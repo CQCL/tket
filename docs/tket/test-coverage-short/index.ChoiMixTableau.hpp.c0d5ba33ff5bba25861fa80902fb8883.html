@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2024-01-05 12:20:56</td>
+      <td>2024-01-08 17:07:07</td>
     </tr>
   </table>
 </div>
@@ -81,13 +81,13 @@
     </tr>
     <tr>
       <td>
-        <a href="#l103">tket::ChoiMixTableau::ChoiMixTableau(tket::ChoiMixTableau const&amp;)</a>
+        <a href="#l101">tket::ChoiMixTableau::ChoiMixTableau(tket::ChoiMixTableau const&amp;)</a>
       </td>
       <td>
-        <a href="#l103">103</a>
+        <a href="#l101">101</a>
       </td>
       <td>
-        <a href="#l103"> not called</a>
+        <a href="#l101"> not called</a>
       </td>
     </tr>
   </table>
@@ -535,7 +535,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * product. get_row() will automatically transpose the input segment term so</span></td>
+      <td class="src "><span class="cm">   * product.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l49" href="#l49">49</a></td>
@@ -544,7 +544,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * it is presented as RxS s.t. SCR = C.</span></td>
+      <td class="src "><span class="cm">   *</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l50" href="#l50">50</a></td>
@@ -553,7 +553,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   *</span></td>
+      <td class="src "><span class="cm">   * Columns of the tableau are indexed by pair of Qubit id and a tag to</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l51" href="#l51">51</a></td>
@@ -562,7 +562,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Columns of the tableau are indexed by pair of Qubit id and a tag to</span></td>
+      <td class="src "><span class="cm">   * distinguish input vs output. Rows are not maintained in any particular</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l52" href="#l52">52</a></td>
@@ -571,7 +571,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * distinguish input vs output. Rows are not maintained in any particular</span></td>
+      <td class="src "><span class="cm">   * order, though the `gaussian_form()` method will bring it into row-reduced</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l53" href="#l53">53</a></td>
@@ -580,7 +580,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * order, though the `gaussian_form()` method will bring it into row-reduced</span></td>
+      <td class="src "><span class="cm">   * echelon form.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l54" href="#l54">54</a></td>
@@ -589,7 +589,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * echelon form.</span></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l55" href="#l55">55</a></td>
@@ -598,7 +598,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l56" href="#l56">56</a></td>
@@ -607,7 +607,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">TableauSegment</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Input</span><span class="p">,</span><span class="w"> </span><span class="n">Output</span><span class="w"> </span><span class="p">};</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l57" href="#l57">57</a></td>
@@ -616,7 +616,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">TableauSegment</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Input</span><span class="p">,</span><span class="w"> </span><span class="n">Output</span><span class="w"> </span><span class="p">};</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="k">typedef</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">Qubit</span><span class="p">,</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">&gt;</span><span class="w"> </span><span class="n">col_key_t</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l58" href="#l58">58</a></td>
@@ -625,7 +625,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">typedef</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">Qubit</span><span class="p">,</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">&gt;</span><span class="w"> </span><span class="n">col_key_t</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="k">typedef</span><span class="w"> </span><span class="n">boost</span><span class="o">::</span><span class="n">bimap</span><span class="o">&lt;</span><span class="n">col_key_t</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="w"> </span><span class="n">tableau_col_index_t</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l59" href="#l59">59</a></td>
@@ -634,7 +634,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">typedef</span><span class="w"> </span><span class="n">boost</span><span class="o">::</span><span class="n">bimap</span><span class="o">&lt;</span><span class="n">col_key_t</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="w"> </span><span class="n">tableau_col_index_t</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="k">typedef</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">SpPauliStabiliser</span><span class="p">,</span><span class="w"> </span><span class="n">SpPauliStabiliser</span><span class="o">&gt;</span><span class="w"> </span><span class="n">row_tensor_t</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l60" href="#l60">60</a></td>
@@ -643,7 +643,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">typedef</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">SpPauliStabiliser</span><span class="p">,</span><span class="w"> </span><span class="n">SpPauliStabiliser</span><span class="o">&gt;</span><span class="w"> </span><span class="n">row_tensor_t</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l61" href="#l61">61</a></td>
@@ -652,7 +652,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l62" href="#l62">62</a></td>
@@ -661,7 +661,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "><span class="cm">   * The actual binary tableau.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l63" href="#l63">63</a></td>
@@ -670,7 +670,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * The actual binary tableau.</span></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l64" href="#l64">64</a></td>
@@ -679,7 +679,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">SymplecticTableau</span><span class="w"> </span><span class="n">tab_</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l65" href="#l65">65</a></td>
@@ -688,7 +688,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">SymplecticTableau</span><span class="w"> </span><span class="n">tab_</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l66" href="#l66">66</a></td>
@@ -697,7 +697,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l67" href="#l67">67</a></td>
@@ -706,7 +706,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "><span class="cm">   * Map between column indices and the corresponding qubit ID and type.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l68" href="#l68">68</a></td>
@@ -715,7 +715,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Map between column indices and the corresponding qubit ID and type.</span></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l69" href="#l69">69</a></td>
@@ -724,7 +724,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">tableau_col_index_t</span><span class="w"> </span><span class="n">col_index_</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l70" href="#l70">70</a></td>
@@ -733,7 +733,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">tableau_col_index_t</span><span class="w"> </span><span class="n">col_index_</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l71" href="#l71">71</a></td>
@@ -742,7 +742,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l72" href="#l72">72</a></td>
@@ -751,7 +751,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "><span class="cm">   * Construct the tableau for the identity unitary over n qubits (given default</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l73" href="#l73">73</a></td>
@@ -760,7 +760,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Construct the tableau for the identity unitary over n qubits (given default</span></td>
+      <td class="src "><span class="cm">   * qubit names).</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l74" href="#l74">74</a></td>
@@ -769,7 +769,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * qubit names).</span></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l75" href="#l75">75</a></td>
@@ -778,7 +778,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="k">explicit</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">n</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l76" href="#l76">76</a></td>
@@ -787,7 +787,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">explicit</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">n</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l77" href="#l77">77</a></td>
@@ -796,7 +796,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "><span class="cm">   * Construct the tableau for the identity unitary over specific qubits.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l78" href="#l78">78</a></td>
@@ -805,7 +805,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Construct the tableau for the identity unitary over specific qubits.</span></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l79" href="#l79">79</a></td>
@@ -814,7 +814,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="k">explicit</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">qubit_vector_t</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qbs</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l80" href="#l80">80</a></td>
@@ -823,7 +823,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">explicit</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">qubit_vector_t</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qbs</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l81" href="#l81">81</a></td>
@@ -832,7 +832,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "><span class="cm">   * Construct a tableau from the underlying binary matrices.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l82" href="#l82">82</a></td>
@@ -841,7 +841,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Construct a tableau from the underlying binary matrices.</span></td>
+      <td class="src "><span class="cm">   * Qubits are given default names and mapped such that the first columns are</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l83" href="#l83">83</a></td>
@@ -850,7 +850,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Qubits are given default names and mapped such that the first columns are</span></td>
+      <td class="src "><span class="cm">   * inputs and the last columns are outputs.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l84" href="#l84">84</a></td>
@@ -859,7 +859,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * inputs and the last columns are outputs.</span></td>
+      <td class="src "><span class="cm">   * @param xmat The X component of the rows in the symplectic representation.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l85" href="#l85">85</a></td>
@@ -868,7 +868,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param xmat The X component of the rows in the symplectic representation.</span></td>
+      <td class="src "><span class="cm">   * @param zmat The Z component of the rows in the symplectic representation.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l86" href="#l86">86</a></td>
@@ -877,7 +877,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param zmat The Z component of the rows in the symplectic representation.</span></td>
+      <td class="src "><span class="cm">   * @param phase The phases of the rows.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l87" href="#l87">87</a></td>
@@ -886,7 +886,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param phase The phases of the rows.</span></td>
+      <td class="src "><span class="cm">   * @param n_ins The number of qubits identified as inputs.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l88" href="#l88">88</a></td>
@@ -895,7 +895,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param n_ins The number of qubits identified as inputs.</span></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l89" href="#l89">89</a></td>
@@ -904,7 +904,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="k">explicit</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l90" href="#l90">90</a></td>
@@ -913,7 +913,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">explicit</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="p">(</span><span class="w"></span></td>
+      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">MatrixXb</span><span class="o">&amp;</span><span class="w"> </span><span class="n">xmat</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">MatrixXb</span><span class="o">&amp;</span><span class="w"> </span><span class="n">zmat</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">VectorXb</span><span class="o">&amp;</span><span class="w"> </span><span class="n">phase</span><span class="p">,</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l91" href="#l91">91</a></td>
@@ -922,7 +922,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">MatrixXb</span><span class="o">&amp;</span><span class="w"> </span><span class="n">xmat</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">MatrixXb</span><span class="o">&amp;</span><span class="w"> </span><span class="n">zmat</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">VectorXb</span><span class="o">&amp;</span><span class="w"> </span><span class="n">phase</span><span class="p">,</span><span class="w"></span></td>
+      <td class="src "><span class="w">      </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">n_ins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l92" href="#l92">92</a></td>
@@ -931,7 +931,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">n_ins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l93" href="#l93">93</a></td>
@@ -940,7 +940,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "><span class="cm">   * Construct a tableau directly from its rows.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l94" href="#l94">94</a></td>
@@ -949,7 +949,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Construct a tableau directly from its rows.</span></td>
+      <td class="src "><span class="cm">   * Each row is represented as a product of SpPauliStabilisers where the first</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l95" href="#l95">95</a></td>
@@ -958,7 +958,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Each row is represented as a product of SpPauliStabilisers where the first</span></td>
+      <td class="src "><span class="cm">   * is over the input qubits and the second is over the outputs.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l96" href="#l96">96</a></td>
@@ -967,7 +967,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * is over the input qubits and the second is over the outputs.</span></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l97" href="#l97">97</a></td>
@@ -976,7 +976,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * A row RxS is a pair s.t. SCR = C</span></td>
+      <td class="src "><span class="w">  </span><span class="k">explicit</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">row_tensor_t</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">rows</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l98" href="#l98">98</a></td>
@@ -985,7 +985,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l99" href="#l99">99</a></td>
@@ -994,7 +994,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">explicit</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">row_tensor_t</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">rows</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * Other required constructors</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l100" href="#l100">100</a></td>
@@ -1003,28 +1003,10 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l101" href="#l101">101</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Other required constructors</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l102" href="#l102">102</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
       <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l103" href="#l103">103</a></td>
+      <td class="lineno"><a id="l101" href="#l101">101</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1033,7 +1015,7 @@
       <td class="src uncoveredLine"><span class="w">  </span><span class="n">ChoiMixTableau</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l104" href="#l104">104</a></td>
+      <td class="lineno"><a id="l102" href="#l102">102</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1042,7 +1024,7 @@
       <td class="src "><span class="w">  </span><span class="n">ChoiMixTableau</span><span class="p">(</span><span class="n">ChoiMixTableau</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l105" href="#l105">105</a></td>
+      <td class="lineno"><a id="l103" href="#l103">103</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1051,7 +1033,7 @@
       <td class="src "><span class="w">  </span><span class="n">ChoiMixTableau</span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l106" href="#l106">106</a></td>
+      <td class="lineno"><a id="l104" href="#l104">104</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1060,7 +1042,7 @@
       <td class="src "><span class="w">  </span><span class="n">ChoiMixTableau</span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">ChoiMixTableau</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l107" href="#l107">107</a></td>
+      <td class="lineno"><a id="l105" href="#l105">105</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1069,7 +1051,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l108" href="#l108">108</a></td>
+      <td class="lineno"><a id="l106" href="#l106">106</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1078,7 +1060,7 @@
       <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l109" href="#l109">109</a></td>
+      <td class="lineno"><a id="l107" href="#l107">107</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1087,7 +1069,7 @@
       <td class="src "><span class="cm">   * Get the number of rows in the tableau</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l110" href="#l110">110</a></td>
+      <td class="lineno"><a id="l108" href="#l108">108</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1096,7 +1078,7 @@
       <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l111" href="#l111">111</a></td>
+      <td class="lineno"><a id="l109" href="#l109">109</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1105,7 +1087,7 @@
       <td class="src "><span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="nf">get_n_rows</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l112" href="#l112">112</a></td>
+      <td class="lineno"><a id="l110" href="#l110">110</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1114,7 +1096,7 @@
       <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l113" href="#l113">113</a></td>
+      <td class="lineno"><a id="l111" href="#l111">111</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1123,7 +1105,7 @@
       <td class="src "><span class="cm">   * Get the total number of qubits/boundaries of the process.</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l114" href="#l114">114</a></td>
+      <td class="lineno"><a id="l112" href="#l112">112</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1132,7 +1114,7 @@
       <td class="src "><span class="cm">   * The number of boundaries is the sum of inputs and outputs.</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l115" href="#l115">115</a></td>
+      <td class="lineno"><a id="l113" href="#l113">113</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1141,7 +1123,7 @@
       <td class="src "><span class="cm">   * The number of binary columns in the full symplectic representation is</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l116" href="#l116">116</a></td>
+      <td class="lineno"><a id="l114" href="#l114">114</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1150,7 +1132,7 @@
       <td class="src "><span class="cm">   * 2*n_boundaries+1.</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l117" href="#l117">117</a></td>
+      <td class="lineno"><a id="l115" href="#l115">115</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1159,7 +1141,7 @@
       <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l118" href="#l118">118</a></td>
+      <td class="lineno"><a id="l116" href="#l116">116</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1168,7 +1150,7 @@
       <td class="src "><span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="nf">get_n_boundaries</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l119" href="#l119">119</a></td>
+      <td class="lineno"><a id="l117" href="#l117">117</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1177,7 +1159,7 @@
       <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l120" href="#l120">120</a></td>
+      <td class="lineno"><a id="l118" href="#l118">118</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1186,7 +1168,7 @@
       <td class="src "><span class="cm">   * Get the number of boundaries representing inputs to the process.</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l121" href="#l121">121</a></td>
+      <td class="lineno"><a id="l119" href="#l119">119</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1195,7 +1177,7 @@
       <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l122" href="#l122">122</a></td>
+      <td class="lineno"><a id="l120" href="#l120">120</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1204,7 +1186,7 @@
       <td class="src "><span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="nf">get_n_inputs</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l123" href="#l123">123</a></td>
+      <td class="lineno"><a id="l121" href="#l121">121</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1213,7 +1195,7 @@
       <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l124" href="#l124">124</a></td>
+      <td class="lineno"><a id="l122" href="#l122">122</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1222,7 +1204,7 @@
       <td class="src "><span class="cm">   * Get the number of boundaries representing outputs from the process.</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l125" href="#l125">125</a></td>
+      <td class="lineno"><a id="l123" href="#l123">123</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1231,7 +1213,7 @@
       <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l126" href="#l126">126</a></td>
+      <td class="lineno"><a id="l124" href="#l124">124</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1240,13 +1222,31 @@
       <td class="src "><span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="nf">get_n_outputs</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l127" href="#l127">127</a></td>
+      <td class="lineno"><a id="l125" href="#l125">125</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l126" href="#l126">126</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
       <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l127" href="#l127">127</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm">   * Read off a row as a Pauli string</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l128" href="#l128">128</a></td>
@@ -1255,7 +1255,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Get all qubit names present in the input segment.</span></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l129" href="#l129">129</a></td>
@@ -1264,7 +1264,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">row_tensor_t</span><span class="w"> </span><span class="nf">get_row</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l130" href="#l130">130</a></td>
@@ -1273,7 +1273,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">qubit_vector_t</span><span class="w"> </span><span class="nf">input_qubits</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l131" href="#l131">131</a></td>
@@ -1282,7 +1282,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "><span class="cm">   * Combine rows into a single row</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l132" href="#l132">132</a></td>
@@ -1291,7 +1291,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Get all qubit names present in the output segment.</span></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l133" href="#l133">133</a></td>
@@ -1300,7 +1300,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">row_tensor_t</span><span class="w"> </span><span class="nf">get_row_product</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">rows</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l134" href="#l134">134</a></td>
@@ -1309,7 +1309,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">qubit_vector_t</span><span class="w"> </span><span class="nf">output_qubits</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l135" href="#l135">135</a></td>
@@ -1318,7 +1318,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l136" href="#l136">136</a></td>
@@ -1327,7 +1327,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "><span class="cm">   * Transform the tableau according to consuming a Clifford gate at either end</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l137" href="#l137">137</a></td>
@@ -1336,7 +1336,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Read off a row as a Pauli string.</span></td>
+      <td class="src "><span class="cm">   * of the circuit. Applying a gate to the inputs really consumes its transpose</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l138" href="#l138">138</a></td>
@@ -1345,7 +1345,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Returns a pair of Pauli strings RxS such that SCR = C</span></td>
+      <td class="src "><span class="cm">   * via the CJ isomorphism. The basic gates considered here are all</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l139" href="#l139">139</a></td>
@@ -1354,7 +1354,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * self-transpose, and the method for other Clifford gates handles the</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l140" href="#l140">140</a></td>
@@ -1363,7 +1363,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">row_tensor_t</span><span class="w"> </span><span class="nf">get_row</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * transposition internally by reversing the order of application. For</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l141" href="#l141">141</a></td>
@@ -1372,7 +1372,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "><span class="cm">   * multi-qubit gates, the qubits applied must either be all inputs or all</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l142" href="#l142">142</a></td>
@@ -1381,7 +1381,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Combine rows into a single row.</span></td>
+      <td class="src "><span class="cm">   * outputs.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l143" href="#l143">143</a></td>
@@ -1390,7 +1390,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Returns a pair of Pauli strings RxS such that SCR = C</span></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l144" href="#l144">144</a></td>
@@ -1399,7 +1399,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_S</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">,</span><span class="w"> </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l145" href="#l145">145</a></td>
@@ -1408,7 +1408,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">row_tensor_t</span><span class="w"> </span><span class="nf">get_row_product</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">rows</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_V</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">,</span><span class="w"> </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l146" href="#l146">146</a></td>
@@ -1417,7 +1417,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_CX</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l147" href="#l147">147</a></td>
@@ -1426,7 +1426,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">control</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">target</span><span class="p">,</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l148" href="#l148">148</a></td>
@@ -1435,7 +1435,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Transform the tableau according to consuming a Clifford gate at either end</span></td>
+      <td class="src "><span class="w">      </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l149" href="#l149">149</a></td>
@@ -1444,7 +1444,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * of the circuit. Applying a gate to the inputs really consumes its transpose</span></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_gate</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l150" href="#l150">150</a></td>
@@ -1453,7 +1453,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * via the CJ isomorphism. The basic gates considered here are all</span></td>
+      <td class="src "><span class="w">      </span><span class="n">OpType</span><span class="w"> </span><span class="n">type</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">qubit_vector_t</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qbs</span><span class="p">,</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l151" href="#l151">151</a></td>
@@ -1462,7 +1462,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * self-transpose, and the method for other Clifford gates handles the</span></td>
+      <td class="src "><span class="w">      </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l152" href="#l152">152</a></td>
@@ -1471,7 +1471,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * transposition internally by reversing the order of application. For</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l153" href="#l153">153</a></td>
@@ -1480,7 +1480,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * multi-qubit gates, the qubits applied must either be all inputs or all</span></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l154" href="#l154">154</a></td>
@@ -1489,7 +1489,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * outputs.</span></td>
+      <td class="src "><span class="cm">   * Transform the tableau according to consuming a Clifford-phase Pauli gadget</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l155" href="#l155">155</a></td>
@@ -1498,7 +1498,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * at either end of the circuit. Transposition for inputs is handled</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l156" href="#l156">156</a></td>
@@ -1507,7 +1507,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_S</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">,</span><span class="w"> </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * internally. The qubits applied over must either be all inputs or all</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l157" href="#l157">157</a></td>
@@ -1516,7 +1516,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_Z</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">,</span><span class="w"> </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * outputs.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l158" href="#l158">158</a></td>
@@ -1525,7 +1525,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_V</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">,</span><span class="w"> </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   *</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l159" href="#l159">159</a></td>
@@ -1534,7 +1534,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_X</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">,</span><span class="w"> </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * @param pauli The string of the Pauli gadget</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l160" href="#l160">160</a></td>
@@ -1543,7 +1543,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_H</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">,</span><span class="w"> </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * @param half_pis The Clifford angle: {0, 1, 2, 3} represents {0, pi/2, pi,</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l161" href="#l161">161</a></td>
@@ -1552,7 +1552,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_CX</span><span class="p">(</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * -pi/2}</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l162" href="#l162">162</a></td>
@@ -1561,7 +1561,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">control</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">target</span><span class="p">,</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * @param seg Whether to apply the Pauli gadget over the inputs or outputs</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l163" href="#l163">163</a></td>
@@ -1570,7 +1570,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l164" href="#l164">164</a></td>
@@ -1579,7 +1579,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_gate</span><span class="p">(</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_pauli</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l165" href="#l165">165</a></td>
@@ -1588,7 +1588,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="n">OpType</span><span class="w"> </span><span class="n">type</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">qubit_vector_t</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qbs</span><span class="p">,</span><span class="w"></span></td>
+      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">SpPauliStabiliser</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pauli</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">half_pis</span><span class="p">,</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l166" href="#l166">166</a></td>
@@ -1624,7 +1624,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Transform the tableau according to consuming a Clifford-phase Pauli gadget</span></td>
+      <td class="src "><span class="cm">   * Post-select a qubit of the Choi state in |0&gt;.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l170" href="#l170">170</a></td>
@@ -1633,7 +1633,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * at either end of the circuit. Transposition for inputs is handled</span></td>
+      <td class="src "><span class="cm">   * Over the input system, this corresponds to initialising in the |0&gt; state.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l171" href="#l171">171</a></td>
@@ -1642,7 +1642,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * internally. The qubits applied over must either be all inputs or all</span></td>
+      <td class="src "><span class="cm">   * Over the output system, this corresponds to a true post-selection.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l172" href="#l172">172</a></td>
@@ -1651,7 +1651,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * outputs.</span></td>
+      <td class="src "><span class="cm">   * Throws an exception if post-selection has a zero chance of success.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l173" href="#l173">173</a></td>
@@ -1660,7 +1660,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   *</span></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l174" href="#l174">174</a></td>
@@ -1669,7 +1669,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param pauli The string of the Pauli gadget</span></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">post_select</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l175" href="#l175">175</a></td>
@@ -1678,7 +1678,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param half_pis The Clifford angle: {0, 1, 2, 3} represents {0, pi/2, pi,</span></td>
+      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">,</span><span class="w"> </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l176" href="#l176">176</a></td>
@@ -1687,7 +1687,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * -pi/2}</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l177" href="#l177">177</a></td>
@@ -1696,7 +1696,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param seg Whether to apply the Pauli gadget over the inputs or outputs</span></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l178" href="#l178">178</a></td>
@@ -1705,7 +1705,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * Discards a qubit of the Choi state.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l179" href="#l179">179</a></td>
@@ -1714,7 +1714,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_pauli</span><span class="p">(</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * Over the input system, this corresponds to initialising in the</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l180" href="#l180">180</a></td>
@@ -1723,7 +1723,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">SpPauliStabiliser</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pauli</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">half_pis</span><span class="p">,</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * maximally-mixed state. Over the output system, this corresponds to a true</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l181" href="#l181">181</a></td>
@@ -1732,7 +1732,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * discard/partial trace.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l182" href="#l182">182</a></td>
@@ -1741,7 +1741,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l183" href="#l183">183</a></td>
@@ -1750,7 +1750,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">discard_qubit</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l184" href="#l184">184</a></td>
@@ -1759,7 +1759,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Post-select a qubit of the Choi state in |0&gt;.</span></td>
+      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">,</span><span class="w"> </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l185" href="#l185">185</a></td>
@@ -1768,7 +1768,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Over the input system, this corresponds to initialising in the |0&gt; state.</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l186" href="#l186">186</a></td>
@@ -1777,7 +1777,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Over the output system, this corresponds to a true post-selection.</span></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l187" href="#l187">187</a></td>
@@ -1786,7 +1786,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Throws an exception if post-selection has a zero chance of success.</span></td>
+      <td class="src "><span class="cm">   * Performs the effect of an OpType::Collapse gate on the qubit.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l188" href="#l188">188</a></td>
@@ -1795,7 +1795,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * I.e. non-destructively measure the qubit in the Z basis and ignore the</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l189" href="#l189">189</a></td>
@@ -1804,7 +1804,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">post_select</span><span class="p">(</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * result.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l190" href="#l190">190</a></td>
@@ -1813,7 +1813,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">,</span><span class="w"> </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l191" href="#l191">191</a></td>
@@ -1822,7 +1822,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">collapse_qubit</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l192" href="#l192">192</a></td>
@@ -1831,7 +1831,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">,</span><span class="w"> </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l193" href="#l193">193</a></td>
@@ -1840,7 +1840,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Discards a qubit of the Choi state.</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l194" href="#l194">194</a></td>
@@ -1849,7 +1849,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Over the input system, this corresponds to initialising in the</span></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l195" href="#l195">195</a></td>
@@ -1858,7 +1858,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * maximally-mixed state. Over the output system, this corresponds to a true</span></td>
+      <td class="src "><span class="cm">   * Removes a row from the tableau.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l196" href="#l196">196</a></td>
@@ -1867,7 +1867,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * discard/partial trace.</span></td>
+      <td class="src "><span class="cm">   * The final row is shifted into its place.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l197" href="#l197">197</a></td>
@@ -1885,7 +1885,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">discard_qubit</span><span class="p">(</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">remove_row</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">row</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l199" href="#l199">199</a></td>
@@ -1894,7 +1894,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">,</span><span class="w"> </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l200" href="#l200">200</a></td>
@@ -1903,7 +1903,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l201" href="#l201">201</a></td>
@@ -1912,7 +1912,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "><span class="cm">   * Permutes columns into a canonical order: chosen segment first, subordered</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l202" href="#l202">202</a></td>
@@ -1921,7 +1921,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Performs the effect of an OpType::Collapse gate on the qubit.</span></td>
+      <td class="src "><span class="cm">   * in ILO.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l203" href="#l203">203</a></td>
@@ -1930,7 +1930,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * I.e. non-destructively measure the qubit in the Z basis and ignore the</span></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l204" href="#l204">204</a></td>
@@ -1939,7 +1939,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * result.</span></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">canonical_column_order</span><span class="p">(</span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Input</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l205" href="#l205">205</a></td>
@@ -1948,7 +1948,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l206" href="#l206">206</a></td>
@@ -1957,7 +1957,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">collapse_qubit</span><span class="p">(</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l207" href="#l207">207</a></td>
@@ -1966,7 +1966,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">,</span><span class="w"> </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * Reduces the underlying SymplecticTableau to its Gaussian/row-echelon form.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l208" href="#l208">208</a></td>
@@ -1975,7 +1975,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l209" href="#l209">209</a></td>
@@ -1984,7 +1984,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">gaussian_form</span><span class="p">();</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l210" href="#l210">210</a></td>
@@ -1993,7 +1993,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Removes a row from the tableau.</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l211" href="#l211">211</a></td>
@@ -2002,7 +2002,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * The final row is shifted into its place.</span></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l212" href="#l212">212</a></td>
@@ -2011,7 +2011,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * Renames qubits.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l213" href="#l213">213</a></td>
@@ -2020,7 +2020,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">remove_row</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">row</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l214" href="#l214">214</a></td>
@@ -2029,7 +2029,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">rename_qubits</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">qubit_map_t</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qmap</span><span class="p">,</span><span class="w"> </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l215" href="#l215">215</a></td>
@@ -2038,7 +2038,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l216" href="#l216">216</a></td>
@@ -2047,7 +2047,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Permutes columns into a canonical order: chosen segment first, subordered</span></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l217" href="#l217">217</a></td>
@@ -2056,7 +2056,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * in ILO.</span></td>
+      <td class="src "><span class="cm">   * Combine two tableaux in sequence/parallel.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l218" href="#l218">218</a></td>
@@ -2065,7 +2065,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * Any matching output qubits of first and input qubits of second will be</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l219" href="#l219">219</a></td>
@@ -2074,7 +2074,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">canonical_column_order</span><span class="p">(</span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TableauSegment</span><span class="o">::</span><span class="n">Input</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * contracted, and others will be added in parallel. Throws an exception if</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l220" href="#l220">220</a></td>
@@ -2083,7 +2083,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm">   * parallel composition would introduce name clashes.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l221" href="#l221">221</a></td>
@@ -2092,7 +2092,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "><span class="cm">   *</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l222" href="#l222">222</a></td>
@@ -2101,7 +2101,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Reduces the underlying SymplecticTableau to its Gaussian/row-echelon form.</span></td>
+      <td class="src "><span class="cm">   * @param first First circuit in the sequential order</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l223" href="#l223">223</a></td>
@@ -2110,7 +2110,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * @param second Second circuit in the sequential order</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l224" href="#l224">224</a></td>
@@ -2119,7 +2119,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">gaussian_form</span><span class="p">();</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l225" href="#l225">225</a></td>
@@ -2128,7 +2128,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="w"> </span><span class="nf">compose</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l226" href="#l226">226</a></td>
@@ -2137,7 +2137,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="o">&amp;</span><span class="w"> </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="o">&amp;</span><span class="w"> </span><span class="n">second</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l227" href="#l227">227</a></td>
@@ -2146,7 +2146,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Renames qubits.</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l228" href="#l228">228</a></td>
@@ -2155,7 +2155,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="k">friend</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">os</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="o">&amp;</span><span class="w"> </span><span class="n">tab</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l229" href="#l229">229</a></td>
@@ -2164,7 +2164,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">rename_qubits</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">qubit_map_t</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qmap</span><span class="p">,</span><span class="w"> </span><span class="n">TableauSegment</span><span class="w"> </span><span class="n">seg</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l230" href="#l230">230</a></td>
@@ -2182,7 +2182,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "><span class="w"> </span><span class="k">private</span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l232" href="#l232">232</a></td>
@@ -2191,7 +2191,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Combine two tableaux in sequence/parallel.</span></td>
+      <td class="src "><span class="w">  </span><span class="n">row_tensor_t</span><span class="w"> </span><span class="n">stab_to_row_tensor</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">PauliStabiliser</span><span class="o">&amp;</span><span class="w"> </span><span class="n">stab</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l233" href="#l233">233</a></td>
@@ -2200,7 +2200,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Any matching output qubits of first and input qubits of second will be</span></td>
+      <td class="src "><span class="w">  </span><span class="n">PauliStabiliser</span><span class="w"> </span><span class="nf">row_tensor_to_stab</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">row_tensor_t</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ten</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l234" href="#l234">234</a></td>
@@ -2209,7 +2209,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * contracted, and others will be added in parallel. Throws an exception if</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l235" href="#l235">235</a></td>
@@ -2218,7 +2218,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * parallel composition would introduce name clashes.</span></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l236" href="#l236">236</a></td>
@@ -2227,7 +2227,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   *</span></td>
+      <td class="src "><span class="cm">   * Removes a column from the tableau.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l237" href="#l237">237</a></td>
@@ -2236,7 +2236,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param first First circuit in the sequential order</span></td>
+      <td class="src "><span class="cm">   * The final column is shifted into its place and col_index_ updated.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l238" href="#l238">238</a></td>
@@ -2245,7 +2245,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param second Second circuit in the sequential order</span></td>
+      <td class="src "><span class="cm">   * Hidden as private since it just strips this qubit out of the table without</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l239" href="#l239">239</a></td>
@@ -2254,7 +2254,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * attempting to preserve correctness of the stabilizers.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l240" href="#l240">240</a></td>
@@ -2263,7 +2263,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="w"> </span><span class="nf">compose</span><span class="p">(</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l241" href="#l241">241</a></td>
@@ -2272,7 +2272,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="o">&amp;</span><span class="w"> </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="o">&amp;</span><span class="w"> </span><span class="n">second</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">remove_col</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">col</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l242" href="#l242">242</a></td>
@@ -2281,7 +2281,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="p">};</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l243" href="#l243">243</a></td>
@@ -2290,7 +2290,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">friend</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">os</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="o">&amp;</span><span class="w"> </span><span class="n">tab</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l244" href="#l244">244</a></td>
@@ -2299,7 +2299,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="n">JSON_DECL</span><span class="p">(</span><span class="n">ChoiMixTableau</span><span class="o">::</span><span class="n">TableauSegment</span><span class="p">)</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l245" href="#l245">245</a></td>
@@ -2308,7 +2308,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="n">JSON_DECL</span><span class="p">(</span><span class="n">ChoiMixTableau</span><span class="p">)</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l246" href="#l246">246</a></td>
@@ -2317,7 +2317,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w"> </span><span class="k">private</span><span class="o">:</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l247" href="#l247">247</a></td>
@@ -2326,7 +2326,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">row_tensor_t</span><span class="w"> </span><span class="n">stab_to_row_tensor</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">PauliStabiliser</span><span class="o">&amp;</span><span class="w"> </span><span class="n">stab</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">os</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="o">&amp;</span><span class="w"> </span><span class="n">tab</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l248" href="#l248">248</a></td>
@@ -2335,7 +2335,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">PauliStabiliser</span><span class="w"> </span><span class="nf">row_tensor_to_stab</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">row_tensor_t</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ten</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l249" href="#l249">249</a></td>
@@ -2344,145 +2344,10 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l250" href="#l250">250</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l251" href="#l251">251</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Removes a column from the tableau.</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l252" href="#l252">252</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">   * The final column is shifted into its place and col_index_ updated.</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l253" href="#l253">253</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Hidden as private since it just strips this qubit out of the table without</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l254" href="#l254">254</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">   * attempting to preserve correctness of the stabilizers.</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l255" href="#l255">255</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l256" href="#l256">256</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">remove_col</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">col</span><span class="p">);</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l257" href="#l257">257</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">};</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l258" href="#l258">258</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l259" href="#l259">259</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="n">JSON_DECL</span><span class="p">(</span><span class="n">ChoiMixTableau</span><span class="o">::</span><span class="n">TableauSegment</span><span class="p">)</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l260" href="#l260">260</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="n">JSON_DECL</span><span class="p">(</span><span class="n">ChoiMixTableau</span><span class="p">)</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l261" href="#l261">261</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l262" href="#l262">262</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">os</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">ChoiMixTableau</span><span class="o">&amp;</span><span class="w"> </span><span class="n">tab</span><span class="p">);</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l263" href="#l263">263</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l264" href="#l264">264</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
       <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace tket</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l265" href="#l265">265</a></td>
+      <td class="lineno"><a id="l250" href="#l250">250</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">

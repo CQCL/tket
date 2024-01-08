@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2024-01-05 12:20:56</td>
+      <td>2024-01-08 17:07:07</td>
     </tr>
     <tr>
       <th scrope="row">Warnings:</th>
@@ -57,9 +57,9 @@
     </tr>
     <tr>
       <th scope="row">Branches:</th>
-      <td>210</td>
-      <td>373</td>
-      <td class="coverage-low">56.3%</td>
+      <td>207</td>
+      <td>367</td>
+      <td class="coverage-low">56.4%</td>
     </tr>
     <tr>
       <th scope="row">Decisions:</th>
@@ -315,7 +315,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;tket/Circuit/CircUtils.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;tket/Converters/Converters.hpp&quot;</span><span class="cp"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l18" href="#l18">18</a></td>
@@ -324,7 +324,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;tket/Converters/Converters.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;tket/Converters/PauliGadget.hpp&quot;</span><span class="cp"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l19" href="#l19">19</a></td>
@@ -2388,37 +2388,30 @@
       <td class="lineno"><a id="l171" href="#l171">171</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
-        <summary class="linebranchSummary">1/2</summary>
+        <summary class="linebranchSummary">3/6</summary>
         <div class="linebranchContents">
           <div class="takenBranch">&check; Branch 1 taken 6 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
-        </div>
-        </details>
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">6</td>
-      <td class="src coveredLine"><span class="w">      </span><span class="n">gadget_circ</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l172" href="#l172">172</a></td>
-      <td class="linebranch">
-        <details class="linebranchDetails">
-        <summary class="linebranchSummary">3/6</summary>
-        <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 2 taken 6 times.</div>
-          <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
-          <div class="takenBranch">&check; Branch 6 taken 6 times.</div>
-          <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
-          <div class="takenBranch">&check; Branch 9 taken 6 times.</div>
-          <div class="notTakenBranch">&cross; Branch 10 not taken.</div>
+          <div class="takenBranch">&check; Branch 4 taken 6 times.</div>
+          <div class="notTakenBranch">&cross; Branch 5 not taken.</div>
+          <div class="takenBranch">&check; Branch 7 taken 6 times.</div>
+          <div class="notTakenBranch">&cross; Branch 8 not taken.</div>
         </div>
         </details>
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">12</td>
-      <td class="src coveredLine"><span class="w">          </span><span class="n">pauli_gadget_pair</span><span class="p">(</span><span class="n">pauli_gadgets</span><span class="p">[</span><span class="n">g</span><span class="p">],</span><span class="w"> </span><span class="n">pauli_gadgets</span><span class="p">[</span><span class="n">g</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">cx_config</span><span class="p">));</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">append_pauli_gadget_pair</span><span class="p">(</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l172" href="#l172">172</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">12</td>
+      <td class="src coveredLine"><span class="w">          </span><span class="n">gadget_circ</span><span class="p">,</span><span class="w"> </span><span class="n">pauli_gadgets</span><span class="p">[</span><span class="n">g</span><span class="p">],</span><span class="w"> </span><span class="n">pauli_gadgets</span><span class="p">[</span><span class="n">g</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">cx_config</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l173" href="#l173">173</a></td>
@@ -2483,21 +2476,17 @@
       <td class="lineno"><a id="l178" href="#l178">178</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
-        <summary class="linebranchSummary">3/6</summary>
+        <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
           <div class="takenBranch">&check; Branch 2 taken 4 times.</div>
           <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
-          <div class="takenBranch">&check; Branch 5 taken 4 times.</div>
-          <div class="notTakenBranch">&cross; Branch 6 not taken.</div>
-          <div class="takenBranch">&check; Branch 8 taken 4 times.</div>
-          <div class="notTakenBranch">&cross; Branch 9 not taken.</div>
         </div>
         </details>
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">4</td>
-      <td class="src coveredLine"><span class="w">      </span><span class="n">gadget_circ</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">pauli_gadget</span><span class="p">(</span><span class="n">pauli_gadgets</span><span class="p">[</span><span class="n">g</span><span class="p">],</span><span class="w"> </span><span class="n">cx_config</span><span class="p">));</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">append_single_pauli_gadget</span><span class="p">(</span><span class="n">gadget_circ</span><span class="p">,</span><span class="w"> </span><span class="n">pauli_gadgets</span><span class="p">[</span><span class="n">g</span><span class="p">],</span><span class="w"> </span><span class="n">cx_config</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l179" href="#l179">179</a></td>
