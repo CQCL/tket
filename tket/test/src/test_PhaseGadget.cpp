@@ -149,8 +149,7 @@ SCENARIO("Constructing Pauli gadgets") {
              1.*i_, 0., 0., 0.;
     // clang-format on
     Eigen::Matrix4cd m = (+0.5 * PI * i_ * t * a).exp();
-    Circuit circ =
-        pauli_gadget(SpSymPauliTensor(DensePauliMap{Pauli::X, Pauli::Y}, t));
+    Circuit circ = pauli_gadget({Pauli::X, Pauli::Y}, t);
     const Eigen::Matrix4cd u = tket_sim::get_unitary(circ);
     Eigen::Matrix4cd v = m * u;
     REQUIRE((v - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
@@ -287,7 +286,7 @@ SCENARIO("Decompose phase gadgets") {
     for (unsigned i = 0; i < n_qubits; ++i) {
       nZ.push_back(Pauli::Z);
     }
-    Circuit pauli_gadget_circ = pauli_gadget(SpSymPauliTensor(nZ, 0.2));
+    Circuit pauli_gadget_circ = pauli_gadget(nZ, 0.2);
     pauli_gadget_circ.decompose_boxes_recursively();
     Circuit phase_gadget_circ = phase_gadget(n_qubits, 0.2, config);
     phase_gadget_circ.decompose_boxes_recursively();
