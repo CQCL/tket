@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['graphcolourmethod_5125',['GraphColourMethod',['../namespacetket.html#a4e74bb747130174e23260df03944dd0c',1,'tket']]],
-  ['graphrewiring_5126',['GraphRewiring',['../classtket_1_1Circuit.html#a9ebf9fffcbb5cf57899e25d9358a41cb',1,'tket::Circuit']]],
-  ['guarantee_5127',['Guarantee',['../namespacetket.html#a927f86cd8e86326952a143fdc6222ec7',1,'tket']]]
+  ['graphcolourmethod_5101',['GraphColourMethod',['../namespacetket.html#a4e74bb747130174e23260df03944dd0c',1,'tket']]],
+  ['graphrewiring_5102',['GraphRewiring',['../classtket_1_1Circuit.html#a9ebf9fffcbb5cf57899e25d9358a41cb',1,'tket::Circuit']]],
+  ['guarantee_5103',['Guarantee',['../namespacetket.html#a927f86cd8e86326952a143fdc6222ec7',1,'tket']]]
 ];
