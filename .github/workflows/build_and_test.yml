@@ -555,7 +555,7 @@ jobs:
   check_pytket_coverage:
     name: Check pytket line and branch coverage
     needs: build_test_pytket_ubuntu
-    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    if: (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop') || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4

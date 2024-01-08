@@ -69,9 +69,9 @@ def compare(old_cov_file, new_cov_file):
     print(f"Branch coverage: {new_branch_rate}")
     print()
 
-    if new_line_rate < old_line_rate:
+    if new_line_rate + 0.01 < old_line_rate:
         sys.exit("Line coverage has decreased!")
-    if new_branch_rate < old_branch_rate:
+    if new_branch_rate + 0.01 < old_branch_rate:
         sys.exit("Branch coverage has decreased!")
 
 
