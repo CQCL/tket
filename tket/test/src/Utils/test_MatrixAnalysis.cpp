@@ -112,5 +112,41 @@ SCENARIO("Test nth root of a 2x2 unitary") {
     }
   }
 }
+
+SCENARIO("Test unitary product") {
+  GIVEN("Two perturbed unitaries") {
+    Eigen::Matrix4cd U = random_unitary(4, 0);
+    U(1, 2) += 0.1;
+    Eigen::Matrix4cd V = random_unitary(4, 1);
+    V(3, 0) -= 0.1;
+    Eigen::Matrix4cd UV = U * V;
+    Eigen::Matrix4cd X = unitary_product2(U, V);
+    REQUIRE(!is_unitary(UV));
+    REQUIRE(is_unitary(X));
+    double d = (X - UV).squaredNorm();
+    for (int i = 0; i < 10; i++) {
+      Eigen::Matrix4cd Y = random_unitary(4, 2 + i);
+      CHECK((Y - UV).squaredNorm() >= d);
+    }
+  }
+  GIVEN("Three perturbed unitaries") {
+    Eigen::Matrix4cd U = random_unitary(4, 12);
+    U(1, 2) += 0.1;
+    Eigen::Matrix4cd V = random_unitary(4, 13);
+    V(3, 0) -= 0.1;
+    Eigen::Matrix4cd W = random_unitary(4, 14);
+    W(2, 2) += 0.1;
+    Eigen::Matrix4cd UVW = U * V * W;
+    Eigen::Matrix4cd X = unitary_product3(U, V, W);
+    REQUIRE(!is_unitary(UVW));
+    REQUIRE(is_unitary(X));
+    double d = (X - UVW).squaredNorm();
+    for (int i = 0; i < 10; i++) {
+      Eigen::Matrix4cd Y = random_unitary(4, 15 + i);
+      CHECK((Y - UVW).squaredNorm() >= d);
+    }
+  }
+}
+
 }  // namespace test_MatrixAnalysis
 }  // namespace tket

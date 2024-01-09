@@ -328,10 +328,14 @@ std::string CustomGate::get_name(bool) const {
   s << gate_->get_name();
   if (!params_.empty()) {
     s << "(";
-    std::string sep = "";
+    bool initial = true;
     for (const Expr &e : params_) {
-      s << sep << e;
-      sep = ",";
+      if (initial) {
+        s << e;
+      } else {
+        s << "," << e;
+      }
+      initial = false;
     }
     s << ")";
   }

@@ -58,6 +58,43 @@ UnitID to_cpp_unitid(const PyUnitID &py_unitid) {
   return get<Bit>(py_unitid);
 }
 
+template <typename T>
+std::vector<T> get_unit_registers(Circuit &circ) {
+  static_assert(
+      std::is_same<T, QubitRegister>::value ||
+          std::is_same<T, BitRegister>::value,
+      "T must be either QubitRegister or BitRegister");
+  using T2 = typename std::conditional<
+      std::is_same<T, QubitRegister>::value, Qubit, Bit>::type;
+  std::vector<T2> unitids;
+  if constexpr (std::is_same<T, QubitRegister>::value) {
+    unitids = circ.all_qubits();
+  } else if constexpr (std::is_same<T, BitRegister>::value) {
+    unitids = circ.all_bits();
+  }
+  // map from register name to unsigned indices
+  std::map<std::string, std::set<unsigned>> unit_map;
+  std::vector<T> regs;
+  for (const T2 &unitid : unitids) {
+    // UnitRegisters only describe registers with 1-d indices
+    if (unitid.reg_dim() > 1) continue;
+    auto it = unit_map.find(unitid.reg_name());
+    if (it == unit_map.end()) {
+      unit_map.insert({unitid.reg_name(), {unitid.index()[0]}});
+    } else {
+      it->second.insert(unitid.index()[0]);
+    }
+  }
+  regs.reserve(unit_map.size());
+  for (auto const &it : unit_map) {
+    // only return registers that are indexed consecutively from zero
+    if (*it.second.rbegin() == it.second.size() - 1) {
+      regs.emplace_back(it.first, it.second.size());
+    }
+  }
+  return regs;
+}
+
 void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c);
 void init_circuit_add_classical_op(
     py::class_<Circuit, std::shared_ptr<Circuit>> &c);
@@ -252,27 +289,13 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           ":py:class:`BitRegister`",
           py::arg("name"))
       .def_property_readonly(
-          "c_registers",
-          [](Circuit &circ) {
-            bit_vector_t all_bits = circ.all_bits();
-            std::map<std::string, unsigned> bits_map;
-            std::vector<BitRegister> b_regs;
-            for (const Bit &bit : all_bits) {
-              auto it = bits_map.find(bit.reg_name());
-              if (it == bits_map.end()) {
-                bits_map.insert({bit.reg_name(), 1});
-              } else {
-                it->second++;
-              }
-            }
-            b_regs.reserve(bits_map.size());
-            for (auto const &it : bits_map) {
-              b_regs.emplace_back(it.first, it.second);
-            }
-            return b_regs;
-          },
-          "Get all classical registers.\n\n:return: List of "
-          ":py:class:`BitRegister`")
+          "c_registers", &get_unit_registers<BitRegister>,
+          "Get all classical registers.\n\n"
+          "This property is only valid if the bits in the circuit are "
+          "organized into registers (i.e. all bit indices are single numbers "
+          "and all sets of bits with the same string identifier consist of "
+          "bits indexed consecutively from zero).\n\n"
+          ":return: List of :py:class:`BitRegister`")
       .def(
           "get_q_register",
           [](Circuit &circ, const std::string &name) {
@@ -288,27 +311,13 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           ":py:class:`QubitRegister`",
           py::arg("name"))
       .def_property_readonly(
-          "q_registers",
-          [](Circuit &circ) {
-            qubit_vector_t all_qbs = circ.all_qubits();
-            std::map<std::string, unsigned> qbs_map;
-            std::vector<QubitRegister> q_regs;
-            for (const Qubit &qb : all_qbs) {
-              auto it = qbs_map.find(qb.reg_name());
-              if (it == qbs_map.end()) {
-                qbs_map.insert({qb.reg_name(), 1});
-              } else {
-                it->second++;
-              }
-            }
-            q_regs.reserve(qbs_map.size());
-            for (auto const &it : qbs_map) {
-              q_regs.emplace_back(it.first, it.second);
-            }
-            return q_regs;
-          },
-          "Get all quantum registers.\n\n:return: List of "
-          ":py:class:`QubitRegister`")
+          "q_registers", &get_unit_registers<QubitRegister>,
+          "Get all quantum registers.\n\n"
+          "This property is only valid if the qubits in the circuit are "
+          "organized into registers (i.e. all qubit indices are single numbers "
+          "and all sets of qubits with the same string identifier consist of "
+          "qubits indexed consecutively from zero).\n\n"
+          ":return: List of :py:class:`QubitRegister`")
       .def(
           "add_qubit", &Circuit::add_qubit,
           "Constructs a single qubit with the given id.\n\n:param id: "

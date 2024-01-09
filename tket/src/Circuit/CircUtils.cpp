@@ -22,7 +22,6 @@
 #include "tket/Circuit/CircPool.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/ConjugationBox.hpp"
-#include "tket/Diagonalisation/Diagonalisation.hpp"
 #include "tket/Gate/GatePtr.hpp"
 #include "tket/Gate/GateUnitaryMatrixImplementations.hpp"
 #include "tket/Gate/Rotation.hpp"
@@ -57,7 +56,7 @@ Eigen::Matrix2cd get_matrix_from_circ(const Circuit &circ) {
   if (N == 2) return factor * Eigen::Matrix2cd::Identity();
   Eigen::Matrix2cd m = get_matrix(circ, qpath[N - 2]);
   for (unsigned x = N - 3; x >= 1; --x) {
-    m = m * get_matrix(circ, qpath[x]);
+    m = unitary_product2(m, get_matrix(circ, qpath[x]));
   }
   return factor * m;
 }
@@ -138,7 +137,7 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit &circ) {
   SliceVec slices = circ.get_slices();
   for (const Slice &s : slices) {
     for (const Vertex &v : s) {
-      m = v_to_op[v] * m;
+      m = unitary_product2(v_to_op[v], m);
     }
   }
   return std::exp(i_ * PI * eval_expr(circ.get_phase()).value()) * m;
@@ -188,7 +187,8 @@ Circuit two_qubit_canonical(const Eigen::Matrix4cd &U, OpType target_2qb_gate) {
       OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
 
   // this fixes phase if decomposition is exact
-  Eigen::Matrix4cd reminder = get_matrix_from_2qb_circ(result).adjoint() * U;
+  Eigen::Matrix4cd V = get_matrix_from_2qb_circ(result).adjoint();
+  Eigen::Matrix4cd reminder = unitary_product2(V, U);
   const Complex phase = reminder(0, 0);  // reminder = phase * I
   result.add_phase(arg(phase) / PI);
   return result;
@@ -269,79 +269,152 @@ std::pair<Circuit, Complex> decompose_2cx_DV(const Eigen::Matrix4cd &U) {
 }
 
 Circuit phase_gadget(unsigned n_qubits, const Expr &t, CXConfigType cx_config) {
-  return pauli_gadget(
-      SpSymPauliTensor(DensePauliMap(n_qubits, Pauli::Z), t), cx_config);
-}
-
-Circuit pauli_gadget(SpSymPauliTensor paulis, CXConfigType cx_config) {
-  if (SpPauliString(paulis.string) == SpPauliString{}) {
-    Circuit phase_circ(paulis.size());
-    phase_circ.add_phase(-paulis.coeff / 2);
-    return phase_circ;
+  // Handle n_qubits==0 as a special case, or the calculations below
+  // go badly wrong.
+  Circuit new_circ(n_qubits);
+  Circuit compute(n_qubits);
+  Circuit action(n_qubits);
+  Circuit uncompute(n_qubits);
+  if (n_qubits == 0) {
+    new_circ.add_phase(-t / 2);
+    return new_circ;
   }
-  std::pair<Circuit, Qubit> diag =
-      reduce_pauli_to_z(SpPauliStabiliser(paulis.string), cx_config);
-  Circuit compute = diag.first;
-  qubit_vector_t all_qubits = compute.all_qubits();
-  unit_map_t mapping = compute.flatten_registers();
-  Circuit action(all_qubits.size());
-  action.add_op<UnitID>(OpType::Rz, paulis.coeff, {mapping.at(diag.second)});
-  Circuit circ(all_qubits, {});
+  switch (cx_config) {
+    case CXConfigType::Snake: {
+      for (unsigned i = n_qubits - 1; i != 0; --i) {
+        unsigned j = i - 1;
+        compute.add_op<unsigned>(OpType::CX, {i, j});
+      }
+      action.add_op<unsigned>(OpType::Rz, t, {0});
+      for (unsigned i = 0; i != n_qubits - 1; ++i) {
+        unsigned j = i + 1;
+        uncompute.add_op<unsigned>(OpType::CX, {j, i});
+      }
+      break;
+    }
+    case CXConfigType::Star: {
+      for (unsigned i = n_qubits - 1; i != 0; --i) {
+        compute.add_op<unsigned>(OpType::CX, {i, 0});
+      }
+      action.add_op<unsigned>(OpType::Rz, t, {0});
+      for (unsigned i = 1; i != n_qubits; ++i) {
+        uncompute.add_op<unsigned>(OpType::CX, {i, 0});
+      }
+      break;
+    }
+    case CXConfigType::Tree: {
+      unsigned complete_layers = floor(log2(n_qubits));
+      unsigned dense_end = pow(2, complete_layers);
+      for (unsigned i = 0; i < n_qubits - dense_end; i++)
+        compute.add_op<unsigned>(
+            OpType::CX, {dense_end + i, dense_end - 1 - i});
+      for (unsigned step_size = 1; step_size < dense_end; step_size *= 2) {
+        for (unsigned i = 0; i < dense_end; i += 2 * step_size)
+          compute.add_op<unsigned>(OpType::CX, {i + step_size, i});
+      }
+      action.add_op<unsigned>(OpType::Rz, t, {0});
+      for (unsigned step_size = dense_end / 2; step_size >= 1; step_size /= 2) {
+        for (unsigned i = 0; i < dense_end; i += 2 * step_size)
+          uncompute.add_op<unsigned>(OpType::CX, {i + step_size, i});
+      }
+      for (unsigned i = 0; i < n_qubits - dense_end; i++)
+        uncompute.add_op<unsigned>(
+            OpType::CX, {dense_end + i, dense_end - 1 - i});
+      break;
+    }
+    case CXConfigType::MultiQGate: {
+      std::vector<std::vector<unsigned>> conjugations;
+      int sign_correction = 1;
+      for (int q = n_qubits - 1; q > 0; q -= 2) {
+        if (q - 1 > 0) {
+          unsigned i = q, j = q - 1;
+          // this is only equal to the CX decompositions above
+          // up to phase, but phase differences are cancelled out by
+          // its dagger XXPhase(-1/2) below.
+          compute.add_op<unsigned>(OpType::H, {i});
+          compute.add_op<unsigned>(OpType::H, {j});
+          compute.add_op<unsigned>(OpType::XXPhase3, 0.5, {i, j, 0});
+          sign_correction *= -1;
+          conjugations.push_back({i, j, 0});
+        } else {
+          unsigned i = q;
+          compute.add_op<unsigned>(OpType::CX, {i, 0});
+          conjugations.push_back({i, 0});
+        }
+      }
+      action.add_op<unsigned>(OpType::Rz, sign_correction * t, {0});
+      for (const auto &conj : conjugations) {
+        if (conj.size() == 2) {
+          uncompute.add_op<unsigned>(OpType::CX, conj);
+        } else {
+          TKET_ASSERT(conj.size() == 3);
+          uncompute.add_op<unsigned>(OpType::XXPhase3, -0.5, conj);
+          uncompute.add_op<unsigned>(OpType::H, {conj[0]});
+          uncompute.add_op<unsigned>(OpType::H, {conj[1]});
+        }
+      }
+      break;
+    }
+  }
   ConjugationBox box(
-      std::make_shared<CircBox>(compute), std::make_shared<CircBox>(action));
-  circ.add_box(box, all_qubits);
-  return circ;
+      std::make_shared<CircBox>(compute), std::make_shared<CircBox>(action),
+      std::make_shared<CircBox>(uncompute));
+  new_circ.add_box(box, new_circ.all_qubits());
+  return new_circ;
 }
 
-Circuit pauli_gadget_pair(
-    SpSymPauliTensor paulis0, SpSymPauliTensor paulis1,
-    CXConfigType cx_config) {
-  if (SpPauliString(paulis0.string) == SpPauliString{}) {
-    Circuit p1_circ = pauli_gadget(paulis1, cx_config);
-    p1_circ.add_phase(-paulis0.coeff / 2);
-    return p1_circ;
-  } else if (SpPauliString(paulis1.string) == SpPauliString{}) {
-    Circuit p0_circ = pauli_gadget(paulis0, cx_config);
-    p0_circ.add_phase(-paulis1.coeff / 2);
-    return p0_circ;
+Circuit pauli_gadget(
+    const std::vector<Pauli> &paulis, const Expr &t, CXConfigType cx_config) {
+  unsigned n = paulis.size();
+  Circuit circ(n);
+  Circuit compute(n);
+  Circuit action(n);
+  Circuit uncompute(n);
+  std::vector<unsigned> qubits;
+  for (unsigned i = 0; i < n; i++) {
+    switch (paulis[i]) {
+      case Pauli::I:
+        break;
+      case Pauli::X:
+        compute.add_op<unsigned>(OpType::H, {i});
+        qubits.push_back(i);
+        break;
+      case Pauli::Y:
+        compute.add_op<unsigned>(OpType::V, {i});
+        qubits.push_back(i);
+        break;
+      case Pauli::Z:
+        qubits.push_back(i);
+        break;
+    }
   }
-  if (paulis0.commutes_with(paulis1)) {
-    std::tuple<Circuit, Qubit, Qubit> diag = reduce_commuting_paulis_to_zi_iz(
-        SpPauliStabiliser(paulis0.string), SpPauliStabiliser(paulis1.string),
-        cx_config);
-    Circuit &diag_circ = std::get<0>(diag);
-    qubit_vector_t all_qubits = diag_circ.all_qubits();
-    unit_map_t mapping = diag_circ.flatten_registers();
-    Circuit rot_circ(all_qubits.size());
-    rot_circ.add_op<UnitID>(
-        OpType::Rz, paulis0.coeff, {mapping.at(std::get<1>(diag))});
-    rot_circ.add_op<UnitID>(
-        OpType::Rz, paulis1.coeff, {mapping.at(std::get<2>(diag))});
-    ConjugationBox box(
-        std::make_shared<CircBox>(diag_circ),
-        std::make_shared<CircBox>(rot_circ));
-    Circuit circ(all_qubits, {});
-    circ.add_box(box, all_qubits);
-    return circ;
-  } else {
-    std::pair<Circuit, Qubit> diag = reduce_anticommuting_paulis_to_z_x(
-        SpPauliStabiliser(paulis0.string), SpPauliStabiliser(paulis1.string),
-        cx_config);
-    Circuit &diag_circ = diag.first;
-    qubit_vector_t all_qubits = diag_circ.all_qubits();
-    unit_map_t mapping = diag_circ.flatten_registers();
-    Circuit rot_circ(all_qubits.size());
-    rot_circ.add_op<UnitID>(
-        OpType::Rz, paulis0.coeff, {mapping.at(diag.second)});
-    rot_circ.add_op<UnitID>(
-        OpType::Rx, paulis1.coeff, {mapping.at(diag.second)});
-    ConjugationBox box(
-        std::make_shared<CircBox>(diag_circ),
-        std::make_shared<CircBox>(rot_circ));
-    Circuit circ(all_qubits, {});
-    circ.add_box(box, all_qubits);
+  if (qubits.empty()) {
+    circ.add_phase(-t / 2);
     return circ;
   }
+  Vertex v = action.add_op<unsigned>(OpType::PhaseGadget, t, qubits);
+  Circuit cx_gadget = phase_gadget(action.n_in_edges(v), t, cx_config);
+  Subcircuit sub = {action.get_in_edges(v), action.get_all_out_edges(v), {v}};
+  action.substitute(cx_gadget, sub, Circuit::VertexDeletion::Yes);
+  for (unsigned i = 0; i < n; i++) {
+    switch (paulis[i]) {
+      case Pauli::I:
+        break;
+      case Pauli::X:
+        uncompute.add_op<unsigned>(OpType::H, {i});
+        break;
+      case Pauli::Y:
+        uncompute.add_op<unsigned>(OpType::Vdg, {i});
+        break;
+      case Pauli::Z:
+        break;
+    }
+  }
+  ConjugationBox box(
+      std::make_shared<CircBox>(compute), std::make_shared<CircBox>(action),
+      std::make_shared<CircBox>(uncompute));
+  circ.add_box(box, circ.all_qubits());
+  return circ;
 }
 
 void replace_CX_with_TK2(Circuit &c) {
@@ -401,8 +474,8 @@ Circuit with_TK2(Gate_ptr op) {
             {angles_K2a[0], angles_K2a[1], angles_K2a[2], 0}),
         get_matrix_from_tk1_angles(
             {angles_K2b[0], angles_K2b[1], angles_K2b[2], 0}));
-    Eigen::Matrix4cd V = V_K1 * V_A * V_K2;
-    Eigen::Matrix4cd R = V.adjoint() * U;
+    Eigen::Matrix4cd V_adj = unitary_product3(V_K1, V_A, V_K2).adjoint();
+    Eigen::Matrix4cd R = unitary_product2(V_adj, U);
     const Complex phase = R(0, 0);  // R = phase * I
     c.add_phase(arg(phase) / PI);
 
@@ -907,7 +980,7 @@ struct CnGateBlock {
   Eigen::Matrix2cd get_target_unitary() const {
     Eigen::Matrix2cd m = Eigen::Matrix2cd::Identity();
     for (const Op_ptr &op : ops) {
-      m = get_target_op_matrix(op) * m;
+      m = unitary_product2(get_target_op_matrix(op), m);
     }
     return m;
   }

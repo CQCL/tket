@@ -41,7 +41,7 @@ SCENARIO("Base NoiseAwarePlacement class") {
     Circuit circuit(1);
     NoiseAwarePlacement placement(architecture);
     placement.place(circuit);
-    REQUIRE(circuit.all_qubits()[0] == Qubit(Placement::unplaced_reg(), 0));
+    REQUIRE(circuit.all_qubits()[0] == Node(0));
   }
   GIVEN(
       "Two qubit unconnected circuit, two qubit Architecture, "
@@ -51,8 +51,8 @@ SCENARIO("Base NoiseAwarePlacement class") {
     Circuit circuit(2);
     NoiseAwarePlacement placement(architecture);
     placement.place(circuit);
-    REQUIRE(circuit.all_qubits()[0] == Qubit(Placement::unplaced_reg(), 0));
-    REQUIRE(circuit.all_qubits()[1] == Qubit(Placement::unplaced_reg(), 1));
+    REQUIRE(circuit.all_qubits()[0] == Node(0));
+    REQUIRE(circuit.all_qubits()[1] == Node(1));
   }
   GIVEN(
       "Three qubit unconnected circuit, two qubit Architecture, "
@@ -231,8 +231,8 @@ SCENARIO("Base NoiseAwarePlacement class") {
     circuit.add_op<unsigned>(OpType::CX, {1, 2});
     circuit.add_op<unsigned>(OpType::CX, {2, 3});
     circuit.add_op<unsigned>(OpType::CX, {0, 3});
-    // In this case there are many valid placements, it happens to return this
-    // one
+    // In this case there are many valid placements, it happens to return
+    // this one
     NoiseAwarePlacement placement(architecture);
     std::map<Qubit, Node> map = placement.get_placement_map(circuit);
     REQUIRE(map[Qubit(0)] == Node(3));
@@ -276,8 +276,8 @@ SCENARIO("Base NoiseAwarePlacement class") {
     DeviceCharacterisation characterisation_link_node(
         op_node_errors, op_link_errors);
 
-    // Here the difference in single qubit error rates makes this placement (or
-    // a rotation of) best
+    // Here the difference in single qubit error rates makes this placement
+    // (or a rotation of) best
     placement.set_characterisation(characterisation_link_node);
     map = placement.get_placement_map(circuit);
 
@@ -407,6 +407,32 @@ SCENARIO("Base NoiseAwarePlacement class") {
     REQUIRE(map[Qubit(3)] == Node(0));
     REQUIRE(map[Qubit(4)] == Node(1));
     REQUIRE(map[Qubit(5)] == Node(2));
+  }
+  GIVEN(
+      "A circuit with only single-qubit gates, assigns Qubits to Nodes with "
+      "lowest single qubit error rates.") {
+    std::vector<std::pair<unsigned, unsigned>> edges = {
+        {0, 1}, {1, 2}, {0, 2}, {2, 3}};
+    Architecture architecture(edges);
+    Circuit circuit(3);
+    circuit.add_op<unsigned>(OpType::H, {0});
+    circuit.add_op<unsigned>(OpType::H, {1});
+    circuit.add_op<unsigned>(OpType::H, {2});
+
+    avg_node_errors_t op_node_errors;
+    op_node_errors[Node(0)] = 0.25;
+    op_node_errors[Node(1)] = 0.01;
+    op_node_errors[Node(2)] = 0.01;
+    op_node_errors[Node(3)] = 0.05;
+
+    DeviceCharacterisation characterisation(op_node_errors, {}, {});
+    NoiseAwarePlacement placement(architecture);
+    placement.set_characterisation(characterisation);
+
+    std::map<Qubit, Node> placement_map = placement.get_placement_map(circuit);
+    REQUIRE(placement_map[Qubit(0)] == Node(1));
+    REQUIRE(placement_map[Qubit(1)] == Node(2));
+    REQUIRE(placement_map[Qubit(2)] == Node(3));
   }
 }
 }  // namespace tket

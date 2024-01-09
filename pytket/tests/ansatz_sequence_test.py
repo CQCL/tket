@@ -88,9 +88,9 @@ def test_nontrivial_sequence() -> None:
             GraphColourMethod.Exhaustive: (3, 28, 20, 19),
         },
         PauliPartitionStrat.NonConflictingSets: {
-            GraphColourMethod.LargestFirst: (6, 28, 28, 26),
-            GraphColourMethod.Lazy: (6, 28, 28, 28),
-            GraphColourMethod.Exhaustive: (6, 28, 28, 28),
+            GraphColourMethod.LargestFirst: (6, 28, 28, 28),
+            GraphColourMethod.Lazy: (6, 28, 28, 26),
+            GraphColourMethod.Exhaustive: (6, 28, 28, 26),
         },
     }
 

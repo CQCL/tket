@@ -13,6 +13,7 @@
 # limitations under the License.
 import sympy
 
+from pytket import logging
 from pytket.circuit import (
     Circuit,
     OpType,
@@ -69,6 +70,7 @@ from pytket.passes import (
     FlattenRelabelRegistersPass,
     RoundAngles,
     PeepholeOptimise2Q,
+    SynthesiseHQS,
 )
 from pytket.predicates import (
     GateSetPredicate,
@@ -965,6 +967,15 @@ def test_selectively_decompose_boxes() -> None:
     assert cmds[0].op.type == OpType.Unitary1qBox
     assert cmds[1].op.type == OpType.Unitary1qBox
     assert cmds[2].op.type == OpType.CircBox
+
+
+def test_SynthesiseHQS_deprecation(capfd: Any) -> None:
+    logging.set_level(logging.level.warn)
+    p = SynthesiseHQS()
+    out = capfd.readouterr().out
+    assert "[warn]" in out
+    assert "deprecated" in out
+    logging.set_level(logging.level.err)
 
 
 if __name__ == "__main__":
