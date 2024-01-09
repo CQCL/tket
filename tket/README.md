@@ -90,5 +90,5 @@ report can be generated using the following sequence of commands:
 conan build tket --user=tket --channel=stable -s build_type=Debug --build=missing -o "boost/*":header_only=True -o "tket/*":profile_coverage=True -o "test-tket/*":with_coverage=True -o with_test=True -of build/tket
 
 mkdir test-coverage
-gcovr --print-summary --html --html-details -r ./tket --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/tket/build/Debug/CMakeFiles/tket.dir/src -o test-coverage/index.html --decisions
+gcovr --print-summary --html --html-details -r ./tket --exclude-lines-by-pattern='.*\bTKET_ASSERT\(.*\);' --object-directory=${PWD}/build/tket/build/Debug/CMakeFiles/tket.dir/src -o test-coverage/index.html --decisions
 ```
