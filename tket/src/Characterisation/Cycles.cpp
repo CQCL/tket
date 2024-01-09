@@ -79,33 +79,46 @@ void CycleFinder::erase_keys(
   for (const unsigned& key : all_erased) erase_from.erase(key);
 }
 
-// Adds a new cycle to bt.key_to_cycle
+// Adds a new cycle to this->cycle_history.key_to_cycle
 std::pair<unsigned, std::set<unsigned>> CycleFinder::make_cycle(
     const Vertex& v, const EdgeVec& out_edges, const CutFrontier& cut) {
   // Make a new boundary, add it to "all_boundaries", update "boundary_key" map
   std::vector<edge_pair_t> new_cycle_boundary;
-  std::vector<UnitID> new_boundary_uids;
+  std::set<UnitID> new_boundary_uids;
   std::set<unsigned> old_boundary_keys;
-  std::set<unsigned> banned_keys;
+  std::set<unsigned> not_mergeable_keys;
+  std::set<UnitID> not_mergeable_uids;
 
   // Get UnitID, add to uids for new boundary, keep note of all old boundary
   // keys for merging set new boundary key, add new edges to new boundary update
   // cycle out edges if the edge can't be found
+
   for (const Edge& e : out_edges) {
     UnitID uid = unitid_from_unit_frontier(cut.u_frontier, e);
-    new_boundary_uids.push_back(uid);
-    old_boundary_keys.insert(bt.uid_to_key[uid]);
-
+    new_boundary_uids.insert(uid);
+    old_boundary_keys.insert(this->cycle_history.uid_to_key[uid]);
     // boundary key associated with given edge e not included
     // i.e. e's associated in edge isn't a cycle out edge
     // i.e. some other non-cycle gate has been passed
+
+    // if the edge going into the vertex is not in a previous cycle
+    // then it can't be merged with that cycle
     if (cycle_out_edges.find(circ.get_last_edge(v, e)) ==
         cycle_out_edges.end()) {
-      banned_keys.insert(bt.uid_to_key[uid]);
+      not_mergeable_keys.insert(this->cycle_history.uid_to_key[uid]);
     }
-    bt.uid_to_key[uid] = bt.key;
+    this->cycle_history.uid_to_key[uid] = this->cycle_history.key;
     new_cycle_boundary.push_back({circ.get_last_edge(v, e), e});
     update_cycle_out_edges(uid, e);
+  }
+
+  for (const unsigned& key : old_boundary_keys) {
+    for (const UnitID& uid : this->cycle_history.history[key]) {
+      if (not_mergeable_uids.find(uid) != not_mergeable_uids.end()) {
+        not_mergeable_keys.insert(key);
+        break;
+      }
+    }
   }
 
   std::vector<unsigned> op_indices(out_edges.size());
@@ -113,15 +126,70 @@ std::pair<unsigned, std::set<unsigned>> CycleFinder::make_cycle(
   // Edges in port ordering
   Cycle new_cycle(
       new_cycle_boundary, {{circ.get_OpType_from_Vertex(v), op_indices, v}});
-  bt.key_to_cycle[bt.key] = {new_cycle};
+  this->cycle_history.key_to_cycle[this->cycle_history.key] = {new_cycle};
 
-  bt.history.push_back(new_boundary_uids);
-  for (const unsigned& key : banned_keys) {
+  this->cycle_history.history.push_back(
+      std::vector<UnitID>(new_boundary_uids.begin(), new_boundary_uids.end()));
+  for (const unsigned& key : not_mergeable_keys) {
     erase_keys(key, old_boundary_keys);
   }
+
+  not_mergeable_keys.clear();
+
+  // For each candidate cycle "cycle" given as an unsigned key
+  // For all UnitID "uid" in "v" that are not in "cycle"
+  // For all cycles between cycle_history.uid_to_key[uid] and "cycle"
+  // If a cycle contains both "uid" and any "uid" from "cycle"
+  // Set the key as not to be merged
+  for (const unsigned& candidate_cycle_key : old_boundary_keys) {
+    std::vector<UnitID> candidate_cycle_uid =
+        this->cycle_history.history[candidate_cycle_key];
+    std::set<UnitID> not_present_uids;
+    for (const UnitID& candidate_uids : new_boundary_uids) {
+      if (std::find(
+              candidate_cycle_uid.begin(), candidate_cycle_uid.end(),
+              candidate_uids) == candidate_cycle_uid.end()) {
+        not_present_uids.insert(candidate_uids);
+      }
+    }
+    // not_present_uids now contains UnitID in the new cycle that are not in the
+    // cycle represented by "candidate_cycle_key"
+
+    // We now iterate through all cycles between these UnitIDs' most recent
+    // cycles and our target cycle
+
+    // If any of these cycles have both a non-present uid and any uid in the
+    // target cycle then this key is not mergeable and would lead to a "cycle in
+    // the DAG" (different type of cycle)
+    for (const UnitID& not_present_uid : not_present_uids) {
+      for (unsigned i = candidate_cycle_key;
+           i < this->cycle_history.uid_to_key[not_present_uid]; i++) {
+        std::vector<UnitID> history_uids = this->cycle_history.history[i];
+        if (std::find(
+                history_uids.begin(), history_uids.end(), not_present_uid) !=
+            history_uids.end()) {
+          std::vector<UnitID> intersection;
+          std::vector<UnitID> candidates =
+              cycle_history.history[candidate_cycle_key];
+          std::set_intersection(
+              candidates.begin(), candidates.end(), history_uids.begin(),
+              history_uids.end(), std::back_inserter(intersection));
+          if (!intersection.empty()) {
+            not_mergeable_keys.insert(candidate_cycle_key);
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  for (const unsigned& key : not_mergeable_keys) {
+    erase_keys(key, old_boundary_keys);
+  }
+
   std::pair<unsigned, std::set<unsigned>> return_keys = {
-      bt.key, old_boundary_keys};
-  bt.key++;
+      this->cycle_history.key, old_boundary_keys};
+  this->cycle_history.key++;
   return return_keys;
 }
 
@@ -141,8 +209,8 @@ void CycleFinder::order_keys(
     // blocked. remove smaller key from keys from set as not a candidate for
     // merging into
     for (; jt != old_keys.end(); ++jt)
-      for (const UnitID& u0 : bt.history[*it])
-        for (const UnitID& u1 : bt.history[*jt])
+      for (const UnitID& u0 : this->cycle_history.history[*it])
+        for (const UnitID& u1 : this->cycle_history.history[*jt])
           if (u0 == u1) {
             bad_keys.insert(*it);
             goto new_loop;
@@ -209,14 +277,15 @@ void CycleFinder::merge_cycles(unsigned new_key, std::set<unsigned>& old_keys) {
   std::advance(it, 1);
   for (; it != old_keys.end(); ++it) {
     unsigned merge_key = *it;
-    bt.key_to_cycle[base_key].merge(bt.key_to_cycle[merge_key]);
-    bt.key_to_cycle.erase(merge_key);
-    // update bt.history for "base_key"
-    for (const UnitID& u0 : bt.history[merge_key]) {
-      bt.uid_to_key[u0] = base_key;
-      for (const UnitID& u1 : bt.history[base_key])
+    this->cycle_history.key_to_cycle[base_key].merge(
+        this->cycle_history.key_to_cycle[merge_key]);
+    this->cycle_history.key_to_cycle.erase(merge_key);
+    // update this->cycle_history.history for "base_key"
+    for (const UnitID& u0 : this->cycle_history.history[merge_key]) {
+      this->cycle_history.uid_to_key[u0] = base_key;
+      for (const UnitID& u1 : this->cycle_history.history[base_key])
         if (u0 == u1) break;
-      bt.history[base_key].push_back(u0);
+      this->cycle_history.history[base_key].push_back(u0);
     }
   }
 }
@@ -227,7 +296,6 @@ void CycleFinder::extend_cycles(const CutFrontier& cut) {
   // If any in edge to new cycle matches an out edge to a previous cycle,
   // attempt to merge cycles together
   for (const Vertex& v : *cut.slice) {
-    EdgeVec in_edges = circ.get_in_edges_of_type(v, EdgeType::Quantum);
     EdgeVec out_edges = circ.get_out_edges_of_type(v, EdgeType::Quantum);
     // Compare EdgeType::Quantum "in_edges" of vertex in slice to collection of
     // out edges from "active" boundaries If an "in_edge" is not equivalent to
@@ -247,7 +315,7 @@ std::vector<Cycle> CycleFinder::get_cycles() {
   };
 
   Circuit::SliceIterator slice_iter(circ, skip_func);
-  bt.key = 0;
+  this->cycle_history.key = 0;
 
   // initialization
   if (!(*slice_iter).empty()) {
@@ -256,25 +324,24 @@ std::vector<Cycle> CycleFinder::get_cycles() {
       Edge in_edge = pair.second;
       if (circ.get_edgetype(in_edge) != EdgeType::Classical) {
         Vertex in_vert = circ.source(pair.second);
-
         // if vertex is type from types, then vertex is in slice and need
         // in_edge. else can ignore.
         if (cycle_types_.find(circ.get_OpType_from_Vertex(in_vert)) !=
             cycle_types_.end()) {
           in_edge = circ.get_last_edge(in_vert, pair.second);
         }
-
         cycle_out_edges.insert({in_edge, pair.first});
-        bt.uid_to_key.insert({pair.first, bt.key});
+        this->cycle_history.uid_to_key.insert(
+            {pair.first, this->cycle_history.key});
         Cycle new_cycle({{in_edge, in_edge}}, {{}});
-        bt.key_to_cycle[bt.key] = new_cycle;
-        bt.history.push_back({pair.first});
-        bt.key++;
+        this->cycle_history.key_to_cycle[this->cycle_history.key] = new_cycle;
+        this->cycle_history.history.push_back({pair.first});
+        this->cycle_history.key++;
       }
     }
     // extend cycles automatically merges cycles that can be merge due to
     // overlapping multi-qubit gates
-    extend_cycles(slice_iter.cut_);
+    this->extend_cycles(slice_iter.cut_);
     cycle_out_edges = {};
     for (const std::pair<UnitID, Edge>& pair :
          slice_iter.cut_.u_frontier->get<TagKey>()) {
@@ -285,14 +352,14 @@ std::vector<Cycle> CycleFinder::get_cycles() {
     slice_iter.cut_ = circ.next_cut(
         slice_iter.cut_.u_frontier, slice_iter.cut_.b_frontier, skip_func);
     if (!(*slice_iter).empty()) {
-      extend_cycles(slice_iter.cut_);
+      this->extend_cycles(slice_iter.cut_);
     }
   }
 
   // Skim Cycle type from CycleHistory.key_to_cycle
   // Discard any Cycles with only Input Gates
   std::vector<Cycle> output_cycles;
-  for (std::pair<unsigned, Cycle> entry : bt.key_to_cycle) {
+  for (std::pair<unsigned, Cycle> entry : this->cycle_history.key_to_cycle) {
     if (entry.second.coms_.size() == 0) {
       throw CycleError(std::string("Cycle with no internal gates."));
     }
