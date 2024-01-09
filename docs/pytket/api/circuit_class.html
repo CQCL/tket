@@ -3,13 +3,13 @@
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="" >
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.circuit.Circuit &#8212; pytket 1.22.0 documentation</title>
+    <title>pytket.circuit.Circuit &#8212; pytket 1.23.0 documentation</title>
   
   
   
@@ -19,15 +19,15 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
@@ -37,9 +37,9 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/doctools.js"></script>
@@ -65,7 +65,7 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
 
@@ -108,12 +108,18 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <header>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <div class="bd-header navbar navbar-expand-lg bd-navbar">
+    </div>
   
+  </header>
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -128,6 +134,7 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
   
 
 <a class="navbar-brand logo" href="index.html">
@@ -141,29 +148,27 @@
       
     
     
-    <img src="_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="pytket 1.22.0 documentation - Home"/>
-    <script>document.write(`<img src="_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="pytket 1.22.0 documentation - Home"/>`);</script>
+    <img src="_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="pytket 1.23.0 documentation - Home"/>
+    <script>document.write(`<img src="_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="pytket 1.23.0 documentation - Home"/>`);</script>
   
   
 </a></div>
         <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction:</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">pytket documentation:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/">TKET website</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/user-manual/">Manual</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/api-docs/">pytket API docs</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="extensions.html">pytket extensions</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-aqt/api/index.html">pytket-aqt</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-braket">pytket-braket</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cirq">pytket-cirq</a></li>
-<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum">pytket-ionq</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-iqm">pytket-iqm</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pennylane">pytket-pennylane</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-projectq">pytket-projectq</a></li>
@@ -171,16 +176,18 @@
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pysimplex">pytket-pysimplex</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pyzx">pytket-pyzx</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qir">pytket-qir</a></li>
-<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qir">pytket-qiskit</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qiskit">pytket-qiskit</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-qsharp/api/index.html">pytket-qsharp</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum">pytket-quantinuum</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cutensornet">pytket-cutensornet</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qulacs">pytket-qulacs</a></li>
-<li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-qujax/api/index.html">pytket-qujax</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qujax">pytket-qujax</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-stim">pytket-stim</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/user-manual">Manual</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/examples">Example notebooks</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/">TKET website</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="current nav bd-sidenav">
@@ -363,6 +370,7 @@
 </button>
 
 
+
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -372,6 +380,7 @@ document.write(`
   </button>
 `);
 </script>
+
 
 <script>
 document.write(`
@@ -431,6 +440,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.Phase"><code class="docutils literal notranslate"><span class="pre">Circuit.Phase()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.PhasedISWAP"><code class="docutils literal notranslate"><span class="pre">Circuit.PhasedISWAP()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.PhasedX"><code class="docutils literal notranslate"><span class="pre">Circuit.PhasedX()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.Reset"><code class="docutils literal notranslate"><span class="pre">Circuit.Reset()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.Rx"><code class="docutils literal notranslate"><span class="pre">Circuit.Rx()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.Ry"><code class="docutils literal notranslate"><span class="pre">Circuit.Ry()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.Rz"><code class="docutils literal notranslate"><span class="pre">Circuit.Rz()</span></code></a></li>
@@ -586,7 +596,7 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section id="pytket-circuit-circuit">
 <h1>pytket.circuit.Circuit<a class="headerlink" href="#pytket-circuit-circuit" title="Permalink to this heading">#</a></h1>
@@ -1246,11 +1256,35 @@ condition on a specified set of bit values.)</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.Circuit.Reset">
+<span class="sig-name descname"><span class="pre">Reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.Reset" title="Permalink to this definition">#</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>Reset(self: pytket.circuit.Circuit, qubit: int, <a href="#id105"><span class="problematic" id="id106">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+</ol>
+<p>Appends a Reset operation. Sets a qubit to the Z-basis 0 state. Non-unitary operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the new <a class="reference internal" href="#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code></a></p>
+</dd>
+</dl>
+<ol class="arabic simple" start="2">
+<li><p>Reset(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id107"><span class="problematic" id="id108">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+</ol>
+<p>Appends a Reset operation. Sets a qubit to the Z-basis 0 state. Non-unitary operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the new <a class="reference internal" href="#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pytket.circuit.Circuit.Rx">
 <span class="sig-name descname"><span class="pre">Rx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.Rx" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>Rx(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit: int, <a href="#id105"><span class="problematic" id="id106">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Rx(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit: int, <a href="#id109"><span class="problematic" id="id110">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends an Rx gate with a possibly symbolic angle (specified in half-turns).</p>
 <dl class="field-list simple">
@@ -1259,7 +1293,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>Rx(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit: pytket.unit_id.Qubit, <a href="#id107"><span class="problematic" id="id108">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Rx(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit: pytket.unit_id.Qubit, <a href="#id111"><span class="problematic" id="id112">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends an Rx gate with a possibly symbolic angle (specified in half-turns).</p>
 <dl class="field-list simple">
@@ -1274,7 +1308,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">Ry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.Ry" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>Ry(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit: int, <a href="#id109"><span class="problematic" id="id110">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Ry(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit: int, <a href="#id113"><span class="problematic" id="id114">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends an Ry gate with a possibly symbolic angle (specified in half-turns).</p>
 <dl class="field-list simple">
@@ -1283,7 +1317,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>Ry(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit: pytket.unit_id.Qubit, <a href="#id111"><span class="problematic" id="id112">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Ry(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit: pytket.unit_id.Qubit, <a href="#id115"><span class="problematic" id="id116">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends an Ry gate with a possibly symbolic angle (specified in half-turns).</p>
 <dl class="field-list simple">
@@ -1298,7 +1332,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">Rz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.Rz" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>Rz(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit: int, <a href="#id113"><span class="problematic" id="id114">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Rz(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit: int, <a href="#id117"><span class="problematic" id="id118">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends an Rz gate with a possibly symbolic angle (specified in half-turns).</p>
 <dl class="field-list simple">
@@ -1307,7 +1341,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>Rz(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit: pytket.unit_id.Qubit, <a href="#id115"><span class="problematic" id="id116">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Rz(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit: pytket.unit_id.Qubit, <a href="#id119"><span class="problematic" id="id120">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends an Rz gate with a possibly symbolic angle (specified in half-turns).</p>
 <dl class="field-list simple">
@@ -1322,7 +1356,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">S</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.S" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>S(self: pytket.circuit.Circuit, qubit: int, <a href="#id117"><span class="problematic" id="id118">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>S(self: pytket.circuit.Circuit, qubit: int, <a href="#id121"><span class="problematic" id="id122">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends an S gate (equivalent to U1(0.5,-)).</p>
 <dl class="field-list simple">
@@ -1331,7 +1365,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>S(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id119"><span class="problematic" id="id120">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>S(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id123"><span class="problematic" id="id124">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends an S gate (equivalent to Rz(0.5,-)).</p>
 <dl class="field-list simple">
@@ -1346,7 +1380,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">SWAP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.SWAP" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>SWAP(self: pytket.circuit.Circuit, qubit_0: int, qubit_1: int, <a href="#id121"><span class="problematic" id="id122">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>SWAP(self: pytket.circuit.Circuit, qubit_0: int, qubit_1: int, <a href="#id125"><span class="problematic" id="id126">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a SWAP gate on the wires for the specified qubits.</p>
 <dl class="field-list simple">
@@ -1355,7 +1389,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>SWAP(self: pytket.circuit.Circuit, qubit_0: pytket.unit_id.Qubit, qubit_1: pytket.unit_id.Qubit, <a href="#id123"><span class="problematic" id="id124">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>SWAP(self: pytket.circuit.Circuit, qubit_0: pytket.unit_id.Qubit, qubit_1: pytket.unit_id.Qubit, <a href="#id127"><span class="problematic" id="id128">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a SWAP gate on the wires for the specified qubits.</p>
 <dl class="field-list simple">
@@ -1370,7 +1404,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">SX</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.SX" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>SX(self: pytket.circuit.Circuit, qubit: int, <a href="#id125"><span class="problematic" id="id126">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>SX(self: pytket.circuit.Circuit, qubit: int, <a href="#id129"><span class="problematic" id="id130">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a SX gate (equivalent to Rx(0.5,-) up to a 0.25 global phase).</p>
 <dl class="field-list simple">
@@ -1379,7 +1413,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>SX(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id127"><span class="problematic" id="id128">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>SX(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id131"><span class="problematic" id="id132">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a SX gate (equivalent to Rx(0.5,-) up to a 0.25 global phase).</p>
 <dl class="field-list simple">
@@ -1394,7 +1428,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">SXdg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.SXdg" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>SXdg(self: pytket.circuit.Circuit, qubit: int, <a href="#id129"><span class="problematic" id="id130">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>SXdg(self: pytket.circuit.Circuit, qubit: int, <a href="#id133"><span class="problematic" id="id134">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a SXdg gate (equivalent to Rx(-0.5,-) up to a -0.25 global phase).</p>
 <dl class="field-list simple">
@@ -1403,7 +1437,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>SXdg(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id131"><span class="problematic" id="id132">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>SXdg(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id135"><span class="problematic" id="id136">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a SXdg gate (equivalent to Rx(-0.5,-) up to a -0.25 global phase).</p>
 <dl class="field-list simple">
@@ -1418,7 +1452,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">Sdg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.Sdg" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>Sdg(self: pytket.circuit.Circuit, qubit: int, <a href="#id133"><span class="problematic" id="id134">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Sdg(self: pytket.circuit.Circuit, qubit: int, <a href="#id137"><span class="problematic" id="id138">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends an S-dagger gate (equivalent to U1(-0.5,-)).</p>
 <dl class="field-list simple">
@@ -1427,7 +1461,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>Sdg(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id135"><span class="problematic" id="id136">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Sdg(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id139"><span class="problematic" id="id140">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends an S-dagger gate (equivalent to Rz(-0.5,-)).</p>
 <dl class="field-list simple">
@@ -1442,7 +1476,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">Sycamore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.Sycamore" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>Sycamore(self: pytket.circuit.Circuit, qubit0: int, qubit1: int, <a href="#id137"><span class="problematic" id="id138">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Sycamore(self: pytket.circuit.Circuit, qubit0: int, qubit1: int, <a href="#id141"><span class="problematic" id="id142">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a Sycamore gate on the wires for the specified qubits.</p>
 <dl class="field-list simple">
@@ -1451,7 +1485,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>Sycamore(self: pytket.circuit.Circuit, qubit0: pytket.unit_id.Qubit, qubit1: pytket.unit_id.Qubit, <a href="#id139"><span class="problematic" id="id140">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Sycamore(self: pytket.circuit.Circuit, qubit0: pytket.unit_id.Qubit, qubit1: pytket.unit_id.Qubit, <a href="#id143"><span class="problematic" id="id144">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a Sycamore gate on the wires for the specified qubits.</p>
 <dl class="field-list simple">
@@ -1466,7 +1500,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">T</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.T" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>T(self: pytket.circuit.Circuit, qubit: int, <a href="#id141"><span class="problematic" id="id142">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>T(self: pytket.circuit.Circuit, qubit: int, <a href="#id145"><span class="problematic" id="id146">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a T gate (equivalent to U1(0.25,-)).</p>
 <dl class="field-list simple">
@@ -1475,7 +1509,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>T(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id143"><span class="problematic" id="id144">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>T(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id147"><span class="problematic" id="id148">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a T gate (equivalent to Rz(0.25,-)).</p>
 <dl class="field-list simple">
@@ -1490,7 +1524,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">TK1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.TK1" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>TK1(self: pytket.circuit.Circuit, angle0: typing.Union[sympy.Expr, float], angle1: typing.Union[sympy.Expr, float], angle2: typing.Union[sympy.Expr, float], qubit: int, <a href="#id145"><span class="problematic" id="id146">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>TK1(self: pytket.circuit.Circuit, angle0: typing.Union[sympy.Expr, float], angle1: typing.Union[sympy.Expr, float], angle2: typing.Union[sympy.Expr, float], qubit: int, <a href="#id149"><span class="problematic" id="id150">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a TK1 gate with possibly symbolic angles (specified in half-turns).</p>
 <dl class="field-list simple">
@@ -1499,7 +1533,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>TK1(self: pytket.circuit.Circuit, angle0: typing.Union[sympy.Expr, float], angle1: typing.Union[sympy.Expr, float], angle2: typing.Union[sympy.Expr, float], qubit: pytket.unit_id.Qubit, <a href="#id147"><span class="problematic" id="id148">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>TK1(self: pytket.circuit.Circuit, angle0: typing.Union[sympy.Expr, float], angle1: typing.Union[sympy.Expr, float], angle2: typing.Union[sympy.Expr, float], qubit: pytket.unit_id.Qubit, <a href="#id151"><span class="problematic" id="id152">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a TK1 gate with possibly symbolic angles (specified in half-turns).</p>
 <dl class="field-list simple">
@@ -1514,7 +1548,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">TK2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.TK2" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>TK2(self: pytket.circuit.Circuit, angle0: typing.Union[sympy.Expr, float], angle1: typing.Union[sympy.Expr, float], angle2: typing.Union[sympy.Expr, float], qubit0: int, qubit1: int, <a href="#id149"><span class="problematic" id="id150">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>TK2(self: pytket.circuit.Circuit, angle0: typing.Union[sympy.Expr, float], angle1: typing.Union[sympy.Expr, float], angle2: typing.Union[sympy.Expr, float], qubit0: int, qubit1: int, <a href="#id153"><span class="problematic" id="id154">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a TK2 gate with possibly symbolic angles (specified in half-turns).</p>
 <dl class="field-list simple">
@@ -1523,7 +1557,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>TK2(self: pytket.circuit.Circuit, angle0: typing.Union[sympy.Expr, float], angle1: typing.Union[sympy.Expr, float], angle2: typing.Union[sympy.Expr, float], qubit0: pytket.unit_id.Qubit, qubit1: pytket.unit_id.Qubit, <a href="#id151"><span class="problematic" id="id152">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>TK2(self: pytket.circuit.Circuit, angle0: typing.Union[sympy.Expr, float], angle1: typing.Union[sympy.Expr, float], angle2: typing.Union[sympy.Expr, float], qubit0: pytket.unit_id.Qubit, qubit1: pytket.unit_id.Qubit, <a href="#id155"><span class="problematic" id="id156">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a TK2 gate with possibly symbolic angles (specified in half-turns).</p>
 <dl class="field-list simple">
@@ -1538,7 +1572,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">Tdg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.Tdg" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>Tdg(self: pytket.circuit.Circuit, qubit: int, <a href="#id153"><span class="problematic" id="id154">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Tdg(self: pytket.circuit.Circuit, qubit: int, <a href="#id157"><span class="problematic" id="id158">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a T-dagger gate (equivalent to U1(-0.25,-)).</p>
 <dl class="field-list simple">
@@ -1547,7 +1581,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>Tdg(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id155"><span class="problematic" id="id156">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Tdg(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id159"><span class="problematic" id="id160">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a T-dagger gate (equivalent to Rz(-0.25,-)).</p>
 <dl class="field-list simple">
@@ -1562,7 +1596,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">U1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.U1" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>U1(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit: int, <a href="#id157"><span class="problematic" id="id158">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>U1(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit: int, <a href="#id161"><span class="problematic" id="id162">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a U1 gate with a possibly symbolic angle (specified in half-turns).</p>
 <dl class="field-list simple">
@@ -1571,7 +1605,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>U1(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit: pytket.unit_id.Qubit, <a href="#id159"><span class="problematic" id="id160">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>U1(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit: pytket.unit_id.Qubit, <a href="#id163"><span class="problematic" id="id164">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a U1 gate with a possibly symbolic angle (specified in half-turns).</p>
 <dl class="field-list simple">
@@ -1586,7 +1620,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">U2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.U2" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>U2(self: pytket.circuit.Circuit, angle0: typing.Union[sympy.Expr, float], angle1: typing.Union[sympy.Expr, float], qubit: int, <a href="#id161"><span class="problematic" id="id162">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>U2(self: pytket.circuit.Circuit, angle0: typing.Union[sympy.Expr, float], angle1: typing.Union[sympy.Expr, float], qubit: int, <a href="#id165"><span class="problematic" id="id166">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a U2 gate with possibly symbolic angles (specified in half-turns).</p>
 <dl class="field-list simple">
@@ -1595,7 +1629,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>U2(self: pytket.circuit.Circuit, angle0: typing.Union[sympy.Expr, float], angle1: typing.Union[sympy.Expr, float], qubit: pytket.unit_id.Qubit, <a href="#id163"><span class="problematic" id="id164">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>U2(self: pytket.circuit.Circuit, angle0: typing.Union[sympy.Expr, float], angle1: typing.Union[sympy.Expr, float], qubit: pytket.unit_id.Qubit, <a href="#id167"><span class="problematic" id="id168">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a U2 gate with possibly symbolic angles (specified in half-turns).</p>
 <dl class="field-list simple">
@@ -1610,7 +1644,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">U3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.U3" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>U3(self: pytket.circuit.Circuit, angle0: typing.Union[sympy.Expr, float], angle1: typing.Union[sympy.Expr, float], angle2: typing.Union[sympy.Expr, float], qubit: int, <a href="#id165"><span class="problematic" id="id166">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>U3(self: pytket.circuit.Circuit, angle0: typing.Union[sympy.Expr, float], angle1: typing.Union[sympy.Expr, float], angle2: typing.Union[sympy.Expr, float], qubit: int, <a href="#id169"><span class="problematic" id="id170">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a U3 gate with possibly symbolic angles (specified in half-turns).</p>
 <dl class="field-list simple">
@@ -1619,7 +1653,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>U3(self: pytket.circuit.Circuit, angle0: typing.Union[sympy.Expr, float], angle1: typing.Union[sympy.Expr, float], angle2: typing.Union[sympy.Expr, float], qubit: pytket.unit_id.Qubit, <a href="#id167"><span class="problematic" id="id168">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>U3(self: pytket.circuit.Circuit, angle0: typing.Union[sympy.Expr, float], angle1: typing.Union[sympy.Expr, float], angle2: typing.Union[sympy.Expr, float], qubit: pytket.unit_id.Qubit, <a href="#id171"><span class="problematic" id="id172">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a U3 gate with possibly symbolic angles (specified in half-turns).</p>
 <dl class="field-list simple">
@@ -1634,7 +1668,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">V</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.V" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>V(self: pytket.circuit.Circuit, qubit: int, <a href="#id169"><span class="problematic" id="id170">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>V(self: pytket.circuit.Circuit, qubit: int, <a href="#id173"><span class="problematic" id="id174">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a V gate (equivalent to Rx(0.5,-)).</p>
 <dl class="field-list simple">
@@ -1643,7 +1677,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>V(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id171"><span class="problematic" id="id172">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>V(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id175"><span class="problematic" id="id176">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a V gate (equivalent to Rx(0.5,-)).</p>
 <dl class="field-list simple">
@@ -1658,7 +1692,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">Vdg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.Vdg" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>Vdg(self: pytket.circuit.Circuit, qubit: int, <a href="#id173"><span class="problematic" id="id174">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Vdg(self: pytket.circuit.Circuit, qubit: int, <a href="#id177"><span class="problematic" id="id178">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a V-dagger gate (equivalent to Rx(-0.5,-)).</p>
 <dl class="field-list simple">
@@ -1667,7 +1701,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>Vdg(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id175"><span class="problematic" id="id176">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Vdg(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id179"><span class="problematic" id="id180">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a V-dagger gate (equivalent to Rx(-0.5,-)).</p>
 <dl class="field-list simple">
@@ -1682,7 +1716,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">X</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.X" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>X(self: pytket.circuit.Circuit, qubit: int, <a href="#id177"><span class="problematic" id="id178">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>X(self: pytket.circuit.Circuit, qubit: int, <a href="#id181"><span class="problematic" id="id182">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1690,7 +1724,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>X(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id179"><span class="problematic" id="id180">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>X(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id183"><span class="problematic" id="id184">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends an X gate.</p>
 <dl class="field-list simple">
@@ -1705,7 +1739,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">XXPhase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.XXPhase" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>XXPhase(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit0: int, qubit1: int, <a href="#id181"><span class="problematic" id="id182">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>XXPhase(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit0: int, qubit1: int, <a href="#id185"><span class="problematic" id="id186">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a XX gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified two qubits.</p>
 <dl class="field-list simple">
@@ -1714,7 +1748,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>XXPhase(self: pytket.circuit.Circuit, qubit0: typing.Union[sympy.Expr, float], qubit1: pytket.unit_id.Qubit, angle: pytket.unit_id.Qubit, <a href="#id183"><span class="problematic" id="id184">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>XXPhase(self: pytket.circuit.Circuit, qubit0: typing.Union[sympy.Expr, float], qubit1: pytket.unit_id.Qubit, angle: pytket.unit_id.Qubit, <a href="#id187"><span class="problematic" id="id188">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a XX gate with a symbolic angle (specified in half-turns) on the wires for the specified two qubits.</p>
 <dl class="field-list simple">
@@ -1729,7 +1763,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">XXPhase3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.XXPhase3" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>XXPhase3(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit0: int, qubit1: int, qubit2: int, <a href="#id185"><span class="problematic" id="id186">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>XXPhase3(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit0: int, qubit1: int, qubit2: int, <a href="#id189"><span class="problematic" id="id190">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a 3-qubit XX gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified three qubits.</p>
 <dl class="field-list simple">
@@ -1738,7 +1772,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>XXPhase3(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit0: pytket.unit_id.Qubit, qubit1: pytket.unit_id.Qubit, qubit2: pytket.unit_id.Qubit, <a href="#id187"><span class="problematic" id="id188">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>XXPhase3(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit0: pytket.unit_id.Qubit, qubit1: pytket.unit_id.Qubit, qubit2: pytket.unit_id.Qubit, <a href="#id191"><span class="problematic" id="id192">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a 3-qubit XX gate with a symbolic angle (specified in half-turns) on the wires for the specified three qubits.</p>
 <dl class="field-list simple">
@@ -1753,7 +1787,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">Y</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.Y" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>Y(self: pytket.circuit.Circuit, qubit: int, <a href="#id189"><span class="problematic" id="id190">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Y(self: pytket.circuit.Circuit, qubit: int, <a href="#id193"><span class="problematic" id="id194">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1761,7 +1795,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>Y(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id191"><span class="problematic" id="id192">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Y(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id195"><span class="problematic" id="id196">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a Y gate.</p>
 <dl class="field-list simple">
@@ -1776,7 +1810,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">YYPhase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.YYPhase" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>YYPhase(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit0: int, qubit1: int, <a href="#id193"><span class="problematic" id="id194">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>YYPhase(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit0: int, qubit1: int, <a href="#id197"><span class="problematic" id="id198">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a YY gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified two qubits.</p>
 <dl class="field-list simple">
@@ -1785,7 +1819,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>YYPhase(self: pytket.circuit.Circuit, qubit0: typing.Union[sympy.Expr, float], qubit1: pytket.unit_id.Qubit, angle: pytket.unit_id.Qubit, <a href="#id195"><span class="problematic" id="id196">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>YYPhase(self: pytket.circuit.Circuit, qubit0: typing.Union[sympy.Expr, float], qubit1: pytket.unit_id.Qubit, angle: pytket.unit_id.Qubit, <a href="#id199"><span class="problematic" id="id200">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a YY gate with a symbolic angle (specified in half-turns) on the wires for the specified two qubits.</p>
 <dl class="field-list simple">
@@ -1800,7 +1834,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">Z</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.Z" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>Z(self: pytket.circuit.Circuit, qubit: int, <a href="#id197"><span class="problematic" id="id198">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Z(self: pytket.circuit.Circuit, qubit: int, <a href="#id201"><span class="problematic" id="id202">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1808,7 +1842,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>Z(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id199"><span class="problematic" id="id200">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>Z(self: pytket.circuit.Circuit, qubit: pytket.unit_id.Qubit, <a href="#id203"><span class="problematic" id="id204">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a Z gate.</p>
 <dl class="field-list simple">
@@ -1823,7 +1857,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">ZZMax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.ZZMax" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>ZZMax(self: pytket.circuit.Circuit, qubit0: int, qubit1: int, <a href="#id201"><span class="problematic" id="id202">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>ZZMax(self: pytket.circuit.Circuit, qubit0: int, qubit1: int, <a href="#id205"><span class="problematic" id="id206">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a ZZMax gate on the wires for the specified two qubits.</p>
 <dl class="field-list simple">
@@ -1832,7 +1866,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>ZZMax(self: pytket.circuit.Circuit, qubit0: pytket.unit_id.Qubit, qubit1: pytket.unit_id.Qubit, <a href="#id203"><span class="problematic" id="id204">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>ZZMax(self: pytket.circuit.Circuit, qubit0: pytket.unit_id.Qubit, qubit1: pytket.unit_id.Qubit, <a href="#id207"><span class="problematic" id="id208">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a ZZMax gate on the wires for the specified two qubits.</p>
 <dl class="field-list simple">
@@ -1847,7 +1881,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">ZZPhase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.ZZPhase" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>ZZPhase(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit0: int, qubit1: int, <a href="#id205"><span class="problematic" id="id206">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>ZZPhase(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit0: int, qubit1: int, <a href="#id209"><span class="problematic" id="id210">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a ZZ gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified two qubits.</p>
 <dl class="field-list simple">
@@ -1856,7 +1890,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>ZZPhase(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit0: pytket.unit_id.Qubit, qubit1: pytket.unit_id.Qubit, <a href="#id207"><span class="problematic" id="id208">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>ZZPhase(self: pytket.circuit.Circuit, angle: typing.Union[sympy.Expr, float], qubit0: pytket.unit_id.Qubit, qubit1: pytket.unit_id.Qubit, <a href="#id211"><span class="problematic" id="id212">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a ZZ gate with a symbolic angle (specified in half-turns) on the wires for the specified two qubits.</p>
 <dl class="field-list simple">
@@ -2101,7 +2135,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_c_and</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_c_and" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_c_and(self: pytket.circuit.Circuit, arg0_in: int, arg1_in: int, arg_out: int, <a href="#id209"><span class="problematic" id="id210">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_and(self: pytket.circuit.Circuit, arg0_in: int, arg1_in: int, arg_out: int, <a href="#id213"><span class="problematic" id="id214">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a binary AND operation to the end of the circuit.</p>
 <dl class="field-list simple">
@@ -2118,7 +2152,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_c_and(self: pytket.circuit.Circuit, arg0_in: pytket.unit_id.Bit, arg1_in: pytket.unit_id.Bit, arg_out: pytket.unit_id.Bit, <a href="#id211"><span class="problematic" id="id212">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_and(self: pytket.circuit.Circuit, arg0_in: pytket.unit_id.Bit, arg1_in: pytket.unit_id.Bit, arg_out: pytket.unit_id.Bit, <a href="#id215"><span class="problematic" id="id216">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>See <a class="reference internal" href="#pytket.circuit.Circuit.add_c_and" title="pytket.circuit.Circuit.add_c_and"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_c_and()</span></code></a>.</p>
 </dd></dl>
@@ -2148,7 +2182,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_c_copybits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_c_copybits" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_c_copybits(self: pytket.circuit.Circuit, args_in: Sequence[int], args_out: Sequence[int], <a href="#id213"><span class="problematic" id="id214">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_copybits(self: pytket.circuit.Circuit, args_in: Sequence[int], args_out: Sequence[int], <a href="#id217"><span class="problematic" id="id218">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a classical copy operation</p>
 <dl class="field-list simple">
@@ -2164,7 +2198,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_c_copybits(self: pytket.circuit.Circuit, args_in: Sequence[pytket.unit_id.Bit], args_out: Sequence[pytket.unit_id.Bit], <a href="#id215"><span class="problematic" id="id216">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_copybits(self: pytket.circuit.Circuit, args_in: Sequence[pytket.unit_id.Bit], args_out: Sequence[pytket.unit_id.Bit], <a href="#id219"><span class="problematic" id="id220">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>See <a class="reference internal" href="#pytket.circuit.Circuit.add_c_copybits" title="pytket.circuit.Circuit.add_c_copybits"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_c_copybits()</span></code></a>.</p>
 </dd></dl>
@@ -2180,7 +2214,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_c_modifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_c_modifier" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_c_modifier(self: pytket.circuit.Circuit, values: Sequence[bool], args_in: Sequence[int], arg_inout: int, name: str = ‘ExplicitModifier’, <a href="#id217"><span class="problematic" id="id218">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_modifier(self: pytket.circuit.Circuit, values: Sequence[bool], args_in: Sequence[int], arg_inout: int, name: str = ‘ExplicitModifier’, <a href="#id221"><span class="problematic" id="id222">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2194,7 +2228,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_c_modifier(self: pytket.circuit.Circuit, values: Sequence[bool], args_in: Sequence[pytket.unit_id.Bit], arg_inout: pytket.unit_id.Bit, name: str = ‘ExplicitModifier’, <a href="#id219"><span class="problematic" id="id220">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_modifier(self: pytket.circuit.Circuit, values: Sequence[bool], args_in: Sequence[pytket.unit_id.Bit], arg_inout: pytket.unit_id.Bit, name: str = ‘ExplicitModifier’, <a href="#id223"><span class="problematic" id="id224">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>See <a class="reference internal" href="#pytket.circuit.Circuit.add_c_modifier" title="pytket.circuit.Circuit.add_c_modifier"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_c_modifier()</span></code></a>.</p>
 </dd></dl>
@@ -2204,7 +2238,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_c_not</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_c_not" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_c_not(self: pytket.circuit.Circuit, arg_in: int, arg_out: int, <a href="#id221"><span class="problematic" id="id222">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_not(self: pytket.circuit.Circuit, arg_in: int, arg_out: int, <a href="#id225"><span class="problematic" id="id226">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a NOT operation to the end of the circuit.</p>
 <dl class="field-list simple">
@@ -2220,7 +2254,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_c_not(self: pytket.circuit.Circuit, arg_in: pytket.unit_id.Bit, arg_out: pytket.unit_id.Bit, <a href="#id223"><span class="problematic" id="id224">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_not(self: pytket.circuit.Circuit, arg_in: pytket.unit_id.Bit, arg_out: pytket.unit_id.Bit, <a href="#id227"><span class="problematic" id="id228">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>See <a class="reference internal" href="#pytket.circuit.Circuit.add_c_not" title="pytket.circuit.Circuit.add_c_not"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_c_not()</span></code></a>.</p>
 </dd></dl>
@@ -2249,7 +2283,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_c_or</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_c_or" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_c_or(self: pytket.circuit.Circuit, arg0_in: int, arg1_in: int, arg_out: int, <a href="#id225"><span class="problematic" id="id226">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_or(self: pytket.circuit.Circuit, arg0_in: int, arg1_in: int, arg_out: int, <a href="#id229"><span class="problematic" id="id230">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a binary OR operation to the end of the circuit.</p>
 <dl class="field-list simple">
@@ -2266,7 +2300,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_c_or(self: pytket.circuit.Circuit, arg0_in: pytket.unit_id.Bit, arg1_in: pytket.unit_id.Bit, arg_out: pytket.unit_id.Bit, <a href="#id227"><span class="problematic" id="id228">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_or(self: pytket.circuit.Circuit, arg0_in: pytket.unit_id.Bit, arg1_in: pytket.unit_id.Bit, arg_out: pytket.unit_id.Bit, <a href="#id231"><span class="problematic" id="id232">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>See <a class="reference internal" href="#pytket.circuit.Circuit.add_c_or" title="pytket.circuit.Circuit.add_c_or"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_c_or()</span></code></a>.</p>
 </dd></dl>
@@ -2296,7 +2330,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_c_predicate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_c_predicate" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_c_predicate(self: pytket.circuit.Circuit, values: Sequence[bool], args_in: Sequence[int], arg_out: int, name: str = ‘ExplicitPredicate’, <a href="#id229"><span class="problematic" id="id230">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_predicate(self: pytket.circuit.Circuit, values: Sequence[bool], args_in: Sequence[int], arg_out: int, name: str = ‘ExplicitPredicate’, <a href="#id233"><span class="problematic" id="id234">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2310,7 +2344,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_c_predicate(self: pytket.circuit.Circuit, values: Sequence[bool], args_in: Sequence[pytket.unit_id.Bit], arg_out: pytket.unit_id.Bit, name: str = ‘ExplicitPredicate’, <a href="#id231"><span class="problematic" id="id232">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_predicate(self: pytket.circuit.Circuit, values: Sequence[bool], args_in: Sequence[pytket.unit_id.Bit], arg_out: pytket.unit_id.Bit, name: str = ‘ExplicitPredicate’, <a href="#id235"><span class="problematic" id="id236">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>See <a class="reference internal" href="#pytket.circuit.Circuit.add_c_predicate" title="pytket.circuit.Circuit.add_c_predicate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_c_predicate()</span></code></a>.</p>
 </dd></dl>
@@ -2320,7 +2354,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_c_range_predicate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_c_range_predicate" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_c_range_predicate(self: pytket.circuit.Circuit, minval: int, maxval: int, args_in: Sequence[int], arg_out: int, <a href="#id233"><span class="problematic" id="id234">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_range_predicate(self: pytket.circuit.Circuit, minval: int, maxval: int, args_in: Sequence[int], arg_out: int, <a href="#id237"><span class="problematic" id="id238">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a range-predicate operation to the end of the circuit.</p>
 <dl class="field-list simple">
@@ -2338,7 +2372,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_c_range_predicate(self: pytket.circuit.Circuit, minval: int, maxval: int, args_in: Sequence[pytket.unit_id.Bit], arg_out: pytket.unit_id.Bit, <a href="#id235"><span class="problematic" id="id236">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_range_predicate(self: pytket.circuit.Circuit, minval: int, maxval: int, args_in: Sequence[pytket.unit_id.Bit], arg_out: pytket.unit_id.Bit, <a href="#id239"><span class="problematic" id="id240">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a range-predicate operation to the end of the circuit.</p>
 <dl class="field-list simple">
@@ -2392,7 +2426,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_c_setbits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_c_setbits" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_c_setbits(self: pytket.circuit.Circuit, values: Sequence[bool], args: Sequence[int], <a href="#id237"><span class="problematic" id="id238">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_setbits(self: pytket.circuit.Circuit, values: Sequence[bool], args: Sequence[int], <a href="#id241"><span class="problematic" id="id242">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends an operation to set some bit values.</p>
 <dl class="field-list simple">
@@ -2408,7 +2442,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_c_setbits(self: pytket.circuit.Circuit, values: Sequence[bool], args: Sequence[pytket.unit_id.Bit], <a href="#id239"><span class="problematic" id="id240">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_setbits(self: pytket.circuit.Circuit, values: Sequence[bool], args: Sequence[pytket.unit_id.Bit], <a href="#id243"><span class="problematic" id="id244">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>See <a class="reference internal" href="#pytket.circuit.Circuit.add_c_setbits" title="pytket.circuit.Circuit.add_c_setbits"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_c_setbits()</span></code></a>.</p>
 </dd></dl>
@@ -2424,7 +2458,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_c_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_c_transform" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_c_transform(self: pytket.circuit.Circuit, values: Sequence[int], args: Sequence[int], name: str = ‘ClassicalTransform’, <a href="#id241"><span class="problematic" id="id242">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_transform(self: pytket.circuit.Circuit, values: Sequence[int], args: Sequence[int], name: str = ‘ClassicalTransform’, <a href="#id245"><span class="problematic" id="id246">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a purely classical transformation, defined by a table of values, to the end of the circuit.</p>
 <dl class="field-list simple">
@@ -2441,7 +2475,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_c_transform(self: pytket.circuit.Circuit, values: Sequence[int], args: Sequence[pytket.unit_id.Bit], name: str = ‘ClassicalTransform’, <a href="#id243"><span class="problematic" id="id244">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_transform(self: pytket.circuit.Circuit, values: Sequence[int], args: Sequence[pytket.unit_id.Bit], name: str = ‘ClassicalTransform’, <a href="#id247"><span class="problematic" id="id248">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>See <a class="reference internal" href="#pytket.circuit.Circuit.add_c_transform" title="pytket.circuit.Circuit.add_c_transform"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_c_transform()</span></code></a>.</p>
 </dd></dl>
@@ -2451,7 +2485,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_c_xor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_c_xor" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_c_xor(self: pytket.circuit.Circuit, arg0_in: int, arg1_in: int, arg_out: int, <a href="#id245"><span class="problematic" id="id246">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_xor(self: pytket.circuit.Circuit, arg0_in: int, arg1_in: int, arg_out: int, <a href="#id249"><span class="problematic" id="id250">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a binary XOR operation to the end of the circuit.</p>
 <dl class="field-list simple">
@@ -2468,7 +2502,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_c_xor(self: pytket.circuit.Circuit, arg0_in: pytket.unit_id.Bit, arg1_in: pytket.unit_id.Bit, arg_out: pytket.unit_id.Bit, <a href="#id247"><span class="problematic" id="id248">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_c_xor(self: pytket.circuit.Circuit, arg0_in: pytket.unit_id.Bit, arg1_in: pytket.unit_id.Bit, arg_out: pytket.unit_id.Bit, <a href="#id251"><span class="problematic" id="id252">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>See <a class="reference internal" href="#pytket.circuit.Circuit.add_c_xor" title="pytket.circuit.Circuit.add_c_xor"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_c_xor()</span></code></a>.</p>
 </dd></dl>
@@ -2498,7 +2532,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_circbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_circbox" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_circbox(self: pytket.circuit.Circuit, circbox: pytket.circuit.CircBox, args: Sequence[int], <a href="#id249"><span class="problematic" id="id250">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_circbox(self: pytket.circuit.Circuit, circbox: pytket.circuit.CircBox, args: Sequence[int], <a href="#id253"><span class="problematic" id="id254">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.CircBox" title="pytket.circuit.CircBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">CircBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -2513,7 +2547,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_circbox(self: pytket.circuit.Circuit, circbox: pytket.circuit.CircBox, args: Sequence[pytket.unit_id.UnitID], <a href="#id251"><span class="problematic" id="id252">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_circbox(self: pytket.circuit.Circuit, circbox: pytket.circuit.CircBox, args: Sequence[pytket.unit_id.UnitID], <a href="#id255"><span class="problematic" id="id256">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.CircBox" title="pytket.circuit.CircBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">CircBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -2647,7 +2681,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_conjugation_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_conjugation_box" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_conjugation_box(self: pytket.circuit.Circuit, box: pytket.circuit.ConjugationBox, args: Sequence[pytket.unit_id.UnitID], <a href="#id253"><span class="problematic" id="id254">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_conjugation_box(self: pytket.circuit.Circuit, box: pytket.circuit.ConjugationBox, args: Sequence[pytket.unit_id.UnitID], <a href="#id257"><span class="problematic" id="id258">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.ConjugationBox" title="pytket.circuit.ConjugationBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConjugationBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -2662,7 +2696,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_conjugation_box(self: pytket.circuit.Circuit, box: pytket.circuit.ConjugationBox, args: Sequence[int], <a href="#id255"><span class="problematic" id="id256">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_conjugation_box(self: pytket.circuit.Circuit, box: pytket.circuit.ConjugationBox, args: Sequence[int], <a href="#id259"><span class="problematic" id="id260">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.ConjugationBox" title="pytket.circuit.ConjugationBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConjugationBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -2683,7 +2717,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_custom_gate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_custom_gate" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_custom_gate(self: pytket.circuit.Circuit, definition: pytket.circuit.CustomGateDef, params: Sequence[typing.Union[sympy.Expr, float]], qubits: Sequence[int], <a href="#id257"><span class="problematic" id="id258">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_custom_gate(self: pytket.circuit.Circuit, definition: pytket.circuit.CustomGateDef, params: Sequence[typing.Union[sympy.Expr, float]], qubits: Sequence[int], <a href="#id261"><span class="problematic" id="id262">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append an instance of a <a class="reference internal" href="circuit.html#pytket.circuit.CustomGateDef" title="pytket.circuit.CustomGateDef"><code class="xref py py-class docutils literal notranslate"><span class="pre">CustomGateDef</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -2699,7 +2733,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_custom_gate(self: pytket.circuit.Circuit, definition: pytket.circuit.CustomGateDef, params: Sequence[typing.Union[sympy.Expr, float]], qubits: Sequence[pytket.unit_id.Qubit], <a href="#id259"><span class="problematic" id="id260">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_custom_gate(self: pytket.circuit.Circuit, definition: pytket.circuit.CustomGateDef, params: Sequence[typing.Union[sympy.Expr, float]], qubits: Sequence[pytket.unit_id.Qubit], <a href="#id263"><span class="problematic" id="id264">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append an instance of a <a class="reference internal" href="circuit.html#pytket.circuit.CustomGateDef" title="pytket.circuit.CustomGateDef"><code class="xref py py-class docutils literal notranslate"><span class="pre">CustomGateDef</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -2721,7 +2755,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_diagonal_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_diagonal_box" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_diagonal_box(self: pytket.circuit.Circuit, box: pytket.circuit.DiagonalBox, args: Sequence[pytket.unit_id.UnitID], <a href="#id261"><span class="problematic" id="id262">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_diagonal_box(self: pytket.circuit.Circuit, box: pytket.circuit.DiagonalBox, args: Sequence[pytket.unit_id.UnitID], <a href="#id265"><span class="problematic" id="id266">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.DiagonalBox" title="pytket.circuit.DiagonalBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiagonalBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -2736,7 +2770,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_diagonal_box(self: pytket.circuit.Circuit, box: pytket.circuit.DiagonalBox, args: Sequence[int], <a href="#id263"><span class="problematic" id="id264">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_diagonal_box(self: pytket.circuit.Circuit, box: pytket.circuit.DiagonalBox, args: Sequence[int], <a href="#id267"><span class="problematic" id="id268">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.DiagonalBox" title="pytket.circuit.DiagonalBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiagonalBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -2757,7 +2791,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_dummybox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_dummybox" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_dummybox(self: pytket.circuit.Circuit, dummybox: pytket.circuit.DummyBox, qubits: Sequence[int], bits: Sequence[int], <a href="#id265"><span class="problematic" id="id266">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_dummybox(self: pytket.circuit.Circuit, dummybox: pytket.circuit.DummyBox, qubits: Sequence[int], bits: Sequence[int], <a href="#id269"><span class="problematic" id="id270">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.DummyBox" title="pytket.circuit.DummyBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">DummyBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -2773,7 +2807,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_dummybox(self: pytket.circuit.Circuit, dummybox: pytket.circuit.DummyBox, qubits: Sequence[pytket.unit_id.Qubit], bits: Sequence[pytket.unit_id.Bit], <a href="#id267"><span class="problematic" id="id268">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_dummybox(self: pytket.circuit.Circuit, dummybox: pytket.circuit.DummyBox, qubits: Sequence[pytket.unit_id.Qubit], bits: Sequence[pytket.unit_id.Bit], <a href="#id271"><span class="problematic" id="id272">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.DummyBox" title="pytket.circuit.DummyBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">DummyBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -2795,7 +2829,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_expbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_expbox" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_expbox(self: pytket.circuit.Circuit, expbox: pytket.circuit.ExpBox, qubit_0: int, qubit_1: int, <a href="#id269"><span class="problematic" id="id270">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_expbox(self: pytket.circuit.Circuit, expbox: pytket.circuit.ExpBox, qubit_0: int, qubit_1: int, <a href="#id273"><span class="problematic" id="id274">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append an <a class="reference internal" href="circuit.html#pytket.circuit.ExpBox" title="pytket.circuit.ExpBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExpBox</span></code></a> to the circuit.</p>
 <p>The matrix representation is ILO-BE.</p>
@@ -2812,7 +2846,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_expbox(self: pytket.circuit.Circuit, expbox: pytket.circuit.ExpBox, qubit_0: pytket.unit_id.Qubit, qubit_1: pytket.unit_id.Qubit, <a href="#id271"><span class="problematic" id="id272">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_expbox(self: pytket.circuit.Circuit, expbox: pytket.circuit.ExpBox, qubit_0: pytket.unit_id.Qubit, qubit_1: pytket.unit_id.Qubit, <a href="#id275"><span class="problematic" id="id276">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append an <a class="reference internal" href="circuit.html#pytket.circuit.ExpBox" title="pytket.circuit.ExpBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExpBox</span></code></a> to the circuit.</p>
 <p>The matrix representation is ILO-BE.</p>
@@ -2835,15 +2869,15 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_gate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_gate" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_gate(self: pytket.circuit.Circuit, Op: pytket.circuit.Op, args: Sequence[int], <a href="#id273"><span class="problematic" id="id274">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_gate(self: pytket.circuit.Circuit, Op: pytket.circuit.Op, args: Sequence[int], <a href="#id277"><span class="problematic" id="id278">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a single operation to the end of the circuit on some particular qubits/bits. The number of qubits/bits specified must match the arity of the gate.</p>
 <ol class="arabic simple" start="2">
-<li><p>add_gate(self: pytket.circuit.Circuit, Op: pytket.circuit.Op, args: Sequence[pytket.unit_id.UnitID], <a href="#id275"><span class="problematic" id="id276">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_gate(self: pytket.circuit.Circuit, Op: pytket.circuit.Op, args: Sequence[pytket.unit_id.UnitID], <a href="#id279"><span class="problematic" id="id280">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a single operation to the end of the circuit on some particular qubits/bits. The number of qubits/bits specified must match the arity of the gate.</p>
 <ol class="arabic simple" start="3">
-<li><p>add_gate(self: pytket.circuit.Circuit, type: pytket.circuit.OpType, args: Sequence[int], <a href="#id277"><span class="problematic" id="id278">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_gate(self: pytket.circuit.Circuit, type: pytket.circuit.OpType, args: Sequence[int], <a href="#id281"><span class="problematic" id="id282">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a single (non-parameterised) gate to the end of the circuit on some particular qubits from the default register (‘q’). The number of qubits specified must match the arity of the gate. For <cite>OpType.Measure</cite> operations the bit from the default register should follow the qubit.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add_gate</span><span class="p">(</span><span class="n">OpType</span><span class="o">.</span><span class="n">H</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># equivalent to c.H(0)</span>
@@ -2863,7 +2897,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="4">
-<li><p>add_gate(self: pytket.circuit.Circuit, type: pytket.circuit.OpType, args: Sequence[pytket.unit_id.UnitID], <a href="#id279"><span class="problematic" id="id280">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_gate(self: pytket.circuit.Circuit, type: pytket.circuit.OpType, args: Sequence[pytket.unit_id.UnitID], <a href="#id283"><span class="problematic" id="id284">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a single (non-parameterised) gate to the end of the circuit on some particular qubits from the default register (‘q’). The number of qubits specified must match the arity of the gate. For <cite>OpType.Measure</cite> operations the bit from the default register should follow the qubit.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add_gate</span><span class="p">(</span><span class="n">OpType</span><span class="o">.</span><span class="n">H</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># equivalent to c.H(0)</span>
@@ -2883,7 +2917,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="5">
-<li><p>add_gate(self: pytket.circuit.Circuit, type: pytket.circuit.OpType, angle: typing.Union[sympy.Expr, float], args: Sequence[int], <a href="#id281"><span class="problematic" id="id282">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_gate(self: pytket.circuit.Circuit, type: pytket.circuit.OpType, angle: typing.Union[sympy.Expr, float], args: Sequence[int], <a href="#id285"><span class="problematic" id="id286">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a single gate, parameterised by an expression, to the end of circuit on some particular qubits from the default register (‘q’).</p>
 <dl class="field-list simple">
@@ -2900,7 +2934,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="6">
-<li><p>add_gate(self: pytket.circuit.Circuit, type: pytket.circuit.OpType, angle: typing.Union[sympy.Expr, float], args: Sequence[pytket.unit_id.UnitID], <a href="#id283"><span class="problematic" id="id284">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_gate(self: pytket.circuit.Circuit, type: pytket.circuit.OpType, angle: typing.Union[sympy.Expr, float], args: Sequence[pytket.unit_id.UnitID], <a href="#id287"><span class="problematic" id="id288">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a single gate, parameterised by an expression, to the end of circuit on some particular qubits from the default register (‘q’).</p>
 <dl class="field-list simple">
@@ -2917,7 +2951,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="7">
-<li><p>add_gate(self: pytket.circuit.Circuit, type: pytket.circuit.OpType, angles: Sequence[typing.Union[sympy.Expr, float]], args: Sequence[int], <a href="#id285"><span class="problematic" id="id286">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_gate(self: pytket.circuit.Circuit, type: pytket.circuit.OpType, angles: Sequence[typing.Union[sympy.Expr, float]], args: Sequence[int], <a href="#id289"><span class="problematic" id="id290">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a single gate, parameterised with a vector of expressions corresponding to halfturns, to the end of circuit on some particular qubits from the default register (‘q’).</p>
 <dl class="field-list simple">
@@ -2934,7 +2968,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="8">
-<li><p>add_gate(self: pytket.circuit.Circuit, type: pytket.circuit.OpType, angles: Sequence[typing.Union[sympy.Expr, float]], args: Sequence[pytket.unit_id.UnitID], <a href="#id287"><span class="problematic" id="id288">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_gate(self: pytket.circuit.Circuit, type: pytket.circuit.OpType, angles: Sequence[typing.Union[sympy.Expr, float]], args: Sequence[pytket.unit_id.UnitID], <a href="#id291"><span class="problematic" id="id292">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Appends a single gate to the end of the circuit</p>
 <dl class="field-list simple">
@@ -2957,7 +2991,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_multiplexed_tensored_u2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_multiplexed_tensored_u2" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_multiplexed_tensored_u2(self: pytket.circuit.Circuit, box: pytket.circuit.MultiplexedTensoredU2Box, args: Sequence[pytket.unit_id.UnitID], <a href="#id289"><span class="problematic" id="id290">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_multiplexed_tensored_u2(self: pytket.circuit.Circuit, box: pytket.circuit.MultiplexedTensoredU2Box, args: Sequence[pytket.unit_id.UnitID], <a href="#id293"><span class="problematic" id="id294">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.MultiplexedTensoredU2Box" title="pytket.circuit.MultiplexedTensoredU2Box"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiplexedTensoredU2Box</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -2972,7 +3006,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_multiplexed_tensored_u2(self: pytket.circuit.Circuit, box: pytket.circuit.MultiplexedTensoredU2Box, args: Sequence[int], <a href="#id291"><span class="problematic" id="id292">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_multiplexed_tensored_u2(self: pytket.circuit.Circuit, box: pytket.circuit.MultiplexedTensoredU2Box, args: Sequence[int], <a href="#id295"><span class="problematic" id="id296">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.MultiplexedTensoredU2Box" title="pytket.circuit.MultiplexedTensoredU2Box"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiplexedTensoredU2Box</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -2993,7 +3027,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_multiplexedrotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_multiplexedrotation" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_multiplexedrotation(self: pytket.circuit.Circuit, box: pytket.circuit.MultiplexedRotationBox, args: Sequence[pytket.unit_id.UnitID], <a href="#id293"><span class="problematic" id="id294">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_multiplexedrotation(self: pytket.circuit.Circuit, box: pytket.circuit.MultiplexedRotationBox, args: Sequence[pytket.unit_id.UnitID], <a href="#id297"><span class="problematic" id="id298">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.MultiplexedRotationBox" title="pytket.circuit.MultiplexedRotationBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiplexedRotationBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3008,7 +3042,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_multiplexedrotation(self: pytket.circuit.Circuit, box: pytket.circuit.MultiplexedRotationBox, args: Sequence[int], <a href="#id295"><span class="problematic" id="id296">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_multiplexedrotation(self: pytket.circuit.Circuit, box: pytket.circuit.MultiplexedRotationBox, args: Sequence[int], <a href="#id299"><span class="problematic" id="id300">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.MultiplexedRotationBox" title="pytket.circuit.MultiplexedRotationBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiplexedRotationBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3029,7 +3063,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_multiplexedu2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_multiplexedu2" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_multiplexedu2(self: pytket.circuit.Circuit, box: pytket.circuit.MultiplexedU2Box, args: Sequence[pytket.unit_id.UnitID], <a href="#id297"><span class="problematic" id="id298">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_multiplexedu2(self: pytket.circuit.Circuit, box: pytket.circuit.MultiplexedU2Box, args: Sequence[pytket.unit_id.UnitID], <a href="#id301"><span class="problematic" id="id302">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.MultiplexedU2Box" title="pytket.circuit.MultiplexedU2Box"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiplexedU2Box</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3044,7 +3078,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_multiplexedu2(self: pytket.circuit.Circuit, box: pytket.circuit.MultiplexedU2Box, args: Sequence[int], <a href="#id299"><span class="problematic" id="id300">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_multiplexedu2(self: pytket.circuit.Circuit, box: pytket.circuit.MultiplexedU2Box, args: Sequence[int], <a href="#id303"><span class="problematic" id="id304">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.MultiplexedU2Box" title="pytket.circuit.MultiplexedU2Box"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiplexedU2Box</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3065,7 +3099,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_multiplexor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_multiplexor" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_multiplexor(self: pytket.circuit.Circuit, box: pytket.circuit.MultiplexorBox, args: Sequence[pytket.unit_id.UnitID], <a href="#id301"><span class="problematic" id="id302">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_multiplexor(self: pytket.circuit.Circuit, box: pytket.circuit.MultiplexorBox, args: Sequence[pytket.unit_id.UnitID], <a href="#id305"><span class="problematic" id="id306">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.MultiplexorBox" title="pytket.circuit.MultiplexorBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiplexorBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3080,7 +3114,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_multiplexor(self: pytket.circuit.Circuit, box: pytket.circuit.MultiplexorBox, args: Sequence[int], <a href="#id303"><span class="problematic" id="id304">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_multiplexor(self: pytket.circuit.Circuit, box: pytket.circuit.MultiplexorBox, args: Sequence[int], <a href="#id307"><span class="problematic" id="id308">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.MultiplexorBox" title="pytket.circuit.MultiplexorBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiplexorBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3101,7 +3135,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_pauliexpbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_pauliexpbox" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_pauliexpbox(self: pytket.circuit.Circuit, pauliexpbox: pytket.circuit.PauliExpBox, qubits: Sequence[int], <a href="#id305"><span class="problematic" id="id306">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_pauliexpbox(self: pytket.circuit.Circuit, pauliexpbox: pytket.circuit.PauliExpBox, qubits: Sequence[int], <a href="#id309"><span class="problematic" id="id310">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.PauliExpBox" title="pytket.circuit.PauliExpBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">PauliExpBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3116,7 +3150,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_pauliexpbox(self: pytket.circuit.Circuit, pauliexpbox: pytket.circuit.PauliExpBox, qubits: Sequence[pytket.unit_id.Qubit], <a href="#id307"><span class="problematic" id="id308">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_pauliexpbox(self: pytket.circuit.Circuit, pauliexpbox: pytket.circuit.PauliExpBox, qubits: Sequence[pytket.unit_id.Qubit], <a href="#id311"><span class="problematic" id="id312">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.PauliExpBox" title="pytket.circuit.PauliExpBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">PauliExpBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3137,7 +3171,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_pauliexpcommutingsetbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_pauliexpcommutingsetbox" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_pauliexpcommutingsetbox(self: pytket.circuit.Circuit, pauliexpcommutingsetbox: pytket.circuit.PauliExpCommutingSetBox, qubits: Sequence[int], <a href="#id309"><span class="problematic" id="id310">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_pauliexpcommutingsetbox(self: pytket.circuit.Circuit, pauliexpcommutingsetbox: pytket.circuit.PauliExpCommutingSetBox, qubits: Sequence[int], <a href="#id313"><span class="problematic" id="id314">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <code class="xref py py-class docutils literal notranslate"><span class="pre">PauliExpCommutingSetBox</span></code> to the circuit.</p>
 <dl class="field-list simple">
@@ -3152,7 +3186,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_pauliexpcommutingsetbox(self: pytket.circuit.Circuit, pauliexpcommutingsetbox: pytket.circuit.PauliExpCommutingSetBox, qubits: Sequence[pytket.unit_id.Qubit], <a href="#id311"><span class="problematic" id="id312">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_pauliexpcommutingsetbox(self: pytket.circuit.Circuit, pauliexpcommutingsetbox: pytket.circuit.PauliExpCommutingSetBox, qubits: Sequence[pytket.unit_id.Qubit], <a href="#id315"><span class="problematic" id="id316">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <code class="xref py py-class docutils literal notranslate"><span class="pre">PauliExpCommutingSetBox</span></code> to the circuit.</p>
 <dl class="field-list simple">
@@ -3173,9 +3207,9 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_pauliexppairbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_pauliexppairbox" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_pauliexppairbox(self: pytket.circuit.Circuit, pauliexppairbox: pytket.circuit.PauliExpPairBox, qubits: Sequence[int], <a href="#id313"><span class="problematic" id="id314">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_pauliexppairbox(self: pytket.circuit.Circuit, pauliexppairbox: pytket.circuit.PauliExpPairBox, qubits: Sequence[int], <a href="#id317"><span class="problematic" id="id318">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
-<p>Append a <code class="xref py py-class docutils literal notranslate"><span class="pre">PauliExpPairBox</span></code> to the circuit.</p>
+<p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.PauliExpPairBox" title="pytket.circuit.PauliExpPairBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">PauliExpPairBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -3188,9 +3222,9 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_pauliexppairbox(self: pytket.circuit.Circuit, pauliexppairbox: pytket.circuit.PauliExpPairBox, qubits: Sequence[pytket.unit_id.Qubit], <a href="#id315"><span class="problematic" id="id316">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_pauliexppairbox(self: pytket.circuit.Circuit, pauliexppairbox: pytket.circuit.PauliExpPairBox, qubits: Sequence[pytket.unit_id.Qubit], <a href="#id319"><span class="problematic" id="id320">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
-<p>Append a <code class="xref py py-class docutils literal notranslate"><span class="pre">PauliExpPairBox</span></code> to the circuit.</p>
+<p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.PauliExpPairBox" title="pytket.circuit.PauliExpPairBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">PauliExpPairBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -3223,7 +3257,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_phasepolybox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_phasepolybox" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_phasepolybox(self: pytket.circuit.Circuit, phasepolybox: pytket.circuit.PhasePolyBox, qubits: Sequence[int], <a href="#id317"><span class="problematic" id="id318">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_phasepolybox(self: pytket.circuit.Circuit, phasepolybox: pytket.circuit.PhasePolyBox, qubits: Sequence[int], <a href="#id321"><span class="problematic" id="id322">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.PhasePolyBox" title="pytket.circuit.PhasePolyBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhasePolyBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3238,7 +3272,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_phasepolybox(self: pytket.circuit.Circuit, phasepolybox: pytket.circuit.PhasePolyBox, qubits: Sequence[pytket.unit_id.Qubit], <a href="#id319"><span class="problematic" id="id320">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_phasepolybox(self: pytket.circuit.Circuit, phasepolybox: pytket.circuit.PhasePolyBox, qubits: Sequence[pytket.unit_id.Qubit], <a href="#id323"><span class="problematic" id="id324">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.PhasePolyBox" title="pytket.circuit.PhasePolyBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhasePolyBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3289,7 +3323,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_qcontrolbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_qcontrolbox" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_qcontrolbox(self: pytket.circuit.Circuit, qcontrolbox: pytket.circuit.QControlBox, args: Sequence[int], <a href="#id321"><span class="problematic" id="id322">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_qcontrolbox(self: pytket.circuit.Circuit, qcontrolbox: pytket.circuit.QControlBox, args: Sequence[int], <a href="#id325"><span class="problematic" id="id326">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.QControlBox" title="pytket.circuit.QControlBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">QControlBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3304,7 +3338,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_qcontrolbox(self: pytket.circuit.Circuit, qcontrolbox: pytket.circuit.QControlBox, args: Sequence[pytket.unit_id.UnitID], <a href="#id323"><span class="problematic" id="id324">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_qcontrolbox(self: pytket.circuit.Circuit, qcontrolbox: pytket.circuit.QControlBox, args: Sequence[pytket.unit_id.UnitID], <a href="#id327"><span class="problematic" id="id328">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.QControlBox" title="pytket.circuit.QControlBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">QControlBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3339,7 +3373,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_state_preparation_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_state_preparation_box" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_state_preparation_box(self: pytket.circuit.Circuit, box: pytket.circuit.StatePreparationBox, args: Sequence[pytket.unit_id.UnitID], <a href="#id325"><span class="problematic" id="id326">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_state_preparation_box(self: pytket.circuit.Circuit, box: pytket.circuit.StatePreparationBox, args: Sequence[pytket.unit_id.UnitID], <a href="#id329"><span class="problematic" id="id330">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.StatePreparationBox" title="pytket.circuit.StatePreparationBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">StatePreparationBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3354,7 +3388,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_state_preparation_box(self: pytket.circuit.Circuit, box: pytket.circuit.StatePreparationBox, args: Sequence[int], <a href="#id327"><span class="problematic" id="id328">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_state_preparation_box(self: pytket.circuit.Circuit, box: pytket.circuit.StatePreparationBox, args: Sequence[int], <a href="#id331"><span class="problematic" id="id332">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.StatePreparationBox" title="pytket.circuit.StatePreparationBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">StatePreparationBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3375,7 +3409,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_toffolibox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_toffolibox" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_toffolibox(self: pytket.circuit.Circuit, toffolibox: pytket.circuit.ToffoliBox, qubits: Sequence[int], <a href="#id329"><span class="problematic" id="id330">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_toffolibox(self: pytket.circuit.Circuit, toffolibox: pytket.circuit.ToffoliBox, qubits: Sequence[int], <a href="#id333"><span class="problematic" id="id334">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.ToffoliBox" title="pytket.circuit.ToffoliBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">ToffoliBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3390,7 +3424,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_toffolibox(self: pytket.circuit.Circuit, toffolibox: pytket.circuit.ToffoliBox, qubits: Sequence[pytket.unit_id.Qubit], <a href="#id331"><span class="problematic" id="id332">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_toffolibox(self: pytket.circuit.Circuit, toffolibox: pytket.circuit.ToffoliBox, qubits: Sequence[pytket.unit_id.Qubit], <a href="#id335"><span class="problematic" id="id336">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.ToffoliBox" title="pytket.circuit.ToffoliBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">ToffoliBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3411,7 +3445,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_unitary1qbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_unitary1qbox" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_unitary1qbox(self: pytket.circuit.Circuit, unitarybox: pytket.circuit.Unitary1qBox, qubit_0: int, <a href="#id333"><span class="problematic" id="id334">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_unitary1qbox(self: pytket.circuit.Circuit, unitarybox: pytket.circuit.Unitary1qBox, qubit_0: int, <a href="#id337"><span class="problematic" id="id338">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.Unitary1qBox" title="pytket.circuit.Unitary1qBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unitary1qBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3426,7 +3460,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_unitary1qbox(self: pytket.circuit.Circuit, unitarybox: pytket.circuit.Unitary1qBox, qubit_0: pytket.unit_id.Qubit, <a href="#id335"><span class="problematic" id="id336">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_unitary1qbox(self: pytket.circuit.Circuit, unitarybox: pytket.circuit.Unitary1qBox, qubit_0: pytket.unit_id.Qubit, <a href="#id339"><span class="problematic" id="id340">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.Unitary1qBox" title="pytket.circuit.Unitary1qBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unitary1qBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3447,7 +3481,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_unitary2qbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_unitary2qbox" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_unitary2qbox(self: pytket.circuit.Circuit, unitarybox: pytket.circuit.Unitary2qBox, qubit_0: int, qubit_1: int, <a href="#id337"><span class="problematic" id="id338">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_unitary2qbox(self: pytket.circuit.Circuit, unitarybox: pytket.circuit.Unitary2qBox, qubit_0: int, qubit_1: int, <a href="#id341"><span class="problematic" id="id342">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.Unitary2qBox" title="pytket.circuit.Unitary2qBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unitary2qBox</span></code></a> to the circuit.</p>
 <p>The matrix representation is ILO-BE.</p>
@@ -3464,7 +3498,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_unitary2qbox(self: pytket.circuit.Circuit, unitarybox: pytket.circuit.Unitary2qBox, qubit_0: pytket.unit_id.Qubit, qubit_1: pytket.unit_id.Qubit, <a href="#id339"><span class="problematic" id="id340">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_unitary2qbox(self: pytket.circuit.Circuit, unitarybox: pytket.circuit.Unitary2qBox, qubit_0: pytket.unit_id.Qubit, qubit_1: pytket.unit_id.Qubit, <a href="#id343"><span class="problematic" id="id344">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.Unitary2qBox" title="pytket.circuit.Unitary2qBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unitary2qBox</span></code></a> to the circuit.</p>
 <p>The matrix representation is ILO-BE.</p>
@@ -3487,7 +3521,7 @@ condition on a specified set of bit values.)</p>
 <span class="sig-name descname"><span class="pre">add_unitary3qbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_unitary3qbox" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>add_unitary3qbox(self: pytket.circuit.Circuit, unitarybox: pytket.circuit.Unitary3qBox, qubit_0: int, qubit_1: int, qubit_2: int, <a href="#id341"><span class="problematic" id="id342">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_unitary3qbox(self: pytket.circuit.Circuit, unitarybox: pytket.circuit.Unitary3qBox, qubit_0: int, qubit_1: int, qubit_2: int, <a href="#id345"><span class="problematic" id="id346">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.Unitary3qBox" title="pytket.circuit.Unitary3qBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unitary3qBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -3504,7 +3538,7 @@ condition on a specified set of bit values.)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>add_unitary3qbox(self: pytket.circuit.Circuit, unitarybox: pytket.circuit.Unitary3qBox, qubit_0: pytket.unit_id.Qubit, qubit_1: pytket.unit_id.Qubit, qubit_2: pytket.unit_id.Qubit, <a href="#id343"><span class="problematic" id="id344">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
+<li><p>add_unitary3qbox(self: pytket.circuit.Circuit, unitarybox: pytket.circuit.Unitary3qBox, qubit_0: pytket.unit_id.Qubit, qubit_1: pytket.unit_id.Qubit, qubit_2: pytket.unit_id.Qubit, <a href="#id347"><span class="problematic" id="id348">**</span></a>kwargs) -&gt; pytket.circuit.Circuit</p></li>
 </ol>
 <p>Append a <a class="reference internal" href="circuit.html#pytket.circuit.Unitary3qBox" title="pytket.circuit.Unitary3qBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unitary3qBox</span></code></a> to the circuit.</p>
 <dl class="field-list simple">
@@ -4303,6 +4337,7 @@ Allowed parameters are <cite>opgroup</cite>,  <cite>condition</cite> , <cite>con
 <dt class="sig sig-object py" id="pytket.circuit.Circuit.c_registers">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">c_registers</span></span><a class="headerlink" href="#pytket.circuit.Circuit.c_registers" title="Permalink to this definition">#</a></dt>
 <dd><p>Get all classical registers.</p>
+<p>This property is only valid if the bits in the circuit are organized into registers (i.e. all bit indices are single numbers and all sets of bits with the same string identifier consist of bits indexed consecutively from zero).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List of <code class="xref py py-class docutils literal notranslate"><span class="pre">BitRegister</span></code></p>
@@ -4378,6 +4413,7 @@ Allowed parameters are <cite>opgroup</cite>,  <cite>condition</cite> , <cite>con
 <dt class="sig sig-object py" id="pytket.circuit.Circuit.q_registers">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">q_registers</span></span><a class="headerlink" href="#pytket.circuit.Circuit.q_registers" title="Permalink to this definition">#</a></dt>
 <dd><p>Get all quantum registers.</p>
+<p>This property is only valid if the qubits in the circuit are organized into registers (i.e. all qubit indices are single numbers and all sets of qubits with the same string identifier consist of qubits indexed consecutively from zero).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List of <code class="xref py py-class docutils literal notranslate"><span class="pre">QubitRegister</span></code></p>
@@ -4416,7 +4452,7 @@ Allowed parameters are <cite>opgroup</cite>,  <cite>condition</cite> , <cite>con
               
               
                 <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                  
 <div class="prev-next-area">
     <a class="left-prev"
        href="circuit.html"
@@ -4444,6 +4480,7 @@ Allowed parameters are <cite>opgroup</cite>,  <cite>condition</cite> , <cite>con
             
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
 
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
@@ -4479,6 +4516,7 @@ Allowed parameters are <cite>opgroup</cite>,  <cite>condition</cite> , <cite>con
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.Phase"><code class="docutils literal notranslate"><span class="pre">Circuit.Phase()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.PhasedISWAP"><code class="docutils literal notranslate"><span class="pre">Circuit.PhasedISWAP()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.PhasedX"><code class="docutils literal notranslate"><span class="pre">Circuit.PhasedX()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.Reset"><code class="docutils literal notranslate"><span class="pre">Circuit.Reset()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.Rx"><code class="docutils literal notranslate"><span class="pre">Circuit.Rx()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.Ry"><code class="docutils literal notranslate"><span class="pre">Circuit.Ry()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.Rz"><code class="docutils literal notranslate"><span class="pre">Circuit.Rz()</span></code></a></li>
@@ -4646,6 +4684,7 @@ By Quantinuum
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
       © Copyright 2023 Quantinuum.
@@ -4672,8 +4711,8 @@ By Quantinuum
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+  <script src="_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509"></script>
 
   <footer class="bd-footer">
   </footer>

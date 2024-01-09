@@ -3,13 +3,13 @@
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="" >
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.passes &#8212; pytket 1.22.0 documentation</title>
+    <title>pytket.passes &#8212; pytket 1.23.0 documentation</title>
   
   
   
@@ -19,15 +19,15 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
@@ -37,9 +37,9 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/doctools.js"></script>
@@ -65,7 +65,7 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
 
@@ -108,12 +108,20 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <header>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <div class="bd-header navbar navbar-expand-lg bd-navbar">
+    </div>
   
+  </header>
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -128,6 +136,7 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
   
 
 <a class="navbar-brand logo" href="index.html">
@@ -141,29 +150,27 @@
       
     
     
-    <img src="_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="pytket 1.22.0 documentation - Home"/>
-    <script>document.write(`<img src="_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="pytket 1.22.0 documentation - Home"/>`);</script>
+    <img src="_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="pytket 1.23.0 documentation - Home"/>
+    <script>document.write(`<img src="_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="pytket 1.23.0 documentation - Home"/>`);</script>
   
   
 </a></div>
         <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction:</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">pytket documentation:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/">TKET website</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/user-manual/">Manual</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/api-docs/">pytket API docs</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="extensions.html">pytket extensions</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-aqt/api/index.html">pytket-aqt</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-braket">pytket-braket</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cirq">pytket-cirq</a></li>
-<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum">pytket-ionq</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-iqm">pytket-iqm</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pennylane">pytket-pennylane</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-projectq">pytket-projectq</a></li>
@@ -171,16 +178,18 @@
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pysimplex">pytket-pysimplex</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pyzx">pytket-pyzx</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qir">pytket-qir</a></li>
-<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qir">pytket-qiskit</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qiskit">pytket-qiskit</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-qsharp/api/index.html">pytket-qsharp</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum">pytket-quantinuum</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cutensornet">pytket-cutensornet</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qulacs">pytket-qulacs</a></li>
-<li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-qujax/api/index.html">pytket-qujax</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qujax">pytket-qujax</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-stim">pytket-stim</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/user-manual">Manual</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/examples">Example notebooks</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/">TKET website</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="current nav bd-sidenav">
@@ -363,6 +372,7 @@
 </button>
 
 
+
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -372,6 +382,7 @@ document.write(`
   </button>
 `);
 </script>
+
 
 <script>
 document.write(`
@@ -523,7 +534,7 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section id="pytket-passes">
 <h1>pytket.passes<a class="headerlink" href="#pytket-passes" title="Permalink to this heading">#</a></h1>
@@ -955,7 +966,7 @@ document.write(`
 <p>Gate fidelities can be passed as keyword arguments to perform noise-aware decompositions. If the fidelities of several gate types are provided, the best will be chosen.</p>
 <p>We currently support <cite>CX_fidelity</cite>, <cite>ZZMax_fidelity</cite> and <cite>ZZPhase_fidelity</cite>. If provided, the <cite>CX</cite> and <cite>ZZMax</cite> fidelities must be given by a single floating point fidelity. The <cite>ZZPhase</cite> fidelity is given as a lambda float -&gt; float, mapping a ZZPhase angle parameter to its fidelity. These parameters will be used to return the optimal decomposition of each TK2 gate, taking noise into consideration.</p>
 <p>If no fidelities are provided, the TK2 gates will be decomposed exactly using CX gates. For equal fidelities, ZZPhase will be prefered over ZZMax and CX if the decomposition results in fewer two-qubit gates.</p>
-<p>All TK2 gate parameters must be normalised, i.e. they must satisfy <cite>NormalisedTK2Predicate</cite>.</p>
+<p>All TK2 gate parameters must be normalised, i.e. they must satisfy <cite>NormalisedTK2Predicate</cite>. (This can be achieved by applying the <a class="reference internal" href="#pytket.passes.NormaliseTK2" title="pytket.passes.NormaliseTK2"><code class="xref py py-meth docutils literal notranslate"><span class="pre">NormaliseTK2()</span></code></a> pass beforehand.)</p>
 <p>Using the <cite>allow_swaps=True</cite> (default) option, qubits will be swapped when convenient to reduce the two-qubit gate count of the decomposed TK2.</p>
 <p>If the TK2 angles are symbolic values, the decomposition will be exact (i.e. not noise-aware). It is not possible in general to obtain optimal decompositions for arbitrary symbolic parameters, so consider substituting for concrete values if possible.</p>
 <dl class="field-list simple">
@@ -1104,6 +1115,7 @@ document.write(`
 <p>It is in general recommended to squash to TK2 gates, and to then use the <cite>DecomposeTK2</cite> pass for noise-aware decompositions to other gatesets. For backward compatibility, decompositions to CX are also supported. In this case, <cite>cx_fidelity</cite> can be provided to perform approximate decompositions to CX gates.</p>
 <p>When decomposing to TK2 gates, any sequence of two or more two-qubit gates on the same set of qubits are replaced by a single TK2 gate. When decomposing to CX, the substitution is only performed if it results in a reduction of the number of CX gates, or if at least one of the two-qubit gates is not a CX.</p>
 <p>Using the <cite>allow_swaps=True</cite> (default) option, qubits will be swapped when convenient to further reduce the two-qubit gate count (only applicable when decomposing to CX gates).</p>
+<p>Note that gates containing symbolic parameters are not squashed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1253,13 +1265,13 @@ document.write(`
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>gateset</strong> – the allowed operations in the rebased circuit</p></li>
+<li><p><strong>gateset</strong> – the allowed operations in the rebased circuit (in addition, Measure, Reset and Collapse operations are always allowed and are left alone; conditional operations may be present; and Phase gates may also be introduced by the rebase)</p></li>
 <li><p><strong>cx_replacement</strong> – the equivalent circuit to replace a CX gate using two qubit gates from the desired basis (can use any single qubit OpTypes)</p></li>
 <li><p><strong>tk1_replacement</strong> – a function which, given the parameters of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the desired basis</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a pass that rebases to the given gate set (possibly including conditional and phase operations)</p>
+<dd class="field-even"><p>a pass that rebases to the given gate set (possibly including conditional and phase operations, and Measure, Reset and Collapse)</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
@@ -1275,13 +1287,13 @@ document.write(`
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>gateset</strong> – the allowed operations in the rebased circuit</p></li>
+<li><p><strong>gateset</strong> – the allowed operations in the rebased circuit (in addition, Measure, Reset and Collapse operations are always allowed and are left alone; conditional operations may be present; and Phase gates may also be introduced by the rebase)</p></li>
 <li><p><strong>tk2_replacement</strong> – a function which, given the parameters (a,b,c) of an XXPhase(a)YYPhase(b)ZZPhase(c) triple, returns an equivalent circuit in the desired basis</p></li>
 <li><p><strong>tk1_replacement</strong> – a function which, given the parameters (a,b,c) of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the desired basis</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a pass that rebases to the given gate set (possibly including conditional and phase operations)</p>
+<dd class="field-even"><p>a pass that rebases to the given gate set (possibly including conditional and phase operations, and Measure, Reset and Collapse)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1289,7 +1301,7 @@ document.write(`
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.passes.RebaseTket">
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">RebaseTket</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.RebaseTket" title="Permalink to this definition">#</a></dt>
-<dd><p>Converts all gates to CX, TK1 and Phase.</p>
+<dd><p>Converts all gates to CX, TK1 and Phase. (Any Measure, Reset and Collapse operations are left untouched; Conditional gates are also allowed.)</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1409,7 +1421,7 @@ document.write(`
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.passes.SynthesiseHQS">
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">SynthesiseHQS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.SynthesiseHQS" title="Permalink to this definition">#</a></dt>
-<dd><p>Optimises and converts a circuit consisting of CX and single-qubit gates into one containing only ZZMax, PhasedX, Rz and Phase.</p>
+<dd><p>Optimises and converts a circuit consisting of CX and single-qubit gates into one containing only ZZMax, PhasedX, Rz and Phase. DEPRECATED: will be removed after pytket 1.25.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1440,6 +1452,7 @@ document.write(`
 <dt class="sig sig-object py" id="pytket.passes.ThreeQubitSquash">
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">ThreeQubitSquash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">allow_swaps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.ThreeQubitSquash" title="Permalink to this definition">#</a></dt>
 <dd><p>Squash three-qubit subcircuits into subcircuits having fewer CX gates, when possible, and apply Clifford simplification.</p>
+<p>The circuit to which this is applied must consist of single-qubit, pure-classical and CX gates, and Measure, Collapse, Reset, Phase and conditional gates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>allow_swaps</strong> – whether to allow implicit wire swaps</p>
@@ -1562,6 +1575,9 @@ to target gateset and TK1 to target gateset and uses those to construct a
 custom rebase.
 Raises an error if no known decompositions can be found, in which case try
 using RebaseCustom with your own decompositions.</p>
+<p>In addition to the gate types in <code class="docutils literal notranslate"><span class="pre">gateset</span></code>, any <code class="docutils literal notranslate"><span class="pre">Measure</span></code>, <code class="docutils literal notranslate"><span class="pre">Reset</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Collapse</span></code> operations in the original circuit are retained. Conditional
+operations are also allowed. <code class="docutils literal notranslate"><span class="pre">Phase</span></code> gates may also be introduced.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>gateset</strong> (<em>FrozenSet</em><em>[</em><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><em>OpType</em></a><em>]</em>) – Set of supported OpTypes, target gate set.</p>
@@ -1608,7 +1624,7 @@ single qubit gateset.</p>
               
               
                 <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                  
 <div class="prev-next-area">
     <a class="left-prev"
        href="pauli.html"
@@ -1636,6 +1652,7 @@ single qubit gateset.</p>
             
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
 
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
@@ -1775,6 +1792,7 @@ By Quantinuum
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
       © Copyright 2023 Quantinuum.
@@ -1801,8 +1819,8 @@ By Quantinuum
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+  <script src="_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509"></script>
 
   <footer class="bd-footer">
   </footer>

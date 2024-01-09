@@ -38,6 +38,9 @@ pytket.circuit
 .. autoclass:: pytket._tket.circuit.PauliExpBox
     :special-members:
     :members:
+.. autoclass:: pytket._tket.circuit.PauliExpPairBox
+    :special-members:
+    :members:
 .. autoclass:: pytket._tket.circuit.ToffoliBox
     :special-members:
     :members:

@@ -3,12 +3,12 @@
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="" >
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.backends.backendinfo &#8212; pytket 1.22.0 documentation</title>
+    <title>pytket.backends.backendinfo &#8212; pytket 1.23.0 documentation</title>
   
   
   
@@ -18,15 +18,15 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-<link href="../../../_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
 
   
-  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
@@ -36,9 +36,9 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
-  <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
+  <script src="../../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/doctools.js"></script>
@@ -61,7 +61,7 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
 
@@ -104,12 +104,20 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <header>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <div class="bd-header navbar navbar-expand-lg bd-navbar">
+    </div>
   
+  </header>
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -124,6 +132,7 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
   
 
 <a class="navbar-brand logo" href="../../../index.html">
@@ -137,29 +146,27 @@
       
     
     
-    <img src="../../../_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="pytket 1.22.0 documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="pytket 1.22.0 documentation - Home"/>`);</script>
+    <img src="../../../_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="pytket 1.23.0 documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="pytket 1.23.0 documentation - Home"/>`);</script>
   
   
 </a></div>
         <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction:</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../faqs.html">TKET FAQs</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">pytket documentation:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/">TKET website</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/user-manual/">Manual</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/api-docs/">pytket API docs</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../extensions.html">pytket extensions</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-aqt/api/index.html">pytket-aqt</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-braket">pytket-braket</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cirq">pytket-cirq</a></li>
-<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum">pytket-ionq</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-iqm">pytket-iqm</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pennylane">pytket-pennylane</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-projectq">pytket-projectq</a></li>
@@ -167,16 +174,18 @@
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pysimplex">pytket-pysimplex</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pyzx">pytket-pyzx</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qir">pytket-qir</a></li>
-<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qir">pytket-qiskit</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qiskit">pytket-qiskit</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-qsharp/api/index.html">pytket-qsharp</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum">pytket-quantinuum</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cutensornet">pytket-cutensornet</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qulacs">pytket-qulacs</a></li>
-<li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-qujax/api/index.html">pytket-qujax</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qujax">pytket-qujax</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-stim">pytket-stim</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/user-manual">Manual</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/examples">Example notebooks</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/">TKET website</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="nav bd-sidenav">
@@ -311,6 +320,7 @@
 </button>
 
 
+
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -320,6 +330,7 @@ document.write(`
   </button>
 `);
 </script>
+
 
 <script>
 document.write(`
@@ -351,7 +362,7 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <h1>Source code for pytket.backends.backendinfo</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright 2019-2023 Cambridge Quantum Computing</span>
@@ -500,7 +511,7 @@ document.write(`
 <span class="sd">    :param name: Class name of the backend.</span>
 <span class="sd">    :param device_name: Name of the device.</span>
 <span class="sd">    :param version: Pytket-extension version installed when creating object.</span>
-<span class="sd">    :param architecture: Device connectivity.</span>
+<span class="sd">    :param architecture: Optional device connectivity.</span>
 <span class="sd">    :param gate_set: Set of supported gate types.</span>
 <span class="sd">    :param n_cl_reg: number of classical registers supported.</span>
 <span class="sd">    :param supports_fast_feedforward: Flag for hardware support of fast feedforward.</span>
@@ -528,7 +539,7 @@ document.write(`
     <span class="n">device_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">version</span><span class="p">:</span> <span class="nb">str</span>
     <span class="c1"># hardware constraints</span>
-    <span class="n">architecture</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Architecture</span><span class="p">,</span> <span class="n">FullyConnected</span><span class="p">]</span>
+    <span class="n">architecture</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Architecture</span><span class="p">,</span> <span class="n">FullyConnected</span><span class="p">]]</span>
     <span class="n">gate_set</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">OpType</span><span class="p">]</span>
     <span class="n">n_cl_reg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1"># additional feature support</span>
@@ -550,17 +561,21 @@ document.write(`
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Node</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        List of device nodes of the backend.</span>
+<span class="sd">        List of device nodes of the backend. Returns empty list</span>
+<span class="sd">        if the `architecture` field is not provided.</span>
 
 <span class="sd">        :return: List of nodes.</span>
 <span class="sd">        :rtype: List[Node]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span><span class="o">.</span><span class="n">nodes</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Number of nodes in the architecture of the device.</span>
+<span class="sd">        Number of nodes in the architecture of the device. Returns 0</span>
+<span class="sd">        if the `architecture` field is not provided.</span>
 
 <span class="sd">        :return: Number of nodes.</span>
 <span class="sd">        :rtype: int</span>
@@ -602,7 +617,8 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">self_dict</span> <span class="o">=</span> <span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;architecture&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;architecture&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;architecture&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;architecture&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;architecture&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
         <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;gate_set&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">op</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;gate_set&quot;</span><span class="p">]]</span>
         <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;all_node_gate_errors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_serialize_all_node_gate_errors</span><span class="p">(</span>
             <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;all_node_gate_errors&quot;</span><span class="p">]</span>
@@ -635,10 +651,11 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span>
         <span class="n">arch</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;architecture&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s2">&quot;links&quot;</span> <span class="ow">in</span> <span class="n">arch</span><span class="p">:</span>
-            <span class="n">args</span><span class="p">[</span><span class="s2">&quot;architecture&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Architecture</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;architecture&quot;</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">args</span><span class="p">[</span><span class="s2">&quot;architecture&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FullyConnected</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;architecture&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">arch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;links&quot;</span> <span class="ow">in</span> <span class="n">arch</span><span class="p">:</span>
+                <span class="n">args</span><span class="p">[</span><span class="s2">&quot;architecture&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Architecture</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;architecture&quot;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">args</span><span class="p">[</span><span class="s2">&quot;architecture&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FullyConnected</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;architecture&quot;</span><span class="p">])</span>
         <span class="n">args</span><span class="p">[</span><span class="s2">&quot;gate_set&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">OpType</span><span class="p">(</span><span class="n">op</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;gate_set&quot;</span><span class="p">]}</span>
         <span class="n">args</span><span class="p">[</span><span class="s2">&quot;all_node_gate_errors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_deserialize_all_node_gate_errors</span><span class="p">(</span>
             <span class="n">args</span><span class="p">[</span><span class="s2">&quot;all_node_gate_errors&quot;</span><span class="p">]</span>
@@ -692,7 +709,7 @@ document.write(`
               
               
                 <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                  
 <div class="prev-next-area">
 </div>
                 </footer>
@@ -700,6 +717,8 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"></div>
               
             
           </div>
@@ -717,6 +736,7 @@ By Quantinuum
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
       © Copyright 2023 Quantinuum.
@@ -743,8 +763,8 @@ By Quantinuum
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
-<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+  <script src="../../../_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509"></script>
 
   <footer class="bd-footer">
   </footer>
