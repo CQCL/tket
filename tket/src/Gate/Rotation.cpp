@@ -14,7 +14,10 @@
 
 #include "tket/Gate/Rotation.hpp"
 
-#include "symengine/constants.h"
+#include <symengine/constants.h>
+
+#include <tkassert/Assert.hpp>
+
 #include "tket/OpType/OpDesc.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/Utils/Expression.hpp"
@@ -124,6 +127,7 @@ static std::tuple<Expr, Expr, Expr> xyx_angles_from_coeffs(
   // 2 * atan2(B, A).
   // Finally, note that u must be well-defined because we have already dealt
   // with all cases where s = 0.
+  TKET_ASSERT(!s_zero);
   if (approx_0(SymEngine::expand(i * j + s * k))) {
     Expr u = expr_div(i, s);
     if (SymEngine::free_symbols(u).empty()) {
