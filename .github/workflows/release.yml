@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        python3-version: ['9', '10', '11']
+        python3-version: ['10', '11', '12']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -22,15 +22,15 @@ jobs:
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up container
       run: |
-        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_x86_64:latest /bin/bash
+        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux_2_28_x86_64:latest /bin/bash
         docker cp . linux_build:/tket/
     - name: Run build
       run: |
         docker start linux_build
-        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-x86_64-gcc10-libstdc++ linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
+        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-x86_64-gcc12 linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
         mkdir wheelhouse
         docker cp linux_build:/tket/pytket/audited/. wheelhouse/
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: Linux_3.${{ matrix.python3-version }}_wheel
         path: wheelhouse/
@@ -40,7 +40,7 @@ jobs:
     runs-on: ['self-hosted', 'macOS', 'ARM64']
     strategy:
       matrix:
-        python3-version: ['9', '10', '11']
+        python3-version: ['10', '11', '12']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -49,13 +49,13 @@ jobs:
     - name: Set up container
       run: |
         export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
-        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_aarch64:latest /bin/bash
+        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux_2_28_aarch64:latest /bin/bash
         docker cp . linux_build:/tket/
     - name: Run build
       run: |
         export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
         docker start linux_build
-        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-armv8-gcc10-libstdc++ linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
+        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-armv8-gcc12 linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
         mkdir wheelhouse
         docker cp linux_build:/tket/pytket/audited/. wheelhouse/
     - name: Remove container
@@ -63,7 +63,7 @@ jobs:
       run: |
         export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
         docker rm --force -v linux_build
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: Linux_aarch64_3.${{ matrix.python3-version }}_wheel
         path: wheelhouse/
@@ -76,7 +76,7 @@ jobs:
     runs-on: macos-12
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -108,7 +108,7 @@ jobs:
         pip install -U pip build delocate
         python -m build
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: MacOS_${{ matrix.python-version }}_wheel
         path: wheelhouse/
@@ -118,20 +118,16 @@ jobs:
     runs-on: macos-13-xlarge
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12']
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up Python ${{ matrix.python-version }}
-      if: matrix.python-version != '3.9'
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Set up Python 3.9
-      if: matrix.python-version == '3.9'
-      run: brew install python@3.9
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -154,7 +150,7 @@ jobs:
         python${{ matrix.python-version }} -m pip install -U pip build delocate
         python${{ matrix.python-version }} -m build
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: MacOS_M1_${{ matrix.python-version }}_wheel
         path: wheelhouse/
@@ -164,7 +160,7 @@ jobs:
     runs-on: windows-2022
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -194,7 +190,7 @@ jobs:
         cd pytket
         python -m pip install -U pip build
         python -m build --outdir "${{ github.workspace }}/wheelhouse"
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: Windows_${{ matrix.python-version }}_wheel
         path: wheelhouse/
@@ -205,14 +201,14 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        python3-version: ['9', '10', '11']
+        python3-version: ['10', '11', '12']
     steps:
       - name: Set up Python 3.${{ matrix.python3-version }}
         uses: actions/setup-python@v5
         with:
           python-version: "3.${{ matrix.python3-version }}"
       - name: Download wheels
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: Linux_3.${{ matrix.python3-version }}_wheel
           path: wheelhouse/
@@ -234,20 +230,20 @@ jobs:
     runs-on: ['self-hosted', 'macOS', 'ARM64']
     strategy:
       matrix:
-        python3-version: ['9', '10', '11']
+        python3-version: ['10', '11', '12']
     steps:
     - uses: actions/checkout@v4
       with:
         path: tket
     - name: Download wheel
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: Linux_aarch64_3.${{ matrix.python3-version }}_wheel
         path: wheelhouse/
     - name: Set up container
       run: |
         export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
-        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_aarch64:latest /bin/bash
+        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux_2_28_aarch64:latest /bin/bash
         docker cp . linux_build:/tket/
     - name: Run tests
       run: |
@@ -269,7 +265,7 @@ jobs:
     strategy:
       matrix:
         os: ['macos-12', 'macos-13']
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12']
     runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Python ${{ matrix.python-version }}
@@ -277,7 +273,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Download wheels
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: MacOS_${{ matrix.python-version }}_wheel
         path: wheelhouse/
@@ -299,18 +295,14 @@ jobs:
     runs-on: macos-13-xlarge
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12']
     steps:
     - name: Set up Python ${{ matrix.python-version }}
-      if: matrix.python-version != '3.9'
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Set up Python 3.9
-      if: matrix.python-version == '3.9'
-      run: brew install python@3.9
     - name: Download wheels
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: MacOS_M1_${{ matrix.python-version }}_wheel
         path: wheelhouse/
@@ -332,14 +324,14 @@ jobs:
     runs-on: windows-2022
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12']
     steps:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Download wheel
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: Windows_${{ matrix.python-version }}_wheel
         path: wheelhouse/
@@ -363,7 +355,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - name: Download all wheels
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         path: wheelhouse
     - name: Put them all in the dist folder
@@ -384,26 +376,26 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.10
+    - name: Set up Python 3.11
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
     - name: Download wheels
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
-        name: Linux_3.10_wheel
+        name: Linux_3.11_wheel
         path: wheelhouse/
     - name: Install pip, wheel
       run: pip install -U pip wheel
     - name: Install pytket
-      run: for w in `find wheelhouse/ -type f -name "*-cp310-cp310-*.whl"` ; do pip install $w ; done
+      run: for w in `find wheelhouse/ -type f -name "*-cp311-cp311-*.whl"` ; do pip install $w ; done
     - name: Install docs dependencies
       run: pip install -r pytket/docs/requirements.txt
     - name: Build docs
       timeout-minutes: 20
       run: ./.github/workflows/build-docs
     - name: Upload artefact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: pytket_docs
         path: pytket/docs/build/html/
@@ -419,7 +411,7 @@ jobs:
       with:
         ref: gh-pages
     - name: Download artefact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: pytket_docs
         path: api/

@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+General:
+
+* Python 3.12 support added; 3.9 dropped.
+
 API changes:
 
 * Make the ``architecture`` field in ``BackendInfo`` optional.
@@ -20,6 +24,8 @@ Fixes:
 * For `Circuit` with no 2-qubit gates, `NoiseAwarePlacement` now assigns `Qubit` to `Node` in `Architecture`
   with lowest reported error rates.
 * Fix invalid registers returned by ``Circuit.q_registers`` and ``Circuit.c_registers``.
+* Fix regression (introduced in 1.22.0) in compilation performance with certain
+  sequences of passes.
 
 
 1.22.0 (November 2023)
