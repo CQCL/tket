@@ -105,6 +105,7 @@ add_executable(test-tket
     src/OpType/test_OpTypeFunctions.cpp
     src/Passes/test_SynthesiseTK.cpp
     src/Passes/test_SynthesiseTket.cpp
+    src/Gate/test_Rotation.cpp
     src/Gate/test_GateUnitaryMatrix.cpp
     src/Simulation/test_CircuitSimulator.cpp
     src/Simulation/test_PauliExpBoxUnitaryCalculator.cpp
