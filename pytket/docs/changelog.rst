@@ -7,6 +7,7 @@ Unreleased
 Fixes:
 
 * Handle a missing edge case in decomposition of single-qubit rotations.
+* Add missing ``OpType.ConjugationBox``.
 
 1.23.0 (January 2024)
 ---------------------
