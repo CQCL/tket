@@ -1,11 +1,12 @@
 <map id="src/Gate/Rotation.cpp" name="src/Gate/Rotation.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="1966,5,2129,32"/>
-<area shape="rect" id="node2" href="$Rotation_8hpp.html" title=" " alt="" coords="1683,80,1852,107"/>
+<area shape="rect" id="node1" title=" " alt="" coords="1987,5,2150,32"/>
+<area shape="rect" id="node2" href="$Rotation_8hpp.html" title=" " alt="" coords="1621,80,1791,107"/>
 <area shape="rect" id="node3" href="$OpType_8hpp.html" title=" " alt="" coords="1851,229,2030,256"/>
 <area shape="rect" id="node9" href="$Expression_8hpp.html" title="Functions related to (possibly symbolic) phase values." alt="" coords="1593,229,1777,256"/>
-<area shape="rect" id="node14" href="$Symbols_8hpp.html" title=" " alt="" coords="2443,311,2550,338"/>
-<area shape="rect" id="node36" title=" " alt="" coords="2237,80,2410,107"/>
-<area shape="rect" id="node37" href="$OpDesc_8hpp.html" title=" " alt="" coords="2031,80,2213,107"/>
+<area shape="rect" id="node14" href="$Symbols_8hpp.html" title=" " alt="" coords="2511,311,2618,338"/>
+<area shape="rect" id="node36" title=" " alt="" coords="2183,80,2357,107"/>
+<area shape="rect" id="node37" title=" " alt="" coords="2381,80,2527,107"/>
+<area shape="rect" id="node38" href="$OpDesc_8hpp.html" title=" " alt="" coords="1978,80,2159,107"/>
 <area shape="rect" id="node20" href="$MatrixAnalysis_8hpp.html" title=" " alt="" coords="1403,155,1614,181"/>
 <area shape="rect" id="node4" href="$Json_8hpp.html" title=" " alt="" coords="1780,311,1920,338"/>
 <area shape="rect" id="node5" title=" " alt="" coords="1659,393,1737,420"/>
@@ -36,6 +37,6 @@
 <area shape="rect" id="node33" title=" " alt="" coords="2209,311,2267,338"/>
 <area shape="rect" id="node34" href="$BiMapHeaders_8hpp.html" title=" " alt="" coords="905,311,1051,338"/>
 <area shape="rect" id="node35" title=" " alt="" coords="913,393,1043,420"/>
-<area shape="rect" id="node38" href="$OpTypeInfo_8hpp.html" title=" " alt="" coords="2095,155,2218,181"/>
-<area shape="rect" id="node39" href="$EdgeType_8hpp.html" title=" " alt="" coords="2105,229,2217,256"/>
+<area shape="rect" id="node39" href="$OpTypeInfo_8hpp.html" title=" " alt="" coords="2081,155,2203,181"/>
+<area shape="rect" id="node40" href="$EdgeType_8hpp.html" title=" " alt="" coords="2105,229,2217,256"/>
 </map>
