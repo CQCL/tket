@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Fixes:
+
+* Handle a missing edge case in decomposition of single-qubit rotations.
+
 1.23.0 (January 2024)
 ---------------------
 

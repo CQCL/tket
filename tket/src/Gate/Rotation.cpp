@@ -14,7 +14,10 @@
 
 #include "tket/Gate/Rotation.hpp"
 
-#include "symengine/constants.h"
+#include <symengine/constants.h>
+
+#include <tkassert/Assert.hpp>
+
 #include "tket/OpType/OpDesc.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/Utils/Expression.hpp"
@@ -103,6 +106,22 @@ static std::tuple<Expr, Expr, Expr> xyx_angles_from_coeffs(
   if (i_zero && j_zero) return {-0.5, 2 * atan2_bypi(k, s), 0.5};
   if (i_zero && k_zero) return {0, 2 * atan2_bypi(j, s), 0};
   if (j_zero && k_zero) return {2 * atan2_bypi(i, s), 0, 0};
+  if (s_zero) {
+    // We want to return (a, b, c) s.t.
+    // Rx(c) Ry(b) Rx(a) = i*i_ + j*j_ + k*k_ (where i_, j_, k_ are the
+    // quaternionic roots of -1. Multiplying out the LHS gives
+    // (Cc + i_ Sc)(Cb + j_ Sb)(Ca + i_ Sa)
+    // where for brevity Sa = sin(pi*a/2), Ca = cos(pi*a/2) etc.
+    // Expanding and using the sin/cos addition identities gives
+    // Cb cos(pi*l) = 0, Cb sin(pi*l) = i, Sb cos(pi*m) = j, Sb sin(pi*m) = k
+    // where l = (c+a)/2 and m = (c-a)/2.
+    // Since we have already handled the case s=i=0 we know that Cb != 0, so
+    // cos(pi*l) = 0. A solution to these equations is given by
+    // l = 1/2, m = atan2(k,j)/pi, b = (2/pi)*acos(i)
+    // and finally substituting a=l-m, b=l+m gives the following solution:
+    Expr m = atan2_bypi(k, j);
+    return {0.5 - m, 2 * acos_bypi(i), 0.5 + m};
+  }
 
   // This is a (partial) workaround for
   // https://github.com/symengine/symengine/issues/1806
@@ -124,6 +143,7 @@ static std::tuple<Expr, Expr, Expr> xyx_angles_from_coeffs(
   // 2 * atan2(B, A).
   // Finally, note that u must be well-defined because we have already dealt
   // with all cases where s = 0.
+  TKET_ASSERT(!s_zero);
   if (approx_0(SymEngine::expand(i * j + s * k))) {
     Expr u = expr_div(i, s);
     if (SymEngine::free_symbols(u).empty()) {
