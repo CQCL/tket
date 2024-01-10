@@ -331,6 +331,10 @@ PYBIND11_MODULE(circuit, m) {
           "ToffoliBox", OpType::ToffoliBox,
           "A permutation of classical basis states")
       .value(
+          "ConjugationBox", OpType::ConjugationBox,
+          "An operation composed of 'action', 'compute' and 'uncompute' "
+          "circuits")
+      .value(
           "DummyBox", OpType::DummyBox,
           "A placeholder operation that holds resource data")
       .value(
