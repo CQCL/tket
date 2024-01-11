@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+Features:
+
+* Accept ``OpType.Phase`` in circuits passed to ``ZXGraphlikeOptimisation``.
+
 Fixes:
 
 * Handle a missing edge case in decomposition of single-qubit rotations.
