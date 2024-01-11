@@ -159,7 +159,8 @@ BoundaryVertMap circuit_to_zx_recursive(
       // Spiderless ops are handled during vertex wiring
       case OpType::Barrier:
       case OpType::noop:
-      case OpType::SWAP: {
+      case OpType::SWAP:
+      case OpType::Phase: {
         continue;
       }
       case OpType::H: {
