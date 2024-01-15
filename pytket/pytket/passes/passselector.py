@@ -35,7 +35,7 @@ class PassSelector:
 
         :param passlist: list of pytket compilation passes
         :param score_func: function to score the
-          results of the compilation
+          results of the compilation (lower scores are preferred)
         """
         self._passlist = passlist
         self._score_func = score_func
