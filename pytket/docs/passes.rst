@@ -16,8 +16,9 @@ For more on pytket passes see the `compilation <https://tket.quantinuum.com/user
     :members:
     :special-members: __init__
 
-.. automodule:: pytket.passes
-    :members: PassSelector
+.. autoclass:: pytket.passes.PassSelector
+    :special-members: __init__
+    :members:
 
 pytket.passes.script
 ~~~~~~~~~~~~~~~~~~~~

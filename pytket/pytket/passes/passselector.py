@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ class PassSelector:
 
         :param passlist: list of pytket compilation passes
         :param score_func: function to score the
-          results of the compilation
+          results of the compilation (lower scores are preferred)
         """
         self._passlist = passlist
         self._score_func = score_func

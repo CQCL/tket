@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,13 +34,13 @@
 # -- Project information -----------------------------------------------------
 
 project = "pytket"
-copyright = "2023 Quantinuum"
+copyright = "2024 Quantinuum"
 author = "Quantinuum"
 
 # The short X.Y version
-version = "1.23"
+version = "1.24"
 # The full version, including alpha/beta/rc tags
-release = "1.23.0"
+release = "1.24.0"
 
 
 # -- General configuration ---------------------------------------------------

@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -105,6 +105,7 @@ add_executable(test-tket
     src/OpType/test_OpTypeFunctions.cpp
     src/Passes/test_SynthesiseTK.cpp
     src/Passes/test_SynthesiseTket.cpp
+    src/Gate/test_Rotation.cpp
     src/Gate/test_GateUnitaryMatrix.cpp
     src/Simulation/test_CircuitSimulator.cpp
     src/Simulation/test_PauliExpBoxUnitaryCalculator.cpp

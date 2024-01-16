@@ -32,7 +32,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.12'
     - uses: dorny/paths-filter@v2.11.1
       id: filter
       with:
@@ -104,11 +104,11 @@ jobs:
     - name: apt update
       if: matrix.os == 'ubuntu-22.04'
       run: sudo apt update
-    - name: Select Python 3.10
+    - name: Select Python 3.11
       # otherwise turtlebrowser/get-conan@v1.2 fails on macos-12
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -262,21 +262,27 @@ jobs:
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v5
       with:
-        python-version: "3.9"
+        python-version: '3.10'
     - name: Set up Python (push)
       if: github.event_name == 'push'
       uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
+        python-version: '3.11'
     - name: Set up Python (schedule)
       if: github.event_name == 'schedule'
       uses: actions/setup-python@v5
       with:
-        python-version: "3.11"
+        python-version: '3.12'
     - name: Build pytket
+      if: github.event_name != 'schedule'
       run: |
         cd pytket
         pip install -e .[ZX] -v
+    - name: Build pytket
+      if: github.event_name == 'schedule' # https://github.com/CQCL/tket/issues/1200
+      run: |
+        cd pytket
+        pip install -e -v
     - name: Run doctests
       run: |
         cd pytket
@@ -328,11 +334,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
-    - name: Select Python 3.10
+    - name: Select Python 3.11
       # otherwise turtlebrowser/get-conan@v1.2 fails on macos-12
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -367,21 +373,29 @@ jobs:
         conan create recipes/pybind11_json/all --version 0.2.13
     - name: Set up Python (pull request)
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      run: brew install python@3.9
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
     - name: Set up Python (push)
       if: github.event_name == 'push'
       uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
+        python-version: '3.11'
     - name: Set up Python (schedule)
       if: github.event_name == 'schedule'
       uses: actions/setup-python@v5
       with:
-        python-version: "3.11"
+        python-version: '3.12'
     - name: Build pytket
+      if: github.event_name != 'schedule'
       run: |
         cd pytket
         python${{ matrix.python-version }} -m pip install -e .[ZX] -v
+    - name: Build pytket
+      if: github.event_name == 'schedule' # https://github.com/CQCL/tket/issues/1200
+      run: |
+        cd pytket
+        python${{ matrix.python-version }} -m pip install -e -v
     - name: Run doctests
       run: |
         cd pytket
@@ -484,25 +498,31 @@ jobs:
       run: |
         conan create recipes/pybind11
         conan create recipes/pybind11_json/all --version 0.2.13
-    - name: Set up Python (3.9)
+    - name: Set up Python 3.10
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v5
       with:
-        python-version: "3.9"
-    - name: Set up Python (3.10)
+        python-version: '3.10'
+    - name: Set up Python 3.11
       if: github.event_name == 'push'
       uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
-    - name: Set up Python (3.11)
+        python-version: '3.11'
+    - name: Set up Python 3.12
       if: github.event_name == 'schedule'
       uses: actions/setup-python@v5
       with:
-        python-version: "3.11"
+        python-version: '3.12'
     - name: Build pytket
+      if: github.event_name != 'schedule'
       run: |
         cd pytket
         pip install -e .[ZX] -v
+    - name: Build pytket
+      if: github.event_name == 'schedule' # https://github.com/CQCL/tket/issues/1200
+      run: |
+        cd pytket
+        pip install -e -v
     - name: Run doctests
       run: |
         cd pytket

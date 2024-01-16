@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -65,7 +65,12 @@ class CMakeBuild(build_ext):
             ["cmake", f"-DCMAKE_INSTALL_PREFIX={install_dir}", os.pardir], cwd=build_dir
         )
         subprocess.run(
-            ["cmake", "--build", os.curdir, f"-j{multiprocessing.cpu_count()}"],
+            [
+                "cmake",
+                "--build",
+                os.curdir,
+                f"-j{os.getenv('PYTKET_CMAKE_N_THREADS', multiprocessing.cpu_count())}",
+            ],
             cwd=build_dir,
         )
         subprocess.run(["cmake", "--install", os.curdir], cwd=build_dir)
@@ -173,7 +178,7 @@ setup(
     name="pytket",
     author="TKET development team",
     author_email="tket-support@cambridgequantum.com",
-    python_requires=">=3.9",
+    python_requires=">=3.10",
     project_urls={
         "Documentation": "https://cqcl.github.io/tket/pytket/api/index.html",
         "Source": "https://github.com/CQCL/tket",
@@ -212,9 +217,9 @@ setup(
     },
     classifiers=[
         "Environment :: Console",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX :: Linux",
