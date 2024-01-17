@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -330,6 +330,10 @@ PYBIND11_MODULE(circuit, m) {
       .value(
           "ToffoliBox", OpType::ToffoliBox,
           "A permutation of classical basis states")
+      .value(
+          "ConjugationBox", OpType::ConjugationBox,
+          "An operation composed of 'action', 'compute' and 'uncompute' "
+          "circuits")
       .value(
           "DummyBox", OpType::DummyBox,
           "A placeholder operation that holds resource data")

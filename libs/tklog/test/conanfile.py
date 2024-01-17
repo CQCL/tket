@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -60,4 +60,4 @@ class test_tklogRecipe(ConanFile):
 
     def requirements(self):
         self.requires("tklog/0.3.3")
-        self.requires("catch2/3.5.0")
+        self.requires("catch2/3.5.1")

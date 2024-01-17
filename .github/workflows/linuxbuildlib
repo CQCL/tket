@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 set -evu
 
 # Choose a Python to install conan
-export PYBIN=/opt/python/cp39-cp39/bin
+export PYBIN=/opt/python/cp310-cp310/bin
 
 ${PYBIN}/pip install --upgrade pip
 ${PYBIN}/pip install conan~=2.0
