@@ -1,8 +1,12 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.24.0 (January 2024)
+---------------------
+
+General:
+
+* Python 3.12 support added; 3.9 dropped.
 
 Features:
 
@@ -15,10 +19,6 @@ Fixes:
 
 1.23.0 (January 2024)
 ---------------------
-
-General:
-
-* Python 3.12 support added; 3.9 dropped.
 
 API changes:
 
