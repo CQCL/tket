@@ -68,10 +68,6 @@ condition on a specified set of bit values.)
 
    .. automethod:: flatten_registers
 
-   .. autoproperty:: q_registers
-
-   .. autoproperty:: c_registers
-
    .. autoproperty:: qubit_readout
 
    .. autoproperty:: opgroups
