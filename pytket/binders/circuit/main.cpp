@@ -649,11 +649,11 @@ PYBIND11_MODULE(circuit, m) {
   auto pyCircuit = py::class_<Circuit, std::shared_ptr<Circuit>>(
       m, "Circuit", py::dynamic_attr(),
       "Encapsulates a quantum circuit using a DAG representation.\n\n>>> "
-      "from pytket import Circuit\n>>> c = Circuit(4, 2) # Create a circuit "
+      "from pytket import Circuit\n>>> c = Circuit(4,2) # Create a circuit "
       "with 4 qubits and 2 classical bits"
       "\n>>> c.H(0) # Apply a gate to qubit 0\n>>> "
-      "c.Rx(0.5, 1) # Angles of rotation are expressed in half-turns "
-      "(i.e. 0.5 means PI/2)\n>>> c.Measure(1, 0) # Measure qubit 1, saving "
+      "c.Rx(0.5,1) # Angles of rotation are expressed in half-turns "
+      "(i.e. 0.5 means PI/2)\n>>> c.Measure(1,0) # Measure qubit 1, saving "
       "result in bit 0");
   init_boxes(m);
   init_classical(m);
