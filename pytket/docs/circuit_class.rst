@@ -199,9 +199,9 @@ condition on a specified set of bit values.)
    
    .. automethod:: qubit_is_discarded
 
-   .. automethod:: created_qubits
+   .. autoproperty:: created_qubits
 
-   .. automethod:: discarded_qubits
+   .. autoproperty:: discarded_qubits
 
    .. autoproperty:: valid_connectivity
    
