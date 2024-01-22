@@ -34,23 +34,7 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_bit
 
-   .. automethod:: add_q_register
-
-   .. automethod:: get_q_register
-
-   .. automethod:: add_c_register
-
-   .. automethod:: get_c_register
-
    .. automethod:: add_phase
-
-   .. automethod:: rename_units
-
-   .. automethod:: add_blank_wires
-
-   .. automethod:: remove_blank_wires
-
-   .. automethod:: flatten_registers
 
    .. autoproperty:: n_qubits
 
@@ -62,11 +46,31 @@ condition on a specified set of bit values.)
 
    .. autoproperty:: bits
 
+   .. autoproperty:: n_gates
+
+   .. automethod:: add_q_register
+
+   .. automethod:: get_q_register
+
+   .. automethod:: add_c_register
+
+   .. automethod:: get_c_register
+
    .. autoproperty:: q_registers
 
    .. autoproperty:: c_registers
 
-   .. autoproperty:: n_gates
+   .. automethod:: rename_units
+
+   .. automethod:: add_blank_wires
+
+   .. automethod:: remove_blank_wires
+
+   .. automethod:: flatten_registers
+
+   .. autoproperty:: q_registers
+
+   .. autoproperty:: c_registers
 
    .. autoproperty:: qubit_readout
 
