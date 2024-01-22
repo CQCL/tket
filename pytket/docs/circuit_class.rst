@@ -22,7 +22,26 @@ condition on a specified set of bit values.)
 
 .. currentmodule:: pytket.circuit.Circuit
 .. autoclass:: pytket.circuit.Circuit
-   :special-members: __init__, __eq__, __iter__, __mul__, __repr__, __rshift__, __str__, __getstate__, __setstate__, __hash__
+
+   .. automethod:: __init__
+
+   .. automethod:: __eq__
+   
+   .. automethod:: __iter__
+
+   .. automethod:: __mul__
+
+   .. automethod:: __repr__
+
+   .. automethod:: __rshift__
+
+   .. automethod:: __str__
+
+   .. automethod:: __getstate__
+
+   .. automethod:: __setstate__
+
+   .. automethod:: __hash__
 
    .. automethod:: add_gate
 
