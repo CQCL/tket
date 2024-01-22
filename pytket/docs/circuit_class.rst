@@ -41,8 +41,6 @@ condition on a specified set of bit values.)
 
    .. automethod:: __setstate__
 
-   .. automethod:: __hash__
-
    .. automethod:: add_gate
 
    .. automethod:: append
