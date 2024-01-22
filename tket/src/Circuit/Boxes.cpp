@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -328,10 +328,14 @@ std::string CustomGate::get_name(bool) const {
   s << gate_->get_name();
   if (!params_.empty()) {
     s << "(";
-    std::string sep = "";
+    bool initial = true;
     for (const Expr &e : params_) {
-      s << sep << e;
-      sep = ",";
+      if (initial) {
+        s << e;
+      } else {
+        s << "," << e;
+      }
+      initial = false;
     }
     s << ")";
   }

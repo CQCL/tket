@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -56,27 +56,28 @@ bool CompilationUnit::check_all_predicates() const {
 }
 
 std::string CompilationUnit::to_string() const {
-  std::string str = "~~~CompilationUnit~~~\n<tket::Circuit qubits=" +
-                    std::to_string(circ_.n_qubits()) +
-                    ", gates=" + std::to_string(circ_.n_gates()) + ">\n";
+  std::stringstream s;
+  s << "~~~CompilationUnit~~~" << std::endl
+    << "<tket::Circuit qubits=" << circ_.n_qubits()
+    << ", gates=" << circ_.n_gates() << ">" << std::endl;
 
   if (!target_preds.empty()) {
-    str += "Target Predicates:\n";
+    s << "Target Predicates:" << std::endl;
     for (const TypePredicatePair& pp : target_preds) {
-      str += ("  " + pp.second->to_string() + "\n");
+      s << "  " << pp.second->to_string() << std::endl;
     }
   } else
-    str += "Target Predicates empty\n";
+    s << "Target Predicates empty" << std::endl;
   if (!cache_.empty()) {
-    str += "Cache:\n";
+    s << "Cache:" << std::endl;
     for (const std::pair<const std::type_index, std::pair<PredicatePtr, bool>>&
              tp : cache_) {
-      str += (" " + tp.second.first->to_string() + " :: ");
-      str += tp.second.second ? "True\n" : "False\n";
+      s << " " << tp.second.first->to_string()
+        << " :: " << ((tp.second.second) ? "True" : "False") << std::endl;
     }
   } else
-    str += "Cache empty\n";
-  return str;
+    s << "Cache empty" << std::endl;
+  return s.str();
 }
 
 void CompilationUnit::empty_cache() const { cache_ = {}; }

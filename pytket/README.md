@@ -5,7 +5,7 @@ README, to build `tket` with the required configuration (from the root directory
 of the repo):
 
 ```shell
-conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
+conan create tket --user=tket --channel=stable --build=missing -o "boost/*":header_only=True -o "tklog/*":shared=True -o "tket/*":shared=True -tf ""
 ```
 
 There is a known
@@ -23,7 +23,7 @@ It is also currently necessary to use the local `pybind11_json` recipe, since
 the recipe on the `conan-center` is not yet compatible with conan 2:
 
 ```shell
-conan create recipes/pybind11_json/all --version 0.2.13
+conan create recipes/pybind11_json/all --version=0.2.13
 ```
 
 Then build the pytket module:

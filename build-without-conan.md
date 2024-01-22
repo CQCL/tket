@@ -91,9 +91,9 @@ cmake --install .
 
 ```
 cd ${TMP_DIR}
-wget https://github.com/catchorg/Catch2/archive/refs/tags/v3.5.0.tar.gz
-tar xzvf v3.5.0.tar.gz
-cd Catch2-3.5.0/
+wget https://github.com/catchorg/Catch2/archive/refs/tags/v3.5.2.tar.gz
+tar xzvf v3.5.2.tar.gz
+cd Catch2-3.5.2/
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
@@ -105,9 +105,9 @@ cmake --install .
 
 ```
 cd ${TMP_DIR}
-wget https://github.com/emil-e/rapidcheck/archive/8fafda42e732164db58003e542196e94a28481f9.zip
-unzip 8fafda42e732164db58003e542196e94a28481f9.zip
-cd rapidcheck-8fafda42e732164db58003e542196e94a28481f9/
+wget https://github.com/emil-e/rapidcheck/archive/1c91f40e64d87869250cfb610376c629307bf77d.zip
+unzip 1c91f40e64d87869250cfb610376c629307bf77d.zip
+cd rapidcheck-1c91f40e64d87869250cfb610376c629307bf77d/
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
@@ -255,3 +255,7 @@ This needs the shared `tklog` and `tket` libraries to be installed.
 cd ${TKET_DIR}/pytket
 NO_CONAN=1 pip install -v -e .
 ```
+
+(You can use the environment variable `PYTKET_CMAKE_N_THREADS` to restrict the
+number of threads used in the above command; otherwise one thread per CPU is
+used.)

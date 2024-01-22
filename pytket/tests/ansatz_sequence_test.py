@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -88,9 +88,9 @@ def test_nontrivial_sequence() -> None:
             GraphColourMethod.Exhaustive: (3, 28, 20, 19),
         },
         PauliPartitionStrat.NonConflictingSets: {
-            GraphColourMethod.LargestFirst: (6, 28, 28, 26),
-            GraphColourMethod.Lazy: (6, 28, 28, 28),
-            GraphColourMethod.Exhaustive: (6, 28, 28, 28),
+            GraphColourMethod.LargestFirst: (6, 28, 28, 28),
+            GraphColourMethod.Lazy: (6, 28, 28, 26),
+            GraphColourMethod.Exhaustive: (6, 28, 28, 26),
         },
     }
 

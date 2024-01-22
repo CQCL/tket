@@ -1,8 +1,24 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.24.0 (January 2024)
+---------------------
+
+General:
+
+* Python 3.12 support added; 3.9 dropped.
+
+Features:
+
+* Accept ``OpType.Phase`` in circuits passed to ``ZXGraphlikeOptimisation``.
+
+Fixes:
+
+* Handle a missing edge case in decomposition of single-qubit rotations.
+* Add missing ``OpType.ConjugationBox``.
+
+1.23.0 (January 2024)
+---------------------
 
 API changes:
 
@@ -19,6 +35,9 @@ Fixes:
 * Fix `PauliFrameRandomisation.sample_circuits`.
 * For `Circuit` with no 2-qubit gates, `NoiseAwarePlacement` now assigns `Qubit` to `Node` in `Architecture`
   with lowest reported error rates.
+* Fix invalid registers returned by ``Circuit.q_registers`` and ``Circuit.c_registers``.
+* Fix regression (introduced in 1.22.0) in compilation performance with certain
+  sequences of passes.
 
 
 1.22.0 (November 2023)

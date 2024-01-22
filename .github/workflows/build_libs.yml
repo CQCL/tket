@@ -63,10 +63,10 @@ jobs:
           $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
           [IO.File]::WriteAllText($f, $normalized_file)
         }
-    - name: Set up Python 3.10
+    - name: Set up Python 3.11
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -107,7 +107,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: set up container
       run: |
-        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_x86_64:latest /bin/bash
+        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux_2_28_x86_64:latest /bin/bash
         docker cp ./libs/${{ matrix.lib }} linux_build:/
         docker cp ./libver linux_build:/
         docker cp ./.github/workflows/linuxbuildlib linux_build:/
@@ -123,6 +123,6 @@ jobs:
         UPLOAD_PACKAGE=${UPLOAD_PACKAGE}
         JFROG_ARTIFACTORY_TOKEN_3=${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }}
         JFROG_ARTIFACTORY_USER_3=${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
-        CONAN_PROFILE=linux-x86_64-gcc10-libstdc++
+        CONAN_PROFILE=linux-x86_64-gcc12
         EOF
         docker exec --env-file env-vars linux_build /bin/bash -c "/linuxbuildlib"

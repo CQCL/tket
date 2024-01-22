@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -1068,6 +1068,16 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("qubit"), py::arg("bit_index"))
       .def(
+          "Reset",
+          [](Circuit *circ, unsigned qb, const py::kwargs &kwargs) {
+            return add_gate_method_noparams<unsigned>(
+                circ, OpType::Reset, {qb}, kwargs);
+          },
+          "Appends a Reset operation. Sets a qubit to the Z-basis 0 state. "
+          "Non-unitary operation."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("qubit"))
+      .def(
           "Rz",
           [](Circuit *circ, const Expr &angle, unsigned qb,
              const py::kwargs &kwargs) {
@@ -1680,6 +1690,16 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "(Z) basis."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("qubit"), py::arg("bit"))
+      .def(
+          "Reset",
+          [](Circuit *circ, const Qubit &qb, const py::kwargs &kwargs) {
+            return add_gate_method_noparams<UnitID>(
+                circ, OpType::Reset, {qb}, kwargs);
+          },
+          "Appends a Reset operation. Sets a qubit to the Z-basis 0 state. "
+          "Non-unitary operation."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("qubit"))
       .def(
           "Rz",
           [](Circuit *circ, const Expr &angle, const Qubit &qb,
