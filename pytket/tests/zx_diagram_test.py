@@ -37,6 +37,7 @@ from typing import Tuple
 
 have_quimb: bool = True
 try:
+    import quimb.tensor
     from pytket.zx.tensor_eval import (
         unitary_from_quantum_diagram,
         fix_boundaries_to_binary_states,
