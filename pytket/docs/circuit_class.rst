@@ -53,6 +53,8 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_phase
 
+   .. autoproperty:: name
+
    .. autoproperty:: n_qubits
 
    .. autoproperty:: n_bits
@@ -64,6 +66,8 @@ condition on a specified set of bit values.)
    .. autoproperty:: bits
 
    .. autoproperty:: n_gates
+
+   .. autoproperty:: is_symbolic
 
    .. automethod:: add_q_register
 
@@ -87,9 +91,13 @@ condition on a specified set of bit values.)
 
    .. autoproperty:: qubit_readout
 
+   .. autoproperty:: bit_readout
+
    .. autoproperty:: opgroups
 
    .. autoproperty:: is_simple
+
+   .. autoproperty:: qubit_to_bit_map
 
    .. automethod:: commands_of_type
 
@@ -105,6 +113,10 @@ condition on a specified set of bit values.)
 
    .. automethod:: free_symbols
 
+   .. automethod:: symbol_substitution
+
+   .. automethod:: substitute_named
+
    .. automethod:: depth
 
    .. automethod:: depth_2q
@@ -114,6 +126,8 @@ condition on a specified set of bit values.)
    .. automethod:: get_commands
 
    .. automethod:: add_barrier
+
+   .. automethod:: add_conditional_barrier
 
    .. automethod:: add_wasm
 
@@ -138,6 +152,8 @@ condition on a specified set of bit values.)
    .. automethod:: get_resources
 
    .. automethod:: add_c_and
+
+   .. automethod:: add_c_not
 
    .. automethod:: add_c_or
 
@@ -182,6 +198,12 @@ condition on a specified set of bit values.)
    .. automethod:: qubit_is_created
    
    .. automethod:: qubit_is_discarded
+
+   .. automethod:: created_qubits
+
+   .. automethod:: discarded_qubits
+
+   .. autoproperty:: valid_connectivity
    
    .. automethod:: replace_SWAPs
 
@@ -231,6 +253,8 @@ condition on a specified set of bit values.)
 
    .. automethod:: TK1
 
+   .. automethod:: TK2
+
    .. automethod:: U1
 
    .. automethod:: U2
@@ -265,11 +289,17 @@ condition on a specified set of bit values.)
 
    .. automethod:: CRz
 
+   .. automethod:: CU1
+
+   .. automethod:: CU3
+
    .. automethod:: Measure
 
    .. automethod:: measure_all
 
    .. automethod:: measure_register
+
+   .. automethod:: Reset
 
    .. automethod:: Phase
    
@@ -298,6 +328,8 @@ condition on a specified set of bit values.)
    .. automethod:: YYPhase
 
    .. automethod:: ZZPhase
+
+   .. automethod:: ZZMax
 
    Methods for adding circuit boxes
    --------------------------------
@@ -333,6 +365,8 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_pauliexpcommutingsetbox
 
+   .. automethod:: add_phasepolybox
+
    .. automethod:: add_toffolibox
    
    .. automethod:: add_dummybox
@@ -348,6 +382,8 @@ condition on a specified set of bit values.)
    .. automethod:: add_multiplexedrotation
    
    .. automethod:: add_multiplexedu2
+
+   .. automethod:: add_multiplexed_tensored_u2
       
    .. automethod:: add_state_preparation_box
 
