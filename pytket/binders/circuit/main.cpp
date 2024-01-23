@@ -325,6 +325,12 @@ PYBIND11_MODULE(circuit, m) {
           ":math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor "
           ":math:`P` of Pauli operations.")
       .value(
+          "TermSequenceBox", OpType::TermSequenceBox,
+          "An operation defined as a set"
+          "of exponentials of the form "
+          ":math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor "
+          ":math:`P` of Pauli operations.")
+      .value(
           "QControlBox", OpType::QControlBox,
           "An arbitrary n-controlled operation")
       .value(

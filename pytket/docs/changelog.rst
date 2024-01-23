@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Features:
+
+* Add ``TermSequenceBox``
+
 1.24.0 (January 2024)
 ---------------------
 

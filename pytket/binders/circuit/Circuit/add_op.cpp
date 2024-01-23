@@ -322,6 +322,21 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:return: the new :py:class:`Circuit`",
           py::arg("pauliexpcommutingsetbox"), py::arg("qubits"))
       .def(
+          "add_termsequencebox",
+          [](Circuit *circ, const TermSequenceBox &box,
+             const py::tket_custom::SequenceVec<unsigned> &qubits,
+             const py::kwargs &kwargs) {
+            return add_box_method<unsigned>(
+                circ, std::make_shared<TermSequenceBox>(box), qubits,
+                kwargs);
+          },
+          "Append a :py:class:`TermSequenceBox` to the "
+          "circuit.\n\n:param termsequencebox: The box to "
+          "append\n:param "
+          "qubits: Indices of the qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("termsequencebox"), py::arg("qubits"))
+      .def(
           "add_toffolibox",
           [](Circuit *circ, const ToffoliBox &box,
              const py::tket_custom::SequenceVec<unsigned> &qubits,
@@ -616,6 +631,20 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "qubits: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("pauliexpcommutingsetbox"), py::arg("qubits"))
+      .def(
+          "add_termsequencebox",
+          [](Circuit *circ, const TermSequenceBox &box,
+             const py_qubit_vector_t &qubits, const py::kwargs &kwargs) {
+            return add_box_method<UnitID>(
+                circ, std::make_shared<TermSequenceBox>(box),
+                {qubits.begin(), qubits.end()}, kwargs);
+          },
+          "Append a :py:class:`TermSequenceBox` to the "
+          "circuit.\n\n:param termsequencebox: The box to "
+          "append\n:param "
+          "qubits: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("termsequencebox"), py::arg("qubits"))
       .def(
           "add_toffolibox",
           [](Circuit *circ, const ToffoliBox &box,
