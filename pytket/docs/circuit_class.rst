@@ -27,6 +27,8 @@ condition on a specified set of bit values.)
    
    .. automethod:: __iter__
 
+   .. automethod:: __rshift__
+
    .. automethod:: add_gate
 
    .. automethod:: append
