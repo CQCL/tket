@@ -24,22 +24,8 @@ condition on a specified set of bit values.)
 .. autoclass:: pytket.circuit.Circuit
 
    .. automethod:: __init__
-
-   .. automethod:: __eq__
    
    .. automethod:: __iter__
-
-   .. automethod:: __mul__
-
-   .. automethod:: __repr__
-
-   .. automethod:: __rshift__
-
-   .. automethod:: __str__
-
-   .. automethod:: __getstate__
-
-   .. automethod:: __setstate__
 
    .. automethod:: add_gate
 
