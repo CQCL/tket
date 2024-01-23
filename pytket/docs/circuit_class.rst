@@ -1,5 +1,5 @@
 pytket.circuit.Circuit
-==================================
+======================
 :py:class:`Circuit` objects provide an abstraction of quantum circuits. They consist of a set of qubits/quantum wires and a collection of operations applied to them in a given order. These wires have open inputs and outputs, rather than assuming any fixed input state.
 
 See the `pytket User Manual <https://tket.quantinuum.com/user-manual/manual_circuit.html>`_ for a step-by-step tutorial on constructing circuits.
@@ -214,8 +214,8 @@ condition on a specified set of bit values.)
    .. automethod:: to_latex_file
 
 
-   Convenience methods for appending circuit operations
-   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   Convenience methods for appending gates
+   ---------------------------------------
 
    .. Note:: For adding gates to a circuit the :py:meth:`Circuit.add_gate` method is sufficient to append any :py:class:`OpType` to a :py:class:`Circuit`. 
       Some gates can only be added with :py:meth:`Circuit.add_gate`. For other more commonly used operations these can be added to a :py:class:`Circuit` directly using the convenience methods below.
@@ -332,8 +332,8 @@ condition on a specified set of bit values.)
 
    .. automethod:: ZZMax
 
-   Methods for adding circuit boxes
-   --------------------------------
+   Methods for appending circuit boxes
+   -----------------------------------
 
    .. Note:: For adding boxes to a circuit the :py:meth:`Circuit.add_gate` method is sufficient to append any :py:class:`OpType` to a :py:class:`Circuit`.
 
