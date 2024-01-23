@@ -121,7 +121,7 @@ condition on a specified set of bit values.)
 
    .. automethod:: depth_2q
 
-   .. automethod:: depth_by_type 
+   .. automethod:: depth_by_type
 
    .. automethod:: get_commands
 
@@ -215,6 +215,7 @@ condition on a specified set of bit values.)
 
 
    Convenience methods for appending circuit operations
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    .. Note:: For adding gates to a circuit the :py:meth:`Circuit.add_gate` method is sufficient to append any :py:class:`OpType` to a :py:class:`Circuit`. 
       Some gates can only be added with :py:meth:`Circuit.add_gate`. For other more commonly used operations these can be added to a :py:class:`Circuit` directly using the convenience methods below.
