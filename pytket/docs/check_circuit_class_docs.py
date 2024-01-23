@@ -3,8 +3,6 @@ import re
 
 from pytket._tket.circuit import Circuit
 
-# paste contents of https://github.com/CQCL/tket/blob/7b0df5cf68503944cd34e593fb094ba5aa4357f4/pytket/docs/circuit_class.rst
-
 
 with open("circuit_class.rst", "r", encoding="utf-8") as file:
     rst = file.read()
