@@ -202,4 +202,63 @@ class PauliExpCommutingSetBox : public Box {
   CXConfigType cx_config_;
 };
 
+class TermSequenceBox : public Box {
+public: 
+  TermSequenceBox(
+    const std::vector<SymPauliTensor> &pauli_gadgets,
+    PauliPartitionStrat partition_strategy,
+    GraphColourMethod graph_colouring,
+    CXConfigType cx_configuration
+  );
+
+  /**
+   * Construct from the empty vector
+   */
+  TermSequenceBox();
+
+  /**
+   * Copy constructor
+   */
+  TermSequenceBox(const TermSequenceBox &other);
+
+  ~TermSequenceBox() override {}
+
+  bool is_clifford() const override;
+
+  SymSet free_symbols() const override;
+
+  /**
+   * Equality check between two instances
+   */
+  bool is_equal(const Op &op_other) const override;
+
+  /** Get the pauli partitioning strategy parameter (affects box decomposition) */
+  auto get_partition_strategy() const { return partition_strategy_; }
+
+  /** Get the graph colouring parameter (affects box decomposition) */
+  auto get_graph_colouring() const {return graph_colouring_;}
+
+  /** Get the cx config parameter (affects box decomposition) */
+  auto get_cx_config() const { return cx_configuration_; }
+
+  Op_ptr dagger() const override;
+
+  Op_ptr transpose() const override;
+
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &sub_map) const override;
+
+  static Op_ptr from_json(const nlohmann::json &j);
+
+  static nlohmann::json to_json(const Op_ptr &op);
+
+private:
+  std::vector<SymPauliTensor> pauli_gadgets_;
+  PauliPartitionStrat partition_strategy_;
+  GraphColourMethod graph_colouring_;
+  CXConfigType cx_configuration_;
+
+}
+
+
 }  // namespace tket

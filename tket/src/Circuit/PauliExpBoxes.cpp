@@ -363,4 +363,136 @@ Op_ptr PauliExpCommutingSetBox::from_json(const nlohmann::json &j) {
 
 REGISTER_OPFACTORY(PauliExpCommutingSetBox, PauliExpCommutingSetBox)
 
+
+TermSequenceBox::TermSequenceBox(
+    const std::vector<SymPauliTensor> &pauli_gadgets,
+    PauliPartitionStrat partition_strategy,
+    GraphColourMethod graph_colouring,
+    CXConfigType cx_configuration)
+    : Box(OpType::TermSequenceBox),
+      pauli_gadgets_(pauli_gadgets),
+      partition_strategy_(partition_strategy),
+      graph_colouring_(graph_colouring)
+      cx_configuration_(cx_configuration) {
+  // check at least one gadget
+  if (pauli_gadgets.empty()) {
+    throw PauliExpBoxInvalidity(
+        "TermSequenceBox requires at least one Pauli string");
+  }
+  // check all gadgets have same Pauli string length
+  auto n_qubits = pauli_gadgets[0].size();
+  for (const auto &gadget : pauli_gadgets) {
+    if (gadget.size() != n_qubits) {
+      throw PauliExpBoxInvalidity(
+          "the Pauli strings within TermSequenceBox must all be the "
+          "same length - add Pauli.I to pad strings to required length.");
+    }
+  }
+  signature_ = op_signature_t(n_qubits, EdgeType::Quantum);
+}
+
+TermSequenceBox::TermSequenceBox(
+    const TermSequenceBox &other)
+    : Box(other),
+      pauli_gadgets_(other.pauli_gadgets_),
+      partition_strategy_(other.partition_strategy_),
+      graph_colouring_(other.graph_colouring_),
+      cx_configuration_(other.cx_configuration_), {}
+
+TermSequenceBox::TermSequenceBox()
+    : TermSequenceBox({{{}, 0}}) {}
+
+bool TermSequenceBox::is_clifford() const {
+  return std::all_of(
+      pauli_gadgets_.begin(), pauli_gadgets_.end(),
+      [](const SymPauliTensor &pauli_exp) {
+        return equiv_0(4 * pauli_exp.coeff) || pauli_exp.string.empty();
+      });
+}
+
+SymSet TermSequenceBox::free_symbols() const {
+  std::vector<Expr> angles;
+  for (const auto &pauli_exp : pauli_gadgets_) {
+    angles.push_back(pauli_exp.coeff);
+  }
+  return expr_free_symbols(angles);
+}
+
+Op_ptr TermSequenceBox::dagger() const {
+  std::vector<SymPauliTensor> dagger_gadgets;
+  for (const auto &pauli_exp : pauli_gadgets_) {
+    dagger_gadgets.emplace_back(pauli_exp.string, -pauli_exp.coeff);
+  }
+  return std::make_shared<TermSequenceBox>(dagger_gadgets, partition_strategy_, graph_colouring_, cx_configuration_);
+}
+
+Op_ptr TermSequenceBox::transpose() const {
+  std::vector<SymPauliTensor> transpose_gadgets;
+  for (const auto &pauli_exp : pauli_gadgets_) {
+    SymPauliTensor tr = pauli_exp;
+    tr.transpose();
+    transpose_gadgets.push_back(tr);
+  }
+  return std::make_shared<TermSequenceBox>(
+      transpose_gadgets, partition_strategy_, graph_colouring_, cx_configuration_);
+}
+
+Op_ptr TermSequenceBox::symbol_substitution(
+    const SymEngine::map_basic_basic &sub_map) const {
+  std::vector<SymPauliTensor> symbol_sub_gadgets;
+  for (const auto &pauli_exp : pauli_gadgets_) {
+    symbol_sub_gadgets.push_back(pauli_exp.symbol_substitution(sub_map));
+  }
+  return std::make_shared<TermSequenceBox>(
+      symbol_sub_gadgets, partition_strategy_, graph_colouring_, cx_configuration_);
+}
+
+bool TermSequenceBox::is_equal(const Op &op_other) const {
+  const TermSequenceBox &other =
+      dynamic_cast<const TermSequenceBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  if (partition_strategy_ != other.partition_strategy_) return false;
+  if (graph_colouring_ != other.graph_colouring_) return false;
+  if (cx_configuration_ != other.cx_configuration_) return false;
+  return std::equal(
+      pauli_gadgets_.begin(), pauli_gadgets_.end(),
+      other.pauli_gadgets_.begin(), other.pauli_gadgets_.end(),
+      [](const SymPauliTensor &a, const SymPauliTensor &b) {
+        return a.equiv_mod(b, 4);
+      });
+}
+
+nlohmann::json TermSequenceBox::to_json(const Op_ptr &op) {
+  const auto &box = static_cast<const TermSequenceBox &>(*op);
+  nlohmann::json j = core_box_json(box);
+  // Encode SymPauliTensor as unlabelled pair of Pauli vector and Expr for
+  // backwards compatibility from before templated PauliTensor
+  std::vector<std::pair<std::vector<Pauli>, Expr>> gadget_encoding;
+  for (const SymPauliTensor &g : box.get_pauli_gadgets())
+    gadget_encoding.push_back({g.string, g.coeff});
+  j["pauli_gadgets"] = gadget_encoding;
+  j["partition_strategy"] = box.get_partition_strategy();
+  j["graph_colouring"] = box.get_graph_colouring();
+  j["cx_config"] = box.get_cx_config();
+
+  return j;
+}
+
+Op_ptr TermSequenceBox::from_json(const nlohmann::json &j) {
+  std::vector<std::pair<std::vector<Pauli>, Expr>> gadget_encoding =
+      j.at("pauli_gadgets")
+          .get<std::vector<std::pair<std::vector<Pauli>, Expr>>>();
+  std::vector<SymPauliTensor> gadgets;
+  for (const std::pair<std::vector<Pauli>, Expr> &g : gadget_encoding)
+    gadgets.push_back(SymPauliTensor(g.first, g.second));
+  TermSequenceBox box =
+      TermSequenceBox(gadgets, j.at("partition_strategy").get<PauliPartitionStrat>(), j.at("graph_colouring").get<GraphColourMethod>(), j.at("cx_config").get<CXConfigType>());
+  return set_box_id(
+      box,
+      boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
+}
+
+
+REGISTER_OPFACTORY(TermSequenceBox, TermSequenceBox)
+
 }  // namespace tket
