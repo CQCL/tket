@@ -206,6 +206,7 @@ class TermSequenceBox : public Box {
 public: 
   TermSequenceBox(
     const std::vector<SymPauliTensor> &pauli_gadgets,
+    PauliSynthStrat synth_strategy,
     PauliPartitionStrat partition_strategy,
     GraphColourMethod graph_colouring,
     CXConfigType cx_configuration
@@ -232,6 +233,9 @@ public:
    */
   bool is_equal(const Op &op_other) const override;
 
+  /** Get the circuit synthesis strategy parameter (affects box decomposition) */
+  auto get_synth_strategy() const {return synth_strategy_; }
+
   /** Get the pauli partitioning strategy parameter (affects box decomposition) */
   auto get_partition_strategy() const { return partition_strategy_; }
 
@@ -251,6 +255,9 @@ public:
   static Op_ptr from_json(const nlohmann::json &j);
 
   static nlohmann::json to_json(const Op_ptr &op);
+
+protected: 
+  void generate_circuit() const override;
 
 private:
   std::vector<SymPauliTensor> pauli_gadgets_;
