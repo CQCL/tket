@@ -668,5 +668,213 @@ SCENARIO("Pauli gadget commuting sets", "[boxes]") {
   }
 }
 
+SCENARIO("TermSequenceBox", "[boxes]") {
+  GIVEN("Basis Circuit check") {
+    TermSequenceBox pbox(
+        {{{Pauli::X}, 1.0}, {{Pauli::I}, 0.0}, {{Pauli::I}, 0.0}});
+    auto circ = pbox.to_circuit();
+    circ->decompose_boxes_recursively();
+    Circuit comp(1);
+    comp.add_op<unsigned>(OpType::H, {0});
+    comp.add_op<unsigned>(OpType::Rz, 1.0, {0});
+    comp.add_op<unsigned>(OpType::H, {0});
+    REQUIRE(*circ == comp);
+  }
+  GIVEN("Empty PauliExpPairBox compiles to empty circuit") {
+    Circuit empty_circuit(0);
+    TermSequenceBox pbox;
+    auto empty_pbox_circuit = pbox.to_circuit();
+    empty_pbox_circuit->decompose_boxes_recursively();
+    REQUIRE(*empty_pbox_circuit == empty_circuit);
+  }
+  GIVEN("Construction with no gadgets throws") {
+    REQUIRE_THROWS_AS(
+        TermSequenceBox(std::vector<SymPauliTensor>{}), PauliExpBoxInvalidity);
+  }
+  GIVEN("Construction with pauli strings of different length throws") {
+    DensePauliMap pauli_string0{Pauli::X, Pauli::Z};
+    DensePauliMap pauli_string1{Pauli::X, Pauli::I};
+    DensePauliMap pauli_string2{Pauli::X, Pauli::Z, Pauli::I};
+    REQUIRE_THROWS_AS(
+        TermSequenceBox({
+            SymPauliTensor(pauli_string0, 1.0),
+            SymPauliTensor(pauli_string1, 1.0),
+            SymPauliTensor(pauli_string2, 1.0),
+        }),
+        PauliExpBoxInvalidity);
+  }
+  GIVEN("is_clifford test cases") {
+    SECTION("Empty Paulis") {
+      REQUIRE(TermSequenceBox({{{}, 1.2}, {{}, 0.1}, {{}, 1.1}}).is_clifford());
+    }
+    SECTION("Various phases") {
+      auto phase_case = GENERATE(
+          // (phase0, phase1, expected is_clifford result)
+          std::make_tuple(0.0, 0.0, 1.0, true),
+          std::make_tuple(0.5, 0.0, 0.0, true),
+          std::make_tuple(1.0, 0.0, 2.0, true),
+          std::make_tuple(1.5, 0.0, 0.0, true),
+          std::make_tuple(2.0, 0.0, 0.5, true),
+          std::make_tuple(0.5, 0.5, 0.5, true),
+          std::make_tuple(0.5, 1.0, 1.0, true),
+          std::make_tuple(0.5, 1.5, 1.5, true),
+          std::make_tuple(0.5, 2.0, 2.0, true),
+          std::make_tuple(0.0, 0.3, 0.3, false),
+          std::make_tuple(0.1, 0.3, 0.3, false),
+          std::make_tuple(0.0, 0.0, 0.3, false),
+          std::make_tuple(0.1, 0.3, 0.3, false),
+          std::make_tuple(0.0, 2.0, 1.1, false),
+          std::make_tuple(0.1, 0.3, 0.3, false),
+          std::make_tuple(1.1, 2.0, 2.0, false));
+      auto pbox = TermSequenceBox({
+          {{Pauli::I, Pauli::Y, Pauli::I}, get<0>(phase_case)},
+          {{Pauli::X, Pauli::Y, Pauli::Z}, get<1>(phase_case)},
+          {{Pauli::X, Pauli::Y, Pauli::Z}, get<2>(phase_case)},
+      });
+      REQUIRE(pbox.is_clifford() == get<3>(phase_case));
+    }
+  }
+  GIVEN("free_symbols") {
+    auto a = SymTable::fresh_symbol("a");
+    auto b = SymTable::fresh_symbol("b");
+    auto c = SymTable::fresh_symbol("c");
+    auto ea = Expr(a);
+    auto eb = Expr(b);
+    auto ec = Expr(c);
+    auto paulis0 = std::vector<Pauli>{Pauli::X};
+    auto paulis1 = std::vector<Pauli>{Pauli::X};
+    auto paulis2 = std::vector<Pauli>{Pauli::I};
+    REQUIRE(TermSequenceBox({{paulis0, 0.2}, {paulis1, 0.4}, {paulis2, 0.3}})
+                .free_symbols()
+                .empty());
+    REQUIRE(
+        TermSequenceBox({{paulis0, ea}, {paulis1, 0.4}, {paulis2, 0.3}})
+            .free_symbols() == SymSet{a});
+    REQUIRE(
+        TermSequenceBox({{paulis0, 0.2}, {paulis1, eb}, {paulis2, 0.3}})
+            .free_symbols() == SymSet{b});
+    REQUIRE(
+        TermSequenceBox({{paulis0, 0.2}, {paulis1, 0.4}, {paulis2, ec}})
+            .free_symbols() == SymSet{c});
+    REQUIRE(
+        TermSequenceBox({{paulis0, ea}, {paulis1, eb}, {paulis2, 0.3}})
+            .free_symbols() == SymSet{a, b});
+    REQUIRE(
+        TermSequenceBox({{paulis0, 0.2}, {paulis1, eb}, {paulis2, ec}})
+            .free_symbols() == SymSet{b, c});
+    REQUIRE(
+        TermSequenceBox({{paulis0, ea}, {paulis1, 0.4}, {paulis2, ec}})
+            .free_symbols() == SymSet{a, c});
+    REQUIRE(
+        TermSequenceBox({{paulis0, ea}, {paulis1, eb}, {paulis2, ec}})
+            .free_symbols() == SymSet{a, b, c});
+  }
+  GIVEN("dagger") {
+    auto ea = Expr(SymTable::fresh_symbol("a"));
+    auto paulis0 = std::vector<Pauli>{Pauli::Z};
+    auto paulis1 = std::vector<Pauli>{Pauli::I};
+    auto paulis2 = std::vector<Pauli>{Pauli::Z};
+    auto phase0 = ea;
+    auto phase1 = Expr(0.4);
+    auto phase2 = Expr(1.3);
+    auto cx_config = CXConfigType::Tree;
+    auto box = TermSequenceBox(
+        {{paulis0, phase0}, {paulis1, phase1}, {paulis2, phase2}}, cx_config);
+    auto dagger_box =
+        std::dynamic_pointer_cast<const TermSequenceBox>(box.dagger());
+    auto pauli_gadgets = dagger_box->get_pauli_gadgets();
+
+    REQUIRE(pauli_gadgets.size() == 3);
+    REQUIRE(pauli_gadgets[0].string == paulis0);
+    REQUIRE(pauli_gadgets[0].coeff == -phase0);
+    REQUIRE(pauli_gadgets[1].string == paulis1);
+    REQUIRE(pauli_gadgets[1].coeff == -phase1);
+    REQUIRE(pauli_gadgets[2].string == paulis2);
+    REQUIRE(pauli_gadgets[2].coeff == -phase2);
+    REQUIRE(dagger_box->get_cx_config() == cx_config);
+  }
+  GIVEN("transpose") {
+    auto ea = Expr(SymTable::fresh_symbol("a"));
+    auto paulis0 = std::vector<Pauli>{Pauli::Y, Pauli::Y, Pauli::Y, Pauli::Y};
+    auto paulis1 = std::vector<Pauli>{Pauli::I, Pauli::Y, Pauli::Y, Pauli::Y};
+    auto paulis2 = std::vector<Pauli>{Pauli::Y, Pauli::Y, Pauli::I, Pauli::I};
+    auto paulis3 = std::vector<Pauli>{Pauli::Y, Pauli::I, Pauli::I, Pauli::I};
+    auto phase0 = ea;
+    auto phase1 = Expr(0.4);
+    auto phase2 = Expr(1.3);
+    auto phase3 = ea;
+    auto cx_config = CXConfigType::Snake;
+    auto box = TermSequenceBox(
+        {{paulis0, phase0},
+         {paulis1, phase1},
+         {paulis2, phase2},
+         {paulis3, phase3}},
+        cx_config);
+    auto transpose_box =
+        std::dynamic_pointer_cast<const TermSequenceBox>(box.transpose());
+    auto pauli_gadgets = transpose_box->get_pauli_gadgets();
+
+    REQUIRE(pauli_gadgets.size() == 4);
+    REQUIRE(pauli_gadgets[0].string == paulis0);
+    REQUIRE(pauli_gadgets[0].coeff == phase0);
+    REQUIRE(pauli_gadgets[1].string == paulis1);
+    REQUIRE(pauli_gadgets[1].coeff == -phase1);
+    REQUIRE(pauli_gadgets[2].string == paulis2);
+    REQUIRE(pauli_gadgets[2].coeff == phase2);
+    REQUIRE(pauli_gadgets[3].string == paulis3);
+    REQUIRE(pauli_gadgets[3].coeff == -phase3);
+    REQUIRE(transpose_box->get_cx_config() == cx_config);
+  }
+  GIVEN("symbol_substitution") {
+    auto a = SymTable::fresh_symbol("a");
+    auto b = SymTable::fresh_symbol("b");
+    auto c = SymTable::fresh_symbol("c");
+    auto ea = Expr(a);
+    auto eb = Expr(b);
+    auto ec = Expr(c);
+    auto sub_a = Expr(0.8);
+    auto sub_b = Expr(0.3);
+    auto sub_c = Expr(2.3);
+    auto paulis0 = std::vector<Pauli>{Pauli::X};
+    auto paulis1 = std::vector<Pauli>{Pauli::X};
+    auto paulis2 = std::vector<Pauli>{Pauli::X};
+
+    auto box = TermSequenceBox({{paulis0, ea}, {paulis1, eb}, {paulis2, ec}});
+
+    SymEngine::map_basic_basic sub_map1{std::make_pair(a, sub_a)};
+    auto sub_box1 = std::dynamic_pointer_cast<const TermSequenceBox>(
+        box.symbol_substitution(sub_map1));
+    auto pauli_gadgets1 = sub_box1->get_pauli_gadgets();
+    REQUIRE(pauli_gadgets1[0].coeff == sub_a);
+    REQUIRE(pauli_gadgets1[1].coeff == eb);
+    REQUIRE(pauli_gadgets1[2].coeff == ec);
+
+    SymEngine::map_basic_basic sub_map2{std::make_pair(b, sub_b)};
+    auto sub_box2 = std::dynamic_pointer_cast<const TermSequenceBox>(
+        box.symbol_substitution(sub_map2));
+    auto pauli_gadgets2 = sub_box2->get_pauli_gadgets();
+    REQUIRE(pauli_gadgets2[0].coeff == ea);
+    REQUIRE(pauli_gadgets2[1].coeff == sub_b);
+    REQUIRE(pauli_gadgets2[2].coeff == ec);
+
+    SymEngine::map_basic_basic sub_map3{std::make_pair(c, sub_c)};
+    auto sub_box3 = std::dynamic_pointer_cast<const TermSequenceBox>(
+        box.symbol_substitution(sub_map3));
+    auto pauli_gadgets3 = sub_box3->get_pauli_gadgets();
+    REQUIRE(pauli_gadgets3[0].coeff == ea);
+    REQUIRE(pauli_gadgets3[1].coeff == eb);
+    REQUIRE(pauli_gadgets3[2].coeff == sub_c);
+
+    sub_map1.merge(sub_map2);
+    sub_map1.merge(sub_map3);
+    auto sub_box4 = std::dynamic_pointer_cast<const TermSequenceBox>(
+        box.symbol_substitution(sub_map1));
+    auto pauli_gadgets4 = sub_box4->get_pauli_gadgets();
+    REQUIRE(pauli_gadgets4[0].coeff == sub_a);
+    REQUIRE(pauli_gadgets4[1].coeff == sub_b);
+    REQUIRE(pauli_gadgets4[2].coeff == sub_c);
+  }
+}
+
 }  // namespace test_PauliExpBoxes
 }  // namespace tket

@@ -206,8 +206,11 @@ class TermSequenceBox : public Box {
  public:
   TermSequenceBox(
       const std::vector<SymPauliTensor> &pauli_gadgets,
-      PauliSynthStrat synth_strategy, PauliPartitionStrat partition_strategy,
-      GraphColourMethod graph_colouring, CXConfigType cx_configuration);
+      PauliSynthStrat synth_strategy = PauliSynthStrat::Sets,
+      PauliPartitionStrat partition_strategy =
+          PauliPartitionStrat::CommutingSets,
+      GraphColourMethod graph_colouring = GraphColourMethod::Lazy,
+      CXConfigType cx_configuration = CXConfigType::Tree);
 
   /**
    * Construct from the empty vector
