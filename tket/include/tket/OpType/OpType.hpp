@@ -636,12 +636,10 @@ enum class OpType {
    */
   PauliExpCommutingSetBox,
 
-
   /**
    * See \ref TermSequenceBox
    */
   TermSequenceBox,
-
 
   /**
    * NYI

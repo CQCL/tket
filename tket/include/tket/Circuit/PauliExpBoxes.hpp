@@ -203,14 +203,11 @@ class PauliExpCommutingSetBox : public Box {
 };
 
 class TermSequenceBox : public Box {
-public: 
+ public:
   TermSequenceBox(
-    const std::vector<SymPauliTensor> &pauli_gadgets,
-    PauliSynthStrat synth_strategy,
-    PauliPartitionStrat partition_strategy,
-    GraphColourMethod graph_colouring,
-    CXConfigType cx_configuration
-  );
+      const std::vector<SymPauliTensor> &pauli_gadgets,
+      PauliSynthStrat synth_strategy, PauliPartitionStrat partition_strategy,
+      GraphColourMethod graph_colouring, CXConfigType cx_configuration);
 
   /**
    * Construct from the empty vector
@@ -233,14 +230,16 @@ public:
    */
   bool is_equal(const Op &op_other) const override;
 
-  /** Get the circuit synthesis strategy parameter (affects box decomposition) */
-  auto get_synth_strategy() const {return synth_strategy_; }
+  /** Get the circuit synthesis strategy parameter (affects box decomposition)
+   */
+  auto get_synth_strategy() const { return synth_strategy_; }
 
-  /** Get the pauli partitioning strategy parameter (affects box decomposition) */
+  /** Get the pauli partitioning strategy parameter (affects box decomposition)
+   */
   auto get_partition_strategy() const { return partition_strategy_; }
 
   /** Get the graph colouring parameter (affects box decomposition) */
-  auto get_graph_colouring() const {return graph_colouring_;}
+  auto get_graph_colouring() const { return graph_colouring_; }
 
   /** Get the cx config parameter (affects box decomposition) */
   auto get_cx_config() const { return cx_configuration_; }
@@ -256,16 +255,15 @@ public:
 
   static nlohmann::json to_json(const Op_ptr &op);
 
-protected: 
+ protected:
   void generate_circuit() const override;
 
-private:
+ private:
   std::vector<SymPauliTensor> pauli_gadgets_;
+  PauliSynthStrat synth_strategy_;
   PauliPartitionStrat partition_strategy_;
   GraphColourMethod graph_colouring_;
   CXConfigType cx_configuration_;
-
 }
-
 
 }  // namespace tket

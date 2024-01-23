@@ -327,8 +327,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
              const py::tket_custom::SequenceVec<unsigned> &qubits,
              const py::kwargs &kwargs) {
             return add_box_method<unsigned>(
-                circ, std::make_shared<TermSequenceBox>(box), qubits,
-                kwargs);
+                circ, std::make_shared<TermSequenceBox>(box), qubits, kwargs);
           },
           "Append a :py:class:`TermSequenceBox` to the "
           "circuit.\n\n:param termsequencebox: The box to "
