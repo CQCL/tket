@@ -360,7 +360,7 @@ void init_boxes(py::module &m) {
                  pauli_gadgets)
               gadgets.push_back(SymPauliTensor(g.first, g.second));
             return TermSequenceBox(
-                gadgets, synth_strat, partition_strat, grpah_colouring,
+                gadgets, synth_strat, partition_strat, graph_colouring,
                 cx_config);
           }),
           "Construct a set of Pauli exponentials of the "
