@@ -508,7 +508,6 @@ def test_boxes() -> None:
     )
     assert psetbox.type == OpType.PauliExpCommutingSetBox
     d.add_pauliexpcommutingsetbox(psetbox, [0, 1, 2, 3])
-    
 
     tseqbox = TermSequenceBox(
         [
@@ -519,7 +518,6 @@ def test_boxes() -> None:
     )
     assert tseqbox.type == OpType.TermSequenceBox
     d.add_termsequencebox(psetbox, [0, 1, 2, 3])
-    
 
     qcbox = QControlBox(Op.create(OpType.S), 2)
     assert qcbox.type == OpType.QControlBox
