@@ -3,6 +3,8 @@ import re
 
 from pytket._tket.circuit import Circuit
 
+# This script is used to check that no methods or properties of
+# the Circuit class are left out in the circuit_class.rst file.
 
 with open("circuit_class.rst", "r", encoding="utf-8") as file:
     rst = file.read()
