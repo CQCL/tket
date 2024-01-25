@@ -15,6 +15,8 @@
 #pragma once
 
 #include "Boxes.hpp"
+#include "tket/Diagonalisation/PauliPartition.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
 
 namespace tket {
 
@@ -206,7 +208,8 @@ class TermSequenceBox : public Box {
  public:
   TermSequenceBox(
       const std::vector<SymPauliTensor> &pauli_gadgets,
-      PauliSynthStrat synth_strategy = PauliSynthStrat::Sets,
+      Transforms::PauliSynthStrat synth_strategy =
+          Transforms::PauliSynthStrat::Sets,
       PauliPartitionStrat partition_strategy =
           PauliPartitionStrat::CommutingSets,
       GraphColourMethod graph_colouring = GraphColourMethod::Lazy,
@@ -244,6 +247,9 @@ class TermSequenceBox : public Box {
   /** Get the graph colouring parameter (affects box decomposition) */
   auto get_graph_colouring() const { return graph_colouring_; }
 
+  /** Get the pauli gadgets */
+  auto get_pauli_gadgets() const { return pauli_gadgets_; }
+
   /** Get the cx config parameter (affects box decomposition) */
   auto get_cx_config() const { return cx_configuration_; }
 
@@ -263,10 +269,10 @@ class TermSequenceBox : public Box {
 
  private:
   std::vector<SymPauliTensor> pauli_gadgets_;
-  PauliSynthStrat synth_strategy_;
+  Transforms::PauliSynthStrat synth_strategy_;
   PauliPartitionStrat partition_strategy_;
   GraphColourMethod graph_colouring_;
   CXConfigType cx_configuration_;
-}
+};
 
 }  // namespace tket

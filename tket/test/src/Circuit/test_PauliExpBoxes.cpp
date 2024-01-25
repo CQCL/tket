@@ -777,9 +777,13 @@ SCENARIO("TermSequenceBox", "[boxes]") {
     auto phase0 = ea;
     auto phase1 = Expr(0.4);
     auto phase2 = Expr(1.3);
+    auto synth_strat = Transforms::PauliSynthStrat::Sets;
+    auto partition_strat = PauliPartitionStrat::CommutingSets;
+    auto colouring_method = GraphColourMethod::Lazy;
     auto cx_config = CXConfigType::Tree;
     auto box = TermSequenceBox(
-        {{paulis0, phase0}, {paulis1, phase1}, {paulis2, phase2}}, cx_config);
+        {{paulis0, phase0}, {paulis1, phase1}, {paulis2, phase2}}, synth_strat,
+        partition_strat, colouring_method, cx_config);
     auto dagger_box =
         std::dynamic_pointer_cast<const TermSequenceBox>(box.dagger());
     auto pauli_gadgets = dagger_box->get_pauli_gadgets();
@@ -791,6 +795,9 @@ SCENARIO("TermSequenceBox", "[boxes]") {
     REQUIRE(pauli_gadgets[1].coeff == -phase1);
     REQUIRE(pauli_gadgets[2].string == paulis2);
     REQUIRE(pauli_gadgets[2].coeff == -phase2);
+    REQUIRE(dagger_box->get_synth_strategy() == synth_strat);
+    REQUIRE(dagger_box->get_partition_strategy() == partition_strat);
+    REQUIRE(dagger_box->get_graph_colouring() == colouring_method);
     REQUIRE(dagger_box->get_cx_config() == cx_config);
   }
   GIVEN("transpose") {
@@ -803,13 +810,16 @@ SCENARIO("TermSequenceBox", "[boxes]") {
     auto phase1 = Expr(0.4);
     auto phase2 = Expr(1.3);
     auto phase3 = ea;
+    auto synth_strat = Transforms::PauliSynthStrat::Sets;
+    auto partition_strat = PauliPartitionStrat::CommutingSets;
+    auto colouring_method = GraphColourMethod::Lazy;
     auto cx_config = CXConfigType::Snake;
     auto box = TermSequenceBox(
         {{paulis0, phase0},
          {paulis1, phase1},
          {paulis2, phase2},
          {paulis3, phase3}},
-        cx_config);
+        synth_strat, partition_strat, colouring_method, cx_config);
     auto transpose_box =
         std::dynamic_pointer_cast<const TermSequenceBox>(box.transpose());
     auto pauli_gadgets = transpose_box->get_pauli_gadgets();
@@ -823,6 +833,9 @@ SCENARIO("TermSequenceBox", "[boxes]") {
     REQUIRE(pauli_gadgets[2].coeff == phase2);
     REQUIRE(pauli_gadgets[3].string == paulis3);
     REQUIRE(pauli_gadgets[3].coeff == -phase3);
+    REQUIRE(transpose_box->get_synth_strategy() == synth_strat);
+    REQUIRE(transpose_box->get_partition_strategy() == partition_strat);
+    REQUIRE(transpose_box->get_graph_colouring() == colouring_method);
     REQUIRE(transpose_box->get_cx_config() == cx_config);
   }
   GIVEN("symbol_substitution") {
