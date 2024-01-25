@@ -30,8 +30,6 @@ condition on a specified set of bit values.)
 .. currentmodule:: pytket.circuit.Circuit
 .. autoclass:: pytket.circuit.Circuit
 
-
-
    .. automethod:: __init__
    
    .. automethod:: __iter__
