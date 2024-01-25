@@ -546,30 +546,31 @@ void TermSequenceBox::generate_circuit() const {
     case Transforms::PauliSynthStrat::Individual:
       for (auto it = reduced_pauli_gadgets.begin();
            it != reduced_pauli_gadgets.end(); ++it) {
-        circ.append(
-            *PauliExpBox(
-                 SymPauliTensor(it->first, it->second), this->cx_configuration_)
-                 .to_circuit());
+        circ.add_box(
+            PauliExpBox(
+                SymPauliTensor(it->first, it->second), this->cx_configuration_),
+            circ.all_qubits());
       }
       break;
     case Transforms::PauliSynthStrat::Pairwise: {
       auto it = reduced_pauli_gadgets.begin();
       // if there is an odd number of gadgets, add first gadget as a single
       if (reduced_pauli_gadgets.size() % 2 == 1) {
-        circ.append(
-            *PauliExpBox(
-                 SymPauliTensor(it->first, it->second), this->cx_configuration_)
-                 .to_circuit());
+        circ.add_box(
+            PauliExpBox(
+                SymPauliTensor(it->first, it->second), this->cx_configuration_),
+            circ.all_qubits());
         ++it;
       }
       while (it != reduced_pauli_gadgets.end()) {
         auto next_it = std::next(it);
         TKET_ASSERT(next_it != reduced_pauli_gadgets.end());
-        circ.append(*PauliExpPairBox(
-                         SymPauliTensor(it->first, it->second),
-                         SymPauliTensor(next_it->first, next_it->second),
-                         this->cx_configuration_)
-                         .to_circuit());
+        circ.add_box(
+            PauliExpPairBox(
+                SymPauliTensor(it->first, it->second),
+                SymPauliTensor(next_it->first, next_it->second),
+                this->cx_configuration_),
+            circ.all_qubits());
         std::advance(it, 2);
       }
     } break;
@@ -597,9 +598,9 @@ void TermSequenceBox::generate_circuit() const {
           commuting_gadgets.push_back(SymPauliTensor(
               padded_string, reduced_pauli_gadgets[padded_string]));
         }
-        circ.append(
-            *PauliExpCommutingSetBox(commuting_gadgets, this->cx_configuration_)
-                 .to_circuit());
+        circ.add_box(
+            PauliExpCommutingSetBox(commuting_gadgets, this->cx_configuration_),
+            circ.all_qubits());
       }
       break;
   }

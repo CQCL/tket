@@ -887,6 +887,65 @@ SCENARIO("TermSequenceBox", "[boxes]") {
     REQUIRE(pauli_gadgets4[1].coeff == sub_b);
     REQUIRE(pauli_gadgets4[2].coeff == sub_c);
   }
+  GIVEN("circuit construction, PauliSynthStrat::Individual") {
+    auto paulis0 = std::vector<Pauli>{Pauli::X, Pauli::Y, Pauli::Z, Pauli::Y};
+    auto paulis1 = std::vector<Pauli>{Pauli::I, Pauli::Y, Pauli::Y, Pauli::Y};
+    auto paulis2 = std::vector<Pauli>{Pauli::Y, Pauli::Z, Pauli::I, Pauli::X};
+    auto paulis3 = std::vector<Pauli>{Pauli::Z, Pauli::I, Pauli::X, Pauli::I};
+    auto phase0 = Expr(0.25);
+    auto phase1 = Expr(0.4);
+    auto phase2 = Expr(1.3);
+    auto phase3 = Expr(1.7);
+    auto phase4 = Expr(1.4);
+    auto synth_strat = Transforms::PauliSynthStrat::Individual;
+    auto partition_strat = PauliPartitionStrat::CommutingSets;
+    auto colouring_method = GraphColourMethod::Lazy;
+    auto cx_config = CXConfigType::Tree;
+    auto box = TermSequenceBox(
+        {{paulis0, phase0},
+         {paulis1, phase1},
+         {paulis2, phase2},
+         {paulis3, phase3},
+         {paulis2, phase4}},
+        synth_strat, partition_strat, colouring_method, cx_config);
+    Circuit c = *box.to_circuit();
+    REQUIRE(c.n_gates() == 4);
+    std::vector<Command> coms = c.get_commands();
+
+    // n.b. that TermSequenceBox works on the assumption
+    // that the order of provided pauli gadgets is fluid
+    // in this manner, they end up being ordered lexicographically
+    // from the value of the Pauli Enums as this is how a
+    // map object generated during synthesis orders them
+    Op_ptr op0 = coms[0].get_op_ptr();
+    REQUIRE(op0->get_type() == OpType::PauliExpBox);
+    const PauliExpBox& peb0 = static_cast<const PauliExpBox&>(*op0);
+    REQUIRE(peb0.get_paulis() == paulis1);
+    REQUIRE(peb0.get_phase() == phase1);
+    REQUIRE(peb0.get_cx_config() == cx_config);
+
+    Op_ptr op1 = coms[1].get_op_ptr();
+    REQUIRE(op1->get_type() == OpType::PauliExpBox);
+    const PauliExpBox& peb1 = static_cast<const PauliExpBox&>(*op1);
+    REQUIRE(peb1.get_paulis() == paulis0);
+    REQUIRE(peb1.get_phase() == phase0);
+    REQUIRE(peb1.get_cx_config() == cx_config);
+
+    Op_ptr op2 = coms[2].get_op_ptr();
+    REQUIRE(op2->get_type() == OpType::PauliExpBox);
+    const PauliExpBox& peb2 = static_cast<const PauliExpBox&>(*op2);
+    REQUIRE(peb2.get_paulis() == paulis2);
+    // the synthesis method combines identical terms
+    REQUIRE(peb2.get_phase() == phase2 + phase4);
+    REQUIRE(peb2.get_cx_config() == cx_config);
+
+    Op_ptr op3 = coms[3].get_op_ptr();
+    REQUIRE(op3->get_type() == OpType::PauliExpBox);
+    const PauliExpBox& peb3 = static_cast<const PauliExpBox&>(*op3);
+    REQUIRE(peb3.get_paulis() == paulis3);
+    REQUIRE(peb3.get_phase() == phase3);
+    REQUIRE(peb3.get_cx_config() == cx_config);
+  }
 }
 
 }  // namespace test_PauliExpBoxes
