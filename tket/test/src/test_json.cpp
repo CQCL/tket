@@ -389,13 +389,13 @@ SCENARIO("Test Circuit serialization") {
         {{{Pauli::I, Pauli::X, Pauli::Z, Pauli::I, Pauli::Z}, 0.3112},
          {{Pauli::I, Pauli::Y, Pauli::I, Pauli::Z, Pauli::Y}, 1.178},
          {{Pauli::X, Pauli::X, Pauli::I, Pauli::Y, Pauli::I}, -0.911}},
-        PauliSynthStrat::Sets, PauliPartitionStrat::CommutingSets,
+        Transforms::PauliSynthStrat::Sets, PauliPartitionStrat::CommutingSets,
         GraphColourMethod::Lazy, CXConfigType::Snake);
     c.add_box(pbox, {0, 1, 2, 3, 4});
     nlohmann::json j_pbox = c;
     const Circuit new_c = j_pbox.get<Circuit>();
 
-    const auto& p_b = static_cast<const TermSequenceBoxBox&>(
+    const auto& p_b = static_cast<const TermSequenceBox&>(
         *new_c.get_commands()[0].get_op_ptr());
 
     REQUIRE(p_b.get_pauli_gadgets() == pbox.get_pauli_gadgets());
