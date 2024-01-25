@@ -40,6 +40,7 @@ from pytket.circuit import (
     PauliExpPairBox,
     PauliExpCommutingSetBox,
     QControlBox,
+    TermSequenceBox,
     ToffoliBox,
     ToffoliBoxSynthStrat,
     CustomGateDef,
@@ -507,6 +508,18 @@ def test_boxes() -> None:
     )
     assert psetbox.type == OpType.PauliExpCommutingSetBox
     d.add_pauliexpcommutingsetbox(psetbox, [0, 1, 2, 3])
+    
+
+    tseqbox = TermSequenceBox(
+        [
+            ([Pauli.X, Pauli.X, Pauli.X, Pauli.Y], Symbol("alpha")),  # type: ignore
+            ([Pauli.X, Pauli.X, Pauli.Y, Pauli.X], Symbol("beta")),  # type: ignore
+            ([Pauli.X, Pauli.Y, Pauli.X, Pauli.X], Symbol("gamma")),  # type: ignore
+        ]
+    )
+    assert tseqbox.type == OpType.TermSequenceBox
+    d.add_termsequencebox(psetbox, [0, 1, 2, 3])
+    
 
     qcbox = QControlBox(Op.create(OpType.S), 2)
     assert qcbox.type == OpType.QControlBox
