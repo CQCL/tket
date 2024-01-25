@@ -900,7 +900,7 @@ SCENARIO("TermSequenceBox", "[boxes]") {
     auto synth_strat = Transforms::PauliSynthStrat::Individual;
     auto partition_strat = PauliPartitionStrat::CommutingSets;
     auto colouring_method = GraphColourMethod::Lazy;
-    auto cx_config = CXConfigType::Tree;
+    auto cx_config = CXConfigType::Snake;
     auto box = TermSequenceBox(
         {{paulis0, phase0},
          {paulis1, phase1},
@@ -946,7 +946,186 @@ SCENARIO("TermSequenceBox", "[boxes]") {
     REQUIRE(peb3.get_phase() == phase3);
     REQUIRE(peb3.get_cx_config() == cx_config);
   }
-}
+  GIVEN(
+      "circuit construction, PauliSynthStrat::Pairwise, even number of reduced "
+      "terms") {
+    auto paulis0 = std::vector<Pauli>{Pauli::X, Pauli::Y, Pauli::Z, Pauli::Y};
+    auto paulis1 = std::vector<Pauli>{Pauli::I, Pauli::Y, Pauli::Y, Pauli::Y};
+    auto paulis2 = std::vector<Pauli>{Pauli::Y, Pauli::Z, Pauli::I, Pauli::X};
+    auto paulis3 = std::vector<Pauli>{Pauli::Z, Pauli::I, Pauli::X, Pauli::I};
+    auto phase0 = Expr(0.25);
+    auto phase1 = Expr(0.4);
+    auto phase2 = Expr(1.3);
+    auto phase3 = Expr(1.7);
+    auto phase4 = Expr(1.4);
+    auto synth_strat = Transforms::PauliSynthStrat::Pairwise;
+    auto partition_strat = PauliPartitionStrat::CommutingSets;
+    auto colouring_method = GraphColourMethod::Lazy;
+    auto cx_config = CXConfigType::Snake;
 
+    auto box = TermSequenceBox(
+        {{paulis0, phase0},
+         {paulis1, phase1},
+         {paulis2, phase2},
+         {paulis3, phase3},
+         {paulis2, phase4}},
+        synth_strat, partition_strat, colouring_method, cx_config);
+    Circuit c = *box.to_circuit();
+    REQUIRE(c.n_gates() == 2);
+    std::vector<Command> coms = c.get_commands();
+
+    Op_ptr op0 = coms[0].get_op_ptr();
+    REQUIRE(op0->get_type() == OpType::PauliExpPairBox);
+    const PauliExpPairBox& pebp0 = static_cast<const PauliExpPairBox&>(*op0);
+    std::pair<std::vector<Pauli>, std::vector<Pauli>> pauli_pair0 =
+        pebp0.get_paulis_pair();
+    REQUIRE(pauli_pair0.first == paulis1);
+    REQUIRE(pauli_pair0.second == paulis0);
+    std::pair<Expr, Expr> phase_pair0 = pebp0.get_phase_pair();
+    REQUIRE(phase_pair0.first == phase1);
+    REQUIRE(phase_pair0.second == phase0);
+    REQUIRE(pebp0.get_cx_config() == cx_config);
+
+    Op_ptr op1 = coms[1].get_op_ptr();
+    REQUIRE(op1->get_type() == OpType::PauliExpPairBox);
+    const PauliExpPairBox& pebp1 = static_cast<const PauliExpPairBox&>(*op1);
+    std::pair<std::vector<Pauli>, std::vector<Pauli>> pauli_pair1 =
+        pebp1.get_paulis_pair();
+    REQUIRE(pauli_pair1.first == paulis2);
+    REQUIRE(pauli_pair1.second == paulis3);
+    std::pair<Expr, Expr> phase_pair1 = pebp1.get_phase_pair();
+    REQUIRE(phase_pair1.first == phase2 + phase4);
+    REQUIRE(phase_pair1.second == phase3);
+    REQUIRE(pebp1.get_cx_config() == cx_config);
+  }
+  GIVEN(
+      "circuit construction, PauliSynthStrat::Pairwise, odd number of reduced "
+      "terms") {
+    auto paulis0 = std::vector<Pauli>{Pauli::X, Pauli::Y, Pauli::Z, Pauli::Y};
+    auto paulis1 = std::vector<Pauli>{Pauli::I, Pauli::Y, Pauli::Y, Pauli::Y};
+    auto paulis2 = std::vector<Pauli>{Pauli::Y, Pauli::Z, Pauli::I, Pauli::X};
+    auto paulis3 = std::vector<Pauli>{Pauli::Z, Pauli::I, Pauli::X, Pauli::I};
+    auto paulis4 = std::vector<Pauli>{Pauli::Z, Pauli::X, Pauli::Y, Pauli::I};
+    auto phase0 = Expr(0.25);
+    auto phase1 = Expr(0.4);
+    auto phase2 = Expr(1.3);
+    auto phase3 = Expr(1.7);
+    auto phase4 = Expr(1.4);
+    auto synth_strat = Transforms::PauliSynthStrat::Pairwise;
+    auto partition_strat = PauliPartitionStrat::CommutingSets;
+    auto colouring_method = GraphColourMethod::Lazy;
+    auto cx_config = CXConfigType::Snake;
+
+    auto box = TermSequenceBox(
+        {{paulis0, phase0},
+         {paulis1, phase1},
+         {paulis2, phase2},
+         {paulis3, phase3},
+         {paulis2, phase4},
+         {paulis4, phase4}},
+        synth_strat, partition_strat, colouring_method, cx_config);
+    Circuit c = *box.to_circuit();
+    REQUIRE(c.n_gates() == 3);
+    std::vector<Command> coms = c.get_commands();
+
+    Op_ptr op0 = coms[0].get_op_ptr();
+    REQUIRE(op0->get_type() == OpType::PauliExpBox);
+    const PauliExpBox& peb0 = static_cast<const PauliExpBox&>(*op0);
+    REQUIRE(peb0.get_paulis() == paulis1);
+    REQUIRE(peb0.get_phase() == phase1);
+    REQUIRE(peb0.get_cx_config() == cx_config);
+
+    Op_ptr op1 = coms[1].get_op_ptr();
+    REQUIRE(op1->get_type() == OpType::PauliExpPairBox);
+    const PauliExpPairBox& pebp1 = static_cast<const PauliExpPairBox&>(*op1);
+    std::pair<std::vector<Pauli>, std::vector<Pauli>> pauli_pair1 =
+        pebp1.get_paulis_pair();
+    REQUIRE(pauli_pair1.first == paulis0);
+    REQUIRE(pauli_pair1.second == paulis2);
+    std::pair<Expr, Expr> phase_pair1 = pebp1.get_phase_pair();
+    REQUIRE(phase_pair1.first == phase0);
+    REQUIRE(phase_pair1.second == phase2 + phase4);
+    REQUIRE(pebp1.get_cx_config() == cx_config);
+
+    Op_ptr op2 = coms[2].get_op_ptr();
+    REQUIRE(op2->get_type() == OpType::PauliExpPairBox);
+    const PauliExpPairBox& pebp2 = static_cast<const PauliExpPairBox&>(*op2);
+    std::pair<std::vector<Pauli>, std::vector<Pauli>> pauli_pair2 =
+        pebp2.get_paulis_pair();
+    REQUIRE(pauli_pair2.first == paulis3);
+    REQUIRE(pauli_pair2.second == paulis4);
+    std::pair<Expr, Expr> phase_pair2 = pebp2.get_phase_pair();
+    REQUIRE(phase_pair2.first == phase3);
+    REQUIRE(phase_pair2.second == phase4);
+    REQUIRE(pebp2.get_cx_config() == cx_config);
+  }
+  GIVEN("circuit construction, PauliSynthStrat::Sets") {
+    auto paulis0 = std::vector<Pauli>{Pauli::X, Pauli::Y, Pauli::Z, Pauli::Y};
+    auto paulis1 = std::vector<Pauli>{Pauli::I, Pauli::Y, Pauli::Y, Pauli::Y};
+    auto paulis2 = std::vector<Pauli>{Pauli::Y, Pauli::Z, Pauli::I, Pauli::X};
+    auto paulis3 = std::vector<Pauli>{Pauli::Z, Pauli::I, Pauli::X, Pauli::I};
+    auto paulis4 = std::vector<Pauli>{Pauli::Z, Pauli::X, Pauli::Y, Pauli::I};
+    auto phase0 = Expr(0.25);
+    auto phase1 = Expr(0.4);
+    auto phase2 = Expr(1.3);
+    auto phase3 = Expr(1.7);
+    auto phase4 = Expr(1.4);
+    auto synth_strat = Transforms::PauliSynthStrat::Sets;
+    auto partition_strat = PauliPartitionStrat::CommutingSets;
+    auto colouring_method = GraphColourMethod::Lazy;
+    auto cx_config = CXConfigType::Snake;
+
+    auto box = TermSequenceBox(
+        {{paulis0, phase0},
+         {paulis1, phase1},
+         {paulis2, phase2},
+         {paulis3, phase3},
+         {paulis2, phase4},
+         {paulis4, phase4}},
+        synth_strat, partition_strat, colouring_method, cx_config);
+    Circuit c = *box.to_circuit();
+    std::cout << c << std::endl;
+    REQUIRE(c.n_gates() == 3);
+
+    std::vector<Command> coms = c.get_commands();
+
+    Op_ptr op0 = coms[0].get_op_ptr();
+    REQUIRE(op0->get_type() == OpType::PauliExpCommutingSetBox);
+    const PauliExpCommutingSetBox& peb0 =
+        static_cast<const PauliExpCommutingSetBox&>(*op0);
+    REQUIRE(peb0.get_cx_config() == cx_config);
+    std::vector<SymPauliTensor> gadgets0 = peb0.get_pauli_gadgets();
+    REQUIRE(gadgets0.size() == 2);
+    REQUIRE(gadgets0[0].string == paulis1);
+    REQUIRE(gadgets0[0].coeff == phase1);
+    REQUIRE(gadgets0[1].string == paulis2);
+    REQUIRE(gadgets0[1].coeff == phase2 + phase4);
+
+    Op_ptr op1 = coms[1].get_op_ptr();
+    REQUIRE(op1->get_type() == OpType::PauliExpCommutingSetBox);
+    const PauliExpCommutingSetBox& peb1 =
+        static_cast<const PauliExpCommutingSetBox&>(*op1);
+    REQUIRE(peb1.get_cx_config() == cx_config);
+    std::vector<SymPauliTensor> gadgets1 = peb1.get_pauli_gadgets();
+
+    REQUIRE(gadgets1.size() == 2);
+
+    REQUIRE(gadgets1[0].string == paulis0);
+    REQUIRE(gadgets1[0].coeff == phase0);
+    REQUIRE(gadgets1[1].string == paulis3);
+    REQUIRE(gadgets1[1].coeff == phase3);
+
+    Op_ptr op2 = coms[2].get_op_ptr();
+    REQUIRE(op2->get_type() == OpType::PauliExpCommutingSetBox);
+    const PauliExpCommutingSetBox& peb2 =
+        static_cast<const PauliExpCommutingSetBox&>(*op2);
+    REQUIRE(peb2.get_cx_config() == cx_config);
+    std::vector<SymPauliTensor> gadgets2 = peb2.get_pauli_gadgets();
+
+    REQUIRE(gadgets2.size() == 1);
+    REQUIRE(gadgets2[0].string == paulis4);
+    REQUIRE(gadgets2[0].coeff == phase4);
+  }
+}
 }  // namespace test_PauliExpBoxes
 }  // namespace tket

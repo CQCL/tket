@@ -528,7 +528,9 @@ void TermSequenceBox::generate_circuit() const {
   }
 
   // First combine any PauliGadgets with the same dense string into the same
-  // term,
+  // term
+  // n.b. the map assigns an ordering to the Pauli terms, meaning it
+  // is an algorithm effecting step
   std::map<DensePauliMap, Expr> reduced_pauli_gadgets;
   for (const SymPauliTensor &pauli_gadget : this->pauli_gadgets_) {
     auto it = reduced_pauli_gadgets.find(pauli_gadget.string);
