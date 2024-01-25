@@ -390,16 +390,16 @@ void init_boxes(py::module &m) {
           ":return: the corresponding list of Pauli gadgets")
       .def(
           "get_synthesis_strategy", &TermSequenceBox::get_synth_strategy,
-          ":return: synthesis strategy");
-  .def(
-      "get_partition_strategy", &TermSequenceBox::get_partition_strategy,
-      ":return: partitioning strategy");
-  .def(
-      "get_graph_colouring_method", &TermSequenceBox::get_graph_colouring,
-      ":return: graph colouring method");
-  .def(
-      "get_cx_config", &TermSequenceBox::get_cx_config,
-      ":return: cx decomposition method");
+          ":return: synthesis strategy")
+      .def(
+          "get_partition_strategy", &TermSequenceBox::get_partition_strategy,
+          ":return: partitioning strategy")
+      .def(
+          "get_graph_colouring_method", &TermSequenceBox::get_graph_colouring,
+          ":return: graph colouring method")
+      .def(
+          "get_cx_config", &TermSequenceBox::get_cx_config,
+          ":return: cx decomposition method");
 
   py::enum_<ToffoliBoxSynthStrat>(
       m, "ToffoliBoxSynthStrat",
