@@ -9,7 +9,7 @@ import pytket.circuit.logic_exp
 import pytket.wasm.wasm
 import sympy
 import typing
-__all__ = ['BarrierOp', 'BasisOrder', 'CXConfigType', 'CircBox', 'Circuit', 'ClassicalEvalOp', 'ClassicalExpBox', 'ClassicalOp', 'Command', 'Conditional', 'ConjugationBox', 'CopyBitsOp', 'CustomGate', 'CustomGateDef', 'DiagonalBox', 'DummyBox', 'EdgeType', 'ExpBox', 'MetaOp', 'MultiBitOp', 'MultiplexedRotationBox', 'MultiplexedTensoredU2Box', 'MultiplexedU2Box', 'MultiplexorBox', 'Op', 'OpType', 'PauliExpBox', 'PauliExpCommutingSetBox', 'PauliExpPairBox', 'PhasePolyBox', 'ProjectorAssertionBox', 'QControlBox', 'RangePredicateOp', 'ResourceBounds', 'ResourceData', 'SetBitsOp', 'StabiliserAssertionBox', 'StatePreparationBox', 'ToffoliBox', 'ToffoliBoxSynthStrat', 'Unitary1qBox', 'Unitary2qBox', 'Unitary3qBox', 'WASMOp', 'fresh_symbol']
+__all__ = ['BarrierOp', 'BasisOrder', 'CXConfigType', 'CircBox', 'Circuit', 'ClassicalEvalOp', 'ClassicalExpBox', 'ClassicalOp', 'Command', 'Conditional', 'ConjugationBox', 'CopyBitsOp', 'CustomGate', 'CustomGateDef', 'DiagonalBox', 'DummyBox', 'EdgeType', 'ExpBox', 'MetaOp', 'MultiBitOp', 'MultiplexedRotationBox', 'MultiplexedTensoredU2Box', 'MultiplexedU2Box', 'MultiplexorBox', 'Op', 'OpType', 'PauliExpBox', 'PauliExpCommutingSetBox', 'PauliExpPairBox', 'PhasePolyBox', 'ProjectorAssertionBox', 'QControlBox', 'RangePredicateOp', 'ResourceBounds', 'ResourceData', 'SetBitsOp', 'StabiliserAssertionBox', 'StatePreparationBox', 'TermSequenceBox', 'ToffoliBox', 'ToffoliBoxSynthStrat', 'Unitary1qBox', 'Unitary2qBox', 'Unitary3qBox', 'WASMOp', 'fresh_symbol']
 class BarrierOp(Op):
     """
     Barrier operations.
@@ -1666,6 +1666,24 @@ class Circuit:
         Append a :py:class:`PauliExpCommutingSetBox` to the circuit.
         
         :param pauliexpcommutingsetbox: The box to append
+        :param qubits: The qubits to append the box to
+        :return: the new :py:class:`Circuit`
+        """
+    @typing.overload
+    def add_termsequencebox(self, termsequencebox: TermSequenceBox, qubits: typing.Sequence[int], **kwargs: Any) -> Circuit:
+        """
+        Append a :py:class:`TermSequenceBox` to the circuit.
+        
+        :param termsequencebox: The box to append
+        :param qubits: Indices of the qubits to append the box to
+        :return: the new :py:class:`Circuit`
+        """
+    @typing.overload
+    def add_termsequencebox(self, termsequencebox: TermSequenceBox, typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+        """
+        Append a :py:class:`TermSequenceBox` to the circuit.
+        
+        :param termsequencebox: The box to append
         :param qubits: The qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
