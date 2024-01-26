@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Features:
+
+* Add ``WasmFileHandler.bytecode()`` method to retrieve the WASM as bytecode.
+
 1.24.0 (January 2024)
 ---------------------
 
