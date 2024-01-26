@@ -91,7 +91,6 @@ class WasmFileHandler:
         self._unsupported_function = []
 
         if self._check_file:
-
             mod_iter = iter(decode_module(self._wasm_file))
             _, _ = next(mod_iter)
 
@@ -143,7 +142,6 @@ class WasmFileHandler:
                     self._function_types = cur_sec_data.payload.types
 
             for x in function_names:
-
                 # check for only integer type in parameters and return values
                 supported_function = True
                 idx = _func_lookup[x][1]
@@ -213,6 +211,10 @@ class WasmFileHandler:
                 """the content of the wasm file can only be printed if the
 wasm file was checked"""
             )
+
+    def bytecode(self) -> bytes:
+        """The WASM content as bytecode"""
+        return self._wasm_file
 
     def check_function(
         self, function_name: str, number_of_parameters: int, number_of_returns: int
