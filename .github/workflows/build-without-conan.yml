@@ -30,8 +30,8 @@ jobs:
     - name: Install boost
       run: |
         cd ${TMP_DIR}
-        wget -O boost_1_83_0.tar.gz https://sourceforge.net/projects/boost/files/boost/1.83.0/boost_1_83_0.tar.gz/download
-        tar xzvf boost_1_83_0.tar.gz
+        wget -O boost_1_84_0.tar.gz https://sourceforge.net/projects/boost/files/boost/1.84.0/boost_1_84_0.tar.gz/download
+        tar xzvf boost_1_84_0.tar.gz
         cd boost_1_83_0/
         ./bootstrap.sh --prefix=${INSTALL_DIR}
         ./b2
