@@ -3,7 +3,9 @@ from typing import Any
 from __future__ import annotations
 import numpy
 import pytket._tket.architecture
+import pytket._tket.partition
 import pytket._tket.pauli
+import pytket._tket.transform
 import pytket._tket.unit_id
 import pytket.circuit.logic_exp
 import pytket.wasm.wasm
@@ -1670,24 +1672,6 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_termsequencebox(self, termsequencebox: TermSequenceBox, qubits: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`TermSequenceBox` to the circuit.
-        
-        :param termsequencebox: The box to append
-        :param qubits: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_termsequencebox(self, termsequencebox: TermSequenceBox, typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`TermSequenceBox` to the circuit.
-        
-        :param termsequencebox: The box to append
-        :param qubits: The qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
     def add_pauliexppairbox(self, pauliexppairbox: PauliExpPairBox, qubits: typing.Sequence[int], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`PauliExpPairBox` to the circuit.
@@ -1788,6 +1772,24 @@ class Circuit:
         
         :param box: The box to append
         :param args: Indices of the qubits to append the box to
+        :return: the new :py:class:`Circuit`
+        """
+    @typing.overload
+    def add_termsequencebox(self, termsequencebox: TermSequenceBox, qubits: typing.Sequence[int], **kwargs: Any) -> Circuit:
+        """
+        Append a :py:class:`TermSequenceBox` to the circuit.
+        
+        :param termsequencebox: The box to append
+        :param qubits: Indices of the qubits to append the box to
+        :return: the new :py:class:`Circuit`
+        """
+    @typing.overload
+    def add_termsequencebox(self, termsequencebox: TermSequenceBox, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+        """
+        Append a :py:class:`TermSequenceBox` to the circuit.
+        
+        :param termsequencebox: The box to append
+        :param qubits: The qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
@@ -3136,6 +3138,8 @@ class OpType:
     
       PauliExpCommutingSetBox : An operation defined as a setof commuting exponentials of the form :math:`e^{-\frac{i\pi\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
     
+      TermSequenceBox : An operation defined as a setof exponentials of the form :math:`e^{-\frac{i\pi\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
+    
       QControlBox : An arbitrary n-controlled operation
     
       ToffoliBox : A permutation of classical basis states
@@ -3233,18 +3237,18 @@ class OpType:
     CY: typing.ClassVar[OpType]  # value = <OpType.CY: 43>
     CZ: typing.ClassVar[OpType]  # value = <OpType.CZ: 44>
     CircBox: typing.ClassVar[OpType]  # value = <OpType.CircBox: 84>
-    ClassicalExpBox: typing.ClassVar[OpType]  # value = <OpType.ClassicalExpBox: 103>
+    ClassicalExpBox: typing.ClassVar[OpType]  # value = <OpType.ClassicalExpBox: 104>
     ClassicalTransform: typing.ClassVar[OpType]  # value = <OpType.ClassicalTransform: 13>
     CnRy: typing.ClassVar[OpType]  # value = <OpType.CnRy: 80>
     CnX: typing.ClassVar[OpType]  # value = <OpType.CnX: 81>
     CnY: typing.ClassVar[OpType]  # value = <OpType.CnY: 83>
     CnZ: typing.ClassVar[OpType]  # value = <OpType.CnZ: 82>
-    Conditional: typing.ClassVar[OpType]  # value = <OpType.Conditional: 104>
-    ConjugationBox: typing.ClassVar[OpType]  # value = <OpType.ConjugationBox: 102>
+    Conditional: typing.ClassVar[OpType]  # value = <OpType.Conditional: 105>
+    ConjugationBox: typing.ClassVar[OpType]  # value = <OpType.ConjugationBox: 103>
     CopyBits: typing.ClassVar[OpType]  # value = <OpType.CopyBits: 16>
-    CustomGate: typing.ClassVar[OpType]  # value = <OpType.CustomGate: 93>
-    DiagonalBox: typing.ClassVar[OpType]  # value = <OpType.DiagonalBox: 101>
-    DummyBox: typing.ClassVar[OpType]  # value = <OpType.DummyBox: 109>
+    CustomGate: typing.ClassVar[OpType]  # value = <OpType.CustomGate: 94>
+    DiagonalBox: typing.ClassVar[OpType]  # value = <OpType.DiagonalBox: 102>
+    DummyBox: typing.ClassVar[OpType]  # value = <OpType.DummyBox: 110>
     ECR: typing.ClassVar[OpType]  # value = <OpType.ECR: 66>
     ESWAP: typing.ClassVar[OpType]  # value = <OpType.ESWAP: 75>
     ExpBox: typing.ClassVar[OpType]  # value = <OpType.ExpBox: 88>
@@ -3258,19 +3262,19 @@ class OpType:
     Label: typing.ClassVar[OpType]  # value = <OpType.Label: 9>
     Measure: typing.ClassVar[OpType]  # value = <OpType.Measure: 63>
     MultiBit: typing.ClassVar[OpType]  # value = <OpType.MultiBit: 20>
-    MultiplexedRotationBox: typing.ClassVar[OpType]  # value = <OpType.MultiplexedRotationBox: 97>
-    MultiplexedTensoredU2Box: typing.ClassVar[OpType]  # value = <OpType.MultiplexedTensoredU2Box: 99>
-    MultiplexedU2Box: typing.ClassVar[OpType]  # value = <OpType.MultiplexedU2Box: 98>
-    MultiplexorBox: typing.ClassVar[OpType]  # value = <OpType.MultiplexorBox: 96>
+    MultiplexedRotationBox: typing.ClassVar[OpType]  # value = <OpType.MultiplexedRotationBox: 98>
+    MultiplexedTensoredU2Box: typing.ClassVar[OpType]  # value = <OpType.MultiplexedTensoredU2Box: 100>
+    MultiplexedU2Box: typing.ClassVar[OpType]  # value = <OpType.MultiplexedU2Box: 99>
+    MultiplexorBox: typing.ClassVar[OpType]  # value = <OpType.MultiplexorBox: 97>
     NPhasedX: typing.ClassVar[OpType]  # value = <OpType.NPhasedX: 69>
     PauliExpBox: typing.ClassVar[OpType]  # value = <OpType.PauliExpBox: 89>
     PauliExpCommutingSetBox: typing.ClassVar[OpType]  # value = <OpType.PauliExpCommutingSetBox: 91>
     PauliExpPairBox: typing.ClassVar[OpType]  # value = <OpType.PauliExpPairBox: 90>
     Phase: typing.ClassVar[OpType]  # value = <OpType.Phase: 21>
-    PhasePolyBox: typing.ClassVar[OpType]  # value = <OpType.PhasePolyBox: 94>
+    PhasePolyBox: typing.ClassVar[OpType]  # value = <OpType.PhasePolyBox: 95>
     PhasedISWAP: typing.ClassVar[OpType]  # value = <OpType.PhasedISWAP: 79>
     PhasedX: typing.ClassVar[OpType]  # value = <OpType.PhasedX: 68>
-    QControlBox: typing.ClassVar[OpType]  # value = <OpType.QControlBox: 95>
+    QControlBox: typing.ClassVar[OpType]  # value = <OpType.QControlBox: 96>
     RangePredicate: typing.ClassVar[OpType]  # value = <OpType.RangePredicate: 17>
     Reset: typing.ClassVar[OpType]  # value = <OpType.Reset: 65>
     Rx: typing.ClassVar[OpType]  # value = <OpType.Rx: 34>
@@ -3282,14 +3286,15 @@ class OpType:
     SXdg: typing.ClassVar[OpType]  # value = <OpType.SXdg: 32>
     Sdg: typing.ClassVar[OpType]  # value = <OpType.Sdg: 26>
     SetBits: typing.ClassVar[OpType]  # value = <OpType.SetBits: 15>
-    StatePreparationBox: typing.ClassVar[OpType]  # value = <OpType.StatePreparationBox: 100>
+    StatePreparationBox: typing.ClassVar[OpType]  # value = <OpType.StatePreparationBox: 101>
     Stop: typing.ClassVar[OpType]  # value = <OpType.Stop: 12>
     Sycamore: typing.ClassVar[OpType]  # value = <OpType.Sycamore: 77>
     T: typing.ClassVar[OpType]  # value = <OpType.T: 27>
     TK1: typing.ClassVar[OpType]  # value = <OpType.TK1: 40>
     TK2: typing.ClassVar[OpType]  # value = <OpType.TK2: 41>
     Tdg: typing.ClassVar[OpType]  # value = <OpType.Tdg: 28>
-    ToffoliBox: typing.ClassVar[OpType]  # value = <OpType.ToffoliBox: 107>
+    TermSequenceBox: typing.ClassVar[OpType]  # value = <OpType.TermSequenceBox: 92>
+    ToffoliBox: typing.ClassVar[OpType]  # value = <OpType.ToffoliBox: 108>
     U1: typing.ClassVar[OpType]  # value = <OpType.U1: 39>
     U2: typing.ClassVar[OpType]  # value = <OpType.U2: 38>
     U3: typing.ClassVar[OpType]  # value = <OpType.U3: 37>
@@ -3307,7 +3312,7 @@ class OpType:
     Z: typing.ClassVar[OpType]  # value = <OpType.Z: 22>
     ZZMax: typing.ClassVar[OpType]  # value = <OpType.ZZMax: 70>
     ZZPhase: typing.ClassVar[OpType]  # value = <OpType.ZZPhase: 73>
-    __members__: typing.ClassVar[dict[str, OpType]]  # value = {'Phase': <OpType.Phase: 21>, 'Z': <OpType.Z: 22>, 'X': <OpType.X: 23>, 'Y': <OpType.Y: 24>, 'S': <OpType.S: 25>, 'Sdg': <OpType.Sdg: 26>, 'T': <OpType.T: 27>, 'Tdg': <OpType.Tdg: 28>, 'V': <OpType.V: 29>, 'Vdg': <OpType.Vdg: 30>, 'SX': <OpType.SX: 31>, 'SXdg': <OpType.SXdg: 32>, 'H': <OpType.H: 33>, 'Rx': <OpType.Rx: 34>, 'Ry': <OpType.Ry: 35>, 'Rz': <OpType.Rz: 36>, 'U1': <OpType.U1: 39>, 'U2': <OpType.U2: 38>, 'U3': <OpType.U3: 37>, 'TK1': <OpType.TK1: 40>, 'TK2': <OpType.TK2: 41>, 'CX': <OpType.CX: 42>, 'CY': <OpType.CY: 43>, 'CZ': <OpType.CZ: 44>, 'CH': <OpType.CH: 45>, 'CV': <OpType.CV: 46>, 'CVdg': <OpType.CVdg: 47>, 'CSX': <OpType.CSX: 48>, 'CSXdg': <OpType.CSXdg: 49>, 'CS': <OpType.CS: 50>, 'CSdg': <OpType.CSdg: 51>, 'CRz': <OpType.CRz: 52>, 'CRx': <OpType.CRx: 53>, 'CRy': <OpType.CRy: 54>, 'CU1': <OpType.CU1: 55>, 'CU3': <OpType.CU3: 56>, 'CCX': <OpType.CCX: 58>, 'ECR': <OpType.ECR: 66>, 'SWAP': <OpType.SWAP: 59>, 'CSWAP': <OpType.CSWAP: 60>, 'noop': <OpType.noop: 62>, 'Barrier': <OpType.Barrier: 8>, 'Label': <OpType.Label: 9>, 'Branch': <OpType.Branch: 10>, 'Goto': <OpType.Goto: 11>, 'Stop': <OpType.Stop: 12>, 'BRIDGE': <OpType.BRIDGE: 61>, 'Measure': <OpType.Measure: 63>, 'Reset': <OpType.Reset: 65>, 'CircBox': <OpType.CircBox: 84>, 'PhasePolyBox': <OpType.PhasePolyBox: 94>, 'Unitary1qBox': <OpType.Unitary1qBox: 85>, 'Unitary2qBox': <OpType.Unitary2qBox: 86>, 'Unitary3qBox': <OpType.Unitary3qBox: 87>, 'ExpBox': <OpType.ExpBox: 88>, 'PauliExpBox': <OpType.PauliExpBox: 89>, 'PauliExpPairBox': <OpType.PauliExpPairBox: 90>, 'PauliExpCommutingSetBox': <OpType.PauliExpCommutingSetBox: 91>, 'QControlBox': <OpType.QControlBox: 95>, 'ToffoliBox': <OpType.ToffoliBox: 107>, 'ConjugationBox': <OpType.ConjugationBox: 102>, 'DummyBox': <OpType.DummyBox: 109>, 'CustomGate': <OpType.CustomGate: 93>, 'Conditional': <OpType.Conditional: 104>, 'ISWAP': <OpType.ISWAP: 67>, 'PhasedISWAP': <OpType.PhasedISWAP: 79>, 'XXPhase': <OpType.XXPhase: 71>, 'YYPhase': <OpType.YYPhase: 72>, 'ZZPhase': <OpType.ZZPhase: 73>, 'XXPhase3': <OpType.XXPhase3: 74>, 'PhasedX': <OpType.PhasedX: 68>, 'NPhasedX': <OpType.NPhasedX: 69>, 'CnRy': <OpType.CnRy: 80>, 'CnX': <OpType.CnX: 81>, 'CnY': <OpType.CnY: 83>, 'CnZ': <OpType.CnZ: 82>, 'ZZMax': <OpType.ZZMax: 70>, 'ESWAP': <OpType.ESWAP: 75>, 'FSim': <OpType.FSim: 76>, 'Sycamore': <OpType.Sycamore: 77>, 'ISWAPMax': <OpType.ISWAPMax: 78>, 'ClassicalTransform': <OpType.ClassicalTransform: 13>, 'WASM': <OpType.WASM: 14>, 'SetBits': <OpType.SetBits: 15>, 'CopyBits': <OpType.CopyBits: 16>, 'RangePredicate': <OpType.RangePredicate: 17>, 'ExplicitPredicate': <OpType.ExplicitPredicate: 18>, 'ExplicitModifier': <OpType.ExplicitModifier: 19>, 'MultiBit': <OpType.MultiBit: 20>, 'ClassicalExpBox': <OpType.ClassicalExpBox: 103>, 'MultiplexorBox': <OpType.MultiplexorBox: 96>, 'MultiplexedRotationBox': <OpType.MultiplexedRotationBox: 97>, 'MultiplexedU2Box': <OpType.MultiplexedU2Box: 98>, 'MultiplexedTensoredU2Box': <OpType.MultiplexedTensoredU2Box: 99>, 'StatePreparationBox': <OpType.StatePreparationBox: 100>, 'DiagonalBox': <OpType.DiagonalBox: 101>}
+    __members__: typing.ClassVar[dict[str, OpType]]  # value = {'Phase': <OpType.Phase: 21>, 'Z': <OpType.Z: 22>, 'X': <OpType.X: 23>, 'Y': <OpType.Y: 24>, 'S': <OpType.S: 25>, 'Sdg': <OpType.Sdg: 26>, 'T': <OpType.T: 27>, 'Tdg': <OpType.Tdg: 28>, 'V': <OpType.V: 29>, 'Vdg': <OpType.Vdg: 30>, 'SX': <OpType.SX: 31>, 'SXdg': <OpType.SXdg: 32>, 'H': <OpType.H: 33>, 'Rx': <OpType.Rx: 34>, 'Ry': <OpType.Ry: 35>, 'Rz': <OpType.Rz: 36>, 'U1': <OpType.U1: 39>, 'U2': <OpType.U2: 38>, 'U3': <OpType.U3: 37>, 'TK1': <OpType.TK1: 40>, 'TK2': <OpType.TK2: 41>, 'CX': <OpType.CX: 42>, 'CY': <OpType.CY: 43>, 'CZ': <OpType.CZ: 44>, 'CH': <OpType.CH: 45>, 'CV': <OpType.CV: 46>, 'CVdg': <OpType.CVdg: 47>, 'CSX': <OpType.CSX: 48>, 'CSXdg': <OpType.CSXdg: 49>, 'CS': <OpType.CS: 50>, 'CSdg': <OpType.CSdg: 51>, 'CRz': <OpType.CRz: 52>, 'CRx': <OpType.CRx: 53>, 'CRy': <OpType.CRy: 54>, 'CU1': <OpType.CU1: 55>, 'CU3': <OpType.CU3: 56>, 'CCX': <OpType.CCX: 58>, 'ECR': <OpType.ECR: 66>, 'SWAP': <OpType.SWAP: 59>, 'CSWAP': <OpType.CSWAP: 60>, 'noop': <OpType.noop: 62>, 'Barrier': <OpType.Barrier: 8>, 'Label': <OpType.Label: 9>, 'Branch': <OpType.Branch: 10>, 'Goto': <OpType.Goto: 11>, 'Stop': <OpType.Stop: 12>, 'BRIDGE': <OpType.BRIDGE: 61>, 'Measure': <OpType.Measure: 63>, 'Reset': <OpType.Reset: 65>, 'CircBox': <OpType.CircBox: 84>, 'PhasePolyBox': <OpType.PhasePolyBox: 95>, 'Unitary1qBox': <OpType.Unitary1qBox: 85>, 'Unitary2qBox': <OpType.Unitary2qBox: 86>, 'Unitary3qBox': <OpType.Unitary3qBox: 87>, 'ExpBox': <OpType.ExpBox: 88>, 'PauliExpBox': <OpType.PauliExpBox: 89>, 'PauliExpPairBox': <OpType.PauliExpPairBox: 90>, 'PauliExpCommutingSetBox': <OpType.PauliExpCommutingSetBox: 91>, 'TermSequenceBox': <OpType.TermSequenceBox: 92>, 'QControlBox': <OpType.QControlBox: 96>, 'ToffoliBox': <OpType.ToffoliBox: 108>, 'ConjugationBox': <OpType.ConjugationBox: 103>, 'DummyBox': <OpType.DummyBox: 110>, 'CustomGate': <OpType.CustomGate: 94>, 'Conditional': <OpType.Conditional: 105>, 'ISWAP': <OpType.ISWAP: 67>, 'PhasedISWAP': <OpType.PhasedISWAP: 79>, 'XXPhase': <OpType.XXPhase: 71>, 'YYPhase': <OpType.YYPhase: 72>, 'ZZPhase': <OpType.ZZPhase: 73>, 'XXPhase3': <OpType.XXPhase3: 74>, 'PhasedX': <OpType.PhasedX: 68>, 'NPhasedX': <OpType.NPhasedX: 69>, 'CnRy': <OpType.CnRy: 80>, 'CnX': <OpType.CnX: 81>, 'CnY': <OpType.CnY: 83>, 'CnZ': <OpType.CnZ: 82>, 'ZZMax': <OpType.ZZMax: 70>, 'ESWAP': <OpType.ESWAP: 75>, 'FSim': <OpType.FSim: 76>, 'Sycamore': <OpType.Sycamore: 77>, 'ISWAPMax': <OpType.ISWAPMax: 78>, 'ClassicalTransform': <OpType.ClassicalTransform: 13>, 'WASM': <OpType.WASM: 14>, 'SetBits': <OpType.SetBits: 15>, 'CopyBits': <OpType.CopyBits: 16>, 'RangePredicate': <OpType.RangePredicate: 17>, 'ExplicitPredicate': <OpType.ExplicitPredicate: 18>, 'ExplicitModifier': <OpType.ExplicitModifier: 19>, 'MultiBit': <OpType.MultiBit: 20>, 'ClassicalExpBox': <OpType.ClassicalExpBox: 104>, 'MultiplexorBox': <OpType.MultiplexorBox: 97>, 'MultiplexedRotationBox': <OpType.MultiplexedRotationBox: 98>, 'MultiplexedU2Box': <OpType.MultiplexedU2Box: 99>, 'MultiplexedTensoredU2Box': <OpType.MultiplexedTensoredU2Box: 100>, 'StatePreparationBox': <OpType.StatePreparationBox: 101>, 'DiagonalBox': <OpType.DiagonalBox: 102>}
     noop: typing.ClassVar[OpType]  # value = <OpType.noop: 62>
     @staticmethod
     def from_name(arg0: str) -> OpType:
@@ -3670,6 +3675,38 @@ class StatePreparationBox(Op):
     def with_initial_reset(self) -> bool:
         """
         :return: flag indicating whether the qubits are explicitly set to the zero state initially
+        """
+class TermSequenceBox(Op):
+    """
+    An operation defined as a set of exponentials of atensor of Pauli operations and their (possibly symbolic) phase parameters.
+    """
+    def __init__(self, pauli_gadgets: typing.Sequence[tuple[typing.Sequence[pytket._tket.pauli.Pauli], sympy.Expr | float]], synthesis_strategy: pytket._tket.transform.PauliSynthStrat = pytket._tket.transform.PauliSynthStrat.Sets, partitioning_strategy: pytket._tket.partition.PauliPartitionStrat = pytket._tket.partition.PauliPartitionStrat.CommutingSets, graph_colouring: pytket._tket.partition.GraphColourMethod = pytket._tket.partition.GraphColourMethod.Lazy, cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
+        """
+        Construct a set of Pauli exponentials of the form :math:`e^{-\frac12 i \pi t_j \sigma_0 \otimes \sigma_1 \otimes \cdots}` from Pauli operator strings :math:`\sigma_i \in \{I,X,Y,Z\}` and parameters :math:`t_j, j \in \{0, 1, \cdots \}`.
+        """
+    def get_circuit(self) -> Circuit:
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
+    def get_cx_config(self) -> CXConfigType:
+        """
+        :return: cx decomposition method
+        """
+    def get_graph_colouring_method(self) -> pytket._tket.partition.GraphColourMethod:
+        """
+        :return: graph colouring method
+        """
+    def get_partition_strategy(self) -> pytket._tket.partition.PauliPartitionStrat:
+        """
+        :return: partitioning strategy
+        """
+    def get_paulis(self) -> list[tuple[list[pytket._tket.pauli.Pauli], sympy.Expr | float]]:
+        """
+        :return: the corresponding list of Pauli gadgets
+        """
+    def get_synthesis_strategy(self) -> pytket._tket.transform.PauliSynthStrat:
+        """
+        :return: synthesis strategy
         """
 class ToffoliBox(Op):
     """

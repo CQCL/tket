@@ -100,7 +100,7 @@ class MeasurementSetup:
         """
     def __repr__(self) -> str:
         ...
-    def add_measurement_circuit(self, circ: pytket._tket.circuit.Circuit) -> None:
+    def add_measurement_circuit(self, circ: ...) -> None:
         """
         Add a Clifford circuit that rotates into some Pauli basis
         """
@@ -121,7 +121,7 @@ class MeasurementSetup:
         :return: True or False
         """
     @property
-    def measurement_circs(self) -> list[pytket._tket.circuit.Circuit]:
+    def measurement_circs(self) -> list[...]:
         """
         Clifford measurement circuits.
         """
