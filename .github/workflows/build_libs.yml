@@ -20,7 +20,7 @@ jobs:
       libs: ${{ steps.filter.outputs.changes }}
     steps:
     - uses: actions/checkout@v4
-    - uses: dorny/paths-filter@v2.11.1
+    - uses: dorny/paths-filter@v3.0.0
       id: filter
       with:
         base: ${{ github.ref }}
@@ -83,8 +83,6 @@ jobs:
     - name: build shared ${{ matrix.lib }}
       if: matrix.lib == 'tklog'
       run: conan create -s build_type=${{ matrix.build_type }} -o boost/*:header_only=True -o ${{ matrix.lib }}/*:shared=True libs/${{ matrix.lib }} --build=missing --user=tket --channel=stable
-    - name: authenticate to repository
-      run: conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
     - name: get version
       shell: bash
       run: |
@@ -92,7 +90,9 @@ jobs:
         echo "LIB_LABEL=${lib_label}" >> $GITHUB_ENV
     - name: upload package
       if: github.event_name == 'push'
-      run: conan upload ${{ env.LIB_LABEL }} -r=tket-libs
+      run: |
+        conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
+        conan upload ${{ env.LIB_LABEL }} -r=tket-libs
   manylinux:
     name: build library (manylinux)
     needs: changes
