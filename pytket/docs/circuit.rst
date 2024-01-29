@@ -2,7 +2,7 @@ pytket.circuit
 ==================================
 .. toctree::
    :caption: Classes:
-   :maxdepth: 2
+   :maxdepth: 1
 
    circuit_class.rst
    optype.rst
@@ -14,106 +14,106 @@ pytket.circuit
 
 .. automodule:: pytket._tket.circuit
     :members: fresh_symbol
-.. autoclass:: pytket._tket.circuit.Op
+.. autoclass:: pytket.circuit.Op
     :members:
-.. autoclass:: pytket._tket.circuit.Command
+.. autoclass:: pytket.circuit.Command
     :members:
-.. autoclass:: pytket._tket.circuit.BasisOrder
+.. autoclass:: pytket.circuit.BasisOrder
     :members:
-.. autoclass:: pytket._tket.circuit.CXConfigType
+.. autoclass:: pytket.circuit.CXConfigType
     :members:
-.. autoclass:: pytket._tket.circuit.CircBox
+.. autoclass:: pytket.circuit.CircBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.Unitary1qBox
+.. autoclass:: pytket.circuit.Unitary1qBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.Unitary2qBox
+.. autoclass:: pytket.circuit.Unitary2qBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.Unitary3qBox
+.. autoclass:: pytket.circuit.Unitary3qBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.ExpBox
+.. autoclass:: pytket.circuit.ExpBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.PauliExpBox
+.. autoclass:: pytket.circuit.PauliExpBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.PauliExpPairBox
+.. autoclass:: pytket.circuit.PauliExpPairBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.ToffoliBox
+.. autoclass:: pytket.circuit.ToffoliBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.QControlBox
+.. autoclass:: pytket.circuit.QControlBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.CustomGateDef
+.. autoclass:: pytket.circuit.CustomGateDef
     :members:
-.. autoclass:: pytket._tket.circuit.CustomGate
+.. autoclass:: pytket.circuit.CustomGate
     :members:
-.. autoclass:: pytket._tket.circuit.Conditional
+.. autoclass:: pytket.circuit.Conditional
     :members:
-.. autoclass:: pytket._tket.circuit.ClassicalExpBox
+.. autoclass:: pytket.circuit.ClassicalExpBox
     :members:
-.. autoclass:: pytket._tket.circuit.PhasePolyBox
+.. autoclass:: pytket.circuit.PhasePolyBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.ProjectorAssertionBox
+.. autoclass:: pytket.circuit.ProjectorAssertionBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.StabiliserAssertionBox
+.. autoclass:: pytket.circuit.StabiliserAssertionBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.WASMOp
+.. autoclass:: pytket.circuit.WASMOp
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.MultiBitOp
+.. autoclass:: pytket.circuit.MultiBitOp
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.SetBitsOp
+.. autoclass:: pytket.circuit.SetBitsOp
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.ClassicalEvalOp
+.. autoclass:: pytket.circuit.ClassicalEvalOp
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.ClassicalOp
+.. autoclass:: pytket.circuit.ClassicalOp
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.CopyBitsOp
+.. autoclass:: pytket.circuit.CopyBitsOp
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.RangePredicateOp
+.. autoclass:: pytket.circuit.RangePredicateOp
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.MultiplexorBox
+.. autoclass:: pytket.circuit.MultiplexorBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.MultiplexedRotationBox
+.. autoclass:: pytket.circuit.MultiplexedRotationBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.MultiplexedU2Box
+.. autoclass:: pytket.circuit.MultiplexedU2Box
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.MultiplexedTensoredU2Box
+.. autoclass:: pytket.circuit.MultiplexedTensoredU2Box
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.StatePreparationBox
+.. autoclass:: pytket.circuit.StatePreparationBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.DiagonalBox
+.. autoclass:: pytket.circuit.DiagonalBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.ConjugationBox
+.. autoclass:: pytket.circuit.ConjugationBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.ResourceBounds
+.. autoclass:: pytket.circuit.ResourceBounds
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.ResourceData
+.. autoclass:: pytket.circuit.ResourceData
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.DummyBox
+.. autoclass:: pytket.circuit.DummyBox
     :special-members:
     :members:
