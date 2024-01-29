@@ -342,6 +342,8 @@ void init_boxes(py::module &m) {
           "get_cx_config", &PauliExpCommutingSetBox::get_cx_config,
           ":return: decomposition method");
 
+  py::module::import("pytket._tket.transform");
+  py::module::import("pytket._tket.partition");
   py::class_<TermSequenceBox, std::shared_ptr<TermSequenceBox>, Op>(
       m, "TermSequenceBox",
       "An operation defined as a set of exponentials of a"

@@ -113,7 +113,7 @@ class Transform:
         Decompose NPhasedX gates into single-qubit PhasedX gates.
         """
     @staticmethod
-    def DecomposeSWAP(circuit: ...) -> Transform:
+    def DecomposeSWAP(circuit: pytket._tket.circuit.Circuit) -> Transform:
         """
         Decomposes all SWAP gates to provided replacement circuit.
         
@@ -317,7 +317,7 @@ class Transform:
         :param body: The Transform to be applied after each successful test of the condition
         :return: a new Transform representing the iteration
         """
-    def __init__(self, arg0: typing.Callable[[...], bool]) -> None:
+    def __init__(self, arg0: typing.Callable[[pytket._tket.circuit.Circuit], bool]) -> None:
         ...
     def __rshift__(self, arg0: Transform) -> Transform:
         """
@@ -329,14 +329,14 @@ class Transform:
         
         >>> sequence([a,b])
         """
-    def apply(self, circuit: ...) -> bool:
+    def apply(self, circuit: pytket._tket.circuit.Circuit) -> bool:
         """
         Performs the transformation on the circuit in place.
         
         :param circuit: The circuit to be transformed
         :return: True if any changes were made, else False
         """
-def separate_classical(circ: ...) -> tuple[..., ...]:
+def separate_classical(circ: pytket._tket.circuit.Circuit) -> tuple[pytket._tket.circuit.Circuit, pytket._tket.circuit.Circuit]:
     """
     Separate the input circuit into a 'main' circuit and a classical 'post-processing' circuit, which are equivalent to the original when composed.
     
