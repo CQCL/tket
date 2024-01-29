@@ -20,8 +20,6 @@ pytket.circuit
     :members:
 .. autoclass:: pytket.circuit.BasisOrder
     :members:
-.. autoclass:: pytket.circuit.CircBox
-    :members:
 .. autoclass:: pytket.circuit.CXConfigType
     :members:
 .. autoclass:: pytket.circuit.CircBox
