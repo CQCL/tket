@@ -1084,7 +1084,6 @@ SCENARIO("TermSequenceBox", "[boxes]") {
          {paulis4, phase4}},
         synth_strat, partition_strat, colouring_method, cx_config);
     Circuit c = *box.to_circuit();
-    std::cout << c << std::endl;
     REQUIRE(c.n_gates() == 3);
 
     std::vector<Command> coms = c.get_commands();
