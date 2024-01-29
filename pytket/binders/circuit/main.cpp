@@ -574,8 +574,8 @@ PYBIND11_MODULE(circuit, m) {
           "converse is not the case as some Clifford operations may not be "
           "detected as such.")
       .def("is_gate", [](const Op &op) { return op.get_desc().is_gate(); });
-      py::module::import("pytket._tket.transform");
-      py::module::import("pytket._tket.partition");
+  py::module::import("pytket._tket.transform");
+  py::module::import("pytket._tket.partition");
 
   py::enum_<BasisOrder>(
       m, "BasisOrder",
