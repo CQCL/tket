@@ -10,8 +10,6 @@ pytket.circuit
    display.rst
 
 .. currentmodule:: pytket._tket.circuit
-
-
 .. automodule:: pytket._tket.circuit
     :members: fresh_symbol
 .. autoclass:: pytket.circuit.Op
