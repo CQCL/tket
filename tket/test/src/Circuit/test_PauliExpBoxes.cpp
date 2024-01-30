@@ -703,6 +703,17 @@ SCENARIO("TermSequenceBox", "[boxes]") {
         }),
         PauliExpBoxInvalidity);
   }
+  GIVEN("Basic getters") {
+    std::vector<SymPauliTensor> pgadgets = {
+        {{Pauli::X}, 1.0}, {{Pauli::I}, 0.0}, {{Pauli::I}, 0.0}};
+    TermSequenceBox pbox(pgadgets);
+    REQUIRE(pbox.get_synth_strategy() == Transforms::PauliSynthStrat::Sets);
+    REQUIRE(
+        pbox.get_partition_strategy() == PauliPartitionStrat::CommutingSets);
+    REQUIRE(pbox.get_graph_colouring() == GraphColourMethod::Lazy);
+    REQUIRE(pbox.get_cx_config() == CXConfigType::Tree);
+    REQUIRE(pbox.get_pauli_gadgets() == pgadgets);
+  }
   GIVEN("is_clifford test cases") {
     SECTION("Empty Paulis") {
       REQUIRE(TermSequenceBox({{{}, 1.2}, {{}, 0.1}, {{}, 1.1}}).is_clifford());
