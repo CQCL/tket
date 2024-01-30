@@ -19,7 +19,7 @@ class GraphPlacement(Placement):
         :param maximum_pattern_gates: The upper bound on the number of circuit gates used to construct the pattern graph for finding subgraph monomorphisms.
         :param maximum_pattern_depth: The upper bound on the circuit depth gates are added to the pattern graph to for finding subgraph monomorphisms.
         """
-    def __repr__(self: Placement) -> str:
+    def __repr__(self) -> str:
         ...
     def modify_config(self, **kwargs: Any) -> None:
         """
@@ -37,7 +37,7 @@ class LinePlacement(Placement):
         :param maximum_line_gates: maximum number of gates in the circuit considered when constructing lines for assigning to the graph
         :param maximum_line_depth: maximum depth of circuit considered when constructing lines for assigning to the graph
         """
-    def __repr__(self: Placement) -> str:
+    def __repr__(self) -> str:
         ...
 class NoiseAwarePlacement(Placement):
     """
@@ -56,7 +56,7 @@ class NoiseAwarePlacement(Placement):
         :param maximum_pattern_gates: The upper bound on the number of circuit gates used to construct the pattern graph for finding subgraph monomorphisms.
         :param maximum_pattern_depth: The upper bound on the circuit depth gates are added to the pattern graph to for finding subgraph monomorphisms.
         """
-    def __repr__(self: Placement) -> str:
+    def __repr__(self) -> str:
         ...
     def modify_config(self, **kwargs: Any) -> None:
         """

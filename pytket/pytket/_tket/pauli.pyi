@@ -176,14 +176,14 @@ class QubitPauliString:
         :return: a list of :py:class:`Qubit`-to-:py:class:`Pauli` entries, represented as dicts.
         """
     @typing.overload
-    def to_sparse_matrix(self) -> scipy.sparse.csc_matrix:
+    def to_sparse_matrix(self) -> scipy.sparse.csc_matrix[numpy.complex128]:
         """
         Represents the sparse string as a dense string (without padding for extra qubits) and generates the matrix for the tensor. Uses the ILO-BE convention, so ``Qubit("a", 0)`` is more significant that ``Qubit("a", 1)`` and ``Qubit("b")`` for indexing into the matrix.
         
         :return: a sparse matrix corresponding to the operator
         """
     @typing.overload
-    def to_sparse_matrix(self, n_qubits: int) -> scipy.sparse.csc_matrix:
+    def to_sparse_matrix(self, n_qubits: int) -> scipy.sparse.csc_matrix[numpy.complex128]:
         """
         Represents the sparse string as a dense string over `n_qubits` qubits (sequentially indexed from 0 in the default register) and generates the matrix for the tensor. Uses the ILO-BE convention, so ``Qubit(0)`` is the most significant bit for indexing into the matrix.
         
@@ -191,7 +191,7 @@ class QubitPauliString:
         :return: a sparse matrix corresponding to the operator
         """
     @typing.overload
-    def to_sparse_matrix(self, qubits: typing.Sequence[pytket._tket.unit_id.Qubit]) -> scipy.sparse.csc_matrix:
+    def to_sparse_matrix(self, qubits: typing.Sequence[pytket._tket.unit_id.Qubit]) -> scipy.sparse.csc_matrix[numpy.complex128]:
         """
         Represents the sparse string as a dense string and generates the matrix for the tensor. Orders qubits according to `qubits` (padding with identities if they are not in the sparse string), so ``qubits[0]`` is the most significant bit for indexing into the matrix.
         
@@ -297,14 +297,14 @@ class QubitPauliTensor:
         :return: expectation value with respect to state
         """
     @typing.overload
-    def to_sparse_matrix(self) -> scipy.sparse.csc_matrix:
+    def to_sparse_matrix(self) -> scipy.sparse.csc_matrix[numpy.complex128]:
         """
         Represents the sparse string as a dense string (without padding for extra qubits) and generates the matrix for the tensor. Uses the ILO-BE convention, so ``Qubit("a", 0)`` is more significant that ``Qubit("a", 1)`` and ``Qubit("b")`` for indexing into the matrix.
         
         :return: a sparse matrix corresponding to the tensor
         """
     @typing.overload
-    def to_sparse_matrix(self, n_qubits: int) -> scipy.sparse.csc_matrix:
+    def to_sparse_matrix(self, n_qubits: int) -> scipy.sparse.csc_matrix[numpy.complex128]:
         """
         Represents the sparse string as a dense string over `n_qubits` qubits (sequentially indexed from 0 in the default register) and generates the matrix for the tensor. Uses the ILO-BE convention, so ``Qubit(0)`` is the most significant bit for indexing into the matrix.
         
@@ -312,7 +312,7 @@ class QubitPauliTensor:
         :return: a sparse matrix corresponding to the operator
         """
     @typing.overload
-    def to_sparse_matrix(self, qubits: typing.Sequence[pytket._tket.unit_id.Qubit]) -> scipy.sparse.csc_matrix:
+    def to_sparse_matrix(self, qubits: typing.Sequence[pytket._tket.unit_id.Qubit]) -> scipy.sparse.csc_matrix[numpy.complex128]:
         """
         Represents the sparse string as a dense string and generates the matrix for the tensor. Orders qubits according to `qubits` (padding with identities if they are not in the sparse string), so ``qubits[0]`` is the most significant bit for indexing into the matrix.
         
