@@ -134,6 +134,100 @@ PYBIND11_MODULE(tableau, m) {
           "\"Improved Simulation of Stabilizer Circuits\", Theorem 8. This is "
           "not optimised for gate count, so is not recommended for "
           "performance-sensitive usage.");
+  py::class_<UnitaryRevTableau>(
+      m, "UnitaryRevTableau",
+      "Stabilizer tableau for a unitary in the style of Aaronson&Gottesman "
+      "\"Improved Simulation of Stabilizer Circuits\": rows indicate the "
+      "action at the output corresponding to either an X or a Z on a single "
+      "input.")
+      .def(
+          py::init<unsigned>(),
+          "Constructs a :py:class:`UnitaryRevTableau` representing the identity "
+          "operation over some number of qubits. Qubits will be indexed "
+          "sequentially in the default register."
+          "\n\n:param nqb: The number of qubits in the unitary.",
+          py::arg("nqb"))
+      .def(
+          py::init<>([](const Circuit& circ) {
+            return circuit_to_unitary_rev_tableau(circ);
+          }),
+          "Constructs a :py:class:`UnitaryRevTableau` from a unitary "
+          ":py:class:`Circuit`. Throws an exception if the input contains "
+          "non-unitary operations."
+          "\n\n:param circ: The unitary circuit to convert to a tableau.")
+      .def(
+          "__repr__",
+          [](const UnitaryRevTableau& tab) {
+            std::stringstream str;
+            str << tab;
+            return str.str();
+          })
+      .def(
+          "get_xrow",
+          [](const UnitaryRevTableau& tab, const Qubit& qb) {
+            return SpCxPauliTensor(tab.get_xrow(qb));
+          },
+          "Read off an X row as a Pauli string."
+          "\n\n:param qb: The qubits whose X row to read off."
+          "\n:return: The Pauli string :math:`P` such that :math:`PU=UX_{qb}`.",
+          py::arg("qb"))
+      .def(
+          "get_zrow",
+          [](const UnitaryRevTableau& tab, const Qubit& qb) {
+            return SpCxPauliTensor(tab.get_zrow(qb));
+          },
+          "Read off an Z row as a Pauli string."
+          "\n\n:param qb: The qubits whose Z row to read off."
+          "\n:return: The Pauli string :math:`P` such that :math:`PU=UZ_{qb}`.",
+          py::arg("qb"))
+      .def(
+          "get_row_product",
+          [](const UnitaryRevTableau& tab, const SpCxPauliTensor& paulis) {
+            SpCxPauliTensor res =
+                tab.get_row_product(SpPauliStabiliser(paulis.string));
+            res.coeff *= paulis.coeff;
+            return res;
+          },
+          "Combine rows to yield the effect of a given Pauli string."
+          "\n\n:param paulis: The Pauli string :math:`P` to consider at the "
+          "input."
+          "\n:return: The Pauli string :math:`Q` such that :math:`QU=UP`.",
+          py::arg("paulis"))
+      .def(
+          "apply_gate_at_front",
+          [](UnitaryRevTableau& self, const OpType& type,
+             const py_qubit_vector_t& qbs) {
+            return self.apply_gate_at_front(type, qbs);
+          },
+          "Update the tableau according to adding a Clifford gate before the "
+          "current unitary, i.e. updates :math:`U` to :math:`UG` for a gate "
+          ":math:`G`."
+          "\n\n:param type: The :py:class:`OpType` of the gate to add. Must be "
+          "an unparameterised Clifford gate type."
+          "\n:param qbs: The qubits to apply the gate to. Length must match "
+          "the arity of the given gate type.",
+          py::arg("type"), py::arg("qbs"))
+      .def(
+          "apply_gate_at_end",
+          [](UnitaryRevTableau& self, const OpType& type,
+             const py_qubit_vector_t& qbs) {
+            return self.apply_gate_at_end(type, qbs);
+          },
+          "Update the tableau according to adding a Clifford gate after the "
+          "current unitary, i.e. updates :math:`U` to :math:`GU` for a gate "
+          ":math:`G`."
+          "\n\n:param type: The :py:class:`OpType` of the gate to add. Must be "
+          "an unparameterised Clifford gate type."
+          "\n:param qbs: The qubits to apply the gate to. Length must match "
+          "the arity of the given gate type.",
+          py::arg("type"), py::arg("qbs"))
+      .def(
+          "to_circuit", &unitary_rev_tableau_to_circuit,
+          "Synthesises a unitary :py:class:`Circuit` realising the same "
+          "unitary as the tableau. Uses the method from Aaronson & Gottesman: "
+          "\"Improved Simulation of Stabilizer Circuits\", Theorem 8. This is "
+          "not optimised for gate count, so is not recommended for "
+          "performance-sensitive usage.");
   py::class_<UnitaryTableauBox, std::shared_ptr<UnitaryTableauBox>, Op>(
       m, "UnitaryTableauBox",
       "A Clifford unitary specified by its actions on Paulis.")
