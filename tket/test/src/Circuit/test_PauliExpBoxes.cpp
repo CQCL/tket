@@ -491,6 +491,13 @@ SCENARIO("Pauli gadget commuting sets", "[boxes]") {
         }),
         PauliExpBoxInvalidity);
   }
+  GIVEN("Basic getters") {
+    std::vector<SymPauliTensor> pgadgets = {
+        {{Pauli::X}, 1.0}, {{Pauli::I}, 0.0}, {{Pauli::I}, 0.0}};
+    PauliExpCommutingSetBox pbox(pgadgets);
+    REQUIRE(pbox.get_cx_config() == CXConfigType::Tree);
+    REQUIRE(pbox.get_pauli_gadgets() == pgadgets);
+  }
   GIVEN("is_clifford test cases") {
     SECTION("Empty Paulis") {
       REQUIRE(PauliExpCommutingSetBox({{{}, 1.2}, {{}, 0.1}, {{}, 1.1}})
