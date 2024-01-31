@@ -238,20 +238,20 @@ class TermSequenceBox : public Box {
 
   /** Get the circuit synthesis strategy parameter (affects box decomposition)
    */
-  auto get_synth_strategy() const { return synth_strategy_; }
+  auto get_synth_strategy() const;
 
   /** Get the pauli partitioning strategy parameter (affects box decomposition)
    */
-  auto get_partition_strategy() const { return partition_strategy_; }
+  auto get_partition_strategy() const;
 
   /** Get the graph colouring parameter (affects box decomposition) */
-  auto get_graph_colouring() const { return graph_colouring_; }
+  auto get_graph_colouring() const;
 
   /** Get the pauli gadgets */
-  auto get_pauli_gadgets() const { return pauli_gadgets_; }
+  auto get_pauli_gadgets() const;
 
   /** Get the cx config parameter (affects box decomposition) */
-  auto get_cx_config() const { return cx_configuration_; }
+  auto get_cx_config() const;
 
   Op_ptr dagger() const override;
 
