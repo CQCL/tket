@@ -466,17 +466,25 @@ bool TermSequenceBox::is_equal(const Op &op_other) const {
       });
 }
 
-auto TermSequenceBox::get_synth_strategy() const { return synth_strategy_; }
+Transforms::PauliSynthStrat TermSequenceBox::get_synth_strategy() const {
+  return synth_strategy_;
+}
 
-auto TermSequenceBox::get_partition_strategy() const {
+PauliPartitionStrat TermSequenceBox::get_partition_strategy() const {
   return partition_strategy_;
 }
 
-auto TermSequenceBox::get_graph_colouring() const { return graph_colouring_; }
+GraphColourMethod TermSequenceBox::get_graph_colouring() const {
+  return graph_colouring_;
+}
 
-auto TermSequenceBox::get_pauli_gadgets() const { return pauli_gadgets_; }
+std::vector<SymPauliTensor> TermSequenceBox::get_pauli_gadgets() const {
+  return pauli_gadgets_;
+}
 
-auto TermSequenceBox::get_cx_config() const { return cx_configuration_; }
+CXConfigType TermSequenceBox::get_cx_config() const {
+  return cx_configuration_;
+}
 
 nlohmann::json TermSequenceBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const TermSequenceBox &>(*op);
