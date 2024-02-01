@@ -46,7 +46,7 @@ jobs:
     if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022', 'macos-13-xlarge']
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2022', 'macos-14']
         lib: ${{ fromJson(needs.changes.outputs.libs) }}
         build_type: ['Release', 'Debug']
     runs-on: ${{ matrix.os }}
