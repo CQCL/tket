@@ -279,7 +279,7 @@ jobs:
         cd pytket
         pip install -e .[ZX] -v
     - name: Build pytket
-      if: github.event_name == 'schedule' # https://github.com/CQCL/tket/issues/1200
+      if: github.event_name == 'schedule' # https://github.com/CQCL/tket/issues/1242
       run: |
         cd pytket
         pip install -e . -v
@@ -387,34 +387,28 @@ jobs:
       with:
         python-version: '3.12'
     - name: Build pytket
-      if: github.event_name != 'schedule'
       run: |
         cd pytket
-        python${{ matrix.python-version }} -m pip install -e .[ZX] -v
-    - name: Build pytket
-      if: github.event_name == 'schedule' # https://github.com/CQCL/tket/issues/1200
-      run: |
-        cd pytket
-        python${{ matrix.python-version }} -m pip install -e . -v
+        python -m pip install -e .[ZX] -v
     - name: Run doctests
       run: |
         cd pytket
-        python${{ matrix.python-version }} -m pip install pytest
-        python${{ matrix.python-version }} -m pytest --doctest-modules pytket
+        python -m pip install pytest
+        python -m pytest --doctest-modules pytket
     - name: Test pytket
       run: |
         cd pytket/tests
-        python${{ matrix.python-version }} -m pip install -r requirements.txt
-        python${{ matrix.python-version }} -m pytest --ignore=simulator/
+        python -m pip install -r requirements.txt
+        python -m pytest --ignore=simulator/
     - name: Check type stubs are up-to-date and run mypy
       if: matrix.os == 'macos-13-xlarge' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
       run: |
-        python${{ matrix.python-version }} -m pip install -U mypy
-        python${{ matrix.python-version }} -m pip install pybind11-stubgen==2.3.6 # https://github.com/CQCL/tket/issues/1135
+        python -m pip install -U mypy
+        python -m pip install pybind11-stubgen==2.3.6 # https://github.com/CQCL/tket/issues/1135
         cd pytket
         ./stub_generation/regenerate_stubs
         git diff --quiet pytket/_tket && echo "Stubs are up-to-date" || exit 1  # fail if stubs change after regeneration
-        python${{ matrix.python-version }} -m mypy --config-file=mypy.ini --no-incremental -p pytket -p tests
+        python -m mypy --config-file=mypy.ini --no-incremental -p pytket -p tests
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
@@ -514,15 +508,9 @@ jobs:
       with:
         python-version: '3.12'
     - name: Build pytket
-      if: github.event_name != 'schedule'
       run: |
         cd pytket
         pip install -e .[ZX] -v
-    - name: Build pytket
-      if: github.event_name == 'schedule' # https://github.com/CQCL/tket/issues/1200
-      run: |
-        cd pytket
-        pip install -e . -v
     - name: Run doctests
       run: |
         cd pytket
