@@ -830,6 +830,8 @@ class PauliGraph {
    */
   std::list<PGOp_ptr> pgop_sequence() const;
 
+  std::list<std::list<PGOp_ptr>> pgop_commuting_sets() const;
+
   /**
    * Symbolic substitution: replaces each PGOp in the PauliGraph according to
    * the substitution map sending some set of symbols (not necessarily the same

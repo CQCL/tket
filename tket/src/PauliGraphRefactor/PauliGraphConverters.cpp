@@ -567,6 +567,73 @@ Circuit pauli_graph3_to_circuit_individual(
   return circ;
 }
 
+Circuit pauli_graph3_to_circuit_sets(
+    const pg::PauliGraph& pg, CXConfigType cx_config) {
+  const std::set<Qubit>& qubits = pg.get_qubits();
+  const std::set<Bit>& bits = pg.get_bits();
+  Circuit circ(
+      qubit_vector_t{qubits.begin(), qubits.end()},
+      bit_vector_t{bits.begin(), bits.end()});
+  std::list<std::list<PGOp_ptr>> commuting_sets = pg.pgop_commuting_sets();
+  // Synthesise input tableau
+  std::optional<PGVert> itab_v = pg.get_input_tableau();
+  if (itab_v) {
+    PGOp_ptr pgop = pg.get_vertex_PGOp_ptr(*itab_v);
+    PGInputTableau& tab_op = dynamic_cast<PGInputTableau&>(*pgop);
+    ChoiMixTableau cmtab = tab_op.to_cm_tableau();
+    UnitaryTableau in_utab = cm_tableau_to_unitary_tableau(cmtab);
+    Circuit in_cliff_circuit = unitary_tableau_to_circuit(in_utab);
+    circ.append(in_cliff_circuit);
+    // Remove the input tableau from the first commuting set
+    auto first_set = commuting_sets.begin();
+    for (auto it = first_set->begin(); it != first_set->end(); ++it) {
+      if (it->get_type() == PGOpType::InputTableau) {
+        first_set->erase(it);
+        break;
+      }
+    }
+    if (first_set->empty()) commuting_sets.erase(first_set);
+  }
+  if (otab_v) {
+    // Remove the output tableau from the last commuting set
+    auto last_set = commuting_sets.rbegin();
+    for (auto it = last_set->begin(); it != last_set->end(); ++it) {
+      if (it->get_type() == PGOpType::OutputTableau) {
+        last_set->erase(it);
+        break;
+      }
+    }
+    if (last_set->empty()) commuting_sets.erase(last_set);
+  }
+
+  // Synthesise each interior commuting set
+  for (const std::list<PGOp_ptr>& set : commuting_sets) {
+    //TODO::Implement
+    //TODO::I can somewhat see what to do when the active paulis of an op can be partitioned into a set of pairs of anti-commuting paulis for exact reduction to specific qubits, and up to one pauli for diagonalisation. Will we ever have a kind of op that will have multiple strings that require simultaneous diagonalisation and reduction to single qubits at the same time e.g. a quantum-controlled unitary op? Graysynth targets one string at a time, so how do we generalise it to target multiple strings in parallel?
+
+    // For each PGOp, split the active paulis into pairs of anti-commuting paulis which will be reduced to a specific qubit, and others which will just be diagonalised and then handled by graysynth
+    // Pick an independent generating set of the commuting paulis to be diagonalised
+    // Obtain the conjugation circuit as the unitary extension of a ChoiMixTableau
+    // Build a UnitaryTableau for the conjugation circuit to map paulis through
+    // Sort PGOps into groups whose diagonal components are identical (i.e. they will be synthesised at the same point during GraySynth)
+    // Conjugate
+    // Append to the circuit
+  }
+
+  // Synthesise output tableau
+  std::optional<PGVert> otab_v = pg.get_output_tableau();
+  if (otab_v) {
+    PGOp_ptr pgop = pg.get_vertex_PGOp_ptr(*otab_v);
+    PGOutputTableau& tab_op = dynamic_cast<PGOutputTableau&>(*pgop);
+    ChoiMixTableau cmtab = tab_op.to_cm_tableau();
+    UnitaryTableau out_utab = cm_tableau_to_unitary_tableau(cmtab);
+    Circuit out_cliff_circuit = unitary_tableau_to_circuit(out_utab);
+    circ.append(out_cliff_circuit);
+  }
+
+  return circ;
+}
+
 /*******************************************************************************
  * LEGACY SYNTHESIS METHODS
  ******************************************************************************/

@@ -84,6 +84,9 @@ Circuit pauli_graph3_to_pauli_exp_box_circuit_sets(
 Circuit pauli_graph3_to_circuit_individual(
     const pg::PauliGraph& pg, CXConfigType cx_config = CXConfigType::Snake);
 
+Circuit pauli_graph3_to_circuit_sets(
+    const pg::PauliGraph& pg, CXConfigType cx_config = CXConfigType::Snake);
+
 namespace pg {
 
 /**

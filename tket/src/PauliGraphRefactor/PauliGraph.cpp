@@ -880,6 +880,14 @@ void PauliGraph::verify() const {
 
 std::list<PGOp_ptr> PauliGraph::pgop_sequence() const {
   std::list<PGOp_ptr> sequence;
+  std::list<std::list<PGOp_ptr>> set_list = pgop_commuting_sets();
+  for (const std::list<PGOp_ptr>& set : set_list)
+    sequence.insert(sequence.end(), set.begin(), set.end());
+  return sequence;
+}
+
+std::list<std::list<PGOp_ptr>> PauliGraph::pgop_commuting_sets() const {
+  std::list<std::list<PGOp_ptr>> set_list;
   sequence_set_t<PGVert> remaining;
   BGL_FORALL_VERTICES(v, c_graph_, PGClassicalGraph) { remaining.insert(v); }
   while (!remaining.empty()) {
@@ -906,13 +914,13 @@ std::list<PGOp_ptr> PauliGraph::pgop_sequence() const {
       }
       if (initial) initials.push_back(v);
     }
+    set_list.push_back(initials);
     auto& lookup = remaining.get<TagKey>();
     for (const PGVert& v : initials) {
-      sequence.push_back(c_graph_[v]);
       lookup.erase(lookup.find(v));
     }
   }
-  return sequence;
+  return set_list;
 }
 
 void PauliGraph::symbol_substitution(
