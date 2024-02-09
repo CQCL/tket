@@ -2032,6 +2032,7 @@ SCENARIO("PauliExponentials") {
     // https://github.com/CQCL/tket/issues/1244
     Circuit c(1);
     c.add_op<unsigned>(OpType::PhasedX, {0.5, 0.6}, {0});
+    c.add_op<unsigned>(OpType::PhasedX, {0.6, 0.5}, {0});
     CompilationUnit cu(c);
     CHECK(gen_pauli_exponentials(Transforms::PauliSynthStrat::Individual)
               ->apply(cu));
