@@ -2026,5 +2026,17 @@ SCENARIO(
     REQUIRE(cu.get_circ_ref().n_gates() == 1);
   }
 }
+
+SCENARIO("PauliExponentials") {
+  GIVEN("A PhasedX gate") {
+    // https://github.com/CQCL/tket/issues/1244
+    Circuit c(1);
+    c.add_op<unsigned>(OpType::PhasedX, {0.5, 0.6}, {0});
+    CompilationUnit cu(c);
+    CHECK(gen_pauli_exponentials(Transforms::PauliSynthStrat::Individual)
+              ->apply(cu));
+    REQUIRE(test_unitary_comparison(c, cu.get_circ_ref(), true));
+  }
+}
 }  // namespace test_CompilerPass
 }  // namespace tket
