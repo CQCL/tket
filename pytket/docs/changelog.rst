@@ -8,6 +8,11 @@ Features:
 
 * Add ``WasmFileHandler.bytecode()`` method to retrieve the WASM as bytecode.
 
+Fixes:
+
+* Fix bug in ``PauliExponentials()`` pass affecting circuits containing
+  ``PhasedX`` gates containing Clifford angles.
+
 1.24.0 (January 2024)
 ---------------------
 
