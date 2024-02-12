@@ -178,6 +178,10 @@ def test_wasm_2() -> None:
 def test_wasm_3() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
 
+    with open("testfile.wasm", "rb") as f:
+        bytecode = f.read()
+    assert w.bytecode() == bytecode
+
     c = Circuit(0, 6)
 
     c.add_wasm("add_one", w, [1], [1], [Bit(0), Bit(1)])
