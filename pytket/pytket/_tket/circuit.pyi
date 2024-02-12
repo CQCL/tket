@@ -3114,7 +3114,7 @@ class OpType:
     
       PauliExpBox : An operation defined as the exponential :math:`e^{-\frac{i\pi\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
     
-      PauliExpPairBox : An operation defined as a pairof exponentials of the form :math:`e^{-\frac{i\pi\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
+      PauliExpPairBox : A pair of (not necessarily commuting) Pauli exponentials :math:`e^{-\frac{i\pi\alpha}{2} P}` performed in sequence.
     
       PauliExpCommutingSetBox : An operation defined as a setof commuting exponentials of the form :math:`e^{-\frac{i\pi\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
     
@@ -3376,7 +3376,9 @@ class PauliExpCommutingSetBox(Op):
         """
 class PauliExpPairBox(Op):
     """
-    An operation defined as a pair of exponentials of a tensor of Pauli operations and their (possibly symbolic) phase parameters.
+    A pair of (not necessarily commuting) Pauli exponentials performed in sequence.
+    Pairing up exponentials for synthesis can reduce gate costs of synthesis compared to synthesising individually, with the best reductions found when the Pauli tensors act on a large number of the same qubits.
+    Phase parameters may be symbolic.
     """
     def __init__(self, paulis0: typing.Sequence[pytket._tket.pauli.Pauli], t0: sympy.Expr | float, paulis1: typing.Sequence[pytket._tket.pauli.Pauli], t1: sympy.Expr | float, cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
         """

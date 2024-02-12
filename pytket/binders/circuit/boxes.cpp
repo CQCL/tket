@@ -267,8 +267,11 @@ void init_boxes(py::module &m) {
           ":return: decomposition method");
   py::class_<PauliExpPairBox, std::shared_ptr<PauliExpPairBox>, Op>(
       m, "PauliExpPairBox",
-      "An operation defined as a pair of exponentials of a tensor of Pauli "
-      "operations and their (possibly symbolic) phase parameters.")
+      "A pair of (not necessarily commuting) Pauli exponentials performed in "
+      "sequence.\nPairing up exponentials for synthesis can reduce gate costs "
+      "of synthesis compared to synthesising individually, with the best "
+      "reductions found when the Pauli tensors act on a large number of the "
+      "same qubits.\nPhase parameters may be symbolic.")
       .def(
           py::init([](const py::tket_custom::SequenceVec<Pauli> &paulis0,
                       Expr t0,
