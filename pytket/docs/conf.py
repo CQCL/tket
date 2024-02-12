@@ -38,9 +38,9 @@ copyright = "2024 Quantinuum"
 author = "Quantinuum"
 
 # The short X.Y version
-version = "1.24"
+version = "1.25"
 # The full version, including alpha/beta/rc tags
-release = "1.24.0"
+release = "1.25.0"
 
 
 # -- General configuration ---------------------------------------------------
@@ -99,6 +99,7 @@ html_theme = "sphinx_book_theme"
 #
 
 html_theme_options = {
+    "show_toc_level": 2,
     "repository_url": "https://github.com/CQCL/tket",
     "use_repository_button": True,
     "use_issues_button": True,
@@ -132,78 +133,6 @@ html_css_files = ["custom.css"]
 # Output file base name for HTML help builder.
 htmlhelp_basename = "pytketdoc"
 
-
-# -- Options for LaTeX output ------------------------------------------------
-
-latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
-    #
-    # 'papersize': 'letterpaper',
-    # The font size ('10pt', '11pt' or '12pt').
-    #
-    # 'pointsize': '10pt',
-    # Additional stuff for the LaTeX preamble.
-    #
-    # 'preamble': '',
-    # Latex figure (float) alignment
-    #
-    # 'figure_align': 'htbp',
-}
-
-# Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title,
-#  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (
-        master_doc,
-        "pytket.tex",
-        "pytket Documentation",
-        "Cambridge Quantum Computing Ltd",
-        "manual",
-    ),
-]
-
-
-# -- Options for manual page output ------------------------------------------
-
-# One entry per manual page. List of tuples
-# (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "pytket", "pytket Documentation", [author], 1)]
-
-
-# -- Options for Texinfo output ----------------------------------------------
-
-# Grouping the document tree into Texinfo files. List of tuples
-# (source start file, target name, title, author,
-#  dir menu entry, description, category)
-texinfo_documents = [
-    (
-        master_doc,
-        "pytket",
-        "pytket Documentation",
-        author,
-        "pytket",
-        "Python API for CQC's tket compiler",
-        "Miscellaneous",
-    ),
-]
-
-
-# -- Options for Epub output -------------------------------------------------
-
-# Bibliographic Dublin Core info.
-epub_title = project
-
-# The unique identifier of the text. This can be a ISBN number
-# or the project homepage.
-#
-# epub_identifier = ''
-
-# A unique identification for the text.
-#
-# epub_uid = ''
-
-# A list of files that should not be packed into the epub file.
 epub_exclude_files = ["search.html"]
 
 autodoc_member_order = "groupwise"

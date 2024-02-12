@@ -163,8 +163,6 @@ void PauliGraph::apply_gate_at_end(
     case OpType::PhasedX: {
       Expr alpha = gate.get_params().at(0);
       Expr beta = gate.get_params().at(1);
-      SpPauliStabiliser zpauli = cliff_.get_zrow(qbs.at(0));
-      SpPauliStabiliser xpauli = cliff_.get_xrow(qbs.at(0));
       std::optional<unsigned> cliff_alpha = equiv_Clifford(alpha);
       std::optional<unsigned> cliff_beta = equiv_Clifford(beta);
       // Rz(-b)
@@ -173,6 +171,7 @@ void PauliGraph::apply_gate_at_end(
           cliff_.apply_gate_at_end(OpType::Sdg, qbs);
         }
       } else {
+        SpPauliStabiliser zpauli = cliff_.get_zrow(qbs.at(0));
         apply_pauli_gadget_at_end(zpauli, -beta);
       }
       // Rx(a)
@@ -181,6 +180,7 @@ void PauliGraph::apply_gate_at_end(
           cliff_.apply_gate_at_end(OpType::V, qbs);
         }
       } else {
+        SpPauliStabiliser xpauli = cliff_.get_xrow(qbs.at(0));
         apply_pauli_gadget_at_end(xpauli, alpha);
       }
       // Rz(b)
@@ -189,6 +189,7 @@ void PauliGraph::apply_gate_at_end(
           cliff_.apply_gate_at_end(OpType::S, qbs);
         }
       } else {
+        SpPauliStabiliser zpauli = cliff_.get_zrow(qbs.at(0));
         apply_pauli_gadget_at_end(zpauli, beta);
       }
       break;
