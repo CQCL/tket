@@ -1309,14 +1309,18 @@ class Circuit:
         """
         Append a :py:class:`CircBox` to the circuit.
         
+        The qubits and bits of the :py:class:`CircBox` are wired into the circuit in lexicographic order. Bits follow qubits in the order of arguments.
+        
         :param circbox: The box to append
-        :param args: Indices of the qubits/bits to append the box to
+        :param args: Indices of the (default-register) qubits/bits to append the box to
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
     def add_circbox(self, circbox: CircBox, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`CircBox` to the circuit.
+        
+        The qubits and bits of the :py:class:`CircBox` are wired into the circuit in lexicographic order. Bits follow qubits in the order of arguments.
         
         :param circbox: The box to append
         :param args: The qubits/bits to append the box to

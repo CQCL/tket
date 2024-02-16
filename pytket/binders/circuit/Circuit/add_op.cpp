@@ -219,9 +219,13 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             return add_box_method(
                 circ, std::make_shared<CircBox>(box), args, kwargs);
           },
-          "Append a :py:class:`CircBox` to the circuit.\n\n:param "
-          "circbox: The box to append\n:param args: Indices of the "
-          "qubits/bits to append the box to"
+          "Append a :py:class:`CircBox` to the circuit."
+          "\n\nThe qubits and bits of the :py:class:`CircBox` are wired into "
+          "the circuit in lexicographic order. Bits follow qubits in the order "
+          "of arguments."
+          "\n\n:param circbox: The box to append"
+          "\n:param args: Indices of the (default-register) qubits/bits to "
+          "append the box to"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("circbox"), py::arg("args"))
       .def(
@@ -517,9 +521,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             return add_box_method(
                 circ, std::make_shared<CircBox>(box), args, kwargs);
           },
-          "Append a :py:class:`CircBox` to the circuit.\n\n:param "
-          "circbox: The box to append\n:param args: The qubits/bits "
-          "to append the box to"
+          "Append a :py:class:`CircBox` to the circuit."
+          "\n\nThe qubits and bits of the :py:class:`CircBox` are wired into "
+          "the circuit in lexicographic order. Bits follow qubits in the order "
+          "of arguments."
+          "\n\n:param circbox: The box to append"
+          "\n:param args: The qubits/bits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("circbox"), py::arg("args"))
       .def(
