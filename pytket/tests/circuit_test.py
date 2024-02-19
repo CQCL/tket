@@ -1398,6 +1398,47 @@ def test_add_circbox_with_registers() -> None:
     assert c1 == c2
 
 
+def test_add_circbox_with_mixed_registers() -> None:
+    c0 = Circuit()
+    c0_qreg1 = c0.add_q_register("q1", 2)
+    c0_qreg2 = c0.add_q_register("q2", 3)
+    c0_creg1 = c0.add_c_register("c1", 4)
+    c0_creg2 = c0.add_c_register("c2", 5)
+    cbox = CircBox(c0)
+    c = Circuit()
+    c_qreg1 = c.add_q_register("q1", 2)
+    c_qreg2 = c.add_q_register("q2", 3)
+    c_creg1 = c.add_c_register("c1", 4)
+    c_creg2 = c.add_c_register("c2", 5)
+
+    c.add_circbox_with_regmap(
+        cbox, qregmap={"q1": "q1", "q2": "q2"}, cregmap={"c1": "c1", "c2": "c2"}
+    )
+
+    # Incomplete map:
+    with pytest.raises(IndexError):
+        c.add_circbox_with_regmap(
+            cbox, qregmap={"q1": "q1", "q2": "q2"}, cregmap={"c1": "c1"}
+        )
+
+    # Mismatched register sizes:
+    with pytest.raises(RuntimeError):
+        c.add_circbox_with_regmap(
+            cbox, qregmap={"q1": "q2", "q2": "q1"}, cregmap={"c1": "c2", "c2": "c1"}
+        )
+
+    # Non-register qubit in box:
+    c0.add_qubit(Qubit("q3", 1))
+    cbox = CircBox(c0)
+    c.add_qubit(Qubit("q3", 0))
+    with pytest.raises(RuntimeError):
+        c.add_circbox_with_regmap(
+            cbox,
+            qregmap={"q1": "q1", "q2": "q2", "q3": "q3"},
+            cregmap={"c1": "c1", "c2": "c2"},
+        )
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
