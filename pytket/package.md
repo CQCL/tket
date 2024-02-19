@@ -10,7 +10,7 @@ To install run the pip command:
 
 `` pip install pytket``
 
-See [Installation troubleshooting](https://cqcl.github.io/tket/pytket/api/install.html) for help with installation.
+See [Installation troubleshooting](https://tket.quantinuum.com/api-docs/install.html) for help with installation.
 
 To install the pytket extension modules add a hyphen and the extension name to the command:
 
@@ -25,7 +25,7 @@ official Python distribution instead.
 
 ## Documentation and Examples
 
-API reference: https://cqcl.github.io/tket/pytket/api/
+API reference: https://tket.quantinuum.com/api-docs/
 
 To get started using pytket see the [user manual](https://tket.quantinuum.com/user-manual/).
 
