@@ -189,7 +189,7 @@ jobs:
           ccache --set-config namespace=WITH_TESTS
           ccache -p
       - name: Get current time
-        uses: josStorer/get-current-time@v2.1.1
+        uses: josStorer/get-current-time@v2.1.2
         id: current_time
         with:
           format: YYYYMMDDHHmmss
@@ -456,7 +456,7 @@ jobs:
         ccache --set-config namespace=WITH_TESTS
         ccache -p
     - name: Get current time
-      uses: josStorer/get-current-time@v2.1.1
+      uses: josStorer/get-current-time@v2.1.2
       id: current_time
       with:
         format: YYYYMMDDHHmmss
