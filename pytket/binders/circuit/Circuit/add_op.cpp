@@ -20,6 +20,7 @@
 
 #include "UnitRegister.hpp"
 #include "add_gate.hpp"
+#include "circuit_registers.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/ClassicalExpBox.hpp"
@@ -41,6 +42,8 @@ namespace tket {
 typedef py::tket_custom::SequenceVec<UnitID> py_unit_vector_t;
 typedef py::tket_custom::SequenceVec<Bit> py_bit_vector_t;
 typedef py::tket_custom::SequenceVec<Qubit> py_qubit_vector_t;
+typedef py::tket_custom::SequenceVec<QubitRegister> py_qreg_vector_t;
+typedef py::tket_custom::SequenceVec<BitRegister> py_creg_vector_t;
 
 const bit_vector_t no_bits;
 
@@ -529,6 +532,38 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:param args: The qubits/bits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("circbox"), py::arg("args"))
+      .def(
+          "add_circbox_regwise",
+          [](Circuit *circ, const CircBox &box, const py_qreg_vector_t &qregs,
+             const py_creg_vector_t &cregs, const py::kwargs &kwargs) {
+            std::vector<UnitID> args;
+
+            for (const QubitRegister &qreg : qregs) {
+              const std::string &name = qreg.name();
+              for (std::size_t i = 0; i < qreg.size(); i++) {
+                args.push_back(Qubit(name, i));
+              }
+            }
+            for (const BitRegister &creg : cregs) {
+              const std::string &name = creg.name();
+              for (std::size_t i = 0; i < creg.size(); i++) {
+                args.push_back(Bit(name, i));
+              }
+            }
+            return add_box_method(
+                circ, std::make_shared<CircBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`CircBox` to the circuit, wiring whole registers "
+          "together."
+          "\n\n:param circbox: The box to append"
+          "\n:param qregs: Sequence of :py:class:`QubitRegister` from the "
+          "outer :py:class:`Circuit`, in order of corresponding registers in "
+          "the :py:class:`CircBox`"
+          "\n:param cregs: Sequence of :py:class:`BitRegister` from the "
+          "outer :py:class:`Circuit`, in order of corresponding registers in "
+          "the :py:class:`CircBox`"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("circbox"), py::arg("qregs"), py::arg("cregs"))
       .def(
           "add_unitary1qbox",
           [](Circuit *circ, const Unitary1qBox &box, const Qubit &q0,
