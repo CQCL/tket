@@ -1372,6 +1372,27 @@ def test_resources() -> None:
     assert two_qubit_gate_depth.get_max() == 13
 
 
+def test_add_circbox_regwise() -> None:
+    c0 = Circuit()
+    areg = c0.add_q_register("a", 2)
+    breg = c0.add_q_register("b", 3)
+    c0.CZ(areg[0], areg[1])
+    c0.CZ(areg[1], breg[0])
+    c0.CCX(breg[0], breg[1], breg[2])
+    cbox = CircBox(c0)
+    c = Circuit()
+    xreg = c.add_q_register("x", 3)
+    yreg = c.add_q_register("y", 2)
+    zreg = c.add_q_register("z", 3)
+    wreg = c.add_q_register("w", 2)
+    for qb in c.qubits:
+        c.H(qb)
+    c.add_circbox_regwise(cbox, [wreg, zreg], [])
+    assert c.n_gates == 11
+    DecomposeBoxes().apply(c)
+    assert c.n_gates == 13
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
