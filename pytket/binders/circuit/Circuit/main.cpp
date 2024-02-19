@@ -291,10 +291,8 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
       .def_property_readonly(
           "c_registers", &get_unit_registers<BitRegister>,
           "Get all classical registers.\n\n"
-          "This property is only valid if the bits in the circuit are "
-          "organized into registers (i.e. all bit indices are single numbers "
-          "and all sets of bits with the same string identifier consist of "
-          "bits indexed consecutively from zero).\n\n"
+          "The list only includes registers that are singly-indexed "
+          "contiguously from zero.\n\n"
           ":return: List of :py:class:`BitRegister`")
       .def(
           "get_q_register",
@@ -313,10 +311,8 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
       .def_property_readonly(
           "q_registers", &get_unit_registers<QubitRegister>,
           "Get all quantum registers.\n\n"
-          "This property is only valid if the qubits in the circuit are "
-          "organized into registers (i.e. all qubit indices are single numbers "
-          "and all sets of qubits with the same string identifier consist of "
-          "qubits indexed consecutively from zero).\n\n"
+          "The list only includes registers that are singly-indexed "
+          "contiguously from zero.\n\n"
           ":return: List of :py:class:`QubitRegister`")
       .def(
           "add_qubit", &Circuit::add_qubit,
