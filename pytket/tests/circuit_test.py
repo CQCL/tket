@@ -1372,7 +1372,7 @@ def test_resources() -> None:
     assert two_qubit_gate_depth.get_max() == 13
 
 
-def test_add_circbox_regwise() -> None:
+def test_add_circbox_with_registers() -> None:
     c0 = Circuit()
     areg = c0.add_q_register("a", 2)
     breg = c0.add_q_register("b", 3)
@@ -1387,10 +1387,15 @@ def test_add_circbox_regwise() -> None:
     wreg = c.add_q_register("w", 2)
     for qb in c.qubits:
         c.H(qb)
-    c.add_circbox_regwise(cbox, [wreg, zreg], [])
-    assert c.n_gates == 11
-    DecomposeBoxes().apply(c)
-    assert c.n_gates == 13
+    c1 = c.copy()
+    c1.add_circbox_regwise(cbox, [wreg, zreg], [])
+    assert c1.n_gates == 11
+    DecomposeBoxes().apply(c1)
+    assert c1.n_gates == 13
+    c2 = c.copy()
+    c2.add_circbox_with_regmap(cbox, {"a": "w", "b": "z"}, {})
+    DecomposeBoxes().apply(c2)
+    assert c1 == c2
 
 
 if __name__ == "__main__":
