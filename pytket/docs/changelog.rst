@@ -1,6 +1,17 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Features:
+
+* Allow ``CircBox`` containing non-default registers.
+* Add new methods ``Circuit.add_circbox_regwise()`` and
+  ``Circuit.add_circbox_with_regmap()`` for adding a ``CircBox`` to a circuit
+  providing either an ordered sequence of registers or a mapping of registers
+  from the box to the containing circuit.
+
 1.25.0 (February 2024)
 ----------------------
 
