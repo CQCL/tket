@@ -869,7 +869,6 @@ SCENARIO(
       REQUIRE(test2.get_slices().size() == depth_before);
       test2.assert_valid();
     }
-    // test2.print_graph();
     WHEN("The reverse substitution is performed") {
       Edge f1 = test.get_nth_in_edge(h1, 0);
       Edge f2 = test.get_nth_in_edge(h2, 0);
@@ -879,6 +878,19 @@ SCENARIO(
       test.substitute(test2, sub, Circuit::VertexDeletion::Yes);
       REQUIRE(test.get_slices().size() == depth_before);
       test.assert_valid();
+    }
+    WHEN("The circuit to insert is not simple") {
+      unit_map_t qmap;
+      Edge e1 = test2.get_nth_in_edge(x1, 0);
+      Edge e2 = test2.get_nth_in_edge(x2, 0);
+      Edge e3 = test2.get_nth_out_edge(x1, 0);
+      Edge e4 = test2.get_nth_out_edge(x2, 0);
+      Subcircuit sub = {{e1, e2}, {e3, e4}, {x1, x2}};
+      test2.substitute(test, sub);
+      qmap.insert({Qubit(0), Qubit("a", 1)});
+      qmap.insert({Qubit(1), Qubit("b", 0)});
+      test.rename_units(qmap);
+      REQUIRE_THROWS_AS(test2.substitute(test, sub), SimpleOnly);
     }
   }
   GIVEN("Circuits with Classical effects") {
