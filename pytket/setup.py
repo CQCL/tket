@@ -180,7 +180,7 @@ setup(
     author_email="tket-support@cambridgequantum.com",
     python_requires=">=3.10",
     project_urls={
-        "Documentation": "https://cqcl.github.io/tket/pytket/api/index.html",
+        "Documentation": "https://tket.quantinuum.com/api-docs/index.html",
         "Source": "https://github.com/CQCL/tket",
         "Tracker": "https://github.com/CQCL/tket/issues",
     },
