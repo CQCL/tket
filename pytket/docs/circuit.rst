@@ -41,7 +41,10 @@ pytket.circuit
 .. autoclass:: pytket._tket.circuit.PauliExpPairBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.ToffoliBox
+.. autoclass:: pytket.circuit.PauliExpCommutingSetBox
+    :special-members:
+    :members:
+.. autoclass:: pytket.circuit.ToffoliBox
     :special-members:
     :members:
 .. autoclass:: pytket._tket.circuit.QControlBox
