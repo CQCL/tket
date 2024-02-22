@@ -1331,8 +1331,8 @@ class Circuit:
         Append a :py:class:`CircBox` to the circuit, wiring whole registers together.
         
         :param circbox: The box to append
-        :param qregs: Sequence of :py:class:`QubitRegister` from the outer :py:class:`Circuit`, in order of corresponding registers in the :py:class:`CircBox`
-        :param cregs: Sequence of :py:class:`BitRegister` from the outer :py:class:`Circuit`, in order of corresponding registers in the :py:class:`CircBox`
+        :param qregs: Sequence of :py:class:`QubitRegister` from the outer :py:class:`Circuit`, the order corresponding to the lexicographic order of corresponding registers in the :py:class:`CircBox`
+        :param cregs: Sequence of :py:class:`BitRegister` from the outer :py:class:`Circuit`, the order corresponding to the lexicographic order of corresponding registers in the :py:class:`CircBox`
         :return: the new :py:class:`Circuit`
         """
     def add_circbox_with_regmap(self, circbox: CircBox, qregmap: dict[str, str], cregmap: dict[str, str], **kwargs: Any) -> Circuit:
