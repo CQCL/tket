@@ -557,11 +557,13 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "together."
           "\n\n:param circbox: The box to append"
           "\n:param qregs: Sequence of :py:class:`QubitRegister` from the "
-          "outer :py:class:`Circuit`, in order of corresponding registers in "
-          "the :py:class:`CircBox`"
+          "outer :py:class:`Circuit`, the order corresponding to the "
+          "lexicographic order of corresponding registers in the "
+          ":py:class:`CircBox`"
           "\n:param cregs: Sequence of :py:class:`BitRegister` from the "
-          "outer :py:class:`Circuit`, in order of corresponding registers in "
-          "the :py:class:`CircBox`"
+          "outer :py:class:`Circuit`, the order corresponding to the "
+          "lexicographic order of corresponding registers in the "
+          ":py:class:`CircBox`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("circbox"), py::arg("qregs"), py::arg("cregs"))
       .def(
