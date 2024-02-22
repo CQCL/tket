@@ -589,7 +589,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             // Get box circuit:
             std::shared_ptr<Circuit> box_circ = box.to_circuit();
 
-            // Get units of box:
+            // Get units of box (in lexicographic order):
             const qubit_vector_t box_qubits = box_circ->all_qubits();
             const bit_vector_t box_bits = box_circ->all_bits();
 
@@ -633,7 +633,10 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
               }
             }
 
-            // Populate the arguments (qubits then bits):
+            // Populate the arguments (qubits then bits). Note that they are in
+            // lexicographic order; when the box is inserted into the circuit
+            // (in Circuit::substitute_box_vertex()) the units are also
+            // connected in lexicographic order.
             std::vector<UnitID> args;
             for (const Qubit &qb : box_qubits) {
               args.push_back(Qubit(qregmap.at(qb.reg_name()), qb.index()[0]));
