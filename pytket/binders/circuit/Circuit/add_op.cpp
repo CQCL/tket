@@ -20,6 +20,7 @@
 
 #include "UnitRegister.hpp"
 #include "add_gate.hpp"
+#include "circuit_registers.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/ClassicalExpBox.hpp"
@@ -41,6 +42,8 @@ namespace tket {
 typedef py::tket_custom::SequenceVec<UnitID> py_unit_vector_t;
 typedef py::tket_custom::SequenceVec<Bit> py_bit_vector_t;
 typedef py::tket_custom::SequenceVec<Qubit> py_qubit_vector_t;
+typedef py::tket_custom::SequenceVec<QubitRegister> py_qreg_vector_t;
+typedef py::tket_custom::SequenceVec<BitRegister> py_creg_vector_t;
 
 const bit_vector_t no_bits;
 
@@ -219,9 +222,13 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             return add_box_method(
                 circ, std::make_shared<CircBox>(box), args, kwargs);
           },
-          "Append a :py:class:`CircBox` to the circuit.\n\n:param "
-          "circbox: The box to append\n:param args: Indices of the "
-          "qubits/bits to append the box to"
+          "Append a :py:class:`CircBox` to the circuit."
+          "\n\nThe qubits and bits of the :py:class:`CircBox` are wired into "
+          "the circuit in lexicographic order. Bits follow qubits in the order "
+          "of arguments."
+          "\n\n:param circbox: The box to append"
+          "\n:param args: Indices of the (default-register) qubits/bits to "
+          "append the box to"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("circbox"), py::arg("args"))
       .def(
@@ -517,11 +524,149 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             return add_box_method(
                 circ, std::make_shared<CircBox>(box), args, kwargs);
           },
-          "Append a :py:class:`CircBox` to the circuit.\n\n:param "
-          "circbox: The box to append\n:param args: The qubits/bits "
-          "to append the box to"
+          "Append a :py:class:`CircBox` to the circuit."
+          "\n\nThe qubits and bits of the :py:class:`CircBox` are wired into "
+          "the circuit in lexicographic order. Bits follow qubits in the order "
+          "of arguments."
+          "\n\n:param circbox: The box to append"
+          "\n:param args: The qubits/bits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("circbox"), py::arg("args"))
+      .def(
+          "add_circbox_regwise",
+          [](Circuit *circ, const CircBox &box, const py_qreg_vector_t &qregs,
+             const py_creg_vector_t &cregs, const py::kwargs &kwargs) {
+            std::vector<UnitID> args;
+
+            for (const QubitRegister &qreg : qregs) {
+              const std::string &name = qreg.name();
+              for (std::size_t i = 0; i < qreg.size(); i++) {
+                args.push_back(Qubit(name, i));
+              }
+            }
+            for (const BitRegister &creg : cregs) {
+              const std::string &name = creg.name();
+              for (std::size_t i = 0; i < creg.size(); i++) {
+                args.push_back(Bit(name, i));
+              }
+            }
+            return add_box_method(
+                circ, std::make_shared<CircBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`CircBox` to the circuit, wiring whole registers "
+          "together."
+          "\n\n:param circbox: The box to append"
+          "\n:param qregs: Sequence of :py:class:`QubitRegister` from the "
+          "outer :py:class:`Circuit`, the order corresponding to the "
+          "lexicographic order of corresponding registers in the "
+          ":py:class:`CircBox`"
+          "\n:param cregs: Sequence of :py:class:`BitRegister` from the "
+          "outer :py:class:`Circuit`, the order corresponding to the "
+          "lexicographic order of corresponding registers in the "
+          ":py:class:`CircBox`"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("circbox"), py::arg("qregs"), py::arg("cregs"))
+      .def(
+          "add_circbox_with_regmap",
+          [](Circuit *circ, const CircBox &box,
+             const std::map<std::string, std::string> &qregmap,
+             const std::map<std::string, std::string> &cregmap,
+             const py::kwargs &kwargs) {
+            // Get registers of circuit:
+            std::vector<QubitRegister> circ_qregs =
+                get_unit_registers<QubitRegister>(*circ);
+            std::vector<BitRegister> circ_cregs =
+                get_unit_registers<BitRegister>(*circ);
+
+            // Map name -> size for circuit registers:
+            std::map<std::string, std::size_t> circ_qreg_sizes;
+            for (const QubitRegister &qreg : circ_qregs) {
+              circ_qreg_sizes[qreg.name()] = qreg.size();
+            }
+            std::map<std::string, unsigned> circ_creg_sizes;
+            for (const BitRegister &creg : circ_cregs) {
+              circ_creg_sizes[creg.name()] = creg.size();
+            }
+
+            // Get box circuit:
+            std::shared_ptr<Circuit> box_circ = box.to_circuit();
+
+            // Get units of box (in lexicographic order):
+            const qubit_vector_t box_qubits = box_circ->all_qubits();
+            const bit_vector_t box_bits = box_circ->all_bits();
+
+            // Get registers of box:
+            std::vector<QubitRegister> box_qregs =
+                get_unit_registers<QubitRegister>(*box_circ);
+            std::vector<BitRegister> box_cregs =
+                get_unit_registers<BitRegister>(*box_circ);
+
+            // Map name -> size for box registers
+            std::map<std::string, std::size_t> box_qreg_sizes;
+            for (const QubitRegister &qreg : box_qregs) {
+              box_qreg_sizes[qreg.name()] = qreg.size();
+            }
+            std::map<std::string, unsigned> box_creg_sizes;
+            for (const BitRegister &creg : box_cregs) {
+              box_creg_sizes[creg.name()] = creg.size();
+            }
+
+            // Check that all units in the box are in a register:
+            for (const Qubit &qb : box_qubits) {
+              if (box_qreg_sizes.find(qb.reg_name()) == box_qreg_sizes.end()) {
+                throw CircuitInvalidity("Box contains non-register qubits.");
+              }
+            }
+            for (const Bit &cb : box_bits) {
+              if (box_creg_sizes.find(cb.reg_name()) == box_creg_sizes.end()) {
+                throw CircuitInvalidity("Box contains non-register bits.");
+              }
+            }
+
+            // Check that the sizes of the registers match up:
+            for (const auto &pair : box_qreg_sizes) {
+              if (circ_qreg_sizes.at(qregmap.at(pair.first)) != pair.second) {
+                throw CircuitInvalidity("Size mismatch in qubit registers");
+              }
+            }
+            for (const auto &pair : box_creg_sizes) {
+              if (circ_creg_sizes.at(cregmap.at(pair.first)) != pair.second) {
+                throw CircuitInvalidity("Size mismatch in bit registers");
+              }
+            }
+
+            // Populate the arguments (qubits then bits). Note that they are in
+            // lexicographic order; when the box is inserted into the circuit
+            // (in Circuit::substitute_box_vertex()) the units are also
+            // connected in lexicographic order.
+            std::vector<UnitID> args;
+            for (const Qubit &qb : box_qubits) {
+              args.push_back(Qubit(qregmap.at(qb.reg_name()), qb.index()[0]));
+            }
+            for (const Bit &cb : box_bits) {
+              args.push_back(Bit(cregmap.at(cb.reg_name()), cb.index()[0]));
+            }
+
+            // Add the box:
+            return add_box_method(
+                circ, std::make_shared<CircBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`CircBox` to the circuit, wiring whole registers "
+          "together."
+          "\n\nThis method expects two maps (one for qubit registers and one "
+          "for bit registers), which must have keys corresponding to all "
+          "register names in the box. The box may not contain any qubits or "
+          "bits that do not belong to a register, i.e. all must be single-"
+          "indexed contiguously from zero."
+          "\n\n:param circbox: The box to append"
+          "\n:param qregmap: Map specifying which qubit register in the "
+          ":py:class:`CircBox` (the map's keys) matches which register in the "
+          "outer circuit (the map's values)"
+          "\n:param cregmap: Map specifying which bit register in the "
+          ":py:class:`CircBox` (the map's keys) matches which register in the "
+          "outer circuit (the map's values)"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("circbox"), py::arg("qregmap"), py::arg("cregmap"))
       .def(
           "add_unitary1qbox",
           [](Circuit *circ, const Unitary1qBox &box, const Qubit &q0,

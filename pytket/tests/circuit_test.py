@@ -1372,6 +1372,73 @@ def test_resources() -> None:
     assert two_qubit_gate_depth.get_max() == 13
 
 
+def test_add_circbox_with_registers() -> None:
+    c0 = Circuit()
+    areg = c0.add_q_register("a", 2)
+    breg = c0.add_q_register("b", 3)
+    c0.CZ(areg[0], areg[1])
+    c0.CZ(areg[1], breg[0])
+    c0.CCX(breg[0], breg[1], breg[2])
+    cbox = CircBox(c0)
+    c = Circuit()
+    xreg = c.add_q_register("x", 3)
+    yreg = c.add_q_register("y", 2)
+    zreg = c.add_q_register("z", 3)
+    wreg = c.add_q_register("w", 2)
+    for qb in c.qubits:
+        c.H(qb)
+    c1 = c.copy()
+    c1.add_circbox_regwise(cbox, [wreg, zreg], [])
+    assert c1.n_gates == 11
+    DecomposeBoxes().apply(c1)
+    assert c1.n_gates == 13
+    c2 = c.copy()
+    c2.add_circbox_with_regmap(cbox, {"a": "w", "b": "z"}, {})
+    DecomposeBoxes().apply(c2)
+    assert c1 == c2
+
+
+def test_add_circbox_with_mixed_registers() -> None:
+    c0 = Circuit()
+    c0_qreg1 = c0.add_q_register("q1", 2)
+    c0_qreg2 = c0.add_q_register("q2", 3)
+    c0_creg1 = c0.add_c_register("c1", 4)
+    c0_creg2 = c0.add_c_register("c2", 5)
+    cbox = CircBox(c0)
+    c = Circuit()
+    c_qreg1 = c.add_q_register("q1", 2)
+    c_qreg2 = c.add_q_register("q2", 3)
+    c_creg1 = c.add_c_register("c1", 4)
+    c_creg2 = c.add_c_register("c2", 5)
+
+    c.add_circbox_with_regmap(
+        cbox, qregmap={"q1": "q1", "q2": "q2"}, cregmap={"c1": "c1", "c2": "c2"}
+    )
+
+    # Incomplete map:
+    with pytest.raises(IndexError):
+        c.add_circbox_with_regmap(
+            cbox, qregmap={"q1": "q1", "q2": "q2"}, cregmap={"c1": "c1"}
+        )
+
+    # Mismatched register sizes:
+    with pytest.raises(RuntimeError):
+        c.add_circbox_with_regmap(
+            cbox, qregmap={"q1": "q2", "q2": "q1"}, cregmap={"c1": "c2", "c2": "c1"}
+        )
+
+    # Non-register qubit in box:
+    c0.add_qubit(Qubit("q3", 1))
+    cbox = CircBox(c0)
+    c.add_qubit(Qubit("q3", 0))
+    with pytest.raises(RuntimeError):
+        c.add_circbox_with_regmap(
+            cbox,
+            qregmap={"q1": "q1", "q2": "q2", "q3": "q3"},
+            cregmap={"c1": "c1", "c2": "c2"},
+        )
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()

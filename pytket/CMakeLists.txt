@@ -102,6 +102,7 @@ set(HEADER_FILES
         binders/include/add_gate.hpp
         binders/include/binder_json.hpp
         binders/include/binder_utils.hpp
+        binders/include/circuit_registers.hpp
         binders/include/deleted_hash.hpp
         binders/include/py_operators.hpp
         binders/include/typecast.hpp
