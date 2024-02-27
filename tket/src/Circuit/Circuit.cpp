@@ -15,6 +15,7 @@
 #include "tket/Circuit/Circuit.hpp"
 
 #include <algorithm>
+#include <cstddef>
 #include <fstream>
 #include <numeric>
 #include <optional>
@@ -119,7 +120,7 @@ VertexVec Circuit::all_vertices() const {
 
 void Circuit::index_vertices() /*const*/ {
   VIndex index = boost::get(boost::vertex_index, dag);
-  int i = 0;
+  std::size_t i = 0;
   BGL_FORALL_VERTICES(v, dag, DAG) { boost::put(index, v, i++); }
 }
 

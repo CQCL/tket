@@ -174,6 +174,7 @@ target_sources(tket
         src/Circuit/basic_circ_manip.cpp
         src/Circuit/latex_drawing.cpp
         src/Circuit/macro_circ_info.cpp
+        src/Circuit/SubcircuitFinder.cpp
         src/Circuit/setters_and_getters.cpp
         src/Circuit/CircUtils.cpp
         src/Circuit/ThreeQubitConversion.cpp

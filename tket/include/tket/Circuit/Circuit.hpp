@@ -1220,6 +1220,15 @@ class Circuit {
 
   Circuit subcircuit(const Subcircuit &sc) const;
 
+  /**
+   * Construct a subcircuit consisting of a single vertex.
+   *
+   * @param v vertex
+   *
+   * @return subcircuit
+   */
+  Subcircuit singleton_subcircuit(const Vertex &v) const;
+
   // returns qubit path via vertices & inhabited port in vertices
   QPathDetailed unit_path(const UnitID &unit) const;  // vector<vertex,port>
   // returns a vector of each qubits path via qubit_path
@@ -1601,6 +1610,30 @@ class Circuit {
    * @return index map from Vertex to int
    */
   IndexMap index_map() const;
+
+  /**
+   * Return a partition into connected convex subcircuits of the set of ops
+   * satisfying the given criterion.
+   *
+   * @param criterion criterion satisfied by all ops in all subcircuits
+   *
+   * @return vector of disjoint vertex sets whose union includes all ops
+   *   satisfying the criterion.
+   */
+  std::vector<VertexSet> get_subcircuits(
+      std::function<bool(Op_ptr)> criterion) const;
+
+  /**
+   * Constructs a @ref Subcircuit with a given vertex set.
+   *
+   * The vertex set is assumed to be connected and convex. (This is not
+   * checked.)
+   *
+   * @param verts set of vertices
+   *
+   * @return corresponding @ref Subcircuit
+   */
+  Subcircuit make_subcircuit(VertexSet verts) const;
 
   /**
    * Get the global phase offset as a multiple of pi (in the range [0,2)).

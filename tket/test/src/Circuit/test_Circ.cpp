@@ -3381,5 +3381,54 @@ SCENARIO("Check decompose_boxes_recursively") {
   REQUIRE(cmds[3].get_op_ptr()->get_type() == OpType::CX);
 }
 
+SCENARIO("Finding subcircuits") {
+  GIVEN("A circuit with two Clifford subcircuits") {
+    Circuit c(4);
+    c.add_op<unsigned>(OpType::T, {0});
+    Vertex cx0 = c.add_op<unsigned>(OpType::CX, {0, 1});  // (0)
+    Vertex cy0 = c.add_op<unsigned>(OpType::CY, {1, 2});  // (0)
+    Vertex cz0 = c.add_op<unsigned>(OpType::CZ, {0, 1});  // (0)
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {2, 3});
+    c.add_op<unsigned>(OpType::T, {1});
+    Vertex cx1 = c.add_op<unsigned>(OpType::CX, {1, 2});  // (1)
+    Vertex h1 = c.add_op<unsigned>(OpType::H, {2});       // (1)
+    Vertex cy1 = c.add_op<unsigned>(OpType::CY, {2, 3});  // (1)
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {1, 2});
+
+    VertexSet expected0{cx0, cy0, cz0};
+    VertexSet expected1{cx1, h1, cy1};
+
+    std::vector<VertexSet> subcircuits =
+        c.get_subcircuits([](Op_ptr op) { return op->is_clifford(); });
+    REQUIRE(subcircuits.size() == 2);
+    CHECK(subcircuits[0] == expected0);
+    CHECK(subcircuits[1] == expected1);
+  }
+  GIVEN("A more complex example with more than one solution") {
+    Circuit c(5);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::X, {1});
+    c.add_op<unsigned>(OpType::T, {2});
+    c.add_op<unsigned>(OpType::Y, {3});
+    c.add_op<unsigned>(OpType::Z, {4});
+    c.add_op<unsigned>(OpType::CX, {2, 3});
+    c.add_op<unsigned>(OpType::T, {2});
+    c.add_op<unsigned>(OpType::S, {3});
+    c.add_op<unsigned>(OpType::SX, {1});
+    c.add_op<unsigned>(OpType::V, {2});
+    c.add_op<unsigned>(OpType::Vdg, {3});
+    c.add_op<unsigned>(OpType::CY, {1, 3});
+    c.add_op<unsigned>(OpType::CZ, {3, 4});
+    c.add_op<unsigned>(OpType::SWAP, {2, 3});
+    c.add_op<unsigned>(OpType::Sdg, {4});
+    c.add_op<unsigned>(OpType::ZZMax, {3, 0});
+    c.add_op<unsigned>(OpType::SXdg, {0});
+    std::vector<VertexSet> subcircuits =
+        c.get_subcircuits([](Op_ptr op) { return op->is_clifford(); });
+    REQUIRE(subcircuits.size() == 2);
+    CHECK(subcircuits[0].size() + subcircuits[1].size() == 15);
+  }
+}
+
 }  // namespace test_Circ
 }  // namespace tket
