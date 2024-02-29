@@ -265,6 +265,7 @@ target_sources(tket
         src/Transformations/PauliOptimisation.cpp
         src/Transformations/CliffordOptimisation.cpp
         src/Transformations/CliffordReductionPass.cpp
+        src/Transformations/CliffordResynthesis.cpp
         src/Transformations/OptimisationPass.cpp
         src/Transformations/PhaseOptimisation.cpp
         src/Transformations/Decomposition.cpp
@@ -406,6 +407,7 @@ target_sources(tket
         include/tket/Transformations/BasicOptimisation.hpp
         include/tket/Transformations/CliffordOptimisation.hpp
         include/tket/Transformations/CliffordReductionPass.hpp
+        include/tket/Transformations/CliffordResynthesis.hpp
         include/tket/Transformations/Combinator.hpp
         include/tket/Transformations/ContextualReduction.hpp
         include/tket/Transformations/Decomposition.hpp
