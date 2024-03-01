@@ -57,6 +57,13 @@ PassPtr gen_euler_pass(const OpType& q, const OpType& p, bool strict = false);
 PassPtr gen_clifford_simp_pass(bool allow_swaps = true);
 
 /**
+ * Pass to resynthesise Clifford subcircuits.
+ *
+ * @return pass to perform Clifford resynthesis
+ */
+PassPtr gen_clifford_resynthesis_pass();
+
+/**
  * Pass to remove empty Quantum edges from a Circuit and then relabel
  * all Qubit to some new register defined by a passed label.
  * Qubits removed from the Circuit are preserved in the bimap, but not updated
