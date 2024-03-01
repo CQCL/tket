@@ -1218,6 +1218,13 @@ class Circuit {
   std::map<Vertex, unsigned> vertex_rev_depth_map() const;
   std::map<Edge, UnitID> edge_unit_map() const;
 
+  /**
+   * Construct a new circuit representing the given subcircuit.
+   *
+   * @param sc subcircuit specification
+   *
+   * @return new circuit representing a copy of the subcircuit
+   */
   Circuit subcircuit(const Subcircuit &sc) const;
 
   /**
