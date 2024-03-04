@@ -18,6 +18,7 @@
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Converters/Converters.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/Transform.hpp"
 
 namespace tket {
@@ -33,7 +34,8 @@ static bool resynthesise_cliffords(Circuit &circ) {
     decompose_cliffords_std().apply(
         subc);  // works around https://github.com/CQCL/tket/issues/1268
     const UnitaryTableau tab = circuit_to_unitary_tableau(subc);
-    const Circuit newsubc = unitary_tableau_to_circuit(tab);
+    Circuit newsubc = unitary_tableau_to_circuit(tab);
+    clifford_simp().apply(newsubc);
     circ.substitute(newsubc, subcircuit);
     changed = true;
   }
