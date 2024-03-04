@@ -57,7 +57,7 @@ PassPtr gen_euler_pass(const OpType& q, const OpType& p, bool strict = false);
 PassPtr gen_clifford_simp_pass(bool allow_swaps = true);
 
 /**
- * Pass to resynthesise Clifford subcircuits.
+ * Pass to resynthesise Clifford subcircuits and simplify using Clifford rules.
  *
  * @return pass to perform Clifford resynthesis
  */

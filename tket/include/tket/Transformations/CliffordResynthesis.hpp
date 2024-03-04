@@ -20,6 +20,12 @@ namespace tket {
 
 namespace Transforms {
 
+/**
+ * Resynthesise all Clifford subcircuits and simplify using Clifford rules.
+ *
+ * @param allow_swaps whether to allow introduction of implicit wire swaps
+ * @return transform to perform Clifford resynthesis
+ */
 Transform clifford_resynthesis(bool allow_swaps = true);
 
 }  // namespace Transforms
