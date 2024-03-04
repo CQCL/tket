@@ -14,6 +14,7 @@
 
 #include "tket/Transformations/CliffordResynthesis.hpp"
 
+#include "Transformations/Decomposition.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Converters/Converters.hpp"
@@ -28,7 +29,9 @@ static bool resynthesise_cliffords(Circuit &circ) {
   for (const VertexSet &verts :
        circ.get_subcircuits([](Op_ptr op) { return op->is_clifford(); })) {
     Subcircuit subcircuit = circ.make_subcircuit(verts);
-    const Circuit subc = circ.subcircuit(subcircuit);
+    Circuit subc = circ.subcircuit(subcircuit);
+    decompose_cliffords_std().apply(
+        subc);  // works around https://github.com/CQCL/tket/issues/1268
     const UnitaryTableau tab = circuit_to_unitary_tableau(subc);
     const Circuit newsubc = unitary_tableau_to_circuit(tab);
     circ.substitute(newsubc, subcircuit);
