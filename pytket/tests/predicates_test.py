@@ -71,6 +71,7 @@ from pytket.passes import (
     RoundAngles,
     PeepholeOptimise2Q,
     SynthesiseHQS,
+    CliffordResynthesis,
 )
 from pytket.predicates import (
     GateSetPredicate,
@@ -976,6 +977,33 @@ def test_SynthesiseHQS_deprecation(capfd: Any) -> None:
     assert "[warn]" in out
     assert "deprecated" in out
     logging.set_level(logging.level.err)
+
+
+def test_clifford_resynthesis() -> None:
+    circ = (
+        Circuit(5)
+        .H(0)
+        .X(1)
+        .T(2)
+        .Y(3)
+        .Z(4)
+        .SX(1)
+        .CX(2, 3)
+        .T(2)
+        .S(3)
+        .V(2)
+        .Vdg(3)
+        .CY(1, 3)
+        .CZ(3, 4)
+        .SWAP(2, 3)
+        .Sdg(4)
+        .ZZMax(0, 3)
+        .SXdg(0)
+        .measure_all()
+    )
+    CliffordResynthesis().apply(circ)
+    assert circ.depth() <= 9
+    assert circ.n_2qb_gates() <= 4
 
 
 if __name__ == "__main__":
