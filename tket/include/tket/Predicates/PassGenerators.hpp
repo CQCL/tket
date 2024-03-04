@@ -61,7 +61,7 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps = true);
  *
  * @return pass to perform Clifford resynthesis
  */
-PassPtr gen_clifford_resynthesis_pass();
+PassPtr gen_clifford_resynthesis_pass(bool allow_swaps = true);
 
 /**
  * Pass to remove empty Quantum edges from a Circuit and then relabel

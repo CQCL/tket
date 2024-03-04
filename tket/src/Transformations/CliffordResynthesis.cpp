@@ -25,7 +25,7 @@ namespace tket {
 
 namespace Transforms {
 
-static bool resynthesise_cliffords(Circuit &circ) {
+static bool resynthesise_cliffords(Circuit &circ, bool allow_swaps = true) {
   bool changed = false;
   for (const VertexSet &verts :
        circ.get_subcircuits([](Op_ptr op) { return op->is_clifford(); })) {
@@ -35,15 +35,17 @@ static bool resynthesise_cliffords(Circuit &circ) {
         subc);  // works around https://github.com/CQCL/tket/issues/1268
     const UnitaryTableau tab = circuit_to_unitary_tableau(subc);
     Circuit newsubc = unitary_tableau_to_circuit(tab);
-    clifford_simp().apply(newsubc);
+    clifford_simp(allow_swaps).apply(newsubc);
     circ.substitute(newsubc, subcircuit);
     changed = true;
   }
   return changed;
 }
 
-Transform clifford_resynthesis() {
-  return Transform([](Circuit &circ) { return resynthesise_cliffords(circ); });
+Transform clifford_resynthesis(bool allow_swaps) {
+  return Transform([allow_swaps](Circuit &circ) {
+    return resynthesise_cliffords(circ, allow_swaps);
+  });
 }
 
 }  // namespace Transforms

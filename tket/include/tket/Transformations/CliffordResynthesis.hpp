@@ -20,7 +20,7 @@ namespace tket {
 
 namespace Transforms {
 
-Transform clifford_resynthesis();
+Transform clifford_resynthesis(bool allow_swaps = true);
 
 }  // namespace Transforms
 
