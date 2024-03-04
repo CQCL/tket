@@ -18,7 +18,8 @@ namespace tket {
 
 MeasurementSetup measurement_reduction(
     const std::list<SpPauliString>& strings, PauliPartitionStrat strat,
-    GraphColourMethod method, CXConfigType cx_config) {
+    GraphColourMethod method, CXConfigType cx_config,
+    DiagonalisationMethod diag_meth) {
   std::set<Qubit> qubits;
   for (const SpPauliString& qpt : strings) {
     for (const std::pair<const Qubit, Pauli>& qb_p : qpt.string)
@@ -43,7 +44,8 @@ MeasurementSetup measurement_reduction(
     }
 
     std::set<Qubit> mutable_qb_set(qubits);
-    Circuit cliff_circ = mutual_diagonalise(gadgets, mutable_qb_set, cx_config);
+    Circuit cliff_circ =
+        mutual_diagonalise(gadgets, mutable_qb_set, cx_config, diag_meth);
     unsigned bit_count = 0;
     for (const Qubit& qb : cliff_circ.all_qubits()) {
       cliff_circ.add_bit(Bit(bit_count));

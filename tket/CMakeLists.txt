@@ -204,6 +204,9 @@ target_sources(tket
         src/Architecture/SubgraphMonomorphisms.cpp
         src/Diagonalisation/DiagUtils.cpp
         src/Diagonalisation/Diagonalisation.cpp
+        src/Diagonalisation/Diag_JGM.cpp
+        src/Diagonalisation/Diag_vdBT.cpp
+        src/Diagonalisation/Diag_CSW.cpp
         src/Diagonalisation/PauliPartition.cpp
         src/Characterisation/Cycles.cpp
         src/Characterisation/FrameRandomisation.cpp

@@ -20,6 +20,40 @@
 
 namespace tket {
 
+enum class DiagonalisationMethod {
+  Greedy,
+  JGM,
+  vdBT_PE,
+  vdBT_CX,
+  vdBT_greedy1,
+  vdBT_greedy2,
+  CSW_CZ,
+  CSW_CX
+};
+
+NLOHMANN_JSON_SERIALIZE_ENUM(
+    DiagonalisationMethod,
+    {
+        {DiagonalisationMethod::Greedy, "Greedy"},
+        {DiagonalisationMethod::JGM, "JGM"},
+        {DiagonalisationMethod::vdBT_PE, "vdBT_PE"},
+        {DiagonalisationMethod::vdBT_CX, "vdBT_CX"},
+        {DiagonalisationMethod::vdBT_greedy1, "vdBT_greedy1"},
+        {DiagonalisationMethod::vdBT_greedy2, "vdBT_greedy2"},
+        {DiagonalisationMethod::CSW_CZ, "CSW_CZ"},
+        {DiagonalisationMethod::CSW_CX, "CSW_CX"},
+    });
+
+/**
+ * Diagonalise a mutually commuting set of Pauli strings. Modifies the
+ * list of Pauli strings in place, and returns the Clifford circuit
+ * required to generate the initial set.
+ */
+Circuit mutual_diagonalise(
+    std::list<SpSymPauliTensor> &gadgets, std::set<Qubit> qubits,
+    CXConfigType cx_config,
+    DiagonalisationMethod diag_meth = DiagonalisationMethod::Greedy);
+
 /**
  * Check whether there are any qubits which only requires a single
  * qubit Clifford to make all Paulis I or Z
@@ -46,11 +80,9 @@ void greedy_diagonalise(
     Conjugations &conjugations, Circuit &circ, CXConfigType cx_config);
 
 /**
- * Diagonalise a mutually commuting set of Pauli strings. Modifies the
- * list of Pauli strings in place, and returns the Clifford circuit
- * required to generate the initial set.
+ * Implements mutual_diagonalise for the Greedy method.
  */
-Circuit mutual_diagonalise(
+Circuit mutual_diagonalise_greedy(
     std::list<SpSymPauliTensor> &gadgets, std::set<Qubit> qubits,
     CXConfigType cx_config);
 /**
@@ -68,5 +100,45 @@ void apply_conjugations(
 bool conjugate_with_xxphase3(
     const Qubit &qb_a, const Qubit &qb_b, Conjugations &conjugations,
     Circuit &cliff_circ);
+
+ChoiMixTableau tab_from_gadgets(const std::list<SpSymPauliTensor> &gadgets);
+
+/**
+ * Implements mutual_diagonalise for the method in Appendix A of Jena, Genin,
+ * Mosca, "Pauli Partitioning with Respect to Gate Sets",
+ * https://arxiv.org/pdf/1907.07859.pdf
+ */
+Circuit mutual_diagonalise_JGM(
+    std::list<SpSymPauliTensor> &gadgets, std::set<Qubit> qubits,
+    CXConfigType cx_config);
+
+/**
+ * Implements mutual_diagonalise for the methods in Section 4 of van den Berg &
+ * Temme, "Circuit optimisation of Hamiltonian simulation by simultaneous
+ * diagonalization of Pauli clusters",
+ * https://quantum-journal.org/papers/q-2020-09-12-322/
+ */
+Circuit mutual_diagonalise_vdBT_PE(
+    std::list<SpSymPauliTensor> &gadgets, std::set<Qubit> qubits,
+    CXConfigType cx_config);
+Circuit mutual_diagonalise_vdBT_CX(
+    std::list<SpSymPauliTensor> &gadgets, std::set<Qubit> qubits,
+    CXConfigType cx_config);
+Circuit mutual_diagonalise_vdBT_greedy(
+    std::list<SpSymPauliTensor> &gadgets, std::set<Qubit> qubits,
+    CXConfigType cx_config, bool subsort_by_singles);
+
+/**
+ * Implements mutual_diagonalise for the methods in Section 3 of Crawford, van
+ * Straaten, Wang, Parks, Campbell, Brierley, "Efficient quantum measurement of
+ * Pauli operators in the presence of finite sampling error",
+ * https://arxiv.org/pdf/1908.06942.pdf
+ */
+Circuit mutual_diagonalise_CSW_CZ(
+    std::list<SpSymPauliTensor> &gadgets, std::set<Qubit> qubits,
+    CXConfigType cx_config);
+Circuit mutual_diagonalise_CSW_CX(
+    std::list<SpSymPauliTensor> &gadgets, std::set<Qubit> qubits,
+    CXConfigType cx_config);
 
 }  // namespace tket

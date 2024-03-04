@@ -31,6 +31,7 @@ namespace tket {
 MeasurementSetup measurement_reduction(
     const std::list<SpPauliString>& strings, PauliPartitionStrat strat,
     GraphColourMethod method = GraphColourMethod::Lazy,
-    CXConfigType cx_config = CXConfigType::Snake);
+    CXConfigType cx_config = CXConfigType::Snake,
+    DiagonalisationMethod diag_meth = DiagonalisationMethod::Greedy);
 
 }  // namespace tket

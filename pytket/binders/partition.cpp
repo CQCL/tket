@@ -60,6 +60,17 @@ PYBIND11_MODULE(partition, m) {
           "Exponential time in the worst case, but often runs "
           "much faster.");
 
+  py::enum_<DiagonalisationMethod>(
+    m, "DiagonalisationMethod",
+    "Enum for available methods to diagonalise sets of mutually-commuting Pauli strings.")
+    .value("Greedy", DiagonalisationMethod::Greedy, "The greedy method traditionally used in tket.")
+    .value("JGM", DiagonalisationMethod::JGM, "Jena-Genin-Mosca method.")
+    .value("vdBT_PE", DiagonalisationMethod::vdBT_PE, "van den Berg-Temme pairwise elimination method.")
+    .value("vdBT_CX", DiagonalisationMethod::vdBT_CX, "van den Berg-Temme CX method.")
+    .value("vdBT_greedy1", DiagonalisationMethod::vdBT_greedy1, "van den Berg-Temme greedy-1 method (just prioritises 2qb gates).")
+    .value("vdBT_greedy2", DiagonalisationMethod::vdBT_greedy2, "van den Berg-Temme greedy-2 method (prioritises 2qb gates, then by single qubit gates).")
+    ;
+
   py::class_<MeasurementSetup::MeasurementBitMap>(
       m, "MeasurementBitMap",
       "Maps Pauli tensors to Clifford circuit indices and bits required "
@@ -155,8 +166,8 @@ PYBIND11_MODULE(partition, m) {
       "measurement_reduction",
       [](const py::tket_custom::SequenceList<SpPauliString> &strings,
          PauliPartitionStrat strat, GraphColourMethod method,
-         CXConfigType cx_config) {
-        return measurement_reduction(strings, strat, method, cx_config);
+         CXConfigType cx_config, DiagonalisationMethod diag_meth) {
+        return measurement_reduction(strings, strat, method, cx_config, diag_meth);
       },
       "Automatically performs graph colouring and diagonalisation to "
       "reduce measurements required for Pauli strings."
@@ -166,10 +177,12 @@ PYBIND11_MODULE(partition, m) {
       "\n:param method: The `GraphColourMethod` to use."
       "\n:param cx_config: Whenever diagonalisation is required, use "
       "this configuration of CX gates"
+      "\n:param diag_meth: The `DiagonalisationMethod` to use."
       "\n:return: a :py:class:`MeasurementSetup` object",
       py::arg("strings"), py::arg("strat"),
       py::arg("method") = GraphColourMethod::Lazy,
-      py::arg("cx_config") = CXConfigType::Snake);
+      py::arg("cx_config") = CXConfigType::Snake,
+      py::arg("diag_meth") = DiagonalisationMethod::Greedy);
 
   m.def(
       "term_sequence",

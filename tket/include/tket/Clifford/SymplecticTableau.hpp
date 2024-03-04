@@ -173,7 +173,6 @@ class SymplecticTableau {
    */
   void gaussian_form();
 
- private:
   /**
    * Number of rows
    */
@@ -191,6 +190,7 @@ class SymplecticTableau {
   MatrixXb zmat_;
   VectorXb phase_;
 
+ private:
   /**
    * Complex conjugate of the state by conjugating rows
    */

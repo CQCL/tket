@@ -22,6 +22,40 @@
 
 namespace tket {
 
+Circuit mutual_diagonalise(
+    std::list<SpSymPauliTensor> &gadgets, std::set<Qubit> qubits,
+    CXConfigType cx_config, DiagonalisationMethod diag_meth) {
+  switch (diag_meth) {
+    case DiagonalisationMethod::Greedy: {
+      return mutual_diagonalise_greedy(gadgets, qubits, cx_config);
+    }
+    case DiagonalisationMethod::JGM: {
+      return mutual_diagonalise_JGM(gadgets, qubits, cx_config);
+    }
+    case DiagonalisationMethod::vdBT_PE: {
+      return mutual_diagonalise_vdBT_PE(gadgets, qubits, cx_config);
+    }
+    case DiagonalisationMethod::vdBT_CX: {
+      return mutual_diagonalise_vdBT_CX(gadgets, qubits, cx_config);
+    }
+    case DiagonalisationMethod::vdBT_greedy1: {
+      return mutual_diagonalise_vdBT_greedy(gadgets, qubits, cx_config, false);
+    }
+    case DiagonalisationMethod::vdBT_greedy2: {
+      return mutual_diagonalise_vdBT_greedy(gadgets, qubits, cx_config, true);
+    }
+    case DiagonalisationMethod::CSW_CZ: {
+      return mutual_diagonalise_CSW_CZ(gadgets, qubits, cx_config);
+    }
+    case DiagonalisationMethod::CSW_CX: {
+      return mutual_diagonalise_CSW_CX(gadgets, qubits, cx_config);
+    }
+    default: {
+      throw std::logic_error("Unrecognised diagonalisation method");
+    }
+  }
+}
+
 void check_easy_diagonalise(
     std::list<SpSymPauliTensor> &gadgets, std::set<Qubit> &qubits,
     Circuit &circ) {
@@ -222,7 +256,7 @@ void greedy_diagonalise(
 }
 
 /* Diagonalise a set of Pauli Gadgets simultaneously using Cliffords*/
-Circuit mutual_diagonalise(
+Circuit mutual_diagonalise_greedy(
     std::list<SpSymPauliTensor> &gadgets, std::set<Qubit> qubits,
     CXConfigType cx_config) {
   Circuit cliff_circ;
