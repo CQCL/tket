@@ -818,6 +818,14 @@ PYBIND11_MODULE(passes, m) {
       py::arg("allow_swaps") = true);
 
   m.def(
+      "CliffordResynthesis", &gen_clifford_resynthesis_pass,
+      "An optimisation pass that resynhesises all Clifford subcircuits and "
+      "then applies some rewrite rules to simplify them further."
+      "\n\n:param allow_swaps: whether the rewriting may introduce wire swaps"
+      "\n:return: a pass to perform the rewriting",
+      py::arg("allow_swaps") = true);
+
+  m.def(
       "DecomposeSwapsToCXs", &gen_decompose_routing_gates_to_cxs_pass,
       "Construct a pass to decompose SWAP and BRIDGE gates to CX gates, "
       "constraining connectivity to an :py:class:`Architecture`, optionally "
