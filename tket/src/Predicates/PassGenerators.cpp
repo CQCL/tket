@@ -163,7 +163,8 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps) {
 }
 
 PassPtr gen_clifford_resynthesis_pass(
-    std::function<Circuit(const Circuit&)> transform, bool allow_swaps) {
+    std::optional<std::function<Circuit(const Circuit&)>> transform,
+    bool allow_swaps) {
   Transform t = Transforms::clifford_resynthesis(transform, allow_swaps);
   PredicatePtrMap precons;
   PostConditions pc{{}, {}, Guarantee::Preserve};

@@ -224,7 +224,7 @@ def CXMappingPass(arc: pytket._tket.architecture.Architecture, placer: pytket._t
     :param \**kwargs: Parameters for routing: (bool)directed_cx=false, (bool)delay_measures=true
     :return: a pass to perform the remapping
     """
-def CliffordResynthesis(transform: typing.Callable[[pytket._tket.circuit.Circuit], pytket._tket.circuit.Circuit] = None, allow_swaps: bool = True) -> BasePass:
+def CliffordResynthesis(transform: typing.Callable[[pytket._tket.circuit.Circuit], pytket._tket.circuit.Circuit] | None = None, allow_swaps: bool = True) -> BasePass:
     """
     An optimisation pass that resynhesises all Clifford subcircuits and then applies some rewrite rules to simplify them further.
     

@@ -14,6 +14,7 @@
 
 #include <pybind11/functional.h>
 
+#include <optional>
 #include <tklog/TketLog.hpp>
 
 #include "binder_json.hpp"
@@ -829,7 +830,7 @@ PYBIND11_MODULE(passes, m) {
       "(only relevant to the default resynthesis method used when the "
       "`transform` argument is not provided)"
       "\n:return: a pass to perform the rewriting",
-      py::arg("transform") = nullptr, py::arg("allow_swaps") = true);
+      py::arg("transform") = std::nullopt, py::arg("allow_swaps") = true);
 
   m.def(
       "DecomposeSwapsToCXs", &gen_decompose_routing_gates_to_cxs_pass,

@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <optional>
+
 #include "CompilerPass.hpp"
 #include "tket/ArchAwareSynth/SteinerForest.hpp"
 #include "tket/Circuit/Circuit.hpp"
@@ -69,7 +71,8 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps = true);
  * @return pass to perform Clifford resynthesis
  */
 PassPtr gen_clifford_resynthesis_pass(
-    std::function<Circuit(const Circuit&)> transform = nullptr,
+    std::optional<std::function<Circuit(const Circuit&)>> transform =
+        std::nullopt,
     bool allow_swaps = true);
 
 /**

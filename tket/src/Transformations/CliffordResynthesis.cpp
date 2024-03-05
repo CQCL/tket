@@ -27,10 +27,11 @@ namespace tket {
 namespace Transforms {
 
 static Circuit resynthesised_circuit(
-    Circuit &circ, std::function<Circuit(const Circuit &)> transform = nullptr,
+    Circuit &circ,
+    std::optional<std::function<Circuit(const Circuit &)>> transform = nullptr,
     bool allow_swaps = true) {
-  if (transform) {
-    return transform(circ);
+  if (transform.has_value()) {
+    return (*transform)(circ);
   } else {
     // Work around https://github.com/CQCL/tket/issues/1268 :
     decompose_multi_qubits_CX().apply(circ);
@@ -49,7 +50,8 @@ static Circuit resynthesised_circuit(
 }
 
 static bool resynthesise_cliffords(
-    Circuit &circ, std::function<Circuit(const Circuit &)> transform = nullptr,
+    Circuit &circ,
+    std::optional<std::function<Circuit(const Circuit &)>> transform = nullptr,
     bool allow_swaps = true) {
   bool changed = false;
   for (const VertexSet &verts :
@@ -64,7 +66,8 @@ static bool resynthesise_cliffords(
 }
 
 Transform clifford_resynthesis(
-    std::function<Circuit(const Circuit &)> transform, bool allow_swaps) {
+    std::optional<std::function<Circuit(const Circuit &)>> transform,
+    bool allow_swaps) {
   return Transform([transform, allow_swaps](Circuit &circ) {
     return resynthesise_cliffords(circ, transform, allow_swaps);
   });

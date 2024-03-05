@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <optional>
+
 #include "Transform.hpp"
 
 namespace tket {
@@ -33,7 +35,8 @@ namespace Transforms {
  * @return transform to perform Clifford resynthesis
  */
 Transform clifford_resynthesis(
-    std::function<Circuit(const Circuit&)> transform = nullptr,
+    std::optional<std::function<Circuit(const Circuit&)>> transform =
+        std::nullopt,
     bool allow_swaps = true);
 
 }  // namespace Transforms
