@@ -31,11 +31,18 @@ static bool resynthesise_cliffords(Circuit &circ, bool allow_swaps = true) {
        circ.get_subcircuits([](Op_ptr op) { return op->is_clifford(); })) {
     Subcircuit subcircuit = circ.make_subcircuit(verts);
     Circuit subc = circ.subcircuit(subcircuit);
-    decompose_cliffords_std().apply(
-        subc);  // works around https://github.com/CQCL/tket/issues/1268
+
+    // Work around https://github.com/CQCL/tket/issues/1268 :
+    decompose_multi_qubits_CX().apply(subc);
+    decompose_cliffords_std().apply(subc);
+
+    // Convert to tableau and back:
     const UnitaryTableau tab = circuit_to_unitary_tableau(subc);
     Circuit newsubc = unitary_tableau_to_circuit(tab);
+
+    // Simplify:
     clifford_simp(allow_swaps).apply(newsubc);
+
     circ.substitute(newsubc, subcircuit);
     changed = true;
   }
