@@ -162,8 +162,9 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps) {
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
-PassPtr gen_clifford_resynthesis_pass(bool allow_swaps) {
-  Transform t = Transforms::clifford_resynthesis(allow_swaps);
+PassPtr gen_clifford_resynthesis_pass(
+    std::function<Circuit(const Circuit&)> transform, bool allow_swaps) {
+  Transform t = Transforms::clifford_resynthesis(transform, allow_swaps);
   PredicatePtrMap precons;
   PostConditions pc{{}, {}, Guarantee::Preserve};
   nlohmann::json j;

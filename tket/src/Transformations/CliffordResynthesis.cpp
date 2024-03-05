@@ -25,33 +25,46 @@ namespace tket {
 
 namespace Transforms {
 
-static bool resynthesise_cliffords(Circuit &circ, bool allow_swaps = true) {
+static Circuit resynthesised_circuit(
+    Circuit &circ, std::function<Circuit(const Circuit &)> transform = nullptr,
+    bool allow_swaps = true) {
+  if (transform) {
+    return transform(circ);
+  } else {
+    // Work around https://github.com/CQCL/tket/issues/1268 :
+    decompose_multi_qubits_CX().apply(circ);
+    decompose_cliffords_std().apply(circ);
+
+    // Convert to tableau and back:
+    const UnitaryTableau tab = circuit_to_unitary_tableau(circ);
+    Circuit newcirc = unitary_tableau_to_circuit(tab);
+
+    // Simplify:
+    clifford_simp(allow_swaps).apply(newcirc);
+
+    return newcirc;
+  }
+}
+
+static bool resynthesise_cliffords(
+    Circuit &circ, std::function<Circuit(const Circuit &)> transform = nullptr,
+    bool allow_swaps = true) {
   bool changed = false;
   for (const VertexSet &verts :
        circ.get_subcircuits([](Op_ptr op) { return op->is_clifford(); })) {
     Subcircuit subcircuit = circ.make_subcircuit(verts);
     Circuit subc = circ.subcircuit(subcircuit);
-
-    // Work around https://github.com/CQCL/tket/issues/1268 :
-    decompose_multi_qubits_CX().apply(subc);
-    decompose_cliffords_std().apply(subc);
-
-    // Convert to tableau and back:
-    const UnitaryTableau tab = circuit_to_unitary_tableau(subc);
-    Circuit newsubc = unitary_tableau_to_circuit(tab);
-
-    // Simplify:
-    clifford_simp(allow_swaps).apply(newsubc);
-
+    Circuit newsubc = resynthesised_circuit(subc, transform, allow_swaps);
     circ.substitute(newsubc, subcircuit);
     changed = true;
   }
   return changed;
 }
 
-Transform clifford_resynthesis(bool allow_swaps) {
-  return Transform([allow_swaps](Circuit &circ) {
-    return resynthesise_cliffords(circ, allow_swaps);
+Transform clifford_resynthesis(
+    std::function<Circuit(const Circuit &)> transform, bool allow_swaps) {
+  return Transform([transform, allow_swaps](Circuit &circ) {
+    return resynthesise_cliffords(circ, transform, allow_swaps);
   });
 }
 

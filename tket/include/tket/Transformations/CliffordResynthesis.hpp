@@ -23,10 +23,18 @@ namespace Transforms {
 /**
  * Resynthesise all Clifford subcircuits and simplify using Clifford rules.
  *
- * @param allow_swaps whether to allow introduction of implicit wire swaps
+ * @param transform optional user-provided resynthesis method to apply to all
+ *   Clifford subcircuits (a function taking a Clifford circuit as an argument
+ *   and returning an equivalent circuit); if not provided, a default
+ *   resynthesis method is applied
+ * @param allow_swaps whether the rewriting may introduce wire swaps (only
+ *   relevant to the default resynthesis method used when the `transform`
+ *   argument is not provided)
  * @return transform to perform Clifford resynthesis
  */
-Transform clifford_resynthesis(bool allow_swaps = true);
+Transform clifford_resynthesis(
+    std::function<Circuit(const Circuit&)> transform = nullptr,
+    bool allow_swaps = true);
 
 }  // namespace Transforms
 
