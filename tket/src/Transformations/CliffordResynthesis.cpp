@@ -14,10 +14,11 @@
 
 #include "tket/Transformations/CliffordResynthesis.hpp"
 
-#include "Transformations/Decomposition.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Converters/Converters.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/Transform.hpp"
 
@@ -34,6 +35,7 @@ static Circuit resynthesised_circuit(
     // Work around https://github.com/CQCL/tket/issues/1268 :
     decompose_multi_qubits_CX().apply(circ);
     decompose_cliffords_std().apply(circ);
+    remove_redundancies().apply(circ);
 
     // Convert to tableau and back:
     const UnitaryTableau tab = circuit_to_unitary_tableau(circ);
