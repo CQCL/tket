@@ -49,6 +49,9 @@ pytket.circuit
 .. autoclass:: pytket.circuit.ToffoliBox
     :special-members:
     :members:
+.. autoclass:: pytket.circuit.ToffoliBoxSynthStrat
+    :special-members:
+    :members:
 .. autoclass:: pytket.circuit.QControlBox
     :special-members:
     :members:
