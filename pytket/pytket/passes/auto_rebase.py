@@ -53,7 +53,7 @@ _TK2_CIRCS_WIRE_SWAP: Dict[OpType, Callable[[Param, Param, Param], "Circuit"]] =
 }
 
 
-def get_cx_decomposition(gateset: Set[OpType]) -> Circuit:
+def _get_cx_decomposition(gateset: Set[OpType]) -> Circuit:
     """Return a Circuit expressing a CX in terms of a two qubit gate in the
     gateset if one is available, raise an error otherwise.
 
@@ -68,7 +68,7 @@ def get_cx_decomposition(gateset: Set[OpType]) -> Circuit:
     raise NoAutoRebase("No known decomposition from CX to available gateset.")
 
 
-def get_tk2_decomposition(
+def _get_tk2_decomposition(
     gateset: Set[OpType],
     allow_swaps: bool,
 ) -> Callable[[Param, Param, Param], "Circuit"]:
@@ -104,7 +104,7 @@ _TK1_circs: Dict[FrozenSet[OpType], Callable[[Param, Param, Param], "Circuit"]] 
 }
 
 
-def get_TK1_decomposition_function(
+def _get_TK1_decomposition_function(
     gateset: Set[OpType],
 ) -> Callable[[Param, Param, Param], "Circuit"]:
     """Return a function for generating TK1 equivalent circuits, which take the
@@ -144,18 +144,18 @@ def auto_rebase_pass(gateset: Set[OpType], allow_swaps: bool = False) -> BasePas
     :return: Rebase pass.
     :rtype: RebaseCustom
     """
-    tk1 = get_TK1_decomposition_function(gateset)
+    tk1 = _get_TK1_decomposition_function(gateset)
     # if the gateset has CX but not TK2, and implicit wire swaps not allowed:
     # rebase via CX
     if OpType.CX in gateset and OpType.TK2 not in gateset and not allow_swaps:
         return RebaseCustom(gateset, _library.CX(), tk1)
     # in other cases, try to rebase via TK2 first
     try:
-        return RebaseCustom(gateset, get_tk2_decomposition(gateset, allow_swaps), tk1)
+        return RebaseCustom(gateset, _get_tk2_decomposition(gateset, allow_swaps), tk1)
     except NoAutoRebase:
         pass
     try:
-        return RebaseCustom(gateset, get_cx_decomposition(gateset), tk1)
+        return RebaseCustom(gateset, _get_cx_decomposition(gateset), tk1)
     except NoAutoRebase:
         raise NoAutoRebase(
             "No known decomposition from CX or TK2 to available gateset."
@@ -174,4 +174,4 @@ def auto_squash_pass(gateset: Set[OpType]) -> BasePass:
     if {OpType.Rz, OpType.PhasedX} <= gateset:
         return SquashRzPhasedX()
 
-    return SquashCustom(gateset, get_TK1_decomposition_function(gateset))
+    return SquashCustom(gateset, _get_TK1_decomposition_function(gateset))
