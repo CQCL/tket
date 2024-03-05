@@ -311,7 +311,7 @@ class BackendInfo:
         return cls(**args)
 
 
-def fully_connected_backendinfo(  # type: ignore
+def _fully_connected_backendinfo(  # type: ignore
     name: str,
     device_name: Optional[str],
     version: str,
