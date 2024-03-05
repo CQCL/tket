@@ -1001,9 +1001,17 @@ def test_clifford_resynthesis() -> None:
         .SXdg(0)
         .measure_all()
     )
-    CliffordResynthesis().apply(circ)
-    assert circ.depth() <= 9
-    assert circ.n_2qb_gates() <= 4
+    circ0 = circ.copy()
+    CliffordResynthesis().apply(circ0)
+    assert circ0.depth() <= 9
+    assert circ0.n_2qb_gates() <= 4
+    circ1 = circ.copy()
+    CliffordResynthesis(allow_swaps=False).apply(circ1)
+    assert circ1.depth() <= 16
+    assert circ1.n_2qb_gates() <= 9
+    circ2 = circ.copy()
+    CliffordResynthesis(transform=lambda c: c.copy()).apply(circ2)
+    assert circ2 == circ
 
 
 if __name__ == "__main__":
