@@ -11,6 +11,8 @@ Features:
   ``Circuit.add_circbox_with_regmap()`` for adding a ``CircBox`` to a circuit
   providing either an ordered sequence of registers or a mapping of registers
   from the box to the containing circuit.
+* Add ``CliffordResynthesis`` pass to apply Clifford resynthesis (optionally
+  with a user-defined resynthesis method) on all Clifford subcircuits.
 
 1.25.0 (February 2024)
 ----------------------
