@@ -63,8 +63,8 @@ void Logger::log(const char *levstr, const std::string &s, std::ostream &os) {
 #else
   plt = std::localtime(&t);
 #endif
-  os << "[" << std::put_time(plt, "%Y-%m-%d %H:%M:%S") << "]"
-     << " [tket] [" << levstr << "] " << s << std::endl;
+  os << "[" << std::put_time(plt, "%Y-%m-%d %H:%M:%S") << "]" << " [tket] ["
+     << levstr << "] " << s << std::endl;
 }
 
 void Logger::set_level(LogLevel lev) { level = lev; }
