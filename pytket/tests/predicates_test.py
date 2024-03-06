@@ -72,6 +72,7 @@ from pytket.passes import (
     PeepholeOptimise2Q,
     SynthesiseHQS,
     CliffordResynthesis,
+    CliffordSimp,
 )
 from pytket.predicates import (
     GateSetPredicate,
@@ -1012,6 +1013,18 @@ def test_clifford_resynthesis() -> None:
     circ2 = circ.copy()
     CliffordResynthesis(transform=lambda c: c.copy()).apply(circ2)
     assert circ2 == circ
+
+
+def test_clifford_resynthesis_implicit_swaps() -> None:
+    def T(c):
+        c1 = c.copy()
+        CliffordSimp().apply(c1)
+        return c1
+
+    circ = Circuit(2).CX(0, 1).CX(1, 0).CX(0, 1)
+    CliffordResynthesis(transform=T).apply(circ)
+    assert circ.n_gates == 0
+    assert circ.implicit_qubit_permutation() == {Qubit(0): Qubit(1), Qubit(1): Qubit(0)}
 
 
 if __name__ == "__main__":
