@@ -1439,6 +1439,38 @@ def test_add_circbox_with_mixed_registers() -> None:
         )
 
 
+def test_deserialization_from_junk() -> None:
+    # https://github.com/CQCL/tket/issues/1243
+    with pytest.raises(RuntimeError):
+        Circuit.from_dict(
+            {
+                "phase": "1.9999999999999998",
+                "qubits": [("q", (20057, 24021, 112, 9628, 79))],
+                "bits": [("c", (128, 3, 384))],
+                "implicit_permutation": [
+                    (("c", (1174437931,)), ("q", (0,))),
+                    (("c", (25199232,)), ("c", (29697, 126852352))),
+                ],
+                "commands": [
+                    {
+                        "op": {
+                            "type": "CCX",
+                            "conditional": {
+                                "op": {"type": "CCX"},
+                                "width": 3,
+                                "value": 2,
+                            },
+                        },
+                        "args": [],
+                    }
+                ],
+                "name": "ú\x19",
+                "created_qubits": [("c", (0,))],
+                "discarded_qubits": [("c", (0,))],
+            }
+        )
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
