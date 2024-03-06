@@ -1016,7 +1016,7 @@ def test_clifford_resynthesis() -> None:
 
 
 def test_clifford_resynthesis_implicit_swaps() -> None:
-    def T(c):
+    def T(c: Circuit) -> Circuit:
         c1 = c.copy()
         CliffordSimp().apply(c1)
         return c1
