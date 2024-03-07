@@ -14,6 +14,7 @@
 
 #include <pybind11/functional.h>
 
+#include <optional>
 #include <tklog/TketLog.hpp>
 
 #include "binder_json.hpp"
@@ -816,6 +817,20 @@ PYBIND11_MODULE(passes, m) {
       "disregard CX placement or orientation and introduce wire swaps."
       "\n:return: a pass to perform the rewriting",
       py::arg("allow_swaps") = true);
+
+  m.def(
+      "CliffordResynthesis", &gen_clifford_resynthesis_pass,
+      "An optimisation pass that resynhesises all Clifford subcircuits and "
+      "then applies some rewrite rules to simplify them further."
+      "\n\n:param transform: optional user-provided resynthesis method to "
+      "apply to all Clifford subcircuits (a function taking a Clifford "
+      "circuit as an argument and returning an equivalent circuit); if not "
+      "provided, a default resynthesis method is applied"
+      "\n:param allow_swaps: whether the rewriting may introduce wire swaps "
+      "(only relevant to the default resynthesis method used when the "
+      "`transform` argument is not provided)"
+      "\n:return: a pass to perform the rewriting",
+      py::arg("transform") = std::nullopt, py::arg("allow_swaps") = true);
 
   m.def(
       "DecomposeSwapsToCXs", &gen_decompose_routing_gates_to_cxs_pass,

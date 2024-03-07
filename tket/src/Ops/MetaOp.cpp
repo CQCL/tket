@@ -42,7 +42,7 @@ op_signature_t MetaOp::get_signature() const {
     return signature_;
 }
 
-bool MetaOp::is_clifford() const { return true; }
+bool MetaOp::is_clifford() const { return false; }
 
 MetaOp::~MetaOp() {}
 
