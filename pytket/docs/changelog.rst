@@ -11,6 +11,7 @@ Features:
   ``Circuit.add_circbox_with_regmap()`` for adding a ``CircBox`` to a circuit
   providing either an ordered sequence of registers or a mapping of registers
   from the box to the containing circuit.
+* Add optional ``name`` argument to ``Circuit.dagger``.
 
 Fixes:
 

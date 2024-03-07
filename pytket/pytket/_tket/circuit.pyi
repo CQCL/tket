@@ -1944,10 +1944,11 @@ class Circuit:
         """
         :return: an identical copy of the circuit
         """
-    def dagger(self) -> Circuit:
+    def dagger(self, name: str | None = None) -> Circuit:
         """
         Given a pure circuit (i.e. without any measurements or conditional gates), produces a new circuit for the inverse/adjoint operation.
         
+        :param name: optional name for the returned circuit
         :return: a new :py:class:`Circuit` corresponding to the inverse operation
         """
     def depth(self) -> int:

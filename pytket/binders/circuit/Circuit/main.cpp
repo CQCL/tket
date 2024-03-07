@@ -589,11 +589,20 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "composition of the given Circuits. This will fail if the "
           "circuits share qubits/bits with the same ids.")
       .def(
-          "dagger", &Circuit::dagger,
+          "dagger",
+          [](Circuit &circ, const std::optional<std::string> &name) {
+            Circuit circ_dagger = circ.dagger();
+            if (name != std::nullopt) {
+              circ_dagger.set_name(name.value());
+            }
+            return circ_dagger;
+          },
           "Given a pure circuit (i.e. without any measurements or "
           "conditional gates), produces a new circuit for the "
-          "inverse/adjoint operation.\n\n:return: a new "
-          ":py:class:`Circuit` corresponding to the inverse operation")
+          "inverse/adjoint operation."
+          "\n\n:param name: optional name for the returned circuit"
+          "\n:return: a new :py:class:`Circuit` corresponding to the inverse operation",
+          py::arg("name") = std::nullopt)
       .def(
           "transpose", &Circuit::transpose,
           "Given a pure circuit (i.e. without any measurements or "

@@ -130,13 +130,14 @@ def test_circuit_dagger() -> None:
     ubox = Unitary2qBox(u)
     c.add_unitary2qbox(ubox, 1, 0)
     c.add_gate(OpType.CnRy, 0.3, [0, 1])
-    c_d = c.dagger()
+    c_d = c.dagger(name="c_dag")
     commands = c_d.get_commands()
     assert str(commands[0]) == "CnRy(3.7) q[0], q[1];"
     assert commands[0].qubits == [Qubit(0), Qubit(1)]
     assert str(commands[1]) == "Unitary2qBox q[1], q[0];"
     assert isinstance(commands[1].op, Unitary2qBox)
     assert commands[1].op.get_matrix().all() == u.conj().transpose().all()
+    assert c_d.name == "c_dag"
 
 
 # TKET-1365 bug
