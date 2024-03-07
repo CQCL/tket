@@ -561,13 +561,16 @@ class BackendResult:
         return EmpiricalDistribution(self.get_counts(bits))
 
     def get_probability_distribution(
-        self, qubits: Optional[Sequence[Qubit]] = None
+        self, qubits: Optional[Sequence[Qubit]] = None, min_p: float = 0.0
     ) -> ProbabilityDistribution[Tuple[int, ...]]:
         """Convert to a :py:class:`pytket.utils.distribution.ProbabilityDistribution`
         where the possible outcomes are sequences of 0s and 1s.
 
         :param qubits: Optionally provide the :py:class:`Qubit` s over which to
             marginalize the distribution.
+        :param min_p: Optional probability below which to ignore values (for
+            example to avoid spurious values due to rounding errors in
+            statevector computations). Default 0.
         :return: A distribution where the possible outcomes are tuples of 0s and 1s.
         """
         if not self.contains_state_results:
@@ -575,7 +578,7 @@ class BackendResult:
                 "Probability distribution only available for statevector result types."
             )
         state = self.get_state(qubits)
-        return ProbabilityDistribution(probs_from_state(state))
+        return ProbabilityDistribution(probs_from_state(state), min_p=min_p)
 
     def get_debug_info(self) -> Dict[str, float]:
         """Calculate the success rate of each assertion averaged across shots.
