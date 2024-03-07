@@ -103,6 +103,7 @@ add_executable(test-tket
     src/Ops/test_Expression.cpp
     src/Ops/test_Ops.cpp
     src/OpType/test_OpTypeFunctions.cpp
+    src/Passes/test_CliffordResynthesis.cpp
     src/Passes/test_SynthesiseTK.cpp
     src/Passes/test_SynthesiseTket.cpp
     src/Gate/test_Rotation.cpp

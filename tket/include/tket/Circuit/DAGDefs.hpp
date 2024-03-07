@@ -64,7 +64,7 @@ typedef boost::adjacency_list<
     boost::bidirectionalS,
 
     // indexing needed for algorithms such as topological sort
-    boost::property<boost::vertex_index_t, int, VertexProperties>,
+    boost::property<boost::vertex_index_t, std::size_t, VertexProperties>,
 
     EdgeProperties>
     DAG;
@@ -76,7 +76,7 @@ typedef std::vector<Vertex> VertexVec;
 typedef std::list<Vertex> VertexList;
 typedef std::unordered_map<Vertex, unsigned> IndexMap;
 typedef boost::adj_list_vertex_property_map<
-    DAG, int, int&, boost::vertex_index_t>
+    DAG, std::size_t, std::size_t&, boost::vertex_index_t>
     VIndex;
 
 /**

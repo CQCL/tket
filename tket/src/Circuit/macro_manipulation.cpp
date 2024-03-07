@@ -323,13 +323,7 @@ void Circuit::substitute(
 void Circuit::substitute(
     const Circuit& to_insert, const Vertex& to_replace,
     VertexDeletion vertex_deletion, OpGroupTransfer opgroup_transfer) {
-  Subcircuit sub = {
-      get_in_edges_of_type(to_replace, EdgeType::Quantum),
-      get_out_edges_of_type(to_replace, EdgeType::Quantum),
-      get_in_edges_of_type(to_replace, EdgeType::Classical),
-      get_out_edges_of_type(to_replace, EdgeType::Classical),
-      get_out_edges_of_type(to_replace, EdgeType::Boolean),
-      {to_replace}};
+  Subcircuit sub = singleton_subcircuit(to_replace);
   substitute(to_insert, sub, vertex_deletion, opgroup_transfer);
 }
 
@@ -340,13 +334,7 @@ void Circuit::substitute_conditional(
   if (op->get_type() != OpType::Conditional)
     throw CircuitInvalidity(
         "substitute_conditional called with an unconditional gate");
-  Subcircuit sub = {
-      get_in_edges_of_type(to_replace, EdgeType::Quantum),
-      get_out_edges_of_type(to_replace, EdgeType::Quantum),
-      get_in_edges_of_type(to_replace, EdgeType::Classical),
-      get_out_edges_of_type(to_replace, EdgeType::Classical),
-      get_out_edges_of_type(to_replace, EdgeType::Boolean),
-      {to_replace}};
+  Subcircuit sub = singleton_subcircuit(to_replace);
   const Conditional& cond = static_cast<const Conditional&>(*op);
   unsigned width = cond.get_width();
   // Conditions are first few args, so increase index of all others
