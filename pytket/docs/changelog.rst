@@ -14,6 +14,11 @@ Features:
 * Add ``CliffordResynthesis`` pass to apply Clifford resynthesis (optionally
   with a user-defined resynthesis method) on all Clifford subcircuits.
 
+Fixes:
+
+* Add missing op types to methods for converting Clifford circuits to unitary
+  tableaux.
+
 1.25.0 (February 2024)
 ----------------------
 
