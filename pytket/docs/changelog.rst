@@ -12,6 +12,11 @@ Features:
   providing either an ordered sequence of registers or a mapping of registers
   from the box to the containing circuit.
 
+Fixes:
+
+* Add missing op types to methods for converting Clifford circuits to unitary
+  tableaux.
+
 1.25.0 (February 2024)
 ----------------------
 
