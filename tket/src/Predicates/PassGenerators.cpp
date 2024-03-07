@@ -32,6 +32,7 @@
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Predicates/Predicates.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/CliffordResynthesis.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
@@ -159,6 +160,17 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps) {
   j["allow_swaps"] = allow_swaps;
 
   return std::make_shared<StandardPass>(precons, t, postcon, j);
+}
+
+PassPtr gen_clifford_resynthesis_pass(
+    std::optional<std::function<Circuit(const Circuit&)>> transform,
+    bool allow_swaps) {
+  Transform t = Transforms::clifford_resynthesis(transform, allow_swaps);
+  PredicatePtrMap precons;
+  PostConditions pc{{}, {}, Guarantee::Preserve};
+  nlohmann::json j;
+  j["name"] = "CliffordResynthesis";
+  return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
 PassPtr gen_flatten_relabel_registers_pass(const std::string& label) {
