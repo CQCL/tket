@@ -33,7 +33,7 @@ static Circuit resynthesised_circuit(
   if (transform.has_value()) {
     return (*transform)(circ);
   } else {
-    // Work around https://github.com/CQCL/tket/issues/1268 :
+    // Ensure all recognized Clifford gates are Clifford types:
     decompose_multi_qubits_CX().apply(circ);
     decompose_cliffords_std().apply(circ);
     remove_redundancies().apply(circ);
