@@ -13,6 +13,10 @@ Features:
   from the box to the containing circuit.
 * Add ``CliffordResynthesis`` pass to apply Clifford resynthesis (optionally
   with a user-defined resynthesis method) on all Clifford subcircuits.
+* Add optional ``min_p`` argument to
+  ``BackendResult.get_probability_distribution()`` and to the constructor of a
+  ``ProbabilityDistribution``, defaulting to zero. (Previously probabilities
+  below 1e-10 were by default treated as zero.)
 
 Fixes:
 
