@@ -26,6 +26,7 @@ from typing import (
     TypeVar,
     Counter,
 )
+import warnings
 import numpy as np
 from scipy.stats import rv_discrete
 
@@ -149,16 +150,29 @@ class ProbabilityDistribution(Generic[T0]):
     derived from an :py:class:`EmpriricalDistribution`.
     """
 
-    def __init__(self, P: Dict[T0, float]):
+    def __init__(self, P: Dict[T0, float], min_p: float = 0.0):
         """Initialize with a dictionary of probabilities.
 
-        The values must be non-negative and add up to 1.
+        :param P: Dictionary of probabilities.
+        :param min_p: Optional probability below which to ignore values. Default
+            0. Distribution is renormalized after removing these values.
+
+        The values must be non-negative. If they do not sum to 1, a warning is
+        emitted; the distribution will contain normalized values.
         """
-        self._P = {x: p for x, p in P.items() if not np.isclose(p, 0)}
-        if any(x < 0 for x in self._P.values()):
+        if any(x < 0 for x in P.values()):
             raise ValueError("Distribution contains negative probabilities")
-        if not np.isclose(sum(self._P.values()), 1):
-            raise ValueError("Probabilities do not sum to 1")
+        s0 = sum(P.values())
+        if np.isclose(s0, 0):
+            raise ValueError("Distribution has zero weight")
+        if not np.isclose(s0, 1):
+            warnings.warn(
+                "Probabilities used to initialize ProbabilityDistribution do "
+                "not sum to 1: renormalizing."
+            )
+        newP = {x: p for x, p in P.items() if p > min_p}
+        s = sum(newP.values())
+        self._P = {x: p / s for x, p in newP.items()}
 
     def as_dict(self) -> Dict[T0, float]:
         """Return the distribution as a :py:class:`dict` object."""
