@@ -206,6 +206,16 @@ Circuit Circuit::subcircuit(const Subcircuit& sc) const {
   return sub;
 }
 
+Subcircuit Circuit::singleton_subcircuit(const Vertex& v) const {
+  return {
+      get_in_edges_of_type(v, EdgeType::Quantum),
+      get_out_edges_of_type(v, EdgeType::Quantum),
+      get_in_edges_of_type(v, EdgeType::Classical),
+      get_out_edges_of_type(v, EdgeType::Classical),
+      get_out_edges_of_type(v, EdgeType::Boolean),
+      {v}};
+}
+
 // returns qubit path via vertices & inhabited port in vertices
 // used to construct a routing grid
 QPathDetailed Circuit::unit_path(const UnitID& unit) const {

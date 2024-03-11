@@ -83,7 +83,9 @@ CircBox::CircBox() : Box(OpType::CircBox) {
 
 bool CircBox::is_clifford() const {
   BGL_FORALL_VERTICES(v, circ_->dag, DAG) {
-    if (!circ_->get_Op_ptr_from_Vertex(v)->is_clifford()) return false;
+    Op_ptr op = circ_->get_Op_ptr_from_Vertex(v);
+    if (op->get_desc().is_meta()) continue;
+    if (!op->is_clifford()) return false;
   }
   return true;
 }
@@ -344,7 +346,9 @@ std::string CustomGate::get_name(bool) const {
 bool CustomGate::is_clifford() const {
   std::shared_ptr<Circuit> circ = to_circuit();
   BGL_FORALL_VERTICES(v, circ->dag, DAG) {
-    if (!circ->get_Op_ptr_from_Vertex(v)->is_clifford()) return false;
+    Op_ptr op = circ->get_Op_ptr_from_Vertex(v);
+    if (op->get_desc().is_meta()) continue;
+    if (!op->is_clifford()) return false;
   }
   return true;
 }
