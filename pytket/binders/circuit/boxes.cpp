@@ -169,7 +169,16 @@ void init_boxes(py::module &m) {
           "any Circuit that the CircBox has been added to "
           "(via Circuit.add_circbox). \n\n:param symbol_map: "
           "A map from SymPy symbols to SymPy expressions",
-          py::arg("symbol_map"));
+          py::arg("symbol_map"))
+      .def_property(
+          "circuit_name", &CircBox::get_circuit_name,
+          &CircBox::set_circuit_name,
+          ":return: the name of the contained circuit. "
+          "\n\n WARNING: "
+          "Setting this property mutates the CircBox and "
+          "any changes are propagated to "
+          "any Circuit that the CircBox has been added to "
+          "(via Circuit.add_circbox).");
   py::class_<Unitary1qBox, std::shared_ptr<Unitary1qBox>, Op>(
       m, "Unitary1qBox",
       "A user-defined one-qubit operation specified by a unitary matrix.")

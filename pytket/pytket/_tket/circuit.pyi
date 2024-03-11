@@ -133,6 +133,14 @@ class CircBox(Op):
         
         :param symbol_map: A map from SymPy symbols to SymPy expressions
         """
+    @property
+    def circuit_name(self) -> str | None:
+        """
+        :return: the name of the contained circuit
+        """
+    @circuit_name.setter
+    def circuit_name(self, arg1: str) -> None:
+        ...
 class Circuit:
     """
     Encapsulates a quantum circuit using a DAG representation.

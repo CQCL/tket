@@ -172,6 +172,20 @@ class CircBox : public Box {
 
   static nlohmann::json to_json(const Op_ptr &op);
 
+  /**
+   * Get the name of the inner circuit.
+   *
+   * @return name
+   */
+  std::optional<std::string> get_circuit_name() const;
+
+  /**
+   * Set the name of the inner circuit
+   *
+   * @param _name name string
+   */
+  void set_circuit_name(const std::string _name);
+
  protected:
   void generate_circuit() const override {}  // Already set by constructor
 };
