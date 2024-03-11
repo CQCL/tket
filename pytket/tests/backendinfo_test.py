@@ -22,7 +22,7 @@ from json import dumps, loads
 from hypothesis import given, settings
 import pytest
 
-from pytket.backends.backendinfo import BackendInfo, _fully_connected_backendinfo
+from pytket.backends.backendinfo import BackendInfo, fully_connected_backendinfo
 from pytket.architecture import SquareGrid, RingArch, FullyConnected
 from pytket.circuit import OpType, Node
 
@@ -173,7 +173,7 @@ def test_backendinfo_serialization(backinfo: BackendInfo) -> None:
 
 
 def test_fullyconnected() -> None:
-    bi = _fully_connected_backendinfo(
+    bi = fully_connected_backendinfo(
         "name", "device_name", "version", 10, {OpType.CX, OpType.Rx}
     )
     assert bi.n_nodes == 10

@@ -36,4 +36,4 @@ pytket.backends.status
 pytket.backends.backendinfo
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automodule:: pytket.backends.backendinfo
-    :members: BackendInfo
+    :members: BackendInfo, fully_connected_backendinfo
