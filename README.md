@@ -11,6 +11,8 @@ If you just want to use tket via Python, the easiest way is to install it with
 pip install pytket
 ```
 
+For getting started using pytket, check out the user manual and examples notebooks.
+
 User manual - https://tket.quantinuum.com/user-manual/
 Notebook examples - https://tket.quantinuum.com/examples/
 
