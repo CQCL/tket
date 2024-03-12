@@ -11,6 +11,12 @@ If you just want to use tket via Python, the easiest way is to install it with
 pip install pytket
 ```
 
+User manual - https://tket.quantinuum.com/user-manual/
+Notebook examples - https://tket.quantinuum.com/examples/
+
+The source content for the manual and example notebooks can be found in the [pytket-docs repository](https://github.com/CQCL/pytket-docs).
+
+
 In addition to the core pytket package there are pytket extension modules which allow pytket to interface with quantum devices and simulators. Some extensions also provide interoperability with other software libraries such as qiskit, cirq and pennylane.
 
 For a list of available pytket extensions see the [extensions index page](https://tket.quantinuum.com/api-docs/extensions).
