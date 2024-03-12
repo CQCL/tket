@@ -92,6 +92,15 @@ SCENARIO("SynthesiseCliffordResynthesis correctness") {
     c.add_op<unsigned>(OpType::ZZMax, {0, 1});
     check_clifford_resynthesis(c);
   }
+  GIVEN("A troublesome circuit") {
+    // https://github.com/CQCL/tket/issues/1279
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::ECR, {1, 2});
+    c.add_op<unsigned>(OpType::CnRy, 0., {0, 1});
+    c.add_op<unsigned>(OpType::Rz, 0., {1});
+    c.add_op<unsigned>(OpType::ZZMax, {2, 1});
+    check_clifford_resynthesis(c);
+  }
 }
 
 }  // namespace test_CliffordResynthesis

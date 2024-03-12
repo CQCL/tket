@@ -1628,7 +1628,7 @@ class Circuit {
    *   satisfying the criterion.
    */
   std::vector<VertexSet> get_subcircuits(
-      std::function<bool(Op_ptr)> criterion) const;
+      std::function<bool(Op_ptr)> criterion) /*const*/;
 
   /**
    * Constructs a @ref Subcircuit with a given vertex set.
