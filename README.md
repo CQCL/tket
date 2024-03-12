@@ -5,7 +5,7 @@
 
 ## Introduction
 
-TKET (pronounced ticket) is a high performance quantum compiler capable of optimising circuits for execution on a wide range quantum computing architectures and simulators.
+TKET (pronounced ticket) is a high performance quantum compiler that can optimise circuits for execution on a wide range quantum computing architectures and simulators.
 
 This repository contains the full source code for TKET and its python bindings.
 
