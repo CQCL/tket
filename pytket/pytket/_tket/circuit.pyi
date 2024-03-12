@@ -136,7 +136,9 @@ class CircBox(Op):
     @property
     def circuit_name(self) -> str | None:
         """
-        :return: the name of the contained circuit
+        :return: the name of the contained circuit. 
+        
+         WARNING: Setting this property mutates the CircBox and any changes are propagated to any Circuit that the CircBox has been added to (via Circuit.add_circbox).
         """
     @circuit_name.setter
     def circuit_name(self, arg1: str) -> None:
