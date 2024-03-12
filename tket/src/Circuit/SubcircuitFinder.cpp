@@ -98,18 +98,38 @@ static subcircuit_info_t convex_union(
   return {verts, preds, succs};
 }
 
+static std::set<std::pair<Vertex, Vertex>> order_relations(
+    Circuit *circ /*const*/) {
+  // Put the vertices in reverse topological order:
+  circ->index_vertices();
+  VertexVec verts;
+  boost::topological_sort(circ->dag, std::back_inserter(verts));
+  // Construct a map v --> {all vertices in the future of v}:
+  std::map<Vertex, VertexSet> futures;
+  for (const Vertex &v : verts) {
+    VertexSet v_futures = {v};
+    for (const Vertex &w : circ->get_successors(v)) {
+      const VertexSet &w_futures = futures[w];
+      v_futures.insert(w_futures.begin(), w_futures.end());
+    }
+    futures[v] = v_futures;
+  }
+  // Construct the set of order relations:
+  std::set<std::pair<Vertex, Vertex>> rels;
+  for (const auto &v_ws : futures) {
+    const Vertex &v = v_ws.first;
+    for (const Vertex &w : v_ws.second) {
+      rels.insert({v, w});
+    }
+  }
+  return rels;
+}
+
 // Helper class for finding connected convex subcircuits.
 class SubcircuitFinder {
  public:
-  SubcircuitFinder(const Circuit *circ) : circ_(circ) {
-    // Compute the partial order on the DAG:
-    DAG TC;
-    boost::transitive_closure(circ_->dag, TC);
-    BGL_FORALL_VERTICES(v, circ_->dag, DAG) { order_relations_.insert({v, v}); }
-    BGL_FORALL_EDGES(e, TC, DAG) {
-      order_relations_.insert({boost::source(e, TC), boost::target(e, TC)});
-    }
-  }
+  SubcircuitFinder(Circuit *circ /*const*/)
+      : circ_(circ), order_relations_(order_relations(circ)) {}
   std::vector<VertexSet> find_subcircuits(
       std::function<bool(Op_ptr)> criterion) {
     // Find a maximal partition of the vertices satisfying the criterion into
@@ -202,7 +222,7 @@ class SubcircuitFinder {
 };
 
 std::vector<VertexSet> Circuit::get_subcircuits(
-    std::function<bool(Op_ptr)> criterion) const {
+    std::function<bool(Op_ptr)> criterion) /*const*/ {
   SubcircuitFinder finder(this);
   return finder.find_subcircuits(criterion);
 }
