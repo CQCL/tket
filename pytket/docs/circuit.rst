@@ -50,6 +50,8 @@ pytket.circuit
 .. autoclass:: pytket.circuit.PauliExpCommutingSetBox
     :special-members:
     :members:
+.. autoclass:: pytket.circuit.ToffoliBoxSynthStrat
+    :members:
 .. autoclass:: pytket.circuit.ToffoliBox
     :special-members:
     :members:
