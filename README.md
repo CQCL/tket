@@ -11,7 +11,7 @@ TKET is primarily a high performance quantum compiler capable of optimising circ
 
 The standard way of using TKET is via its `pytket` python API.
 
-If you just want to use tket via python, the easiest way is to install it with
+If you just want to use tket via Python, the easiest way is to install it with
 `pip`:
 
 ```shell
