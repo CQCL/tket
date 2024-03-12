@@ -109,4 +109,4 @@ The following code snippet will show how to compile a circuit to run on an IBM d
 Here the default compilation pass is applied by :py:meth:`IBMQBackend.get_compiled_circuit`. See `this page <https://tket.quantinuum.com/extensions/pytket-qiskit/#default-compilation>`_ for more details.
 
 As an alternative, We can experiment with constructing our own circuit compilation routines in pytket. Passes from the :py:mod:`pytket.passes` module can be applied individually or composed in sequence. 
-See the section of the user manual on `circuit compilation <https://tket.quantinuum.com/user-manual/manual_compiler.html>`_ and the corresponding `notebook example <https://github.com/CQCL/pytket/blob/main/examples/compilation_example.ipynb>`_ for more.
+See the section of the user manual on `circuit compilation <https://tket.quantinuum.com/user-manual/manual_compiler.html>`_ and the corresponding `notebook example <https://tket.quantinuum.com/examples/compilation_example.html>`_ for more.
