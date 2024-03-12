@@ -5,7 +5,7 @@
 
 ## Introduction
 
-This repository contains the full source code for the TKET quantum compiler and its pytket python bindings.
+This repository contains the full source code for the TKET quantum compiler and its python bindings.
 
 TKET is primarily a high performance quantum compiler capable of optimising circuits for execution on a wide range quantum computing architectures and simulators.
 
