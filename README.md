@@ -13,8 +13,8 @@ pip install pytket
 
 For getting started using pytket, check out the user manual and notebook examples.
 
-User manual - https://tket.quantinuum.com/user-manual/
-Notebook examples - https://tket.quantinuum.com/examples/
+- User manual - https://tket.quantinuum.com/user-manual/
+- Notebook examples - https://tket.quantinuum.com/examples/
 
 The source content for the manual and notebook examples can be found in the [pytket-docs repository](https://github.com/CQCL/pytket-docs).
 
