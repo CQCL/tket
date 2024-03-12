@@ -17,6 +17,7 @@ Features:
   ``BackendResult.get_probability_distribution()`` and to the constructor of a
   ``ProbabilityDistribution``, defaulting to zero. (Previously probabilities
   below 1e-10 were by default treated as zero.)
+* Add python binding for ``UnitaryRevTableau``.
 
 Fixes:
 
