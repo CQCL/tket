@@ -1471,6 +1471,17 @@ def test_deserialization_from_junk() -> None:
         )
 
 
+def test_decompose_clexpbox() -> None:
+    # https://github.com/CQCL/tket/issues/1289
+    c0 = Circuit()
+    c_reg = c0.add_c_register("c", 2)
+    c0.add_classicalexpbox_register(c_reg | c_reg, c_reg)  # type: ignore
+    cbox = CircBox(c0)
+    c = Circuit(0, 2)
+    c.add_circbox(cbox, [0, 1])
+    assert Transform.DecomposeBoxes().apply(c)
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
