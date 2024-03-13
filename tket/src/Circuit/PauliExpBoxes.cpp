@@ -565,7 +565,7 @@ void TermSequenceBox::generate_circuit() const {
   // Construct circuit depending on specified strategy, using other Pauli
   // Exponential Boxes
   switch (this->synth_strategy_) {
-    case Transforms::PauliSynthStrat::Individual:
+    case Transforms::PauliSynthStrat::Individual: {
       for (auto it = reduced_pauli_gadgets.begin();
            it != reduced_pauli_gadgets.end(); ++it) {
         circ.add_box(
@@ -573,9 +573,8 @@ void TermSequenceBox::generate_circuit() const {
                 SymPauliTensor(it->first, it->second), this->cx_configuration_),
             circ.all_qubits());
       }
-      break;
-
-    case Transforms::PauliSynthStrat::Pairwise:
+    }
+    case Transforms::PauliSynthStrat::Pairwise: {
       auto it = reduced_pauli_gadgets.begin();
       // if there is an odd number of gadgets, add first gadget as a single
       if (reduced_pauli_gadgets.size() % 2 == 1) {
@@ -596,9 +595,8 @@ void TermSequenceBox::generate_circuit() const {
             circ.all_qubits());
         std::advance(it, 2);
       }
-      break;
-
-    case Transforms::PauliSynthStrat::Sets:
+    }
+    case Transforms::PauliSynthStrat::Sets: {
       // term_sequence expects std::list<SpPauliString>, i.e. QubitPauliMap
       // instead of DensePauliMap first convert the keys of
       // reduced_pauli_gadgets to a std::list<SpPauliString> object
@@ -626,11 +624,11 @@ void TermSequenceBox::generate_circuit() const {
             PauliExpCommutingSetBox(commuting_gadgets, this->cx_configuration_),
             circ.all_qubits());
       }
-      break;
-
-    default:
+    }
+    default: {
       throw std::logic_error(
           "TermSequenceBox passed an unsupported PauliSynthStrat");
+    }
   }
   circ_ = std::make_shared<Circuit>(circ);
 }
