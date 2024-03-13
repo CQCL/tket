@@ -574,7 +574,8 @@ void TermSequenceBox::generate_circuit() const {
             circ.all_qubits());
       }
       break;
-    case Transforms::PauliSynthStrat::Pairwise: {
+
+    case Transforms::PauliSynthStrat::Pairwise:
       auto it = reduced_pauli_gadgets.begin();
       // if there is an odd number of gadgets, add first gadget as a single
       if (reduced_pauli_gadgets.size() % 2 == 1) {
@@ -595,7 +596,8 @@ void TermSequenceBox::generate_circuit() const {
             circ.all_qubits());
         std::advance(it, 2);
       }
-    } break;
+      break;
+
     case Transforms::PauliSynthStrat::Sets:
       // term_sequence expects std::list<SpPauliString>, i.e. QubitPauliMap
       // instead of DensePauliMap first convert the keys of
@@ -625,6 +627,7 @@ void TermSequenceBox::generate_circuit() const {
             circ.all_qubits());
       }
       break;
+
     default:
       throw std::logic_error(
           "TermSequenceBox passed an unsupported PauliSynthStrat");
