@@ -69,7 +69,6 @@ Op_ptr Box::deserialize(const nlohmann::json &j) {
 }
 
 CircBox::CircBox(const Circuit &circ) : Box(OpType::CircBox) {
-  if (!circ.is_simple()) throw SimpleOnly();
   signature_ = op_signature_t(circ.n_qubits(), EdgeType::Quantum);
   op_signature_t bits(circ.n_bits(), EdgeType::Classical);
   signature_.insert(signature_.end(), bits.begin(), bits.end());
@@ -84,7 +83,9 @@ CircBox::CircBox() : Box(OpType::CircBox) {
 
 bool CircBox::is_clifford() const {
   BGL_FORALL_VERTICES(v, circ_->dag, DAG) {
-    if (!circ_->get_Op_ptr_from_Vertex(v)->is_clifford()) return false;
+    Op_ptr op = circ_->get_Op_ptr_from_Vertex(v);
+    if (op->get_desc().is_meta()) continue;
+    if (!op->is_clifford()) return false;
   }
   return true;
 }
@@ -345,7 +346,9 @@ std::string CustomGate::get_name(bool) const {
 bool CustomGate::is_clifford() const {
   std::shared_ptr<Circuit> circ = to_circuit();
   BGL_FORALL_VERTICES(v, circ->dag, DAG) {
-    if (!circ->get_Op_ptr_from_Vertex(v)->is_clifford()) return false;
+    Op_ptr op = circ->get_Op_ptr_from_Vertex(v);
+    if (op->get_desc().is_meta()) continue;
+    if (!op->is_clifford()) return false;
   }
   return true;
 }

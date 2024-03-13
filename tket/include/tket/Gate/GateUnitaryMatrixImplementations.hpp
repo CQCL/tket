@@ -34,7 +34,7 @@ struct GateUnitaryMatrixImplementations {
   // so dense->sparse routines would be needed).
 
   // Roughly follows the order in
-  // https://cqcl.github.io/tket/pytket/api/optype.html
+  // https://tket.quantinuum.com/api-docs/optype.html
 
   // Note: the below functions do not check double parameter values,
   // the caller must do that.

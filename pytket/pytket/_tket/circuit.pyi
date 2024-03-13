@@ -1311,8 +1311,10 @@ class Circuit:
         """
         Append a :py:class:`CircBox` to the circuit.
         
+        The qubits and bits of the :py:class:`CircBox` are wired into the circuit in lexicographic order. Bits follow qubits in the order of arguments.
+        
         :param circbox: The box to append
-        :param args: Indices of the qubits/bits to append the box to
+        :param args: Indices of the (default-register) qubits/bits to append the box to
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
@@ -1320,8 +1322,30 @@ class Circuit:
         """
         Append a :py:class:`CircBox` to the circuit.
         
+        The qubits and bits of the :py:class:`CircBox` are wired into the circuit in lexicographic order. Bits follow qubits in the order of arguments.
+        
         :param circbox: The box to append
         :param args: The qubits/bits to append the box to
+        :return: the new :py:class:`Circuit`
+        """
+    def add_circbox_regwise(self, circbox: CircBox, qregs: typing.Sequence[pytket._tket.unit_id.QubitRegister], cregs: typing.Sequence[pytket._tket.unit_id.BitRegister], **kwargs: Any) -> Circuit:
+        """
+        Append a :py:class:`CircBox` to the circuit, wiring whole registers together.
+        
+        :param circbox: The box to append
+        :param qregs: Sequence of :py:class:`QubitRegister` from the outer :py:class:`Circuit`, the order corresponding to the lexicographic order of corresponding registers in the :py:class:`CircBox`
+        :param cregs: Sequence of :py:class:`BitRegister` from the outer :py:class:`Circuit`, the order corresponding to the lexicographic order of corresponding registers in the :py:class:`CircBox`
+        :return: the new :py:class:`Circuit`
+        """
+    def add_circbox_with_regmap(self, circbox: CircBox, qregmap: dict[str, str], cregmap: dict[str, str], **kwargs: Any) -> Circuit:
+        """
+        Append a :py:class:`CircBox` to the circuit, wiring whole registers together.
+        
+        This method expects two maps (one for qubit registers and one for bit registers), which must have keys corresponding to all register names in the box. The box may not contain any qubits or bits that do not belong to a register, i.e. all must be single-indexed contiguously from zero.
+        
+        :param circbox: The box to append
+        :param qregmap: Map specifying which qubit register in the :py:class:`CircBox` (the map's keys) matches which register in the outer circuit (the map's values)
+        :param cregmap: Map specifying which bit register in the :py:class:`CircBox` (the map's keys) matches which register in the outer circuit (the map's values)
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
@@ -2373,7 +2397,7 @@ class Circuit:
         """
         Get all classical registers.
         
-        This property is only valid if the bits in the circuit are organized into registers (i.e. all bit indices are single numbers and all sets of bits with the same string identifier consist of bits indexed consecutively from zero).
+        The list only includes registers that are singly-indexed contiguously from zero.
         
         :return: List of :py:class:`BitRegister`
         """
@@ -2428,7 +2452,7 @@ class Circuit:
         """
         Get all quantum registers.
         
-        This property is only valid if the qubits in the circuit are organized into registers (i.e. all qubit indices are single numbers and all sets of qubits with the same string identifier consist of qubits indexed consecutively from zero).
+        The list only includes registers that are singly-indexed contiguously from zero.
         
         :return: List of :py:class:`QubitRegister`
         """
@@ -3134,7 +3158,7 @@ class OpType:
     
       PauliExpBox : An operation defined as the exponential :math:`e^{-\frac{i\pi\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
     
-      PauliExpPairBox : An operation defined as a pairof exponentials of the form :math:`e^{-\frac{i\pi\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
+      PauliExpPairBox : A pair of (not necessarily commuting) Pauli exponentials :math:`e^{-\frac{i\pi\alpha}{2} P}` performed in sequence.
     
       PauliExpCommutingSetBox : An operation defined as a setof commuting exponentials of the form :math:`e^{-\frac{i\pi\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
     
@@ -3399,7 +3423,9 @@ class PauliExpCommutingSetBox(Op):
         """
 class PauliExpPairBox(Op):
     """
-    An operation defined as a pair of exponentials of a tensor of Pauli operations and their (possibly symbolic) phase parameters.
+    A pair of (not necessarily commuting) Pauli exponentials performed in sequence.
+    Pairing up exponentials for synthesis can reduce gate costs of synthesis compared to synthesising individually, with the best reductions found when the Pauli tensors act on a large number of the same qubits.
+    Phase parameters may be symbolic.
     """
     def __init__(self, paulis0: typing.Sequence[pytket._tket.pauli.Pauli], t0: sympy.Expr | float, paulis1: typing.Sequence[pytket._tket.pauli.Pauli], t1: sympy.Expr | float, cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
         """
