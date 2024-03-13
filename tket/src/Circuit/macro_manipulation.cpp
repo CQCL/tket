@@ -687,7 +687,6 @@ bool Circuit::substitute_box_vertex(
   if (op->get_type() == OpType::ClassicalExpBox) return false;
   const Box& b = static_cast<const Box&>(*op);
   Circuit replacement = *b.to_circuit();
-  replacement.flatten_registers();
   if (conditional) {
     substitute_conditional(
         replacement, vert, vertex_deletion, OpGroupTransfer::Merge);

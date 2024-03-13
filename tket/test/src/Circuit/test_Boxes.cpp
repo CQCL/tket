@@ -41,6 +41,21 @@ using Catch::Matchers::StartsWith;
 namespace tket {
 namespace test_Boxes {
 
+SCENARIO("CircBox requires simple circuits", "[boxes]") {
+  Circuit circ(2);
+  circ.add_op<unsigned>(OpType::Y, {0});
+  circ.add_op<unsigned>(OpType::CX, {0, 1});
+  REQUIRE(circ.is_simple());
+  Qubit qb0(0);
+  Qubit qb1(1);
+  Qubit a0("a", 0);
+  Qubit a1("a", 1);
+  unit_map_t qubit_map = {{qb0, a0}, {qb1, a1}};
+  circ.rename_units(qubit_map);
+  REQUIRE(!circ.is_simple());
+  REQUIRE_THROWS_AS(CircBox(circ), SimpleOnly);
+}
+
 SCENARIO("CircBox in-place symbol substitution") {
   Sym asym = SymEngine::symbol("a");
   Expr alpha(asym);
@@ -119,20 +134,6 @@ SCENARIO("Using Boxes", "[boxes]") {
     Eigen::MatrixXcd uc0 = tket_sim::get_unitary(c0);
     Eigen::MatrixXcd uc0a = tket_sim::get_unitary(c0a);
     REQUIRE((uc0 - uc0a).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("CircBox with non-default units") {
-    Circuit c0;
-    c0.add_q_register("a", 2);
-    c0.add_q_register("b", 1);
-    c0.add_op<Qubit>(
-        OpType::CCX, {Qubit("a", 1), Qubit("a", 0), Qubit("b", 0)});
-    CircBox cbox(c0);
-    Circuit c(3);
-    c.add_box(cbox, {0, 2, 1});
-    REQUIRE(!test_unitary_comparison(c0, c));
-    Circuit c1(3);
-    c1.add_box(cbox, {0, 1, 2});
-    REQUIRE(test_unitary_comparison(c0, c1));
   }
   GIVEN("Unitary1qBox manipulation") {
     // random 1qb gate

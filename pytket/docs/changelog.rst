@@ -1,28 +1,7 @@
 Changelog
 =========
 
-Unreleased
-----------
-
-Features:
-
-* Allow ``CircBox`` containing non-default registers.
-* Add new methods ``Circuit.add_circbox_regwise()`` and
-  ``Circuit.add_circbox_with_regmap()`` for adding a ``CircBox`` to a circuit
-  providing either an ordered sequence of registers or a mapping of registers
-  from the box to the containing circuit.
-* Add ``CliffordResynthesis`` pass to apply Clifford resynthesis (optionally
-  with a user-defined resynthesis method) on all Clifford subcircuits.
-* Add optional ``min_p`` argument to
-  ``BackendResult.get_probability_distribution()`` and to the constructor of a
-  ``ProbabilityDistribution``, defaulting to zero. (Previously probabilities
-  below 1e-10 were by default treated as zero.)
-* Add python binding for ``UnitaryRevTableau``.
-
-Fixes:
-
-* Add missing op types to methods for converting Clifford circuits to unitary
-  tableaux.
+TODO merge conflict
 
 1.25.0 (February 2024)
 ----------------------
