@@ -573,6 +573,7 @@ void TermSequenceBox::generate_circuit() const {
                 SymPauliTensor(it->first, it->second), this->cx_configuration_),
             circ.all_qubits());
       }
+      break;
     }
     case Transforms::PauliSynthStrat::Pairwise: {
       auto it = reduced_pauli_gadgets.begin();
@@ -595,6 +596,7 @@ void TermSequenceBox::generate_circuit() const {
             circ.all_qubits());
         std::advance(it, 2);
       }
+      break;
     }
     case Transforms::PauliSynthStrat::Sets: {
       // term_sequence expects std::list<SpPauliString>, i.e. QubitPauliMap
@@ -624,6 +626,7 @@ void TermSequenceBox::generate_circuit() const {
             PauliExpCommutingSetBox(commuting_gadgets, this->cx_configuration_),
             circ.all_qubits());
       }
+      break;
     }
     default: {
       throw std::logic_error(
