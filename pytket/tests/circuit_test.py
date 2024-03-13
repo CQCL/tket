@@ -764,6 +764,18 @@ def test_custom_gates() -> None:
     assert str(coms[2]) == "CRz(1.3) q[0], q[1];"
 
 
+def test_decompose_clexpbox() -> None:
+    box_circ = Circuit(1)
+    box_c = box_circ.add_c_register("c", 5)
+
+    box_circ.add_classicalexpbox_register(box_c | box_c, box_c)  # type: ignore
+
+    cbox = CircBox(box_circ)
+    d = Circuit(1, 5)
+    d.add_circbox(cbox, [0, 0, 1, 2, 3, 4])
+    Transform.DecomposeBoxes().apply(d)
+
+
 def test_errors() -> None:
     # TKET-289
     c = Circuit(1)
@@ -1370,6 +1382,7 @@ def test_resources() -> None:
     two_qubit_gate_depth = resource_data.get_two_qubit_gate_depth()
     assert two_qubit_gate_depth.get_min() == 10
     assert two_qubit_gate_depth.get_max() == 13
+
 
 if __name__ == "__main__":
     test_circuit_gen()
