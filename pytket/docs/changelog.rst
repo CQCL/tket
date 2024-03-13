@@ -6,7 +6,6 @@ Unreleased
 
 Features:
 
-* Add ``TermSequenceBox``
 * Allow ``CircBox`` containing non-default registers.
 * Add new methods ``Circuit.add_circbox_regwise()`` and
   ``Circuit.add_circbox_with_regmap()`` for adding a ``CircBox`` to a circuit
@@ -19,7 +18,8 @@ Features:
   ``ProbabilityDistribution``, defaulting to zero. (Previously probabilities
   below 1e-10 were by default treated as zero.)
 * Add python binding for ``UnitaryRevTableau``.
-
+* Add ``TermSequenceBox``, for circuit synthesis of a series of Pauli 
+  Exponentials, where the ordering of terms can be changed.
 Fixes:
 
 * Add missing op types to methods for converting Clifford circuits to unitary

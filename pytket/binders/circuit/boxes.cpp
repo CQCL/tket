@@ -349,9 +349,10 @@ void init_boxes(py::module &m) {
   py::module::import("pytket._tket.partition");
   py::class_<TermSequenceBox, std::shared_ptr<TermSequenceBox>, Op>(
       m, "TermSequenceBox",
-      "An operation defined as a set of exponentials of a"
-      "tensor of Pauli operations and their (possibly symbolic) phase "
-      "parameters.")
+      "An unordered collection of Pauli exponentials "
+      "that can be synthesised in any order, causing a "
+      "change in the unitary operation. Synthesise order "
+      "depends on the synthesis strategy chosen only.")
       .def(
           py::init([](const py::tket_custom::SequenceVec<
                           std::pair<py::tket_custom::SequenceVec<Pauli>, Expr>>

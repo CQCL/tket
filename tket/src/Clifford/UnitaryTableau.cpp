@@ -599,16 +599,16 @@ std::ostream& operator<<(std::ostream& os, const UnitaryRevTableau& tab) {
   for (unsigned i = 0; i < nqs; ++i) {
     Qubit qi = tab.tab_.qubits_.right.at(i);
     os << tab.tab_.tab_.xmat_.row(i) << "   " << tab.tab_.tab_.zmat_.row(i)
-       << "   " << tab.tab_.tab_.phase_(i) << "\t->\t" << "X@" << qi.repr()
-       << std::endl;
+       << "   " << tab.tab_.tab_.phase_(i) << "\t->\t"
+       << "X@" << qi.repr() << std::endl;
   }
   os << "--" << std::endl;
   for (unsigned i = 0; i < nqs; ++i) {
     Qubit qi = tab.tab_.qubits_.right.at(i);
     os << tab.tab_.tab_.xmat_.row(i + nqs) << "   "
        << tab.tab_.tab_.zmat_.row(i + nqs) << "   "
-       << tab.tab_.tab_.phase_(i + nqs) << "\t->\t" << "Z@" << qi.repr()
-       << std::endl;
+       << tab.tab_.tab_.phase_(i + nqs) << "\t->\t"
+       << "Z@" << qi.repr() << std::endl;
   }
   return os;
 }

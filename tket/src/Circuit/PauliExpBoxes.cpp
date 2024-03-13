@@ -376,19 +376,19 @@ TermSequenceBox::TermSequenceBox(
       cx_configuration_(cx_configuration) {
   // check at least one gadget
   if (pauli_gadgets.empty()) {
-    throw PauliExpBoxInvalidity(
-        "TermSequenceBox requires at least one Pauli string");
-  }
-  // check all gadgets have same Pauli string length
-  auto n_qubits = pauli_gadgets[0].size();
-  for (const auto &gadget : pauli_gadgets) {
-    if (gadget.size() != n_qubits) {
-      throw PauliExpBoxInvalidity(
-          "the Pauli strings within TermSequenceBox must all be the "
-          "same length - add Pauli.I to pad strings to required length.");
+    signature_ = op_signature_t(0, EdgeType::Quantum);
+  } else {
+    // check all gadgets have same Pauli string length
+    auto n_qubits = pauli_gadgets[0].size();
+    for (const auto &gadget : pauli_gadgets) {
+      if (gadget.size() != n_qubits) {
+        throw PauliExpBoxInvalidity(
+            "the Pauli strings within TermSequenceBox must all be the "
+            "same length - add Pauli.I to pad strings to required length.");
+      }
     }
+    signature_ = op_signature_t(n_qubits, EdgeType::Quantum);
   }
-  signature_ = op_signature_t(n_qubits, EdgeType::Quantum);
 }
 
 TermSequenceBox::TermSequenceBox(const TermSequenceBox &other)
@@ -522,7 +522,7 @@ Op_ptr TermSequenceBox::from_json(const nlohmann::json &j) {
 
 DensePauliMap pad_sparse_pauli_map(
     const QubitPauliMap &sparse_string, size_t size) {
-  // n.b. as a helper method this can assumes that all qubits in sparse string
+  // n.b. as a helper method this can assume that all qubits in sparse string
   // are labelled with the default qubit register and no index is larger than or
   // equal to the size
   std::vector<Pauli> dense_string(size, Pauli::I);
@@ -550,7 +550,7 @@ void TermSequenceBox::generate_circuit() const {
   // First combine any PauliGadgets with the same dense string into the same
   // term
   // n.b. the map assigns an ordering to the Pauli terms, meaning it
-  // is an algorithm effecting step
+  // is an algorithm-affecting step
   std::map<DensePauliMap, Expr> reduced_pauli_gadgets;
   for (const SymPauliTensor &pauli_gadget : this->pauli_gadgets_) {
     auto it = reduced_pauli_gadgets.find(pauli_gadget.string);
@@ -625,6 +625,9 @@ void TermSequenceBox::generate_circuit() const {
             circ.all_qubits());
       }
       break;
+    default:
+      throw std::logic_error(
+          "TermSequenceBox passed an unsupported PauliSynthStrat");
   }
   circ_ = std::make_shared<Circuit>(circ);
 }

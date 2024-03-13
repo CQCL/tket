@@ -26,7 +26,7 @@ namespace tket {
 namespace test_PauliExpBoxes {
 
 SCENARIO("Pauli gadgets", "[boxes]") {
-  GIVEN("Basis Circuit check") {
+  GIVEN("Basic circuit check") {
     PauliExpBox pbox(SymPauliTensor({Pauli::X}, 1.0));
     auto circ = pbox.to_circuit();
     circ->decompose_boxes_recursively();
@@ -274,7 +274,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
   }
 }
 SCENARIO("Pauli gadget pairs", "[boxes]") {
-  GIVEN("Basis Circuit check") {
+  GIVEN("Basic circuit check") {
     PauliExpPairBox pbox(
         SymPauliTensor({Pauli::X}, 1.0), SymPauliTensor({Pauli::I}, 0.0));
     auto circ = pbox.to_circuit();
@@ -444,7 +444,7 @@ SCENARIO("Pauli gadget pairs", "[boxes]") {
 }
 
 SCENARIO("Pauli gadget commuting sets", "[boxes]") {
-  GIVEN("Basis Circuit check") {
+  GIVEN("Basic circuit check") {
     PauliExpCommutingSetBox pbox(
         {{{Pauli::X}, 1.0}, {{Pauli::I}, 0.0}, {{Pauli::I}, 0.0}});
     auto circ = pbox.to_circuit();
@@ -676,7 +676,7 @@ SCENARIO("Pauli gadget commuting sets", "[boxes]") {
 }
 
 SCENARIO("TermSequenceBox", "[boxes]") {
-  GIVEN("Basis Circuit check") {
+  GIVEN("Basic circuit check") {
     TermSequenceBox pbox(
         {{{Pauli::X}, 1.0}, {{Pauli::I}, 0.0}, {{Pauli::I}, 0.0}});
     auto circ = pbox.to_circuit();
