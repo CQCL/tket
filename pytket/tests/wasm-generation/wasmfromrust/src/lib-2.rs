@@ -1,3 +1,4 @@
+#![deny(warnings)]
 // src/lib.rs
 
 #[no_mangle]
