@@ -3162,7 +3162,7 @@ class OpType:
     
       PauliExpCommutingSetBox : An operation defined as a setof commuting exponentials of the form :math:`e^{-\frac{i\pi\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
     
-      TermSequenceBox : An operation defined as a setof exponentials of the form :math:`e^{-\frac{i\pi\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
+      TermSequenceBox : An unordered collection of Pauli exponentials that can be synthesised in any order, causing a change in the unitary operation. Synthesise order depends on the synthesis strategy chosen only.
     
       QControlBox : An arbitrary n-controlled operation
     
@@ -3704,7 +3704,7 @@ class StatePreparationBox(Op):
         """
 class TermSequenceBox(Op):
     """
-    An operation defined as a set of exponentials of atensor of Pauli operations and their (possibly symbolic) phase parameters.
+    An unordered collection of Pauli exponentials that can be synthesised in any order, causing a change in the unitary operation. Synthesise order depends on the synthesis strategy chosen only.
     """
     def __init__(self, pauli_gadgets: typing.Sequence[tuple[typing.Sequence[pytket._tket.pauli.Pauli], sympy.Expr | float]], synthesis_strategy: pytket._tket.transform.PauliSynthStrat = pytket._tket.transform.PauliSynthStrat.Sets, partitioning_strategy: pytket._tket.partition.PauliPartitionStrat = pytket._tket.partition.PauliPartitionStrat.CommutingSets, graph_colouring: pytket._tket.partition.GraphColourMethod = pytket._tket.partition.GraphColourMethod.Lazy, cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
         """
