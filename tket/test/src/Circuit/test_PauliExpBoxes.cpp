@@ -694,10 +694,6 @@ SCENARIO("TermSequenceBox", "[boxes]") {
     empty_pbox_circuit->decompose_boxes_recursively();
     REQUIRE(*empty_pbox_circuit == empty_circuit);
   }
-  GIVEN("Construction with no gadgets throws") {
-    REQUIRE_THROWS_AS(
-        TermSequenceBox(std::vector<SymPauliTensor>{}), PauliExpBoxInvalidity);
-  }
   GIVEN("Construction with pauli strings of different length throws") {
     DensePauliMap pauli_string0{Pauli::X, Pauli::Z};
     DensePauliMap pauli_string1{Pauli::X, Pauli::I};
