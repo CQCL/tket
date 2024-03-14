@@ -279,6 +279,8 @@ class LogicExp:
         """Rename the Bits according to a Bit map. Raise ValueError if
         a bit is being used in a register-wise expression.
         """
+        if all(old_bit == new_bit for old_bit, new_bit in cmap.items()):
+            return False
         renamed_regs = set([key.reg_name for key in cmap.keys()])
         return self._rename_args_recursive(cmap, renamed_regs)
 
