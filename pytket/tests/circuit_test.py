@@ -1490,6 +1490,12 @@ def test_decompose_clexpbox() -> None:
     c = Circuit(0, 2)
     c.add_circbox(cbox, [0, 1])
     assert Transform.DecomposeBoxes().apply(c)
+    cmds = c.get_commands()
+    assert len(cmds) == 1
+    op = cmds[0].op
+    assert op.get_n_io() == 2
+    expr = op.get_exp()
+    assert expr.args == [BitRegister("c", 2), BitRegister("c", 2)]
 
 
 def test_bad_circbox() -> None:
