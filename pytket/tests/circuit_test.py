@@ -1482,6 +1482,16 @@ def test_decompose_clexpbox() -> None:
     assert Transform.DecomposeBoxes().apply(c)
 
 
+def test_bad_circbox() -> None:
+    circ = Circuit(3)
+    a = circ.add_c_register("a", 5)
+    b = circ.add_c_register("b", 5)
+    c = circ.add_c_register("c", 5)
+    circ.add_classicalexpbox_register(a | b, c.to_list())
+    with pytest.raises(RuntimeError) as e:
+        _ = CircBox(circ)
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
