@@ -1395,6 +1395,33 @@ SCENARIO("Checking equality", "[boxes]") {
                SymPauliTensor({Pauli::I}, -0.5)}));
     }
   }
+  GIVEN("TermSequenceBox") {
+    TermSequenceBox tbox(
+        {SymPauliTensor({Pauli::X}, 1.0), SymPauliTensor({Pauli::I}, 1.2),
+         SymPauliTensor({Pauli::I}, -0.5)});
+    WHEN("both arguments are equal") { REQUIRE(tbox == tbox); }
+    WHEN("different ids but same arguments") {
+      REQUIRE(
+          tbox ==
+          TermSequenceBox(
+              {SymPauliTensor({Pauli::X}, 1.0), SymPauliTensor({Pauli::I}, 1.2),
+               SymPauliTensor({Pauli::I}, -0.5)}));
+    }
+    WHEN("different ids, equivalent angles") {
+      REQUIRE(
+          tbox == TermSequenceBox(
+                      {SymPauliTensor({Pauli::X}, -3.0),
+                       SymPauliTensor({Pauli::I}, 5.2),
+                       SymPauliTensor({Pauli::I}, -0.5)}));
+    }
+    WHEN("different arguments") {
+      REQUIRE(
+          tbox !=
+          TermSequenceBox(
+              {SymPauliTensor({Pauli::Y}, 1.0), SymPauliTensor({Pauli::I}, 1.2),
+               SymPauliTensor({Pauli::I}, -0.5)}));
+    }
+  }
   GIVEN("ConjugationBox") {
     Circuit compute(2);
     compute.add_op<unsigned>(OpType::CRx, 0.5, {1, 0});
