@@ -53,6 +53,7 @@ from pytket.circuit import (
     ResourceBounds,
     ResourceData,
     DummyBox,
+    ClassicalExpBox,
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
 from pytket.circuit.named_types import (
@@ -1493,6 +1494,7 @@ def test_decompose_clexpbox() -> None:
     cmds = c.get_commands()
     assert len(cmds) == 1
     op = cmds[0].op
+    assert isinstance(op, ClassicalExpBox)
     assert op.get_n_io() == 2
     expr = op.get_exp()
     assert expr.args == [BitRegister("c", 2), BitRegister("c", 2)]
