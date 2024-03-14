@@ -329,7 +329,7 @@ def test_renaming_circbox_circuit() -> None:
     d = Circuit(2).add_circbox(cbox, [0, 1])
     cbox.circuit_name = "test_name"
     assert cbox.circuit_name == "test_name"
-    assert d.get_commands()[0].op.circuit_name == "test_name"
+    assert d.get_commands()[0].op.circuit_name == "test_name"  # type: ignore
 
 
 def test_subst_4() -> None:
