@@ -15,6 +15,8 @@
 #pragma once
 
 #include "Boxes.hpp"
+#include "tket/Diagonalisation/PauliPartition.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
 
 namespace tket {
 
@@ -200,6 +202,77 @@ class PauliExpCommutingSetBox : public Box {
  private:
   std::vector<SymPauliTensor> pauli_gadgets_;
   CXConfigType cx_config_;
+};
+
+class TermSequenceBox : public Box {
+ public:
+  TermSequenceBox(
+      const std::vector<SymPauliTensor> &pauli_gadgets,
+      Transforms::PauliSynthStrat synth_strategy =
+          Transforms::PauliSynthStrat::Sets,
+      PauliPartitionStrat partition_strategy =
+          PauliPartitionStrat::CommutingSets,
+      GraphColourMethod graph_colouring = GraphColourMethod::Lazy,
+      CXConfigType cx_configuration = CXConfigType::Tree);
+
+  /**
+   * Construct from the empty vector
+   */
+  TermSequenceBox();
+
+  /**
+   * Copy constructor
+   */
+  TermSequenceBox(const TermSequenceBox &other);
+
+  ~TermSequenceBox() override {}
+
+  bool is_clifford() const override;
+
+  SymSet free_symbols() const override;
+
+  /**
+   * Equality check between two instances
+   */
+  bool is_equal(const Op &op_other) const override;
+
+  /** Get the circuit synthesis strategy parameter (affects box decomposition)
+   */
+  Transforms::PauliSynthStrat get_synth_strategy() const;
+
+  /** Get the pauli partitioning strategy parameter (affects box decomposition)
+   */
+  PauliPartitionStrat get_partition_strategy() const;
+
+  /** Get the graph colouring parameter (affects box decomposition) */
+  GraphColourMethod get_graph_colouring() const;
+
+  /** Get the pauli gadgets */
+  std::vector<SymPauliTensor> get_pauli_gadgets() const;
+
+  /** Get the cx config parameter (affects box decomposition) */
+  CXConfigType get_cx_config() const;
+
+  Op_ptr dagger() const override;
+
+  Op_ptr transpose() const override;
+
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &sub_map) const override;
+
+  static Op_ptr from_json(const nlohmann::json &j);
+
+  static nlohmann::json to_json(const Op_ptr &op);
+
+ protected:
+  void generate_circuit() const override;
+
+ private:
+  std::vector<SymPauliTensor> pauli_gadgets_;
+  Transforms::PauliSynthStrat synth_strategy_;
+  PauliPartitionStrat partition_strategy_;
+  GraphColourMethod graph_colouring_;
+  CXConfigType cx_configuration_;
 };
 
 }  // namespace tket

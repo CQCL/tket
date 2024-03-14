@@ -499,6 +499,11 @@ UnitaryRevTableau::UnitaryRevTableau(const qubit_vector_t& qbs) : tab_(qbs) {}
 
 UnitaryRevTableau::UnitaryRevTableau() : tab_() {}
 
+UnitaryRevTableau::UnitaryRevTableau(
+    const MatrixXb& xx, const MatrixXb& xz, const VectorXb& xph,
+    const MatrixXb& zx, const MatrixXb& zz, const VectorXb& zph)
+    : tab_(xx, xz, xph, zx, zz, zph) {}
+
 SpPauliStabiliser UnitaryRevTableau::get_xrow(const Qubit& qb) const {
   return tab_.get_xrow(qb);
 }

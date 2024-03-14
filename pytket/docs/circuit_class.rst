@@ -4,7 +4,7 @@ pytket.circuit.Circuit
 
 See the `pytket User Manual <https://tket.quantinuum.com/user-manual/manual_circuit.html>`_ for a step-by-step tutorial on constructing circuits.
 
-See also the notebook tutorials on `circuit generation <https://github.com/CQCL/pytket/blob/main/examples/circuit_generation_example.ipynb>`_ and `circuit analysis <https://github.com/CQCL/pytket/blob/main/examples/circuit_analysis_example.ipynb>`_.
+See also the notebook tutorials on `circuit generation <https://tket.quantinuum.com/examples/circuit_generation_example.html>`_ and `circuit analysis <https://tket.quantinuum.com/examples/circuit_analysis_example.html>`_.
 
 
 Many of the :py:class:`Circuit` methods described below append a gate or box to
