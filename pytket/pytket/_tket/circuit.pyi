@@ -3162,7 +3162,7 @@ class OpType:
     
       PauliExpCommutingSetBox : An operation defined as a setof commuting exponentials of the form :math:`e^{-\frac{i\pi\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
     
-      TermSequenceBox : An unordered collection of Pauli exponentials that can be synthesised in any order, causing a change in the unitary operation. Synthesise order depends on the synthesis strategy chosen only.
+      TermSequenceBox : An unordered collection of Pauli exponentials that can be synthesised in any order, causing a change in the unitary operation. Synthesis order depends on the synthesis strategy chosen only.
     
       QControlBox : An arbitrary n-controlled operation
     
