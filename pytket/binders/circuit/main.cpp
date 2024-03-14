@@ -326,7 +326,7 @@ PYBIND11_MODULE(circuit, m) {
           "TermSequenceBox", OpType::TermSequenceBox,
           "An unordered collection of Pauli exponentials "
           "that can be synthesised in any order, causing a "
-          "change in the unitary operation. Synthesise order "
+          "change in the unitary operation. Synthesis order "
           "depends on the synthesis strategy chosen only.")
       .value(
           "QControlBox", OpType::QControlBox,
