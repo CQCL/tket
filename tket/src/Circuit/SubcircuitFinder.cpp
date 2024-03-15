@@ -181,7 +181,7 @@ class SubcircuitFinder {
     const VertexSet &preds0 = subcircuit_info0.preds;
     const VertexSet &succs0 = subcircuit_info0.succs;
     const VertexSet &preds1 = subcircuit_info1.preds;
-    const VertexSet &succs1 = subcircuit_info0.succs;
+    const VertexSet &succs1 = subcircuit_info1.succs;
     for (const Vertex &v0 : succs0) {
       for (const Vertex &v1 : preds1) {
         if (order_relations_.contains({v0, v1})) {
