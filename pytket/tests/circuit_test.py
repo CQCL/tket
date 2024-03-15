@@ -53,6 +53,7 @@ from pytket.circuit import (
     ResourceBounds,
     ResourceData,
     DummyBox,
+    ClassicalExpBox,
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
 from pytket.circuit.named_types import (
@@ -1479,6 +1480,34 @@ def test_deserialization_from_junk() -> None:
                 "discarded_qubits": [("c", (0,))],
             }
         )
+
+
+def test_decompose_clexpbox() -> None:
+    # https://github.com/CQCL/tket/issues/1289
+    c0 = Circuit()
+    c_reg = c0.add_c_register("c", 2)
+    c0.add_classicalexpbox_register(c_reg | c_reg, c_reg)  # type: ignore
+    cbox = CircBox(c0)
+    c = Circuit(0, 2)
+    c.add_circbox(cbox, [0, 1])
+    assert Transform.DecomposeBoxes().apply(c)
+    cmds = c.get_commands()
+    assert len(cmds) == 1
+    op = cmds[0].op
+    assert isinstance(op, ClassicalExpBox)
+    assert op.get_n_io() == 2
+    expr = op.get_exp()
+    assert expr.args == [BitRegister("c", 2), BitRegister("c", 2)]
+
+
+def test_bad_circbox() -> None:
+    circ = Circuit(3)
+    a = circ.add_c_register("a", 5)
+    b = circ.add_c_register("b", 5)
+    c = circ.add_c_register("c", 5)
+    circ.add_classicalexpbox_register(a | b, c.to_list())
+    with pytest.raises(RuntimeError) as e:
+        _ = CircBox(circ)
 
 
 if __name__ == "__main__":
