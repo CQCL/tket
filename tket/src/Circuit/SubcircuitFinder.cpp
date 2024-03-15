@@ -101,7 +101,6 @@ static subcircuit_info_t convex_union(
 static std::set<std::pair<Vertex, Vertex>> order_relations(
     Circuit *circ /*const*/) {
   // Put the vertices in reverse topological order:
-  circ->index_vertices();
   VertexVec verts;
   boost::topological_sort(circ->dag, std::back_inserter(verts));
   // Construct a map v --> {all vertices in the future of v}:
@@ -223,6 +222,7 @@ class SubcircuitFinder {
 
 std::vector<VertexSet> Circuit::get_subcircuits(
     std::function<bool(Op_ptr)> criterion) /*const*/ {
+  index_vertices();
   SubcircuitFinder finder(this);
   return finder.find_subcircuits(criterion);
 }
