@@ -134,7 +134,7 @@ VertexVec Circuit::vertices_in_order() /*const*/ {
 
 IndexMap Circuit::index_map() const {
   IndexMap im;
-  unsigned i = 0;
+  std::size_t i = 0;
   BGL_FORALL_VERTICES(v, dag, DAG) { im[v] = i++; }
   return im;
 }
