@@ -363,4 +363,279 @@ Op_ptr PauliExpCommutingSetBox::from_json(const nlohmann::json &j) {
 
 REGISTER_OPFACTORY(PauliExpCommutingSetBox, PauliExpCommutingSetBox)
 
+TermSequenceBox::TermSequenceBox(
+    const std::vector<SymPauliTensor> &pauli_gadgets,
+    Transforms::PauliSynthStrat synth_strategy,
+    PauliPartitionStrat partition_strategy, GraphColourMethod graph_colouring,
+    CXConfigType cx_configuration)
+    : Box(OpType::TermSequenceBox),
+      pauli_gadgets_(pauli_gadgets),
+      synth_strategy_(synth_strategy),
+      partition_strategy_(partition_strategy),
+      graph_colouring_(graph_colouring),
+      cx_configuration_(cx_configuration) {
+  // check at least one gadget
+  if (pauli_gadgets.empty()) {
+    signature_ = op_signature_t(0, EdgeType::Quantum);
+  } else {
+    // check all gadgets have same Pauli string length
+    auto n_qubits = pauli_gadgets[0].size();
+    for (const auto &gadget : pauli_gadgets) {
+      if (gadget.size() != n_qubits) {
+        throw PauliExpBoxInvalidity(
+            "the Pauli strings within TermSequenceBox must all be the "
+            "same length - add Pauli.I to pad strings to required length.");
+      }
+    }
+    signature_ = op_signature_t(n_qubits, EdgeType::Quantum);
+  }
+}
+
+TermSequenceBox::TermSequenceBox(const TermSequenceBox &other)
+    : Box(other),
+      pauli_gadgets_(other.pauli_gadgets_),
+      synth_strategy_(other.synth_strategy_),
+      partition_strategy_(other.partition_strategy_),
+      graph_colouring_(other.graph_colouring_),
+      cx_configuration_(other.cx_configuration_) {}
+
+TermSequenceBox::TermSequenceBox() : TermSequenceBox({{{}, 0}}) {}
+
+bool TermSequenceBox::is_clifford() const {
+  return std::all_of(
+      pauli_gadgets_.begin(), pauli_gadgets_.end(),
+      [](const SymPauliTensor &pauli_exp) {
+        return equiv_0(4 * pauli_exp.coeff) || pauli_exp.string.empty();
+      });
+}
+
+SymSet TermSequenceBox::free_symbols() const {
+  std::vector<Expr> angles;
+  for (const auto &pauli_exp : pauli_gadgets_) {
+    angles.push_back(pauli_exp.coeff);
+  }
+  return expr_free_symbols(angles);
+}
+
+Op_ptr TermSequenceBox::dagger() const {
+  std::vector<SymPauliTensor> dagger_gadgets;
+  for (const auto &pauli_exp : pauli_gadgets_) {
+    dagger_gadgets.emplace_back(pauli_exp.string, -pauli_exp.coeff);
+  }
+  return std::make_shared<TermSequenceBox>(
+      dagger_gadgets, synth_strategy_, partition_strategy_, graph_colouring_,
+      cx_configuration_);
+}
+
+Op_ptr TermSequenceBox::transpose() const {
+  std::vector<SymPauliTensor> transpose_gadgets;
+  for (const auto &pauli_exp : pauli_gadgets_) {
+    SymPauliTensor tr = pauli_exp;
+    tr.transpose();
+    transpose_gadgets.push_back(tr);
+  }
+  return std::make_shared<TermSequenceBox>(
+      transpose_gadgets, synth_strategy_, partition_strategy_, graph_colouring_,
+      cx_configuration_);
+}
+
+Op_ptr TermSequenceBox::symbol_substitution(
+    const SymEngine::map_basic_basic &sub_map) const {
+  std::vector<SymPauliTensor> symbol_sub_gadgets;
+  for (const auto &pauli_exp : pauli_gadgets_) {
+    symbol_sub_gadgets.push_back(pauli_exp.symbol_substitution(sub_map));
+  }
+  return std::make_shared<TermSequenceBox>(
+      symbol_sub_gadgets, synth_strategy_, partition_strategy_,
+      graph_colouring_, cx_configuration_);
+}
+
+bool TermSequenceBox::is_equal(const Op &op_other) const {
+  const TermSequenceBox &other =
+      dynamic_cast<const TermSequenceBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  if (synth_strategy_ != other.synth_strategy_) return false;
+  if (partition_strategy_ != other.partition_strategy_) return false;
+  if (graph_colouring_ != other.graph_colouring_) return false;
+  if (cx_configuration_ != other.cx_configuration_) return false;
+  return std::equal(
+      pauli_gadgets_.begin(), pauli_gadgets_.end(),
+      other.pauli_gadgets_.begin(), other.pauli_gadgets_.end(),
+      [](const SymPauliTensor &a, const SymPauliTensor &b) {
+        return a.equiv_mod(b, 4);
+      });
+}
+
+Transforms::PauliSynthStrat TermSequenceBox::get_synth_strategy() const {
+  return synth_strategy_;
+}
+
+PauliPartitionStrat TermSequenceBox::get_partition_strategy() const {
+  return partition_strategy_;
+}
+
+GraphColourMethod TermSequenceBox::get_graph_colouring() const {
+  return graph_colouring_;
+}
+
+std::vector<SymPauliTensor> TermSequenceBox::get_pauli_gadgets() const {
+  return pauli_gadgets_;
+}
+
+CXConfigType TermSequenceBox::get_cx_config() const {
+  return cx_configuration_;
+}
+
+nlohmann::json TermSequenceBox::to_json(const Op_ptr &op) {
+  const auto &box = static_cast<const TermSequenceBox &>(*op);
+  nlohmann::json j = core_box_json(box);
+  // Encode SymPauliTensor as unlabelled pair of Pauli vector and Expr for
+  // backwards compatibility from before templated PauliTensor
+  std::vector<std::pair<std::vector<Pauli>, Expr>> gadget_encoding;
+  for (const SymPauliTensor &g : box.get_pauli_gadgets())
+    gadget_encoding.push_back({g.string, g.coeff});
+  j["pauli_gadgets"] = gadget_encoding;
+  j["synth_strategy"] = box.get_synth_strategy();
+  j["partition_strategy"] = box.get_partition_strategy();
+  j["graph_colouring"] = box.get_graph_colouring();
+  j["cx_config"] = box.get_cx_config();
+
+  return j;
+}
+
+Op_ptr TermSequenceBox::from_json(const nlohmann::json &j) {
+  std::vector<std::pair<std::vector<Pauli>, Expr>> gadget_encoding =
+      j.at("pauli_gadgets")
+          .get<std::vector<std::pair<std::vector<Pauli>, Expr>>>();
+  std::vector<SymPauliTensor> gadgets;
+  for (const std::pair<std::vector<Pauli>, Expr> &g : gadget_encoding)
+    gadgets.push_back(SymPauliTensor(g.first, g.second));
+  TermSequenceBox box = TermSequenceBox(
+      gadgets, j.at("synth_strategy").get<Transforms::PauliSynthStrat>(),
+      j.at("partition_strategy").get<PauliPartitionStrat>(),
+      j.at("graph_colouring").get<GraphColourMethod>(),
+      j.at("cx_config").get<CXConfigType>());
+  return set_box_id(
+      box,
+      boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
+}
+
+DensePauliMap pad_sparse_pauli_map(
+    const QubitPauliMap &sparse_string, size_t size) {
+  // n.b. as a helper method this can assume that all qubits in sparse string
+  // are labelled with the default qubit register and no index is larger than or
+  // equal to the size
+  std::vector<Pauli> dense_string(size, Pauli::I);
+  for (const auto &letter : sparse_string) {
+    TKET_ASSERT(letter.first.reg_name() == q_default_reg());
+    std::vector<unsigned> index = letter.first.index();
+    TKET_ASSERT(index.size() == 1);
+    TKET_ASSERT(index[0] < size);
+    dense_string[index[0]] = letter.second;
+  }
+  return dense_string;
+}
+
+void TermSequenceBox::generate_circuit() const {
+  // constructor guarantees all gadgets are the same size
+  unsigned n_qubits = pauli_gadgets_[0].size();
+  Circuit circ(n_qubits);
+
+  // Saves later handling
+  if (this->pauli_gadgets_.empty()) {
+    circ_ = std::make_shared<Circuit>(circ);
+    return;
+  }
+
+  // First combine any PauliGadgets with the same dense string into the same
+  // term
+  // n.b. the map assigns an ordering to the Pauli terms, meaning it
+  // is an algorithm-affecting step
+  std::map<DensePauliMap, Expr> reduced_pauli_gadgets;
+  for (const SymPauliTensor &pauli_gadget : this->pauli_gadgets_) {
+    auto it = reduced_pauli_gadgets.find(pauli_gadget.string);
+    if (it != reduced_pauli_gadgets.end()) {
+      it->second += pauli_gadget.coeff;
+    } else {
+      reduced_pauli_gadgets.insert(
+          std::make_pair(pauli_gadget.string, pauli_gadget.coeff));
+    }
+  }
+
+  // Construct circuit depending on specified strategy, using other Pauli
+  // Exponential Boxes
+  switch (this->synth_strategy_) {
+    case Transforms::PauliSynthStrat::Individual: {
+      for (auto it = reduced_pauli_gadgets.begin();
+           it != reduced_pauli_gadgets.end(); ++it) {
+        circ.add_box(
+            PauliExpBox(
+                SymPauliTensor(it->first, it->second), this->cx_configuration_),
+            circ.all_qubits());
+      }
+      break;
+    }
+    case Transforms::PauliSynthStrat::Pairwise: {
+      auto it = reduced_pauli_gadgets.begin();
+      // if there is an odd number of gadgets, add first gadget as a single
+      if (reduced_pauli_gadgets.size() % 2 == 1) {
+        circ.add_box(
+            PauliExpBox(
+                SymPauliTensor(it->first, it->second), this->cx_configuration_),
+            circ.all_qubits());
+        ++it;
+      }
+      while (it != reduced_pauli_gadgets.end()) {
+        auto next_it = std::next(it);
+        TKET_ASSERT(next_it != reduced_pauli_gadgets.end());
+        circ.add_box(
+            PauliExpPairBox(
+                SymPauliTensor(it->first, it->second),
+                SymPauliTensor(next_it->first, next_it->second),
+                this->cx_configuration_),
+            circ.all_qubits());
+        std::advance(it, 2);
+      }
+      break;
+    }
+    case Transforms::PauliSynthStrat::Sets: {
+      // term_sequence expects std::list<SpPauliString>, i.e. QubitPauliMap
+      // instead of DensePauliMap first convert the keys of
+      // reduced_pauli_gadgets to a std::list<SpPauliString> object
+      std::list<SpPauliString> all_terms;
+      for (const auto &gadget : reduced_pauli_gadgets) {
+        all_terms.push_back(SpPauliString(gadget.first));
+      }
+      // then get the term sequence into commuting sets
+      std::list<std::list<SpPauliString>> commuting_sets = term_sequence(
+          all_terms, this->partition_strategy_, this->graph_colouring_);
+      // construct each commuting set using PauliExpCommutingSetBox:
+      // 1) pad each QubitPauliMap into a DensePauliMap by adding Pauli.I terms
+      // for missing keys 2) retrieve the exponential coefficient from
+      // reduced_pauli_gadgets 3) construct a SymPauliTensor object as the
+      // argument to PauliExpCommutingSetBox
+      for (const std::list<SpPauliString> &strings : commuting_sets) {
+        std::vector<SymPauliTensor> commuting_gadgets;
+        for (const SpPauliString &string : strings) {
+          DensePauliMap padded_string =
+              pad_sparse_pauli_map(string.string, n_qubits);
+          commuting_gadgets.push_back(SymPauliTensor(
+              padded_string, reduced_pauli_gadgets[padded_string]));
+        }
+        circ.add_box(
+            PauliExpCommutingSetBox(commuting_gadgets, this->cx_configuration_),
+            circ.all_qubits());
+      }
+      break;
+    }
+    default: {
+      throw std::logic_error(
+          "TermSequenceBox passed an unsupported PauliSynthStrat");
+    }
+  }
+  circ_ = std::make_shared<Circuit>(circ);
+}
+
+REGISTER_OPFACTORY(TermSequenceBox, TermSequenceBox)
+
 }  // namespace tket
