@@ -17,10 +17,16 @@
 #include <vector>
 
 #include "tket/Circuit/CircPool.hpp"
+#include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DAGDefs.hpp"
+#include "tket/Clifford/UnitaryTableau.hpp"
+#include "tket/Converters/Converters.hpp"
+#include "tket/Diagonalisation/Diagonalisation.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {
 
@@ -200,9 +206,9 @@ static bool multiq_clifford_match(Circuit &circ, bool allow_swaps) {
         bin.push_back(v);
         bin.push_back(v0);
         circ.remove_vertex(
-            v, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
+            v, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::Yes);
         circ.remove_vertex(
-            v0, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
+            v0, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::Yes);
         Edge default_h0 = circ.get_nth_in_edge(next_v0, next_p0);
         Edge default_h1 = circ.get_nth_in_edge(next_v1, next_p1);
 
@@ -696,6 +702,300 @@ Transform singleq_clifford_sweep() {
     circ.remove_vertices(
         bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
     return success;
+  });
+}
+
+// std::tuple<Circuit, std::vector<Vertex>, std::vector<MeasureVertices>>
+// get_end_of_circuit_clifford(const Circuit &circ) {
+//   // To avoid a causal nightmare, we only push Clifford gates through Measure
+//   // operations where the Measure is the last operation for both the Qubit &
+//   // Bit
+//   std::vector<MeasureVertices> eoc_measures;
+//   for (auto [it, end] =
+//            circ.boundary.get<TagType>().equal_range(UnitType::Qubit);
+//        it != end; it++) {
+//     Vertex q_out = it->out_;
+//     Edge last_gate_out_edge = circ.get_nth_in_edge(q_out, 0);
+//     Vertex last_gate = circ.source(last_gate_out_edge);
+//     if (get_OpType_from_Vertex(circ.source(last_gate_out_edge)) ==
+//         OpType::Measure) {
+//       Edge possible_c_out_in_edge = circ.get_nth_out_edge(last_gate, 1);
+//       Vertex possible_c_out = circ.target(possible_c_out_in_edge);
+//       if (circ.get_OpType_from_Vertex(possible_c_out) == OpType::ClOutput) {
+//         Bit b(circ.get_id_from_out(possible_c_out));
+//         eoc_measures.push_back(MeasuresVertices(Qubit(it->id_), b,
+//         last_gate));
+//       }
+//     }
+//   }
+//   // We now do a backwards traversal from the slice of in edges to these
+//   // measure
+//   Circuit clifford_circuit;
+//   Circuit clifford_vertices;
+
+//   std::map<Edge, Qubit> frontier;
+//   for (const auto &mv : eoc_measures) {
+//     frontier.insert({circ.get_nth_in_edge(mv.measure, 0), mv.qubit});
+//   }
+//   VertexSet previous;
+//   while (!frontier.empty()) {
+//     // Get set of source vertices
+//     VertexSet current;
+//     for (const auto &e : frontier) {
+//       Vertex source = circ.source(e.first);
+//       OpDesc desc = circ.get_OpDesc_from_Vertex(source);
+//       if (desc.is_clifford_gate() && desc.n_boolean() == 0 &&
+//           desc.n_classical() == 0) {
+//         current.insert(source);
+//       } else {
+//         // TODO: is this ok?
+//         frontier.erase(e);
+//       }
+//     }
+//     TKET_ASSERT(!current.empty());
+//     // TODO: work this into the while loop...
+//     if (current == previous) {
+//       break;
+//     }
+//     std::map<Edge, Qubit> new_frontier;
+//     for (const Vertex &v : current) {
+//       EdgeVec out_edges = circ.get_all_out_edges(v);
+//       TKET_ASSERT(
+//           out_edges.size() == circ.n_out_edges_of_type(v,
+//           EdgeType::Quantum));
+//       std::vector<std::pair<Edge, Qubit>> valid;
+//       std::vector<Edge> edges;
+//       std::vector<Qubit> qubits;
+//       for (const Edge &edge : out_edges) {
+//         auto it = frontier.find(edge);
+//         if (it != frontier.end()) {
+//           edges.push_back(it->first);
+//           qubits.push_back(it->second);
+//         }
+//       }
+//       if (qubits.size() == out_edges.size()) {
+//         // n.b. as we traverse backwards, this is the reverse of the circuit
+//         // but this is helpful as we want to act the Z Pauli operators in
+//         this
+//         // order
+//         clifford_circuit.add_op(circ.get_OpType_from_Vertex(v), qubits);
+//         clifford_vertices.push_back(v);
+//         EdgeVec in_edges = circ.get_all_in_edges(v);
+//         TKET_ASSERT(
+//             in_edges.size() == circ.n_in_edges_of_type(v,
+//             EdgeType::Quantum));
+//         TKET_ASSERT(edges.size() == qubits.size());
+//         for (unsigned i = 0; i < edges.size(); i++) {
+//           Edge e = edges[i];
+//           port_t source = circ.get_source_port(e);
+//           frontier.insert({in_edges[source], qubits[i]});
+//           frontier.erase(e);
+//         }
+//       }
+//     }
+//   }
+// }
+
+struct MeasureVertices {
+  Qubit qubit;
+  Bit bit;
+  Vertex measure;
+  MeasureVertices(const Qubit &q, const Bit &b, const Vertex &v)
+      : qubit(q), bit(b), measure(v) {}
+};
+
+std::tuple<Circuit, VertexSet, std::vector<MeasureVertices>>
+get_end_of_circuit_clifford(const Circuit &circ) {
+  // Initialize vector to store MeasureVertices for end-of-circuit Measures
+  std::vector<MeasureVertices> end_of_circuit_measures;
+
+  // Iterate over Qubit boundaries to find Measure gates
+  for (auto [it, end] =
+           circ.boundary.get<TagType>().equal_range(UnitType::Qubit);
+       it != end; it++) {
+    Vertex q_out = it->out_;
+    Edge last_gate_out_edge = circ.get_nth_in_edge(q_out, 0);
+    Vertex last_gate = circ.source(last_gate_out_edge);
+
+    // Check if last gate is a Measure gate
+    if (circ.get_OpType_from_Vertex(last_gate) == OpType::Measure) {
+      Edge possible_c_out_in_edge = circ.get_nth_out_edge(last_gate, 1);
+      Vertex possible_c_out = circ.target(possible_c_out_in_edge);
+
+      // If the Measure is followed by a ClOutput, store the MeasureVertices
+      if (circ.get_OpType_from_Vertex(possible_c_out) == OpType::ClOutput) {
+        Bit b(circ.get_id_from_out(possible_c_out));
+        end_of_circuit_measures.push_back(
+            MeasureVertices(Qubit(it->id_), b, last_gate));
+      }
+    }
+  }
+
+  // Initialize variables for constructing Clifford circuit
+  Circuit clifford_circuit;
+  VertexSet clifford_vertices;
+  std::map<Edge, Qubit> frontier;
+  VertexSet previous;
+
+  // Populate frontier map with Measure edges and associated qubits
+  for (const auto &mv : end_of_circuit_measures) {
+    frontier.insert({circ.get_nth_in_edge(mv.measure, 0), mv.qubit});
+  }
+
+  // Main loop for constructing Clifford circuit
+  while (!frontier.empty()) {
+    VertexSet current;
+
+    // Iterate over frontier edges to identify Clifford gates
+    for (const auto &e : frontier) {
+      Vertex source = circ.source(e.first);
+      OpDesc desc = circ.get_OpDesc_from_Vertex(source);
+
+      // Check if gate is a Clifford gate without classical or boolean inputs
+      if (desc.is_clifford_gate() && desc.n_boolean() == 0 &&
+          desc.n_classical() == 0) {
+        current.insert(source);
+      } else {
+        // Remove non-Clifford gates from frontier
+        frontier.erase(e.first);
+      }
+    }
+
+    // Check for convergence to previous set of vertices
+    if (current == previous) {
+      break;
+    }
+
+    // Update previous set with current set
+    previous = current;
+
+    // Process Clifford gates and update frontier
+    for (const Vertex &v : current) {
+      EdgeVec out_edges = circ.get_all_out_edges(v);
+      std::vector<Edge> edges;
+      std::vector<Qubit> qubits;
+
+      // Check which edges connect to existing qubits in the frontier
+      for (const Edge &edge : out_edges) {
+        auto it = frontier.find(edge);
+        if (it != frontier.end()) {
+          edges.push_back(it->first);
+          qubits.push_back(it->second);
+        }
+      }
+
+      // If all outgoing edges connect to frontier qubits, add gate to Clifford
+      // circuit
+      if (qubits.size() == out_edges.size()) {
+        clifford_circuit.add_op(circ.get_OpType_from_Vertex(v), qubits);
+        clifford_vertices.insert(v);
+        EdgeVec in_edges = circ.get_in_edges(v);
+
+        // Update frontier with incoming edges to processed gate
+        for (unsigned i = 0; i < edges.size(); i++) {
+          Edge e = edges[i];
+          port_t source = circ.get_source_port(e);
+          frontier.insert({in_edges[source], qubits[i]});
+          frontier.erase(e);
+        }
+      }
+    }
+  }
+
+  // Return constructed Clifford circuit and associated vertices and measures
+  return std::make_tuple(
+      clifford_circuit, clifford_vertices, end_of_circuit_measures);
+}
+
+Transform push_cliffords_through_measures() {
+  return Transform([](Circuit &circ) {
+    std::tuple<Circuit, VertexSet, std::vector<MeasureVertices>> clifford_info =
+        get_end_of_circuit_clifford(circ);
+    // we want
+    UnitaryRevTableau cliff_tab =
+        circuit_to_unitary_rev_tableau(std::get<0>(clifford_info));
+    std::vector<MeasureVertices> measure_vertices = std::get<2>(clifford_info);
+    std::list<SpSymPauliTensor> measurement_operators_l;
+    std::vector<Qubit> qubits;
+    std::vector<Bit> bits;
+    QubitPauliMap base;
+    for (const MeasureVertices &mv : measure_vertices) {
+      qubits.push_back(mv.qubit);
+      bits.push_back(mv.bit);
+      base.insert({mv.qubit, Pauli::I});
+    }
+    for (const Qubit &q : qubits) {
+      QubitPauliMap copy = base;
+      copy[q] = Pauli::Z;
+      SpPauliStabiliser sps(copy, 2);
+      measurement_operators_l.push_back(cliff_tab.get_row_product(sps));
+    }
+    Circuit mutual_c = mutual_diagonalise(
+        measurement_operators_l, std::set<Qubit>(qubits.begin(), qubits.end()),
+        CXConfigType::Snake);
+
+    // Only add if it improves on the number of 2qb gates
+    if (mutual_c.count_n_qubit_gates(2) >=
+        std::get<0>(clifford_info).count_n_qubit_gates(2)) {
+      return false;
+    }
+
+    // Before adding classical expressions, we first
+    // remove clifford vertices and replace with mutual_c
+    VertexSet clifford_vertices = std::get<1>(clifford_info);
+    circ.remove_vertices(
+        clifford_vertices, Circuit::GraphRewiring::Yes,
+        Circuit::VertexDeletion::Yes);
+    circ.append(mutual_c);
+    // Add classical logic to permute output measurements to correct string
+    register_t scratch =
+        circ.add_c_register("permutation_scratch", bits.size());
+    std::vector<Bit> phase_correction;
+    std::vector<SpSymPauliTensor> measurement_operators(
+        std::begin(measurement_operators_l), std::end(measurement_operators_l));
+    TKET_ASSERT(measurement_operators.size() == bits.size());
+    for (unsigned i = 0; i < measurement_operators.size(); i++) {
+      auto string = measurement_operators[i].string;
+      std::vector<Bit> parity_bits;
+      // std::map<Qubit, Pauli>
+      // for (unsigned j = 0; j < string.size(); j++) {
+      // for(const Qubit& q: qubits){
+      for (unsigned j = 0; j < qubits.size(); j++) {
+        Qubit q = qubits[j];
+        // TKET_ASSERT()
+        auto it = string.find(q);
+        TKET_ASSERT(it != string.end());
+        // Qubit q = string[j].first;
+        // TKET_ASSERT(q == qubits[j]);
+
+        if (it->second == Pauli::Z) {
+          parity_bits.push_back(bits[j]);
+        } else {
+          TKET_ASSERT(it->second == Pauli::I);
+        }
+      }
+      parity_bits.push_back(Bit(scratch[i]));
+      circ.add_op(XorOp(), parity_bits);
+      if (measurement_operators[i].coeff == -1) {
+        phase_correction.push_back(bits[i]);
+      } else {
+        TKET_ASSERT(measurement_operators[i].coeff == 1);
+      }
+    }
+    // apply constant change to bitstring due to phase
+    std::vector<Bit> scratch_v;
+    for (const auto &b : scratch) {
+      std::vector<Bit> arg = phase_correction;
+      Bit scratch_b = Bit(b.second);
+      scratch_v.push_back(scratch_b);
+      arg.push_back(scratch_b);
+      circ.add_op(XorWithOp(), arg);
+    }
+    // copy scratch results over to original Bit
+    TKET_ASSERT(bits.size() == scratch_v.size());
+    scratch_v.insert(scratch_v.end(), bits.begin(), bits.end());
+    circ.add_op(std::make_shared<CopyBitsOp>(bits.size()), scratch_v);
+    return true;
   });
 }
 
