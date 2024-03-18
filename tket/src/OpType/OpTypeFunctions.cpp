@@ -183,6 +183,7 @@ bool is_box_type(OpType optype) {
       OpType::PauliExpBox,
       OpType::PauliExpPairBox,
       OpType::PauliExpCommutingSetBox,
+      OpType::TermSequenceBox,
       OpType::CustomGate,
       OpType::CliffBox,
       OpType::PhasePolyBox,
