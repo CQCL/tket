@@ -164,6 +164,10 @@ target_sources(tket
         src/Gate/GateUnitarySparseMatrix.cpp
         src/PauliGraph/ConjugatePauliFunctions.cpp
         src/PauliGraph/PauliGraph.cpp
+        src/PauliGraphRefactor/PauliGraph.cpp
+        src/PauliGraphRefactor/PauliGraphConverters.cpp
+        src/PauliGraphRefactor/PGBox.cpp
+        src/PauliGraphRefactor/PGOp.cpp
         src/Circuit/Boxes.cpp
         src/Circuit/Circuit.cpp
         src/Circuit/CircuitJson.cpp
@@ -338,6 +342,10 @@ target_sources(tket
         include/tket/Gate/SymTable.hpp
         include/tket/PauliGraph/ConjugatePauliFunctions.hpp
         include/tket/PauliGraph/PauliGraph.hpp
+        include/tket/PauliGraphRefactor/Converters.hpp
+        include/tket/PauliGraphRefactor/PauliGraph.hpp
+        include/tket/PauliGraphRefactor/PGBox.hpp
+        include/tket/PauliGraphRefactor/PGOp.hpp
         include/tket/Circuit/AssertionSynthesis.hpp
         include/tket/Circuit/Boxes.hpp
         include/tket/Circuit/CircPool.hpp

@@ -18,9 +18,13 @@
 
 namespace tket {
 
-// Forward declare classes for friends
+// Forward declare for friends
 class Circuit;
+class UnitaryTableau;
 class UnitaryRevTableau;
+class ChoiMixTableau;
+UnitaryTableau cm_tableau_to_unitary_tableau(const ChoiMixTableau& tab);
+UnitaryRevTableau cm_tableau_to_unitary_rev_tableau(const ChoiMixTableau& tab);
 
 class UnitaryTableau {
   /**
@@ -149,6 +153,10 @@ class UnitaryTableau {
 
   friend UnitaryTableau circuit_to_unitary_tableau(const Circuit& circ);
   friend Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab);
+  friend UnitaryTableau cm_tableau_to_unitary_tableau(
+      const ChoiMixTableau& tab);
+  friend UnitaryRevTableau cm_tableau_to_unitary_rev_tableau(
+      const ChoiMixTableau& tab);
 
   friend void to_json(nlohmann::json& j, const UnitaryTableau& tab);
   friend void from_json(const nlohmann::json& j, UnitaryTableau& tab);
@@ -292,6 +300,8 @@ class UnitaryRevTableau {
 
   friend UnitaryRevTableau circuit_to_unitary_rev_tableau(const Circuit& circ);
   friend Circuit unitary_rev_tableau_to_circuit(const UnitaryRevTableau& tab);
+  friend UnitaryRevTableau cm_tableau_to_unitary_rev_tableau(
+      const ChoiMixTableau& tab);
 
   friend void to_json(nlohmann::json& j, const UnitaryRevTableau& tab);
   friend void from_json(const nlohmann::json& j, UnitaryRevTableau& tab);

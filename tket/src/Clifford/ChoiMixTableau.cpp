@@ -504,6 +504,19 @@ void ChoiMixTableau::collapse_qubit(const Qubit& qb, TableauSegment seg) {
   }
 }
 
+void ChoiMixTableau::add_qubit(const Qubit& qb, TableauSegment seg) {
+  unsigned n_rows = get_n_rows();
+  unsigned n_cols = get_n_boundaries();
+  auto inserted = col_index_.insert({{qb, seg}, n_cols});
+  if (!inserted.second)
+    throw std::logic_error(
+        "Could not add qubit to ChoiMixTableau, it already exists");
+  tab_.xmat.conservativeResize(n_rows, n_cols + 1);
+  tab_.xmat.block(0, n_cols, n_rows, 1) = MatrixXb::Zero(n_rows, 1);
+  tab_.zmat.conservativeResize(n_rows, n_cols + 1);
+  tab_.zmat.block(0, n_cols, n_rows, 1) = MatrixXb::Zero(n_rows, 1);
+}
+
 void ChoiMixTableau::remove_row(unsigned row) {
   if (row >= get_n_rows())
     throw std::invalid_argument(
@@ -600,6 +613,13 @@ void ChoiMixTableau::rename_qubits(
       new_index.insert({entry.first, entry.second});
   }
   col_index_ = new_index;
+}
+
+bool ChoiMixTableau::is_unitary() const {
+  // A pure process has as many rows as boundary qubits (sum of inputs and
+  // outputs); in the case of an n-qubit unitary, this is 2n rows
+  return (get_n_rows() == get_n_boundaries()) &&
+         (input_qubits() == output_qubits());
 }
 
 ChoiMixTableau ChoiMixTableau::compose(

@@ -107,6 +107,8 @@ std::pair<Circuit, Complex> decompose_2cx_VD(const Eigen::Matrix4cd& U);
  */
 std::pair<Circuit, Complex> decompose_2cx_DV(const Eigen::Matrix4cd& U);
 
+Expr pauli_angle_convert_or_throw(Complex pauliCoeff, const Expr& angle);
+
 /**
  * Construct a phase gadget
  *

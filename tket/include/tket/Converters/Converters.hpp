@@ -55,6 +55,24 @@ ChoiMixTableau circuit_to_cm_tableau(const Circuit &circ);
 std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
     const ChoiMixTableau &circ);
 
+/**
+ * Convert a tableau for a unitary to the equivalent ChoiMixTableau. This
+ * enables composition with non-unitary stabiliser operations.
+ */
+ChoiMixTableau unitary_tableau_to_cm_tableau(const UnitaryTableau &tab);
+ChoiMixTableau unitary_rev_tableau_to_cm_tableau(const UnitaryRevTableau &tab);
+
+/**
+ * Convert a ChoiMixTableau representing a unitary to a more specialised
+ * tableau. This enables simpler and faster calculations of Pauli conjugations
+ * (i.e. pushing a given Pauli string from one side of the tableau to the
+ * other). If this is provided with a non-unitary process (requiring the names
+ * of input and output qubits to be identical, and have 2n rows for n qubits),
+ * an exception is thrown.
+ */
+UnitaryTableau cm_tableau_to_unitary_tableau(const ChoiMixTableau &tab);
+UnitaryRevTableau cm_tableau_to_unitary_rev_tableau(const ChoiMixTableau &tab);
+
 PauliGraph circuit_to_pauli_graph(const Circuit &circ);
 
 /**

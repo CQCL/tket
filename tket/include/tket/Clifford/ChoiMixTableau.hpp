@@ -191,6 +191,8 @@ class ChoiMixTableau {
   void collapse_qubit(
       const Qubit& qb, TableauSegment seg = TableauSegment::Output);
 
+  void add_qubit(const Qubit& qb, TableauSegment seg = TableauSegment::Output);
+
   /**
    * Removes a row from the tableau.
    * The final row is shifted into its place.
@@ -212,6 +214,11 @@ class ChoiMixTableau {
    * Renames qubits.
    */
   void rename_qubits(const qubit_map_t& qmap, TableauSegment seg);
+
+  /**
+   * Check whether the process described by the tableau is a unitary
+   */
+  bool is_unitary() const;
 
   /**
    * Combine two tableaux in sequence/parallel.

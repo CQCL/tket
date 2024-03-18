@@ -663,4 +663,87 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
   return {in_circ, join_permutation};
 }
 
+ChoiMixTableau unitary_tableau_to_cm_tableau(const UnitaryTableau& tab) {
+  std::list<ChoiMixTableau::row_tensor_t> rows;
+  for (const Qubit& q : tab.get_qubits()) {
+    rows.push_back({SpPauliStabiliser(q, Pauli::X), tab.get_xrow(q)});
+    rows.push_back({SpPauliStabiliser(q, Pauli::Z), tab.get_zrow(q)});
+  }
+  return ChoiMixTableau(rows);
+}
+
+ChoiMixTableau unitary_rev_tableau_to_cm_tableau(const UnitaryRevTableau& tab) {
+  std::list<ChoiMixTableau::row_tensor_t> rows;
+  for (const Qubit& q : tab.get_qubits()) {
+    rows.push_back({tab.get_xrow(q), SpPauliStabiliser(q, Pauli::X)});
+    rows.push_back({tab.get_zrow(q), SpPauliStabiliser(q, Pauli::Z)});
+  }
+  return ChoiMixTableau(rows);
+}
+
+UnitaryTableau cm_tableau_to_unitary_tableau(const ChoiMixTableau& tab) {
+  if (!tab.is_unitary())
+    throw std::logic_error(
+        "Cannot convert non-unitary ChoiMixTableau to UnitaryTableau");
+  ChoiMixTableau tab_copy = tab;
+  // Order inputs first in the SymplecticTableau to solve inputs with Gaussian
+  // elimination; leaves outputs from columns n_qbs to 2*n_qbs-1
+  tab_copy.canonical_column_order(ChoiMixTableau::TableauSegment::Input);
+  tab_copy.gaussian_form();
+  qubit_vector_t qubits = tab_copy.input_qubits();
+  UnitaryTableau res(qubits);
+  SymplecticTableau& sym_tab = res.tab_;
+  unsigned n_qbs = qubits.size();
+  for (unsigned uqb = 0; uqb < n_qbs; ++uqb) {
+    // X row of qubit uqb is row uqb in UnitaryTableau and row 2*uqb in gaussian
+    // form ChoiMixTableau
+    sym_tab.xmat.row(uqb) = tab_copy.tab_.xmat.block(2 * uqb, n_qbs, 1, n_qbs);
+    sym_tab.zmat.row(uqb) = tab_copy.tab_.zmat.block(2 * uqb, n_qbs, 1, n_qbs);
+    sym_tab.phase(uqb) = tab_copy.tab_.phase(2 * uqb);
+    // Z row of qubit uqb is row n_qbs+uqb in UnitaryTableau and row 2*uqb+1 in
+    // gaussian form ChoiMixTableau
+    sym_tab.xmat.row(n_qbs + uqb) =
+        tab_copy.tab_.xmat.block(2 * uqb + 1, n_qbs, 1, n_qbs);
+    sym_tab.zmat.row(n_qbs + uqb) =
+        tab_copy.tab_.zmat.block(2 * uqb + 1, n_qbs, 1, n_qbs);
+    sym_tab.phase(n_qbs + uqb) = tab_copy.tab_.phase(2 * uqb + 1);
+  }
+  return res;
+}
+
+UnitaryRevTableau cm_tableau_to_unitary_rev_tableau(const ChoiMixTableau& tab) {
+  if (!tab.is_unitary())
+    throw std::logic_error(
+        "Cannot convert non-unitary ChoiMixTableau to UnitaryTableau");
+  ChoiMixTableau tab_copy = tab;
+  // Order outputs first in the SymplecticTableau to solve outputs with Gaussian
+  // elimination; leaves inputs from columns n_qbs to 2*n_qbs-1
+  tab_copy.canonical_column_order(ChoiMixTableau::TableauSegment::Output);
+  tab_copy.gaussian_form();
+  // Because input segment is transposed, we can recover the true phases by
+  // conjugating the SymplecticTableau (gaussian form for a unitary will
+  // guarantee the outputs are just X or Z so are self-transpose and won't mess
+  // this up)
+  tab_copy.tab_ = tab_copy.tab_.conjugate();
+  qubit_vector_t qubits = tab_copy.input_qubits();
+  UnitaryRevTableau res(qubits);
+  SymplecticTableau& sym_tab = res.tab_.tab_;
+  unsigned n_qbs = qubits.size();
+  for (unsigned uqb = 0; uqb < n_qbs; ++uqb) {
+    // X row of qubit uqb is row uqb in UnitaryTableau and row 2*uqb in gaussian
+    // form ChoiMixTableau
+    sym_tab.xmat.row(uqb) = tab_copy.tab_.xmat.block(2 * uqb, n_qbs, 1, n_qbs);
+    sym_tab.zmat.row(uqb) = tab_copy.tab_.zmat.block(2 * uqb, n_qbs, 1, n_qbs);
+    sym_tab.phase(uqb) = tab_copy.tab_.phase(2 * uqb);
+    // Z row of qubit uqb is row n_qbs+uqb in UnitaryTableau and row 2*uqb+1 in
+    // gaussian form ChoiMixTableau
+    sym_tab.xmat.row(n_qbs + uqb) =
+        tab_copy.tab_.xmat.block(2 * uqb + 1, n_qbs, 1, n_qbs);
+    sym_tab.zmat.row(n_qbs + uqb) =
+        tab_copy.tab_.zmat.block(2 * uqb + 1, n_qbs, 1, n_qbs);
+    sym_tab.phase(n_qbs + uqb) = tab_copy.tab_.phase(2 * uqb + 1);
+  }
+  return res;
+}
+
 }  // namespace tket

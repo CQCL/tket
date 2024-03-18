@@ -126,6 +126,7 @@ add_executable(test-tket
     src/test_ChoiMixTableau.cpp
     src/test_PhasePolynomials.cpp
     src/test_PauliGraph.cpp
+    src/PauliGraphRefactor/test_PauliGraph.cpp
     src/test_Architectures.cpp
     src/test_ArchitectureAwareSynthesis.cpp
     src/Placement/test_GraphPlacement.cpp

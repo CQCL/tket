@@ -334,7 +334,6 @@ def test_Pauli_gadget_xxphase3() -> None:
     c.CX(2, 1).CX(1, 0)
     c.Rz(0.3, 0)
     c.CX(1, 0).CX(2, 1)
-    c.Phase(0.2)
     c.H(1)
     c.CX(1, 0).CX(3, 2).CX(2, 0)
     c.H(1).H(3)
