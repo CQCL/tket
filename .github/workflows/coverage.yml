@@ -24,7 +24,7 @@ jobs:
       tket: ${{ steps.filter.outputs.tket }}
     steps:
     - uses: actions/checkout@v4
-    - uses: dorny/paths-filter@v2.11.1
+    - uses: dorny/paths-filter@v3.0.2
       id: filter
       with:
         base: ${{ github.ref }}
@@ -82,7 +82,7 @@ jobs:
         gcovr --print-summary --html --html-details -r ./tket --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/tket/build/Debug/CMakeFiles/tket.dir/src -o test-coverage/index.html --decisions > test-coverage/summary.txt
         cat test-coverage/summary.txt
     - name: Upload artefact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test_coverage
         path: test-coverage/
@@ -95,7 +95,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Download artefact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: test_coverage
         path: test-coverage/
@@ -121,7 +121,7 @@ jobs:
       with:
         ref: gh-pages
     - name: Download artefact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: test_coverage
         path: test-coverage/
@@ -150,7 +150,7 @@ jobs:
       with:
         ref: gh-pages
     - name: Download artefact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: test_coverage
         path: test-coverage/

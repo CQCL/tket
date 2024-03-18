@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,8 +14,11 @@
 
 #include "tket/Circuit/Boxes.hpp"
 
+#include <exception>
 #include <memory>
 #include <numeric>
+#include <sstream>
+#include <stdexcept>
 #include <tkassert/Assert.hpp>
 
 #include "tket/Circuit/AssertionSynthesis.hpp"
@@ -69,7 +72,14 @@ Op_ptr Box::deserialize(const nlohmann::json &j) {
 }
 
 CircBox::CircBox(const Circuit &circ) : Box(OpType::CircBox) {
-  if (!circ.is_simple()) throw SimpleOnly();
+  try {
+    Circuit circ1 = circ;
+    circ1.flatten_registers();
+  } catch (const std::exception &e) {
+    std::stringstream ss;
+    ss << "Unable to construct CircBox: " << e.what();
+    throw std::runtime_error(ss.str());
+  }
   signature_ = op_signature_t(circ.n_qubits(), EdgeType::Quantum);
   op_signature_t bits(circ.n_bits(), EdgeType::Classical);
   signature_.insert(signature_.end(), bits.begin(), bits.end());
@@ -84,7 +94,9 @@ CircBox::CircBox() : Box(OpType::CircBox) {
 
 bool CircBox::is_clifford() const {
   BGL_FORALL_VERTICES(v, circ_->dag, DAG) {
-    if (!circ_->get_Op_ptr_from_Vertex(v)->is_clifford()) return false;
+    Op_ptr op = circ_->get_Op_ptr_from_Vertex(v);
+    if (op->get_desc().is_meta()) continue;
+    if (!op->is_clifford()) return false;
   }
   return true;
 }
@@ -328,10 +340,14 @@ std::string CustomGate::get_name(bool) const {
   s << gate_->get_name();
   if (!params_.empty()) {
     s << "(";
-    std::string sep = "";
+    bool initial = true;
     for (const Expr &e : params_) {
-      s << sep << e;
-      sep = ",";
+      if (initial) {
+        s << e;
+      } else {
+        s << "," << e;
+      }
+      initial = false;
     }
     s << ")";
   }
@@ -341,7 +357,9 @@ std::string CustomGate::get_name(bool) const {
 bool CustomGate::is_clifford() const {
   std::shared_ptr<Circuit> circ = to_circuit();
   BGL_FORALL_VERTICES(v, circ->dag, DAG) {
-    if (!circ->get_Op_ptr_from_Vertex(v)->is_clifford()) return false;
+    Op_ptr op = circ->get_Op_ptr_from_Vertex(v);
+    if (op->get_desc().is_meta()) continue;
+    if (!op->is_clifford()) return false;
   }
   return true;
 }

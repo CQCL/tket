@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -71,6 +71,8 @@ from pytket.passes import (
     RoundAngles,
     PeepholeOptimise2Q,
     SynthesiseHQS,
+    CliffordResynthesis,
+    CliffordSimp,
 )
 from pytket.predicates import (
     GateSetPredicate,
@@ -976,6 +978,53 @@ def test_SynthesiseHQS_deprecation(capfd: Any) -> None:
     assert "[warn]" in out
     assert "deprecated" in out
     logging.set_level(logging.level.err)
+
+
+def test_clifford_resynthesis() -> None:
+    circ = (
+        Circuit(5)
+        .H(0)
+        .X(1)
+        .T(2)
+        .Y(3)
+        .Z(4)
+        .SX(1)
+        .CX(2, 3)
+        .T(2)
+        .S(3)
+        .V(2)
+        .Vdg(3)
+        .CY(1, 3)
+        .CZ(3, 4)
+        .SWAP(2, 3)
+        .Sdg(4)
+        .ZZMax(0, 3)
+        .SXdg(0)
+        .measure_all()
+    )
+    circ0 = circ.copy()
+    CliffordResynthesis().apply(circ0)
+    assert circ0.depth() <= 9
+    assert circ0.n_2qb_gates() <= 4
+    circ1 = circ.copy()
+    CliffordResynthesis(allow_swaps=False).apply(circ1)
+    assert circ1.depth() <= 16
+    assert circ1.n_2qb_gates() <= 9
+    circ2 = circ.copy()
+    CliffordResynthesis(transform=lambda c: c.copy()).apply(circ2)
+    assert circ2 == circ
+
+
+def test_clifford_resynthesis_implicit_swaps() -> None:
+    def T(c: Circuit) -> Circuit:
+        c1 = c.copy()
+        CliffordSimp().apply(c1)
+        return c1
+
+    circ = Circuit(2).CX(0, 1).CX(1, 0).CX(0, 1)
+    CliffordResynthesis(transform=T).apply(circ)
+    assert circ.n_gates == 0
+    assert circ.implicit_qubit_permutation() == {Qubit(0): Qubit(1), Qubit(1): Qubit(0)}
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -54,7 +54,9 @@ using namespace tket;
   DO(NormaliseTK2)                        \
   DO(SquashRzPhasedX)                     \
   DO(CnXPairwiseDecomposition)            \
-  DO(RemoveImplicitQubitPermutation)
+  DO(RemoveImplicitQubitPermutation)      \
+  DO(ZXGraphlikeOptimisation)             \
+  DO(gen_clifford_resynthesis_pass)
 
 static const std::map<PassPtr, std::string> &pass_name() {
   // Map from PassPtr to readable name
@@ -201,7 +203,9 @@ static Architecture random_architecture() {
  * @param[in] c0 original circuit
  * @param[in] cu compliation pass having been applied to \p c0
  */
-static void check_correctness(const Circuit &c0, const CompilationUnit &cu) {
+static void check_correctness(
+    const Circuit &c0, const CompilationUnit &cu,
+    tket_sim::MatrixEquivalence equivalence) {
   RC_LOG() << "In Check Correctness" << std::endl;
 
   const Circuit &c1 = cu.get_circ_ref();
@@ -247,7 +251,7 @@ static void check_correctness(const Circuit &c0, const CompilationUnit &cu) {
     const auto u1 = tket_sim::get_unitary(c1);
     const auto u0 = tket_sim::get_unitary(c0_copy);
     RC_ASSERT(tket_sim::compare_statevectors_or_unitaries(
-        u0, m_inv_fin * u1 * m_ini));
+        u0, m_inv_fin * u1 * m_ini, equivalence));
   } catch (const Unsupported &) {
   } catch (const BadOpType &) {
   }
@@ -317,7 +321,13 @@ bool check_passes() {
             for (auto postcon : postcons) {
               RC_ASSERT(postcon.second->verify(c1));
             }
-            check_correctness(c, cu);
+            std::string name = pass_name().at(p);
+            check_correctness(
+                c, cu,
+                (name == "ZXGraphlikeOptimisation" ||
+                 name == "gen_clifford_resynthesis_pass")
+                    ? tket_sim::MatrixEquivalence::EQUAL_UP_TO_GLOBAL_PHASE
+                    : tket_sim::MatrixEquivalence::EQUAL);
           } else {
             RC_ASSERT(c == c1);
           }
@@ -368,7 +378,7 @@ bool check_mapping() {
           RC_LOG() << x.first.repr() << " " << x.second.repr() << std::endl;
         }
         if (applied) {
-          check_correctness(c, cu);
+          check_correctness(c, cu, tket_sim::MatrixEquivalence::EQUAL);
         } else {
           RC_ASSERT(c == c1);
         }

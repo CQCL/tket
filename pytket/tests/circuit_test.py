@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -40,6 +40,7 @@ from pytket.circuit import (
     PauliExpPairBox,
     PauliExpCommutingSetBox,
     QControlBox,
+    TermSequenceBox,
     ToffoliBox,
     ToffoliBoxSynthStrat,
     CustomGateDef,
@@ -52,6 +53,7 @@ from pytket.circuit import (
     ResourceBounds,
     ResourceData,
     DummyBox,
+    ClassicalExpBox,
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
 from pytket.circuit.named_types import (
@@ -508,13 +510,22 @@ def test_boxes() -> None:
     assert psetbox.type == OpType.PauliExpCommutingSetBox
     d.add_pauliexpcommutingsetbox(psetbox, [0, 1, 2, 3])
 
+    tseqbox = TermSequenceBox(
+        [
+            ([Pauli.X, Pauli.X, Pauli.X, Pauli.Y], Symbol("alpha")),  # type: ignore
+            ([Pauli.X, Pauli.X, Pauli.Y, Pauli.X], Symbol("beta")),  # type: ignore
+            ([Pauli.X, Pauli.Y, Pauli.X, Pauli.X], Symbol("gamma")),  # type: ignore
+        ]
+    )
+    assert tseqbox.type == OpType.TermSequenceBox
+    d.add_termsequencebox(tseqbox, [0, 1, 2, 3])
+
     qcbox = QControlBox(Op.create(OpType.S), 2)
     assert qcbox.type == OpType.QControlBox
     assert qcbox.get_op().type == OpType.S
     assert qcbox.get_n_controls() == 2
     d.add_qcontrolbox(qcbox, [1, 2, 3])
-
-    assert d.n_gates == 9
+    assert d.n_gates == 10
 
     pauli_exps = [cmd.op for cmd in d if cmd.op.type == OpType.PauliExpBox]
     assert len(pauli_exps) == 1
@@ -531,7 +542,7 @@ def test_boxes() -> None:
     comparison = np.asarray([[0, 0, 0, 1], [0, 1, 0, 0], [0, 0, 1, 0], [1, 0, 0, 0]])
     assert np.allclose(unitary, comparison)
     d.add_toffolibox(tb, [0, 1])
-    assert d.n_gates == 10
+    assert d.n_gates == 11
 
     # MultiplexorBox, MultiplexedU2Box
     op_map: BitstringToOpMap = {
@@ -574,7 +585,7 @@ def test_boxes() -> None:
     # constructor taking qubit indices
     d.add_multiplexor(multiplexor, [0, 1, 2])
     d.add_multiplexedu2(ucu2_box, [0, 1, 2])
-    assert d.n_gates == 14
+    assert d.n_gates == 15
     # MultiplexedRotationBox
     op_map = {
         (_0, _0): Op.create(OpType.Rz, 0.3),
@@ -601,12 +612,12 @@ def test_boxes() -> None:
     assert np.allclose(unitary, comparison)
     d.add_multiplexedrotation(multiplexed_rot, [Qubit(0), Qubit(1), Qubit(2)])
     d.add_multiplexedrotation(multiplexed_rot, [1, 2, 0])
-    assert d.n_gates == 16
+    assert d.n_gates == 17
     multiplexed_rot = MultiplexedRotationBox([0.3, 0, 0, 1.7], OpType.Rz)
     unitary = multiplexed_rot.get_circuit().get_unitary()
     assert np.allclose(unitary, comparison)
     d.add_multiplexedrotation(multiplexed_rot, [Qubit(0), Qubit(1), Qubit(2)])
-    assert d.n_gates == 17
+    assert d.n_gates == 18
     # StatePreparationBox
     state = np.array([np.sqrt(0.125)] * 8)
     prep_box = StatePreparationBox(state)
@@ -619,7 +630,7 @@ def test_boxes() -> None:
     assert np.allclose(prep_u.dot(state), zero_state)
     d.add_state_preparation_box(prep_box, [Qubit(0), Qubit(1), Qubit(2)])
     d.add_state_preparation_box(prep_box, [2, 1, 0])
-    assert d.n_gates == 19
+    assert d.n_gates == 20
     # DiagonalBox
     diag_vect = np.array([1j] * 8)
     diag_box = DiagonalBox(diag_vect)
@@ -627,7 +638,7 @@ def test_boxes() -> None:
     assert np.allclose(np.diag(diag_vect), u)
     d.add_diagonal_box(diag_box, [Qubit(0), Qubit(1), Qubit(2)])
     d.add_diagonal_box(diag_box, [0, 1, 2])
-    assert d.n_gates == 21
+    assert d.n_gates == 22
     # MultiplexedTensoredU2Box
     rz_op = Op.create(OpType.Rz, 0.3)
     pauli_x_op = Op.create(OpType.X)
@@ -657,7 +668,7 @@ def test_boxes() -> None:
     d.add_multiplexed_tensored_u2(multiplexU2, [Qubit(0), Qubit(1), Qubit(2), Qubit(3)])
     d.add_multiplexed_tensored_u2(multiplexU2, [3, 2, 1, 0])
     assert np.allclose(unitary, comparison)
-    assert d.n_gates == 23
+    assert d.n_gates == 24
     # ConjugationBox
     compute = CircBox(Circuit(3).CX(0, 1).CX(1, 2))
     action = CircBox(Circuit(3).H(2))
@@ -670,7 +681,7 @@ def test_boxes() -> None:
     assert conj_box2.get_uncompute() == uncompute
     d.add_conjugation_box(conj_box1, [0, 1, 2])
     d.add_conjugation_box(conj_box2, [Qubit(0), Qubit(1), Qubit(2)])
-    assert d.n_gates == 25
+    assert d.n_gates == 26
     assert json_validate(d)
     # test op.get_unitary doesn't throw
     for command in d.get_commands():
@@ -1150,6 +1161,25 @@ def test_getting_registers() -> None:
     assert q_regs[1] == QubitRegister("test_qr", 10)
 
 
+def test_getting_registers_with_non_consective_indices() -> None:
+    # https://github.com/CQCL/tket/issues/1160
+    c = Circuit()
+    c.add_qubit(Qubit(3))
+    c.add_qubit(Qubit(2))
+    c.add_bit(Bit(3))
+    c.add_qubit(Qubit("a", 0))
+    c.add_qubit(Qubit("a", 1))
+    c.add_qubit(Qubit("a", 2))
+    c.add_bit(Bit("b", 0))
+    c.add_bit(Bit("b", 1))
+    c_regs = c.c_registers
+    assert len(c_regs) == 1
+    assert c_regs[0] == BitRegister("b", 2)
+    q_regs = c.q_registers
+    assert len(q_regs) == 1
+    assert q_regs[0] == QubitRegister("a", 3)
+
+
 def test_measuring_registers() -> None:
     c = Circuit()
     with pytest.raises(RuntimeError) as e:
@@ -1351,6 +1381,133 @@ def test_resources() -> None:
     two_qubit_gate_depth = resource_data.get_two_qubit_gate_depth()
     assert two_qubit_gate_depth.get_min() == 10
     assert two_qubit_gate_depth.get_max() == 13
+
+
+def test_add_circbox_with_registers() -> None:
+    c0 = Circuit()
+    areg = c0.add_q_register("a", 2)
+    breg = c0.add_q_register("b", 3)
+    c0.CZ(areg[0], areg[1])
+    c0.CZ(areg[1], breg[0])
+    c0.CCX(breg[0], breg[1], breg[2])
+    cbox = CircBox(c0)
+    c = Circuit()
+    xreg = c.add_q_register("x", 3)
+    yreg = c.add_q_register("y", 2)
+    zreg = c.add_q_register("z", 3)
+    wreg = c.add_q_register("w", 2)
+    for qb in c.qubits:
+        c.H(qb)
+    c1 = c.copy()
+    c1.add_circbox_regwise(cbox, [wreg, zreg], [])
+    assert c1.n_gates == 11
+    DecomposeBoxes().apply(c1)
+    assert c1.n_gates == 13
+    c2 = c.copy()
+    c2.add_circbox_with_regmap(cbox, {"a": "w", "b": "z"}, {})
+    DecomposeBoxes().apply(c2)
+    assert c1 == c2
+
+
+def test_add_circbox_with_mixed_registers() -> None:
+    c0 = Circuit()
+    c0_qreg1 = c0.add_q_register("q1", 2)
+    c0_qreg2 = c0.add_q_register("q2", 3)
+    c0_creg1 = c0.add_c_register("c1", 4)
+    c0_creg2 = c0.add_c_register("c2", 5)
+    cbox = CircBox(c0)
+    c = Circuit()
+    c_qreg1 = c.add_q_register("q1", 2)
+    c_qreg2 = c.add_q_register("q2", 3)
+    c_creg1 = c.add_c_register("c1", 4)
+    c_creg2 = c.add_c_register("c2", 5)
+
+    c.add_circbox_with_regmap(
+        cbox, qregmap={"q1": "q1", "q2": "q2"}, cregmap={"c1": "c1", "c2": "c2"}
+    )
+
+    # Incomplete map:
+    with pytest.raises(IndexError):
+        c.add_circbox_with_regmap(
+            cbox, qregmap={"q1": "q1", "q2": "q2"}, cregmap={"c1": "c1"}
+        )
+
+    # Mismatched register sizes:
+    with pytest.raises(RuntimeError):
+        c.add_circbox_with_regmap(
+            cbox, qregmap={"q1": "q2", "q2": "q1"}, cregmap={"c1": "c2", "c2": "c1"}
+        )
+
+    # Non-register qubit in box:
+    c0.add_qubit(Qubit("q3", 1))
+    cbox = CircBox(c0)
+    c.add_qubit(Qubit("q3", 0))
+    with pytest.raises(RuntimeError):
+        c.add_circbox_with_regmap(
+            cbox,
+            qregmap={"q1": "q1", "q2": "q2", "q3": "q3"},
+            cregmap={"c1": "c1", "c2": "c2"},
+        )
+
+
+def test_deserialization_from_junk() -> None:
+    # https://github.com/CQCL/tket/issues/1243
+    with pytest.raises(RuntimeError):
+        Circuit.from_dict(
+            {
+                "phase": "1.9999999999999998",
+                "qubits": [("q", (20057, 24021, 112, 9628, 79))],
+                "bits": [("c", (128, 3, 384))],
+                "implicit_permutation": [
+                    (("c", (1174437931,)), ("q", (0,))),
+                    (("c", (25199232,)), ("c", (29697, 126852352))),
+                ],
+                "commands": [
+                    {
+                        "op": {
+                            "type": "CCX",
+                            "conditional": {
+                                "op": {"type": "CCX"},
+                                "width": 3,
+                                "value": 2,
+                            },
+                        },
+                        "args": [],
+                    }
+                ],
+                "name": "ú\x19",
+                "created_qubits": [("c", (0,))],
+                "discarded_qubits": [("c", (0,))],
+            }
+        )
+
+
+def test_decompose_clexpbox() -> None:
+    # https://github.com/CQCL/tket/issues/1289
+    c0 = Circuit()
+    c_reg = c0.add_c_register("c", 2)
+    c0.add_classicalexpbox_register(c_reg | c_reg, c_reg)  # type: ignore
+    cbox = CircBox(c0)
+    c = Circuit(0, 2)
+    c.add_circbox(cbox, [0, 1])
+    assert Transform.DecomposeBoxes().apply(c)
+    cmds = c.get_commands()
+    assert len(cmds) == 1
+    op = cmds[0].op
+    assert isinstance(op, ClassicalExpBox)
+    assert op.get_n_io() == 2
+    expr = op.get_exp()
+    assert expr.args == [BitRegister("c", 2), BitRegister("c", 2)]
+
+
+def test_bad_circbox() -> None:
+    circ = Circuit(3)
+    a = circ.add_c_register("a", 5)
+    b = circ.add_c_register("b", 5)
+    c = circ.add_c_register("c", 5)
+    circ.add_classicalexpbox_register(a | b, c.to_list())
+    with pytest.raises(RuntimeError) as e:
+        _ = CircBox(circ)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2028,6 +2028,19 @@ SCENARIO(
     CompilationUnit cu(c);
     CHECK(SynthesiseTK()->apply(cu));
     REQUIRE(cu.get_circ_ref().n_gates() == 1);
+  }
+}
+
+SCENARIO("PauliExponentials") {
+  GIVEN("A PhasedX gate") {
+    // https://github.com/CQCL/tket/issues/1244
+    Circuit c(1);
+    c.add_op<unsigned>(OpType::PhasedX, {0.5, 0.6}, {0});
+    c.add_op<unsigned>(OpType::PhasedX, {0.6, 0.5}, {0});
+    CompilationUnit cu(c);
+    CHECK(gen_pauli_exponentials(Transforms::PauliSynthStrat::Individual)
+              ->apply(cu));
+    REQUIRE(test_unitary_comparison(c, cu.get_circ_ref(), true));
   }
 }
 }  // namespace test_CompilerPass

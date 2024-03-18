@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
 #pragma once
 
 #include "Boxes.hpp"
+#include "tket/Diagonalisation/PauliPartition.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
 
 namespace tket {
 
@@ -202,46 +204,75 @@ class PauliExpCommutingSetBox : public Box {
   CXConfigType cx_config_;
 };
 
-/**
- * Constructs a PauliExpBox for a single pauli gadget and appends it to a
- * circuit.
- *
- * @param circ The circuit to append the box to
- * @param pauli The pauli operator of the gadget; coefficient gives the rotation
- * angle in half-turns
- * @param cx_config The CX configuration to be used during synthesis
- */
-void append_single_pauli_gadget_as_pauli_exp_box(
-    Circuit &circ, const SpSymPauliTensor &pauli, CXConfigType cx_config);
+class TermSequenceBox : public Box {
+ public:
+  TermSequenceBox(
+      const std::vector<SymPauliTensor> &pauli_gadgets,
+      Transforms::PauliSynthStrat synth_strategy =
+          Transforms::PauliSynthStrat::Sets,
+      PauliPartitionStrat partition_strategy =
+          PauliPartitionStrat::CommutingSets,
+      GraphColourMethod graph_colouring = GraphColourMethod::Lazy,
+      CXConfigType cx_configuration = CXConfigType::Tree);
 
-/**
- * Constructs a PauliExpPairBox for a pair of pauli gadgets and appends it to a
- * circuit. The pauli gadgets may or may not commute, so the ordering matters.
- *
- * @param circ The circuit to append the box to
- * @param pauli0 The pauli operator of the first gadget; coefficient gives the
- * rotation angle in half-turns
- * @param pauli1 The pauli operator of the second gadget; coefficient gives the
- * rotation angle in half-turns
- * @param cx_config The CX configuration to be used during synthesis
- */
-void append_pauli_gadget_pair_as_box(
-    Circuit &circ, const SpSymPauliTensor &pauli0,
-    const SpSymPauliTensor &pauli1, CXConfigType cx_config);
+  /**
+   * Construct from the empty vector
+   */
+  TermSequenceBox();
 
-/**
- * Constructs a PauliExpCommutingSetBox for a set of mutually commuting pauli
- * gadgets and appends it to a circuit. As the pauli gadgets all commute, the
- * ordering does not matter semantically, but may yield different synthesised
- * circuits.
- *
- * @param circ The circuit to append the box to
- * @param gadgets Description of the pauli gadgets; coefficients give the
- * rotation angles in half-turns
- * @param cx_config The CX configuration to be used during synthesis
- */
-void append_commuting_pauli_gadget_set_as_box(
-    Circuit &circ, const std::list<SpSymPauliTensor> &gadgets,
-    CXConfigType cx_config);
+  /**
+   * Copy constructor
+   */
+  TermSequenceBox(const TermSequenceBox &other);
+
+  ~TermSequenceBox() override {}
+
+  bool is_clifford() const override;
+
+  SymSet free_symbols() const override;
+
+  /**
+   * Equality check between two instances
+   */
+  bool is_equal(const Op &op_other) const override;
+
+  /** Get the circuit synthesis strategy parameter (affects box decomposition)
+   */
+  Transforms::PauliSynthStrat get_synth_strategy() const;
+
+  /** Get the pauli partitioning strategy parameter (affects box decomposition)
+   */
+  PauliPartitionStrat get_partition_strategy() const;
+
+  /** Get the graph colouring parameter (affects box decomposition) */
+  GraphColourMethod get_graph_colouring() const;
+
+  /** Get the pauli gadgets */
+  std::vector<SymPauliTensor> get_pauli_gadgets() const;
+
+  /** Get the cx config parameter (affects box decomposition) */
+  CXConfigType get_cx_config() const;
+
+  Op_ptr dagger() const override;
+
+  Op_ptr transpose() const override;
+
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &sub_map) const override;
+
+  static Op_ptr from_json(const nlohmann::json &j);
+
+  static nlohmann::json to_json(const Op_ptr &op);
+
+ protected:
+  void generate_circuit() const override;
+
+ private:
+  std::vector<SymPauliTensor> pauli_gadgets_;
+  Transforms::PauliSynthStrat synth_strategy_;
+  PauliPartitionStrat partition_strategy_;
+  GraphColourMethod graph_colouring_;
+  CXConfigType cx_configuration_;
+};
 
 }  // namespace tket

@@ -20,7 +20,7 @@ jobs:
       libs: ${{ steps.filter.outputs.changes }}
     steps:
     - uses: actions/checkout@v4
-    - uses: dorny/paths-filter@v2.11.1
+    - uses: dorny/paths-filter@v3.0.2
       id: filter
       with:
         base: ${{ github.ref }}
@@ -68,10 +68,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.10
+    - name: Set up Python 3.11
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -131,7 +131,7 @@ jobs:
         gcovr --print-summary --html --html-details -r ${GITHUB_WORKSPACE}/libs/${{ matrix.lib }} --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${GITHUB_WORKSPACE}/build/${{ matrix.lib }}/build/Debug/CMakeFiles/${{ matrix.lib }}.dir/src -o ${{ matrix.lib }}-coverage/index.html --decisions > ${{ matrix.lib }}-coverage/summary.txt
         cat ${{ matrix.lib }}-coverage/summary.txt
     - name: upload artefact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.lib }}_coverage
         path: ${{ matrix.lib }}-coverage/
@@ -157,7 +157,7 @@ jobs:
       with:
         ref: gh-pages
     - name: download artefact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: ${{ matrix.lib }}_coverage
         path: ${{ matrix.lib }}-coverage/

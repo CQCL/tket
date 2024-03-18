@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -177,6 +177,10 @@ def test_wasm_2() -> None:
 
 def test_wasm_3() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
+
+    with open("testfile.wasm", "rb") as f:
+        bytecode = f.read()
+    assert w.bytecode() == bytecode
 
     c = Circuit(0, 6)
 

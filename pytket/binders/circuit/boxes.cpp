@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -267,8 +267,11 @@ void init_boxes(py::module &m) {
           ":return: decomposition method");
   py::class_<PauliExpPairBox, std::shared_ptr<PauliExpPairBox>, Op>(
       m, "PauliExpPairBox",
-      "An operation defined as a pair of exponentials of a tensor of Pauli "
-      "operations and their (possibly symbolic) phase parameters.")
+      "A pair of (not necessarily commuting) Pauli exponentials performed in "
+      "sequence.\nPairing up exponentials for synthesis can reduce gate costs "
+      "of synthesis compared to synthesising individually, with the best "
+      "reductions found when the Pauli tensors act on a large number of the "
+      "same qubits.\nPhase parameters may be symbolic.")
       .def(
           py::init([](const py::tket_custom::SequenceVec<Pauli> &paulis0,
                       Expr t0,
@@ -341,6 +344,69 @@ void init_boxes(py::module &m) {
       .def(
           "get_cx_config", &PauliExpCommutingSetBox::get_cx_config,
           ":return: decomposition method");
+
+  py::module::import("pytket._tket.transform");
+  py::module::import("pytket._tket.partition");
+  py::class_<TermSequenceBox, std::shared_ptr<TermSequenceBox>, Op>(
+      m, "TermSequenceBox",
+      "An unordered collection of Pauli exponentials "
+      "that can be synthesised in any order, causing a "
+      "change in the unitary operation. Synthesis order "
+      "depends on the synthesis strategy chosen only.")
+      .def(
+          py::init([](const py::tket_custom::SequenceVec<
+                          std::pair<py::tket_custom::SequenceVec<Pauli>, Expr>>
+                          &pauli_gadgets,
+                      Transforms::PauliSynthStrat synth_strat,
+                      PauliPartitionStrat partition_strat,
+                      GraphColourMethod graph_colouring,
+                      CXConfigType cx_config) {
+            std::vector<SymPauliTensor> gadgets;
+            for (const std::pair<py::tket_custom::SequenceVec<Pauli>, Expr> &g :
+                 pauli_gadgets)
+              gadgets.push_back(SymPauliTensor(g.first, g.second));
+            return TermSequenceBox(
+                gadgets, synth_strat, partition_strat, graph_colouring,
+                cx_config);
+          }),
+          "Construct a set of Pauli exponentials of the "
+          "form"
+          " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
+          "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
+          ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters "
+          ":math:`t_j, j \\in \\{0, 1, \\cdots \\}`.",
+          py::arg("pauli_gadgets"),
+          py::arg("synthesis_strategy") = Transforms::PauliSynthStrat::Sets,
+          py::arg("partitioning_strategy") = PauliPartitionStrat::CommutingSets,
+          py::arg("graph_colouring") = GraphColourMethod::Lazy,
+          py::arg("cx_config_type") = CXConfigType::Tree)
+      .def(
+          "get_circuit",
+          [](TermSequenceBox &pbox) { return *pbox.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_paulis",
+          [](const TermSequenceBox &pbox) {
+            // For backwards compatibility with before templated PauliTensor
+            std::vector<std::pair<DensePauliMap, Expr>> gadgets;
+            for (const SymPauliTensor &g : pbox.get_pauli_gadgets())
+              gadgets.push_back({g.string, g.coeff});
+            return gadgets;
+          },
+          ":return: the corresponding list of Pauli gadgets")
+      .def(
+          "get_synthesis_strategy", &TermSequenceBox::get_synth_strategy,
+          ":return: synthesis strategy")
+      .def(
+          "get_partition_strategy", &TermSequenceBox::get_partition_strategy,
+          ":return: partitioning strategy")
+      .def(
+          "get_graph_colouring_method", &TermSequenceBox::get_graph_colouring,
+          ":return: graph colouring method")
+      .def(
+          "get_cx_config", &TermSequenceBox::get_cx_config,
+          ":return: cx decomposition method");
+
   py::enum_<ToffoliBoxSynthStrat>(
       m, "ToffoliBoxSynthStrat",
       "Enum strategies for synthesising ToffoliBoxes")

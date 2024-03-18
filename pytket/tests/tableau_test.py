@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 import pytest
 from pytket.circuit import Circuit, OpType, Qubit
 from pytket.pauli import Pauli, QubitPauliTensor
-from pytket.tableau import UnitaryTableau, UnitaryTableauBox
+from pytket.tableau import UnitaryTableau, UnitaryRevTableau, UnitaryTableauBox
 from pytket.utils.results import compare_unitaries
 import numpy as np
 
@@ -101,3 +101,25 @@ def test_tableau_rows() -> None:
     assert tab.get_row_product(
         QubitPauliTensor(Qubit(0), Pauli.Z) * QubitPauliTensor(Qubit(1), Pauli.X, -1.0)
     ) == QubitPauliTensor(Qubit(0), Pauli.X, -1.0)
+
+
+def test_rev_tableau() -> None:
+    tab = UnitaryRevTableau(2)
+    tab.apply_gate_at_end(OpType.H, [Qubit(0)])
+    tab.apply_gate_at_end(OpType.Sdg, [Qubit(0)])
+    tab.apply_gate_at_end(OpType.CX, [Qubit(0), Qubit(1)])
+    assert tab.get_zrow(Qubit(0)) == QubitPauliTensor(
+        [Qubit(0), Qubit(1)], [Pauli.X, Pauli.I], 1.0
+    )
+    assert tab.get_zrow(Qubit(1)) == QubitPauliTensor(
+        [Qubit(0), Qubit(1)], [Pauli.X, Pauli.Z], 1.0
+    )
+    assert tab.get_xrow(Qubit(0)) == QubitPauliTensor(
+        [Qubit(0), Qubit(1)], [Pauli.Y, Pauli.X], -1.0
+    )
+    assert tab.get_xrow(Qubit(1)) == QubitPauliTensor(
+        [Qubit(0), Qubit(1)], [Pauli.I, Pauli.X], 1.0
+    )
+    assert tab.get_row_product(
+        QubitPauliTensor([Qubit(0), Qubit(1)], [Pauli.X, Pauli.Y], 1.0)
+    ) == QubitPauliTensor([Qubit(0), Qubit(1)], [Pauli.Z, Pauli.Z], -1.0)

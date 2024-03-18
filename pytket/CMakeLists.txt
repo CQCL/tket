@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -47,6 +47,8 @@ if(CCACHE_PROGRAM)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}")
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(Boost_NO_BOOST_CMAKE ON)
 
@@ -100,6 +102,7 @@ set(HEADER_FILES
         binders/include/add_gate.hpp
         binders/include/binder_json.hpp
         binders/include/binder_utils.hpp
+        binders/include/circuit_registers.hpp
         binders/include/deleted_hash.hpp
         binders/include/py_operators.hpp
         binders/include/typecast.hpp

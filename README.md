@@ -1,19 +1,43 @@
 # tket
 
+[![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)](https://tketusers.slack.com/join/shared_invite/zt-18qmsamj9-UqQFVdkRzxnXCcKtcarLRA#)
+[![Stack Exchange](https://img.shields.io/badge/StackExchange-%23ffffff.svg?style=for-the-badge&logo=StackExchange)](https://quantumcomputing.stackexchange.com/tags/pytket)
+[![PyPI version](https://badge.fury.io/py/pytket.svg)](https://badge.fury.io/py/pytket)
+
 ## Introduction
 
-This repository contains the full source code for tket, a quantum SDK.
+TKET (pronounced "ticket") is a high-performance quantum compiler that can optimise circuits for a wide range of quantum computing architectures.
 
-If you just want to use tket via Python, the easiest way is to install it with
+This repository contains the full source code for TKET and its python bindings.
+
+The standard way of using TKET is via its pytket python API.
+
+If you just want to use TKET via Python, the easiest way is to install pytket with
 `pip`:
 
 ```shell
 pip install pytket
 ```
 
-For full API documentation, as well as a comprehensive user manual and a
-selection of example notebooks, please follow the links from the
-[pytket](https://github.com/CQCL/pytket) main page.
+As well as being an interface to the TKET compiler, pytket also provides an extensive API for other quantum computing tasks. These include constructing quantum circuits and handling the execution of experiments on devices and simulators.
+
+## Documentation
+
+The `tket` (C++) API documentation (generated with `doxygen`, and still rather
+patchy) is available
+[here](https://cqcl.github.io/tket/tket/api/index.html).
+
+The `pytket` (Python) API documentation is available
+[here](https://tket.quantinuum.com/api-docs).
+
+For getting started using pytket, check out the user manual and notebook examples.
+
+- User manual - https://tket.quantinuum.com/user-manual/
+- Notebook examples - https://tket.quantinuum.com/examples/
+
+The source content for the manual and notebook examples can be found in the [pytket-docs repository](https://github.com/CQCL/pytket-docs).
+
+## Extensions
 
 In addition to the core pytket package there are pytket extension modules which allow pytket to interface with quantum devices and simulators. Some extensions also provide interoperability with other software libraries such as qiskit, cirq and pennylane.
 
@@ -21,7 +45,9 @@ For a list of available pytket extensions see the [extensions index page](https:
 
 These extensions are installed as separate python packages and the source code for each extension lives in its own github repository.
 
-If you would like to build tket yourself and help to improve it, read on!
+## How to build TKET and pytket
+
+If you would like to build TKET yourself and help to improve it, read on!
 
 The codebase is split into two main projects:
  - [tket](tket): the core functionality of tket, optimised for execution speed
@@ -31,8 +57,6 @@ The codebase is split into two main projects:
    shared library) and pure Python code that defines abstract interfaces 
    used by the extension modules such as the `Backend` and `BackendResult` classes,
    as well as various other utilities.
-
-## How to build tket and pytket
 
 ### Prerequisites
 
@@ -50,7 +74,7 @@ depend on the features they support. The compiler version can be controlled by
 setting `CC` and `CXX` in your environment (e.g. `CC=gcc-11` and `CXX=g++-11`),
 or on Debian-based Linux systems using `update-alternatives`.
 
-You should also have Python (3.9, 3.10 or 3.11) and `pip` installed. We use
+You should also have Python (3.10, 3.11 or 3.12) and `pip` installed. We use
 `cmake` and the package manager `conan` to build tket and pytket. The latter can
 be installed with `pip`:
 
@@ -129,12 +153,3 @@ building and testing pytket.
 Tket and pytket are available as a Nix flake, with support for Linux and Apple Silicon systems.
 See the [README](nix-support/README.md) in the `nix-support` directory for instructions
 on building and testing tket and pytket through Nix, and on how to use it within a Nix project.
-
-## API documentation
-
-The `tket` (C++) API documentation (generated with `doxygen`, and still rather
-patchy) is available
-[here](https://cqcl.github.io/tket/tket/api/index.html).
-
-The `pytket` (Python) API documentation is available
-[here](https://cqcl.github.io/tket/pytket/api/index.html).

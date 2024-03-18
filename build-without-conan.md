@@ -22,9 +22,9 @@ The versions should match the current requirements as specified in the relevant
 
 ```
 cd ${TMP_DIR}
-wget -O boost_1_83_0.tar.gz https://sourceforge.net/projects/boost/files/boost/1.83.0/boost_1_83_0.tar.gz/download
-tar xzvf boost_1_83_0.tar.gz
-cd boost_1_83_0/
+wget -O boost_1_84_0.tar.gz https://sourceforge.net/projects/boost/files/boost/1.84.0/boost_1_84_0.tar.gz/download
+tar xzvf boost_1_84_0.tar.gz
+cd boost_1_84_0/
 ./bootstrap.sh --prefix=${INSTALL_DIR}
 ./b2
 ./b2 install
@@ -34,10 +34,10 @@ cd boost_1_83_0/
 
 ```
 cd ${TMP_DIR}
-wget https://gmplib.org/download/gmp/gmp-6.2.1.tar.bz2
-bzip2 -dk gmp-6.2.1.tar.bz2
-tar xvf gmp-6.2.1.tar
-cd gmp-6.2.1/
+wget https://gmplib.org/download/gmp/gmp-6.3.0.tar.bz2
+bzip2 -dk gmp-6.3.0.tar.bz2
+tar xvf gmp-6.3.0.tar
+cd gmp-6.3.0/
 ./configure --prefix=${INSTALL_DIR} --enable-cxx=yes
 make
 make check
@@ -48,9 +48,9 @@ make install
 
 ```
 cd ${TMP_DIR}
-wget https://github.com/symengine/symengine/releases/download/v0.11.1/symengine-0.11.1.tar.gz
-tar xzvf symengine-0.11.1.tar.gz
-cd symengine-0.11.1/
+wget https://github.com/symengine/symengine/releases/download/v0.11.2/symengine-0.11.2.tar.gz
+tar xzvf symengine-0.11.2.tar.gz
+cd symengine-0.11.2/
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DBUILD_TESTS=OFF -DBUILD_BENCHMARKS=OFF ..
@@ -91,9 +91,9 @@ cmake --install .
 
 ```
 cd ${TMP_DIR}
-wget https://github.com/catchorg/Catch2/archive/refs/tags/v3.3.2.tar.gz
-tar xzvf v3.3.2.tar.gz
-cd Catch2-3.3.2/
+wget https://github.com/catchorg/Catch2/archive/refs/tags/v3.5.2.tar.gz
+tar xzvf v3.5.2.tar.gz
+cd Catch2-3.5.2/
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
@@ -105,9 +105,9 @@ cmake --install .
 
 ```
 cd ${TMP_DIR}
-wget https://github.com/emil-e/rapidcheck/archive/8fafda42e732164db58003e542196e94a28481f9.zip
-unzip 8fafda42e732164db58003e542196e94a28481f9.zip
-cd rapidcheck-8fafda42e732164db58003e542196e94a28481f9/
+wget https://github.com/emil-e/rapidcheck/archive/1c91f40e64d87869250cfb610376c629307bf77d.zip
+unzip 1c91f40e64d87869250cfb610376c629307bf77d.zip
+cd rapidcheck-1c91f40e64d87869250cfb610376c629307bf77d/
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
@@ -255,3 +255,7 @@ This needs the shared `tklog` and `tket` libraries to be installed.
 cd ${TKET_DIR}/pytket
 NO_CONAN=1 pip install -v -e .
 ```
+
+(You can use the environment variable `PYTKET_CMAKE_N_THREADS` to restrict the
+number of threads used in the above command; otherwise one thread per CPU is
+used.)
