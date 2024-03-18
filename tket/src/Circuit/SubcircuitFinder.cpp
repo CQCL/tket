@@ -81,17 +81,15 @@ static subcircuit_info_t convex_union(
   VertexSet verts = verts0;
   verts.insert(verts1.begin(), verts1.end());
 
-  // preds = (preds0 ∖ verts1) ∪ (preds1 ∖ verts0)
-  VertexSet p0mv1 = set_diff(preds0, verts1);
-  VertexSet p1mv0 = set_diff(preds1, verts0);
-  VertexSet preds{p0mv1.begin(), p0mv1.end()};
-  preds.insert(p1mv0.begin(), p1mv0.end());
+  // preds = (preds0 ∪ preds1) ∖ verts
+  VertexSet preds01 = preds0;
+  preds01.insert(preds1.begin(), preds1.end());
+  VertexSet preds = set_diff(preds01, verts);
 
-  // succs = (succs0 ∖ verts1) ∪ (succs1 ∖ verts0)
-  VertexSet s0mv1 = set_diff(succs0, verts1);
-  VertexSet s1mv0 = set_diff(succs1, verts0);
-  VertexSet succs{s0mv1.begin(), s0mv1.end()};
-  succs.insert(s1mv0.begin(), s1mv0.end());
+  // succs = (succs0 ∪ succs1) ∖ verts
+  VertexSet succs01 = succs0;
+  succs01.insert(succs1.begin(), succs1.end());
+  VertexSet succs = set_diff(succs01, verts);
 
   return {verts, preds, succs};
 }
