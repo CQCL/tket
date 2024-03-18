@@ -957,17 +957,10 @@ Transform push_cliffords_through_measures() {
     for (unsigned i = 0; i < measurement_operators.size(); i++) {
       auto string = measurement_operators[i].string;
       std::vector<Bit> parity_bits;
-      // std::map<Qubit, Pauli>
-      // for (unsigned j = 0; j < string.size(); j++) {
-      // for(const Qubit& q: qubits){
       for (unsigned j = 0; j < qubits.size(); j++) {
         Qubit q = qubits[j];
-        // TKET_ASSERT()
         auto it = string.find(q);
         TKET_ASSERT(it != string.end());
-        // Qubit q = string[j].first;
-        // TKET_ASSERT(q == qubits[j]);
-
         if (it->second == Pauli::Z) {
           parity_bits.push_back(bits[j]);
         } else {

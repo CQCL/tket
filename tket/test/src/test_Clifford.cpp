@@ -770,5 +770,18 @@ SCENARIO("Testing full clifford_simp") {
   }
 }
 
+SCENARIO("Test push_cliffords_through_measures"){
+  GIVEN("Single qubit Cliffords"){
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::S, {1});
+    circ.add_op<unsigned>(OpType::Y, {2});
+
+    Transforms::push_cliffords_through_measures().apply(circ);
+    std::cout << circ << std::endl;
+
+  }
+}
+
 }  // namespace test_Clifford
 }  // namespace tket
