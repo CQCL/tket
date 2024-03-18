@@ -940,11 +940,9 @@ Transform push_cliffords_through_measures() {
         }
       }
       TKET_ASSERT(!parity_bits.empty());
-      parity_bits.push_back(Bit(scratch[i]));
-      if (parity_bits.size() == 2) {
-        circ.add_op(std::make_shared<CopyBitsOp>(1), parity_bits);
-      } else {
-        circ.add_op(XorOp(), parity_bits);
+      for (const Bit &pb : parity_bits) {
+        std::vector<Bit> arg = {pb, Bit(scratch[i])};
+        circ.add_op(XorWithOp(), arg);
       }
       if (measurement_operators[i].coeff == -1) {
         phase_correction.push_back(bits[i]);
@@ -955,11 +953,12 @@ Transform push_cliffords_through_measures() {
     // apply constant change to bitstring due to phase
     std::vector<Bit> scratch_v;
     for (const auto &b : scratch) {
-      std::vector<Bit> arg = phase_correction;
       Bit scratch_b = Bit(b.second);
       scratch_v.push_back(scratch_b);
-      arg.push_back(scratch_b);
-      circ.add_op(XorWithOp(), arg);
+      for (const auto &p : phase_correction) {
+        std::vector<Bit> arg = {p, scratch_b};
+        circ.add_op(XorWithOp(), arg);
+      }
     }
     // copy scratch results over to original Bit
     TKET_ASSERT(bits.size() == scratch_v.size());
