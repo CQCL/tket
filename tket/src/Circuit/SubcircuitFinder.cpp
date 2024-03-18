@@ -55,6 +55,16 @@ static bool union_is_connected(
   return false;
 }
 
+static VertexSet set_diff(const VertexSet &A, const VertexSet &B) {
+  VertexSet C;
+  for (const Vertex &v : A) {
+    if (!B.contains(v)) {
+      C.insert(v);
+    }
+  }
+  return C;
+}
+
 // Return the union of two disjoint convex connected subcircuits, assuming that
 // the union is convex and connected.
 static subcircuit_info_t convex_union(
@@ -72,26 +82,14 @@ static subcircuit_info_t convex_union(
   verts.insert(verts1.begin(), verts1.end());
 
   // preds = (preds0 ∖ verts1) ∪ (preds1 ∖ verts0)
-  VertexVec p0mv1;
-  std::set_difference(
-      preds0.begin(), preds0.end(), verts1.begin(), verts1.end(),
-      std::inserter(p0mv1, p0mv1.begin()));
-  VertexVec p1mv0;
-  std::set_difference(
-      preds1.begin(), preds1.end(), verts0.begin(), verts0.end(),
-      std::inserter(p1mv0, p1mv0.begin()));
+  VertexSet p0mv1 = set_diff(preds0, verts1);
+  VertexSet p1mv0 = set_diff(preds1, verts0);
   VertexSet preds{p0mv1.begin(), p0mv1.end()};
   preds.insert(p1mv0.begin(), p1mv0.end());
 
   // succs = (succs0 ∖ verts1) ∪ (succs1 ∖ verts0)
-  VertexVec s0mv1;
-  std::set_difference(
-      succs0.begin(), succs0.end(), verts1.begin(), verts1.end(),
-      std::inserter(s0mv1, s0mv1.begin()));
-  VertexVec s1mv0;
-  std::set_difference(
-      succs1.begin(), succs1.end(), verts0.begin(), verts0.end(),
-      std::inserter(s1mv0, s1mv0.begin()));
+  VertexSet s0mv1 = set_diff(succs0, verts1);
+  VertexSet s1mv0 = set_diff(succs1, verts0);
   VertexSet succs{s0mv1.begin(), s0mv1.end()};
   succs.insert(s1mv0.begin(), s1mv0.end());
 
