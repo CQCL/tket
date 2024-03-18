@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Converters/Converters.hpp"
+#include "tket/Converters/PauliGadget.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
 #include "tket/Gate/Gate.hpp"

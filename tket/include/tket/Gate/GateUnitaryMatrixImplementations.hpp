@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ struct GateUnitaryMatrixImplementations {
   // so dense->sparse routines would be needed).
 
   // Roughly follows the order in
-  // https://cqcl.github.io/tket/pytket/api/optype.html
+  // https://tket.quantinuum.com/api-docs/optype.html
 
   // Note: the below functions do not check double parameter values,
   // the caller must do that.

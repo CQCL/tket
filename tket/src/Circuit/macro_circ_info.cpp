@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -204,6 +204,16 @@ Circuit Circuit::subcircuit(const Subcircuit& sc) const {
     sub.add_edge({sub_source, in_port}, {out, 0}, EdgeType::Classical);
   }
   return sub;
+}
+
+Subcircuit Circuit::singleton_subcircuit(const Vertex& v) const {
+  return {
+      get_in_edges_of_type(v, EdgeType::Quantum),
+      get_out_edges_of_type(v, EdgeType::Quantum),
+      get_in_edges_of_type(v, EdgeType::Classical),
+      get_out_edges_of_type(v, EdgeType::Classical),
+      get_out_edges_of_type(v, EdgeType::Boolean),
+      {v}};
 }
 
 // returns qubit path via vertices & inhabited port in vertices

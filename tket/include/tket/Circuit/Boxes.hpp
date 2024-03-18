@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -134,7 +134,7 @@ Op_ptr set_box_id(BoxT &b, boost::uuids::uuid newid) {
 class CircBox : public Box {
  public:
   /**
-   * Construct from a given circuit. The circuit must be simple.
+   * Construct from a given circuit.
    */
   explicit CircBox(const Circuit &circ);
 

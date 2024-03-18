@@ -30,9 +30,9 @@ jobs:
     - name: Install boost
       run: |
         cd ${TMP_DIR}
-        wget -O boost_1_83_0.tar.gz https://sourceforge.net/projects/boost/files/boost/1.83.0/boost_1_83_0.tar.gz/download
-        tar xzvf boost_1_83_0.tar.gz
-        cd boost_1_83_0/
+        wget -O boost_1_84_0.tar.gz https://sourceforge.net/projects/boost/files/boost/1.84.0/boost_1_84_0.tar.gz/download
+        tar xzvf boost_1_84_0.tar.gz
+        cd boost_1_84_0/
         ./bootstrap.sh --prefix=${INSTALL_DIR}
         ./b2
         ./b2 install
@@ -40,9 +40,9 @@ jobs:
     - name: Install symengine
       run: |
         cd ${TMP_DIR}
-        wget https://github.com/symengine/symengine/releases/download/v0.11.1/symengine-0.11.1.tar.gz
-        tar xzvf symengine-0.11.1.tar.gz
-        cd symengine-0.11.1/
+        wget https://github.com/symengine/symengine/releases/download/v0.11.2/symengine-0.11.2.tar.gz
+        tar xzvf symengine-0.11.2.tar.gz
+        cd symengine-0.11.2/
         mkdir build
         cd build
         cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DBUILD_TESTS=OFF -DBUILD_BENCHMARKS=OFF ..
@@ -74,9 +74,9 @@ jobs:
     - name: Install catch2
       run: |
         cd ${TMP_DIR}
-        wget https://github.com/catchorg/Catch2/archive/refs/tags/v3.3.2.tar.gz
-        tar xzvf v3.3.2.tar.gz
-        cd Catch2-3.3.2/
+        wget https://github.com/catchorg/Catch2/archive/refs/tags/v3.5.2.tar.gz
+        tar xzvf v3.5.2.tar.gz
+        cd Catch2-3.5.2/
         mkdir build
         cd build
         cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
@@ -85,9 +85,9 @@ jobs:
     - name: Install rapidcheck
       run: |
         cd ${TMP_DIR}
-        wget https://github.com/emil-e/rapidcheck/archive/8fafda42e732164db58003e542196e94a28481f9.zip
-        unzip 8fafda42e732164db58003e542196e94a28481f9.zip
-        cd rapidcheck-8fafda42e732164db58003e542196e94a28481f9/
+        wget https://github.com/emil-e/rapidcheck/archive/1c91f40e64d87869250cfb610376c629307bf77d.zip
+        unzip 1c91f40e64d87869250cfb610376c629307bf77d.zip
+        cd rapidcheck-1c91f40e64d87869250cfb610376c629307bf77d/
         mkdir build
         cd build
         cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
@@ -189,10 +189,10 @@ jobs:
         cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_WITH_INSTALL_RPATH=1 -DCMAKE_INSTALL_RPATH="\${ORIGIN}" ..
         cmake --build  . -j2
         cmake --install .
-    - name: Set up Python 3.10
+    - name: Set up Python 3.11
       uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
+        python-version: '3.11'
     - name: Install pytket
       run: |
         cd pytket

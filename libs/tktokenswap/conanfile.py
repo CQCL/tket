@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ from conan.errors import ConanInvalidConfiguration
 
 class TktokenswapConan(ConanFile):
     name = "tktokenswap"
-    version = "0.3.6"
+    version = "0.3.7"
     package_type = "library"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
@@ -73,4 +73,4 @@ class TktokenswapConan(ConanFile):
         self.requires("tklog/0.3.3@tket/stable")
         self.requires("tkassert/0.3.4@tket/stable", transitive_headers=True)
         self.requires("tkrng/0.3.3@tket/stable")
-        self.requires("boost/1.83.0", transitive_libs=False)
+        self.requires("boost/1.84.0", transitive_libs=False)

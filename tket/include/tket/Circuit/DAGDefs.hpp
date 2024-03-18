@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ typedef boost::adjacency_list<
     boost::bidirectionalS,
 
     // indexing needed for algorithms such as topological sort
-    boost::property<boost::vertex_index_t, int, VertexProperties>,
+    boost::property<boost::vertex_index_t, std::size_t, VertexProperties>,
 
     EdgeProperties>
     DAG;
@@ -76,7 +76,7 @@ typedef std::vector<Vertex> VertexVec;
 typedef std::list<Vertex> VertexList;
 typedef std::unordered_map<Vertex, unsigned> IndexMap;
 typedef boost::adj_list_vertex_property_map<
-    DAG, int, int&, boost::vertex_index_t>
+    DAG, std::size_t, std::size_t&, boost::vertex_index_t>
     VIndex;
 
 /**

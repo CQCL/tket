@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,12 @@
 #include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {
+
+// Forward declare friend classes for converters
+class ChoiMixTableau;
+class UnitaryTableau;
+class UnitaryRevTableau;
+class Circuit;
 
 /**
  * Boolean encoding of Pauli
@@ -130,13 +136,10 @@ class SymplecticTableau {
   void row_mult(unsigned ra, unsigned rw, Complex coeff = 1.);
 
   /**
-   * Applies a chosen gate to the given qubit(s)
+   * Applies an S/V/CX gate to the given qubit(s)
    */
   void apply_S(unsigned qb);
-  void apply_Z(unsigned qb);
   void apply_V(unsigned qb);
-  void apply_X(unsigned qb);
-  void apply_H(unsigned qb);
   void apply_CX(unsigned qc, unsigned qt);
   void apply_gate(OpType type, const std::vector<unsigned> &qbs);
 
@@ -170,19 +173,29 @@ class SymplecticTableau {
    */
   void gaussian_form();
 
+ private:
+  /**
+   * Number of rows
+   */
+  unsigned n_rows_;
+
+  /**
+   * Number of qubits in each row
+   */
+  unsigned n_qubits_;
+
   /**
    * Tableau contents
    */
-  MatrixXb xmat;
-  MatrixXb zmat;
-  VectorXb phase;
+  MatrixXb xmat_;
+  MatrixXb zmat_;
+  VectorXb phase_;
 
   /**
    * Complex conjugate of the state by conjugating rows
    */
   SymplecticTableau conjugate() const;
 
- private:
   /**
    * Helper methods for manipulating the tableau when applying gates
    */
@@ -193,6 +206,18 @@ class SymplecticTableau {
   void col_mult(
       const MatrixXb::ColXpr &a, const MatrixXb::ColXpr &b, bool flip,
       MatrixXb::ColXpr &w, VectorXb &pw);
+
+  friend class UnitaryTableau;
+  friend class ChoiMixTableau;
+  friend Circuit unitary_tableau_to_circuit(const UnitaryTableau &tab);
+  friend std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
+      const ChoiMixTableau &tab);
+  friend std::ostream &operator<<(std::ostream &os, const UnitaryTableau &tab);
+  friend std::ostream &operator<<(
+      std::ostream &os, const UnitaryRevTableau &tab);
+
+  friend void to_json(nlohmann::json &j, const SymplecticTableau &tab);
+  friend void from_json(const nlohmann::json &j, SymplecticTableau &tab);
 };
 
 JSON_DECL(SymplecticTableau)

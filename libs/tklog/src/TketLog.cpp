@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -63,8 +63,8 @@ void Logger::log(const char *levstr, const std::string &s, std::ostream &os) {
 #else
   plt = std::localtime(&t);
 #endif
-  os << "[" << std::put_time(plt, "%Y-%m-%d %H:%M:%S") << "]"
-     << " [tket] [" << levstr << "] " << s << std::endl;
+  os << "[" << std::put_time(plt, "%Y-%m-%d %H:%M:%S") << "]" << " [tket] ["
+     << levstr << "] " << s << std::endl;
 }
 
 void Logger::set_level(LogLevel lev) { level = lev; }

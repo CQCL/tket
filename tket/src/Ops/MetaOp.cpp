@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ op_signature_t MetaOp::get_signature() const {
     return signature_;
 }
 
-bool MetaOp::is_clifford() const { return true; }
+bool MetaOp::is_clifford() const { return false; }
 
 MetaOp::~MetaOp() {}
 

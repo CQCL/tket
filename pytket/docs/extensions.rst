@@ -2,9 +2,9 @@ pytket extensions
 =================
 
 The pytket extensions are separate python modules which allow pytket to interface with backends from a range of providers including quantum devices from Quantinuum and IBM.
-In pytket a ``Backend`` represents a connection to a QPU (Quantum Processing Unit) or simulator for processing quantum circuits. One can also access additional quantum devices and simulators via the cloud through the extensions for `Azure <https://cqcl.github.io/pytket-qsharp/api/api.html#pytket.extensions.qsharp.AzureBackend>`_ and `Braket <https://tket.quantinuum.com/extensions/pytket-braket/api/api.html#pytket.extensions.braket.BraketBackend>`_ . 
+In pytket a ``Backend`` represents a connection to a QPU (Quantum Processing Unit) or simulator for processing quantum circuits. One can also access additional quantum devices and simulators via the cloud through the extensions for `Azure <https://cqcl.github.io/pytket-qsharp/api/api.html#pytket.extensions.qsharp.AzureBackend>`_ and `Braket <https://tket.quantinuum.com/extensions/pytket-braket/api.html#pytket.extensions.braket.BraketBackend>`_ . 
 
-Additionally, the extensions allow pytket to cross-compile circuits from different quantum computing libraries with the extensions for `qiskit <https://tket.quantinuum.com/extensions/pytket-qiskit/api/index.html>`_, `cirq <https://tket.quantinuum.com/extensions/pytket-cirq/api/index.html>`_ and `pennylane <https://tket.quantinuum.com/extensions/pytket-pennylane/api/index.html>`_ . This enables pytket's compilation features to be used in conjunction with other software tools.
+Additionally, the extensions allow pytket to cross-compile circuits from different quantum computing libraries with the extensions for `qiskit <https://tket.quantinuum.com/extensions/pytket-qiskit/index.html>`_, `cirq <https://tket.quantinuum.com/extensions/pytket-cirq/index.html>`_ and `pennylane <https://tket.quantinuum.com/extensions/pytket-pennylane/index.html>`_ . This enables pytket's compilation features to be used in conjunction with other software tools.
 
 The additional modules can be installed adding the extension name to the installation command for pytket. For example pytket-quantinuum can be installed by running
 
@@ -149,12 +149,12 @@ Other
    pytket-stim <https://tket.quantinuum.com/extensions/pytket-stim>
 
 
-.. _pytket: https://tket.quantinuum.com/tket/pytket/api/
+.. _pytket: https://tket.quantinuum.com/api-docs
 .. _Quantinuum: https://quantinuum.com
-.. _IBMQEmulatorBackend:  https://tket.quantinuum.com/extensions/pytket-qiskit/api/api.html#pytket.extensions.qiskit.IBMQEmulatorBackend
+.. _IBMQEmulatorBackend:  https://tket.quantinuum.com/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.IBMQEmulatorBackend
 .. _AerStateBackend: https://tket.quantinuum.com/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.AerStateBackend
-.. _ForestStateBackend: https://tket.quantinuum.com/extensions/pytket-pyquil/api/api.html#pytket.extensions.pyquil.ForestStateBackend
-.. _AerUnitaryBackend: https://tket.quantinuum.com/extensions/pytket-qiskit/api/api.html#pytket.extensions.qiskit.AerUnitaryBackend
-.. _CirqDensityMatrixSampleBackend: https://tket.quantinuum.com/extensions/pytket-cirq/api/api.html#pytket.extensions.cirq.CirqDensityMatrixSampleBackend
-.. _SimplexBackend: https://tket.quantinuum.com/extensions/pytket-simplex/api.html#pytket.extensions.pysimplex.SimplexBackend
+.. _ForestStateBackend: https://tket.quantinuum.com/extensions/pytket-pyquil/api.html#pytket.extensions.pyquil.ForestStateBackend
+.. _AerUnitaryBackend: https://tket.quantinuum.com/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.AerUnitaryBackend
+.. _CirqDensityMatrixSampleBackend: https://tket.quantinuum.com/extensions/pytket-cirq/api.html#pytket.extensions.cirq.CirqDensityMatrixSampleBackend
+.. _SimplexBackend: https://tket.quantinuum.com/extensions/pytket-pysimplex/api.html#pytket.extensions.pysimplex.SimplexBackend
 .. _QulacsBackend: https://tket.quantinuum.com/extensions/pytket-qulacs/api.html#pytket.extensions.qulacs.QulacsBackend

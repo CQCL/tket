@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ class test_tkwsmRecipe(ConanFile):
         cmake.install()
 
     def requirements(self):
-        self.requires("tkwsm/0.3.6")
+        self.requires("tkwsm/0.3.7")
         self.requires("tkassert/0.3.4@tket/stable")
         self.requires("tkrng/0.3.3@tket/stable")
-        self.requires("catch2/3.3.2")
+        self.requires("catch2/3.5.2")

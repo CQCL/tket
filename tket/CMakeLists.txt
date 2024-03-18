@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -178,6 +178,7 @@ target_sources(tket
         src/Circuit/basic_circ_manip.cpp
         src/Circuit/latex_drawing.cpp
         src/Circuit/macro_circ_info.cpp
+        src/Circuit/SubcircuitFinder.cpp
         src/Circuit/setters_and_getters.cpp
         src/Circuit/CircUtils.cpp
         src/Circuit/ThreeQubitConversion.cpp
@@ -228,6 +229,7 @@ target_sources(tket
         src/ZX/MBQCRewrites.cpp
         src/ZX/ZXRWSequences.cpp
         src/Converters/ChoiMixTableauConverters.cpp
+        src/Converters/PauliGadget.cpp
         src/Converters/PauliGraphConverters.cpp
         src/Converters/Gauss.cpp
         src/Converters/PhasePoly.cpp
@@ -267,6 +269,7 @@ target_sources(tket
         src/Transformations/PauliOptimisation.cpp
         src/Transformations/CliffordOptimisation.cpp
         src/Transformations/CliffordReductionPass.cpp
+        src/Transformations/CliffordResynthesis.cpp
         src/Transformations/OptimisationPass.cpp
         src/Transformations/PhaseOptimisation.cpp
         src/Transformations/Decomposition.cpp
@@ -384,6 +387,7 @@ target_sources(tket
         include/tket/ZX/ZXGenerator.hpp
         include/tket/Converters/Converters.hpp
         include/tket/Converters/Gauss.hpp
+        include/tket/Converters/PauliGadget.hpp
         include/tket/Converters/PhasePoly.hpp
         include/tket/Converters/UnitaryTableauBox.hpp
         include/tket/Placement/NeighbourPlacements.hpp
@@ -411,6 +415,7 @@ target_sources(tket
         include/tket/Transformations/BasicOptimisation.hpp
         include/tket/Transformations/CliffordOptimisation.hpp
         include/tket/Transformations/CliffordReductionPass.hpp
+        include/tket/Transformations/CliffordResynthesis.hpp
         include/tket/Transformations/Combinator.hpp
         include/tket/Transformations/ContextualReduction.hpp
         include/tket/Transformations/Decomposition.hpp

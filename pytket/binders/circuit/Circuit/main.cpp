@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@
 #include "UnitRegister.hpp"
 #include "binder_json.hpp"
 #include "boost/graph/iteration_macros.hpp"
+#include "circuit_registers.hpp"
 #include "deleted_hash.hpp"
 #include "py_operators.hpp"
 #include "tket/Circuit/Boxes.hpp"
@@ -252,30 +253,10 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           ":py:class:`BitRegister`",
           py::arg("name"))
       .def_property_readonly(
-          "c_registers",
-          [](Circuit &circ) {
-            bit_vector_t all_bits = circ.all_bits();
-            std::map<std::string, unsigned> bits_map;
-            std::vector<BitRegister> b_regs;
-            for (const Bit &bit : all_bits) {
-              auto it = bits_map.find(bit.reg_name());
-              if (it == bits_map.end()) {
-                bits_map.insert({bit.reg_name(), 1});
-              } else {
-                it->second++;
-              }
-            }
-            b_regs.reserve(bits_map.size());
-            for (auto const &it : bits_map) {
-              b_regs.emplace_back(it.first, it.second);
-            }
-            return b_regs;
-          },
+          "c_registers", &get_unit_registers<BitRegister>,
           "Get all classical registers.\n\n"
-          "This property is only valid if the bits in the circuit are "
-          "organized into registers (i.e. all bit indices are single numbers "
-          "and all sets of bits with the same string identifier consist of "
-          "bits indexed consecutively from zero).\n\n"
+          "The list only includes registers that are singly-indexed "
+          "contiguously from zero.\n\n"
           ":return: List of :py:class:`BitRegister`")
       .def(
           "get_q_register",
@@ -292,30 +273,10 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           ":py:class:`QubitRegister`",
           py::arg("name"))
       .def_property_readonly(
-          "q_registers",
-          [](Circuit &circ) {
-            qubit_vector_t all_qbs = circ.all_qubits();
-            std::map<std::string, unsigned> qbs_map;
-            std::vector<QubitRegister> q_regs;
-            for (const Qubit &qb : all_qbs) {
-              auto it = qbs_map.find(qb.reg_name());
-              if (it == qbs_map.end()) {
-                qbs_map.insert({qb.reg_name(), 1});
-              } else {
-                it->second++;
-              }
-            }
-            q_regs.reserve(qbs_map.size());
-            for (auto const &it : qbs_map) {
-              q_regs.emplace_back(it.first, it.second);
-            }
-            return q_regs;
-          },
+          "q_registers", &get_unit_registers<QubitRegister>,
           "Get all quantum registers.\n\n"
-          "This property is only valid if the qubits in the circuit are "
-          "organized into registers (i.e. all qubit indices are single numbers "
-          "and all sets of qubits with the same string identifier consist of "
-          "qubits indexed consecutively from zero).\n\n"
+          "The list only includes registers that are singly-indexed "
+          "contiguously from zero.\n\n"
           ":return: List of :py:class:`QubitRegister`")
       .def(
           "add_qubit", &Circuit::add_qubit,

@@ -32,8 +32,8 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
-    - uses: dorny/paths-filter@v2.11.1
+        python-version: '3.12'
+    - uses: dorny/paths-filter@v3.0.2
       id: filter
       with:
         base: ${{ github.ref }}
@@ -88,7 +88,7 @@ jobs:
       - name: Check C++ code formatting
         run: |
           brew update
-          brew install clang-format@17
+          brew install clang-format@18
           git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file --dry-run --Werror
 
   build_test_tket:
@@ -104,11 +104,11 @@ jobs:
     - name: apt update
       if: matrix.os == 'ubuntu-22.04'
       run: sudo apt update
-    - name: Select Python 3.10
+    - name: Select Python 3.11
       # otherwise turtlebrowser/get-conan@v1.2 fails on macos-12
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -189,12 +189,12 @@ jobs:
           ccache --set-config namespace=WITH_TESTS
           ccache -p
       - name: Get current time
-        uses: josStorer/get-current-time@v2.1.1
+        uses: josStorer/get-current-time@v2.1.2
         id: current_time
         with:
           format: YYYYMMDDHHmmss
       - name: ccache windows
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.ninja-ccache-setup.outputs.ccache_dir }}
           key: tket-static-${{ matrix.os }}-${{ steps.current_time.outputs.formattedTime }}
@@ -262,21 +262,27 @@ jobs:
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v5
       with:
-        python-version: "3.9"
+        python-version: '3.10'
     - name: Set up Python (push)
       if: github.event_name == 'push'
       uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
+        python-version: '3.11'
     - name: Set up Python (schedule)
       if: github.event_name == 'schedule'
       uses: actions/setup-python@v5
       with:
-        python-version: "3.11"
+        python-version: '3.12'
     - name: Build pytket
+      if: github.event_name != 'schedule'
       run: |
         cd pytket
         pip install -e .[ZX] -v
+    - name: Build pytket
+      if: github.event_name == 'schedule' # https://github.com/CQCL/tket/issues/1242
+      run: |
+        cd pytket
+        pip install -e . -v
     - name: Run doctests
       run: |
         cd pytket
@@ -302,13 +308,13 @@ jobs:
         ./.github/workflows/build-docs
     - name: Upload artefact
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: pytket_docs
         path: pytket/docs/build/html/
     - name: Upload pytket coverage artefact
       if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: pytket_test_coverage
         path: pytket/tests/htmlcov
@@ -328,11 +334,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
-    - name: Select Python 3.10
+    - name: Select Python 3.11
       # otherwise turtlebrowser/get-conan@v1.2 fails on macos-12
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -367,40 +373,42 @@ jobs:
         conan create recipes/pybind11_json/all --version 0.2.13
     - name: Set up Python (pull request)
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      run: brew install python@3.9
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
     - name: Set up Python (push)
       if: github.event_name == 'push'
       uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
+        python-version: '3.11'
     - name: Set up Python (schedule)
       if: github.event_name == 'schedule'
       uses: actions/setup-python@v5
       with:
-        python-version: "3.11"
+        python-version: '3.12'
     - name: Build pytket
       run: |
         cd pytket
-        python${{ matrix.python-version }} -m pip install -e .[ZX] -v
+        python -m pip install -e .[ZX] -v
     - name: Run doctests
       run: |
         cd pytket
-        python${{ matrix.python-version }} -m pip install pytest
-        python${{ matrix.python-version }} -m pytest --doctest-modules pytket
+        python -m pip install pytest
+        python -m pytest --doctest-modules pytket
     - name: Test pytket
       run: |
         cd pytket/tests
-        python${{ matrix.python-version }} -m pip install -r requirements.txt
-        python${{ matrix.python-version }} -m pytest --ignore=simulator/
+        python -m pip install -r requirements.txt
+        python -m pytest --ignore=simulator/
     - name: Check type stubs are up-to-date and run mypy
       if: matrix.os == 'macos-13-xlarge' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
       run: |
-        python${{ matrix.python-version }} -m pip install -U mypy
-        python${{ matrix.python-version }} -m pip install pybind11-stubgen==2.3.6 # https://github.com/CQCL/tket/issues/1135
+        python -m pip install -U mypy
+        python -m pip install pybind11-stubgen==2.3.6 # https://github.com/CQCL/tket/issues/1135
         cd pytket
         ./stub_generation/regenerate_stubs
         git diff --quiet pytket/_tket && echo "Stubs are up-to-date" || exit 1  # fail if stubs change after regeneration
-        python${{ matrix.python-version }} -m mypy --config-file=mypy.ini --no-incremental -p pytket -p tests
+        python -m mypy --config-file=mypy.ini --no-incremental -p pytket -p tests
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
@@ -448,30 +456,32 @@ jobs:
         ccache --set-config namespace=WITH_TESTS
         ccache -p
     - name: Get current time
-      uses: josStorer/get-current-time@v2.1.1
+      uses: josStorer/get-current-time@v2.1.2
       id: current_time
       with:
         format: YYYYMMDDHHmmss
     - name: ccache windows
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{ steps.ccache-setup.outputs.ccache_dir }}
         key: tket-dynamic-visual-studio-windows-2022-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
           tket-dynamic-visual-studio-windows-2022
-    - name: get ccache version
-      id: ccache-ver
+    - name: get ccache path
+      id: ccache-path
       shell: bash
       run: |
-        ccache_ver=$(choco list -e ccache | grep "ccache" | grep -ioE '[0-9]+\.[0-9]+\.[0-9]+')
-        echo "Found ccache version ${ccache_ver}"
-        echo "ccache_ver=${ccache_ver}" >> $GITHUB_OUTPUT
+        ccache --shimgen-noop > ccache-info.txt || true
+        a=$(cat ccache-info.txt | grep executable)
+        # strip off the initial "  path to executable: "
+        b=${a:22}
+        echo "ccache_path=${b}" >> $GITHUB_OUTPUT
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: |
-        $env:TKET_VSGEN_CCACHE_EXE = 'C:\\ProgramData\\chocolatey\\lib\\ccache\\tools\\ccache-${{ steps.ccache-ver.outputs.ccache_ver }}-windows-x86_64\\ccache.exe' 
+        $env:TKET_VSGEN_CCACHE_EXE = '${{ steps.ccache-path.outputs.ccache_path }}'
         conan build tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
-        conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
+        conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
@@ -482,21 +492,21 @@ jobs:
       run: |
         conan create recipes/pybind11
         conan create recipes/pybind11_json/all --version 0.2.13
-    - name: Set up Python (3.9)
+    - name: Set up Python 3.10
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v5
       with:
-        python-version: "3.9"
-    - name: Set up Python (3.10)
+        python-version: '3.10'
+    - name: Set up Python 3.11
       if: github.event_name == 'push'
       uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
-    - name: Set up Python (3.11)
+        python-version: '3.11'
+    - name: Set up Python 3.12
       if: github.event_name == 'schedule'
       uses: actions/setup-python@v5
       with:
-        python-version: "3.11"
+        python-version: '3.12'
     - name: Build pytket
       run: |
         cd pytket
@@ -532,7 +542,7 @@ jobs:
       with:
         ref: gh-pages
     - name: Download artefact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: pytket_test_coverage
         path: htmlcov/
@@ -553,12 +563,12 @@ jobs:
   check_pytket_coverage:
     name: Check pytket line and branch coverage
     needs: build_test_pytket_ubuntu
-    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    if: (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop') || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
     - name: Download artefact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: pytket_test_coverage
         path: pytket-test-coverage/

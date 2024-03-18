@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -59,6 +59,6 @@ class test_tktokenswapRecipe(ConanFile):
         cmake.install()
 
     def requirements(self):
-        self.requires("tktokenswap/0.3.6")
+        self.requires("tktokenswap/0.3.7")
         self.requires("tkrng/0.3.3@tket/stable")
-        self.requires("catch2/3.3.2")
+        self.requires("catch2/3.5.2")

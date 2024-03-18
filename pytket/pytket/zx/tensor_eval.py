@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 numpy tensor features, in particular the einsum evaluation and optimisations."""
 from typing import Dict, List, Any
 from math import floor, pi, sqrt, cos, sin
+import warnings
 import sympy
 import numpy as np
 from pytket.zx import (
@@ -34,12 +35,10 @@ from pytket.zx import (
 try:
     import quimb.tensor as qtn  # type: ignore
 except ModuleNotFoundError as err:
-    err.msg = (
+    warnings.warn(
         'Missing package for tensor evaluation of ZX diagrams. Run "pip '
-        "install 'pytket[ZX]'\" to install the optional dependencies and try "
-        "again."
+        "install 'pytket[ZX]'\" to install the optional dependencies."
     )
-    raise err
 
 
 def _gen_to_tensor(gen: ZXGen, rank: int) -> np.ndarray:

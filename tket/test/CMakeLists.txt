@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -103,8 +103,10 @@ add_executable(test-tket
     src/Ops/test_Expression.cpp
     src/Ops/test_Ops.cpp
     src/OpType/test_OpTypeFunctions.cpp
+    src/Passes/test_CliffordResynthesis.cpp
     src/Passes/test_SynthesiseTK.cpp
     src/Passes/test_SynthesiseTket.cpp
+    src/Gate/test_Rotation.cpp
     src/Gate/test_GateUnitaryMatrix.cpp
     src/Simulation/test_CircuitSimulator.cpp
     src/Simulation/test_PauliExpBoxUnitaryCalculator.cpp
@@ -122,7 +124,6 @@ add_executable(test-tket
     src/Circuit/test_DummyBox.cpp
     src/test_UnitaryTableau.cpp
     src/test_ChoiMixTableau.cpp
-    src/test_Diagonalisation.cpp
     src/test_PhasePolynomials.cpp
     src/test_PauliGraph.cpp
     src/PauliGraphRefactor/test_PauliGraph.cpp

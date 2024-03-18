@@ -1,4 +1,4 @@
-# Copyright 2019-2023 Cambridge Quantum Computing
+# Copyright 2019-2024 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,12 +26,14 @@ def test_probability_distribution() -> None:
     pd = ProbabilityDistribution({"a": 1 / 3, "b": 2 / 3})
     with pytest.raises(ValueError):
         pd = ProbabilityDistribution({"a": 1 / 3, "b": 1, "c": -1 / 3})
-    pd1 = ProbabilityDistribution({"a": 1 / 3, "b": 2 / 3 - 1e-15, "c": 1e-15})
+    pd1 = ProbabilityDistribution(
+        {"a": 1 / 3, "b": 2 / 3 - 1e-15, "c": 1e-15}, min_p=1e-10
+    )
     assert pd1.support == set(["a", "b"])
     assert isclose(pd1["a"], 1 / 3)
     assert pd1["c"] == 0.0
     assert pd == pd1
-    with pytest.raises(ValueError):
+    with pytest.warns(UserWarning):
         pd2 = ProbabilityDistribution({"a": 2 / 3, "b": 4 / 3})
     pd3 = ProbabilityDistribution({"a": 2 / 9, "b": 4 / 9, "c": 1 / 3})
     pd4 = convex_combination([(pd, 1 / 3), (pd3, 2 / 3)])

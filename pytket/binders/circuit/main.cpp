@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -314,10 +314,8 @@ PYBIND11_MODULE(circuit, m) {
           ":math:`P` of Pauli operations.")
       .value(
           "PauliExpPairBox", OpType::PauliExpPairBox,
-          "An operation defined as a pair"
-          "of exponentials of the form "
-          ":math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor "
-          ":math:`P` of Pauli operations.")
+          "A pair of (not necessarily commuting) Pauli exponentials "
+          ":math:`e^{-\\frac{i\\pi\\alpha}{2} P}` performed in sequence.")
       .value(
           "PauliExpCommutingSetBox", OpType::PauliExpCommutingSetBox,
           "An operation defined as a set"
@@ -325,11 +323,21 @@ PYBIND11_MODULE(circuit, m) {
           ":math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor "
           ":math:`P` of Pauli operations.")
       .value(
+          "TermSequenceBox", OpType::TermSequenceBox,
+          "An unordered collection of Pauli exponentials "
+          "that can be synthesised in any order, causing a "
+          "change in the unitary operation. Synthesis order "
+          "depends on the synthesis strategy chosen only.")
+      .value(
           "QControlBox", OpType::QControlBox,
           "An arbitrary n-controlled operation")
       .value(
           "ToffoliBox", OpType::ToffoliBox,
           "A permutation of classical basis states")
+      .value(
+          "ConjugationBox", OpType::ConjugationBox,
+          "An operation composed of 'action', 'compute' and 'uncompute' "
+          "circuits")
       .value(
           "DummyBox", OpType::DummyBox,
           "A placeholder operation that holds resource data")

@@ -4,13 +4,13 @@ The source code for the TKET compiler can be found in [this github repository](h
 
 ## Installation
 
-Installation is supported for Linux, MacOS and Windows. Installation requires python 3.9, 3.10 or 3.11.
+Installation is supported for Linux, MacOS and Windows. Installation requires python 3.10, 3.11 or 3.12.
 
 To install run the pip command: 
 
 `` pip install pytket``
 
-See [Installation troubleshooting](https://cqcl.github.io/tket/pytket/api/install.html) for help with installation.
+See [Installation troubleshooting](https://tket.quantinuum.com/api-docs/install.html) for help with installation.
 
 To install the pytket extension modules add a hyphen and the extension name to the command:
 
@@ -25,7 +25,7 @@ official Python distribution instead.
 
 ## Documentation and Examples
 
-API reference: https://cqcl.github.io/tket/pytket/api/
+API reference: https://tket.quantinuum.com/api-docs/
 
 To get started using pytket see the [user manual](https://tket.quantinuum.com/user-manual/).
 

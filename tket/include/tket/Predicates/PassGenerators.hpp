@@ -1,4 +1,4 @@
-// Copyright 2019-2023 Cambridge Quantum Computing
+// Copyright 2019-2024 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,6 +13,8 @@
 // limitations under the License.
 
 #pragma once
+
+#include <optional>
 
 #include "CompilerPass.hpp"
 #include "tket/ArchAwareSynth/SteinerForest.hpp"
@@ -55,6 +57,23 @@ PassPtr gen_squash_pass(
     bool always_squash_symbols = false);
 PassPtr gen_euler_pass(const OpType& q, const OpType& p, bool strict = false);
 PassPtr gen_clifford_simp_pass(bool allow_swaps = true);
+
+/**
+ * Pass to resynthesise Clifford subcircuits and simplify using Clifford rules.
+ *
+ * @param transform optional user-provided resynthesis method to apply to all
+ *   Clifford subcircuits (a function taking a Clifford circuit as an argument
+ *   and returning an equivalent circuit); if not provided, a default
+ *   resynthesis method is applied
+ * @param allow_swaps whether the rewriting may introduce wire swaps (only
+ *   relevant to the default resynthesis method used when the `transform`
+ *   argument is not provided)
+ * @return pass to perform Clifford resynthesis
+ */
+PassPtr gen_clifford_resynthesis_pass(
+    std::optional<std::function<Circuit(const Circuit&)>> transform =
+        std::nullopt,
+    bool allow_swaps = true);
 
 /**
  * Pass to remove empty Quantum edges from a Circuit and then relabel
