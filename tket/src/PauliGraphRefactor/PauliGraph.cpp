@@ -347,6 +347,201 @@ bit_vector_t PGConditional::read_bits() const {
 bit_vector_t PGConditional::write_bits() const { return inner_->write_bits(); }
 
 /**
+ * PGQControl Implementation
+ */
+
+PGOp_ptr PGQControl::get_inner_op() const { return inner_; }
+
+const std::vector<SpPauliStabiliser>& PGQControl::get_control_paulis() const {
+  return control_paulis_;
+}
+
+std::vector<bool> PGQControl::get_value() const { return value_; }
+
+PGQControl::PGQControl(
+    PGOp_ptr inner, const std::vector<SpPauliStabiliser>& control_paulis,
+    std::vector<bool> value)
+    : PGOp(PGOpType::QControl),
+      inner_(inner),
+      control_paulis_(control_paulis),
+      value_(value) {
+  if (control_paulis_.size() != value_.size())
+    throw PGError(
+        "PGQControl: Size mismatch between number of controls and length of "
+        "value");
+}
+
+SymSet PGQControl::free_symbols() const { return inner_->free_symbols(); }
+
+PGOp_ptr PGQControl::symbol_substitution(
+    const SymEngine::map_basic_basic& sub_map) const {
+  PGOp_ptr inner_sub = inner_->symbol_substitution(sub_map);
+  if (inner_sub)
+    return std::make_shared<PGQControl>(inner_sub, control_paulis_, value_);
+  else
+    return PGOp_ptr();
+}
+
+std::string PGQControl::get_name(bool latex) const {
+  std::stringstream str;
+  str << "qif (";
+  if (!control_paulis_.empty()) {
+    str << (value_.at(0) ? "-" : "") << control_paulis_.at(0).to_str();
+    for (unsigned i = 1; i < control_paulis_.size(); ++i) {
+      str << ", " << (value_.at(i) ? "-" : "")
+          << control_paulis_.at(i).to_str();
+    }
+  }
+  str << ") " << inner_->get_name(latex);
+  return str.str();
+}
+
+bool PGQControl::is_equal(const PGOp& op_other) const {
+  const PGQControl& other = dynamic_cast<const PGQControl&>(op_other);
+  return (value_ == other.value_) &&
+         (control_paulis_ == other.control_paulis_) &&
+         (*inner_ == *other.inner_);
+}
+
+unsigned PGQControl::n_paulis() const {
+  return control_paulis_.size() + inner_->n_paulis();
+}
+
+std::vector<SpPauliStabiliser> PGQControl::active_paulis() const {
+  std::vector<SpPauliStabiliser> aps = control_paulis_;
+  std::vector<SpPauliStabiliser> inner_aps = inner_->active_paulis();
+  aps.insert(aps.end(), inner_aps.begin(), inner_aps.end());
+  return aps;
+}
+
+SpPauliStabiliser& PGQControl::port(unsigned p) {
+  if (p < control_paulis_.size())
+    return control_paulis_.at(p);
+  else
+    return inner_->port(p - control_paulis_.size());
+}
+
+/**
+ * PGMultiplexor Implementation
+ */
+
+const std::map<std::vector<bool>, PGOp_ptr>& PGMultiplexor::get_inner_op_map()
+    const {
+  return op_map_;
+}
+
+const std::vector<SpPauliStabiliser>& PGMultiplexor::get_control_paulis()
+    const {
+  return control_paulis_;
+}
+
+PGMultiplexor::PGMultiplexor(
+    const std::map<std::vector<bool>, PGOp_ptr>& op_map,
+    const std::vector<SpPauliStabiliser>& control_paulis)
+    : PGOp(PGOpType::Multiplexor),
+      op_map_(op_map),
+      control_paulis_(control_paulis) {
+  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
+    if (it->first.size() != control_paulis_.size())
+      throw PGError(
+          "PGMultiplexor: Size mismatch between number of controls and length "
+          "of values in op_map");
+  }
+}
+
+SymSet PGMultiplexor::free_symbols() const {
+  SymSet sset;
+  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
+    SymSet it_sset = it->second->free_symbols();
+    sset.insert(it_sset.begin(), it_sset.end());
+  }
+  return sset;
+}
+
+PGOp_ptr PGMultiplexor::symbol_substitution(
+    const SymEngine::map_basic_basic& sub_map) const {
+  std::map<std::vector<bool>, PGOp_ptr> new_op_map = op_map_;
+  bool any_change = false;
+  for (auto it = new_op_map.begin(); it != new_op_map.end(); ++it) {
+    PGOp_ptr new_op = it->second->symbol_substitution(sub_map);
+    if (new_op) {
+      any_change = true;
+      it->second = new_op;
+    }
+  }
+  if (any_change)
+    return std::make_shared<PGMultiplexor>(new_op_map, control_paulis_);
+  else
+    return PGOp_ptr();
+}
+
+std::string PGMultiplexor::get_name(bool latex) const {
+  std::stringstream str;
+  str << "qswitch [";
+  if (!control_paulis_.empty()) {
+    str << control_paulis_.at(0).to_str();
+    for (unsigned i = 1; i < control_paulis_.size(); ++i) {
+      str << ", " << control_paulis_.at(i).to_str();
+    }
+  }
+  str << "]";
+  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
+    str << ", ";
+    for (bool b : it->first) {
+      str << (b ? "1" : "0");
+    }
+    str << "->[" << it->second->get_name(latex) << "]";
+  }
+  return str.str();
+}
+
+bool PGMultiplexor::is_equal(const PGOp& op_other) const {
+  const PGMultiplexor& other = dynamic_cast<const PGMultiplexor&>(op_other);
+  if (control_paulis_ != other.control_paulis_) return false;
+  auto this_it = op_map_.begin();
+  auto other_it = other.op_map_.end();
+  while (this_it != op_map_.end()) {
+    if (other_it == other.op_map_.end()) return false;
+    if (this_it->first != other_it->first) return false;
+    if (*(this_it->second) != *(other_it->second)) return false;
+    ++this_it;
+    ++other_it;
+  }
+  return (other_it == other.op_map_.end());
+}
+
+unsigned PGMultiplexor::n_paulis() const {
+  unsigned n_paulis = control_paulis_.size();
+  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
+    n_paulis += it->second->n_paulis();
+  }
+  return n_paulis;
+}
+
+std::vector<SpPauliStabiliser> PGMultiplexor::active_paulis() const {
+  std::vector<SpPauliStabiliser> aps = control_paulis_;
+  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
+    std::vector<SpPauliStabiliser> it_aps = it->second->active_paulis();
+    aps.insert(aps.end(), it_aps.begin(), it_aps.end());
+  }
+  return aps;
+}
+
+SpPauliStabiliser& PGMultiplexor::port(unsigned p) {
+  unsigned original_p = p;
+  if (p < control_paulis_.size()) return control_paulis_.at(p);
+  p -= control_paulis_.size();
+  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
+    unsigned it_paulis = it->second->n_paulis();
+    if (p < it_paulis) return it->second->port(p);
+    p -= it_paulis;
+  }
+  throw PGError(
+      "Cannot dereference port of PGMultiplexor: " +
+      std::to_string(original_p));
+}
+
+/**
  * PGStabAssertion Implementation
  */
 
@@ -914,7 +1109,9 @@ std::list<std::list<PGOp_ptr>> PauliGraph::pgop_commuting_sets() const {
       }
       if (initial) initials.push_back(v);
     }
-    set_list.push_back(initials);
+    std::list<PGOp_ptr> initial_ops;
+    for (const PGVert& v : initials) initial_ops.push_back(c_graph_[v]);
+    set_list.push_back(initial_ops);
     auto& lookup = remaining.get<TagKey>();
     for (const PGVert& v : initials) {
       lookup.erase(lookup.find(v));
