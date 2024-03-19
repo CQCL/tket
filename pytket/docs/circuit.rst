@@ -18,6 +18,10 @@ pytket.circuit
     :members:
 .. autoclass:: pytket.circuit.Command
     :members:
+.. autoclass:: MetaOp
+    :members:
+.. autoclass:: BarrierOp
+    :members:
 .. autoclass:: pytket.circuit.BasisOrder
     :members:
 .. autoclass:: pytket.circuit.CXConfigType

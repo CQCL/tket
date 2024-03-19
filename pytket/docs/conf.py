@@ -60,7 +60,13 @@ extensions = [
     "sphinx_copybutton",
     "jupyter_sphinx",
     "enum_tools.autoenum",
+    "sphinx.ext.coverage",
 ]
+
+# Configure the sphinx coverage extension to show API docs omissions
+# Run: sphinx-build -b coverage pytket/docs/ pytket/docs/build/
+# From the commmand line
+coverage_show_missing_items = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
