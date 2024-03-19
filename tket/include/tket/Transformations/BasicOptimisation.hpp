@@ -84,11 +84,6 @@ Transform two_qubit_squash(
     bool allow_swaps = true);
 Transform two_qubit_squash(bool allow_swaps);
 
-// 1qb squashing into -Rz-Rx-Rz- or -Rx-Rz-Rx- form
-// Expects: Rx, Rz, and any multi-qubit gates
-// Produces: Rx, Rz, and any multi-qubit gates
-Transform reduce_XZ_chains();
-
 /**
  * general u_squash by converting any chains of p, q gates (p, q in
  * {Rx,Ry,Rz}) to triples -p-q-p- or -q-p-q-
