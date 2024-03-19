@@ -269,8 +269,8 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
         {std::make_shared<LexiLabellingMethod>(),
          std::make_shared<LexiRouteRoutingMethod>()});
 
-    PassPtr all_passes = SynthesiseHQS() >> SynthesiseOQC() >>
-                         SynthesiseUMD() >> SynthesiseTK() >> cp_route;
+    PassPtr all_passes =
+        SynthesiseOQC() >> SynthesiseUMD() >> SynthesiseTK() >> cp_route;
     REQUIRE(all_passes->apply(cu));
     REQUIRE(cu.check_all_predicates());
   }
@@ -447,7 +447,7 @@ SCENARIO("Construct sequence pass") {
 
 SCENARIO("Construct invalid sequence passes from vector") {
   std::vector<PassPtr> invalid_pass_to_combo{
-      SynthesiseHQS(), SynthesiseOQC(), SynthesiseUMD(), SynthesiseTK()};
+      SynthesiseOQC(), SynthesiseUMD(), SynthesiseTK()};
   for (const PassPtr& pass : invalid_pass_to_combo) {
     std::vector<PassPtr> passes = {pass};
     OpTypeSet ots = {OpType::CX};

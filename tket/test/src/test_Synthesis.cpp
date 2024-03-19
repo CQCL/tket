@@ -2300,7 +2300,6 @@ SCENARIO("Synthesis with conditional gates") {
   c.add_conditional_gate<unsigned>(OpType::U1, {0.25}, {1}, {0}, 1);
   c.add_conditional_gate<unsigned>(OpType::CnRy, {0.25}, {0, 1, 2}, {0, 1}, 0);
   c.add_measure(2, 2);
-  check_conditions(SynthesiseHQS(), c);
   check_conditions(SynthesiseOQC(), c);
   check_conditions(SynthesiseTK(), c);
   check_conditions(SynthesiseTket(), c);
