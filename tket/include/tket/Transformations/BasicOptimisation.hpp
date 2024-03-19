@@ -38,11 +38,6 @@ Transform squash_1qb_to_tk1();
 // Produces: Any gates
 Transform commute_through_multis();
 
-// commutes Rz gates through ZZMax, and combines adjacent ZZMax gates
-// Expects: ZZMax, Rz, Rx
-// Produces: ZZMax, Rz, Rx
-Transform commute_and_combine_HQS2();
-
 // squashes each sequence of two-qubit instructions into their canonical 3-CX
 // form (Cartan/KAK decomposition) The optional CX gate fidelity cx_fidelity
 // is used to produce circuit decompositions that maximise expected circuit
