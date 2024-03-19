@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Features:
+
+* Add ``circuit_name`` property to ``CircBox``.
+
 1.26.0 (March 2024)
 -------------------
 
@@ -20,7 +27,7 @@ Features:
 * Add python binding for ``UnitaryRevTableau``.
 * Add ``TermSequenceBox``, for circuit synthesis of a series of Pauli 
   Exponentials, where the ordering of terms can be changed.
-  
+
 Fixes:
 
 * Add missing op types to methods for converting Clifford circuits to unitary

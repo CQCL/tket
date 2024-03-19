@@ -324,6 +324,15 @@ def test_symbolic_circbox() -> None:
     assert not c_outer.is_symbolic()
 
 
+def test_renaming_circbox_circuit() -> None:
+    c = Circuit(2).CX(0, 1)
+    cbox = CircBox(c)
+    d = Circuit(2).add_circbox(cbox, [0, 1])
+    cbox.circuit_name = "test_name"
+    assert cbox.circuit_name == "test_name"
+    assert d.get_commands()[0].op.circuit_name == "test_name"  # type: ignore
+
+
 def test_subst_4() -> None:
     # https://github.com/CQCL/tket/issues/219
     m = fresh_symbol("m")
