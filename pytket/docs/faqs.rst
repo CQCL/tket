@@ -1,6 +1,6 @@
 TKET FAQs
 ~~~~~~~~~
-These are frequently asked questions that relate to the use of pytket. For installation FAQs see the `installation troubleshooting <https://cqcl.github.io/tket/pytket/api/install.html>`_ page. 
+These are frequently asked questions that relate to the use of pytket. For installation FAQs see the `installation troubleshooting <https://tket.quantinuum.com/api-docs/install.html>`_ page. 
 
 Rebases
 -------
@@ -30,7 +30,7 @@ Qiskit to TKET Conversion
 
 Q: How can I convert my qiskit :py:class:`QuantumCircuit` to a pytket :py:class:`Circuit`?
 
-A: This can be achieved using the :py:meth:`qiskit_to_tk` function from the `pytket-qiskit extension <https://cqcl.github.io/pytket-qiskit/api/index.html>`_
+A: This can be achieved using the :py:meth:`qiskit_to_tk` function from the `pytket-qiskit extension <https://tket.quantinuum.com/extensions/pytket-qiskit/>`_
 
 ::
 

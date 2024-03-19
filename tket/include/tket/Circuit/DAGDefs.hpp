@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <cstddef>
 #include <list>
 #include <optional>
 #include <set>
@@ -64,7 +65,7 @@ typedef boost::adjacency_list<
     boost::bidirectionalS,
 
     // indexing needed for algorithms such as topological sort
-    boost::property<boost::vertex_index_t, int, VertexProperties>,
+    boost::property<boost::vertex_index_t, std::size_t, VertexProperties>,
 
     EdgeProperties>
     DAG;
@@ -74,9 +75,9 @@ typedef boost::graph_traits<DAG>::vertex_iterator V_iterator;
 typedef std::unordered_set<Vertex> VertexSet;
 typedef std::vector<Vertex> VertexVec;
 typedef std::list<Vertex> VertexList;
-typedef std::unordered_map<Vertex, unsigned> IndexMap;
+typedef std::unordered_map<Vertex, std::size_t> IndexMap;
 typedef boost::adj_list_vertex_property_map<
-    DAG, int, int&, boost::vertex_index_t>
+    DAG, std::size_t, std::size_t&, boost::vertex_index_t>
     VIndex;
 
 /**
@@ -85,7 +86,7 @@ typedef boost::adj_list_vertex_property_map<
  * This can be used instead of a plain @ref Vertex in associative containers
  * where control over the order of iteration is required.
  */
-typedef std::pair<unsigned, Vertex> IVertex;
+typedef std::pair<std::size_t, Vertex> IVertex;
 
 typedef boost::graph_traits<DAG>::edge_descriptor Edge;
 typedef boost::graph_traits<DAG>::edge_iterator E_iterator;

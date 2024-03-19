@@ -38,9 +38,9 @@ copyright = "2024 Quantinuum"
 author = "Quantinuum"
 
 # The short X.Y version
-version = "1.25"
+version = "1.26"
 # The full version, including alpha/beta/rc tags
-release = "1.25.0"
+release = "1.26.0"
 
 
 # -- General configuration ---------------------------------------------------
@@ -159,6 +159,7 @@ custom_internal_mapping = {
     "tket::Unitary1qBox": "pytket._tket.circuit.Unitary1qBox",
     "tket::Unitary2qBox": "pytket._tket.circuit.Unitary2qBox",
     "tket::PauliExpBox": "pytket._tket.circuit.PauliExpBox",
+    "tket::TermSequenceBox": "pytket._tket.circuit.TermSequenceBox",
     "tket::ToffoliBox": "pytket._tket.circuit.ToffoliBox",
     "tket::OpType": "pytket._tket.circuit.OpType",
     "tket::CompilationUnit": "pytket._tket.predicates.CompilationUnit",

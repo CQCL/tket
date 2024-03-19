@@ -521,6 +521,24 @@ SCENARIO("Synthesis of circuits from UnitaryRevTableau") {
     UnitaryRevTableau res_tab = circuit_to_unitary_rev_tableau(res);
     REQUIRE(res_tab == tab);
   }
+  GIVEN("Another circuit containing more OpTypes") {
+    // https://github.com/CQCL/tket/issues/1268
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::SX, {0});
+    circ.add_op<unsigned>(OpType::SXdg, {1});
+    circ.add_op<unsigned>(OpType::ZZMax, {0, 1});
+    circ.add_op<unsigned>(OpType::SX, {0});
+    circ.add_op<unsigned>(OpType::SXdg, {1});
+    circ.add_op<unsigned>(OpType::ECR, {0, 1});
+    circ.add_op<unsigned>(OpType::SX, {0});
+    circ.add_op<unsigned>(OpType::SXdg, {1});
+    circ.add_op<unsigned>(OpType::ISWAPMax, {0, 1});
+    UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(circ);
+    Circuit res = unitary_rev_tableau_to_circuit(tab);
+    REQUIRE(test_unitary_comparison(circ, res, true));
+    UnitaryRevTableau res_tab = circuit_to_unitary_rev_tableau(res);
+    REQUIRE(res_tab == tab);
+  }
 }
 
 SCENARIO("UnitaryTableauBoxes in Circuits") {

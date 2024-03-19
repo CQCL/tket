@@ -202,6 +202,14 @@ class UnitaryRevTableau {
   explicit UnitaryRevTableau(const qubit_vector_t& qbs);
 
   /**
+   * Construct a tableau from the underlying binary matrices.
+   * Qubits given default names.
+   */
+  explicit UnitaryRevTableau(
+      const MatrixXb& xx, const MatrixXb& xz, const VectorXb& xph,
+      const MatrixXb& zx, const MatrixXb& zz, const VectorXb& zph);
+
+  /**
    * Other required constructors
    */
   UnitaryRevTableau();
