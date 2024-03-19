@@ -204,6 +204,17 @@ PYBIND11_MODULE(unit_id, m) {
           py::arg("name"), py::arg("index"))
       .def("__eq__", &py_equals<Bit>)
       .def("__hash__", [](const Bit &b) { return hash_value(b); })
+      .def(py::pickle(
+          [](const Bit &b) {
+            return py::make_tuple(b.reg_name(), b.index());
+          },
+          [](const py::tuple &t) {
+            if (t.size() != 2)
+              throw std::runtime_error(
+                  "Invalid state: tuple size: " + std::to_string(t.size()));
+            return Bit(
+                t[0].cast<std::string>(), t[1].cast<std::vector<unsigned>>());
+          }))
       .def(
           "to_list",
           [](const Bit &b) { return py::object(json(b)).cast<py::list>(); },
