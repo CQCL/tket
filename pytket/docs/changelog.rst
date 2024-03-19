@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.26.0 (March 2024)
+-------------------
 
 Features:
 
