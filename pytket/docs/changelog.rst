@@ -6,6 +6,13 @@ Unreleased
 
 Features:
 
+* Add ``circuit_name`` property to ``CircBox``.
+
+1.26.0 (March 2024)
+-------------------
+
+Features:
+
 * Allow ``CircBox`` containing non-default registers.
 * Add new methods ``Circuit.add_circbox_regwise()`` and
   ``Circuit.add_circbox_with_regmap()`` for adding a ``CircBox`` to a circuit
@@ -20,7 +27,6 @@ Features:
 * Add python binding for ``UnitaryRevTableau``.
 * Add ``TermSequenceBox``, for circuit synthesis of a series of Pauli 
   Exponentials, where the ordering of terms can be changed.
-* Add ``circuit_name`` property to ``CircBox``.
 
 Fixes:
 
