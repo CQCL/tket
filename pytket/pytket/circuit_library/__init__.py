@@ -35,7 +35,6 @@ from pytket._tket.circuit_library import (
     CX_XC_reduced,
     SWAP_using_CX_0,
     SWAP_using_CX_1,
-    two_Rz1,
     X1_CX,
     Z0_CX,
     CCX_modulo_phase_shift,

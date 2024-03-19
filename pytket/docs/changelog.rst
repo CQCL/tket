@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+General:
+
+* Remove deprecated ``SynthesiseHQS`` pass.
+
 Features:
 
 * Add ``circuit_name`` property to ``CircBox``.
