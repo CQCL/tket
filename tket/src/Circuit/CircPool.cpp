@@ -268,17 +268,6 @@ const Circuit &SWAP_using_CX_1() {
   return *C;
 }
 
-const Circuit &two_Rz1() {
-  static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
-    Circuit c(2);
-    Op_ptr z = get_op_ptr(OpType::Rz, 1.);
-    c.add_op<unsigned>(z, {0});
-    c.add_op<unsigned>(z, {1});
-    return c;
-  }());
-  return *C;
-}
-
 const Circuit &X1_CX() {
   static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
     Circuit c(2);
