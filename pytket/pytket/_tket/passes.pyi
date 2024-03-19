@@ -585,7 +585,7 @@ def SquashCustom(singleqs: set[pytket._tket.circuit.OpType], tk1_replacement: ty
     """
 def SquashRzPhasedX() -> BasePass:
     """
-    Squash single qubit gates into PhasedX and Rz gates. Commute Rz gates to the back if possible.
+    Squash single qubit gates into PhasedX and Rz gates. Also remove identity gates. Commute Rz gates to the back if possible.
     """
 def SquashTK1() -> BasePass:
     """
