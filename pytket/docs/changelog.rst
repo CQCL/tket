@@ -12,6 +12,10 @@ Features:
 
 * Add ``circuit_name`` property to ``CircBox``.
 
+Fixes:
+
+* Correct handling of ``CustomGate`` when converting from pytket to QASM.
+
 1.26.0 (March 2024)
 -------------------
 
