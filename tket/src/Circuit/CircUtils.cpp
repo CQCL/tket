@@ -501,6 +501,8 @@ Circuit with_TK2(Gate_ptr op) {
       return CircPool::CU1_using_TK2(params[0]);
     case OpType::XXPhase3:
       return CircPool::XXPhase3_using_TK2(params[0]);
+    case OpType::AAMS:
+      return CircPool::AAMS_using_TK2(params[0], params[1], params[2]);
     case OpType::CCX:
     case OpType::CSWAP:
     case OpType::BRIDGE:
@@ -608,6 +610,8 @@ Circuit with_CX(Gate_ptr op) {
       return CircPool::PhasedISWAP_using_CX(params[0], params[1]);
     case OpType::NPhasedX:
       return CircPool::NPhasedX_using_PhasedX(n, params[0], params[1]);
+    case OpType::AAMS:
+      return CircPool::AAMS_using_CX(params[0], params[1], params[2]);
     default:
       throw CircuitInvalidity("Cannot decompose " + op->get_name());
   }
