@@ -1060,11 +1060,11 @@ def _filtered_qasm_str(qasm: str) -> str:
     return "\n".join(lines)
 
 
-def is_empty_customgate(op: Op):
-    return op.type == OpType.CustomGate and op.get_circuit().n_gates == 0
+def is_empty_customgate(op: Op) -> bool:
+    return op.type == OpType.CustomGate and op.get_circuit().n_gates == 0  # type: ignore
 
 
-def check_can_convert_circuit(circ: Circuit, header: str, maxwidth: int):
+def check_can_convert_circuit(circ: Circuit, header: str, maxwidth: int) -> None:
     if any(
         circ.n_gates_of_type(typ)
         for typ in (
