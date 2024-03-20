@@ -888,6 +888,38 @@ def test_register_name_check() -> None:
     assert err_msg in str(e2.value)
 
 
+def test_conditional_custom() -> None:
+    # https://github.com/CQCL/tket/issues/1299
+    qasm0 = """
+    OPENQASM 2.0;
+    include "qelib1.inc";
+
+    gate cx_o0 q0,q1 { x q0; cx q0,q1; x q0; }
+
+    qreg q[2];
+    creg c[1];
+
+    if(c==1) cx_o0 q[1],q[0];
+    measure q[0] -> c[0];
+    """
+
+    circ = circuit_from_qasm_str(qasm0)
+    qasm1 = circuit_to_qasm_str(circ)
+    assert (
+        qasm1
+        == """OPENQASM 2.0;
+include "qelib1.inc";
+
+qreg q[2];
+creg c[1];
+if(c==1) x q[1];
+if(c==1) cx q[1],q[0];
+if(c==1) x q[1];
+measure q[0] -> c[0];
+"""
+    )
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
