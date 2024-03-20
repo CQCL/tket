@@ -460,7 +460,7 @@ def test_opaque() -> None:
     )
     with pytest.raises(QASMUnsupportedError) as e:
         circuit_to_qasm_str(c)
-    assert "CustomGate myopaq has empty definition" in str(e.value)
+    assert "Empty CustomGates and opaque gates are not supported" in str(e.value)
 
 
 def test_alternate_encoding() -> None:

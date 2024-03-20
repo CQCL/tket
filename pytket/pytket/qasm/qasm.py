@@ -81,7 +81,7 @@ from pytket.circuit.logic_exp import (
     create_logic_exp,
 )
 from pytket.qasm.grammar import grammar
-from pytket.passes import auto_rebase_pass, RemoveRedundancies
+from pytket.passes import auto_rebase_pass, DecomposeBoxes, RemoveRedundancies
 from pytket.wasm import WasmFileHandler
 
 
@@ -1060,25 +1060,11 @@ def _filtered_qasm_str(qasm: str) -> str:
     return "\n".join(lines)
 
 
-def circuit_to_qasm_str(
-    circ: Circuit,
-    header: str = "qelib1",
-    include_gate_defs: Optional[Set[str]] = None,
-    maxwidth: int = 32,
-) -> str:
-    """Convert a Circuit to QASM and return the string.
+def is_empty_customgate(op: Op):
+    return op.type == OpType.CustomGate and op.get_circuit().n_gates == 0
 
-    Classical bits in the pytket circuit must be singly-indexed.
 
-    Note that this will not account for implicit qubit permutations in the Circuit.
-
-    :param circ: pytket circuit
-    :param header: qasm header (default "qelib1")
-    :param output_file: path to output qasm file
-    :param include_gate_defs: optional set of gates to include
-    :param maxwidth: maximum allowed width of classical registers (default 32)
-    :return: qasm string
-    """
+def check_can_convert_circuit(circ: Circuit, header: str, maxwidth: int):
     if any(
         circ.n_gates_of_type(typ)
         for typ in (
@@ -1100,10 +1086,42 @@ def circuit_to_qasm_str(
             f"Circuit contains a classical register larger than {maxwidth}: try "
             "setting the `maxwidth` parameter to a higher value."
         )
+    for cmd in circ:
+        if is_empty_customgate(cmd.op) or (
+            cmd.op.type == OpType.Conditional and is_empty_customgate(cmd.op.op)
+        ):
+            raise QASMUnsupportedError(
+                f"Empty CustomGates and opaque gates are not supported."
+            )
+
+
+def circuit_to_qasm_str(
+    circ: Circuit,
+    header: str = "qelib1",
+    include_gate_defs: Optional[Set[str]] = None,
+    maxwidth: int = 32,
+) -> str:
+    """Convert a Circuit to QASM and return the string.
+
+    Classical bits in the pytket circuit must be singly-indexed.
+
+    Note that this will not account for implicit qubit permutations in the Circuit.
+
+    :param circ: pytket circuit
+    :param header: qasm header (default "qelib1")
+    :param output_file: path to output qasm file
+    :param include_gate_defs: optional set of gates to include
+    :param maxwidth: maximum allowed width of classical registers (default 32)
+    :return: qasm string
+    """
+
+    check_can_convert_circuit(circ, header, maxwidth)
     qasm_writer = QasmWriter(
         circ.qubits, circ.bits, header, include_gate_defs, maxwidth
     )
-    for command in circ:
+    circ1 = circ.copy()
+    DecomposeBoxes().apply(circ1)
+    for command in circ1:
         assert isinstance(command, Command)
         qasm_writer.add_op(command.op, command.args)
     return qasm_writer.finalize()
