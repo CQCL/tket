@@ -1552,32 +1552,6 @@ class QasmWriter:
         self.strings.add_string(f"measure {args[0]} -> {args[1]};\n")
         self.mark_as_written(f"{args[1]}")
 
-    def add_custom_gate(self, op: CustomGate, args: List[UnitID]) -> None:
-        if op.gate.name not in self.include_gate_defs:
-            # unroll custom gate
-            gate_circ = op.get_circuit()
-            if gate_circ.n_gates == 0:
-                raise QASMUnsupportedError(
-                    f"CustomGate {op.gate.name} has empty definition."
-                    " Empty CustomGates and opaque gates are not supported."
-                )
-            gate_circ.rename_units(dict(zip(gate_circ.qubits, args)))
-            gate_circ.symbol_substitution(dict(zip(op.gate.args, op.params)))
-            self.strings.add_string(
-                circuit_to_qasm_str(
-                    gate_circ, self.header, self.include_gate_defs, self.maxwidth
-                )
-            )
-        else:
-            opstr = op.gate.name
-            if opstr not in self.include_gate_defs:
-                raise QASMUnsupportedError(
-                    "Gate of type {} is not supported in conversion.".format(opstr)
-                )
-            self.strings.add_string(opstr)
-            self.write_params(op.params)
-            self.write_args(args)
-
     def add_zzphase(self, param: Union[float, Expr], args: List[UnitID]) -> None:
         # as op.params returns reduced parameters, we can assume
         # that 0 <= param < 4
@@ -1663,9 +1637,6 @@ class QasmWriter:
             self.add_wasm(op, cast(List[Bit], args))
         elif optype == OpType.Measure:
             self.add_measure(args)
-        elif optype == OpType.CustomGate:
-            assert isinstance(op, CustomGate)
-            self.add_custom_gate(op, args)
         elif hqs_header(self.header) and optype == OpType.ZZPhase:
             # special handling for zzphase
             assert len(op.params) == 1
