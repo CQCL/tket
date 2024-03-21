@@ -1063,7 +1063,7 @@ SCENARIO("Test routing on a directed architecture with bidirectional edges") {
     circ.add_op<unsigned>(OpType::H, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     Architecture arc({{Node(0), Node(1)}, {Node(1), Node(0)}});
-    Architecture arc2(std::vector<std::pair<unsigned, unsigned>>{{0, 1}});
+    Architecture arc2({std::pair<Node, Node>{Node(0), Node(1)}});
 
     // routing ignored bi directional edge and solves correctly
     MappingManager mm(std::make_shared<Architecture>(arc));
@@ -1091,7 +1091,7 @@ SCENARIO(
     circ.add_op<unsigned>(OpType::CRz, 0.5, {1, 0});
     circ.add_op<unsigned>(OpType::CRz, 0.5, {0, 1});
 
-    Architecture arc(std::vector<std::pair<unsigned, unsigned>>{{0, 1}});
+    Architecture arc({std::pair<Node, Node>{Node(0), Node(1)}});
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(mm.route_circuit(
         circ, {std::make_shared<LexiLabellingMethod>(),
@@ -1114,7 +1114,7 @@ SCENARIO("Dense CX circuits route succesfully") {
         }
       }
     }
-    Architecture arc((std::vector<std::pair<unsigned, unsigned>>){
+    Architecture arc(std::vector<std::pair<unsigned, unsigned>>{
         {0, 1},   {1, 2},   {2, 3},   {3, 4},   {0, 5},   {1, 6},   {1, 7},
         {2, 6},   {2, 7},   {3, 8},   {3, 9},   {4, 8},   {4, 9},   {5, 6},
         {5, 10},  {5, 11},  {6, 10},  {6, 11},  {6, 7},   {7, 12},  {7, 13},
@@ -1172,7 +1172,7 @@ SCENARIO(
         }
       }
     }
-    Architecture arc((std::vector<std::pair<unsigned, unsigned>>){
+    Architecture arc(std::vector<std::pair<unsigned, unsigned>>{
         {0, 1},
         {2, 0},
         {2, 4},
@@ -1629,7 +1629,7 @@ SCENARIO("Test failing case") {
   std::ifstream circuit_file("lexiroute_circuit.json");
   nlohmann::json j = nlohmann::json::parse(circuit_file);
   auto c = j.get<Circuit>();
-  Architecture arc((std::vector<std::pair<unsigned, unsigned>>){
+  Architecture arc(std::vector<std::pair<unsigned, unsigned>>{
       {0, 1},   {1, 2},   {2, 3},   {3, 5},   {4, 1},   {4, 7},   {5, 8},
       {6, 7},   {7, 10},  {8, 9},   {8, 11},  {10, 12}, {11, 14}, {12, 13},
       {14, 13}, {14, 16}, {12, 15}, {15, 18}, {17, 18}, {16, 19}, {19, 20},

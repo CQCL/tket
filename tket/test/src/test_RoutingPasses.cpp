@@ -422,7 +422,7 @@ SCENARIO(
     }
   }
   GIVEN("A directed architecture, a single CX gate that requires flipping.") {
-    Architecture arc(std::vector<std::pair<unsigned, unsigned>>{{0, 1}});
+    Architecture arc({std::pair{Node(0), Node(1)}});
     Circuit circ(2, 2);
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {1, 0}, 0);
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0, 1}, 1);
