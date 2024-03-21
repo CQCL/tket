@@ -995,7 +995,11 @@ SCENARIO(
     test_circuit.add_blank_wires(4);
     add_2qb_gates(test_circuit, OpType::CX, {{0, 1}, {1, 2}, {2, 3}, {3, 0}});
 
-    Architecture test_arc({{0, 1}, {1, 2}, {2, 3}, {3, 0}});
+    Architecture test_arc(
+        {{Node(0), Node(1)},
+         {Node(1), Node(2)},
+         {Node(2), Node(3)},
+         {Node(3), Node(0)}});
     Placement test_p(test_arc);
 
     std::map<Qubit, Node> map_;
@@ -1020,7 +1024,8 @@ SCENARIO("Empty Circuit test") {
   GIVEN("An Empty Circuit") {
     Circuit circ;
     circ.add_blank_wires(4);
-    Architecture arc({{0, 1}, {1, 2}, {2, 3}});
+    Architecture arc(
+        {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(mm.route_circuit(
         circ, {
@@ -1040,7 +1045,8 @@ SCENARIO("Routing on circuit with no multi-qubit gates") {
     circ.add_op<unsigned>(OpType::Y, {1});
 
     unsigned orig_vertices = circ.n_vertices();
-    Architecture arc({{0, 1}, {1, 2}, {2, 3}});
+    Architecture arc(
+        {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(mm.route_circuit(
         circ, {
@@ -1056,7 +1062,7 @@ SCENARIO("Test routing on a directed architecture with bidirectional edges") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::H, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    Architecture arc({{0, 1}, {1, 0}});
+    Architecture arc({{Node(0), Node(1)}, {Node(1), Node(0)}});
     Architecture arc2(std::vector<std::pair<unsigned, unsigned>>{{0, 1}});
 
     // routing ignored bi directional edge and solves correctly
@@ -1108,13 +1114,13 @@ SCENARIO("Dense CX circuits route succesfully") {
         }
       }
     }
-    Architecture arc(
-        {{0, 1},   {1, 2},   {2, 3},   {3, 4},   {0, 5},   {1, 6},   {1, 7},
-         {2, 6},   {2, 7},   {3, 8},   {3, 9},   {4, 8},   {4, 9},   {5, 6},
-         {5, 10},  {5, 11},  {6, 10},  {6, 11},  {6, 7},   {7, 12},  {7, 13},
-         {7, 8},   {8, 12},  {8, 13},  {8, 9},   {10, 11}, {11, 16}, {11, 17},
-         {11, 12}, {12, 16}, {12, 17}, {12, 13}, {13, 18}, {13, 19}, {13, 14},
-         {14, 18}, {14, 19}, {15, 16}, {16, 17}, {17, 18}, {18, 19}});
+    Architecture arc((std::vector<std::pair<unsigned, unsigned>>){
+        {0, 1},   {1, 2},   {2, 3},   {3, 4},   {0, 5},   {1, 6},   {1, 7},
+        {2, 6},   {2, 7},   {3, 8},   {3, 9},   {4, 8},   {4, 9},   {5, 6},
+        {5, 10},  {5, 11},  {6, 10},  {6, 11},  {6, 7},   {7, 12},  {7, 13},
+        {7, 8},   {8, 12},  {8, 13},  {8, 9},   {10, 11}, {11, 16}, {11, 17},
+        {11, 12}, {12, 16}, {12, 17}, {12, 13}, {13, 18}, {13, 19}, {13, 14},
+        {14, 18}, {14, 19}, {15, 16}, {16, 17}, {17, 18}, {18, 19}});
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(mm.route_circuit(
         circ, {std::make_shared<LexiLabellingMethod>(),
@@ -1166,22 +1172,22 @@ SCENARIO(
         }
       }
     }
-    Architecture arc(
-        {{0, 1},
-         {2, 0},
-         {2, 4},
-         {6, 4},
-         {8, 6},
-         {8, 10},
-         {12, 10},
-         {3, 1},
-         {3, 5},
-         {7, 5},
-         {7, 9},
-         {11, 9},
-         {11, 13},
-         {12, 13},
-         {6, 7}});
+    Architecture arc((std::vector<std::pair<unsigned, unsigned>>){
+        {0, 1},
+        {2, 0},
+        {2, 4},
+        {6, 4},
+        {8, 6},
+        {8, 10},
+        {12, 10},
+        {3, 1},
+        {3, 5},
+        {7, 5},
+        {7, 9},
+        {11, 9},
+        {11, 13},
+        {12, 13},
+        {6, 7}});
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(mm.route_circuit(
         circ, {std::make_shared<LexiLabellingMethod>(),
@@ -1525,7 +1531,11 @@ SCENARIO("Initial map should contain all data qubits") {
   }
 }
 SCENARIO("Unlabelled qubits should be assigned to ancilla qubits.") {
-  Architecture arc({{0, 1}, {1, 2}, {2, 3}, {3, 0}});
+  Architecture arc(
+      {{Node(0), Node(1)},
+       {Node(1), Node(2)},
+       {Node(2), Node(3)},
+       {Node(3), Node(0)}});
   Circuit c(4);
   c.add_op<unsigned>(OpType::CZ, {0, 3});
   c.add_op<unsigned>(OpType::CZ, {1, 0});
@@ -1556,7 +1566,7 @@ SCENARIO("Unlabelled qubits should be assigned to ancilla qubits.") {
 }
 SCENARIO("Lexi relabel with partially mapped circuit") {
   GIVEN("With an unplaced qubit") {
-    Architecture arc({{0, 1}, {1, 2}});
+    Architecture arc({{Node(0), Node(1)}, {Node(1), Node(2)}});
     Circuit c(3);
     c.add_op<unsigned>(OpType::CZ, {0, 1}, "cz0,1");
     c.add_op<unsigned>(OpType::CZ, {1, 2}, "cz1,2");
@@ -1587,7 +1597,12 @@ SCENARIO("Lexi relabel with partially mapped circuit") {
     c.add_op<unsigned>(OpType::CZ, {1, 3}, "cz1,3");
     c.add_op<unsigned>(OpType::CZ, {3, 2}, "cz3,2");
 
-    Architecture arc({{0, 1}, {0, 2}, {0, 3}, {4, 1}, {4, 2}});
+    Architecture arc(
+        {{Node(0), Node(1)},
+         {Node(0), Node(2)},
+         {Node(0), Node(3)},
+         {Node(4), Node(1)},
+         {Node(4), Node(2)}});
     PassPtr plac_p = gen_placement_pass(std::make_shared<GraphPlacement>(arc));
     CompilationUnit cu(c);
     REQUIRE(plac_p->apply(cu));
@@ -1614,11 +1629,11 @@ SCENARIO("Test failing case") {
   std::ifstream circuit_file("lexiroute_circuit.json");
   nlohmann::json j = nlohmann::json::parse(circuit_file);
   auto c = j.get<Circuit>();
-  Architecture arc({{0, 1},   {1, 2},   {2, 3},   {3, 5},   {4, 1},   {4, 7},
-                    {5, 8},   {6, 7},   {7, 10},  {8, 9},   {8, 11},  {10, 12},
-                    {11, 14}, {12, 13}, {14, 13}, {14, 16}, {12, 15}, {15, 18},
-                    {17, 18}, {16, 19}, {19, 20}, {18, 21}, {21, 23}, {19, 22},
-                    {22, 25}, {23, 24}, {24, 25}, {25, 26}});
+  Architecture arc((std::vector<std::pair<unsigned, unsigned>>){
+      {0, 1},   {1, 2},   {2, 3},   {3, 5},   {4, 1},   {4, 7},   {5, 8},
+      {6, 7},   {7, 10},  {8, 9},   {8, 11},  {10, 12}, {11, 14}, {12, 13},
+      {14, 13}, {14, 16}, {12, 15}, {15, 18}, {17, 18}, {16, 19}, {19, 20},
+      {18, 21}, {21, 23}, {19, 22}, {22, 25}, {23, 24}, {24, 25}, {25, 26}});
 
   CompilationUnit cu(c);
   PassPtr r_p = gen_routing_pass(
