@@ -11,6 +11,7 @@ General:
 Features:
 
 * Add ``circuit_name`` property to ``CircBox``.
+* Enable pickling of ``Bit`` objects.
 
 Fixes:
 

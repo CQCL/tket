@@ -1519,6 +1519,12 @@ def test_bad_circbox() -> None:
         _ = CircBox(circ)
 
 
+def test_pickle_bit() -> None:
+    # https://github.com/CQCL/tket/issues/1293
+    for b in [Bit(1), Bit("z", 0), Bit("z", (2, 0, 3))]:
+        assert b == pickle.loads(pickle.dumps(b))
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
