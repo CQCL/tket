@@ -123,12 +123,20 @@ SCENARIO("Diameters") {
     CHECK(arc.get_diameter() == 0);
   }
   GIVEN("a connected architecture") {
-    Architecture arc({{0, 1}, {1, 2}, {2, 3}, {3, 0}});
+    Architecture arc(
+        {{Node(0), Node(1)},
+         {Node(1), Node(2)},
+         {Node(2), Node(3)},
+         {Node(3), Node(0)}});
     CHECK(arc.get_diameter() == 2);
   }
   GIVEN("a disconnected architecture") {
     // TKET-1425
-    Architecture arc({{0, 1}, {1, 2}, {2, 0}, {3, 4}});
+    Architecture arc(
+        {{Node(0), Node(1)},
+         {Node(1), Node(2)},
+         {Node(2), Node(0)},
+         {Node(3), Node(4)}});
     CHECK_THROWS(arc.get_diameter());
   }
 }
