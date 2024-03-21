@@ -13,6 +13,10 @@ Features:
 * Add ``circuit_name`` property to ``CircBox``.
 * Enable pickling of ``Bit`` objects.
 
+Fixes:
+
+* Correct handling of ``CustomGate`` when converting from pytket to QASM.
+
 1.26.0 (March 2024)
 -------------------
 
