@@ -205,9 +205,7 @@ PYBIND11_MODULE(unit_id, m) {
       .def("__eq__", &py_equals<Bit>)
       .def("__hash__", [](const Bit &b) { return hash_value(b); })
       .def(py::pickle(
-          [](const Bit &b) {
-            return py::make_tuple(b.reg_name(), b.index());
-          },
+          [](const Bit &b) { return py::make_tuple(b.reg_name(), b.index()); },
           [](const py::tuple &t) {
             if (t.size() != 2)
               throw std::runtime_error(
