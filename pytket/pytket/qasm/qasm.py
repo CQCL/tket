@@ -1599,7 +1599,7 @@ class QasmWriter:
         self.write_params(params)
         self.write_args(args)
 
-    def add_extra_noparams(self, op: Op, args: List[UnitID]) -> None:
+    def add_extra_noparams(self, op: Op, args: List[UnitID]) -> Tuple[str, str]:
         optype = op.type
         opstr = _tk_to_qasm_extra_noparams[optype]
         gatedefstr = ""
@@ -1607,10 +1607,9 @@ class QasmWriter:
             self.added_gate_definitions.add(opstr)
             gatedefstr = self.make_gate_definition(op.n_qubits, opstr, optype)
         mainstr = opstr + " " + make_args_str(args)
-        self.strings.add_string(gatedefstr)
-        self.strings.add_string(mainstr)
+        return gatedefstr, mainstr
 
-    def add_extra_params(self, op: Op, args: List[UnitID]) -> None:
+    def add_extra_params(self, op: Op, args: List[UnitID]) -> Tuple[str, str]:
         optype, params = _get_optype_and_params(op)
         assert params is not None
         opstr = _tk_to_qasm_extra_params[optype]
@@ -1621,8 +1620,7 @@ class QasmWriter:
                 op.n_qubits, opstr, optype, len(params)
             )
         mainstr = opstr + make_params_str(params) + make_args_str(args)
-        self.strings.add_string(gatedefstr)
-        self.strings.add_string(mainstr)
+        return gatedefstr, mainstr
 
     def add_op(self, op: Op, args: List[UnitID]) -> None:
         optype, _params = _get_optype_and_params(op)
@@ -1672,9 +1670,13 @@ class QasmWriter:
         ):
             self.add_gate_params(op, args)
         elif optype in _tk_to_qasm_extra_noparams:
-            self.add_extra_noparams(op, args)
+            gatedefstr, mainstr = self.add_extra_noparams(op, args)
+            self.strings.add_string(gatedefstr)
+            self.strings.add_string(mainstr)
         elif optype in _tk_to_qasm_extra_params:
-            self.add_extra_params(op, args)
+            gatedefstr, mainstr = self.add_extra_params(op, args)
+            self.strings.add_string(gatedefstr)
+            self.strings.add_string(mainstr)
         else:
             raise QASMUnsupportedError(
                 "Cannot print command of type: {}".format(op.get_name())
