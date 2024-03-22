@@ -1334,6 +1334,40 @@ class QasmWriter:
             else:
                 self.strings.add_string(";\n")
 
+    def make_gate_definition(
+        self,
+        n_qubits: int,
+        opstr: str,
+        optype: OpType,
+        n_params: Optional[int] = None,
+    ) -> str:
+        s = "gate " + opstr + " "
+        symbols: Optional[List[Symbol]] = None
+        if n_params is not None:
+            # need to add parameters to gate definition
+            s += "("
+            symbols = [Symbol("param" + str(index) + "/pi") for index in range(n_params)]  # type: ignore
+            symbols_header = [Symbol("param" + str(index)) for index in range(n_params)]  # type: ignore
+            for symbol in symbols_header[:-1]:
+                s += symbol.name + ", "
+            s += symbols_header[-1].name + ") "
+
+        # add qubits to gate definition
+        qubit_args = [
+            Qubit(opstr + "q" + str(index)) for index in list(range(n_qubits))
+        ]
+        for qb in qubit_args[:-1]:
+            s += str(qb) + ","
+        s += str(qubit_args[-1]) + " {\n"
+        # get rebased circuit for constructing qasm
+        gate_circ = _get_gate_circuit(optype, qubit_args, symbols)
+        # write circuit to qasm
+        s += circuit_to_qasm_str(
+            gate_circ, self.header, self.include_gate_defs, self.maxwidth
+        )
+        s += "}\n"
+        return s
+
     def write_gate_definition(
         self,
         n_qubits: int,
@@ -1341,33 +1375,8 @@ class QasmWriter:
         optype: OpType,
         n_params: Optional[int] = None,
     ) -> None:
-        self.strings.add_string("gate " + opstr + " ")
-        symbols: Optional[List[Symbol]] = None
-        if n_params is not None:
-            # need to add parameters to gate definition
-            self.strings.add_string("(")
-            symbols = [Symbol("param" + str(index) + "/pi") for index in range(n_params)]  # type: ignore
-            symbols_header = [Symbol("param" + str(index)) for index in range(n_params)]  # type: ignore
-            for symbol in symbols_header[:-1]:
-                self.strings.add_string(symbol.name + ", ")
-            self.strings.add_string(symbols_header[-1].name + ") ")
-
-        # add qubits to gate definition
-        qubit_args = [
-            Qubit(opstr + "q" + str(index)) for index in list(range(n_qubits))
-        ]
-        for qb in qubit_args[:-1]:
-            self.strings.add_string(str(qb) + ",")
-        self.strings.add_string(str(qubit_args[-1]) + " {\n")
-        # get rebased circuit for constructing qasm
-        gate_circ = _get_gate_circuit(optype, qubit_args, symbols)
-        # write circuit to qasm
-        self.strings.add_string(
-            circuit_to_qasm_str(
-                gate_circ, self.header, self.include_gate_defs, self.maxwidth
-            )
-        )
-        self.strings.add_string("}\n")
+        s = self.make_gate_definition(n_qubits, opstr, optype, n_params)
+        self.strings.add_string(s)
 
     def mark_as_written(self, written_variable: str) -> None:
         """Remove any references to the written-to variable in `self.range_preds`, so
