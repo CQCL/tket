@@ -1602,25 +1602,32 @@ class QasmWriter:
     def add_extra_noparams(self, op: Op, args: List[UnitID]) -> None:
         optype = op.type
         opstr = _tk_to_qasm_extra_noparams[optype]
+        gatedefstr = ""
         if opstr not in self.added_gate_definitions:
             self.added_gate_definitions.add(opstr)
-            s = self.make_gate_definition(op.n_qubits, opstr, optype)
-            self.strings.add_string(s)
+            gatedefstr = self.make_gate_definition(op.n_qubits, opstr, optype)
+        args_str = make_args_str(args)
+        self.strings.add_string(gatedefstr)
         self.strings.add_string(opstr)
         self.strings.add_string(" ")
-        self.write_args(args)
+        self.strings.add_string(args_str)
 
     def add_extra_params(self, op: Op, args: List[UnitID]) -> None:
         optype, params = _get_optype_and_params(op)
         assert params is not None
         opstr = _tk_to_qasm_extra_params[optype]
+        gatedefstr = ""
         if opstr not in self.added_gate_definitions:
             self.added_gate_definitions.add(opstr)
-            s = self.make_gate_definition(op.n_qubits, opstr, optype, len(params))
-            self.strings.add_string(s)
+            gatedefstr = self.make_gate_definition(
+                op.n_qubits, opstr, optype, len(params)
+            )
+        params_str = make_params_str(params)
+        args_str = make_args_str(args)
+        self.strings.add_string(gatedefstr)
         self.strings.add_string(opstr)
-        self.write_params(params)
-        self.write_args(args)
+        self.strings.add_string(params_str)
+        self.strings.add_string(args_str)
 
     def add_op(self, op: Op, args: List[UnitID]) -> None:
         optype, _params = _get_optype_and_params(op)
