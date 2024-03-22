@@ -31,7 +31,7 @@ void to_json(nlohmann::json& j, const Command& com) {
   const unit_vector_t& args = com.get_args();
 
   if (sig.size() != args.size()) {
-    JsonError("Number of args does not match signature of op.");
+    throw JsonError("Number of args does not match signature of op.");
   }
 
   nlohmann::json j_args;
@@ -72,7 +72,7 @@ void from_json(const nlohmann::json& j, Command& com) {
 
   const nlohmann::json& j_args = j.at("args");
   if (sig.size() != j_args.size()) {
-    JsonError("Number of args does not match signature of op.");
+    throw JsonError("Number of args does not match signature of op.");
   }
   unit_vector_t args;
   for (std::size_t i = 0; i < sig.size(); i++) {

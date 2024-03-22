@@ -52,9 +52,11 @@ static std::string auto_name(const T&) {
   return predicate_name(typeid(T));
 }
 
+#define SET_PRED_NAME(a) \
+  { typeid(a), #a }
+
 const std::string& predicate_name(std::type_index idx) {
   static const std::map<std::type_index, std::string> predicate_names = {
-#define SET_PRED_NAME(a) {typeid(a), #a}
       SET_PRED_NAME(CliffordCircuitPredicate),
       SET_PRED_NAME(ConnectivityPredicate),
       SET_PRED_NAME(DefaultRegisterPredicate),
@@ -75,9 +77,10 @@ const std::string& predicate_name(std::type_index idx) {
       SET_PRED_NAME(NoWireSwapsPredicate),
       SET_PRED_NAME(PlacementPredicate),
       SET_PRED_NAME(UserDefinedPredicate)};
-#undef SET_PRED_NAME
   return predicate_names.at(idx);
 }
+
+#undef SET_PRED_NAME
 
 /////////////////////
 // PREDICATE METHODS//
@@ -447,7 +450,9 @@ std::string DirectednessPredicate::to_string() const {
 
 bool CliffordCircuitPredicate::verify(const Circuit& circ) const {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-    if (!circ.get_Op_ptr_from_Vertex(v)->is_clifford()) return false;
+    Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    if (op->get_desc().is_meta()) continue;
+    if (!op->is_clifford()) return false;
   }
   return true;
 }

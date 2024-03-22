@@ -824,6 +824,25 @@
           "if": {
             "properties": {
               "type": {
+                "const": "TermSequenceBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "pauli_gadgets",
+              "synth_strategy",
+              "partition_strategy",
+              "graph_colouring",
+              "cx_config"
+            ],
+            "maxProperties": 7
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
                 "const": "ToffoliBox"
               }
             }

@@ -314,16 +314,20 @@ PYBIND11_MODULE(circuit, m) {
           ":math:`P` of Pauli operations.")
       .value(
           "PauliExpPairBox", OpType::PauliExpPairBox,
-          "An operation defined as a pair"
-          "of exponentials of the form "
-          ":math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor "
-          ":math:`P` of Pauli operations.")
+          "A pair of (not necessarily commuting) Pauli exponentials "
+          ":math:`e^{-\\frac{i\\pi\\alpha}{2} P}` performed in sequence.")
       .value(
           "PauliExpCommutingSetBox", OpType::PauliExpCommutingSetBox,
           "An operation defined as a set"
           "of commuting exponentials of the form "
           ":math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor "
           ":math:`P` of Pauli operations.")
+      .value(
+          "TermSequenceBox", OpType::TermSequenceBox,
+          "An unordered collection of Pauli exponentials "
+          "that can be synthesised in any order, causing a "
+          "change in the unitary operation. Synthesis order "
+          "depends on the synthesis strategy chosen only.")
       .value(
           "QControlBox", OpType::QControlBox,
           "An arbitrary n-controlled operation")
