@@ -1303,10 +1303,11 @@ class QasmWriter:
             self.cregs = {}
             self.qregs = {}
 
-    def write_params(self, params: Optional[List[Union[float, Expr]]]) -> None:
+    def make_params_str(self, params: Optional[List[Union[float, Expr]]]) -> str:
+        s = ""
         if params is not None:
             n_params = len(params)
-            self.strings.add_string("(")
+            s += "("
             for i in range(n_params):
                 reduced = True
                 try:
@@ -1316,23 +1317,34 @@ class QasmWriter:
                     p = params[i]
                 if i < n_params - 1:
                     if reduced:
-                        self.strings.add_string("{}*pi,".format(p))
+                        s += "{}*pi,".format(p)
                     else:
-                        self.strings.add_string("({})*pi,".format(p))
+                        s += "({})*pi,".format(p)
                 else:
                     if reduced:
-                        self.strings.add_string("{}*pi)".format(p))
+                        s += "{}*pi)".format(p)
                     else:
-                        self.strings.add_string("({})*pi)".format(p))
-        self.strings.add_string(" ")
+                        s += "({})*pi)".format(p)
+        s += " "
+        return s
+
+    def write_params(self, params: Optional[List[Union[float, Expr]]]) -> None:
+        params_str = self.make_params_str(params)
+        self.strings.add_string(params_str)
+
+    def make_args_str(self, args: List[UnitID]):
+        s = ""
+        for i in range(len(args)):
+            s += f"{args[i]}"
+            if i < len(args) - 1:
+                s += ","
+            else:
+                s += ";\n"
+        return s
 
     def write_args(self, args: List[UnitID]) -> None:
-        for i in range(len(args)):
-            self.strings.add_string(f"{args[i]}")
-            if i < len(args) - 1:
-                self.strings.add_string(",")
-            else:
-                self.strings.add_string(";\n")
+        args_str = self.make_args_str(args)
+        self.strings.add_string(args_str)
 
     def make_gate_definition(
         self,
