@@ -1416,6 +1416,25 @@ class QasmWriter:
         # list if it is.)
         self.range_preds.append((variable, comparator, value, dest_bit, label))
 
+    def condition_string(self, op: Conditional, variable: str) -> str:
+        # Check whether the variable is actually in `self.range_preds`.
+        hits = [
+            (real_variable, comparator, value, label)
+            for (real_variable, comparator, value, dest_bit, label) in self.range_preds
+            if dest_bit == variable
+        ]
+        if not hits:
+            return f"if({variable}=={op.value}) "
+        else:
+            assert len(hits) == 1
+            real_variable, comparator, value, label = hits[0]
+            self.strings.del_string(label)
+            if op.value == 1:
+                return f"if({real_variable}{comparator}{value}) "
+            else:
+                assert op.value == 0
+                return f"if({real_variable}{_negate_comparator(comparator)}{value}) "
+
     def add_conditional(self, op: Conditional, args: List[UnitID]) -> None:
         bits = args[: op.width]
         control_bit = bits[0]
@@ -1440,25 +1459,8 @@ class QasmWriter:
         if op.op.type == OpType.Phase:
             # Conditional phase is ignored.
             return
-        # Check whether the variable is actually in `self.range_preds`.
-        hits = [
-            (real_variable, comparator, value, label)
-            for (real_variable, comparator, value, dest_bit, label) in self.range_preds
-            if dest_bit == variable
-        ]
-        if not hits:
-            self.strings.add_string(f"if({variable}=={op.value}) ")
-        else:
-            assert len(hits) == 1
-            real_variable, comparator, value, label = hits[0]
-            self.strings.del_string(label)
-            if op.value == 1:
-                self.strings.add_string(f"if({real_variable}{comparator}{value}) ")
-            else:
-                assert op.value == 0
-                self.strings.add_string(
-                    f"if({real_variable}{_negate_comparator(comparator)}{value}) "
-                )
+        condstr = self.condition_string(op, variable)
+        self.strings.add_string(condstr)
         self.add_op(op.op, args[op.width :])
 
     def add_set_bits(self, op: SetBitsOp, args: List[Bit]) -> None:
