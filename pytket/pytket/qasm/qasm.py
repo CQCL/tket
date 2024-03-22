@@ -132,8 +132,6 @@ NOPARAM_COMMANDS = {
     "cy": OpType.CY,
     "ch": OpType.CH,
     "csx": OpType.CSX,
-    "cs": OpType.CS,
-    "csdg": OpType.CSdg,
     "ccx": OpType.CCX,
     "c3x": OpType.CnX,
     "c4x": OpType.CnX,
@@ -144,7 +142,6 @@ NOPARAM_COMMANDS = {
     "barrier": OpType.Barrier,
     "swap": OpType.SWAP,
     "cswap": OpType.CSWAP,
-    "ecr": OpType.ECR,
 }
 PARAM_COMMANDS = {
     "p": OpType.U1,  # alias. https://github.com/Qiskit/qiskit-terra/pull/4765
@@ -179,6 +176,8 @@ NOPARAM_EXTRA_COMMANDS = {
     "iswapmax": OpType.ISWAPMax,
     "zzmax": OpType.ZZMax,
     "ecr": OpType.ECR,
+    "cs": OpType.CS,
+    "csdg": OpType.CSdg,
 }
 
 PARAM_EXTRA_COMMANDS = {
