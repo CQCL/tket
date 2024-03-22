@@ -134,7 +134,7 @@ Op_ptr set_box_id(BoxT &b, boost::uuids::uuid newid) {
 class CircBox : public Box {
  public:
   /**
-   * Construct from a given circuit. The circuit must be simple.
+   * Construct from a given circuit.
    */
   explicit CircBox(const Circuit &circ);
 

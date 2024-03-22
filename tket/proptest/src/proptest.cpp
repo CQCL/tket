@@ -55,7 +55,8 @@ using namespace tket;
   DO(SquashRzPhasedX)                     \
   DO(CnXPairwiseDecomposition)            \
   DO(RemoveImplicitQubitPermutation)      \
-  DO(ZXGraphlikeOptimisation)
+  DO(ZXGraphlikeOptimisation)             \
+  DO(gen_clifford_resynthesis_pass)
 
 static const std::map<PassPtr, std::string> &pass_name() {
   // Map from PassPtr to readable name
@@ -320,9 +321,11 @@ bool check_passes() {
             for (auto postcon : postcons) {
               RC_ASSERT(postcon.second->verify(c1));
             }
+            std::string name = pass_name().at(p);
             check_correctness(
                 c, cu,
-                (pass_name().at(p) == "ZXGraphlikeOptimisation")
+                (name == "ZXGraphlikeOptimisation" ||
+                 name == "gen_clifford_resynthesis_pass")
                     ? tket_sim::MatrixEquivalence::EQUAL_UP_TO_GLOBAL_PHASE
                     : tket_sim::MatrixEquivalence::EQUAL);
           } else {

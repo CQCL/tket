@@ -24,7 +24,7 @@ jobs:
       tket: ${{ steps.filter.outputs.tket }}
     steps:
     - uses: actions/checkout@v4
-    - uses: dorny/paths-filter@v3.0.0
+    - uses: dorny/paths-filter@v3.0.2
       id: filter
       with:
         base: ${{ github.ref }}

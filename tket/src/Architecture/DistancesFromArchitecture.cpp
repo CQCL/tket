@@ -80,8 +80,8 @@ std::size_t DistancesFromArchitecture::operator()(
         distance_entry > 0 ||
         AssertMessage() << "DistancesFromArchitecture: architecture has "
                         << arch.n_nodes() << " vertices, "
-                        << arch.n_connections() << " edges; "
-                        << " and d(" << vertex1 << "," << vertex2
+                        << arch.n_connections() << " edges; " << " and d("
+                        << vertex1 << "," << vertex2
                         << ")=0. "
                            "Is the graph connected?");
     // GCOVR_EXCL_STOP
