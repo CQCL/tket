@@ -17,7 +17,6 @@ import os
 import re
 import uuid
 
-# TODO: Output custom gates
 from collections import OrderedDict
 from importlib import import_module
 from itertools import chain, groupby
