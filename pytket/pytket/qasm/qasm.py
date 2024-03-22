@@ -1232,6 +1232,43 @@ class LabelledStringList:
         return "".join(self.strings.values())
 
 
+def make_params_str(params: Optional[List[Union[float, Expr]]]) -> str:
+    s = ""
+    if params is not None:
+        n_params = len(params)
+        s += "("
+        for i in range(n_params):
+            reduced = True
+            try:
+                p: Union[float, Expr] = float(params[i])
+            except TypeError:
+                reduced = False
+                p = params[i]
+            if i < n_params - 1:
+                if reduced:
+                    s += "{}*pi,".format(p)
+                else:
+                    s += "({})*pi,".format(p)
+            else:
+                if reduced:
+                    s += "{}*pi)".format(p)
+                else:
+                    s += "({})*pi)".format(p)
+    s += " "
+    return s
+
+
+def make_args_str(args: List[UnitID]):
+    s = ""
+    for i in range(len(args)):
+        s += f"{args[i]}"
+        if i < len(args) - 1:
+            s += ","
+        else:
+            s += ";\n"
+    return s
+
+
 class QasmWriter:
     """
     Helper class for converting a sequence of TKET Commands to QASM, and retrieving the
@@ -1303,47 +1340,12 @@ class QasmWriter:
             self.cregs = {}
             self.qregs = {}
 
-    def make_params_str(self, params: Optional[List[Union[float, Expr]]]) -> str:
-        s = ""
-        if params is not None:
-            n_params = len(params)
-            s += "("
-            for i in range(n_params):
-                reduced = True
-                try:
-                    p: Union[float, Expr] = float(params[i])
-                except TypeError:
-                    reduced = False
-                    p = params[i]
-                if i < n_params - 1:
-                    if reduced:
-                        s += "{}*pi,".format(p)
-                    else:
-                        s += "({})*pi,".format(p)
-                else:
-                    if reduced:
-                        s += "{}*pi)".format(p)
-                    else:
-                        s += "({})*pi)".format(p)
-        s += " "
-        return s
-
     def write_params(self, params: Optional[List[Union[float, Expr]]]) -> None:
-        params_str = self.make_params_str(params)
+        params_str = make_params_str(params)
         self.strings.add_string(params_str)
 
-    def make_args_str(self, args: List[UnitID]):
-        s = ""
-        for i in range(len(args)):
-            s += f"{args[i]}"
-            if i < len(args) - 1:
-                s += ","
-            else:
-                s += ";\n"
-        return s
-
     def write_args(self, args: List[UnitID]) -> None:
-        args_str = self.make_args_str(args)
+        args_str = make_args_str(args)
         self.strings.add_string(args_str)
 
     def make_gate_definition(
