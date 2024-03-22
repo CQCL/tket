@@ -920,6 +920,18 @@ measure q[0] -> c[0];
     )
 
 
+def test_nonstandard_gates() -> None:
+    # https://github.com/CQCL/tket/issues/1302
+    circ = Circuit(2)
+    circ.CS(0, 1)
+    circ.ECR(0, 1)
+    circ.CSdg(0, 1)
+    qasm = circuit_to_qasm_str(circ)
+    assert "gate cs" in qasm
+    assert "gate ecr" in qasm
+    assert "gate csdg" in qasm
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
