@@ -1368,16 +1368,6 @@ class QasmWriter:
         s += "}\n"
         return s
 
-    def write_gate_definition(
-        self,
-        n_qubits: int,
-        opstr: str,
-        optype: OpType,
-        n_params: Optional[int] = None,
-    ) -> None:
-        s = self.make_gate_definition(n_qubits, opstr, optype, n_params)
-        self.strings.add_string(s)
-
     def mark_as_written(self, written_variable: str) -> None:
         """Remove any references to the written-to variable in `self.range_preds`, so
         that we don't try and replace instances of the variable with stale aliases.
@@ -1598,7 +1588,8 @@ class QasmWriter:
         opstr = _tk_to_qasm_extra_noparams[optype]
         if opstr not in self.added_gate_definitions:
             self.added_gate_definitions.add(opstr)
-            self.write_gate_definition(op.n_qubits, opstr, optype)
+            s = self.make_gate_definition(op.n_qubits, opstr, optype)
+            self.strings.add_string(s)
         self.strings.add_string(opstr)
         self.strings.add_string(" ")
         self.write_args(args)
@@ -1609,7 +1600,8 @@ class QasmWriter:
         opstr = _tk_to_qasm_extra_params[optype]
         if opstr not in self.added_gate_definitions:
             self.added_gate_definitions.add(opstr)
-            self.write_gate_definition(op.n_qubits, opstr, optype, len(params))
+            s = self.make_gate_definition(op.n_qubits, opstr, optype, len(params))
+            self.strings.add_string(s)
         self.strings.add_string(opstr)
         self.write_params(params)
         self.write_args(args)
