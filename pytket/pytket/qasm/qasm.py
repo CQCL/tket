@@ -1606,11 +1606,9 @@ class QasmWriter:
         if opstr not in self.added_gate_definitions:
             self.added_gate_definitions.add(opstr)
             gatedefstr = self.make_gate_definition(op.n_qubits, opstr, optype)
-        args_str = make_args_str(args)
+        mainstr = opstr + " " + make_args_str(args)
         self.strings.add_string(gatedefstr)
-        self.strings.add_string(opstr)
-        self.strings.add_string(" ")
-        self.strings.add_string(args_str)
+        self.strings.add_string(mainstr)
 
     def add_extra_params(self, op: Op, args: List[UnitID]) -> None:
         optype, params = _get_optype_and_params(op)
@@ -1622,12 +1620,9 @@ class QasmWriter:
             gatedefstr = self.make_gate_definition(
                 op.n_qubits, opstr, optype, len(params)
             )
-        params_str = make_params_str(params)
-        args_str = make_args_str(args)
+        mainstr = opstr + make_params_str(params) + make_args_str(args)
         self.strings.add_string(gatedefstr)
-        self.strings.add_string(opstr)
-        self.strings.add_string(params_str)
-        self.strings.add_string(args_str)
+        self.strings.add_string(mainstr)
 
     def add_op(self, op: Op, args: List[UnitID]) -> None:
         optype, _params = _get_optype_and_params(op)
