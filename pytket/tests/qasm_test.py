@@ -152,14 +152,6 @@ def test_qasm_str_roundtrip() -> None:
     assert c == c2
 
 
-def test_qasm_str_roundtrip_oqc() -> None:
-    with open(curr_file_path / "qasm_test_files/test15.qasm", "r") as f:
-        c = circuit_from_qasm_str(f.read())
-        qasm_str = circuit_to_qasm_str(c, "oqclib1")
-        c2 = circuit_from_qasm_str(qasm_str)
-    assert c == c2
-
-
 def test_readout() -> None:
     fname = str(curr_file_path / "qasm_test_files/testout2.qasm")
     circ = Circuit(3)
@@ -920,6 +912,18 @@ measure q[0] -> c[0];
     )
 
 
+def test_nonstandard_gates() -> None:
+    # https://github.com/CQCL/tket/issues/1302
+    circ = Circuit(2)
+    circ.CS(0, 1)
+    circ.ECR(0, 1)
+    circ.CSdg(0, 1)
+    qasm = circuit_to_qasm_str(circ)
+    assert "gate cs" in qasm
+    assert "gate ecr" in qasm
+    assert "gate csdg" in qasm
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
@@ -928,7 +932,6 @@ if __name__ == "__main__":
     test_qasm_measure()
     test_qasm_roundtrip()
     test_qasm_str_roundtrip()
-    test_qasm_str_roundtrip_oqc()
     test_readout()
     test_symbolic_write()
     test_custom_gate()
