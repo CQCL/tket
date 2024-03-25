@@ -1258,7 +1258,7 @@ def make_params_str(params: Optional[List[Union[float, Expr]]]) -> str:
     return s
 
 
-def make_args_str(args: List[UnitID]):
+def make_args_str(args: List[UnitID]) -> str:
     s = ""
     for i in range(len(args)):
         s += f"{args[i]}"
