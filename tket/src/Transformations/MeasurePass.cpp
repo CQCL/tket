@@ -105,7 +105,7 @@ static Edge follow_until_noncommuting(
  * through SWAPs, gates that commute on the Pauli Z basis, and recursively
  * checks inside boxes and conditional operations.
  * @param circ The circuit containing the operation.
- * @param v The vertex of the operation.
+ * @param op The operation.
  * @param in_port The input port of the operation to check.
  * @param only_boxes Whether to only commute through straight wires in boxes or
  * conditional operations.
