@@ -1291,6 +1291,7 @@ class QasmWriter:
             _load_include_module(header, False, True).keys()
         )
         self.prefix = ""
+        self.gatedefs = ""
         self.strings = LabelledStringList()
 
         # Record of `RangePredicate` operations that set a "scratch" bit to 0 or 1
@@ -1670,11 +1671,11 @@ class QasmWriter:
             self.add_gate_params(op, args)
         elif optype in _tk_to_qasm_extra_noparams:
             gatedefstr, mainstr = self.add_extra_noparams(op, args)
-            self.strings.add_string(gatedefstr)
+            self.gatedefs += gatedefstr
             self.strings.add_string(mainstr)
         elif optype in _tk_to_qasm_extra_params:
             gatedefstr, mainstr = self.add_extra_params(op, args)
-            self.strings.add_string(gatedefstr)
+            self.gatedefs += gatedefstr
             self.strings.add_string(mainstr)
         else:
             raise QASMUnsupportedError(
@@ -1682,7 +1683,11 @@ class QasmWriter:
             )
 
     def finalize(self) -> str:
-        return self.prefix + _filtered_qasm_str(self.strings.get_full_string())
+        return (
+            self.prefix
+            + self.gatedefs
+            + _filtered_qasm_str(self.strings.get_full_string())
+        )
 
 
 def circuit_to_qasm_io(
