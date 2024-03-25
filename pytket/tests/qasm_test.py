@@ -924,6 +924,14 @@ def test_nonstandard_gates() -> None:
     assert "gate csdg" in qasm
 
 
+def test_conditional_nonstandard_gates() -> None:
+    # https://github.com/CQCL/tket/issues/1301
+    circ = Circuit(2, 1)
+    circ.ZZMax(0, 1, condition=Bit(0))
+    qasm = circuit_to_qasm_str(circ)
+    assert "if(c==1) zzmax q[0],q[1];" in qasm
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()

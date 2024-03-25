@@ -17,7 +17,6 @@ import os
 import re
 import uuid
 
-# TODO: Output custom gates
 from collections import OrderedDict
 from importlib import import_module
 from itertools import chain, groupby
@@ -1233,6 +1232,43 @@ class LabelledStringList:
         return "".join(self.strings.values())
 
 
+def make_params_str(params: Optional[List[Union[float, Expr]]]) -> str:
+    s = ""
+    if params is not None:
+        n_params = len(params)
+        s += "("
+        for i in range(n_params):
+            reduced = True
+            try:
+                p: Union[float, Expr] = float(params[i])
+            except TypeError:
+                reduced = False
+                p = params[i]
+            if i < n_params - 1:
+                if reduced:
+                    s += "{}*pi,".format(p)
+                else:
+                    s += "({})*pi,".format(p)
+            else:
+                if reduced:
+                    s += "{}*pi)".format(p)
+                else:
+                    s += "({})*pi)".format(p)
+    s += " "
+    return s
+
+
+def make_args_str(args: List[UnitID]) -> str:
+    s = ""
+    for i in range(len(args)):
+        s += f"{args[i]}"
+        if i < len(args) - 1:
+            s += ","
+        else:
+            s += ";\n"
+    return s
+
+
 class QasmWriter:
     """
     Helper class for converting a sequence of TKET Commands to QASM, and retrieving the
@@ -1254,6 +1290,8 @@ class QasmWriter:
         self.include_module_gates.update(
             _load_include_module(header, False, True).keys()
         )
+        self.prefix = ""
+        self.gatedefs = ""
         self.strings = LabelledStringList()
 
         # Record of `RangePredicate` operations that set a "scratch" bit to 0 or 1
@@ -1275,9 +1313,7 @@ class QasmWriter:
             self.include_gate_defs = self.include_module_gates
             self.include_gate_defs.update(NOPARAM_EXTRA_COMMANDS.keys())
             self.include_gate_defs.update(PARAM_EXTRA_COMMANDS.keys())
-            self.strings.add_string(
-                'OPENQASM 2.0;\ninclude "{}.inc";\n\n'.format(header)
-            )
+            self.prefix = 'OPENQASM 2.0;\ninclude "{}.inc";\n\n'.format(header)
             self.qregs = _retrieve_registers(cast(list[UnitID], qubits), QubitRegister)
             self.cregs = _retrieve_registers(cast(list[UnitID], bits), BitRegister)
             for reg in self.qregs.values():
@@ -1305,70 +1341,46 @@ class QasmWriter:
             self.qregs = {}
 
     def write_params(self, params: Optional[List[Union[float, Expr]]]) -> None:
-        if params is not None:
-            n_params = len(params)
-            self.strings.add_string("(")
-            for i in range(n_params):
-                reduced = True
-                try:
-                    p: Union[float, Expr] = float(params[i])
-                except TypeError:
-                    reduced = False
-                    p = params[i]
-                if i < n_params - 1:
-                    if reduced:
-                        self.strings.add_string("{}*pi,".format(p))
-                    else:
-                        self.strings.add_string("({})*pi,".format(p))
-                else:
-                    if reduced:
-                        self.strings.add_string("{}*pi)".format(p))
-                    else:
-                        self.strings.add_string("({})*pi)".format(p))
-        self.strings.add_string(" ")
+        params_str = make_params_str(params)
+        self.strings.add_string(params_str)
 
     def write_args(self, args: List[UnitID]) -> None:
-        for i in range(len(args)):
-            self.strings.add_string(f"{args[i]}")
-            if i < len(args) - 1:
-                self.strings.add_string(",")
-            else:
-                self.strings.add_string(";\n")
+        args_str = make_args_str(args)
+        self.strings.add_string(args_str)
 
-    def write_gate_definition(
+    def make_gate_definition(
         self,
         n_qubits: int,
         opstr: str,
         optype: OpType,
         n_params: Optional[int] = None,
-    ) -> None:
-        self.strings.add_string("gate " + opstr + " ")
+    ) -> str:
+        s = "gate " + opstr + " "
         symbols: Optional[List[Symbol]] = None
         if n_params is not None:
             # need to add parameters to gate definition
-            self.strings.add_string("(")
+            s += "("
             symbols = [Symbol("param" + str(index) + "/pi") for index in range(n_params)]  # type: ignore
             symbols_header = [Symbol("param" + str(index)) for index in range(n_params)]  # type: ignore
             for symbol in symbols_header[:-1]:
-                self.strings.add_string(symbol.name + ", ")
-            self.strings.add_string(symbols_header[-1].name + ") ")
+                s += symbol.name + ", "
+            s += symbols_header[-1].name + ") "
 
         # add qubits to gate definition
         qubit_args = [
             Qubit(opstr + "q" + str(index)) for index in list(range(n_qubits))
         ]
         for qb in qubit_args[:-1]:
-            self.strings.add_string(str(qb) + ",")
-        self.strings.add_string(str(qubit_args[-1]) + " {\n")
+            s += str(qb) + ","
+        s += str(qubit_args[-1]) + " {\n"
         # get rebased circuit for constructing qasm
         gate_circ = _get_gate_circuit(optype, qubit_args, symbols)
         # write circuit to qasm
-        self.strings.add_string(
-            circuit_to_qasm_str(
-                gate_circ, self.header, self.include_gate_defs, self.maxwidth
-            )
+        s += circuit_to_qasm_str(
+            gate_circ, self.header, self.include_gate_defs, self.maxwidth
         )
-        self.strings.add_string("}\n")
+        s += "}\n"
+        return s
 
     def mark_as_written(self, written_variable: str) -> None:
         """Remove any references to the written-to variable in `self.range_preds`, so
@@ -1418,6 +1430,25 @@ class QasmWriter:
         # list if it is.)
         self.range_preds.append((variable, comparator, value, dest_bit, label))
 
+    def condition_string(self, op: Conditional, variable: str) -> str:
+        # Check whether the variable is actually in `self.range_preds`.
+        hits = [
+            (real_variable, comparator, value, label)
+            for (real_variable, comparator, value, dest_bit, label) in self.range_preds
+            if dest_bit == variable
+        ]
+        if not hits:
+            return f"if({variable}=={op.value}) "
+        else:
+            assert len(hits) == 1
+            real_variable, comparator, value, label = hits[0]
+            self.strings.del_string(label)
+            if op.value == 1:
+                return f"if({real_variable}{comparator}{value}) "
+            else:
+                assert op.value == 0
+                return f"if({real_variable}{_negate_comparator(comparator)}{value}) "
+
     def add_conditional(self, op: Conditional, args: List[UnitID]) -> None:
         bits = args[: op.width]
         control_bit = bits[0]
@@ -1442,25 +1473,8 @@ class QasmWriter:
         if op.op.type == OpType.Phase:
             # Conditional phase is ignored.
             return
-        # Check whether the variable is actually in `self.range_preds`.
-        hits = [
-            (real_variable, comparator, value, label)
-            for (real_variable, comparator, value, dest_bit, label) in self.range_preds
-            if dest_bit == variable
-        ]
-        if not hits:
-            self.strings.add_string(f"if({variable}=={op.value}) ")
-        else:
-            assert len(hits) == 1
-            real_variable, comparator, value, label = hits[0]
-            self.strings.del_string(label)
-            if op.value == 1:
-                self.strings.add_string(f"if({real_variable}{comparator}{value}) ")
-            else:
-                assert op.value == 0
-                self.strings.add_string(
-                    f"if({real_variable}{_negate_comparator(comparator)}{value}) "
-                )
+        condstr = self.condition_string(op, variable)
+        self.strings.add_string(condstr)
         self.add_op(op.op, args[op.width :])
 
     def add_set_bits(self, op: SetBitsOp, args: List[Bit]) -> None:
@@ -1585,26 +1599,28 @@ class QasmWriter:
         self.write_params(params)
         self.write_args(args)
 
-    def add_extra_noparams(self, op: Op, args: List[UnitID]) -> None:
+    def add_extra_noparams(self, op: Op, args: List[UnitID]) -> Tuple[str, str]:
         optype = op.type
         opstr = _tk_to_qasm_extra_noparams[optype]
+        gatedefstr = ""
         if opstr not in self.added_gate_definitions:
             self.added_gate_definitions.add(opstr)
-            self.write_gate_definition(op.n_qubits, opstr, optype)
-        self.strings.add_string(opstr)
-        self.strings.add_string(" ")
-        self.write_args(args)
+            gatedefstr = self.make_gate_definition(op.n_qubits, opstr, optype)
+        mainstr = opstr + " " + make_args_str(args)
+        return gatedefstr, mainstr
 
-    def add_extra_params(self, op: Op, args: List[UnitID]) -> None:
+    def add_extra_params(self, op: Op, args: List[UnitID]) -> Tuple[str, str]:
         optype, params = _get_optype_and_params(op)
         assert params is not None
         opstr = _tk_to_qasm_extra_params[optype]
+        gatedefstr = ""
         if opstr not in self.added_gate_definitions:
             self.added_gate_definitions.add(opstr)
-            self.write_gate_definition(op.n_qubits, opstr, optype, len(params))
-        self.strings.add_string(opstr)
-        self.write_params(params)
-        self.write_args(args)
+            gatedefstr = self.make_gate_definition(
+                op.n_qubits, opstr, optype, len(params)
+            )
+        mainstr = opstr + make_params_str(params) + make_args_str(args)
+        return gatedefstr, mainstr
 
     def add_op(self, op: Op, args: List[UnitID]) -> None:
         optype, _params = _get_optype_and_params(op)
@@ -1654,16 +1670,24 @@ class QasmWriter:
         ):
             self.add_gate_params(op, args)
         elif optype in _tk_to_qasm_extra_noparams:
-            self.add_extra_noparams(op, args)
+            gatedefstr, mainstr = self.add_extra_noparams(op, args)
+            self.gatedefs += gatedefstr
+            self.strings.add_string(mainstr)
         elif optype in _tk_to_qasm_extra_params:
-            self.add_extra_params(op, args)
+            gatedefstr, mainstr = self.add_extra_params(op, args)
+            self.gatedefs += gatedefstr
+            self.strings.add_string(mainstr)
         else:
             raise QASMUnsupportedError(
                 "Cannot print command of type: {}".format(op.get_name())
             )
 
     def finalize(self) -> str:
-        return _filtered_qasm_str(self.strings.get_full_string())
+        return (
+            self.prefix
+            + self.gatedefs
+            + _filtered_qasm_str(self.strings.get_full_string())
+        )
 
 
 def circuit_to_qasm_io(
