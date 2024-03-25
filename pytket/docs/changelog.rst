@@ -18,6 +18,8 @@ Fixes:
 * Correct handling of ``CustomGate`` when converting from pytket to QASM.
 * Ensure that ECR, CS and CSdg operations have gate definitions in QASM
   conversion.
+* Correct position of custom gate definitions needed for conditional operations
+  in QASM conversion.
 
 1.26.0 (March 2024)
 -------------------
