@@ -111,13 +111,13 @@ std::pair<Circuit, Complex> decompose_2cx_DV(const Eigen::Matrix4cd& U);
  * Construct a phase gadget
  *
  * @param n_qubits number of qubits
- * @param t phase parameter
+ * @param angle phase parameter
  * @param cx_config CX configuration
  *
  * @return phase gadget implementation wrapped in a ConjugationBox
  */
 Circuit phase_gadget(
-    unsigned n_qubits, const Expr& t,
+    unsigned n_qubits, const Expr& angle,
     CXConfigType cx_config = CXConfigType::Snake);
 
 /**
@@ -127,13 +127,29 @@ Circuit phase_gadget(
  * \f$ e^{-\frac12 i \pi t \sigma_0 \otimes \sigma_1 \otimes \cdots} \f$
  * where \f$ \sigma_i \in \{I,X,Y,Z\} \f$ are the Pauli operators.
  *
- * @param paulis Pauli operators
- * @param t angle in half-turns
+ * @param pauli Pauli operators; coefficient gives rotation angle in half-turns
  * @param cx_config CX configuration
  * @return Pauli gadget implementation wrapped in a ConjugationBox
  */
 Circuit pauli_gadget(
-    const std::vector<Pauli>& paulis, const Expr& t,
+    SpSymPauliTensor pauli, CXConfigType cx_config = CXConfigType::Snake);
+
+/**
+ * Construct a circuit realising a pair of Pauli gadgets with the fewest
+ * two-qubit gates.
+ *
+ * The returned circuit implements the unitary e^{-i pi angle1 paulis1 / 2}
+ * e^{-i pi angle0 paulis0 / 2}, i.e. a gadget of angle0 about paulis0 followed
+ * by a gadget of angle1 about paulis1.
+ *
+ * @param paulis0 Pauli operators for first gadget; coefficient gives rotation
+ * angle in half-turns
+ * @param paulis1 Pauli operators for second gadget; coefficient gives rotation
+ * angle in half-turns
+ * @param cx_config CX configuration
+ */
+Circuit pauli_gadget_pair(
+    SpSymPauliTensor paulis0, SpSymPauliTensor paulis1,
     CXConfigType cx_config = CXConfigType::Snake);
 
 /**

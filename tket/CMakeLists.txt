@@ -225,7 +225,6 @@ target_sources(tket
         src/ZX/MBQCRewrites.cpp
         src/ZX/ZXRWSequences.cpp
         src/Converters/ChoiMixTableauConverters.cpp
-        src/Converters/PauliGadget.cpp
         src/Converters/PauliGraphConverters.cpp
         src/Converters/Gauss.cpp
         src/Converters/PhasePoly.cpp
@@ -379,7 +378,6 @@ target_sources(tket
         include/tket/ZX/ZXGenerator.hpp
         include/tket/Converters/Converters.hpp
         include/tket/Converters/Gauss.hpp
-        include/tket/Converters/PauliGadget.hpp
         include/tket/Converters/PhasePoly.hpp
         include/tket/Converters/UnitaryTableauBox.hpp
         include/tket/Placement/NeighbourPlacements.hpp

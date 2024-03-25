@@ -45,7 +45,8 @@ class ChoiMixTableau {
    * When mapped to a sparse readable representation, independent
    * SpPauliStabiliser objects are used for each segment, so we no longer expect
    * their individual phases to be +-1, instead only requiring this on their
-   * product.
+   * product. get_row() will automatically transpose the input segment term so
+   * it is presented as RxS s.t. SCR = C.
    *
    * Columns of the tableau are indexed by pair of Qubit id and a tag to
    * distinguish input vs output. Rows are not maintained in any particular
@@ -93,6 +94,7 @@ class ChoiMixTableau {
    * Construct a tableau directly from its rows.
    * Each row is represented as a product of SpPauliStabilisers where the first
    * is over the input qubits and the second is over the outputs.
+   * A row RxS is a pair s.t. SCR = C
    */
   explicit ChoiMixTableau(const std::list<row_tensor_t>& rows);
   /**
@@ -122,15 +124,25 @@ class ChoiMixTableau {
    * Get the number of boundaries representing outputs from the process.
    */
   unsigned get_n_outputs() const;
+  /**
+    * Get all qubit names present in the input segment.
+    */
+   qubit_vector_t input_qubits() const;
+   /**
+    * Get all qubit names present in the output segment.
+    */
+   qubit_vector_t output_qubits() const;
 
-  /**
-   * Read off a row as a Pauli string
-   */
-  row_tensor_t get_row(unsigned i) const;
-  /**
-   * Combine rows into a single row
-   */
-  row_tensor_t get_row_product(const std::vector<unsigned>& rows) const;
+   /**
+    * Read off a row as a Pauli string.
+    * Returns a pair of Pauli strings RxS such that SCR = C
+    */
+   row_tensor_t get_row(unsigned i) const;
+   /**
+    * Combine rows into a single row.
+    * Returns a pair of Pauli strings RxS such that SCR = C
+    */
+   row_tensor_t get_row_product(const std::vector<unsigned>& rows) const;
 
   /**
    * Transform the tableau according to consuming a Clifford gate at either end
@@ -141,8 +153,9 @@ class ChoiMixTableau {
    * multi-qubit gates, the qubits applied must either be all inputs or all
    * outputs.
    */
-  void apply_S(const Qubit& qb, TableauSegment seg = TableauSegment::Output);
-  void apply_V(const Qubit& qb, TableauSegment seg = TableauSegment::Output);
+  void apply_S(const Qubit& qb, TableauSegment seg = TableauSegment::Output);   void apply_Z(const Qubit& qb, TableauSegment seg = TableauSegment::Output);
+  void apply_V(const Qubit& qb, TableauSegment seg = TableauSegment::Output);   void apply_X(const Qubit& qb, TableauSegment seg = TableauSegment::Output);
+  void apply_H(const Qubit& qb, TableauSegment seg = TableauSegment::Output);
   void apply_CX(
       const Qubit& control, const Qubit& target,
       TableauSegment seg = TableauSegment::Output);

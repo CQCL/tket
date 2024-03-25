@@ -60,13 +60,42 @@ void apply_conjugations(
     SpSymPauliTensor &qps, const Conjugations &conjugations);
 
 /**
- *  Given two qubits on which to conjugate a CX gate, try to conjugate with a
- * XXPhase3 instead. If successful, undoes conjugations that must be undone and
- * replaces it with XXPhase3 conjugation. Returns true if successful and false
- * otherwise.
+ * Given a Pauli tensor P, produces a short Clifford circuit C which maps P to Z
+ * on a single qubit, i.e. Z_i C P = C. This can be viewed as the components
+ * required to synthesise a single Pauli gadget C^dag RZ(a)_i C = exp(-i pi a
+ * P/2) (up to global phase), or as a diagonalisation of a single Pauli string
+ * along with CXs to reduce it to a single qubit. Returns the circuit C and the
+ * qubit i where the Z ends up.
  */
-bool conjugate_with_xxphase3(
-    const Qubit &qb_a, const Qubit &qb_b, Conjugations &conjugations,
-    Circuit &cliff_circ);
+std::pair<Circuit, Qubit> reduce_pauli_to_z(
+    const SpPauliStabiliser &pauli, CXConfigType cx_config);
+
+std::pair<Circuit, std::optional<Qubit>> reduce_overlap_of_paulis(
+    SpPauliStabiliser &pauli0, SpPauliStabiliser &pauli1,
+    CXConfigType cx_config, bool allow_matching_final = false);
+
+/**
+ * Given a pair of anticommuting Pauli tensors P0, P1, produces a short Clifford
+ * circuit C which maps P0 to Z and P1 to X on the same qubit, i.e. Z_i C P0 = C
+ * = X_i C P1. This can be viewed as the components required to synthesise a
+ * pair of noncommuting Pauli gadgets C^dag RX(b)_i RZ(a)_i C = exp(-i pi b
+ * P1/2) exp(-i pi a P0/2) (up to global phase). This is not strictly a
+ * diagonalisation because anticommuting strings cannot be simultaneously
+ * diagonalised. Returns the circuit C and the qubit i where the Z and X end up.
+ */
+std::pair<Circuit, Qubit> reduce_anticommuting_paulis_to_z_x(
+    SpPauliStabiliser pauli0, SpPauliStabiliser pauli1, CXConfigType cx_config);
+
+/**
+ * Given a pair of commuting Pauli tensors P0, P1, produces a short Clifford
+ * circuit C which maps P0 and P1 to Z on different qubits, i.e. Z_i C P0 = C =
+ * Z_j C P1. This can be viewed as the components required to synthesise a pair
+ * of commuting Pauli gadgets C^dag RZ(b)_j RZ(a)_i C = exp(-i pi b P1/2) exp(-i
+ * pi a P0/2) (up to global phase), or as a mutual diagonalisation of two Pauli
+ * strings along with CXs to reduce them to independent, individual qubits.
+ * Returns the circuit C and the qubits i and j where the Zs end up.
+ */
+std::tuple<Circuit, Qubit, Qubit> reduce_commuting_paulis_to_zi_iz(
+    SpPauliStabiliser pauli0, SpPauliStabiliser pauli1, CXConfigType cx_config);
 
 }  // namespace tket
