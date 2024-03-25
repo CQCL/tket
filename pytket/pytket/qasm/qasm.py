@@ -1290,6 +1290,7 @@ class QasmWriter:
         self.include_module_gates.update(
             _load_include_module(header, False, True).keys()
         )
+        self.prefix = ""
         self.strings = LabelledStringList()
 
         # Record of `RangePredicate` operations that set a "scratch" bit to 0 or 1
@@ -1311,9 +1312,7 @@ class QasmWriter:
             self.include_gate_defs = self.include_module_gates
             self.include_gate_defs.update(NOPARAM_EXTRA_COMMANDS.keys())
             self.include_gate_defs.update(PARAM_EXTRA_COMMANDS.keys())
-            self.strings.add_string(
-                'OPENQASM 2.0;\ninclude "{}.inc";\n\n'.format(header)
-            )
+            self.prefix = 'OPENQASM 2.0;\ninclude "{}.inc";\n\n'.format(header)
             self.qregs = _retrieve_registers(cast(list[UnitID], qubits), QubitRegister)
             self.cregs = _retrieve_registers(cast(list[UnitID], bits), BitRegister)
             for reg in self.qregs.values():
@@ -1683,7 +1682,7 @@ class QasmWriter:
             )
 
     def finalize(self) -> str:
-        return _filtered_qasm_str(self.strings.get_full_string())
+        return self.prefix + _filtered_qasm_str(self.strings.get_full_string())
 
 
 def circuit_to_qasm_io(
