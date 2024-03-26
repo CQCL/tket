@@ -1388,6 +1388,17 @@ SCENARIO("Commute measurements to the end of a circuit") {
     REQUIRE(type == OpType::Measure);
     // REQUIRE(final_command.get_args().front() == Node(3));
   }
+  GIVEN("Measures targeting the same bit") {
+    // https://github.com/CQCL/tket/issues/1305
+    Circuit c(4, 1);
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_measure(3, 0);
+    c.add_measure(1, 0);
+    c.add_op<unsigned>(OpType::X, {1});
+    c.add_op<unsigned>(OpType::CCX, {1, 3, 2});
+    CompilationUnit cu(c);
+    CHECK_FALSE(try_delay_pass->apply(cu));
+  }
 }
 
 SCENARIO("RemoveRedundancies and phase") {
