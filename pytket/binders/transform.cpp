@@ -22,6 +22,7 @@
 
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/CliffordOptimisation.hpp"
 #include "tket/Transformations/Combinator.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
 #include "tket/Transformations/Decomposition.hpp"
@@ -414,6 +415,17 @@ PYBIND11_MODULE(transform, m) {
           "Decompose CnX gates to 2-qubit gates and single qubit gates. "
           "For every two CnX gates, reorder their control qubits to improve "
           "the chance of gate cancellation.")
+      .def_static(
+          "PushCliffordsThroughMeasures",
+          &Transforms::push_cliffords_through_measures,
+          "Derives a new set of end-of-Circuit measurement operators "
+          "by acting on end-of-Circuit measurements with a Clifford "
+          "subcircuit. The new set of measurement operators is necessarily "
+          "commuting and is implemented by adding a new mutual diagonalisation "
+          "Clifford subcirciuit to the end of the Circuit and implementing the "
+          "remaining diagonal measurement operators by measuring and permuting "
+          "the "
+          "output.")
       .def_static(
           "round_angles", &Transforms::round_angles,
           "Rounds angles to the nearest :math:`\\pi / 2^n`."
