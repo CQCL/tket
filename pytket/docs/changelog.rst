@@ -7,6 +7,8 @@ Unreleased
 General:
 
 * Remove deprecated ``SynthesiseHQS`` pass.
+* New ``Transform.PushCliffordsThroughMeasures()`` that reimplements Clifford
+  subcircuits before end of circuit measurements by measurement reduction.
 
 Features:
 
