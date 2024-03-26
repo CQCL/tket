@@ -80,101 +80,101 @@ add_executable(test-tket
     src/Gate/GatesData.cpp
     src/Simulation/ComparisonFunctions.cpp
     # test sources:
-    # src/Utils/test_CosSinDecomposition.cpp
-    # src/Utils/test_HelperFunctions.cpp
-    # src/Utils/test_MatrixAnalysis.cpp
-    # src/Graphs/test_GraphColouring.cpp
-    # src/Graphs/test_GraphFindComponents.cpp
-    # src/Graphs/test_GraphFindMaxClique.cpp
-    # src/Graphs/test_GraphUtils.cpp
-    # src/Graphs/test_DirectedGraph.cpp
-    # src/Graphs/test_ArticulationPoints.cpp
-    # src/Graphs/test_TreeSearch.cpp
-    # src/TokenSwapping/test_ArchitectureMappingEndToEnd.cpp
-    # src/TokenSwapping/test_BestTsaFixedSwapSequences.cpp
-    # src/TokenSwapping/test_DistancesFromArchitecture.cpp
-    # src/TokenSwapping/test_FullTsa.cpp
-    # src/TokenSwapping/test_RiverFlowPathFinder.cpp
-    # src/TokenSwapping/test_SwapsFromQubitMapping.cpp
-    # src/TokenSwapping/test_VariousPartialTsa.cpp
-    # src/Architecture/test_SubgraphMonomorphisms.cpp
-    # src/test_PauliTensor.cpp
-    # src/Ops/test_ClassicalOps.cpp
-    # src/Ops/test_Expression.cpp
-    # src/Ops/test_Ops.cpp
-    # src/OpType/test_OpTypeFunctions.cpp
-    # src/Passes/test_CliffordResynthesis.cpp
-    # src/Passes/test_SynthesiseTK.cpp
-    # src/Passes/test_SynthesiseTket.cpp
-    # src/Gate/test_Rotation.cpp
-    # src/Gate/test_GateUnitaryMatrix.cpp
-    # src/Simulation/test_CircuitSimulator.cpp
-    # src/Simulation/test_PauliExpBoxUnitaryCalculator.cpp
-    # src/Circuit/test_Boxes.cpp
-    # src/Circuit/test_PauliExpBoxes.cpp
-    # src/Circuit/test_Circ.cpp
-    # src/Circuit/test_CircPool.cpp
-    # src/Circuit/test_Symbolic.cpp
-    # src/Circuit/test_ThreeQubitConversion.cpp
-    # src/Circuit/test_Multiplexor.cpp
-    # src/Circuit/test_StatePreparation.cpp
-    # src/Circuit/test_DiagonalBox.cpp
-    # src/Circuit/test_ToffoliBox.cpp
-    # src/Circuit/test_ConjugationBox.cpp
-    # src/Circuit/test_DummyBox.cpp
-    # src/test_UnitaryTableau.cpp
-    # src/test_ChoiMixTableau.cpp
-    # src/test_PhasePolynomials.cpp
-    # src/test_PauliGraph.cpp
-    # src/test_Architectures.cpp
-    # src/test_ArchitectureAwareSynthesis.cpp
-    # src/Placement/test_GraphPlacement.cpp
-    # src/Placement/test_LinePlacement.cpp
-    # src/Placement/test_NoiseAwarePlacement.cpp
-    # src/Placement/test_Placement.cpp
-    # src/Placement/test_NeighbourPlacements.cpp
-    # src/Transformations/test_RedundancyRemoval.cpp
-    # src/test_MappingVerification.cpp
-    # src/test_MappingFrontier.cpp
-    # src/test_RoutingMethod.cpp
-    # src/test_MappingManager.cpp
-    # src/test_LexicographicalComparison.cpp
-    # src/test_LexiRoute.cpp
-    # src/test_AASRoute.cpp
-    # src/test_MultiGateReorder.cpp
-    # src/test_BoxDecompRoutingMethod.cpp
-    # src/test_RoutingPasses.cpp
-    # src/test_DeviceCharacterisation.cpp
+    src/Utils/test_CosSinDecomposition.cpp
+    src/Utils/test_HelperFunctions.cpp
+    src/Utils/test_MatrixAnalysis.cpp
+    src/Graphs/test_GraphColouring.cpp
+    src/Graphs/test_GraphFindComponents.cpp
+    src/Graphs/test_GraphFindMaxClique.cpp
+    src/Graphs/test_GraphUtils.cpp
+    src/Graphs/test_DirectedGraph.cpp
+    src/Graphs/test_ArticulationPoints.cpp
+    src/Graphs/test_TreeSearch.cpp
+    src/TokenSwapping/test_ArchitectureMappingEndToEnd.cpp
+    src/TokenSwapping/test_BestTsaFixedSwapSequences.cpp
+    src/TokenSwapping/test_DistancesFromArchitecture.cpp
+    src/TokenSwapping/test_FullTsa.cpp
+    src/TokenSwapping/test_RiverFlowPathFinder.cpp
+    src/TokenSwapping/test_SwapsFromQubitMapping.cpp
+    src/TokenSwapping/test_VariousPartialTsa.cpp
+    src/Architecture/test_SubgraphMonomorphisms.cpp
+    src/test_PauliTensor.cpp
+    src/Ops/test_ClassicalOps.cpp
+    src/Ops/test_Expression.cpp
+    src/Ops/test_Ops.cpp
+    src/OpType/test_OpTypeFunctions.cpp
+    src/Passes/test_CliffordResynthesis.cpp
+    src/Passes/test_SynthesiseTK.cpp
+    src/Passes/test_SynthesiseTket.cpp
+    src/Gate/test_Rotation.cpp
+    src/Gate/test_GateUnitaryMatrix.cpp
+    src/Simulation/test_CircuitSimulator.cpp
+    src/Simulation/test_PauliExpBoxUnitaryCalculator.cpp
+    src/Circuit/test_Boxes.cpp
+    src/Circuit/test_PauliExpBoxes.cpp
+    src/Circuit/test_Circ.cpp
+    src/Circuit/test_CircPool.cpp
+    src/Circuit/test_Symbolic.cpp
+    src/Circuit/test_ThreeQubitConversion.cpp
+    src/Circuit/test_Multiplexor.cpp
+    src/Circuit/test_StatePreparation.cpp
+    src/Circuit/test_DiagonalBox.cpp
+    src/Circuit/test_ToffoliBox.cpp
+    src/Circuit/test_ConjugationBox.cpp
+    src/Circuit/test_DummyBox.cpp
+    src/test_UnitaryTableau.cpp
+    src/test_ChoiMixTableau.cpp
+    src/test_PhasePolynomials.cpp
+    src/test_PauliGraph.cpp
+    src/test_Architectures.cpp
+    src/test_ArchitectureAwareSynthesis.cpp
+    src/Placement/test_GraphPlacement.cpp
+    src/Placement/test_LinePlacement.cpp
+    src/Placement/test_NoiseAwarePlacement.cpp
+    src/Placement/test_Placement.cpp
+    src/Placement/test_NeighbourPlacements.cpp
+    src/Transformations/test_RedundancyRemoval.cpp
+    src/test_MappingVerification.cpp
+    src/test_MappingFrontier.cpp
+    src/test_RoutingMethod.cpp
+    src/test_MappingManager.cpp
+    src/test_LexicographicalComparison.cpp
+    src/test_LexiRoute.cpp
+    src/test_AASRoute.cpp
+    src/test_MultiGateReorder.cpp
+    src/test_BoxDecompRoutingMethod.cpp
+    src/test_RoutingPasses.cpp
+    src/test_DeviceCharacterisation.cpp
     src/test_Clifford.cpp
-    # src/test_MeasurementSetup.cpp
-    # src/test_Partition.cpp
-    # src/test_MeasurementReduction.cpp
-    # src/test_PhaseGadget.cpp
-    # src/test_Rebase.cpp
-    # src/test_PhasedXFrontier.cpp
-    # src/test_GlobalisePhasedX.cpp
-    # src/test_Synthesis.cpp
-    # src/test_TwoQubitCanonical.cpp
-    # src/test_ControlDecomp.cpp
-    # src/test_Combinators.cpp
-    # src/test_Predicates.cpp
-    # src/test_CompilerPass.cpp
-    # src/test_ContextOpt.cpp
-    # src/test_FrameRandomisation.cpp
-    # src/test_Assertion.cpp
-    # src/test_json.cpp
-    # src/test_Path.cpp
-    # src/test_SteinerTree.cpp
-    # src/test_SteinerForest.cpp
-    # src/test_wasm.cpp
-    # src/test_RoundAngles.cpp
-    # src/ZX/test_ZXDiagram.cpp
-    # src/ZX/test_ZXAxioms.cpp
-    # src/ZX/test_ZXSimp.cpp
-    # src/ZX/test_ZXRebase.cpp
-    # src/ZX/test_Flow.cpp
-    # src/ZX/test_ZXConverters.cpp
-    # src/ZX/test_ZXExtraction.cpp
+    src/test_MeasurementSetup.cpp
+    src/test_Partition.cpp
+    src/test_MeasurementReduction.cpp
+    src/test_PhaseGadget.cpp
+    src/test_Rebase.cpp
+    src/test_PhasedXFrontier.cpp
+    src/test_GlobalisePhasedX.cpp
+    src/test_Synthesis.cpp
+    src/test_TwoQubitCanonical.cpp
+    src/test_ControlDecomp.cpp
+    src/test_Combinators.cpp
+    src/test_Predicates.cpp
+    src/test_CompilerPass.cpp
+    src/test_ContextOpt.cpp
+    src/test_FrameRandomisation.cpp
+    src/test_Assertion.cpp
+    src/test_json.cpp
+    src/test_Path.cpp
+    src/test_SteinerTree.cpp
+    src/test_SteinerForest.cpp
+    src/test_wasm.cpp
+    src/test_RoundAngles.cpp
+    src/ZX/test_ZXDiagram.cpp
+    src/ZX/test_ZXAxioms.cpp
+    src/ZX/test_ZXSimp.cpp
+    src/ZX/test_ZXRebase.cpp
+    src/ZX/test_Flow.cpp
+    src/ZX/test_ZXConverters.cpp
+    src/ZX/test_ZXExtraction.cpp
     )
 
 if (NOT TARGET gmp::gmp)
