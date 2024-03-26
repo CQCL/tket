@@ -7,13 +7,13 @@ Unreleased
 General:
 
 * Remove deprecated ``SynthesiseHQS`` pass.
-* New ``Transform.PushCliffordsThroughMeasures()`` that reimplements Clifford
-  subcircuits before end of circuit measurements by measurement reduction.
 
 Features:
 
 * Add ``circuit_name`` property to ``CircBox``.
 * Enable pickling of ``Bit`` objects.
+* New ``Transform.PushCliffordsThroughMeasures()`` that reimplements Clifford
+  subcircuits before end of circuit measurements by measurement reduction.
 
 Fixes:
 
