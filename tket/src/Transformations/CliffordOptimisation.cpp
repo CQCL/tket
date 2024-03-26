@@ -713,7 +713,6 @@ struct MeasureVertices {
       : qubit(q), bit(b), measure(v) {}
 };
 
-// std::tuple<Circuit, VertexSet, std::vector<MeasureVertices>>
 std::pair<VertexSet, std::vector<MeasureVertices>> get_end_of_circuit_clifford(
     const Circuit &circ) {
   // Initialize vector to store MeasureVertices for end-of-circuit Measures
@@ -749,43 +748,30 @@ std::pair<VertexSet, std::vector<MeasureVertices>> get_end_of_circuit_clifford(
 
   // Populate frontier map with Measure edges and associated qubits
   for (const auto &mv : end_of_circuit_measures) {
-    // std::cout << "Measure: " << mv.qubit.repr() << " " << mv.bit.repr()
-    //           << std::endl;
     frontier.insert({circ.get_nth_in_edge(mv.measure, 0), mv.qubit});
-    // clifford_circuit.add_qubit(mv.qubit);
-    // clifford_circuit.add_bit(mv.bit);
   }
 
   // Main loop for constructing Clifford circuit
-  // unsigned counter = 0;
   std::vector<std::pair<OpType, std::vector<Qubit>>> clifford_commands;
   std::vector<Edge> to_erase;
   while (!frontier.empty()) {
     VertexSet current;
     // Iterate over frontier edges to identify Clifford gates
-    // std::cout << "New attempt !" << counter << std::endl;
-    // counter += 1;
     for (const auto &e : frontier) {
       Vertex source = circ.source(e.first);
       OpDesc desc = circ.get_OpDesc_from_Vertex(source);
-      // std::cout << "Desc: " << desc.name() << std::endl;
       // Check if gate is a Clifford gate without classical or boolean inputs
       if (desc.is_clifford_gate() && desc.n_boolean() == 0 &&
           desc.n_classical() == 0) {
-        // std::cout << "Adding " << std::endl;
         current.insert(source);
       } else {
         // Remove non-Clifford gates from frontier
-        // std::cout << "Erasing" << std::endl;
         to_erase.push_back(e.first);
       }
     }
     for (const Edge &e : to_erase) {
       frontier.erase(e);
     }
-
-    // std::cout << "Whats in current? " << current.size() << std::endl;
-
     // Check for convergence to previous set of vertices
     if (current == previous) {
       break;
@@ -812,9 +798,6 @@ std::pair<VertexSet, std::vector<MeasureVertices>> get_end_of_circuit_clifford(
       // If all outgoing edges connect to frontier qubits, add gate to Clifford
       // circuit
       if (qubits.size() == out_edges.size()) {
-        // clifford_circuit.add_op(circ.get_OpType_from_Vertex(v), qubits);
-        // clifford_commands.push_back({circ.get_OpType_from_Vertex(v),
-        // qubits});
         clifford_vertices.insert(v);
         EdgeVec in_edges = circ.get_in_edges(v);
 
@@ -828,22 +811,13 @@ std::pair<VertexSet, std::vector<MeasureVertices>> get_end_of_circuit_clifford(
       }
     }
   }
-
-  // Return constructed Clifford circuit and associated vertices and measures
-  // std::cout << "Found Clifford: " << clifford_circuit << std::endl;
-  // Circuit clifford_circuit,
-  // Subcircuit sc = circ.make_subcircuit(clifford_vertices);
-  // return std::make_tuple(
-  // clifford_circuit, clifford_vertices, end_of_circuit_measures);
   return std::make_pair(clifford_vertices, end_of_circuit_measures);
 }
 
 Transform push_cliffords_through_measures() {
   return Transform([](Circuit &circ) {
-    // std::tuple<Circuit, VertexSet, std::vector<MeasureVertices>>
     std::pair<VertexSet, std::vector<MeasureVertices>> clifford_info =
         get_end_of_circuit_clifford(circ);
-    // we want
     VertexSet clifford_vertices = clifford_info.first;
     std::vector<MeasureVertices> measure_vertices = clifford_info.second;
 
@@ -861,7 +835,6 @@ Transform push_cliffords_through_measures() {
     }
     clifford_circuit.append(
         circ.subcircuit(circ.make_subcircuit(clifford_vertices)));
-    // std::cout << clifford_circuit << std:endl;
     UnitaryRevTableau cliff_tab =
         circuit_to_unitary_rev_tableau(clifford_circuit);
     std::list<SpSymPauliTensor> measurement_operators_l;
@@ -873,52 +846,10 @@ Transform push_cliffords_through_measures() {
       measurement_operators_l.push_back(cliff_tab.get_row_product(sps));
     }
 
-    unsigned c = 0;
-    for (auto x : measurement_operators_l) {
-      std::cout << "Operator " << c << " " << x.coeff << std::endl;
-      c += 1;
-      for (auto q : x.string) {
-        if (q.second == Pauli::I) {
-          std::cout << q.first.repr() << " Identity " << std::endl;
-        }
-        if (q.second == Pauli::X) {
-          std::cout << q.first.repr() << " X " << std::endl;
-        }
-        if (q.second == Pauli::Y) {
-          std::cout << q.first.repr() << " Y " << std::endl;
-        }
-        if (q.second == Pauli::Z) {
-          std::cout << q.first.repr() << " Z " << std::endl;
-        }
-      }
-    }
     Circuit mutual_c = mutual_diagonalise(
         measurement_operators_l, std::set<Qubit>(qubits.begin(), qubits.end()),
         CXConfigType::Snake);
-    std::cout << "\nAfter diagonalise" << std::endl;
-    c = 0;
-    for (auto x : measurement_operators_l) {
-      std::cout << "Operator " << c << " " << x.coeff << std::endl;
-      c += 1;
-      for (auto q : x.string) {
-        if (q.second == Pauli::I) {
-          std::cout << q.first.repr() << " Identity " << std::endl;
-        }
-        if (q.second == Pauli::X) {
-          std::cout << q.first.repr() << " X " << std::endl;
-        }
-        if (q.second == Pauli::Y) {
-          std::cout << q.first.repr() << " Y " << std::endl;
-        }
-        if (q.second == Pauli::Z) {
-          std::cout << q.first.repr() << " Z " << std::endl;
-        }
-      }
-    }
     // Only add if it improves on the number of 2qb gates
-    // std::cout << "Mutual:" << mutual_c << std::endl;
-    // std::cout << std::get<0>(clifford_info).count_n_qubit_gates(2) << " "
-    //           << mutual_c.count_n_qubit_gates(2) << std::endl;
     if (mutual_c.count_n_qubit_gates(2) >=
         clifford_circuit.count_n_qubit_gates(2)) {
       return false;
@@ -939,7 +870,7 @@ Transform push_cliffords_through_measures() {
     // Add classical logic to permute output measurements to correct string
     register_t scratch_r =
         circ.add_c_register("permutation_scratch", bits.size() + 1);
-    // convert to vector for indexing and return
+    // convert to vector for indexing
     std::vector<Bit> scratch_v;
     for (const auto &b : scratch_r) {
       Bit scratch_b = Bit(b.second);
@@ -971,25 +902,17 @@ Transform push_cliffords_through_measures() {
         circ.add_op(XorWithOp(), arg);
       }
       if (measurement_operators[i].coeff == 1) {
-        std::cout << "Add " << scratch_v[i].repr() << std::endl;
-        // phase_correction.push_back(bits[i]);
         phase_correction.push_back(scratch_v[i]);
       } else {
-        std::cout << "Dont' add " << scratch_v[i].repr() << std::endl;
         TKET_ASSERT(measurement_operators[i].coeff == -1);
       }
     }
     // apply constant change to bitstring due to phase
-    // Bit flip_bit("permutation_scratch", bits.size() + 1);
-    // circ.add_bit(flip_bit);
-    std::cout << "Here" << std::endl;
-    std::vector<bool> assignment = {true};
-    std::vector<Bit> set_bit_arg = {scratch_v.back()};
-    circ.add_op(std::make_shared<SetBitsOp>(assignment), set_bit_arg);
+    circ.add_op(
+        std::make_shared<SetBitsOp>(std::vector<bool>({true})),
+        std::vector<Bit>({scratch_v.back()}));
     for (const auto &p_bit : phase_correction) {
-      std::vector<Bit> arg = {scratch_v.back(), p_bit};
-      // circ.add_op(ClassicalX(), arg);
-      circ.add_op(XorWithOp(), arg);
+      circ.add_op(XorWithOp(), std::vector<Bit>({scratch_v.back(), p_bit}));
     }
 
     // copy scratch results over to original Bit
