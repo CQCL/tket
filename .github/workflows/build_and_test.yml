@@ -39,9 +39,9 @@ jobs:
         base: ${{ github.ref }}
         filters: |
           tket:
-            - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**}'
+            - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**}'
           tket_or_workflow:
-            - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**}'
+            - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**}'
             - '.github/workflows/build_and_test.yml'
           doxyfile_or_workflow:
             - '{tket/Doxyfile}'
