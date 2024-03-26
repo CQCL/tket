@@ -20,6 +20,8 @@ Fixes:
   conversion.
 * Correct position of custom gate definitions needed for conditional operations
   in QASM conversion.
+* Fix ``DelayMeasures()`` pass for circuits where bits are reused as measurement
+  targets.
 
 1.26.0 (March 2024)
 -------------------
