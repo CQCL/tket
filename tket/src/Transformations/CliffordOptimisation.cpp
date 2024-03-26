@@ -944,7 +944,7 @@ Transform push_cliffords_through_measures() {
     TKET_ASSERT(bits.size() + 1 == scratch_v.size());
     scratch_v.pop_back();
     scratch_v.insert(scratch_v.end(), bits.begin(), bits.end());
-    circ.add_op(std::make_shared<CopyBitsOp>(bits.size()), scratch_v);
+    circ.add_op(std::make_shared<CopyBitsOp>(unsigned(bits.size())), scratch_v);
     return true;
   });
 }
