@@ -41,7 +41,12 @@ namespace tket {
 using Connection = Architecture::Connection;
 
 SCENARIO("Test decompose_SWAP_to_CX pass", ) {
-  Architecture arc({{0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 0}});
+  Architecture arc(
+      {{Node(0), Node(1)},
+       {Node(1), Node(2)},
+       {Node(2), Node(3)},
+       {Node(3), Node(4)},
+       {Node(4), Node(0)}});
   GIVEN("A single SWAP gate. Finding if correct number of vertices added") {
     Circuit circ(5);
     circ.add_op<unsigned>(OpType::SWAP, {0, 1});
@@ -154,7 +159,7 @@ SCENARIO("Test decompose_SWAP_to_CX pass", ) {
   GIVEN(
       "A circuit that with no CX gates, but with directed architecture, "
       "opposite case.") {
-    Architecture dummy_arc({{1, 0}});
+    Architecture dummy_arc({std::pair(Node(1), Node(0))});
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::SWAP, {1, 0});
     reassign_boundary(circ);
@@ -208,7 +213,7 @@ SCENARIO("Test decompose_SWAP_to_CX pass", ) {
 }
 
 SCENARIO("Test redirect_CX_gates pass", "[routing]") {
-  Architecture arc({{1, 0}, {1, 2}});
+  Architecture arc({{Node(1), Node(0)}, {Node(1), Node(2)}});
   GIVEN("A circuit that requires no redirection.") {
     Circuit circ(3);
     add_2qb_gates(circ, OpType::CX, {{1, 0}, {1, 2}});
@@ -356,7 +361,7 @@ SCENARIO(
     "Methods related to correct routing and decomposition of circuits with "
     "classical wires.") {
   GIVEN("A circuit with classical wires on CX gates.") {
-    Architecture test_arc({{0, 1}, {1, 2}});
+    Architecture test_arc({{Node(0), Node(1)}, {Node(1), Node(2)}});
     Circuit circ(3, 2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::H, {0});
@@ -379,7 +384,11 @@ SCENARIO(
   GIVEN(
       "A circuit that requires modification to satisfy architecture "
       "constraints.") {
-    Architecture arc({{0, 1}, {1, 2}, {2, 3}, {3, 4}});
+    Architecture arc(
+        {{Node(0), Node(1)},
+         {Node(1), Node(2)},
+         {Node(2), Node(3)},
+         {Node(3), Node(4)}});
     Circuit circ(5, 1);
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {1, 2}, {1, 3}, {1, 4}, {0, 1}});
@@ -398,7 +407,7 @@ SCENARIO(
     REQUIRE(classical_com.get_args()[0] == circ.all_bits()[0]);
   }
   GIVEN("A single Bridge gate with multiple classical wires, decomposed.") {
-    Architecture arc({{0, 1}, {1, 2}});
+    Architecture arc({{Node(0), Node(1)}, {Node(1), Node(2)}});
     Circuit circ(3, 3);
     circ.add_conditional_gate<unsigned>(
         OpType::BRIDGE, {}, {0, 1, 2}, {0, 1, 2}, 1);
@@ -413,7 +422,7 @@ SCENARIO(
     }
   }
   GIVEN("A directed architecture, a single CX gate that requires flipping.") {
-    Architecture arc(std::vector<std::pair<unsigned, unsigned>>{{0, 1}});
+    Architecture arc({std::pair{Node(0), Node(1)}});
     Circuit circ(2, 2);
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {1, 0}, 0);
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0, 1}, 1);
@@ -480,7 +489,13 @@ SCENARIO(
          {0, 4},
          {2, 1},
          {0, 3}});
-    Architecture arc({{1, 0}, {0, 2}, {1, 2}, {2, 3}, {2, 4}, {4, 3}});
+    Architecture arc(
+        {{Node(1), Node(0)},
+         {Node(0), Node(2)},
+         {Node(1), Node(2)},
+         {Node(2), Node(3)},
+         {Node(2), Node(4)},
+         {Node(4), Node(3)}});
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(mm.route_circuit(
         circ, {std::make_shared<LexiLabellingMethod>(),

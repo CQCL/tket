@@ -269,8 +269,8 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
         {std::make_shared<LexiLabellingMethod>(),
          std::make_shared<LexiRouteRoutingMethod>()});
 
-    PassPtr all_passes = SynthesiseHQS() >> SynthesiseOQC() >>
-                         SynthesiseUMD() >> SynthesiseTK() >> cp_route;
+    PassPtr all_passes =
+        SynthesiseOQC() >> SynthesiseUMD() >> SynthesiseTK() >> cp_route;
     REQUIRE(all_passes->apply(cu));
     REQUIRE(cu.check_all_predicates());
   }
@@ -447,7 +447,7 @@ SCENARIO("Construct sequence pass") {
 
 SCENARIO("Construct invalid sequence passes from vector") {
   std::vector<PassPtr> invalid_pass_to_combo{
-      SynthesiseHQS(), SynthesiseOQC(), SynthesiseUMD(), SynthesiseTK()};
+      SynthesiseOQC(), SynthesiseUMD(), SynthesiseTK()};
   for (const PassPtr& pass : invalid_pass_to_combo) {
     std::vector<PassPtr> passes = {pass};
     OpTypeSet ots = {OpType::CX};
@@ -617,7 +617,8 @@ SCENARIO("gen_placement_pass test") {
   GIVEN("A simple circuit and device and base Placement.") {
     Circuit circ(4);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {2, 1}, {2, 3}});
-    Architecture arc({{0, 1}, {1, 2}, {3, 2}});
+    Architecture arc(
+        {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(3), Node(2)}});
     Placement::Ptr plptr = std::make_shared<Placement>(arc);
     PassPtr pp_place = gen_placement_pass(plptr);
     CompilationUnit cu(circ);
@@ -632,7 +633,8 @@ SCENARIO("gen_placement_pass test") {
   GIVEN("A simple circuit and device and GraphPlacement.") {
     Circuit circ(4);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {2, 1}, {2, 3}});
-    Architecture arc({{0, 1}, {1, 2}, {3, 2}});
+    Architecture arc(
+        {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(3), Node(2)}});
     Placement::Ptr plptr = std::make_shared<GraphPlacement>(arc);
     PassPtr pp_place = gen_placement_pass(plptr);
     CompilationUnit cu(circ);
@@ -1371,7 +1373,8 @@ SCENARIO("Commute measurements to the end of a circuit") {
     add_1qb_gates(test, OpType::X, {2, 2});
     test.add_op<unsigned>(OpType::CX, {0, 2});
 
-    Architecture line({{0, 1}, {1, 2}, {2, 3}});
+    Architecture line(
+        {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
     Placement::Ptr pp = std::make_shared<Placement>(line);
     PassPtr route_pass = gen_full_mapping_pass(
         line, pp,
@@ -1384,6 +1387,17 @@ SCENARIO("Commute measurements to the end of a circuit") {
     OpType type = final_command.get_op_ptr()->get_type();
     REQUIRE(type == OpType::Measure);
     // REQUIRE(final_command.get_args().front() == Node(3));
+  }
+  GIVEN("Measures targeting the same bit") {
+    // https://github.com/CQCL/tket/issues/1305
+    Circuit c(4, 1);
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_measure(3, 0);
+    c.add_measure(1, 0);
+    c.add_op<unsigned>(OpType::X, {1});
+    c.add_op<unsigned>(OpType::CCX, {1, 3, 2});
+    CompilationUnit cu(c);
+    CHECK_FALSE(try_delay_pass->apply(cu));
   }
 }
 
@@ -1432,7 +1446,11 @@ static bool is_classical_map(const Circuit& c) {
 SCENARIO("CX mapping pass") {
   // TKET-1045
   GIVEN("A device with a linear architecture") {
-    Architecture line({{0, 1}, {1, 2}, {2, 3}, {3, 4}});
+    Architecture line(
+        {{Node(0), Node(1)},
+         {Node(1), Node(2)},
+         {Node(2), Node(3)},
+         {Node(3), Node(4)}});
 
     // Noise-aware placement and rebase
     Placement::Ptr placer = std::make_shared<GraphPlacement>(line);

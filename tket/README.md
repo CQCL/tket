@@ -38,7 +38,7 @@ wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.c
 To build tket and its dependencies and run all unit and property tests, use:
 
 ```shell
-conan build tket --build=missing -o "boost/*":header_only=True -o with_all_tests=True
+conan build tket --user=tket --channel=stable --build=missing -o "boost/*":header_only=True -o with_all_tests=True
 ```
 or `with_test`/`with_proptest` to only build and run the unit tests or proptests, respectively.
  
@@ -51,8 +51,8 @@ build directories `tket/build/Release` and/or `tket/build/Debug`.
 They can be run from those directories, e.g.:
 ```shell
 cd tket/build/Release
-./test/tket-test
-./proptest/tket-proptest
+./test/test-tket
+./proptest/proptest-tket
 ```
 
 The tests with a running time >=1 second (on a regular modern laptop) are marked

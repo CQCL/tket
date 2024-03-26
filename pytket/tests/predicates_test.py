@@ -33,7 +33,6 @@ from pytket.passes import (
     SequencePass,
     RemoveRedundancies,
     SynthesiseTket,
-    SynthesiseHQS,
     SynthesiseUMD,
     RepeatUntilSatisfiedPass,
     CommuteThroughMultis,
@@ -70,7 +69,6 @@ from pytket.passes import (
     FlattenRelabelRegistersPass,
     RoundAngles,
     PeepholeOptimise2Q,
-    SynthesiseHQS,
     CliffordResynthesis,
     CliffordSimp,
 )
@@ -132,7 +130,7 @@ def test_compilation_unit_generation() -> None:
 
 
 def test_compilerpass_seq() -> None:
-    passlist = [SynthesiseTket(), SynthesiseOQC(), SynthesiseUMD(), SynthesiseHQS()]
+    passlist = [SynthesiseTket(), SynthesiseOQC(), SynthesiseUMD()]
     seq = SequencePass(passlist)
     circ = Circuit(2)
     circ.X(0).Z(1)
@@ -969,15 +967,6 @@ def test_selectively_decompose_boxes() -> None:
     assert cmds[0].op.type == OpType.Unitary1qBox
     assert cmds[1].op.type == OpType.Unitary1qBox
     assert cmds[2].op.type == OpType.CircBox
-
-
-def test_SynthesiseHQS_deprecation(capfd: Any) -> None:
-    logging.set_level(logging.level.warn)
-    p = SynthesiseHQS()
-    out = capfd.readouterr().out
-    assert "[warn]" in out
-    assert "deprecated" in out
-    logging.set_level(logging.level.err)
 
 
 def test_clifford_resynthesis() -> None:

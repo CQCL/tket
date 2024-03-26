@@ -409,8 +409,6 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = RebaseUFR();
     } else if (passname == "RemoveRedundancies") {
       pp = RemoveRedundancies();
-    } else if (passname == "SynthesiseHQS") {
-      pp = SynthesiseHQS();
     } else if (passname == "SynthesiseTK") {
       pp = SynthesiseTK();
     } else if (passname == "SynthesiseTket") {

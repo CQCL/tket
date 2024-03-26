@@ -515,17 +515,6 @@ PYBIND11_MODULE(passes, m) {
       "When merging rotations with the same op group name, the merged "
       "operation keeps the same name.");
   m.def(
-      "SynthesiseHQS",
-      []() {
-        tket_log()->warn(
-            "SynthesiseHQS is deprecated. It will be removed "
-            "after pytket v1.25.");
-        return SynthesiseHQS();
-      },
-      "Optimises and converts a circuit consisting of CX and single-qubit "
-      "gates into one containing only ZZMax, PhasedX, Rz and Phase. "
-      "DEPRECATED: will be removed after pytket 1.25.");
-  m.def(
       "SynthesiseTK", &SynthesiseTK,
       "Optimises and converts all gates to TK2, TK1 and Phase gates.");
   m.def(
@@ -542,8 +531,8 @@ PYBIND11_MODULE(passes, m) {
       "Squash sequences of single-qubit gates to TK1 gates.");
   m.def(
       "SquashRzPhasedX", &SquashRzPhasedX,
-      "Squash single qubit gates into PhasedX and Rz gates. "
-      "Commute Rz gates to the back if possible.");
+      "Squash single qubit gates into PhasedX and Rz gates. Also remove "
+      "identity gates. Commute Rz gates to the back if possible.");
   m.def(
       "FlattenRegisters", &FlattenRegisters,
       "Merges all quantum and classical registers into their "

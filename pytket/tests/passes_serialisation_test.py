@@ -300,7 +300,6 @@ TWO_WAY_NONPARAM_PASSES = [
     "RebaseTket",
     "RebaseUFR",
     "RemoveRedundancies",
-    "SynthesiseHQS",
     "SynthesiseTK",
     "SynthesiseTket",
     "SynthesiseOQC",
