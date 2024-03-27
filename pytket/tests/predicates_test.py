@@ -1022,7 +1022,7 @@ def test_clifford_push_through_measures() -> None:
     CliffordPushThroughMeasures().apply(c_x)
     assert c_x == Circuit(2, 2).X(0).measure_all()
     c_cx_x: Circuit = Circuit(2, 2).X(0).CX(0, 1).X(0).measure_all()
-    PushCliffordPushThroughMeasures().apply(c_cx_x)
+    CliffordPushThroughMeasures().apply(c_cx_x)
     assert c_cx_x.n_1qb_gates() == 0
     assert c_cx_x.n_2qb_gates() == 0
     coms = c_cx_x.get_commands()
