@@ -982,9 +982,9 @@ void init_boxes(py::module &m) {
       "uniformly controlled single-axis rotations) specified by "
       "a map from bitstrings to " CLSOBJS(Op)
       "or a list of bitstring-" CLSOBJS(Op) " pairs. "
-      "Implamentation based on https://arxiv.org/abs/quant-ph/0410066. "
+      "Implementation based on arxiv.org/abs/quant-ph/0410066. "
       "The decomposed circuit has at most 2^k single-qubit rotations, "
-      "2^k CX gates, and 2 H gates if it's X-axis. "
+      "2^k CX gates, and two additional H gates if the rotation axis is X. "
       "k is the number of control qubits.")
       .def(
               py::init([](const py_ctrl_op_map_t_alt & bitstring_op_pairs){
@@ -1053,7 +1053,7 @@ void init_boxes(py::module &m) {
       "gate) specified by a "
       "map from bitstrings to " CLSOBJS(Op)
       "or a list of bitstring-" CLSOBJS(Op) " pairs"
-      "Implamentation based on https://arxiv.org/abs/quant-ph/0410066. "
+      "Implementation based on arxiv.org/abs/quant-ph/0410066. "
       "The decomposed circuit has at most 2^k single-qubit gates, 2^k -1 CX gates, "
       "and a k+1 qubit DiagonalBox at the end. "
       "k is the number of control qubits.")
@@ -1149,13 +1149,9 @@ void init_boxes(py::module &m) {
       "A box for preparing quantum states using multiplexed-Ry and "
       "multiplexed-Rz gates. "
       "Implementation based on Theorem 9 of "
-      "https://arxiv.org/abs/quant-ph/0406176. "
+      "arxiv.org/abs/quant-ph/0406176. "
       "The decomposed circuit has at most 2*(2^n-2) CX gates, and "
-      "2^n-2 CX gates if the coefficients are all real. "
-      "Note that by decomposing each multiplexed-Ry(Rz) as its dagger can lead "
-      "to a CX cancellation with its adjacent multiplexed-Rz(Ry), "
-      "which leads to an improved CX count of 2^(n+1)-2n. "
-      "However, this is currently not automatically done in tket.")
+      "2^n-2 CX gates if the coefficients are all real.")
       .def(
           py::init<const Eigen::VectorXcd &, bool, bool>(),
           "Construct from a statevector\n\n"
@@ -1187,7 +1183,7 @@ void init_boxes(py::module &m) {
       "A box for synthesising a diagonal unitary matrix into a sequence of "
       "multiplexed-Rz gates. "
       "Implementation based on Theorem 7 of "
-      "https://arxiv.org/abs/quant-ph/0406176. "
+      "arxiv.org/abs/quant-ph/0406176. "
       "The decomposed circuit has at most 2^n-2 CX gates.")
       .def(
           py::init<const Eigen::VectorXcd &, bool>(),

@@ -2705,7 +2705,7 @@ class CustomGateDef:
         """
 class DiagonalBox(Op):
     """
-    A box for synthesising a diagonal unitary matrix into a sequence of multiplexed-Rz gates. Implementation based on Theorem 7 of https://arxiv.org/abs/quant-ph/0406176. The decomposed circuit has at most 2^n-2 CX gates.
+    A box for synthesising a diagonal unitary matrix into a sequence of multiplexed-Rz gates. Implementation based on Theorem 7 of arxiv.org/abs/quant-ph/0406176. The decomposed circuit has at most 2^n-2 CX gates.
     """
     def __init__(self, diagonal: NDArray[numpy.complex128], upper_triangle: bool = True) -> None:
         """
@@ -2839,7 +2839,7 @@ class MultiBitOp(ClassicalEvalOp):
         """
 class MultiplexedRotationBox(Op):
     """
-    A user-defined multiplexed rotation gate (i.e. uniformly controlled single-axis rotations) specified by a map from bitstrings to :py:class:`Op` sor a list of bitstring-:py:class:`Op` s pairs. Implamentation based on https://arxiv.org/abs/quant-ph/0410066. The decomposed circuit has at most 2^k single-qubit rotations, 2^k CX gates, and 2 H gates if it's X-axis. k is the number of control qubits.
+    A user-defined multiplexed rotation gate (i.e. uniformly controlled single-axis rotations) specified by a map from bitstrings to :py:class:`Op` sor a list of bitstring-:py:class:`Op` s pairs. Implementation based on arxiv.org/abs/quant-ph/0410066. The decomposed circuit has at most 2^k single-qubit rotations, 2^k CX gates, and two additional H gates if the rotation axis is X. k is the number of control qubits.
     """
     @typing.overload
     def __init__(self, bistring_to_op_list: typing.Sequence[tuple[typing.Sequence[bool], Op]]) -> None:
@@ -2911,7 +2911,7 @@ class MultiplexedTensoredU2Box(Op):
         """
 class MultiplexedU2Box(Op):
     """
-    A user-defined multiplexed U2 gate (i.e. uniformly controlled U2 gate) specified by a map from bitstrings to :py:class:`Op` sor a list of bitstring-:py:class:`Op` s pairsImplamentation based on https://arxiv.org/abs/quant-ph/0410066. The decomposed circuit has at most 2^k single-qubit gates, 2^k -1 CX gates, and a k+1 qubit DiagonalBox at the end. k is the number of control qubits.
+    A user-defined multiplexed U2 gate (i.e. uniformly controlled U2 gate) specified by a map from bitstrings to :py:class:`Op` sor a list of bitstring-:py:class:`Op` s pairsImplementation based on arxiv.org/abs/quant-ph/0410066. The decomposed circuit has at most 2^k single-qubit gates, 2^k -1 CX gates, and a k+1 qubit DiagonalBox at the end. k is the number of control qubits.
     """
     @typing.overload
     def __init__(self, bistring_to_op_list: typing.Sequence[tuple[typing.Sequence[bool], Op]], impl_diag: bool = True) -> None:
@@ -3686,7 +3686,7 @@ class StabiliserAssertionBox(Op):
         """
 class StatePreparationBox(Op):
     """
-    A box for preparing quantum states using multiplexed-Ry and multiplexed-Rz gates. Implementation based on Theorem 9 of https://arxiv.org/abs/quant-ph/0406176. The decomposed circuit has at most 2*(2^n-2) CX gates, and 2^n-2 CX gates if the coefficients are all real. Note that by decomposing each multiplexed-Ry(Rz) as its dagger can lead to a CX cancellation with its adjacent multiplexed-Rz(Ry), which leads to an improved CX count of 2^(n+1)-2n. However, this is currently not automatically done in tket.
+    A box for preparing quantum states using multiplexed-Ry and multiplexed-Rz gates. Implementation based on Theorem 9 of arxiv.org/abs/quant-ph/0406176. The decomposed circuit has at most 2*(2^n-2) CX gates, and 2^n-2 CX gates if the coefficients are all real.
     """
     def __init__(self, statevector: NDArray[numpy.complex128], is_inverse: bool = False, with_initial_reset: bool = False) -> None:
         """
