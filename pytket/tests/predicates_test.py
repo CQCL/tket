@@ -70,6 +70,7 @@ from pytket.passes import (
     RoundAngles,
     PeepholeOptimise2Q,
     CliffordResynthesis,
+    CliffordPushThroughMeasures,
     CliffordSimp,
 )
 from pytket.predicates import (
@@ -1016,6 +1017,24 @@ def test_clifford_resynthesis_implicit_swaps() -> None:
     assert circ.implicit_qubit_permutation() == {Qubit(0): Qubit(1), Qubit(1): Qubit(0)}
 
 
+def test_clifford_push_through_measures() -> None:
+    c_x: Circuit = Circuit(2, 2).X(0).measure_all()
+    CliffordPushThroughMeasures().apply(c_x)
+    assert c_x == Circuit(2, 2).X(0).measure_all()
+    c_cx_x: Circuit = Circuit(2, 2).X(0).CX(0, 1).X(0).measure_all()
+    PushCliffordPushThroughMeasures().apply(c_cx_x)
+    assert c_cx_x.n_1qb_gates() == 0
+    assert c_cx_x.n_2qb_gates() == 0
+    coms = c_cx_x.get_commands()
+    assert len(coms) == 8
+    assert coms[2].op.type == OpType.SetBits
+    assert coms[3].op.type == OpType.ExplicitModifier
+    assert coms[4].op.type == OpType.ExplicitModifier
+    assert coms[5].op.type == OpType.ExplicitModifier
+    assert coms[6].op.type == OpType.ExplicitModifier
+    assert coms[7].op.type == OpType.CopyBits
+
+
 if __name__ == "__main__":
     test_predicate_generation()
     test_compilation_unit_generation()
@@ -1035,3 +1054,4 @@ if __name__ == "__main__":
     test_flatten_relabel_pass()
     test_rebase_custom_tk2()
     test_selectively_decompose_boxes()
+    test_clifford_push_through_measures()

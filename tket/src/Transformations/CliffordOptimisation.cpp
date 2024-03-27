@@ -27,6 +27,7 @@
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/PauliTensor.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 
@@ -771,7 +772,7 @@ std::pair<VertexSet, std::vector<MeasureVertices>> get_end_of_circuit_clifford(
     for (const Edge &e : to_erase) {
       frontier.erase(e);
     }
-    // Check if identical to preivous vertices
+    // Check if identical to previous vertices
     if (current == previous) {
       break;
     }
@@ -863,7 +864,7 @@ Transform push_cliffords_through_measures() {
     }
 
     // Remove Clifford and Measure vertices from the original circuit
-    // before adding mutualy diagonalisation circuit
+    // before adding mutual diagonalisation circuit
     circ.remove_vertices(
         clifford_vertices, Circuit::GraphRewiring::Yes,
         Circuit::VertexDeletion::Yes);
@@ -880,8 +881,9 @@ Transform push_cliffords_through_measures() {
     }
 
     // Add classical logic to permute output measurements to correct result
-    register_t scratch_r =
-        circ.add_c_register("permutation_scratch", bits.size() + 1);
+    std::string reg_name =
+        circ.get_next_c_reg_name(c_permutation_scratch_name());
+    register_t scratch_r = circ.add_c_register(reg_name, bits.size() + 1);
     // Convert Bit to vector for ease of indexing and assigning
     std::vector<Bit> scratch_v;
     for (const auto &b : scratch_r) {
@@ -892,7 +894,7 @@ Transform push_cliffords_through_measures() {
     // We need to collect ClassicalX due to phase correction
     // and permutation due to Z terms in operator
     std::vector<Bit> phase_correction;
-    ;
+
     TKET_ASSERT(measurement_operators.size() == bits.size());
     auto it = measurement_operators.begin();
     for (unsigned i = 0; i < measurement_operators.size(); ++i, ++it) {

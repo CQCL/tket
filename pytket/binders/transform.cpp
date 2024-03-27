@@ -424,8 +424,7 @@ PYBIND11_MODULE(transform, m) {
           "commuting and is implemented by adding a new mutual diagonalisation "
           "Clifford subcirciuit to the end of the Circuit and implementing the "
           "remaining diagonal measurement operators by measuring and permuting "
-          "the "
-          "output.")
+          "the output.")
       .def_static(
           "round_angles", &Transforms::round_angles,
           "Rounds angles to the nearest :math:`\\pi / 2^n`."
