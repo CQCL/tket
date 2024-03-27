@@ -822,6 +822,15 @@ PYBIND11_MODULE(passes, m) {
       py::arg("transform") = std::nullopt, py::arg("allow_swaps") = true);
 
   m.def(
+      "CliffordPushThroughMeasures", &gen_clifford_push_through_pass,
+      "An optimisation pass that resynthesise a Clifford subcircuit "
+      "before end of circuit Measurement operations by implementing "
+      "the action of the Clifford as a mutual diagonalisation circuit "
+      "and a permutation on output measurements realised as a series "
+      "of classical operations."
+      "\n: return: a pass to simplify end of circuit Clifford gates.");
+
+  m.def(
       "DecomposeSwapsToCXs", &gen_decompose_routing_gates_to_cxs_pass,
       "Construct a pass to decompose SWAP and BRIDGE gates to CX gates, "
       "constraining connectivity to an :py:class:`Architecture`, optionally "

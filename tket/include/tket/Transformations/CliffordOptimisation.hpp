@@ -34,6 +34,16 @@ Transform copy_pi_through_CX();
 
 Transform singleq_clifford_sweep();
 
+// In some cases, 2-qubit gates can be saved by:
+// 1) representing end-of-circuit measurements as a collection of single Z
+// operators 2) transforming each fo these single Z operators to a new Pauli
+// operator by acting on them with an end-of-circuit Clifford subcircuit 3)
+// finding a Clifford that mutually diagonalises these Pauli operators 4)
+// replacing the end-of-circuit Clifford subcircuit with the mutual
+// diagonalisation circuit and adding classical logic to map the diagonalised
+// Pauli operators back to the desired single Z operators
+Transform push_cliffords_through_measures();
+
 }  // namespace Transforms
 
 }  // namespace tket
