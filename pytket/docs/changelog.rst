@@ -22,6 +22,8 @@ Fixes:
   in QASM conversion.
 * Fix ``DelayMeasures()`` pass for circuits where bits are reused as measurement
   targets.
+* When adding operations to a circuit, check for invalid wires before adding a
+  vertex to the circuit.
 
 1.26.0 (March 2024)
 -------------------
