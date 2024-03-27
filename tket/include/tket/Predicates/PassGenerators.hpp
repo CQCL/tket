@@ -76,6 +76,15 @@ PassPtr gen_clifford_resynthesis_pass(
     bool allow_swaps = true);
 
 /**
+ * Pass that simplifies circuits by resynthesising Clifford subcircuits before
+ * end of circuit measurements as a mutual diagonalisation circuit and classical
+ * postprocessing.
+ *
+ * @return pass to resynthesise pre end of circuit measure Clifford subcircuits
+ */
+PassPtr gen_clifford_push_through_pass();
+
+/**
  * Pass to remove empty Quantum edges from a Circuit and then relabel
  * all Qubit to some new register defined by a passed label.
  * Qubits removed from the Circuit are preserved in the bimap, but not updated

@@ -12,6 +12,9 @@ Features:
 
 * Add ``circuit_name`` property to ``CircBox``.
 * Enable pickling of ``Bit`` objects.
+* New optimisation ``Transform.PushCliffordsThroughMeasures()`` and pass 
+  ``CliffordPushThroughMeasures`` that optimises Clifford subcircuits 
+  before end of circuit measurement gates.
 
 Fixes:
 

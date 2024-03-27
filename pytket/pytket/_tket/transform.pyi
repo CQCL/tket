@@ -223,6 +223,11 @@ class Transform:
         Fast optimisation pass, performing basic simplifications. Works on any circuit, giving the result in TK1 and TK2 gates. Preserves connectivity of circuit.
         """
     @staticmethod
+    def PushCliffordsThroughMeasures() -> Transform:
+        """
+        Derives a new set of end-of-Circuit measurement operators by acting on end-of-Circuit measurements with a Clifford subcircuit. The new set of measurement operators is necessarily commuting and is implemented by adding a new mutual diagonalisation Clifford subcirciuit to the end of the Circuit and implementing the remaining diagonal measurement operators by measuring and permuting the output.
+        """
+    @staticmethod
     def RebaseToCirq() -> Transform:
         """
         Rebase from any gate set into PhasedX, Rz, CZ.

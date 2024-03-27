@@ -117,4 +117,10 @@ const std::string& c_debug_default_name() {
   return *regname;
 }
 
+const std::string& c_permutation_scratch_name() {
+  static std::unique_ptr<const std::string> regname =
+      std::make_unique<const std::string>("permutation_scratch");
+  return *regname;
+}
+
 }  // namespace tket
