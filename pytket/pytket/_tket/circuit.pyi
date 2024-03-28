@@ -30,7 +30,7 @@ class BarrierOp(Op):
 class BasisOrder:
     """
     Enum for readout basis and ordering.
-    Readouts are viewed in increasing lexicographic order (ILO) of the bit's UnitID. This is our default convention for column indexing for ALL readout forms (shots, counts, statevector, and unitaries). e.g. :math:`\lvert abc \rangle` corresponds to the readout: ('c', 0) --> :math:`a`, ('c', 1) --> :math:`b`, ('d', 0) --> :math:`c`
+    Readouts are viewed in increasing lexicographic order (ILO) of the bit's UnitID. This is our default convention for column indexing for ALL readout forms (shots, counts, statevector, and unitaries). e.g. :math:`\\lvert abc \\rangle` corresponds to the readout: ('c', 0) --> :math:`a`, ('c', 1) --> :math:`b`, ('d', 0) --> :math:`c`
     For statevector and unitaries, the string abc is interpreted as an index in a big-endian (BE) fashion. e.g. the statevector :math:`(a_{00}, a_{01}, a_{10}, a_{11})`
     Some backends (Qiskit, ProjectQ, etc.) use a DLO-BE (decreasing lexicographic order, big-endian) convention. This is the same as ILO-LE (little-endian) for statevectors and unitaries, but gives shot tables/readouts in a counter-intuitive manner.
     Every backend and matrix-based box has a BasisOrder option which can toggle between ILO-BE (ilo) and DLO-BE (dlo).
@@ -3038,7 +3038,7 @@ class Op:
     @property
     def params(self) -> list[sympy.Expr | float]:
         """
-        Angular parameters of the op, in half-turns (e.g. 1.0 half-turns is :math:`\pi` radians). The parameters returned are constrained to the appropriate canonical range, which is usually the half-open interval [0,2) but for some operations (e.g. Rx, Ry and Rz) is [0,4).
+        Angular parameters of the op, in half-turns (e.g. 1.0 half-turns is :math:`\\pi` radians). The parameters returned are constrained to the appropriate canonical range, which is usually the half-open interval [0,2) but for some operations (e.g. Rx, Ry and Rz) is [0,4).
         """
     @property
     def transpose(self) -> Op:
@@ -3056,81 +3056,81 @@ class OpType:
     
     Members:
     
-      Phase : Global phase: :math:`(\alpha) \mapsto \left[ \begin{array}{c} e^{i\pi\alpha} \end{array} \right]`
+      Phase : Global phase: :math:`(\\alpha) \\mapsto \\left[ \\begin{array}{c} e^{i\\pi\\alpha} \\end{array} \\right]`
     
-      Z : Pauli Z: :math:`\left[ \begin{array}{cc} 1 & 0 \\ 0 & -1 \end{array} \right]`
+      Z : Pauli Z: :math:`\\left[ \\begin{array}{cc} 1 & 0 \\\\ 0 & -1 \\end{array} \\right]`
     
-      X : Pauli X: :math:`\left[ \begin{array}{cc} 0 & 1 \\ 1 & 0 \end{array} \right]`
+      X : Pauli X: :math:`\\left[ \\begin{array}{cc} 0 & 1 \\\\ 1 & 0 \\end{array} \\right]`
     
-      Y : Pauli Y: :math:`\left[ \begin{array}{cc} 0 & -i \\ i & 0 \end{array} \right]`
+      Y : Pauli Y: :math:`\\left[ \\begin{array}{cc} 0 & -i \\\\ i & 0 \\end{array} \\right]`
     
-      S : :math:`\left[ \begin{array}{cc} 1 & 0 \\ 0 & i \end{array} \right] = \mathrm{U1}(\frac12)`
+      S : :math:`\\left[ \\begin{array}{cc} 1 & 0 \\\\ 0 & i \\end{array} \\right] = \\mathrm{U1}(\\frac12)`
     
-      Sdg : :math:`\mathrm{S}^{\dagger} = \left[ \begin{array}{cc} 1 & 0 \\ 0 & -i \end{array} \right] = \mathrm{U1}(-\frac12)`
+      Sdg : :math:`\\mathrm{S}^{\\dagger} = \\left[ \\begin{array}{cc} 1 & 0 \\\\ 0 & -i \\end{array} \\right] = \\mathrm{U1}(-\\frac12)`
     
-      T : :math:`\left[ \begin{array}{cc} 1 & 0 \\ 0 & e^{i\pi/4} \end{array} \right] = \mathrm{U1}(\frac14)`
+      T : :math:`\\left[ \\begin{array}{cc} 1 & 0 \\\\ 0 & e^{i\\pi/4} \\end{array} \\right] = \\mathrm{U1}(\\frac14)`
     
-      Tdg : :math:`\mathrm{T}^{\dagger} = \left[ \begin{array}{cc} 1 & 0 \\ 0 & e^{-i\pi/4} \end{array} \right] = \mathrm{U1}(-\frac14)`
+      Tdg : :math:`\\mathrm{T}^{\\dagger} = \\left[ \\begin{array}{cc} 1 & 0 \\\\ 0 & e^{-i\\pi/4} \\end{array} \\right] = \\mathrm{U1}(-\\frac14)`
     
-      V : :math:`\frac{1}{\sqrt 2} \left[ \begin{array}{cc} 1 & -i \\ -i & 1 \end{array} \right] = \mathrm{Rx}(\frac12)`
+      V : :math:`\\frac{1}{\\sqrt 2} \\left[ \\begin{array}{cc} 1 & -i \\\\ -i & 1 \\end{array} \\right] = \\mathrm{Rx}(\\frac12)`
     
-      Vdg : :math:`\mathrm{V}^{\dagger} = \frac{1}{\sqrt 2} \left[ \begin{array}{cc} 1 & i \\ i & 1 \end{array} \right] = \mathrm{Rx}(-\frac12)`
+      Vdg : :math:`\\mathrm{V}^{\\dagger} = \\frac{1}{\\sqrt 2} \\left[ \\begin{array}{cc} 1 & i \\\\ i & 1 \\end{array} \\right] = \\mathrm{Rx}(-\\frac12)`
     
-      SX : :math:`\frac{1}{2} \left[ \begin{array}{cc} 1 + i & 1 - i \\ 1 - i & 1 + i \end{array} \right] = e^{\frac{i\pi}{4}}\mathrm{Rx}(\frac12)`
+      SX : :math:`\\frac{1}{2} \\left[ \\begin{array}{cc} 1 + i & 1 - i \\\\ 1 - i & 1 + i \\end{array} \\right] = e^{\\frac{i\\pi}{4}}\\mathrm{Rx}(\\frac12)`
     
-      SXdg : :math:`\mathrm{SX}^{\dagger} = \frac{1}{2} \left[ \begin{array}{cc} 1 - i & 1 + i \\ 1 + i & 1 - i \end{array} \right] = e^{\frac{-i\pi}{4}}\mathrm{Rx}(-\frac12)`
+      SXdg : :math:`\\mathrm{SX}^{\\dagger} = \\frac{1}{2} \\left[ \\begin{array}{cc} 1 - i & 1 + i \\\\ 1 + i & 1 - i \\end{array} \\right] = e^{\\frac{-i\\pi}{4}}\\mathrm{Rx}(-\\frac12)`
     
-      H : Hadamard gate: :math:`\frac{1}{\sqrt 2} \left[ \begin{array}{cc} 1 & 1 \\ 1 & -1 \end{array} \right]`
+      H : Hadamard gate: :math:`\\frac{1}{\\sqrt 2} \\left[ \\begin{array}{cc} 1 & 1 \\\\ 1 & -1 \\end{array} \\right]`
     
-      Rx : :math:`(\alpha) \mapsto e^{-\frac12 i \pi \alpha \mathrm{X}} = \left[ \begin{array}{cc} \cos\frac{\pi\alpha}{2} & -i\sin\frac{\pi\alpha}{2} \\ -i\sin\frac{\pi\alpha}{2} & \cos\frac{\pi\alpha}{2} \end{array} \right]`
+      Rx : :math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi \\alpha \\mathrm{X}} = \\left[ \\begin{array}{cc} \\cos\\frac{\\pi\\alpha}{2} & -i\\sin\\frac{\\pi\\alpha}{2} \\\\ -i\\sin\\frac{\\pi\\alpha}{2} & \\cos\\frac{\\pi\\alpha}{2} \\end{array} \\right]`
     
-      Ry : :math:`(\alpha) \mapsto e^{-\frac12 i \pi \alpha \mathrm{Y}} = \left[ \begin{array}{cc} \cos\frac{\pi\alpha}{2} & -\sin\frac{\pi\alpha}{2} \\ \sin\frac{\pi\alpha}{2} & \cos\frac{\pi\alpha}{2} \end{array} \right]`
+      Ry : :math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi \\alpha \\mathrm{Y}} = \\left[ \\begin{array}{cc} \\cos\\frac{\\pi\\alpha}{2} & -\\sin\\frac{\\pi\\alpha}{2} \\\\ \\sin\\frac{\\pi\\alpha}{2} & \\cos\\frac{\\pi\\alpha}{2} \\end{array} \\right]`
     
-      Rz : :math:`(\alpha) \mapsto e^{-\frac12 i \pi \alpha \mathrm{Z}} = \left[ \begin{array}{cc} e^{-\frac12 i \pi\alpha} & 0 \\ 0 & e^{\frac12 i \pi\alpha} \end{array} \right]`
+      Rz : :math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi \\alpha \\mathrm{Z}} = \\left[ \\begin{array}{cc} e^{-\\frac12 i \\pi\\alpha} & 0 \\\\ 0 & e^{\\frac12 i \\pi\\alpha} \\end{array} \\right]`
     
-      U1 : :math:`(\lambda) \mapsto \mathrm{U3}(0, 0, \lambda) = e^{\frac12 i\pi\lambda} \mathrm{Rz}(\lambda)`. U-gates are used by IBM. See https://qiskit.org/documentation/tutorials/circuits/3_summary_of_quantum_operations.html for more information on U-gates.
+      U1 : :math:`(\\lambda) \\mapsto \\mathrm{U3}(0, 0, \\lambda) = e^{\\frac12 i\\pi\\lambda} \\mathrm{Rz}(\\lambda)`. U-gates are used by IBM. See https://qiskit.org/documentation/tutorials/circuits/3_summary_of_quantum_operations.html for more information on U-gates.
     
-      U2 : :math:`(\phi, \lambda) \mapsto \mathrm{U3}(\frac12, \phi, \lambda) = e^{\frac12 i\pi(\lambda+\phi)} \mathrm{Rz}(\phi) \mathrm{Ry}(\frac12) \mathrm{Rz}(\lambda)`, defined by matrix multiplication
+      U2 : :math:`(\\phi, \\lambda) \\mapsto \\mathrm{U3}(\\frac12, \\phi, \\lambda) = e^{\\frac12 i\\pi(\\lambda+\\phi)} \\mathrm{Rz}(\\phi) \\mathrm{Ry}(\\frac12) \\mathrm{Rz}(\\lambda)`, defined by matrix multiplication
     
-      U3 : :math:`(\theta, \phi, \lambda) \mapsto  \left[ \begin{array}{cc} \cos\frac{\pi\theta}{2} & -e^{i\pi\lambda} \sin\frac{\pi\theta}{2} \\ e^{i\pi\phi} \sin\frac{\pi\theta}{2} & e^{i\pi(\lambda+\phi)} \cos\frac{\pi\theta}{2} \end{array} \right] = e^{\frac12 i\pi(\lambda+\phi)} \mathrm{Rz}(\phi) \mathrm{Ry}(\theta) \mathrm{Rz}(\lambda)`
+      U3 : :math:`(\\theta, \\phi, \\lambda) \\mapsto  \\left[ \\begin{array}{cc} \\cos\\frac{\\pi\\theta}{2} & -e^{i\\pi\\lambda} \\sin\\frac{\\pi\\theta}{2} \\\\ e^{i\\pi\\phi} \\sin\\frac{\\pi\\theta}{2} & e^{i\\pi(\\lambda+\\phi)} \\cos\\frac{\\pi\\theta}{2} \\end{array} \\right] = e^{\\frac12 i\\pi(\\lambda+\\phi)} \\mathrm{Rz}(\\phi) \\mathrm{Ry}(\\theta) \\mathrm{Rz}(\\lambda)`
     
-      TK1 : :math:`(\alpha, \beta, \gamma) \mapsto \mathrm{Rz}(\alpha) \mathrm{Rx}(\beta) \mathrm{Rz}(\gamma)`
+      TK1 : :math:`(\\alpha, \\beta, \\gamma) \\mapsto \\mathrm{Rz}(\\alpha) \\mathrm{Rx}(\\beta) \\mathrm{Rz}(\\gamma)`
     
-      TK2 : :math:`(\alpha, \beta, \gamma) \mapsto \mathrm{XXPhase}(\alpha) \mathrm{YYPhase}(\beta) \mathrm{ZZPhase}(\gamma)`
+      TK2 : :math:`(\\alpha, \\beta, \\gamma) \\mapsto \\mathrm{XXPhase}(\\alpha) \\mathrm{YYPhase}(\\beta) \\mathrm{ZZPhase}(\\gamma)`
     
-      CX : Controlled :math:`\mathrm{X}` gate
+      CX : Controlled :math:`\\mathrm{X}` gate
     
-      CY : Controlled :math:`\mathrm{Y}` gate
+      CY : Controlled :math:`\\mathrm{Y}` gate
     
-      CZ : Controlled :math:`\mathrm{Z}` gate
+      CZ : Controlled :math:`\\mathrm{Z}` gate
     
-      CH : Controlled :math:`\mathrm{H}` gate
+      CH : Controlled :math:`\\mathrm{H}` gate
     
-      CV : Controlled :math:`\mathrm{V}` gate
+      CV : Controlled :math:`\\mathrm{V}` gate
     
-      CVdg : Controlled :math:`\mathrm{V}^{\dagger}` gate
+      CVdg : Controlled :math:`\\mathrm{V}^{\\dagger}` gate
     
-      CSX : Controlled :math:`\mathrm{SX}` gate
+      CSX : Controlled :math:`\\mathrm{SX}` gate
     
-      CSXdg : Controlled :math:`\mathrm{SX}^{\dagger}` gate
+      CSXdg : Controlled :math:`\\mathrm{SX}^{\\dagger}` gate
     
-      CS : Controlled :math:`\mathrm{S}` gate
+      CS : Controlled :math:`\\mathrm{S}` gate
     
-      CSdg : Controlled :math:`\mathrm{S}^{\dagger}` gate
+      CSdg : Controlled :math:`\\mathrm{S}^{\\dagger}` gate
     
-      CRz : :math:`(\alpha) \mapsto` Controlled :math:`\mathrm{Rz}(\alpha)` gate
+      CRz : :math:`(\\alpha) \\mapsto` Controlled :math:`\\mathrm{Rz}(\\alpha)` gate
     
-      CRx : :math:`(\alpha) \mapsto` Controlled :math:`\mathrm{Rx}(\alpha)` gate
+      CRx : :math:`(\\alpha) \\mapsto` Controlled :math:`\\mathrm{Rx}(\\alpha)` gate
     
-      CRy : :math:`(\alpha) \mapsto` Controlled :math:`\mathrm{Ry}(\alpha)` gate
+      CRy : :math:`(\\alpha) \\mapsto` Controlled :math:`\\mathrm{Ry}(\\alpha)` gate
     
-      CU1 : :math:`(\lambda) \mapsto` Controlled :math:`\mathrm{U1}(\lambda)` gate. Note that this is not equivalent to a :math:`\mathrm{CRz}(\lambda)` up to global phase, differing by an extra :math:`\mathrm{Rz}(\frac{\lambda}{2})` on the control qubit.
+      CU1 : :math:`(\\lambda) \\mapsto` Controlled :math:`\\mathrm{U1}(\\lambda)` gate. Note that this is not equivalent to a :math:`\\mathrm{CRz}(\\lambda)` up to global phase, differing by an extra :math:`\\mathrm{Rz}(\\frac{\\lambda}{2})` on the control qubit.
     
-      CU3 : :math:`(\theta, \phi, \lambda) \mapsto` Controlled :math:`\mathrm{U3}(\theta, \phi, \lambda)` gate. Similar rules apply.
+      CU3 : :math:`(\\theta, \\phi, \\lambda) \\mapsto` Controlled :math:`\\mathrm{U3}(\\theta, \\phi, \\lambda)` gate. Similar rules apply.
     
       CCX : Toffoli gate
     
-      ECR : :math:`\frac{1}{\sqrt 2} \left[ \begin{array}{cccc} 0 & 0 & 1 & i \\0 & 0 & i & 1 \\1 & -i & 0 & 0 \\-i & 1 & 0 & 0 \end{array} \right]`
+      ECR : :math:`\\frac{1}{\\sqrt 2} \\left[ \\begin{array}{cccc} 0 & 0 & 1 & i \\\\0 & 0 & i & 1 \\\\1 & -i & 0 & 0 \\\\-i & 1 & 0 & 0 \\end{array} \\right]`
     
       SWAP : Swap gate
     
@@ -3152,7 +3152,7 @@ class OpType:
     
       Measure : Z-basis projective measurement, storing the measurement outcome in a specified bit
     
-      Reset : Resets the qubit to :math:`\left|0\right>`
+      Reset : Resets the qubit to :math:`\\left|0\\right>`
     
       CircBox : Represents an arbitrary subcircuit
     
@@ -3166,11 +3166,11 @@ class OpType:
     
       ExpBox : A two-qubit operation corresponding to a unitary matrix defined as the exponential :math:`e^{itA}` of an arbitrary 4x4 hermitian matrix :math:`A`.
     
-      PauliExpBox : An operation defined as the exponential :math:`e^{-\frac{i\pi\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
+      PauliExpBox : An operation defined as the exponential :math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
     
-      PauliExpPairBox : A pair of (not necessarily commuting) Pauli exponentials :math:`e^{-\frac{i\pi\alpha}{2} P}` performed in sequence.
+      PauliExpPairBox : A pair of (not necessarily commuting) Pauli exponentials :math:`e^{-\\frac{i\\pi\\alpha}{2} P}` performed in sequence.
     
-      PauliExpCommutingSetBox : An operation defined as a setof commuting exponentials of the form :math:`e^{-\frac{i\pi\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
+      PauliExpCommutingSetBox : An operation defined as a setof commuting exponentials of the form :math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
     
       TermSequenceBox : An unordered collection of Pauli exponentials that can be synthesised in any order, causing a change in the unitary operation. Synthesis order depends on the synthesis strategy chosen only.
     
@@ -3182,27 +3182,27 @@ class OpType:
     
       DummyBox : A placeholder operation that holds resource data
     
-      CustomGate : :math:`(\alpha, \beta, \ldots) \mapsto` A user-defined operation, based on a :py:class:`Circuit` :math:`C` with parameters :math:`\alpha, \beta, \ldots` substituted in place of bound symbolic variables in :math:`C`, as defined by the :py:class:`CustomGateDef`.
+      CustomGate : :math:`(\\alpha, \\beta, \\ldots) \\mapsto` A user-defined operation, based on a :py:class:`Circuit` :math:`C` with parameters :math:`\\alpha, \\beta, \\ldots` substituted in place of bound symbolic variables in :math:`C`, as defined by the :py:class:`CustomGateDef`.
     
       Conditional : An operation to be applied conditionally on the value of some classical register
     
-      ISWAP : :math:`(\alpha) \mapsto e^{\frac14 i \pi\alpha (\mathrm{X} \otimes \mathrm{X} + \mathrm{Y} \otimes \mathrm{Y})} = \left[ \begin{array}{cccc} 1 & 0 & 0 & 0 \\ 0 & \cos\frac{\pi\alpha}{2} & i\sin\frac{\pi\alpha}{2} & 0 \\ 0 & i\sin\frac{\pi\alpha}{2} & \cos\frac{\pi\alpha}{2} & 0 \\ 0 & 0 & 0 & 1 \end{array} \right]`
+      ISWAP : :math:`(\\alpha) \\mapsto e^{\\frac14 i \\pi\\alpha (\\mathrm{X} \\otimes \\mathrm{X} + \\mathrm{Y} \\otimes \\mathrm{Y})} = \\left[ \\begin{array}{cccc} 1 & 0 & 0 & 0 \\\\ 0 & \\cos\\frac{\\pi\\alpha}{2} & i\\sin\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & i\\sin\\frac{\\pi\\alpha}{2} & \\cos\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & 0 & 0 & 1 \\end{array} \\right]`
     
-      PhasedISWAP : :math:`(p, t) \mapsto \left[ \begin{array}{cccc} 1 & 0 & 0 & 0 \\ 0 & \cos\frac{\pi t}{2} & i\sin\frac{\pi t}{2}e^{2i\pi p} & 0 \\ 0 & i\sin\frac{\pi t}{2}e^{-2i\pi p} & \cos\frac{\pi t}{2} & 0 \\ 0 & 0 & 0 & 1 \end{array} \right]` (equivalent to: Rz(p)[0]; Rz(-p)[1]; ISWAP(t); Rz(-p)[0]; Rz(p)[1])
+      PhasedISWAP : :math:`(p, t) \\mapsto \\left[ \\begin{array}{cccc} 1 & 0 & 0 & 0 \\\\ 0 & \\cos\\frac{\\pi t}{2} & i\\sin\\frac{\\pi t}{2}e^{2i\\pi p} & 0 \\\\ 0 & i\\sin\\frac{\\pi t}{2}e^{-2i\\pi p} & \\cos\\frac{\\pi t}{2} & 0 \\\\ 0 & 0 & 0 & 1 \\end{array} \\right]` (equivalent to: Rz(p)[0]; Rz(-p)[1]; ISWAP(t); Rz(-p)[0]; Rz(p)[1])
     
-      XXPhase : :math:`(\alpha) \mapsto e^{-\frac12 i \pi\alpha (\mathrm{X} \otimes \mathrm{X})} = \left[ \begin{array}{cccc} \cos\frac{\pi\alpha}{2} & 0 & 0 & -i\sin\frac{\pi\alpha}{2} \\ 0 & \cos\frac{\pi\alpha}{2} & -i\sin\frac{\pi\alpha}{2} & 0 \\ 0 & -i\sin\frac{\pi\alpha}{2} & \cos\frac{\pi\alpha}{2} & 0 \\ -i\sin\frac{\pi\alpha}{2} & 0 & 0 & \cos\frac{\pi\alpha}{2} \end{array} \right]`
+      XXPhase : :math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi\\alpha (\\mathrm{X} \\otimes \\mathrm{X})} = \\left[ \\begin{array}{cccc} \\cos\\frac{\\pi\\alpha}{2} & 0 & 0 & -i\\sin\\frac{\\pi\\alpha}{2} \\\\ 0 & \\cos\\frac{\\pi\\alpha}{2} & -i\\sin\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & -i\\sin\\frac{\\pi\\alpha}{2} & \\cos\\frac{\\pi\\alpha}{2} & 0 \\\\ -i\\sin\\frac{\\pi\\alpha}{2} & 0 & 0 & \\cos\\frac{\\pi\\alpha}{2} \\end{array} \\right]`
     
-      YYPhase : :math:`(\alpha) \mapsto e^{-\frac12 i \pi\alpha (\mathrm{Y} \otimes \mathrm{Y})} = \left[ \begin{array}{cccc} \cos\frac{\pi\alpha}{2} & 0 & 0 & i\sin\frac{\pi\alpha}{2} \\ 0 & \cos\frac{\pi\alpha}{2} & -i\sin\frac{\pi\alpha}{2} & 0 \\ 0 & -i\sin\frac{\pi\alpha}{2} & \cos\frac{\pi\alpha}{2} & 0 \\ i\sin\frac{\pi\alpha}{2} & 0 & 0 & \cos\frac{\pi\alpha}{2} \end{array} \right]`
+      YYPhase : :math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi\\alpha (\\mathrm{Y} \\otimes \\mathrm{Y})} = \\left[ \\begin{array}{cccc} \\cos\\frac{\\pi\\alpha}{2} & 0 & 0 & i\\sin\\frac{\\pi\\alpha}{2} \\\\ 0 & \\cos\\frac{\\pi\\alpha}{2} & -i\\sin\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & -i\\sin\\frac{\\pi\\alpha}{2} & \\cos\\frac{\\pi\\alpha}{2} & 0 \\\\ i\\sin\\frac{\\pi\\alpha}{2} & 0 & 0 & \\cos\\frac{\\pi\\alpha}{2} \\end{array} \\right]`
     
-      ZZPhase : :math:`(\alpha) \mapsto e^{-\frac12 i \pi\alpha (\mathrm{Z} \otimes \mathrm{Z})} = \left[ \begin{array}{cccc} e^{-\frac12 i \pi\alpha} & 0 & 0 & 0 \\ 0 & e^{\frac12 i \pi\alpha} & 0 & 0 \\ 0 & 0 & e^{\frac12 i \pi\alpha} & 0 \\ 0 & 0 & 0 & e^{-\frac12 i \pi\alpha} \end{array} \right]`
+      ZZPhase : :math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi\\alpha (\\mathrm{Z} \\otimes \\mathrm{Z})} = \\left[ \\begin{array}{cccc} e^{-\\frac12 i \\pi\\alpha} & 0 & 0 & 0 \\\\ 0 & e^{\\frac12 i \\pi\\alpha} & 0 & 0 \\\\ 0 & 0 & e^{\\frac12 i \\pi\\alpha} & 0 \\\\ 0 & 0 & 0 & e^{-\\frac12 i \\pi\\alpha} \\end{array} \\right]`
     
       XXPhase3 : A 3-qubit gate XXPhase3(α) consists of pairwise 2-qubit XXPhase(α) interactions. Equivalent to XXPhase(α) XXPhase(α) XXPhase(α).
     
-      PhasedX : :math:`(\alpha,\beta) \mapsto \mathrm{Rz}(\beta)\mathrm{Rx}(\alpha)\mathrm{Rz}(-\beta)` (matrix-multiplication order)
+      PhasedX : :math:`(\\alpha,\\beta) \\mapsto \\mathrm{Rz}(\\beta)\\mathrm{Rx}(\\alpha)\\mathrm{Rz}(-\\beta)` (matrix-multiplication order)
     
-      NPhasedX : :math:`(\alpha, \beta) \mapsto \mathrm{PhasedX}(\alpha, \beta)^{\otimes n}` (n-qubit gate composed of identical PhasedX in parallel.
+      NPhasedX : :math:`(\\alpha, \\beta) \\mapsto \\mathrm{PhasedX}(\\alpha, \\beta)^{\\otimes n}` (n-qubit gate composed of identical PhasedX in parallel.
     
-      CnRy : :math:`(\alpha)` := n-controlled :math:`\mathrm{Ry}(\alpha)` gate.
+      CnRy : :math:`(\\alpha)` := n-controlled :math:`\\mathrm{Ry}(\\alpha)` gate.
     
       CnX : n-controlled X gate.
     
@@ -3210,15 +3210,15 @@ class OpType:
     
       CnZ : n-controlled Z gate.
     
-      ZZMax : :math:`e^{-\frac{i\pi}{4}(\mathrm{Z} \otimes \mathrm{Z})}`, a maximally entangling ZZPhase
+      ZZMax : :math:`e^{-\\frac{i\\pi}{4}(\\mathrm{Z} \\otimes \\mathrm{Z})}`, a maximally entangling ZZPhase
     
-      ESWAP : :math:`\alpha \mapsto e^{-\frac12 i\pi\alpha \cdot \mathrm{SWAP}} = \left[ \begin{array}{cccc} e^{-\frac12 i \pi\alpha} & 0 & 0 & 0 \\ 0 & \cos\frac{\pi\alpha}{2} & -i\sin\frac{\pi\alpha}{2} & 0 \\ 0 & -i\sin\frac{\pi\alpha}{2} & \cos\frac{\pi\alpha}{2} & 0 \\ 0 & 0 & 0 & e^{-\frac12 i \pi\alpha} \end{array} \right]`
+      ESWAP : :math:`\\alpha \\mapsto e^{-\\frac12 i\\pi\\alpha \\cdot \\mathrm{SWAP}} = \\left[ \\begin{array}{cccc} e^{-\\frac12 i \\pi\\alpha} & 0 & 0 & 0 \\\\ 0 & \\cos\\frac{\\pi\\alpha}{2} & -i\\sin\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & -i\\sin\\frac{\\pi\\alpha}{2} & \\cos\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & 0 & 0 & e^{-\\frac12 i \\pi\\alpha} \\end{array} \\right]`
     
-      FSim : :math:`(\alpha, \beta) \mapsto \left[ \begin{array}{cccc} 1 & 0 & 0 & 0 \\ 0 & \cos \pi\alpha & -i\sin \pi\alpha & 0 \\ 0 & -i\sin \pi\alpha & \cos \pi\alpha & 0 \\ 0 & 0 & 0 & e^{-i\pi\beta} \end{array} \right]`
+      FSim : :math:`(\\alpha, \\beta) \\mapsto \\left[ \\begin{array}{cccc} 1 & 0 & 0 & 0 \\\\ 0 & \\cos \\pi\\alpha & -i\\sin \\pi\\alpha & 0 \\\\ 0 & -i\\sin \\pi\\alpha & \\cos \\pi\\alpha & 0 \\\\ 0 & 0 & 0 & e^{-i\\pi\\beta} \\end{array} \\right]`
     
-      Sycamore : :math:`\mathrm{FSim}(\frac12, \frac16)`
+      Sycamore : :math:`\\mathrm{FSim}(\\frac12, \\frac16)`
     
-      ISWAPMax : :math:`\mathrm{ISWAP}(1) = \left[ \begin{array}{cccc} 1 & 0 & 0 & 0 \\ 0 & 0 & i & 0 \\ 0 & i & 0 & 0 \\ 0 & 0 & 0 & 1 \end{array} \right]`
+      ISWAPMax : :math:`\\mathrm{ISWAP}(1) = \\left[ \\begin{array}{cccc} 1 & 0 & 0 & 0 \\\\ 0 & 0 & i & 0 \\\\ 0 & i & 0 & 0 \\\\ 0 & 0 & 0 & 1 \\end{array} \\right]`
     
       ClassicalTransform : A general classical operation where all inputs are also outputs
     
@@ -3393,7 +3393,7 @@ class PauliExpBox(Op):
     """
     def __init__(self, paulis: typing.Sequence[pytket._tket.pauli.Pauli], t: sympy.Expr | float, cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
         """
-        Construct :math:`e^{-\frac12 i \pi t \sigma_0 \otimes \sigma_1 \otimes \cdots}` from Pauli operators :math:`\sigma_i \in \{I,X,Y,Z\}` and a parameter :math:`t`.
+        Construct :math:`e^{-\\frac12 i \\pi t \\sigma_0 \\otimes \\sigma_1 \\otimes \\cdots}` from Pauli operators :math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and a parameter :math:`t`.
         """
     def get_circuit(self) -> Circuit:
         """
@@ -3417,7 +3417,7 @@ class PauliExpCommutingSetBox(Op):
     """
     def __init__(self, pauli_gadgets: typing.Sequence[tuple[typing.Sequence[pytket._tket.pauli.Pauli], sympy.Expr | float]], cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
         """
-        Construct a set of necessarily commuting Pauli exponentials of the form :math:`e^{-\frac12 i \pi t_j \sigma_0 \otimes \sigma_1 \otimes \cdots}` from Pauli operator strings :math:`\sigma_i \in \{I,X,Y,Z\}` and parameters :math:`t_j, j \in \{0, 1, \cdots \}`.
+        Construct a set of necessarily commuting Pauli exponentials of the form :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes \\sigma_1 \\otimes \\cdots}` from Pauli operator strings :math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters :math:`t_j, j \\in \\{0, 1, \\cdots \\}`.
         """
     def get_circuit(self) -> Circuit:
         """
@@ -3439,7 +3439,7 @@ class PauliExpPairBox(Op):
     """
     def __init__(self, paulis0: typing.Sequence[pytket._tket.pauli.Pauli], t0: sympy.Expr | float, paulis1: typing.Sequence[pytket._tket.pauli.Pauli], t1: sympy.Expr | float, cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
         """
-        Construct a pair of Pauli exponentials of the form :math:`e^{-\frac12 i \pi t_j \sigma_0 \otimes \sigma_1 \otimes \cdots}` from Pauli operator strings :math:`\sigma_i \in \{I,X,Y,Z\}` and parameters :math:`t_j, j \in \{0,1\}`.
+        Construct a pair of Pauli exponentials of the form :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes \\sigma_1 \\otimes \\cdots}` from Pauli operator strings :math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters :math:`t_j, j \\in \\{0,1\\}`.
         """
     def get_circuit(self) -> Circuit:
         """
@@ -3718,7 +3718,7 @@ class TermSequenceBox(Op):
     """
     def __init__(self, pauli_gadgets: typing.Sequence[tuple[typing.Sequence[pytket._tket.pauli.Pauli], sympy.Expr | float]], synthesis_strategy: pytket._tket.transform.PauliSynthStrat = pytket._tket.transform.PauliSynthStrat.Sets, partitioning_strategy: pytket._tket.partition.PauliPartitionStrat = pytket._tket.partition.PauliPartitionStrat.CommutingSets, graph_colouring: pytket._tket.partition.GraphColourMethod = pytket._tket.partition.GraphColourMethod.Lazy, cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
         """
-        Construct a set of Pauli exponentials of the form :math:`e^{-\frac12 i \pi t_j \sigma_0 \otimes \sigma_1 \otimes \cdots}` from Pauli operator strings :math:`\sigma_i \in \{I,X,Y,Z\}` and parameters :math:`t_j, j \in \{0, 1, \cdots \}`.
+        Construct a set of Pauli exponentials of the form :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes \\sigma_1 \\otimes \\cdots}` from Pauli operator strings :math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters :math:`t_j, j \\in \\{0, 1, \\cdots \\}`.
         """
     def get_circuit(self) -> Circuit:
         """
