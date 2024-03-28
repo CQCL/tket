@@ -647,7 +647,7 @@ def test_apply_pass_with_callbacks() -> None:
 
     def compile(circ: Circuit, handler: CallbackHandler) -> bool:
         p = SequencePass([CommuteThroughMultis(), RemoveRedundancies()])
-        return p.apply(circ, handler.before_apply, handler.after_apply)  # type: ignore
+        return p.apply(circ, handler.before_apply, handler.after_apply)
 
     circ = Circuit(5)
     circ.CX(0, 1)
