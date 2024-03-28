@@ -42,7 +42,7 @@ class BasePass:
         :return: True if pass modified the circuit, else False
         """
     @typing.overload
-    def apply(self, circuit: pytket._tket.circuit.Circuit, before_apply: typing.Callable[[pytket._tket.predicates.CompilationUnit, object], None], after_apply: typing.Callable[[pytket._tket.predicates.CompilationUnit, object], None]) -> bool:
+    def apply(self, circuit: pytket._tket.circuit.Circuit, before_apply: typing.Callable[[pytket._tket.predicates.CompilationUnit, typing.Any], None], after_apply: typing.Callable[[pytket._tket.predicates.CompilationUnit, typing.Any], None]) -> bool:
         """
         Apply to a :py:class:`Circuit` in-place and invoke callbacks for all nested passes.
         
@@ -123,7 +123,7 @@ class RepeatUntilSatisfiedPass(BasePass):
         """
         Construct from a compilation pass and a user-defined function from :py:class:`Circuit` to `bool`.
         """
-    def __str__(self) -> str:
+    def __str__(self: BasePass) -> str:
         ...
     def get_pass(self) -> BasePass:
         """
@@ -141,7 +141,7 @@ class RepeatWithMetricPass(BasePass):
         """
         Construct from a compilation pass and a metric function.
         """
-    def __str__(self) -> str:
+    def __str__(self: BasePass) -> str:
         ...
     def get_metric(self) -> typing.Callable[[pytket._tket.circuit.Circuit], int]:
         """
@@ -196,7 +196,7 @@ class SequencePass(BasePass):
         """
         Construct from a list of compilation passes arranged in order of application.
         """
-    def __str__(self) -> str:
+    def __str__(self: BasePass) -> str:
         ...
     def get_sequence(self) -> list[BasePass]:
         """
@@ -212,7 +212,7 @@ def AASRouting(arc: pytket._tket.architecture.Architecture, **kwargs: Any) -> Ba
     NB: The circuit needs to have at most as many qubits as the architecture has nodes. The resulting circuit will always have the same number of qubits as the architecture has nodes, even if the input circuit had fewer.
     
     :param arc: target architecture
-    :param \**kwargs: parameters for routing (described above)
+    :param \\**kwargs: parameters for routing (described above)
     :return: a pass to perform the remapping
     """
 def CXMappingPass(arc: pytket._tket.architecture.Architecture, placer: pytket._tket.placement.Placement, **kwargs: Any) -> BasePass:
@@ -221,7 +221,7 @@ def CXMappingPass(arc: pytket._tket.architecture.Architecture, placer: pytket._t
     
     :param arc: The Architecture used for connectivity information.
     :param placer: The placement used for relabelling.
-    :param \**kwargs: Parameters for routing: (bool)directed_cx=false, (bool)delay_measures=true
+    :param \\**kwargs: Parameters for routing: (bool)directed_cx=false, (bool)delay_measures=true
     :return: a pass to perform the remapping
     """
 def CliffordPushThroughMeasures() -> BasePass:
@@ -258,7 +258,7 @@ def ComposePhasePolyBoxes(min_size: int = 0) -> BasePass:
     
     - (unsigned) min_size=0: minimal number of CX gates in each phase polynominal box: groups with a smaller number of CX gates are not affected by this transformation
     
-    :param \**kwargs: parameters for composition (described above)
+    :param \\**kwargs: parameters for composition (described above)
     :return: a pass to perform the composition
     """
 def ContextSimp(allow_classical: bool = True, xcirc: pytket._tket.circuit.Circuit | None = None) -> BasePass:
@@ -494,13 +494,13 @@ def PlacementPass(placer: pytket._tket.placement.Placement) -> BasePass:
     :return: a pass to relabel :py:class:`Circuit` Qubits to :py:class:`Architecture` Nodes
     """
 @typing.overload
-def RebaseCustom(gateset: set[pytket._tket.circuit.OpType], cx_replacement: pytket._tket.circuit.Circuit, tk1_replacement: typing.Callable[[typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float]], pytket._tket.circuit.Circuit]) -> BasePass:
+def RebaseCustom(gateset: set[pytket._tket.circuit.OpType], cx_replacement: pytket._tket.circuit.Circuit, tk1_replacement: typing.Callable[[sympy.Expr | float, sympy.Expr | float, sympy.Expr | float], pytket._tket.circuit.Circuit]) -> BasePass:
     """
     Construct a custom rebase pass, given user-defined rebases for TK1 and CX. This pass:
     
     1. decomposes multi-qubit gates not in the set of gate types `gateset` to CX gates;
     2. if CX is not in `gateset`, replaces CX gates with `cx_replacement`;
-    3. converts any single-qubit gates not in the gate type set to the form :math:`\mathrm{Rz}(a)\mathrm{Rx}(b)\mathrm{Rz}(c)` (in matrix-multiplication order, i.e. reverse order in the circuit);
+    3. converts any single-qubit gates not in the gate type set to the form :math:`\\mathrm{Rz}(a)\\mathrm{Rx}(b)\\mathrm{Rz}(c)` (in matrix-multiplication order, i.e. reverse order in the circuit);
     4. applies the `tk1_replacement` function to each of these triples :math:`(a,b,c)` to generate replacement circuits.
     
     :param gateset: the allowed operations in the rebased circuit (in addition, Measure, Reset and Collapse operations are always allowed and are left alone; conditional operations may be present; and Phase gates may also be introduced by the rebase)
@@ -509,7 +509,7 @@ def RebaseCustom(gateset: set[pytket._tket.circuit.OpType], cx_replacement: pytk
     :return: a pass that rebases to the given gate set (possibly including conditional and phase operations, and Measure, Reset and Collapse)
     """
 @typing.overload
-def RebaseCustom(gateset: set[pytket._tket.circuit.OpType], tk2_replacement: typing.Callable[[typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float]], pytket._tket.circuit.Circuit], tk1_replacement: typing.Callable[[typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float]], pytket._tket.circuit.Circuit]) -> BasePass:
+def RebaseCustom(gateset: set[pytket._tket.circuit.OpType], tk2_replacement: typing.Callable[[sympy.Expr | float, sympy.Expr | float, sympy.Expr | float], pytket._tket.circuit.Circuit], tk1_replacement: typing.Callable[[sympy.Expr | float, sympy.Expr | float, sympy.Expr | float], pytket._tket.circuit.Circuit]) -> BasePass:
     """
     Construct a custom rebase pass, given user-defined rebases for TK1 and TK2. This pass:
     
@@ -555,10 +555,10 @@ def RenameQubitsPass(qubit_map: dict[pytket._tket.unit_id.Qubit, pytket._tket.un
     """
 def RoundAngles(n: int, only_zeros: bool = False) -> BasePass:
     """
-    Round angles to the nearest :math:`\pi / 2^n`. 
+    Round angles to the nearest :math:`\\pi / 2^n`. 
     
     :param n: precision parameter, must be >= 0 and < 32 
-    :param only_zeros: if True, only round angles less than :math:`\pi / 2^{n+1}` to zero, leave other angles alone (default False)
+    :param only_zeros: if True, only round angles less than :math:`\\pi / 2^{n+1}` to zero, leave other angles alone (default False)
     """
 def RoutingPass(arc: pytket._tket.architecture.Architecture) -> BasePass:
     """
@@ -580,7 +580,7 @@ def SimplifyMeasured() -> BasePass:
     """
     A pass to replace all 'classical maps' followed by measure operations whose quantum output is discarded with classical operations following the measure. (A 'classical map' is a quantum operation that acts as a permutation of the computational basis states followed by a diagonal operation.)
     """
-def SquashCustom(singleqs: set[pytket._tket.circuit.OpType], tk1_replacement: typing.Callable[[typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float]], pytket._tket.circuit.Circuit], always_squash_symbols: bool = False) -> BasePass:
+def SquashCustom(singleqs: set[pytket._tket.circuit.OpType], tk1_replacement: typing.Callable[[sympy.Expr | float, sympy.Expr | float, sympy.Expr | float], pytket._tket.circuit.Circuit], always_squash_symbols: bool = False) -> BasePass:
     """
     Squash sequences of single qubit gates from the target gate set into an optimal form given by `tk1_replacement`.
     
