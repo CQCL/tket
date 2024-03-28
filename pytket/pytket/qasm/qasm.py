@@ -1086,7 +1086,7 @@ def check_can_convert_circuit(circ: Circuit, header: str, maxwidth: int) -> None
         )
     for cmd in circ:
         if is_empty_customgate(cmd.op) or (
-            cmd.op.type == OpType.Conditional and is_empty_customgate(cmd.op.op)
+            isinstance(cmd.op, Conditional) and is_empty_customgate(cmd.op.op)
         ):
             raise QASMUnsupportedError(
                 f"Empty CustomGates and opaque gates are not supported."

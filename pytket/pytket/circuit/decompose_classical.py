@@ -37,10 +37,7 @@ from pytket._tket.unit_id import (
     BitRegister,
     Bit,
 )
-from pytket._tket.circuit import (
-    Circuit,
-    OpType,
-)
+from pytket._tket.circuit import Circuit, ClassicalExpBox, Conditional, OpType
 from pytket.circuit.logic_exp import (
     BitLogicExp,
     BitWiseOp,
@@ -280,9 +277,11 @@ def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
         args = command.args
         kwargs = dict()
         if optype == OpType.Conditional:
+            assert isinstance(op, Conditional)
             bits = args[: op.width]
             # check if conditional on previously decomposed expression
             if len(bits) == 1 and bits[0] in replace_targets:
+                assert isinstance(bits[0], Bit)
                 # this op should encode comparison and value
                 assert op.value in (0, 1)
                 replace_bit = replace_targets[bits[0]]
@@ -299,8 +298,9 @@ def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
 
         if optype == OpType.RangePredicate:
             target = args[-1]
+            assert isinstance(target, Bit)
             newcirc.add_bit(target, reject_dups=False)
-            temp_reg = temp_reg_in_args(args)
+            temp_reg = temp_reg_in_args(args)  # type: ignore
             # ensure predicate is reading from correct output register
             if temp_reg in replace_targets:
                 assert temp_reg is not None
@@ -312,12 +312,14 @@ def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
                 replace_targets[target] = target
 
         elif optype == OpType.ClassicalExpBox:
+            assert isinstance(op, ClassicalExpBox)
             pred_exp = copy.deepcopy(op.get_exp())
             n_out_bits = op.get_n_o() + op.get_n_io()
             # copied as it will be modified in place
             if isinstance(pred_exp, BitLogicExp):
                 assert n_out_bits == 1
                 target = args[-1]
+                assert isinstance(target, Bit)
 
                 bit_heap.push(target)
                 comp_bit = bit_recursive_walk(pred_exp, kwargs)
@@ -325,6 +327,7 @@ def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
                 replace_targets[target] = comp_bit
 
             else:
+                assert isinstance(pred_exp, RegLogicExp)
                 output_args = args[-n_out_bits:]
                 if not all(
                     arg.reg_name == output_args[0].reg_name for arg in output_args
