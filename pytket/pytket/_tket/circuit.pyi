@@ -942,7 +942,7 @@ class Circuit:
         :param n_bits: The number of classical bits in the circuit
         :param name: Optional name for the circuit.
         """
-    def __iter__(self) -> typing.Iterator:
+    def __iter__(self) -> typing.Iterator[Command]:
         """
         Iterate through the circuit, a Command at a time.
         """
