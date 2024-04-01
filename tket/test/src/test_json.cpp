@@ -693,7 +693,8 @@ SCENARIO("Test Circuit serialization") {
 
 SCENARIO("Test device serializations") {
   GIVEN("Architecture") {
-    Architecture arc({{0, 1}, {1, 2}});
+    Architecture arc(
+        std::vector<std::pair<unsigned, unsigned>>{{0, 1}, {1, 2}});
     nlohmann::json j_arc = arc;
     Architecture loaded_arc = j_arc.get<Architecture>();
     CHECK(arc == loaded_arc);

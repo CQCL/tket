@@ -25,11 +25,12 @@ SCENARIO(
     "Test validity of circuit against architecture using "
     "respects_connectivity_constraints method.",
     "[routing]") {
-  Architecture arc({{1, 0}, {1, 2}});
+  Architecture arc(std::vector<std::pair<unsigned, unsigned>>{{1, 0}, {1, 2}});
   GIVEN("A simple CX circuit and a line_placement map.") {
     Circuit circ(5);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {0, 3}, {2, 4}, {1, 4}, {0, 4}});
-    Architecture test_arc({{0, 1}, {1, 2}, {2, 3}, {3, 4}});
+    Architecture test_arc(std::vector<std::pair<unsigned, unsigned>>{
+        {0, 1}, {1, 2}, {2, 3}, {3, 4}});
     LinePlacement lp_obj(test_arc);
     lp_obj.place(circ);
     MappingManager mm(std::make_shared<Architecture>(test_arc));
