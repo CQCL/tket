@@ -125,24 +125,24 @@ class ChoiMixTableau {
    */
   unsigned get_n_outputs() const;
   /**
-    * Get all qubit names present in the input segment.
-    */
-   qubit_vector_t input_qubits() const;
-   /**
-    * Get all qubit names present in the output segment.
-    */
-   qubit_vector_t output_qubits() const;
+   * Get all qubit names present in the input segment.
+   */
+  qubit_vector_t input_qubits() const;
+  /**
+   * Get all qubit names present in the output segment.
+   */
+  qubit_vector_t output_qubits() const;
 
-   /**
-    * Read off a row as a Pauli string.
-    * Returns a pair of Pauli strings RxS such that SCR = C
-    */
-   row_tensor_t get_row(unsigned i) const;
-   /**
-    * Combine rows into a single row.
-    * Returns a pair of Pauli strings RxS such that SCR = C
-    */
-   row_tensor_t get_row_product(const std::vector<unsigned>& rows) const;
+  /**
+   * Read off a row as a Pauli string.
+   * Returns a pair of Pauli strings RxS such that SCR = C
+   */
+  row_tensor_t get_row(unsigned i) const;
+  /**
+   * Combine rows into a single row.
+   * Returns a pair of Pauli strings RxS such that SCR = C
+   */
+  row_tensor_t get_row_product(const std::vector<unsigned>& rows) const;
 
   /**
    * Transform the tableau according to consuming a Clifford gate at either end
@@ -153,8 +153,10 @@ class ChoiMixTableau {
    * multi-qubit gates, the qubits applied must either be all inputs or all
    * outputs.
    */
-  void apply_S(const Qubit& qb, TableauSegment seg = TableauSegment::Output);   void apply_Z(const Qubit& qb, TableauSegment seg = TableauSegment::Output);
-  void apply_V(const Qubit& qb, TableauSegment seg = TableauSegment::Output);   void apply_X(const Qubit& qb, TableauSegment seg = TableauSegment::Output);
+  void apply_S(const Qubit& qb, TableauSegment seg = TableauSegment::Output);
+  void apply_Z(const Qubit& qb, TableauSegment seg = TableauSegment::Output);
+  void apply_V(const Qubit& qb, TableauSegment seg = TableauSegment::Output);
+  void apply_X(const Qubit& qb, TableauSegment seg = TableauSegment::Output);
   void apply_H(const Qubit& qb, TableauSegment seg = TableauSegment::Output);
   void apply_CX(
       const Qubit& control, const Qubit& target,

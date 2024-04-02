@@ -668,8 +668,7 @@ std::pair<Circuit, std::optional<Qubit>> reduce_overlap_of_paulis(
       } else {
         u.add_op<Qubit>(OpType::CX, {last_match, other->first});
       }
-    }
-    else {
+    } else {
       last_overlap = last_match;
     }
   }
