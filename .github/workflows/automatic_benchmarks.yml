@@ -13,11 +13,11 @@ jobs:
 
     steps:
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Checkout Tket
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-          cache: 'pip'
-
+          python-version: '3.12'
       - name: Install pytket-benchmarking
         run: pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket-benchmarking
