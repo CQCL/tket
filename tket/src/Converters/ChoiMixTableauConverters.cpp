@@ -219,6 +219,7 @@ ChoiMixBuilder::ChoiMixBuilder(
   }
 }
 
+// DEBUG METHOD: Ignore this for coverage checks
 ChoiMixTableau ChoiMixBuilder::realised_tableau() const {
   ChoiMixTableau in_tab = circuit_to_cm_tableau(in_circ);
   for (const Qubit& q : post_selected)

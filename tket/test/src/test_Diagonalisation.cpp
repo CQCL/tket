@@ -120,5 +120,29 @@ SCENARIO("Matrix tests for reducing two commuting Paulis to Z X") {
   }
 }
 
+SCENARIO("Reducing shared qubits to no matches") {
+  GIVEN("Strings with no mismatch and second completely contains the first") {
+    SpPauliStabiliser pauli0({{Qubit(0), Pauli::X}, {Qubit(1), Pauli::Y}});
+    SpPauliStabiliser pauli1(
+        {{Qubit(0), Pauli::X}, {Qubit(1), Pauli::Y}, {Qubit(2), Pauli::Z}});
+    SpPauliStabiliser p0_orig = pauli0;
+    SpPauliStabiliser p1_orig = pauli1;
+    std::pair<Circuit, std::optional<Qubit>> sol =
+        reduce_overlap_of_paulis(pauli0, pauli1, CXConfigType::Snake, false);
+    // Check there is no final overlapping qubit returned
+    CHECK(!sol.second);
+    CHECK(pauli0.common_qubits(pauli1).empty());
+    CHECK(pauli0.conflicting_qubits(pauli1).empty());
+    // Check the strings are updated correctly to match the unitary
+    Eigen::MatrixXcd diag_u = tket_sim::get_unitary(sol.first);
+    Eigen::MatrixXcd p0_u = pauli0.to_sparse_matrix(3);
+    Eigen::MatrixXcd p0_o_u = p0_orig.to_sparse_matrix(3);
+    CHECK((p0_u * diag_u * p0_o_u).isApprox(diag_u));
+    Eigen::MatrixXcd p1_u = pauli1.to_sparse_matrix(3);
+    Eigen::MatrixXcd p1_o_u = p1_orig.to_sparse_matrix(3);
+    CHECK((p1_u * diag_u * p1_o_u).isApprox(diag_u));
+  }
+}
+
 }  // namespace test_Diagonalisation
 }  // namespace tket

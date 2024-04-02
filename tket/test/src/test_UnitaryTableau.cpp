@@ -660,6 +660,29 @@ SCENARIO("Synthesis of circuits from UnitaryRevTableau") {
     REQUIRE(test_unitary_comparison(circ, res, true));
     UnitaryRevTableau res_tab = circuit_to_unitary_rev_tableau(res);
     REQUIRE(res_tab == tab);
+    // Manually call apply_gate methods
+    UnitaryRevTableau tab_front(2);
+    tab_front.apply_gate_at_front(OpType::ISWAPMax, {Qubit(0), Qubit(1)});
+    tab_front.apply_gate_at_front(OpType::SXdg, {Qubit(1)});
+    tab_front.apply_gate_at_front(OpType::SX, {Qubit(0)});
+    tab_front.apply_gate_at_front(OpType::ECR, {Qubit(0), Qubit(1)});
+    tab_front.apply_gate_at_front(OpType::SXdg, {Qubit(1)});
+    tab_front.apply_gate_at_front(OpType::SX, {Qubit(0)});
+    tab_front.apply_gate_at_front(OpType::ZZMax, {Qubit(0), Qubit(1)});
+    tab_front.apply_gate_at_front(OpType::SXdg, {Qubit(1)});
+    tab_front.apply_gate_at_front(OpType::SX, {Qubit(0)});
+    REQUIRE(tab == tab_front);
+    UnitaryRevTableau tab_end(2);
+    tab_end.apply_gate_at_end(OpType::SX, {Qubit(0)});
+    tab_end.apply_gate_at_end(OpType::SXdg, {Qubit(1)});
+    tab_end.apply_gate_at_end(OpType::ZZMax, {Qubit(0), Qubit(1)});
+    tab_end.apply_gate_at_end(OpType::SX, {Qubit(0)});
+    tab_end.apply_gate_at_end(OpType::SXdg, {Qubit(1)});
+    tab_end.apply_gate_at_end(OpType::ECR, {Qubit(0), Qubit(1)});
+    tab_end.apply_gate_at_end(OpType::SX, {Qubit(0)});
+    tab_end.apply_gate_at_end(OpType::SXdg, {Qubit(1)});
+    tab_end.apply_gate_at_end(OpType::ISWAPMax, {Qubit(0), Qubit(1)});
+    REQUIRE(tab == tab_end);
   }
 }
 

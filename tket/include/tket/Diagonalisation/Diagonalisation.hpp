@@ -70,6 +70,15 @@ void apply_conjugations(
 std::pair<Circuit, Qubit> reduce_pauli_to_z(
     const SpPauliStabiliser &pauli, CXConfigType cx_config);
 
+/**
+ * Given a pair of (either commuting or anticommuting) Pauli tensors P0, P1,
+ * produces a short Clifford circuit C which maps P0 and P1 to strings which
+ * overlap on at most one qubit (which is also returned). If P0 and P1
+ * anticommute, a mismatching qubit is always left. If they commute, contain at
+ * least one matching qubit and no mismatching qubits, then the final matching
+ * qubit is returned if allow_matching_final is true, otherwise P0 and P1 are
+ * reduced to non-overlapping strings.
+ */
 std::pair<Circuit, std::optional<Qubit>> reduce_overlap_of_paulis(
     SpPauliStabiliser &pauli0, SpPauliStabiliser &pauli1,
     CXConfigType cx_config, bool allow_matching_final = false);
