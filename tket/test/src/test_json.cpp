@@ -693,8 +693,7 @@ SCENARIO("Test Circuit serialization") {
 
 SCENARIO("Test device serializations") {
   GIVEN("Architecture") {
-    Architecture arc(
-        std::vector<std::pair<unsigned, unsigned>>{{0, 1}, {1, 2}});
+    Architecture arc({{Node(0), Node(1)}, {Node(1), Node(2)}});
     nlohmann::json j_arc = arc;
     Architecture loaded_arc = j_arc.get<Architecture>();
     CHECK(arc == loaded_arc);
@@ -919,7 +918,6 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(RebaseTket, RebaseTket())
   COMPPASSJSONTEST(RebaseUFR, RebaseUFR())
   COMPPASSJSONTEST(RemoveRedundancies, RemoveRedundancies())
-  COMPPASSJSONTEST(SynthesiseHQS, SynthesiseHQS())
   COMPPASSJSONTEST(SynthesiseTK, SynthesiseTK())
   COMPPASSJSONTEST(SynthesiseTket, SynthesiseTket())
   COMPPASSJSONTEST(SynthesiseOQC, SynthesiseOQC())

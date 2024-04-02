@@ -128,6 +128,16 @@ bool CircBox::is_equal(const Op &op_other) const {
   return circ_->circuit_equality(*other.circ_, {}, false);
 }
 
+std::optional<std::string> CircBox::get_circuit_name() const {
+  TKET_ASSERT(circ_ != nullptr);
+  return circ_->get_name();
+}
+
+void CircBox::set_circuit_name(const std::string _name) {
+  TKET_ASSERT(circ_ != nullptr);
+  circ_->set_name(_name);
+}
+
 Unitary1qBox::Unitary1qBox(const Eigen::Matrix2cd &m)
     : Box(OpType::Unitary1qBox), m_(m) {
   if (!is_unitary(m)) {

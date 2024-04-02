@@ -42,7 +42,6 @@ from pytket.passes import (
     RemoveRedundancies,
     SimplifyInitial,
     SimplifyMeasured,
-    SynthesiseHQS,
     SynthesiseTket,
     SynthesiseOQC,
     SynthesiseUMD,
@@ -88,7 +87,6 @@ basic_pass:
     | simplify_initial
     | simplify_initial_no_classical
     | simplify_measured
-    | synthesise_hqs
     | synthesise_tket
     | synthesise_oqc
     | synthesise_umd
@@ -132,7 +130,6 @@ remove_redundancies: "RemoveRedundancies"
 simplify_initial: "SimplifyInitial"
 simplify_initial_no_classical: "SimplifyInitialNoClassical"
 simplify_measured: "SimplifyMeasured"
-synthesise_hqs: "SynthesiseHQS"
 synthesise_tket: "SynthesiseTket"
 synthesise_oqc: "SynthesiseOQC"
 synthesise_umd: "SynthesiseUMD"
@@ -300,9 +297,6 @@ class PassTransformer(Transformer):
 
     def simplify_measured(self, t: List) -> BasePass:
         return SimplifyMeasured()
-
-    def synthesise_hqs(self, t: List) -> BasePass:
-        return SynthesiseHQS()
 
     def synthesise_tket(self, t: List) -> BasePass:
         return SynthesiseTket()

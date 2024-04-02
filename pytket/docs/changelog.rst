@@ -4,6 +4,33 @@ Changelog
 Unreleased
 ----------
 
+General:
+
+* Remove deprecated ``SynthesiseHQS`` pass.
+
+Features:
+
+* Add ``circuit_name`` property to ``CircBox``.
+* Enable pickling of ``Bit`` objects.
+* New optimisation ``Transform.PushCliffordsThroughMeasures()`` and pass 
+  ``CliffordPushThroughMeasures`` that optimises Clifford subcircuits 
+  before end of circuit measurement gates.
+
+Fixes:
+
+* Correct handling of ``CustomGate`` when converting from pytket to QASM.
+* Ensure that ECR, CS and CSdg operations have gate definitions in QASM
+  conversion.
+* Correct position of custom gate definitions needed for conditional operations
+  in QASM conversion.
+* Fix ``DelayMeasures()`` pass for circuits where bits are reused as measurement
+  targets.
+* When adding operations to a circuit, check for invalid wires before adding a
+  vertex to the circuit.
+
+1.26.0 (March 2024)
+-------------------
+
 Features:
 
 * Allow ``CircBox`` containing non-default registers.
@@ -20,7 +47,7 @@ Features:
 * Add python binding for ``UnitaryRevTableau``.
 * Add ``TermSequenceBox``, for circuit synthesis of a series of Pauli 
   Exponentials, where the ordering of terms can be changed.
-  
+
 Fixes:
 
 * Add missing op types to methods for converting Clifford circuits to unitary
