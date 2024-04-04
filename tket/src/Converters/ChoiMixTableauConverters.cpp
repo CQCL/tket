@@ -220,6 +220,7 @@ ChoiMixBuilder::ChoiMixBuilder(
 }
 
 // DEBUG METHOD: Ignore this for coverage checks
+// GCOVR_EXCL_START
 ChoiMixTableau ChoiMixBuilder::realised_tableau() const {
   ChoiMixTableau in_tab = circuit_to_cm_tableau(in_circ);
   for (const Qubit& q : post_selected)
@@ -242,6 +243,7 @@ ChoiMixTableau ChoiMixBuilder::realised_tableau() const {
       out_in_permutation, ChoiMixTableau::TableauSegment::Output);
   return ChoiMixTableau::compose(ChoiMixTableau::compose(in_tab, tab), out_tab);
 }
+// GCOVR_EXCL_STOP
 
 void ChoiMixBuilder::solve_id_subspace() {
   // Input-first gaussian elimination to solve input-sides of remaining rows
