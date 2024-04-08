@@ -53,7 +53,7 @@ jobs:
     - name: Save Wheel
       uses: actions/upload-artifact@v4
       with:
-        name: MacOS_M1_3.11_wheel
+        name: pytket_wheel
         path: wheelhouse/
 
   Run-Benchmakrs:
@@ -62,9 +62,6 @@ jobs:
     runs-on: macos-13-xlarge
 
     steps:
-
-      # - name: Checkout Tket
-      #   uses: actions/checkout@v4
       
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -74,21 +71,23 @@ jobs:
       - name: Download Wheel
         uses: actions/download-artifact@v4
         with:
-          name: MacOS_M1_3.11_wheel
+          name: pytket_wheel
 
-      - name: Display workspace
-        run: ls
-
-      # - name: Print short hash
-      #   run: cat $(git rev-parse --short "$GITHUB_SHA")
-
-      - name: Install pytket
-        run: pip install pytket-*.whl
-      
-      - name: Install pytket-benchmarking
+      - name: Install dependencies
         run: |
+          pip install pytket-*.whl
           pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket_benchmarking==0.0.2
+          pip install typer
           pip list
+
+      - name: Checkout tket
+        uses: actions/checkout@v4
+        
+      - name: Compile
+        run: |
+          python automated_benchmarking/automated_benchmarking --help
+          python automated_benchmarking/automated_benchmarking compile --help
+          python automated_benchmarking/automated_benchmarking.py compile Pytket HeavyHexagon
       
       - name: Create comment
         uses: actions/github-script@v7
