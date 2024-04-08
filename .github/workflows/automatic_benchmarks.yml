@@ -79,8 +79,11 @@ jobs:
       - name: Display workspace
         run: ls
 
+      - name: Print short hash
+        run: cat $(git rev-parse --short "$GITHUB_SHA")
+
       - name: Install pytket
-        run: pip install .
+        run: pip install pytket-*.whl
       
       - name: Install pytket-benchmarking
         run: |
