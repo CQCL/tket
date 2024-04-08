@@ -80,10 +80,12 @@ jobs:
         run: ls
 
       - name: Install pytket
-        run: pip install MacOS_M1_3.11_wheel
+        run: pip install .
       
       - name: Install pytket-benchmarking
-        run: pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket_benchmarking==0.0.2
+        run: |
+          pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket_benchmarking==0.0.2
+          pip list
       
       - name: Create comment
         uses: actions/github-script@v7
