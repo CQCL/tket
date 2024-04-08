@@ -6,6 +6,7 @@ from pytket_benchmarking.compiler_passes.architectures import HeavyHexagon
 from pytket.passes import BasePass
 from pytket.architecture import Architecture
 from pytket import Circuit
+from typing_extensions import Annotated
 
 app = typer.Typer()
 
@@ -28,26 +29,17 @@ architectures_dict = {
 }
 
 @app.command()
-def compile(compiler: Compilers, architecture: Architectures):
+def compile(
+    compiler: Annotated[Compilers, typer.Argument(help="Compiler to use")],
+    architecture: Annotated[Architectures, typer.Argument(help="Architecture to compile to")]
+):
+    """Compile circuit
+    """
     circuit = Circuit(2)
     compilers_dict[compiler](
         architecture=architectures_dict[architecture],
         optimisation_level=0,
     ).apply(circuit)
-
-
-@app.command()
-def hello(name: str):
-    print(f"Hello {name}")
-
-
-@app.command()
-def goodbye(name: str, formal: bool = False):
-    if formal:
-        print(f"Goodbye Ms. {name}. Have a good day.")
-    else:
-        print(f"Bye {name}!")
-
 
 if __name__ == "__main__":
     app()
