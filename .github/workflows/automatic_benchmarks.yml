@@ -50,7 +50,8 @@ jobs:
         python3.11 -m build
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
 
-    - uses: actions/upload-artifact@v4
+    - name: Save Wheel
+      uses: actions/upload-artifact@v4
       with:
         name: MacOS_M1_3.11_wheel
         path: wheelhouse/
@@ -62,16 +63,26 @@ jobs:
 
     steps:
 
-      - name: Checkout Tket
-        uses: actions/checkout@v4
+      # - name: Checkout Tket
+      #   uses: actions/checkout@v4
       
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
+      - name: Download Wheel
+        uses: actions/download-artifact@v4
+        with:
+          name: MacOS_M1_3.11_wheel
+
+      - name: Install pytket
+        run: pip install MacOS_M1_3.11_wheel
       
       - name: Install pytket-benchmarking
-        run: pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket_benchmarking==0.0.2
+        run: |
+          pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket_benchmarking==0.0.2
+          pip list
       
       - name: Create comment
         uses: actions/github-script@v7
