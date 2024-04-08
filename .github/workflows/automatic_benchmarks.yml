@@ -85,8 +85,8 @@ jobs:
         
       - name: Compile
         run: |
-          python automated_benchmarking/automated_benchmarking --help
-          python automated_benchmarking/automated_benchmarking compile --help
+          python automated_benchmarking/automated_benchmarking.py --help
+          python automated_benchmarking/automated_benchmarking.py compile --help
           python automated_benchmarking/automated_benchmarking.py compile Pytket HeavyHexagon
       
       - name: Create comment
