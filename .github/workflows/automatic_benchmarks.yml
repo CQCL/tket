@@ -63,8 +63,8 @@ jobs:
 
     steps:
 
-      # - name: Checkout Tket
-      #   uses: actions/checkout@v4
+      - name: Checkout Tket
+        uses: actions/checkout@v4
       
       - name: Setup Python
         uses: actions/setup-python@v5
