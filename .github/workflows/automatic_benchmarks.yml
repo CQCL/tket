@@ -9,7 +9,7 @@ on:
 jobs:
 
   build_wheels:
-    name: Build macos (M1) wheels
+    name: Build Wheels
     runs-on: macos-13-xlarge
 
     steps:
@@ -50,6 +50,11 @@ jobs:
         python3.11 -m build
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
 
+    - name: Display workspace
+      run: |
+        ls
+        ls wheelhouse/
+
     - name: Save Wheel
       uses: actions/upload-artifact@v4
       with:
@@ -75,6 +80,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: MacOS_M1_3.11_wheel
+
+      - name: Display workspace
+      run: ls
 
       - name: Install pytket
         run: pip install MacOS_M1_3.11_wheel
