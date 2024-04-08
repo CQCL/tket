@@ -995,8 +995,11 @@ SCENARIO(
     test_circuit.add_blank_wires(4);
     add_2qb_gates(test_circuit, OpType::CX, {{0, 1}, {1, 2}, {2, 3}, {3, 0}});
 
-    Architecture test_arc(std::vector<std::pair<unsigned, unsigned>>{
-        {0, 1}, {1, 2}, {2, 3}, {3, 0}});
+    Architecture test_arc(
+        {{Node(0), Node(1)},
+         {Node(1), Node(2)},
+         {Node(2), Node(3)},
+         {Node(3), Node(0)}});
     Placement test_p(test_arc);
 
     std::map<Qubit, Node> map_;
@@ -1022,7 +1025,7 @@ SCENARIO("Empty Circuit test") {
     Circuit circ;
     circ.add_blank_wires(4);
     Architecture arc(
-        std::vector<std::pair<unsigned, unsigned>>{{0, 1}, {1, 2}, {2, 3}});
+        {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(mm.route_circuit(
         circ, {
@@ -1043,7 +1046,7 @@ SCENARIO("Routing on circuit with no multi-qubit gates") {
 
     unsigned orig_vertices = circ.n_vertices();
     Architecture arc(
-        std::vector<std::pair<unsigned, unsigned>>{{0, 1}, {1, 2}, {2, 3}});
+        {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(mm.route_circuit(
         circ, {
@@ -1059,9 +1062,8 @@ SCENARIO("Test routing on a directed architecture with bidirectional edges") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::H, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    Architecture arc(
-        std::vector<std::pair<unsigned, unsigned>>{{0, 1}, {1, 0}});
-    Architecture arc2(std::vector<std::pair<unsigned, unsigned>>{{0, 1}});
+    Architecture arc({{Node(0), Node(1)}, {Node(1), Node(0)}});
+    Architecture arc2({std::pair<Node, Node>{Node(0), Node(1)}});
 
     // routing ignored bi directional edge and solves correctly
     MappingManager mm(std::make_shared<Architecture>(arc));
@@ -1089,7 +1091,7 @@ SCENARIO(
     circ.add_op<unsigned>(OpType::CRz, 0.5, {1, 0});
     circ.add_op<unsigned>(OpType::CRz, 0.5, {0, 1});
 
-    Architecture arc(std::vector<std::pair<unsigned, unsigned>>{{0, 1}});
+    Architecture arc({std::pair<Node, Node>{Node(0), Node(1)}});
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(mm.route_circuit(
         circ, {std::make_shared<LexiLabellingMethod>(),
@@ -1529,8 +1531,11 @@ SCENARIO("Initial map should contain all data qubits") {
   }
 }
 SCENARIO("Unlabelled qubits should be assigned to ancilla qubits.") {
-  Architecture arc(std::vector<std::pair<unsigned, unsigned>>{
-      {0, 1}, {1, 2}, {2, 3}, {3, 0}});
+  Architecture arc(
+      {{Node(0), Node(1)},
+       {Node(1), Node(2)},
+       {Node(2), Node(3)},
+       {Node(3), Node(0)}});
   Circuit c(4);
   c.add_op<unsigned>(OpType::CZ, {0, 3});
   c.add_op<unsigned>(OpType::CZ, {1, 0});
@@ -1561,8 +1566,7 @@ SCENARIO("Unlabelled qubits should be assigned to ancilla qubits.") {
 }
 SCENARIO("Lexi relabel with partially mapped circuit") {
   GIVEN("With an unplaced qubit") {
-    Architecture arc(
-        std::vector<std::pair<unsigned, unsigned>>{{0, 1}, {1, 2}});
+    Architecture arc({{Node(0), Node(1)}, {Node(1), Node(2)}});
     Circuit c(3);
     c.add_op<unsigned>(OpType::CZ, {0, 1}, "cz0,1");
     c.add_op<unsigned>(OpType::CZ, {1, 2}, "cz1,2");
@@ -1593,8 +1597,12 @@ SCENARIO("Lexi relabel with partially mapped circuit") {
     c.add_op<unsigned>(OpType::CZ, {1, 3}, "cz1,3");
     c.add_op<unsigned>(OpType::CZ, {3, 2}, "cz3,2");
 
-    Architecture arc(std::vector<std::pair<unsigned, unsigned>>{
-        {0, 1}, {0, 2}, {0, 3}, {4, 1}, {4, 2}});
+    Architecture arc(
+        {{Node(0), Node(1)},
+         {Node(0), Node(2)},
+         {Node(0), Node(3)},
+         {Node(4), Node(1)},
+         {Node(4), Node(2)}});
     PassPtr plac_p = gen_placement_pass(std::make_shared<GraphPlacement>(arc));
     CompilationUnit cu(c);
     REQUIRE(plac_p->apply(cu));

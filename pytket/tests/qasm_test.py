@@ -152,14 +152,6 @@ def test_qasm_str_roundtrip() -> None:
     assert c == c2
 
 
-def test_qasm_str_roundtrip_oqc() -> None:
-    with open(curr_file_path / "qasm_test_files/test15.qasm", "r") as f:
-        c = circuit_from_qasm_str(f.read())
-        qasm_str = circuit_to_qasm_str(c, "oqclib1")
-        c2 = circuit_from_qasm_str(qasm_str)
-    assert c == c2
-
-
 def test_readout() -> None:
     fname = str(curr_file_path / "qasm_test_files/testout2.qasm")
     circ = Circuit(3)
@@ -460,7 +452,7 @@ def test_opaque() -> None:
     )
     with pytest.raises(QASMUnsupportedError) as e:
         circuit_to_qasm_str(c)
-    assert "CustomGate myopaq has empty definition" in str(e.value)
+    assert "Empty CustomGates and opaque gates are not supported" in str(e.value)
 
 
 def test_alternate_encoding() -> None:
@@ -888,6 +880,58 @@ def test_register_name_check() -> None:
     assert err_msg in str(e2.value)
 
 
+def test_conditional_custom() -> None:
+    # https://github.com/CQCL/tket/issues/1299
+    qasm0 = """
+    OPENQASM 2.0;
+    include "qelib1.inc";
+
+    gate cx_o0 q0,q1 { x q0; cx q0,q1; x q0; }
+
+    qreg q[2];
+    creg c[1];
+
+    if(c==1) cx_o0 q[1],q[0];
+    measure q[0] -> c[0];
+    """
+
+    circ = circuit_from_qasm_str(qasm0)
+    qasm1 = circuit_to_qasm_str(circ)
+    assert (
+        qasm1
+        == """OPENQASM 2.0;
+include "qelib1.inc";
+
+qreg q[2];
+creg c[1];
+if(c==1) x q[1];
+if(c==1) cx q[1],q[0];
+if(c==1) x q[1];
+measure q[0] -> c[0];
+"""
+    )
+
+
+def test_nonstandard_gates() -> None:
+    # https://github.com/CQCL/tket/issues/1302
+    circ = Circuit(2)
+    circ.CS(0, 1)
+    circ.ECR(0, 1)
+    circ.CSdg(0, 1)
+    qasm = circuit_to_qasm_str(circ)
+    assert "gate cs" in qasm
+    assert "gate ecr" in qasm
+    assert "gate csdg" in qasm
+
+
+def test_conditional_nonstandard_gates() -> None:
+    # https://github.com/CQCL/tket/issues/1301
+    circ = Circuit(2, 1)
+    circ.ZZMax(0, 1, condition=Bit(0))
+    qasm = circuit_to_qasm_str(circ)
+    assert "if(c==1) zzmax q[0],q[1];" in qasm
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
@@ -896,7 +940,6 @@ if __name__ == "__main__":
     test_qasm_measure()
     test_qasm_roundtrip()
     test_qasm_str_roundtrip()
-    test_qasm_str_roundtrip_oqc()
     test_readout()
     test_symbolic_write()
     test_custom_gate()

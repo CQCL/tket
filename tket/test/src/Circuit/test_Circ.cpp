@@ -2800,11 +2800,20 @@ SCENARIO("(qu)bit_readout/mapping for a circuit") {
   REQUIRE(qb_map.at(Qubit(qreg[2])) == creg[2]);
 }
 
-SCENARIO("Trying to add a Measure gate with no classical output") {
-  Circuit circ(2);
-  circ.add_op<unsigned>(OpType::CX, {0, 1});
-  REQUIRE_THROWS_AS(
-      circ.add_op<unsigned>(OpType::Measure, {0}), CircuitInvalidity);
+SCENARIO("Invalid Measure operations") {
+  GIVEN("Trying to add a Measure gate with no classical output") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    REQUIRE_THROWS_AS(
+        circ.add_op<unsigned>(OpType::Measure, {0}), CircuitInvalidity);
+  }
+  GIVEN("Trying to add a Measure on non-existent wires") {
+    // https://github.com/CQCL/tket/issues/979
+    Circuit circ;
+    REQUIRE_THROWS(circ.add_measure(0, 0));
+    std::vector<Command> cmds = circ.get_commands();
+    REQUIRE(cmds.empty());
+  }
 }
 
 SCENARIO("Testing add_op with Barrier type and add_barrier") {

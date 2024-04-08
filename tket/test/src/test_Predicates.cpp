@@ -438,8 +438,13 @@ SCENARIO("Test PlacementPredicate") {
   GIVEN(
       "Does the Placement class correctly modify Circuits and return "
       "maps?") {
-    Architecture test_arc(std::vector<std::pair<unsigned, unsigned>>{
-        {0, 1}, {1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 5}});
+    Architecture test_arc(
+        {{Node(0), Node(1)},
+         {Node(1), Node(2)},
+         {Node(1), Node(3)},
+         {Node(1), Node(4)},
+         {Node(2), Node(3)},
+         {Node(2), Node(5)}});
 
     PredicatePtr placement_pred =
         std::make_shared<PlacementPredicate>(test_arc);
@@ -478,7 +483,7 @@ SCENARIO("Test PlacementPredicate") {
 SCENARIO("Test ConnectivityPredicate") {
   // https://github.com/CQCL/tket/issues/683
   Architecture arc(
-      std::vector<std::pair<unsigned, unsigned>>{{0, 1}, {0, 2}, {1, 2}});
+      {{Node(0), Node(1)}, {Node(0), Node(2)}, {Node(1), Node(2)}});
   Circuit c(2, 2);
   c.add_conditional_gate<unsigned>(OpType::Phase, {0.5}, {}, {0}, 1);
   PredicatePtr conn = std::make_shared<ConnectivityPredicate>(arc);

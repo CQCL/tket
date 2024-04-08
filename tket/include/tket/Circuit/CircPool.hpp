@@ -109,9 +109,6 @@ const Circuit &SWAP_using_CX_0();
 /** Equivalent to SWAP, using three CX, outer CX have control on qubit 1 */
 const Circuit &SWAP_using_CX_1();
 
-/** A two-qubit circuit with an Rz(1) on each qubit */
-const Circuit &two_Rz1();
-
 /** X[1]; CX[0,1] */
 const Circuit &X1_CX();
 

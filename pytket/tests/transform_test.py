@@ -1473,6 +1473,23 @@ def test_selectively_decompose_boxes() -> None:
     assert cmds[2].op.type == OpType.CircBox
 
 
+def test_clifford_push() -> None:
+    c_x: Circuit = Circuit(2, 2).X(0).measure_all()
+    assert not Transform.PushCliffordsThroughMeasures().apply(c_x)
+    c_cx_x: Circuit = Circuit(2, 2).X(0).CX(0, 1).X(0).measure_all()
+    assert Transform.PushCliffordsThroughMeasures().apply(c_cx_x)
+    assert c_cx_x.n_1qb_gates() == 0
+    assert c_cx_x.n_2qb_gates() == 0
+    coms = c_cx_x.get_commands()
+    assert len(coms) == 8
+    assert coms[2].op.type == OpType.SetBits
+    assert coms[3].op.type == OpType.ExplicitModifier
+    assert coms[4].op.type == OpType.ExplicitModifier
+    assert coms[5].op.type == OpType.ExplicitModifier
+    assert coms[6].op.type == OpType.ExplicitModifier
+    assert coms[7].op.type == OpType.CopyBits
+
+
 if __name__ == "__main__":
     test_remove_redundancies()
     test_reduce_singles()
@@ -1504,3 +1521,4 @@ if __name__ == "__main__":
     test_auto_rebase_with_swap_zzphase()
     test_auto_rebase_with_swap_tk2()
     test_selectively_decompose_boxes()
+    test_clifford_push()

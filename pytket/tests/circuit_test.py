@@ -324,6 +324,15 @@ def test_symbolic_circbox() -> None:
     assert not c_outer.is_symbolic()
 
 
+def test_renaming_circbox_circuit() -> None:
+    c = Circuit(2).CX(0, 1)
+    cbox = CircBox(c)
+    d = Circuit(2).add_circbox(cbox, [0, 1])
+    cbox.circuit_name = "test_name"
+    assert cbox.circuit_name == "test_name"
+    assert d.get_commands()[0].op.circuit_name == "test_name"  # type: ignore
+
+
 def test_subst_4() -> None:
     # https://github.com/CQCL/tket/issues/219
     m = fresh_symbol("m")
@@ -529,8 +538,10 @@ def test_boxes() -> None:
 
     pauli_exps = [cmd.op for cmd in d if cmd.op.type == OpType.PauliExpBox]
     assert len(pauli_exps) == 1
-    assert pauli_exps[0].get_paulis() == paulis
-    assert pauli_exps[0].get_phase() == Symbol("alpha")  # type: ignore
+    pauli_exp = pauli_exps[0]
+    assert isinstance(pauli_exp, PauliExpBox)
+    assert pauli_exp.get_paulis() == paulis
+    assert pauli_exp.get_phase() == Symbol("alpha")  # type: ignore
 
     boxes = (cbox, mbox, u2qbox, u3qbox, ebox, pbox, qcbox)
     assert all(box == box for box in boxes)
@@ -1508,6 +1519,12 @@ def test_bad_circbox() -> None:
     circ.add_classicalexpbox_register(a | b, c.to_list())
     with pytest.raises(RuntimeError) as e:
         _ = CircBox(circ)
+
+
+def test_pickle_bit() -> None:
+    # https://github.com/CQCL/tket/issues/1293
+    for b in [Bit(1), Bit("z", 0), Bit("z", (2, 0, 3))]:
+        assert b == pickle.loads(pickle.dumps(b))
 
 
 if __name__ == "__main__":
