@@ -76,6 +76,9 @@ jobs:
         with:
           name: MacOS_M1_3.11_wheel
 
+      - name: Display workspace
+        run: ls
+
       - name: Install pytket
         run: pip install MacOS_M1_3.11_wheel
       
