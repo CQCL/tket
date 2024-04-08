@@ -63,8 +63,8 @@ jobs:
 
     steps:
 
-      - name: Checkout Tket
-        uses: actions/checkout@v4
+      # - name: Checkout Tket
+      #   uses: actions/checkout@v4
       
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -79,8 +79,8 @@ jobs:
       - name: Display workspace
         run: ls
 
-      - name: Print short hash
-        run: cat $(git rev-parse --short "$GITHUB_SHA")
+      # - name: Print short hash
+      #   run: cat $(git rev-parse --short "$GITHUB_SHA")
 
       - name: Install pytket
         run: pip install pytket-*.whl
