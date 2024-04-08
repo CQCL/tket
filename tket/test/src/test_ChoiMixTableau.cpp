@@ -953,31 +953,5 @@ SCENARIO("Conversions to and from UnitaryTableau and UnitaryRevTableau") {
   }
 }
 
-SCENARIO("Conversions to and from UnitaryTableau and UnitaryRevTableau") {
-  GIVEN("A round trip UnitaryTableau -> ChoiMixTableau -> UnitaryTableau") {
-    Circuit circ = get_test_circ();
-    UnitaryTableau utab = circuit_to_unitary_tableau(circ);
-    ChoiMixTableau cmtab = unitary_tableau_to_cm_tableau(utab);
-    UnitaryTableau utab2 = cm_tableau_to_unitary_tableau(cmtab);
-    REQUIRE(utab == utab2);
-  }
-  GIVEN(
-      "A round trip UnitaryRevTableau -> ChoiMixTableau -> UnitaryRevTableau") {
-    Circuit circ = get_test_circ();
-    UnitaryRevTableau utab = circuit_to_unitary_rev_tableau(circ);
-    ChoiMixTableau cmtab = unitary_rev_tableau_to_cm_tableau(utab);
-    UnitaryRevTableau utab2 = cm_tableau_to_unitary_rev_tableau(cmtab);
-    REQUIRE(utab == utab2);
-  }
-  GIVEN("A non-unitary ChoiMixTableau") {
-    Circuit circ = get_test_circ();
-    circ.qubit_discard(Qubit(1));
-    circ.qubit_create(Qubit(2));
-    ChoiMixTableau cmtab = circuit_to_cm_tableau(circ);
-    REQUIRE_THROWS(cm_tableau_to_unitary_tableau(cmtab));
-    REQUIRE_THROWS(cm_tableau_to_unitary_rev_tableau(cmtab));
-  }
-}
-
 }  // namespace test_ChoiMixTableau
 }  // namespace tket

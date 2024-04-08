@@ -50,6 +50,13 @@ enum class PGOpType {
   // Some other PGOp conditioned on classical data
   Conditional,
 
+  // Some other PGOp conditioned on a quantum state
+  QControl,
+
+  // A collection of other PGOps conditioned on different values of a quantum
+  // state
+  Multiplexor,
+
   // An opaque boxed circuit component; treated as a local barrier
   // Defined in Converters module to have access to Circuit components
   Box,
@@ -452,7 +459,6 @@ class PGConditional : public PGOp {
   bit_vector_t args_;
   unsigned value_;
 };
-
 
 /**
  * PGOp for PGOpType::QControl, wrapping another (unitary) PGOp and executing it

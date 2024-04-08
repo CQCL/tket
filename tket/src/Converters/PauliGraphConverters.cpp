@@ -16,6 +16,7 @@
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Converters/Converters.hpp"
 #include "tket/Converters/PhasePoly.hpp"
+#include "tket/Diagonalisation/DiagUtils.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
 #include "tket/Gate/Gate.hpp"
 

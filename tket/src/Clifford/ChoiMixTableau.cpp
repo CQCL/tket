@@ -102,8 +102,8 @@ ChoiMixTableau::ChoiMixTableau(const std::list<row_tensor_t>& rows)
   MatrixXb zmat = MatrixXb::Zero(n_rows, n_qbs);
   VectorXb phase = VectorXb::Zero(n_rows);
   unsigned r = 0;
-  unsigned n_ys = 0;
   for (const row_tensor_t& row : rows) {
+    unsigned n_ys = 0;
     for (const std::pair<const Qubit, Pauli>& qb : row.first.string) {
       unsigned c =
           col_index_.left.at(col_key_t{qb.first, TableauSegment::Input});
