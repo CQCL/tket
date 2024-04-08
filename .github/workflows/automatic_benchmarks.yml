@@ -9,38 +9,56 @@ on:
 jobs:
 
   build_wheels:
-    name: Build manylinux
-    runs-on: ubuntu-22.04
+    name: Build macos (M1) wheels
+    runs-on: macos-13-xlarge
 
     steps:
-    - name: Checkout Tket
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
       with:
         fetch-depth: '0'
 
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    
-    - name: Set up container
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.11
+
+    - name: Install conan
+      uses: turtlebrowser/get-conan@v1.2
+
+    - name: Set up conan
       run: |
-        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux_2_28_x86_64:latest /bin/bash
-        docker cp . linux_build:/tket/
-    
-    - name: Run build
+        conan profile detect
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/macos-13-xlarge
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+
+    - name: Build tket C++
+      run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
+
+    - name: Build wheel
       run: |
-        docker start linux_build
-        docker exec -e PY_TAG="cp311-cp311" -e CONAN_PROFILE=linux-x86_64-gcc12 linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
-        mkdir wheelhouse
-        docker cp linux_build:/tket/pytket/audited/. wheelhouse/
-    
+        conan create recipes/pybind11
+        conan create recipes/pybind11_json/all --version 0.2.13
+        cd pytket
+        # Ensure wheels are compatible with MacOS 12.0 and later:
+        export WHEEL_PLAT_NAME=macosx_12_0_arm64
+        python3.11 -m pip install -U pip build delocate
+        python3.11 -m build
+        delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
+
     - uses: actions/upload-artifact@v4
       with:
-        name: Linux_3.11_wheel
+        name: MacOS_M1_3.11_wheel
         path: wheelhouse/
 
   Run-Benchmakrs:
     name: Run Benchmarks
     needs: build_wheels
-    runs-on: ubuntu-latest
+    runs-on: macos-13-xlarge
 
     steps:
 
