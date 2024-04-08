@@ -9,7 +9,7 @@ on:
 jobs:
 
   build_wheels:
-    name: Build Wheels
+    name: Build macos (M1) wheels
     runs-on: macos-13-xlarge
 
     steps:
@@ -50,11 +50,6 @@ jobs:
         python3.11 -m build
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
 
-    - name: Display workspace
-      run: |
-        ls
-        ls wheelhouse/
-
     - name: Save Wheel
       uses: actions/upload-artifact@v4
       with:
@@ -67,6 +62,9 @@ jobs:
     runs-on: macos-13-xlarge
 
     steps:
+
+      # - name: Checkout Tket
+      #   uses: actions/checkout@v4
       
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -78,16 +76,11 @@ jobs:
         with:
           name: MacOS_M1_3.11_wheel
 
-      - name: Display workspace
-      run: ls
-
       - name: Install pytket
         run: pip install MacOS_M1_3.11_wheel
       
       - name: Install pytket-benchmarking
-        run: |
-          pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket_benchmarking==0.0.2
-          pip list
+        run: pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket_benchmarking==0.0.2
       
       - name: Create comment
         uses: actions/github-script@v7
