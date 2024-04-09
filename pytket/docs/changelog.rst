@@ -15,6 +15,7 @@ Features:
 * New optimisation ``Transform.PushCliffordsThroughMeasures()`` and pass 
   ``CliffordPushThroughMeasures`` that optimises Clifford subcircuits 
   before end of circuit measurement gates.
+* Add ``OpType.GPI``, ``OpType.GPI2`` and ``OpType.AAMS``.
 
 Fixes:
 
