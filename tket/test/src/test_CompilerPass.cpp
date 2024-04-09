@@ -25,6 +25,7 @@
 #include "tket/Circuit/Command.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
+#include "tket/Gate/SymTable.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeFunctions.hpp"
@@ -2057,5 +2058,71 @@ SCENARIO("PauliExponentials") {
     REQUIRE(test_unitary_comparison(c, cu.get_circ_ref(), true));
   }
 }
+
+SCENARIO("GPI, GPI2 and AAMS operations") {
+  GIVEN("A circuit") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::GPI, 0.1, {0});
+    c.add_op<unsigned>(OpType::GPI2, 0.2, {1});
+    c.add_op<unsigned>(OpType::AAMS, {0.3, 0.4, 0.5}, {0, 1});
+    c.add_op<unsigned>(OpType::AAMS, {0.6, 0.7, 0.8}, {1, 2});
+    c.add_op<unsigned>(OpType::GPI, 0.1, {1});
+    c.add_op<unsigned>(OpType::GPI2, 0.2, {2});
+    Circuit c_d = c.dagger();
+    Circuit c2 = c;
+    c2.append(c_d);
+    Eigen::MatrixXcd u = tket_sim::get_unitary(c2);
+    REQUIRE(u.isApprox(Eigen::MatrixXcd::Identity(8, 8)));
+    Circuit c_t = c.transpose();
+    CHECK(c_t.n_gates() == c.n_gates());
+    CompilationUnit cu(c);
+    CHECK(FullPeepholeOptimise(true, OpType::CX)->apply(cu));
+    REQUIRE(test_unitary_comparison(c, cu.get_circ_ref()));
+    CompilationUnit cu1(c);
+    CHECK(gen_rebase_pass_via_tk2(
+              {OpType::PhasedX, OpType::Rz, OpType::CX},
+              CircPool::TK2_using_CX_and_swap, CircPool::tk1_to_PhasedXRz)
+              ->apply(cu1));
+    REQUIRE(test_unitary_comparison(c, cu1.get_circ_ref()));
+  }
+  GIVEN("Rebasing a symbolic AAAS gate") {
+    Circuit circ(2);
+    auto a = SymTable::fresh_symbol("a");
+    auto b = SymTable::fresh_symbol("b");
+    auto c = SymTable::fresh_symbol("c");
+    auto ea = Expr(a);
+    auto eb = Expr(b);
+    auto ec = Expr(c);
+    SymEngine::map_basic_basic sub_map{
+        std::make_pair(a, Expr(0.1)), std::make_pair(b, Expr(0.2)),
+        std::make_pair(c, Expr(0.3))};
+    circ.add_op<unsigned>(OpType::AAMS, {Expr(a), Expr(b), Expr(c)}, {0, 1});
+    CompilationUnit cu(circ);
+    CHECK(gen_rebase_pass_via_tk2(
+              {OpType::PhasedX, OpType::Rz, OpType::CX},
+              CircPool::TK2_using_CX_and_swap, CircPool::tk1_to_PhasedXRz)
+              ->apply(cu));
+    Circuit circ1 = cu.get_circ_ref();
+    circ1.symbol_substitution(sub_map);
+    Circuit circ2(2);
+    circ2.add_op<unsigned>(OpType::AAMS, {0.1, 0.2, 0.3}, {0, 1});
+    REQUIRE(test_unitary_comparison(circ1, circ2));
+  }
+  GIVEN("A circuit made of Clifford gates") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::GPI, 0.25, {0});
+    c.add_op<unsigned>(OpType::GPI2, 0.5, {1});
+    c.add_op<unsigned>(OpType::AAMS, {0, 0.1, 0.2}, {0, 1});
+    c.add_op<unsigned>(OpType::AAMS, {1., 0.25, 0.75}, {1, 2});
+    c.add_op<unsigned>(OpType::AAMS, {0.5, 0.5, 1.5}, {0, 1});
+    REQUIRE(CliffordCircuitPredicate().verify(c));
+  }
+  GIVEN("A circuit with a non-Clifford AAMS gate") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::AAMS, {1., 0, 0.1}, {0, 1});
+    REQUIRE_FALSE(CliffordCircuitPredicate().verify(c));
+  }
+}
+
 }  // namespace test_CompilerPass
 }  // namespace tket
