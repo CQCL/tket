@@ -278,7 +278,7 @@ enum class OpType {
    * \cos\frac{\pi\theta}{2} & 0 & 0 &
    * -ie^{-i\pi(\phi_0+\phi_1)}\sin\frac{\pi\theta}{2} \\
    * 0 & \cos\frac{\pi\theta}{2} &
-   * -ie^{i\pi(\phi_0-\phi_1)}\sin\frac{\pi\theta}{2} & 0 \\
+   * -ie^{i\pi(\phi_1-\phi_0)}\sin\frac{\pi\theta}{2} & 0 \\
    * 0 & -ie^{i\pi(\phi_0-\phi_1)}\sin\frac{\pi\theta}{2} &
    * \cos\frac{\pi\theta}{2} & 0 \\
    * -ie^{i\pi(\phi_0+\phi_1)}\sin\frac{\pi\theta}{2} & 0 & 0 &
