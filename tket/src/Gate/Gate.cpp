@@ -118,6 +118,15 @@ Op_ptr Gate::dagger() const {
     case OpType::ESWAP: {
       return get_op_ptr(optype, minus_times(params_[0]), n_qubits_);
     }
+    case OpType::GPI: {
+      return get_op_ptr(optype, params_[0]);
+    }
+    case OpType::GPI2: {
+      return get_op_ptr(optype, params_[0] + 1);
+    }
+    case OpType::AAMS: {
+      return get_op_ptr(optype, {params_[0], params_[1] + 1, params_[2]});
+    }
     case OpType::ZZMax: {
       // ZZMax.dagger = ZZPhase(-0.5)
       return get_op_ptr(OpType::ZZPhase, -0.5);
@@ -231,6 +240,13 @@ Op_ptr Gate::transpose() const {
     case OpType::CnX:
     case OpType::CnZ: {
       return get_op_ptr(optype, std::vector<Expr>(), n_qubits_);
+    }
+    case OpType::GPI:
+    case OpType::GPI2: {
+      return get_op_ptr(optype, -params_[0]);
+    }
+    case OpType::AAMS: {
+      return get_op_ptr(optype, {params_[0], -params_[1], -params_[2]});
     }
     case OpType::U2: {
       // U2(a,b).transpose() == U2(b+1,a+1)
@@ -367,7 +383,8 @@ std::optional<double> Gate::is_identity() const {
     case OpType::YYPhase:
     case OpType::ZZPhase:
     case OpType::XXPhase3:
-    case OpType::ESWAP: {
+    case OpType::ESWAP:
+    case OpType::AAMS: {
       Expr e = params[0];
       if (equiv_0(e, 4)) {
         return 0.;
@@ -462,6 +479,22 @@ bool Gate::is_clifford() const {
     case OpType::PhasedISWAP:
     case OpType::FSim:
       return equiv_0(4 * params_.at(0)) && equiv_0(2 * params_.at(1));
+    case OpType::GPI:
+      return equiv_0(8 * params_.at(0));
+    case OpType::GPI2:
+      return equiv_0(4 * params_.at(0));
+    case OpType::AAMS:
+      if (equiv_0(params_.at(0))) {
+        return true;
+      } else if (
+          !equiv_0(4 * params_.at(0)) || !equiv_0(8 * params_.at(1)) ||
+          !equiv_0(8 * params_.at(2))) {
+        return false;
+      } else if (equiv_0(2 * params_.at(0))) {
+        return true;
+      } else {
+        return equiv_0(4 * params_.at(1)) && equiv_0(4 * params_.at(2));
+      }
     default:
       return false;
   }
@@ -704,6 +737,12 @@ std::vector<Expr> Gate::get_tk1_angles() const {
       return {
           params_.at(1) + half, params_.at(0), params_.at(2) - half,
           (params_.at(1) + params_.at(2)) / 2};
+    }
+    case OpType::GPI: {
+      return {2 * params_.at(0), 1, 0, half};
+    }
+    case OpType::GPI2: {
+      return {params_.at(0), half, -params_.at(0), 0};
     }
     case OpType::NPhasedX: {
       if (n_qubits_ != 1) {

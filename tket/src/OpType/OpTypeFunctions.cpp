@@ -41,7 +41,8 @@ const OpTypeSet& all_gate_types() {
       OpType::CnRy,     OpType::CnX,      OpType::CnZ,         OpType::CnY,
       OpType::BRIDGE,   OpType::Collapse, OpType::ESWAP,       OpType::FSim,
       OpType::Sycamore, OpType::ISWAPMax, OpType::PhasedISWAP, OpType::XXPhase3,
-      OpType::NPhasedX, OpType::TK2,      OpType::Phase};
+      OpType::NPhasedX, OpType::TK2,      OpType::Phase,       OpType::GPI,
+      OpType::GPI2,     OpType::AAMS};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;
@@ -61,7 +62,7 @@ const OpTypeSet& all_multi_qubit_types() {
       OpType::CnZ,         OpType::CnY,         OpType::BRIDGE,
       OpType::ESWAP,       OpType::FSim,        OpType::Sycamore,
       OpType::ISWAPMax,    OpType::PhasedISWAP, OpType::XXPhase3,
-      OpType::NPhasedX,    OpType::TK2};
+      OpType::NPhasedX,    OpType::TK2,         OpType::AAMS};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;
@@ -74,7 +75,7 @@ const OpTypeSet& all_single_qubit_unitary_types() {
       OpType::Sdg,  OpType::T,    OpType::Tdg, OpType::V,  OpType::Vdg,
       OpType::SX,   OpType::SXdg, OpType::H,   OpType::Rx, OpType::Ry,
       OpType::Rz,   OpType::U1,   OpType::U2,  OpType::U3, OpType::PhasedX,
-      OpType::TK1};
+      OpType::TK1,  OpType::GPI,  OpType::GPI2};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;
@@ -87,7 +88,8 @@ const OpTypeSet& all_single_qubit_types() {
       OpType::Vdg,   OpType::SX,       OpType::SXdg,    OpType::H,
       OpType::Rx,    OpType::Ry,       OpType::Rz,      OpType::U3,
       OpType::U2,    OpType::U1,       OpType::TK1,     OpType::Measure,
-      OpType::Reset, OpType::Collapse, OpType::PhasedX, OpType::noop};
+      OpType::Reset, OpType::Collapse, OpType::PhasedX, OpType::noop,
+      OpType::GPI,   OpType::GPI2};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;
