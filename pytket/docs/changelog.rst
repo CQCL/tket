@@ -30,6 +30,10 @@ Fixes:
   vertex to the circuit.
 * Restrict scipy version to 1.12.x to avoid quimb-related errors from zx module.
 
+Deprecations:
+
+* Deprecate ``SynthesiseOQC`` pass.
+
 1.26.0 (March 2024)
 -------------------
 
