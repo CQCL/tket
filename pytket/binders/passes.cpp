@@ -521,8 +521,15 @@ PYBIND11_MODULE(passes, m) {
       "SynthesiseTket", &SynthesiseTket,
       "Optimises and converts all gates to CX, TK1 and Phase gates.");
   m.def(
-      "SynthesiseOQC", &SynthesiseOQC,
-      "Optimises and converts all gates to ECR, Rz, SX and Phase.");
+      "SynthesiseOQC",
+      []() {
+        tket_log()->warn(
+            "SynthesiseOQC is deprecated. It will be removed "
+            "after pytket v1.28.");
+        return SynthesiseOQC();
+      },
+      "Optimises and converts all gates to ECR, Rz, SX and Phase. "
+      "DEPRECATED: will be removed after pytket 1.28.");
   m.def(
       "SynthesiseUMD", &SynthesiseUMD,
       "Optimises and converts all gates to XXPhase, PhasedX, Rz and Phase.");
