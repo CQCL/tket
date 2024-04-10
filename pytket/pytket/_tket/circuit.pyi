@@ -3140,7 +3140,7 @@ class OpType:
     
       GPI2 : :math:`(\\phi) \\mapsto \\frac{1}{\\sqrt 2} \\left[ \\begin{array}{cc} 1 & -ie^{-i\\pi\\phi} \\\\ -ie^{i\\pi\\phi} & 1 \\end{array} \\right]`
     
-      AAMS : :math:`(\\theta, \\phi_0, \\phi_1) \\mapsto \\left[ \\begin{array}{cccc} \\cos\\frac{\\pi\\theta}{2} & 0 & 0 & -ie^{-i\\pi{\\phi_0+\\phi_1}}\\sin\\frac{\\pi\\theta}{2} \\\\ 0 & \\cos\\frac{\\pi\\theta}{2} & -ie^{i\\pi{\\phi_0-\\phi_1}}\\sin\\frac{\\pi\\theta}{2} & 0 \\\\ 0 & -ie^{i\\pi{\\phi_0-\\phi_1}}\\sin\\frac{\\pi\\theta}{2} & \\cos\\frac{\\pi\\theta}{2} & 0 \\\\ -ie^{i\\pi{\\phi_0+\\phi_1}}\\sin\\frac{\\pi\\theta}{2} & 0 & 0 & \\cos\\frac{\\pi\\theta}{2} \\end{array} \\right]`
+      AAMS : :math:`(\\theta, \\phi_0, \\phi_1) \\mapsto \\left[ \\begin{array}{cccc} \\cos\\frac{\\pi\\theta}{2} & 0 & 0 & -ie^{-i\\pi(\\phi_0+\\phi_1)}\\sin\\frac{\\pi\\theta}{2} \\\\ 0 & \\cos\\frac{\\pi\\theta}{2} & -ie^{i\\pi(\\phi_1-\\phi_0)}\\sin\\frac{\\pi\\theta}{2} & 0 \\\\ 0 & -ie^{i\\pi(\\phi_0-\\phi_1)}\\sin\\frac{\\pi\\theta}{2} & \\cos\\frac{\\pi\\theta}{2} & 0 \\\\ -ie^{i\\pi(\\phi_0+\\phi_1)}\\sin\\frac{\\pi\\theta}{2} & 0 & 0 & \\cos\\frac{\\pi\\theta}{2} \\end{array} \\right]`
     
       TK1 : :math:`(\\alpha, \\beta, \\gamma) \\mapsto \\mathrm{Rz}(\\alpha) \\mathrm{Rx}(\\beta) \\mathrm{Rz}(\\gamma)`
     
