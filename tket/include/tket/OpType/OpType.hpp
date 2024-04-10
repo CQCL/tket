@@ -276,12 +276,12 @@ enum class OpType {
   /**
    * \f$ \mathrm{AAMS}(\theta, \phi_0, \phi_1) = \left[ \begin{array}{cccc}
    * \cos\frac{\pi\theta}{2} & 0 & 0 &
-   * -ie^{-i\pi{\phi_0+\phi_1}}\sin\frac{\pi\theta}{2} \\
+   * -ie^{-i\pi(\phi_0+\phi_1)}\sin\frac{\pi\theta}{2} \\
    * 0 & \cos\frac{\pi\theta}{2} &
-   * -ie^{i\pi{\phi_0-\phi_1}}\sin\frac{\pi\theta}{2} & 0 \\
-   * 0 & -ie^{i\pi{\phi_0-\phi_1}}\sin\frac{\pi\theta}{2} &
+   * -ie^{i\pi(\phi_0-\phi_1)}\sin\frac{\pi\theta}{2} & 0 \\
+   * 0 & -ie^{i\pi(\phi_0-\phi_1)}\sin\frac{\pi\theta}{2} &
    * \cos\frac{\pi\theta}{2} & 0 \\
-   * -ie^{i\pi{\phi_0+\phi_1}}\sin\frac{\pi\theta}{2} & 0 & 0 &
+   * -ie^{i\pi(\phi_0+\phi_1)}\sin\frac{\pi\theta}{2} & 0 & 0 &
    * \cos\frac{\pi\theta}{2} \end{array} \right] \f$
    */
   AAMS,

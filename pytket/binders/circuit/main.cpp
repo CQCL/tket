@@ -199,14 +199,14 @@ PYBIND11_MODULE(circuit, m) {
           "AAMS", OpType::AAMS,
           ":math:`(\\theta, \\phi_0, \\phi_1) \\mapsto \\left[ "
           "\\begin{array}{cccc} \\cos\\frac{\\pi\\theta}{2} & 0 & 0 & "
-          "-ie^{-i\\pi{\\phi_0+\\phi_1}}\\sin\\frac{\\pi\\theta}{2} \\\\ "
+          "-ie^{-i\\pi(\\phi_0+\\phi_1)}\\sin\\frac{\\pi\\theta}{2} \\\\ "
           "0 & "
           "\\cos\\frac{\\pi\\theta}{2} & "
-          "-ie^{i\\pi{\\phi_0-\\phi_1}}\\sin\\frac{\\pi\\theta}{2} & 0 \\\\ 0 "
+          "-ie^{i\\pi(\\phi_0-\\phi_1)}\\sin\\frac{\\pi\\theta}{2} & 0 \\\\ 0 "
           "& "
-          "-ie^{i\\pi{\\phi_0-\\phi_1}}\\sin\\frac{\\pi\\theta}{2} & "
+          "-ie^{i\\pi(\\phi_0-\\phi_1)}\\sin\\frac{\\pi\\theta}{2} & "
           "\\cos\\frac{\\pi\\theta}{2} & 0 \\\\ "
-          "-ie^{i\\pi{\\phi_0+\\phi_1}}\\sin\\frac{\\pi\\theta}{2} & 0 & 0 & "
+          "-ie^{i\\pi(\\phi_0+\\phi_1)}\\sin\\frac{\\pi\\theta}{2} & 0 & 0 & "
           "\\cos\\frac{\\pi\\theta}{2} \\end{array} \\right]`")
       .value(
           "TK1", OpType::TK1,
