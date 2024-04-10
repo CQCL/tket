@@ -1431,6 +1431,15 @@ SCENARIO("RemoveRedundancies and phase") {
     REQUIRE(c1.get_commands().size() == 0);
     REQUIRE(equiv_val(c1.get_phase(), 1.));
   }
+  GIVEN("A circuit with a Phase gate") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::Phase, 0.25, {});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    CompilationUnit cu(c);
+    REQUIRE(RemoveRedundancies()->apply(cu));
+    REQUIRE(cu.get_circ_ref().n_gates() == 2);
+  }
 }
 
 // Check whether a circuit maps all basis states to basis states.

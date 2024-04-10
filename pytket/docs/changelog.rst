@@ -29,6 +29,7 @@ Fixes:
 * When adding operations to a circuit, check for invalid wires before adding a
   vertex to the circuit.
 * Restrict scipy version to 1.12.x to avoid quimb-related errors from zx module.
+* Make ``RemoveRedundancies`` pass remove ``OpType.Phase`` gates.
 
 Deprecations:
 
