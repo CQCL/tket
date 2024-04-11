@@ -598,7 +598,7 @@ def SquashTK1() -> BasePass:
     """
 def SynthesiseOQC() -> BasePass:
     """
-    Optimises and converts all gates to ECR, Rz, SX and Phase.
+    Optimises and converts all gates to ECR, Rz, SX and Phase. DEPRECATED: will be removed after pytket 1.28.
     """
 def SynthesiseTK() -> BasePass:
     """

@@ -31,6 +31,10 @@ Fixes:
 * Restrict scipy version to 1.12.x to avoid quimb-related errors from zx module.
 * Make ``RemoveRedundancies`` pass remove ``OpType.Phase`` gates.
 
+Deprecations:
+
+* Deprecate ``SynthesiseOQC`` pass.
+
 1.26.0 (March 2024)
 -------------------
 
