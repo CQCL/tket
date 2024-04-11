@@ -194,7 +194,7 @@ setup(
         "sympy ~=1.6",
         "numpy >=1.21.4, <2.0",
         "lark-parser ~=0.7",
-        "scipy ~=1.12.0",
+        "scipy ~=1.13.0",
         "networkx >= 2.8.8",
         "graphviz ~= 0.14",
         "jinja2 ~= 3.0",
@@ -204,7 +204,7 @@ setup(
     ],
     extras_require={
         "ZX": [
-            "quimb ~= 1.5",
+            "quimb ~= 1.8",
             "autoray >= 0.6.1",
         ],
     },
