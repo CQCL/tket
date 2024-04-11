@@ -28,8 +28,11 @@ Fixes:
   targets.
 * When adding operations to a circuit, check for invalid wires before adding a
   vertex to the circuit.
-* Restrict scipy version to 1.12.x to avoid quimb-related errors from zx module.
 * Make ``RemoveRedundancies`` pass remove ``OpType.Phase`` gates.
+
+Deprecations:
+
+* Deprecate ``SynthesiseOQC`` pass.
 
 1.26.0 (March 2024)
 -------------------
@@ -55,6 +58,7 @@ Fixes:
 
 * Add missing op types to methods for converting Clifford circuits to unitary
   tableaux.
+* Require scipy >= 1.13 and quimb >= 1.8 for ZX module.
 
 1.25.0 (February 2024)
 ----------------------
