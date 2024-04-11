@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import sympy
-
+import pytest
 from pytket import logging
 from pytket.circuit import (
     Circuit,
@@ -73,6 +73,7 @@ from pytket.passes import (
     CliffordPushThroughMeasures,
     CliffordSimp,
     SynthesiseOQC,
+    ZXGraphlikeOptimisation,
 )
 from pytket.predicates import (
     GateSetPredicate,
@@ -140,6 +141,16 @@ def test_compilerpass_seq() -> None:
     cu2 = CompilationUnit(circ2)
     assert seq.apply(cu)
     assert seq.apply(cu2)
+
+
+def test_compilerpass_seq_nonstrict() -> None:
+    passlist = [RebaseTket(), ZXGraphlikeOptimisation()]
+    with pytest.raises(RuntimeError):
+        _ = SequencePass(passlist)
+    seq = SequencePass(passlist, strict=False)
+    circ = Circuit(2)
+    seq.apply(circ)
+    assert np.allclose(circ.get_unitary(), np.eye(4, 4, dtype=complex))
 
 
 def test_rebase_pass_generation() -> None:
