@@ -58,6 +58,7 @@ Fixes:
 
 * Add missing op types to methods for converting Clifford circuits to unitary
   tableaux.
+* Require scipy >= 1.13 and quimb >= 1.8 for ZX module.
 
 1.25.0 (February 2024)
 ----------------------
