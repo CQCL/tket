@@ -137,13 +137,13 @@ static PredicateClassGuarantees match_class_guarantees(
 }
 
 PassConditions BasePass::match_passes(
-    const PassConditions& lhs, const PassConditions& rhs) {
+    const PassConditions& lhs, const PassConditions& rhs, bool strict) {
   PredicatePtrMap new_precons = lhs.first;
   for (const TypePredicatePair& precon : rhs.first) {
     PredicatePtrMap::const_iterator data_guar_iter =
         lhs.second.specific_postcons_.find(precon.first);
     if (data_guar_iter == lhs.second.specific_postcons_.end()) {
-      if (get_guarantee(precon.first, lhs) == Guarantee::Clear) {
+      if (strict && get_guarantee(precon.first, lhs) == Guarantee::Clear) {
         throw IncompatibleCompilerPasses(precon.first);
       } else {
         PredicatePtrMap::iterator new_pre_it = new_precons.find(precon.first);
@@ -156,7 +156,7 @@ PassConditions BasePass::match_passes(
         }
       }
     } else {
-      if (!data_guar_iter->second->implies(*precon.second)) {
+      if (strict && !data_guar_iter->second->implies(*precon.second)) {
         throw IncompatibleCompilerPasses(precon.first);
       }
     }
@@ -227,14 +227,14 @@ PassPtr operator>>(const PassPtr& lhs, const PassPtr& rhs) {
   return sequence;
 }
 
-SequencePass::SequencePass(const std::vector<PassPtr>& ptvec) {
+SequencePass::SequencePass(const std::vector<PassPtr>& ptvec, bool strict) {
   if (ptvec.size() == 0)
     throw std::logic_error("Cannot generate CompilerPass from empty list");
   std::vector<PassPtr>::const_iterator iter = ptvec.begin();
   PassConditions conditions = (*iter)->get_conditions();
   for (++iter; iter != ptvec.end(); ++iter) {
     const PassConditions next_cons = (*iter)->get_conditions();
-    conditions = match_passes(conditions, next_cons);
+    conditions = match_passes(conditions, next_cons, strict);
   }
   this->precons_ = conditions.first;
   this->postcons_ = conditions.second;

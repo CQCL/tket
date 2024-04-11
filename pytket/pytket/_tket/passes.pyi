@@ -192,9 +192,13 @@ class SequencePass(BasePass):
     """
     A sequence of compilation passes.
     """
-    def __init__(self, pass_list: typing.Sequence[BasePass]) -> None:
+    def __init__(self, pass_list: typing.Sequence[BasePass], strict: bool = True) -> None:
         """
         Construct from a list of compilation passes arranged in order of application.
+        
+        :param pass_list: sequence of passes
+        :param strict: if True (the default), check that all postconditions and preconditions of the passes in the sequence are compatible and raise an exception if not.
+        :return: a pass that applies the sequence
         """
     def __str__(self: BasePass) -> str:
         ...

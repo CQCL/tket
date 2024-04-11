@@ -446,7 +446,7 @@ SCENARIO("Construct sequence pass") {
   }
 }
 
-SCENARIO("Construct invalid sequence passes from vector") {
+SCENARIO("Construct sequence pass that is invalid in strict mode") {
   std::vector<PassPtr> invalid_pass_to_combo{
       SynthesiseOQC(), SynthesiseUMD(), SynthesiseTK()};
   for (const PassPtr& pass : invalid_pass_to_combo) {
@@ -459,6 +459,12 @@ SCENARIO("Construct invalid sequence passes from vector") {
         ppm, Transforms::id, pc, nlohmann::json{});
     passes.push_back(compass);
     REQUIRE_THROWS_AS((void)SequencePass(passes), IncompatibleCompilerPasses);
+    GIVEN("A circuit compilable with non-strict SequencePass") {
+      PassPtr sequence = std::make_shared<SequencePass>(passes, false);
+      Circuit circ(2);
+      CompilationUnit cu(circ);
+      REQUIRE_NOTHROW(sequence->apply(cu));
+    }
   }
 }
 

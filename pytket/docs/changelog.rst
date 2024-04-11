@@ -16,6 +16,8 @@ Features:
   ``CliffordPushThroughMeasures`` that optimises Clifford subcircuits 
   before end of circuit measurement gates.
 * Add ``OpType.GPI``, ``OpType.GPI2`` and ``OpType.AAMS``.
+* Allow construction of ``SequencePass`` without predicate checks, by means of
+  new ``strict`` argument to the constructor (defaulting to ``True``).
 
 Fixes:
 

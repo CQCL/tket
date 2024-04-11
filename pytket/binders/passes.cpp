@@ -288,10 +288,15 @@ PYBIND11_MODULE(passes, m) {
   py::class_<SequencePass, std::shared_ptr<SequencePass>, BasePass>(
       m, "SequencePass", "A sequence of compilation passes.")
       .def(
-          py::init<const py::tket_custom::SequenceVec<PassPtr> &>(),
-          "Construct from a list of compilation passes arranged in "
-          "order of application.",
-          py::arg("pass_list"))
+          py::init<const py::tket_custom::SequenceVec<PassPtr> &, bool>(),
+          "Construct from a list of compilation passes arranged in order of "
+          "application."
+          "\n\n:param pass_list: sequence of passes"
+          "\n:param strict: if True (the default), check that all "
+          "postconditions and preconditions of the passes in the sequence are "
+          "compatible and raise an exception if not."
+          "\n:return: a pass that applies the sequence",
+          py::arg("pass_list"), py::arg("strict") = true)
       .def("__str__", [](const BasePass &) { return "<tket::SequencePass>"; })
       .def(
           "get_sequence", &SequencePass::get_sequence,
