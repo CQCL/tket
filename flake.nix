@@ -1,5 +1,7 @@
 {
   description = "Tket Quantum SDK";
+  nixConfig.extra-substituters = "https://tket.cachix.org";
+  nixConfig.trusted-public-keys = "tket.cachix.org-1:ACdm5Zg19qPL0PpvUwTPPiIx8SEUy+D/uqa9vKJFwh0=";
   inputs.nixpkgs.url = "github:nixos/nixpkgs";
   inputs.flake-utils.url = "github:numtide/flake-utils";
   outputs = { self, nixpkgs, flake-utils }:
