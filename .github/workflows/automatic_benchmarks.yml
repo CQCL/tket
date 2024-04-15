@@ -96,9 +96,9 @@ jobs:
         
       - name: Compile
         run: |
-          python automated_benchmarking/automated_benchmarking.py --help
-          python automated_benchmarking/automated_benchmarking.py compile --help
-          python automated_benchmarking/automated_benchmarking.py compile Qiskit HeavyHexagon pytket-benchmarking-store/benchmarking_circuits/random_iqp compiled_circuits
+          python tket/automated_benchmarking/automated_benchmarking.py --help
+          python tket/automated_benchmarking/automated_benchmarking.py compile --help
+          python tket/automated_benchmarking/automated_benchmarking.py compile Qiskit HeavyHexagon pytket-benchmarking-store/benchmarking_circuits/random_iqp compiled_circuits
           ls
 
       - name: Save Compiled Circuits
