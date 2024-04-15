@@ -61,7 +61,7 @@ jobs:
     runs-on: macos-14
 
     steps:
-     - name: Checkout tket
+      - name: Checkout tket
         uses: actions/checkout@v4
         with:
           path: tket
