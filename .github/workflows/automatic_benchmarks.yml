@@ -79,7 +79,7 @@ jobs:
       
       - name: Move to iqp
         run: |
-          cd pytket-benchmarking-store/benchmarking_circuits/random_iqp
+          cd pytket-benchmarking-store
           ls
           pwd
 
