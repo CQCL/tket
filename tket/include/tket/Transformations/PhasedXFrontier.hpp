@@ -15,6 +15,7 @@
 #pragma once
 
 #include <cmath>
+#include <optional>
 #include <set>
 
 #include "SingleQubitSquash.hpp"
@@ -289,12 +290,44 @@ class PhasedXFrontier {
 
   // squasher to squash gates
   SingleQubitSquash squasher_;
+
+  // Access class attributes for testing
+  friend class PhasedXFrontierTester;
 };
 
 /**
  * @brief Whether all elements of `vec` are std::nullopt.
  */
 bool all_nullopt(const OptVertexVec& vec);
+
+/**
+ * @brief Testing class for the PhasedXFrontier class.
+ *
+ * Gives access to current interval start and end vertices.
+ */
+class PhasedXFrontierTester {
+ public:
+  PhasedXFrontierTester(PhasedXFrontier& frontier, Circuit& circ);
+
+  /**
+   * @brief Get the start of the interval on qubit `i`.
+   *
+   * @param i The qubit index.
+   * @return Vertex The gate before the current interval on qubit `i`.
+   */
+  Vertex get_interval_start(unsigned i);
+  /**
+   * @brief Get the end of the interval on qubit `i`.
+   *
+   * @param i The qubit index.
+   * @return Vertex The gate after the current interval on qubit `i`.
+   */
+  Vertex get_interval_end(unsigned i);
+
+ private:
+  PhasedXFrontier const& frontier_;
+  Circuit const& circ_;
+};
 
 }  // namespace Transforms
 
