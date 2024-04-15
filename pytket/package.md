@@ -39,6 +39,8 @@ User support: tket-support@quantinuum.com
 
 For discussion, join the public slack channel [here](https://join.slack.com/t/tketusers/shared_invite/zt-18qmsamj9-UqQFVdkRzxnXCcKtcarLRA).
 
+There is also a [pytket tag](https://quantumcomputing.stackexchange.com/questions/tagged/pytket) on quantum computing stack exchange.
+
 Mailing list: join [here](https://list.cambridgequantum.com/cgi-bin/mailman/listinfo/tket-users).
 
 ## Citation
