@@ -56,33 +56,6 @@ jobs:
         name: pytket_wheel
         path: wheelhouse/
 
-  Checkout-tests:
-    name: checkout test
-    runs-on: macos-14
-
-    steps:
-      - name: Checkout tket
-        uses: actions/checkout@v4
-        with:
-          path: tket
-
-      - name: Checkout pytket-benchmarking-store
-        uses: actions/checkout@v4
-        with:
-          repository: CQCL/pytket-dqc
-          path: pytket-benchmarking-store
-
-      - name: Look at workspace
-        run: |
-          ls
-          pwd
-      
-      - name: Move to iqp
-        run: |
-          cd pytket-benchmarking-store
-          ls
-          pwd
-
   Run-Benchmakrs:
     name: Run Benchmarks
     needs: build_wheels
@@ -115,7 +88,7 @@ jobs:
       - name: Checkout pytket-benchmarking-store
         uses: actions/checkout@v4
         with:
-          repository: CQCL/pytket-dqc
+          repository: CQCL/pytket-benchmarking-store
           path: pytket-benchmarking-store
 
       - name: Look at workspace
