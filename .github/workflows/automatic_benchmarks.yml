@@ -76,12 +76,20 @@ jobs:
       - name: Install dependencies
         run: |
           pip install pytket-*.whl
-          pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket_benchmarking==0.0.2
+          pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket_benchmarking
           pip install typer
           pip list
 
       - name: Checkout tket
         uses: actions/checkout@v4
+
+      - name: Checkout pytket-benchmarking-store
+        uses: actions/checkout@v4
+        with:
+          repository: CQCL/pytket-dqc
+
+      - name: Look at workspace
+        run: ls
         
       - name: Compile
         run: |
