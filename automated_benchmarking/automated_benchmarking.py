@@ -13,9 +13,9 @@ from pytket_benchmarking.utils.storage_manager import LocalStorage
 from pytket_benchmarking.compiler_benchmarking.pass_runner import TimedPassRunner
 from pytket_benchmarking.compiler_benchmarking import CompiledCircuitsManager
 from pytket_benchmarking.compiler_benchmarking.experiment_analyser import CompiledCircuitExperiment
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from typing import Optional, List
-from rich.progress import track
+# from rich.progress import track
 from pytket.passes import SequencePass, DecomposeBoxes
 
 
@@ -78,7 +78,7 @@ def compile(
 def plot(
     suite_path: Annotated[Path, typer.Argument(help="Path to circuit suite.")],
     compiled_path: Annotated[Path, typer.Argument(help="Path to compiled circuits.")],
-    show: Annotated[bool, typer.Option("--show", "-s", help='Display plot.')] = False,
+    # show: Annotated[bool, typer.Option("--show", "-s", help='Display plot.')] = False,
     plot_path: Annotated[
         Optional[Path],
         typer.Argument(
@@ -111,8 +111,8 @@ def plot(
         compiled_func=compiled_func,
         original_func=original_func,
     )
-    if show:
-        plt.show()
+    # if show:
+    #     plt.show()
 
     if plot_path is not None:
         fig.savefig(fname=plot_path)
