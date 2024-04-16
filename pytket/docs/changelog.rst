@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.27.0 (April 2024)
+-------------------
 
 General:
 
