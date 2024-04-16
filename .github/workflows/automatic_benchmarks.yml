@@ -61,9 +61,6 @@ jobs:
     needs: build_wheels
     runs-on: macos-14
 
-    env:
-      RETURN_TEST: 0
-
     steps:
       
       - name: Setup Python
@@ -95,7 +92,17 @@ jobs:
           path: pytket-benchmarking-store
 
       - name: Test write result to env variable
-        run: echo "RETURN_TEST=$(python automated_benchmarking/automated_benchmarking.py return-test)"  >> $GITHUB_ENV
+        run: |
+          export TEMP_RETURN_TEST="$(python automated_benchmarking/automated_benchmarking.py return-test)"
+          echo "RETURN_TEST=$TEMP_RETURN_TEST" >> $GITHUB_ENV
+
+      - name: Test
+        run: echo $RETURN_TEST
+      
+      - name: Test
+        run: echo $RETURN_TEST
+        env:
+          RETURN_TEST: ${{ env.RETURN_TEST }}
 
       - name: Create comment
         uses: peter-evans/create-or-update-comment@v4
