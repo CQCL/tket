@@ -123,6 +123,10 @@ def percentage_better(
     compiled_path: Annotated[Path, typer.Argument(help="Path to compiled circuits.")],
     compilers: Annotated[List[Compilers], typer.Argument(help="Compilers to compare.")],
 ):
+    
+    print("compilers", compilers)
+    print("compiled_path", compiled_path)
+    print("circuit_suite_path", circuit_suite_path)
 
     storage_manager = LocalStorage(
         directory_path=compiled_path,
