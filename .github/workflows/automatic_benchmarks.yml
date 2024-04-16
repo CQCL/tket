@@ -87,7 +87,7 @@ jobs:
 
       - name: Test write result to env variable
         run: |
-          export TEMP_RETURN_TEST="$(python automated_benchmarking/automated_benchmarking.py return-test)"
+          export TEMP_RETURN_TEST="$(python tket/automated_benchmarking/automated_benchmarking.py return-test)"
           echo $TEMP_RETURN_TEST
           echo "RETURN_TEST=$TEMP_RETURN_TEST" >> $GITHUB_ENV
 
