@@ -85,12 +85,11 @@ jobs:
           repository: CQCL/pytket-benchmarking-store
           path: pytket-benchmarking-store
 
-      # - name: Test write result to env variable
-      #   run: |
-      #     echo "RETURN_TEST=$(python tket/automated_benchmarking/automated_benchmarking.py return-test)" >> $GITHUB_ENV
+      - name: Test write result to env variable
+        run: echo "RETURN_TEST=$(python tket/automated_benchmarking/automated_benchmarking.py return-test)" >> $GITHUB_ENV
 
       - name: Test write result to env variable
-        run: echo "RETURN_TEST=$(python tket/automated_benchmarking/automated_benchmarking.py automated_benchmarking/automated_benchmarking.py percentage-better ../pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarking/temp_compiled QiskitIBMQ PytketIBMQ)" >> $GITHUB_ENV
+        run: echo "RETURN_TEST=$(python tket/automated_benchmarking/automated_benchmarking.py percentage-better pytket-benchmarking-store/benchmarking_circuits/quantum_volume temp_compiled QiskitIBMQ PytketIBMQ)" >> $GITHUB_ENV
 
       - name: Test
         run: echo $RETURN_TEST

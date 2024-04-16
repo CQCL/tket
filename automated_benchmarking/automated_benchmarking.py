@@ -166,9 +166,9 @@ def percentage_better(
     print(len(data.loc[data['pytket better']]) / len(data))
 
 
-# @app.command()
-# def return_test():
-#     return print(2)
+@app.command()
+def return_test():
+    return print(2)
 
 if __name__ == "__main__":
     app()
