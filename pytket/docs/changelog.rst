@@ -31,6 +31,7 @@ Fixes:
 * When adding operations to a circuit, check for invalid wires before adding a
   vertex to the circuit.
 * Make ``RemoveRedundancies`` pass remove ``OpType.Phase`` gates.
+* Remove support for wasm functions with multiple return values.
 
 Deprecations:
 

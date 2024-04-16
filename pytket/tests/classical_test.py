@@ -653,7 +653,7 @@ def test_wasmfilehandler_multivalue_clang() -> None:
         == """Functions in wasm file with the uid 6f821422038eec251d2f4e6bf2b9a5717b18b5c96a8a8e01fb49f080d9610f6e:
 function '__wasm_call_ctors' with 0 i32 parameter(s) and 0 i32 return value(s)
 function 'init' with 0 i32 parameter(s) and 0 i32 return value(s)
-function 'divmod' with 2 i32 parameter(s) and 2 i32 return value(s)
+unsupported function with invalid parameter or result type: 'divmod' 
 """
     )
 
