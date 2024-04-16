@@ -119,6 +119,10 @@ SCENARIO("Using Boxes", "[boxes]") {
     Eigen::MatrixXcd uc0 = tket_sim::get_unitary(c0);
     Eigen::MatrixXcd uc0a = tket_sim::get_unitary(c0a);
     REQUIRE((uc0 - uc0a).cwiseAbs().sum() < ERR_EPS);
+    // Test circuit name access
+    CircBox cbox(Circuit(2));
+    cbox.set_circuit_name("test_box");
+    REQUIRE(cbox.get_circuit_name() == "test_box");
   }
   GIVEN("CircBox with non-default units") {
     Circuit c0;

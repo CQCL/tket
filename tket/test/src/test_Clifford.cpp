@@ -770,5 +770,194 @@ SCENARIO("Testing full clifford_simp") {
   }
 }
 
+SCENARIO("Test push_cliffords_through_measures") {
+  GIVEN("Single qubit Cliffords") {
+    Circuit circ(3, 3);
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::S, {1});
+    circ.add_op<unsigned>(OpType::Y, {2});
+    circ.add_measure(0, 0);
+    circ.add_measure(1, 1);
+    circ.add_measure(2, 2);
+    REQUIRE(!Transforms::push_cliffords_through_measures().apply(circ));
+  }
+  GIVEN("Multi Cliffords") {
+    Circuit circ(3, 3);
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::S, {1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::S, {1});
+    circ.add_op<unsigned>(OpType::CX, {2, 1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Y, {2});
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_op<unsigned>(OpType::S, {2});
+    circ.add_op<unsigned>(OpType::CX, {2, 1});
+    circ.add_op<unsigned>(OpType::S, {2});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {0, 2});
+    circ.add_op<unsigned>(OpType::X, {1});
+    circ.add_measure(0, 0);
+    circ.add_measure(1, 1);
+    circ.add_measure(2, 2);
+    REQUIRE(Transforms::push_cliffords_through_measures().apply(circ));
+    auto coms = circ.get_commands();
+    REQUIRE(coms.size() == 14);
+    REQUIRE(coms[0].to_str() == "Measure q[2] --> c[2];");
+    REQUIRE(coms[1].to_str() == "SetBits(1) permutation_scratch[3];");
+    REQUIRE(coms[2].to_str() == "H q[0];");
+    REQUIRE(coms[3].to_str() == "H q[1];");
+    REQUIRE(coms[4].to_str() == "Measure q[0] --> c[0];");
+    REQUIRE(coms[5].to_str() == "Measure q[1] --> c[1];");
+    REQUIRE(coms[6].to_str() == "XOR c[0], permutation_scratch[0];");
+    REQUIRE(coms[7].to_str() == "XOR c[1], permutation_scratch[1];");
+    REQUIRE(coms[8].to_str() == "XOR c[0], permutation_scratch[2];");
+    REQUIRE(coms[9].to_str() == "XOR c[2], permutation_scratch[1];");
+    REQUIRE(coms[10].to_str() == "XOR c[2], permutation_scratch[2];");
+    REQUIRE(
+        coms[11].to_str() ==
+        "XOR permutation_scratch[3], permutation_scratch[1];");
+    REQUIRE(
+        coms[12].to_str() ==
+        "XOR permutation_scratch[3], permutation_scratch[2];");
+    REQUIRE(
+        coms[13].to_str() ==
+        "CopyBits permutation_scratch[0], permutation_scratch[1], "
+        "permutation_scratch[2], c[0], c[1], c[2];");
+  }
+  GIVEN("Classical Circuit") {
+    Circuit circ(3, 3);
+    circ.add_op<unsigned>(OpType::X, {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::X, {2});
+    circ.add_op<unsigned>(OpType::CX, {2, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    circ.add_measure(0, 0);
+    circ.add_measure(1, 1);
+    circ.add_measure(2, 2);
+    REQUIRE(Transforms::push_cliffords_through_measures().apply(circ));
+    auto coms = circ.get_commands();
+    REQUIRE(coms.size() == 12);
+    REQUIRE(coms[0].to_str() == "Measure q[0] --> c[0];");
+    REQUIRE(coms[1].to_str() == "Measure q[1] --> c[1];");
+    REQUIRE(coms[2].to_str() == "Measure q[2] --> c[2];");
+    REQUIRE(coms[3].to_str() == "SetBits(1) permutation_scratch[3];");
+    REQUIRE(coms[4].to_str() == "XOR c[0], permutation_scratch[0];");
+    REQUIRE(coms[5].to_str() == "XOR c[2], permutation_scratch[1];");
+    REQUIRE(coms[6].to_str() == "XOR c[0], permutation_scratch[2];");
+    REQUIRE(coms[7].to_str() == "XOR c[2], permutation_scratch[0];");
+    REQUIRE(
+        coms[8].to_str() ==
+        "XOR permutation_scratch[3], permutation_scratch[1];");
+    REQUIRE(coms[9].to_str() == "XOR c[1], permutation_scratch[2];");
+    REQUIRE(coms[10].to_str() == "XOR c[2], permutation_scratch[2];");
+    REQUIRE(
+        coms[11].to_str() ==
+        "CopyBits permutation_scratch[0], permutation_scratch[1], "
+        "permutation_scratch[2], c[0], c[1], c[2];");
+  }
+  GIVEN("Identity Circuit") {
+    Circuit circ(3, 3);
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::S, {1});
+    circ.add_op<unsigned>(OpType::V, {2});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::CX, {2, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::H, {2});
+    circ.add_op<unsigned>(OpType::Sdg, {0});
+    circ.add_op<unsigned>(OpType::Vdg, {1});
+    circ.add_measure(0, 0);
+    circ.add_measure(1, 1);
+    circ.add_measure(2, 2);
+    REQUIRE(Transforms::push_cliffords_through_measures().apply(circ));
+    auto coms = circ.get_commands();
+    REQUIRE(coms.size() == 8);
+    REQUIRE(coms[0].to_str() == "Measure q[0] --> c[0];");
+    REQUIRE(coms[1].to_str() == "Measure q[1] --> c[1];");
+    REQUIRE(coms[2].to_str() == "Measure q[2] --> c[2];");
+    REQUIRE(coms[3].to_str() == "SetBits(1) permutation_scratch[3];");
+    REQUIRE(coms[4].to_str() == "XOR c[1], permutation_scratch[0];");
+    REQUIRE(coms[5].to_str() == "XOR c[2], permutation_scratch[1];");
+    REQUIRE(coms[6].to_str() == "XOR c[0], permutation_scratch[2];");
+    REQUIRE(
+        coms[7].to_str() ==
+        "CopyBits permutation_scratch[0], permutation_scratch[1], "
+        "permutation_scratch[2], c[0], c[1], c[2];");
+  }
+  GIVEN("Mixed Clifford and Non-Clifford circuit") {
+    Circuit circ(5, 5);
+    circ.add_op<unsigned>(OpType::H, {4});
+    circ.add_op<unsigned>(OpType::S, {3});
+    circ.add_op<unsigned>(OpType::CX, {3, 2});
+    circ.add_op<unsigned>(OpType::S, {1});
+    circ.add_op<unsigned>(OpType::T, {2});
+    circ.add_op<unsigned>(OpType::T, {3});
+    circ.add_op<unsigned>(OpType::CX, {4, 1});
+    circ.add_op<unsigned>(OpType::CX, {2, 1});
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::S, {1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::S, {1});
+    circ.add_op<unsigned>(OpType::CX, {3, 1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Y, {2});
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_op<unsigned>(OpType::S, {2});
+    circ.add_op<unsigned>(OpType::CX, {1, 4});
+    circ.add_op<unsigned>(OpType::S, {2});
+    circ.add_op<unsigned>(OpType::CX, {3, 1});
+    circ.add_op<unsigned>(OpType::CX, {0, 2});
+    circ.add_op<unsigned>(OpType::X, {1});
+    circ.add_measure(0, 0);
+    circ.add_measure(1, 1);
+    circ.add_measure(2, 2);
+    circ.add_measure(3, 3);
+    circ.add_measure(4, 4);
+    REQUIRE(Transforms::push_cliffords_through_measures().apply(circ));
+    auto coms = circ.get_commands();
+
+    REQUIRE(coms.size() == 26);
+    REQUIRE(coms[0].to_str() == "SetBits(1) permutation_scratch[5];");
+    REQUIRE(coms[1].to_str() == "H q[0];");
+    REQUIRE(coms[2].to_str() == "V q[1];");
+    REQUIRE(coms[3].to_str() == "S q[3];");
+    REQUIRE(coms[4].to_str() == "H q[4];");
+    REQUIRE(coms[5].to_str() == "Measure q[0] --> c[0];");
+    REQUIRE(coms[6].to_str() == "Measure q[1] --> c[1];");
+    REQUIRE(coms[7].to_str() == "Measure q[4] --> c[4];");
+    REQUIRE(coms[8].to_str() == "CX q[3], q[2];");
+    REQUIRE(coms[9].to_str() == "XOR c[0], permutation_scratch[0];");
+    REQUIRE(coms[10].to_str() == "XOR c[0], permutation_scratch[1];");
+    REQUIRE(coms[11].to_str() == "XOR c[0], permutation_scratch[2];");
+    REQUIRE(coms[12].to_str() == "XOR c[0], permutation_scratch[4];");
+    REQUIRE(coms[13].to_str() == "T q[2];");
+    REQUIRE(coms[14].to_str() == "T q[3];");
+    REQUIRE(coms[15].to_str() == "Measure q[2] --> c[2];");
+    REQUIRE(coms[16].to_str() == "Measure q[3] --> c[3];");
+    REQUIRE(coms[17].to_str() == "XOR c[1], permutation_scratch[1];");
+    REQUIRE(coms[18].to_str() == "XOR c[1], permutation_scratch[4];");
+    REQUIRE(coms[19].to_str() == "XOR c[3], permutation_scratch[1];");
+    REQUIRE(coms[20].to_str() == "XOR c[2], permutation_scratch[2];");
+    REQUIRE(coms[21].to_str() == "XOR c[3], permutation_scratch[3];");
+    REQUIRE(coms[22].to_str() == "XOR c[4], permutation_scratch[4];");
+    REQUIRE(
+        coms[23].to_str() ==
+        "XOR permutation_scratch[5], permutation_scratch[1];");
+    REQUIRE(
+        coms[24].to_str() ==
+        "XOR permutation_scratch[5], permutation_scratch[2];");
+    REQUIRE(
+        coms[25].to_str() ==
+        "CopyBits permutation_scratch[0], permutation_scratch[1], "
+        "permutation_scratch[2], permutation_scratch[3], "
+        "permutation_scratch[4], c[0], c[1], c[2], c[3], c[4];");
+  }
+}
+
 }  // namespace test_Clifford
 }  // namespace tket

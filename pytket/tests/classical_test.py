@@ -653,7 +653,7 @@ def test_wasmfilehandler_multivalue_clang() -> None:
         == """Functions in wasm file with the uid 6f821422038eec251d2f4e6bf2b9a5717b18b5c96a8a8e01fb49f080d9610f6e:
 function '__wasm_call_ctors' with 0 i32 parameter(s) and 0 i32 return value(s)
 function 'init' with 0 i32 parameter(s) and 0 i32 return value(s)
-function 'divmod' with 2 i32 parameter(s) and 2 i32 return value(s)
+unsupported function with invalid parameter or result type: 'divmod' 
 """
     )
 
@@ -1032,12 +1032,18 @@ def compare_commands_box(
         if print_com:
             print(c1, c2)
         if c1.op.type == OpType.ClassicalExpBox:
+            assert isinstance(c1.op, ClassicalExpBox)
+            assert isinstance(c2.op, ClassicalExpBox)
             commands_equal &= c1.op.content_equality(c2.op)
             commands_equal &= c1.args == c2.args
         elif c1.op.type == OpType.Conditional:
+            assert isinstance(c1.op, Conditional)
+            assert isinstance(c2.op, Conditional)
             commands_equal &= c1.op.value == c2.op.value
             commands_equal &= c1.op.width == c2.op.width
             if c1.op.op.type == OpType.ClassicalExpBox:
+                assert isinstance(c1.op.op, ClassicalExpBox)
+                assert isinstance(c2.op.op, ClassicalExpBox)
                 commands_equal &= c1.op.op.content_equality(c2.op.op)
             else:
                 commands_equal &= c1.op == c2.op

@@ -50,6 +50,7 @@ const std::string &node_default_reg();
 const std::string &c_debug_zero_prefix();
 const std::string &c_debug_one_prefix();
 const std::string &c_debug_default_name();
+const std::string &c_permutation_scratch_name();
 
 /** Conversion invalid */
 class InvalidUnitConversion : public std::logic_error {

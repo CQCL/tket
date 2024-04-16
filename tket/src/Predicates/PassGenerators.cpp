@@ -32,6 +32,7 @@
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Predicates/Predicates.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/CliffordOptimisation.hpp"
 #include "tket/Transformations/CliffordResynthesis.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
 #include "tket/Transformations/Decomposition.hpp"
@@ -170,6 +171,23 @@ PassPtr gen_clifford_resynthesis_pass(
   PostConditions pc{{}, {}, Guarantee::Preserve};
   nlohmann::json j;
   j["name"] = "CliffordResynthesis";
+  return std::make_shared<StandardPass>(precons, t, pc, j);
+}
+
+PassPtr gen_clifford_push_through_pass() {
+  // Expects: Measure operations at end of circuit with
+  // no classical gates to outputs to work, but
+  // just makes no modification if this is not true
+  Transform t = Transforms::push_cliffords_through_measures();
+  PredicatePtrMap precons;
+  // mutual diagonalisation circuit is not architecture aware
+  PredicateClassGuarantees g_postcons = {
+      {typeid(ConnectivityPredicate), Guarantee::Clear},
+      {typeid(DirectednessPredicate), Guarantee::Clear}};
+
+  PostConditions pc{{}, {}, Guarantee::Preserve};
+  nlohmann::json j;
+  j["name"] = "CliffordPushThroughMeausres";
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 

@@ -105,7 +105,7 @@ static Edge follow_until_noncommuting(
  * through SWAPs, gates that commute on the Pauli Z basis, and recursively
  * checks inside boxes and conditional operations.
  * @param circ The circuit containing the operation.
- * @param v The vertex of the operation.
+ * @param op The operation.
  * @param in_port The input port of the operation to check.
  * @param only_boxes Whether to only commute through straight wires in boxes or
  * conditional operations.
@@ -191,9 +191,12 @@ std::pair<bool, bool> run_delay_measures(
     Vertex v = com.get_vertex();
     OpType optype = com.get_op_ptr()->get_type();
     if (optype == OpType::Measure) {
-      if (!allow_partial) {
-        Edge c_out_edge = circ.get_nth_out_edge(v, 1);
-        if (!circ.detect_final_Op(circ.target(c_out_edge)) ||
+      Edge c_out_edge = circ.get_nth_out_edge(v, 1);
+      bool measurement_is_final = circ.detect_final_Op(circ.target(c_out_edge));
+      if (allow_partial) {
+        if (!measurement_is_final) continue;
+      } else {
+        if (!measurement_is_final ||
             circ.n_out_edges_of_type(v, EdgeType::Boolean) != 0) {
           if (dry_run) return {false, false};
           throw CircuitInvalidity(

@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cmath>
+#include <complex>
 #include <unsupported/Eigen/KroneckerProduct>
 
 #include "tket/Gate/GateUnitaryMatrixImplementations.hpp"
@@ -54,6 +56,32 @@ Eigen::Matrix2cd GateUnitaryMatrixImplementations::Rz(double value) {
 Eigen::Matrix2cd GateUnitaryMatrixImplementations::U1(double value) {
   Eigen::Matrix2cd matr;
   matr << 1, 0, 0, std::polar(1.0, PI * value);
+  return matr;
+}
+
+Eigen::Matrix2cd GateUnitaryMatrixImplementations::GPI(double value) {
+  Eigen::Matrix2cd matr;
+  matr << 0, std::polar(1.0, -PI * value), std::polar(1.0, PI * value), 0;
+  return matr;
+}
+
+Eigen::Matrix2cd GateUnitaryMatrixImplementations::GPI2(double value) {
+  Eigen::Matrix2cd matr;
+  matr << 1, -i_ * std::polar(1.0, -PI * value),
+      -i_ * std::polar(1.0, PI * value), 1;
+  return matr / std::sqrt(2.0);
+}
+
+Eigen::Matrix4cd GateUnitaryMatrixImplementations::AAMS(
+    double theta, double phi0, double phi1) {
+  Eigen::Matrix4cd matr;
+  const double angle = 0.5 * PI * theta;
+  const double cc = cos(angle);
+  const double ss = sin(angle);
+  matr << cc, 0, 0, -i_ * std::polar(1., -PI * (phi0 + phi1)) * ss, 0, cc,
+      -i_ * std::polar(1., PI * (phi1 - phi0)) * ss, 0, 0,
+      -i_ * std::polar(1., PI * (phi0 - phi1)) * ss, cc, 0,
+      -i_ * std::polar(1., PI * (phi0 + phi1)) * ss, 0, 0, cc;
   return matr;
 }
 
