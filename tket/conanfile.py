@@ -23,7 +23,7 @@ from conan.errors import ConanInvalidConfiguration
 
 class TketConan(ConanFile):
     name = "tket"
-    version = "1.2.114"
+    version = "1.2.117"
     package_type = "library"
     license = "Apache 2"
     homepage = "https://github.com/CQCL/tket"
@@ -121,7 +121,7 @@ class TketConan(ConanFile):
         self.requires("tktokenswap/0.3.7@tket/stable")
         self.requires("tkwsm/0.3.7@tket/stable")
         if self.build_test():
-            self.test_requires("catch2/3.5.3")
+            self.test_requires("catch2/3.5.4")
         if self.build_proptest():
             self.test_requires("rapidcheck/cci.20230815")
 
