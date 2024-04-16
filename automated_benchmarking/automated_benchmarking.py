@@ -139,12 +139,15 @@ def percentage_better(
 
     for compiler in compilers:
 
+        print("compiler", compiler)
+
         pass_runner = TimedPassRunner(
             compiler_pass=compilers_dict[compiler],
             label=compiler.value,
         )
         
         for original_circuit in circuit_suite_mgr:
+            print("original_circuit", original_circuit)
             compiled_circuit_mgr.run_circuit(
                 pass_runner=pass_runner,
                 original_circuit=original_circuit,
