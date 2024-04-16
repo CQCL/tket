@@ -12,10 +12,12 @@ from pytket_benchmarking.compiler_benchmarking.circuit_suite_manager import Circ
 from pytket_benchmarking.utils.storage_manager import LocalStorage
 from pytket_benchmarking.compiler_benchmarking.pass_runner import TimedPassRunner
 from pytket_benchmarking.compiler_benchmarking import CompiledCircuitsManager
+from pytket_benchmarking.compiler_benchmarking.experiment_analyser import CompiledCircuitExperiment
+import matplotlib.pyplot as plt
+from typing import Optional
 
-app = typer.Typer(
-    # pretty_exceptions_enable=False,
-)
+
+app = typer.Typer()
 
 class Compilers(Enum):
 
@@ -40,7 +42,7 @@ def compile(
     compiler: Annotated[Compilers, typer.Argument(help="Compiler to use.")],
     architecture: Annotated[Architectures, typer.Argument(help="Architecture to compile to.")],
     suite_path: Annotated[Path, typer.Argument(help="Path to circuit suite.")],
-    compiled_path: Annotated[Path, typer.Argument(help="Path to compiled circuits.")]
+    compiled_path: Annotated[Path, typer.Argument(help="Path to compiled circuits.")],
 ):
     """Compile circuit
     """
@@ -74,8 +76,51 @@ def compile(
         )
 
 @app.command()
-def plot():
-    pass
+def plot(
+    suite_path: Annotated[Path, typer.Argument(help="Path to circuit suite.")],
+    compiled_path: Annotated[Path, typer.Argument(help="Path to compiled circuits.")],
+    show: Annotated[bool, typer.Option("--show", "-s", help='Display plot.')] = False,
+    plot_path: Annotated[
+        Optional[Path],
+        typer.Argument(
+            help=(
+                "Path where plot should be saved. "
+                + "If none is given it will not be saved."
+            )
+        )
+    ] = None,
+):
+    storage_manager = LocalStorage(directory_path=suite_path)
+    circuit_suite = CircuitSuiteManager.from_storage_manager(
+        storage_manager=storage_manager
+    )
+
+    storage_manager = LocalStorage(directory_path=compiled_path)
+    compiled_circuit_mgr = CompiledCircuitsManager.from_storage_manager(
+        storage_manager=storage_manager,
+    )
+
+    compiled_func = lambda circuit : circuit.n_2qb_gates()
+    original_func = lambda circuit : circuit.n_2qb_gates()
+
+    benchmarking_experiment = CompiledCircuitExperiment(
+        compiled_circuit_mgr_list = [compiled_circuit_mgr],
+        circuit_suite_mgr_list = [circuit_suite],
+    )
+
+    fig, _ = benchmarking_experiment.plot_circuit_comparison(
+        compiled_func=compiled_func,
+        original_func=original_func,
+    )
+    if show:
+        plt.show()
+
+    if plot_path is not None:
+        fig.savefig(fname=plot_path)
+
+@app.command()
+def return_test():
+    return print(2)
 
 if __name__ == "__main__":
     app()

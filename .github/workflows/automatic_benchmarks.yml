@@ -91,8 +91,25 @@ jobs:
           repository: CQCL/pytket-benchmarking-store
           path: pytket-benchmarking-store
 
-      - name: Look at workspace
-        run: ls
+      - name: Test write result to env variable
+        run: export RETURN_TEST="$(python automated_benchmarking/automated_benchmarking.py return-test)"
+
+      - name: Create comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: ${{ RETURN_TEST }}
+
+      - name: Create comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'The results of the benchmarking are... ${{ RETURN_TEST }}'
+            })
         
       - name: Compile
         run: |
@@ -107,13 +124,4 @@ jobs:
           name: compiled_circuits
           path: compiled_circuits/
       
-      - name: Create comment
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: 'The results of the benchmarking are...'
-            })
+      
