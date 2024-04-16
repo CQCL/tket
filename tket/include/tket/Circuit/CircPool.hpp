@@ -109,9 +109,6 @@ const Circuit &SWAP_using_CX_0();
 /** Equivalent to SWAP, using three CX, outer CX have control on qubit 1 */
 const Circuit &SWAP_using_CX_1();
 
-/** A two-qubit circuit with an Rz(1) on each qubit */
-const Circuit &two_Rz1();
-
 /** X[1]; CX[0,1] */
 const Circuit &X1_CX();
 
@@ -443,6 +440,12 @@ Circuit PhasedISWAP_using_TK2(const Expr &p, const Expr &t);
 
 /** Equivalent to PhasedISWAP, using CX, U3 and Rz gates */
 Circuit PhasedISWAP_using_CX(const Expr &p, const Expr &t);
+
+/** Equivalent to AAMS, using a TK2 and Rz gates */
+Circuit AAMS_using_TK2(const Expr &theta, const Expr &phi0, const Expr &phi1);
+
+/** Equivalent to AAMS, using CX, Rz and U3 gates */
+Circuit AAMS_using_CX(const Expr &theta, const Expr &phi0, const Expr &phi1);
 
 /** Unwrap NPhasedX, into number_of_qubits PhasedX gates */
 Circuit NPhasedX_using_PhasedX(

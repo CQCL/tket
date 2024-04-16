@@ -103,9 +103,6 @@ PYBIND11_MODULE(circuit_library, library_m) {
   library_m.def(
       "SWAP_using_CX_1", &CircPool::SWAP_using_CX_1,
       "Equivalent to SWAP, using three CX, outer CX have control on qubit 1");
-  library_m.def(
-      "two_Rz1", &CircPool::two_Rz1,
-      "A two-qubit circuit with an Rz(1) on each qubit");
   library_m.def("X1_CX", &CircPool::X1_CX, "X[1]; CX[0,1]");
   library_m.def("Z0_CX", &CircPool::Z0_CX, "Z[0]; CX[0,1] ");
 

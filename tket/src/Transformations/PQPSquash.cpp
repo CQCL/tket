@@ -187,12 +187,6 @@ static bool squash_to_pqp(
   return SingleQubitSquash(std::move(squasher), circ, reverse).squash();
 }
 
-Transform reduce_XZ_chains() {
-  return Transform([](Circuit &circ) {
-    return squash_to_pqp(circ, OpType::Rx, OpType::Rz);
-  });
-}
-
 Transform squash_1qb_to_pqp(const OpType &q, const OpType &p, bool strict) {
   return Transform(
       [=](Circuit &circ) { return squash_to_pqp(circ, q, p, strict); });

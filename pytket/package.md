@@ -1,4 +1,4 @@
-Pytket is a python module for interfacing with TKET, an optimising compiler for quantum circuits developed by [Quantinuum](https://www.quantinuum.com/). In addition to pytket there are several extension modules for accessing a range of quantum hardware and classical simulators. The extension modules also provide integration with several widely used quantum software tools.
+Pytket is a python module for interfacing with TKET, a quantum computing toolkit and optimising compiler developed by [Quantinuum](https://www.quantinuum.com/). In addition to pytket there are several pytket extension modules for accessing a range of quantum hardware and classical simulators. The extension modules also allow circuit conversion between several widely used quantum software tools including qiskit, cirq and pennylane.
 
 The source code for the TKET compiler can be found in [this github repository](https://github.com/CQCL/tket).
 
@@ -38,6 +38,8 @@ For bugs and feature requests we recommend creating an issue on the [github repo
 User support: tket-support@cambridgequantum.com
 
 For discussion, join the public slack channel [here](https://join.slack.com/t/tketusers/shared_invite/zt-18qmsamj9-UqQFVdkRzxnXCcKtcarLRA).
+
+There is also a [pytket tag](https://quantumcomputing.stackexchange.com/questions/tagged/pytket) on quantum computing stack exchange.
 
 Mailing list: join [here](https://list.cambridgequantum.com/cgi-bin/mailman/listinfo/tket-users).
 

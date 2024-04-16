@@ -68,6 +68,10 @@ struct GateUnitaryMatrixImplementations {
   static Eigen::Matrix2cd Rz(double value);
   static Eigen::Matrix2cd U1(double value);
 
+  static Eigen::Matrix2cd GPI(double value);
+  static Eigen::Matrix2cd GPI2(double value);
+  static Eigen::Matrix4cd AAMS(double theta, double phi0, double phi1);
+
   static Eigen::Matrix2cd U2(double phi, double lambda);
 
   static Eigen::Matrix2cd U3(double theta, double phi, double lambda);

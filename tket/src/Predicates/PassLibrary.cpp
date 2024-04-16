@@ -71,12 +71,6 @@ const PassPtr &SynthesiseTket() {
       "SynthesiseTket"));
   return pp;
 }
-const PassPtr &SynthesiseHQS() {
-  static const PassPtr pp(gate_translation_pass(
-      Transforms::synthesise_HQS(),
-      {OpType::ZZMax, OpType::PhasedX, OpType::Rz}, false, "SynthesiseHQS"));
-  return pp;
-}
 const PassPtr &SynthesiseOQC() {
   static const PassPtr pp(gate_translation_pass(
       Transforms::synthesise_OQC(), {OpType::Rz, OpType::SX, OpType::ECR}, true,

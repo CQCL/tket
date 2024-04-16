@@ -87,11 +87,6 @@ Transform synthesise_tket();
 // Produces: Rz, SX, ECR
 Transform synthesise_OQC();
 
-// converts a circuit into the HQS primitives (Rz, PhasedX, ZZMax) whilst
-// optimising Expects: CX and any single-qubit gates Produces: ZZMax, PhasedX,
-// Rz
-Transform synthesise_HQS();
-
 // converts a circuit into the UMD primitives (Rz, PhasedX, XXPhase) whilst
 // optimising Expects: Any gate set Produces: XXPhase, PhasedX, Rz
 Transform synthesise_UMD();
