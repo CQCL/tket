@@ -102,6 +102,8 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: ${{RETURN_TEST}}
+        env:
+          RETURN_TEST: ${{ env.RETURN_TEST }}
 
       - name: Create comment
         uses: actions/github-script@v7
@@ -113,6 +115,8 @@ jobs:
               repo: context.repo.repo,
               body: 'The results of the benchmarking are... ${{RETURN_TEST}}'
             })
+        env:
+          RETURN_TEST: ${{ env.RETURN_TEST }}
         
       - name: Compile
         run: |
