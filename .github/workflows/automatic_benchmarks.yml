@@ -95,7 +95,7 @@ jobs:
           path: pytket-benchmarking-store
 
       - name: Test write result to env variable
-        run: export RETURN_TEST="$(python automated_benchmarking/automated_benchmarking.py return-test)"
+        run: echo "RETURN_TEST=$(python automated_benchmarking/automated_benchmarking.py return-test)"  >> $GITHUB_ENV
 
       - name: Create comment
         uses: peter-evans/create-or-update-comment@v4
