@@ -144,11 +144,7 @@ def percentage_better(
             label=compiler.value,
         )
         
-        for original_circuit in track(
-            circuit_suite_mgr,
-            description=f"Compiling with {compiler.value}...",
-            total=len(circuit_suite_mgr.df)
-        ):
+        for original_circuit in circuit_suite_mgr:
             compiled_circuit_mgr.run_circuit(
                 pass_runner=pass_runner,
                 original_circuit=original_circuit,
