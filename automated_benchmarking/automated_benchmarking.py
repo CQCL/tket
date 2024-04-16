@@ -14,33 +14,36 @@ from pytket_benchmarking.compiler_benchmarking.pass_runner import TimedPassRunne
 from pytket_benchmarking.compiler_benchmarking import CompiledCircuitsManager
 from pytket_benchmarking.compiler_benchmarking.experiment_analyser import CompiledCircuitExperiment
 import matplotlib.pyplot as plt
-from typing import Optional
+from typing import Optional, List
+from rich.progress import track
+from pytket.passes import SequencePass, DecomposeBoxes
 
 
 app = typer.Typer()
 
 class Compilers(Enum):
 
-    QiskitDefault = "Qiskit"
-    PytketDefault = "Pytket"
+    QiskitIBMQ = "QiskitIBMQ"
+    PytketIBMQ = "PytketIBMQ"
+
+ibmq_architecture = HeavyHexagon(n_rows=3, n_columns=3)
 
 compilers_dict = {
-    Compilers.QiskitDefault: QiskitDefault,
-    Compilers.PytketDefault: PytketDefault,
-}
-
-class Architectures(Enum):
-
-    heavy_hexagon = "HeavyHexagon"
-
-architectures_dict = {
-    Architectures.heavy_hexagon: HeavyHexagon(n_rows=10, n_columns=10)
+    Compilers.QiskitIBMQ: SequencePass(
+        pass_list=[
+            DecomposeBoxes(),
+            QiskitDefault(
+                architecture=ibmq_architecture,
+                optimisation_level=3,
+            )
+        ]
+    ),
+    Compilers.PytketIBMQ: PytketDefault(architecture=ibmq_architecture, optimisation_level=2),
 }
 
 @app.command()
 def compile(
     compiler: Annotated[Compilers, typer.Argument(help="Compiler to use.")],
-    architecture: Annotated[Architectures, typer.Argument(help="Architecture to compile to.")],
     suite_path: Annotated[Path, typer.Argument(help="Path to circuit suite.")],
     compiled_path: Annotated[Path, typer.Argument(help="Path to compiled circuits.")],
 ):
@@ -52,12 +55,8 @@ def compile(
         storage_manager=storage_manager
     )
 
-    compiler_pass=compilers_dict[compiler](
-        architecture=architectures_dict[architecture],
-        optimisation_level=0,
-    )
     pass_runner = TimedPassRunner(
-        compiler_pass=compiler_pass,
+        compiler_pass=compilers_dict[compiler],
         label=compiler.value,
     )
 
@@ -119,8 +118,57 @@ def plot(
         fig.savefig(fname=plot_path)
 
 @app.command()
-def return_test():
-    return print(2)
+def percentage_better(
+    circuit_suite_path: Annotated[Path, typer.Argument(help="Path circuit suite.")],
+    compiled_path: Annotated[Path, typer.Argument(help="Path to compiled circuits.")],
+    compilers: Annotated[List[Compilers], typer.Argument(help="Compilers to compare.")],
+):
+
+    storage_manager = LocalStorage(
+        directory_path=compiled_path,
+        write_permission=True,
+    )
+    compiled_circuit_mgr = CompiledCircuitsManager(
+        storage_manager=storage_manager,
+    )
+
+    storage_manager = LocalStorage(directory_path=circuit_suite_path)
+    circuit_suite_mgr = CircuitSuiteManager(
+        storage_manager=storage_manager
+    )
+
+    for compiler in compilers:
+
+        pass_runner = TimedPassRunner(
+            compiler_pass=compilers_dict[compiler],
+            label=compiler.value,
+        )
+        
+        for original_circuit in track(
+            circuit_suite_mgr,
+            description=f"Compiling with {compiler.value}...",
+            total=len(circuit_suite_mgr.df)
+        ):
+            compiled_circuit_mgr.run_circuit(
+                pass_runner=pass_runner,
+                original_circuit=original_circuit,
+            )
+    
+    benchmarking_experiment = CompiledCircuitExperiment(
+        compiled_circuit_mgr_list = [compiled_circuit_mgr],
+        circuit_suite_mgr_list = [circuit_suite_mgr],
+    )
+
+    data = benchmarking_experiment.compiler_comparison(
+        comparison_func=lambda circuit : circuit.n_2qb_gates(),
+    )
+    data['pytket better'] = data['PytketIBMQ'] <= data['QiskitIBMQ']
+    print(len(data.loc[data['pytket better']]) / len(data))
+
+
+# @app.command()
+# def return_test():
+#     return print(2)
 
 if __name__ == "__main__":
     app()

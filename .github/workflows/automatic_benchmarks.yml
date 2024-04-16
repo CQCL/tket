@@ -85,11 +85,12 @@ jobs:
           repository: CQCL/pytket-benchmarking-store
           path: pytket-benchmarking-store
 
+      # - name: Test write result to env variable
+      #   run: |
+      #     echo "RETURN_TEST=$(python tket/automated_benchmarking/automated_benchmarking.py return-test)" >> $GITHUB_ENV
+
       - name: Test write result to env variable
-        run: |
-          export TEMP_RETURN_TEST="$(python tket/automated_benchmarking/automated_benchmarking.py return-test)"
-          echo $TEMP_RETURN_TEST
-          echo "RETURN_TEST=$(python tket/automated_benchmarking/automated_benchmarking.py return-test)" >> $GITHUB_ENV
+        run: echo "RETURN_TEST=$(python tket/automated_benchmarking/automated_benchmarking.py automated_benchmarking/automated_benchmarking.py percentage-better ../pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarking/temp_compiled QiskitIBMQ PytketIBMQ)" >> $GITHUB_ENV
 
       - name: Test
         run: echo $RETURN_TEST
@@ -155,17 +156,23 @@ jobs:
           repository: CQCL/pytket-benchmarking-store
           path: pytket-benchmarking-store
 
-      - name: Test write result to env variable
-        run: |
-          echo "RETURN_TEST=$(python tket/automated_benchmarking/automated_benchmarking.py return-test)" >> $GITHUB_ENV
+      # - name: Test write result to env variable
+      #   run: |
+      #     echo "RETURN_TEST=$(python tket/automated_benchmarking/automated_benchmarking.py return-test)" >> $GITHUB_ENV
 
-      - name: Test
-        run: echo $RETURN_TEST
+      # - name: Test
+      #   run: echo $RETURN_TEST
       
-      - name: Test
-        run: echo $RETURN_TEST
-        env:
-          RETURN_TEST: ${{ env.RETURN_TEST }}
+      # - name: Test
+      #   run: echo $RETURN_TEST
+      #   env:
+      #     RETURN_TEST: ${{ env.RETURN_TEST }}
+        
+      - name: Compile
+        run: |
+          python tket/automated_benchmarking/automated_benchmarking.py --help
+          python tket/automated_benchmarking/automated_benchmarking.py compile --help
+          echo "RETURN_TEST=$(python tket/automated_benchmarking/automated_benchmarking.py automated_benchmarking/automated_benchmarking.py percentage-better ../pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarking/temp_compiled QiskitIBMQ PytketIBMQ)" >> $GITHUB_ENV
 
       - name: Create comment
         uses: peter-evans/create-or-update-comment@v4
@@ -187,13 +194,6 @@ jobs:
             })
         env:
           RETURN_TEST: ${{ env.RETURN_TEST }}
-        
-      - name: Compile
-        run: |
-          python tket/automated_benchmarking/automated_benchmarking.py --help
-          python tket/automated_benchmarking/automated_benchmarking.py compile --help
-          python tket/automated_benchmarking/automated_benchmarking.py compile Qiskit HeavyHexagon pytket-benchmarking-store/benchmarking_circuits/random_iqp compiled_circuits
-          ls
 
       - name: Save Compiled Circuits
         uses: actions/upload-artifact@v4
