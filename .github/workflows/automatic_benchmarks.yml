@@ -101,7 +101,7 @@ jobs:
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          body: ${{ RETURN_TEST }}
+          body: ${{ env.RETURN_TEST }}
         env:
           RETURN_TEST: ${{ env.RETURN_TEST }}
 
@@ -113,7 +113,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'The results of the benchmarking are... ${{ RETURN_TEST }}'
+              body: 'The results of the benchmarking are... ${{ env.RETURN_TEST }}'
             })
         env:
           RETURN_TEST: ${{ env.RETURN_TEST }}
