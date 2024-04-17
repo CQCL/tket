@@ -91,8 +91,8 @@ jobs:
       - name: Test
         run: echo $RETURN_TEST
 
-      # - name: Test run benchmarks
-      #   run: python tket/automated_benchmarking/automated_benchmarking.py percentage-better pytket-benchmarking-store/benchmarking_circuits/quantum_volume temp_compiled QiskitIBMQ PytketIBMQ
+      - name: Test run benchmarks
+        run: python tket/automated_benchmarking/automated_benchmarking.py percentage-better pytket-benchmarking-store/benchmarking_circuits/quantum_volume temp_compiled QiskitIBMQ PytketIBMQ
 
       - name: Test write result to env variable
         run: echo "RETURN_TEST=$(python tket/automated_benchmarking/automated_benchmarking.py percentage-better pytket-benchmarking-store/benchmarking_circuits/quantum_volume temp_compiled QiskitIBMQ PytketIBMQ)" >> $GITHUB_ENV
