@@ -59,7 +59,7 @@ jobs:
   Write-Env-Var:
     name: Write Env Var
     runs-on: macos-14
-    needs: build_wheels
+    # needs: build_wheels
 
     steps:
       
@@ -98,15 +98,6 @@ jobs:
           repository: CQCL/pytket-benchmarking-store
           path: pytket-benchmarking-store
 
-      # - name: Test write two to env variable
-      #   run: echo "RETURN_TEST=$(python tket/automated_benchmarking/automated_benchmarking.py return-test)" >> $GITHUB_ENV
-
-      # - name: Test
-      #   run: echo $RETURN_TEST
-
-      # - name: Test run benchmarks
-      #   run: python tket/automated_benchmarking/automated_benchmarking.py percentage-better pytket-benchmarking-store/benchmarking_circuits/quantum_volume temp_compiled QiskitIBMQ PytketIBMQ
-
       - name: Test write result to env variable
         run: echo "RETURN_TEST=$(python tket/automated_benchmarking/automated_benchmarking.py percentage-better pytket-benchmarking-store/benchmarking_circuits/quantum_volume compiled_circuits QiskitIBMQ PytketIBMQ)" >> $GITHUB_ENV
       
@@ -119,7 +110,7 @@ jobs:
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          body: 'Pytket is the best or equal best on ${{ env.RETURN_TEST }}% of circuits.'
+          body: 'Pytket is best, or equal best, on ${{ env.RETURN_TEST }}% of circuits.'
         env:
           RETURN_TEST: ${{ env.RETURN_TEST }}
 
@@ -128,85 +119,3 @@ jobs:
         with:
           name: compiled_circuits
           path: compiled_circuits/
-
-  # Run-Benchmakrs:
-  #   name: Run Benchmarks
-  #   needs: build_wheels
-  #   runs-on: macos-14
-
-  #   steps:
-      
-  #     - name: Setup Python
-  #       uses: actions/setup-python@v5
-  #       with:
-  #         python-version: '3.11'
-
-  #     - name: Download Wheel
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: pytket_wheel
-
-  #     - name: Install dependencies
-  #       run: |
-  #         pip install pytket-*.whl
-  #         pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket_benchmarking
-  #         pip install typer
-  #         pip list
-
-  #     - name: Checkout tket
-  #       uses: actions/checkout@v4
-  #       with:
-  #         path: tket
-
-  #     - name: Checkout pytket-benchmarking-store
-  #       uses: actions/checkout@v4
-  #       with:
-  #         repository: CQCL/pytket-benchmarking-store
-  #         path: pytket-benchmarking-store
-
-  #     # - name: Test write result to env variable
-  #     #   run: |
-  #     #     echo "RETURN_TEST=$(python tket/automated_benchmarking/automated_benchmarking.py return-test)" >> $GITHUB_ENV
-
-  #     # - name: Test
-  #     #   run: echo $RETURN_TEST
-      
-  #     # - name: Test
-  #     #   run: echo $RETURN_TEST
-  #     #   env:
-  #     #     RETURN_TEST: ${{ env.RETURN_TEST }}
-        
-  #     - name: Compile
-  #       run: echo "RETURN_TEST=$(python tket/automated_benchmarking/automated_benchmarking.py automated_benchmarking/automated_benchmarking.py percentage-better ../pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarking/temp_compiled QiskitIBMQ PytketIBMQ)" >> $GITHUB_ENV
-
-  #     - name: Test write result to env variable
-  #       run: echo "RETURN_TEST=$(python tket/automated_benchmarking/automated_benchmarking.py percentage-better pytket-benchmarking-store/benchmarking_circuits/quantum_volume temp_compiled QiskitIBMQ PytketIBMQ)" >> $GITHUB_ENV
-
-  #     - name: Create comment
-  #       uses: peter-evans/create-or-update-comment@v4
-  #       with:
-  #         issue-number: ${{ github.event.pull_request.number }}
-  #         body: ${{ env.RETURN_TEST }}
-  #       env:
-  #         RETURN_TEST: ${{ env.RETURN_TEST }}
-
-  #     - name: Create comment
-  #       uses: actions/github-script@v7
-  #       with:
-  #         script: |
-  #           github.rest.issues.createComment({
-  #             issue_number: context.issue.number,
-  #             owner: context.repo.owner,
-  #             repo: context.repo.repo,
-  #             body: 'The results of the benchmarking are... ${{ env.RETURN_TEST }}'
-  #           })
-  #       env:
-  #         RETURN_TEST: ${{ env.RETURN_TEST }}
-
-  #     - name: Save Compiled Circuits
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: compiled_circuits
-  #         path: compiled_circuits/
-      
-      

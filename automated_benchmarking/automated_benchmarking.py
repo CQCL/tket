@@ -79,9 +79,8 @@ def compile(
 def plot(
     suite_path: Annotated[Path, typer.Argument(help="Path to circuit suite.")],
     compiled_path: Annotated[Path, typer.Argument(help="Path to compiled circuits.")],
-    # show: Annotated[bool, typer.Option("--show", "-s", help='Display plot.')] = False,
     plot_path: Annotated[
-        Optional[Path],
+        Path,
         typer.Argument(
             help=(
                 "Path where plot should be saved. "
@@ -112,11 +111,8 @@ def plot(
         compiled_func=compiled_func,
         original_func=original_func,
     )
-    # if show:
-    #     plt.show()
 
-    if plot_path is not None:
-        fig.savefig(fname=plot_path)
+    fig.savefig(fname=plot_path)
 
 @app.command()
 def percentage_better(
