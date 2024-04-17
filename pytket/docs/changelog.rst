@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Features:
+
+* Update to pytket-circuit-renderer 0.8.
+
 1.27.0 (April 2024)
 -------------------
 
