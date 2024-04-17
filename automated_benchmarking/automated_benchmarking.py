@@ -124,9 +124,9 @@ def percentage_better(
     compilers: Annotated[List[Compilers], typer.Argument(help="Compilers to compare.")],
 ):
     
-    print("compilers", compilers)
-    print("compiled_path", compiled_path)
-    print("circuit_suite_path", circuit_suite_path)
+    # print("compilers", compilers)
+    # print("compiled_path", compiled_path)
+    # print("circuit_suite_path", circuit_suite_path)
 
     storage_manager = LocalStorage(
         directory_path=compiled_path,
@@ -143,7 +143,7 @@ def percentage_better(
 
     for compiler in compilers:
 
-        print("compiler", compiler)
+        # print("compiler", compiler)
 
         pass_runner = TimedPassRunner(
             compiler_pass=compilers_dict[compiler],
@@ -151,7 +151,7 @@ def percentage_better(
         )
         
         for original_circuit in circuit_suite_mgr:
-            print("original_circuit", original_circuit)
+            # print("original_circuit", original_circuit)
             compiled_circuit_mgr.run_circuit(
                 pass_runner=pass_runner,
                 original_circuit=original_circuit,
@@ -166,7 +166,7 @@ def percentage_better(
         comparison_func=lambda circuit : circuit.n_2qb_gates(),
     )
     data['pytket better'] = data['PytketIBMQ'] <= data['QiskitIBMQ']
-    print(len(data.loc[data['pytket better']]) / len(data))
+    print(100 * len(data.loc[data['pytket better']]) / len(data))
 
 
 @app.command()
