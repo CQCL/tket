@@ -327,6 +327,12 @@ condition on a specified set of bit values.)
 
    .. automethod:: ZZMax
 
+   .. automethod:: AAMS
+   
+   .. automethod:: GPI
+
+   .. automethod:: GPI2
+
    Methods for appending circuit boxes
    -----------------------------------
 
@@ -347,6 +353,10 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_circbox
 
+   .. automethod:: add_circbox_regwise
+
+   .. automethod:: add_circbox_with_regmap
+
    .. automethod:: add_unitary1qbox
    
    .. automethod:: add_unitary2qbox
@@ -360,6 +370,8 @@ condition on a specified set of bit values.)
    .. automethod:: add_pauliexppairbox
 
    .. automethod:: add_pauliexpcommutingsetbox
+
+   .. automethod:: add_termsequencebox
 
    .. automethod:: add_phasepolybox
 
