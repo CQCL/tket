@@ -1503,104 +1503,6 @@ SCENARIO("Testing Synthesis OQC") {
   }
 }
 
-SCENARIO("Test synthesise_HQS") {
-  GIVEN("A simple ZXZ chain") {
-    Circuit circ(1);
-    circ.add_op<unsigned>(OpType::Rz, 0.3333, {0});
-    circ.add_op<unsigned>(OpType::Rx, 1.3333, {0});
-    circ.add_op<unsigned>(OpType::Rz, 0.3333, {0});
-    REQUIRE(Transforms::synthesise_HQS().apply(circ));
-    SliceVec slices = circ.get_slices();
-    REQUIRE(circ.get_OpType_from_Vertex(*slices[0].begin()) == OpType::Rz);
-    REQUIRE(circ.get_OpType_from_Vertex(*slices[1].begin()) == OpType::PhasedX);
-    Expr first =
-        (circ.get_Op_ptr_from_Vertex(*slices[0].begin()))->get_params()[0];
-    Expr second =
-        (circ.get_Op_ptr_from_Vertex(*slices[1].begin()))->get_params()[0];
-    Expr third =
-        (circ.get_Op_ptr_from_Vertex(*slices[1].begin()))->get_params()[1];
-    REQUIRE(test_equiv_val(first, 0.6666));
-    // Two equivalent possibilities for the PhasedX:
-    bool poss1 =
-        (test_equiv_val(second, 1.3333) && test_equiv_val(third, 0.3333));
-    bool poss2 =
-        (test_equiv_val(second, 0.6667) && test_equiv_val(third, 1.3333));
-    bool ok = poss1 || poss2;
-    REQUIRE(ok);
-  }
-  GIVEN("A 2-qb circuit") {
-    Circuit circ(2);
-    circ.add_op<unsigned>(OpType::Z, {0});
-    circ.add_op<unsigned>(OpType::X, {0});
-    circ.add_op<unsigned>(OpType::Z, {0});
-    circ.add_op<unsigned>(OpType::X, {0});
-    circ.add_op<unsigned>(OpType::Z, {0});
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    circ.add_op<unsigned>(OpType::Z, {1});
-    circ.add_op<unsigned>(OpType::X, {1});
-    circ.add_op<unsigned>(OpType::Z, {1});
-    circ.add_op<unsigned>(OpType::Rz, 0.3333, {1});
-    REQUIRE(Transforms::synthesise_HQS().apply(circ));
-    circ.get_slices();
-    REQUIRE(circ.n_vertices() == 10);
-    auto slices = circ.get_slices();
-    REQUIRE(slices.size() == 5);
-    REQUIRE(circ.get_OpType_from_Vertex(slices[4].front()) == OpType::Rz);
-    REQUIRE(circ.get_OpType_from_Vertex(slices[3].front()) == OpType::PhasedX);
-    REQUIRE(circ.get_OpType_from_Vertex(slices[2].front()) == OpType::ZZMax);
-    REQUIRE(circ.get_OpType_from_Vertex(slices[1].front()) == OpType::PhasedX);
-    REQUIRE(circ.get_OpType_from_Vertex(slices[0].front()) == OpType::Rz);
-  }
-  GIVEN("An X-Z-X chain") {
-    Circuit circ(1);
-    circ.add_op<unsigned>(OpType::Rx, 1.3333, {0});
-    circ.add_op<unsigned>(OpType::Rz, 0.5, {0});
-    circ.add_op<unsigned>(OpType::Rx, 0.6666, {0});
-    REQUIRE(Transforms::synthesise_HQS().apply(circ));
-    auto slices = circ.get_slices();
-    REQUIRE(slices.size() == 2);
-    REQUIRE(circ.get_OpType_from_Vertex(*slices[1].begin()) == OpType::PhasedX);
-    REQUIRE(circ.get_OpType_from_Vertex(*slices[0].begin()) == OpType::Rz);
-  }
-  GIVEN("A perfect CX-Rz(pi/2)-CX phase gadget") {
-    Circuit circ(2);
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    circ.add_op<unsigned>(OpType::Rz, 0.5, {1});
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transforms::synthesise_HQS().apply(circ));
-    REQUIRE(circ.get_slices().size() == 1);
-  }
-  GIVEN("Something that isn't quite a phase gadget") {
-    Circuit circ(2);
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    circ.add_op<unsigned>(OpType::Rz, 0.499999, {1});
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transforms::synthesise_HQS().apply(circ));
-    REQUIRE(circ.get_slices().size() > 3);
-
-    Circuit circ2(2);
-    circ2.add_op<unsigned>(OpType::CX, {0, 1});
-    circ2.add_op<unsigned>(OpType::Rz, 0.500003, {0});
-    circ2.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transforms::synthesise_HQS().apply(circ2));
-    REQUIRE(circ2.get_slices().size() == 1);
-    REQUIRE(
-        circ2.get_OpType_from_Vertex(*circ2.get_slices()[0].begin()) ==
-        OpType::Rz);
-  }
-  GIVEN("A CRz") {
-    Circuit circ(2);
-    circ.add_op<unsigned>(OpType::CRz, 1., {0, 1});
-    REQUIRE(Transforms::synthesise_HQS().apply(circ));
-  }
-  GIVEN("A mixed circuit") {
-    Circuit circ(2, 1);
-    circ.add_op<unsigned>(OpType::H, {0});
-    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
-    REQUIRE_NOTHROW(Transforms::synthesise_HQS().apply(circ));
-  }
-}
-
 SCENARIO("Test synthesise_UMD") {
   GIVEN("3 expressions which =0") {
     Expr a = 0.;
@@ -2300,7 +2202,6 @@ SCENARIO("Synthesis with conditional gates") {
   c.add_conditional_gate<unsigned>(OpType::U1, {0.25}, {1}, {0}, 1);
   c.add_conditional_gate<unsigned>(OpType::CnRy, {0.25}, {0, 1, 2}, {0, 1}, 0);
   c.add_measure(2, 2);
-  check_conditions(SynthesiseHQS(), c);
   check_conditions(SynthesiseOQC(), c);
   check_conditions(SynthesiseTK(), c);
   check_conditions(SynthesiseTket(), c);

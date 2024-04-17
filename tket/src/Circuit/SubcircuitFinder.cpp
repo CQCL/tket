@@ -55,6 +55,16 @@ static bool union_is_connected(
   return false;
 }
 
+static VertexSet set_diff(const VertexSet &A, const VertexSet &B) {
+  VertexSet C;
+  for (const Vertex &v : A) {
+    if (!B.contains(v)) {
+      C.insert(v);
+    }
+  }
+  return C;
+}
+
 // Return the union of two disjoint convex connected subcircuits, assuming that
 // the union is convex and connected.
 static subcircuit_info_t convex_union(
@@ -71,45 +81,50 @@ static subcircuit_info_t convex_union(
   VertexSet verts = verts0;
   verts.insert(verts1.begin(), verts1.end());
 
-  // preds = (preds0 ∖ verts1) ∪ (preds1 ∖ verts0)
-  VertexVec p0mv1;
-  std::set_difference(
-      preds0.begin(), preds0.end(), verts1.begin(), verts1.end(),
-      std::inserter(p0mv1, p0mv1.begin()));
-  VertexVec p1mv0;
-  std::set_difference(
-      preds1.begin(), preds1.end(), verts0.begin(), verts0.end(),
-      std::inserter(p1mv0, p1mv0.begin()));
-  VertexSet preds{p0mv1.begin(), p0mv1.end()};
-  preds.insert(p1mv0.begin(), p1mv0.end());
+  // preds = (preds0 ∪ preds1) ∖ verts
+  VertexSet preds01 = preds0;
+  preds01.insert(preds1.begin(), preds1.end());
+  VertexSet preds = set_diff(preds01, verts);
 
-  // succs = (succs0 ∖ verts1) ∪ (succs1 ∖ verts0)
-  VertexVec s0mv1;
-  std::set_difference(
-      succs0.begin(), succs0.end(), verts1.begin(), verts1.end(),
-      std::inserter(s0mv1, s0mv1.begin()));
-  VertexVec s1mv0;
-  std::set_difference(
-      succs1.begin(), succs1.end(), verts0.begin(), verts0.end(),
-      std::inserter(s1mv0, s1mv0.begin()));
-  VertexSet succs{s0mv1.begin(), s0mv1.end()};
-  succs.insert(s1mv0.begin(), s1mv0.end());
+  // succs = (succs0 ∪ succs1) ∖ verts
+  VertexSet succs01 = succs0;
+  succs01.insert(succs1.begin(), succs1.end());
+  VertexSet succs = set_diff(succs01, verts);
 
   return {verts, preds, succs};
+}
+
+static std::set<std::pair<Vertex, Vertex>> order_relations(
+    Circuit *circ /*const*/) {
+  // Put the vertices in reverse topological order:
+  VertexVec verts;
+  boost::topological_sort(circ->dag, std::back_inserter(verts));
+  // Construct a map v --> {all vertices in the future of v}:
+  std::map<Vertex, VertexSet> futures;
+  for (const Vertex &v : verts) {
+    VertexSet v_futures = {v};
+    for (const Vertex &w : circ->get_successors(v)) {
+      const VertexSet &w_futures = futures[w];
+      v_futures.insert(w_futures.begin(), w_futures.end());
+    }
+    futures[v] = v_futures;
+  }
+  // Construct the set of order relations:
+  std::set<std::pair<Vertex, Vertex>> rels;
+  for (const auto &v_ws : futures) {
+    const Vertex &v = v_ws.first;
+    for (const Vertex &w : v_ws.second) {
+      rels.insert({v, w});
+    }
+  }
+  return rels;
 }
 
 // Helper class for finding connected convex subcircuits.
 class SubcircuitFinder {
  public:
-  SubcircuitFinder(const Circuit *circ) : circ_(circ) {
-    // Compute the partial order on the DAG:
-    DAG TC;
-    boost::transitive_closure(circ_->dag, TC);
-    BGL_FORALL_VERTICES(v, circ_->dag, DAG) { order_relations_.insert({v, v}); }
-    BGL_FORALL_EDGES(e, TC, DAG) {
-      order_relations_.insert({boost::source(e, TC), boost::target(e, TC)});
-    }
-  }
+  SubcircuitFinder(Circuit *circ /*const*/)
+      : circ_(circ), order_relations_(order_relations(circ)) {}
   std::vector<VertexSet> find_subcircuits(
       std::function<bool(Op_ptr)> criterion) {
     // Find a maximal partition of the vertices satisfying the criterion into
@@ -161,7 +176,7 @@ class SubcircuitFinder {
     const VertexSet &preds0 = subcircuit_info0.preds;
     const VertexSet &succs0 = subcircuit_info0.succs;
     const VertexSet &preds1 = subcircuit_info1.preds;
-    const VertexSet &succs1 = subcircuit_info0.succs;
+    const VertexSet &succs1 = subcircuit_info1.succs;
     for (const Vertex &v0 : succs0) {
       for (const Vertex &v1 : preds1) {
         if (order_relations_.contains({v0, v1})) {
@@ -202,7 +217,8 @@ class SubcircuitFinder {
 };
 
 std::vector<VertexSet> Circuit::get_subcircuits(
-    std::function<bool(Op_ptr)> criterion) const {
+    std::function<bool(Op_ptr)> criterion) /*const*/ {
+  index_vertices();
   SubcircuitFinder finder(this);
   return finder.find_subcircuits(criterion);
 }

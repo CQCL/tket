@@ -1628,7 +1628,7 @@ class Circuit {
    *   satisfying the criterion.
    */
   std::vector<VertexSet> get_subcircuits(
-      std::function<bool(Op_ptr)> criterion) const;
+      std::function<bool(Op_ptr)> criterion) /*const*/;
 
   /**
    * Constructs a @ref Subcircuit with a given vertex set.
@@ -1821,7 +1821,6 @@ Vertex Circuit::add_op(
 
   add_wasm_register(count_wasm_sig);
 
-  Vertex new_v = add_vertex(op, opgroup);
   unit_set_t write_arg_set;
   EdgeVec preds;
   for (unsigned i = 0; i < args.size(); ++i) {
@@ -1837,6 +1836,7 @@ Vertex Circuit::add_op(
     preds.push_back(pred_out_e);
   }
 
+  Vertex new_v = add_vertex(op, opgroup);
   rewire(new_v, preds, sig);
   return new_v;
 }

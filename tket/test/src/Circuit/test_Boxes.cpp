@@ -119,6 +119,10 @@ SCENARIO("Using Boxes", "[boxes]") {
     Eigen::MatrixXcd uc0 = tket_sim::get_unitary(c0);
     Eigen::MatrixXcd uc0a = tket_sim::get_unitary(c0a);
     REQUIRE((uc0 - uc0a).cwiseAbs().sum() < ERR_EPS);
+    // Test circuit name access
+    CircBox cbox(Circuit(2));
+    cbox.set_circuit_name("test_box");
+    REQUIRE(cbox.get_circuit_name() == "test_box");
   }
   GIVEN("CircBox with non-default units") {
     Circuit c0;
@@ -1391,6 +1395,33 @@ SCENARIO("Checking equality", "[boxes]") {
       REQUIRE(
           pbox !=
           PauliExpCommutingSetBox(
+              {SymPauliTensor({Pauli::Y}, 1.0), SymPauliTensor({Pauli::I}, 1.2),
+               SymPauliTensor({Pauli::I}, -0.5)}));
+    }
+  }
+  GIVEN("TermSequenceBox") {
+    TermSequenceBox tbox(
+        {SymPauliTensor({Pauli::X}, 1.0), SymPauliTensor({Pauli::I}, 1.2),
+         SymPauliTensor({Pauli::I}, -0.5)});
+    WHEN("both arguments are equal") { REQUIRE(tbox == tbox); }
+    WHEN("different ids but same arguments") {
+      REQUIRE(
+          tbox ==
+          TermSequenceBox(
+              {SymPauliTensor({Pauli::X}, 1.0), SymPauliTensor({Pauli::I}, 1.2),
+               SymPauliTensor({Pauli::I}, -0.5)}));
+    }
+    WHEN("different ids, equivalent angles") {
+      REQUIRE(
+          tbox == TermSequenceBox(
+                      {SymPauliTensor({Pauli::X}, -3.0),
+                       SymPauliTensor({Pauli::I}, 5.2),
+                       SymPauliTensor({Pauli::I}, -0.5)}));
+    }
+    WHEN("different arguments") {
+      REQUIRE(
+          tbox !=
+          TermSequenceBox(
               {SymPauliTensor({Pauli::Y}, 1.0), SymPauliTensor({Pauli::I}, 1.2),
                SymPauliTensor({Pauli::I}, -0.5)}));
     }

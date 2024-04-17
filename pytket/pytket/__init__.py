@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Python Interface to CQC tket
+"""Python Interface to tket
 """
 from pytket.circuit import (
     Circuit,

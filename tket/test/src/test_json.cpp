@@ -81,9 +81,9 @@ SCENARIO("Test Op serialization") {
         OpType::Unitary2qBox,    OpType::Unitary3qBox,
         OpType::ExpBox,          OpType::PauliExpBox,
         OpType::PauliExpPairBox, OpType::PauliExpCommutingSetBox,
-        OpType::ToffoliBox,      OpType::CustomGate,
-        OpType::CliffBox,        OpType::PhasePolyBox,
-        OpType::QControlBox};
+        OpType::TermSequenceBox, OpType::ToffoliBox,
+        OpType::CustomGate,      OpType::CliffBox,
+        OpType::PhasePolyBox,    OpType::QControlBox};
 
     std::set<std::string> type_names;
     for (auto type :
@@ -383,6 +383,29 @@ SCENARIO("Test Circuit serialization") {
     REQUIRE(p_b == pbox);
   }
 
+  GIVEN("TermSequenceBoxes") {
+    Circuit c(5, 2, "termseqbox");
+    TermSequenceBox pbox(
+        {{{Pauli::I, Pauli::X, Pauli::Z, Pauli::I, Pauli::Z}, 0.3112},
+         {{Pauli::I, Pauli::Y, Pauli::I, Pauli::Z, Pauli::Y}, 1.178},
+         {{Pauli::X, Pauli::X, Pauli::I, Pauli::Y, Pauli::I}, -0.911}},
+        Transforms::PauliSynthStrat::Sets, PauliPartitionStrat::CommutingSets,
+        GraphColourMethod::Lazy, CXConfigType::Snake);
+    c.add_box(pbox, {0, 1, 2, 3, 4});
+    nlohmann::json j_pbox = c;
+    const Circuit new_c = j_pbox.get<Circuit>();
+
+    const auto& p_b = static_cast<const TermSequenceBox&>(
+        *new_c.get_commands()[0].get_op_ptr());
+
+    REQUIRE(p_b.get_pauli_gadgets() == pbox.get_pauli_gadgets());
+    REQUIRE(p_b.get_synth_strategy() == pbox.get_synth_strategy());
+    REQUIRE(p_b.get_partition_strategy() == pbox.get_partition_strategy());
+    REQUIRE(p_b.get_graph_colouring() == pbox.get_graph_colouring());
+    REQUIRE(p_b.get_cx_config() == pbox.get_cx_config());
+    REQUIRE(p_b == pbox);
+  }
+
   GIVEN("ToffoliBoxes") {
     Circuit c(2, 2, "toffolibox");
     std::map<std::vector<bool>, std::vector<bool>> permutation;
@@ -670,7 +693,7 @@ SCENARIO("Test Circuit serialization") {
 
 SCENARIO("Test device serializations") {
   GIVEN("Architecture") {
-    Architecture arc({{0, 1}, {1, 2}});
+    Architecture arc({{Node(0), Node(1)}, {Node(1), Node(2)}});
     nlohmann::json j_arc = arc;
     Architecture loaded_arc = j_arc.get<Architecture>();
     CHECK(arc == loaded_arc);
@@ -895,7 +918,6 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(RebaseTket, RebaseTket())
   COMPPASSJSONTEST(RebaseUFR, RebaseUFR())
   COMPPASSJSONTEST(RemoveRedundancies, RemoveRedundancies())
-  COMPPASSJSONTEST(SynthesiseHQS, SynthesiseHQS())
   COMPPASSJSONTEST(SynthesiseTK, SynthesiseTK())
   COMPPASSJSONTEST(SynthesiseTket, SynthesiseTket())
   COMPPASSJSONTEST(SynthesiseOQC, SynthesiseOQC())

@@ -288,10 +288,15 @@ PYBIND11_MODULE(passes, m) {
   py::class_<SequencePass, std::shared_ptr<SequencePass>, BasePass>(
       m, "SequencePass", "A sequence of compilation passes.")
       .def(
-          py::init<const py::tket_custom::SequenceVec<PassPtr> &>(),
-          "Construct from a list of compilation passes arranged in "
-          "order of application.",
-          py::arg("pass_list"))
+          py::init<const py::tket_custom::SequenceVec<PassPtr> &, bool>(),
+          "Construct from a list of compilation passes arranged in order of "
+          "application."
+          "\n\n:param pass_list: sequence of passes"
+          "\n:param strict: if True (the default), check that all "
+          "postconditions and preconditions of the passes in the sequence are "
+          "compatible and raise an exception if not."
+          "\n:return: a pass that applies the sequence",
+          py::arg("pass_list"), py::arg("strict") = true)
       .def("__str__", [](const BasePass &) { return "<tket::SequencePass>"; })
       .def(
           "get_sequence", &SequencePass::get_sequence,
@@ -515,25 +520,21 @@ PYBIND11_MODULE(passes, m) {
       "When merging rotations with the same op group name, the merged "
       "operation keeps the same name.");
   m.def(
-      "SynthesiseHQS",
-      []() {
-        tket_log()->warn(
-            "SynthesiseHQS is deprecated. It will be removed "
-            "after pytket v1.25.");
-        return SynthesiseHQS();
-      },
-      "Optimises and converts a circuit consisting of CX and single-qubit "
-      "gates into one containing only ZZMax, PhasedX, Rz and Phase. "
-      "DEPRECATED: will be removed after pytket 1.25.");
-  m.def(
       "SynthesiseTK", &SynthesiseTK,
       "Optimises and converts all gates to TK2, TK1 and Phase gates.");
   m.def(
       "SynthesiseTket", &SynthesiseTket,
       "Optimises and converts all gates to CX, TK1 and Phase gates.");
   m.def(
-      "SynthesiseOQC", &SynthesiseOQC,
-      "Optimises and converts all gates to ECR, Rz, SX and Phase.");
+      "SynthesiseOQC",
+      []() {
+        tket_log()->warn(
+            "SynthesiseOQC is deprecated. It will be removed "
+            "after pytket v1.28.");
+        return SynthesiseOQC();
+      },
+      "Optimises and converts all gates to ECR, Rz, SX and Phase. "
+      "DEPRECATED: will be removed after pytket 1.28.");
   m.def(
       "SynthesiseUMD", &SynthesiseUMD,
       "Optimises and converts all gates to XXPhase, PhasedX, Rz and Phase.");
@@ -542,8 +543,8 @@ PYBIND11_MODULE(passes, m) {
       "Squash sequences of single-qubit gates to TK1 gates.");
   m.def(
       "SquashRzPhasedX", &SquashRzPhasedX,
-      "Squash single qubit gates into PhasedX and Rz gates. "
-      "Commute Rz gates to the back if possible.");
+      "Squash single qubit gates into PhasedX and Rz gates. Also remove "
+      "identity gates. Commute Rz gates to the back if possible.");
   m.def(
       "FlattenRegisters", &FlattenRegisters,
       "Merges all quantum and classical registers into their "
@@ -831,6 +832,15 @@ PYBIND11_MODULE(passes, m) {
       "`transform` argument is not provided)"
       "\n:return: a pass to perform the rewriting",
       py::arg("transform") = std::nullopt, py::arg("allow_swaps") = true);
+
+  m.def(
+      "CliffordPushThroughMeasures", &gen_clifford_push_through_pass,
+      "An optimisation pass that resynthesise a Clifford subcircuit "
+      "before end of circuit Measurement operations by implementing "
+      "the action of the Clifford as a mutual diagonalisation circuit "
+      "and a permutation on output measurements realised as a series "
+      "of classical operations."
+      "\n: return: a pass to simplify end of circuit Clifford gates.");
 
   m.def(
       "DecomposeSwapsToCXs", &gen_decompose_routing_gates_to_cxs_pass,

@@ -122,6 +122,8 @@ static Eigen::MatrixXcd get_unitary_or_throw(
     CASE_RETURN_1P(Ry)
     CASE_RETURN_1P(Rz)
     CASE_RETURN_1P(U1)
+    CASE_RETURN_1P(GPI)
+    CASE_RETURN_1P(GPI2)
     CASE_RETURN_1P(CRx)
     CASE_RETURN_1P(CRy)
     CASE_RETURN_1P(CRz)
@@ -140,6 +142,7 @@ static Eigen::MatrixXcd get_unitary_or_throw(
 #undef CASE_RETURN_2P
     CASE_RETURN_3P(CU3)
     CASE_RETURN_3P(U3)
+    CASE_RETURN_3P(AAMS)
     CASE_RETURN_3P(TK1)
     CASE_RETURN_3P(TK2)
 #undef CASE_RETURN_3P

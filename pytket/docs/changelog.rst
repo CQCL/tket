@@ -1,8 +1,44 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.27.0 (April 2024)
+-------------------
+
+General:
+
+* Remove deprecated ``SynthesiseHQS`` pass.
+
+Features:
+
+* Add ``circuit_name`` property to ``CircBox``.
+* Enable pickling of ``Bit`` objects.
+* New optimisation ``Transform.PushCliffordsThroughMeasures()`` and pass 
+  ``CliffordPushThroughMeasures`` that optimises Clifford subcircuits 
+  before end of circuit measurement gates.
+* Add ``OpType.GPI``, ``OpType.GPI2`` and ``OpType.AAMS``.
+* Allow construction of ``SequencePass`` without predicate checks, by means of
+  new ``strict`` argument to the constructor (defaulting to ``True``).
+
+Fixes:
+
+* Correct handling of ``CustomGate`` when converting from pytket to QASM.
+* Ensure that ECR, CS and CSdg operations have gate definitions in QASM
+  conversion.
+* Correct position of custom gate definitions needed for conditional operations
+  in QASM conversion.
+* Fix ``DelayMeasures()`` pass for circuits where bits are reused as measurement
+  targets.
+* When adding operations to a circuit, check for invalid wires before adding a
+  vertex to the circuit.
+* Make ``RemoveRedundancies`` pass remove ``OpType.Phase`` gates.
+* Remove support for wasm functions with multiple return values.
+
+Deprecations:
+
+* Deprecate ``SynthesiseOQC`` pass.
+
+1.26.0 (March 2024)
+-------------------
 
 Features:
 
@@ -17,11 +53,15 @@ Features:
   ``BackendResult.get_probability_distribution()`` and to the constructor of a
   ``ProbabilityDistribution``, defaulting to zero. (Previously probabilities
   below 1e-10 were by default treated as zero.)
+* Add python binding for ``UnitaryRevTableau``.
+* Add ``TermSequenceBox``, for circuit synthesis of a series of Pauli 
+  Exponentials, where the ordering of terms can be changed.
 
 Fixes:
 
 * Add missing op types to methods for converting Clifford circuits to unitary
   tableaux.
+* Require scipy >= 1.13 and quimb >= 1.8 for ZX module.
 
 1.25.0 (February 2024)
 ----------------------

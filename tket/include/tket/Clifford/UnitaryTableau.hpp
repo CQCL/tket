@@ -101,8 +101,14 @@ class UnitaryTableau {
    */
   void apply_S_at_front(const Qubit& qb);
   void apply_S_at_end(const Qubit& qb);
+  void apply_Z_at_front(const Qubit& qb);
+  void apply_Z_at_end(const Qubit& qb);
   void apply_V_at_front(const Qubit& qb);
   void apply_V_at_end(const Qubit& qb);
+  void apply_X_at_front(const Qubit& qb);
+  void apply_X_at_end(const Qubit& qb);
+  void apply_H_at_front(const Qubit& qb);
+  void apply_H_at_end(const Qubit& qb);
   void apply_CX_at_front(const Qubit& control, const Qubit& target);
   void apply_CX_at_end(const Qubit& control, const Qubit& target);
   void apply_gate_at_front(OpType type, const qubit_vector_t& qbs);
@@ -202,6 +208,14 @@ class UnitaryRevTableau {
   explicit UnitaryRevTableau(const qubit_vector_t& qbs);
 
   /**
+   * Construct a tableau from the underlying binary matrices.
+   * Qubits given default names.
+   */
+  explicit UnitaryRevTableau(
+      const MatrixXb& xx, const MatrixXb& xz, const VectorXb& xph,
+      const MatrixXb& zx, const MatrixXb& zz, const VectorXb& zph);
+
+  /**
    * Other required constructors
    */
   UnitaryRevTableau();
@@ -236,8 +250,14 @@ class UnitaryRevTableau {
    */
   void apply_S_at_front(const Qubit& qb);
   void apply_S_at_end(const Qubit& qb);
+  void apply_Z_at_front(const Qubit& qb);
+  void apply_Z_at_end(const Qubit& qb);
   void apply_V_at_front(const Qubit& qb);
   void apply_V_at_end(const Qubit& qb);
+  void apply_X_at_front(const Qubit& qb);
+  void apply_X_at_end(const Qubit& qb);
+  void apply_H_at_front(const Qubit& qb);
+  void apply_H_at_end(const Qubit& qb);
   void apply_CX_at_front(const Qubit& control, const Qubit& target);
   void apply_CX_at_end(const Qubit& control, const Qubit& target);
   void apply_gate_at_front(OpType type, const qubit_vector_t& qbs);

@@ -329,6 +329,20 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:return: the new :py:class:`Circuit`",
           py::arg("pauliexpcommutingsetbox"), py::arg("qubits"))
       .def(
+          "add_termsequencebox",
+          [](Circuit *circ, const TermSequenceBox &box,
+             const py::tket_custom::SequenceVec<unsigned> &qubits,
+             const py::kwargs &kwargs) {
+            return add_box_method<unsigned>(
+                circ, std::make_shared<TermSequenceBox>(box), qubits, kwargs);
+          },
+          "Append a :py:class:`TermSequenceBox` to the "
+          "circuit.\n\n:param termsequencebox: The box to "
+          "append\n:param "
+          "qubits: Indices of the qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("termsequencebox"), py::arg("qubits"))
+      .def(
           "add_toffolibox",
           [](Circuit *circ, const ToffoliBox &box,
              const py::tket_custom::SequenceVec<unsigned> &qubits,
@@ -761,6 +775,20 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "qubits: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("pauliexpcommutingsetbox"), py::arg("qubits"))
+      .def(
+          "add_termsequencebox",
+          [](Circuit *circ, const TermSequenceBox &box,
+             const py_qubit_vector_t &qubits, const py::kwargs &kwargs) {
+            return add_box_method<UnitID>(
+                circ, std::make_shared<TermSequenceBox>(box),
+                {qubits.begin(), qubits.end()}, kwargs);
+          },
+          "Append a :py:class:`TermSequenceBox` to the "
+          "circuit.\n\n:param termsequencebox: The box to "
+          "append\n:param "
+          "qubits: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("termsequencebox"), py::arg("qubits"))
       .def(
           "add_toffolibox",
           [](Circuit *circ, const ToffoliBox &box,
@@ -1289,6 +1317,42 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
           py::arg("qubit"))
+      .def(
+          "GPI",
+          [](Circuit *circ, const Expr &angle, unsigned qb,
+             const py::kwargs &kwargs) {
+            return add_gate_method_oneparam<unsigned>(
+                circ, OpType::GPI, angle, {qb}, kwargs);
+          },
+          "Appends a GPI gate with a possibly symbolic angle "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle"), py::arg("qubit"))
+      .def(
+          "GPI2",
+          [](Circuit *circ, const Expr &angle, unsigned qb,
+             const py::kwargs &kwargs) {
+            return add_gate_method_oneparam<unsigned>(
+                circ, OpType::GPI, angle, {qb}, kwargs);
+          },
+          "Appends a GPI2 gate with a possibly symbolic angle "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle"), py::arg("qubit"))
+      .def(
+          "AAMS",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+             const Expr &angle2, const unsigned &qb0, const unsigned &qb1,
+             const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<unsigned>(
+                circ, OpType::AAMS, {angle0, angle1, angle2}, {qb0, qb1},
+                kwargs);
+          },
+          "Appends an AAMS gate with possibly symbolic angles "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
+          py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "TK1",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -1912,6 +1976,42 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
           py::arg("qubit"))
+      .def(
+          "GPI",
+          [](Circuit *circ, const Expr &angle, const Qubit &qb,
+             const py::kwargs &kwargs) {
+            return add_gate_method_oneparam<UnitID>(
+                circ, OpType::GPI, angle, {qb}, kwargs);
+          },
+          "Appends a GPI gate with a possibly symbolic angle "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle"), py::arg("qubit"))
+      .def(
+          "GPI2",
+          [](Circuit *circ, const Expr &angle, const Qubit &qb,
+             const py::kwargs &kwargs) {
+            return add_gate_method_oneparam<UnitID>(
+                circ, OpType::GPI2, angle, {qb}, kwargs);
+          },
+          "Appends a GPI2 gate with a possibly symbolic angle "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle"), py::arg("qubit"))
+      .def(
+          "AAMS",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+             const Expr &angle2, const Qubit &qb0, const Qubit &qb1,
+             const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<UnitID>(
+                circ, OpType::AAMS, {angle0, angle1, angle2}, {qb0, qb1},
+                kwargs);
+          },
+          "Appends an AAMS gate with possibly symbolic angles "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
+          py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "TK1",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,

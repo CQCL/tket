@@ -268,17 +268,6 @@ const Circuit &SWAP_using_CX_1() {
   return *C;
 }
 
-const Circuit &two_Rz1() {
-  static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
-    Circuit c(2);
-    Op_ptr z = get_op_ptr(OpType::Rz, 1.);
-    c.add_op<unsigned>(z, {0});
-    c.add_op<unsigned>(z, {1});
-    return c;
-  }());
-  return *C;
-}
-
 const Circuit &X1_CX() {
   static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
     Circuit c(2);
@@ -1203,6 +1192,28 @@ Circuit PhasedISWAP_using_CX(const Expr &p, const Expr &t) {
   c.add_op<unsigned>(OpType::CX, {0, 1});
   c.add_op<unsigned>(OpType::U3, {-0.5, -0.5 - p, 0.5}, {0});
   c.add_op<unsigned>(OpType::U3, {-0.5, -0.5 + p, 0.5}, {1});
+  return c;
+}
+
+Circuit AAMS_using_TK2(const Expr &theta, const Expr &phi0, const Expr &phi1) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::Rz, -phi0, {0});
+  c.add_op<unsigned>(OpType::Rz, -phi1, {1});
+  c.add_op<unsigned>(OpType::TK2, {theta, 0, 0}, {0, 1});
+  c.add_op<unsigned>(OpType::Rz, phi0, {0});
+  c.add_op<unsigned>(OpType::Rz, phi1, {1});
+  return c;
+}
+
+Circuit AAMS_using_CX(const Expr &theta, const Expr &phi0, const Expr &phi1) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::Rz, -phi0, {0});
+  c.add_op<unsigned>(OpType::Rz, -phi1, {1});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_op<unsigned>(OpType::U3, {theta, -0.5, 0.5}, {0});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_op<unsigned>(OpType::Rz, phi0, {0});
+  c.add_op<unsigned>(OpType::Rz, phi1, {1});
   return c;
 }
 

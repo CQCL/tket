@@ -14,8 +14,11 @@
 
 #include "tket/Circuit/Boxes.hpp"
 
+#include <exception>
 #include <memory>
 #include <numeric>
+#include <sstream>
+#include <stdexcept>
 #include <tkassert/Assert.hpp>
 
 #include "tket/Circuit/AssertionSynthesis.hpp"
@@ -69,6 +72,14 @@ Op_ptr Box::deserialize(const nlohmann::json &j) {
 }
 
 CircBox::CircBox(const Circuit &circ) : Box(OpType::CircBox) {
+  try {
+    Circuit circ1 = circ;
+    circ1.flatten_registers();
+  } catch (const std::exception &e) {
+    std::stringstream ss;
+    ss << "Unable to construct CircBox: " << e.what();
+    throw std::runtime_error(ss.str());
+  }
   signature_ = op_signature_t(circ.n_qubits(), EdgeType::Quantum);
   op_signature_t bits(circ.n_bits(), EdgeType::Classical);
   signature_.insert(signature_.end(), bits.begin(), bits.end());
@@ -115,6 +126,16 @@ bool CircBox::is_equal(const Op &op_other) const {
   const CircBox &other = dynamic_cast<const CircBox &>(op_other);
   if (id_ == other.get_id()) return true;
   return circ_->circuit_equality(*other.circ_, {}, false);
+}
+
+std::optional<std::string> CircBox::get_circuit_name() const {
+  TKET_ASSERT(circ_ != nullptr);
+  return circ_->get_name();
+}
+
+void CircBox::set_circuit_name(const std::string _name) {
+  TKET_ASSERT(circ_ != nullptr);
+  circ_->set_name(_name);
 }
 
 Unitary1qBox::Unitary1qBox(const Eigen::Matrix2cd &m)

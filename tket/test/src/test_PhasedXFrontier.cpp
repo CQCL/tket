@@ -297,5 +297,59 @@ SCENARIO("PhasedXFrontier: Squashing PhasedX") {
   }
 }
 
+SCENARIO("PhasedXFrontier: Compute intervals") {
+  GIVEN("A simple circuit") {
+    Circuit c(2, 1);
+    c.add_op<unsigned>(OpType::PhasedX, {0.4, 0.3}, {0});
+    c.add_op<unsigned>(OpType::PhasedX, {0.4, 0.3}, {1});
+    auto first_cx = c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::PhasedX, {0.4, 0.3}, {0});
+    auto ctrl_phasedx = c.add_conditional_gate<unsigned>(
+        OpType::PhasedX, {0.4, 0.3}, {0}, {0}, 1);
+    c.add_op<unsigned>(OpType::PhasedX, {0.4, 0.3}, {1});
+    auto ctrl_cx =
+        c.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+
+    Transforms::PhasedXFrontier frontier(c);
+    Transforms::PhasedXFrontierTester frontier_tester(frontier, c);
+
+    THEN("Initial intervals: [input, first_cx] and [input, first_cx]") {
+      auto inputs = c.all_inputs();
+      REQUIRE(frontier_tester.get_interval_start(0) == inputs[0]);
+      REQUIRE(frontier_tester.get_interval_start(1) == inputs[1]);
+      REQUIRE(frontier_tester.get_interval_end(0) == first_cx);
+      REQUIRE(frontier_tester.get_interval_end(1) == first_cx);
+    }
+
+    // Move frontier forward
+    frontier.next_multiqb(first_cx);
+    THEN("Second intervals: [first_cx, ctrl_phasedx] and [first_cx, ctrl_cx]") {
+      REQUIRE(frontier_tester.get_interval_start(0) == first_cx);
+      REQUIRE(frontier_tester.get_interval_start(1) == first_cx);
+      REQUIRE(frontier_tester.get_interval_end(0) == ctrl_phasedx);
+      REQUIRE(frontier_tester.get_interval_end(1) == ctrl_cx);
+    }
+
+    // Move frontier forward
+    frontier.next_multiqb(ctrl_phasedx);
+    THEN("Third intervals: [ctrl_phasedx, ctrl_cx] and [first_cx, ctrl_cx]") {
+      REQUIRE(frontier_tester.get_interval_start(0) == ctrl_phasedx);
+      REQUIRE(frontier_tester.get_interval_start(1) == first_cx);
+      REQUIRE(frontier_tester.get_interval_end(0) == ctrl_cx);
+      REQUIRE(frontier_tester.get_interval_end(1) == ctrl_cx);
+    }
+
+    // Move frontier forward
+    frontier.next_multiqb(ctrl_cx);
+    THEN("Final intervals: [ctrl_cx, output] and [ctrl_cx, output]") {
+      auto outputs = c.all_outputs();
+      REQUIRE(frontier_tester.get_interval_start(0) == ctrl_cx);
+      REQUIRE(frontier_tester.get_interval_start(1) == ctrl_cx);
+      REQUIRE(frontier_tester.get_interval_end(0) == outputs[0]);
+      REQUIRE(frontier_tester.get_interval_end(1) == outputs[1]);
+    }
+  }
+}
+
 }  // namespace test_PhasedXFrontier
 }  // namespace tket

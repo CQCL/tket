@@ -359,7 +359,7 @@ def circuit_to_symbolic_gates(circ: Circuit) -> Mul:
             continue
         args = com.args
         try:
-            targs = [qubit_map[q] for q in args]
+            targs = [qubit_map[q] for q in args]  # type: ignore
         except KeyError as e:
             raise ValueError(
                 f"Gates can only act on qubits. Operation {com} not valid."

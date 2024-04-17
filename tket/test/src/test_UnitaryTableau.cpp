@@ -16,6 +16,7 @@
 #include <sstream>
 
 #include "testutil.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Converters/Converters.hpp"
 #include "tket/Converters/UnitaryTableauBox.hpp"
@@ -246,11 +247,59 @@ SCENARIO("Correct creation of UnitaryTableau") {
     CHECK(tab0 == tab4);
     CHECK(tab0 == tab5);
   }
+  GIVEN("A single Z gate") {
+    UnitaryTableau tab0(3);
+    UnitaryTableau tab1(3);
+    UnitaryTableau tab2(3);
+    UnitaryTableau tab3(3);
+    UnitaryTableau tab4(3);
+    UnitaryTableau tab5(3);
+    tab0.apply_gate_at_front(OpType::Z, {Qubit(0)});
+    tab1.apply_gate_at_end(OpType::Z, {Qubit(0)});
+    tab2.apply_gate_at_front(OpType::S, {Qubit(0)});
+    tab2.apply_gate_at_front(OpType::S, {Qubit(0)});
+    tab3.apply_gate_at_end(OpType::Sdg, {Qubit(0)});
+    tab3.apply_gate_at_end(OpType::Sdg, {Qubit(0)});
+    tab4.apply_Z_at_front(Qubit(0));
+    tab5.apply_Z_at_end(Qubit(0));
+    CHECK(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z));
+    CHECK(tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X, 2));
+    CHECK(tab0 == tab1);
+    CHECK(tab0 == tab2);
+    CHECK(tab0 == tab3);
+    CHECK(tab0 == tab4);
+    CHECK(tab0 == tab5);
+  }
+  GIVEN("A single X gate") {
+    UnitaryTableau tab0(3);
+    UnitaryTableau tab1(3);
+    UnitaryTableau tab2(3);
+    UnitaryTableau tab3(3);
+    UnitaryTableau tab4(3);
+    UnitaryTableau tab5(3);
+    tab0.apply_gate_at_front(OpType::X, {Qubit(0)});
+    tab1.apply_gate_at_end(OpType::X, {Qubit(0)});
+    tab2.apply_gate_at_front(OpType::V, {Qubit(0)});
+    tab2.apply_gate_at_front(OpType::V, {Qubit(0)});
+    tab3.apply_gate_at_end(OpType::Vdg, {Qubit(0)});
+    tab3.apply_gate_at_end(OpType::Vdg, {Qubit(0)});
+    tab4.apply_X_at_front(Qubit(0));
+    tab5.apply_X_at_end(Qubit(0));
+    CHECK(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z, 2));
+    CHECK(tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X));
+    CHECK(tab0 == tab1);
+    CHECK(tab0 == tab2);
+    CHECK(tab0 == tab3);
+    CHECK(tab0 == tab4);
+    CHECK(tab0 == tab5);
+  }
   GIVEN("A single H gate") {
     UnitaryTableau tab0(3);
     UnitaryTableau tab1(3);
     UnitaryTableau tab2(3);
     UnitaryTableau tab3(3);
+    UnitaryTableau tab4(3);
+    UnitaryTableau tab5(3);
     tab0.apply_gate_at_front(OpType::H, {Qubit(0)});
     tab1.apply_gate_at_end(OpType::H, {Qubit(0)});
     tab2.apply_gate_at_front(OpType::S, {Qubit(0)});
@@ -259,11 +308,15 @@ SCENARIO("Correct creation of UnitaryTableau") {
     tab3.apply_gate_at_end(OpType::Vdg, {Qubit(0)});
     tab3.apply_gate_at_end(OpType::Sdg, {Qubit(0)});
     tab3.apply_gate_at_end(OpType::Vdg, {Qubit(0)});
+    tab4.apply_H_at_front(Qubit(0));
+    tab5.apply_H_at_end(Qubit(0));
     CHECK(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X));
     CHECK(tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z));
     CHECK(tab0 == tab1);
     CHECK(tab0 == tab2);
     CHECK(tab0 == tab3);
+    CHECK(tab0 == tab4);
+    CHECK(tab0 == tab5);
   }
   GIVEN("A single CX gate") {
     UnitaryTableau tab0(3);
@@ -297,6 +350,21 @@ SCENARIO("Correct creation of UnitaryTableau") {
     UnitaryTableau tab = circuit_to_unitary_tableau(circ);
     UnitaryTableau rev_tab = get_tableau_with_gates_applied_at_front();
     REQUIRE(tab == rev_tab);
+    Eigen::MatrixXcd circ_u = tket_sim::get_unitary(circ);
+    for (unsigned q = 0; q < 3; ++q) {
+      CmplxSpMat xq = SpPauliString(Qubit(q), Pauli::X).to_sparse_matrix(3);
+      Eigen::MatrixXcd xqd = xq;
+      PauliStabiliser xrow = tab.get_xrow(Qubit(q));
+      CmplxSpMat xrowmat = xrow.to_sparse_matrix(3);
+      Eigen::MatrixXcd xrowmatd = xrowmat;
+      CHECK((xrowmatd * circ_u * xqd).isApprox(circ_u));
+      CmplxSpMat zq = SpPauliString(Qubit(q), Pauli::Z).to_sparse_matrix(3);
+      Eigen::MatrixXcd zqd = zq;
+      PauliStabiliser zrow = tab.get_zrow(Qubit(q));
+      CmplxSpMat zrowmat = zrow.to_sparse_matrix(3);
+      Eigen::MatrixXcd zrowmatd = zrowmat;
+      CHECK((zrowmatd * circ_u * zqd).isApprox(circ_u));
+    }
   }
   GIVEN("A PI/2 rotation") {
     Circuit circ = get_test_circ();
@@ -359,6 +427,22 @@ SCENARIO("Synthesis of circuits from UnitaryTableau") {
     UnitaryTableau res_tab = circuit_to_unitary_tableau(res);
     REQUIRE(res_tab == tab);
   }
+  GIVEN("Additional gate coverage, check unitary") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::ZZMax, {0, 1});
+    circ.add_op<unsigned>(OpType::ECR, {2, 3});
+    circ.add_op<unsigned>(OpType::ISWAPMax, {1, 2});
+    circ.add_op<unsigned>(OpType::noop, {0});
+    UnitaryTableau tab = circuit_to_unitary_tableau(circ);
+    UnitaryTableau rev_tab(4);
+    rev_tab.apply_gate_at_front(OpType::noop, {Qubit(0)});
+    rev_tab.apply_gate_at_front(OpType::ISWAPMax, {Qubit(1), Qubit(2)});
+    rev_tab.apply_gate_at_front(OpType::ECR, {Qubit(2), Qubit(3)});
+    rev_tab.apply_gate_at_front(OpType::ZZMax, {Qubit(0), Qubit(1)});
+    REQUIRE(tab == rev_tab);
+    Circuit res = unitary_tableau_to_circuit(tab);
+    REQUIRE(test_unitary_comparison(circ, res, true));
+  }
 }
 
 SCENARIO("Correct creation of UnitaryRevTableau") {
@@ -418,14 +502,52 @@ SCENARIO("Correct creation of UnitaryRevTableau") {
     CHECK(tab0 == tab4);
     CHECK(tab0 == tab5);
   }
+  GIVEN("A single Z gate") {
+    UnitaryRevTableau tab0(3);
+    UnitaryRevTableau tab1(3);
+    UnitaryRevTableau tab2(3);
+    UnitaryRevTableau tab3(3);
+    tab0.apply_gate_at_end(OpType::Z, {Qubit(0)});
+    tab1.apply_gate_at_front(OpType::Z, {Qubit(0)});
+    tab2.apply_Z_at_end(Qubit(0));
+    tab3.apply_Z_at_front(Qubit(0));
+    REQUIRE(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z));
+    REQUIRE(
+        tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X, 2));
+    REQUIRE(tab0 == tab1);
+    REQUIRE(tab0 == tab2);
+    REQUIRE(tab0 == tab3);
+  }
+  GIVEN("A single X gate") {
+    UnitaryRevTableau tab0(3);
+    UnitaryRevTableau tab1(3);
+    UnitaryRevTableau tab2(3);
+    UnitaryRevTableau tab3(3);
+    tab0.apply_gate_at_end(OpType::X, {Qubit(0)});
+    tab1.apply_gate_at_front(OpType::X, {Qubit(0)});
+    tab2.apply_X_at_end(Qubit(0));
+    tab3.apply_X_at_front(Qubit(0));
+    REQUIRE(
+        tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z, 2));
+    REQUIRE(tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X));
+    REQUIRE(tab0 == tab1);
+    REQUIRE(tab0 == tab2);
+    REQUIRE(tab0 == tab3);
+  }
   GIVEN("A single H gate") {
     UnitaryRevTableau tab0(3);
     UnitaryRevTableau tab1(3);
+    UnitaryRevTableau tab2(3);
+    UnitaryRevTableau tab3(3);
     tab0.apply_gate_at_end(OpType::H, {Qubit(0)});
     tab1.apply_gate_at_front(OpType::H, {Qubit(0)});
+    tab2.apply_H_at_end(Qubit(0));
+    tab3.apply_H_at_front(Qubit(0));
     REQUIRE(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X));
     REQUIRE(tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z));
     REQUIRE(tab0 == tab1);
+    REQUIRE(tab0 == tab2);
+    REQUIRE(tab0 == tab3);
   }
   GIVEN("A single CX gate") {
     UnitaryRevTableau tab0(3);
@@ -538,6 +660,29 @@ SCENARIO("Synthesis of circuits from UnitaryRevTableau") {
     REQUIRE(test_unitary_comparison(circ, res, true));
     UnitaryRevTableau res_tab = circuit_to_unitary_rev_tableau(res);
     REQUIRE(res_tab == tab);
+    // Manually call apply_gate methods
+    UnitaryRevTableau tab_front(2);
+    tab_front.apply_gate_at_front(OpType::ISWAPMax, {Qubit(0), Qubit(1)});
+    tab_front.apply_gate_at_front(OpType::SXdg, {Qubit(1)});
+    tab_front.apply_gate_at_front(OpType::SX, {Qubit(0)});
+    tab_front.apply_gate_at_front(OpType::ECR, {Qubit(0), Qubit(1)});
+    tab_front.apply_gate_at_front(OpType::SXdg, {Qubit(1)});
+    tab_front.apply_gate_at_front(OpType::SX, {Qubit(0)});
+    tab_front.apply_gate_at_front(OpType::ZZMax, {Qubit(0), Qubit(1)});
+    tab_front.apply_gate_at_front(OpType::SXdg, {Qubit(1)});
+    tab_front.apply_gate_at_front(OpType::SX, {Qubit(0)});
+    REQUIRE(tab == tab_front);
+    UnitaryRevTableau tab_end(2);
+    tab_end.apply_gate_at_end(OpType::SX, {Qubit(0)});
+    tab_end.apply_gate_at_end(OpType::SXdg, {Qubit(1)});
+    tab_end.apply_gate_at_end(OpType::ZZMax, {Qubit(0), Qubit(1)});
+    tab_end.apply_gate_at_end(OpType::SX, {Qubit(0)});
+    tab_end.apply_gate_at_end(OpType::SXdg, {Qubit(1)});
+    tab_end.apply_gate_at_end(OpType::ECR, {Qubit(0), Qubit(1)});
+    tab_end.apply_gate_at_end(OpType::SX, {Qubit(0)});
+    tab_end.apply_gate_at_end(OpType::SXdg, {Qubit(1)});
+    tab_end.apply_gate_at_end(OpType::ISWAPMax, {Qubit(0), Qubit(1)});
+    REQUIRE(tab == tab_end);
   }
 }
 

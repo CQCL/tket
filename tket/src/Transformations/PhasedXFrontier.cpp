@@ -171,6 +171,13 @@ Edge PhasedXFrontier::get_interval_start(Edge e) const {
 
 bool PhasedXFrontier::is_interval_boundary(Op_ptr op) {
   OpType type = op->get_type();
+  if (type == OpType::Conditional) {
+    // We currently split intervals on Conditional gates even if they
+    // are single-qubit gates, as there is no simple way to guarantee that
+    // classically controlled gates are space-like separated without making
+    // additional assumptions or walking the DAG.
+    return true;
+  }
   return is_gate_type(type) && as_gate_ptr(op)->n_qubits() > 1 &&
          type != OpType::NPhasedX;
 }
@@ -436,6 +443,20 @@ bool all_nullopt(const OptVertexVec& vec) {
   }
   return true;
 }
+
+Vertex PhasedXFrontierTester::get_interval_start(unsigned i) {
+  auto edge = frontier_.intervals_[i].first;
+  return circ_.source(edge);
+}
+
+Vertex PhasedXFrontierTester::get_interval_end(unsigned i) {
+  auto edge = frontier_.intervals_[i].second;
+  return circ_.target(edge);
+}
+
+PhasedXFrontierTester::PhasedXFrontierTester(
+    PhasedXFrontier& frontier, Circuit& circ)
+    : frontier_(frontier), circ_(circ) {}
 
 }  // namespace Transforms
 

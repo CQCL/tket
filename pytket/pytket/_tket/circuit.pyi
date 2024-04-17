@@ -3,13 +3,15 @@ from typing import Any
 from __future__ import annotations
 import numpy
 import pytket._tket.architecture
+import pytket._tket.partition
 import pytket._tket.pauli
+import pytket._tket.transform
 import pytket._tket.unit_id
 import pytket.circuit.logic_exp
 import pytket.wasm.wasm
 import sympy
 import typing
-__all__ = ['BarrierOp', 'BasisOrder', 'CXConfigType', 'CircBox', 'Circuit', 'ClassicalEvalOp', 'ClassicalExpBox', 'ClassicalOp', 'Command', 'Conditional', 'ConjugationBox', 'CopyBitsOp', 'CustomGate', 'CustomGateDef', 'DiagonalBox', 'DummyBox', 'EdgeType', 'ExpBox', 'MetaOp', 'MultiBitOp', 'MultiplexedRotationBox', 'MultiplexedTensoredU2Box', 'MultiplexedU2Box', 'MultiplexorBox', 'Op', 'OpType', 'PauliExpBox', 'PauliExpCommutingSetBox', 'PauliExpPairBox', 'PhasePolyBox', 'ProjectorAssertionBox', 'QControlBox', 'RangePredicateOp', 'ResourceBounds', 'ResourceData', 'SetBitsOp', 'StabiliserAssertionBox', 'StatePreparationBox', 'ToffoliBox', 'ToffoliBoxSynthStrat', 'Unitary1qBox', 'Unitary2qBox', 'Unitary3qBox', 'WASMOp', 'fresh_symbol']
+__all__ = ['BarrierOp', 'BasisOrder', 'CXConfigType', 'CircBox', 'Circuit', 'ClassicalEvalOp', 'ClassicalExpBox', 'ClassicalOp', 'Command', 'Conditional', 'ConjugationBox', 'CopyBitsOp', 'CustomGate', 'CustomGateDef', 'DiagonalBox', 'DummyBox', 'EdgeType', 'ExpBox', 'MetaOp', 'MultiBitOp', 'MultiplexedRotationBox', 'MultiplexedTensoredU2Box', 'MultiplexedU2Box', 'MultiplexorBox', 'Op', 'OpType', 'PauliExpBox', 'PauliExpCommutingSetBox', 'PauliExpPairBox', 'PhasePolyBox', 'ProjectorAssertionBox', 'QControlBox', 'RangePredicateOp', 'ResourceBounds', 'ResourceData', 'SetBitsOp', 'StabiliserAssertionBox', 'StatePreparationBox', 'TermSequenceBox', 'ToffoliBox', 'ToffoliBoxSynthStrat', 'Unitary1qBox', 'Unitary2qBox', 'Unitary3qBox', 'WASMOp', 'fresh_symbol']
 class BarrierOp(Op):
     """
     Barrier operations.
@@ -28,7 +30,7 @@ class BarrierOp(Op):
 class BasisOrder:
     """
     Enum for readout basis and ordering.
-    Readouts are viewed in increasing lexicographic order (ILO) of the bit's UnitID. This is our default convention for column indexing for ALL readout forms (shots, counts, statevector, and unitaries). e.g. :math:`\lvert abc \rangle` corresponds to the readout: ('c', 0) --> :math:`a`, ('c', 1) --> :math:`b`, ('d', 0) --> :math:`c`
+    Readouts are viewed in increasing lexicographic order (ILO) of the bit's UnitID. This is our default convention for column indexing for ALL readout forms (shots, counts, statevector, and unitaries). e.g. :math:`\\lvert abc \\rangle` corresponds to the readout: ('c', 0) --> :math:`a`, ('c', 1) --> :math:`b`, ('d', 0) --> :math:`c`
     For statevector and unitaries, the string abc is interpreted as an index in a big-endian (BE) fashion. e.g. the statevector :math:`(a_{00}, a_{01}, a_{10}, a_{11})`
     Some backends (Qiskit, ProjectQ, etc.) use a DLO-BE (decreasing lexicographic order, big-endian) convention. This is the same as ILO-LE (little-endian) for statevectors and unitaries, but gives shot tables/readouts in a counter-intuitive manner.
     Every backend and matrix-based box has a BasisOrder option which can toggle between ILO-BE (ilo) and DLO-BE (dlo).
@@ -133,6 +135,16 @@ class CircBox(Op):
         
         :param symbol_map: A map from SymPy symbols to SymPy expressions
         """
+    @property
+    def circuit_name(self) -> str | None:
+        """
+        :return: the name of the contained circuit. 
+        
+         WARNING: Setting this property mutates the CircBox and any changes are propagated to any Circuit that the CircBox has been added to (via Circuit.add_circbox).
+        """
+    @circuit_name.setter
+    def circuit_name(self, arg1: str) -> None:
+        ...
 class Circuit:
     """
     Encapsulates a quantum circuit using a DAG representation.
@@ -147,6 +159,20 @@ class Circuit:
     def from_dict(arg0: dict) -> Circuit:
         """
         Construct Circuit instance from JSON serializable dictionary representation of the Circuit.
+        """
+    @typing.overload
+    def AAMS(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, angle2: sympy.Expr | float, qubit0: int, qubit1: int, **kwargs: Any) -> Circuit:
+        """
+        Appends an AAMS gate with possibly symbolic angles (specified in half-turns).
+        
+        :return: the new :py:class:`Circuit`
+        """
+    @typing.overload
+    def AAMS(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, angle2: sympy.Expr | float, qubit0: pytket._tket.unit_id.Qubit, qubit1: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+        """
+        Appends an AAMS gate with possibly symbolic angles (specified in half-turns).
+        
+        :return: the new :py:class:`Circuit`
         """
     @typing.overload
     def CCX(self, control_0: int, control_1: int, target: int, **kwargs: Any) -> Circuit:
@@ -425,6 +451,34 @@ class Circuit:
     def FSim(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, qubit0: pytket._tket.unit_id.Qubit, qubit1: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends an FSim gate with possibly symbolic angles (specified in half-turns) on the wires for the specified qubits.
+        
+        :return: the new :py:class:`Circuit`
+        """
+    @typing.overload
+    def GPI(self, angle: sympy.Expr | float, qubit: int, **kwargs: Any) -> Circuit:
+        """
+        Appends a GPI gate with a possibly symbolic angle (specified in half-turns).
+        
+        :return: the new :py:class:`Circuit`
+        """
+    @typing.overload
+    def GPI(self, angle: sympy.Expr | float, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+        """
+        Appends a GPI gate with a possibly symbolic angle (specified in half-turns).
+        
+        :return: the new :py:class:`Circuit`
+        """
+    @typing.overload
+    def GPI2(self, angle: sympy.Expr | float, qubit: int, **kwargs: Any) -> Circuit:
+        """
+        Appends a GPI2 gate with a possibly symbolic angle (specified in half-turns).
+        
+        :return: the new :py:class:`Circuit`
+        """
+    @typing.overload
+    def GPI2(self, angle: sympy.Expr | float, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+        """
+        Appends a GPI2 gate with a possibly symbolic angle (specified in half-turns).
         
         :return: the new :py:class:`Circuit`
         """
@@ -930,7 +984,7 @@ class Circuit:
         :param n_bits: The number of classical bits in the circuit
         :param name: Optional name for the circuit.
         """
-    def __iter__(self) -> typing.Iterator:
+    def __iter__(self) -> typing.Iterator[Command]:
         """
         Iterate through the circuit, a Command at a time.
         """
@@ -1794,6 +1848,24 @@ class Circuit:
         
         :param box: The box to append
         :param args: Indices of the qubits to append the box to
+        :return: the new :py:class:`Circuit`
+        """
+    @typing.overload
+    def add_termsequencebox(self, termsequencebox: TermSequenceBox, qubits: typing.Sequence[int], **kwargs: Any) -> Circuit:
+        """
+        Append a :py:class:`TermSequenceBox` to the circuit.
+        
+        :param termsequencebox: The box to append
+        :param qubits: Indices of the qubits to append the box to
+        :return: the new :py:class:`Circuit`
+        """
+    @typing.overload
+    def add_termsequencebox(self, termsequencebox: TermSequenceBox, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+        """
+        Append a :py:class:`TermSequenceBox` to the circuit.
+        
+        :param termsequencebox: The box to append
+        :param qubits: The qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
@@ -2675,7 +2747,7 @@ class CustomGateDef:
         """
 class DiagonalBox(Op):
     """
-    A box for synthesising a diagonal unitary matrix into a sequence of multiplexed-Rz gates.
+    A box for synthesising a diagonal unitary matrix into a sequence of multiplexed-Rz gates. Implementation based on Theorem 7 of arxiv.org/abs/quant-ph/0406176. The decomposed circuit has at most 2^n-2 CX gates.
     """
     def __init__(self, diagonal: NDArray[numpy.complex128], upper_triangle: bool = True) -> None:
         """
@@ -2809,7 +2881,7 @@ class MultiBitOp(ClassicalEvalOp):
         """
 class MultiplexedRotationBox(Op):
     """
-    A user-defined multiplexed rotation gate (i.e. uniformly controlled single-axis rotations) specified by a map from bitstrings to :py:class:`Op` sor a list of bitstring-:py:class:`Op` s pairs
+    A user-defined multiplexed rotation gate (i.e. uniformly controlled single-axis rotations) specified by a map from bitstrings to :py:class:`Op` sor a list of bitstring-:py:class:`Op` s pairs. Implementation based on arxiv.org/abs/quant-ph/0410066. The decomposed circuit has at most 2^k single-qubit rotations, 2^k CX gates, and two additional H gates if the rotation axis is X. k is the number of control qubits.
     """
     @typing.overload
     def __init__(self, bistring_to_op_list: typing.Sequence[tuple[typing.Sequence[bool], Op]]) -> None:
@@ -2849,7 +2921,7 @@ class MultiplexedRotationBox(Op):
         """
 class MultiplexedTensoredU2Box(Op):
     """
-    A user-defined multiplexed tensor product of U2 gates specified by a map from bitstrings to lists of :py:class:`Op` sor a list of bitstring-list(:py:class:`Op` s) pairs
+    A user-defined multiplexed tensor product of U2 gates specified by a map from bitstrings to lists of :py:class:`Op` sor a list of bitstring-list(:py:class:`Op` s) pairs. A box with k control qubits and t target qubits is implemented as t k-controlled multiplexed-U2 gates with their diagonal components merged and commuted to the end. The resulting circuit contains t non-diagonal components of the multiplexed-U2 decomposition, t k-controlled multiplexed-Rz boxes, and a k-qubit DiagonalBox at the end. The total CX count is at most 2^k(2t+1)-t-2.
     """
     @typing.overload
     def __init__(self, bistring_to_op_list: typing.Sequence[tuple[typing.Sequence[bool], typing.Sequence[Op]]]) -> None:
@@ -2881,7 +2953,7 @@ class MultiplexedTensoredU2Box(Op):
         """
 class MultiplexedU2Box(Op):
     """
-    A user-defined multiplexed U2 gate (i.e. uniformly controlled U2 gate) specified by a map from bitstrings to :py:class:`Op` sor a list of bitstring-:py:class:`Op` s pairs
+    A user-defined multiplexed U2 gate (i.e. uniformly controlled U2 gate) specified by a map from bitstrings to :py:class:`Op` sor a list of bitstring-:py:class:`Op` s pairsImplementation based on arxiv.org/abs/quant-ph/0410066. The decomposed circuit has at most 2^k single-qubit gates, 2^k -1 CX gates, and a k+1 qubit DiagonalBox at the end. k is the number of control qubits.
     """
     @typing.overload
     def __init__(self, bistring_to_op_list: typing.Sequence[tuple[typing.Sequence[bool], Op]], impl_diag: bool = True) -> None:
@@ -3008,7 +3080,7 @@ class Op:
     @property
     def params(self) -> list[sympy.Expr | float]:
         """
-        Angular parameters of the op, in half-turns (e.g. 1.0 half-turns is :math:`\pi` radians). The parameters returned are constrained to the appropriate canonical range, which is usually the half-open interval [0,2) but for some operations (e.g. Rx, Ry and Rz) is [0,4).
+        Angular parameters of the op, in half-turns (e.g. 1.0 half-turns is :math:`\\pi` radians). The parameters returned are constrained to the appropriate canonical range, which is usually the half-open interval [0,2) but for some operations (e.g. Rx, Ry and Rz) is [0,4).
         """
     @property
     def transpose(self) -> Op:
@@ -3026,81 +3098,87 @@ class OpType:
     
     Members:
     
-      Phase : Global phase: :math:`(\alpha) \mapsto \left[ \begin{array}{c} e^{i\pi\alpha} \end{array} \right]`
+      Phase : Global phase: :math:`(\\alpha) \\mapsto \\left[ \\begin{array}{c} e^{i\\pi\\alpha} \\end{array} \\right]`
     
-      Z : Pauli Z: :math:`\left[ \begin{array}{cc} 1 & 0 \\ 0 & -1 \end{array} \right]`
+      Z : Pauli Z: :math:`\\left[ \\begin{array}{cc} 1 & 0 \\\\ 0 & -1 \\end{array} \\right]`
     
-      X : Pauli X: :math:`\left[ \begin{array}{cc} 0 & 1 \\ 1 & 0 \end{array} \right]`
+      X : Pauli X: :math:`\\left[ \\begin{array}{cc} 0 & 1 \\\\ 1 & 0 \\end{array} \\right]`
     
-      Y : Pauli Y: :math:`\left[ \begin{array}{cc} 0 & -i \\ i & 0 \end{array} \right]`
+      Y : Pauli Y: :math:`\\left[ \\begin{array}{cc} 0 & -i \\\\ i & 0 \\end{array} \\right]`
     
-      S : :math:`\left[ \begin{array}{cc} 1 & 0 \\ 0 & i \end{array} \right] = \mathrm{U1}(\frac12)`
+      S : :math:`\\left[ \\begin{array}{cc} 1 & 0 \\\\ 0 & i \\end{array} \\right] = \\mathrm{U1}(\\frac12)`
     
-      Sdg : :math:`\mathrm{S}^{\dagger} = \left[ \begin{array}{cc} 1 & 0 \\ 0 & -i \end{array} \right] = \mathrm{U1}(-\frac12)`
+      Sdg : :math:`\\mathrm{S}^{\\dagger} = \\left[ \\begin{array}{cc} 1 & 0 \\\\ 0 & -i \\end{array} \\right] = \\mathrm{U1}(-\\frac12)`
     
-      T : :math:`\left[ \begin{array}{cc} 1 & 0 \\ 0 & e^{i\pi/4} \end{array} \right] = \mathrm{U1}(\frac14)`
+      T : :math:`\\left[ \\begin{array}{cc} 1 & 0 \\\\ 0 & e^{i\\pi/4} \\end{array} \\right] = \\mathrm{U1}(\\frac14)`
     
-      Tdg : :math:`\mathrm{T}^{\dagger} = \left[ \begin{array}{cc} 1 & 0 \\ 0 & e^{-i\pi/4} \end{array} \right] = \mathrm{U1}(-\frac14)`
+      Tdg : :math:`\\mathrm{T}^{\\dagger} = \\left[ \\begin{array}{cc} 1 & 0 \\\\ 0 & e^{-i\\pi/4} \\end{array} \\right] = \\mathrm{U1}(-\\frac14)`
     
-      V : :math:`\frac{1}{\sqrt 2} \left[ \begin{array}{cc} 1 & -i \\ -i & 1 \end{array} \right] = \mathrm{Rx}(\frac12)`
+      V : :math:`\\frac{1}{\\sqrt 2} \\left[ \\begin{array}{cc} 1 & -i \\\\ -i & 1 \\end{array} \\right] = \\mathrm{Rx}(\\frac12)`
     
-      Vdg : :math:`\mathrm{V}^{\dagger} = \frac{1}{\sqrt 2} \left[ \begin{array}{cc} 1 & i \\ i & 1 \end{array} \right] = \mathrm{Rx}(-\frac12)`
+      Vdg : :math:`\\mathrm{V}^{\\dagger} = \\frac{1}{\\sqrt 2} \\left[ \\begin{array}{cc} 1 & i \\\\ i & 1 \\end{array} \\right] = \\mathrm{Rx}(-\\frac12)`
     
-      SX : :math:`\frac{1}{2} \left[ \begin{array}{cc} 1 + i & 1 - i \\ 1 - i & 1 + i \end{array} \right] = e^{\frac{i\pi}{4}}\mathrm{Rx}(\frac12)`
+      SX : :math:`\\frac{1}{2} \\left[ \\begin{array}{cc} 1 + i & 1 - i \\\\ 1 - i & 1 + i \\end{array} \\right] = e^{\\frac{i\\pi}{4}}\\mathrm{Rx}(\\frac12)`
     
-      SXdg : :math:`\mathrm{SX}^{\dagger} = \frac{1}{2} \left[ \begin{array}{cc} 1 - i & 1 + i \\ 1 + i & 1 - i \end{array} \right] = e^{\frac{-i\pi}{4}}\mathrm{Rx}(-\frac12)`
+      SXdg : :math:`\\mathrm{SX}^{\\dagger} = \\frac{1}{2} \\left[ \\begin{array}{cc} 1 - i & 1 + i \\\\ 1 + i & 1 - i \\end{array} \\right] = e^{\\frac{-i\\pi}{4}}\\mathrm{Rx}(-\\frac12)`
     
-      H : Hadamard gate: :math:`\frac{1}{\sqrt 2} \left[ \begin{array}{cc} 1 & 1 \\ 1 & -1 \end{array} \right]`
+      H : Hadamard gate: :math:`\\frac{1}{\\sqrt 2} \\left[ \\begin{array}{cc} 1 & 1 \\\\ 1 & -1 \\end{array} \\right]`
     
-      Rx : :math:`(\alpha) \mapsto e^{-\frac12 i \pi \alpha \mathrm{X}} = \left[ \begin{array}{cc} \cos\frac{\pi\alpha}{2} & -i\sin\frac{\pi\alpha}{2} \\ -i\sin\frac{\pi\alpha}{2} & \cos\frac{\pi\alpha}{2} \end{array} \right]`
+      Rx : :math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi \\alpha \\mathrm{X}} = \\left[ \\begin{array}{cc} \\cos\\frac{\\pi\\alpha}{2} & -i\\sin\\frac{\\pi\\alpha}{2} \\\\ -i\\sin\\frac{\\pi\\alpha}{2} & \\cos\\frac{\\pi\\alpha}{2} \\end{array} \\right]`
     
-      Ry : :math:`(\alpha) \mapsto e^{-\frac12 i \pi \alpha \mathrm{Y}} = \left[ \begin{array}{cc} \cos\frac{\pi\alpha}{2} & -\sin\frac{\pi\alpha}{2} \\ \sin\frac{\pi\alpha}{2} & \cos\frac{\pi\alpha}{2} \end{array} \right]`
+      Ry : :math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi \\alpha \\mathrm{Y}} = \\left[ \\begin{array}{cc} \\cos\\frac{\\pi\\alpha}{2} & -\\sin\\frac{\\pi\\alpha}{2} \\\\ \\sin\\frac{\\pi\\alpha}{2} & \\cos\\frac{\\pi\\alpha}{2} \\end{array} \\right]`
     
-      Rz : :math:`(\alpha) \mapsto e^{-\frac12 i \pi \alpha \mathrm{Z}} = \left[ \begin{array}{cc} e^{-\frac12 i \pi\alpha} & 0 \\ 0 & e^{\frac12 i \pi\alpha} \end{array} \right]`
+      Rz : :math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi \\alpha \\mathrm{Z}} = \\left[ \\begin{array}{cc} e^{-\\frac12 i \\pi\\alpha} & 0 \\\\ 0 & e^{\\frac12 i \\pi\\alpha} \\end{array} \\right]`
     
-      U1 : :math:`(\lambda) \mapsto \mathrm{U3}(0, 0, \lambda) = e^{\frac12 i\pi\lambda} \mathrm{Rz}(\lambda)`. U-gates are used by IBM. See https://qiskit.org/documentation/tutorials/circuits/3_summary_of_quantum_operations.html for more information on U-gates.
+      U1 : :math:`(\\lambda) \\mapsto \\mathrm{U3}(0, 0, \\lambda) = e^{\\frac12 i\\pi\\lambda} \\mathrm{Rz}(\\lambda)`. U-gates are used by IBM. See https://qiskit.org/documentation/tutorials/circuits/3_summary_of_quantum_operations.html for more information on U-gates.
     
-      U2 : :math:`(\phi, \lambda) \mapsto \mathrm{U3}(\frac12, \phi, \lambda) = e^{\frac12 i\pi(\lambda+\phi)} \mathrm{Rz}(\phi) \mathrm{Ry}(\frac12) \mathrm{Rz}(\lambda)`, defined by matrix multiplication
+      U2 : :math:`(\\phi, \\lambda) \\mapsto \\mathrm{U3}(\\frac12, \\phi, \\lambda) = e^{\\frac12 i\\pi(\\lambda+\\phi)} \\mathrm{Rz}(\\phi) \\mathrm{Ry}(\\frac12) \\mathrm{Rz}(\\lambda)`, defined by matrix multiplication
     
-      U3 : :math:`(\theta, \phi, \lambda) \mapsto  \left[ \begin{array}{cc} \cos\frac{\pi\theta}{2} & -e^{i\pi\lambda} \sin\frac{\pi\theta}{2} \\ e^{i\pi\phi} \sin\frac{\pi\theta}{2} & e^{i\pi(\lambda+\phi)} \cos\frac{\pi\theta}{2} \end{array} \right] = e^{\frac12 i\pi(\lambda+\phi)} \mathrm{Rz}(\phi) \mathrm{Ry}(\theta) \mathrm{Rz}(\lambda)`
+      U3 : :math:`(\\theta, \\phi, \\lambda) \\mapsto  \\left[ \\begin{array}{cc} \\cos\\frac{\\pi\\theta}{2} & -e^{i\\pi\\lambda} \\sin\\frac{\\pi\\theta}{2} \\\\ e^{i\\pi\\phi} \\sin\\frac{\\pi\\theta}{2} & e^{i\\pi(\\lambda+\\phi)} \\cos\\frac{\\pi\\theta}{2} \\end{array} \\right] = e^{\\frac12 i\\pi(\\lambda+\\phi)} \\mathrm{Rz}(\\phi) \\mathrm{Ry}(\\theta) \\mathrm{Rz}(\\lambda)`
     
-      TK1 : :math:`(\alpha, \beta, \gamma) \mapsto \mathrm{Rz}(\alpha) \mathrm{Rx}(\beta) \mathrm{Rz}(\gamma)`
+      GPI : :math:`(\\phi) \\mapsto \\left[ \\begin{array}{cc} 0 & e^{-i\\pi\\phi} \\\\ e^{i\\pi\\phi} & 0 \\end{array} \\right]`
     
-      TK2 : :math:`(\alpha, \beta, \gamma) \mapsto \mathrm{XXPhase}(\alpha) \mathrm{YYPhase}(\beta) \mathrm{ZZPhase}(\gamma)`
+      GPI2 : :math:`(\\phi) \\mapsto \\frac{1}{\\sqrt 2} \\left[ \\begin{array}{cc} 1 & -ie^{-i\\pi\\phi} \\\\ -ie^{i\\pi\\phi} & 1 \\end{array} \\right]`
     
-      CX : Controlled :math:`\mathrm{X}` gate
+      AAMS : :math:`(\\theta, \\phi_0, \\phi_1) \\mapsto \\left[ \\begin{array}{cccc} \\cos\\frac{\\pi\\theta}{2} & 0 & 0 & -ie^{-i\\pi(\\phi_0+\\phi_1)}\\sin\\frac{\\pi\\theta}{2} \\\\ 0 & \\cos\\frac{\\pi\\theta}{2} & -ie^{i\\pi(\\phi_1-\\phi_0)}\\sin\\frac{\\pi\\theta}{2} & 0 \\\\ 0 & -ie^{i\\pi(\\phi_0-\\phi_1)}\\sin\\frac{\\pi\\theta}{2} & \\cos\\frac{\\pi\\theta}{2} & 0 \\\\ -ie^{i\\pi(\\phi_0+\\phi_1)}\\sin\\frac{\\pi\\theta}{2} & 0 & 0 & \\cos\\frac{\\pi\\theta}{2} \\end{array} \\right]`
     
-      CY : Controlled :math:`\mathrm{Y}` gate
+      TK1 : :math:`(\\alpha, \\beta, \\gamma) \\mapsto \\mathrm{Rz}(\\alpha) \\mathrm{Rx}(\\beta) \\mathrm{Rz}(\\gamma)`
     
-      CZ : Controlled :math:`\mathrm{Z}` gate
+      TK2 : :math:`(\\alpha, \\beta, \\gamma) \\mapsto \\mathrm{XXPhase}(\\alpha) \\mathrm{YYPhase}(\\beta) \\mathrm{ZZPhase}(\\gamma)`
     
-      CH : Controlled :math:`\mathrm{H}` gate
+      CX : Controlled :math:`\\mathrm{X}` gate
     
-      CV : Controlled :math:`\mathrm{V}` gate
+      CY : Controlled :math:`\\mathrm{Y}` gate
     
-      CVdg : Controlled :math:`\mathrm{V}^{\dagger}` gate
+      CZ : Controlled :math:`\\mathrm{Z}` gate
     
-      CSX : Controlled :math:`\mathrm{SX}` gate
+      CH : Controlled :math:`\\mathrm{H}` gate
     
-      CSXdg : Controlled :math:`\mathrm{SX}^{\dagger}` gate
+      CV : Controlled :math:`\\mathrm{V}` gate
     
-      CS : Controlled :math:`\mathrm{S}` gate
+      CVdg : Controlled :math:`\\mathrm{V}^{\\dagger}` gate
     
-      CSdg : Controlled :math:`\mathrm{S}^{\dagger}` gate
+      CSX : Controlled :math:`\\mathrm{SX}` gate
     
-      CRz : :math:`(\alpha) \mapsto` Controlled :math:`\mathrm{Rz}(\alpha)` gate
+      CSXdg : Controlled :math:`\\mathrm{SX}^{\\dagger}` gate
     
-      CRx : :math:`(\alpha) \mapsto` Controlled :math:`\mathrm{Rx}(\alpha)` gate
+      CS : Controlled :math:`\\mathrm{S}` gate
     
-      CRy : :math:`(\alpha) \mapsto` Controlled :math:`\mathrm{Ry}(\alpha)` gate
+      CSdg : Controlled :math:`\\mathrm{S}^{\\dagger}` gate
     
-      CU1 : :math:`(\lambda) \mapsto` Controlled :math:`\mathrm{U1}(\lambda)` gate. Note that this is not equivalent to a :math:`\mathrm{CRz}(\lambda)` up to global phase, differing by an extra :math:`\mathrm{Rz}(\frac{\lambda}{2})` on the control qubit.
+      CRz : :math:`(\\alpha) \\mapsto` Controlled :math:`\\mathrm{Rz}(\\alpha)` gate
     
-      CU3 : :math:`(\theta, \phi, \lambda) \mapsto` Controlled :math:`\mathrm{U3}(\theta, \phi, \lambda)` gate. Similar rules apply.
+      CRx : :math:`(\\alpha) \\mapsto` Controlled :math:`\\mathrm{Rx}(\\alpha)` gate
+    
+      CRy : :math:`(\\alpha) \\mapsto` Controlled :math:`\\mathrm{Ry}(\\alpha)` gate
+    
+      CU1 : :math:`(\\lambda) \\mapsto` Controlled :math:`\\mathrm{U1}(\\lambda)` gate. Note that this is not equivalent to a :math:`\\mathrm{CRz}(\\lambda)` up to global phase, differing by an extra :math:`\\mathrm{Rz}(\\frac{\\lambda}{2})` on the control qubit.
+    
+      CU3 : :math:`(\\theta, \\phi, \\lambda) \\mapsto` Controlled :math:`\\mathrm{U3}(\\theta, \\phi, \\lambda)` gate. Similar rules apply.
     
       CCX : Toffoli gate
     
-      ECR : :math:`\frac{1}{\sqrt 2} \left[ \begin{array}{cccc} 0 & 0 & 1 & i \\0 & 0 & i & 1 \\1 & -i & 0 & 0 \\-i & 1 & 0 & 0 \end{array} \right]`
+      ECR : :math:`\\frac{1}{\\sqrt 2} \\left[ \\begin{array}{cccc} 0 & 0 & 1 & i \\\\0 & 0 & i & 1 \\\\1 & -i & 0 & 0 \\\\-i & 1 & 0 & 0 \\end{array} \\right]`
     
       SWAP : Swap gate
     
@@ -3122,7 +3200,7 @@ class OpType:
     
       Measure : Z-basis projective measurement, storing the measurement outcome in a specified bit
     
-      Reset : Resets the qubit to :math:`\left|0\right>`
+      Reset : Resets the qubit to :math:`\\left|0\\right>`
     
       CircBox : Represents an arbitrary subcircuit
     
@@ -3136,11 +3214,13 @@ class OpType:
     
       ExpBox : A two-qubit operation corresponding to a unitary matrix defined as the exponential :math:`e^{itA}` of an arbitrary 4x4 hermitian matrix :math:`A`.
     
-      PauliExpBox : An operation defined as the exponential :math:`e^{-\frac{i\pi\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
+      PauliExpBox : An operation defined as the exponential :math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
     
-      PauliExpPairBox : A pair of (not necessarily commuting) Pauli exponentials :math:`e^{-\frac{i\pi\alpha}{2} P}` performed in sequence.
+      PauliExpPairBox : A pair of (not necessarily commuting) Pauli exponentials :math:`e^{-\\frac{i\\pi\\alpha}{2} P}` performed in sequence.
     
-      PauliExpCommutingSetBox : An operation defined as a setof commuting exponentials of the form :math:`e^{-\frac{i\pi\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
+      PauliExpCommutingSetBox : An operation defined as a setof commuting exponentials of the form :math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor :math:`P` of Pauli operations.
+    
+      TermSequenceBox : An unordered collection of Pauli exponentials that can be synthesised in any order, causing a change in the unitary operation. Synthesis order depends on the synthesis strategy chosen only.
     
       QControlBox : An arbitrary n-controlled operation
     
@@ -3150,27 +3230,27 @@ class OpType:
     
       DummyBox : A placeholder operation that holds resource data
     
-      CustomGate : :math:`(\alpha, \beta, \ldots) \mapsto` A user-defined operation, based on a :py:class:`Circuit` :math:`C` with parameters :math:`\alpha, \beta, \ldots` substituted in place of bound symbolic variables in :math:`C`, as defined by the :py:class:`CustomGateDef`.
+      CustomGate : :math:`(\\alpha, \\beta, \\ldots) \\mapsto` A user-defined operation, based on a :py:class:`Circuit` :math:`C` with parameters :math:`\\alpha, \\beta, \\ldots` substituted in place of bound symbolic variables in :math:`C`, as defined by the :py:class:`CustomGateDef`.
     
       Conditional : An operation to be applied conditionally on the value of some classical register
     
-      ISWAP : :math:`(\alpha) \mapsto e^{\frac14 i \pi\alpha (\mathrm{X} \otimes \mathrm{X} + \mathrm{Y} \otimes \mathrm{Y})} = \left[ \begin{array}{cccc} 1 & 0 & 0 & 0 \\ 0 & \cos\frac{\pi\alpha}{2} & i\sin\frac{\pi\alpha}{2} & 0 \\ 0 & i\sin\frac{\pi\alpha}{2} & \cos\frac{\pi\alpha}{2} & 0 \\ 0 & 0 & 0 & 1 \end{array} \right]`
+      ISWAP : :math:`(\\alpha) \\mapsto e^{\\frac14 i \\pi\\alpha (\\mathrm{X} \\otimes \\mathrm{X} + \\mathrm{Y} \\otimes \\mathrm{Y})} = \\left[ \\begin{array}{cccc} 1 & 0 & 0 & 0 \\\\ 0 & \\cos\\frac{\\pi\\alpha}{2} & i\\sin\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & i\\sin\\frac{\\pi\\alpha}{2} & \\cos\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & 0 & 0 & 1 \\end{array} \\right]`
     
-      PhasedISWAP : :math:`(p, t) \mapsto \left[ \begin{array}{cccc} 1 & 0 & 0 & 0 \\ 0 & \cos\frac{\pi t}{2} & i\sin\frac{\pi t}{2}e^{2i\pi p} & 0 \\ 0 & i\sin\frac{\pi t}{2}e^{-2i\pi p} & \cos\frac{\pi t}{2} & 0 \\ 0 & 0 & 0 & 1 \end{array} \right]` (equivalent to: Rz(p)[0]; Rz(-p)[1]; ISWAP(t); Rz(-p)[0]; Rz(p)[1])
+      PhasedISWAP : :math:`(p, t) \\mapsto \\left[ \\begin{array}{cccc} 1 & 0 & 0 & 0 \\\\ 0 & \\cos\\frac{\\pi t}{2} & i\\sin\\frac{\\pi t}{2}e^{2i\\pi p} & 0 \\\\ 0 & i\\sin\\frac{\\pi t}{2}e^{-2i\\pi p} & \\cos\\frac{\\pi t}{2} & 0 \\\\ 0 & 0 & 0 & 1 \\end{array} \\right]` (equivalent to: Rz(p)[0]; Rz(-p)[1]; ISWAP(t); Rz(-p)[0]; Rz(p)[1])
     
-      XXPhase : :math:`(\alpha) \mapsto e^{-\frac12 i \pi\alpha (\mathrm{X} \otimes \mathrm{X})} = \left[ \begin{array}{cccc} \cos\frac{\pi\alpha}{2} & 0 & 0 & -i\sin\frac{\pi\alpha}{2} \\ 0 & \cos\frac{\pi\alpha}{2} & -i\sin\frac{\pi\alpha}{2} & 0 \\ 0 & -i\sin\frac{\pi\alpha}{2} & \cos\frac{\pi\alpha}{2} & 0 \\ -i\sin\frac{\pi\alpha}{2} & 0 & 0 & \cos\frac{\pi\alpha}{2} \end{array} \right]`
+      XXPhase : :math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi\\alpha (\\mathrm{X} \\otimes \\mathrm{X})} = \\left[ \\begin{array}{cccc} \\cos\\frac{\\pi\\alpha}{2} & 0 & 0 & -i\\sin\\frac{\\pi\\alpha}{2} \\\\ 0 & \\cos\\frac{\\pi\\alpha}{2} & -i\\sin\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & -i\\sin\\frac{\\pi\\alpha}{2} & \\cos\\frac{\\pi\\alpha}{2} & 0 \\\\ -i\\sin\\frac{\\pi\\alpha}{2} & 0 & 0 & \\cos\\frac{\\pi\\alpha}{2} \\end{array} \\right]`
     
-      YYPhase : :math:`(\alpha) \mapsto e^{-\frac12 i \pi\alpha (\mathrm{Y} \otimes \mathrm{Y})} = \left[ \begin{array}{cccc} \cos\frac{\pi\alpha}{2} & 0 & 0 & i\sin\frac{\pi\alpha}{2} \\ 0 & \cos\frac{\pi\alpha}{2} & -i\sin\frac{\pi\alpha}{2} & 0 \\ 0 & -i\sin\frac{\pi\alpha}{2} & \cos\frac{\pi\alpha}{2} & 0 \\ i\sin\frac{\pi\alpha}{2} & 0 & 0 & \cos\frac{\pi\alpha}{2} \end{array} \right]`
+      YYPhase : :math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi\\alpha (\\mathrm{Y} \\otimes \\mathrm{Y})} = \\left[ \\begin{array}{cccc} \\cos\\frac{\\pi\\alpha}{2} & 0 & 0 & i\\sin\\frac{\\pi\\alpha}{2} \\\\ 0 & \\cos\\frac{\\pi\\alpha}{2} & -i\\sin\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & -i\\sin\\frac{\\pi\\alpha}{2} & \\cos\\frac{\\pi\\alpha}{2} & 0 \\\\ i\\sin\\frac{\\pi\\alpha}{2} & 0 & 0 & \\cos\\frac{\\pi\\alpha}{2} \\end{array} \\right]`
     
-      ZZPhase : :math:`(\alpha) \mapsto e^{-\frac12 i \pi\alpha (\mathrm{Z} \otimes \mathrm{Z})} = \left[ \begin{array}{cccc} e^{-\frac12 i \pi\alpha} & 0 & 0 & 0 \\ 0 & e^{\frac12 i \pi\alpha} & 0 & 0 \\ 0 & 0 & e^{\frac12 i \pi\alpha} & 0 \\ 0 & 0 & 0 & e^{-\frac12 i \pi\alpha} \end{array} \right]`
+      ZZPhase : :math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi\\alpha (\\mathrm{Z} \\otimes \\mathrm{Z})} = \\left[ \\begin{array}{cccc} e^{-\\frac12 i \\pi\\alpha} & 0 & 0 & 0 \\\\ 0 & e^{\\frac12 i \\pi\\alpha} & 0 & 0 \\\\ 0 & 0 & e^{\\frac12 i \\pi\\alpha} & 0 \\\\ 0 & 0 & 0 & e^{-\\frac12 i \\pi\\alpha} \\end{array} \\right]`
     
       XXPhase3 : A 3-qubit gate XXPhase3(α) consists of pairwise 2-qubit XXPhase(α) interactions. Equivalent to XXPhase(α) XXPhase(α) XXPhase(α).
     
-      PhasedX : :math:`(\alpha,\beta) \mapsto \mathrm{Rz}(\beta)\mathrm{Rx}(\alpha)\mathrm{Rz}(-\beta)` (matrix-multiplication order)
+      PhasedX : :math:`(\\alpha,\\beta) \\mapsto \\mathrm{Rz}(\\beta)\\mathrm{Rx}(\\alpha)\\mathrm{Rz}(-\\beta)` (matrix-multiplication order)
     
-      NPhasedX : :math:`(\alpha, \beta) \mapsto \mathrm{PhasedX}(\alpha, \beta)^{\otimes n}` (n-qubit gate composed of identical PhasedX in parallel.
+      NPhasedX : :math:`(\\alpha, \\beta) \\mapsto \\mathrm{PhasedX}(\\alpha, \\beta)^{\\otimes n}` (n-qubit gate composed of identical PhasedX in parallel.
     
-      CnRy : :math:`(\alpha)` := n-controlled :math:`\mathrm{Ry}(\alpha)` gate.
+      CnRy : :math:`(\\alpha)` := n-controlled :math:`\\mathrm{Ry}(\\alpha)` gate.
     
       CnX : n-controlled X gate.
     
@@ -3178,15 +3258,15 @@ class OpType:
     
       CnZ : n-controlled Z gate.
     
-      ZZMax : :math:`e^{-\frac{i\pi}{4}(\mathrm{Z} \otimes \mathrm{Z})}`, a maximally entangling ZZPhase
+      ZZMax : :math:`e^{-\\frac{i\\pi}{4}(\\mathrm{Z} \\otimes \\mathrm{Z})}`, a maximally entangling ZZPhase
     
-      ESWAP : :math:`\alpha \mapsto e^{-\frac12 i\pi\alpha \cdot \mathrm{SWAP}} = \left[ \begin{array}{cccc} e^{-\frac12 i \pi\alpha} & 0 & 0 & 0 \\ 0 & \cos\frac{\pi\alpha}{2} & -i\sin\frac{\pi\alpha}{2} & 0 \\ 0 & -i\sin\frac{\pi\alpha}{2} & \cos\frac{\pi\alpha}{2} & 0 \\ 0 & 0 & 0 & e^{-\frac12 i \pi\alpha} \end{array} \right]`
+      ESWAP : :math:`\\alpha \\mapsto e^{-\\frac12 i\\pi\\alpha \\cdot \\mathrm{SWAP}} = \\left[ \\begin{array}{cccc} e^{-\\frac12 i \\pi\\alpha} & 0 & 0 & 0 \\\\ 0 & \\cos\\frac{\\pi\\alpha}{2} & -i\\sin\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & -i\\sin\\frac{\\pi\\alpha}{2} & \\cos\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & 0 & 0 & e^{-\\frac12 i \\pi\\alpha} \\end{array} \\right]`
     
-      FSim : :math:`(\alpha, \beta) \mapsto \left[ \begin{array}{cccc} 1 & 0 & 0 & 0 \\ 0 & \cos \pi\alpha & -i\sin \pi\alpha & 0 \\ 0 & -i\sin \pi\alpha & \cos \pi\alpha & 0 \\ 0 & 0 & 0 & e^{-i\pi\beta} \end{array} \right]`
+      FSim : :math:`(\\alpha, \\beta) \\mapsto \\left[ \\begin{array}{cccc} 1 & 0 & 0 & 0 \\\\ 0 & \\cos \\pi\\alpha & -i\\sin \\pi\\alpha & 0 \\\\ 0 & -i\\sin \\pi\\alpha & \\cos \\pi\\alpha & 0 \\\\ 0 & 0 & 0 & e^{-i\\pi\\beta} \\end{array} \\right]`
     
-      Sycamore : :math:`\mathrm{FSim}(\frac12, \frac16)`
+      Sycamore : :math:`\\mathrm{FSim}(\\frac12, \\frac16)`
     
-      ISWAPMax : :math:`\mathrm{ISWAP}(1) = \left[ \begin{array}{cccc} 1 & 0 & 0 & 0 \\ 0 & 0 & i & 0 \\ 0 & i & 0 & 0 \\ 0 & 0 & 0 & 1 \end{array} \right]`
+      ISWAPMax : :math:`\\mathrm{ISWAP}(1) = \\left[ \\begin{array}{cccc} 1 & 0 & 0 & 0 \\\\ 0 & 0 & i & 0 \\\\ 0 & i & 0 & 0 \\\\ 0 & 0 & 0 & 1 \\end{array} \\right]`
     
       ClassicalTransform : A general classical operation where all inputs are also outputs
     
@@ -3218,103 +3298,107 @@ class OpType:
     
       DiagonalBox : A box for synthesising a diagonal unitary matrix into a sequence of multiplexed-Rz gates
     """
-    BRIDGE: typing.ClassVar[OpType]  # value = <OpType.BRIDGE: 61>
+    AAMS: typing.ClassVar[OpType]  # value = <OpType.AAMS: 42>
+    BRIDGE: typing.ClassVar[OpType]  # value = <OpType.BRIDGE: 64>
     Barrier: typing.ClassVar[OpType]  # value = <OpType.Barrier: 8>
     Branch: typing.ClassVar[OpType]  # value = <OpType.Branch: 10>
-    CCX: typing.ClassVar[OpType]  # value = <OpType.CCX: 58>
-    CH: typing.ClassVar[OpType]  # value = <OpType.CH: 45>
-    CRx: typing.ClassVar[OpType]  # value = <OpType.CRx: 53>
-    CRy: typing.ClassVar[OpType]  # value = <OpType.CRy: 54>
-    CRz: typing.ClassVar[OpType]  # value = <OpType.CRz: 52>
-    CS: typing.ClassVar[OpType]  # value = <OpType.CS: 50>
-    CSWAP: typing.ClassVar[OpType]  # value = <OpType.CSWAP: 60>
-    CSX: typing.ClassVar[OpType]  # value = <OpType.CSX: 48>
-    CSXdg: typing.ClassVar[OpType]  # value = <OpType.CSXdg: 49>
-    CSdg: typing.ClassVar[OpType]  # value = <OpType.CSdg: 51>
-    CU1: typing.ClassVar[OpType]  # value = <OpType.CU1: 55>
-    CU3: typing.ClassVar[OpType]  # value = <OpType.CU3: 56>
-    CV: typing.ClassVar[OpType]  # value = <OpType.CV: 46>
-    CVdg: typing.ClassVar[OpType]  # value = <OpType.CVdg: 47>
-    CX: typing.ClassVar[OpType]  # value = <OpType.CX: 42>
-    CY: typing.ClassVar[OpType]  # value = <OpType.CY: 43>
-    CZ: typing.ClassVar[OpType]  # value = <OpType.CZ: 44>
-    CircBox: typing.ClassVar[OpType]  # value = <OpType.CircBox: 84>
-    ClassicalExpBox: typing.ClassVar[OpType]  # value = <OpType.ClassicalExpBox: 103>
+    CCX: typing.ClassVar[OpType]  # value = <OpType.CCX: 61>
+    CH: typing.ClassVar[OpType]  # value = <OpType.CH: 48>
+    CRx: typing.ClassVar[OpType]  # value = <OpType.CRx: 56>
+    CRy: typing.ClassVar[OpType]  # value = <OpType.CRy: 57>
+    CRz: typing.ClassVar[OpType]  # value = <OpType.CRz: 55>
+    CS: typing.ClassVar[OpType]  # value = <OpType.CS: 53>
+    CSWAP: typing.ClassVar[OpType]  # value = <OpType.CSWAP: 63>
+    CSX: typing.ClassVar[OpType]  # value = <OpType.CSX: 51>
+    CSXdg: typing.ClassVar[OpType]  # value = <OpType.CSXdg: 52>
+    CSdg: typing.ClassVar[OpType]  # value = <OpType.CSdg: 54>
+    CU1: typing.ClassVar[OpType]  # value = <OpType.CU1: 58>
+    CU3: typing.ClassVar[OpType]  # value = <OpType.CU3: 59>
+    CV: typing.ClassVar[OpType]  # value = <OpType.CV: 49>
+    CVdg: typing.ClassVar[OpType]  # value = <OpType.CVdg: 50>
+    CX: typing.ClassVar[OpType]  # value = <OpType.CX: 45>
+    CY: typing.ClassVar[OpType]  # value = <OpType.CY: 46>
+    CZ: typing.ClassVar[OpType]  # value = <OpType.CZ: 47>
+    CircBox: typing.ClassVar[OpType]  # value = <OpType.CircBox: 87>
+    ClassicalExpBox: typing.ClassVar[OpType]  # value = <OpType.ClassicalExpBox: 107>
     ClassicalTransform: typing.ClassVar[OpType]  # value = <OpType.ClassicalTransform: 13>
-    CnRy: typing.ClassVar[OpType]  # value = <OpType.CnRy: 80>
-    CnX: typing.ClassVar[OpType]  # value = <OpType.CnX: 81>
-    CnY: typing.ClassVar[OpType]  # value = <OpType.CnY: 83>
-    CnZ: typing.ClassVar[OpType]  # value = <OpType.CnZ: 82>
-    Conditional: typing.ClassVar[OpType]  # value = <OpType.Conditional: 104>
-    ConjugationBox: typing.ClassVar[OpType]  # value = <OpType.ConjugationBox: 102>
+    CnRy: typing.ClassVar[OpType]  # value = <OpType.CnRy: 83>
+    CnX: typing.ClassVar[OpType]  # value = <OpType.CnX: 84>
+    CnY: typing.ClassVar[OpType]  # value = <OpType.CnY: 86>
+    CnZ: typing.ClassVar[OpType]  # value = <OpType.CnZ: 85>
+    Conditional: typing.ClassVar[OpType]  # value = <OpType.Conditional: 108>
+    ConjugationBox: typing.ClassVar[OpType]  # value = <OpType.ConjugationBox: 106>
     CopyBits: typing.ClassVar[OpType]  # value = <OpType.CopyBits: 16>
-    CustomGate: typing.ClassVar[OpType]  # value = <OpType.CustomGate: 93>
-    DiagonalBox: typing.ClassVar[OpType]  # value = <OpType.DiagonalBox: 101>
-    DummyBox: typing.ClassVar[OpType]  # value = <OpType.DummyBox: 109>
-    ECR: typing.ClassVar[OpType]  # value = <OpType.ECR: 66>
-    ESWAP: typing.ClassVar[OpType]  # value = <OpType.ESWAP: 75>
-    ExpBox: typing.ClassVar[OpType]  # value = <OpType.ExpBox: 88>
+    CustomGate: typing.ClassVar[OpType]  # value = <OpType.CustomGate: 97>
+    DiagonalBox: typing.ClassVar[OpType]  # value = <OpType.DiagonalBox: 105>
+    DummyBox: typing.ClassVar[OpType]  # value = <OpType.DummyBox: 113>
+    ECR: typing.ClassVar[OpType]  # value = <OpType.ECR: 69>
+    ESWAP: typing.ClassVar[OpType]  # value = <OpType.ESWAP: 78>
+    ExpBox: typing.ClassVar[OpType]  # value = <OpType.ExpBox: 91>
     ExplicitModifier: typing.ClassVar[OpType]  # value = <OpType.ExplicitModifier: 19>
     ExplicitPredicate: typing.ClassVar[OpType]  # value = <OpType.ExplicitPredicate: 18>
-    FSim: typing.ClassVar[OpType]  # value = <OpType.FSim: 76>
+    FSim: typing.ClassVar[OpType]  # value = <OpType.FSim: 79>
+    GPI: typing.ClassVar[OpType]  # value = <OpType.GPI: 40>
+    GPI2: typing.ClassVar[OpType]  # value = <OpType.GPI2: 41>
     Goto: typing.ClassVar[OpType]  # value = <OpType.Goto: 11>
     H: typing.ClassVar[OpType]  # value = <OpType.H: 33>
-    ISWAP: typing.ClassVar[OpType]  # value = <OpType.ISWAP: 67>
-    ISWAPMax: typing.ClassVar[OpType]  # value = <OpType.ISWAPMax: 78>
+    ISWAP: typing.ClassVar[OpType]  # value = <OpType.ISWAP: 70>
+    ISWAPMax: typing.ClassVar[OpType]  # value = <OpType.ISWAPMax: 81>
     Label: typing.ClassVar[OpType]  # value = <OpType.Label: 9>
-    Measure: typing.ClassVar[OpType]  # value = <OpType.Measure: 63>
+    Measure: typing.ClassVar[OpType]  # value = <OpType.Measure: 66>
     MultiBit: typing.ClassVar[OpType]  # value = <OpType.MultiBit: 20>
-    MultiplexedRotationBox: typing.ClassVar[OpType]  # value = <OpType.MultiplexedRotationBox: 97>
-    MultiplexedTensoredU2Box: typing.ClassVar[OpType]  # value = <OpType.MultiplexedTensoredU2Box: 99>
-    MultiplexedU2Box: typing.ClassVar[OpType]  # value = <OpType.MultiplexedU2Box: 98>
-    MultiplexorBox: typing.ClassVar[OpType]  # value = <OpType.MultiplexorBox: 96>
-    NPhasedX: typing.ClassVar[OpType]  # value = <OpType.NPhasedX: 69>
-    PauliExpBox: typing.ClassVar[OpType]  # value = <OpType.PauliExpBox: 89>
-    PauliExpCommutingSetBox: typing.ClassVar[OpType]  # value = <OpType.PauliExpCommutingSetBox: 91>
-    PauliExpPairBox: typing.ClassVar[OpType]  # value = <OpType.PauliExpPairBox: 90>
+    MultiplexedRotationBox: typing.ClassVar[OpType]  # value = <OpType.MultiplexedRotationBox: 101>
+    MultiplexedTensoredU2Box: typing.ClassVar[OpType]  # value = <OpType.MultiplexedTensoredU2Box: 103>
+    MultiplexedU2Box: typing.ClassVar[OpType]  # value = <OpType.MultiplexedU2Box: 102>
+    MultiplexorBox: typing.ClassVar[OpType]  # value = <OpType.MultiplexorBox: 100>
+    NPhasedX: typing.ClassVar[OpType]  # value = <OpType.NPhasedX: 72>
+    PauliExpBox: typing.ClassVar[OpType]  # value = <OpType.PauliExpBox: 92>
+    PauliExpCommutingSetBox: typing.ClassVar[OpType]  # value = <OpType.PauliExpCommutingSetBox: 94>
+    PauliExpPairBox: typing.ClassVar[OpType]  # value = <OpType.PauliExpPairBox: 93>
     Phase: typing.ClassVar[OpType]  # value = <OpType.Phase: 21>
-    PhasePolyBox: typing.ClassVar[OpType]  # value = <OpType.PhasePolyBox: 94>
-    PhasedISWAP: typing.ClassVar[OpType]  # value = <OpType.PhasedISWAP: 79>
-    PhasedX: typing.ClassVar[OpType]  # value = <OpType.PhasedX: 68>
-    QControlBox: typing.ClassVar[OpType]  # value = <OpType.QControlBox: 95>
+    PhasePolyBox: typing.ClassVar[OpType]  # value = <OpType.PhasePolyBox: 98>
+    PhasedISWAP: typing.ClassVar[OpType]  # value = <OpType.PhasedISWAP: 82>
+    PhasedX: typing.ClassVar[OpType]  # value = <OpType.PhasedX: 71>
+    QControlBox: typing.ClassVar[OpType]  # value = <OpType.QControlBox: 99>
     RangePredicate: typing.ClassVar[OpType]  # value = <OpType.RangePredicate: 17>
-    Reset: typing.ClassVar[OpType]  # value = <OpType.Reset: 65>
+    Reset: typing.ClassVar[OpType]  # value = <OpType.Reset: 68>
     Rx: typing.ClassVar[OpType]  # value = <OpType.Rx: 34>
     Ry: typing.ClassVar[OpType]  # value = <OpType.Ry: 35>
     Rz: typing.ClassVar[OpType]  # value = <OpType.Rz: 36>
     S: typing.ClassVar[OpType]  # value = <OpType.S: 25>
-    SWAP: typing.ClassVar[OpType]  # value = <OpType.SWAP: 59>
+    SWAP: typing.ClassVar[OpType]  # value = <OpType.SWAP: 62>
     SX: typing.ClassVar[OpType]  # value = <OpType.SX: 31>
     SXdg: typing.ClassVar[OpType]  # value = <OpType.SXdg: 32>
     Sdg: typing.ClassVar[OpType]  # value = <OpType.Sdg: 26>
     SetBits: typing.ClassVar[OpType]  # value = <OpType.SetBits: 15>
-    StatePreparationBox: typing.ClassVar[OpType]  # value = <OpType.StatePreparationBox: 100>
+    StatePreparationBox: typing.ClassVar[OpType]  # value = <OpType.StatePreparationBox: 104>
     Stop: typing.ClassVar[OpType]  # value = <OpType.Stop: 12>
-    Sycamore: typing.ClassVar[OpType]  # value = <OpType.Sycamore: 77>
+    Sycamore: typing.ClassVar[OpType]  # value = <OpType.Sycamore: 80>
     T: typing.ClassVar[OpType]  # value = <OpType.T: 27>
-    TK1: typing.ClassVar[OpType]  # value = <OpType.TK1: 40>
-    TK2: typing.ClassVar[OpType]  # value = <OpType.TK2: 41>
+    TK1: typing.ClassVar[OpType]  # value = <OpType.TK1: 43>
+    TK2: typing.ClassVar[OpType]  # value = <OpType.TK2: 44>
     Tdg: typing.ClassVar[OpType]  # value = <OpType.Tdg: 28>
-    ToffoliBox: typing.ClassVar[OpType]  # value = <OpType.ToffoliBox: 107>
+    TermSequenceBox: typing.ClassVar[OpType]  # value = <OpType.TermSequenceBox: 95>
+    ToffoliBox: typing.ClassVar[OpType]  # value = <OpType.ToffoliBox: 111>
     U1: typing.ClassVar[OpType]  # value = <OpType.U1: 39>
     U2: typing.ClassVar[OpType]  # value = <OpType.U2: 38>
     U3: typing.ClassVar[OpType]  # value = <OpType.U3: 37>
-    Unitary1qBox: typing.ClassVar[OpType]  # value = <OpType.Unitary1qBox: 85>
-    Unitary2qBox: typing.ClassVar[OpType]  # value = <OpType.Unitary2qBox: 86>
-    Unitary3qBox: typing.ClassVar[OpType]  # value = <OpType.Unitary3qBox: 87>
+    Unitary1qBox: typing.ClassVar[OpType]  # value = <OpType.Unitary1qBox: 88>
+    Unitary2qBox: typing.ClassVar[OpType]  # value = <OpType.Unitary2qBox: 89>
+    Unitary3qBox: typing.ClassVar[OpType]  # value = <OpType.Unitary3qBox: 90>
     V: typing.ClassVar[OpType]  # value = <OpType.V: 29>
     Vdg: typing.ClassVar[OpType]  # value = <OpType.Vdg: 30>
     WASM: typing.ClassVar[OpType]  # value = <OpType.WASM: 14>
     X: typing.ClassVar[OpType]  # value = <OpType.X: 23>
-    XXPhase: typing.ClassVar[OpType]  # value = <OpType.XXPhase: 71>
-    XXPhase3: typing.ClassVar[OpType]  # value = <OpType.XXPhase3: 74>
+    XXPhase: typing.ClassVar[OpType]  # value = <OpType.XXPhase: 74>
+    XXPhase3: typing.ClassVar[OpType]  # value = <OpType.XXPhase3: 77>
     Y: typing.ClassVar[OpType]  # value = <OpType.Y: 24>
-    YYPhase: typing.ClassVar[OpType]  # value = <OpType.YYPhase: 72>
+    YYPhase: typing.ClassVar[OpType]  # value = <OpType.YYPhase: 75>
     Z: typing.ClassVar[OpType]  # value = <OpType.Z: 22>
-    ZZMax: typing.ClassVar[OpType]  # value = <OpType.ZZMax: 70>
-    ZZPhase: typing.ClassVar[OpType]  # value = <OpType.ZZPhase: 73>
-    __members__: typing.ClassVar[dict[str, OpType]]  # value = {'Phase': <OpType.Phase: 21>, 'Z': <OpType.Z: 22>, 'X': <OpType.X: 23>, 'Y': <OpType.Y: 24>, 'S': <OpType.S: 25>, 'Sdg': <OpType.Sdg: 26>, 'T': <OpType.T: 27>, 'Tdg': <OpType.Tdg: 28>, 'V': <OpType.V: 29>, 'Vdg': <OpType.Vdg: 30>, 'SX': <OpType.SX: 31>, 'SXdg': <OpType.SXdg: 32>, 'H': <OpType.H: 33>, 'Rx': <OpType.Rx: 34>, 'Ry': <OpType.Ry: 35>, 'Rz': <OpType.Rz: 36>, 'U1': <OpType.U1: 39>, 'U2': <OpType.U2: 38>, 'U3': <OpType.U3: 37>, 'TK1': <OpType.TK1: 40>, 'TK2': <OpType.TK2: 41>, 'CX': <OpType.CX: 42>, 'CY': <OpType.CY: 43>, 'CZ': <OpType.CZ: 44>, 'CH': <OpType.CH: 45>, 'CV': <OpType.CV: 46>, 'CVdg': <OpType.CVdg: 47>, 'CSX': <OpType.CSX: 48>, 'CSXdg': <OpType.CSXdg: 49>, 'CS': <OpType.CS: 50>, 'CSdg': <OpType.CSdg: 51>, 'CRz': <OpType.CRz: 52>, 'CRx': <OpType.CRx: 53>, 'CRy': <OpType.CRy: 54>, 'CU1': <OpType.CU1: 55>, 'CU3': <OpType.CU3: 56>, 'CCX': <OpType.CCX: 58>, 'ECR': <OpType.ECR: 66>, 'SWAP': <OpType.SWAP: 59>, 'CSWAP': <OpType.CSWAP: 60>, 'noop': <OpType.noop: 62>, 'Barrier': <OpType.Barrier: 8>, 'Label': <OpType.Label: 9>, 'Branch': <OpType.Branch: 10>, 'Goto': <OpType.Goto: 11>, 'Stop': <OpType.Stop: 12>, 'BRIDGE': <OpType.BRIDGE: 61>, 'Measure': <OpType.Measure: 63>, 'Reset': <OpType.Reset: 65>, 'CircBox': <OpType.CircBox: 84>, 'PhasePolyBox': <OpType.PhasePolyBox: 94>, 'Unitary1qBox': <OpType.Unitary1qBox: 85>, 'Unitary2qBox': <OpType.Unitary2qBox: 86>, 'Unitary3qBox': <OpType.Unitary3qBox: 87>, 'ExpBox': <OpType.ExpBox: 88>, 'PauliExpBox': <OpType.PauliExpBox: 89>, 'PauliExpPairBox': <OpType.PauliExpPairBox: 90>, 'PauliExpCommutingSetBox': <OpType.PauliExpCommutingSetBox: 91>, 'QControlBox': <OpType.QControlBox: 95>, 'ToffoliBox': <OpType.ToffoliBox: 107>, 'ConjugationBox': <OpType.ConjugationBox: 102>, 'DummyBox': <OpType.DummyBox: 109>, 'CustomGate': <OpType.CustomGate: 93>, 'Conditional': <OpType.Conditional: 104>, 'ISWAP': <OpType.ISWAP: 67>, 'PhasedISWAP': <OpType.PhasedISWAP: 79>, 'XXPhase': <OpType.XXPhase: 71>, 'YYPhase': <OpType.YYPhase: 72>, 'ZZPhase': <OpType.ZZPhase: 73>, 'XXPhase3': <OpType.XXPhase3: 74>, 'PhasedX': <OpType.PhasedX: 68>, 'NPhasedX': <OpType.NPhasedX: 69>, 'CnRy': <OpType.CnRy: 80>, 'CnX': <OpType.CnX: 81>, 'CnY': <OpType.CnY: 83>, 'CnZ': <OpType.CnZ: 82>, 'ZZMax': <OpType.ZZMax: 70>, 'ESWAP': <OpType.ESWAP: 75>, 'FSim': <OpType.FSim: 76>, 'Sycamore': <OpType.Sycamore: 77>, 'ISWAPMax': <OpType.ISWAPMax: 78>, 'ClassicalTransform': <OpType.ClassicalTransform: 13>, 'WASM': <OpType.WASM: 14>, 'SetBits': <OpType.SetBits: 15>, 'CopyBits': <OpType.CopyBits: 16>, 'RangePredicate': <OpType.RangePredicate: 17>, 'ExplicitPredicate': <OpType.ExplicitPredicate: 18>, 'ExplicitModifier': <OpType.ExplicitModifier: 19>, 'MultiBit': <OpType.MultiBit: 20>, 'ClassicalExpBox': <OpType.ClassicalExpBox: 103>, 'MultiplexorBox': <OpType.MultiplexorBox: 96>, 'MultiplexedRotationBox': <OpType.MultiplexedRotationBox: 97>, 'MultiplexedU2Box': <OpType.MultiplexedU2Box: 98>, 'MultiplexedTensoredU2Box': <OpType.MultiplexedTensoredU2Box: 99>, 'StatePreparationBox': <OpType.StatePreparationBox: 100>, 'DiagonalBox': <OpType.DiagonalBox: 101>}
-    noop: typing.ClassVar[OpType]  # value = <OpType.noop: 62>
+    ZZMax: typing.ClassVar[OpType]  # value = <OpType.ZZMax: 73>
+    ZZPhase: typing.ClassVar[OpType]  # value = <OpType.ZZPhase: 76>
+    __members__: typing.ClassVar[dict[str, OpType]]  # value = {'Phase': <OpType.Phase: 21>, 'Z': <OpType.Z: 22>, 'X': <OpType.X: 23>, 'Y': <OpType.Y: 24>, 'S': <OpType.S: 25>, 'Sdg': <OpType.Sdg: 26>, 'T': <OpType.T: 27>, 'Tdg': <OpType.Tdg: 28>, 'V': <OpType.V: 29>, 'Vdg': <OpType.Vdg: 30>, 'SX': <OpType.SX: 31>, 'SXdg': <OpType.SXdg: 32>, 'H': <OpType.H: 33>, 'Rx': <OpType.Rx: 34>, 'Ry': <OpType.Ry: 35>, 'Rz': <OpType.Rz: 36>, 'U1': <OpType.U1: 39>, 'U2': <OpType.U2: 38>, 'U3': <OpType.U3: 37>, 'GPI': <OpType.GPI: 40>, 'GPI2': <OpType.GPI2: 41>, 'AAMS': <OpType.AAMS: 42>, 'TK1': <OpType.TK1: 43>, 'TK2': <OpType.TK2: 44>, 'CX': <OpType.CX: 45>, 'CY': <OpType.CY: 46>, 'CZ': <OpType.CZ: 47>, 'CH': <OpType.CH: 48>, 'CV': <OpType.CV: 49>, 'CVdg': <OpType.CVdg: 50>, 'CSX': <OpType.CSX: 51>, 'CSXdg': <OpType.CSXdg: 52>, 'CS': <OpType.CS: 53>, 'CSdg': <OpType.CSdg: 54>, 'CRz': <OpType.CRz: 55>, 'CRx': <OpType.CRx: 56>, 'CRy': <OpType.CRy: 57>, 'CU1': <OpType.CU1: 58>, 'CU3': <OpType.CU3: 59>, 'CCX': <OpType.CCX: 61>, 'ECR': <OpType.ECR: 69>, 'SWAP': <OpType.SWAP: 62>, 'CSWAP': <OpType.CSWAP: 63>, 'noop': <OpType.noop: 65>, 'Barrier': <OpType.Barrier: 8>, 'Label': <OpType.Label: 9>, 'Branch': <OpType.Branch: 10>, 'Goto': <OpType.Goto: 11>, 'Stop': <OpType.Stop: 12>, 'BRIDGE': <OpType.BRIDGE: 64>, 'Measure': <OpType.Measure: 66>, 'Reset': <OpType.Reset: 68>, 'CircBox': <OpType.CircBox: 87>, 'PhasePolyBox': <OpType.PhasePolyBox: 98>, 'Unitary1qBox': <OpType.Unitary1qBox: 88>, 'Unitary2qBox': <OpType.Unitary2qBox: 89>, 'Unitary3qBox': <OpType.Unitary3qBox: 90>, 'ExpBox': <OpType.ExpBox: 91>, 'PauliExpBox': <OpType.PauliExpBox: 92>, 'PauliExpPairBox': <OpType.PauliExpPairBox: 93>, 'PauliExpCommutingSetBox': <OpType.PauliExpCommutingSetBox: 94>, 'TermSequenceBox': <OpType.TermSequenceBox: 95>, 'QControlBox': <OpType.QControlBox: 99>, 'ToffoliBox': <OpType.ToffoliBox: 111>, 'ConjugationBox': <OpType.ConjugationBox: 106>, 'DummyBox': <OpType.DummyBox: 113>, 'CustomGate': <OpType.CustomGate: 97>, 'Conditional': <OpType.Conditional: 108>, 'ISWAP': <OpType.ISWAP: 70>, 'PhasedISWAP': <OpType.PhasedISWAP: 82>, 'XXPhase': <OpType.XXPhase: 74>, 'YYPhase': <OpType.YYPhase: 75>, 'ZZPhase': <OpType.ZZPhase: 76>, 'XXPhase3': <OpType.XXPhase3: 77>, 'PhasedX': <OpType.PhasedX: 71>, 'NPhasedX': <OpType.NPhasedX: 72>, 'CnRy': <OpType.CnRy: 83>, 'CnX': <OpType.CnX: 84>, 'CnY': <OpType.CnY: 86>, 'CnZ': <OpType.CnZ: 85>, 'ZZMax': <OpType.ZZMax: 73>, 'ESWAP': <OpType.ESWAP: 78>, 'FSim': <OpType.FSim: 79>, 'Sycamore': <OpType.Sycamore: 80>, 'ISWAPMax': <OpType.ISWAPMax: 81>, 'ClassicalTransform': <OpType.ClassicalTransform: 13>, 'WASM': <OpType.WASM: 14>, 'SetBits': <OpType.SetBits: 15>, 'CopyBits': <OpType.CopyBits: 16>, 'RangePredicate': <OpType.RangePredicate: 17>, 'ExplicitPredicate': <OpType.ExplicitPredicate: 18>, 'ExplicitModifier': <OpType.ExplicitModifier: 19>, 'MultiBit': <OpType.MultiBit: 20>, 'ClassicalExpBox': <OpType.ClassicalExpBox: 107>, 'MultiplexorBox': <OpType.MultiplexorBox: 100>, 'MultiplexedRotationBox': <OpType.MultiplexedRotationBox: 101>, 'MultiplexedU2Box': <OpType.MultiplexedU2Box: 102>, 'MultiplexedTensoredU2Box': <OpType.MultiplexedTensoredU2Box: 103>, 'StatePreparationBox': <OpType.StatePreparationBox: 104>, 'DiagonalBox': <OpType.DiagonalBox: 105>}
+    noop: typing.ClassVar[OpType]  # value = <OpType.noop: 65>
     @staticmethod
     def from_name(arg0: str) -> OpType:
         """
@@ -3360,7 +3444,7 @@ class PauliExpBox(Op):
     """
     def __init__(self, paulis: typing.Sequence[pytket._tket.pauli.Pauli], t: sympy.Expr | float, cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
         """
-        Construct :math:`e^{-\frac12 i \pi t \sigma_0 \otimes \sigma_1 \otimes \cdots}` from Pauli operators :math:`\sigma_i \in \{I,X,Y,Z\}` and a parameter :math:`t`.
+        Construct :math:`e^{-\\frac12 i \\pi t \\sigma_0 \\otimes \\sigma_1 \\otimes \\cdots}` from Pauli operators :math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and a parameter :math:`t`.
         """
     def get_circuit(self) -> Circuit:
         """
@@ -3384,7 +3468,7 @@ class PauliExpCommutingSetBox(Op):
     """
     def __init__(self, pauli_gadgets: typing.Sequence[tuple[typing.Sequence[pytket._tket.pauli.Pauli], sympy.Expr | float]], cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
         """
-        Construct a set of necessarily commuting Pauli exponentials of the form :math:`e^{-\frac12 i \pi t_j \sigma_0 \otimes \sigma_1 \otimes \cdots}` from Pauli operator strings :math:`\sigma_i \in \{I,X,Y,Z\}` and parameters :math:`t_j, j \in \{0, 1, \cdots \}`.
+        Construct a set of necessarily commuting Pauli exponentials of the form :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes \\sigma_1 \\otimes \\cdots}` from Pauli operator strings :math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters :math:`t_j, j \\in \\{0, 1, \\cdots \\}`.
         """
     def get_circuit(self) -> Circuit:
         """
@@ -3406,7 +3490,7 @@ class PauliExpPairBox(Op):
     """
     def __init__(self, paulis0: typing.Sequence[pytket._tket.pauli.Pauli], t0: sympy.Expr | float, paulis1: typing.Sequence[pytket._tket.pauli.Pauli], t1: sympy.Expr | float, cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
         """
-        Construct a pair of Pauli exponentials of the form :math:`e^{-\frac12 i \pi t_j \sigma_0 \otimes \sigma_1 \otimes \cdots}` from Pauli operator strings :math:`\sigma_i \in \{I,X,Y,Z\}` and parameters :math:`t_j, j \in \{0,1\}`.
+        Construct a pair of Pauli exponentials of the form :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes \\sigma_1 \\otimes \\cdots}` from Pauli operator strings :math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters :math:`t_j, j \\in \\{0,1\\}`.
         """
     def get_circuit(self) -> Circuit:
         """
@@ -3653,7 +3737,7 @@ class StabiliserAssertionBox(Op):
         """
 class StatePreparationBox(Op):
     """
-    A box for preparing quantum states using multiplexed-Ry and multiplexed-Rz gates
+    A box for preparing quantum states using multiplexed-Ry and multiplexed-Rz gates. Implementation based on Theorem 9 of arxiv.org/abs/quant-ph/0406176. The decomposed circuit has at most 2*(2^n-2) CX gates, and 2^n-2 CX gates if the coefficients are all real.
     """
     def __init__(self, statevector: NDArray[numpy.complex128], is_inverse: bool = False, with_initial_reset: bool = False) -> None:
         """
@@ -3678,6 +3762,38 @@ class StatePreparationBox(Op):
     def with_initial_reset(self) -> bool:
         """
         :return: flag indicating whether the qubits are explicitly set to the zero state initially
+        """
+class TermSequenceBox(Op):
+    """
+    An unordered collection of Pauli exponentials that can be synthesised in any order, causing a change in the unitary operation. Synthesis order depends on the synthesis strategy chosen only.
+    """
+    def __init__(self, pauli_gadgets: typing.Sequence[tuple[typing.Sequence[pytket._tket.pauli.Pauli], sympy.Expr | float]], synthesis_strategy: pytket._tket.transform.PauliSynthStrat = pytket._tket.transform.PauliSynthStrat.Sets, partitioning_strategy: pytket._tket.partition.PauliPartitionStrat = pytket._tket.partition.PauliPartitionStrat.CommutingSets, graph_colouring: pytket._tket.partition.GraphColourMethod = pytket._tket.partition.GraphColourMethod.Lazy, cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
+        """
+        Construct a set of Pauli exponentials of the form :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes \\sigma_1 \\otimes \\cdots}` from Pauli operator strings :math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters :math:`t_j, j \\in \\{0, 1, \\cdots \\}`.
+        """
+    def get_circuit(self) -> Circuit:
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
+    def get_cx_config(self) -> CXConfigType:
+        """
+        :return: cx decomposition method
+        """
+    def get_graph_colouring_method(self) -> pytket._tket.partition.GraphColourMethod:
+        """
+        :return: graph colouring method
+        """
+    def get_partition_strategy(self) -> pytket._tket.partition.PauliPartitionStrat:
+        """
+        :return: partitioning strategy
+        """
+    def get_paulis(self) -> list[tuple[list[pytket._tket.pauli.Pauli], sympy.Expr | float]]:
+        """
+        :return: the corresponding list of Pauli gadgets
+        """
+    def get_synthesis_strategy(self) -> pytket._tket.transform.PauliSynthStrat:
+        """
+        :return: synthesis strategy
         """
 class ToffoliBox(Op):
     """

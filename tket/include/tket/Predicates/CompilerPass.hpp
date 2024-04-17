@@ -156,7 +156,7 @@ class BasePass {
   void update_cache(const CompilationUnit& c_unit, SafetyMode safe_mode) const;
   static PassConditions match_passes(const PassPtr& lhs, const PassPtr& rhs);
   static PassConditions match_passes(
-      const PassConditions& lhs, const PassConditions& rhs);
+      const PassConditions& lhs, const PassConditions& rhs, bool strict = true);
 };
 
 /* Basic Pass that all combinators can be used on */
@@ -192,7 +192,7 @@ class StandardPass : public BasePass {
 class SequencePass : public BasePass {
  public:
   SequencePass() {}
-  explicit SequencePass(const std::vector<PassPtr>& ptvec);
+  explicit SequencePass(const std::vector<PassPtr>& ptvec, bool strict = true);
   bool apply(
       CompilationUnit& c_unit, SafetyMode safe_mode = SafetyMode::Default,
       const PassCallback& before_apply = trivial_callback,
