@@ -371,8 +371,6 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_pauliexpcommutingsetbox
 
-   .. automethod:: add_termsequencebox
-
    .. automethod:: add_phasepolybox
 
    .. automethod:: add_toffolibox
