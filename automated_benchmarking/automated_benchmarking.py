@@ -125,11 +125,11 @@ def percentage_better(
     compilers: Annotated[List[Compilers], typer.Argument(help="Compilers to compare.")],
 ):
     
-    start_time=time.time()
+    # start_time=time.time()
     
-    print("compilers", compilers)
-    print("compiled_path", compiled_path)
-    print("circuit_suite_path", circuit_suite_path)
+    # print("compilers", compilers)
+    # print("compiled_path", compiled_path)
+    # print("circuit_suite_path", circuit_suite_path)
 
     storage_manager = LocalStorage(
         directory_path=compiled_path,
@@ -139,18 +139,18 @@ def percentage_better(
         storage_manager=storage_manager,
     )
 
-    print("compiled_circuit_mgr", time.time() - start_time)
+    # print("compiled_circuit_mgr", time.time() - start_time)
 
     storage_manager = LocalStorage(directory_path=circuit_suite_path)
     circuit_suite_mgr = CircuitSuiteManager(
         storage_manager=storage_manager
     )
 
-    print("circuit_suite_mgr", time.time() - start_time)
+    # print("circuit_suite_mgr", time.time() - start_time)
 
     for compiler in compilers:
 
-        print("compiler", compiler, time.time() - start_time)
+        # print("compiler", compiler, time.time() - start_time)
 
         pass_runner = TimedPassRunner(
             compiler_pass=compilers_dict[compiler],
@@ -158,13 +158,13 @@ def percentage_better(
         )
         
         for original_circuit in circuit_suite_mgr:
-            print("original_circuit", original_circuit, time.time() - start_time)
+            # print("original_circuit", original_circuit, time.time() - start_time)
             compiled_circuit_mgr.run_circuit(
                 pass_runner=pass_runner,
                 original_circuit=original_circuit,
             )
 
-    print("compiling done", time.time() - start_time)
+    # print("compiling done", time.time() - start_time)
     
     benchmarking_experiment = CompiledCircuitExperiment(
         compiled_circuit_mgr_list = [compiled_circuit_mgr],
@@ -175,7 +175,7 @@ def percentage_better(
         comparison_func=lambda circuit : circuit.n_2qb_gates(),
     )
 
-    print("data analysed", time.time() - start_time)
+    # print("data analysed", time.time() - start_time)
 
     data['pytket better'] = data['PytketIBMQ'] <= data['QiskitIBMQ']
     print(100 * len(data.loc[data['pytket better']]) / len(data))
