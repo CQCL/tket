@@ -68,6 +68,8 @@ extensions = [
 # From the commmand line
 coverage_show_missing_items = True
 
+coverage_ignore_pyobjects = [r"symb_", r"EdgeType", r"get_TK1_decomposition_function"]
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
