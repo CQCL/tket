@@ -35,3 +35,5 @@ pytket/tests/qasm_test_files/testout6.qasm
 
 #nix
 result
+.envrc
+.direnv/

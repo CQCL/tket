@@ -184,8 +184,7 @@ setup(
         "Source": "https://github.com/CQCL/tket",
         "Tracker": "https://github.com/CQCL/tket/issues",
     },
-    description="Python module for interfacing with the CQC tket library of quantum "
-    "software",
+    description="Quantum computing toolkit and interface to the TKET compiler",
     long_description=open("package.md", "r").read(),
     long_description_content_type="text/markdown",
     license="Apache 2",

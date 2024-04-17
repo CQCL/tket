@@ -158,6 +158,12 @@ class WasmFileHandler:
                     if t != self._int_type:
                         supported_function = False
 
+                if (
+                    len(function_signatures[self._function_types[idx]]["return_types"])
+                    > 1
+                ):
+                    supported_function = False
+
                 if supported_function:
                     self._functions[x] = (
                         len(
