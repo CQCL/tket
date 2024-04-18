@@ -138,8 +138,7 @@ jobs:
         cd pytket
         # Ensure wheels are compatible with MacOS 12.0 and later:
         export WHEEL_PLAT_NAME=macosx_12_0_arm64
-        python${{ matrix.python-version }} -m pip install -U pip build
-        python${{ matrix.python-version }} -m pip install delocate~=0.10.7
+        python${{ matrix.python-version }} -m pip install -U pip build delocate
         python${{ matrix.python-version }} -m build
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
     - uses: actions/upload-artifact@v4
