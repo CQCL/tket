@@ -13,11 +13,8 @@ from pytket_benchmarking.utils.storage_manager import LocalStorage
 from pytket_benchmarking.compiler_benchmarking.pass_runner import TimedPassRunner
 from pytket_benchmarking.compiler_benchmarking import CompiledCircuitsManager
 from pytket_benchmarking.compiler_benchmarking.experiment_analyser import CompiledCircuitExperiment
-# import matplotlib.pyplot as plt
 from typing import Optional, List
-# from rich.progress import track
 from pytket.passes import SequencePass, DecomposeBoxes
-import time
 
 
 app = typer.Typer()
@@ -119,13 +116,7 @@ def percentage_better(
     circuit_suite_path: Annotated[Path, typer.Argument(help="Path circuit suite.")],
     compiled_path: Annotated[Path, typer.Argument(help="Path to compiled circuits.")],
     compilers: Annotated[List[Compilers], typer.Argument(help="Compilers to compare.")],
-):
-    
-    # start_time=time.time()
-    
-    # print("compilers", compilers)
-    # print("compiled_path", compiled_path)
-    # print("circuit_suite_path", circuit_suite_path)
+):    
 
     storage_manager = LocalStorage(
         directory_path=compiled_path,
@@ -135,18 +126,12 @@ def percentage_better(
         storage_manager=storage_manager,
     )
 
-    # print("compiled_circuit_mgr", time.time() - start_time)
-
     storage_manager = LocalStorage(directory_path=circuit_suite_path)
     circuit_suite_mgr = CircuitSuiteManager(
         storage_manager=storage_manager
     )
 
-    # print("circuit_suite_mgr", time.time() - start_time)
-
     for compiler in compilers:
-
-        # print("compiler", compiler, time.time() - start_time)
 
         pass_runner = TimedPassRunner(
             compiler_pass=compilers_dict[compiler],
@@ -154,13 +139,10 @@ def percentage_better(
         )
         
         for original_circuit in circuit_suite_mgr:
-            # print("original_circuit", original_circuit, time.time() - start_time)
             compiled_circuit_mgr.run_circuit(
                 pass_runner=pass_runner,
                 original_circuit=original_circuit,
             )
-
-    # print("compiling done", time.time() - start_time)
     
     benchmarking_experiment = CompiledCircuitExperiment(
         compiled_circuit_mgr_list = [compiled_circuit_mgr],
@@ -171,10 +153,8 @@ def percentage_better(
         comparison_func=lambda circuit : circuit.n_2qb_gates(),
     )
 
-    # print("data analysed", time.time() - start_time)
-
     data['pytket better'] = data['PytketIBMQ'] <= data['QiskitIBMQ']
-    print(100 * len(data.loc[data['pytket better']]) / len(data))
+    print(f"pytket is okay at {100 * len(data.loc[data['pytket better']]) / len(data)}")
 
 
 @app.command()
