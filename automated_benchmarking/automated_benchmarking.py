@@ -15,6 +15,7 @@ from pytket_benchmarking.compiler_benchmarking import CompiledCircuitsManager
 from pytket_benchmarking.compiler_benchmarking.experiment_analyser import CompiledCircuitExperiment
 from typing import Optional, List
 from pytket.passes import SequencePass, DecomposeBoxes
+from rich.progress import track
 
 
 app = typer.Typer()
@@ -138,7 +139,10 @@ def percentage_better(
             label=compiler.value,
         )
         
-        for original_circuit in circuit_suite_mgr:
+        for original_circuit in track(
+            circuit_suite_mgr,
+            description="Processing..."
+        ):
             compiled_circuit_mgr.run_circuit(
                 pass_runner=pass_runner,
                 original_circuit=original_circuit,
