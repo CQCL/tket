@@ -56,8 +56,8 @@ jobs:
         name: pytket_wheel
         path: wheelhouse/
 
-  Write-Env-Var:
-    name: Write Env Var
+  compile-and-compare:
+    name: Compile and compare
     runs-on: macos-14
     needs: build_wheels
 
@@ -68,7 +68,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Download Wheel
+      - name: Download wheel
         uses: actions/download-artifact@v4
         with:
           name: pytket_wheel
@@ -77,7 +77,6 @@ jobs:
         run: |
           pip install pytket-*.whl
           pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket_benchmarking
-          pip list
 
       - name: Checkout tket
         uses: actions/checkout@v4
@@ -95,13 +94,13 @@ jobs:
           pytket_benchmarking compile QiskitIBMQ pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled
           pytket_benchmarking compile PytketIBMQ pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled
 
-      - name: Save Compiled Circuits
+      - name: Save compiled circuits
         uses: actions/upload-artifact@v4
         with:
           name: automated_benchmarks_compiled
           path: automated_benchmarks_compiled/
 
-      - name: Percentage better
+      - name: Calculate percentage better
         run: echo "RETURN_TEST=$(pytket_benchmarking percentage-better pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled PytketIBMQ)" >> $GITHUB_ENV
 
       - name: Create comment
