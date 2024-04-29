@@ -44,6 +44,8 @@ jobs:
         conan create recipes/pybind11
         conan create recipes/pybind11_json/all --version 0.2.13
         cd pytket
+        # Ensure wheels are compatible with MacOS 12.0 and later:
+        export WHEEL_PLAT_NAME=macosx_12_0_arm64
         python3.11 -m pip install -U pip build delocate
         python3.11 -m build
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
