@@ -17,7 +17,7 @@
 namespace tket {
 
 LexiRouteRoutingMethod::LexiRouteRoutingMethod(unsigned _max_depth)
-    : max_depth_(_max_depth){};
+    : max_depth_(_max_depth) {};
 
 std::pair<bool, unit_map_t> LexiRouteRoutingMethod::routing_method(
     MappingFrontier_ptr& mapping_frontier,
