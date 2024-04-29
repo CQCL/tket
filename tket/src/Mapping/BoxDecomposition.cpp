@@ -53,7 +53,7 @@ bool BoxDecomposition::solve() {
   return true;
 }
 
-BoxDecompositionRoutingMethod::BoxDecompositionRoutingMethod(){};
+BoxDecompositionRoutingMethod::BoxDecompositionRoutingMethod() {};
 
 std::pair<bool, unit_map_t> BoxDecompositionRoutingMethod::routing_method(
     MappingFrontier_ptr &mapping_frontier,
