@@ -78,11 +78,6 @@ jobs:
           pip install pytket-*.whl
           pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket_benchmarking
 
-      - name: Checkout tket
-        uses: actions/checkout@v4
-        with:
-          path: tket
-
       - name: Checkout pytket-benchmarking-store
         uses: actions/checkout@v4
         with:
