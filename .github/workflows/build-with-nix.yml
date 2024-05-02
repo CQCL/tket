@@ -1,9 +1,18 @@
 name: build with nix
+
 on:
+  pull_request:
+    branches:
+      - main
+      - develop
+  push:
+    branches:
+      - develop
   schedule:
     # 01:00 every Sunday morning
     - cron: '0 1 * * 0'
   workflow_dispatch: {}
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
