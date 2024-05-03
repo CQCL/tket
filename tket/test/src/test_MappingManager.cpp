@@ -23,7 +23,7 @@ namespace tket {
 
 class TokenSwappingTester : public RoutingMethod {
  public:
-  TokenSwappingTester(){};
+  TokenSwappingTester() {};
 
   /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for

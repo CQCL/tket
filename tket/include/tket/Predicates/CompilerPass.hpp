@@ -132,7 +132,7 @@ class BasePass {
   static Guarantee get_guarantee(
       const std::type_index& ti, const PassConditions& conditions);
 
-  virtual ~BasePass(){};
+  virtual ~BasePass() {};
 
  protected:
   BasePass(const PredicatePtrMap& precons, const PostConditions& postcons)
