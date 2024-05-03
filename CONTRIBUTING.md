@@ -1,7 +1,7 @@
 # Contributing to TKET
 
 Pull requests are welcome. To make a PR, first fork the repo, make your proposed
-changes on the `develop` branch, and open a PR from your fork. If it passes
+changes on the `main` branch, and open a PR from your fork. If it passes
 tests and is accepted after review, it will be merged in.
 
 When adding a new feature, please add tests for it. When fixing a bug, please
@@ -9,11 +9,11 @@ add a test that demonstrates the fix.
 
 If you make a change to one of the libraries in the `libs` directory, please
 increase the version number and make a PR with that change only: the component
-will then be tested on the CI, and on merge to `develop` the new version will be
+will then be tested on the CI, and on merge to `main` the new version will be
 uploaded. Then it will be possible to update conan requirements to use the new
 version.
 
-A new version of TKET is uploaded to our conan repo with each push to `develop`
+A new version of TKET is uploaded to our conan repo with each push to `main`
 that changes the core library. This process is managed by CI workflows. If you
 are making changes only to TKET tests or pytket, you do not need to build TKET
 locally: the right version should be downloaded automatically from the conan
@@ -80,7 +80,7 @@ If you make any changes in `tket/src`, you should bump the version number of
 `tket` in `recipes/tket/conanfile.py`, and also the `tket` versions in the
 `requires` field in `recipes/tket-test/conanfile.py`,
 `recipes/tket-proptests/conanfile.py` and `pytket/conanfile.txt` so that they
-match the new version. (This is checked on the CI for all PRs to `develop`.)
+match the new version. (This is checked on the CI for all PRs to `main`.)
 Follow the "semantic versioning" convention: any backwards-incompatible changes
 to the C++ API require a major version bump; new API features that maintain
 backwards compatibility require a minor version bump; internal improvements and
@@ -92,21 +92,21 @@ bugfixes require a patch version bump.
 
 The code coverage of the `tket` tests is reported
 [here](https://cqcl.github.io/tket/tket/test-coverage/index.html). This report
-is generated weekly from the `develop` branch.
+is generated weekly from the `main` branch.
 
 The libraries' coverage (from their own unit tests) is also reported: for
 example [tklog](https://cqcl.github.io/tket/tket/tklog-coverage/index.html).
 (For other libraries, just replace "tklog" with the library name in the URL.)
 
-In both cases, PRs to `develop` check that the coverage has not decreased, and
+In both cases, PRs to `main` check that the coverage has not decreased, and
 merging is blocked until the coverage is at least as good as before.
 
 ### pytket
 
 The code coverage of the `pytket` tests is reported
 [here](https://cqcl.github.io/tket/pytket/test-coverage/index.html). This report
-reflects the coverage of the `develop` branch, and is updated with every push.
+reflects the coverage of the `main` branch, and is updated with every push.
 The same report can be found in XML format
 [here](https://cqcl.github.io/tket/pytket/test-coverage/cov.xml).
 
-Lines and branch coverage results are also checked with every PR to `develop`.
+Lines and branch coverage results are also checked with every PR to `main`.
