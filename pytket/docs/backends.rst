@@ -5,7 +5,7 @@ Contains :py:class:`Backend` abstract class and associated methods. In pytket a 
 
 There are several `example notebooks <https://tket.quantinuum.com/examples>`_ on pytket :py:class:`Backend`\s. If you are interested in developing your own :py:class:`Backend` or pytket extension then see the `creating backends <https://tket.quantinuum.com/examples/creating_backends.html>`_ tutorial.
 
-Notebook tutorials specific to the :py:class:`QuantinuumBackend` can be found `here <https://github.com/CQCL/pytket-quantinuum/tree/main/examples>`_.
+Notebook tutorials specific to the :py:class:`QuantinuumBackend` can be found `here <https://github.com/CQCL/pytket-quantinuum/tree/develop/examples>`_.
 
 See also the `Running on backends <https://tket.quantinuum.com/user-manual/manual_backend.html>`_ section of the pytket user manual.
 
