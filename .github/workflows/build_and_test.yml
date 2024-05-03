@@ -318,7 +318,7 @@ jobs:
         name: pytket_test_coverage
         path: pytket/tests/htmlcov
     - name: Upload package
-      if: github.event_name == 'push && needs.check_changes.outputs.tket_changed == 'true'
+      if: github.event_name == 'push' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
         conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
