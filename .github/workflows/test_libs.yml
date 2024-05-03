@@ -2,10 +2,10 @@ name: test libraries
 on:
   push:
     branches:
-      - develop
+      - main
   pull_request:
     branches:
-      - develop
+      - main
   workflow_dispatch: {}
 
 env:
@@ -135,7 +135,7 @@ jobs:
       with:
         name: ${{ matrix.lib }}_coverage
         path: ${{ matrix.lib }}-coverage/
-    - name: check coverage against latest published data from develop
+    - name: check coverage against latest published data from main
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: |
         # File may not exist if this is the very first time, so don't error.
@@ -146,7 +146,7 @@ jobs:
   publish_coverage:
     name: Publish coverage
     needs: [set_libs_matrix, generate_coverage]
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.set_libs_matrix.outputs.libs != '[]' && needs.set_libs_matrix.outputs.libs != '' }}
+    if: ${{ github.event_name == 'push' && needs.set_libs_matrix.outputs.libs != '[]' && needs.set_libs_matrix.outputs.libs != '' }}
     strategy:
       matrix:
         lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}

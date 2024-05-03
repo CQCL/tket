@@ -3,7 +3,7 @@ name: Deploy tket C++ documentation
 on:
   push:
     branches:
-      - develop
+      - main
     paths:
       - 'tket/src/**'
 
