@@ -22,9 +22,9 @@ The versions should match the current requirements as specified in the relevant
 
 ```
 cd ${TMP_DIR}
-wget -O boost_1_84_0.tar.gz https://sourceforge.net/projects/boost/files/boost/1.84.0/boost_1_84_0.tar.gz/download
-tar xzvf boost_1_84_0.tar.gz
-cd boost_1_84_0/
+wget -O boost_1_85_0.tar.gz https://sourceforge.net/projects/boost/files/boost/1.85.0/boost_1_85_0.tar.gz/download
+tar xzvf boost_1_85_0.tar.gz
+cd boost_1_85_0/
 ./bootstrap.sh --prefix=${INSTALL_DIR}
 ./b2
 ./b2 install
