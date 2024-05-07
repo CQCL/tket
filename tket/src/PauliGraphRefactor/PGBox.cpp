@@ -18,6 +18,10 @@ namespace tket {
 
 namespace pg {
 
+/**
+ * PGBox Implementation
+ */
+
 Op_ptr PGBox::get_op() const { return op_; }
 
 const unit_vector_t& PGBox::get_args() const { return args_; }
@@ -98,6 +102,135 @@ bit_vector_t PGBox::write_bits() const {
     if (sig.at(i) == EdgeType::Classical) writes.push_back(Bit(args_.at(i)));
   }
   return writes;
+}
+
+/**
+ * PGMultiplexedTensoredBox Implementation
+ */
+
+const std::map<std::vector<bool>, std::vector<Op_ptr>>&
+PGMultiplexedTensoredBox::get_op_map() const {
+  return op_map_;
+}
+
+const std::vector<SpPauliStabiliser>&
+PGMultiplexedTensoredBox::get_control_paulis() const {
+  return control_paulis_;
+}
+
+const std::vector<SpPauliStabiliser>&
+PGMultiplexedTensoredBox::get_target_paulis() const {
+  return target_paulis_;
+}
+
+PGMultiplexedTensoredBox::PGMultiplexedTensoredBox(
+    const std::map<std::vector<bool>, std::vector<Op_ptr>>& op_map,
+    const std::vector<SpPauliStabiliser>& control_paulis,
+    const std::vector<SpPauliStabiliser>& target_paulis)
+    : PGOp(PGOpType::MultiplexedTensoredBox),
+      op_map_(op_map),
+      control_paulis_(control_paulis),
+      target_paulis_(target_paulis) {
+  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
+    if (it->first.size() != control_paulis_.size())
+      throw PGError(
+          "PGMultiplexedTensoredBox: Size mismatch between number of controls "
+          "and length of values in op_map");
+    unsigned total_qubits = 0;
+    for (const Op_ptr& op : it->second) total_qubits += op->n_qubits();
+    if (total_qubits * 2 != target_paulis_.size())
+      throw PGError(
+          "PGMultiplexedTensoredBox: Size mismatch between the number of "
+          "qubits in tensored op and number of target qubits expected.");
+  }
+}
+
+SymSet PGMultiplexedTensoredBox::free_symbols() const {
+  SymSet sset;
+  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
+    for (const Op_ptr& op : it->second) {
+      SymSet it_sset = op->free_symbols();
+      sset.insert(it_sset.begin(), it_sset.end());
+    }
+  }
+  return sset;
+}
+
+PGOp_ptr PGMultiplexedTensoredBox::symbol_substitution(
+    const SymEngine::map_basic_basic& sub_map) const {
+  std::map<std::vector<bool>, std::vector<Op_ptr>> new_op_map = op_map_;
+  bool any_changed = false;
+  for (auto it = new_op_map.begin(); it != new_op_map.end(); ++it) {
+    for (auto op_it = it->second.begin(); op_it != it->second.end(); ++op_it) {
+      Op_ptr new_op = (*op_it)->symbol_substitution(sub_map);
+      if (new_op) {
+        *op_it = new_op;
+        any_changed = true;
+      }
+    }
+  }
+  if (any_changed)
+    return std::make_shared<PGMultiplexedTensoredBox>(
+        new_op_map, control_paulis_, target_paulis_);
+  else
+    return PGOp_ptr();
+}
+
+std::string PGMultiplexedTensoredBox::get_name(bool latex) const {
+  std::stringstream str;
+  str << "qswitch [";
+  if (!control_paulis_.empty()) {
+    str << control_paulis_.at(0).to_str();
+    for (unsigned i = 1; i < control_paulis_.size(); ++i) {
+      str << ", " << control_paulis_.at(i).to_str();
+    }
+  }
+  str << "]";
+  bool first = true;
+  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
+    if (!first) {
+      str << ", ";
+    }
+    for (bool b : it->first) {
+      str << (b ? "1" : "0");
+    }
+    str << "->[";
+    bool first_op = true;
+    for (auto op_it = it->second.begin(); op_it != it->second.end(); ++op_it) {
+      if (!first_op) str << " x ";
+      str << (*op_it)->get_name(latex);
+      first_op = false;
+    }
+    first = false;
+  }
+  return str.str();
+}
+
+bool PGMultiplexedTensoredBox::is_equal(const PGOp& op_other) const {
+  const PGMultiplexedTensoredBox& other =
+      dynamic_cast<const PGMultiplexedTensoredBox&>(op_other);
+  return (control_paulis_ == other.control_paulis_) &&
+         (target_paulis_ == other.target_paulis_) && (op_map_ == other.op_map_);
+}
+
+unsigned PGMultiplexedTensoredBox::n_paulis() const {
+  return control_paulis_.size() + target_paulis_.size();
+}
+
+std::vector<SpPauliStabiliser> PGMultiplexedTensoredBox::active_paulis() const {
+  std::vector<SpPauliStabiliser> aps = control_paulis_;
+  aps.insert(aps.end(), target_paulis_.begin(), target_paulis_.end());
+  return aps;
+}
+
+SpPauliStabiliser& PGMultiplexedTensoredBox::port(unsigned p) {
+  if (p < control_paulis_.size()) return control_paulis_.at(p);
+  if (p < control_paulis_.size() + target_paulis_.size())
+    return target_paulis_.at(p - control_paulis_.size());
+  else
+    throw PGError(
+        "Cannot dereference port of PGMultiplexedTensoredBox: " +
+        std::to_string(p));
 }
 
 }  // namespace pg

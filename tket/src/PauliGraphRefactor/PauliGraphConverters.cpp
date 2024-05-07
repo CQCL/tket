@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Clifford/ChoiMixTableau.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
@@ -228,6 +229,111 @@ std::vector<PGOp_ptr> op_to_pgops(
       return {std::make_shared<PGRotation>(
           tab.get_row_product(SpPauliStabiliser(qpm)), box.get_phase())};
     }
+    case OpType::QControlBox: {
+      const QControlBox& box = dynamic_cast<const QControlBox&>(*op);
+      unsigned n_controls = box.get_n_controls();
+      std::vector<bool> control_state = box.get_control_state();
+      unit_vector_t inner_args;
+      for (unsigned i = n_controls; i < args.size(); ++i)
+        inner_args.push_back(args.at(i));
+      std::vector<PGOp_ptr> inner_ops =
+          op_to_pgops(box.get_op(), inner_args, tab, false);
+      std::vector<SpPauliStabiliser> control_paulis;
+      for (unsigned i = 0; i < n_controls; ++i)
+        control_paulis.push_back(tab.get_zrow(Qubit(args.at(i))));
+      std::vector<PGOp_ptr> ret;
+      for (const PGOp_ptr& inn_op : inner_ops)
+        ret.push_back(std::make_shared<PGQControl>(
+            inn_op, control_paulis, control_state));
+      return ret;
+    }
+    case OpType::MultiplexorBox: {
+      const MultiplexorBox& box = dynamic_cast<const MultiplexorBox&>(*op);
+      std::map<std::vector<bool>, std::vector<Op_ptr>> op_map;
+      for (const std::pair<const std::vector<bool>, Op_ptr>& qcase :
+           box.get_ops())
+        op_map.insert({qcase.first, {qcase.second}});
+      unsigned n_controls = box.get_op_map().begin()->first.size();
+      std::vector<SpPauliStabiliser> control_paulis;
+      for (unsigned i = 0; i < n_controls; ++i)
+        control_paulis.push_back(tab.get_zrow(Qubit(args.at(i))));
+      std::vector<SpPauliStabiliser> target_paulis;
+      for (unsigned i = n_controls; i < args.size(); ++i) {
+        target_paulis.push_back(tab.get_zrow(Qubit(args.at(i))));
+        target_paulis.push_back(tab.get_xrow(Qubit(args.at(i))));
+      }
+      return {std::make_shared<PGMultiplexedTensoredBox>(
+          op_map, control_paulis, target_paulis)};
+    }
+    case OpType::MultiplexedRotationBox: {
+      const MultiplexedRotationBox& box =
+          dynamic_cast<const MultiplexedRotationBox&>(*op);
+      std::map<std::vector<bool>, Expr> angle_map;
+      for (const std::pair<const std::vector<bool>, Op_ptr>& qcase :
+           box.get_ops()) {
+        const Gate& g = dynamic_cast<const Gate&>(*qcase.second);
+        angle_map.insert({qcase.first, g.get_params().at(0)});
+      }
+      unsigned n_controls = box.get_op_map().begin()->first.size();
+      std::vector<SpPauliStabiliser> control_paulis;
+      for (unsigned i = 0; i < n_controls; ++i)
+        control_paulis.push_back(tab.get_zrow(Qubit(args.at(i))));
+      OpType rotation_basis = box.get_ops().begin()->second->get_type();
+      switch (rotation_basis) {
+        case OpType::Rx: {
+          return {std::make_shared<PGMultiplexedRotation>(
+              angle_map, control_paulis,
+              tab.get_xrow(Qubit(args.at(n_controls))))};
+        }
+        case OpType::Ry: {
+          return {std::make_shared<PGMultiplexedRotation>(
+              angle_map, control_paulis,
+              tab.get_row_product(
+                  SpPauliStabiliser(Qubit(args.at(n_controls)), Pauli::Y)))};
+        }
+        case OpType::Rz: {
+          return {std::make_shared<PGMultiplexedRotation>(
+              angle_map, control_paulis,
+              tab.get_zrow(Qubit(args.at(n_controls))))};
+        }
+        default: {
+          throw PGError(
+              "Invalid MultiplexedRotationBox encountered when converting to "
+              "PauliGraph");
+        }
+      }
+    }
+    case OpType::MultiplexedU2Box: {
+      const MultiplexedU2Box& box = dynamic_cast<const MultiplexedU2Box&>(*op);
+      std::map<std::vector<bool>, std::vector<Op_ptr>> op_map;
+      for (const std::pair<const std::vector<bool>, Op_ptr>& qcase :
+           box.get_ops())
+        op_map.insert({qcase.first, {qcase.second}});
+      unsigned n_controls = box.get_op_map().begin()->first.size();
+      std::vector<SpPauliStabiliser> control_paulis;
+      for (unsigned i = 0; i < n_controls; ++i)
+        control_paulis.push_back(tab.get_zrow(Qubit(args.at(i))));
+      std::vector<SpPauliStabiliser> target_paulis;
+      target_paulis.push_back(tab.get_zrow(Qubit(args.at(n_controls))));
+      target_paulis.push_back(tab.get_xrow(Qubit(args.at(n_controls))));
+      return {std::make_shared<PGMultiplexedTensoredBox>(
+          op_map, control_paulis, target_paulis)};
+    }
+    case OpType::MultiplexedTensoredU2Box: {
+      const MultiplexedTensoredU2Box& box =
+          dynamic_cast<const MultiplexedTensoredU2Box&>(*op);
+      unsigned n_controls = box.get_op_map().begin()->first.size();
+      std::vector<SpPauliStabiliser> control_paulis;
+      for (unsigned i = 0; i < n_controls; ++i)
+        control_paulis.push_back(tab.get_zrow(Qubit(args.at(i))));
+      std::vector<SpPauliStabiliser> target_paulis;
+      for (unsigned i = n_controls; i < args.size(); ++i) {
+        target_paulis.push_back(tab.get_zrow(Qubit(args.at(i))));
+        target_paulis.push_back(tab.get_xrow(Qubit(args.at(i))));
+      }
+      return {std::make_shared<PGMultiplexedTensoredBox>(
+          box.get_op_map(), control_paulis, target_paulis)};
+    }
     case OpType::StabiliserAssertionBox: {
       const StabiliserAssertionBox& box =
           dynamic_cast<const StabiliserAssertionBox&>(*op);
@@ -306,144 +412,262 @@ pg::PauliGraph circuit_to_pauli_graph3(
   return res;
 }
 
-std::pair<Op_ptr, unit_vector_t> pgop_to_inner_command(
-    const PGOp_ptr& pgop, const qubit_vector_t& qubits) {
+struct IndividualSynth {
+  std::list<ChoiMixTableau::row_tensor_t> rows;
+  Op_ptr op;
+  unit_vector_t args;
+};
+
+enum class MultiplexorCase { Rotation, U2, TensoredU2, General };
+
+IndividualSynth synth_pgop(const PGOp_ptr& pgop) {
   switch (pgop->get_type()) {
     case PGOpType::Rotation: {
-      const PGRotation& rot = dynamic_cast<const PGRotation&>(*pgop);
-      return {get_op_ptr(OpType::Rz, rot.get_angle()), {qubits.front()}};
+      PGRotation& rot = dynamic_cast<PGRotation&>(*pgop);
+      return IndividualSynth{
+          {{rot.port(0), SpPauliStabiliser(Qubit(0), Pauli::Z)}},
+          get_op_ptr(OpType::Rz, rot.get_angle()),
+          {Qubit(0)}};
     }
     case PGOpType::CliffordRot: {
-      const PGCliffordRot& crot = dynamic_cast<const PGCliffordRot&>(*pgop);
+      PGCliffordRot& crot = dynamic_cast<PGCliffordRot&>(*pgop);
+      Op_ptr op;
       switch (crot.get_angle() % 4) {
-        case 1:
-          return {get_op_ptr(OpType::S), {qubits.front()}};
-        case 2:
-          return {get_op_ptr(OpType::Z), {qubits.front()}};
-        case 3:
-          return {get_op_ptr(OpType::Sdg), {qubits.front()}};
-        default:
-          return {};
+        case 1: {
+          op = get_op_ptr(OpType::S);
+          break;
+        }
+        case 2: {
+          op = get_op_ptr(OpType::Z);
+          break;
+        }
+        case 3: {
+          op = get_op_ptr(OpType::Sdg);
+          break;
+        }
+        default: {
+          op = get_op_ptr(OpType::noop);
+        }
       }
+      return IndividualSynth{
+          {{crot.port(0), SpPauliStabiliser(Qubit(0), Pauli::Z)}},
+          op,
+          {Qubit(0)}};
     }
     case PGOpType::Measure: {
-      const PGMeasure& meas = dynamic_cast<const PGMeasure&>(*pgop);
-      return {get_op_ptr(OpType::Measure), {qubits.front(), meas.get_target()}};
+      PGMeasure& meas = dynamic_cast<PGMeasure&>(*pgop);
+      return IndividualSynth{
+          {{meas.port(0), SpPauliStabiliser(Qubit(0), Pauli::Z)}},
+          get_op_ptr(OpType::Measure),
+          {Qubit(0), meas.get_target()}};
     }
     case PGOpType::Decoherence: {
-      return {get_op_ptr(OpType::Collapse), {qubits.front()}};
+      return IndividualSynth{
+          {{pgop->port(0), SpPauliStabiliser(Qubit(0), Pauli::Z)}},
+          get_op_ptr(OpType::Collapse),
+          {Qubit(0)}};
     }
     case PGOpType::Reset: {
-      return {get_op_ptr(OpType::Reset), {qubits.front()}};
+      PGReset& reset = dynamic_cast<PGReset&>(*pgop);
+      return IndividualSynth{
+          {{reset.get_stab(), SpPauliStabiliser(Qubit(0), Pauli::Z)},
+           {reset.get_destab(), SpPauliStabiliser(Qubit(0), Pauli::X)}},
+          get_op_ptr(OpType::Reset),
+          {Qubit(0)}};
     }
     case PGOpType::Conditional: {
-      const PGConditional& cond = dynamic_cast<const PGConditional&>(*pgop);
+      PGConditional& cond = dynamic_cast<PGConditional&>(*pgop);
+      IndividualSynth inner_synth = synth_pgop(cond.get_inner_op());
       unit_vector_t args;
       for (const Bit& b : cond.get_args()) args.push_back(b);
-      std::pair<Op_ptr, unit_vector_t> inner =
-          pgop_to_inner_command(cond.get_inner_op(), qubits);
-      for (const UnitID& u : inner.second) args.push_back(u);
-      return {
+      for (const UnitID& u : inner_synth.args) args.push_back(u);
+      return IndividualSynth{
+          inner_synth.rows,
           std::make_shared<Conditional>(
-              inner.first, cond.get_args().size(), cond.get_value()),
+              inner_synth.op, cond.get_args().size(), cond.get_value()),
           args};
     }
+    case PGOpType::QControl: {
+      PGQControl& qctrl = dynamic_cast<PGQControl&>(*pgop);
+      IndividualSynth synth = synth_pgop(qctrl.get_inner_op());
+      unit_vector_t ctrl_qubits;
+      unsigned qi = synth.args.size();
+      for (const SpPauliStabiliser& cp : qctrl.get_control_paulis()) {
+        Qubit q(qi);
+        synth.rows.push_back({cp, SpPauliStabiliser(q, Pauli::Z)});
+        ctrl_qubits.push_back(q);
+        ++qi;
+      }
+      synth.args.insert(
+          synth.args.begin(), ctrl_qubits.begin(), ctrl_qubits.end());
+      synth.op = std::make_shared<QControlBox>(
+          synth.op, qctrl.get_value().size(), qctrl.get_value());
+      return synth;
+    }
+    case PGOpType::MultiplexedTensoredBox: {
+      PGMultiplexedTensoredBox& mptb =
+          dynamic_cast<PGMultiplexedTensoredBox&>(*pgop);
+      IndividualSynth synth;
+      const std::vector<SpPauliStabiliser>& control_paulis =
+          mptb.get_control_paulis();
+      for (unsigned qi = 0; qi < control_paulis.size(); ++qi) {
+        Qubit q(qi);
+        synth.rows.push_back(
+            {control_paulis.at(qi), SpPauliStabiliser(q, Pauli::Z)});
+        synth.args.push_back(q);
+      }
+      const std::vector<SpPauliStabiliser>& target_paulis =
+          mptb.get_target_paulis();
+      for (unsigned qi = 0; 2 * qi < target_paulis.size(); ++qi) {
+        Qubit q(control_paulis.size() + qi);
+        synth.rows.push_back(
+            {target_paulis.at(2 * qi), SpPauliStabiliser(q, Pauli::Z)});
+        synth.rows.push_back(
+            {target_paulis.at(2 * qi + 1), SpPauliStabiliser(q, Pauli::X)});
+        synth.args.push_back(q);
+      }
+      bool all_single_qubit = true;
+      for (const std::pair<const std::vector<bool>, std::vector<Op_ptr>>&
+               qcase : mptb.get_op_map()) {
+        for (const Op_ptr& op : qcase.second) {
+          if (op->n_qubits() != 1) {
+            all_single_qubit = false;
+            break;
+          }
+        }
+        if (!all_single_qubit) break;
+      }
+      if (all_single_qubit) {
+        // Fits into either a MultiplexedU2Box or a MultiplexedTensoredU2Box
+        bool all_one_op = true;
+        for (const std::pair<const std::vector<bool>, std::vector<Op_ptr>>&
+                 qcase : mptb.get_op_map()) {
+          if (qcase.second.size() != 1) {
+            all_one_op = false;
+            break;
+          }
+        }
+        if (all_one_op) {
+          // Fits into a MultiplexedU2Box
+          ctrl_op_map_t op_map;
+          for (const std::pair<const std::vector<bool>, std::vector<Op_ptr>>&
+                   qcase : mptb.get_op_map())
+            op_map.insert({qcase.first, qcase.second.front()});
+          synth.op = std::make_shared<MultiplexedU2Box>(op_map);
+          return synth;
+        } else {
+          // Fits into a MultiplexedTensoredU2Box
+          synth.op =
+              std::make_shared<MultiplexedTensoredU2Box>(mptb.get_op_map());
+          return synth;
+        }
+      } else {
+        // Catch-all case, encode into a MultiplexorBox
+        ctrl_op_map_t op_map;
+        for (const std::pair<const std::vector<bool>, std::vector<Op_ptr>>&
+                 qcase : mptb.get_op_map()) {
+          if (qcase.second.size() == 1) {
+            op_map.insert({qcase.first, qcase.second.front()});
+          } else {
+            // Encode a tensor of operations into a CircBox to reduce the
+            // collection to a single Op
+            Circuit c;
+            for (const Op_ptr& op : qcase.second) {
+              unsigned nq = op->n_qubits();
+              qubit_vector_t args;
+              unsigned c_size = c.n_qubits();
+              for (unsigned qi = 0; qi < nq; ++qi) {
+                c.add_qubit(Qubit(c_size + qi));
+                args.push_back(Qubit(c_size + qi));
+              }
+              c.add_op<Qubit>(op, args);
+            }
+            op_map.insert({qcase.first, std::make_shared<CircBox>(c)});
+          }
+        }
+        synth.op = std::make_shared<MultiplexorBox>(op_map);
+        return synth;
+      }
+    }
+    case PGOpType::MultiplexedRotation: {
+      PGMultiplexedRotation& mpr =
+          dynamic_cast<PGMultiplexedRotation&>(*pgop);
+      IndividualSynth synth;
+      const std::vector<SpPauliStabiliser>& control_paulis =
+          mpr.get_control_paulis();
+      for (unsigned qi = 0; qi < control_paulis.size(); ++qi) {
+        Qubit q(qi);
+        synth.rows.push_back(
+            {control_paulis.at(qi), SpPauliStabiliser(q, Pauli::Z)});
+        synth.args.push_back(q);
+      }
+      synth.rows.push_back(
+          {mpr.get_target_pauli(),
+           SpPauliStabiliser(Qubit(control_paulis.size()), Pauli::Z)});
+      synth.args.push_back(Qubit(control_paulis.size()));
+      ctrl_op_map_t op_map;
+      for (const std::pair<const std::vector<bool>, Expr>& qcase :
+           mpr.get_angle_map()) {
+        op_map.insert({qcase.first, get_op_ptr(OpType::Rz, qcase.second)});
+      }
+      synth.op = std::make_shared<MultiplexedRotationBox>(op_map);
+      return synth;
+    }
     case PGOpType::Box: {
-      const PGBox& box = dynamic_cast<const PGBox&>(*pgop);
-      unit_vector_t new_args;
+      PGBox& box = dynamic_cast<PGBox&>(*pgop);
+      IndividualSynth res;
+      for (unsigned i = 0; 2 * i < box.n_paulis(); ++i) {
+        res.rows.push_back(
+            {box.port(2 * i), SpPauliStabiliser(Qubit(i), Pauli::Z)});
+        res.rows.push_back(
+            {box.port(2 * i + 1), SpPauliStabiliser(Qubit(i), Pauli::X)});
+      }
+      res.op = box.get_op();
       unsigned qb_i = 0;
       for (const UnitID& u : box.get_args()) {
         if (u.type() == UnitType::Qubit) {
-          new_args.push_back(qubits.at(qb_i));
+          res.args.push_back(Qubit(qb_i));
           ++qb_i;
         } else
-          new_args.push_back(u);
+          res.args.push_back(u);
       }
-      return {box.get_op(), new_args};
+      return res;
     }
     case PGOpType::StabAssertion: {
-      const PGStabAssertion& stab = dynamic_cast<const PGStabAssertion&>(*pgop);
-      unit_vector_t args = {qubits.at(0), qubits.at(1), stab.get_target()};
-      return {
+      PGStabAssertion& stab = dynamic_cast<PGStabAssertion&>(*pgop);
+      return IndividualSynth{
+          {
+              {stab.get_stab(), SpPauliStabiliser(Qubit(0), Pauli::Z)},
+              {stab.get_anc_z(), SpPauliStabiliser(Qubit(1), Pauli::Z)},
+              {stab.get_anc_x(), SpPauliStabiliser(Qubit(1), Pauli::X)},
+          },
           std::make_shared<StabiliserAssertionBox>(
               PauliStabiliserVec{PauliStabiliser({Pauli::Z}, 0)}),
-          args};
+          {Qubit(0), Qubit(1), stab.get_target()}};
     }
     default: {
       throw std::logic_error(
           "Error during PauliGraph synthesis: unexpected PGOpType in "
-          "pgop_to_inner_op");
+          "synth_pgop");
     }
   }
 }
 
 Circuit pgop_to_circuit(const PGOp_ptr& pgop) {
-  ChoiMixTableau diag_tab(0);
-  qubit_vector_t arg_qubits;
-  PGOp_ptr true_pgop = pgop;
-  while (true_pgop->get_type() == PGOpType::Conditional) {
-    const PGConditional& cond = dynamic_cast<const PGConditional&>(*true_pgop);
-    true_pgop = cond.get_inner_op();
-  }
-  switch (true_pgop->get_type()) {
-    case PGOpType::Rotation:
-    case PGOpType::CliffordRot:
-    case PGOpType::Measure:
-    case PGOpType::Decoherence: {
-      diag_tab = ChoiMixTableau(
-          {{true_pgop->port(0), SpPauliStabiliser(Qubit(0), Pauli::Z)}});
-      arg_qubits.push_back(Qubit(0));
-      break;
-    }
-    case PGOpType::Reset: {
-      const PGReset& reset = dynamic_cast<const PGReset&>(*true_pgop);
-      diag_tab = ChoiMixTableau(
-          {{reset.get_stab(), SpPauliStabiliser(Qubit(0), Pauli::Z)},
-           {reset.get_destab(), SpPauliStabiliser(Qubit(0), Pauli::X)}});
-      arg_qubits.push_back(Qubit(0));
-      break;
-    }
-    case PGOpType::Box: {
-      unsigned n_qbs = true_pgop->n_paulis() / 2;
-      std::list<ChoiMixTableau::row_tensor_t> rows;
-      for (unsigned i = 0; i < n_qbs; ++i) {
-        rows.push_back(
-            {true_pgop->port(2 * i), SpPauliStabiliser(Qubit(i), Pauli::Z)});
-        rows.push_back(
-            {true_pgop->port(2 * i + 1),
-             SpPauliStabiliser(Qubit(i), Pauli::X)});
-        arg_qubits.push_back(Qubit(i));
-      }
-      diag_tab = ChoiMixTableau(rows);
-      break;
-    }
-    case PGOpType::StabAssertion: {
-      const PGStabAssertion& stab =
-          dynamic_cast<const PGStabAssertion&>(*true_pgop);
-      diag_tab = ChoiMixTableau(
-          {{stab.get_stab(), SpPauliStabiliser(Qubit(0), Pauli::Z)},
-           {stab.get_anc_z(), SpPauliStabiliser(Qubit(1), Pauli::Z)},
-           {stab.get_anc_x(), SpPauliStabiliser(Qubit(1), Pauli::X)}});
-      arg_qubits.push_back(Qubit(0));
-      arg_qubits.push_back(Qubit(1));
-      break;
-    }
-    default: {
-      throw std::logic_error(
-          "Error during PauliGraph synthesis: unexpected PGOpType in "
-          "pgop_to_circuit");
-    }
-  }
+  IndividualSynth synth_data = synth_pgop(pgop);
+  ChoiMixTableau diag_tab(synth_data.rows);
   auto [diag_circ, qb_map] = cm_tableau_to_unitary_extension_circuit(diag_tab);
-  qubit_vector_t new_qubits;
-  for (const Qubit& q : arg_qubits) new_qubits.push_back(qb_map.at(q));
   Circuit diag_dag = diag_circ.dagger();
-  auto [op_ptr, unit_args] = pgop_to_inner_command(pgop, new_qubits);
-  for (const UnitID& u : unit_args) {
-    if (u.type() == UnitType::Bit && !diag_circ.contains_unit(u))
-      diag_circ.add_bit(Bit(u));
+  unit_vector_t new_args;
+  for (const UnitID& u : synth_data.args) {
+    if (u.type() == UnitType::Qubit) {
+      new_args.push_back(qb_map.at(Qubit(u)));
+    } else {
+      diag_circ.add_bit(Bit(u), false);
+      new_args.push_back(u);
+    }
   }
-  diag_circ.add_op<UnitID>(op_ptr, unit_args);
+  diag_circ.add_op<UnitID>(synth_data.op, new_args);
   diag_circ.append(diag_dag);
   return diag_circ;
 }
@@ -481,8 +705,7 @@ Circuit pauli_graph3_to_circuit_individual(
   return circ;
 }
 
-Circuit pauli_graph3_to_circuit_sets(
-    const pg::PauliGraph& pg, CXConfigType) {
+Circuit pauli_graph3_to_circuit_sets(const pg::PauliGraph& pg, CXConfigType) {
   const std::set<Qubit>& qubits = pg.get_qubits();
   const std::set<Bit>& bits = pg.get_bits();
   Circuit circ(
@@ -528,7 +751,7 @@ Circuit pauli_graph3_to_circuit_sets(
   }
 
   // Synthesise each interior commuting set
-  // for (const std::list<PGOp_ptr>& : commuting_sets) {
+  for (const std::list<PGOp_ptr>& cset : commuting_sets) {
     // TODO::Implement
     // TODO::I can somewhat see what to do when the active paulis of an op can
     // be partitioned into a set of pairs of anti-commuting paulis for exact
@@ -541,14 +764,61 @@ Circuit pauli_graph3_to_circuit_sets(
 
     // For each PGOp, split the active paulis into pairs of anti-commuting
     // paulis which will be reduced to a specific qubit, and others which will
-    // just be diagonalised and then handled by graysynth Pick an independent
-    // generating set of the commuting paulis to be diagonalised Obtain the
-    // conjugation circuit as the unitary extension of a ChoiMixTableau Build a
-    // UnitaryTableau for the conjugation circuit to map paulis through Sort
-    // PGOps into groups whose diagonal components are identical (i.e. they will
-    // be synthesised at the same point during GraySynth) Conjugate Append to
-    // the circuit
-  // }
+    // just be diagonalised and then handled by graysynth
+    std::list<std::pair<SpPauliStabiliser, SpPauliStabiliser>> ac_pairs;
+    std::list<SpPauliStabiliser> to_diag;
+    for (const PGOp_ptr& pgop : cset) {
+      std::list<SpPauliStabiliser> commuting;
+      for (const SpPauliStabiliser& p : pgop->active_paulis()) {
+        bool anti_found = false;
+        for (std::list<SpPauliStabiliser>::iterator it = commuting.begin();
+             it != commuting.end(); ++it) {
+          if (!p.commutes_with(*it)) {
+            anti_found = true;
+            ac_pairs.push_back({p, *it});
+            commuting.erase(it);
+            break;
+          }
+        }
+        if (!anti_found) {
+          commuting.push_back(p);
+        }
+      }
+      to_diag.insert(to_diag.end(), commuting.begin(), commuting.end());
+    }
+
+    // Pick an independent generating set of the commuting paulis to be
+    // diagonalised
+    std::list<ChoiMixTableau::row_tensor_t> diag_tab_rows;
+    std::set<Qubit>::const_iterator qb_it = qubits.begin();
+    for (const std::pair<SpPauliStabiliser, SpPauliStabiliser>& pair :
+         ac_pairs) {
+      diag_tab_rows.push_back(
+          {pair.first, SpPauliStabiliser(*qb_it, Pauli::Z)});
+      diag_tab_rows.push_back(
+          {pair.second, SpPauliStabiliser(*qb_it, Pauli::Z)});
+      ++qb_it;
+    }
+    for (const SpPauliStabiliser& p : to_diag) {
+      diag_tab_rows.push_back({p, {}});
+    }
+    ChoiMixTableau diag_tab(
+        diag_tab_rows);  // TODO:: GAUSSIAN FORM AND REMOVE EMPTY ROWS
+    // TODO:: RETURN TO OTHER SYNTHESIS METHODS TO INCORPORATE QControl and
+    // Multiplexor
+
+    // Obtain the conjugation circuit as the unitary extension of a
+    // ChoiMixTableau
+
+    // Build a UnitaryTableau for the conjugation circuit to map paulis through
+
+    // Sort PGOps into groups whose diagonal components are identical (i.e. they
+    // will be synthesised at the same point during GraySynth)
+
+    // Conjugate
+
+    // Append to the circuit
+  }
 
   // Synthesise output tableau
   if (otab_v) {

@@ -53,9 +53,13 @@ enum class PGOpType {
   // Some other PGOp conditioned on a quantum state
   QControl,
 
-  // A collection of other PGOps conditioned on different values of a quantum
-  // state
-  Multiplexor,
+  // A collection of tensors of opaque boxed circuit components, conditioned on
+  // different values of a quantum state
+  MultiplexedTensoredBox,
+
+  // A collection of rotations in the same basis, conditioned on different
+  // values of a quantum state
+  MultiplexedRotation,
 
   // An opaque boxed circuit component; treated as a local barrier
   // Defined in Converters module to have access to Circuit components
@@ -513,22 +517,20 @@ class PGQControl : public PGOp {
 };
 
 /**
- * PGOp for PGOpType::Multiplexor, wrapping a collection of other (unitary)
- * PGOps and executing them conditional on different values of the state of some
+ * PGOp for PGOpType::MultiplexedRotation, encapsulating rotations of different
+ * angles in the same basis conditioned on different values of the state of some
  * qubits.
  *
  * active_paulis lists first the paulis into which the control qubits are
- * encoded, followed by the active_paulis of each inner op (these may duplicate
- * or fail to be independent, since we need port access to be able to update
- * each of them).
+ * encoded, followed by the pauli into which the target rotation is encoded.
  */
-class PGMultiplexor : public PGOp {
+class PGMultiplexedRotation : public PGOp {
  public:
   /**
-   * Get the map between values of the control qubits and the inner PGOps that
-   * are executed coherently at that value.
+   * Get the map between values of the control qubits and the angle of rotation
+   * (in half-turns) that is performed coherently at that value.
    */
-  const std::map<std::vector<bool>, PGOp_ptr>& get_inner_op_map() const;
+  const std::map<std::vector<bool>, Expr>& get_angle_map() const;
 
   /**
    * Get the Pauli strings into which the controls are encoded.
@@ -536,14 +538,21 @@ class PGMultiplexor : public PGOp {
   const std::vector<SpPauliStabiliser>& get_control_paulis() const;
 
   /**
-   * Construct a multiplexed operation where, if the input state's eigenvalues
-   * wrt \p control_paulis are the vector ``value`` (e.g. value [false, true]
-   * means a +1 (false) eigen value for control_paulis[0] and a -1 (true)
-   * eigenvalue for control_paulis[1]), then \p op_map [value] is applied.
+   * Get the Pauli string about which the target rotation is applied.
    */
-  PGMultiplexor(
-      const std::map<std::vector<bool>, PGOp_ptr>& op_map,
-      const std::vector<SpPauliStabiliser>& control_paulis);
+  const SpPauliStabiliser& get_target_pauli() const;
+
+  /**
+   * Construct a multiplexed operation where, if the input state's eigenvalues
+   * wrt \p control_paulis are the vector ``value`` (e.g. value [false, false,
+   * true] means a +1 eigenvalue for control_paulis[0-1] and a -1 eigenvalue for
+   * control_paulis[2]), then the rotation exp(-i * \p target_pauli * \p
+   * angle_map [value] * pi/4) is applied.
+   */
+  PGMultiplexedRotation(
+      const std::map<std::vector<bool>, Expr>& angle_map,
+      const std::vector<SpPauliStabiliser>& control_paulis,
+      const SpPauliStabiliser& target_pauli);
 
   // Overrides from PGOp
   virtual SymSet free_symbols() const override;
@@ -556,8 +565,9 @@ class PGMultiplexor : public PGOp {
   virtual SpPauliStabiliser& port(unsigned p) override;
 
  protected:
-  std::map<std::vector<bool>, PGOp_ptr> op_map_;
+  std::map<std::vector<bool>, Expr> angle_map_;
   std::vector<SpPauliStabiliser> control_paulis_;
+  SpPauliStabiliser target_pauli_;
 };
 
 /**

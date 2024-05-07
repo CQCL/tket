@@ -16,6 +16,7 @@
 #include <fstream>
 
 #include "../testutil.hpp"
+#include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/PauliGraphRefactor/Converters.hpp"
 #include "tket/PauliGraphRefactor/PauliGraph.hpp"
@@ -528,6 +529,49 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     ChoiMixTableau circ_tab = circuit_to_cm_tableau(circ);
     ChoiMixTableau res_tab = circuit_to_cm_tableau(res);
     REQUIRE(circ_tab == res_tab);
+  }
+  GIVEN("Conjugated QControlBox and Multiplexors") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::CZ, {1, 0});
+    circ.add_op<unsigned>(OpType::CY, {1, 3});
+    circ.add_op<unsigned>(
+        std::make_shared<QControlBox>(
+            get_op_ptr(OpType::ISWAPMax), 2, std::vector<bool>{0, 1}),
+        {2, 1, 0, 3});
+    ctrl_op_map_t op_map = {
+        {{0, 0}, get_op_ptr(OpType::CX)},
+        {{0, 1}, get_op_ptr(OpType::Sycamore)},
+        {{1, 1}, get_op_ptr(OpType::XXPhase, 0.34)}};
+    circ.add_op<unsigned>(
+        std::make_shared<MultiplexorBox>(op_map), {0, 3, 1, 2});
+    ctrl_op_map_t rot_map = {
+        {{0, 0, 0}, get_op_ptr(OpType::Rx, 0.14)},
+        {{1, 0, 1}, get_op_ptr(OpType::Rx, -1.45)}};
+    circ.add_op<unsigned>(
+        std::make_shared<MultiplexedRotationBox>(rot_map), {3, 0, 2, 1});
+    ctrl_op_map_t u2_map = {
+        {{0}, get_op_ptr(OpType::Rz, -0.87)},
+        {{1}, get_op_ptr(OpType::TK1, {0.98, -0.12, 1.2})}};
+    circ.add_op<unsigned>(std::make_shared<MultiplexedU2Box>(u2_map), {1, 3});
+    ctrl_tensored_op_map_t tensor_map = {
+        {{0}, {get_op_ptr(OpType::Ry, 0.98), get_op_ptr(OpType::H)}},
+        {{1}, {get_op_ptr(OpType::Rx, -0.87), get_op_ptr(OpType::Vdg)}}};
+    circ.add_op<unsigned>(
+        std::make_shared<MultiplexedTensoredU2Box>(tensor_map), {3, 2, 1});
+    circ.add_op<unsigned>(OpType::CY, {0, 2});
+    circ.add_op<unsigned>(OpType::ZZMax, {1, 2});
+    circ.add_op<unsigned>(OpType::V, {1});
+    PauliGraph pg = circuit_to_pauli_graph3(circ);
+    REQUIRE_NOTHROW(pg.verify());
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    REQUIRE(res.count_gates(OpType::QControlBox) == 1);
+    REQUIRE(res.count_gates(OpType::MultiplexorBox) == 1);
+    REQUIRE(res.count_gates(OpType::MultiplexedRotationBox) == 1);
+    REQUIRE(res.count_gates(OpType::MultiplexedU2Box) == 1);
+    REQUIRE(res.count_gates(OpType::MultiplexedTensoredU2Box) == 1);
+    REQUIRE(test_unitary_comparison(circ, res, true));
   }
   GIVEN("A conjugated Box") {
     Circuit circ(3);

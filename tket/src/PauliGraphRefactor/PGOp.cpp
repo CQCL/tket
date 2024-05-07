@@ -420,60 +420,59 @@ SpPauliStabiliser& PGQControl::port(unsigned p) {
 }
 
 /**
- * PGMultiplexor Implementation
+ * PGMultiplexedRotation Implementation
  */
 
-const std::map<std::vector<bool>, PGOp_ptr>& PGMultiplexor::get_inner_op_map()
+const std::map<std::vector<bool>, Expr>& PGMultiplexedRotation::get_angle_map()
     const {
-  return op_map_;
+  return angle_map_;
 }
 
-const std::vector<SpPauliStabiliser>& PGMultiplexor::get_control_paulis()
-    const {
+const std::vector<SpPauliStabiliser>&
+PGMultiplexedRotation::get_control_paulis() const {
   return control_paulis_;
 }
 
-PGMultiplexor::PGMultiplexor(
-    const std::map<std::vector<bool>, PGOp_ptr>& op_map,
-    const std::vector<SpPauliStabiliser>& control_paulis)
-    : PGOp(PGOpType::Multiplexor),
-      op_map_(op_map),
-      control_paulis_(control_paulis) {
-  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
+const SpPauliStabiliser& PGMultiplexedRotation::get_target_pauli() const {
+  return target_pauli_;
+}
+
+PGMultiplexedRotation::PGMultiplexedRotation(
+    const std::map<std::vector<bool>, Expr>& angle_map,
+    const std::vector<SpPauliStabiliser>& control_paulis,
+    const SpPauliStabiliser& target_pauli)
+    : PGOp(PGOpType::MultiplexedRotation),
+      angle_map_(angle_map),
+      control_paulis_(control_paulis),
+      target_pauli_(target_pauli) {
+  for (auto it = angle_map_.begin(); it != angle_map_.end(); ++it) {
     if (it->first.size() != control_paulis_.size())
       throw PGError(
-          "PGMultiplexor: Size mismatch between number of controls and length "
-          "of values in op_map");
+          "PGMultiplexedRotation: Size mismatch between number of controls and "
+          "length of values in angle_map");
   }
 }
 
-SymSet PGMultiplexor::free_symbols() const {
+SymSet PGMultiplexedRotation::free_symbols() const {
   SymSet sset;
-  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
-    SymSet it_sset = it->second->free_symbols();
+  for (auto it = angle_map_.begin(); it != angle_map_.end(); ++it) {
+    SymSet it_sset = expr_free_symbols(it->second);
     sset.insert(it_sset.begin(), it_sset.end());
   }
   return sset;
 }
 
-PGOp_ptr PGMultiplexor::symbol_substitution(
+PGOp_ptr PGMultiplexedRotation::symbol_substitution(
     const SymEngine::map_basic_basic& sub_map) const {
-  std::map<std::vector<bool>, PGOp_ptr> new_op_map = op_map_;
-  bool any_change = false;
-  for (auto it = new_op_map.begin(); it != new_op_map.end(); ++it) {
-    PGOp_ptr new_op = it->second->symbol_substitution(sub_map);
-    if (new_op) {
-      any_change = true;
-      it->second = new_op;
-    }
+  std::map<std::vector<bool>, Expr> new_angle_map = angle_map_;
+  for (auto it = new_angle_map.begin(); it != new_angle_map.end(); ++it) {
+    it->second = it->second.subs(sub_map);
   }
-  if (any_change)
-    return std::make_shared<PGMultiplexor>(new_op_map, control_paulis_);
-  else
-    return PGOp_ptr();
+  return std::make_shared<PGMultiplexedRotation>(
+      new_angle_map, control_paulis_, target_pauli_);
 }
 
-std::string PGMultiplexor::get_name(bool latex) const {
+std::string PGMultiplexedRotation::get_name(bool) const {
   std::stringstream str;
   str << "qswitch [";
   if (!control_paulis_.empty()) {
@@ -483,60 +482,47 @@ std::string PGMultiplexor::get_name(bool latex) const {
     }
   }
   str << "]";
-  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
-    str << ", ";
+  bool first = true;
+  for (auto it = angle_map_.begin(); it != angle_map_.end(); ++it) {
+    if (!first) {
+      str << ", ";
+    }
     for (bool b : it->first) {
       str << (b ? "1" : "0");
     }
-    str << "->[" << it->second->get_name(latex) << "]";
+    str << "->Rot(" << target_pauli_.to_str() << "; " << it->second << ")";
+    first = false;
   }
   return str.str();
 }
 
-bool PGMultiplexor::is_equal(const PGOp& op_other) const {
-  const PGMultiplexor& other = dynamic_cast<const PGMultiplexor&>(op_other);
-  if (control_paulis_ != other.control_paulis_) return false;
-  auto this_it = op_map_.begin();
-  auto other_it = other.op_map_.end();
-  while (this_it != op_map_.end()) {
-    if (other_it == other.op_map_.end()) return false;
-    if (this_it->first != other_it->first) return false;
-    if (*(this_it->second) != *(other_it->second)) return false;
-    ++this_it;
-    ++other_it;
-  }
-  return (other_it == other.op_map_.end());
+bool PGMultiplexedRotation::is_equal(const PGOp& op_other) const {
+  const PGMultiplexedRotation& other =
+      dynamic_cast<const PGMultiplexedRotation&>(op_other);
+  return (control_paulis_ == other.control_paulis_) &&
+         (target_pauli_ == other.target_pauli_) &&
+         (angle_map_ == other.angle_map_);
 }
 
-unsigned PGMultiplexor::n_paulis() const {
-  unsigned n_paulis = control_paulis_.size();
-  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
-    n_paulis += it->second->n_paulis();
-  }
-  return n_paulis;
+unsigned PGMultiplexedRotation::n_paulis() const {
+  return control_paulis_.size() + 1;
 }
 
-std::vector<SpPauliStabiliser> PGMultiplexor::active_paulis() const {
+std::vector<SpPauliStabiliser> PGMultiplexedRotation::active_paulis() const {
   std::vector<SpPauliStabiliser> aps = control_paulis_;
-  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
-    std::vector<SpPauliStabiliser> it_aps = it->second->active_paulis();
-    aps.insert(aps.end(), it_aps.begin(), it_aps.end());
-  }
+  aps.push_back(target_pauli_);
   return aps;
 }
 
-SpPauliStabiliser& PGMultiplexor::port(unsigned p) {
-  unsigned original_p = p;
-  if (p < control_paulis_.size()) return control_paulis_.at(p);
-  p -= control_paulis_.size();
-  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
-    unsigned it_paulis = it->second->n_paulis();
-    if (p < it_paulis) return it->second->port(p);
-    p -= it_paulis;
-  }
-  throw PGError(
-      "Cannot dereference port of PGMultiplexor: " +
-      std::to_string(original_p));
+SpPauliStabiliser& PGMultiplexedRotation::port(unsigned p) {
+  if (p == control_paulis_.size())
+    return target_pauli_;
+  else if (p < control_paulis_.size())
+    return control_paulis_.at(p);
+  else
+    throw PGError(
+        "Cannot dereference port of PGMultiplexedRotation: " +
+        std::to_string(p));
 }
 
 /**

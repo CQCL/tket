@@ -83,6 +83,68 @@ class PGBox : public PGOp {
   std::vector<SpPauliStabiliser> paulis_;
 };
 
+/**
+ * PGOp for PGOpType::MultiplexedTensoredBox, encapsulating tensor products of
+ * Ops conditioned on different values of the state of some qubits.
+ *
+ * active_paulis lists first the paulis into which the control qubits are
+ * encoded, followed by iterating over the target qubits and giving the Pauli
+ * operators mapped into +Z and +X by the conjugating circuit.
+ */
+class PGMultiplexedTensoredBox : public PGOp {
+ public:
+  /**
+   * Get the map between values of the control qubits and the Ops that are
+   * performed coherently at that value. The Ops are assumed to be tensored
+   * together in order. In each case, the sum of the number of qubits across the
+   * tensor product must match.
+   */
+  const std::map<std::vector<bool>, std::vector<Op_ptr>>& get_op_map() const;
+
+  /**
+   * Get the Pauli strings into which the controls are encoded.
+   */
+  const std::vector<SpPauliStabiliser>& get_control_paulis() const;
+
+  /**
+   * Get the Pauli strings into which the targets are encoded.
+   */
+  const std::vector<SpPauliStabiliser>& get_target_paulis() const;
+
+  /**
+   * Construct a multiplexed operation where, if the input state's eigenvalues
+   * wrt \p control_paulis are the vector ``value`` (e.g. value [false, false,
+   * true] means a +1 eigenvalue for control_paulis[0-1] and a -1 eigenvalue for
+   * control_paulis[2]), then the operations of \p op_map [value] are performed
+   * in parallel.
+   *
+   * \p target_paulis specifies the Clifford conjugation around the target
+   * operations. Specifically,
+   * for each i in [0..n_targets-1]:
+   *   - target_paulis_[2*i] is the Pauli operator mapped into Z_qt[i]
+   *   - target_paulis_[2*i+1] is the Pauli operator mapped into X_qt[i]
+   */
+  PGMultiplexedTensoredBox(
+      const std::map<std::vector<bool>, std::vector<Op_ptr>>& op_map,
+      const std::vector<SpPauliStabiliser>& control_paulis,
+      const std::vector<SpPauliStabiliser>& target_paulis);
+
+  // Overrides from PGOp
+  virtual SymSet free_symbols() const override;
+  virtual PGOp_ptr symbol_substitution(
+      const SymEngine::map_basic_basic& sub_map) const override;
+  virtual std::string get_name(bool latex = false) const override;
+  virtual bool is_equal(const PGOp& other) const override;
+  virtual unsigned n_paulis() const override;
+  virtual std::vector<SpPauliStabiliser> active_paulis() const override;
+  virtual SpPauliStabiliser& port(unsigned p) override;
+
+ protected:
+  std::map<std::vector<bool>, std::vector<Op_ptr>> op_map_;
+  std::vector<SpPauliStabiliser> control_paulis_;
+  std::vector<SpPauliStabiliser> target_paulis_;
+};
+
 }  // namespace pg
 
 }  // namespace tket
