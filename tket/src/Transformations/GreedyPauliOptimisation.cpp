@@ -421,13 +421,9 @@ struct DepthTracker {
   std::vector<unsigned> qubit_depth;
   unsigned max_depth;
   DepthTracker(unsigned n) : qubit_depth(n, 0), max_depth(0) {};
-  // defined as the gate depth of the given 2q gate minus the
-  // current max_depth minus 1
-  double gate_pace(unsigned a, unsigned b) const {
-    unsigned gate_depth = std::max(qubit_depth[a], qubit_depth[b]);
-    double pace =
-        static_cast<double>(gate_depth) - static_cast<double>(max_depth);
-    return pace;
+
+  unsigned gate_depth(unsigned a, unsigned b) const {
+    return std::max(qubit_depth[a], qubit_depth[b]) + 1;
   };
   void add_1q_gate(unsigned a) {
     qubit_depth[a]++;
@@ -436,11 +432,11 @@ struct DepthTracker {
     }
   };
   void add_2q_gate(unsigned a, unsigned b) {
-    unsigned gate_depth = std::max(qubit_depth[a], qubit_depth[b]);
-    qubit_depth[a] = gate_depth + 1;
-    qubit_depth[b] = gate_depth + 1;
-    if (gate_depth + 1 > max_depth) {
-      max_depth = gate_depth + 1;
+    unsigned new_gate_depth = gate_depth(a, b);
+    qubit_depth[a] = new_gate_depth;
+    qubit_depth[b] = new_gate_depth;
+    if (new_gate_depth > max_depth) {
+      max_depth = new_gate_depth;
     }
   };
 };
@@ -561,13 +557,14 @@ static void tableau_row_nodes_synthesis(
     }
     // for each tqe we compute a vector of cost factors which will
     // be combined to make the final decision.
-    // we currently only consider tqe_cost and gate_pace.
+    // we currently only consider tqe_cost and gate_depth.
     std::map<TQE, std::vector<double>> tqe_candidates_cost;
     for (const TQE& tqe : tqe_candidates) {
       tqe_candidates_cost.insert(
           {tqe,
            {default_tableau_tqe_cost(rows, remaining_indices, tqe),
-            depth_tracker.gate_pace(std::get<1>(tqe), std::get<2>(tqe))}});
+            static_cast<double>(depth_tracker.gate_depth(
+                std::get<1>(tqe), std::get<2>(tqe)))}});
     }
     TKET_ASSERT(tqe_candidates_cost.size() > 0);
     // select the best one
@@ -707,7 +704,8 @@ static void pauli_exps_synthesis(
       tqe_candidates_cost.insert(
           {tqe,
            {default_pauliexp_tqe_cost(discount_rate, rotation_sets, rows, tqe),
-            depth_tracker.gate_pace(std::get<1>(tqe), std::get<2>(tqe))}});
+            static_cast<double>(depth_tracker.gate_depth(
+                std::get<1>(tqe), std::get<2>(tqe)))}});
     }
     // select the best one
     TQE selected_tqe = select_pauliexp_tqe(tqe_candidates_cost, depth_weight);
