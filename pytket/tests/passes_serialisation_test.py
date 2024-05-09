@@ -41,6 +41,7 @@ from pytket.passes import (
     DefaultMappingPass,
     AASRouting,
     SquashCustom,
+    GreedyPauliSimp,
 )
 from pytket.mapping import (
     LexiLabellingMethod,
@@ -288,6 +289,9 @@ TWO_WAY_PARAM_PASSES = {
     ),
     "RoundAngles": standard_pass_dict(
         {"name": "RoundAngles", "n": 6, "only_zeros": False}
+    ),
+    "GreedyPauliSimp": standard_pass_dict(
+        {"name": "GreedyPauliSimp", "discount_rate": 0.4, "depth_weight": 0.5}
     ),
 }
 
