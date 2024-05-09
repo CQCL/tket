@@ -9,6 +9,10 @@ Features:
 * Update to pytket-circuit-renderer 0.8.
 * Add two new status values for circuits on backends: "CANCELLING" and "RETRYING".
 
+Fixes:
+
+* Escape underscores in qubit and bit names when converting to latex.
+
 1.27.0 (April 2024)
 -------------------
 
