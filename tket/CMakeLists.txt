@@ -411,7 +411,7 @@ target_sources(tket
         include/tket/Transformations/ContextualReduction.hpp
         include/tket/Transformations/Decomposition.hpp
         include/tket/Transformations/GreedyPauliOptimisation.hpp
-        include/tket/Transformations/GreedyPauliOptimisationConstants.hpp
+        include/tket/Transformations/GreedyPauliOptimisationLookupTables.hpp
         include/tket/Transformations/MeasurePass.hpp
         include/tket/Transformations/OptimisationPass.hpp
         include/tket/Transformations/PauliOptimisation.hpp

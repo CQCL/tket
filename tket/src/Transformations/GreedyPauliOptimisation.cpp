@@ -25,7 +25,7 @@
 #include "tket/PauliGraph/PauliGraph.hpp"
 #include "tket/Transformations/CliffordOptimisation.hpp"
 #include "tket/Transformations/Decomposition.hpp"
-#include "tket/Transformations/GreedyPauliOptimisationConstants.hpp"
+#include "tket/Transformations/GreedyPauliOptimisationLookupTables.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Transform.hpp"
