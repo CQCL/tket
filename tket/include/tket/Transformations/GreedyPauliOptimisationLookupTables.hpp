@@ -15,9 +15,6 @@
 #pragma once
 
 #include "GreedyPauliOptimisation.hpp"
-#include "Transform.hpp"
-#include "tket/Circuit/Circuit.hpp"
-#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 

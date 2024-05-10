@@ -16,7 +16,6 @@
 
 #include "Transform.hpp"
 #include "tket/Circuit/Circuit.hpp"
-#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 
@@ -72,7 +71,7 @@ class PauliExpNode {
   /**
    * @brief Construct a new PauliExpNode object.
    *
-   * @param supp_vec the support vector
+   * @param support_vec the support vector
    * @param theta the rotation angle in half-turns
    */
   PauliExpNode(std::vector<unsigned> support_vec, Expr theta);
@@ -136,7 +135,7 @@ class TableauRowNode {
   /**
    * @brief Construct a new TableauRowNode object.
    *
-   * @param supp_vec the support vector
+   * @param support_vec the support vector
    */
   TableauRowNode(std::vector<unsigned> support_vec);
 

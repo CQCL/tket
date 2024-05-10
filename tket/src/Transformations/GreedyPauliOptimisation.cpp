@@ -16,7 +16,6 @@
 
 #include <algorithm>
 
-#include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Converters/Converters.hpp"
 #include "tket/OpType/OpType.hpp"
@@ -24,10 +23,7 @@
 #include "tket/Ops/Op.hpp"
 #include "tket/PauliGraph/PauliGraph.hpp"
 #include "tket/Transformations/CliffordOptimisation.hpp"
-#include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/GreedyPauliOptimisationLookupTables.hpp"
-#include "tket/Transformations/OptimisationPass.hpp"
-#include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Transform.hpp"
 
 namespace tket {
