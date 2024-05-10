@@ -39,7 +39,7 @@ in {
     inherit version;
     propagatedBuildInputs = with super.python3.pkgs; [
       self.binders
-      super.lark-parser
+      super.lark
       super.types-pkg_resources
       super.qwasm
       graphviz
