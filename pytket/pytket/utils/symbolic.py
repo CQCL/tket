@@ -251,6 +251,43 @@ def symb_fsim(params: ParamsType) -> ImmutableMatrix:
         ]
     )
 
+def symb_gpi(params: ParamsType) -> ImmutableMatrix:
+    t = sympy.exp(I * sympy.pi * params[0])
+
+    return ImmutableMatrix(  # type: ignore
+        [
+            [0, 1/t],
+            [t, 0],
+        ]
+    )
+
+def symb_gpi2(params: ParamsType) -> ImmutableMatrix:
+    t = sympy.exp(I * sympy.pi * params[0])
+
+    return ImmutableMatrix(  # type: ignore
+        [
+            [1, -I/t],
+            [-I*t, 1],
+        ]
+    )
+
+def symb_aams(params: ParamsType) -> ImmutableMatrix:
+    alpha, beta, gamma = params
+    c = sympy.cos(sympy.pi / 2 * alpha)
+    s = sympy.sin(sympy.pi / 2 * alpha)
+    s1 = -I * sympy.exp(I * sympy.pi * ( -beta - gamma )) * s
+    s2 = -I * sympy.exp(I * sympy.pi * ( -beta + gamma )) * s
+    s3 = -I * sympy.exp(I * sympy.pi * (  beta - gamma )) * s
+    s4 = -I * sympy.exp(I * sympy.pi * (  beta + gamma )) * s
+
+    return ImmutableMatrix(  # type: ignore
+        [
+            [c, 0, 0, s1],
+            [0, c, s2, 0],
+            [0, s3, c, 0],
+            [s4, 0, 0, c],
+        ]
+    )
 
 # end symbolic matrix definitions
 
@@ -282,6 +319,9 @@ class SymGateRegister:
         OpType.PhasedX: symb_phasedx,
         OpType.ESWAP: symb_eswap,
         OpType.FSim: symb_fsim,
+        OpType.GPI: symb_gpi,
+        OpType.GPI2: symb_gpi2,
+        OpType.AAMS: symb_aams,
     }
 
     @classmethod
