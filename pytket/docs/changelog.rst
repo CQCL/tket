@@ -8,6 +8,7 @@ Features:
 
 * Update to pytket-circuit-renderer 0.8.
 * Add two new status values for circuits on backends: "CANCELLING" and "RETRYING".
+* Use `lark` package instead of deprecated `lark-parser`.
 
 1.27.0 (April 2024)
 -------------------
