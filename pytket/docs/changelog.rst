@@ -10,6 +10,10 @@ Features:
 * Add two new status values for circuits on backends: "CANCELLING" and "RETRYING".
 * Use `lark` package instead of deprecated `lark-parser`.
 
+Fixes:
+
+* Escape underscores in qubit and bit names when converting to latex.
+
 1.27.0 (April 2024)
 -------------------
 

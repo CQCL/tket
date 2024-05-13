@@ -37,6 +37,7 @@
 #include "tket/Transformations/Replacement.hpp"
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 namespace test_Circ {
@@ -2693,6 +2694,13 @@ SCENARIO("Confirm that LaTeX output compiles", "[latex][.long]") {
   c.add_conditional_gate<unsigned>(OpType::CU1, {0.02}, {4, 3}, {}, 0);
   c.add_conditional_gate<unsigned>(
       OpType::CU3, {1.04, 0.36, -0.36}, {0, 4}, {}, 0);
+
+  // https://github.com/CQCL/tket/issues/1363
+  Qubit q1("q_1", 0);
+  Bit c1("c_1", 0);
+  c.add_qubit(q1);
+  c.add_bit(c1);
+  c.add_measure(q1, c1);
 
   c.to_latex_file("circ.tex");
   int response = std::system("latexmk -pdf circ.tex -quiet");
