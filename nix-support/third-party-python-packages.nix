@@ -4,8 +4,8 @@ self: super: {
     src = super.fetchFromGitHub {
       owner = "pybind";
       repo = "pybind11_json";
-      rev = "0.2.13";
-      sha256 = "sha256:Kl/QflV2bBoH72/LW03K8JDlhBF+DYYXL47A5s1nmTw=";
+      rev = "0.2.14";
+      sha256 = "sha256-6L675DsfafzRv0mRR3b0eUFFjUpll3jCPoBAAffk7U0=";
     };
     nativeBuildInputs = [ super.cmake ];
     buildInputs = [ super.python3Packages.pybind11 super.nlohmann_json ];

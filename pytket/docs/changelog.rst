@@ -11,6 +11,10 @@ Features:
 * Use `lark` package instead of deprecated `lark-parser`.
 * Add ``GreedyPauliSimp`` optimisation pass.
 
+Fixes:
+
+* Escape underscores in qubit and bit names when converting to latex.
+
 1.27.0 (April 2024)
 -------------------
 
