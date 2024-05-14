@@ -357,3 +357,35 @@ def ladder_up() -> pytket._tket.circuit.Circuit:
     """
     CCX[0,1,2]; CX[2,0]; CX[2,1]
     """
+def Rx_using_GPI(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to Rx, using GPI and GPI2 gates
+    """
+def Ry_using_GPI(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to Ry, using GPI and GPI2 gates
+    """
+def Rz_using_GPI(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to Rz, using GPI gates
+    """
+def XXPhase_using_AAMS(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to XXPhase, using AAMS gates
+    """
+def YYPhase_using_AAMS(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to YYPhase, using AAMS gates
+    """
+def ZZPhase_using_AAMS(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to ZZPhase, using AAMS, GPI and GPI2 gates
+    """
+def TK1_using_GPI(arg0: sympy.Expr | float, arg1: sympy.Expr | float, arg2: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to TK1, using GPI and GPI2 gates
+    """
+def TK2_using_AAMS(arg0: sympy.Expr | float, arg1: sympy.Expr | float, arg2: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to TK2, using AAMS, GPI and GPI2 gates
+    """

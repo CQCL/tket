@@ -294,5 +294,30 @@ PYBIND11_MODULE(circuit_library, library_m) {
   library_m.def(
       "TK1_to_TK1", &CircPool::tk1_to_tk1,
       "A circuit of a single tk1 gate with given parameters");
+  library_m.def(
+      "Rx_using_GPI", &CircPool::Rx_using_GPI,
+      "Equivalent to Rx, using GPI and GPI2 gates");
+  library_m.def(
+      "Ry_using_GPI", &CircPool::Ry_using_GPI,
+      "Equivalent to Ry, using GPI and GPI2 gates");
+  library_m.def(
+      "Rz_using_GPI", &CircPool::Rz_using_GPI,
+      "Equivalent to Rz, using GPI gates");
+  library_m.def(
+      "XXPhase_using_AAMS", &CircPool::XXPhase_using_AAMS,
+      "Equivalent to XXPhase, using AAMS gates");
+  library_m.def(
+      "YYPhase_using_AAMS", &CircPool::YYPhase_using_AAMS,
+      "Equivalent to YYPhase, using AAMS gates");
+  library_m.def(
+      "ZZPhase_using_AAMS", &CircPool::ZZPhase_using_AAMS,
+      "Equivalent to ZZPhase, using AAMS, GPI and GPI2 gates");
+  library_m.def(
+      "TK1_using_GPI", &CircPool::TK1_using_GPI,
+      "Equivalent to TK1, using GPI and GPI2 gates");
+  library_m.def(
+      "TK2_using_AAMS", &CircPool::TK2_using_AAMS,
+      "Equivalent to TK2, using AAMS, GPI and GPI2 gates");
+
 }
 }  // namespace tket

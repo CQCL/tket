@@ -1377,6 +1377,80 @@ Circuit tk1_to_PhasedXRz(
   return c;
 }
 
+Circuit Rx_using_GPI(const Expr &theta) {
+  Circuit c(1);
+  c.add_op<unsigned>(OpType::GPI2,  0.5,         {0});
+  c.add_op<unsigned>(OpType::GPI,   0.5 * theta, {0});
+  c.add_op<unsigned>(OpType::GPI,   0,           {0});
+  c.add_op<unsigned>(OpType::GPI2, -0.5,         {0});
+  return c;
+}
+
+Circuit Ry_using_GPI(const Expr &theta) {
+  Circuit c(1);
+  c.add_op<unsigned>(OpType::GPI2,  1,           {0});
+  c.add_op<unsigned>(OpType::GPI,   0.5 * theta, {0});
+  c.add_op<unsigned>(OpType::GPI,   0,           {0});
+  c.add_op<unsigned>(OpType::GPI2,  0,           {0});
+  return c;
+}
+
+Circuit Rz_using_GPI(const Expr &theta) {
+  Circuit c(1);
+  c.add_op<unsigned>(OpType::GPI, -0.5 * theta, {0});
+  c.add_op<unsigned>(OpType::GPI,  0,           {0});
+  return c;
+}
+
+Circuit XXPhase_using_AAMS(const Expr &theta) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::AAMS, {theta, 0, 0}, {0, 1});
+  return c;
+}
+
+Circuit YYPhase_using_AAMS(const Expr &theta) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::AAMS, {theta, 0.5, 0.5}, {0, 1});
+  return c;
+}
+
+Circuit ZZPhase_using_AAMS(const Expr &theta) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::GPI2,  0.5,             {0});
+  c.add_op<unsigned>(OpType::GPI2,  1,               {0});
+  c.add_op<unsigned>(OpType::GPI2,  1,                  {1});
+  c.add_op<unsigned>(OpType::AAMS,  {theta, 0, 0.5}, {0, 1});
+  c.add_op<unsigned>(OpType::GPI2,  0,                  {1});
+  c.add_op<unsigned>(OpType::GPI2,  0,               {0});
+  c.add_op<unsigned>(OpType::GPI2, -0.5,             {0});
+ return c;
+}
+
+Circuit TK1_using_GPI(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c(1);
+  c.add_op<unsigned>(OpType::GPI,  0,           {0});
+  c.add_op<unsigned>(OpType::GPI,  0.5 * gamma, {0});
+  c.add_op<unsigned>(OpType::GPI2, 0.5,         {0});
+  c.add_op<unsigned>(OpType::GPI,  0.5 * beta,  {0});
+  c.add_op<unsigned>(OpType::GPI2, 0.5,         {0});
+  c.add_op<unsigned>(OpType::GPI,  0.5 * alpha, {0});
+  return c;
+}
+
+Circuit TK2_using_AAMS(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::AAMS, {alpha, 0,   0},   {0, 1});
+  c.add_op<unsigned>(OpType::AAMS, {beta,  0.5, 0.5}, {0, 1});
+  c.add_op<unsigned>(OpType::GPI2,  0.5,              {0});
+  c.add_op<unsigned>(OpType::GPI2,  1,                {0});
+  c.add_op<unsigned>(OpType::GPI2,  1,                   {1});
+  c.add_op<unsigned>(OpType::AAMS, {gamma, 0,   0.5}, {0, 1});
+  c.add_op<unsigned>(OpType::GPI2,  0,                   {1});
+  c.add_op<unsigned>(OpType::GPI2,  0,                {0});
+  c.add_op<unsigned>(OpType::GPI2, -0.5,              {0});
+  return c;
+}
+
 }  // namespace CircPool
 
 }  // namespace tket

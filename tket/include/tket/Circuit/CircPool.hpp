@@ -536,6 +536,30 @@ Circuit CnU_gray_code_decomp(unsigned n, const Gate_ptr &gate);
 Circuit CnSU2_linear_decomp(
     unsigned n, const Expr &alpha, const Expr &theta, const Expr &beta);
 
+/** Equivalent to Rx, using GPI and GPI2 gates */
+Circuit Rx_using_GPI(const Expr &theta);
+
+/** Equivalent to Ry, using GPI and GPI2 gates */
+Circuit Ry_using_GPI(const Expr &theta);
+
+/** Equivalent to Rz, using GPI gates */
+Circuit Rz_using_GPI(const Expr &theta);
+
+/** Equivalent to XXPhase, using AAMS gates */
+Circuit XXPhase_using_AAMS(const Expr &theta);
+
+/** Equivalent to YYPhase, using AAMS gates */
+Circuit YYPhase_using_AAMS(const Expr &theta);
+
+/** Equivalent to ZZPhase, using AAMS, GPI and GPI2 gates */
+Circuit ZZPhase_using_AAMS(const Expr &theta);
+
+/** Equivalent to TK1, using GPI and GPI2 gates */
+Circuit TK1_using_GPI(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+/** Equivalent to TK2, using AAMS, GPI and GPI2 gates */
+Circuit TK2_using_AAMS(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
 }  // namespace CircPool
 
 }  // namespace tket
