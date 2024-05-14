@@ -161,7 +161,7 @@ class Transform:
     @staticmethod
     def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3) -> Transform:
         """
-        Convert a circuit into a graph of Pauli gadgets to account for commutation and phase folding, and resynthesises them using a greedy algorithm adapted from https://arxiv.org/abs/2103.08602. The method for synthesising the final Clifford operator is adapted from https://arxiv.org/abs/2305.10966.
+        Convert a circuit into a graph of Pauli gadgets to account for commutation and phase folding, and resynthesises them using a greedy algorithm adapted from arxiv.org/abs/2103.08602. The method for synthesising the final Clifford operator is adapted from arxiv.org/abs/2305.10966.
         
         :param discount_rate: Rate used to discount the cost impact from gadgets that are further away. Default to 0.7.
         :param depth_weight:  Degree of depth optimisation. Default to 0.3.

@@ -56,9 +56,9 @@ enum class LocalCliffordType {
 using TQE = std::tuple<TQEType, unsigned, unsigned>;
 
 /**
- * @brief A Pauli exponential described by it's commutation relations
+ * @brief A Pauli exponential described by its commutation relations
  * with the rows in a reference Clifford tableau.
- * We store the commutation relations using a n-dimensional
+ * We store the commutation relations using an n-dimensional
  * vector with entries in {0,1,2,3}, where
  * 0: commute with ith Z row and ith X row
  * 1: commute with ith Z row and anti-commute with ith X row
@@ -103,12 +103,14 @@ class PauliExpNode {
   /**
    * @brief Return all possible TQE gates that will reduce the tqe cost by 1
    *
-   * @return std::vector<std::pair<unsigned, unsigned>>
+   * @return std::vector<std::tuple<TQEType, unsigned, unsigned>>
    */
   std::vector<TQE> reduction_tqes() const;
 
   /**
    * @brief Return the index and value of the first support
+   *
+   * @return std::pair<unsigned, unsigned>
    */
   std::pair<unsigned, unsigned> first_support() const;
 
@@ -125,7 +127,7 @@ class PauliExpNode {
  * reference Clifford tableau. Let Xi and Zi be the ith X row and the ith Z row
  * in a reference Tableau T, then the commutation relation between (p0, p1) and
  * the ith row of T is defined by how p0, p1 commute with Xi and Zi. That's 4
- * bits of information. We store such information using a n-dimensional vector
+ * bits of information. We store such information using an n-dimensional vector
  * with entries in {0,1,2,...,15}. The 4 bits from the most significant to the
  * least are: f(p0, Xi), f(p0,Zi), f(q,Xi), f(q,Zi) where f(p,q)==1 if p,q
  * anti-commute and 0 otherwise

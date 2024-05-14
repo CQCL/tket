@@ -37,8 +37,8 @@ struct hash_pair {
 
 /**
  * @brief These are pre-calculated based on some property of the 2x2 matrix
- * (i.e. local support matrix) defined by f(p0, Xi), f(p0,Zi), f(q,Xi), f(q,Zi)
- * https://arxiv.org/pdf/2305.10966 eq.27
+ * (i.e. local support matrix) defined by f(p0,Xi), f(p0,Zi), f(q,Xi), f(q,Zi)
+ * arxiv.org/abs/2305.10966 eq.27
  */
 const static std::unordered_map<unsigned, SupportType> FACTOR_WEAKNESS_MAP = {
     {0, SupportType::No},      {1, SupportType::Weak},

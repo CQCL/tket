@@ -855,7 +855,7 @@ Circuit greedy_pauli_graph_synthesis(
           rotation_set.push_back(get_node_from_exp(
               paulis2, phase2, cmd.get_qubits(), n_qubits, forward_tab, tab));
         }
-        if (rotation_set.size() > 0) {
+        if (!rotation_set.empty()) {
           rotation_sets.push_back(rotation_set);
         }
         break;
