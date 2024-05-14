@@ -77,6 +77,11 @@ Transform rebase_TK();
 // Singleqs: Rz, PhasedX
 Transform rebase_UMD();
 
+// Multiqs: AAMS
+// Singleqs: GPI, GPI2
+Transform rebase_ionq();
+
+
 }  // namespace Transforms
 
 }  // namespace tket

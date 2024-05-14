@@ -152,6 +152,10 @@ PYBIND11_MODULE(transform, m) {
           "ProjectQ (Rx, Ry, Rz, X, Y, Z, S, T, V, H, CX, CZ, CRz, "
           "SWAP).")
       .def_static(
+          "RebaseToIonQ", &Transforms::rebase_ionq,
+          "Rebase from any gate set into the gate set supported by "
+          "IonQ (GPI, GPI2, AAMS).")
+      .def_static(
           "DecomposeCCX", &Transforms::decomp_CCX,
           "Decomposes all 3-qubit Toffoli (CCX) gates into "
           "Clifford+T gates.")
