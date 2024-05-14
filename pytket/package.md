@@ -35,7 +35,7 @@ For worked examples using TKET see our [notebook examples](https://tket.quantinu
 
 For bugs and feature requests we recommend creating an issue on the [github repository](https://github.com/CQCL/tket).
 
-User support: tket-support@cambridgequantum.com
+User support: tket-support@quantinuum.com
 
 For discussion, join the public slack channel [here](https://join.slack.com/t/tketusers/shared_invite/zt-18qmsamj9-UqQFVdkRzxnXCcKtcarLRA).
 

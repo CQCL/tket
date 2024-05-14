@@ -285,8 +285,6 @@ class QuipperTransformer(Transformer):
         return CDiscard(wire=t[0])
 
     def subroutine_call(self, t: List) -> SubroutineCall:
-        for i, ti in enumerate(t):
-            print(f"t[{i}] = {ti}")
         repetitions = 1
         if t[0] is not None:
             assert isinstance(t[0], int)
