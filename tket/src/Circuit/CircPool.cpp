@@ -1423,7 +1423,7 @@ Circuit ZZPhase_using_AAMS(const Expr &theta) {
   c.add_op<unsigned>(OpType::GPI2, 0, {1});
   c.add_op<unsigned>(OpType::GPI2, 0, {0});
   c.add_op<unsigned>(OpType::GPI2, -0.5, {0});
- return c;
+  return c;
 }
 
 Circuit TK1_using_GPI(const Expr &alpha, const Expr &beta, const Expr &gamma) {

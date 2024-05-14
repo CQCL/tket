@@ -81,7 +81,6 @@ Transform rebase_UMD();
 // Singleqs: GPI, GPI2
 Transform rebase_ionq();
 
-
 }  // namespace Transforms
 
 }  // namespace tket
