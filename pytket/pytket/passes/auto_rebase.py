@@ -43,6 +43,7 @@ _TK2_CIRCS: Dict[OpType, Callable[[Param, Param, Param], "Circuit"]] = {
     OpType.ZZPhase: _library.TK2_using_ZZPhase,
     OpType.CX: _library.TK2_using_CX,
     OpType.ZZMax: _library.TK2_using_ZZMax,
+    OpType.AAMS: _library.TK2_using_AAMS,
 }
 
 _TK2_CIRCS_WIRE_SWAP: Dict[OpType, Callable[[Param, Param, Param], "Circuit"]] = {
@@ -101,6 +102,7 @@ _TK1_circs: Dict[FrozenSet[OpType], Callable[[Param, Param, Param], "Circuit"]] 
     frozenset({OpType.Rz, OpType.SX}): _TK1_to_X_SX_Rz,
     frozenset({OpType.Rz, OpType.SX}): _library.TK1_to_RzSX,
     frozenset({OpType.U3}): _TK1_to_U,
+    frozenset({OpType.GPI, OpType.GPI2}): _library.TK1_using_GPI,
 }
 
 
