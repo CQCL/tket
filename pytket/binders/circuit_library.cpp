@@ -318,6 +318,5 @@ PYBIND11_MODULE(circuit_library, library_m) {
   library_m.def(
       "TK2_using_AAMS", &CircPool::TK2_using_AAMS,
       "Equivalent to TK2, using AAMS, GPI and GPI2 gates");
-
 }
 }  // namespace tket
