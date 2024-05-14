@@ -88,7 +88,8 @@ jobs:
         run: |
           brew update
           brew install clang-format@18
-          git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file --dry-run --Werror
+          git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file -i
+          git diff --exit-code
 
   build_test_tket:
     name: Build and test (tket)
@@ -256,7 +257,7 @@ jobs:
     - name: Install pytket requirements
       run: |
         conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
+        conan create recipes/pybind11_json/all --version 0.2.14
     - name: Set up Python (pull request)
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v5
@@ -369,7 +370,7 @@ jobs:
     - name: Install pytket requirements
       run: |
         conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
+        conan create recipes/pybind11_json/all --version 0.2.14
     - name: Set up Python (pull request)
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v5
@@ -489,7 +490,7 @@ jobs:
     - name: Install pytket requirements
       run: |
         conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
+        conan create recipes/pybind11_json/all --version 0.2.14
     - name: Set up Python 3.10
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v5

@@ -183,6 +183,7 @@ Subroutine = NamedTuple(
 )
 Start = NamedTuple("Start", [("circuit", Program), ("subroutines", List[Subroutine])])
 
+
 # Transformer
 class QuipperTransformer(Transformer):
     def int(self, t: List) -> int:
@@ -285,17 +286,17 @@ class QuipperTransformer(Transformer):
 
     def subroutine_call(self, t: List) -> SubroutineCall:
         repetitions = 1
-        if isinstance(t[0], int):
+        if t[0] is not None:
+            assert isinstance(t[0], int)
             repetitions = t[0]
-            t.pop(0)
         return SubroutineCall(
             repetitions=repetitions,
-            name=t[0],
-            shape=t[1],
-            inverted=len(t[2].children) > 0,
-            inputs=t[3],
-            outputs=t[4],
-            control=t[5],
+            name=t[1],
+            shape=t[2],
+            inverted=len(t[3].children) > 0,
+            inputs=t[4],
+            outputs=t[5],
+            control=t[6],
         )
 
     def comment(self, t: List) -> Comment:

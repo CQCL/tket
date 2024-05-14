@@ -326,6 +326,15 @@ PassPtr gen_special_UCC_synthesis(
     CXConfigType cx_config = CXConfigType::Snake);
 
 /**
+ * @brief Greedy synthesis for Pauli graphs.
+ *
+ * @param discount_rate
+ * @param depth_weight
+ * @return PassPtr
+ */
+PassPtr gen_greedy_pauli_simp(double discount_rate, double depth_weight);
+
+/**
  * Generate a pass to simplify the circuit where it acts on known basis states.
  *
  * @param allow_classical allow replacement of measures by pure classical set-

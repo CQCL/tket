@@ -26,6 +26,7 @@
 #include "tket/Transformations/Combinator.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
 #include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/GreedyPauliOptimisation.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Rebase.hpp"
@@ -407,6 +408,21 @@ PYBIND11_MODULE(transform, m) {
           "provides them.",
           py::arg("synth_strat") = Transforms::PauliSynthStrat::Sets,
           py::arg("cx_config") = CXConfigType::Snake)
+      .def_static(
+          "GreedyPauliSimp", &Transforms::greedy_pauli_optimisation,
+          "Convert a circuit into a graph of Pauli "
+          "gadgets to account for commutation and phase folding, and "
+          "resynthesises them using a greedy algorithm adapted from "
+          "arxiv.org/abs/2103.08602. The method for synthesising the "
+          "final Clifford operator is adapted from "
+          "arxiv.org/abs/2305.10966."
+          "\n\n:param discount_rate: Rate used to discount the cost impact "
+          "from "
+          "gadgets that are further away. Default to 0.7."
+          "\n:param depth_weight:  Degree of depth optimisation. Default to "
+          "0.3."
+          "\n:return: a pass to perform the simplification",
+          py::arg("discount_rate") = 0.7, py::arg("depth_weight") = 0.3)
       .def_static(
           "ZZPhaseToRz", &Transforms::ZZPhase_to_Rz,
           "Fixes all ZZPhase gate angles to [-1, 1) half turns.")
