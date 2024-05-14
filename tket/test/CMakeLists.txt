@@ -169,6 +169,7 @@ add_executable(test-tket
     src/test_SteinerForest.cpp
     src/test_wasm.cpp
     src/test_RoundAngles.cpp
+    src/test_GreedyPauli.cpp
     src/ZX/test_ZXDiagram.cpp
     src/ZX/test_ZXAxioms.cpp
     src/ZX/test_ZXSimp.cpp
