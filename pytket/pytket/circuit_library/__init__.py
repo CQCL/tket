@@ -89,7 +89,7 @@ from pytket._tket.circuit_library import (
     XXPhase3_using_CX,
     ESWAP_using_TK2,
     ESWAP_using_CX,
-		FSim_using_TK2,
+    FSim_using_TK2,
     FSim_using_CX,
     PhasedISWAP_using_TK2,
     PhasedISWAP_using_CX,
@@ -106,6 +106,6 @@ from pytket._tket.circuit_library import (
     XXPhase_using_AAMS,
     YYPhase_using_AAMS,
     ZZPhase_using_AAMS,
-		TK1_using_GPI,
-		TK2_using_AAMS,
+    TK1_using_GPI,
+    TK2_using_AAMS,
 )
