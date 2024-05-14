@@ -177,7 +177,7 @@ class bdist_wheel(_bdist_wheel):
 setup(
     name="pytket",
     author="TKET development team",
-    author_email="tket-support@cambridgequantum.com",
+    author_email="tket-support@quantinuum.com",
     python_requires=">=3.10",
     project_urls={
         "Documentation": "https://tket.quantinuum.com/api-docs/index.html",
