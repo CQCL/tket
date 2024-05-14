@@ -291,7 +291,7 @@ Transform rebase_UMD() {
 // Singleqs: GPI, GPI2
 Transform rebase_ionq() {
   return rebase_factory_via_tk2(
-      {OpType::GPI, OpType::GPI2, OpType::AAMS}, CircPool::TK1_using_GPI, 
+      {OpType::GPI, OpType::GPI2, OpType::AAMS}, CircPool::TK1_using_GPI,
       CircPool::TK2_using_AAMS);
 }
 
