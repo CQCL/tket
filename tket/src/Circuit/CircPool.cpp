@@ -153,6 +153,20 @@ const Circuit &CX_using_XXPhase_1() {
   return *C;
 }
 
+const Circuit &CX_using_AAMS() {
+  static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::GPI2, 0.5, {0});
+    c.add_op<unsigned>(OpType::GPI2, 1, {0});
+    c.add_op<unsigned>(OpType::GPI2, 1, {1});
+    c.add_op<unsigned>(OpType::AAMS, {0.5, 0, 0}, {0, 1});
+    c.add_op<unsigned>(OpType::GPI2, -0.5, {0});
+    c.add_phase(-0.25);
+    return c;
+  }());
+  return *C;
+}
+
 const Circuit &CX_VS_CX_reduced() {
   static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
     Circuit c(2);

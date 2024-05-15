@@ -1076,6 +1076,11 @@ def test_auto_rebase() -> None:
         ),
         (
             {OpType.GPI, OpType.GPI2, OpType.AAMS},
+            _library.CX_using_AAMS(),
+            _library.TK1_using_GPI,
+        ),
+        (
+            {OpType.GPI, OpType.GPI2, OpType.AAMS},
             _library.TK2_using_AAMS,
             _library.TK1_using_GPI,
         ),

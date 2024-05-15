@@ -31,6 +31,7 @@ _CX_CIRCS: Dict[OpType, Callable[[], "Circuit"]] = {
     OpType.XXPhase: _library.CX_using_XXPhase_0,
     OpType.ECR: _library.CX_using_ECR,
     OpType.CZ: _library.H_CZ_H,
+    OpType.AAMS: _library.CX_using_AAMS,
 }
 
 

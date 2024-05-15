@@ -27,6 +27,7 @@ from pytket._tket.circuit_library import (
     CX_using_ZZPhase,
     CX_using_XXPhase_0,
     CX_using_XXPhase_1,
+    CX_using_AAMS,
     CX_VS_CX_reduced,
     CX_V_CX_reduced,
     CX_S_CX_reduced,

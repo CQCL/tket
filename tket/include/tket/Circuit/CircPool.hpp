@@ -49,6 +49,9 @@ const Circuit &CX_using_XXPhase_0();
 /** Equivalent to CX, using only XXPhase, Rx and Rz gates */
 const Circuit &CX_using_XXPhase_1();
 
+/** Equivalent to CX, using only AAMS, GPI and GPI2 gates */
+const Circuit &CX_using_AAMS();
+
 /**
  * CX-reduced form of CX/V,S/CX
  *

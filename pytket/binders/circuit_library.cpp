@@ -313,6 +313,9 @@ PYBIND11_MODULE(circuit_library, library_m) {
       "ZZPhase_using_AAMS", &CircPool::ZZPhase_using_AAMS,
       "Equivalent to ZZPhase, using AAMS, GPI and GPI2 gates");
   library_m.def(
+      "CX_using_AAMS", &CircPool::CX_using_AAMS,
+      "Equivalent to CX, using AAMS, GPI and GPI2 gates");
+  library_m.def(
       "TK1_using_GPI", &CircPool::TK1_using_GPI,
       "Equivalent to TK1, using GPI and GPI2 gates");
   library_m.def(
