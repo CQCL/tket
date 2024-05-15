@@ -37,6 +37,7 @@ from pytket.circuit import (
     CustomGate,
 )
 from pytket.circuit.decompose_classical import DecomposeClassicalError
+from pytket.circuit.logic_exp import BitWiseOp, create_bit_logic_exp
 from pytket.qasm import (
     circuit_from_qasm,
     circuit_to_qasm,
@@ -930,6 +931,28 @@ def test_conditional_nonstandard_gates() -> None:
     circ.ZZMax(0, 1, condition=Bit(0))
     qasm = circuit_to_qasm_str(circ)
     assert "if(c==1) zzmax q[0],q[1];" in qasm
+
+
+def test_const_condition() -> None:
+    # https://github.com/CQCL/tket/issues/1383
+    circ = Circuit(1, 1)
+    exp = create_bit_logic_exp(BitWiseOp.ONE, [])
+    circ.H(0, condition=exp)
+    circ.measure_all()
+    qasm = circuit_to_qasm_str(circ, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+qreg q[1];
+creg c[1];
+creg tk_SCRATCH_BIT[1];
+tk_SCRATCH_BIT[0] = (1);
+if(tk_SCRATCH_BIT[0]==1) h q[0];
+measure q[0] -> c[0];
+"""
+    )
 
 
 if __name__ == "__main__":
