@@ -267,14 +267,14 @@ class Transform:
         Rebase single qubit gates into Rz, Rx.
         """
     @staticmethod
-    def rebasetotket() -> transform:
+    def RebaseToTket() -> Transform:
         """
-        rebase from any gate set into tk1, cx.
+        Rebase from any gate set into TK1, CX.
         """
     @staticmethod
-    def RebasetoIonQ() -> transform:
+    def RebasetoIonQ() -> Transform:
         """
-        rebase from any gate set into gpi, gpi2, aams.
+        Rebase from any gate set into GPI, GPI2, AAMS.
         """
     @staticmethod
     def ReduceSingles() -> Transform:
