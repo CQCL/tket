@@ -251,34 +251,41 @@ def symb_fsim(params: ParamsType) -> ImmutableMatrix:
         ]
     )
 
+
 def symb_gpi(params: ParamsType) -> ImmutableMatrix:
     t = sympy.exp(I * sympy.pi * params[0])
 
     return ImmutableMatrix(  # type: ignore
         [
-            [0, 1/t],
+            [0, 1 / t],
             [t, 0],
         ]
     )
 
+
 def symb_gpi2(params: ParamsType) -> ImmutableMatrix:
     t = sympy.exp(I * sympy.pi * params[0])
 
-    return 1/sympy.sqrt(2)*ImmutableMatrix(  # type: ignore
-        [
-            [1, -I/t],
-            [-I*t, 1],
-        ]
+    return (
+        1
+        / sympy.sqrt(2)
+        * ImmutableMatrix(  # type: ignore
+            [
+                [1, -I / t],
+                [-I * t, 1],
+            ]
+        )
     )
+
 
 def symb_aams(params: ParamsType) -> ImmutableMatrix:
     alpha, beta, gamma = params
     c = sympy.cos(sympy.pi / 2 * alpha)
     s = sympy.sin(sympy.pi / 2 * alpha)
-    s1 = -I * sympy.exp(I * sympy.pi * ( -beta - gamma )) * s
-    s2 = -I * sympy.exp(I * sympy.pi * ( -beta + gamma )) * s
-    s3 = -I * sympy.exp(I * sympy.pi * (  beta - gamma )) * s
-    s4 = -I * sympy.exp(I * sympy.pi * (  beta + gamma )) * s
+    s1 = -I * sympy.exp(I * sympy.pi * (-beta - gamma)) * s
+    s2 = -I * sympy.exp(I * sympy.pi * (-beta + gamma)) * s
+    s3 = -I * sympy.exp(I * sympy.pi * (beta - gamma)) * s
+    s4 = -I * sympy.exp(I * sympy.pi * (beta + gamma)) * s
 
     return ImmutableMatrix(  # type: ignore
         [
@@ -288,6 +295,7 @@ def symb_aams(params: ParamsType) -> ImmutableMatrix:
             [s4, 0, 0, c],
         ]
     )
+
 
 # end symbolic matrix definitions
 
