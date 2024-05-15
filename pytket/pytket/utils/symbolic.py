@@ -265,16 +265,13 @@ def symb_gpi(params: ParamsType) -> ImmutableMatrix:
 
 def symb_gpi2(params: ParamsType) -> ImmutableMatrix:
     t = sympy.exp(I * sympy.pi * params[0])
+    c = 1 / sympy.sqrt(2)  # type: ignore
 
-    return (
-        1
-        / sympy.sqrt(2)
-        * ImmutableMatrix(  # type: ignore
-            [
-                [1, -I / t],
-                [-I * t, 1],
-            ]
-        )
+    return c * ImmutableMatrix(  # type: ignore
+        [
+            [1, -I / t],
+            [-I * t, 1],
+        ]
     )
 
 
