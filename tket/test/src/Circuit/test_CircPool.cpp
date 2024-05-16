@@ -265,7 +265,7 @@ SCENARIO(
   Circuit zzphase_orig(2);
   zzphase_orig.add_op<unsigned>(OpType::ZZPhase, {e1}, {0, 1});
   std::vector<Circuit> circuits_orig = {
-    rx_orig, ry_orig, rz_orig, xxphase_orig, yyphase_orig, zzphase_orig};
+      rx_orig, ry_orig, rz_orig, xxphase_orig, yyphase_orig, zzphase_orig};
 
   Circuit rx_res = CircPool::Rx_using_GPI(e1);
   Circuit ry_res = CircPool::Ry_using_GPI(e1);
