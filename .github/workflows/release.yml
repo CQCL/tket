@@ -217,7 +217,7 @@ jobs:
       - name: Run tests
         run: cd tket/pytket/tests && pytest --ignore=simulator/
 
-  test_Linux_aarch64_wheels:
+  test_linux_aarch64_wheels:
     name: Test linux aarch64 wheels
     needs: build_Linux_aarch64_wheels
     runs-on: 'buildjet-4vcpu-ubuntu-2204-arm'
