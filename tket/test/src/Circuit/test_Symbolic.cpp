@@ -227,31 +227,31 @@ SCENARIO("Symbolic GPI, GPI2, AAMS") {
     Circuit gpi_orig_sub = gpi_orig;
     Circuit gpi2_orig_sub = gpi2_orig;
     double an = rands[i];
-		symbol_map_t symmap;
-		symmap[asym] = an;
-		gpi_orig_sub.symbol_substitution(symmap);
+    symbol_map_t symmap;
+    symmap[asym] = an;
+    gpi_orig_sub.symbol_substitution(symmap);
     gpi2_orig_sub.symbol_substitution(symmap);
     auto u_gpi_orig = tket_sim::get_unitary(gpi_orig_sub);
     auto u_gpi2_orig = tket_sim::get_unitary(gpi2_orig_sub);
     Circuit gpi_res(1);
-		Circuit gpi2_res(1);
-		gpi_res.add_op<unsigned>(OpType::GPI, an, {0});
-		gpi2_res.add_op<unsigned>(OpType::GPI2, an, {0});
+    Circuit gpi2_res(1);
+    gpi_res.add_op<unsigned>(OpType::GPI, an, {0});
+    gpi2_res.add_op<unsigned>(OpType::GPI2, an, {0});
     auto u_gpi_res = tket_sim::get_unitary(gpi_res);
     auto u_gpi2_res = tket_sim::get_unitary(gpi2_res);
     REQUIRE(u_gpi_res.isApprox(u_gpi_orig));
     REQUIRE(u_gpi2_res.isApprox(u_gpi2_orig));
     for (unsigned j = 0; j < rands.size(); ++j) {
       double bn = rands[j];
-			for (unsigned k = 0; k < rands.size(); ++k) {
+      for (unsigned k = 0; k < rands.size(); ++k) {
         double cn = rands[k];
-				symmap[bsym]=bn;
-				symmap[csym]=cn;
+        symmap[bsym]=bn;
+        symmap[csym]=cn;
         Circuit aams_orig_sub = aams_orig;
-		    aams_orig_sub.symbol_substitution(symmap);
+        aams_orig_sub.symbol_substitution(symmap);
         auto u_aams_orig = tket_sim::get_unitary(aams_orig_sub);
-		    Circuit aams_res(2);
-		    aams_res.add_op<unsigned>(OpType::AAMS, {an, bn, cn}, {0, 1});
+        Circuit aams_res(2);
+        aams_res.add_op<unsigned>(OpType::AAMS, {an, bn, cn}, {0, 1});
         auto u_aams_res = tket_sim::get_unitary(aams_res);
         REQUIRE(u_aams_res.isApprox(u_aams_orig));
       }
