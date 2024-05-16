@@ -247,6 +247,11 @@ class Transform:
         Replace all single-qubit unitary gates outside the set {Z, X, S, V} that are recognized as Clifford operations with an equivalent sequence of gates from that set.
         """
     @staticmethod
+    def RebaseToIonQ() -> Transform:
+        """
+        Rebase from any gate set into the gate set supported by IonQ (GPI, GPI2, AAMS).
+        """
+    @staticmethod
     def RebaseToProjectQ() -> Transform:
         """
         Rebase from any gate set into the gate set supported by ProjectQ (Rx, Ry, Rz, X, Y, Z, S, T, V, H, CX, CZ, CRz, SWAP).

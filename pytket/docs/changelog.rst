@@ -12,6 +12,8 @@ Features:
 * Add ``GreedyPauliSimp`` optimisation pass.
 * Add ``BitWiseOp.ZERO`` and ``BitWiseOp.ONE`` to allow construction of constant
   conditional expressions.
+* Add target gateset ``(GPI, GPI2, AAMS)`` to ``auto_rebase_pass``.
+* Add ``RebaseToIonQ`` transform.
 
 Fixes:
 
