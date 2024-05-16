@@ -251,7 +251,7 @@ SCENARIO(
   GIVEN("Not normalised concrete angles (1)") { e1 = 1.4; }
   GIVEN("Not normalised concrete angles (2)") { e1 = -5.7; }
   GIVEN("Symbolic angles (1)") { e1 = a; }
- 
+
   Circuit rx_orig(1);
   rx_orig.add_op<unsigned>(OpType::Rx, {e1}, {0});
   Circuit ry_orig(1);
@@ -266,7 +266,7 @@ SCENARIO(
   zzphase_orig.add_op<unsigned>(OpType::ZZPhase, {e1}, {0, 1});
   std::vector<Circuit> circuits_orig = {
     rx_orig, ry_orig, rz_orig, xxphase_orig, yyphase_orig, zzphase_orig};
- 
+
   Circuit rx_res = CircPool::Rx_using_GPI(e1);
   Circuit ry_res = CircPool::Ry_using_GPI(e1);
   Circuit rz_res = CircPool::Rz_using_GPI(e1);
@@ -274,7 +274,7 @@ SCENARIO(
   Circuit yyphase_res = CircPool::YYPhase_using_AAMS(e1);
   Circuit zzphase_res = CircPool::ZZPhase_using_AAMS(e1);
   std::vector<Circuit> circuits_res = {rx_res,      ry_res,      rz_res,
-	                                     xxphase_res, yyphase_res, zzphase_res};
+                                       xxphase_res, yyphase_res, zzphase_res};
 
   // check unitary identity
   auto symset = circuits_orig[0].free_symbols();
