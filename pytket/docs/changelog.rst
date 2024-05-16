@@ -11,7 +11,7 @@ Features:
 * Use `lark` package instead of deprecated `lark-parser`.
 * Add ``GreedyPauliSimp`` optimisation pass.
 * Add target gateset ``(GPI, GPI2, AAMS)`` to ``auto_rebase_pass``.
-* Add ``rebase_ionq``.
+* Add ``RebaseToIonQ`` transform.
 
 Fixes:
 
