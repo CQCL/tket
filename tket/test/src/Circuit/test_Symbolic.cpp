@@ -245,8 +245,8 @@ SCENARIO("Symbolic GPI, GPI2, AAMS") {
       double bn = rands[j];
       for (unsigned k = 0; k < rands.size(); ++k) {
         double cn = rands[k];
-        symmap[bsym]=bn;
-        symmap[csym]=cn;
+        symmap[bsym] = bn;
+        symmap[csym] = cn;
         Circuit aams_orig_sub = aams_orig;
         aams_orig_sub.symbol_substitution(symmap);
         auto u_aams_orig = tket_sim::get_unitary(aams_orig_sub);
