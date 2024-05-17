@@ -29,7 +29,8 @@ jobs:
       tket_package_exists: ${{ steps.tket_package_exists.outputs.tket_package_exists }}
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+    - name: Select Python 3.12
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
     - uses: dorny/paths-filter@v3.0.2
@@ -104,11 +105,10 @@ jobs:
     - name: apt update
       if: matrix.os == 'ubuntu-24.04'
       run: sudo apt update
-    - name: Select Python 3.11
-      # otherwise turtlebrowser/get-conan@v1.2 fails on macos-12
+    - name: Select Python 3.12
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.12'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -155,6 +155,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+      - name: Select Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Install conan
         uses: turtlebrowser/get-conan@v1.2
       - name: Set up conan
@@ -226,6 +230,10 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
+    - name: Select Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -334,11 +342,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
-    - name: Select Python 3.11
-      # otherwise turtlebrowser/get-conan@v1.2 fails on macos-12
+    - name: Select Python 3.12
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.12'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -421,6 +428,10 @@ jobs:
     runs-on: windows-2022
     steps:
     - uses: actions/checkout@v4
+    - name: Select Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
