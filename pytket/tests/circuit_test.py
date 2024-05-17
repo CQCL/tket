@@ -141,6 +141,15 @@ def test_circuit_dagger() -> None:
     assert commands[1].op.get_matrix().all() == u.conj().transpose().all()
 
 
+def test_circuit_dagger_transpose_with_barriers() -> None:
+    c = Circuit(2).S(0).add_barrier([0, 1]).CX(0, 1)
+    c_d = c.dagger()
+    assert c_d == Circuit(2).CX(0, 1).add_barrier([0, 1]).Sdg(0)
+    c = Circuit(2).Ry(0.3, 0).add_barrier([0, 1]).CX(0, 1)
+    c_t = c.transpose()
+    assert c_t == Circuit(2).CX(0, 1).add_barrier([0, 1]).Ry(-0.3, 0)
+
+
 # TKET-1365 bug
 def test_cnx_dagger() -> None:
     c = Circuit(2)
