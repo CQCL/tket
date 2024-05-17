@@ -1502,11 +1502,11 @@ SCENARIO("Test circuit.transpose() method") {
   GIVEN("Circuit with barriers") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::Y, {0});
-    circ.add_barrier({0, 1},{},"comment");
+    circ.add_barrier({0, 1}, {}, "comment");
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     Circuit correct_transposed(2);
     correct_transposed.add_op<unsigned>(OpType::CX, {0, 1});
-    correct_transposed.add_barrier({0, 1},{},"comment");
+    correct_transposed.add_barrier({0, 1}, {}, "comment");
     correct_transposed.add_op<unsigned>(OpType::U3, {3, 0.5, 0.5}, {0});
     Circuit transposed = circ.transpose();
     REQUIRE(transposed == correct_transposed);
@@ -1551,11 +1551,11 @@ SCENARIO("Test circuit.dagger() method") {
   GIVEN("Circuit with barriers") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::Sdg, {0});
-    circ.add_barrier({0, 1},{},"comment");
+    circ.add_barrier({0, 1}, {}, "comment");
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     Circuit correct_daggered(2);
     correct_daggered.add_op<unsigned>(OpType::CX, {0, 1});
-    correct_daggered.add_barrier({0, 1},{},"comment");
+    correct_daggered.add_barrier({0, 1}, {}, "comment");
     correct_daggered.add_op<unsigned>(OpType::S, {0});
     Circuit daggered = circ.dagger();
     REQUIRE(daggered == correct_daggered);
