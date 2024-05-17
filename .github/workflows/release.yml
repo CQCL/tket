@@ -11,7 +11,7 @@ on:
 jobs:
   build_Linux_wheels:
     name: Build manylinux
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python3-version: ['10', '11', '12']
@@ -191,7 +191,7 @@ jobs:
   test_linux_wheels:
     name: Test linux wheels
     needs: build_Linux_wheels
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python3-version: ['10', '11', '12']
@@ -348,7 +348,7 @@ jobs:
     name: Publish to pypi
     if: github.event_name == 'release'
     needs: [test_linux_wheels, test_linux_aarch64_wheels, test_macos_x86_wheels, test_macos_arm64_wheels, test_Windows_wheels]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - name: Download all wheels
       uses: actions/download-artifact@v4

@@ -10,7 +10,7 @@ jobs:
     name: test library
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022', 'macos-14']
+        os: ['ubuntu-24.04', 'macos-12', 'windows-2022', 'macos-14']
         lib: ['tklog', 'tkassert', 'tkrng', 'tktokenswap', 'tkwsm']
     runs-on: ${{ matrix.os }}
     steps:

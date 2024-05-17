@@ -19,7 +19,7 @@ concurrency:
 jobs:
   check_changes:
     name: Check tket library version
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     outputs:
       tket_or_workflow_changed: ${{ steps.filter.outputs.tket_or_workflow }}
       tket_changed: ${{ steps.filter.outputs.tket }}
@@ -69,7 +69,7 @@ jobs:
     name: Check documentation build
     needs: check_changes
     if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.doxyfile_or_workflow_changed == 'true'
-    runs-on: 'ubuntu-22.04'
+    runs-on: 'ubuntu-24.04'
     steps:
       - uses: actions/checkout@v4
       - name: Check doxygen
@@ -97,12 +97,12 @@ jobs:
     if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'macos-14']
+        os: ['ubuntu-24.04', 'macos-12', 'macos-14']
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
     - name: apt update
-      if: matrix.os == 'ubuntu-22.04'
+      if: matrix.os == 'ubuntu-24.04'
       run: sudo apt update
     - name: Select Python 3.11
       # otherwise turtlebrowser/get-conan@v1.2 fails on macos-12
@@ -120,7 +120,7 @@ jobs:
         cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: Install runtime test requirements
-      if: matrix.os == 'ubuntu-22.04' && github.event_name == 'schedule'
+      if: matrix.os == 'ubuntu-24.04' && github.event_name == 'schedule'
       run: |
         sudo apt install texlive texlive-latex-extra latexmk
         mkdir -p ~/texmf/tex/latex
@@ -223,7 +223,7 @@ jobs:
     name: Build and test pytket (ubuntu)
     needs: check_changes
     if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.pytket_or_workflow_changed == 'true'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
     - name: Install conan
@@ -232,14 +232,14 @@ jobs:
       run: |
         conan profile detect
         DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/ubuntu-22.04
+        PROFILE_PATH=./conan-profiles/ubuntu-24.04
         diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
         cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: tket-dynamic-ubuntu-22.04
+        key: tket-dynamic-ubuntu-24.04
     - name: further ccache config
       run: |
         ccache --set-config base_dir=${HOME}
@@ -535,7 +535,7 @@ jobs:
     needs: build_test_pytket_ubuntu
     concurrency: gh_pages
     if: github.event_name == 'push'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
       with:
@@ -563,7 +563,7 @@ jobs:
     name: Check pytket line and branch coverage
     needs: build_test_pytket_ubuntu
     if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
     - name: Download artefact
@@ -591,7 +591,7 @@ jobs:
       - publish_pytket_coverage
       - check_pytket_coverage
     if: always()
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - shell: python
         name: Check job results

@@ -12,7 +12,7 @@ env:
   ALL_LIBS: '["tklog", "tkassert", "tkrng", "tktokenswap", "tkwsm"]'
 jobs:
   changes:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     outputs:
       tklog: ${{ steps.filter.outputs.tklog }}
       tkassert: ${{ steps.filter.outputs.tkassert }}
@@ -40,7 +40,7 @@ jobs:
   set_libs_matrix:
     name: Set the libs strategy matrix
     needs: changes
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     outputs:
       libs: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -63,7 +63,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022', 'macos-14']
+        os: ['ubuntu-24.04', 'macos-12', 'windows-2022', 'macos-14']
         lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -100,7 +100,7 @@ jobs:
     strategy:
       matrix:
         lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
-    runs-on: 'ubuntu-22.04'
+    runs-on: 'ubuntu-24.04'
     steps:
     - uses: actions/checkout@v4
     - name: Install conan
@@ -109,7 +109,7 @@ jobs:
       run: |
         conan profile detect
         DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/ubuntu-22.04
+        PROFILE_PATH=./conan-profiles/ubuntu-24.04
         diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
         cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
@@ -151,7 +151,7 @@ jobs:
       matrix:
         lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
     concurrency: gh_pages
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
       with:
