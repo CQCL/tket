@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Fixes:
+
+* Allow barriers when dagger or transpose a circuit.
+
+
 1.28.0 (May 2024)
 -----------------
 
