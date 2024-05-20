@@ -71,4 +71,5 @@ jobs:
     - name: Run tests under valgrind
       run: |
         PKGPATH=`./rootpath tket.json tket`
-        cd ${PKGPATH}/bin && valgrind --error-exitcode=1 ./test-tket `./github/workflows/test-args ${{ matrix.os }} ${{ github.event_name }}`
+        # realloc of size 0 used (intentionally?) in eigen
+        cd ${PKGPATH}/bin && valgrind --error-exitcode=1 --show-realloc-size-zero=no ./test-tket `./github/workflows/test-args ${{ matrix.os }} ${{ github.event_name }}`
