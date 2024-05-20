@@ -507,6 +507,10 @@ Circuit CnX_gray_decomp(unsigned n);
 
 Circuit CnRy_normal_decomp(const Op_ptr op, unsigned arity);
 
+Circuit CnRx_normal_decomp(const Op_ptr op, unsigned arity);
+
+Circuit CnRz_normal_decomp(const Op_ptr op, unsigned arity);
+
 /**
  * @brief Given a 2x2 numerical unitary matrix U and the number of control
  * qubits n return the decomposed CnU gate

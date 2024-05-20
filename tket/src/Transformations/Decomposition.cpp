@@ -1805,7 +1805,8 @@ Transform decomp_controlled_Rys() {
 
 Transform decomp_arbitrary_controlled_gates() {
   static const std::set<OpType> cn_gate_set = {
-      OpType::CCX, OpType::CnX, OpType::CnRy, OpType::CnZ, OpType::CnY};
+      OpType::CCX, OpType::CnX,  OpType::CnRy, OpType::CnZ,
+      OpType::CnY, OpType::CnRx, OpType::CnRz};
   std::set<OpType> all_gates;
   std::copy(
       all_gate_types().begin(), all_gate_types().end(),

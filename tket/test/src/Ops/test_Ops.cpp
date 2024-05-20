@@ -134,6 +134,14 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     CHECK(cnry->get_name() == "CnRy(0.5)");
     CHECK(cnry->get_params().size() == 1);
     REQUIRE(cnry->transpose()->get_params() == rhs);
+    const Op_ptr cnrx = (get_op_ptr(OpType::CnRx, 0.5));
+    CHECK(cnrx->get_name() == "CnRx(0.5)");
+    CHECK(cnrx->get_params().size() == 1);
+    REQUIRE(cnrx->transpose()->get_params() == rhs);
+    const Op_ptr cnrz = (get_op_ptr(OpType::CnRz, 0.5));
+    CHECK(cnrz->get_name() == "CnRz(0.5)");
+    CHECK(cnrz->get_params().size() == 1);
+    REQUIRE(cnrz->transpose()->get_params() == rhs);
     const Op_ptr xxphase = (get_op_ptr(OpType::XXPhase, 0.5));
     CHECK(xxphase->get_name() == "XXPhase(0.5)");
     REQUIRE(*xxphase->transpose() == *xxphase);
@@ -307,6 +315,8 @@ SCENARIO("Examples for is_singleq_unitary") {
   }
   GIVEN("Variable-qubit gates") {
     REQUIRE(!(get_op_ptr(OpType::CnRy, 0.2))->get_desc().is_singleq_unitary());
+    REQUIRE(!(get_op_ptr(OpType::CnRx, 0.2))->get_desc().is_singleq_unitary());
+    REQUIRE(!(get_op_ptr(OpType::CnRz, 0.2))->get_desc().is_singleq_unitary());
     REQUIRE(!(get_op_ptr(OpType::PhaseGadget, Expr(0.4)))
                  ->get_desc()
                  .is_singleq_unitary());

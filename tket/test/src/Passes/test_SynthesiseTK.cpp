@@ -90,6 +90,8 @@ SCENARIO("SynthesiseTK correctness") {
     c.add_op<unsigned>(OpType::CCX, {0, 1, 2});
     c.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3});
     c.add_op<unsigned>(OpType::CnRy, 0.25, {0, 1, 2, 3});
+    c.add_op<unsigned>(OpType::CnRx, 0.25, {0, 1, 2, 3});
+    c.add_op<unsigned>(OpType::CnRz, 0.25, {0, 1, 2, 3});
     c.add_op<unsigned>(OpType::CSWAP, {1, 2, 3});
     c.add_op<unsigned>(OpType::BRIDGE, {1, 3, 0});
     check_synthesise_tk(c);
@@ -119,6 +121,8 @@ SCENARIO("SynthesiseTK correctness") {
     c.add_op<unsigned>(OpType::PhasedX, {a, a + 0.2}, {0});
     c.add_op<unsigned>(OpType::NPhasedX, {a + 0.3, a}, {0, 1, 2});
     c.add_op<unsigned>(OpType::CnRy, a - 0.3, {1, 2, 0});
+    c.add_op<unsigned>(OpType::CnRx, a - 0.3, {1, 2, 0});
+    c.add_op<unsigned>(OpType::CnRz, a - 0.3, {1, 2, 0});
     c.add_op<unsigned>(OpType::ESWAP, a, {1, 2});
     c.add_op<unsigned>(OpType::FSim, {a + 0.1, a + 0.2}, {2, 0});
     check_synthesise_tk(c);

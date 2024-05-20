@@ -110,6 +110,8 @@ Op_ptr Gate::dagger() const {
     case OpType::Rx:
     case OpType::PhaseGadget:
     case OpType::CnRy:
+    case OpType::CnRx:
+    case OpType::CnRz:
     case OpType::XXPhase:
     case OpType::YYPhase:
     case OpType::ZZPhase:
@@ -215,6 +217,8 @@ Op_ptr Gate::transpose() const {
     case OpType::SXdg:
     case OpType::CRz:
     case OpType::CRx:
+    case OpType::CnRz:
+    case OpType::CnRx:
     case OpType::CU1:
     case OpType::U1:
     case OpType::Rz:
@@ -438,7 +442,9 @@ std::optional<double> Gate::is_identity() const {
     case OpType::CRy:
     case OpType::PhaseGadget:
     case OpType::ISWAP:
-    case OpType::CnRy: {
+    case OpType::CnRy:
+    case OpType::CnRx:
+    case OpType::CnRz: {
       return equiv_0(params[0], 4) ? 0. : notid;
     }
     case OpType::FSim: {
@@ -575,6 +581,8 @@ bool Gate::has_symmetry(unsigned port1, unsigned port2) const {
       // n (+1) qubit gates
     case OpType::CnX:
     case OpType::CnY:
+    case OpType::CnRx:
+    case OpType::CnRz:
     case OpType::CnRy: {
       // symmetry on first n ports not on n+1
       auto last_port = n_q - 1;
@@ -863,6 +871,7 @@ std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
     }
     case OpType::CZ:
     case OpType::CRz:
+    case OpType::CnRz:
     case OpType::CS:
     case OpType::CSdg:
     case OpType::CU1:
@@ -901,6 +910,7 @@ std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
     case OpType::CSX:
     case OpType::CSXdg:
     case OpType::CRx:
+    case OpType::CnRx:
     case OpType::CX:
     case OpType::CCX:
     case OpType::CnX: {

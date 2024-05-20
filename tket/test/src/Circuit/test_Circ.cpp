@@ -2712,6 +2712,10 @@ SCENARIO("Confirm that LaTeX output compiles", "[latex][.long]") {
   c.add_conditional_gate<unsigned>(OpType::CnZ, {}, {0, 1, 2, 4, 3}, {}, 0);
   c.add_conditional_gate<unsigned>(
       OpType::CnRy, {-0.57}, {0, 3, 2, 4, 1}, {}, 0);
+  c.add_conditional_gate<unsigned>(
+      OpType::CnRx, {-0.57}, {0, 3, 2, 4, 1}, {}, 0);
+  c.add_conditional_gate<unsigned>(
+      OpType::CnRz, {-0.57}, {0, 3, 2, 4, 1}, {}, 0);
   c.add_conditional_gate<unsigned>(OpType::CH, {}, {1, 0}, {}, 0);
   c.add_conditional_gate<unsigned>(OpType::CY, {}, {2, 3}, {}, 0);
   c.add_conditional_gate<unsigned>(OpType::CRz, {1.42}, {0, 2}, {}, 0);

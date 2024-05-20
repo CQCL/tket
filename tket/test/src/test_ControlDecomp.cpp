@@ -780,6 +780,8 @@ SCENARIO("Test decomp_arbitrary_controlled_gates") {
     Circuit circ(3);
 
     circ.add_op<unsigned>(OpType::CnRy, 0.33, {0, 1, 2});
+    circ.add_op<unsigned>(OpType::CnRx, 0.33, {0, 1, 2});
+    circ.add_op<unsigned>(OpType::CnRz, 0.33, {0, 1, 2});
     circ.add_op<unsigned>(OpType::CnY, {0, 1, 2});
     circ.add_op<unsigned>(OpType::CnZ, {1, 0, 2});
     circ.add_op<unsigned>(OpType::CnX, {0, 2, 1});
@@ -787,6 +789,8 @@ SCENARIO("Test decomp_arbitrary_controlled_gates") {
     auto u = tket_sim::get_unitary(circ);
     REQUIRE(Transforms::decomp_arbitrary_controlled_gates().apply(circ));
     REQUIRE(circ.count_gates(OpType::CnRy) == 0);
+    REQUIRE(circ.count_gates(OpType::CnRx) == 0);
+    REQUIRE(circ.count_gates(OpType::CnRz) == 0);
     REQUIRE(circ.count_gates(OpType::CnY) == 0);
     REQUIRE(circ.count_gates(OpType::CnZ) == 0);
     REQUIRE(circ.count_gates(OpType::CnX) == 0);
