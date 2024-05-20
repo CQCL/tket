@@ -11,7 +11,7 @@ on:
 jobs:
   build_Linux_wheels:
     name: Build manylinux
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python3-version: ['10', '11', '12']
@@ -159,6 +159,10 @@ jobs:
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    - name: Select Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -172,10 +176,6 @@ jobs:
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: Build tket
       run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
     - name: Build wheel
       run: |
         conan create recipes/pybind11
@@ -191,7 +191,7 @@ jobs:
   test_linux_wheels:
     name: Test linux wheels
     needs: build_Linux_wheels
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python3-version: ['10', '11', '12']
@@ -348,7 +348,7 @@ jobs:
     name: Publish to pypi
     if: github.event_name == 'release'
     needs: [test_linux_wheels, test_linux_aarch64_wheels, test_macos_x86_wheels, test_macos_arm64_wheels, test_Windows_wheels]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - name: Download all wheels
       uses: actions/download-artifact@v4
