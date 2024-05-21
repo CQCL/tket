@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+Features:
+
+* Add ``OpType.CnRx`` and ``OpType.CnRz``.
+
 Fixes:
 
 * Allow barriers when dagger or transpose a circuit.
