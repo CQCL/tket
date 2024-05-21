@@ -642,7 +642,7 @@ Fixes:
 
 * Ensure TK2 angles are normalised before decomposing TK2 gates in passes.
 
-1.3.1 (June 2022)
+1.3.0 (June 2022)
 -----------------
 
 Minor new features:
