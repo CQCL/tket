@@ -933,16 +933,21 @@ SCENARIO("QControlBox", "[boxes]") {
     REQUIRE(*c == d);
   }
 
-  GIVEN("controlled phase_gadget") {
+  GIVEN("controlled phase_gadget, numerical") {
     Expr a;
-    WHEN("numerical") { a = 0.3; }
-    WHEN("symbolic") {
-      Sym s = SymEngine::symbol("a");
-      a = Expr(s);
-    }
+    a = 0.3;
     QControlBox qbox(get_op_ptr(OpType::PhaseGadget, {a}, 2));
     std::shared_ptr<Circuit> c = qbox.to_circuit();
     REQUIRE(c->count_gates(OpType::CX) == 4);
+  }
+  GIVEN("controlled phase_gadget, symbolic") {
+    Expr a;
+    Sym s = SymEngine::symbol("a");
+    a = Expr(s);
+    QControlBox qbox(get_op_ptr(OpType::PhaseGadget, {a}, 2));
+    std::shared_ptr<Circuit> c = qbox.to_circuit();
+    REQUIRE(c->count_gates(OpType::CX) == 2);
+    REQUIRE(c->count_gates(OpType::CRz) == 1);
   }
   GIVEN("controlled PauliExpBox") {
     // https://github.com/CQCL/tket/issues/1109

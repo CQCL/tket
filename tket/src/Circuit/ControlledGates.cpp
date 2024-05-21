@@ -818,16 +818,16 @@ Circuit CnRz_normal_decomp(const Op_ptr op, unsigned arity) {
   Circuit rep(arity);
 
   rep.add_op<unsigned>(OpType::H, {arity - 1});
-  rep.add_op<unsigned>(OpType::Sdg, {arity - 1});
-  rep.append(cnry_circuit);
   rep.add_op<unsigned>(OpType::S, {arity - 1});
+  rep.append(cnry_circuit);
+  rep.add_op<unsigned>(OpType::Sdg, {arity - 1});
   rep.add_op<unsigned>(OpType::H, {arity - 1});
   return rep;
 }
 
 Circuit CnRx_normal_decomp(const Op_ptr op, unsigned arity) {
   if (op->get_type() != OpType::CnRx) {
-    throw CircuitInvalidity("Operation not CnRz");
+    throw CircuitInvalidity("Operation not CnR");
   }
   OpDesc desc = op->get_desc();
   Expr angle = op->get_params()[0];
@@ -838,9 +838,9 @@ Circuit CnRx_normal_decomp(const Op_ptr op, unsigned arity) {
   // Therefore we add basis change Clifford gates to this qubit
   Circuit rep(arity);
 
-  rep.add_op<unsigned>(OpType::Sdg, {arity - 1});
-  rep.append(cnry_circuit);
   rep.add_op<unsigned>(OpType::S, {arity - 1});
+  rep.append(cnry_circuit);
+  rep.add_op<unsigned>(OpType::Sdg, {arity - 1});
   return rep;
 }
 

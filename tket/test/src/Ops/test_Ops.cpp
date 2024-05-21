@@ -135,13 +135,15 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     CHECK(cnry->get_params().size() == 1);
     REQUIRE(cnry->transpose()->get_params() == rhs);
     const Op_ptr cnrx = (get_op_ptr(OpType::CnRx, 0.5));
+
+    std::vector<Expr> rhs_same = {Expr(0.5)};
     CHECK(cnrx->get_name() == "CnRx(0.5)");
     CHECK(cnrx->get_params().size() == 1);
-    REQUIRE(cnrx->transpose()->get_params() == rhs);
+    REQUIRE(cnrx->transpose()->get_params() == rhs_same);
     const Op_ptr cnrz = (get_op_ptr(OpType::CnRz, 0.5));
     CHECK(cnrz->get_name() == "CnRz(0.5)");
     CHECK(cnrz->get_params().size() == 1);
-    REQUIRE(cnrz->transpose()->get_params() == rhs);
+    REQUIRE(cnrz->transpose()->get_params() == rhs_same);
     const Op_ptr xxphase = (get_op_ptr(OpType::XXPhase, 0.5));
     CHECK(xxphase->get_name() == "XXPhase(0.5)");
     REQUIRE(*xxphase->transpose() == *xxphase);

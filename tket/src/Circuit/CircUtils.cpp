@@ -1263,6 +1263,8 @@ Circuit with_controls(const Circuit &c, unsigned n_controls) {
 #undef CNZTYPE
 #undef CNYTYPE
 #undef CNRYTYPE
+#undef CNRXTYPE
+#undef CNRZTYPE
 
 std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
     Expr a, Expr b, Expr c) {

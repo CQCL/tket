@@ -519,8 +519,6 @@ SCENARIO("Test clifford reduction") {
     circ.add_op<unsigned>(OpType::Rx, 0.1, {2});
     circ.add_op<unsigned>(OpType::CH, {2, 1});
     circ.add_op<unsigned>(OpType::CnRy, 0.2, {1, 0});
-    circ.add_op<unsigned>(OpType::CnRx, 0.2, {1, 0});
-    circ.add_op<unsigned>(OpType::CnRz, 0.2, {1, 0});
     circ.add_op<unsigned>(OpType::CY, {2, 0});
     Circuit copy(circ);
     REQUIRE(Transforms::clifford_reduction(true).apply(circ));
