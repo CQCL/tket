@@ -404,6 +404,9 @@ Circuit TK2_using_ZZPhase_and_swap(
  */
 Circuit TK2_using_TK2_or_swap(
     const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+Circuit TK2_using_TK2(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
 /**
  * @brief Equivalent to TK2(α, β, γ), using up to 3 ZZMax gates.
  *
@@ -464,11 +467,17 @@ Circuit tk1_to_PhasedXRz(
 
 Circuit tk1_to_rzrx(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
+Circuit tk1_to_rxry(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
 Circuit tk1_to_rzh(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
+Circuit tk1_to_rzxsx(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
 Circuit tk1_to_tk1(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+Circuit tk1_to_u3(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 class ControlDecompError : public std::logic_error {
  public:
