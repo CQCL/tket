@@ -1548,6 +1548,7 @@ def test_cnrx_cnrz() -> None:
     crz.add_gate(OpType.CRz, 0.3, [0, 1])
 
     assert np.allclose(c1rz.get_unitary(), crz.get_unitary())
+    assert np.allclose(c1rx.get_unitary(), crx.get_unitary())
 
 
 if __name__ == "__main__":
