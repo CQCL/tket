@@ -126,6 +126,147 @@ PassPtr gen_squash_pass(
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
+static std::function<Circuit(const Expr&, const Expr&, const Expr&)>
+find_tk1_replacement(const OpTypeSet& gateset) {
+  if (gateset.find(OpType::TK1) != gateset.end()) {
+    return CircPool::tk1_to_tk1;
+  }
+  if (gateset.find(OpType::U3) != gateset.end()) {
+    return CircPool::tk1_to_u3;
+  }
+  if (gateset.find(OpType::Rz) != gateset.end() &&
+      gateset.find(OpType::X) != gateset.end() &&
+      gateset.find(OpType::SX) != gateset.end()) {
+    return CircPool::tk1_to_rzxsx;
+  }
+  if (gateset.find(OpType::PhasedX) != gateset.end() &&
+      gateset.find(OpType::Rz) != gateset.end()) {
+    return CircPool::tk1_to_PhasedXRz;
+  }
+  if (gateset.find(OpType::Rz) != gateset.end() &&
+      gateset.find(OpType::Rx) != gateset.end()) {
+    return CircPool::tk1_to_rzrx;
+  }
+  if (gateset.find(OpType::Rx) != gateset.end() &&
+      gateset.find(OpType::Ry) != gateset.end()) {
+    return CircPool::tk1_to_rxry;
+  }
+  if (gateset.find(OpType::Rz) != gateset.end() &&
+      gateset.find(OpType::H) != gateset.end()) {
+    return CircPool::tk1_to_rzh;
+  }
+  if (gateset.find(OpType::Rz) != gateset.end() &&
+      gateset.find(OpType::SX) != gateset.end()) {
+    return CircPool::tk1_to_rzsx;
+  }
+  if (gateset.find(OpType::GPI) != gateset.end() &&
+      gateset.find(OpType::GPI2) != gateset.end()) {
+    return CircPool::TK1_using_GPI;
+  }
+  throw Unsupported("No known decomposition from TK1 to available gateset.");
+}
+
+static Circuit find_cx_replacement(const OpTypeSet& gateset) {
+  if (gateset.find(OpType::CX) != gateset.end()) {
+    return CircPool::CX();
+  }
+  if (gateset.find(OpType::ZZMax) != gateset.end()) {
+    return CircPool::CX_using_ZZMax();
+  }
+  if (gateset.find(OpType::XXPhase) != gateset.end()) {
+    return CircPool::CX_using_XXPhase_0();
+  }
+  if (gateset.find(OpType::ECR) != gateset.end()) {
+    return CircPool::CX_using_ECR();
+  }
+  if (gateset.find(OpType::CZ) != gateset.end()) {
+    return CircPool::H_CZ_H();
+  }
+  if (gateset.find(OpType::AAMS) != gateset.end()) {
+    return CircPool::CX_using_AAMS();
+  }
+  throw Unsupported("No known decomposition from CX to available gateset.");
+}
+
+static std::function<Circuit(const Expr&, const Expr&, const Expr&)>
+find_tk2_replacement(const OpTypeSet& gateset, bool allow_swaps) {
+  if (allow_swaps) {
+    if (gateset.find(OpType::TK2) != gateset.end()) {
+      return CircPool::TK2_using_TK2;
+    }
+    if (gateset.find(OpType::ZZPhase) != gateset.end()) {
+      return CircPool::TK2_using_ZZPhase;
+    }
+    if (gateset.find(OpType::CX) != gateset.end()) {
+      return CircPool::TK2_using_CX;
+    }
+    if (gateset.find(OpType::ZZMax) != gateset.end()) {
+      return CircPool::TK2_using_ZZMax;
+    }
+    if (gateset.find(OpType::AAMS) != gateset.end()) {
+      return CircPool::TK2_using_AAMS;
+    }
+  } else {
+    if (gateset.find(OpType::TK2) != gateset.end()) {
+      return CircPool::TK2_using_TK2_or_swap;
+    }
+    if (gateset.find(OpType::ZZPhase) != gateset.end()) {
+      return CircPool::TK2_using_ZZPhase_and_swap;
+    }
+    if (gateset.find(OpType::CX) != gateset.end()) {
+      return CircPool::TK2_using_CX_and_swap;
+    }
+    if (gateset.find(OpType::ZZMax) != gateset.end()) {
+      return CircPool::TK2_using_ZZMax_and_swap;
+    }
+  }
+  throw Unsupported("No known decomposition from TK2 to available gateset.");
+}
+
+PassPtr gen_auto_rebase_pass(const OpTypeSet& allowed_gates, bool allow_swaps) {
+  auto find_rebase = [allowed_gates, allow_swaps]() {
+    auto tk1_replacement = find_tk1_replacement(allowed_gates);
+    if (allowed_gates.find(OpType::CX) != allowed_gates.end() &&
+        allowed_gates.find(OpType::TK2) == allowed_gates.end() &&
+        !allow_swaps) {
+      return Transforms::rebase_factory(
+          allowed_gates, CircPool::CX(), tk1_replacement);
+    }
+    try {
+      return Transforms::rebase_factory_via_tk2(
+          allowed_gates, tk1_replacement,
+          find_tk2_replacement(allowed_gates, allow_swaps));
+    } catch (const Unsupported&) {
+    }
+    try {
+      return Transforms::rebase_factory(
+          allowed_gates, find_cx_replacement(allowed_gates), tk1_replacement);
+    } catch (const Unsupported&) {
+      throw Unsupported(
+          "No known decomposition from CX or TK2 to available gateset.");
+    }
+  };
+  Transform t = find_rebase();
+  PredicatePtrMap precons;
+  OpTypeSet all_types(allowed_gates);
+  all_types.insert(OpType::Measure);
+  all_types.insert(OpType::Collapse);
+  all_types.insert(OpType::Reset);
+  PredicatePtr postcon1 = std::make_shared<GateSetPredicate>(all_types);
+  PredicatePtr postcon2 = std::make_shared<MaxTwoQubitGatesPredicate>();
+  std::pair<const std::type_index, PredicatePtr> pair2 =
+      CompilationUnit::make_type_pair(postcon1);
+  PredicatePtrMap s_postcons{pair2, CompilationUnit::make_type_pair(postcon2)};
+  PredicateClassGuarantees g_postcons{{pair2.first, Guarantee::Clear}};
+  PostConditions pc = {s_postcons, g_postcons, Guarantee::Preserve};
+  // record pass config
+  nlohmann::json j;
+  j["name"] = "AutoRebase";
+  j["basis_allowed"] = allowed_gates;
+  j["allow_swaps"] = allow_swaps;
+  return std::make_shared<StandardPass>(precons, t, pc, j);
+}
+
 // converting chains of p, q rotations to minimal triplets of p,q-rotations (p,
 // q in {Rx,Ry,Rz})
 PassPtr gen_euler_pass(const OpType& q, const OpType& p, bool strict) {

@@ -440,6 +440,11 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = ComposePhasePolyBoxes(content.at("min_size").get<unsigned>());
     } else if (passname == "RebaseCustom") {
       throw PassNotSerializable(passname);
+    } else if (passname == "AutoRebase") {
+      std::unordered_set<OpType> basis_allowed =
+          content.at("basis_allowed").get<std::unordered_set<OpType>>();
+      bool allow_swaps = content.at("allow_swaps").get<bool>();
+      pp = gen_auto_rebase_pass(basis_allowed, allow_swaps);
     } else if (passname == "EulerAngleReduction") {
       OpType p = content.at("euler_p").get<OpType>();
       OpType q = content.at("euler_q").get<OpType>();

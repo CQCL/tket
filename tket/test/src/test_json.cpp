@@ -972,6 +972,28 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(GraphPlacement, gen_placement_pass(ga_place))
   COMPPASSJSONTEST(RoundAngles, RoundAngles(8, true))
 #undef COMPPASSJSONTEST
+  GIVEN("AutoRebase") {
+    Circuit circ = CircuitsForTesting::get().uccsd;
+    CompilationUnit cu{circ};
+    CompilationUnit copy = cu;
+    PassPtr pp = gen_auto_rebase_pass({OpType::ZZMax, OpType::TK1}, false);
+    nlohmann::json j_pp = pp;
+    PassPtr loaded = j_pp.get<PassPtr>();
+    pp->apply(cu);
+    loaded->apply(copy);
+    REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
+    nlohmann::json j_loaded = loaded;
+    REQUIRE(
+        j_pp.at("StandardPass").at("allow_swaps").get<bool>() ==
+        j_loaded.at("StandardPass").at("allow_swaps").get<bool>());
+    REQUIRE(
+        j_pp.at("StandardPass")
+            .at("basis_allowed")
+            .get<std::unordered_set<OpType>>() ==
+        j_loaded.at("StandardPass")
+            .at("basis_allowed")
+            .get<std::unordered_set<OpType>>());
+  }
   GIVEN("PauliExponentials") {
     Circuit circ = CircuitsForTesting::get().uccsd;
     CompilationUnit cu{circ};
