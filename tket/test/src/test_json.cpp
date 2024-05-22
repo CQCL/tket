@@ -132,6 +132,8 @@ SCENARIO("Test Command serialization") {
     const Qubit a = Qubit("a", 1, 2);
     c.add_qubit(a);
     c.add_op<UnitID>(OpType::CnRy, 0.1, {q[0], a, q[1]});
+    c.add_op<UnitID>(OpType::CnRx, 0.1, {q[0], a, q[1]});
+    c.add_op<UnitID>(OpType::CnRz, 0.1, {q[0], a, q[1]});
     c.add_barrier({q[0], a});
 
     check_cases(c.get_commands());

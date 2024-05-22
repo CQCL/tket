@@ -440,9 +440,17 @@ PYBIND11_MODULE(circuit, m) {
           "^{\\otimes n}` (n-qubit gate composed of identical PhasedX in "
           "parallel.")
       .value(
+          "CnRx", OpType::CnRx,
+          ":math:`(\\alpha)` := n-controlled "
+          ":math:`\\mathrm{Rx}(\\alpha)` gate.")
+      .value(
           "CnRy", OpType::CnRy,
           ":math:`(\\alpha)` := n-controlled "
           ":math:`\\mathrm{Ry}(\\alpha)` gate.")
+      .value(
+          "CnRz", OpType::CnRz,
+          ":math:`(\\alpha)` := n-controlled "
+          ":math:`\\mathrm{Rz}(\\alpha)` gate.")
       .value("CnX", OpType::CnX, "n-controlled X gate.")
       .value("CnY", OpType::CnY, "n-controlled Y gate.")
       .value("CnZ", OpType::CnZ, "n-controlled Z gate.")

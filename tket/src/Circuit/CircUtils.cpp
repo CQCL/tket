@@ -622,6 +622,8 @@ Circuit with_CX(Gate_ptr op) {
 #define CNZTYPE(n) (((n) == 2) ? OpType::CZ : OpType::CnZ)
 #define CNYTYPE(n) (((n) == 2) ? OpType::CY : OpType::CnY)
 #define CNRYTYPE(n) (((n) == 2) ? OpType::CRy : OpType::CnRy)
+#define CNRXTYPE(n) (((n) == 2) ? OpType::CRx : OpType::CnRx)
+#define CNRZTYPE(n) (((n) == 2) ? OpType::CRz : OpType::CnRz)
 /**
  * Construct a circuit representing CnU1.
  */
@@ -692,12 +694,13 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
   }
 
   static const OpTypeSet multiq_gate_set = {
-      OpType::CX, OpType::CCX, OpType::CnX, OpType::CRy, OpType::CnRy,
-      OpType::CZ, OpType::CnZ, OpType::CY,  OpType::CnY};
+      OpType::CX,   OpType::CCX,  OpType::CnX, OpType::CRy,
+      OpType::CnRy, OpType::CZ,   OpType::CnZ, OpType::CY,
+      OpType::CnY,  OpType::CnRx, OpType::CnRz};
 
   unsigned c_n_qubits = c1.n_qubits();
 
-  // 1. Rebase to {CX, CCX, CnX, CnRy} and single-qubit gates
+  // 1. Rebase to {CX, CCX, CnX, CnRy, CnRx, CnRz} and single-qubit gates
   VertexList bin;
   BGL_FORALL_VERTICES(v, c1.dag, DAG) {
     Op_ptr op = c1.get_Op_ptr_from_Vertex(v);
@@ -778,6 +781,16 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
       case OpType::CnRy:
         c2.add_op<Qubit>(CNRYTYPE(n_new_args), params, new_args);
         break;
+      case OpType::Rx:
+      case OpType::CRx:
+      case OpType::CnRx:
+        c2.add_op<Qubit>(CNRXTYPE(n_new_args), params, new_args);
+        break;
+      case OpType::Rz:
+      case OpType::CRz:
+      case OpType::CnRz:
+        c2.add_op<Qubit>(CNRZTYPE(n_new_args), params, new_args);
+        break;
       case OpType::Z:
       case OpType::CZ:
       case OpType::CnZ:
@@ -843,6 +856,7 @@ static Eigen::Matrix2cd get_target_op_matrix(const Op_ptr &op) {
       return Gate(OpType::V, {}, 1).get_unitary();
     case OpType::CVdg:
       return Gate(OpType::Vdg, {}, 1).get_unitary();
+    case OpType::CnRx:
     case OpType::CRx:
       return Gate(OpType::Rx, op->get_params(), 1).get_unitary();
     case OpType::CnRy:
@@ -851,6 +865,7 @@ static Eigen::Matrix2cd get_target_op_matrix(const Op_ptr &op) {
     case OpType::CY:
     case OpType::CnY:
       return Gate(OpType::Y, {}, 1).get_unitary();
+    case OpType::CnRz:
     case OpType::CRz:
       return Gate(OpType::Rz, op->get_params(), 1).get_unitary();
     case OpType::CZ:
@@ -1248,6 +1263,8 @@ Circuit with_controls(const Circuit &c, unsigned n_controls) {
 #undef CNZTYPE
 #undef CNYTYPE
 #undef CNRYTYPE
+#undef CNRXTYPE
+#undef CNRZTYPE
 
 std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
     Expr a, Expr b, Expr c) {

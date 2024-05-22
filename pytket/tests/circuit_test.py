@@ -1536,6 +1536,21 @@ def test_pickle_bit() -> None:
         assert b == pickle.loads(pickle.dumps(b))
 
 
+def test_cnrx_cnrz() -> None:
+    c1rx = Circuit(2)
+    c1rx.add_gate(OpType.CnRx, 0.3, [0, 1])
+    crx = Circuit(2)
+    crx.add_gate(OpType.CRx, 0.3, [0, 1])
+
+    c1rz = Circuit(2)
+    c1rz.add_gate(OpType.CnRz, 0.3, [0, 1])
+    crz = Circuit(2)
+    crz.add_gate(OpType.CRz, 0.3, [0, 1])
+
+    assert np.allclose(c1rz.get_unitary(), crz.get_unitary())
+    assert np.allclose(c1rx.get_unitary(), crx.get_unitary())
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
@@ -1551,3 +1566,4 @@ if __name__ == "__main__":
     test_multi_controlled_gates()
     test_counting_n_qubit_gates()
     test_pauliexp_pair_box_serialisation()
+    test_cnrx_cnrz()
