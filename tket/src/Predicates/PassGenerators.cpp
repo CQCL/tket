@@ -267,6 +267,28 @@ PassPtr gen_auto_rebase_pass(const OpTypeSet& allowed_gates, bool allow_swaps) {
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
+PassPtr gen_auto_squash_pass(const OpTypeSet& singleqs) {
+  auto find_squash = [singleqs]() {
+    if (singleqs.find(OpType::Rz) != singleqs.end() &&
+        singleqs.find(OpType::PhasedX) != singleqs.end()) {
+      return Transforms::squash_1qb_to_Rz_PhasedX(true);
+    } else {
+      auto tk1_replacement = find_tk1_replacement(singleqs);
+      return Transforms::squash_factory(singleqs, tk1_replacement, false);
+    }
+  };
+  Transform t = find_squash();
+  PredicateClassGuarantees g_postcons = {
+      {typeid(GateSetPredicate), Guarantee::Clear}};
+  PostConditions postcon = {{}, g_postcons, Guarantee::Preserve};
+  PredicatePtrMap precons;
+  // record pass config
+  nlohmann::json j;
+  j["name"] = "AutoSquash";
+  j["basis_singleqs"] = singleqs;
+  return std::make_shared<StandardPass>(precons, t, postcon, j);
+}
+
 // converting chains of p, q rotations to minimal triplets of p,q-rotations (p,
 // q in {Rx,Ry,Rz})
 PassPtr gen_euler_pass(const OpType& q, const OpType& p, bool strict) {

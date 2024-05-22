@@ -445,6 +445,10 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
           content.at("basis_allowed").get<std::unordered_set<OpType>>();
       bool allow_swaps = content.at("allow_swaps").get<bool>();
       pp = gen_auto_rebase_pass(basis_allowed, allow_swaps);
+    } else if (passname == "AutoSquash") {
+      std::unordered_set<OpType> singleqs =
+          content.at("basis_singleqs").get<std::unordered_set<OpType>>();
+      pp = gen_auto_squash_pass(singleqs);
     } else if (passname == "EulerAngleReduction") {
       OpType p = content.at("euler_p").get<OpType>();
       OpType q = content.at("euler_q").get<OpType>();

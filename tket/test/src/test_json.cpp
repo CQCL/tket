@@ -971,6 +971,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(LinePlacement, gen_placement_pass(la_place))
   COMPPASSJSONTEST(GraphPlacement, gen_placement_pass(ga_place))
   COMPPASSJSONTEST(RoundAngles, RoundAngles(8, true))
+  COMPPASSJSONTEST(AutoSquash, gen_auto_squash_pass({OpType::TK1}))
 #undef COMPPASSJSONTEST
   GIVEN("AutoRebase") {
     Circuit circ = CircuitsForTesting::get().uccsd;

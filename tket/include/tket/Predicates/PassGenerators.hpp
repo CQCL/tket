@@ -67,6 +67,15 @@ PassPtr gen_squash_pass(
 PassPtr gen_auto_rebase_pass(
     const OpTypeSet& allowed_gates, bool allow_swaps = false);
 
+/**
+ * @brief Attempt to generate a squash pass automatically for the given target
+ * single qubit gateset
+ *
+ * @param singleqs
+ * @return PassPtr
+ */
+PassPtr gen_auto_squash_pass(const OpTypeSet& singleqs);
+
 PassPtr gen_euler_pass(const OpType& q, const OpType& p, bool strict = false);
 PassPtr gen_clifford_simp_pass(bool allow_swaps = true);
 

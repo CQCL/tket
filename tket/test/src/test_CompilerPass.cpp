@@ -2168,5 +2168,27 @@ SCENARIO("AutoRebase") {
     REQUIRE(test_unitary_comparison(cx_circ, cx_cu.get_circ_ref()));
   }
 }
+
+SCENARIO("AutoSquash") {
+  Circuit c1(1);
+  c1.add_op<unsigned>(OpType::Rx, 0.2, {0});
+  c1.add_op<unsigned>(OpType::Rz, 0.4, {0});
+  CompilationUnit cu1(c1);
+  REQUIRE(
+      gen_auto_squash_pass({OpType::TK1, OpType::Rz, OpType::Rx})->apply(cu1));
+  REQUIRE(cu1.get_circ_ref().n_gates() == 1);
+  REQUIRE(cu1.get_circ_ref().count_gates(OpType::TK1) == 1);
+  REQUIRE(test_unitary_comparison(c1, cu1.get_circ_ref()));
+  // RzPhasedX squash
+  Circuit c2(1);
+  c2.add_op<unsigned>(OpType::TK1, {0.1, 0.2, 0.3}, {0});
+  CompilationUnit cu2(c2);
+  REQUIRE(gen_auto_squash_pass({OpType::PhasedX, OpType::Rz})->apply(cu2));
+  REQUIRE(cu2.get_circ_ref().n_gates() == 2);
+  REQUIRE(cu2.get_circ_ref().count_gates(OpType::PhasedX) == 1);
+  REQUIRE(cu2.get_circ_ref().count_gates(OpType::Rz) == 1);
+  REQUIRE(test_unitary_comparison(c2, cu2.get_circ_ref()));
+}
+
 }  // namespace test_CompilerPass
 }  // namespace tket
