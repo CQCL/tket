@@ -190,7 +190,7 @@ static Circuit find_cx_replacement(const OpTypeSet& gateset) {
 
 static std::function<Circuit(const Expr&, const Expr&, const Expr&)>
 find_tk2_replacement(const OpTypeSet& gateset, bool allow_swaps) {
-  if (allow_swaps) {
+  if (!allow_swaps) {
     if (gateset.find(OpType::TK2) != gateset.end()) {
       return CircPool::TK2_using_TK2;
     }
