@@ -80,7 +80,7 @@ from pytket.circuit.logic_exp import (
     create_logic_exp,
 )
 from pytket.qasm.grammar import grammar
-from pytket.passes import auto_rebase_pass, DecomposeBoxes, RemoveRedundancies
+from pytket.passes import AutoRebase, DecomposeBoxes, RemoveRedundancies
 from pytket.wasm import WasmFileHandler
 
 
@@ -1197,7 +1197,7 @@ def _get_gate_circuit(
         gate_circ.add_gate(optype, exprs, unitids)
     else:
         gate_circ.add_gate(optype, unitids)
-    auto_rebase_pass({OpType.CX, OpType.U3}).apply(gate_circ)
+    AutoRebase({OpType.CX, OpType.U3}).apply(gate_circ)
     RemoveRedundancies().apply(gate_circ)
 
     return gate_circ

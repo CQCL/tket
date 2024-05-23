@@ -407,7 +407,7 @@ def test_RebaseOQC_and_SynthesiseOQC() -> None:
     u_before_oqc = circ3.get_unitary()
     assert np.allclose(u, u_before_oqc)
 
-    auto_rebase_pass(oqc_gateset).apply(circ3)
+    AutoRebase(oqc_gateset).apply(circ3)
     assert oqc_gateset_pred.verify(circ3)
     u_before_rebase_tket = circ3.get_unitary()
     assert np.allclose(u, u_before_rebase_tket)
@@ -872,7 +872,7 @@ def test_conditional_phase() -> None:
     c.H(1, condition_bits=[0], condition_value=1)
     c.Measure(1, 1)
     target_gateset = {OpType.TK1, OpType.CX}
-    rebase = auto_rebase_pass(target_gateset)
+    rebase = AutoRebase(target_gateset)
     rebase.apply(c)
     cond_cmds = [cmd for cmd in c.get_commands() if cmd.op.type == OpType.Conditional]
     assert len(cond_cmds) > 0
