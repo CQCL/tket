@@ -52,7 +52,6 @@ from pytket._tket.circuit import (
     CopyBitsOp,
     MultiBitOp,
     WASMOp,
-    CustomGate,
     BarrierOp,
 )
 from pytket._tket.unit_id import _TEMP_BIT_NAME

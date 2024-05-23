@@ -21,9 +21,10 @@ from pytket.passes import AutoRebase, AutoSquash, BasePass
 class NoAutoRebase(Exception):
     """Automatic rebase could not be found."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: object, **kwargs: dict) -> None:
         warnings.warn(
-            "The `NoAutoRebase` exception is deprecated along with `auto_rebase_pass()` and `auto_squash_pass()`. "
+            "The `NoAutoRebase` exception is deprecated along with "
+            "`auto_rebase_pass()` and `auto_squash_pass()`. "
             "`AutoRebase` and `AutoSquash` will raise `RuntimeError` instead.",
             DeprecationWarning,
         )
