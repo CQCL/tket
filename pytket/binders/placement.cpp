@@ -40,7 +40,7 @@ void place_fully_connected(
   }
   std::map<Qubit, Node> qmap;
   std::vector<Qubit> qubits = circ.all_qubits();
-  std::vector<Node> nodes = fully_connected.nodes();
+  std::vector<Node> nodes = fully_connected.get_all_nodes_vec();
   TKET_ASSERT(nodes.size() >= qubits.size());
   for (unsigned i = 0; i < qubits.size(); i++) {
     qmap[qubits[i]] = nodes[i];
