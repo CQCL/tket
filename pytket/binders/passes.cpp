@@ -572,7 +572,7 @@ PYBIND11_MODULE(passes, m) {
       "single qubit gateset.\n"
       "Raises an error if no known TK1 decomposition can be found based on the "
       "given gateset, in which case try using :py:class:`SquashCustom` with "
-      "your own decomposition.\n\n"
+      "your own decomposition."
       "\n\n:param singleqs: The types of single qubit gates in the target "
       "gate set. This pass will only affect sequences of gates that are "
       "already in this set.",
