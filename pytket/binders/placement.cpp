@@ -39,10 +39,11 @@ void place_fully_connected(
         "Circuit has more qubits than the FullyConnected graph has nodes");
   }
   std::map<Qubit, Node> qmap;
-  unsigned index = 0;
-  for (const Qubit &q : circ.all_qubits()) {
-    qmap[q] = Node("fcNode", index);
-    index++;
+  std::vector<Qubit> qubits = circ.all_qubits();
+  std::vector<Node> nodes = fully_connected.nodes();
+  TKET_ASSERT(nodes.size() >= qubits.size());
+  for (unsigned i = 0; i < qubits.size(); i++) {
+    qmap[qubits[i]] = nodes[i];
   }
   place_with_map(circ, qmap);
 }
