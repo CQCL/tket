@@ -62,7 +62,10 @@ from pytket.passes import (
     SimplifyInitial,
     RemoveBarriers,
     PauliSquash,
+    AutoRebase,
+    AutoSquash,
     auto_rebase_pass,
+    auto_squash_pass,
     ZZPhaseToRz,
     CnXPairwiseDecomposition,
     RemoveImplicitQubitPermutation,
@@ -1069,6 +1072,19 @@ def test_SynthesiseOQC_deprecation(capfd: Any) -> None:
     assert "[warn]" in out
     assert "deprecated" in out
     logging.set_level(logging.level.err)
+
+
+def test_auto_rebase_deprecation(recwarn: Any) -> None:
+    p = auto_rebase_pass({OpType.TK1, OpType.CX})
+    assert len(recwarn) == 1
+    w = recwarn.pop(DeprecationWarning)
+    assert issubclass(w.category, DeprecationWarning)
+    assert "deprecated" in str(w.message)
+    p = auto_squash_pass({OpType.TK1})
+    assert len(recwarn) == 1
+    w = recwarn.pop(DeprecationWarning)
+    assert issubclass(w.category, DeprecationWarning)
+    assert "deprecated" in str(w.message)
 
 
 if __name__ == "__main__":
