@@ -37,6 +37,8 @@ void add_latex_for_command(LatexContext& context, const Command& command) {
   unit_vector_t args = command.get_args();
   const Op_ptr op = command.get_op_ptr();
   switch (op->get_type()) {
+    case OpType::CnRz:
+    case OpType::CnRx:
     case OpType::CnRy:
     case OpType::CnX:
     case OpType::CnY:
@@ -53,6 +55,16 @@ void add_latex_for_command(LatexContext& context, const Command& command) {
         lines.at(target_index).buffer
             << "\\gate{\\text{"
             << get_op_ptr(OpType::Ry, op->get_params())->get_name(true)
+            << "}} & ";
+      } else if (op->get_type() == OpType::CnRx) {
+        lines.at(target_index).buffer
+            << "\\gate{\\text{"
+            << get_op_ptr(OpType::Rx, op->get_params())->get_name(true)
+            << "}} & ";
+      } else if (op->get_type() == OpType::CnRz) {
+        lines.at(target_index).buffer
+            << "\\gate{\\text{"
+            << get_op_ptr(OpType::Rz, op->get_params())->get_name(true)
             << "}} & ";
       } else if (op->get_type() == OpType::CnX) {
         lines.at(target_index).buffer << "\\targ{} & ";

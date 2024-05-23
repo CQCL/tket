@@ -291,7 +291,7 @@ def CustomRoutingPass(arc: pytket._tket.architecture.Architecture, config: typin
     """
 def DecomposeArbitrarilyControlledGates() -> BasePass:
     """
-    Decomposes CCX, CnX, CnY, CnZ, and CnRy gates into CX and single-qubit gates.
+    Decomposes CCX, CnX, CnY, CnZ, CnRy, CnRz and CnRx gates into CX and single-qubit gates.
     """
 def DecomposeBoxes(excluded_types: set[pytket._tket.circuit.OpType] = set(), excluded_opgroups: set[str] = set()) -> BasePass:
     """

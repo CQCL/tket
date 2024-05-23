@@ -47,6 +47,12 @@ static OpType get_primitive_type(OpType type_without_controls) {
     case OpType::CnRy:
       return OpType::Ry;
 
+    case OpType::CnRx:
+      return OpType::Rx;
+
+    case OpType::CnRz:
+      return OpType::Rz;
+
     default:
       return OpType::noop;
   }

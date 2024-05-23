@@ -453,7 +453,7 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "DecomposeArbitrarilyControlledGates",
       &DecomposeArbitrarilyControlledGates,
-      "Decomposes CCX, CnX, CnY, CnZ, and CnRy gates into "
+      "Decomposes CCX, CnX, CnY, CnZ, CnRy, CnRz and CnRx gates into "
       "CX and single-qubit gates.");
   m.def(
       "DecomposeBoxes", &DecomposeBoxes,

@@ -105,6 +105,17 @@ Eigen::MatrixXcd GateUnitaryMatrixImplementations::CnRy(
       Ry(alpha), number_of_qubits);
 }
 
+Eigen::MatrixXcd GateUnitaryMatrixImplementations::CnRx(
+    unsigned int number_of_qubits, double alpha) {
+  return GateUnitaryMatrixUtils::get_multi_controlled_gate_dense_unitary(
+      Rx(alpha), number_of_qubits);
+}
+Eigen::MatrixXcd GateUnitaryMatrixImplementations::CnRz(
+    unsigned int number_of_qubits, double alpha) {
+  return GateUnitaryMatrixUtils::get_multi_controlled_gate_dense_unitary(
+      Rz(alpha), number_of_qubits);
+}
+
 Eigen::MatrixXcd GateUnitaryMatrixImplementations::CnX(
     unsigned int number_of_qubits) {
   return GateUnitaryMatrixUtils::get_multi_controlled_gate_dense_unitary(

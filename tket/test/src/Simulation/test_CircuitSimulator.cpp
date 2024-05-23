@@ -243,6 +243,8 @@ SCENARIO("Directly simulate circuits with >= 3 qubit gates") {
   circ.add_op<unsigned>(OpType::BRIDGE, {0, 1, 2});
   circ.add_op<unsigned>(OpType::CSWAP, {0, 1, 2});
   circ.add_op<unsigned>(OpType::CnRy, 0.1234, {0, 1, 2, 3});
+  circ.add_op<unsigned>(OpType::CnRx, 0.1234, {0, 1, 2, 3});
+  circ.add_op<unsigned>(OpType::CnRz, 0.1234, {0, 1, 2, 3});
   circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3});
   circ.add_op<unsigned>(OpType::PhaseGadget, 0.1, {0, 1, 2, 3});
   const auto u = tket_sim::get_unitary(circ);
