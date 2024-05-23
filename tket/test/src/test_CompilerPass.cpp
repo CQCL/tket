@@ -2140,54 +2140,69 @@ SCENARIO("GPI, GPI2 and AAMS operations") {
 }
 
 SCENARIO("AutoRebase") {
-  std::vector<std::pair<std::unordered_set<OpType>, bool>> params = {
-      {{OpType::CX, OpType::TK1}, false},
-      {{OpType::CX, OpType::U3}, false},
-      {{OpType::ZZMax, OpType::X, OpType::SX, OpType::Rz}, false},
-      {{OpType::XXPhase, OpType::PhasedX, OpType::Rz}, false},
-      {{OpType::ECR, OpType::Rx, OpType::Rz}, false},
-      {{OpType::CZ, OpType::Rx, OpType::Ry}, false},
-      {{OpType::AAMS, OpType::Rz, OpType::H}, false},
-      {{OpType::TK2, OpType::Rz, OpType::SX}, false},
-      {{OpType::TK2, OpType::GPI, OpType::GPI2}, true},
-      {{OpType::TK2, OpType::CX, OpType::X, OpType::TK1}, true}};
-  Circuit tk2_circ(2);
-  tk2_circ.add_op<unsigned>(OpType::TK1, {0.1, 0.2, 0.3}, {0});
-  tk2_circ.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {0, 1});
-  CompilationUnit tk2_cu(tk2_circ);
-  Circuit cx_circ(2);
-  cx_circ.add_op<unsigned>(OpType::TK1, {0.1, 0.2, 0.3}, {0});
-  cx_circ.add_op<unsigned>(OpType::CX, {0, 1});
-  CompilationUnit cx_cu(cx_circ);
-  for (const auto& pair : params) {
-    gen_auto_rebase_pass(pair.first, pair.second)
-        ->apply(tk2_cu, SafetyMode::Audit);
-    gen_auto_rebase_pass(pair.first, pair.second)
-        ->apply(cx_cu, SafetyMode::Audit);
-    REQUIRE(test_unitary_comparison(tk2_circ, tk2_cu.get_circ_ref()));
-    REQUIRE(test_unitary_comparison(cx_circ, cx_cu.get_circ_ref()));
+  GIVEN("Test rebase") {
+    std::vector<std::pair<std::unordered_set<OpType>, bool>> params = {
+        {{OpType::CX, OpType::TK1}, false},
+        {{OpType::CX, OpType::U3}, false},
+        {{OpType::ZZMax, OpType::X, OpType::SX, OpType::Rz}, false},
+        {{OpType::XXPhase, OpType::PhasedX, OpType::Rz}, false},
+        {{OpType::ECR, OpType::Rx, OpType::Rz}, false},
+        {{OpType::CZ, OpType::Rx, OpType::Ry}, false},
+        {{OpType::AAMS, OpType::Rz, OpType::H}, false},
+        {{OpType::TK2, OpType::Rz, OpType::SX}, false},
+        {{OpType::TK2, OpType::GPI, OpType::GPI2}, true},
+        {{OpType::TK2, OpType::CX, OpType::X, OpType::TK1}, true}};
+    Circuit tk2_circ(2);
+    tk2_circ.add_op<unsigned>(OpType::TK1, {0.1, 0.2, 0.3}, {0});
+    tk2_circ.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {0, 1});
+    CompilationUnit tk2_cu(tk2_circ);
+    Circuit cx_circ(2);
+    cx_circ.add_op<unsigned>(OpType::TK1, {0.1, 0.2, 0.3}, {0});
+    cx_circ.add_op<unsigned>(OpType::CX, {0, 1});
+    CompilationUnit cx_cu(cx_circ);
+    for (const auto& pair : params) {
+      gen_auto_rebase_pass(pair.first, pair.second)
+          ->apply(tk2_cu, SafetyMode::Audit);
+      gen_auto_rebase_pass(pair.first, pair.second)
+          ->apply(cx_cu, SafetyMode::Audit);
+      REQUIRE(test_unitary_comparison(tk2_circ, tk2_cu.get_circ_ref()));
+      REQUIRE(test_unitary_comparison(cx_circ, cx_cu.get_circ_ref()));
+    }
+  }
+  GIVEN("Test exception") {
+    REQUIRE_THROWS_AS(
+        gen_auto_rebase_pass({OpType::CX, OpType::Rz}, false), Unsupported);
+    REQUIRE_THROWS_AS(
+        gen_auto_rebase_pass({OpType::CRz, OpType::TK1}, false), Unsupported);
+    REQUIRE_THROWS_AS(gen_auto_rebase_pass({}, false), Unsupported);
   }
 }
 
 SCENARIO("AutoSquash") {
-  Circuit c1(1);
-  c1.add_op<unsigned>(OpType::Rx, 0.2, {0});
-  c1.add_op<unsigned>(OpType::Rz, 0.4, {0});
-  CompilationUnit cu1(c1);
-  REQUIRE(
-      gen_auto_squash_pass({OpType::TK1, OpType::Rz, OpType::Rx})->apply(cu1));
-  REQUIRE(cu1.get_circ_ref().n_gates() == 1);
-  REQUIRE(cu1.get_circ_ref().count_gates(OpType::TK1) == 1);
-  REQUIRE(test_unitary_comparison(c1, cu1.get_circ_ref()));
-  // RzPhasedX squash
-  Circuit c2(1);
-  c2.add_op<unsigned>(OpType::TK1, {0.1, 0.2, 0.3}, {0});
-  CompilationUnit cu2(c2);
-  REQUIRE(gen_auto_squash_pass({OpType::PhasedX, OpType::Rz})->apply(cu2));
-  REQUIRE(cu2.get_circ_ref().n_gates() == 2);
-  REQUIRE(cu2.get_circ_ref().count_gates(OpType::PhasedX) == 1);
-  REQUIRE(cu2.get_circ_ref().count_gates(OpType::Rz) == 1);
-  REQUIRE(test_unitary_comparison(c2, cu2.get_circ_ref()));
+  GIVEN("Test squash") {
+    Circuit c1(1);
+    c1.add_op<unsigned>(OpType::Rx, 0.2, {0});
+    c1.add_op<unsigned>(OpType::Rz, 0.4, {0});
+    CompilationUnit cu1(c1);
+    REQUIRE(gen_auto_squash_pass({OpType::TK1, OpType::Rz, OpType::Rx})
+                ->apply(cu1));
+    REQUIRE(cu1.get_circ_ref().n_gates() == 1);
+    REQUIRE(cu1.get_circ_ref().count_gates(OpType::TK1) == 1);
+    REQUIRE(test_unitary_comparison(c1, cu1.get_circ_ref()));
+    // RzPhasedX squash
+    Circuit c2(1);
+    c2.add_op<unsigned>(OpType::TK1, {0.1, 0.2, 0.3}, {0});
+    CompilationUnit cu2(c2);
+    REQUIRE(gen_auto_squash_pass({OpType::PhasedX, OpType::Rz})->apply(cu2));
+    REQUIRE(cu2.get_circ_ref().n_gates() == 2);
+    REQUIRE(cu2.get_circ_ref().count_gates(OpType::PhasedX) == 1);
+    REQUIRE(cu2.get_circ_ref().count_gates(OpType::Rz) == 1);
+    REQUIRE(test_unitary_comparison(c2, cu2.get_circ_ref()));
+  }
+  GIVEN("Test exception") {
+    REQUIRE_THROWS_AS(gen_auto_squash_pass({OpType::Rx}), Unsupported);
+    REQUIRE_THROWS_AS(gen_auto_squash_pass({}), Unsupported);
+  }
 }
 
 }  // namespace test_CompilerPass
