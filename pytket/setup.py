@@ -177,7 +177,7 @@ class bdist_wheel(_bdist_wheel):
 setup(
     name="pytket",
     author="TKET development team",
-    author_email="tket-support@cambridgequantum.com",
+    author_email="tket-support@quantinuum.com",
     python_requires=">=3.10",
     project_urls={
         "Documentation": "https://tket.quantinuum.com/api-docs/index.html",
@@ -192,7 +192,7 @@ setup(
     install_requires=[
         "sympy ~=1.6",
         "numpy >=1.21.4, <2.0",
-        "lark-parser ~=0.7",
+        "lark ~=1.1",
         "scipy ~=1.13",
         "networkx >= 2.8.8",
         "graphviz ~= 0.14",

@@ -81,7 +81,7 @@ class ClassicalExpBox : public ClassicalExpBoxBase {
         n_io_(other.n_io_),
         n_o_(other.n_o_),
         exp_(other.exp_),
-        sig_(other.sig_){};
+        sig_(other.sig_) {};
 
   ~ClassicalExpBox() override {}
   Op_ptr symbol_substitution(

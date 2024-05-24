@@ -1333,7 +1333,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           [](Circuit *circ, const Expr &angle, unsigned qb,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
-                circ, OpType::GPI, angle, {qb}, kwargs);
+                circ, OpType::GPI2, angle, {qb}, kwargs);
           },
           "Appends a GPI2 gate with a possibly symbolic angle "
           "(specified in half-turns)."

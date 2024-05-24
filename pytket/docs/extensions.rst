@@ -2,7 +2,7 @@ pytket extensions
 =================
 
 The pytket extensions are separate python modules which allow pytket to interface with backends from a range of providers including quantum devices from Quantinuum and IBM.
-In pytket a ``Backend`` represents a connection to a QPU (Quantum Processing Unit) or simulator for processing quantum circuits. One can also access additional quantum devices and simulators via the cloud through the extensions for `Azure <https://cqcl.github.io/pytket-qsharp/api/api.html#pytket.extensions.qsharp.AzureBackend>`_ and `Braket <https://tket.quantinuum.com/extensions/pytket-braket/api.html#pytket.extensions.braket.BraketBackend>`_ . 
+In pytket a ``Backend`` represents a connection to a QPU (Quantum Processing Unit) or simulator for processing quantum circuits. One can also access additional quantum devices and simulators via the cloud through the extensions for `Braket <https://tket.quantinuum.com/extensions/pytket-braket/api.html#pytket.extensions.braket.BraketBackend>`_ . 
 
 Additionally, the extensions allow pytket to cross-compile circuits from different quantum computing libraries with the extensions for `qiskit <https://tket.quantinuum.com/extensions/pytket-qiskit/index.html>`_, `cirq <https://tket.quantinuum.com/extensions/pytket-cirq/index.html>`_ and `pennylane <https://tket.quantinuum.com/extensions/pytket-pennylane/index.html>`_ . This enables pytket's compilation features to be used in conjunction with other software tools.
 
@@ -47,9 +47,6 @@ QPUs
 
 Cloud Access
 ------------
-
-`AzureBackend <https://cqcl.github.io/pytket-qsharp/api/api.html#pytket.extensions.qsharp.AzureBackend>`_
-- Backend for running circuits remotely using Azure Quantum devices and simulators.
 
 `BraketBackend <https://tket.quantinuum.com/extensions/pytket-braket/api.html#pytket.extensions.braket.BraketBackend>`_
 - Interface to Amazon Braket service.
@@ -119,13 +116,6 @@ Other
 `QulacsBackend <https://tket.quantinuum.com/extensions/pytket-qulacs/api.html#pytket.extensions.qulacs.QulacsBackend>`_
 - Backend for running simulations of variational quantum circuits on the Qulacs simulator.
 
-`QsharpSimulatorBackend <https://cqcl.github.io/pytket-qsharp/api/api.html#pytket.extensions.qsharp.QsharpSimulatorBackend>`_
-- Backend for simulating a circuit using the QDK.
-
-`QsharpToffoliSimulatorBackend <https://cqcl.github.io/pytket-qsharp/api/api.html#pytket.extensions.qsharp.QsharpToffoliSimulatorBackend>`_
-- Backend for simulating a Toffoli circuit using the QDK.
-
-
 .. toctree::
    :caption: Extensions:
    :maxdepth: 0
@@ -141,7 +131,6 @@ Other
    pytket-pyzx <https://tket.quantinuum.com/extensions/pytket-pyzx>
    pytket-qir <https://tket.quantinuum.com/extensions/pytket-qir>
    pytket-qiskit <https://tket.quantinuum.com/extensions/pytket-qiskit>
-   pytket-qsharp <https://cqcl.github.io/pytket-qsharp/api/index.html>
    pytket-quantinuum <https://tket.quantinuum.com/extensions/pytket-quantinuum>
    pytket-cutensornet <https://tket.quantinuum.com/extensions/pytket-cutensornet> 
    pytket-qulacs <https://tket.quantinuum.com/extensions/pytket-qulacs>

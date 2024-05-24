@@ -51,6 +51,8 @@ class BitWiseOp(Enum):
     EQ = "=="
     NEQ = "!="
     NOT = "~"
+    ZERO = "0"
+    ONE = "1"
 
 
 class RegWiseOp(Enum):
@@ -110,6 +112,10 @@ class LogicExp:
             return BitEq
         if op == BitWiseOp.NEQ:
             return BitNeq
+        if op == BitWiseOp.ZERO:
+            return BitZero
+        if op == BitWiseOp.ONE:
+            return BitOne
         if op == RegWiseOp.AND:
             return RegAnd
         if op == RegWiseOp.OR:
@@ -368,6 +374,13 @@ class UnaryOp(LogicExp):
         return f"({self.op.value} {self.args[0]})"
 
 
+class NullaryOp(LogicExp):
+    """Expression for operation on no arguments (i.e. constant)."""
+
+    def __str__(self) -> str:
+        return f"({self.op.value})"
+
+
 class And(BinaryOp):
     @staticmethod
     def _const_eval(args: List[Constant]) -> Constant:
@@ -424,6 +437,26 @@ class BitNot(UnaryOp, BitLogicExp):
     @staticmethod
     def _const_eval(args: List[Constant]) -> Constant:
         return 1 - args[0]
+
+
+class BitZero(NullaryOp, BitLogicExp):
+    def __init__(self) -> None:
+        self.op = BitWiseOp.ZERO
+        self.args = []
+
+    @staticmethod
+    def _const_eval(args: List[Constant]) -> Constant:
+        return 0
+
+
+class BitOne(NullaryOp, BitLogicExp):
+    def __init__(self) -> None:
+        self.op = BitWiseOp.ONE
+        self.args = []
+
+    @staticmethod
+    def _const_eval(args: List[Constant]) -> Constant:
+        return 1
 
 
 class RegAnd(And, RegLogicExp):
@@ -647,6 +680,12 @@ def create_bit_logic_exp(op: BitWiseOp, args: Sequence[BitArgType]) -> BitLogicE
     if op == BitWiseOp.NEQ:
         assert len(args) == 2
         return BitNeq(args[0], args[1])
+    if op == BitWiseOp.ZERO:
+        assert len(args) == 0
+        return BitZero()
+    if op == BitWiseOp.ONE:
+        assert len(args) == 0
+        return BitOne()
 
 
 def create_reg_logic_exp(op: RegWiseOp, args: Sequence[RegArgType]) -> RegLogicExp:

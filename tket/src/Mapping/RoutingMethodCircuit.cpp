@@ -23,7 +23,7 @@ RoutingMethodCircuit::RoutingMethodCircuit(
     unsigned _max_size, unsigned _max_depth)
     : route_subcircuit_(_route_subcircuit),
       max_size_(_max_size),
-      max_depth_(_max_depth){};
+      max_depth_(_max_depth) {};
 
 std::pair<bool, unit_map_t> RoutingMethodCircuit::routing_method(
     MappingFrontier_ptr& mapping_frontier,

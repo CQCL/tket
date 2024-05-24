@@ -74,6 +74,7 @@ from pytket.passes import (
     CliffordSimp,
     SynthesiseOQC,
     ZXGraphlikeOptimisation,
+    GreedyPauliSimp,
 )
 from pytket.predicates import (
     GateSetPredicate,
@@ -1045,6 +1046,20 @@ def test_clifford_push_through_measures() -> None:
     assert coms[5].op.type == OpType.ExplicitModifier
     assert coms[6].op.type == OpType.ExplicitModifier
     assert coms[7].op.type == OpType.CopyBits
+
+
+def greedy_pauli_synth() -> None:
+    circ = Circuit(4, name="test")
+    rega = circ.add_q_register("a", 2)
+    regb = circ.add_q_register("b", 2)
+    d = circ.copy()
+    circ.Rz(0, rega[0]).H(regb[1]).CX(rega[0], rega[1]).Ry(0.3, rega[0]).S(regb[1]).CZ(
+        rega[0], regb[0]
+    ).SWAP(regb[1], rega[0])
+    pss = GreedyPauliSimp(0.5, 0.5)
+    assert pss.apply(d)
+    assert np.allclose(circ.get_unitary(), d.get_unitary())
+    assert d.name == "test"
 
 
 def test_SynthesiseOQC_deprecation(capfd: Any) -> None:
