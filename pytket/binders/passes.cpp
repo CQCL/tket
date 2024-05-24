@@ -453,7 +453,7 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "DecomposeArbitrarilyControlledGates",
       &DecomposeArbitrarilyControlledGates,
-      "Decomposes CCX, CnX, CnY, CnZ, and CnRy gates into "
+      "Decomposes CCX, CnX, CnY, CnZ, CnRy, CnRz and CnRx gates into "
       "CX and single-qubit gates.");
   m.def(
       "DecomposeBoxes", &DecomposeBoxes,
@@ -902,6 +902,19 @@ PYBIND11_MODULE(passes, m) {
       "\n:return: a pass to perform the simplification",
       py::arg("strat") = Transforms::PauliSynthStrat::Sets,
       py::arg("cx_config") = CXConfigType::Snake);
+  m.def(
+      "GreedyPauliSimp", &gen_greedy_pauli_simp,
+      "Construct a pass that converts a circuit into a graph of Pauli "
+      "gadgets to account for commutation and phase folding, and "
+      "resynthesises them using a greedy algorithm adapted from "
+      "arxiv.org/abs/2103.08602. The method for synthesising the "
+      "final Clifford operator is adapted from "
+      "arxiv.org/abs/2305.10966."
+      "\n\n:param discount_rate: Rate used to discount the cost impact from "
+      "gadgets that are further away. Default to 0.7."
+      "\n:param depth_weight:  Degree of depth optimisation. Default to 0.3."
+      "\n:return: a pass to perform the simplification",
+      py::arg("discount_rate") = 0.7, py::arg("depth_weight") = 0.3);
   m.def(
       "PauliSquash", &PauliSquash,
       "Applies :py:meth:`PauliSimp` followed by "

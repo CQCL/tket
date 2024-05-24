@@ -2,17 +2,17 @@ name: test libraries
 on:
   push:
     branches:
-      - develop
+      - main
   pull_request:
     branches:
-      - develop
+      - main
   workflow_dispatch: {}
 
 env:
   ALL_LIBS: '["tklog", "tkassert", "tkrng", "tktokenswap", "tkwsm"]'
 jobs:
   changes:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     outputs:
       tklog: ${{ steps.filter.outputs.tklog }}
       tkassert: ${{ steps.filter.outputs.tkassert }}
@@ -40,7 +40,7 @@ jobs:
   set_libs_matrix:
     name: Set the libs strategy matrix
     needs: changes
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     outputs:
       libs: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -63,15 +63,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022', 'macos-14']
+        os: ['ubuntu-24.04', 'macos-12', 'windows-2022', 'macos-14']
         lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.11
+    - name: Select Python 3.12
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.12'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -100,16 +100,20 @@ jobs:
     strategy:
       matrix:
         lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
-    runs-on: 'ubuntu-22.04'
+    runs-on: 'ubuntu-24.04'
     steps:
     - uses: actions/checkout@v4
+    - name: Select Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
       run: |
         conan profile detect
         DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/ubuntu-22.04
+        PROFILE_PATH=./conan-profiles/ubuntu-24.04
         diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
         cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
@@ -135,7 +139,7 @@ jobs:
       with:
         name: ${{ matrix.lib }}_coverage
         path: ${{ matrix.lib }}-coverage/
-    - name: check coverage against latest published data from develop
+    - name: check coverage against latest published data from main
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: |
         # File may not exist if this is the very first time, so don't error.
@@ -146,12 +150,12 @@ jobs:
   publish_coverage:
     name: Publish coverage
     needs: [set_libs_matrix, generate_coverage]
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.set_libs_matrix.outputs.libs != '[]' && needs.set_libs_matrix.outputs.libs != '' }}
+    if: ${{ github.event_name == 'push' && needs.set_libs_matrix.outputs.libs != '[]' && needs.set_libs_matrix.outputs.libs != '' }}
     strategy:
       matrix:
         lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
     concurrency: gh_pages
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
       with:

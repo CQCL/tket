@@ -123,6 +123,8 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
       {OpType::XXPhase3,
        {"XXPhase3", "$R_{X_0X_1}R_{X_0X_2}R_{X_1X_2}$", {4}, tripleq}},
       {OpType::CnRy, {"CnRy", "CnRy", {4}, std::nullopt}},
+      {OpType::CnRx, {"CnRx", "CnRx", {4}, std::nullopt}},
+      {OpType::CnRz, {"CnRz", "CnRz", {4}, std::nullopt}},
       {OpType::CnX, {"CnX", "CnX", {}, std::nullopt}},
       {OpType::CnZ, {"CnZ", "CnZ", {}, std::nullopt}},
       {OpType::CnY, {"CnY", "CnY", {}, std::nullopt}},

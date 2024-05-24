@@ -11,7 +11,7 @@ on:
 jobs:
   build_Linux_wheels:
     name: Build manylinux
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python3-version: ['10', '11', '12']
@@ -92,7 +92,7 @@ jobs:
     - name: Build wheel
       run: |
         conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
+        conan create recipes/pybind11_json/all --version 0.2.14
         cd pytket
         # Ensure wheels are compatible with MacOS 12.0 and later:
         export WHEEL_PLAT_NAME=macosx_12_0_x86_64
@@ -107,6 +107,8 @@ jobs:
   build_macos_arm64_wheels:
     name: Build macos arm64 wheels
     runs-on: macos-14
+    env:
+        MACOSX_DEPLOYMENT_TARGET: '12.0'
     strategy:
       matrix:
         python-version: ['3.10', '3.11', '3.12']
@@ -130,16 +132,15 @@ jobs:
         cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: Build tket C++
-      run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
+      run: conan create tket --user tket --channel stable --build="*" -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
     - name: Build wheel
       run: |
         conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
+        conan create recipes/pybind11_json/all --version 0.2.14
         cd pytket
         # Ensure wheels are compatible with MacOS 12.0 and later:
         export WHEEL_PLAT_NAME=macosx_12_0_arm64
-        python${{ matrix.python-version }} -m pip install -U pip build
-        python${{ matrix.python-version }} -m pip install delocate~=0.10.7
+        python${{ matrix.python-version }} -m pip install -U pip build delocate
         python${{ matrix.python-version }} -m build
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
     - uses: actions/upload-artifact@v4
@@ -158,6 +159,10 @@ jobs:
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    - name: Select Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -171,14 +176,10 @@ jobs:
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: Build tket
       run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
     - name: Build wheel
       run: |
         conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
+        conan create recipes/pybind11_json/all --version 0.2.14
         cd pytket
         python -m pip install -U pip build
         python -m build --outdir "${{ github.workspace }}/wheelhouse"
@@ -190,7 +191,7 @@ jobs:
   test_linux_wheels:
     name: Test linux wheels
     needs: build_Linux_wheels
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python3-version: ['10', '11', '12']
@@ -216,7 +217,7 @@ jobs:
       - name: Run tests
         run: cd tket/pytket/tests && pytest --ignore=simulator/
 
-  test_Linux_aarch64_wheels:
+  test_linux_aarch64_wheels:
     name: Test linux aarch64 wheels
     needs: build_Linux_aarch64_wheels
     runs-on: 'buildjet-4vcpu-ubuntu-2204-arm'
@@ -347,7 +348,7 @@ jobs:
     name: Publish to pypi
     if: github.event_name == 'release'
     needs: [test_linux_wheels, test_linux_aarch64_wheels, test_macos_x86_wheels, test_macos_arm64_wheels, test_Windows_wheels]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - name: Download all wheels
       uses: actions/download-artifact@v4

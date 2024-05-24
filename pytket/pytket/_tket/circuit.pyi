@@ -3250,7 +3250,11 @@ class OpType:
     
       NPhasedX : :math:`(\\alpha, \\beta) \\mapsto \\mathrm{PhasedX}(\\alpha, \\beta)^{\\otimes n}` (n-qubit gate composed of identical PhasedX in parallel.
     
+      CnRx : :math:`(\\alpha)` := n-controlled :math:`\\mathrm{Rx}(\\alpha)` gate.
+    
       CnRy : :math:`(\\alpha)` := n-controlled :math:`\\mathrm{Ry}(\\alpha)` gate.
+    
+      CnRz : :math:`(\\alpha)` := n-controlled :math:`\\mathrm{Rz}(\\alpha)` gate.
     
       CnX : n-controlled X gate.
     
@@ -3319,22 +3323,24 @@ class OpType:
     CX: typing.ClassVar[OpType]  # value = <OpType.CX: 45>
     CY: typing.ClassVar[OpType]  # value = <OpType.CY: 46>
     CZ: typing.ClassVar[OpType]  # value = <OpType.CZ: 47>
-    CircBox: typing.ClassVar[OpType]  # value = <OpType.CircBox: 87>
-    ClassicalExpBox: typing.ClassVar[OpType]  # value = <OpType.ClassicalExpBox: 107>
+    CircBox: typing.ClassVar[OpType]  # value = <OpType.CircBox: 89>
+    ClassicalExpBox: typing.ClassVar[OpType]  # value = <OpType.ClassicalExpBox: 109>
     ClassicalTransform: typing.ClassVar[OpType]  # value = <OpType.ClassicalTransform: 13>
+    CnRx: typing.ClassVar[OpType]  # value = <OpType.CnRx: 84>
     CnRy: typing.ClassVar[OpType]  # value = <OpType.CnRy: 83>
-    CnX: typing.ClassVar[OpType]  # value = <OpType.CnX: 84>
-    CnY: typing.ClassVar[OpType]  # value = <OpType.CnY: 86>
-    CnZ: typing.ClassVar[OpType]  # value = <OpType.CnZ: 85>
-    Conditional: typing.ClassVar[OpType]  # value = <OpType.Conditional: 108>
-    ConjugationBox: typing.ClassVar[OpType]  # value = <OpType.ConjugationBox: 106>
+    CnRz: typing.ClassVar[OpType]  # value = <OpType.CnRz: 85>
+    CnX: typing.ClassVar[OpType]  # value = <OpType.CnX: 86>
+    CnY: typing.ClassVar[OpType]  # value = <OpType.CnY: 88>
+    CnZ: typing.ClassVar[OpType]  # value = <OpType.CnZ: 87>
+    Conditional: typing.ClassVar[OpType]  # value = <OpType.Conditional: 110>
+    ConjugationBox: typing.ClassVar[OpType]  # value = <OpType.ConjugationBox: 108>
     CopyBits: typing.ClassVar[OpType]  # value = <OpType.CopyBits: 16>
-    CustomGate: typing.ClassVar[OpType]  # value = <OpType.CustomGate: 97>
-    DiagonalBox: typing.ClassVar[OpType]  # value = <OpType.DiagonalBox: 105>
-    DummyBox: typing.ClassVar[OpType]  # value = <OpType.DummyBox: 113>
+    CustomGate: typing.ClassVar[OpType]  # value = <OpType.CustomGate: 99>
+    DiagonalBox: typing.ClassVar[OpType]  # value = <OpType.DiagonalBox: 107>
+    DummyBox: typing.ClassVar[OpType]  # value = <OpType.DummyBox: 115>
     ECR: typing.ClassVar[OpType]  # value = <OpType.ECR: 69>
     ESWAP: typing.ClassVar[OpType]  # value = <OpType.ESWAP: 78>
-    ExpBox: typing.ClassVar[OpType]  # value = <OpType.ExpBox: 91>
+    ExpBox: typing.ClassVar[OpType]  # value = <OpType.ExpBox: 93>
     ExplicitModifier: typing.ClassVar[OpType]  # value = <OpType.ExplicitModifier: 19>
     ExplicitPredicate: typing.ClassVar[OpType]  # value = <OpType.ExplicitPredicate: 18>
     FSim: typing.ClassVar[OpType]  # value = <OpType.FSim: 79>
@@ -3347,19 +3353,19 @@ class OpType:
     Label: typing.ClassVar[OpType]  # value = <OpType.Label: 9>
     Measure: typing.ClassVar[OpType]  # value = <OpType.Measure: 66>
     MultiBit: typing.ClassVar[OpType]  # value = <OpType.MultiBit: 20>
-    MultiplexedRotationBox: typing.ClassVar[OpType]  # value = <OpType.MultiplexedRotationBox: 101>
-    MultiplexedTensoredU2Box: typing.ClassVar[OpType]  # value = <OpType.MultiplexedTensoredU2Box: 103>
-    MultiplexedU2Box: typing.ClassVar[OpType]  # value = <OpType.MultiplexedU2Box: 102>
-    MultiplexorBox: typing.ClassVar[OpType]  # value = <OpType.MultiplexorBox: 100>
+    MultiplexedRotationBox: typing.ClassVar[OpType]  # value = <OpType.MultiplexedRotationBox: 103>
+    MultiplexedTensoredU2Box: typing.ClassVar[OpType]  # value = <OpType.MultiplexedTensoredU2Box: 105>
+    MultiplexedU2Box: typing.ClassVar[OpType]  # value = <OpType.MultiplexedU2Box: 104>
+    MultiplexorBox: typing.ClassVar[OpType]  # value = <OpType.MultiplexorBox: 102>
     NPhasedX: typing.ClassVar[OpType]  # value = <OpType.NPhasedX: 72>
-    PauliExpBox: typing.ClassVar[OpType]  # value = <OpType.PauliExpBox: 92>
-    PauliExpCommutingSetBox: typing.ClassVar[OpType]  # value = <OpType.PauliExpCommutingSetBox: 94>
-    PauliExpPairBox: typing.ClassVar[OpType]  # value = <OpType.PauliExpPairBox: 93>
+    PauliExpBox: typing.ClassVar[OpType]  # value = <OpType.PauliExpBox: 94>
+    PauliExpCommutingSetBox: typing.ClassVar[OpType]  # value = <OpType.PauliExpCommutingSetBox: 96>
+    PauliExpPairBox: typing.ClassVar[OpType]  # value = <OpType.PauliExpPairBox: 95>
     Phase: typing.ClassVar[OpType]  # value = <OpType.Phase: 21>
-    PhasePolyBox: typing.ClassVar[OpType]  # value = <OpType.PhasePolyBox: 98>
+    PhasePolyBox: typing.ClassVar[OpType]  # value = <OpType.PhasePolyBox: 100>
     PhasedISWAP: typing.ClassVar[OpType]  # value = <OpType.PhasedISWAP: 82>
     PhasedX: typing.ClassVar[OpType]  # value = <OpType.PhasedX: 71>
-    QControlBox: typing.ClassVar[OpType]  # value = <OpType.QControlBox: 99>
+    QControlBox: typing.ClassVar[OpType]  # value = <OpType.QControlBox: 101>
     RangePredicate: typing.ClassVar[OpType]  # value = <OpType.RangePredicate: 17>
     Reset: typing.ClassVar[OpType]  # value = <OpType.Reset: 68>
     Rx: typing.ClassVar[OpType]  # value = <OpType.Rx: 34>
@@ -3371,21 +3377,21 @@ class OpType:
     SXdg: typing.ClassVar[OpType]  # value = <OpType.SXdg: 32>
     Sdg: typing.ClassVar[OpType]  # value = <OpType.Sdg: 26>
     SetBits: typing.ClassVar[OpType]  # value = <OpType.SetBits: 15>
-    StatePreparationBox: typing.ClassVar[OpType]  # value = <OpType.StatePreparationBox: 104>
+    StatePreparationBox: typing.ClassVar[OpType]  # value = <OpType.StatePreparationBox: 106>
     Stop: typing.ClassVar[OpType]  # value = <OpType.Stop: 12>
     Sycamore: typing.ClassVar[OpType]  # value = <OpType.Sycamore: 80>
     T: typing.ClassVar[OpType]  # value = <OpType.T: 27>
     TK1: typing.ClassVar[OpType]  # value = <OpType.TK1: 43>
     TK2: typing.ClassVar[OpType]  # value = <OpType.TK2: 44>
     Tdg: typing.ClassVar[OpType]  # value = <OpType.Tdg: 28>
-    TermSequenceBox: typing.ClassVar[OpType]  # value = <OpType.TermSequenceBox: 95>
-    ToffoliBox: typing.ClassVar[OpType]  # value = <OpType.ToffoliBox: 111>
+    TermSequenceBox: typing.ClassVar[OpType]  # value = <OpType.TermSequenceBox: 97>
+    ToffoliBox: typing.ClassVar[OpType]  # value = <OpType.ToffoliBox: 113>
     U1: typing.ClassVar[OpType]  # value = <OpType.U1: 39>
     U2: typing.ClassVar[OpType]  # value = <OpType.U2: 38>
     U3: typing.ClassVar[OpType]  # value = <OpType.U3: 37>
-    Unitary1qBox: typing.ClassVar[OpType]  # value = <OpType.Unitary1qBox: 88>
-    Unitary2qBox: typing.ClassVar[OpType]  # value = <OpType.Unitary2qBox: 89>
-    Unitary3qBox: typing.ClassVar[OpType]  # value = <OpType.Unitary3qBox: 90>
+    Unitary1qBox: typing.ClassVar[OpType]  # value = <OpType.Unitary1qBox: 90>
+    Unitary2qBox: typing.ClassVar[OpType]  # value = <OpType.Unitary2qBox: 91>
+    Unitary3qBox: typing.ClassVar[OpType]  # value = <OpType.Unitary3qBox: 92>
     V: typing.ClassVar[OpType]  # value = <OpType.V: 29>
     Vdg: typing.ClassVar[OpType]  # value = <OpType.Vdg: 30>
     WASM: typing.ClassVar[OpType]  # value = <OpType.WASM: 14>
@@ -3397,7 +3403,7 @@ class OpType:
     Z: typing.ClassVar[OpType]  # value = <OpType.Z: 22>
     ZZMax: typing.ClassVar[OpType]  # value = <OpType.ZZMax: 73>
     ZZPhase: typing.ClassVar[OpType]  # value = <OpType.ZZPhase: 76>
-    __members__: typing.ClassVar[dict[str, OpType]]  # value = {'Phase': <OpType.Phase: 21>, 'Z': <OpType.Z: 22>, 'X': <OpType.X: 23>, 'Y': <OpType.Y: 24>, 'S': <OpType.S: 25>, 'Sdg': <OpType.Sdg: 26>, 'T': <OpType.T: 27>, 'Tdg': <OpType.Tdg: 28>, 'V': <OpType.V: 29>, 'Vdg': <OpType.Vdg: 30>, 'SX': <OpType.SX: 31>, 'SXdg': <OpType.SXdg: 32>, 'H': <OpType.H: 33>, 'Rx': <OpType.Rx: 34>, 'Ry': <OpType.Ry: 35>, 'Rz': <OpType.Rz: 36>, 'U1': <OpType.U1: 39>, 'U2': <OpType.U2: 38>, 'U3': <OpType.U3: 37>, 'GPI': <OpType.GPI: 40>, 'GPI2': <OpType.GPI2: 41>, 'AAMS': <OpType.AAMS: 42>, 'TK1': <OpType.TK1: 43>, 'TK2': <OpType.TK2: 44>, 'CX': <OpType.CX: 45>, 'CY': <OpType.CY: 46>, 'CZ': <OpType.CZ: 47>, 'CH': <OpType.CH: 48>, 'CV': <OpType.CV: 49>, 'CVdg': <OpType.CVdg: 50>, 'CSX': <OpType.CSX: 51>, 'CSXdg': <OpType.CSXdg: 52>, 'CS': <OpType.CS: 53>, 'CSdg': <OpType.CSdg: 54>, 'CRz': <OpType.CRz: 55>, 'CRx': <OpType.CRx: 56>, 'CRy': <OpType.CRy: 57>, 'CU1': <OpType.CU1: 58>, 'CU3': <OpType.CU3: 59>, 'CCX': <OpType.CCX: 61>, 'ECR': <OpType.ECR: 69>, 'SWAP': <OpType.SWAP: 62>, 'CSWAP': <OpType.CSWAP: 63>, 'noop': <OpType.noop: 65>, 'Barrier': <OpType.Barrier: 8>, 'Label': <OpType.Label: 9>, 'Branch': <OpType.Branch: 10>, 'Goto': <OpType.Goto: 11>, 'Stop': <OpType.Stop: 12>, 'BRIDGE': <OpType.BRIDGE: 64>, 'Measure': <OpType.Measure: 66>, 'Reset': <OpType.Reset: 68>, 'CircBox': <OpType.CircBox: 87>, 'PhasePolyBox': <OpType.PhasePolyBox: 98>, 'Unitary1qBox': <OpType.Unitary1qBox: 88>, 'Unitary2qBox': <OpType.Unitary2qBox: 89>, 'Unitary3qBox': <OpType.Unitary3qBox: 90>, 'ExpBox': <OpType.ExpBox: 91>, 'PauliExpBox': <OpType.PauliExpBox: 92>, 'PauliExpPairBox': <OpType.PauliExpPairBox: 93>, 'PauliExpCommutingSetBox': <OpType.PauliExpCommutingSetBox: 94>, 'TermSequenceBox': <OpType.TermSequenceBox: 95>, 'QControlBox': <OpType.QControlBox: 99>, 'ToffoliBox': <OpType.ToffoliBox: 111>, 'ConjugationBox': <OpType.ConjugationBox: 106>, 'DummyBox': <OpType.DummyBox: 113>, 'CustomGate': <OpType.CustomGate: 97>, 'Conditional': <OpType.Conditional: 108>, 'ISWAP': <OpType.ISWAP: 70>, 'PhasedISWAP': <OpType.PhasedISWAP: 82>, 'XXPhase': <OpType.XXPhase: 74>, 'YYPhase': <OpType.YYPhase: 75>, 'ZZPhase': <OpType.ZZPhase: 76>, 'XXPhase3': <OpType.XXPhase3: 77>, 'PhasedX': <OpType.PhasedX: 71>, 'NPhasedX': <OpType.NPhasedX: 72>, 'CnRy': <OpType.CnRy: 83>, 'CnX': <OpType.CnX: 84>, 'CnY': <OpType.CnY: 86>, 'CnZ': <OpType.CnZ: 85>, 'ZZMax': <OpType.ZZMax: 73>, 'ESWAP': <OpType.ESWAP: 78>, 'FSim': <OpType.FSim: 79>, 'Sycamore': <OpType.Sycamore: 80>, 'ISWAPMax': <OpType.ISWAPMax: 81>, 'ClassicalTransform': <OpType.ClassicalTransform: 13>, 'WASM': <OpType.WASM: 14>, 'SetBits': <OpType.SetBits: 15>, 'CopyBits': <OpType.CopyBits: 16>, 'RangePredicate': <OpType.RangePredicate: 17>, 'ExplicitPredicate': <OpType.ExplicitPredicate: 18>, 'ExplicitModifier': <OpType.ExplicitModifier: 19>, 'MultiBit': <OpType.MultiBit: 20>, 'ClassicalExpBox': <OpType.ClassicalExpBox: 107>, 'MultiplexorBox': <OpType.MultiplexorBox: 100>, 'MultiplexedRotationBox': <OpType.MultiplexedRotationBox: 101>, 'MultiplexedU2Box': <OpType.MultiplexedU2Box: 102>, 'MultiplexedTensoredU2Box': <OpType.MultiplexedTensoredU2Box: 103>, 'StatePreparationBox': <OpType.StatePreparationBox: 104>, 'DiagonalBox': <OpType.DiagonalBox: 105>}
+    __members__: typing.ClassVar[dict[str, OpType]]  # value = {'Phase': <OpType.Phase: 21>, 'Z': <OpType.Z: 22>, 'X': <OpType.X: 23>, 'Y': <OpType.Y: 24>, 'S': <OpType.S: 25>, 'Sdg': <OpType.Sdg: 26>, 'T': <OpType.T: 27>, 'Tdg': <OpType.Tdg: 28>, 'V': <OpType.V: 29>, 'Vdg': <OpType.Vdg: 30>, 'SX': <OpType.SX: 31>, 'SXdg': <OpType.SXdg: 32>, 'H': <OpType.H: 33>, 'Rx': <OpType.Rx: 34>, 'Ry': <OpType.Ry: 35>, 'Rz': <OpType.Rz: 36>, 'U1': <OpType.U1: 39>, 'U2': <OpType.U2: 38>, 'U3': <OpType.U3: 37>, 'GPI': <OpType.GPI: 40>, 'GPI2': <OpType.GPI2: 41>, 'AAMS': <OpType.AAMS: 42>, 'TK1': <OpType.TK1: 43>, 'TK2': <OpType.TK2: 44>, 'CX': <OpType.CX: 45>, 'CY': <OpType.CY: 46>, 'CZ': <OpType.CZ: 47>, 'CH': <OpType.CH: 48>, 'CV': <OpType.CV: 49>, 'CVdg': <OpType.CVdg: 50>, 'CSX': <OpType.CSX: 51>, 'CSXdg': <OpType.CSXdg: 52>, 'CS': <OpType.CS: 53>, 'CSdg': <OpType.CSdg: 54>, 'CRz': <OpType.CRz: 55>, 'CRx': <OpType.CRx: 56>, 'CRy': <OpType.CRy: 57>, 'CU1': <OpType.CU1: 58>, 'CU3': <OpType.CU3: 59>, 'CCX': <OpType.CCX: 61>, 'ECR': <OpType.ECR: 69>, 'SWAP': <OpType.SWAP: 62>, 'CSWAP': <OpType.CSWAP: 63>, 'noop': <OpType.noop: 65>, 'Barrier': <OpType.Barrier: 8>, 'Label': <OpType.Label: 9>, 'Branch': <OpType.Branch: 10>, 'Goto': <OpType.Goto: 11>, 'Stop': <OpType.Stop: 12>, 'BRIDGE': <OpType.BRIDGE: 64>, 'Measure': <OpType.Measure: 66>, 'Reset': <OpType.Reset: 68>, 'CircBox': <OpType.CircBox: 89>, 'PhasePolyBox': <OpType.PhasePolyBox: 100>, 'Unitary1qBox': <OpType.Unitary1qBox: 90>, 'Unitary2qBox': <OpType.Unitary2qBox: 91>, 'Unitary3qBox': <OpType.Unitary3qBox: 92>, 'ExpBox': <OpType.ExpBox: 93>, 'PauliExpBox': <OpType.PauliExpBox: 94>, 'PauliExpPairBox': <OpType.PauliExpPairBox: 95>, 'PauliExpCommutingSetBox': <OpType.PauliExpCommutingSetBox: 96>, 'TermSequenceBox': <OpType.TermSequenceBox: 97>, 'QControlBox': <OpType.QControlBox: 101>, 'ToffoliBox': <OpType.ToffoliBox: 113>, 'ConjugationBox': <OpType.ConjugationBox: 108>, 'DummyBox': <OpType.DummyBox: 115>, 'CustomGate': <OpType.CustomGate: 99>, 'Conditional': <OpType.Conditional: 110>, 'ISWAP': <OpType.ISWAP: 70>, 'PhasedISWAP': <OpType.PhasedISWAP: 82>, 'XXPhase': <OpType.XXPhase: 74>, 'YYPhase': <OpType.YYPhase: 75>, 'ZZPhase': <OpType.ZZPhase: 76>, 'XXPhase3': <OpType.XXPhase3: 77>, 'PhasedX': <OpType.PhasedX: 71>, 'NPhasedX': <OpType.NPhasedX: 72>, 'CnRx': <OpType.CnRx: 84>, 'CnRy': <OpType.CnRy: 83>, 'CnRz': <OpType.CnRz: 85>, 'CnX': <OpType.CnX: 86>, 'CnY': <OpType.CnY: 88>, 'CnZ': <OpType.CnZ: 87>, 'ZZMax': <OpType.ZZMax: 73>, 'ESWAP': <OpType.ESWAP: 78>, 'FSim': <OpType.FSim: 79>, 'Sycamore': <OpType.Sycamore: 80>, 'ISWAPMax': <OpType.ISWAPMax: 81>, 'ClassicalTransform': <OpType.ClassicalTransform: 13>, 'WASM': <OpType.WASM: 14>, 'SetBits': <OpType.SetBits: 15>, 'CopyBits': <OpType.CopyBits: 16>, 'RangePredicate': <OpType.RangePredicate: 17>, 'ExplicitPredicate': <OpType.ExplicitPredicate: 18>, 'ExplicitModifier': <OpType.ExplicitModifier: 19>, 'MultiBit': <OpType.MultiBit: 20>, 'ClassicalExpBox': <OpType.ClassicalExpBox: 109>, 'MultiplexorBox': <OpType.MultiplexorBox: 102>, 'MultiplexedRotationBox': <OpType.MultiplexedRotationBox: 103>, 'MultiplexedU2Box': <OpType.MultiplexedU2Box: 104>, 'MultiplexedTensoredU2Box': <OpType.MultiplexedTensoredU2Box: 105>, 'StatePreparationBox': <OpType.StatePreparationBox: 106>, 'DiagonalBox': <OpType.DiagonalBox: 107>}
     noop: typing.ClassVar[OpType]  # value = <OpType.noop: 65>
     @staticmethod
     def from_name(arg0: str) -> OpType:

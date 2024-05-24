@@ -108,6 +108,10 @@ Vertex Circuit::add_op<unsigned>(
   }
   if (optype == OpType::CnRy && args.size() == 1) {
     return add_op(get_op_ptr(OpType::Ry, gate->get_params()), arg_ids);
+  } else if (optype == OpType::CnRx && args.size() == 1) {
+    return add_op(get_op_ptr(OpType::Rx, gate->get_params()), arg_ids);
+  } else if (optype == OpType::CnRz && args.size() == 1) {
+    return add_op(get_op_ptr(OpType::Rz, gate->get_params()), arg_ids);
   } else if (optype == OpType::CnX && args.size() == 1) {
     return add_op(get_op_ptr(OpType::X), arg_ids);
   } else if (optype == OpType::CnZ && args.size() == 1) {

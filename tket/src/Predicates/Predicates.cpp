@@ -52,8 +52,7 @@ static std::string auto_name(const T&) {
   return predicate_name(typeid(T));
 }
 
-#define SET_PRED_NAME(a) \
-  { typeid(a), #a }
+#define SET_PRED_NAME(a) {typeid(a), #a}
 
 const std::string& predicate_name(std::type_index idx) {
   static const std::map<std::type_index, std::string> predicate_names = {

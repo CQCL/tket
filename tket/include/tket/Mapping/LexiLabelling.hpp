@@ -25,7 +25,7 @@ class LexiLabellingMethod : public RoutingMethod {
    * Checking and Routing methods redefined for dynamically assigning qubits to
    * some Architecture.
    */
-  LexiLabellingMethod(){};
+  LexiLabellingMethod() {};
 
   /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for

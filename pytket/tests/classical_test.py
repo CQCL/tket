@@ -56,6 +56,7 @@ from pytket.circuit.logic_exp import (
     RegPow,
     RegWiseOp,
     UnaryOp,
+    NullaryOp,
     reg_eq,
     reg_geq,
     reg_gt,
@@ -763,14 +764,16 @@ def primitive_bit_logic_exps(
     bits: SearchStrategy[Bit] = bits(),
 ) -> BitLogicExp:
     op = draw(ops)
-    args = [draw(bits)]
+    args = []
     exp_type = LogicExp.factory(op)
-    if issubclass(exp_type, BinaryOp):
-        if issubclass(exp_type, PredicateExp):
-            const_compare = draw(binary_digits)
-            args.append(Bit(const_compare))
-        else:
-            args.append(draw(bits))
+    if not issubclass(exp_type, NullaryOp):
+        args.append(draw(bits))
+        if issubclass(exp_type, BinaryOp):
+            if issubclass(exp_type, PredicateExp):
+                const_compare = draw(binary_digits)
+                args.append(Bit(const_compare))
+            else:
+                args.append(draw(bits))
     exp = create_bit_logic_exp(op, args)
     assert isinstance(exp, BitLogicExp)
     return exp
@@ -798,6 +801,8 @@ def test_bit_exp(bit_exp: BitLogicExp, constants: Tuple[int, int]) -> None:
         BitWiseOp.NOT: operator.not_,
         BitWiseOp.EQ: operator.eq,
         BitWiseOp.NEQ: operator.ne,
+        BitWiseOp.ZERO: lambda: 0,
+        BitWiseOp.ONE: lambda: 1,
     }
     op_map = {key: overflow_wrapper(val, 2) for key, val in op_map.items()}
     eval_val = bit_exp.eval_vals()

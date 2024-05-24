@@ -804,6 +804,46 @@ Circuit CnRy_normal_decomp(const Op_ptr op, unsigned arity) {
   return rep;
 }
 
+Circuit CnRz_normal_decomp(const Op_ptr op, unsigned arity) {
+  if (op->get_type() != OpType::CnRz) {
+    throw CircuitInvalidity("Operation not CnRz");
+  }
+  OpDesc desc = op->get_desc();
+  Expr angle = op->get_params()[0];
+  Circuit cnry_circuit =
+      CnRy_normal_decomp(get_op_ptr(OpType::CnRy, angle), arity);
+  TKET_ASSERT(cnry_circuit.n_qubits() == arity);
+  // The target to the CnRy gate will be to the qubit indexed as arity-1
+  // Therefore we add basis change Clifford gates to this qubit
+  Circuit rep(arity);
+
+  rep.add_op<unsigned>(OpType::H, {arity - 1});
+  rep.add_op<unsigned>(OpType::S, {arity - 1});
+  rep.append(cnry_circuit);
+  rep.add_op<unsigned>(OpType::Sdg, {arity - 1});
+  rep.add_op<unsigned>(OpType::H, {arity - 1});
+  return rep;
+}
+
+Circuit CnRx_normal_decomp(const Op_ptr op, unsigned arity) {
+  if (op->get_type() != OpType::CnRx) {
+    throw CircuitInvalidity("Operation not CnR");
+  }
+  OpDesc desc = op->get_desc();
+  Expr angle = op->get_params()[0];
+  Circuit cnry_circuit =
+      CnRy_normal_decomp(get_op_ptr(OpType::CnRy, angle), arity);
+  TKET_ASSERT(cnry_circuit.n_qubits() == arity);
+  // The target to the CnRy gate will be to the qubit indexed as arity-1
+  // Therefore we add basis change Clifford gates to this qubit
+  Circuit rep(arity);
+
+  rep.add_op<unsigned>(OpType::S, {arity - 1});
+  rep.append(cnry_circuit);
+  rep.add_op<unsigned>(OpType::Sdg, {arity - 1});
+  return rep;
+}
+
 // decompose CnX gate using lemma 7.1
 // `n` = no. of controls
 Circuit CnX_gray_decomp(unsigned n) {

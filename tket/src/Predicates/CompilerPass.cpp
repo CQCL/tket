@@ -487,6 +487,10 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
           content.at("pauli_synth_strat").get<Transforms::PauliSynthStrat>();
       CXConfigType cxc = content.at("cx_config").get<CXConfigType>();
       pp = gen_pauli_exponentials(pss, cxc);
+    } else if (passname == "GreedyPauliSimp") {
+      double discount_rate = content.at("discount_rate").get<double>();
+      double depth_weight = content.at("depth_weight").get<double>();
+      pp = gen_greedy_pauli_simp(discount_rate, depth_weight);
     } else if (passname == "PauliSimp") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Transforms::PauliSynthStrat pss =

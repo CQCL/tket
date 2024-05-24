@@ -287,6 +287,14 @@ Transform rebase_UMD() {
       CircPool::CX_using_XXPhase_0(), CircPool::tk1_to_PhasedXRz);
 }
 
+// Multiqs: AAMS
+// Singleqs: GPI, GPI2
+Transform rebase_ionq() {
+  return rebase_factory(
+      {OpType::GPI, OpType::GPI2, OpType::AAMS}, CircPool::CX_using_AAMS(),
+      CircPool::TK1_using_GPI);
+}
+
 }  // namespace Transforms
 
 }  // namespace tket

@@ -2,7 +2,7 @@ from __future__ import annotations
 import pytket._tket.circuit
 import sympy
 import typing
-__all__ = ['BRIDGE', 'BRIDGE_using_CX_0', 'BRIDGE_using_CX_1', 'C3X_normal_decomp', 'C4X_normal_decomp', 'CCX', 'CCX_modulo_phase_shift', 'CCX_normal_decomp', 'CH_using_CX', 'CRx_using_CX', 'CRx_using_TK2', 'CRy_using_CX', 'CRy_using_TK2', 'CRz_using_CX', 'CRz_using_TK2', 'CSWAP_using_CX', 'CSX_using_CX', 'CSXdg_using_CX', 'CS_using_CX', 'CSdg_using_CX', 'CU1_using_CX', 'CU1_using_TK2', 'CU3_using_CX', 'CV_using_CX', 'CVdg_using_CX', 'CX', 'CX_S_CX_reduced', 'CX_S_V_XC_reduced', 'CX_VS_CX_reduced', 'CX_V_CX_reduced', 'CX_V_S_XC_reduced', 'CX_XC_reduced', 'CX_using_ECR', 'CX_using_TK2', 'CX_using_XXPhase_0', 'CX_using_XXPhase_1', 'CX_using_ZZMax', 'CX_using_ZZPhase', 'CX_using_flipped_CX', 'CY_using_CX', 'CZ_using_CX', 'ECR_using_CX', 'ESWAP_using_CX', 'ESWAP_using_TK2', 'FSim_using_CX', 'FSim_using_TK2', 'H_CZ_H', 'ISWAP_using_CX', 'ISWAP_using_TK2', 'NPhasedX_using_PhasedX', 'PhasedISWAP_using_CX', 'PhasedISWAP_using_TK2', 'SWAP_using_CX_0', 'SWAP_using_CX_1', 'TK1_to_PhasedXRz', 'TK1_to_RzH', 'TK1_to_RzRx', 'TK1_to_RzSX', 'TK1_to_TK1', 'TK2_using_3xCX', 'TK2_using_CX', 'TK2_using_CX_and_swap', 'TK2_using_TK2_or_swap', 'TK2_using_ZZMax', 'TK2_using_ZZMax_and_swap', 'TK2_using_ZZPhase', 'TK2_using_ZZPhase_and_swap', 'TK2_using_normalised_TK2', 'X', 'X1_CX', 'XXPhase3_using_CX', 'XXPhase3_using_TK2', 'XXPhase_using_CX', 'XXPhase_using_TK2', 'YYPhase_using_CX', 'YYPhase_using_TK2', 'Z0_CX', 'ZZMax_using_CX', 'ZZPhase_using_CX', 'ZZPhase_using_TK2', 'approx_TK2_using_1xCX', 'approx_TK2_using_1xZZPhase', 'approx_TK2_using_2xCX', 'approx_TK2_using_2xZZPhase', 'ladder_down', 'ladder_down_2', 'ladder_up']
+__all__ = ['BRIDGE', 'BRIDGE_using_CX_0', 'BRIDGE_using_CX_1', 'C3X_normal_decomp', 'C4X_normal_decomp', 'CCX', 'CCX_modulo_phase_shift', 'CCX_normal_decomp', 'CH_using_CX', 'CRx_using_CX', 'CRx_using_TK2', 'CRy_using_CX', 'CRy_using_TK2', 'CRz_using_CX', 'CRz_using_TK2', 'CSWAP_using_CX', 'CSX_using_CX', 'CSXdg_using_CX', 'CS_using_CX', 'CSdg_using_CX', 'CU1_using_CX', 'CU1_using_TK2', 'CU3_using_CX', 'CV_using_CX', 'CVdg_using_CX', 'CX', 'CX_S_CX_reduced', 'CX_S_V_XC_reduced', 'CX_VS_CX_reduced', 'CX_V_CX_reduced', 'CX_V_S_XC_reduced', 'CX_XC_reduced', 'CX_using_AAMS', 'CX_using_ECR', 'CX_using_TK2', 'CX_using_XXPhase_0', 'CX_using_XXPhase_1', 'CX_using_ZZMax', 'CX_using_ZZPhase', 'CX_using_flipped_CX', 'CY_using_CX', 'CZ_using_CX', 'ECR_using_CX', 'ESWAP_using_CX', 'ESWAP_using_TK2', 'FSim_using_CX', 'FSim_using_TK2', 'H_CZ_H', 'ISWAP_using_CX', 'ISWAP_using_TK2', 'NPhasedX_using_PhasedX', 'PhasedISWAP_using_CX', 'PhasedISWAP_using_TK2', 'Rx_using_GPI', 'Ry_using_GPI', 'Rz_using_GPI', 'SWAP_using_CX_0', 'SWAP_using_CX_1', 'TK1_to_PhasedXRz', 'TK1_to_RzH', 'TK1_to_RzRx', 'TK1_to_RzSX', 'TK1_to_TK1', 'TK1_using_GPI', 'TK2_using_3xCX', 'TK2_using_AAMS', 'TK2_using_CX', 'TK2_using_CX_and_swap', 'TK2_using_TK2_or_swap', 'TK2_using_ZZMax', 'TK2_using_ZZMax_and_swap', 'TK2_using_ZZPhase', 'TK2_using_ZZPhase_and_swap', 'TK2_using_normalised_TK2', 'X', 'X1_CX', 'XXPhase3_using_CX', 'XXPhase3_using_TK2', 'XXPhase_using_AAMS', 'XXPhase_using_CX', 'XXPhase_using_TK2', 'YYPhase_using_AAMS', 'YYPhase_using_CX', 'YYPhase_using_TK2', 'Z0_CX', 'ZZMax_using_CX', 'ZZPhase_using_AAMS', 'ZZPhase_using_CX', 'ZZPhase_using_TK2', 'approx_TK2_using_1xCX', 'approx_TK2_using_1xZZPhase', 'approx_TK2_using_2xCX', 'approx_TK2_using_2xZZPhase', 'ladder_down', 'ladder_down_2', 'ladder_up']
 def BRIDGE() -> pytket._tket.circuit.Circuit:
     """
     Just a BRIDGE[0,1,2] gate
@@ -131,6 +131,10 @@ def CX_XC_reduced() -> pytket._tket.circuit.Circuit:
     """
     CX-reduced form of CX/XC
     """
+def CX_using_AAMS() -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to CX, using AAMS, GPI and GPI2 gates
+    """
 def CX_using_ECR() -> pytket._tket.circuit.Circuit:
     """
     Equivalent to CX, using only ECR, Rx and U3 gates
@@ -211,6 +215,18 @@ def PhasedISWAP_using_TK2(arg0: sympy.Expr | float, arg1: sympy.Expr | float) ->
     """
     Equivalent to PhasedISWAP, using a TK2 and Rz gates
     """
+def Rx_using_GPI(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to Rx, using GPI and GPI2 gates
+    """
+def Ry_using_GPI(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to Ry, using GPI and GPI2 gates
+    """
+def Rz_using_GPI(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to Rz, using GPI gates
+    """
 def SWAP_using_CX_0() -> pytket._tket.circuit.Circuit:
     """
     Equivalent to SWAP, using three CX, outer CX have control on qubit 0
@@ -239,11 +255,19 @@ def TK1_to_TK1(arg0: sympy.Expr | float, arg1: sympy.Expr | float, arg2: sympy.E
     """
     A circuit of a single tk1 gate with given parameters
     """
+def TK1_using_GPI(arg0: sympy.Expr | float, arg1: sympy.Expr | float, arg2: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to TK1, using GPI and GPI2 gates
+    """
 def TK2_using_3xCX(arg0: sympy.Expr | float, arg1: sympy.Expr | float, arg2: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
     """
     Given expressions α, β and γ, return circuit equivalent to TK2(α, β, γ) using 3 CX and single-qubit gates.
     
     Prefer using `_TK2_using_CX` unless you wish to explicitly use 3 CX or if α, β and γ are not normalised to the Weyl chamber.
+    """
+def TK2_using_AAMS(arg0: sympy.Expr | float, arg1: sympy.Expr | float, arg2: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to TK2, using AAMS, GPI and GPI2 gates
     """
 def TK2_using_CX(arg0: sympy.Expr | float, arg1: sympy.Expr | float, arg2: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
     """
@@ -297,6 +321,10 @@ def XXPhase3_using_TK2(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit
     """
     Equivalent to XXPhase3, using three TK2 gates
     """
+def XXPhase_using_AAMS(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to XXPhase, using AAMS gates
+    """
 def XXPhase_using_CX(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
     """
     Equivalent to XXPhase, using CX and U3 gates 
@@ -304,6 +332,10 @@ def XXPhase_using_CX(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
 def XXPhase_using_TK2(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
     """
     Equivalent to XXPhase, using a TK2 gate
+    """
+def YYPhase_using_AAMS(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to YYPhase, using AAMS gates
     """
 def YYPhase_using_CX(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
     """
@@ -320,6 +352,10 @@ def Z0_CX() -> pytket._tket.circuit.Circuit:
 def ZZMax_using_CX() -> pytket._tket.circuit.Circuit:
     """
     Equivalent to ZZMax, using CX, Rz and U3 gates 
+    """
+def ZZPhase_using_AAMS(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to ZZPhase, using AAMS, GPI and GPI2 gates
     """
 def ZZPhase_using_CX(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
     """

@@ -37,6 +37,7 @@
 #include "tket/Transformations/Replacement.hpp"
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 namespace test_Circ {
@@ -1498,6 +1499,19 @@ SCENARIO("Test circuit.transpose() method") {
     REQUIRE(matrices_are_equal(ubox_t->get_matrix(), m.transpose()));
     REQUIRE(*cx_t_ptr == *get_op_ptr(OpType::CX));
   }
+  GIVEN("Circuit with barriers") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::Y, {0});
+    circ.add_barrier({0, 1}, {}, "comment");
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    Circuit correct_transposed(2);
+    correct_transposed.add_op<unsigned>(OpType::CX, {0, 1});
+    correct_transposed.add_barrier({0, 1}, {}, "comment");
+    correct_transposed.add_op<unsigned>(OpType::U3, {3, 0.5, 0.5}, {0});
+    Circuit transposed = circ.transpose();
+    REQUIRE(transposed == correct_transposed);
+    transposed.assert_valid();
+  }
 }
 
 SCENARIO("Test circuit.dagger() method") {
@@ -1533,6 +1547,19 @@ SCENARIO("Test circuit.dagger() method") {
     const Eigen::MatrixXcd u = tket_sim::get_unitary(circ);
     const Eigen::MatrixXcd udag = tket_sim::get_unitary(daggered);
     REQUIRE(u.adjoint().isApprox(udag, ERR_EPS));
+  }
+  GIVEN("Circuit with barriers") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::Sdg, {0});
+    circ.add_barrier({0, 1}, {}, "comment");
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    Circuit correct_daggered(2);
+    correct_daggered.add_op<unsigned>(OpType::CX, {0, 1});
+    correct_daggered.add_barrier({0, 1}, {}, "comment");
+    correct_daggered.add_op<unsigned>(OpType::S, {0});
+    Circuit daggered = circ.dagger();
+    REQUIRE(daggered == correct_daggered);
+    daggered.assert_valid();
   }
 }
 
@@ -2685,6 +2712,10 @@ SCENARIO("Confirm that LaTeX output compiles", "[latex][.long]") {
   c.add_conditional_gate<unsigned>(OpType::CnZ, {}, {0, 1, 2, 4, 3}, {}, 0);
   c.add_conditional_gate<unsigned>(
       OpType::CnRy, {-0.57}, {0, 3, 2, 4, 1}, {}, 0);
+  c.add_conditional_gate<unsigned>(
+      OpType::CnRx, {-0.57}, {0, 3, 2, 4, 1}, {}, 0);
+  c.add_conditional_gate<unsigned>(
+      OpType::CnRz, {-0.57}, {0, 3, 2, 4, 1}, {}, 0);
   c.add_conditional_gate<unsigned>(OpType::CH, {}, {1, 0}, {}, 0);
   c.add_conditional_gate<unsigned>(OpType::CY, {}, {2, 3}, {}, 0);
   c.add_conditional_gate<unsigned>(OpType::CRz, {1.42}, {0, 2}, {}, 0);
@@ -2693,6 +2724,13 @@ SCENARIO("Confirm that LaTeX output compiles", "[latex][.long]") {
   c.add_conditional_gate<unsigned>(OpType::CU1, {0.02}, {4, 3}, {}, 0);
   c.add_conditional_gate<unsigned>(
       OpType::CU3, {1.04, 0.36, -0.36}, {0, 4}, {}, 0);
+
+  // https://github.com/CQCL/tket/issues/1363
+  Qubit q1("q_1", 0);
+  Bit c1("c_1", 0);
+  c.add_qubit(q1);
+  c.add_bit(c1);
+  c.add_measure(q1, c1);
 
   c.to_latex_file("circ.tex");
   int response = std::system("latexmk -pdf circ.tex -quiet");

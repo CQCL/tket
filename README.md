@@ -65,8 +65,8 @@ The codebase is split into two main projects:
 The following compiler toolchains are used to build tket on the CI and are
 therefore known to work:
 
-* Linux: gcc-11
-* MacOS: apple-clang 14
+* Linux: gcc-13
+* MacOS: apple-clang 15
 * Windows: MSVC 19
 
 It is recommended that you use these versions to build locally, as code may
