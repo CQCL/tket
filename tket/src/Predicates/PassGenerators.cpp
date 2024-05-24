@@ -36,6 +36,7 @@
 #include "tket/Transformations/CliffordResynthesis.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
 #include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/GreedyPauliOptimisation.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Rebase.hpp"
@@ -809,6 +810,39 @@ PassPtr gen_synthesise_pauli_graph(
   std::vector<PassPtr> seq = {
       gen_pauli_exponentials(strat, cx_config), DecomposeBoxes()};
   return std::make_shared<SequencePass>(seq);
+}
+
+PassPtr gen_greedy_pauli_simp(double discount_rate, double depth_weight) {
+  Transform t =
+      Transforms::greedy_pauli_optimisation(discount_rate, depth_weight);
+  PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
+  PredicatePtr mid_pred = std::make_shared<NoMidMeasurePredicate>();
+  OpTypeSet ins = {OpType::Z,       OpType::X,           OpType::Y,
+                   OpType::S,       OpType::Sdg,         OpType::V,
+                   OpType::Vdg,     OpType::H,           OpType::CX,
+                   OpType::CY,      OpType::CZ,          OpType::SWAP,
+                   OpType::Rz,      OpType::Rx,          OpType::Ry,
+                   OpType::T,       OpType::Tdg,         OpType::ZZMax,
+                   OpType::ZZPhase, OpType::PhaseGadget, OpType::XXPhase,
+                   OpType::YYPhase, OpType::PauliExpBox, OpType::Measure,
+                   OpType::PhasedX};
+  PredicatePtr in_gates = std::make_shared<GateSetPredicate>(ins);
+  PredicatePtrMap precons{
+      CompilationUnit::make_type_pair(ccontrol_pred),
+      CompilationUnit::make_type_pair(mid_pred),
+      CompilationUnit::make_type_pair(in_gates)};
+  PredicateClassGuarantees g_postcons = {
+      {typeid(ConnectivityPredicate), Guarantee::Clear},
+      {typeid(NoWireSwapsPredicate), Guarantee::Clear}};
+  PostConditions postcon{{}, g_postcons, Guarantee::Preserve};
+
+  // record pass config
+  nlohmann::json j;
+  j["name"] = "GreedyPauliSimp";
+  j["discount_rate"] = discount_rate;
+  j["depth_weight"] = depth_weight;
+
+  return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
 PassPtr gen_special_UCC_synthesis(

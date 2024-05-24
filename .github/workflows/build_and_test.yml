@@ -4,10 +4,9 @@ on:
   pull_request:
     branches:
       - main
-      - develop
   push:
     branches:
-      - develop
+      - main
   schedule:
     # 03:00 every Saturday morning
     - cron: '0 3 * * 6'
@@ -63,7 +62,7 @@ jobs:
         tket_package_exists=`conan search -r tket-libs "tket/${{ steps.tket_ver.outputs.tket_ver }}@tket/stable" | grep "not found" > /dev/null 2>&1 && echo false || echo true`
         echo "tket_package_exists=${tket_package_exists}" >> $GITHUB_OUTPUT
     - name: Check tket version bump
-      if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop' && steps.filter.outputs.tket == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
+      if: github.event_name == 'pull_request' && steps.filter.outputs.tket == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
       run: exit 1
 
   check_docs_tket:
@@ -89,7 +88,8 @@ jobs:
         run: |
           brew update
           brew install clang-format@18
-          git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file --dry-run --Werror
+          git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file -i
+          git diff --exit-code
 
   build_test_tket:
     name: Build and test (tket)
@@ -138,7 +138,7 @@ jobs:
     - name: Build tket
       run: conan create tket -s build_type=Release --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True
     - name: Upload package
-      if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+      if: github.event_name == 'push'
       run: |
         ccache --set-config namespace=WITHOUT_TESTS
         conan create tket --user=tket --channel=stable -o boost/*:header_only=True
@@ -207,7 +207,7 @@ jobs:
           conan build tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
           conan export-pkg tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
       - name: Upload package
-        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        if: github.event_name == 'push'
         run: |
           ccache --set-config namespace=WITHOUT_TESTS
           conan build tket --user=tket --channel=stable -o boost/*:header_only=True
@@ -257,7 +257,7 @@ jobs:
     - name: Install pytket requirements
       run: |
         conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
+        conan create recipes/pybind11_json/all --version 0.2.14
     - name: Set up Python (pull request)
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v5
@@ -319,7 +319,7 @@ jobs:
         name: pytket_test_coverage
         path: pytket/tests/htmlcov
     - name: Upload package
-      if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
+      if: github.event_name == 'push' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
         conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
@@ -370,7 +370,7 @@ jobs:
     - name: Install pytket requirements
       run: |
         conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
+        conan create recipes/pybind11_json/all --version 0.2.14
     - name: Set up Python (pull request)
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v5
@@ -410,7 +410,7 @@ jobs:
         git diff --quiet pytket/_tket && echo "Stubs are up-to-date" || exit 1  # fail if stubs change after regeneration
         python -m mypy --config-file=mypy.ini --no-incremental -p pytket -p tests
     - name: Upload package
-      if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
+      if: github.event_name == 'push' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
         conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
@@ -491,7 +491,7 @@ jobs:
     - name: Install pytket requirements
       run: |
         conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
+        conan create recipes/pybind11_json/all --version 0.2.14
     - name: Set up Python 3.10
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v5
@@ -528,7 +528,7 @@ jobs:
         pip install -r requirements.txt
         pytest --ignore=simulator/
     - name: Upload package
-      if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
+      if: github.event_name == 'push' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
         conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
@@ -541,7 +541,7 @@ jobs:
     name: Publish pytket coverage
     needs: build_test_pytket_ubuntu
     concurrency: gh_pages
-    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    if: github.event_name == 'push'
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
@@ -569,7 +569,7 @@ jobs:
   check_pytket_coverage:
     name: Check pytket line and branch coverage
     needs: build_test_pytket_ubuntu
-    if: (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop') || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
@@ -578,7 +578,7 @@ jobs:
       with:
         name: pytket_test_coverage
         path: pytket-test-coverage/
-    - name: Compare with latest report from develop
+    - name: Compare with latest report from main
       run: |
         wget https://cqcl.github.io/tket/pytket/test-coverage/cov.xml -O oldcov.xml
         ./.github/workflows/compare-pytket-coverage oldcov.xml pytket-test-coverage/cov.xml

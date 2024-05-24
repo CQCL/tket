@@ -90,7 +90,7 @@ struct CycleHistory {
 class CycleFinder {
  public:
   CycleFinder(const Circuit& _circ, const OpTypeSet& _cycle_types)
-      : circ(_circ), cycle_types_(_cycle_types){};
+      : circ(_circ), cycle_types_(_cycle_types) {};
 
   // Cycles are sub-circuits of circ where every gate has OpType in cycle_types_
   // get_cycles() returns the minimum number of cycles such that every

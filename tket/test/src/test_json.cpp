@@ -964,6 +964,7 @@ SCENARIO("Test compiler pass serializations") {
           Transforms::AllowClassical::No, Transforms::CreateAllQubits::Yes,
           std::make_shared<Circuit>(CircPool::X())))
   COMPPASSJSONTEST(PlacementPass, gen_placement_pass(place))
+  COMPPASSJSONTEST(GreedyPauliSimp, gen_greedy_pauli_simp(0.3, 0.18))
   // TKET-1419
   COMPPASSJSONTEST(NoiseAwarePlacement, gen_placement_pass(na_place))
   COMPPASSJSONTEST(NaivePlacementPass, gen_naive_placement_pass(arc))

@@ -793,7 +793,7 @@ class CircuitTransformer(Transformer):
             else:
                 raise QASMParseError(f"Unexpected expression in assignment {exp}", line)
 
-    def extern(self, tree: List[Any]) -> Type[Discard]:
+    def extern(self, tree: List[Any]) -> Any:
         # TODO parse extern defs
         return Discard
 
@@ -899,7 +899,7 @@ class CircuitTransformer(Transformer):
 
     opaq = gdef
 
-    def oqasm(self, tree: List) -> Type[Discard]:
+    def oqasm(self, tree: List) -> Any:
         return Discard
 
     def incl(self, tree: List[Token]) -> None:

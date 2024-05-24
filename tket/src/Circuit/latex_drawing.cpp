@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <boost/algorithm/string/replace.hpp>
 #include <limits>
 
 #include "tket/Circuit/Boxes.hpp"
@@ -287,14 +288,16 @@ std::string Circuit::to_latex_str() const {
     unsigned n_lines = lines.size();
     line_ids.insert({qb, n_lines});
     LineBufferInfo& line = *lines.emplace(lines.end());
-    line.buffer << "\\lstick{" + qb.repr() + "} & ";
+    line.buffer << "\\lstick{" +
+                       boost::replace_all_copy(qb.repr(), "_", "\\_") + "} & ";
     line.is_quantum = true;
   }
   for (const Bit& cb : this->all_bits()) {
     unsigned n_lines = lines.size();
     line_ids.insert({cb, n_lines});
     LineBufferInfo& line = *lines.emplace(lines.end());
-    line.buffer << "\\lstick{" + cb.repr() + "} & ";
+    line.buffer << "\\lstick{" +
+                       boost::replace_all_copy(cb.repr(), "_", "\\_") + "} & ";
     line.is_quantum = false;
   }
 

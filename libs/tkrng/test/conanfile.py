@@ -60,4 +60,4 @@ class test_tkrngRecipe(ConanFile):
 
     def requirements(self):
         self.requires("tkrng/0.3.3")
-        self.requires("catch2/3.5.4")
+        self.requires("catch2/3.6.0")

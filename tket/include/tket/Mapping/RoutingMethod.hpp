@@ -21,7 +21,7 @@ namespace tket {
 
 class RoutingMethod {
  public:
-  RoutingMethod(){};
+  RoutingMethod() {};
   virtual ~RoutingMethod() {}
 
   /**

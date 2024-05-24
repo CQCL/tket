@@ -3,10 +3,10 @@ name: Analyse tket C++ test coverage
 on:
   pull_request:
     branches:
-      - develop
+      - main
   push:
     branches:
-      - develop
+      - main
   schedule:
     # 03:00 every Saturday morning
     - cron: '0 3 * * 6'
@@ -99,12 +99,12 @@ jobs:
       with:
         name: test_coverage
         path: test-coverage/
-    - name: Compare with latest report from develop (short tests)
+    - name: Compare with latest report from main (short tests)
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: |
         wget https://cqcl.github.io/tket/tket/test-coverage-short/summary.txt
         ./.github/workflows/compare-coverage summary.txt test-coverage/summary.txt
-    - name: Compare with latest report from develop (full suite)
+    - name: Compare with latest report from main (full suite)
       if: github.event_name == 'schedule'
       run: |
         wget https://cqcl.github.io/tket/tket/test-coverage/summary.txt
