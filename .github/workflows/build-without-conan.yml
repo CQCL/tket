@@ -85,9 +85,6 @@ jobs:
     - name: Install rapidcheck
       run: |
         cd ${TMP_DIR}
-        wget https://github.com/emil-e/rapidcheck/archive/1c91f40e64d87869250cfb610376c629307bf77d.zip
-        unzip 1c91f40e64d87869250cfb610376c629307bf77d.zip
-        cd rapidcheck-1c91f40e64d87869250cfb610376c629307bf77d/
         mkdir build
         cd build
         cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
