@@ -1141,16 +1141,23 @@ Transform decompose_cliffords_std() {
           circ.substitute(replacement, sub, Circuit::VertexDeletion::No);
           circ.add_phase(tk1_param_exprs[3]);
           success = true;
-        } else if (type == OpType::TK2) {
-          auto params = op->get_params();
-          TKET_ASSERT(params.size() == 3);
-          // TODO: Maybe handle TK2 gates natively within clifford_simp?
-          Circuit replacement =
-              CircPool::TK2_using_CX(params[0], params[1], params[2]);
-          decompose_cliffords_std().apply(replacement);
-          bin.push_back(v);
-          circ.substitute(replacement, v, Circuit::VertexDeletion::No);
-          success = true;
+        } else {
+          switch (type) {
+            case OpType::TK2: {
+              auto params = op->get_params();
+              TKET_ASSERT(params.size() == 3);
+              // TODO: Maybe handle TK2 gates natively within clifford_simp?
+              Circuit replacement =
+                  CircPool::TK2_using_CX(params[0], params[1], params[2]);
+              decompose_cliffords_std().apply(replacement);
+              bin.push_back(v);
+              circ.substitute(replacement, v, Circuit::VertexDeletion::No);
+              success = true;
+              break;
+            }
+            default:
+              break;
+          }
         }
       }
     }
