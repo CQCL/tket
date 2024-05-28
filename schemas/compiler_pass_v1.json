@@ -175,7 +175,7 @@
           "items": {
             "type": "string"
           },
-          "description": "OpTypes of supported gates. Used in \"RebaseCustom\" and \"AutoCustom\"."
+          "description": "OpTypes of supported gates. Used in \"RebaseCustom\" and \"AutoRebase\"."
         },
         "basis_singleqs": {
           "type": "array",
