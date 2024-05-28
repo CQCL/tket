@@ -98,14 +98,6 @@ jobs:
       - name: Calculate percentage better
         run: echo "RETURN_TEST=$(pytket_benchmarking percentage-better pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled PytketIBMQ)" >> $GITHUB_ENV
 
-      - name: Create comment
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: '${{ env.RETURN_TEST }}'
-        env:
-          RETURN_TEST: ${{ env.RETURN_TEST }}
-
       - name: Post to a Slack channel
         id: slack
         uses: slackapi/slack-github-action@v1.26.0
