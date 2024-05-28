@@ -129,61 +129,54 @@ PassPtr gen_squash_pass(
 
 static std::function<Circuit(const Expr&, const Expr&, const Expr&)>
 find_tk1_replacement(const OpTypeSet& gateset) {
-  if (gateset.find(OpType::TK1) != gateset.end()) {
+  if (gateset.contains(OpType::TK1)) {
     return CircPool::tk1_to_tk1;
   }
-  if (gateset.find(OpType::U3) != gateset.end()) {
+  if (gateset.contains(OpType::U3)) {
     return CircPool::tk1_to_u3;
   }
-  if (gateset.find(OpType::Rz) != gateset.end() &&
-      gateset.find(OpType::X) != gateset.end() &&
-      gateset.find(OpType::SX) != gateset.end()) {
+  if (gateset.contains(OpType::Rz) && gateset.contains(OpType::X) &&
+      gateset.contains(OpType::SX)) {
     return CircPool::tk1_to_rzxsx;
   }
-  if (gateset.find(OpType::PhasedX) != gateset.end() &&
-      gateset.find(OpType::Rz) != gateset.end()) {
+  if (gateset.contains(OpType::PhasedX) && gateset.contains(OpType::Rz)) {
     return CircPool::tk1_to_PhasedXRz;
   }
-  if (gateset.find(OpType::Rz) != gateset.end() &&
-      gateset.find(OpType::Rx) != gateset.end()) {
+  if (gateset.contains(OpType::Rz) && gateset.contains(OpType::Rx)) {
     return CircPool::tk1_to_rzrx;
   }
-  if (gateset.find(OpType::Rx) != gateset.end() &&
-      gateset.find(OpType::Ry) != gateset.end()) {
+  if (gateset.contains(OpType::Rx) && gateset.contains(OpType::Ry)) {
     return CircPool::tk1_to_rxry;
   }
-  if (gateset.find(OpType::Rz) != gateset.end() &&
-      gateset.find(OpType::H) != gateset.end()) {
+  if (gateset.contains(OpType::Rz) && gateset.contains(OpType::H)) {
     return CircPool::tk1_to_rzh;
   }
-  if (gateset.find(OpType::Rz) != gateset.end() &&
-      gateset.find(OpType::SX) != gateset.end()) {
+  if (gateset.contains(OpType::Rz) && gateset.contains(OpType::SX)) {
     return CircPool::tk1_to_rzsx;
   }
-  if (gateset.find(OpType::GPI) != gateset.end() &&
-      gateset.find(OpType::GPI2) != gateset.end()) {
+  if (gateset.contains(OpType::GPI) && gateset.contains(OpType::GPI2)) {
     return CircPool::TK1_using_GPI;
   }
   throw Unsupported("No known decomposition from TK1 to available gateset.");
 }
 
 static Circuit find_cx_replacement(const OpTypeSet& gateset) {
-  if (gateset.find(OpType::CX) != gateset.end()) {
+  if (gateset.contains(OpType::CX)) {
     return CircPool::CX();
   }
-  if (gateset.find(OpType::ZZMax) != gateset.end()) {
+  if (gateset.contains(OpType::ZZMax)) {
     return CircPool::CX_using_ZZMax();
   }
-  if (gateset.find(OpType::XXPhase) != gateset.end()) {
+  if (gateset.contains(OpType::XXPhase)) {
     return CircPool::CX_using_XXPhase_0();
   }
-  if (gateset.find(OpType::ECR) != gateset.end()) {
+  if (gateset.contains(OpType::ECR)) {
     return CircPool::CX_using_ECR();
   }
-  if (gateset.find(OpType::CZ) != gateset.end()) {
+  if (gateset.contains(OpType::CZ)) {
     return CircPool::H_CZ_H();
   }
-  if (gateset.find(OpType::AAMS) != gateset.end()) {
+  if (gateset.contains(OpType::AAMS)) {
     return CircPool::CX_using_AAMS();
   }
   throw Unsupported("No known decomposition from CX to available gateset.");
@@ -192,32 +185,32 @@ static Circuit find_cx_replacement(const OpTypeSet& gateset) {
 static std::function<Circuit(const Expr&, const Expr&, const Expr&)>
 find_tk2_replacement(const OpTypeSet& gateset, bool allow_swaps) {
   if (!allow_swaps) {
-    if (gateset.find(OpType::TK2) != gateset.end()) {
+    if (gateset.contains(OpType::TK2)) {
       return CircPool::TK2_using_TK2;
     }
-    if (gateset.find(OpType::ZZPhase) != gateset.end()) {
+    if (gateset.contains(OpType::ZZPhase)) {
       return CircPool::TK2_using_ZZPhase;
     }
-    if (gateset.find(OpType::CX) != gateset.end()) {
+    if (gateset.contains(OpType::CX)) {
       return CircPool::TK2_using_CX;
     }
-    if (gateset.find(OpType::ZZMax) != gateset.end()) {
+    if (gateset.contains(OpType::ZZMax)) {
       return CircPool::TK2_using_ZZMax;
     }
-    if (gateset.find(OpType::AAMS) != gateset.end()) {
+    if (gateset.contains(OpType::AAMS)) {
       return CircPool::TK2_using_AAMS;
     }
   } else {
-    if (gateset.find(OpType::TK2) != gateset.end()) {
+    if (gateset.contains(OpType::TK2)) {
       return CircPool::TK2_using_TK2_or_swap;
     }
-    if (gateset.find(OpType::ZZPhase) != gateset.end()) {
+    if (gateset.contains(OpType::ZZPhase)) {
       return CircPool::TK2_using_ZZPhase_and_swap;
     }
-    if (gateset.find(OpType::CX) != gateset.end()) {
+    if (gateset.contains(OpType::CX)) {
       return CircPool::TK2_using_CX_and_swap;
     }
-    if (gateset.find(OpType::ZZMax) != gateset.end()) {
+    if (gateset.contains(OpType::ZZMax)) {
       return CircPool::TK2_using_ZZMax_and_swap;
     }
   }
@@ -227,9 +220,8 @@ find_tk2_replacement(const OpTypeSet& gateset, bool allow_swaps) {
 PassPtr gen_auto_rebase_pass(const OpTypeSet& allowed_gates, bool allow_swaps) {
   auto find_rebase = [allowed_gates, allow_swaps]() {
     auto tk1_replacement = find_tk1_replacement(allowed_gates);
-    if (allowed_gates.find(OpType::CX) != allowed_gates.end() &&
-        allowed_gates.find(OpType::TK2) == allowed_gates.end() &&
-        !allow_swaps) {
+    if (allowed_gates.contains(OpType::CX) &&
+        !allowed_gates.contains(OpType::TK2) && !allow_swaps) {
       return Transforms::rebase_factory(
           allowed_gates, CircPool::CX(), tk1_replacement);
     }
@@ -273,8 +265,7 @@ PassPtr gen_auto_rebase_pass(const OpTypeSet& allowed_gates, bool allow_swaps) {
 
 PassPtr gen_auto_squash_pass(const OpTypeSet& singleqs) {
   auto find_squash = [singleqs]() {
-    if (singleqs.find(OpType::Rz) != singleqs.end() &&
-        singleqs.find(OpType::PhasedX) != singleqs.end()) {
+    if (singleqs.contains(OpType::Rz) && singleqs.contains(OpType::PhasedX)) {
       return Transforms::squash_1qb_to_Rz_PhasedX(true);
     } else {
       auto tk1_replacement = find_tk1_replacement(singleqs);
