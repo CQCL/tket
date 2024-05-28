@@ -1,10 +1,9 @@
 name: Automated Benchmarks
 
 on:
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
 
@@ -77,6 +76,7 @@ jobs:
         run: |
           pip install pytket-*.whl
           pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket_benchmarking
+          pip list
 
       - name: Checkout pytket-benchmarking-store
         uses: actions/checkout@v4
@@ -98,10 +98,12 @@ jobs:
       - name: Calculate percentage better
         run: echo "RETURN_TEST=$(pytket_benchmarking percentage-better pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled PytketIBMQ)" >> $GITHUB_ENV
 
-      - name: Create comment
-        uses: peter-evans/create-or-update-comment@v4
+      - name: Post to a Slack channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
         with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: '${{ env.RETURN_TEST }}'
+          channel-id: 'G01CP0YFFA7'
+          slack-message: '${{ env.RETURN_TEST }}'
         env:
+          SLACK_BOT_TOKEN: ${{ secrets.PYTKET_BENCHMARKING_SLACK_BOT_TOKEN }}
           RETURN_TEST: ${{ env.RETURN_TEST }}
