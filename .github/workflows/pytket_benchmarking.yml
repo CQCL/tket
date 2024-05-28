@@ -1,10 +1,9 @@
 name: Automated Benchmarks
 
 on:
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
 
@@ -77,6 +76,7 @@ jobs:
         run: |
           pip install pytket-*.whl
           pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket_benchmarking
+          pip list
 
       - name: Checkout pytket-benchmarking-store
         uses: actions/checkout@v4
@@ -113,7 +113,7 @@ jobs:
           # Slack channel id, channel name, or user id to post message.
           # See also: https://api.slack.com/methods/chat.postMessage#channels
           # You can pass in multiple channels to post to by providing a comma-delimited list of channel IDs.
-          channel-id: 'temp_pytket_benchmarking_bot'
+          channel-id: 'G01CP0YFFA7'
           # For posting a simple plain text message
           slack-message: '${{ env.RETURN_TEST }}'
         env:
