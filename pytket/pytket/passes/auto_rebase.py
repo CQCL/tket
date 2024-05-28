@@ -49,11 +49,14 @@ def auto_rebase_pass(gateset: Set[OpType], allow_swaps: bool = False) -> BasePas
     :type gateset: FrozenSet[OpType]
     :raises NoAutoRebase: No suitable decomposition found.
     :return: Rebase pass.
-    :rtype: RebaseCustom
+    :rtype: AutoRebase
+
+    .. deprecated:: 1.29.0
+       Will be removed after pytket 1.33, please use `AutoRebase` instead.
     """
     warnings.warn(
-        "The `auto_rebase_pass()` method is deprecated: "
-        "please use `AutoRebase` instead.",
+        "The `auto_rebase_pass()` method is deprecated and will be removed after "
+        "pytket 1.33, please use `AutoRebase` instead.",
         DeprecationWarning,
     )
     try:
@@ -71,11 +74,14 @@ def auto_squash_pass(gateset: Set[OpType]) -> BasePass:
     :param gateset: Available single qubit gateset
     :type gateset: Set[OpType]
     :return: Squash to target gateset
-    :rtype: SquashCustom
+    :rtype: AutoSquash
+
+    .. deprecated:: 1.29.0
+        Will be removed after pytket 1.33, please use `AutoSquash` instead.
     """
     warnings.warn(
-        "The `auto_squash_pass()` method is deprecated: "
-        "please use `AutoSquash` instead.",
+        "The `auto_squash_pass()` method is deprecated and will be removed after "
+        "pytket 1.33, please use `AutoSquash` instead.",
         DeprecationWarning,
     )
     try:
