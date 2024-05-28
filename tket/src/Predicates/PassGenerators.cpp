@@ -14,6 +14,7 @@
 
 #include "tket/Predicates/PassGenerators.hpp"
 
+#include <algorithm>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -260,9 +261,12 @@ PassPtr gen_auto_rebase_pass(const OpTypeSet& allowed_gates, bool allow_swaps) {
   PredicateClassGuarantees g_postcons{{pair2.first, Guarantee::Clear}};
   PostConditions pc = {s_postcons, g_postcons, Guarantee::Preserve};
   // record pass config
+  // sort the gateset
+  std::vector<OpType> sorted_gates(allowed_gates.begin(), allowed_gates.end());
+  std::sort(sorted_gates.begin(), sorted_gates.end());
   nlohmann::json j;
   j["name"] = "AutoRebase";
-  j["basis_allowed"] = allowed_gates;
+  j["basis_allowed"] = sorted_gates;
   j["allow_swaps"] = allow_swaps;
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
@@ -283,9 +287,12 @@ PassPtr gen_auto_squash_pass(const OpTypeSet& singleqs) {
   PostConditions postcon = {{}, g_postcons, Guarantee::Preserve};
   PredicatePtrMap precons;
   // record pass config
+  // sort the gateset
+  std::vector<OpType> sorted_gates(singleqs.begin(), singleqs.end());
+  std::sort(sorted_gates.begin(), sorted_gates.end());
   nlohmann::json j;
   j["name"] = "AutoSquash";
-  j["basis_singleqs"] = singleqs;
+  j["basis_singleqs"] = sorted_gates;
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 

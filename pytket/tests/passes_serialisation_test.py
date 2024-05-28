@@ -41,9 +41,6 @@ from pytket.passes import (
     DefaultMappingPass,
     AASRouting,
     SquashCustom,
-    GreedyPauliSimp,
-    AutoRebase,
-    AutoSquash,
 )
 from pytket.mapping import (
     LexiLabellingMethod,
@@ -295,7 +292,13 @@ TWO_WAY_PARAM_PASSES = {
     "GreedyPauliSimp": standard_pass_dict(
         {"name": "GreedyPauliSimp", "discount_rate": 0.4, "depth_weight": 0.5}
     ),
-    "AutoSquash": standard_pass_dict({"name": "AutoSquash", "basis_singleqs": ["TK1"]}),
+    # lists must be sorted by OpType value
+    "AutoSquash": standard_pass_dict(
+        {"name": "AutoSquash", "basis_singleqs": ["Rz", "TK1"]}
+    ),
+    "AutoRebase": standard_pass_dict(
+        {"name": "AutoRebase", "basis_allowed": ["H", "TK1", "CX"], "allow_swaps": True}
+    ),
 }
 
 # non-parametrized passes that satisfy pass.from_dict(d).to_dict()==d
@@ -781,13 +784,3 @@ def test_pass_deserialisation_only() -> None:
         rps.to_dict()["RepeatUntilSatisfiedPass"]["predicate"]["type"]
         == "UserDefinedPredicate"
     )
-
-
-def test_passes_with_unordered_lists() -> None:
-    j_rebase = AutoRebase({OpType.Rz, OpType.Rx, OpType.ZZMax}, False).to_dict()
-    j_rebase_des = BasePass.from_dict(j_rebase).to_dict()
-    for j in [j_rebase, j_rebase_des]:
-        pass_validator.validate(j)
-        assert j["StandardPass"]["name"] == "AutoRebase"
-        assert j["StandardPass"]["allow_swaps"] == False
-        assert set(j["StandardPass"]["basis_allowed"]) == {"Rz", "Rx", "ZZMax"}
