@@ -1074,6 +1074,12 @@ Circuit TK2_using_TK2_or_swap(
   return tk2;
 }
 
+Circuit TK2_using_TK2(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit tk2(2);
+  tk2.add_op<unsigned>(OpType::TK2, {alpha, beta, gamma}, {0, 1});
+  return tk2;
+}
+
 Circuit TK2_using_ZZMax(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
   Circuit c = TK2_using_CX(alpha, beta, gamma);
@@ -1259,7 +1265,8 @@ static unsigned int_half(const Expr &angle) {
   return lround(eval / 2);
 }
 
-Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+static Circuit _tk1_to_rzsx(
+    const Expr &alpha, const Expr &beta, const Expr &gamma, bool allow_x) {
   Circuit c(1);
   Expr correction_phase = 0;
   if (equiv_0(beta)) {
@@ -1272,13 +1279,21 @@ Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma) {
     if (equiv_0(alpha - gamma)) {
       // a - c = 2m
       // overall operation is (-1)^{m}Rx(2k -1)
-      c.add_op<unsigned>(OpType::SX, {0});
-      c.add_op<unsigned>(OpType::SX, {0});
+      if (allow_x) {
+        c.add_op<unsigned>(OpType::X, {0});
+      } else {
+        c.add_op<unsigned>(OpType::SX, {0});
+        c.add_op<unsigned>(OpType::SX, {0});
+      }
       correction_phase += int_half(alpha - gamma);
     } else {
       c.add_op<unsigned>(OpType::Rz, gamma, {0});
-      c.add_op<unsigned>(OpType::SX, {0});
-      c.add_op<unsigned>(OpType::SX, {0});
+      if (allow_x) {
+        c.add_op<unsigned>(OpType::X, {0});
+      } else {
+        c.add_op<unsigned>(OpType::SX, {0});
+        c.add_op<unsigned>(OpType::SX, {0});
+      }
       c.add_op<unsigned>(OpType::Rz, alpha, {0});
     }
   } else if (equiv_0(beta - 0.5) && equiv_0(alpha) && equiv_0(gamma)) {
@@ -1293,6 +1308,18 @@ Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma) {
     c.add_op<unsigned>(OpType::SX, {0});
     c.add_op<unsigned>(OpType::Rz, alpha, {0});
     correction_phase = int_half(beta - 0.5) - 0.25;
+  } else if (equiv_0(beta + 0.5) && equiv_0(alpha) && equiv_0(gamma)) {
+    // a = 2k, b = 2m-0.5, c = 2n
+    // Rz(2k)Rx(2m - 0.5)Rz(2n) = (-1)^{k+m+n}e^{i \pi /4} X.SX
+    if (allow_x) {
+      c.add_op<unsigned>(OpType::X, {0});
+    } else {
+      c.add_op<unsigned>(OpType::SX, {0});
+      c.add_op<unsigned>(OpType::SX, {0});
+    }
+    c.add_op<unsigned>(OpType::SX, {0});
+    correction_phase =
+        int_half(beta + 0.5) + int_half(alpha) + int_half(gamma) + 0.25;
   } else if (equiv_0(beta + 0.5)) {
     // SX.Rz(2m+0.5).SX = (-1)^{m}e^{i \pi /4} Rz(0.5).SX.Rz(0.5)
     c.add_op<unsigned>(OpType::Rz, gamma + 1, {0});
@@ -1316,6 +1343,14 @@ Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma) {
   c.add_phase(correction_phase);
   c.remove_noops();
   return c;
+}
+
+Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  return _tk1_to_rzsx(alpha, beta, gamma, false);
+}
+
+Circuit tk1_to_rzxsx(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  return _tk1_to_rzsx(alpha, beta, gamma, true);
 }
 
 Circuit tk1_to_rzh(const Expr &alpha, const Expr &beta, const Expr &gamma) {
@@ -1372,6 +1407,23 @@ Circuit tk1_to_rzrx(const Expr &alpha, const Expr &beta, const Expr &gamma) {
   c.add_op<unsigned>(OpType::Rz, gamma, {0});
   c.add_op<unsigned>(OpType::Rx, beta, {0});
   c.add_op<unsigned>(OpType::Rz, alpha, {0});
+  return c;
+}
+
+Circuit tk1_to_rxry(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c(1);
+  c.add_op<unsigned>(OpType::Rx, -0.5, {0});
+  c.add_op<unsigned>(OpType::Ry, gamma, {0});
+  c.add_op<unsigned>(OpType::Rx, beta, {0});
+  c.add_op<unsigned>(OpType::Ry, alpha, {0});
+  c.add_op<unsigned>(OpType::Rx, 0.5, {0});
+  return c;
+}
+
+Circuit tk1_to_u3(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c(1);
+  c.add_op<unsigned>(OpType::U3, {beta, alpha - 0.5, gamma + 0.5}, {0});
+  c.add_phase(-0.5 * (alpha + gamma));
   return c;
 }
 

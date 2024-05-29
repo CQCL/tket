@@ -16,7 +16,7 @@ from math import pow, isclose
 import numpy as np
 import pytest
 from pytket import Qubit, Circuit, OpType
-from pytket.passes import auto_rebase_pass
+from pytket.passes import AutoRebase
 from pytket.pauli import Pauli, QubitPauliString
 from pytket.utils.results import compare_unitaries
 from pytket.zx import (
@@ -1032,7 +1032,7 @@ def test_round_trip() -> None:
     circ.CCX(0, 1, 4)
     circ.CCX(2, 4, 3)
     circ.CCX(0, 1, 4)
-    auto_rebase_pass(
+    AutoRebase(
         {OpType.Rx, OpType.Rz, OpType.X, OpType.Z, OpType.H, OpType.CX, OpType.CZ}
     ).apply(circ)
     diag, _ = circuit_to_zx(circ)

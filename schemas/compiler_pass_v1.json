@@ -115,6 +115,7 @@
           "enum": [
             "RebaseCustom",
             "RebaseCustomViaTK2",
+            "AutoRebase",
             "CommuteThroughMultis",
             "DecomposeArbitrarilyControlledGates",
             "DecomposeBoxes",
@@ -130,6 +131,7 @@
             "SynthesiseUMD",
             "SquashTK1",
             "SquashRzPhasedX",
+            "AutoSquash",
             "FlattenRegisters",
             "DelayMeasures",
             "ZZPhaseToRz",
@@ -173,7 +175,14 @@
           "items": {
             "type": "string"
           },
-          "description": "OpTypes of supported gates. Used in \"RebaseCustom\"."
+          "description": "OpTypes of supported gates. Used in \"RebaseCustom\" and \"AutoRebase\"."
+        },
+        "basis_singleqs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "OpTypes of supported single qubit gates. Used in \"SquashCustom\" and \"AutoSquash\""
         },
         "basis_cx_replacement": {
           "$ref": "circuit_v1.json#",
@@ -370,6 +379,22 @@
           "if": {
             "properties": {
               "name": {
+                "const": "AutoRebase"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "basis_allowed",
+              "allow_swaps"
+            ],
+            "maxProperties": 3
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
                 "const": "SquashCustom"
               }
             }
@@ -381,6 +406,21 @@
               "always_squash_symbols"
             ],
             "maxProperties": 4
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "AutoSquash"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "basis_singleqs"
+            ],
+            "maxProperties": 2
           }
         },
         {
