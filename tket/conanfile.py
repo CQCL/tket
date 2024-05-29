@@ -112,7 +112,7 @@ class TketConan(ConanFile):
         # libraries installed from remote:
         # https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
         self.requires("boost/1.85.0", transitive_headers=True)
-        self.requires("symengine/0.11.2", transitive_headers=True)
+        self.requires("symengine/0.12.0", transitive_headers=True)
         self.requires("eigen/3.4.0", transitive_headers=True)
         self.requires("nlohmann_json/3.11.3", transitive_headers=True)
         self.requires("tklog/0.3.3@tket/stable")
