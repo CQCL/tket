@@ -103,7 +103,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'G01CP0YFFA7'
-          slack-message: '${{ env.RETURN_TEST }}'
+          slack-message: '${{ env.RETURN_TEST }}\nFor details on what is being run please visit https://cqc.atlassian.net/l/cp/ALgrP1an'
         env:
           SLACK_BOT_TOKEN: ${{ secrets.PYTKET_BENCHMARKING_SLACK_BOT_TOKEN }}
           RETURN_TEST: ${{ env.RETURN_TEST }}
