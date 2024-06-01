@@ -1,0 +1,9 @@
+{
+    "type": "PLCC-IEC61131-3",
+    "configuration": "",
+    "target": "r8",
+    "libs": [
+        "plcc_motion"
+    ],
+    "mode": "lib"
+}
