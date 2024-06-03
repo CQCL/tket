@@ -1155,6 +1155,19 @@ Transform decompose_cliffords_std() {
               success = true;
               break;
             }
+            case OpType::NPhasedX: {
+              auto params = op->get_params();
+              unsigned n = circ.n_out_edges(v);
+              Circuit replacement(n);
+              for (unsigned i = 0; i < n; i++) {
+                replacement.add_op<Qubit>(OpType::PhasedX, params, {Qubit(i)});
+              }
+              decompose_cliffords_std().apply(replacement);
+              bin.push_back(v);
+              circ.substitute(replacement, v, Circuit::VertexDeletion::No);
+              success = true;
+              break;
+            }
             default:
               break;
           }
