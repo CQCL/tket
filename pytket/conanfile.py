@@ -32,7 +32,7 @@ class pytketRecipe(ConanFile):
         cmake.install()
 
     def requirements(self):
-        self.requires("tket/1.3.2@tket/stable")
+        self.requires("tket/1.3.3@tket/stable")
         self.requires("tklog/0.3.3@tket/stable")
         self.requires("tkrng/0.3.3@tket/stable")
         self.requires("tkassert/0.3.4@tket/stable")
