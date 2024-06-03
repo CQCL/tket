@@ -13,6 +13,7 @@ Features:
 Fixes:
 
 * Allow barriers when dagger or transpose a circuit.
+* Handle Clifford-angle ``NPhasedX`` gates in Clifford resynthesis.
 
 
 1.28.0 (May 2024)
