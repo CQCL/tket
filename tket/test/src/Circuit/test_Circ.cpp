@@ -1021,6 +1021,29 @@ SCENARIO(
 }
 
 SCENARIO(
+    "Test a circuit with blank wires can have the blank wires removed keeping "
+    "classical",
+    "[blank_wires]") {
+  Circuit test(4, 2);
+  test.add_op<unsigned>(OpType::CX, {0, 1});
+  test.add_op<unsigned>(OpType::Z, {0});
+
+  WHEN("Check Commands work correctly") {
+    std::vector<Command> coms = test.get_commands();
+    REQUIRE(*coms[0].get_op_ptr() == *get_op_ptr(OpType::CX));
+    REQUIRE(*coms[1].get_op_ptr() == *get_op_ptr(OpType::Z));
+  }
+
+  test.add_blank_wires(8);
+  int n = test.n_vertices();
+  test.remove_blank_wires(false);
+  int m = test.n_vertices();
+  REQUIRE(n == 22);
+  REQUIRE(m == 6);
+  test.assert_valid();
+}
+
+SCENARIO(
     "Test that the copy constructor and copy assignment operator work "
     "correctly",
     "[copy]") {
