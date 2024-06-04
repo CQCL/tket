@@ -2263,7 +2263,7 @@ class Circuit:
         """
         Query whether a qubit has its final state discarded
         """
-    def remove_blank_wires(self) -> None:
+    def remove_blank_wires(self, arg0: bool) -> None:
         """
         Removes any Input-Output pairs in the DAG with no intervening operations, i.e. removes untouched qubits/bits from the circuit. This may occur when optimisations recognise that the operations on a qubit reduce to the identity, or when routing adds wires to "fill out" the architecture.
         """
