@@ -762,8 +762,13 @@ class Circuit {
   // Basic Circuit Manipulation//
   //////////////////////////////
 
-  // O(V), `V` the number of vertices
-  void remove_blank_wires();
+  /**
+   * O(V), `V` the number of vertices
+   * removes all blank wires
+   * @param remove_classical_wire option to choose if empty classical wire
+   * should be removed as well
+   */
+  void remove_blank_wires(bool remove_classical_wire = true);
 
   /**
    * Remove all gates in the circuits that are identities
