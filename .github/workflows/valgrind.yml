@@ -28,7 +28,7 @@ jobs:
             - 'tket/**'
             - '.github/workflows/valgrind.yml'
   check:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     needs: changes
     if: needs.changes.outputs.tket == 'true'
     steps:
@@ -45,7 +45,7 @@ jobs:
       run: |
         conan profile detect
         DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/ubuntu-24.04
+        PROFILE_PATH=./conan-profiles/ubuntu-22.04
         diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
         cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
@@ -69,12 +69,10 @@ jobs:
         mkdir -p ~/texmf/tex/latex
         wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
         PKGPATH=`./rootpath tket.json tket`
-        # realloc of size 0 used (intentionally?) in eigen
-        cd ${PKGPATH}/bin && valgrind --error-exitcode=1 --show-realloc-size-zero=no ./test-tket [long],~[long]
+        cd ${PKGPATH}/bin && valgrind --error-exitcode=1 ./test-tket [long],~[long]
     - name: Run tests under valgrind (basic)
       if: github.event_name != 'schedule'
       run: |
         PKGPATH=`./rootpath tket.json tket`
-        # realloc of size 0 used (intentionally?) in eigen
-        cd ${PKGPATH}/bin && valgrind --error-exitcode=1 --show-realloc-size-zero=no ./test-tket
+        cd ${PKGPATH}/bin && valgrind --error-exitcode=1 ./test-tket
 
