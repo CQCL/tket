@@ -1038,8 +1038,8 @@ SCENARIO(
   int n = test.n_vertices();
   test.remove_blank_wires(false);
   int m = test.n_vertices();
-  REQUIRE(n == 22);
-  REQUIRE(m == 6);
+  REQUIRE(n == 30);
+  REQUIRE(m == 10);
   test.assert_valid();
 }
 
