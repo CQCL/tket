@@ -9,10 +9,12 @@ Features:
 * Add ``OpType.CnRx`` and ``OpType.CnRz``.
 * Add ``AutoRebase`` and ``AutoSquash`` passes.
   Deprecate ``auto_rebase_pass`` and ``auto_squash_pass``.
+* Add new parameter added to `remove_black_wires` to allow to keep empty classical bits
 
 Fixes:
 
 * Allow barriers when dagger or transpose a circuit.
+* Keep blank classical wires when running `FlattenRelabelRegistersPass`
 
 
 1.28.0 (May 2024)
