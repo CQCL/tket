@@ -109,6 +109,17 @@ SCENARIO("SynthesiseCliffordResynthesis correctness") {
     c.add_op<unsigned>(OpType::CY, {1, 0});
     check_clifford_resynthesis(c);
   }
+  GIVEN("A Clifford-angle NPhasedX on 1 qubit") {
+    // https://github.com/CQCL/tket/issues/1408
+    Circuit c(1);
+    c.add_op<unsigned>(OpType::NPhasedX, {0.5, 0.0}, {0});
+    check_clifford_resynthesis(c);
+  }
+  GIVEN("A Clifford-angle NPhasedX on 2 qubits") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::NPhasedX, {0.5, 0.0}, {0, 1});
+    check_clifford_resynthesis(c);
+  }
 }
 
 }  // namespace test_CliffordResynthesis
