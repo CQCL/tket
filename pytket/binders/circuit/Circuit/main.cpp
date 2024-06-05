@@ -432,7 +432,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "recognise that the operations on a qubit reduce to the "
           "identity, or when routing adds wires to \"fill out\" the "
           "architecture.\n\n:param keep_blank_classical_wires: select if "
-          "empty classical wires should be removed, too",
+          "empty classical wires should not be removed",
           py::arg("keep_blank_classical_wires") = false)
       .def(
           "add_blank_wires", &Circuit::add_blank_wires,
