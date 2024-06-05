@@ -1111,45 +1111,67 @@ Transform decompose_cliffords_std() {
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
       Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
       OpType type = op->get_type();
-      if (type != OpType::V && type != OpType::S && type != OpType::X &&
-          type != OpType::Z && is_single_qubit_unitary_type(type) &&
-          op->is_clifford()) {
-        std::vector<Expr> tk1_param_exprs = as_gate_ptr(op)->get_tk1_angles();
-        bool all_reduced = true;
-        bool all_roundable = true;
-        std::vector<int> iangles(3);
-        for (int i = 0; i < 3; i++) {
-          std::optional<double> reduced = eval_expr_mod(tk1_param_exprs[i], 4);
-          if (!reduced)
-            all_reduced = false;
-          else {
-            double angle = 2 * reduced.value();  // > 0
-            iangles[i] = int(angle + 0.5);       // nearest integer
-            if (std::abs(angle - iangles[i]) >= EPS) {
-              all_roundable = false;
+      if (op->is_clifford()) {
+        if (type != OpType::V && type != OpType::S && type != OpType::X &&
+            type != OpType::Z && is_single_qubit_unitary_type(type)) {
+          std::vector<Expr> tk1_param_exprs = as_gate_ptr(op)->get_tk1_angles();
+          bool all_reduced = true;
+          bool all_roundable = true;
+          std::vector<int> iangles(3);
+          for (int i = 0; i < 3; i++) {
+            std::optional<double> reduced =
+                eval_expr_mod(tk1_param_exprs[i], 4);
+            if (!reduced)
+              all_reduced = false;
+            else {
+              double angle = 2 * reduced.value();  // > 0
+              iangles[i] = int(angle + 0.5);       // nearest integer
+              if (std::abs(angle - iangles[i]) >= EPS) {
+                all_roundable = false;
+              }
+              iangles[i] %= 8;  // 8 --> 0
             }
-            iangles[i] %= 8;  // 8 --> 0
+          }
+          if (!(all_reduced && all_roundable)) continue;
+          Circuit replacement =
+              clifford_from_tk1(iangles[0], iangles[1], iangles[2]);
+          Subcircuit sub = {
+              {circ.get_in_edges(v)}, {circ.get_all_out_edges(v)}, {v}};
+          bin.push_back(v);
+          circ.substitute(replacement, sub, Circuit::VertexDeletion::No);
+          circ.add_phase(tk1_param_exprs[3]);
+          success = true;
+        } else {
+          switch (type) {
+            case OpType::TK2: {
+              auto params = op->get_params();
+              TKET_ASSERT(params.size() == 3);
+              // TODO: Maybe handle TK2 gates natively within clifford_simp?
+              Circuit replacement =
+                  CircPool::TK2_using_CX(params[0], params[1], params[2]);
+              decompose_cliffords_std().apply(replacement);
+              bin.push_back(v);
+              circ.substitute(replacement, v, Circuit::VertexDeletion::No);
+              success = true;
+              break;
+            }
+            case OpType::NPhasedX: {
+              auto params = op->get_params();
+              unsigned n = circ.n_out_edges(v);
+              Circuit replacement(n);
+              for (unsigned i = 0; i < n; i++) {
+                replacement.add_op<Qubit>(OpType::PhasedX, params, {Qubit(i)});
+              }
+              decompose_cliffords_std().apply(replacement);
+              bin.push_back(v);
+              circ.substitute(replacement, v, Circuit::VertexDeletion::No);
+              success = true;
+              break;
+            }
+            default:
+              break;
           }
         }
-        if (!(all_reduced && all_roundable)) continue;
-        Circuit replacement =
-            clifford_from_tk1(iangles[0], iangles[1], iangles[2]);
-        Subcircuit sub = {
-            {circ.get_in_edges(v)}, {circ.get_all_out_edges(v)}, {v}};
-        bin.push_back(v);
-        circ.substitute(replacement, sub, Circuit::VertexDeletion::No);
-        circ.add_phase(tk1_param_exprs[3]);
-        success = true;
-      } else if (type == OpType::TK2 && op->is_clifford()) {
-        auto params = op->get_params();
-        TKET_ASSERT(params.size() == 3);
-        // TODO: Maybe handle TK2 gates natively within clifford_simp?
-        Circuit replacement =
-            CircPool::TK2_using_CX(params[0], params[1], params[2]);
-        decompose_cliffords_std().apply(replacement);
-        bin.push_back(v);
-        circ.substitute(replacement, v, Circuit::VertexDeletion::No);
-        success = true;
       }
     }
     circ.remove_vertices(
