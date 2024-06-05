@@ -433,7 +433,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "identity, or when routing adds wires to \"fill out\" the "
           "architecture.\n\n:param keep_blank_classical_wires: select if "
           "empty classical wires should be removed, too",
-          py::arg("keep_blank_classical_wires"))
+          py::arg("keep_blank_classical_wires") = false)
       .def(
           "add_blank_wires", &Circuit::add_blank_wires,
           "Adds a number of new qubits to the circuit. These will be "
