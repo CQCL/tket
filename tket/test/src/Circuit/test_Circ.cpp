@@ -1036,7 +1036,7 @@ SCENARIO(
 
   test.add_blank_wires(8);
   int n = test.n_vertices();
-  test.remove_blank_wires(false);
+  test.remove_blank_wires(true);
   int m = test.n_vertices();
   REQUIRE(n == 30);
   REQUIRE(m == 10);
