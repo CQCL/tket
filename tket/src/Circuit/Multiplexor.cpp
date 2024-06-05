@@ -838,9 +838,6 @@ void MultiplexedU2Box::generate_circuit() const {
   if (n_controls_ == 0) {
     auto it = op_map_.begin();
     circ.add_op<unsigned>(it->second, {0});
-    std::vector<unsigned> args(circ.n_qubits());
-    std::iota(std::begin(args), std::end(args), 0);
-    circ.add_box(DiagonalBox(Eigen::VectorXcd::Constant(2, 1)), args);
     circ_ = std::make_shared<Circuit>(circ);
     return;
   }
@@ -1061,7 +1058,7 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
           // ... I think ...
           circ.add_op<unsigned>(
               OpType::CX, {multiplexor.second[gate.qubit], n_controls_ + j});
-              break;
+          break;
         case OpType::U1:
           circ.add_box(Unitary1qBox(gate.matrix), {n_controls_ + j});
           break;
@@ -1087,7 +1084,7 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
 
   // TODO: we could add a minor improvement to efficiency by moving this into a
   // previous loop For now I'm keeping hear for readabilityf
-  for(unsigned i=0; i < m_u2_decomps.size(); i++){
+  for (unsigned i = 0; i < m_u2_decomps.size(); i++) {
     Eigen::VectorXcd inner_diag_vec = m_u2_decomps[i].first.diag;
     // disentangle one qubit from the diagonal
     // results in a multiplexed-Rz targeting the target j

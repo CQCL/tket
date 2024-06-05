@@ -233,7 +233,6 @@ SCENARIO("MultiplexedU2Box decomposition", "[boxes]") {
     ctrl_op_map_t op_map = {{{}, get_op_ptr(OpType::H)}};
     MultiplexedU2Box multiplexor(op_map);
     std::shared_ptr<Circuit> c = multiplexor.to_circuit();
-    std::cout << *c << std::endl;
     std::vector<Command> cmds = c->get_commands();
     REQUIRE(cmds.size() == 1);
     REQUIRE(check_multiplexor(op_map, *c));
