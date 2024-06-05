@@ -431,7 +431,9 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "from the circuit. This may occur when optimisations "
           "recognise that the operations on a qubit reduce to the "
           "identity, or when routing adds wires to \"fill out\" the "
-          "architecture.")
+          "architecture.\n\n:param remove_classical_wire: select if "
+          "empty classical wires should be removed, too",
+          py::arg("remove_classical_wire"))
       .def(
           "add_blank_wires", &Circuit::add_blank_wires,
           "Adds a number of new qubits to the circuit. These will be "
