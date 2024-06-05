@@ -156,6 +156,27 @@ class MultiplexedRotationBox : public Box {
   OpType axis_;
 };
 
+struct GateSpec {
+  OpType type;
+  unsigned qubit;
+  Eigen::Matrix2cd matrix;
+
+  GateSpec(
+      const OpType &type_, unsigned qubit_, const Eigen::Matrix2cd &matrix_)
+      : type(type_), qubit(qubit_), matrix(matrix_) {}
+};
+
+struct MultiplexedU2Commands {
+  std::vector<GateSpec> commands;
+  Eigen::VectorXcd diag;
+  float phase;
+
+  MultiplexedU2Commands(
+      const std::vector<GateSpec> &commands_, const Eigen::VectorXcd &diag_,
+      float phase_)
+      : commands(commands_), diag(diag_), phase(phase_) {}
+};
+
 /**
  * Multiplexed U2 gate
  */
@@ -205,11 +226,12 @@ class MultiplexedU2Box : public Box {
 
   /**
    * @brief Decompose the multiplexor into a sequence of interleaving CX and
-   * single qubit gates followed by a diagonal matrix
+   * single qubit gates followed by a diagonal matrix, given as command
+   * descriptions and a diagonal vector
    *
-   * @return std::pair<Circuit, Eigen::VectorXcd>
+   * @return  MultiplexedU2Commands
    */
-  std::pair<Circuit, Eigen::VectorXcd> decompose() const;
+  MultiplexedU2Commands decompose() const;
 
  protected:
   /**
