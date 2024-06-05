@@ -103,6 +103,8 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
         std::nullopt}},
       {OpType::TermSequenceBox,
        {"TermSequenceBox", "TermSequenceBox", {}, std::nullopt}},
+      {OpType::PGOpCommutingSetBox,
+       {"PGOpCommutingSetBox", "PGOpCommutingSetBox", {}, std::nullopt}},
       {OpType::CustomGate, {"CustomGate", "CustomGate", {}, std::nullopt}},
       {OpType::Barrier, {"Barrier", "Barrier", {}, std::nullopt}},
       {OpType::Measure,

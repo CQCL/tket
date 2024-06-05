@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <tkassert/Assert.hpp>
+
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
-#include "tket/Clifford/ChoiMixTableau.hpp"
-#include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
 #include "tket/Gate/Gate.hpp"
+#include "tket/Ops/OpJsonFactory.hpp"
 #include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
 #include "tket/PauliGraphRefactor/Converters.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
@@ -590,8 +591,7 @@ IndividualSynth synth_pgop(const PGOp_ptr& pgop) {
       }
     }
     case PGOpType::MultiplexedRotation: {
-      PGMultiplexedRotation& mpr =
-          dynamic_cast<PGMultiplexedRotation&>(*pgop);
+      PGMultiplexedRotation& mpr = dynamic_cast<PGMultiplexedRotation&>(*pgop);
       IndividualSynth synth;
       const std::vector<SpPauliStabiliser>& control_paulis =
           mpr.get_control_paulis();
@@ -705,7 +705,8 @@ Circuit pauli_graph3_to_circuit_individual(
   return circ;
 }
 
-Circuit pauli_graph3_to_circuit_sets(const pg::PauliGraph& pg, CXConfigType) {
+Circuit pauli_graph3_to_circuit_sets(
+    const pg::PauliGraph& pg, CXConfigType cx_config) {
   const std::set<Qubit>& qubits = pg.get_qubits();
   const std::set<Bit>& bits = pg.get_bits();
   Circuit circ(
@@ -750,74 +751,24 @@ Circuit pauli_graph3_to_circuit_sets(const pg::PauliGraph& pg, CXConfigType) {
     }
   }
 
+  boost::bimap<Qubit, unsigned> qubit_indices;
+  boost::bimap<Bit, unsigned> bit_indices;
+  unit_vector_t args;
+  for (const Qubit& q : qubits) {
+    qubit_indices.insert({q, (unsigned)qubit_indices.size()});
+    args.push_back(q);
+  }
+  for (const Bit& b : bits) {
+    bit_indices.insert({b, (unsigned)bit_indices.size()});
+    args.push_back(b);
+  }
   // Synthesise each interior commuting set
   for (const std::list<PGOp_ptr>& cset : commuting_sets) {
-    // TODO::Implement
-    // TODO::I can somewhat see what to do when the active paulis of an op can
-    // be partitioned into a set of pairs of anti-commuting paulis for exact
-    // reduction to specific qubits, and up to one pauli for diagonalisation.
-    // Will we ever have a kind of op that will have multiple strings that
-    // require simultaneous diagonalisation and reduction to single qubits at
-    // the same time e.g. a quantum-controlled unitary op? Graysynth targets one
-    // string at a time, so how do we generalise it to target multiple strings
-    // in parallel?
-
-    // For each PGOp, split the active paulis into pairs of anti-commuting
-    // paulis which will be reduced to a specific qubit, and others which will
-    // just be diagonalised and then handled by graysynth
-    std::list<std::pair<SpPauliStabiliser, SpPauliStabiliser>> ac_pairs;
-    std::list<SpPauliStabiliser> to_diag;
-    for (const PGOp_ptr& pgop : cset) {
-      std::list<SpPauliStabiliser> commuting;
-      for (const SpPauliStabiliser& p : pgop->active_paulis()) {
-        bool anti_found = false;
-        for (std::list<SpPauliStabiliser>::iterator it = commuting.begin();
-             it != commuting.end(); ++it) {
-          if (!p.commutes_with(*it)) {
-            anti_found = true;
-            ac_pairs.push_back({p, *it});
-            commuting.erase(it);
-            break;
-          }
-        }
-        if (!anti_found) {
-          commuting.push_back(p);
-        }
-      }
-      to_diag.insert(to_diag.end(), commuting.begin(), commuting.end());
-    }
-
-    // Pick an independent generating set of the commuting paulis to be
-    // diagonalised
-    std::list<ChoiMixTableau::row_tensor_t> diag_tab_rows;
-    std::set<Qubit>::const_iterator qb_it = qubits.begin();
-    for (const std::pair<SpPauliStabiliser, SpPauliStabiliser>& pair :
-         ac_pairs) {
-      diag_tab_rows.push_back(
-          {pair.first, SpPauliStabiliser(*qb_it, Pauli::Z)});
-      diag_tab_rows.push_back(
-          {pair.second, SpPauliStabiliser(*qb_it, Pauli::Z)});
-      ++qb_it;
-    }
-    for (const SpPauliStabiliser& p : to_diag) {
-      diag_tab_rows.push_back({p, {}});
-    }
-    ChoiMixTableau diag_tab(
-        diag_tab_rows);  // TODO:: GAUSSIAN FORM AND REMOVE EMPTY ROWS
-    // TODO:: RETURN TO OTHER SYNTHESIS METHODS TO INCORPORATE QControl and
-    // Multiplexor
-
-    // Obtain the conjugation circuit as the unitary extension of a
-    // ChoiMixTableau
-
-    // Build a UnitaryTableau for the conjugation circuit to map paulis through
-
-    // Sort PGOps into groups whose diagonal components are identical (i.e. they
-    // will be synthesised at the same point during GraySynth)
-
-    // Conjugate
-
+    Op_ptr box = std::make_shared<PGOpCommutingSetBox>(
+        std::vector<PGOp_ptr>{cset.begin(), cset.end()}, qubit_indices,
+        bit_indices, cx_config);
     // Append to the circuit
+    circ.add_op<UnitID>(box, args);
   }
 
   // Synthesise output tableau
@@ -1082,5 +1033,441 @@ Circuit pauli_graph3_to_pauli_exp_box_circuit_sets(
   return pauli_graph3_to_circuit_legacy(
       pg, cx_config, Transforms::PauliSynthStrat::Sets);
 }
+
+/*******************************************************************************
+ * PGOpCommutingSetBox Implementation
+ ******************************************************************************/
+
+PGOpCommutingSetBox::PGOpCommutingSetBox(
+    const std::vector<PGOp_ptr>& pgops,
+    const boost::bimap<Qubit, unsigned>& qubit_indices,
+    const boost::bimap<Bit, unsigned>& bit_indices, CXConfigType cx_config)
+    : Box(OpType::PGOpCommutingSetBox),
+      pgops_(),
+      qubit_indices_(qubit_indices),
+      bit_indices_(bit_indices),
+      cx_config_(cx_config) {
+  for (auto it = pgops.begin(); it != pgops.end(); ++it) {
+    // Check that all PGOps commute
+    auto it2 = it;
+    ++it2;
+    while (it2 != pgops.end()) {
+      if (!(*it)->commutes_with(*(*it2)))
+        throw PGError(
+            "The PGOps within a PGCommutingSetBox must all commute with each "
+            "other");
+      ++it2;
+    }
+    // Deep copy PGOps since PGOp_ptr is not const
+    pgops_.push_back((*it)->clone());
+    // Check every qubit is in qubit_indices
+    for (const SpPauliStabiliser& pauli : (*it)->active_paulis()) {
+      for (const std::pair<const Qubit, Pauli>& qp : pauli.string) {
+        if (qubit_indices_.left.find(qp.first) == qubit_indices_.left.end())
+          throw PGError(
+              "All qubits in a PGCommutingSetBox need to be assigned indices");
+      }
+    }
+    for (const Bit& b : (*it)->read_bits()) {
+      if (bit_indices_.left.find(b) == bit_indices_.left.end())
+        throw PGError(
+            "All bits in a PGCommutingSetBox need to be assigned indices");
+    }
+    for (const Bit& b : (*it)->write_bits()) {
+      if (bit_indices_.left.find(b) == bit_indices_.left.end())
+        throw PGError(
+            "All bits in a PGCommutingSetBox need to be assigned indices");
+    }
+  }
+  unsigned n_qubits = qubit_indices_.size();
+  for (const auto& pair : qubit_indices_) {
+    if (pair.right >= n_qubits)
+      throw PGError(
+          "Cannot create PGCommutingSetBox: qubit indices do not span the "
+          "range [0..n-1]");
+  }
+  unsigned n_bits = bit_indices_.size();
+  for (const auto& pair : bit_indices_) {
+    if (pair.right >= n_bits)
+      throw PGError(
+          "Cannot create PGCommutingSetBox: bit indices do not span the range "
+          "[0..n-1]");
+  }
+  signature_ = op_signature_t(n_qubits, EdgeType::Quantum);
+  op_signature_t bit_sig(n_bits, EdgeType::Classical);
+  signature_.insert(signature_.end(), bit_sig.begin(), bit_sig.end());
+}
+
+PGOpCommutingSetBox::PGOpCommutingSetBox(const PGOpCommutingSetBox& other)
+    : Box(other),
+      pgops_(),
+      qubit_indices_(other.qubit_indices_),
+      bit_indices_(other.bit_indices_),
+      cx_config_(other.cx_config_) {
+  // Deep copy PGOps since PGOp_ptr is not const
+  for (auto it = other.pgops_.begin(); it != pgops_.end(); ++it)
+    pgops_.push_back((*it)->clone());
+}
+
+PGOpCommutingSetBox::PGOpCommutingSetBox() : PGOpCommutingSetBox({}) {}
+
+bool PGOpCommutingSetBox::is_clifford() const {
+  return std::all_of(pgops_.begin(), pgops_.end(), [](const PGOp_ptr& pgop) {
+    return pgop->get_type() == PGOpType::CliffordRot;
+  });
+}
+
+SymSet PGOpCommutingSetBox::free_symbols() const {
+  SymSet sset;
+  for (const PGOp_ptr& pgop : pgops_) {
+    SymSet op_sset = pgop->free_symbols();
+    sset.insert(op_sset.begin(), op_sset.end());
+  }
+  return sset;
+}
+
+Op_ptr PGOpCommutingSetBox::dagger() const {
+  throw PGError("Dagger of PGOps is not yet implemented.");
+}
+
+Op_ptr PGOpCommutingSetBox::transpose() const {
+  throw PGError("Transpose of PGOps is not yet implemented.");
+}
+
+Op_ptr PGOpCommutingSetBox::symbol_substitution(
+    const SymEngine::map_basic_basic& sub_map) const {
+  std::vector<PGOp_ptr> sub_ops;
+  for (const PGOp_ptr& pgop : pgops_) {
+    PGOp_ptr sub_op = pgop->symbol_substitution(sub_map);
+    if (sub_op) {
+      sub_ops.push_back(sub_op);
+    } else {
+      // Deep copy of PGOp
+      sub_ops.push_back(pgop->clone());
+    }
+  }
+  return std::make_shared<PGOpCommutingSetBox>(
+      sub_ops, qubit_indices_, bit_indices_, cx_config_);
+}
+
+/**
+ * GraySynthRecord describes the arguments to a call of the GraySynth algorithm,
+ * allowing us to unfold the recursion into a loop by adding GraySynthRecords to
+ * a stack in place of each recursive call.
+ *
+ * We have to generalise from phase polynomials to generic PGOps indexed by
+ * diagonal Pauli strings. We represent each goal string by the set of Qubits on
+ * which it acts as Z. Having more than just rotations, we cannot guarantee that
+ * all PGOps indexed by the same goal string can be merged into one, so once the
+ * target string is reduced to a single qubit we synthesise all PGOps from a
+ * list.
+ */
+struct GraySynthRecord {
+  std::map<std::set<Qubit>, std::list<PGOp_ptr>> terms;
+  std::set<Qubit> remaining_qubits;
+  std::optional<Qubit> target;
+};
+
+void PGOpCommutingSetBox::generate_circuit() const {
+  /**
+   * Each PGOp contains a number of active Pauli strings, generating the
+   * subspace on which it acts non-trivially. The PGOps in the box must all
+   * mutually commute, so each active Pauli must commute with all others from
+   * other PGOps, but need not commute with all active Paulis in the same PGOp
+   * (e.g. the active subspace of a Reset is generated by Z and X on the same
+   * qubit).
+   *
+   * PGOp::pauli_signature() splits the active Pauli strings of a PGOp into
+   * pairs of strings which anti-commute with each other but commute with all
+   * other active Paulis, and the remaining strings which commute with every
+   * active Pauli. For each anti-commuting pair, we can reduce them to Z and X
+   * on a single qubit, at which point we know (by commutation) that no other
+   * PGOp in the set acts on that qubit. These qubits then just become ancillas
+   * used at the point of synthesising that particular PGOp, and can otherwise
+   * be ignored.
+   *
+   * This leaves the commuting Pauli strings, which can all be mutually
+   * diagonalised.
+   *
+   * If a PGOp has zero such commuting strings (e.g. reset or Box PGOps), we can
+   * synthesise it at any point since it acts on a completely distinct set of
+   * qubits from all others in the box.
+   *
+   * For the PGOps that contain exactly one commuting string, we can treat this
+   * string like a term in a phase polynomial and feed it into GraySynth. At the
+   * point where the term is reduced to Z on a single qubit, we can synthesise
+   * the PGOp, factoring in any ancillas we prepared earlier.
+   *
+   * If a PGOp has multiple commuting strings, synthesis requires these to be
+   * reduced to Z on distinct qubits at the same time. GraySynth makes no
+   * guarantees about any qubits other than the immediate target, so it is hard
+   * to fit this in to GraySynth in a sensible way. For simplicity, we will also
+   * handle these PGOps separately from the GraySynth algorithm, alongside those
+   * with zero commuting strings. This is likely to yield suboptimal solutions,
+   * but these examples are not very common - e.g. controlled-operations and
+   * multiplexors, which can theoretically be reduced to a large collection of
+   * simple rotations before synthesis anyway.
+   */
+
+  // inner_circ will store the circuit conjugated by the diagonalisation
+  // Cliffords
+  std::set<Qubit> qubits;
+  Circuit inner_circ;
+  for (const auto& pair : qubit_indices_) {
+    qubits.insert(pair.left);
+    inner_circ.add_qubit(pair.left);
+  }
+  for (const auto& pair : bit_indices_) {
+    inner_circ.add_bit(pair.left);
+  }
+
+  /**
+   * Partition PGOps into those with one commuting term (a suitable target for
+   * GraySynth), versus those with zero/multiple which will be synthesised
+   * individually (individual synthesis for those with zero is optimal as the
+   * Clifford conjugation is guaranteed to leave it on disjoint qubits from all
+   * other PGOps).
+   *
+   * At the same time, we form the rows for the diagonalisation problem (split
+   * into ac_pair_rows and c_rows).
+   */
+  std::list<ChoiMixTableau::row_tensor_t> ac_pair_rows;
+  std::list<ChoiMixTableau::row_tensor_t> c_rows;
+  std::set<Qubit>::const_iterator qb_it = qubits.begin();
+  std::list<std::pair<SpPauliStabiliser, PGOp_ptr>> single_diag_ops;
+  std::list<PGOp_ptr> multi_diag_ops;
+  for (const PGOp_ptr& pgop : pgops_) {
+    PGOp_signature sig = pgop->pauli_signature();
+    for (const std::pair<SpPauliStabiliser, SpPauliStabiliser>& ac_pair :
+         sig.ac_pairs) {
+      // All of the anti-commuting pairs are guaranteed to appear uniquely since
+      // the PGOps must commute
+      ac_pair_rows.push_back(
+          {ac_pair.first, SpPauliStabiliser(*qb_it, Pauli::Z)});
+      ac_pair_rows.push_back(
+          {ac_pair.second, SpPauliStabiliser(*qb_it, Pauli::X)});
+      ++qb_it;
+    }
+    for (const SpPauliStabiliser& c_pauli : sig.c) {
+      // However, the commuting rows may appear multiple times or be generated
+      // by a subset; we will filter them by gaussian elimination and removing
+      // empty rows
+      c_rows.push_back({c_pauli, {}});
+    }
+    // Clone so we don't accidentally change the Box when we conjugate
+    PGOp_ptr cl = pgop->clone();
+    // Filter based on recorded commuting ports
+    if (sig.c.size() == 1)
+      single_diag_ops.push_back({*sig.c.begin(), cl});
+    else
+      multi_diag_ops.push_back(cl);
+  }
+
+  /**
+   * cm_tableau_to_unitary_extension_circuit only guarantees the tableau rows UP
+   * TO additional Zs for initialised/post-selected qubits. When we have
+   * ac_pairs, these may end up not being reduced to individual qubits, but
+   * strings (ZZZ..., XZZ...).
+   *
+   * Rather than use one diag_tab, build different ones for the ac_pairs and the
+   * commuting terms. Solve the ac_pairs first, then update the commuting terms
+   * based on the unitary implementation and solve them. Since the ac_pairs
+   * tableau doesn't involve any initialisations or post-selections, those rows
+   * will be guaranteed exactly in the unitary implementation, then by
+   * commutation the commuting terms will exist on disjoint qubits so the second
+   * tableau won't mess with these rows. This should not be a significant
+   * structural change to the solution circuits since ChoiMixTableau synthesis
+   * solves id channels first.
+   */
+  ChoiMixTableau ac_tab(ac_pair_rows);
+  auto [diag_circ, ac_qb_map] =
+      cm_tableau_to_unitary_extension_circuit(ac_tab, {}, {}, cx_config_);
+  // Push the remaining c_rows through this circuit so that when we diagonalise
+  // the new strings, the composite circuit diagonalises the original ones
+  UnitaryTableau u_ac_tab = circuit_to_unitary_tableau(diag_circ);
+  for (ChoiMixTableau::row_tensor_t& row : c_rows) {
+    row.first = u_ac_tab.get_row_product(row.first);
+  }
+  ChoiMixTableau c_tab(c_rows);
+  // The strings are not guaranteed to be linearly-independent, so pick a
+  // generating set for the space to give a proper tableau
+  c_tab.canonical_column_order();
+  c_tab.gaussian_form();
+  for (unsigned r = c_tab.get_n_rows(); r > 0; r--) {
+    if (c_tab.get_row(r - 1) == ChoiMixTableau::row_tensor_t{{}, {}})
+      c_tab.remove_row(r - 1);
+    else
+      break;
+  }
+  // Diagonalisation is encoded into ChoiMixTableau synthesis via the unitary
+  // extension of a post-selection circuit. We need to provide available names
+  // for the qubits over which the diagonal results will act
+  std::vector<Qubit> remaining_qubit_names;
+  remaining_qubit_names.insert(
+      remaining_qubit_names.end(), qb_it, qubits.end());
+  auto [c_circ, c_qb_map] = cm_tableau_to_unitary_extension_circuit(
+      c_tab, {}, remaining_qubit_names, cx_config_);
+  // Compose to give the full diagonalisation circuit which both reduces each
+  // ac_pair to an independent qubit and diagonalises all commuting strings
+  diag_circ.append(c_circ);
+
+  // Build a UnitaryTableau for the conjugation circuit to map paulis through
+  UnitaryTableau u_tab = circuit_to_unitary_tableau(diag_circ);
+  // Set up initial GraySynth state
+  GraySynthRecord init_rec{{}, qubits, std::nullopt};
+  for (std::pair<SpPauliStabiliser, PGOp_ptr>& term : single_diag_ops) {
+    SpPauliStabiliser diag_string = u_tab.get_row_product(term.first);
+    std::set<Qubit> z_qubits;
+    diag_string.compress();
+    for (const std::pair<const Qubit, Pauli>& qp : diag_string.string)
+      z_qubits.insert(qp.first);
+    for (unsigned p = 0; p < term.second->n_paulis(); ++p)
+      term.second->port(p) = u_tab.get_row_product(term.second->port(p));
+    auto [it, inserted] = init_rec.terms.insert({z_qubits, {term.second}});
+    if (!inserted) it->second.push_back(term.second);
+  }
+  for (PGOp_ptr& pgop : multi_diag_ops) {
+    for (unsigned p = 0; p < pgop->n_paulis(); ++p)
+      pgop->port(p) = u_tab.get_row_product(pgop->port(p));
+  }
+
+  // Apply GraySynth to single_diag_ops
+  std::list<GraySynthRecord> Q;
+  Q.push_front(init_rec);
+  // Atab builds up the CX circuit. Once a PGOp is ready to be synthesised, we
+  // update it once by just pushing it through the entire tableau
+  UnitaryTableau Atab(qubit_vector_t{qubits.begin(), qubits.end()});
+  while (!Q.empty()) {
+    GraySynthRecord R = Q.front();
+    Q.pop_front();
+
+    if (R.terms.size() == 0)
+      continue;
+    else if (R.terms.size() == 1 && R.target) {
+      // When there is only a single term, we apply CXs to reduce it down to the
+      // target qubit
+      Qubit target = *(R.target);
+      auto& [pstr, pgops] = *(R.terms.begin());
+      for (const Qubit& control : pstr) {
+        if (control != target) {
+          inner_circ.add_op<Qubit>(OpType::CX, {control, target});
+          for (GraySynthRecord& GSR : Q) {
+            std::map<std::set<Qubit>, std::list<PGOp_ptr>> old_terms =
+                GSR.terms;
+            GSR.terms = {};
+            for (std::pair<std::set<Qubit>, std::list<PGOp_ptr>> term :
+                 old_terms) {
+              if (term.first.find(target) != term.first.end()) {
+                auto [it, inserted] = term.first.insert(control);
+                if (!inserted) term.first.erase(it);
+              }
+              GSR.terms.insert(term);
+            }
+          }
+          Atab.apply_CX_at_end(control, target);
+        }
+      }
+      // Synthesise each PGOp associated to this term
+      for (const PGOp_ptr& pgop : pgops) {
+        for (unsigned p = 0; p < pgop->n_paulis(); ++p)
+          pgop->port(p) = Atab.get_row_product(pgop->port(p));
+        IndividualSynth synth = synth_pgop(pgop);
+        // synth.rows should describe a qubit permutation, telling us which
+        // Qubits to place synth.op on
+        std::map<Qubit, Qubit> position_map;
+        for (ChoiMixTableau::row_tensor_t& row : synth.rows) {
+          row.first.compress();
+          TKET_ASSERT(row.first.size() == 1);
+          row.second.compress();
+          TKET_ASSERT(row.second.size() == 1);
+          position_map[row.second.string.begin()->first] =
+              row.first.string.begin()->first;
+        }
+        for (UnitID& u : synth.args) {
+          if (u.type() == UnitType::Qubit) u = position_map.at(Qubit(u));
+        }
+        inner_circ.add_op<UnitID>(synth.op, synth.args);
+      }
+    } else if (!R.remaining_qubits.empty()) {
+      // Recursive case: find the best qubit to split on (with the greatest
+      // difference between the strings containing it and the strings not
+      // containing it)
+      int max = -1;
+      std::optional<Qubit> max_q = std::nullopt;
+      for (const Qubit& q : R.remaining_qubits) {
+        int num_ones = std::count_if(
+            R.terms.begin(), R.terms.end(),
+            [=](const std::pair<const std::set<Qubit>, std::list<PGOp_ptr>>&
+                    term) { return term.first.find(q) != term.first.end(); });
+        int num_zeros = R.terms.size() - num_ones;
+        if (num_zeros > max || num_ones > max) {
+          max = (num_zeros > num_ones) ? num_zeros : num_ones;
+          max_q = q;
+        }
+      }
+      R.remaining_qubits.erase(*max_q);
+      // Partition the terms into the two sets and recurse on each one
+      GraySynthRecord R0{{}, R.remaining_qubits, R.target};
+      GraySynthRecord R1{{}, R.remaining_qubits, R.target ? R.target : max_q};
+      for (const std::pair<const std::set<Qubit>, std::list<PGOp_ptr>>& term :
+           R.terms) {
+        if (term.first.find(*max_q) == term.first.end())
+          R0.terms.insert(term);
+        else
+          R1.terms.insert(term);
+      }
+      Q.push_front(R1);
+      Q.push_front(R0);
+    }
+  }
+  // NOTE:: Using UnitaryTableau synthesis here instead of simple Gaussian
+  // elimination will give a different (and generally less efficient) circuit
+  // than the legacy GraySynth implementation until UnitaryTableau synthesis is
+  // improved
+  inner_circ.append(unitary_tableau_to_circuit(Atab).dagger());
+
+  // Synthesise multi_diag_ops individually
+  for (const PGOp_ptr& pgop : multi_diag_ops)
+    inner_circ.append(pgop_to_circuit(pgop));
+
+  // Combine into one Circuit (We cannot use ConjugationBox as the inner circuit
+  // may include classical data)
+  Circuit circ = diag_circ;
+  circ.append(inner_circ);
+  circ.append(diag_circ.dagger());
+
+  // Rename units into flat register to hook up with Box arguments correctly
+  unit_map_t umap;
+  for (const auto& pair : qubit_indices_) {
+    umap.insert({pair.left, Qubit(pair.right)});
+  }
+  for (const auto& pair : bit_indices_) {
+    umap.insert({pair.left, Bit(pair.right)});
+  }
+  circ.rename_units(umap);
+  circ_ = std::make_shared<Circuit>(circ);
+}
+
+bool PGOpCommutingSetBox::is_equal(const Op& op_other) const {
+  const PGOpCommutingSetBox& other =
+      dynamic_cast<const PGOpCommutingSetBox&>(op_other);
+  if (id_ == other.get_id()) return true;
+  if (cx_config_ != other.cx_config_) return false;
+  if (qubit_indices_ != other.qubit_indices_) return false;
+  if (bit_indices_ != other.bit_indices_) return false;
+  return std::equal(
+      pgops_.begin(), pgops_.end(), other.pgops_.begin(), other.pgops_.end(),
+      [](const PGOp_ptr& a, const PGOp_ptr& b) { return *a == *b; });
+}
+
+nlohmann::json PGOpCommutingSetBox::to_json(const Op_ptr&) {
+  throw PGError("PGOp serialisation is not yet implemented");
+}
+
+Op_ptr PGOpCommutingSetBox::from_json(const nlohmann::json&) {
+  throw PGError("PGOp deserialisation is not yet implemented");
+}
+
+REGISTER_OPFACTORY(PGOpCommutingSetBox, PGOpCommutingSetBox)
 
 }  // namespace tket

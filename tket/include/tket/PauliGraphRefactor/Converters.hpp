@@ -16,6 +16,7 @@
 
 #include "PGBox.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/PauliGraphRefactor/PauliGraph.hpp"
 
 namespace tket {
@@ -29,6 +30,8 @@ std::pair<Circuit, qubit_map_t> cm_tableau_to_unitary_extension_circuit(
     const ChoiMixTableau& tab, const std::vector<Qubit>& init_names = {},
     const std::vector<Qubit>& post_names = {},
     CXConfigType cx_config = CXConfigType::Snake);
+UnitaryTableau circuit_to_unitary_tableau(const Circuit& circ);
+Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab);
 
 /**
  * Converts the Circuit to a PauliGraph representing the same circuit by
@@ -87,5 +90,71 @@ Circuit pauli_graph3_to_circuit_individual(
 
 Circuit pauli_graph3_to_circuit_sets(
     const pg::PauliGraph& pg, CXConfigType cx_config = CXConfigType::Snake);
+
+/**
+ * Based on PauliExpCommutingSetBox, this Box represents a collection of PGOps
+ * from a PauliGraph which are mutually commuting and can hence be performed
+ * simultaneously.
+ *
+ * generate_circuit() synthesises this by mutual diagonalisation and GraySynth
+ * (though PGOps with more than one active Pauli which commutes with all others
+ * as solved ad-hoc, as this would otherwise require GraySynth targets to be
+ * sets of Pauli strings which need to be simultaneously available)
+ */
+class PGOpCommutingSetBox : public Box {
+ public:
+  PGOpCommutingSetBox(
+      const std::vector<pg::PGOp_ptr>& pgops,
+      const boost::bimap<Qubit, unsigned>& qubit_indices,
+      const boost::bimap<Bit, unsigned>& bit_indices,
+      CXConfigType cx_config = CXConfigType::Tree);
+
+  /**
+   * Construct from the empty vector
+   */
+  PGOpCommutingSetBox();
+
+  /**
+   * Copy constructor
+   */
+  PGOpCommutingSetBox(const PGOpCommutingSetBox& other);
+
+  ~PGOpCommutingSetBox() override {}
+
+  bool is_clifford() const override;
+
+  SymSet free_symbols() const override;
+
+  /**
+   * Equality check between two instances
+   */
+  bool is_equal(const Op& op_other) const override;
+
+  /** Get the PGOps */
+  const std::vector<pg::PGOp_ptr>& get_pgops() const { return pgops_; }
+
+  /** Get the cx_config parameter (affects box decomposition) */
+  CXConfigType get_cx_config() const { return cx_config_; }
+
+  Op_ptr dagger() const override;
+
+  Op_ptr transpose() const override;
+
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic& sub_map) const override;
+
+  static Op_ptr from_json(const nlohmann::json& j);
+
+  static nlohmann::json to_json(const Op_ptr& op);
+
+ protected:
+  void generate_circuit() const override;
+
+ private:
+  std::vector<pg::PGOp_ptr> pgops_;
+  boost::bimap<Qubit, unsigned> qubit_indices_;
+  boost::bimap<Bit, unsigned> bit_indices_;
+  CXConfigType cx_config_;
+};
 
 }  // namespace tket

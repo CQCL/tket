@@ -63,10 +63,12 @@ class PGBox : public PGOp {
   virtual SymSet free_symbols() const override;
   virtual PGOp_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
+  virtual PGOp_ptr clone() const override;
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
   virtual unsigned n_paulis() const override;
   virtual std::vector<SpPauliStabiliser> active_paulis() const override;
+  virtual PGOp_signature pauli_signature() const override;
   virtual SpPauliStabiliser& port(unsigned p) override;
   virtual bit_vector_t read_bits() const override;
   virtual bit_vector_t write_bits() const override;
@@ -133,10 +135,12 @@ class PGMultiplexedTensoredBox : public PGOp {
   virtual SymSet free_symbols() const override;
   virtual PGOp_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
+  virtual PGOp_ptr clone() const override;
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
   virtual unsigned n_paulis() const override;
   virtual std::vector<SpPauliStabiliser> active_paulis() const override;
+  virtual PGOp_signature pauli_signature() const override;
   virtual SpPauliStabiliser& port(unsigned p) override;
 
  protected:

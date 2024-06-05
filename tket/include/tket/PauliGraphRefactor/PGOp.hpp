@@ -84,6 +84,26 @@ enum class PGOpType {
 };
 
 /**
+ * The active Paulis of each PGOp can be split into pairs of anti-commuting
+ * Pauli strings (reducible to the space of one qubit) and additional Pauli
+ * strings that commute with all others (reducible to a qubit with a commuting
+ * Pauli operator).
+ *
+ * This signature indicates the number of qubits used to implement the Op after
+ * diagonalisation: one per anti-commuting pair, plus one per additional
+ * commuting operator. The PGOp is a valid target for GraySynth when there is
+ * exactly one commuting operator which becomes the target "phase", with each
+ * anti-commuting pair just acting as an ancilla which comes into play when the
+ * Op is ready to be synthesised.
+ */
+struct PGOp_signature {
+  // Pairs of anti-commuting Pauli strings
+  std::list<std::pair<SpPauliStabiliser, SpPauliStabiliser>> ac_pairs;
+  // Pauli strings which commute with all others within the PGOp
+  std::list<SpPauliStabiliser> c;
+};
+
+/**
  * Abstract class for a Pauli Graph Op.
  * Each PGOpType has a single possible subclass that can realise it, allowing
  * us to statically cast to a subclass once that is determined.
@@ -115,6 +135,11 @@ class PGOp {
    */
   virtual PGOp_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const = 0;
+
+  /**
+   * Deep copy operation, since PGOp_ptr does not point to a const PGOp
+   */
+  virtual PGOp_ptr clone() const = 0;
 
   /**
    * A human-readable summary of the PGOp.
@@ -172,6 +197,12 @@ class PGOp {
    * ad-hoc basis.
    */
   virtual std::vector<SpPauliStabiliser> active_paulis() const = 0;
+
+  /**
+   * A structured version of active_paulis() which groups the Pauli operators
+   * according to their commutativity with each other.
+   */
+  virtual PGOp_signature pauli_signature() const = 0;
 
   /**
    * Gives direct reference access to the SpPauliStabiliser at index \p p in
@@ -241,9 +272,11 @@ class PGRotation : public PGOp {
   virtual SymSet free_symbols() const override;
   virtual PGOp_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
+  virtual PGOp_ptr clone() const override;
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
   virtual std::vector<SpPauliStabiliser> active_paulis() const override;
+  virtual PGOp_signature pauli_signature() const override;
   virtual SpPauliStabiliser& port(unsigned p) override;
 
  protected:
@@ -280,9 +313,11 @@ class PGCliffordRot : public PGOp {
   virtual SymSet free_symbols() const override;
   virtual PGOp_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
+  virtual PGOp_ptr clone() const override;
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
   virtual std::vector<SpPauliStabiliser> active_paulis() const override;
+  virtual PGOp_signature pauli_signature() const override;
   virtual SpPauliStabiliser& port(unsigned p) override;
 
  protected:
@@ -321,9 +356,11 @@ class PGMeasure : public PGOp {
   virtual SymSet free_symbols() const override;
   virtual PGOp_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
+  virtual PGOp_ptr clone() const override;
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
   virtual std::vector<SpPauliStabiliser> active_paulis() const override;
+  virtual PGOp_signature pauli_signature() const override;
   virtual SpPauliStabiliser& port(unsigned p) override;
   virtual bit_vector_t write_bits() const override;
 
@@ -358,9 +395,11 @@ class PGDecoherence : public PGOp {
   virtual SymSet free_symbols() const override;
   virtual PGOp_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
+  virtual PGOp_ptr clone() const override;
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
   virtual std::vector<SpPauliStabiliser> active_paulis() const override;
+  virtual PGOp_signature pauli_signature() const override;
   virtual SpPauliStabiliser& port(unsigned p) override;
 
  protected:
@@ -404,10 +443,12 @@ class PGReset : public PGOp {
   virtual SymSet free_symbols() const override;
   virtual PGOp_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
+  virtual PGOp_ptr clone() const override;
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
   virtual unsigned n_paulis() const override;
   virtual std::vector<SpPauliStabiliser> active_paulis() const override;
+  virtual PGOp_signature pauli_signature() const override;
   virtual SpPauliStabiliser& port(unsigned p) override;
 
  protected:
@@ -450,10 +491,12 @@ class PGConditional : public PGOp {
   virtual SymSet free_symbols() const override;
   virtual PGOp_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
+  virtual PGOp_ptr clone() const override;
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
   virtual unsigned n_paulis() const override;
   virtual std::vector<SpPauliStabiliser> active_paulis() const override;
+  virtual PGOp_signature pauli_signature() const override;
   virtual SpPauliStabiliser& port(unsigned p) override;
   virtual bit_vector_t read_bits() const override;
   virtual bit_vector_t write_bits() const override;
@@ -504,10 +547,12 @@ class PGQControl : public PGOp {
   virtual SymSet free_symbols() const override;
   virtual PGOp_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
+  virtual PGOp_ptr clone() const override;
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
   virtual unsigned n_paulis() const override;
   virtual std::vector<SpPauliStabiliser> active_paulis() const override;
+  virtual PGOp_signature pauli_signature() const override;
   virtual SpPauliStabiliser& port(unsigned p) override;
 
  protected:
@@ -558,10 +603,12 @@ class PGMultiplexedRotation : public PGOp {
   virtual SymSet free_symbols() const override;
   virtual PGOp_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
+  virtual PGOp_ptr clone() const override;
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
   virtual unsigned n_paulis() const override;
   virtual std::vector<SpPauliStabiliser> active_paulis() const override;
+  virtual PGOp_signature pauli_signature() const override;
   virtual SpPauliStabiliser& port(unsigned p) override;
 
  protected:
@@ -626,11 +673,14 @@ class PGStabAssertion : public PGOp {
   virtual SymSet free_symbols() const override;
   virtual PGOp_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
+  virtual PGOp_ptr clone() const override;
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
   virtual unsigned n_paulis() const override;
   virtual std::vector<SpPauliStabiliser> active_paulis() const override;
+  virtual PGOp_signature pauli_signature() const override;
   virtual SpPauliStabiliser& port(unsigned p) override;
+  virtual bit_vector_t write_bits() const override;
 
  protected:
   SpPauliStabiliser stab_;
@@ -671,10 +721,14 @@ class PGInputTableau : public PGOp {
   virtual SymSet free_symbols() const override;
   virtual PGOp_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
+  virtual PGOp_ptr clone() const override;
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
   virtual unsigned n_paulis() const override;
   virtual std::vector<SpPauliStabiliser> active_paulis() const override;
+  // CAUTION: Paulis in signature may not match active_paulis() due to gaussian
+  // elimination used in determining anti-commuting pairs
+  virtual PGOp_signature pauli_signature() const override;
   virtual SpPauliStabiliser& port(unsigned p) override;
 
  protected:
@@ -721,10 +775,14 @@ class PGOutputTableau : public PGOp {
   virtual SymSet free_symbols() const override;
   virtual PGOp_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
+  virtual PGOp_ptr clone() const override;
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
   virtual unsigned n_paulis() const override;
   virtual std::vector<SpPauliStabiliser> active_paulis() const override;
+  // CAUTION: Paulis in signature may not match active_paulis() due to gaussian
+  // elimination used in determining anti-commuting pairs
+  virtual PGOp_signature pauli_signature() const override;
   virtual SpPauliStabiliser& port(unsigned p) override;
 
  protected:

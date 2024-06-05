@@ -14,6 +14,8 @@
 
 #include "tket/PauliGraphRefactor/PGBox.hpp"
 
+#include <tkassert/Assert.hpp>
+
 namespace tket {
 
 namespace pg {
@@ -59,6 +61,10 @@ PGOp_ptr PGBox::symbol_substitution(
     return PGOp_ptr();
 }
 
+PGOp_ptr PGBox::clone() const {
+  return std::make_shared<PGBox>(op_, args_, paulis_);
+}
+
 std::string PGBox::get_name(bool latex) const {
   std::stringstream str;
   str << op_->get_name(latex) << "(";
@@ -77,6 +83,18 @@ bool PGBox::is_equal(const PGOp& op_other) const {
 unsigned PGBox::n_paulis() const { return paulis_.size(); }
 
 std::vector<SpPauliStabiliser> PGBox::active_paulis() const { return paulis_; }
+
+PGOp_signature PGBox::pauli_signature() const {
+  PGOp_signature sig;
+  for (auto it = paulis_.begin(); it != paulis_.end();) {
+    SpPauliStabiliser zp = *it;
+    ++it;
+    TKET_ASSERT(it != paulis_.end());
+    sig.ac_pairs.push_back({zp, *it});
+    ++it;
+  }
+  return sig;
+}
 
 SpPauliStabiliser& PGBox::port(unsigned p) {
   if (p >= paulis_.size())
@@ -176,6 +194,11 @@ PGOp_ptr PGMultiplexedTensoredBox::symbol_substitution(
     return PGOp_ptr();
 }
 
+PGOp_ptr PGMultiplexedTensoredBox::clone() const {
+  return std::make_shared<PGMultiplexedTensoredBox>(
+      op_map_, control_paulis_, target_paulis_);
+}
+
 std::string PGMultiplexedTensoredBox::get_name(bool latex) const {
   std::stringstream str;
   str << "qswitch [";
@@ -201,6 +224,7 @@ std::string PGMultiplexedTensoredBox::get_name(bool latex) const {
       str << (*op_it)->get_name(latex);
       first_op = false;
     }
+    str << "]";
     first = false;
   }
   return str.str();
@@ -221,6 +245,21 @@ std::vector<SpPauliStabiliser> PGMultiplexedTensoredBox::active_paulis() const {
   std::vector<SpPauliStabiliser> aps = control_paulis_;
   aps.insert(aps.end(), target_paulis_.begin(), target_paulis_.end());
   return aps;
+}
+
+PGOp_signature PGMultiplexedTensoredBox::pauli_signature() const {
+  PGOp_signature sig;
+  for (auto it = control_paulis_.begin(); it != control_paulis_.end(); ++it) {
+    sig.c.push_back(*it);
+  }
+  for (auto it = target_paulis_.begin(); it != target_paulis_.end();) {
+    SpPauliStabiliser zp = *it;
+    ++it;
+    TKET_ASSERT(it != target_paulis_.end());
+    sig.ac_pairs.push_back({zp, *it});
+    ++it;
+  }
+  return sig;
 }
 
 SpPauliStabiliser& PGMultiplexedTensoredBox::port(unsigned p) {

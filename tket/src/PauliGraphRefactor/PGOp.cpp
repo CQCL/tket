@@ -82,6 +82,10 @@ PGOp_ptr PGRotation::symbol_substitution(
   return std::make_shared<PGRotation>(tensor_, angle_.subs(sub_map));
 }
 
+PGOp_ptr PGRotation::clone() const {
+  return std::make_shared<PGRotation>(tensor_, angle_);
+}
+
 std::string PGRotation::get_name(bool) const {
   std::stringstream str;
   str << "Rot(" << tensor_.to_str() << "; " << angle_ << ")";
@@ -96,6 +100,8 @@ bool PGRotation::is_equal(const PGOp& op_other) const {
 std::vector<SpPauliStabiliser> PGRotation::active_paulis() const {
   return {tensor_};
 }
+
+PGOp_signature PGRotation::pauli_signature() const { return {{}, {tensor_}}; }
 
 SpPauliStabiliser& PGRotation::port(unsigned p) {
   if (p != 0)
@@ -127,6 +133,10 @@ PGOp_ptr PGCliffordRot::symbol_substitution(
   return PGOp_ptr();
 }
 
+PGOp_ptr PGCliffordRot::clone() const {
+  return std::make_shared<PGCliffordRot>(tensor_, angle_);
+}
+
 std::string PGCliffordRot::get_name(bool) const {
   std::stringstream str;
   str << "ClfRot(" << tensor_.to_str() << "; " << (angle_ * 0.5) << ")";
@@ -140,6 +150,10 @@ bool PGCliffordRot::is_equal(const PGOp& op_other) const {
 
 std::vector<SpPauliStabiliser> PGCliffordRot::active_paulis() const {
   return {tensor_};
+}
+
+PGOp_signature PGCliffordRot::pauli_signature() const {
+  return {{}, {tensor_}};
 }
 
 SpPauliStabiliser& PGCliffordRot::port(unsigned p) {
@@ -170,6 +184,10 @@ PGOp_ptr PGMeasure::symbol_substitution(
   return PGOp_ptr();
 }
 
+PGOp_ptr PGMeasure::clone() const {
+  return std::make_shared<PGMeasure>(tensor_, target_);
+}
+
 std::string PGMeasure::get_name(bool) const {
   std::stringstream str;
   str << "Meas(" << tensor_.to_str() << " -> " << target_.repr() << ")";
@@ -184,6 +202,8 @@ bool PGMeasure::is_equal(const PGOp& op_other) const {
 std::vector<SpPauliStabiliser> PGMeasure::active_paulis() const {
   return {tensor_};
 }
+
+PGOp_signature PGMeasure::pauli_signature() const { return {{}, {tensor_}}; }
 
 SpPauliStabiliser& PGMeasure::port(unsigned p) {
   if (p != 0)
@@ -213,6 +233,10 @@ PGOp_ptr PGDecoherence::symbol_substitution(
   return PGOp_ptr();
 }
 
+PGOp_ptr PGDecoherence::clone() const {
+  return std::make_shared<PGDecoherence>(tensor_);
+}
+
 std::string PGDecoherence::get_name(bool) const {
   std::stringstream str;
   str << "Deco(" << tensor_.to_str() << ")";
@@ -226,6 +250,10 @@ bool PGDecoherence::is_equal(const PGOp& op_other) const {
 
 std::vector<SpPauliStabiliser> PGDecoherence::active_paulis() const {
   return {tensor_};
+}
+
+PGOp_signature PGDecoherence::pauli_signature() const {
+  return {{}, {tensor_}};
 }
 
 SpPauliStabiliser& PGDecoherence::port(unsigned p) {
@@ -256,6 +284,10 @@ PGOp_ptr PGReset::symbol_substitution(const SymEngine::map_basic_basic&) const {
   return PGOp_ptr();
 }
 
+PGOp_ptr PGReset::clone() const {
+  return std::make_shared<PGReset>(stab_, destab_);
+}
+
 std::string PGReset::get_name(bool) const {
   std::stringstream str;
   str << "Reset(" << stab_.to_str() << "; " << destab_.to_str() << ")";
@@ -271,6 +303,10 @@ unsigned PGReset::n_paulis() const { return 2; }
 
 std::vector<SpPauliStabiliser> PGReset::active_paulis() const {
   return {stab_, destab_};
+}
+
+PGOp_signature PGReset::pauli_signature() const {
+  return {{{stab_, destab_}}, {}};
 }
 
 SpPauliStabiliser& PGReset::port(unsigned p) {
@@ -307,6 +343,10 @@ PGOp_ptr PGConditional::symbol_substitution(
     return PGOp_ptr();
 }
 
+PGOp_ptr PGConditional::clone() const {
+  return std::make_shared<PGConditional>(inner_, args_, value_);
+}
+
 std::string PGConditional::get_name(bool latex) const {
   std::stringstream str;
   str << "[";
@@ -332,6 +372,10 @@ unsigned PGConditional::n_paulis() const { return inner_->n_paulis(); }
 
 std::vector<SpPauliStabiliser> PGConditional::active_paulis() const {
   return inner_->active_paulis();
+}
+
+PGOp_signature PGConditional::pauli_signature() const {
+  return inner_->pauli_signature();
 }
 
 SpPauliStabiliser& PGConditional::port(unsigned p) { return inner_->port(p); }
@@ -380,6 +424,10 @@ PGOp_ptr PGQControl::symbol_substitution(
     return PGOp_ptr();
 }
 
+PGOp_ptr PGQControl::clone() const {
+  return std::make_shared<PGQControl>(inner_, control_paulis_, value_);
+}
+
 std::string PGQControl::get_name(bool latex) const {
   std::stringstream str;
   str << "qif (";
@@ -410,6 +458,12 @@ std::vector<SpPauliStabiliser> PGQControl::active_paulis() const {
   std::vector<SpPauliStabiliser> inner_aps = inner_->active_paulis();
   aps.insert(aps.end(), inner_aps.begin(), inner_aps.end());
   return aps;
+}
+
+PGOp_signature PGQControl::pauli_signature() const {
+  PGOp_signature sig = inner_->pauli_signature();
+  sig.c.insert(sig.c.begin(), control_paulis_.begin(), control_paulis_.end());
+  return sig;
 }
 
 SpPauliStabiliser& PGQControl::port(unsigned p) {
@@ -472,6 +526,11 @@ PGOp_ptr PGMultiplexedRotation::symbol_substitution(
       new_angle_map, control_paulis_, target_pauli_);
 }
 
+PGOp_ptr PGMultiplexedRotation::clone() const {
+  return std::make_shared<PGMultiplexedRotation>(
+      angle_map_, control_paulis_, target_pauli_);
+}
+
 std::string PGMultiplexedRotation::get_name(bool) const {
   std::stringstream str;
   str << "qswitch [";
@@ -512,6 +571,13 @@ std::vector<SpPauliStabiliser> PGMultiplexedRotation::active_paulis() const {
   std::vector<SpPauliStabiliser> aps = control_paulis_;
   aps.push_back(target_pauli_);
   return aps;
+}
+
+PGOp_signature PGMultiplexedRotation::pauli_signature() const {
+  std::list<SpPauliStabiliser> ps;
+  ps.insert(ps.begin(), control_paulis_.begin(), control_paulis_.end());
+  ps.push_back(target_pauli_);
+  return {{}, ps};
 }
 
 SpPauliStabiliser& PGMultiplexedRotation::port(unsigned p) {
@@ -558,6 +624,10 @@ PGOp_ptr PGStabAssertion::symbol_substitution(
   return PGOp_ptr();
 }
 
+PGOp_ptr PGStabAssertion::clone() const {
+  return std::make_shared<PGStabAssertion>(stab_, anc_z_, anc_x_, target_);
+}
+
 std::string PGStabAssertion::get_name(bool) const {
   std::stringstream str;
   str << "Stab(" << stab_.to_str() << " -> " << target_.repr() << "; "
@@ -577,6 +647,10 @@ std::vector<SpPauliStabiliser> PGStabAssertion::active_paulis() const {
   return {stab_, anc_z_, anc_x_};
 }
 
+PGOp_signature PGStabAssertion::pauli_signature() const {
+  return {{{anc_z_, anc_x_}}, {stab_}};
+}
+
 SpPauliStabiliser& PGStabAssertion::port(unsigned p) {
   switch (p) {
     case 0:
@@ -590,6 +664,8 @@ SpPauliStabiliser& PGStabAssertion::port(unsigned p) {
           "Cannot dereference port of PGStabAssertion: " + std::to_string(p));
   }
 }
+
+bit_vector_t PGStabAssertion::write_bits() const { return {target_}; }
 
 /**
  * PGInputTableau Implementation
@@ -624,6 +700,11 @@ PGOp_ptr PGInputTableau::symbol_substitution(
   return PGOp_ptr();
 }
 
+PGOp_ptr PGInputTableau::clone() const {
+  return std::make_shared<PGInputTableau>(ChoiMixTableau(
+      std::list<ChoiMixTableau::row_tensor_t>{rows_.begin(), rows_.end()}));
+}
+
 std::string PGInputTableau::get_name(bool) const {
   std::stringstream str;
   str << "Input(\n";
@@ -646,6 +727,44 @@ std::vector<SpPauliStabiliser> PGInputTableau::active_paulis() const {
   for (const ChoiMixTableau::row_tensor_t& row : rows_)
     paulis.push_back(row.second);
   return paulis;
+}
+
+PGOp_signature PGInputTableau::pauli_signature() const {
+  ChoiMixTableau tab(
+      std::list<ChoiMixTableau::row_tensor_t>{rows_.begin(), rows_.end()});
+  tab.canonical_column_order(ChoiMixTableau::TableauSegment::Input);
+  tab.gaussian_form();
+  PGOp_signature sig;
+  std::set<unsigned> used_rows;
+  for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
+    if (used_rows.find(r) != used_rows.end()) continue;
+    // Look for a row which anticommutes with row r over the inputs
+    std::list<unsigned> xcols, zcols;
+    for (unsigned c = 0; c < tab.get_n_inputs(); ++c) {
+      if (tab.tab_.xmat(r, c)) xcols.push_back(c);
+      if (tab.tab_.zmat(r, c)) zcols.push_back(c);
+    }
+    for (unsigned r2 = r + 1; r2 < tab.get_n_rows(); ++r2) {
+      if (used_rows.find(r2) != used_rows.end()) continue;
+      bool anti = false;
+      for (const unsigned c : xcols) anti ^= tab.tab_.zmat(r2, c);
+      for (const unsigned c : zcols) anti ^= tab.tab_.xmat(r2, c);
+      if (anti) {
+        // Found a candidate pair of rows. Because of the Gaussian elimination,
+        // it is more likely that the first mismatching qubit is X for r and Z
+        // for r2
+        used_rows.insert(r);
+        used_rows.insert(r2);
+        sig.ac_pairs.push_back({tab.get_row(r2).second, tab.get_row(r).second});
+        break;
+      }
+    }
+  }
+  for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
+    if (used_rows.find(r) == used_rows.end())
+      sig.c.push_back(tab.get_row(r).second);
+  }
+  return sig;
 }
 
 SpPauliStabiliser& PGInputTableau::port(unsigned p) {
@@ -688,6 +807,11 @@ PGOp_ptr PGOutputTableau::symbol_substitution(
   return PGOp_ptr();
 }
 
+PGOp_ptr PGOutputTableau::clone() const {
+  return std::make_shared<PGOutputTableau>(ChoiMixTableau(
+      std::list<ChoiMixTableau::row_tensor_t>{rows_.begin(), rows_.end()}));
+}
+
 std::string PGOutputTableau::get_name(bool) const {
   std::stringstream str;
   str << "Output(\n";
@@ -710,6 +834,44 @@ std::vector<SpPauliStabiliser> PGOutputTableau::active_paulis() const {
   for (const ChoiMixTableau::row_tensor_t& row : rows_)
     paulis.push_back(row.first);
   return paulis;
+}
+
+PGOp_signature PGOutputTableau::pauli_signature() const {
+  ChoiMixTableau tab(
+      std::list<ChoiMixTableau::row_tensor_t>{rows_.begin(), rows_.end()});
+  tab.canonical_column_order(ChoiMixTableau::TableauSegment::Output);
+  tab.gaussian_form();
+  PGOp_signature sig;
+  std::set<unsigned> used_rows;
+  for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
+    if (used_rows.find(r) != used_rows.end()) continue;
+    // Look for a row which anticommutes with row r over the outputs
+    std::list<unsigned> xcols, zcols;
+    for (unsigned c = 0; c < tab.get_n_outputs(); ++c) {
+      if (tab.tab_.xmat(r, c)) xcols.push_back(c);
+      if (tab.tab_.zmat(r, c)) zcols.push_back(c);
+    }
+    for (unsigned r2 = r + 1; r2 < tab.get_n_rows(); ++r2) {
+      if (used_rows.find(r2) != used_rows.end()) continue;
+      bool anti = false;
+      for (const unsigned c : xcols) anti ^= tab.tab_.zmat(r2, c);
+      for (const unsigned c : zcols) anti ^= tab.tab_.xmat(r2, c);
+      if (anti) {
+        // Found a candidate pair of rows. Because of the Gaussian elimination,
+        // it is more likely that the first mismatching qubit is X for r and Z
+        // for r2
+        used_rows.insert(r);
+        used_rows.insert(r2);
+        sig.ac_pairs.push_back({tab.get_row(r2).first, tab.get_row(r).first});
+        break;
+      }
+    }
+  }
+  for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
+    if (used_rows.find(r) == used_rows.end())
+      sig.c.push_back(tab.get_row(r).first);
+  }
+  return sig;
 }
 
 SpPauliStabiliser& PGOutputTableau::port(unsigned p) {
