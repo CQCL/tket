@@ -2263,11 +2263,11 @@ class Circuit:
         """
         Query whether a qubit has its final state discarded
         """
-    def remove_blank_wires(self, remove_classical_wire: bool) -> None:
+    def remove_blank_wires(self, keep_blank_classical_wires: bool) -> None:
         """
         Removes any Input-Output pairs in the DAG with no intervening operations, i.e. removes untouched qubits/bits from the circuit. This may occur when optimisations recognise that the operations on a qubit reduce to the identity, or when routing adds wires to "fill out" the architecture.
         
-        :param remove_classical_wire: select if empty classical wires should be removed, too
+        :param keep_blank_classical_wires: select if empty classical wires should be removed, too
         """
     def rename_units(self, map: dict[pytket._tket.unit_id.UnitID | pytket._tket.unit_id.Qubit | pytket._tket.unit_id.Bit, pytket._tket.unit_id.UnitID | pytket._tket.unit_id.Qubit | pytket._tket.unit_id.Bit]) -> bool:
         """

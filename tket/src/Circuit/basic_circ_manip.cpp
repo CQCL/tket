@@ -32,12 +32,12 @@ namespace tket {
 // if there are any blank wires in the circuit,
 // this method removes them and removes the vertices
 // from boundaries
-void Circuit::remove_blank_wires(bool remove_classical_wire) {
+void Circuit::remove_blank_wires(bool keep_blank_classical_wires) {
   VertexList bin;
   unit_vector_t unused_units;
   const Op_ptr noop = get_op_ptr(OpType::noop);
   for (const BoundaryElement& el : boundary.get<TagID>()) {
-    if (remove_classical_wire || el.type() == UnitType::Qubit) {
+    if (!keep_blank_classical_wires || el.type() == UnitType::Qubit) {
       Vertex in = el.in_;
       Vertex out = el.out_;
       VertexVec succs = get_successors(in);
