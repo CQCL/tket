@@ -1012,11 +1012,11 @@ SCENARIO(
   }
 
   test.add_blank_wires(8);
-  int n = test.n_vertices();
+  REQUIRE(test.n_bits() == 0);
+  REQUIRE(test.n_qubits() == 10);
   test.remove_blank_wires();
-  int m = test.n_vertices();
-  REQUIRE(n == 22);
-  REQUIRE(m == 6);
+  REQUIRE(test.n_bits() == 0);
+  REQUIRE(test.n_qubits() == 2);
   test.assert_valid();
 }
 
@@ -1035,11 +1035,11 @@ SCENARIO(
   }
 
   test.add_blank_wires(8);
-  int n = test.n_vertices();
+  REQUIRE(test.n_bits() == 2);
+  REQUIRE(test.n_qubits() == 12);
   test.remove_blank_wires(true);
-  int m = test.n_vertices();
-  REQUIRE(n == 30);
-  REQUIRE(m == 10);
+  REQUIRE(test.n_bits() == 2);
+  REQUIRE(test.n_qubits() == 2);
   test.assert_valid();
 }
 
