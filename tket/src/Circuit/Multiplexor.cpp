@@ -1047,6 +1047,7 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
     std::rotate(
         all_qubits.begin(), all_qubits.begin() + control_number,
         all_qubits.end());
+
     std::cout << "Control Qubits: ";
     for (auto i : all_qubits) {
       std::cout << i;
@@ -1093,7 +1094,6 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
         case OpType::U1:
           circ.add_box(Unitary1qBox(gate.matrix), {n_controls_ + j});
           break;
-
         default:
           // this should never be hit
           TKET_ASSERT(false);
@@ -1102,25 +1102,36 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
   }
 
   // We have now implemented the U1 + CX segment of the circuit construction
-  // with interleaving Next we split each diagonal vector for each MultiplexedU2
+  // with interleaving
+  // Next we split each diagonal vector for each MultiplexedU2
   // into a Multiplexed-Rz on the target qubit and a Diagonal gate over the
   // control register
 
-  Eigen::VectorXcd diag_vec =
-      Eigen::VectorXcd::Constant(1ULL << n_controls_, 1);
-
-  // contains the multiplexed-Rz gates
-  Circuit diag_circ(n_controls_ + n_targets_);
   // the final diagonal on the control qubits
 
   // TODO: we could add a minor improvement to efficiency by moving this into a
   // previous loop For now I'm keeping hear for readability
+  std::vector<ctrl_op_map_t> all_multiplexed_rz;
+  std::vector<Eigen::VectorXcd> all_diag_vec;
   for (unsigned i = 0; i < m_u2_decomps.size(); i++) {
+    // This inner_diag_vec will correspond to the permutation over the control
+    // qubits which will need handling
+    Eigen::VectorXcd diag_vec =
+        Eigen::VectorXcd::Constant(1ULL << n_controls_, 1);
     Eigen::VectorXcd inner_diag_vec = m_u2_decomps[i].first.diag;
+    std::cout << "Returned diag for multiplexor " << i << ": ";
+    for (auto p : inner_diag_vec) {
+      std::cout << p << " ";
+    }
+    std::cout << std::endl;
     // disentangle one qubit from the diagonal
     // results in a multiplexed-Rz targeting the target j
     ctrl_op_map_t multip_rz;
     for (unsigned long long j = 0; j < (1ULL << n_controls_); j++) {
+      // As inner_diag_vec as produced by MultiplexedU2Box::decompose
+      // adds an extra qubit for the compensating diagonal, we know
+      // that the control bitstring corresponding to j should match
+      // up with the rotated bitstrings
       Complex a = inner_diag_vec[2 * j];
       Complex b = inner_diag_vec[2 * j + 1];
       // convert diag[a,b] into a p*Rz(alpha)
@@ -1128,94 +1139,95 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
       double b_phase = std::arg(b);
       double alpha = (b_phase - a_phase) / PI;
       Complex p = std::exp((b_phase + a_phase) * 0.5 * i_);
+      // bitstr should correspond to the rotated controls
+      // when being constructed from MultiplexedU2Box::decompose
       std::vector<bool> bitstr = dec_to_bin(j, n_controls_);
-      // std::rotate(bitstr.begin(), bitstr.begin() + i, bitstr.end());
       if (std::abs(alpha) > EPS) {
         multip_rz.insert({bitstr, get_op_ptr(OpType::Rz, alpha)});
       }
       // update the diagonal on the control qubits, rotating the elements
-
-      // unsigned index = j;
-      unsigned rotation = i;
-      unsigned n_bits = n_controls_;
+      // unsigned rotation = i;
+      // unsigned n_bits = n_controls_;
       // unsigned rotated_index =
-      //     ((j << rotation) & (1 << n_bits) - 1) | (j >> (n_bits - rotation));
+      //   (j >> rotation) |
+      //   ((j << (n_bits - rotation)) & ((1 << n_bits) - 1));
 
-
-      unsigned rotated_index =
-        (j >> rotation) |
-        ((j << (n_bits - rotation)) & ((1 << n_bits) - 1));
-
-      // unsigned rotated_index = (j >> rotation) | (j << (n_bits - rotation)) &
-      // ((1 << n_bits) - 1);
-      std::cout << "original index: " << j << " rotation: " << rotation
-                << " rotated_index: " << rotated_index <<  " value: " << p << std::endl;
-      diag_vec[rotated_index] *= p;
+      // std::cout << "original index: " << j << " rotation: " << rotation
+      //           << " rotated_index: " << rotated_index <<  " value: " << p <<
+      //           std::endl;
+      diag_vec[j] *= p;
     }
-    if (!multip_rz.empty()) {
-      // std::vector<unsigned> args(n_controls_);
-      // std::iota(std::begin(args), std::end(args), 0);
-      // args.push_back(i + n_controls_);
-      std::vector<unsigned> args = m_u2_decomps[i].second;
-      args.push_back(n_controls_ + i);
-      std::cout << "Multip Rz Args:" << std::endl;
-      for (auto j : args) {
-        std::cout << j;
-      }
-      std::cout << std::endl;
-      diag_circ.add_box(MultiplexedRotationBox(multip_rz), args);
+    // Store constructed arguments for MultiplexedRz
+    //
+    // if (!multip_rz.empty()) {
+    // std::vector<unsigned> args(n_controls_);
+    // std::iota(std::begin(args), std::end(args), 0);
+    // args.push_back(i + n_controls_);
+    // std::vector<unsigned> args = m_u2_decomps[i].second;
+    // args.push_back(n_controls_ + i);
+    // std::cout << "Multip Rz Args:" << std::endl;
+    // for (auto j : args) {
+    //   std::cout << j;
+    // }
+    // std::cout << std::endl;
+    // diag_circ.add_box(MultiplexedRotationBox(multip_rz), args);
+    all_multiplexed_rz.push_back(multip_rz);
+    all_diag_vec.push_back(diag_vec);
+    // }
+  }
+  // We now have a Vector of Multiplexed-Rz gates to add along with a Vector of
+  // compensating Diagonal gate over the control qubits First we add the
+  // Multiplexed-Rz gates
+  TKET_ASSERT(all_multiplexed_rz.size() == n_targets_);
+  for (unsigned target = 0; target < n_targets_; target++) {
+    ctrl_op_map_t multiplexor_args = all_multiplexed_rz[target];
+    // n.b. we skim angle arguments if they're below some threshold
+    // therefore we check before adding to make sure we aren't adding
+    // "empty" multiplexed rz
+    if (!multiplexor_args.empty()) {
+      std::vector<unsigned> args(n_controls_);
+      std::iota(args.begin(), args.end(), 0);
+      std::rotate(args.begin(), args.begin() + target, args.end());
+      args.push_back(target + n_controls_);
+      circ.add_box(MultiplexedRotationBox(all_multiplexed_rz[target]), args);
+    }
+  }
+  // Second we add the Diagonal gate
+  // First we merge the diagonal vectors into one
+  Eigen::VectorXcd combined_diag_vec =
+      Eigen::VectorXcd::Constant(1ULL << n_controls_, 1);
+  for (unsigned rotate = 0; rotate < n_targets_; rotate++) {
+    Eigen::VectorXcd diag_vec = all_diag_vec[rotate];
+    TKET_ASSERT(diag_vec.size() == combined_diag_vec.size());
+    // the "rotate" indexed diagonal vector in all_diag_vec
+    // will have indexing corresponding to a left rotation
+    // of the input bit strings of "rotate"
+    for (unsigned index = 0; index < diag_vec.size(); index++) {
+      // to construct the diagonal vector correctly, we take
+      // the value "index", convert it to a bitstring, right
+      // rotate it by "rotate" and convert it back an integer.
+      unsigned rotated_index =
+          (index >> rotate) |
+          ((index << (n_controls_ - rotate)) & ((1 << n_controls_) - 1));
+      TKET_ASSERT(rotated_index <= combined_diag_vec.size());
+      // This gives a new index for updating the correct element of the
+      // diagonal vector
+      combined_diag_vec[rotated_index] *= diag_vec[index];
+      std::cout << rotated_index << " " << diag_vec[rotated_index] << " " << index << " " << diag_vec[index] << std::endl;
     }
   }
 
-  // for (unsigned i = 0; i < n_targets_; i++) {
-  //   ctrl_op_map_t u2_op_map;
-  //   for (auto it = op_map_.begin(); it != op_map_.end(); it++) {
-  //     u2_op_map.insert({it->first, it->second[i]});
-  //   }
-  //   MultiplexedU2Box mbox(u2_op_map);
-  //   Circuit inner_circ;
-  //   Eigen::VectorXcd inner_diag_vec;
-  //   std::tie(inner_circ, inner_diag_vec) = mbox.decompose();
-
-  //   std::vector<unsigned> args(n_controls_);
-  //   std::iota(std::begin(args), std::end(args), 0);
-  //   args.push_back(i + n_controls_);
-  //   // append the first part of the decomposition
-  //   circ.append_qubits(inner_circ, args);
-  //   // disentangle one qubit from the diagonal
-  //   // results in a multiplexed-Rz targeting the target j
-  //   ctrl_op_map_t multip_rz;
-  //   for (unsigned long long j = 0; j < (1ULL << n_controls_); j++) {
-  //     Complex a = inner_diag_vec[2 * j];
-  //     Complex b = inner_diag_vec[2 * j + 1];
-  //     // convert diag[a,b] into a p*Rz(alpha)
-  //     double a_phase = std::arg(a);
-  //     double b_phase = std::arg(b);
-  //     double alpha = (b_phase - a_phase) / PI;
-  //     Complex p = std::exp((b_phase + a_phase) * 0.5 * i_);
-  //     std::vector<bool> bitstr = dec_to_bin(j, n_controls_);
-  //     if (std::abs(alpha) > EPS) {
-  //       multip_rz.insert({bitstr, get_op_ptr(OpType::Rz, alpha)});
-  //     }
-  //     // update the diagonal on the control qubits
-  //     diag_vec[j] *= p;
-  //   }
-  //   if (!multip_rz.empty()) {
-  //     diag_circ.add_box(MultiplexedRotationBox(multip_rz), args);
-  //   }
-  // }
-
-  circ.append(diag_circ);
-  if ((diag_vec - Eigen::VectorXcd::Constant(1ULL << n_controls_, 1))
+  // Now add the combined diagonal vector to the circuit
+  if ((combined_diag_vec - Eigen::VectorXcd::Constant(1ULL << n_controls_, 1))
           .cwiseAbs()
           .sum() > EPS) {
     std::vector<unsigned> args(n_controls_);
     std::iota(std::begin(args), std::end(args), 0);
-    for(auto d : diag_vec){
+    for (auto d : combined_diag_vec) {
       std::cout << d << " ";
     }
     std::cout << std::endl;
-    circ.add_box(DiagonalBox(diag_vec), args);
+    circ.add_box(DiagonalBox(combined_diag_vec), args);
   }
   circ_ = std::make_shared<Circuit>(circ);
 }

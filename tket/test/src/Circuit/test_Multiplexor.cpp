@@ -66,6 +66,7 @@ namespace test_Multiplexor {
 
 static bool check_multiplexor(
     const ctrl_tensored_op_map_t &op_map, const Circuit &circ) {
+  // std::cout << circ << std::endl;
   // Assume op_map is valid
   auto first_op = op_map.begin();
   unsigned n_ctrl_bits = (unsigned)first_op->first.size();
@@ -95,6 +96,8 @@ static bool check_multiplexor(
   Circuit circ_copy(circ);
   circ_copy.decompose_boxes_recursively();
   Eigen::MatrixXcd circ_u = tket_sim::get_unitary(circ_copy);
+  // std::cout << correct_u << std::endl;
+  // std::cout << circ_u << std::endl;
   return (correct_u - circ_u).cwiseAbs().sum() < ERR_EPS;
 }
 
@@ -501,8 +504,8 @@ SCENARIO("Simple MultiplexedTensoredU2Box decomposition", "[boxes]") {
 //   return rotated;
 // }
 
-// // Function to rotate an unsigned integer's binary representation to the right
-// unsigned int rotate_right(
+// // Function to rotate an unsigned integer's binary representation to the
+// right unsigned int rotate_right(
 //     unsigned int value, unsigned int n_bits, unsigned int rotation_amount) {
 //   // Normalize rotation_amount to ensure it is within the range [0, n_bits)
 //   rotation_amount = rotation_amount % n_bits;
@@ -524,14 +527,14 @@ SCENARIO("Simple MultiplexedTensoredU2Box decomposition", "[boxes]") {
 
 //   for (unsigned int value : values) {
 //     std::bitset<3> original_bits(value);  // Original bit representation
-//     unsigned int rotated_value = rotate_right(value, n_bits, rotation_amount);
-//     std::bitset<3> rotated_bits(rotated_value);  //
+//     unsigned int rotated_value = rotate_right(value, n_bits,
+//     rotation_amount); std::bitset<3> rotated_bits(rotated_value);  //
 //     std::cout << "Original: " << original_bits << " (" << value << ")"
-//               << " -> Rotated: " << rotated_bits << " (" << rotated_value << ")"
+//               << " -> Rotated: " << rotated_bits << " (" << rotated_value <<
+//               ")"
 //               << std::endl;
 //   }
 // }
-
 
 // SCENARIO("Random MultiplexedTensoredU2Box decomposition", "[boxes]") {
 //   unsigned n_controls = 2;
