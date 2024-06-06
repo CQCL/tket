@@ -157,22 +157,8 @@ class UnitaryTableau {
    */
   UnitaryTableau conjugate() const;
 
-  friend UnitaryTableau circuit_to_unitary_tableau(const Circuit& circ);
-  friend Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab);
-  friend UnitaryTableau cm_tableau_to_unitary_tableau(
-      const ChoiMixTableau& tab);
-  friend UnitaryRevTableau cm_tableau_to_unitary_rev_tableau(
-      const ChoiMixTableau& tab);
-
-  friend void to_json(nlohmann::json& j, const UnitaryTableau& tab);
-  friend void from_json(const nlohmann::json& j, UnitaryTableau& tab);
-
-  friend std::ostream& operator<<(std::ostream& os, const UnitaryTableau& tab);
-  friend std::ostream& operator<<(
-      std::ostream& os, const UnitaryRevTableau& tab);
   bool operator==(const UnitaryTableau& other) const;
 
- private:
   /**
    * The actual binary tableau.
    * Rows 0-(n-1) are the X rows, n-(2n-1) are the Z rows.
@@ -310,19 +296,8 @@ class UnitaryRevTableau {
    */
   UnitaryRevTableau conjugate() const;
 
-  friend UnitaryRevTableau circuit_to_unitary_rev_tableau(const Circuit& circ);
-  friend Circuit unitary_rev_tableau_to_circuit(const UnitaryRevTableau& tab);
-  friend UnitaryRevTableau cm_tableau_to_unitary_rev_tableau(
-      const ChoiMixTableau& tab);
-
-  friend void to_json(nlohmann::json& j, const UnitaryRevTableau& tab);
-  friend void from_json(const nlohmann::json& j, UnitaryRevTableau& tab);
-
-  friend std::ostream& operator<<(
-      std::ostream& os, const UnitaryRevTableau& tab);
   bool operator==(const UnitaryRevTableau& other) const;
 
- private:
   UnitaryTableau tab_;
 };
 
