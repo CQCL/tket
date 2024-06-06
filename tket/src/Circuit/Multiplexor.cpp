@@ -1074,6 +1074,7 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
     // being identity, we still capture that A few things we will do later rely
     // on this, so worth double checking here
     TKET_ASSERT(reference_size == m_u2_decomps[i].first.commands.size());
+    circ.add_phase(m_u2_decomps[i].first.phase);
   }
 
   // we now iterate through all the commands, interleaving them
