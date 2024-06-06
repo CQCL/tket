@@ -49,6 +49,9 @@ const Circuit &CX_using_XXPhase_0();
 /** Equivalent to CX, using only XXPhase, Rx and Rz gates */
 const Circuit &CX_using_XXPhase_1();
 
+/** Equivalent to CX, using only AAMS, GPI and GPI2 gates */
+const Circuit &CX_using_AAMS();
+
 /**
  * CX-reduced form of CX/V,S/CX
  *
@@ -108,9 +111,6 @@ const Circuit &SWAP_using_CX_0();
 
 /** Equivalent to SWAP, using three CX, outer CX have control on qubit 1 */
 const Circuit &SWAP_using_CX_1();
-
-/** A two-qubit circuit with an Rz(1) on each qubit */
-const Circuit &two_Rz1();
 
 /** X[1]; CX[0,1] */
 const Circuit &X1_CX();
@@ -404,6 +404,10 @@ Circuit TK2_using_ZZPhase_and_swap(
  */
 Circuit TK2_using_TK2_or_swap(
     const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+/** Just a TK2(α, β, γ) gate */
+Circuit TK2_using_TK2(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
 /**
  * @brief Equivalent to TK2(α, β, γ), using up to 3 ZZMax gates.
  *
@@ -444,6 +448,12 @@ Circuit PhasedISWAP_using_TK2(const Expr &p, const Expr &t);
 /** Equivalent to PhasedISWAP, using CX, U3 and Rz gates */
 Circuit PhasedISWAP_using_CX(const Expr &p, const Expr &t);
 
+/** Equivalent to AAMS, using a TK2 and Rz gates */
+Circuit AAMS_using_TK2(const Expr &theta, const Expr &phi0, const Expr &phi1);
+
+/** Equivalent to AAMS, using CX, Rz and U3 gates */
+Circuit AAMS_using_CX(const Expr &theta, const Expr &phi0, const Expr &phi1);
+
 /** Unwrap NPhasedX, into number_of_qubits PhasedX gates */
 Circuit NPhasedX_using_PhasedX(
     unsigned int number_of_qubits, const Expr &alpha, const Expr &beta);
@@ -456,13 +466,26 @@ Circuit TK2_using_normalised_TK2(
 Circuit tk1_to_PhasedXRz(
     const Expr &alpha, const Expr &beta, const Expr &gamma);
 
+/** Equivalent to TK1, using Rz and Rx gates */
 Circuit tk1_to_rzrx(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
+/** Equivalent to TK1, using Rx and Ry gates */
+Circuit tk1_to_rxry(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+/** Equivalent to TK1, using Rz and H gates */
 Circuit tk1_to_rzh(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
+/** Equivalent to TK1, using Rz and SX gates */
 Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
+/** Equivalent to TK1, using Rz, X and SX gates */
+Circuit tk1_to_rzxsx(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+/** Just a TK1(α, β, γ) gate */
 Circuit tk1_to_tk1(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+/** Equivalent to TK1, using a U3 gate */
+Circuit tk1_to_u3(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 class ControlDecompError : public std::logic_error {
  public:
@@ -501,6 +524,10 @@ Circuit CnX_gray_decomp(unsigned n);
 
 Circuit CnRy_normal_decomp(const Op_ptr op, unsigned arity);
 
+Circuit CnRx_normal_decomp(const Op_ptr op, unsigned arity);
+
+Circuit CnRz_normal_decomp(const Op_ptr op, unsigned arity);
+
 /**
  * @brief Given a 2x2 numerical unitary matrix U and the number of control
  * qubits n return the decomposed CnU gate
@@ -532,6 +559,30 @@ Circuit CnU_gray_code_decomp(unsigned n, const Gate_ptr &gate);
  */
 Circuit CnSU2_linear_decomp(
     unsigned n, const Expr &alpha, const Expr &theta, const Expr &beta);
+
+/** Equivalent to Rx, using GPI and GPI2 gates */
+Circuit Rx_using_GPI(const Expr &theta);
+
+/** Equivalent to Ry, using GPI and GPI2 gates */
+Circuit Ry_using_GPI(const Expr &theta);
+
+/** Equivalent to Rz, using GPI gates */
+Circuit Rz_using_GPI(const Expr &theta);
+
+/** Equivalent to XXPhase, using AAMS gates */
+Circuit XXPhase_using_AAMS(const Expr &theta);
+
+/** Equivalent to YYPhase, using AAMS gates */
+Circuit YYPhase_using_AAMS(const Expr &theta);
+
+/** Equivalent to ZZPhase, using AAMS, GPI and GPI2 gates */
+Circuit ZZPhase_using_AAMS(const Expr &theta);
+
+/** Equivalent to TK1, using GPI and GPI2 gates */
+Circuit TK1_using_GPI(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+/** Equivalent to TK2, using AAMS, GPI and GPI2 gates */
+Circuit TK2_using_AAMS(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 }  // namespace CircPool
 

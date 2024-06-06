@@ -48,7 +48,7 @@ void fill_partial_mapping(
 }
 
 Placement::Placement(const Architecture& _architecture)
-    : architecture_(_architecture){};
+    : architecture_(_architecture) {};
 
 bool Placement::place(
     Circuit& circ_, std::shared_ptr<unit_bimaps_t> compilation_map) const {

@@ -55,6 +55,27 @@ PassPtr gen_squash_pass(
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
         tk1_replacement,
     bool always_squash_symbols = false);
+
+/**
+ * @brief Attempt to generate a rebase pass automatically for the given target
+ * gateset
+ *
+ * @param allowed_gates target gateset
+ * @param allow_swaps whether to allow implicit wire swaps
+ * @return PassPtr
+ */
+PassPtr gen_auto_rebase_pass(
+    const OpTypeSet& allowed_gates, bool allow_swaps = false);
+
+/**
+ * @brief Attempt to generate a squash pass automatically for the given target
+ * single qubit gateset
+ *
+ * @param singleqs
+ * @return PassPtr
+ */
+PassPtr gen_auto_squash_pass(const OpTypeSet& singleqs);
+
 PassPtr gen_euler_pass(const OpType& q, const OpType& p, bool strict = false);
 PassPtr gen_clifford_simp_pass(bool allow_swaps = true);
 
@@ -74,6 +95,15 @@ PassPtr gen_clifford_resynthesis_pass(
     std::optional<std::function<Circuit(const Circuit&)>> transform =
         std::nullopt,
     bool allow_swaps = true);
+
+/**
+ * Pass that simplifies circuits by resynthesising Clifford subcircuits before
+ * end of circuit measurements as a mutual diagonalisation circuit and classical
+ * postprocessing.
+ *
+ * @return pass to resynthesise pre end of circuit measure Clifford subcircuits
+ */
+PassPtr gen_clifford_push_through_pass();
 
 /**
  * Pass to remove empty Quantum edges from a Circuit and then relabel
@@ -315,6 +345,15 @@ gadgets and optimises them. */
 PassPtr gen_special_UCC_synthesis(
     Transforms::PauliSynthStrat strat = Transforms::PauliSynthStrat::Sets,
     CXConfigType cx_config = CXConfigType::Snake);
+
+/**
+ * @brief Greedy synthesis for Pauli graphs.
+ *
+ * @param discount_rate
+ * @param depth_weight
+ * @return PassPtr
+ */
+PassPtr gen_greedy_pauli_simp(double discount_rate, double depth_weight);
 
 /**
  * Generate a pass to simplify the circuit where it acts on known basis states.

@@ -194,53 +194,6 @@ static bool replace_two_qubit_interaction(
   }
 }
 
-Transform commute_and_combine_HQS2() {
-  return Transform([](Circuit &circ) {
-    bool success = false;
-    VertexList bin;
-    BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-      EdgeVec outs = circ.get_all_out_edges(v);
-      if (circ.get_OpType_from_Vertex(v) == OpType::ZZMax && outs.size() == 2) {
-        Vertex next0 = boost::target(outs[0], circ.dag);
-        Vertex next1 = boost::target(outs[1], circ.dag);
-        if (next0 == next1 &&
-            circ.get_OpType_from_Vertex(next0) == OpType::ZZMax) {
-          success = true;
-          EdgeVec h_in = circ.get_in_edges(v);
-          EdgeVec h_out = circ.get_all_out_edges(next0);
-          if (circ.get_target_port(outs[0]) != 0) {
-            h_out = {h_out[1], h_out[0]};
-          }
-          bin.push_back(v);
-          bin.push_back(next0);
-          Subcircuit sub = {h_in, h_out};
-          circ.substitute(
-              CircPool::two_Rz1(), sub, Circuit::VertexDeletion::No);
-          circ.add_phase(0.5);
-          continue;
-        }
-        if (circ.get_OpType_from_Vertex(next0) == OpType::Rz) {
-          success = true;
-          circ.remove_vertex(
-              next0, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-          Edge in_0 = circ.get_nth_in_edge(v, 0);
-          circ.rewire(next0, {in_0}, {EdgeType::Quantum});
-        }
-        if (circ.get_OpType_from_Vertex(next1) == OpType::Rz) {
-          success = true;
-          circ.remove_vertex(
-              next1, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-          Edge in_1 = circ.get_nth_in_edge(v, 1);
-          circ.rewire(next1, {in_1}, {EdgeType::Quantum});
-        }
-      }
-    }
-    circ.remove_vertices(
-        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
-    return success;
-  });
-}
-
 Transform two_qubit_squash(bool allow_swaps) {
   return two_qubit_squash(OpType::CX, 1., allow_swaps);
 }

@@ -141,6 +141,15 @@ def test_circuit_dagger() -> None:
     assert commands[1].op.get_matrix().all() == u.conj().transpose().all()
 
 
+def test_circuit_dagger_transpose_with_barriers() -> None:
+    c = Circuit(2).S(0).add_barrier([0, 1]).CX(0, 1)
+    c_d = c.dagger()
+    assert c_d == Circuit(2).CX(0, 1).add_barrier([0, 1]).Sdg(0)
+    c = Circuit(2).Ry(0.3, 0).add_barrier([0, 1]).CX(0, 1)
+    c_t = c.transpose()
+    assert c_t == Circuit(2).CX(0, 1).add_barrier([0, 1]).Ry(-0.3, 0)
+
+
 # TKET-1365 bug
 def test_cnx_dagger() -> None:
     c = Circuit(2)
@@ -322,6 +331,15 @@ def test_symbolic_circbox() -> None:
     assert len(circ_box.free_symbols()) == 0
     assert not circ_box.get_circuit().is_symbolic()
     assert not c_outer.is_symbolic()
+
+
+def test_renaming_circbox_circuit() -> None:
+    c = Circuit(2).CX(0, 1)
+    cbox = CircBox(c)
+    d = Circuit(2).add_circbox(cbox, [0, 1])
+    cbox.circuit_name = "test_name"
+    assert cbox.circuit_name == "test_name"
+    assert d.get_commands()[0].op.circuit_name == "test_name"  # type: ignore
 
 
 def test_subst_4() -> None:
@@ -529,8 +547,10 @@ def test_boxes() -> None:
 
     pauli_exps = [cmd.op for cmd in d if cmd.op.type == OpType.PauliExpBox]
     assert len(pauli_exps) == 1
-    assert pauli_exps[0].get_paulis() == paulis
-    assert pauli_exps[0].get_phase() == Symbol("alpha")  # type: ignore
+    pauli_exp = pauli_exps[0]
+    assert isinstance(pauli_exp, PauliExpBox)
+    assert pauli_exp.get_paulis() == paulis
+    assert pauli_exp.get_phase() == Symbol("alpha")  # type: ignore
 
     boxes = (cbox, mbox, u2qbox, u3qbox, ebox, pbox, qcbox)
     assert all(box == box for box in boxes)
@@ -1510,6 +1530,27 @@ def test_bad_circbox() -> None:
         _ = CircBox(circ)
 
 
+def test_pickle_bit() -> None:
+    # https://github.com/CQCL/tket/issues/1293
+    for b in [Bit(1), Bit("z", 0), Bit("z", (2, 0, 3))]:
+        assert b == pickle.loads(pickle.dumps(b))
+
+
+def test_cnrx_cnrz() -> None:
+    c1rx = Circuit(2)
+    c1rx.add_gate(OpType.CnRx, 0.3, [0, 1])
+    crx = Circuit(2)
+    crx.add_gate(OpType.CRx, 0.3, [0, 1])
+
+    c1rz = Circuit(2)
+    c1rz.add_gate(OpType.CnRz, 0.3, [0, 1])
+    crz = Circuit(2)
+    crz.add_gate(OpType.CRz, 0.3, [0, 1])
+
+    assert np.allclose(c1rz.get_unitary(), crz.get_unitary())
+    assert np.allclose(c1rx.get_unitary(), crx.get_unitary())
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
@@ -1525,3 +1566,4 @@ if __name__ == "__main__":
     test_multi_controlled_gates()
     test_counting_n_qubit_gates()
     test_pauliexp_pair_box_serialisation()
+    test_cnrx_cnrz()

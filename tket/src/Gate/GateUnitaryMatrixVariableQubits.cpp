@@ -26,6 +26,8 @@ GateUnitaryMatrixVariableQubits::GateUnitaryMatrixVariableQubits(
     : op_type(op_type_), known_type(true), number_of_parameters(0) {
   switch (op_type) {
     case OpType::CnRy:
+    case OpType::CnRx:
+    case OpType::CnRz:
       // Fall through.
     case OpType::PhaseGadget:
       number_of_parameters = 1;
@@ -70,6 +72,12 @@ Eigen::MatrixXcd GateUnitaryMatrixVariableQubits::get_dense_unitary(
     case 1:
       if (op_type == OpType::CnRy) {
         return GateUnitaryMatrixImplementations::CnRy(
+            number_of_qubits, parameters[0]);
+      } else if (op_type == OpType::CnRx) {
+        return GateUnitaryMatrixImplementations::CnRx(
+            number_of_qubits, parameters[0]);
+      } else if (op_type == OpType::CnRz) {
+        return GateUnitaryMatrixImplementations::CnRz(
             number_of_qubits, parameters[0]);
       } else {
         TKET_ASSERT(op_type == OpType::PhaseGadget);

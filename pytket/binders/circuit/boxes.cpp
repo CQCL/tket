@@ -169,7 +169,16 @@ void init_boxes(py::module &m) {
           "any Circuit that the CircBox has been added to "
           "(via Circuit.add_circbox). \n\n:param symbol_map: "
           "A map from SymPy symbols to SymPy expressions",
-          py::arg("symbol_map"));
+          py::arg("symbol_map"))
+      .def_property(
+          "circuit_name", &CircBox::get_circuit_name,
+          &CircBox::set_circuit_name,
+          ":return: the name of the contained circuit. "
+          "\n\n WARNING: "
+          "Setting this property mutates the CircBox and "
+          "any changes are propagated to "
+          "any Circuit that the CircBox has been added to "
+          "(via Circuit.add_circbox).");
   py::class_<Unitary1qBox, std::shared_ptr<Unitary1qBox>, Op>(
       m, "Unitary1qBox",
       "A user-defined one-qubit operation specified by a unitary matrix.")
@@ -972,7 +981,11 @@ void init_boxes(py::module &m) {
       "A user-defined multiplexed rotation gate (i.e. "
       "uniformly controlled single-axis rotations) specified by "
       "a map from bitstrings to " CLSOBJS(Op)
-      "or a list of bitstring-" CLSOBJS(Op) " pairs")
+      "or a list of bitstring-" CLSOBJS(Op) " pairs. "
+      "Implementation based on arxiv.org/abs/quant-ph/0410066. "
+      "The decomposed circuit has at most 2^k single-qubit rotations, "
+      "2^k CX gates, and two additional H gates if the rotation axis is X. "
+      "k is the number of control qubits.")
       .def(
               py::init([](const py_ctrl_op_map_t_alt & bitstring_op_pairs){
           return MultiplexedRotationBox(to_cpp_ctrl_op_map_t(bitstring_op_pairs));}),
@@ -1039,7 +1052,11 @@ void init_boxes(py::module &m) {
       "A user-defined multiplexed U2 gate (i.e. uniformly controlled U2 "
       "gate) specified by a "
       "map from bitstrings to " CLSOBJS(Op)
-      "or a list of bitstring-" CLSOBJS(Op) " pairs")
+      "or a list of bitstring-" CLSOBJS(Op) " pairs"
+      "Implementation based on arxiv.org/abs/quant-ph/0410066. "
+      "The decomposed circuit has at most 2^k single-qubit gates, 2^k -1 CX gates, "
+      "and a k+1 qubit DiagonalBox at the end. "
+      "k is the number of control qubits.")
       .def(
               py::init([](const py_ctrl_op_map_t_alt & bitstring_op_pairs, bool impl_diag){
           return MultiplexedU2Box(to_cpp_ctrl_op_map_t(bitstring_op_pairs), impl_diag);}),
@@ -1086,7 +1103,14 @@ void init_boxes(py::module &m) {
       m, "MultiplexedTensoredU2Box",
       "A user-defined multiplexed tensor product of U2 gates specified by a "
       "map from bitstrings to lists of " CLSOBJS(Op)
-      "or a list of bitstring-list(" CLSOBJS(Op) ") pairs")
+      "or a list of bitstring-list(" CLSOBJS(Op) ") pairs. "
+      "A box with k control qubits and t target qubits is implemented as t "
+      "k-controlled multiplexed-U2 gates with their diagonal "
+      "components merged and commuted to the end. The resulting circuit contains "
+      "t non-diagonal components of the multiplexed-U2 decomposition, t k-controlled "
+      "multiplexed-Rz boxes, and a k-qubit DiagonalBox at the end. "
+      "The total CX count is at most 2^k(2t+1)-t-2."
+      )
       .def(
               py::init([](const py_ctrl_tensored_op_map_t_alt & bitstring_op_pairs){
           return MultiplexedTensoredU2Box(to_cpp_ctrl_op_map_t(bitstring_op_pairs));}),
@@ -1123,7 +1147,11 @@ void init_boxes(py::module &m) {
   py::class_<StatePreparationBox, std::shared_ptr<StatePreparationBox>, Op>(
       m, "StatePreparationBox",
       "A box for preparing quantum states using multiplexed-Ry and "
-      "multiplexed-Rz gates")
+      "multiplexed-Rz gates. "
+      "Implementation based on Theorem 9 of "
+      "arxiv.org/abs/quant-ph/0406176. "
+      "The decomposed circuit has at most 2*(2^n-2) CX gates, and "
+      "2^n-2 CX gates if the coefficients are all real.")
       .def(
           py::init<const Eigen::VectorXcd &, bool, bool>(),
           "Construct from a statevector\n\n"
@@ -1153,7 +1181,10 @@ void init_boxes(py::module &m) {
   py::class_<DiagonalBox, std::shared_ptr<DiagonalBox>, Op>(
       m, "DiagonalBox",
       "A box for synthesising a diagonal unitary matrix into a sequence of "
-      "multiplexed-Rz gates.")
+      "multiplexed-Rz gates. "
+      "Implementation based on Theorem 7 of "
+      "arxiv.org/abs/quant-ph/0406176. "
+      "The decomposed circuit has at most 2^n-2 CX gates.")
       .def(
           py::init<const Eigen::VectorXcd &, bool>(),
           "Construct from the diagonal entries of the unitary operator. The "

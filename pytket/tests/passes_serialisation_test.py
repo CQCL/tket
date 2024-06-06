@@ -289,6 +289,16 @@ TWO_WAY_PARAM_PASSES = {
     "RoundAngles": standard_pass_dict(
         {"name": "RoundAngles", "n": 6, "only_zeros": False}
     ),
+    "GreedyPauliSimp": standard_pass_dict(
+        {"name": "GreedyPauliSimp", "discount_rate": 0.4, "depth_weight": 0.5}
+    ),
+    # lists must be sorted by OpType value
+    "AutoSquash": standard_pass_dict(
+        {"name": "AutoSquash", "basis_singleqs": ["Rz", "TK1"]}
+    ),
+    "AutoRebase": standard_pass_dict(
+        {"name": "AutoRebase", "basis_allowed": ["H", "TK1", "CX"], "allow_swaps": True}
+    ),
 }
 
 # non-parametrized passes that satisfy pass.from_dict(d).to_dict()==d
@@ -300,7 +310,6 @@ TWO_WAY_NONPARAM_PASSES = [
     "RebaseTket",
     "RebaseUFR",
     "RemoveRedundancies",
-    "SynthesiseHQS",
     "SynthesiseTK",
     "SynthesiseTket",
     "SynthesiseOQC",

@@ -56,6 +56,7 @@ from pytket.circuit.logic_exp import (
     RegPow,
     RegWiseOp,
     UnaryOp,
+    NullaryOp,
     reg_eq,
     reg_geq,
     reg_gt,
@@ -653,7 +654,7 @@ def test_wasmfilehandler_multivalue_clang() -> None:
         == """Functions in wasm file with the uid 6f821422038eec251d2f4e6bf2b9a5717b18b5c96a8a8e01fb49f080d9610f6e:
 function '__wasm_call_ctors' with 0 i32 parameter(s) and 0 i32 return value(s)
 function 'init' with 0 i32 parameter(s) and 0 i32 return value(s)
-function 'divmod' with 2 i32 parameter(s) and 2 i32 return value(s)
+unsupported function with invalid parameter or result type: 'divmod' 
 """
     )
 
@@ -763,14 +764,16 @@ def primitive_bit_logic_exps(
     bits: SearchStrategy[Bit] = bits(),
 ) -> BitLogicExp:
     op = draw(ops)
-    args = [draw(bits)]
+    args = []
     exp_type = LogicExp.factory(op)
-    if issubclass(exp_type, BinaryOp):
-        if issubclass(exp_type, PredicateExp):
-            const_compare = draw(binary_digits)
-            args.append(Bit(const_compare))
-        else:
-            args.append(draw(bits))
+    if not issubclass(exp_type, NullaryOp):
+        args.append(draw(bits))
+        if issubclass(exp_type, BinaryOp):
+            if issubclass(exp_type, PredicateExp):
+                const_compare = draw(binary_digits)
+                args.append(Bit(const_compare))
+            else:
+                args.append(draw(bits))
     exp = create_bit_logic_exp(op, args)
     assert isinstance(exp, BitLogicExp)
     return exp
@@ -798,6 +801,8 @@ def test_bit_exp(bit_exp: BitLogicExp, constants: Tuple[int, int]) -> None:
         BitWiseOp.NOT: operator.not_,
         BitWiseOp.EQ: operator.eq,
         BitWiseOp.NEQ: operator.ne,
+        BitWiseOp.ZERO: lambda: 0,
+        BitWiseOp.ONE: lambda: 1,
     }
     op_map = {key: overflow_wrapper(val, 2) for key, val in op_map.items()}
     eval_val = bit_exp.eval_vals()
@@ -1032,12 +1037,18 @@ def compare_commands_box(
         if print_com:
             print(c1, c2)
         if c1.op.type == OpType.ClassicalExpBox:
+            assert isinstance(c1.op, ClassicalExpBox)
+            assert isinstance(c2.op, ClassicalExpBox)
             commands_equal &= c1.op.content_equality(c2.op)
             commands_equal &= c1.args == c2.args
         elif c1.op.type == OpType.Conditional:
+            assert isinstance(c1.op, Conditional)
+            assert isinstance(c2.op, Conditional)
             commands_equal &= c1.op.value == c2.op.value
             commands_equal &= c1.op.width == c2.op.width
             if c1.op.op.type == OpType.ClassicalExpBox:
+                assert isinstance(c1.op.op, ClassicalExpBox)
+                assert isinstance(c2.op.op, ClassicalExpBox)
                 commands_equal &= c1.op.op.content_equality(c2.op.op)
             else:
                 commands_equal &= c1.op == c2.op

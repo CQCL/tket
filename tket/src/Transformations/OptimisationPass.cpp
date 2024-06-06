@@ -138,21 +138,6 @@ Transform synthesise_OQC() {
   });
 }
 
-/* Returns a Circuit with only HQS allowed Ops (Rz, PhasedX, ZZMax) */
-Transform synthesise_HQS() {
-  return Transform([](Circuit &circ) {
-    Transform single_loop =
-        remove_redundancies() >> commute_through_multis() >> reduce_XZ_chains();
-    Transform hqs_loop = remove_redundancies() >> commute_and_combine_HQS2() >>
-                         reduce_XZ_chains();
-    Transform main_seq =
-        decompose_multi_qubits_CX() >> clifford_simp() >> decompose_ZX() >>
-        repeat(single_loop) >> decompose_CX_to_HQS2() >> repeat(hqs_loop) >>
-        decompose_ZX_to_HQS1() >> rebase_HQS() >> remove_redundancies();
-    return main_seq.apply(circ);
-  });
-}
-
 // TODO: Make the XXPhase gates combine
 Transform synthesise_UMD() {
   return Transform([](Circuit &circ) {

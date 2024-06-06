@@ -229,7 +229,6 @@ target_sources(tket
         src/ZX/MBQCRewrites.cpp
         src/ZX/ZXRWSequences.cpp
         src/Converters/ChoiMixTableauConverters.cpp
-        src/Converters/PauliGadget.cpp
         src/Converters/PauliGraphConverters.cpp
         src/Converters/Gauss.cpp
         src/Converters/PhasePoly.cpp
@@ -273,6 +272,7 @@ target_sources(tket
         src/Transformations/OptimisationPass.cpp
         src/Transformations/PhaseOptimisation.cpp
         src/Transformations/Decomposition.cpp
+        src/Transformations/GreedyPauliOptimisation.cpp
         src/Transformations/Replacement.cpp
         src/Transformations/MeasurePass.cpp
         src/Transformations/ContextualReduction.cpp
@@ -387,7 +387,6 @@ target_sources(tket
         include/tket/ZX/ZXGenerator.hpp
         include/tket/Converters/Converters.hpp
         include/tket/Converters/Gauss.hpp
-        include/tket/Converters/PauliGadget.hpp
         include/tket/Converters/PhasePoly.hpp
         include/tket/Converters/UnitaryTableauBox.hpp
         include/tket/Placement/NeighbourPlacements.hpp
@@ -419,6 +418,8 @@ target_sources(tket
         include/tket/Transformations/Combinator.hpp
         include/tket/Transformations/ContextualReduction.hpp
         include/tket/Transformations/Decomposition.hpp
+        include/tket/Transformations/GreedyPauliOptimisation.hpp
+        include/tket/Transformations/GreedyPauliOptimisationLookupTables.hpp
         include/tket/Transformations/MeasurePass.hpp
         include/tket/Transformations/OptimisationPass.hpp
         include/tket/Transformations/PauliOptimisation.hpp

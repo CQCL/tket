@@ -37,6 +37,12 @@ Circuit multi_controlled_to_2q(
     case OpType::CnRy:
       c = CircPool::CnRy_normal_decomp(op, n_qubits);
       break;
+    case OpType::CnRx:
+      c = CircPool::CnRx_normal_decomp(op, n_qubits);
+      break;
+    case OpType::CnRz:
+      c = CircPool::CnRz_normal_decomp(op, n_qubits);
+      break;
     case OpType::CnX:
     case OpType::CnZ:
     case OpType::CnY:
@@ -87,6 +93,8 @@ Circuit TK2_circ_from_multiq(const Op_ptr op) {
         "Can only build replacement circuits for basic gates", desc.type());
   switch (desc.type()) {
     case OpType::CnRy:
+    case OpType::CnRx:
+    case OpType::CnRz:
     case OpType::CnX:
     case OpType::CnZ:
     case OpType::CnY:
@@ -110,6 +118,8 @@ Circuit CX_circ_from_multiq(const Op_ptr op) {
         "Can only build replacement circuits for basic gates", desc.type());
   switch (desc.type()) {
     case OpType::CnRy:
+    case OpType::CnRx:
+    case OpType::CnRz:
     case OpType::CnX:
     case OpType::CnZ:
     case OpType::CnY:
@@ -288,6 +298,8 @@ Circuit CX_ZX_circ_from_op(const Op_ptr op) {
     case OpType::ZZPhase:
     case OpType::YYPhase:
     case OpType::CnRy:
+    case OpType::CnRx:
+    case OpType::CnRz:
     case OpType::CnX:
     case OpType::ESWAP:
     case OpType::FSim:

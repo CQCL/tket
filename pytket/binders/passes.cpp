@@ -288,10 +288,15 @@ PYBIND11_MODULE(passes, m) {
   py::class_<SequencePass, std::shared_ptr<SequencePass>, BasePass>(
       m, "SequencePass", "A sequence of compilation passes.")
       .def(
-          py::init<const py::tket_custom::SequenceVec<PassPtr> &>(),
-          "Construct from a list of compilation passes arranged in "
-          "order of application.",
-          py::arg("pass_list"))
+          py::init<const py::tket_custom::SequenceVec<PassPtr> &, bool>(),
+          "Construct from a list of compilation passes arranged in order of "
+          "application."
+          "\n\n:param pass_list: sequence of passes"
+          "\n:param strict: if True (the default), check that all "
+          "postconditions and preconditions of the passes in the sequence are "
+          "compatible and raise an exception if not."
+          "\n:return: a pass that applies the sequence",
+          py::arg("pass_list"), py::arg("strict") = true)
       .def("__str__", [](const BasePass &) { return "<tket::SequencePass>"; })
       .def(
           "get_sequence", &SequencePass::get_sequence,
@@ -448,7 +453,7 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "DecomposeArbitrarilyControlledGates",
       &DecomposeArbitrarilyControlledGates,
-      "Decomposes CCX, CnX, CnY, CnZ, and CnRy gates into "
+      "Decomposes CCX, CnX, CnY, CnZ, CnRy, CnRz and CnRx gates into "
       "CX and single-qubit gates.");
   m.def(
       "DecomposeBoxes", &DecomposeBoxes,
@@ -515,25 +520,21 @@ PYBIND11_MODULE(passes, m) {
       "When merging rotations with the same op group name, the merged "
       "operation keeps the same name.");
   m.def(
-      "SynthesiseHQS",
-      []() {
-        tket_log()->warn(
-            "SynthesiseHQS is deprecated. It will be removed "
-            "after pytket v1.25.");
-        return SynthesiseHQS();
-      },
-      "Optimises and converts a circuit consisting of CX and single-qubit "
-      "gates into one containing only ZZMax, PhasedX, Rz and Phase. "
-      "DEPRECATED: will be removed after pytket 1.25.");
-  m.def(
       "SynthesiseTK", &SynthesiseTK,
       "Optimises and converts all gates to TK2, TK1 and Phase gates.");
   m.def(
       "SynthesiseTket", &SynthesiseTket,
       "Optimises and converts all gates to CX, TK1 and Phase gates.");
   m.def(
-      "SynthesiseOQC", &SynthesiseOQC,
-      "Optimises and converts all gates to ECR, Rz, SX and Phase.");
+      "SynthesiseOQC",
+      []() {
+        tket_log()->warn(
+            "SynthesiseOQC is deprecated. It will be removed "
+            "after pytket v1.28.");
+        return SynthesiseOQC();
+      },
+      "Optimises and converts all gates to ECR, Rz, SX and Phase. "
+      "DEPRECATED: will be removed after pytket 1.28.");
   m.def(
       "SynthesiseUMD", &SynthesiseUMD,
       "Optimises and converts all gates to XXPhase, PhasedX, Rz and Phase.");
@@ -542,8 +543,8 @@ PYBIND11_MODULE(passes, m) {
       "Squash sequences of single-qubit gates to TK1 gates.");
   m.def(
       "SquashRzPhasedX", &SquashRzPhasedX,
-      "Squash single qubit gates into PhasedX and Rz gates. "
-      "Commute Rz gates to the back if possible.");
+      "Squash single qubit gates into PhasedX and Rz gates. Also remove "
+      "identity gates. Commute Rz gates to the back if possible.");
   m.def(
       "FlattenRegisters", &FlattenRegisters,
       "Merges all quantum and classical registers into their "
@@ -565,6 +566,17 @@ PYBIND11_MODULE(passes, m) {
       "symbolic complexity.",
       py::arg("singleqs"), py::arg("tk1_replacement"),
       py::arg("always_squash_symbols") = false);
+  m.def(
+      "AutoSquash", &gen_auto_squash_pass,
+      "Attempt to generate a squash pass automatically for the given target "
+      "single qubit gateset.\n"
+      "Raises an error if no known TK1 decomposition can be found based on the "
+      "given gateset, in which case try using :py:class:`SquashCustom` with "
+      "your own decomposition."
+      "\n\n:param singleqs: The types of single qubit gates in the target "
+      "gate set. This pass will only affect sequences of gates that are "
+      "already in this set.",
+      py::arg("singleqs"));
   m.def(
       "DelayMeasures", &DelayMeasures,
       "Commutes Measure operations to the end of the circuit. Throws an "
@@ -659,7 +671,21 @@ PYBIND11_MODULE(passes, m) {
       "conditional and phase operations, and Measure, Reset and Collapse)",
       py::arg("gateset"), py::arg("tk2_replacement"),
       py::arg("tk1_replacement"));
-
+  m.def(
+      "AutoRebase", &gen_auto_rebase_pass,
+      "Attempt to generate a rebase pass automatically for the given target "
+      "gateset. Checks if there are known existing decompositions "
+      "to target gateset and TK1 to target gateset and uses those to construct "
+      "a custom rebase.\n"
+      "Raises an error if no known decompositions can be found, in which case "
+      "try using :py:class:`RebaseCustom` with your own decompositions.\n\n"
+      ":param gateset: Set of supported OpTypes, target gate set. "
+      "(in addition, Measure, Reset and Collapse operations are always allowed "
+      "and are left alone; conditional operations may be present; and Phase "
+      "gates may also be introduced by the rebase)\n"
+      ":param allow_swaps: Whether to allow implicit wire swaps. Default to "
+      "False.",
+      py::arg("gateset"), py::arg("allow_swaps") = false);
   m.def(
       "EulerAngleReduction", &gen_euler_pass,
       "Uses Euler angle decompositions to squash all chains of P and Q "
@@ -833,6 +859,15 @@ PYBIND11_MODULE(passes, m) {
       py::arg("transform") = std::nullopt, py::arg("allow_swaps") = true);
 
   m.def(
+      "CliffordPushThroughMeasures", &gen_clifford_push_through_pass,
+      "An optimisation pass that resynthesise a Clifford subcircuit "
+      "before end of circuit Measurement operations by implementing "
+      "the action of the Clifford as a mutual diagonalisation circuit "
+      "and a permutation on output measurements realised as a series "
+      "of classical operations."
+      "\n: return: a pass to simplify end of circuit Clifford gates.");
+
+  m.def(
       "DecomposeSwapsToCXs", &gen_decompose_routing_gates_to_cxs_pass,
       "Construct a pass to decompose SWAP and BRIDGE gates to CX gates, "
       "constraining connectivity to an :py:class:`Architecture`, optionally "
@@ -892,6 +927,19 @@ PYBIND11_MODULE(passes, m) {
       "\n:return: a pass to perform the simplification",
       py::arg("strat") = Transforms::PauliSynthStrat::Sets,
       py::arg("cx_config") = CXConfigType::Snake);
+  m.def(
+      "GreedyPauliSimp", &gen_greedy_pauli_simp,
+      "Construct a pass that converts a circuit into a graph of Pauli "
+      "gadgets to account for commutation and phase folding, and "
+      "resynthesises them using a greedy algorithm adapted from "
+      "arxiv.org/abs/2103.08602. The method for synthesising the "
+      "final Clifford operator is adapted from "
+      "arxiv.org/abs/2305.10966."
+      "\n\n:param discount_rate: Rate used to discount the cost impact from "
+      "gadgets that are further away. Default to 0.7."
+      "\n:param depth_weight:  Degree of depth optimisation. Default to 0.3."
+      "\n:return: a pass to perform the simplification",
+      py::arg("discount_rate") = 0.7, py::arg("depth_weight") = 0.3);
   m.def(
       "PauliSquash", &PauliSquash,
       "Applies :py:meth:`PauliSimp` followed by "

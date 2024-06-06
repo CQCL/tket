@@ -26,22 +26,29 @@ bool find_in_set(const OpType& val, const OpTypeSet& set) {
 
 const OpTypeSet& all_gate_types() {
   static const OpTypeSet optypes{
-      OpType::Z,        OpType::X,        OpType::Y,           OpType::S,
-      OpType::Sdg,      OpType::T,        OpType::Tdg,         OpType::V,
-      OpType::Vdg,      OpType::SX,       OpType::SXdg,        OpType::H,
-      OpType::Rx,       OpType::Ry,       OpType::Rz,          OpType::U3,
-      OpType::U2,       OpType::U1,       OpType::TK1,         OpType::CX,
-      OpType::CY,       OpType::CZ,       OpType::CH,          OpType::CV,
-      OpType::CVdg,     OpType::CSX,      OpType::CSXdg,       OpType::CS,
-      OpType::CSdg,     OpType::CRz,      OpType::CRx,         OpType::CRy,
-      OpType::CU1,      OpType::CU3,      OpType::PhaseGadget, OpType::CCX,
-      OpType::SWAP,     OpType::CSWAP,    OpType::noop,        OpType::Measure,
-      OpType::Reset,    OpType::ECR,      OpType::ISWAP,       OpType::PhasedX,
-      OpType::ZZMax,    OpType::XXPhase,  OpType::YYPhase,     OpType::ZZPhase,
-      OpType::CnRy,     OpType::CnX,      OpType::CnZ,         OpType::CnY,
-      OpType::BRIDGE,   OpType::Collapse, OpType::ESWAP,       OpType::FSim,
-      OpType::Sycamore, OpType::ISWAPMax, OpType::PhasedISWAP, OpType::XXPhase3,
-      OpType::NPhasedX, OpType::TK2,      OpType::Phase};
+      OpType::Z,           OpType::X,           OpType::Y,
+      OpType::S,           OpType::Sdg,         OpType::T,
+      OpType::Tdg,         OpType::V,           OpType::Vdg,
+      OpType::SX,          OpType::SXdg,        OpType::H,
+      OpType::Rx,          OpType::Ry,          OpType::Rz,
+      OpType::U3,          OpType::U2,          OpType::U1,
+      OpType::TK1,         OpType::CX,          OpType::CY,
+      OpType::CZ,          OpType::CH,          OpType::CV,
+      OpType::CVdg,        OpType::CSX,         OpType::CSXdg,
+      OpType::CS,          OpType::CSdg,        OpType::CRz,
+      OpType::CRx,         OpType::CRy,         OpType::CU1,
+      OpType::CU3,         OpType::PhaseGadget, OpType::CCX,
+      OpType::SWAP,        OpType::CSWAP,       OpType::noop,
+      OpType::Measure,     OpType::Reset,       OpType::ECR,
+      OpType::ISWAP,       OpType::PhasedX,     OpType::ZZMax,
+      OpType::XXPhase,     OpType::YYPhase,     OpType::ZZPhase,
+      OpType::CnRx,        OpType::CnRz,        OpType::CnRy,
+      OpType::CnX,         OpType::CnZ,         OpType::CnY,
+      OpType::BRIDGE,      OpType::Collapse,    OpType::ESWAP,
+      OpType::FSim,        OpType::Sycamore,    OpType::ISWAPMax,
+      OpType::PhasedISWAP, OpType::XXPhase3,    OpType::NPhasedX,
+      OpType::TK2,         OpType::Phase,       OpType::GPI,
+      OpType::GPI2,        OpType::AAMS};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;
@@ -49,19 +56,20 @@ const OpTypeSet& all_gate_types() {
 
 const OpTypeSet& all_multi_qubit_types() {
   static const OpTypeSet optypes{
-      OpType::CX,          OpType::CY,          OpType::CZ,
-      OpType::CH,          OpType::CV,          OpType::CVdg,
-      OpType::CSX,         OpType::CSXdg,       OpType::CS,
-      OpType::CSdg,        OpType::CRz,         OpType::CRx,
-      OpType::CRy,         OpType::CU1,         OpType::CU3,
-      OpType::PhaseGadget, OpType::CCX,         OpType::SWAP,
-      OpType::CSWAP,       OpType::ECR,         OpType::ISWAP,
-      OpType::ZZMax,       OpType::XXPhase,     OpType::YYPhase,
-      OpType::ZZPhase,     OpType::CnRy,        OpType::CnX,
-      OpType::CnZ,         OpType::CnY,         OpType::BRIDGE,
-      OpType::ESWAP,       OpType::FSim,        OpType::Sycamore,
-      OpType::ISWAPMax,    OpType::PhasedISWAP, OpType::XXPhase3,
-      OpType::NPhasedX,    OpType::TK2};
+      OpType::CX,          OpType::CY,       OpType::CZ,
+      OpType::CH,          OpType::CV,       OpType::CVdg,
+      OpType::CSX,         OpType::CSXdg,    OpType::CS,
+      OpType::CSdg,        OpType::CRz,      OpType::CRx,
+      OpType::CRy,         OpType::CU1,      OpType::CU3,
+      OpType::PhaseGadget, OpType::CCX,      OpType::SWAP,
+      OpType::CSWAP,       OpType::ECR,      OpType::ISWAP,
+      OpType::ZZMax,       OpType::XXPhase,  OpType::YYPhase,
+      OpType::ZZPhase,     OpType::CnRx,     OpType::CnRz,
+      OpType::CnRy,        OpType::CnX,      OpType::CnZ,
+      OpType::CnY,         OpType::BRIDGE,   OpType::ESWAP,
+      OpType::FSim,        OpType::Sycamore, OpType::ISWAPMax,
+      OpType::PhasedISWAP, OpType::XXPhase3, OpType::NPhasedX,
+      OpType::TK2,         OpType::AAMS};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;
@@ -74,7 +82,7 @@ const OpTypeSet& all_single_qubit_unitary_types() {
       OpType::Sdg,  OpType::T,    OpType::Tdg, OpType::V,  OpType::Vdg,
       OpType::SX,   OpType::SXdg, OpType::H,   OpType::Rx, OpType::Ry,
       OpType::Rz,   OpType::U1,   OpType::U2,  OpType::U3, OpType::PhasedX,
-      OpType::TK1};
+      OpType::TK1,  OpType::GPI,  OpType::GPI2};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;
@@ -87,7 +95,8 @@ const OpTypeSet& all_single_qubit_types() {
       OpType::Vdg,   OpType::SX,       OpType::SXdg,    OpType::H,
       OpType::Rx,    OpType::Ry,       OpType::Rz,      OpType::U3,
       OpType::U2,    OpType::U1,       OpType::TK1,     OpType::Measure,
-      OpType::Reset, OpType::Collapse, OpType::PhasedX, OpType::noop};
+      OpType::Reset, OpType::Collapse, OpType::PhasedX, OpType::noop,
+      OpType::GPI,   OpType::GPI2};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;
@@ -118,8 +127,9 @@ const OpTypeSet& all_controlled_gate_types() {
   static const OpTypeSet optypes{
       OpType::CX,   OpType::CCX,   OpType::CnX,  OpType::CnZ,  OpType::CnY,
       OpType::CSX,  OpType::CSXdg, OpType::CS,   OpType::CSdg, OpType::CV,
-      OpType::CVdg, OpType::CRx,   OpType::CnRy, OpType::CRy,  OpType::CY,
-      OpType::CRz,  OpType::CZ,    OpType::CH,   OpType::CU1,  OpType::CU3};
+      OpType::CVdg, OpType::CRx,   OpType::CnRx, OpType::CnRz, OpType::CnRy,
+      OpType::CRy,  OpType::CY,    OpType::CRz,  OpType::CZ,   OpType::CH,
+      OpType::CU1,  OpType::CU3};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;
@@ -212,10 +222,11 @@ bool is_flowop_type(OpType optype) {
 
 bool is_rotation_type(OpType optype) {
   static const OpTypeSet rotation_gates = {
-      OpType::Rx,    OpType::Ry,      OpType::Rz,      OpType::U1,
-      OpType::CnRy,  OpType::CRz,     OpType::CRx,     OpType::CRy,
-      OpType::CU1,   OpType::XXPhase, OpType::YYPhase, OpType::ZZPhase,
-      OpType::ESWAP, OpType::ISWAP,   OpType::XXPhase3};
+      OpType::Rx,      OpType::Ry,      OpType::Rz,    OpType::U1,
+      OpType::CnRy,    OpType::CnRx,    OpType::CnRz,  OpType::CRz,
+      OpType::CRx,     OpType::CRy,     OpType::CU1,   OpType::XXPhase,
+      OpType::YYPhase, OpType::ZZPhase, OpType::ESWAP, OpType::ISWAP,
+      OpType::XXPhase3};
   return find_in_set(optype, rotation_gates);
 }
 

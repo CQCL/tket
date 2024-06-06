@@ -25,7 +25,7 @@ class AASLabellingMethod : public RoutingMethod {
    * Checking and Routing methods redefined for dynamically assigning qubits to
    * some Architecture.
    */
-  AASLabellingMethod(){};
+  AASLabellingMethod() {};
 
   /**
    * will place all the qubits of the given circuit that are not placed at the

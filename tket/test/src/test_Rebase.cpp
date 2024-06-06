@@ -409,7 +409,7 @@ SCENARIO("Check each Clifford case for tk1_to_rzh") {
   }
 }
 
-SCENARIO("Check cases for tk1_to_rzsx") {
+SCENARIO("Check cases for tk1_to_rzsx, tk1_to_rzxsx") {
   GIVEN("Each case") {
     struct RzSXTestCase {
       Expr alpha;
@@ -459,6 +459,16 @@ SCENARIO("Check cases for tk1_to_rzsx") {
       Transforms::remove_redundancies().apply(result);
       REQUIRE(result.n_gates() == test.expected_gates);
       REQUIRE(test_unitary_comparison(correct, result));
+      // allow x gates
+      Circuit result2 =
+          CircPool::tk1_to_rzxsx(test.alpha, test.beta, test.gamma);
+      Transforms::remove_redundancies().apply(result2);
+      // If expected gates are more than the actual gates, it means some SX
+      // pairs were replaced by X gates. Hence each gate saved comes from an
+      // added X gate.
+      REQUIRE(
+          result2.count_gates(OpType::X) ==
+          test.expected_gates - result2.n_gates());
     }
 
     for (const RzSXTestCase& test : symbolic_cases) {

@@ -14,6 +14,7 @@
 
 #include "tket/Predicates/PassGenerators.hpp"
 
+#include <algorithm>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -32,9 +33,11 @@
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Predicates/Predicates.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/CliffordOptimisation.hpp"
 #include "tket/Transformations/CliffordResynthesis.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
 #include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/GreedyPauliOptimisation.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Rebase.hpp"
@@ -124,6 +127,166 @@ PassPtr gen_squash_pass(
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
+static std::function<Circuit(const Expr&, const Expr&, const Expr&)>
+find_tk1_replacement(const OpTypeSet& gateset) {
+  if (gateset.contains(OpType::TK1)) {
+    return CircPool::tk1_to_tk1;
+  }
+  if (gateset.contains(OpType::U3)) {
+    return CircPool::tk1_to_u3;
+  }
+  if (gateset.contains(OpType::Rz) && gateset.contains(OpType::X) &&
+      gateset.contains(OpType::SX)) {
+    return CircPool::tk1_to_rzxsx;
+  }
+  if (gateset.contains(OpType::PhasedX) && gateset.contains(OpType::Rz)) {
+    return CircPool::tk1_to_PhasedXRz;
+  }
+  if (gateset.contains(OpType::Rz) && gateset.contains(OpType::Rx)) {
+    return CircPool::tk1_to_rzrx;
+  }
+  if (gateset.contains(OpType::Rx) && gateset.contains(OpType::Ry)) {
+    return CircPool::tk1_to_rxry;
+  }
+  if (gateset.contains(OpType::Rz) && gateset.contains(OpType::H)) {
+    return CircPool::tk1_to_rzh;
+  }
+  if (gateset.contains(OpType::Rz) && gateset.contains(OpType::SX)) {
+    return CircPool::tk1_to_rzsx;
+  }
+  if (gateset.contains(OpType::GPI) && gateset.contains(OpType::GPI2)) {
+    return CircPool::TK1_using_GPI;
+  }
+  throw Unsupported("No known decomposition from TK1 to available gateset.");
+}
+
+static Circuit find_cx_replacement(const OpTypeSet& gateset) {
+  if (gateset.contains(OpType::CX)) {
+    return CircPool::CX();
+  }
+  if (gateset.contains(OpType::ZZMax)) {
+    return CircPool::CX_using_ZZMax();
+  }
+  if (gateset.contains(OpType::XXPhase)) {
+    return CircPool::CX_using_XXPhase_0();
+  }
+  if (gateset.contains(OpType::ECR)) {
+    return CircPool::CX_using_ECR();
+  }
+  if (gateset.contains(OpType::CZ)) {
+    return CircPool::H_CZ_H();
+  }
+  if (gateset.contains(OpType::AAMS)) {
+    return CircPool::CX_using_AAMS();
+  }
+  throw Unsupported("No known decomposition from CX to available gateset.");
+}
+
+static std::function<Circuit(const Expr&, const Expr&, const Expr&)>
+find_tk2_replacement(const OpTypeSet& gateset, bool allow_swaps) {
+  if (!allow_swaps) {
+    if (gateset.contains(OpType::TK2)) {
+      return CircPool::TK2_using_TK2;
+    }
+    if (gateset.contains(OpType::ZZPhase)) {
+      return CircPool::TK2_using_ZZPhase;
+    }
+    if (gateset.contains(OpType::CX)) {
+      return CircPool::TK2_using_CX;
+    }
+    if (gateset.contains(OpType::ZZMax)) {
+      return CircPool::TK2_using_ZZMax;
+    }
+    if (gateset.contains(OpType::AAMS)) {
+      return CircPool::TK2_using_AAMS;
+    }
+  } else {
+    if (gateset.contains(OpType::TK2)) {
+      return CircPool::TK2_using_TK2_or_swap;
+    }
+    if (gateset.contains(OpType::ZZPhase)) {
+      return CircPool::TK2_using_ZZPhase_and_swap;
+    }
+    if (gateset.contains(OpType::CX)) {
+      return CircPool::TK2_using_CX_and_swap;
+    }
+    if (gateset.contains(OpType::ZZMax)) {
+      return CircPool::TK2_using_ZZMax_and_swap;
+    }
+  }
+  throw Unsupported("No known decomposition from TK2 to available gateset.");
+}
+
+PassPtr gen_auto_rebase_pass(const OpTypeSet& allowed_gates, bool allow_swaps) {
+  auto find_rebase = [allowed_gates, allow_swaps]() {
+    auto tk1_replacement = find_tk1_replacement(allowed_gates);
+    if (allowed_gates.contains(OpType::CX) &&
+        !allowed_gates.contains(OpType::TK2) && !allow_swaps) {
+      return Transforms::rebase_factory(
+          allowed_gates, CircPool::CX(), tk1_replacement);
+    }
+    try {
+      return Transforms::rebase_factory_via_tk2(
+          allowed_gates, tk1_replacement,
+          find_tk2_replacement(allowed_gates, allow_swaps));
+    } catch (const Unsupported&) {
+    }
+    try {
+      return Transforms::rebase_factory(
+          allowed_gates, find_cx_replacement(allowed_gates), tk1_replacement);
+    } catch (const Unsupported&) {
+      throw Unsupported(
+          "No known decomposition from CX or TK2 to available gateset.");
+    }
+  };
+  Transform t = find_rebase();
+  PredicatePtrMap precons;
+  OpTypeSet all_types(allowed_gates);
+  all_types.insert(OpType::Measure);
+  all_types.insert(OpType::Collapse);
+  all_types.insert(OpType::Reset);
+  PredicatePtr postcon1 = std::make_shared<GateSetPredicate>(all_types);
+  PredicatePtr postcon2 = std::make_shared<MaxTwoQubitGatesPredicate>();
+  std::pair<const std::type_index, PredicatePtr> pair2 =
+      CompilationUnit::make_type_pair(postcon1);
+  PredicatePtrMap s_postcons{pair2, CompilationUnit::make_type_pair(postcon2)};
+  PredicateClassGuarantees g_postcons{{pair2.first, Guarantee::Clear}};
+  PostConditions pc = {s_postcons, g_postcons, Guarantee::Preserve};
+  // record pass config
+  // sort the gateset
+  std::vector<OpType> sorted_gates(allowed_gates.begin(), allowed_gates.end());
+  std::sort(sorted_gates.begin(), sorted_gates.end());
+  nlohmann::json j;
+  j["name"] = "AutoRebase";
+  j["basis_allowed"] = sorted_gates;
+  j["allow_swaps"] = allow_swaps;
+  return std::make_shared<StandardPass>(precons, t, pc, j);
+}
+
+PassPtr gen_auto_squash_pass(const OpTypeSet& singleqs) {
+  auto find_squash = [singleqs]() {
+    if (singleqs.contains(OpType::Rz) && singleqs.contains(OpType::PhasedX)) {
+      return Transforms::squash_1qb_to_Rz_PhasedX(false);
+    } else {
+      auto tk1_replacement = find_tk1_replacement(singleqs);
+      return Transforms::squash_factory(singleqs, tk1_replacement, false);
+    }
+  };
+  Transform t = find_squash();
+  PredicateClassGuarantees g_postcons = {
+      {typeid(GateSetPredicate), Guarantee::Clear}};
+  PostConditions postcon = {{}, g_postcons, Guarantee::Preserve};
+  PredicatePtrMap precons;
+  // record pass config
+  // sort the gateset
+  std::vector<OpType> sorted_gates(singleqs.begin(), singleqs.end());
+  std::sort(sorted_gates.begin(), sorted_gates.end());
+  nlohmann::json j;
+  j["name"] = "AutoSquash";
+  j["basis_singleqs"] = sorted_gates;
+  return std::make_shared<StandardPass>(precons, t, postcon, j);
+}
+
 // converting chains of p, q rotations to minimal triplets of p,q-rotations (p,
 // q in {Rx,Ry,Rz})
 PassPtr gen_euler_pass(const OpType& q, const OpType& p, bool strict) {
@@ -173,11 +336,28 @@ PassPtr gen_clifford_resynthesis_pass(
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
+PassPtr gen_clifford_push_through_pass() {
+  // Expects: Measure operations at end of circuit with
+  // no classical gates to outputs to work, but
+  // just makes no modification if this is not true
+  Transform t = Transforms::push_cliffords_through_measures();
+  PredicatePtrMap precons;
+  // mutual diagonalisation circuit is not architecture aware
+  PredicateClassGuarantees g_postcons = {
+      {typeid(ConnectivityPredicate), Guarantee::Clear},
+      {typeid(DirectednessPredicate), Guarantee::Clear}};
+
+  PostConditions pc{{}, {}, Guarantee::Preserve};
+  nlohmann::json j;
+  j["name"] = "CliffordPushThroughMeausres";
+  return std::make_shared<StandardPass>(precons, t, pc, j);
+}
+
 PassPtr gen_flatten_relabel_registers_pass(const std::string& label) {
   Transform t =
       Transform([=](Circuit& circuit, std::shared_ptr<unit_bimaps_t> maps) {
         unsigned n_qubits = circuit.n_qubits();
-        circuit.remove_blank_wires();
+        circuit.remove_blank_wires(false);
         bool changed = circuit.n_qubits() < n_qubits;
         std::map<Qubit, Qubit> relabelling_map;
         std::vector<Qubit> all_qubits = circuit.all_qubits();
@@ -791,6 +971,39 @@ PassPtr gen_synthesise_pauli_graph(
   std::vector<PassPtr> seq = {
       gen_pauli_exponentials(strat, cx_config), DecomposeBoxes()};
   return std::make_shared<SequencePass>(seq);
+}
+
+PassPtr gen_greedy_pauli_simp(double discount_rate, double depth_weight) {
+  Transform t =
+      Transforms::greedy_pauli_optimisation(discount_rate, depth_weight);
+  PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
+  PredicatePtr mid_pred = std::make_shared<NoMidMeasurePredicate>();
+  OpTypeSet ins = {OpType::Z,       OpType::X,           OpType::Y,
+                   OpType::S,       OpType::Sdg,         OpType::V,
+                   OpType::Vdg,     OpType::H,           OpType::CX,
+                   OpType::CY,      OpType::CZ,          OpType::SWAP,
+                   OpType::Rz,      OpType::Rx,          OpType::Ry,
+                   OpType::T,       OpType::Tdg,         OpType::ZZMax,
+                   OpType::ZZPhase, OpType::PhaseGadget, OpType::XXPhase,
+                   OpType::YYPhase, OpType::PauliExpBox, OpType::Measure,
+                   OpType::PhasedX};
+  PredicatePtr in_gates = std::make_shared<GateSetPredicate>(ins);
+  PredicatePtrMap precons{
+      CompilationUnit::make_type_pair(ccontrol_pred),
+      CompilationUnit::make_type_pair(mid_pred),
+      CompilationUnit::make_type_pair(in_gates)};
+  PredicateClassGuarantees g_postcons = {
+      {typeid(ConnectivityPredicate), Guarantee::Clear},
+      {typeid(NoWireSwapsPredicate), Guarantee::Clear}};
+  PostConditions postcon{{}, g_postcons, Guarantee::Preserve};
+
+  // record pass config
+  nlohmann::json j;
+  j["name"] = "GreedyPauliSimp";
+  j["discount_rate"] = discount_rate;
+  j["depth_weight"] = depth_weight;
+
+  return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
 PassPtr gen_special_UCC_synthesis(

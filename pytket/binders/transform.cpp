@@ -22,9 +22,11 @@
 
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/CliffordOptimisation.hpp"
 #include "tket/Transformations/Combinator.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
 #include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/GreedyPauliOptimisation.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Rebase.hpp"
@@ -150,6 +152,10 @@ PYBIND11_MODULE(transform, m) {
           "Rebase from any gate set into the gate set supported by "
           "ProjectQ (Rx, Ry, Rz, X, Y, Z, S, T, V, H, CX, CZ, CRz, "
           "SWAP).")
+      .def_static(
+          "RebaseToIonQ", &Transforms::rebase_ionq,
+          "Rebase from any gate set into the gate set supported by "
+          "IonQ (GPI, GPI2, AAMS).")
       .def_static(
           "DecomposeCCX", &Transforms::decomp_CCX,
           "Decomposes all 3-qubit Toffoli (CCX) gates into "
@@ -407,6 +413,21 @@ PYBIND11_MODULE(transform, m) {
           py::arg("synth_strat") = Transforms::PauliSynthStrat::Sets,
           py::arg("cx_config") = CXConfigType::Snake)
       .def_static(
+          "GreedyPauliSimp", &Transforms::greedy_pauli_optimisation,
+          "Convert a circuit into a graph of Pauli "
+          "gadgets to account for commutation and phase folding, and "
+          "resynthesises them using a greedy algorithm adapted from "
+          "arxiv.org/abs/2103.08602. The method for synthesising the "
+          "final Clifford operator is adapted from "
+          "arxiv.org/abs/2305.10966."
+          "\n\n:param discount_rate: Rate used to discount the cost impact "
+          "from "
+          "gadgets that are further away. Default to 0.7."
+          "\n:param depth_weight:  Degree of depth optimisation. Default to "
+          "0.3."
+          "\n:return: a pass to perform the simplification",
+          py::arg("discount_rate") = 0.7, py::arg("depth_weight") = 0.3)
+      .def_static(
           "ZZPhaseToRz", &Transforms::ZZPhase_to_Rz,
           "Fixes all ZZPhase gate angles to [-1, 1) half turns.")
       .def_static(
@@ -414,6 +435,16 @@ PYBIND11_MODULE(transform, m) {
           "Decompose CnX gates to 2-qubit gates and single qubit gates. "
           "For every two CnX gates, reorder their control qubits to improve "
           "the chance of gate cancellation.")
+      .def_static(
+          "PushCliffordsThroughMeasures",
+          &Transforms::push_cliffords_through_measures,
+          "Derives a new set of end-of-Circuit measurement operators "
+          "by acting on end-of-Circuit measurements with a Clifford "
+          "subcircuit. The new set of measurement operators is necessarily "
+          "commuting and is implemented by adding a new mutual diagonalisation "
+          "Clifford subcirciuit to the end of the Circuit and implementing the "
+          "remaining diagonal measurement operators by measuring and permuting "
+          "the output.")
       .def_static(
           "round_angles", &Transforms::round_angles,
           "Rounds angles to the nearest :math:`\\pi / 2^n`."

@@ -60,7 +60,7 @@ class Predicate {
   virtual bool implies(const Predicate& other) const = 0;
   virtual PredicatePtr meet(const Predicate& other) const = 0;
   virtual std::string to_string() const = 0;
-  virtual ~Predicate(){};  // satisfy compiler
+  virtual ~Predicate() {};  // satisfy compiler
 };
 
 // all Predicate subclasses must inherit from `Predicate`

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import sympy
-
+import pytest
 from pytket import logging
 from pytket.circuit import (
     Circuit,
@@ -33,7 +33,6 @@ from pytket.passes import (
     SequencePass,
     RemoveRedundancies,
     SynthesiseTket,
-    SynthesiseHQS,
     SynthesiseUMD,
     RepeatUntilSatisfiedPass,
     CommuteThroughMultis,
@@ -63,16 +62,22 @@ from pytket.passes import (
     SimplifyInitial,
     RemoveBarriers,
     PauliSquash,
+    AutoRebase,
+    AutoSquash,
     auto_rebase_pass,
+    auto_squash_pass,
     ZZPhaseToRz,
     CnXPairwiseDecomposition,
     RemoveImplicitQubitPermutation,
     FlattenRelabelRegistersPass,
     RoundAngles,
     PeepholeOptimise2Q,
-    SynthesiseHQS,
     CliffordResynthesis,
+    CliffordPushThroughMeasures,
     CliffordSimp,
+    SynthesiseOQC,
+    ZXGraphlikeOptimisation,
+    GreedyPauliSimp,
 )
 from pytket.predicates import (
     GateSetPredicate,
@@ -132,7 +137,7 @@ def test_compilation_unit_generation() -> None:
 
 
 def test_compilerpass_seq() -> None:
-    passlist = [SynthesiseTket(), SynthesiseOQC(), SynthesiseUMD(), SynthesiseHQS()]
+    passlist = [SynthesiseTket(), SynthesiseOQC(), SynthesiseUMD()]
     seq = SequencePass(passlist)
     circ = Circuit(2)
     circ.X(0).Z(1)
@@ -140,6 +145,16 @@ def test_compilerpass_seq() -> None:
     cu2 = CompilationUnit(circ2)
     assert seq.apply(cu)
     assert seq.apply(cu2)
+
+
+def test_compilerpass_seq_nonstrict() -> None:
+    passlist = [RebaseTket(), ZXGraphlikeOptimisation()]
+    with pytest.raises(RuntimeError):
+        _ = SequencePass(passlist)
+    seq = SequencePass(passlist, strict=False)
+    circ = Circuit(2)
+    seq.apply(circ)
+    assert np.allclose(circ.get_unitary(), np.eye(4, 4, dtype=complex))
 
 
 def test_rebase_pass_generation() -> None:
@@ -392,7 +407,7 @@ def test_RebaseOQC_and_SynthesiseOQC() -> None:
     u_before_oqc = circ3.get_unitary()
     assert np.allclose(u, u_before_oqc)
 
-    auto_rebase_pass(oqc_gateset).apply(circ3)
+    AutoRebase(oqc_gateset).apply(circ3)
     assert oqc_gateset_pred.verify(circ3)
     u_before_rebase_tket = circ3.get_unitary()
     assert np.allclose(u, u_before_rebase_tket)
@@ -648,7 +663,7 @@ def test_apply_pass_with_callbacks() -> None:
 
     def compile(circ: Circuit, handler: CallbackHandler) -> bool:
         p = SequencePass([CommuteThroughMultis(), RemoveRedundancies()])
-        return p.apply(circ, handler.before_apply, handler.after_apply)  # type: ignore
+        return p.apply(circ, handler.before_apply, handler.after_apply)
 
     circ = Circuit(5)
     circ.CX(0, 1)
@@ -857,7 +872,7 @@ def test_conditional_phase() -> None:
     c.H(1, condition_bits=[0], condition_value=1)
     c.Measure(1, 1)
     target_gateset = {OpType.TK1, OpType.CX}
-    rebase = auto_rebase_pass(target_gateset)
+    rebase = AutoRebase(target_gateset)
     rebase.apply(c)
     cond_cmds = [cmd for cmd in c.get_commands() if cmd.op.type == OpType.Conditional]
     assert len(cond_cmds) > 0
@@ -971,15 +986,6 @@ def test_selectively_decompose_boxes() -> None:
     assert cmds[2].op.type == OpType.CircBox
 
 
-def test_SynthesiseHQS_deprecation(capfd: Any) -> None:
-    logging.set_level(logging.level.warn)
-    p = SynthesiseHQS()
-    out = capfd.readouterr().out
-    assert "[warn]" in out
-    assert "deprecated" in out
-    logging.set_level(logging.level.err)
-
-
 def test_clifford_resynthesis() -> None:
     circ = (
         Circuit(5)
@@ -1027,6 +1033,60 @@ def test_clifford_resynthesis_implicit_swaps() -> None:
     assert circ.implicit_qubit_permutation() == {Qubit(0): Qubit(1), Qubit(1): Qubit(0)}
 
 
+def test_clifford_push_through_measures() -> None:
+    c_x: Circuit = Circuit(2, 2).X(0).measure_all()
+    CliffordPushThroughMeasures().apply(c_x)
+    assert c_x == Circuit(2, 2).X(0).measure_all()
+    c_cx_x: Circuit = Circuit(2, 2).X(0).CX(0, 1).X(0).measure_all()
+    CliffordPushThroughMeasures().apply(c_cx_x)
+    assert c_cx_x.n_1qb_gates() == 0
+    assert c_cx_x.n_2qb_gates() == 0
+    coms = c_cx_x.get_commands()
+    assert len(coms) == 8
+    assert coms[2].op.type == OpType.SetBits
+    assert coms[3].op.type == OpType.ExplicitModifier
+    assert coms[4].op.type == OpType.ExplicitModifier
+    assert coms[5].op.type == OpType.ExplicitModifier
+    assert coms[6].op.type == OpType.ExplicitModifier
+    assert coms[7].op.type == OpType.CopyBits
+
+
+def greedy_pauli_synth() -> None:
+    circ = Circuit(4, name="test")
+    rega = circ.add_q_register("a", 2)
+    regb = circ.add_q_register("b", 2)
+    d = circ.copy()
+    circ.Rz(0, rega[0]).H(regb[1]).CX(rega[0], rega[1]).Ry(0.3, rega[0]).S(regb[1]).CZ(
+        rega[0], regb[0]
+    ).SWAP(regb[1], rega[0])
+    pss = GreedyPauliSimp(0.5, 0.5)
+    assert pss.apply(d)
+    assert np.allclose(circ.get_unitary(), d.get_unitary())
+    assert d.name == "test"
+
+
+def test_SynthesiseOQC_deprecation(capfd: Any) -> None:
+    logging.set_level(logging.level.warn)
+    p = SynthesiseOQC()
+    out = capfd.readouterr().out
+    assert "[warn]" in out
+    assert "deprecated" in out
+    logging.set_level(logging.level.err)
+
+
+def test_auto_rebase_deprecation(recwarn: Any) -> None:
+    p = auto_rebase_pass({OpType.TK1, OpType.CX})
+    assert len(recwarn) == 1
+    w = recwarn.pop(DeprecationWarning)
+    assert issubclass(w.category, DeprecationWarning)
+    assert "deprecated" in str(w.message)
+    p = auto_squash_pass({OpType.TK1})
+    assert len(recwarn) == 1
+    w = recwarn.pop(DeprecationWarning)
+    assert issubclass(w.category, DeprecationWarning)
+    assert "deprecated" in str(w.message)
+
+
 if __name__ == "__main__":
     test_predicate_generation()
     test_compilation_unit_generation()
@@ -1046,3 +1106,4 @@ if __name__ == "__main__":
     test_flatten_relabel_pass()
     test_rebase_custom_tk2()
     test_selectively_decompose_boxes()
+    test_clifford_push_through_measures()

@@ -1318,6 +1318,42 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
           py::arg("qubit"))
       .def(
+          "GPI",
+          [](Circuit *circ, const Expr &angle, unsigned qb,
+             const py::kwargs &kwargs) {
+            return add_gate_method_oneparam<unsigned>(
+                circ, OpType::GPI, angle, {qb}, kwargs);
+          },
+          "Appends a GPI gate with a possibly symbolic angle "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle"), py::arg("qubit"))
+      .def(
+          "GPI2",
+          [](Circuit *circ, const Expr &angle, unsigned qb,
+             const py::kwargs &kwargs) {
+            return add_gate_method_oneparam<unsigned>(
+                circ, OpType::GPI2, angle, {qb}, kwargs);
+          },
+          "Appends a GPI2 gate with a possibly symbolic angle "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle"), py::arg("qubit"))
+      .def(
+          "AAMS",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+             const Expr &angle2, const unsigned &qb0, const unsigned &qb1,
+             const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<unsigned>(
+                circ, OpType::AAMS, {angle0, angle1, angle2}, {qb0, qb1},
+                kwargs);
+          },
+          "Appends an AAMS gate with possibly symbolic angles "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
+          py::arg("qubit0"), py::arg("qubit1"))
+      .def(
           "TK1",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
              const Expr &angle2, const unsigned &qb, const py::kwargs &kwargs) {
@@ -1940,6 +1976,42 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
           py::arg("qubit"))
+      .def(
+          "GPI",
+          [](Circuit *circ, const Expr &angle, const Qubit &qb,
+             const py::kwargs &kwargs) {
+            return add_gate_method_oneparam<UnitID>(
+                circ, OpType::GPI, angle, {qb}, kwargs);
+          },
+          "Appends a GPI gate with a possibly symbolic angle "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle"), py::arg("qubit"))
+      .def(
+          "GPI2",
+          [](Circuit *circ, const Expr &angle, const Qubit &qb,
+             const py::kwargs &kwargs) {
+            return add_gate_method_oneparam<UnitID>(
+                circ, OpType::GPI2, angle, {qb}, kwargs);
+          },
+          "Appends a GPI2 gate with a possibly symbolic angle "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle"), py::arg("qubit"))
+      .def(
+          "AAMS",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+             const Expr &angle2, const Qubit &qb0, const Qubit &qb1,
+             const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<UnitID>(
+                circ, OpType::AAMS, {angle0, angle1, angle2}, {qb0, qb1},
+                kwargs);
+          },
+          "Appends an AAMS gate with possibly symbolic angles "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
+          py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "TK1",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,

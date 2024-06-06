@@ -1,9 +1,14 @@
 name: build with nix
+
 on:
+  pull_request:
+    branches:
+      - main
   schedule:
     # 01:00 every Sunday morning
     - cron: '0 1 * * 0'
   workflow_dispatch: {}
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -11,10 +16,14 @@ jobs:
   build_and_test:
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-13-xlarge']
+        os: ['ubuntu-24.04', 'macos-14']
     runs-on: ${{matrix.os}}
     steps:
     - uses: actions/checkout@v4
-    - uses: cachix/install-nix-action@v26
+    - uses: cachix/install-nix-action@V27
+    - uses: cachix/cachix-action@v15
+      with:
+        name: tket
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
     - name: Build and test tket
       run: nix flake check -L

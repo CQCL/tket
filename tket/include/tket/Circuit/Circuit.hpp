@@ -762,8 +762,13 @@ class Circuit {
   // Basic Circuit Manipulation//
   //////////////////////////////
 
-  // O(V), `V` the number of vertices
-  void remove_blank_wires();
+  /**
+   * O(V), `V` the number of vertices
+   * removes all blank wires
+   * @param keep_blank_classical_wires option to choose if empty classical wire
+   * should be removed as well
+   */
+  void remove_blank_wires(bool keep_blank_classical_wires = false);
 
   /**
    * Remove all gates in the circuits that are identities
@@ -1821,7 +1826,6 @@ Vertex Circuit::add_op(
 
   add_wasm_register(count_wasm_sig);
 
-  Vertex new_v = add_vertex(op, opgroup);
   unit_set_t write_arg_set;
   EdgeVec preds;
   for (unsigned i = 0; i < args.size(); ++i) {
@@ -1837,6 +1841,7 @@ Vertex Circuit::add_op(
     preds.push_back(pred_out_e);
   }
 
+  Vertex new_v = add_vertex(op, opgroup);
   rewire(new_v, preds, sig);
   return new_v;
 }

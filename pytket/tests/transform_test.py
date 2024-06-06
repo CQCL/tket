@@ -46,11 +46,10 @@ from pytket.passes import (
     CustomPass,
     SequencePass,
     SynthesiseTket,
-    auto_rebase_pass,
-    auto_squash_pass,
+    AutoRebase,
+    AutoSquash,
 )
 from pytket.predicates import CompilationUnit, NoMidMeasurePredicate
-from pytket.passes.auto_rebase import _CX_CIRCS, NoAutoRebase
 from pytket.transform import Transform, CXConfigType, PauliSynthStrat
 from pytket.qasm import circuit_from_qasm
 from pytket.architecture import Architecture
@@ -1050,7 +1049,7 @@ def test_auto_rebase() -> None:
         ({OpType.CX, OpType.Rz, OpType.Rx}, _library.CX(), _library.TK1_to_RzRx),
         (
             {OpType.CZ, OpType.Rz, OpType.SX, OpType.ZZPhase},
-            _CX_CIRCS[OpType.CZ](),
+            _library.H_CZ_H(),
             _library.TK1_to_RzSX,
         ),
         (
@@ -1073,20 +1072,30 @@ def test_auto_rebase() -> None:
             _library.CX(),
             _library.TK1_to_TK1,
         ),
+        (
+            {OpType.GPI, OpType.GPI2, OpType.AAMS},
+            _library.CX_using_AAMS(),
+            _library.TK1_using_GPI,
+        ),
+        (
+            {OpType.GPI, OpType.GPI2, OpType.AAMS},
+            _library.TK2_using_AAMS,
+            _library.TK1_using_GPI,
+        ),
     ]
 
     circ = get_test_circuit()
 
     for gateset, cx_circ, TK1_func in pass_params:
-        rebase = auto_rebase_pass(gateset)
+        rebase = AutoRebase(gateset)
         c2 = circ.copy()
         assert rebase.apply(c2)
 
-    rebase = auto_rebase_pass({OpType.ZZPhase, OpType.TK1})
+    rebase = AutoRebase({OpType.ZZPhase, OpType.TK1})
     assert rebase.apply(circ)
 
     circ = get_test_circuit()
-    rebase = auto_rebase_pass({OpType.PhasedX, OpType.Rz, OpType.TK2})
+    rebase = AutoRebase({OpType.PhasedX, OpType.Rz, OpType.TK2})
     assert rebase.apply(circ)
     assert circ.n_gates_of_type(OpType.TK2) == circ.n_2qb_gates()
     assert (
@@ -1094,17 +1103,17 @@ def test_auto_rebase() -> None:
         == circ.n_1qb_gates()
     )
 
-    with pytest.raises(NoAutoRebase) as cx_err:
-        _ = auto_rebase_pass({OpType.CX, OpType.H, OpType.T})
+    with pytest.raises(RuntimeError) as cx_err:
+        _ = AutoRebase({OpType.CX, OpType.H, OpType.T})
     assert "TK1" in str(cx_err.value)
 
-    with pytest.raises(NoAutoRebase) as err:
-        _ = auto_rebase_pass({OpType.CY, OpType.TK1})
+    with pytest.raises(RuntimeError) as err:
+        _ = AutoRebase({OpType.CY, OpType.TK1})
     assert "No known decomposition" in str(err.value)
 
     # if CX is the only 2-q gate in the gateset, rebase via CX
     gateset = {OpType.TK1, OpType.H, OpType.T, OpType.Tdg, OpType.CX}
-    rebase = auto_rebase_pass(gateset)
+    rebase = AutoRebase(gateset)
     circ = Circuit(3).CCX(0, 1, 2)
     rebase.apply(circ)
     assert circ.n_1qb_gates() <= 9
@@ -1148,16 +1157,11 @@ def test_auto_squash() -> None:
                     break
                 except (RuntimeError, TypeError):
                     params.append(0.1)
-        squash = auto_squash_pass(gateset)
-        if {OpType.PhasedX, OpType.Rz} <= gateset:
-            assert squash.to_dict() == SquashRzPhasedX().to_dict()
-        else:
-            assert squash.to_dict() == SquashCustom(gateset, TK1_func).to_dict()
-
+        squash = AutoSquash(gateset)
         assert squash.apply(circ)
 
-    with pytest.raises(NoAutoRebase) as tk_err:
-        _ = auto_squash_pass({OpType.H, OpType.T})
+    with pytest.raises(RuntimeError) as tk_err:
+        _ = AutoSquash({OpType.H, OpType.T})
     assert "TK1" in str(tk_err.value)
 
 
@@ -1239,8 +1243,8 @@ def test_round_angles() -> None:
 
 
 def test_auto_rebase_with_swap_cx() -> None:
-    swap_pass = auto_rebase_pass({OpType.CX, OpType.PhasedX, OpType.Rz}, True)
-    no_swap_pass = auto_rebase_pass({OpType.CX, OpType.PhasedX, OpType.Rz}, False)
+    swap_pass = AutoRebase({OpType.CX, OpType.PhasedX, OpType.Rz}, True)
+    no_swap_pass = AutoRebase({OpType.CX, OpType.PhasedX, OpType.Rz}, False)
 
     c_swap = Circuit(2).ISWAPMax(0, 1)
     swap_pass.apply(c_swap)
@@ -1302,8 +1306,8 @@ def test_auto_rebase_with_swap_cx() -> None:
 
 
 def test_auto_rebase_with_swap_zzmax() -> None:
-    swap_pass = auto_rebase_pass({OpType.ZZMax, OpType.PhasedX, OpType.Rz}, True)
-    no_swap_pass = auto_rebase_pass({OpType.ZZMax, OpType.PhasedX, OpType.Rz}, False)
+    swap_pass = AutoRebase({OpType.ZZMax, OpType.PhasedX, OpType.Rz}, True)
+    no_swap_pass = AutoRebase({OpType.ZZMax, OpType.PhasedX, OpType.Rz}, False)
 
     c_swap = Circuit(2).ISWAPMax(0, 1)
     swap_pass.apply(c_swap)
@@ -1372,8 +1376,8 @@ def test_auto_rebase_with_swap_zzmax() -> None:
 
 
 def test_auto_rebase_with_swap_zzphase() -> None:
-    swap_pass = auto_rebase_pass({OpType.ZZPhase, OpType.PhasedX, OpType.Rz}, True)
-    no_swap_pass = auto_rebase_pass({OpType.ZZPhase, OpType.PhasedX, OpType.Rz}, False)
+    swap_pass = AutoRebase({OpType.ZZPhase, OpType.PhasedX, OpType.Rz}, True)
+    no_swap_pass = AutoRebase({OpType.ZZPhase, OpType.PhasedX, OpType.Rz}, False)
 
     c_swap = Circuit(2).ISWAPMax(0, 1)
     swap_pass.apply(c_swap)
@@ -1446,8 +1450,8 @@ def test_auto_rebase_with_swap_zzphase() -> None:
 
 
 def test_auto_rebase_with_swap_tk2() -> None:
-    swap_pass = auto_rebase_pass({OpType.TK2, OpType.PhasedX, OpType.Rz}, True)
-    no_swap_pass = auto_rebase_pass({OpType.TK2, OpType.PhasedX, OpType.Rz}, False)
+    swap_pass = AutoRebase({OpType.TK2, OpType.PhasedX, OpType.Rz}, True)
+    no_swap_pass = AutoRebase({OpType.TK2, OpType.PhasedX, OpType.Rz}, False)
     c_swap = Circuit(2).SWAP(0, 1)
     swap_pass.apply(c_swap)
     assert c_swap.n_gates == 0
@@ -1471,6 +1475,23 @@ def test_selectively_decompose_boxes() -> None:
     assert cmds[0].op.type == OpType.Unitary1qBox
     assert cmds[1].op.type == OpType.Unitary1qBox
     assert cmds[2].op.type == OpType.CircBox
+
+
+def test_clifford_push() -> None:
+    c_x: Circuit = Circuit(2, 2).X(0).measure_all()
+    assert not Transform.PushCliffordsThroughMeasures().apply(c_x)
+    c_cx_x: Circuit = Circuit(2, 2).X(0).CX(0, 1).X(0).measure_all()
+    assert Transform.PushCliffordsThroughMeasures().apply(c_cx_x)
+    assert c_cx_x.n_1qb_gates() == 0
+    assert c_cx_x.n_2qb_gates() == 0
+    coms = c_cx_x.get_commands()
+    assert len(coms) == 8
+    assert coms[2].op.type == OpType.SetBits
+    assert coms[3].op.type == OpType.ExplicitModifier
+    assert coms[4].op.type == OpType.ExplicitModifier
+    assert coms[5].op.type == OpType.ExplicitModifier
+    assert coms[6].op.type == OpType.ExplicitModifier
+    assert coms[7].op.type == OpType.CopyBits
 
 
 if __name__ == "__main__":
@@ -1504,3 +1525,4 @@ if __name__ == "__main__":
     test_auto_rebase_with_swap_zzphase()
     test_auto_rebase_with_swap_tk2()
     test_selectively_decompose_boxes()
+    test_clifford_push()

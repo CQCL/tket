@@ -119,6 +119,10 @@ SCENARIO("Using Boxes", "[boxes]") {
     Eigen::MatrixXcd uc0 = tket_sim::get_unitary(c0);
     Eigen::MatrixXcd uc0a = tket_sim::get_unitary(c0a);
     REQUIRE((uc0 - uc0a).cwiseAbs().sum() < ERR_EPS);
+    // Test circuit name access
+    CircBox cbox(Circuit(2));
+    cbox.set_circuit_name("test_box");
+    REQUIRE(cbox.get_circuit_name() == "test_box");
   }
   GIVEN("CircBox with non-default units") {
     Circuit c0;
@@ -929,16 +933,21 @@ SCENARIO("QControlBox", "[boxes]") {
     REQUIRE(*c == d);
   }
 
-  GIVEN("controlled phase_gadget") {
+  GIVEN("controlled phase_gadget, numerical") {
     Expr a;
-    WHEN("numerical") { a = 0.3; }
-    WHEN("symbolic") {
-      Sym s = SymEngine::symbol("a");
-      a = Expr(s);
-    }
+    a = 0.3;
     QControlBox qbox(get_op_ptr(OpType::PhaseGadget, {a}, 2));
     std::shared_ptr<Circuit> c = qbox.to_circuit();
     REQUIRE(c->count_gates(OpType::CX) == 4);
+  }
+  GIVEN("controlled phase_gadget, symbolic") {
+    Expr a;
+    Sym s = SymEngine::symbol("a");
+    a = Expr(s);
+    QControlBox qbox(get_op_ptr(OpType::PhaseGadget, {a}, 2));
+    std::shared_ptr<Circuit> c = qbox.to_circuit();
+    REQUIRE(c->count_gates(OpType::CX) == 2);
+    REQUIRE(c->count_gates(OpType::CRz) == 1);
   }
   GIVEN("controlled PauliExpBox") {
     // https://github.com/CQCL/tket/issues/1109

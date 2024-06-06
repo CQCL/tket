@@ -25,6 +25,7 @@
 #include "tket/Circuit/Command.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
+#include "tket/Gate/SymTable.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeFunctions.hpp"
@@ -269,8 +270,8 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
         {std::make_shared<LexiLabellingMethod>(),
          std::make_shared<LexiRouteRoutingMethod>()});
 
-    PassPtr all_passes = SynthesiseHQS() >> SynthesiseOQC() >>
-                         SynthesiseUMD() >> SynthesiseTK() >> cp_route;
+    PassPtr all_passes =
+        SynthesiseOQC() >> SynthesiseUMD() >> SynthesiseTK() >> cp_route;
     REQUIRE(all_passes->apply(cu));
     REQUIRE(cu.check_all_predicates());
   }
@@ -445,9 +446,9 @@ SCENARIO("Construct sequence pass") {
   }
 }
 
-SCENARIO("Construct invalid sequence passes from vector") {
+SCENARIO("Construct sequence pass that is invalid in strict mode") {
   std::vector<PassPtr> invalid_pass_to_combo{
-      SynthesiseHQS(), SynthesiseOQC(), SynthesiseUMD(), SynthesiseTK()};
+      SynthesiseOQC(), SynthesiseUMD(), SynthesiseTK()};
   for (const PassPtr& pass : invalid_pass_to_combo) {
     std::vector<PassPtr> passes = {pass};
     OpTypeSet ots = {OpType::CX};
@@ -458,6 +459,12 @@ SCENARIO("Construct invalid sequence passes from vector") {
         ppm, Transforms::id, pc, nlohmann::json{});
     passes.push_back(compass);
     REQUIRE_THROWS_AS((void)SequencePass(passes), IncompatibleCompilerPasses);
+    GIVEN("A circuit compilable with non-strict SequencePass") {
+      PassPtr sequence = std::make_shared<SequencePass>(passes, false);
+      Circuit circ(2);
+      CompilationUnit cu(circ);
+      REQUIRE_NOTHROW(sequence->apply(cu));
+    }
   }
 }
 
@@ -618,7 +625,7 @@ SCENARIO("gen_placement_pass test") {
     Circuit circ(4);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {2, 1}, {2, 3}});
     Architecture arc(
-        std::vector<std::pair<unsigned, unsigned>>{{0, 1}, {1, 2}, {3, 2}});
+        {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(3), Node(2)}});
     Placement::Ptr plptr = std::make_shared<Placement>(arc);
     PassPtr pp_place = gen_placement_pass(plptr);
     CompilationUnit cu(circ);
@@ -634,7 +641,7 @@ SCENARIO("gen_placement_pass test") {
     Circuit circ(4);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {2, 1}, {2, 3}});
     Architecture arc(
-        std::vector<std::pair<unsigned, unsigned>>{{0, 1}, {1, 2}, {3, 2}});
+        {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(3), Node(2)}});
     Placement::Ptr plptr = std::make_shared<GraphPlacement>(arc);
     PassPtr pp_place = gen_placement_pass(plptr);
     CompilationUnit cu(circ);
@@ -1374,7 +1381,7 @@ SCENARIO("Commute measurements to the end of a circuit") {
     test.add_op<unsigned>(OpType::CX, {0, 2});
 
     Architecture line(
-        std::vector<std::pair<unsigned, unsigned>>{{0, 1}, {1, 2}, {2, 3}});
+        {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
     Placement::Ptr pp = std::make_shared<Placement>(line);
     PassPtr route_pass = gen_full_mapping_pass(
         line, pp,
@@ -1387,6 +1394,17 @@ SCENARIO("Commute measurements to the end of a circuit") {
     OpType type = final_command.get_op_ptr()->get_type();
     REQUIRE(type == OpType::Measure);
     // REQUIRE(final_command.get_args().front() == Node(3));
+  }
+  GIVEN("Measures targeting the same bit") {
+    // https://github.com/CQCL/tket/issues/1305
+    Circuit c(4, 1);
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_measure(3, 0);
+    c.add_measure(1, 0);
+    c.add_op<unsigned>(OpType::X, {1});
+    c.add_op<unsigned>(OpType::CCX, {1, 3, 2});
+    CompilationUnit cu(c);
+    CHECK_FALSE(try_delay_pass->apply(cu));
   }
 }
 
@@ -1419,6 +1437,15 @@ SCENARIO("RemoveRedundancies and phase") {
     REQUIRE(c1.get_commands().size() == 0);
     REQUIRE(equiv_val(c1.get_phase(), 1.));
   }
+  GIVEN("A circuit with a Phase gate") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::Phase, 0.25, {});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    CompilationUnit cu(c);
+    REQUIRE(RemoveRedundancies()->apply(cu));
+    REQUIRE(cu.get_circ_ref().n_gates() == 2);
+  }
 }
 
 // Check whether a circuit maps all basis states to basis states.
@@ -1435,8 +1462,11 @@ static bool is_classical_map(const Circuit& c) {
 SCENARIO("CX mapping pass") {
   // TKET-1045
   GIVEN("A device with a linear architecture") {
-    Architecture line(std::vector<std::pair<unsigned, unsigned>>{
-        {0, 1}, {1, 2}, {2, 3}, {3, 4}});
+    Architecture line(
+        {{Node(0), Node(1)},
+         {Node(1), Node(2)},
+         {Node(2), Node(3)},
+         {Node(3), Node(4)}});
 
     // Noise-aware placement and rebase
     Placement::Ptr placer = std::make_shared<GraphPlacement>(line);
@@ -2043,5 +2073,137 @@ SCENARIO("PauliExponentials") {
     REQUIRE(test_unitary_comparison(c, cu.get_circ_ref(), true));
   }
 }
+
+SCENARIO("GPI, GPI2 and AAMS operations") {
+  GIVEN("A circuit") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::GPI, 0.1, {0});
+    c.add_op<unsigned>(OpType::GPI2, 0.2, {1});
+    c.add_op<unsigned>(OpType::AAMS, {0.3, 0.4, 0.5}, {0, 1});
+    c.add_op<unsigned>(OpType::AAMS, {0.6, 0.7, 0.8}, {1, 2});
+    c.add_op<unsigned>(OpType::GPI, 0.1, {1});
+    c.add_op<unsigned>(OpType::GPI2, 0.2, {2});
+    Circuit c_d = c.dagger();
+    Circuit c2 = c;
+    c2.append(c_d);
+    Eigen::MatrixXcd u = tket_sim::get_unitary(c2);
+    REQUIRE(u.isApprox(Eigen::MatrixXcd::Identity(8, 8)));
+    Circuit c_t = c.transpose();
+    CHECK(c_t.n_gates() == c.n_gates());
+    CompilationUnit cu(c);
+    CHECK(FullPeepholeOptimise(true, OpType::CX)->apply(cu));
+    REQUIRE(test_unitary_comparison(c, cu.get_circ_ref()));
+    CompilationUnit cu1(c);
+    CHECK(gen_rebase_pass_via_tk2(
+              {OpType::PhasedX, OpType::Rz, OpType::CX},
+              CircPool::TK2_using_CX_and_swap, CircPool::tk1_to_PhasedXRz)
+              ->apply(cu1));
+    REQUIRE(test_unitary_comparison(c, cu1.get_circ_ref()));
+  }
+  GIVEN("Rebasing a symbolic AAAS gate") {
+    Circuit circ(2);
+    auto a = SymTable::fresh_symbol("a");
+    auto b = SymTable::fresh_symbol("b");
+    auto c = SymTable::fresh_symbol("c");
+    auto ea = Expr(a);
+    auto eb = Expr(b);
+    auto ec = Expr(c);
+    SymEngine::map_basic_basic sub_map{
+        std::make_pair(a, Expr(0.1)), std::make_pair(b, Expr(0.2)),
+        std::make_pair(c, Expr(0.3))};
+    circ.add_op<unsigned>(OpType::AAMS, {Expr(a), Expr(b), Expr(c)}, {0, 1});
+    CompilationUnit cu(circ);
+    CHECK(gen_rebase_pass_via_tk2(
+              {OpType::PhasedX, OpType::Rz, OpType::CX},
+              CircPool::TK2_using_CX_and_swap, CircPool::tk1_to_PhasedXRz)
+              ->apply(cu));
+    Circuit circ1 = cu.get_circ_ref();
+    circ1.symbol_substitution(sub_map);
+    Circuit circ2(2);
+    circ2.add_op<unsigned>(OpType::AAMS, {0.1, 0.2, 0.3}, {0, 1});
+    REQUIRE(test_unitary_comparison(circ1, circ2));
+  }
+  GIVEN("A circuit made of Clifford gates") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::GPI, 0.25, {0});
+    c.add_op<unsigned>(OpType::GPI2, 0.5, {1});
+    c.add_op<unsigned>(OpType::AAMS, {0, 0.1, 0.2}, {0, 1});
+    c.add_op<unsigned>(OpType::AAMS, {1., 0.25, 0.75}, {1, 2});
+    c.add_op<unsigned>(OpType::AAMS, {0.5, 0.5, 1.5}, {0, 1});
+    REQUIRE(CliffordCircuitPredicate().verify(c));
+  }
+  GIVEN("A circuit with a non-Clifford AAMS gate") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::AAMS, {1., 0, 0.1}, {0, 1});
+    REQUIRE_FALSE(CliffordCircuitPredicate().verify(c));
+  }
+}
+
+SCENARIO("AutoRebase") {
+  GIVEN("Test rebase") {
+    std::vector<std::pair<std::unordered_set<OpType>, bool>> params = {
+        {{OpType::CX, OpType::TK1}, false},
+        {{OpType::CX, OpType::U3}, false},
+        {{OpType::ZZMax, OpType::X, OpType::SX, OpType::Rz}, false},
+        {{OpType::XXPhase, OpType::PhasedX, OpType::Rz}, false},
+        {{OpType::ECR, OpType::Rx, OpType::Rz}, false},
+        {{OpType::CZ, OpType::Rx, OpType::Ry}, false},
+        {{OpType::AAMS, OpType::Rz, OpType::H}, false},
+        {{OpType::TK2, OpType::Rz, OpType::SX}, false},
+        {{OpType::TK2, OpType::GPI, OpType::GPI2}, true},
+        {{OpType::TK2, OpType::CX, OpType::X, OpType::TK1}, true}};
+    Circuit tk2_circ(2);
+    tk2_circ.add_op<unsigned>(OpType::TK1, {0.1, 0.2, 0.3}, {0});
+    tk2_circ.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {0, 1});
+    CompilationUnit tk2_cu(tk2_circ);
+    Circuit cx_circ(2);
+    cx_circ.add_op<unsigned>(OpType::TK1, {0.1, 0.2, 0.3}, {0});
+    cx_circ.add_op<unsigned>(OpType::CX, {0, 1});
+    CompilationUnit cx_cu(cx_circ);
+    for (const auto& pair : params) {
+      gen_auto_rebase_pass(pair.first, pair.second)
+          ->apply(tk2_cu, SafetyMode::Audit);
+      gen_auto_rebase_pass(pair.first, pair.second)
+          ->apply(cx_cu, SafetyMode::Audit);
+      REQUIRE(test_unitary_comparison(tk2_circ, tk2_cu.get_circ_ref()));
+      REQUIRE(test_unitary_comparison(cx_circ, cx_cu.get_circ_ref()));
+    }
+  }
+  GIVEN("Test exception") {
+    REQUIRE_THROWS_AS(
+        gen_auto_rebase_pass({OpType::CX, OpType::Rz}, false), Unsupported);
+    REQUIRE_THROWS_AS(
+        gen_auto_rebase_pass({OpType::CRz, OpType::TK1}, false), Unsupported);
+    REQUIRE_THROWS_AS(gen_auto_rebase_pass({}, false), Unsupported);
+  }
+}
+
+SCENARIO("AutoSquash") {
+  GIVEN("Test squash") {
+    Circuit c1(1);
+    c1.add_op<unsigned>(OpType::Rx, 0.2, {0});
+    c1.add_op<unsigned>(OpType::Rz, 0.4, {0});
+    CompilationUnit cu1(c1);
+    REQUIRE(gen_auto_squash_pass({OpType::TK1, OpType::Rz, OpType::Rx})
+                ->apply(cu1));
+    REQUIRE(cu1.get_circ_ref().n_gates() == 1);
+    REQUIRE(cu1.get_circ_ref().count_gates(OpType::TK1) == 1);
+    REQUIRE(test_unitary_comparison(c1, cu1.get_circ_ref()));
+    // RzPhasedX squash
+    Circuit c2(1);
+    c2.add_op<unsigned>(OpType::TK1, {0.1, 0.2, 0.3}, {0});
+    CompilationUnit cu2(c2);
+    REQUIRE(gen_auto_squash_pass({OpType::PhasedX, OpType::Rz})->apply(cu2));
+    REQUIRE(cu2.get_circ_ref().n_gates() == 2);
+    REQUIRE(cu2.get_circ_ref().count_gates(OpType::PhasedX) == 1);
+    REQUIRE(cu2.get_circ_ref().count_gates(OpType::Rz) == 1);
+    REQUIRE(test_unitary_comparison(c2, cu2.get_circ_ref()));
+  }
+  GIVEN("Test exception") {
+    REQUIRE_THROWS_AS(gen_auto_squash_pass({OpType::Rx}), Unsupported);
+    REQUIRE_THROWS_AS(gen_auto_squash_pass({}), Unsupported);
+  }
+}
+
 }  // namespace test_CompilerPass
 }  // namespace tket

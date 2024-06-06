@@ -124,6 +124,7 @@ add_executable(test-tket
     src/Circuit/test_DummyBox.cpp
     src/test_UnitaryTableau.cpp
     src/test_ChoiMixTableau.cpp
+    src/test_Diagonalisation.cpp
     src/test_PhasePolynomials.cpp
     src/test_PauliGraph.cpp
     src/PauliGraphRefactor/test_PauliGraph.cpp
@@ -169,6 +170,7 @@ add_executable(test-tket
     src/test_SteinerForest.cpp
     src/test_wasm.cpp
     src/test_RoundAngles.cpp
+    src/test_GreedyPauli.cpp
     src/ZX/test_ZXDiagram.cpp
     src/ZX/test_ZXAxioms.cpp
     src/ZX/test_ZXSimp.cpp

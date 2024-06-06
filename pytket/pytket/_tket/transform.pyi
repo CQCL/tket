@@ -159,6 +159,15 @@ class Transform:
         It is not recommended to use this transformation with symbolic expressions, as in certain cases a blow-up in symbolic expression sizes may occur.
         """
     @staticmethod
+    def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3) -> Transform:
+        """
+        Convert a circuit into a graph of Pauli gadgets to account for commutation and phase folding, and resynthesises them using a greedy algorithm adapted from arxiv.org/abs/2103.08602. The method for synthesising the final Clifford operator is adapted from arxiv.org/abs/2305.10966.
+        
+        :param discount_rate: Rate used to discount the cost impact from gadgets that are further away. Default to 0.7.
+        :param depth_weight:  Degree of depth optimisation. Default to 0.3.
+        :return: a pass to perform the simplification
+        """
+    @staticmethod
     @typing.overload
     def KAKDecomposition(target_2qb_gate: pytket._tket.circuit.OpType = pytket._tket.circuit.OpType.CX, cx_fidelity: float = 1.0, allow_swaps: bool = True) -> Transform:
         """
@@ -223,6 +232,11 @@ class Transform:
         Fast optimisation pass, performing basic simplifications. Works on any circuit, giving the result in TK1 and TK2 gates. Preserves connectivity of circuit.
         """
     @staticmethod
+    def PushCliffordsThroughMeasures() -> Transform:
+        """
+        Derives a new set of end-of-Circuit measurement operators by acting on end-of-Circuit measurements with a Clifford subcircuit. The new set of measurement operators is necessarily commuting and is implemented by adding a new mutual diagonalisation Clifford subcirciuit to the end of the Circuit and implementing the remaining diagonal measurement operators by measuring and permuting the output.
+        """
+    @staticmethod
     def RebaseToCirq() -> Transform:
         """
         Rebase from any gate set into PhasedX, Rz, CZ.
@@ -231,6 +245,11 @@ class Transform:
     def RebaseToCliffordSingles() -> Transform:
         """
         Replace all single-qubit unitary gates outside the set {Z, X, S, V} that are recognized as Clifford operations with an equivalent sequence of gates from that set.
+        """
+    @staticmethod
+    def RebaseToIonQ() -> Transform:
+        """
+        Rebase from any gate set into the gate set supported by IonQ (GPI, GPI2, AAMS).
         """
     @staticmethod
     def RebaseToProjectQ() -> Transform:
@@ -298,7 +317,7 @@ class Transform:
     @staticmethod
     def round_angles(n: int, only_zeros: bool = False) -> Transform:
         """
-        :param only_zeros: if True, only round angles less than :math:`\pi / 2^{n+1}` to zero, leave other angles alone (default False)
+        :param only_zeros: if True, only round angles less than :math:`\\pi / 2^{n+1}` to zero, leave other angles alone (default False)
         """
     @staticmethod
     def sequence(sequence: typing.Sequence[Transform]) -> Transform:

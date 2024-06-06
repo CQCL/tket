@@ -260,6 +260,33 @@ enum class OpType {
   U1,
 
   /**
+   * \f$ \mathrm{GPI}(\phi) = \left[ \begin{array}{cc}
+   * 0 & e^{-i\pi\phi} \\ e^{i\pi\phi} & 0
+   * \end{array} \right] \f$
+   */
+  GPI,
+
+  /**
+   * \f$ \mathrm{GPI2}(\phi) = \frac{1}{\sqrt 2} \left[ \begin{array}{cc}
+   * 1 & -ie^{-i\pi\phi} \\ -ie^{i\pi\phi} & 1
+   * \end{array} \right] \f$
+   */
+  GPI2,
+
+  /**
+   * \f$ \mathrm{AAMS}(\theta, \phi_0, \phi_1) = \left[ \begin{array}{cccc}
+   * \cos\frac{\pi\theta}{2} & 0 & 0 &
+   * -ie^{-i\pi(\phi_0+\phi_1)}\sin\frac{\pi\theta}{2} \\
+   * 0 & \cos\frac{\pi\theta}{2} &
+   * -ie^{i\pi(\phi_1-\phi_0)}\sin\frac{\pi\theta}{2} & 0 \\
+   * 0 & -ie^{i\pi(\phi_0-\phi_1)}\sin\frac{\pi\theta}{2} &
+   * \cos\frac{\pi\theta}{2} & 0 \\
+   * -ie^{i\pi(\phi_0+\phi_1)}\sin\frac{\pi\theta}{2} & 0 & 0 &
+   * \cos\frac{\pi\theta}{2} \end{array} \right] \f$
+   */
+  AAMS,
+
+  /**
    * \f$ \mathrm{TK1}(\alpha, \beta, \gamma) = \mathrm{Rz}(\alpha)
    * \mathrm{Rx}(\beta) \mathrm{Rz}(\gamma) \f$
    */
@@ -580,6 +607,20 @@ enum class OpType {
    * The phase parameter is defined modulo \f$ 4 \f$.
    */
   CnRy,
+
+  /**
+   * Multiply-controlled \ref OpType::Rx
+   *
+   * The phase parameter is defined modulo \f$ 4 \f$.
+   */
+  CnRx,
+
+  /**
+   * Multiply-controlled \ref OpType::Rz
+   *
+   * The phase parameter is defined modulo \f$ 4 \f$.
+   */
+  CnRz,
 
   /**
    * Multiply-controlled \ref OpType::X

@@ -1,0 +1,109 @@
+name: Automated Benchmarks
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+
+  build_wheels:
+    name: Build macos wheels
+    runs-on: macos-14
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: '0'
+
+    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.11
+
+    - name: Install conan
+      uses: turtlebrowser/get-conan@v1.2
+
+    - name: Set up conan
+      run: |
+        conan profile detect
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/macos-14
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+
+    - name: Build tket C++
+      run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
+
+    - name: Build wheel
+      run: |
+        conan create recipes/pybind11
+        conan create recipes/pybind11_json/all --version 0.2.14
+        cd pytket
+        # Ensure wheels are compatible with MacOS 12.0 and later:
+        export WHEEL_PLAT_NAME=macosx_12_0_arm64
+        python3.11 -m pip install -U pip build delocate
+        python3.11 -m build
+        delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
+
+    - name: Save Wheel
+      uses: actions/upload-artifact@v4
+      with:
+        name: pytket_wheel
+        path: wheelhouse/
+
+  compile-and-compare:
+    name: Compile and compare
+    runs-on: macos-14
+    needs: build_wheels
+
+    steps:
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Download wheel
+        uses: actions/download-artifact@v4
+        with:
+          name: pytket_wheel
+
+      - name: Install dependencies
+        run: |
+          pip install pytket-*.whl
+          pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket_benchmarking
+          pip list
+
+      - name: Checkout pytket-benchmarking-store
+        uses: actions/checkout@v4
+        with:
+          repository: CQCL/pytket-benchmarking-store
+          path: pytket-benchmarking-store
+
+      - name: Perform Compilation
+        run: |
+          pytket_benchmarking compile QiskitIBMQ pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled
+          pytket_benchmarking compile PytketIBMQ pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled
+
+      - name: Save compiled circuits
+        uses: actions/upload-artifact@v4
+        with:
+          name: automated_benchmarks_compiled
+          path: automated_benchmarks_compiled/
+
+      - name: Calculate percentage better
+        run: echo "RETURN_TEST=$(pytket_benchmarking percentage-better pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled PytketIBMQ)" >> $GITHUB_ENV
+
+      - name: Post to a Slack channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: 'G01CP0YFFA7'
+          slack-message: '${{ env.RETURN_TEST }}'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.PYTKET_BENCHMARKING_SLACK_BOT_TOKEN }}
+          RETURN_TEST: ${{ env.RETURN_TEST }}

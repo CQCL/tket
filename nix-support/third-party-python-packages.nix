@@ -4,8 +4,8 @@ self: super: {
     src = super.fetchFromGitHub {
       owner = "pybind";
       repo = "pybind11_json";
-      rev = "0.2.13";
-      sha256 = "sha256:Kl/QflV2bBoH72/LW03K8JDlhBF+DYYXL47A5s1nmTw=";
+      rev = "0.2.14";
+      sha256 = "sha256-6L675DsfafzRv0mRR3b0eUFFjUpll3jCPoBAAffk7U0=";
     };
     nativeBuildInputs = [ super.cmake ];
     buildInputs = [ super.python3Packages.pybind11 super.nlohmann_json ];
@@ -19,15 +19,17 @@ self: super: {
       sha256 = "sha256:g/QA5CpAR3exRDgVQMnXGIH8bEGtwGFBjjSblbdXRkU=";
     };
   };
-  lark-parser = super.python3.pkgs.buildPythonPackage {
-    pname = "lark-parser";
-    version = "0.12.0";
+  lark = super.python3.pkgs.buildPythonPackage {
+    pname = "lark";
+    version = "1.1.9";
+    format = "pyproject";
     src = super.fetchFromGitHub {
       owner = "lark-parser";
       repo = "lark";
-      rev = "refs/tags/0.12.0";
-      hash = "sha256-zcMGCn3ixD3dJg3GlC/ijs+U1JN1BodHLTXZc/5UR7Y=";
+      rev = "refs/tags/1.1.9";
+      hash = "sha256:pWLKjELy10VNumpBHjBYCO2TltKsZx1GhQcGMHsYJNk=";
     };
+    nativeBuildInputs = with super.python3Packages; [ setuptools ];
     doCheck = false;
   };
   types-pkg_resources = let

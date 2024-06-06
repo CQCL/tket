@@ -214,10 +214,12 @@ static bool is_apriori_not_detachable(
   const OpDesc op_descriptor =
       circuit.get_Op_ptr_from_Vertex(vertex)->get_desc();
 
-  return (not op_descriptor.is_gate()) or  // not a gate
-         circuit.n_out_edges(vertex) ==
-             0 or  // vertex is boundary or already detached
-         circuit.n_in_edges(vertex) == 0;  // vertex is boundary
+  if (!op_descriptor.is_gate()) return true;
+  if (op_descriptor.type() == OpType::Phase) return false;
+  if (circuit.n_out_edges(vertex) == 0 || circuit.n_in_edges(vertex) == 0) {
+    return true;  // vertex is boundary or already detached
+  }
+  return false;
 }
 
 static bool try_detach_vertex(

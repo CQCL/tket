@@ -11,7 +11,7 @@ on:
 jobs:
   build_Linux_wheels:
     name: Build manylinux
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python3-version: ['10', '11', '12']
@@ -62,8 +62,8 @@ jobs:
         name: Linux_aarch64_3.${{ matrix.python3-version }}_wheel
         path: wheelhouse/
 
-  build_macos_wheels:
-    name: Build macos wheels
+  build_macos_x86_wheels:
+    name: Build macos x86 wheels
     runs-on: macos-12
     strategy:
       matrix:
@@ -92,7 +92,7 @@ jobs:
     - name: Build wheel
       run: |
         conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
+        conan create recipes/pybind11_json/all --version 0.2.14
         cd pytket
         # Ensure wheels are compatible with MacOS 12.0 and later:
         export WHEEL_PLAT_NAME=macosx_12_0_x86_64
@@ -101,12 +101,14 @@ jobs:
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
     - uses: actions/upload-artifact@v4
       with:
-        name: MacOS_${{ matrix.python-version }}_wheel
+        name: MacOS_x86_${{ matrix.python-version }}_wheel
         path: wheelhouse/
 
-  build_macos_M1_wheels:
-    name: Build macos (M1) wheels
-    runs-on: macos-13-xlarge
+  build_macos_arm64_wheels:
+    name: Build macos arm64 wheels
+    runs-on: macos-14
+    env:
+        MACOSX_DEPLOYMENT_TARGET: '12.0'
     strategy:
       matrix:
         python-version: ['3.10', '3.11', '3.12']
@@ -125,16 +127,16 @@ jobs:
       run: |
         conan profile detect
         DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/macos-13-xlarge
+        PROFILE_PATH=./conan-profiles/macos-14
         diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
         cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: Build tket C++
-      run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
+      run: conan create tket --user tket --channel stable --build="*" -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
     - name: Build wheel
       run: |
         conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
+        conan create recipes/pybind11_json/all --version 0.2.14
         cd pytket
         # Ensure wheels are compatible with MacOS 12.0 and later:
         export WHEEL_PLAT_NAME=macosx_12_0_arm64
@@ -143,7 +145,7 @@ jobs:
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
     - uses: actions/upload-artifact@v4
       with:
-        name: MacOS_M1_${{ matrix.python-version }}_wheel
+        name: MacOS_arm64_${{ matrix.python-version }}_wheel
         path: wheelhouse/
 
   build_Windows_wheels:
@@ -157,6 +159,10 @@ jobs:
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    - name: Select Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -170,14 +176,10 @@ jobs:
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: Build tket
       run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
     - name: Build wheel
       run: |
         conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
+        conan create recipes/pybind11_json/all --version 0.2.14
         cd pytket
         python -m pip install -U pip build
         python -m build --outdir "${{ github.workspace }}/wheelhouse"
@@ -189,7 +191,7 @@ jobs:
   test_linux_wheels:
     name: Test linux wheels
     needs: build_Linux_wheels
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python3-version: ['10', '11', '12']
@@ -215,7 +217,7 @@ jobs:
       - name: Run tests
         run: cd tket/pytket/tests && pytest --ignore=simulator/
 
-  test_Linux_aarch64_wheels:
+  test_linux_aarch64_wheels:
     name: Test linux aarch64 wheels
     needs: build_Linux_aarch64_wheels
     runs-on: 'buildjet-4vcpu-ubuntu-2204-arm'
@@ -252,9 +254,9 @@ jobs:
     - name: Run tests
       run: cd tket/pytket/tests && pytest --ignore=simulator/
 
-  test_macos_wheels:
-    name: Test macos wheels
-    needs: build_macos_wheels
+  test_macos_x86_wheels:
+    name: Test macos x86 wheels
+    needs: build_macos_x86_wheels
     strategy:
       matrix:
         os: ['macos-12', 'macos-13']
@@ -268,7 +270,7 @@ jobs:
     - name: Download wheels
       uses: actions/download-artifact@v4
       with:
-        name: MacOS_${{ matrix.python-version }}_wheel
+        name: MacOS_x86_${{ matrix.python-version }}_wheel
         path: wheelhouse/
     - uses: actions/checkout@v4
       with:
@@ -282,13 +284,14 @@ jobs:
         pip install -r requirements.txt
         pytest --ignore=simulator/
 
-  test_macos_M1_wheels:
-    name: Test macos (M1) wheels
-    needs: build_macos_M1_wheels
-    runs-on: macos-13-xlarge
+  test_macos_arm64_wheels:
+    name: Test macos arm64 wheels
+    needs: build_macos_arm64_wheels
     strategy:
       matrix:
+        os: ['macos-13-xlarge', 'macos-14']
         python-version: ['3.10', '3.11', '3.12']
+    runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
@@ -297,7 +300,7 @@ jobs:
     - name: Download wheels
       uses: actions/download-artifact@v4
       with:
-        name: MacOS_M1_${{ matrix.python-version }}_wheel
+        name: MacOS_arm64_${{ matrix.python-version }}_wheel
         path: wheelhouse/
     - uses: actions/checkout@v4
       with:
@@ -344,8 +347,8 @@ jobs:
   publish_to_pypi:
     name: Publish to pypi
     if: github.event_name == 'release'
-    needs: [test_linux_wheels, test_linux_aarch64_wheels, test_macos_wheels, test_macos_M1_wheels, test_Windows_wheels]
-    runs-on: ubuntu-22.04
+    needs: [test_linux_wheels, test_linux_aarch64_wheels, test_macos_x86_wheels, test_macos_arm64_wheels, test_Windows_wheels]
+    runs-on: ubuntu-24.04
     steps:
     - name: Download all wheels
       uses: actions/download-artifact@v4

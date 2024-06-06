@@ -30,7 +30,7 @@ template <typename T>
 class UnitRegister {
  public:
   UnitRegister(const std::string &name, const std::size_t size)
-      : name_(name), size_(size){};
+      : name_(name), size_(size) {};
 
   std::string name() const { return name_; }
   std::size_t size() const { return size_; }
