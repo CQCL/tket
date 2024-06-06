@@ -115,6 +115,7 @@
           "enum": [
             "RebaseCustom",
             "RebaseCustomViaTK2",
+            "AutoRebase",
             "CommuteThroughMultis",
             "DecomposeArbitrarilyControlledGates",
             "DecomposeBoxes",
@@ -130,6 +131,7 @@
             "SynthesiseUMD",
             "SquashTK1",
             "SquashRzPhasedX",
+            "AutoSquash",
             "FlattenRegisters",
             "DelayMeasures",
             "ZZPhaseToRz",
@@ -163,7 +165,8 @@
             "DecomposeTK2",
             "CnXPairwiseDecomposition",
             "RemoveImplicitQubitPermutation",
-            "RoundAngles"
+            "RoundAngles",
+            "GreedyPauliSimp"
           ],
           "description": "The name of the compiler pass. Matches the name of the pytket method used to generate it. List all the passes as enum."
         },
@@ -172,7 +175,14 @@
           "items": {
             "type": "string"
           },
-          "description": "OpTypes of supported gates. Used in \"RebaseCustom\"."
+          "description": "OpTypes of supported gates. Used in \"RebaseCustom\" and \"AutoRebase\"."
+        },
+        "basis_singleqs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "OpTypes of supported single qubit gates. Used in \"SquashCustom\" and \"AutoSquash\""
         },
         "basis_cx_replacement": {
           "$ref": "circuit_v1.json#",
@@ -334,6 +344,14 @@
             "type": "string"
           },
           "description": "opgroups excluded in \"DecomposeBoxes\""
+        },
+        "discount_rate": {
+          "type": "number",
+          "definition": "parameter controlling cost discount in \"GreedyPauliSimp\""
+        },
+        "depth_weight": {
+          "type": "number",
+          "definition": "parameter controlling the degree of depth optimisation in \"GreedyPauliSimp\""
         }
       },
       "required": [
@@ -361,6 +379,22 @@
           "if": {
             "properties": {
               "name": {
+                "const": "AutoRebase"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "basis_allowed",
+              "allow_swaps"
+            ],
+            "maxProperties": 3
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
                 "const": "SquashCustom"
               }
             }
@@ -372,6 +406,21 @@
               "always_squash_symbols"
             ],
             "maxProperties": 4
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "AutoSquash"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "basis_singleqs"
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -814,6 +863,22 @@
             "required": [
               "excluded_types",
               "excluded_opgroups"
+            ],
+            "maxProperties": 3
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "GreedyPauliSimp"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "discount_rate",
+              "depth_weight"
             ],
             "maxProperties": 3
           }

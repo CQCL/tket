@@ -26,6 +26,8 @@ class StatusEnum(Enum):
     QUEUED = "Circuit is queued."
     SUBMITTED = "Circuit has been submitted."
     RUNNING = "Circuit is running."
+    RETRYING = "Circuit is being retried."
+    CANCELLING = "Cancellation has been requested."
     CANCELLED = "Circuit has been cancelled."
     ERROR = "Circuit has errored. Check CircuitStatus.message for error message."
 

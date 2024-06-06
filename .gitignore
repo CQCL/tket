@@ -36,3 +36,5 @@ test-coverage
 
 #nix
 result
+.envrc
+.direnv/

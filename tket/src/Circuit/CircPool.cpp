@@ -153,6 +153,20 @@ const Circuit &CX_using_XXPhase_1() {
   return *C;
 }
 
+const Circuit &CX_using_AAMS() {
+  static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::GPI2, 0.5, {0});
+    c.add_op<unsigned>(OpType::GPI2, 1, {0});
+    c.add_op<unsigned>(OpType::GPI2, 1, {1});
+    c.add_op<unsigned>(OpType::AAMS, {0.5, 0, 0}, {0, 1});
+    c.add_op<unsigned>(OpType::GPI2, -0.5, {0});
+    c.add_phase(-0.25);
+    return c;
+  }());
+  return *C;
+}
+
 const Circuit &CX_VS_CX_reduced() {
   static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
     Circuit c(2);
@@ -1060,6 +1074,12 @@ Circuit TK2_using_TK2_or_swap(
   return tk2;
 }
 
+Circuit TK2_using_TK2(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit tk2(2);
+  tk2.add_op<unsigned>(OpType::TK2, {alpha, beta, gamma}, {0, 1});
+  return tk2;
+}
+
 Circuit TK2_using_ZZMax(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
   Circuit c = TK2_using_CX(alpha, beta, gamma);
@@ -1195,6 +1215,28 @@ Circuit PhasedISWAP_using_CX(const Expr &p, const Expr &t) {
   return c;
 }
 
+Circuit AAMS_using_TK2(const Expr &theta, const Expr &phi0, const Expr &phi1) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::Rz, -phi0, {0});
+  c.add_op<unsigned>(OpType::Rz, -phi1, {1});
+  c.add_op<unsigned>(OpType::TK2, {theta, 0, 0}, {0, 1});
+  c.add_op<unsigned>(OpType::Rz, phi0, {0});
+  c.add_op<unsigned>(OpType::Rz, phi1, {1});
+  return c;
+}
+
+Circuit AAMS_using_CX(const Expr &theta, const Expr &phi0, const Expr &phi1) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::Rz, -phi0, {0});
+  c.add_op<unsigned>(OpType::Rz, -phi1, {1});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_op<unsigned>(OpType::U3, {theta, -0.5, 0.5}, {0});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_op<unsigned>(OpType::Rz, phi0, {0});
+  c.add_op<unsigned>(OpType::Rz, phi1, {1});
+  return c;
+}
+
 Circuit NPhasedX_using_PhasedX(
     unsigned int number_of_qubits, const Expr &alpha, const Expr &beta) {
   Circuit c(number_of_qubits);
@@ -1223,7 +1265,8 @@ static unsigned int_half(const Expr &angle) {
   return lround(eval / 2);
 }
 
-Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+static Circuit _tk1_to_rzsx(
+    const Expr &alpha, const Expr &beta, const Expr &gamma, bool allow_x) {
   Circuit c(1);
   Expr correction_phase = 0;
   if (equiv_0(beta)) {
@@ -1236,13 +1279,21 @@ Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma) {
     if (equiv_0(alpha - gamma)) {
       // a - c = 2m
       // overall operation is (-1)^{m}Rx(2k -1)
-      c.add_op<unsigned>(OpType::SX, {0});
-      c.add_op<unsigned>(OpType::SX, {0});
+      if (allow_x) {
+        c.add_op<unsigned>(OpType::X, {0});
+      } else {
+        c.add_op<unsigned>(OpType::SX, {0});
+        c.add_op<unsigned>(OpType::SX, {0});
+      }
       correction_phase += int_half(alpha - gamma);
     } else {
       c.add_op<unsigned>(OpType::Rz, gamma, {0});
-      c.add_op<unsigned>(OpType::SX, {0});
-      c.add_op<unsigned>(OpType::SX, {0});
+      if (allow_x) {
+        c.add_op<unsigned>(OpType::X, {0});
+      } else {
+        c.add_op<unsigned>(OpType::SX, {0});
+        c.add_op<unsigned>(OpType::SX, {0});
+      }
       c.add_op<unsigned>(OpType::Rz, alpha, {0});
     }
   } else if (equiv_0(beta - 0.5) && equiv_0(alpha) && equiv_0(gamma)) {
@@ -1257,6 +1308,18 @@ Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma) {
     c.add_op<unsigned>(OpType::SX, {0});
     c.add_op<unsigned>(OpType::Rz, alpha, {0});
     correction_phase = int_half(beta - 0.5) - 0.25;
+  } else if (equiv_0(beta + 0.5) && equiv_0(alpha) && equiv_0(gamma)) {
+    // a = 2k, b = 2m-0.5, c = 2n
+    // Rz(2k)Rx(2m - 0.5)Rz(2n) = (-1)^{k+m+n}e^{i \pi /4} X.SX
+    if (allow_x) {
+      c.add_op<unsigned>(OpType::X, {0});
+    } else {
+      c.add_op<unsigned>(OpType::SX, {0});
+      c.add_op<unsigned>(OpType::SX, {0});
+    }
+    c.add_op<unsigned>(OpType::SX, {0});
+    correction_phase =
+        int_half(beta + 0.5) + int_half(alpha) + int_half(gamma) + 0.25;
   } else if (equiv_0(beta + 0.5)) {
     // SX.Rz(2m+0.5).SX = (-1)^{m}e^{i \pi /4} Rz(0.5).SX.Rz(0.5)
     c.add_op<unsigned>(OpType::Rz, gamma + 1, {0});
@@ -1280,6 +1343,14 @@ Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma) {
   c.add_phase(correction_phase);
   c.remove_noops();
   return c;
+}
+
+Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  return _tk1_to_rzsx(alpha, beta, gamma, false);
+}
+
+Circuit tk1_to_rzxsx(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  return _tk1_to_rzsx(alpha, beta, gamma, true);
 }
 
 Circuit tk1_to_rzh(const Expr &alpha, const Expr &beta, const Expr &gamma) {
@@ -1339,6 +1410,23 @@ Circuit tk1_to_rzrx(const Expr &alpha, const Expr &beta, const Expr &gamma) {
   return c;
 }
 
+Circuit tk1_to_rxry(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c(1);
+  c.add_op<unsigned>(OpType::Rx, -0.5, {0});
+  c.add_op<unsigned>(OpType::Ry, gamma, {0});
+  c.add_op<unsigned>(OpType::Rx, beta, {0});
+  c.add_op<unsigned>(OpType::Ry, alpha, {0});
+  c.add_op<unsigned>(OpType::Rx, 0.5, {0});
+  return c;
+}
+
+Circuit tk1_to_u3(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c(1);
+  c.add_op<unsigned>(OpType::U3, {beta, alpha - 0.5, gamma + 0.5}, {0});
+  c.add_phase(-0.5 * (alpha + gamma));
+  return c;
+}
+
 Circuit tk1_to_PhasedXRz(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
   Circuit c(1);
@@ -1352,6 +1440,80 @@ Circuit tk1_to_PhasedXRz(
     c.add_op<unsigned>(OpType::Rz, alpha + gamma, {0});
     c.add_op<unsigned>(OpType::PhasedX, {beta, alpha}, {0});
   }
+  return c;
+}
+
+Circuit Rx_using_GPI(const Expr &theta) {
+  Circuit c(1);
+  c.add_op<unsigned>(OpType::GPI2, 0.5, {0});
+  c.add_op<unsigned>(OpType::GPI, 0.5 * theta, {0});
+  c.add_op<unsigned>(OpType::GPI, 0, {0});
+  c.add_op<unsigned>(OpType::GPI2, -0.5, {0});
+  return c;
+}
+
+Circuit Ry_using_GPI(const Expr &theta) {
+  Circuit c(1);
+  c.add_op<unsigned>(OpType::GPI2, 1, {0});
+  c.add_op<unsigned>(OpType::GPI, 0.5 * theta, {0});
+  c.add_op<unsigned>(OpType::GPI, 0, {0});
+  c.add_op<unsigned>(OpType::GPI2, 0, {0});
+  return c;
+}
+
+Circuit Rz_using_GPI(const Expr &theta) {
+  Circuit c(1);
+  c.add_op<unsigned>(OpType::GPI, -0.5 * theta, {0});
+  c.add_op<unsigned>(OpType::GPI, 0, {0});
+  return c;
+}
+
+Circuit XXPhase_using_AAMS(const Expr &theta) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::AAMS, {theta, 0, 0}, {0, 1});
+  return c;
+}
+
+Circuit YYPhase_using_AAMS(const Expr &theta) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::AAMS, {theta, 0.5, 0.5}, {0, 1});
+  return c;
+}
+
+Circuit ZZPhase_using_AAMS(const Expr &theta) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::GPI2, 0.5, {0});
+  c.add_op<unsigned>(OpType::GPI2, 1, {0});
+  c.add_op<unsigned>(OpType::GPI2, 1, {1});
+  c.add_op<unsigned>(OpType::AAMS, {theta, 0, 0.5}, {0, 1});
+  c.add_op<unsigned>(OpType::GPI2, 0, {1});
+  c.add_op<unsigned>(OpType::GPI2, 0, {0});
+  c.add_op<unsigned>(OpType::GPI2, -0.5, {0});
+  return c;
+}
+
+Circuit TK1_using_GPI(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c(1);
+  c.add_op<unsigned>(OpType::GPI, 0, {0});
+  c.add_op<unsigned>(OpType::GPI, 0.5 * gamma, {0});
+  c.add_op<unsigned>(OpType::GPI2, 0.5, {0});
+  c.add_op<unsigned>(OpType::GPI, 0.5 * beta, {0});
+  c.add_op<unsigned>(OpType::GPI2, 0.5, {0});
+  c.add_op<unsigned>(OpType::GPI, 0.5 * alpha, {0});
+  return c;
+}
+
+Circuit TK2_using_AAMS(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::AAMS, {alpha, 0, 0}, {0, 1});
+  c.add_op<unsigned>(OpType::AAMS, {beta, 0.5, 0.5}, {0, 1});
+  c.add_op<unsigned>(OpType::GPI2, 0.5, {0});
+  c.add_op<unsigned>(OpType::GPI2, 1, {0});
+  c.add_op<unsigned>(OpType::GPI2, 1, {1});
+  c.add_op<unsigned>(OpType::AAMS, {gamma, 0, 0.5}, {0, 1});
+  c.add_op<unsigned>(OpType::GPI2, 0, {1});
+  c.add_op<unsigned>(OpType::GPI2, 0, {0});
+  c.add_op<unsigned>(OpType::GPI2, -0.5, {0});
   return c;
 }
 

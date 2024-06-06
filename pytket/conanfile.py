@@ -32,14 +32,14 @@ class pytketRecipe(ConanFile):
         cmake.install()
 
     def requirements(self):
-        self.requires("tket/1.2.109@tket/stable")
+        self.requires("tket/1.3.4@tket/stable")
         self.requires("tklog/0.3.3@tket/stable")
         self.requires("tkrng/0.3.3@tket/stable")
         self.requires("tkassert/0.3.4@tket/stable")
-        self.requires("tkwsm/0.3.7@tket/stable")
-        self.requires("tktokenswap/0.3.7@tket/stable")
+        self.requires("tkwsm/0.3.8@tket/stable")
+        self.requires("tktokenswap/0.3.8@tket/stable")
         self.requires("symengine/0.11.2")
         self.requires("gmp/6.3.0")
         self.requires("pybind11/2.12.0")
         self.requires("nlohmann_json/3.11.3")
-        self.requires("pybind11_json/0.2.13")
+        self.requires("pybind11_json/0.2.14")

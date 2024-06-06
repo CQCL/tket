@@ -4,6 +4,40 @@ Changelog
 Unreleased
 ----------
 
+Features:
+
+* Add ``OpType.CnRx`` and ``OpType.CnRz``.
+* Add ``AutoRebase`` and ``AutoSquash`` passes.
+  Deprecate ``auto_rebase_pass`` and ``auto_squash_pass``.
+* Add new parameter to `remove_blank_wires` to allow to keep empty classical bits
+
+Fixes:
+
+* Allow barriers when dagger or transpose a circuit.
+* Keep blank classical wires when running `FlattenRelabelRegistersPass`
+* Handle Clifford-angle ``NPhasedX`` gates in Clifford resynthesis.
+
+1.28.0 (May 2024)
+-----------------
+
+Features:
+
+* Update to pytket-circuit-renderer 0.8.
+* Add two new status values for circuits on backends: "CANCELLING" and "RETRYING".
+* Use `lark` package instead of deprecated `lark-parser`.
+* Add ``GreedyPauliSimp`` optimisation pass.
+* Add ``BitWiseOp.ZERO`` and ``BitWiseOp.ONE`` to allow construction of constant
+  conditional expressions.
+* Add target gateset ``(GPI, GPI2, AAMS)`` to ``auto_rebase_pass``.
+* Add ``RebaseToIonQ`` transform.
+
+Fixes:
+
+* Escape underscores in qubit and bit names when converting to latex.
+
+1.27.0 (April 2024)
+-------------------
+
 General:
 
 * Remove deprecated ``SynthesiseHQS`` pass.
@@ -15,6 +49,9 @@ Features:
 * New optimisation ``Transform.PushCliffordsThroughMeasures()`` and pass 
   ``CliffordPushThroughMeasures`` that optimises Clifford subcircuits 
   before end of circuit measurement gates.
+* Add ``OpType.GPI``, ``OpType.GPI2`` and ``OpType.AAMS``.
+* Allow construction of ``SequencePass`` without predicate checks, by means of
+  new ``strict`` argument to the constructor (defaulting to ``True``).
 
 Fixes:
 
@@ -27,7 +64,12 @@ Fixes:
   targets.
 * When adding operations to a circuit, check for invalid wires before adding a
   vertex to the circuit.
-* Restrict scipy version to 1.12.x to avoid quimb-related errors from zx module.
+* Make ``RemoveRedundancies`` pass remove ``OpType.Phase`` gates.
+* Remove support for wasm functions with multiple return values.
+
+Deprecations:
+
+* Deprecate ``SynthesiseOQC`` pass.
 
 1.26.0 (March 2024)
 -------------------
@@ -53,6 +95,7 @@ Fixes:
 
 * Add missing op types to methods for converting Clifford circuits to unitary
   tableaux.
+* Require scipy >= 1.13 and quimb >= 1.8 for ZX module.
 
 1.25.0 (February 2024)
 ----------------------

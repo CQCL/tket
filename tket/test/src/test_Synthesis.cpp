@@ -1646,16 +1646,20 @@ SCENARIO("Test barrier blocks transforms successfully") {
   GIVEN("Controlled gates with barrier") {
     Circuit circ(8);
     circ.add_op<unsigned>(OpType::CnRy, 0.4, {0, 1, 2, 3, 4, 5, 6, 7});
+    circ.add_op<unsigned>(OpType::CnRx, 0.4, {0, 1, 2, 3, 4, 5, 6, 7});
+    circ.add_op<unsigned>(OpType::CnRz, 0.4, {0, 1, 2, 3, 4, 5, 6, 7});
     circ.add_op<unsigned>(OpType::CX, {6, 7});
     circ.add_barrier({0, 1, 2, 3});
     circ.add_op<unsigned>(OpType::CX, {6, 7});
+    circ.add_op<unsigned>(OpType::CnRz, -0.4, {0, 1, 2, 3, 4, 5, 6, 7});
+    circ.add_op<unsigned>(OpType::CnRx, -0.4, {0, 1, 2, 3, 4, 5, 6, 7});
     circ.add_op<unsigned>(OpType::CnRy, -0.4, {0, 1, 2, 3, 4, 5, 6, 7});
     REQUIRE(verify_n_qubits_for_ops(circ));
-    REQUIRE(circ.n_gates() == 5);
+    REQUIRE(circ.n_gates() == 9);
     REQUIRE(Transforms::remove_redundancies().apply(circ));
     REQUIRE(verify_n_qubits_for_ops(circ));
     REQUIRE(circ.depth_by_type(OpType::Barrier) == 1);
-    REQUIRE(circ.n_gates() == 3);  // both CXs removed
+    REQUIRE(circ.n_gates() == 7);  // both CXs removed
     Circuit rep(4);
     const Op_ptr bar =
         std::make_shared<BarrierOp>(op_signature_t(4, EdgeType::Quantum));
@@ -2201,6 +2205,8 @@ SCENARIO("Synthesis with conditional gates") {
   c.add_measure(1, 1);
   c.add_conditional_gate<unsigned>(OpType::U1, {0.25}, {1}, {0}, 1);
   c.add_conditional_gate<unsigned>(OpType::CnRy, {0.25}, {0, 1, 2}, {0, 1}, 0);
+  c.add_conditional_gate<unsigned>(OpType::CnRx, {0.25}, {0, 1, 2}, {0, 1}, 0);
+  c.add_conditional_gate<unsigned>(OpType::CnRz, {0.25}, {0, 1, 2}, {0, 1}, 0);
   c.add_measure(2, 2);
   check_conditions(SynthesiseOQC(), c);
   check_conditions(SynthesiseTK(), c);

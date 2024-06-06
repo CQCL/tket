@@ -52,7 +52,6 @@ from pytket._tket.circuit import (
     CopyBitsOp,
     MultiBitOp,
     WASMOp,
-    CustomGate,
     BarrierOp,
 )
 from pytket._tket.unit_id import _TEMP_BIT_NAME
@@ -80,7 +79,7 @@ from pytket.circuit.logic_exp import (
     create_logic_exp,
 )
 from pytket.qasm.grammar import grammar
-from pytket.passes import auto_rebase_pass, DecomposeBoxes, RemoveRedundancies
+from pytket.passes import AutoRebase, DecomposeBoxes, RemoveRedundancies
 from pytket.wasm import WasmFileHandler
 
 
@@ -793,7 +792,7 @@ class CircuitTransformer(Transformer):
             else:
                 raise QASMParseError(f"Unexpected expression in assignment {exp}", line)
 
-    def extern(self, tree: List[Any]) -> Type[Discard]:
+    def extern(self, tree: List[Any]) -> Any:
         # TODO parse extern defs
         return Discard
 
@@ -899,7 +898,7 @@ class CircuitTransformer(Transformer):
 
     opaq = gdef
 
-    def oqasm(self, tree: List) -> Type[Discard]:
+    def oqasm(self, tree: List) -> Any:
         return Discard
 
     def incl(self, tree: List[Token]) -> None:
@@ -1197,7 +1196,7 @@ def _get_gate_circuit(
         gate_circ.add_gate(optype, exprs, unitids)
     else:
         gate_circ.add_gate(optype, unitids)
-    auto_rebase_pass({OpType.CX, OpType.U3}).apply(gate_circ)
+    AutoRebase({OpType.CX, OpType.U3}).apply(gate_circ)
     RemoveRedundancies().apply(gate_circ)
 
     return gate_circ

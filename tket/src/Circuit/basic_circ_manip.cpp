@@ -32,20 +32,22 @@ namespace tket {
 // if there are any blank wires in the circuit,
 // this method removes them and removes the vertices
 // from boundaries
-void Circuit::remove_blank_wires() {
+void Circuit::remove_blank_wires(bool keep_blank_classical_wires) {
   VertexList bin;
   unit_vector_t unused_units;
   const Op_ptr noop = get_op_ptr(OpType::noop);
   for (const BoundaryElement& el : boundary.get<TagID>()) {
-    Vertex in = el.in_;
-    Vertex out = el.out_;
-    VertexVec succs = get_successors(in);
-    if (succs.size() == 1 && succs.front() == out) {
-      dag[in].op = noop;
-      bin.push_back(in);
-      dag[out].op = noop;
-      bin.push_back(out);
-      unused_units.push_back(el.id_);
+    if (!keep_blank_classical_wires || el.type() == UnitType::Qubit) {
+      Vertex in = el.in_;
+      Vertex out = el.out_;
+      VertexVec succs = get_successors(in);
+      if (succs.size() == 1 && succs.front() == out) {
+        dag[in].op = noop;
+        bin.push_back(in);
+        dag[out].op = noop;
+        bin.push_back(out);
+        unused_units.push_back(el.id_);
+      }
     }
   }
   for (const UnitID& u : unused_units) {
@@ -108,6 +110,10 @@ Vertex Circuit::add_op<unsigned>(
   }
   if (optype == OpType::CnRy && args.size() == 1) {
     return add_op(get_op_ptr(OpType::Ry, gate->get_params()), arg_ids);
+  } else if (optype == OpType::CnRx && args.size() == 1) {
+    return add_op(get_op_ptr(OpType::Rx, gate->get_params()), arg_ids);
+  } else if (optype == OpType::CnRz && args.size() == 1) {
+    return add_op(get_op_ptr(OpType::Rz, gate->get_params()), arg_ids);
   } else if (optype == OpType::CnX && args.size() == 1) {
     return add_op(get_op_ptr(OpType::X), arg_ids);
   } else if (optype == OpType::CnZ && args.size() == 1) {

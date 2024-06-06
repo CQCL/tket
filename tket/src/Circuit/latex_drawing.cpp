@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <boost/algorithm/string/replace.hpp>
 #include <limits>
 
 #include "tket/Circuit/Boxes.hpp"
@@ -36,6 +37,8 @@ void add_latex_for_command(LatexContext& context, const Command& command) {
   unit_vector_t args = command.get_args();
   const Op_ptr op = command.get_op_ptr();
   switch (op->get_type()) {
+    case OpType::CnRz:
+    case OpType::CnRx:
     case OpType::CnRy:
     case OpType::CnX:
     case OpType::CnY:
@@ -52,6 +55,16 @@ void add_latex_for_command(LatexContext& context, const Command& command) {
         lines.at(target_index).buffer
             << "\\gate{\\text{"
             << get_op_ptr(OpType::Ry, op->get_params())->get_name(true)
+            << "}} & ";
+      } else if (op->get_type() == OpType::CnRx) {
+        lines.at(target_index).buffer
+            << "\\gate{\\text{"
+            << get_op_ptr(OpType::Rx, op->get_params())->get_name(true)
+            << "}} & ";
+      } else if (op->get_type() == OpType::CnRz) {
+        lines.at(target_index).buffer
+            << "\\gate{\\text{"
+            << get_op_ptr(OpType::Rz, op->get_params())->get_name(true)
             << "}} & ";
       } else if (op->get_type() == OpType::CnX) {
         lines.at(target_index).buffer << "\\targ{} & ";
@@ -287,14 +300,16 @@ std::string Circuit::to_latex_str() const {
     unsigned n_lines = lines.size();
     line_ids.insert({qb, n_lines});
     LineBufferInfo& line = *lines.emplace(lines.end());
-    line.buffer << "\\lstick{" + qb.repr() + "} & ";
+    line.buffer << "\\lstick{" +
+                       boost::replace_all_copy(qb.repr(), "_", "\\_") + "} & ";
     line.is_quantum = true;
   }
   for (const Bit& cb : this->all_bits()) {
     unsigned n_lines = lines.size();
     line_ids.insert({cb, n_lines});
     LineBufferInfo& line = *lines.emplace(lines.end());
-    line.buffer << "\\lstick{" + cb.repr() + "} & ";
+    line.buffer << "\\lstick{" +
+                       boost::replace_all_copy(cb.repr(), "_", "\\_") + "} & ";
     line.is_quantum = false;
   }
 

@@ -484,6 +484,9 @@ void Circuit::_handle_interior(
       }
       Vertex v = circ.add_vertex(op_type_ptr);
       vmap[*vi] = v;
+    } else if (desc.is_barrier()) {
+      Vertex v = circ.add_vertex(op);
+      vmap[*vi] = v;
     } else {
       throw CircuitInvalidity(
           "Cannot dagger or transpose op: " + op->get_name());

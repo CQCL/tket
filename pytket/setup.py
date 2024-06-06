@@ -177,15 +177,14 @@ class bdist_wheel(_bdist_wheel):
 setup(
     name="pytket",
     author="TKET development team",
-    author_email="tket-support@cambridgequantum.com",
+    author_email="tket-support@quantinuum.com",
     python_requires=">=3.10",
     project_urls={
         "Documentation": "https://tket.quantinuum.com/api-docs/index.html",
         "Source": "https://github.com/CQCL/tket",
         "Tracker": "https://github.com/CQCL/tket/issues",
     },
-    description="Python module for interfacing with the CQC tket library of quantum "
-    "software",
+    description="Quantum computing toolkit and interface to the TKET compiler",
     long_description=open("package.md", "r").read(),
     long_description_content_type="text/markdown",
     license="Apache 2",
@@ -193,8 +192,8 @@ setup(
     install_requires=[
         "sympy ~=1.6",
         "numpy >=1.21.4, <2.0",
-        "lark-parser ~=0.7",
-        "scipy ~=1.12.0",
+        "lark ~=1.1",
+        "scipy ~=1.13",
         "networkx >= 2.8.8",
         "graphviz ~= 0.14",
         "jinja2 ~= 3.0",
@@ -204,7 +203,7 @@ setup(
     ],
     extras_require={
         "ZX": [
-            "quimb ~= 1.5",
+            "quimb ~= 1.8",
             "autoray >= 0.6.1",
         ],
     },

@@ -877,6 +877,10 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
          SpPauliStabiliser({Pauli::I, Pauli::I, Pauli::X})},
     };
     ChoiMixTableau tab(rows);
+    // Check the row constructor gets the right phases after internally
+    // transposing Ys
+    CHECK(tab.get_row(1).second.coeff == 0);
+    CHECK(tab.get_row(2).second.coeff == 0);
     REQUIRE_THROWS(cm_tableau_to_unitary_extension_circuit(tab));
     std::pair<Circuit, qubit_map_t> res_uni =
         cm_tableau_to_unitary_extension_circuit(

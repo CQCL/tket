@@ -27,7 +27,7 @@ class Placement {
 
   explicit Placement(const Architecture& _architecture);
 
-  Placement(){};
+  Placement() {};
 
   /**
    * Reassigns some UnitID in circ_ as UnitID in architecture_
@@ -90,7 +90,7 @@ class Placement {
    */
   const Architecture& get_architecture_ref() { return architecture_; }
 
-  virtual ~Placement(){};
+  virtual ~Placement() {};
 
   static const std::string& unplaced_reg();
 
