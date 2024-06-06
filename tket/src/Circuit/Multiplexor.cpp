@@ -994,6 +994,21 @@ Op_ptr MultiplexedTensoredU2Box::from_json(const nlohmann::json &j) {
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
 }
 
+// Eigen::VectorXcd rotate_diagonal(
+//     const Eigen::VectorXcd &diag_vec, unsigned n_bits, unsigned rotation) {
+//   Eigen::VectorXcd rotated_diag_vec(1 << n_bits);
+//   rotated_diag_vec.setZero();
+//   TKET_ASSERT(diag_vec.size() == rotated_diag_vec.size());
+//   // Modulus rotation to avoid overflow
+//   rotation = rotation & n_bits;
+//   for (unsigned index = 0; index < diag_vec.size(); index++) {
+//     unsigned rotated_index = ((index << rotation) & (1 << n_bits) - 1) |
+//                              (index >> (n_bits - rotation));
+//     rotated_diag_vec[rotated_index] = diag_vec[i];
+//   }
+//   return rotated_diag_vec;
+// }
+
 void MultiplexedTensoredU2Box::generate_circuit() const {
   Circuit circ(n_controls_ + n_targets_);
 
@@ -1016,6 +1031,15 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
           control_condition.end());
       u2_op_map.insert({control_condition, it->second[i]});
     }
+
+    // TODO REMOVE:
+    // for(const auto& p : u2_op_map) {
+    //   for(auto b : p.first){
+    //     std::cout << b;
+    //   }
+    //   std::cout << "\n Op:" << p.second << std::endl;
+    // }
+
     // we also need to capture the right set of qubits the provided commands
     // will be over we take the control qubits and rotate by the same amount as
     // each control condition to get the right set
@@ -1023,6 +1047,12 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
     std::rotate(
         all_qubits.begin(), all_qubits.begin() + control_number,
         all_qubits.end());
+    std::cout << "Control Qubits: ";
+    for (auto i : all_qubits) {
+      std::cout << i;
+    }
+    std::cout << std::endl;
+
     MultiplexedU2Commands decomp = MultiplexedU2Box(u2_op_map).decompose();
     std::pair<MultiplexedU2Commands, std::vector<unsigned>> m_u2 =
         std::make_pair(decomp, all_qubits);
@@ -1034,6 +1064,7 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
 
   TKET_ASSERT(!m_u2_decomps.empty());
   unsigned reference_size = m_u2_decomps[0].first.commands.size();
+  std::cout << "Reference Size: " << reference_size << std::endl;
   // for (const &std::pair<MultiplexedU2Commands, std::vector<Qubit>>
   // multiplexor :
   //      m_u2_decomps) {
@@ -1044,7 +1075,7 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
     TKET_ASSERT(reference_size == m_u2_decomps[i].first.commands.size());
   }
 
-  // we now iteratre through all the commands, interleaving them
+  // we now iterate through all the commands, interleaving them
   for (unsigned i = 0; i < reference_size; i++) {
     for (unsigned j = 0; j < m_u2_decomps.size(); j++) {
       std::pair<MultiplexedU2Commands, std::vector<unsigned>> multiplexor =
@@ -1083,7 +1114,7 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
   // the final diagonal on the control qubits
 
   // TODO: we could add a minor improvement to efficiency by moving this into a
-  // previous loop For now I'm keeping hear for readabilityf
+  // previous loop For now I'm keeping hear for readability
   for (unsigned i = 0; i < m_u2_decomps.size(); i++) {
     Eigen::VectorXcd inner_diag_vec = m_u2_decomps[i].first.diag;
     // disentangle one qubit from the diagonal
@@ -1098,15 +1129,40 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
       double alpha = (b_phase - a_phase) / PI;
       Complex p = std::exp((b_phase + a_phase) * 0.5 * i_);
       std::vector<bool> bitstr = dec_to_bin(j, n_controls_);
+      // std::rotate(bitstr.begin(), bitstr.begin() + i, bitstr.end());
       if (std::abs(alpha) > EPS) {
         multip_rz.insert({bitstr, get_op_ptr(OpType::Rz, alpha)});
       }
-      // update the diagonal on the control qubits
-      diag_vec[j] *= p;
+      // update the diagonal on the control qubits, rotating the elements
+
+      // unsigned index = j;
+      unsigned rotation = i;
+      unsigned n_bits = n_controls_;
+      // unsigned rotated_index =
+      //     ((j << rotation) & (1 << n_bits) - 1) | (j >> (n_bits - rotation));
+
+
+      unsigned rotated_index =
+        (j >> rotation) |
+        ((j << (n_bits - rotation)) & ((1 << n_bits) - 1));
+
+      // unsigned rotated_index = (j >> rotation) | (j << (n_bits - rotation)) &
+      // ((1 << n_bits) - 1);
+      std::cout << "original index: " << j << " rotation: " << rotation
+                << " rotated_index: " << rotated_index <<  " value: " << p << std::endl;
+      diag_vec[rotated_index] *= p;
     }
     if (!multip_rz.empty()) {
+      // std::vector<unsigned> args(n_controls_);
+      // std::iota(std::begin(args), std::end(args), 0);
+      // args.push_back(i + n_controls_);
       std::vector<unsigned> args = m_u2_decomps[i].second;
       args.push_back(n_controls_ + i);
+      std::cout << "Multip Rz Args:" << std::endl;
+      for (auto j : args) {
+        std::cout << j;
+      }
+      std::cout << std::endl;
       diag_circ.add_box(MultiplexedRotationBox(multip_rz), args);
     }
   }
@@ -1155,6 +1211,10 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
           .sum() > EPS) {
     std::vector<unsigned> args(n_controls_);
     std::iota(std::begin(args), std::end(args), 0);
+    for(auto d : diag_vec){
+      std::cout << d << " ";
+    }
+    std::cout << std::endl;
     circ.add_box(DiagonalBox(diag_vec), args);
   }
   circ_ = std::make_shared<Circuit>(circ);
