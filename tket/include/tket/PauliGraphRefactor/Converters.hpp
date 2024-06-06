@@ -21,8 +21,8 @@
 
 namespace tket {
 
-// Copied from Converters/Converters.hpp to allow synthesis and testing of reset
-// and boxes
+// Copied from Converters/Converters.hpp and Converters/Gauss.hpp to allow
+// synthesis and testing of reset and boxes
 ChoiMixTableau circuit_to_cm_tableau(const Circuit& circ);
 std::pair<Circuit, qubit_map_t> cm_tableau_to_exact_circuit(
     const ChoiMixTableau& tab, CXConfigType cx_config = CXConfigType::Snake);
@@ -32,6 +32,30 @@ std::pair<Circuit, qubit_map_t> cm_tableau_to_unitary_extension_circuit(
     CXConfigType cx_config = CXConfigType::Snake);
 UnitaryTableau circuit_to_unitary_tableau(const Circuit& circ);
 Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab);
+class CXMaker {
+ public:
+  explicit CXMaker(unsigned qubits, bool reverse_cx_dirs = false)
+      : _circ(qubits), _reverse_cx_dirs(reverse_cx_dirs) {}
+  void row_add(unsigned r0, unsigned r1);
+  Circuit _circ;
+  bool _reverse_cx_dirs;
+};
+
+class DiagMatrix {
+ public:
+  DiagMatrix() {}
+  explicit DiagMatrix(const MatrixXb& matrix) : _matrix(matrix) {}
+  void row_add(unsigned r0, unsigned r1);
+  void col_add(unsigned c0, unsigned c1);
+  void gauss(CXMaker& cxmaker, unsigned blocksize = 6);
+  friend std::ostream& operator<<(std::ostream& out, const DiagMatrix& diam);
+  bool is_id() const;
+  bool is_id_until_columns(unsigned limit) const;
+  unsigned n_rows() const;
+  unsigned n_cols() const;
+
+  MatrixXb _matrix;
+};
 
 /**
  * Converts the Circuit to a PauliGraph representing the same circuit by

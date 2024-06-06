@@ -1420,11 +1420,21 @@ void PGOpCommutingSetBox::generate_circuit() const {
       Q.push_front(R0);
     }
   }
-  // NOTE:: Using UnitaryTableau synthesis here instead of simple Gaussian
-  // elimination will give a different (and generally less efficient) circuit
-  // than the legacy GraySynth implementation until UnitaryTableau synthesis is
-  // improved
-  inner_circ.append(unitary_tableau_to_circuit(Atab).dagger());
+  // We know Atab is just a CX circuit, so it can be completely described by one
+  // quadrant and solved by Gaussian elimination
+  DiagMatrix m(
+      Atab.tab_.zmat.block(qubits.size(), 0, qubits.size(), qubits.size()));
+  CXMaker cxmaker(qubits.size(), false);
+  m.gauss(cxmaker);
+  Circuit cx_circ = cxmaker._circ.dagger();
+  // cxmaker yields a circuit with just default qubit names; place according to
+  // Atab qubits
+  unit_map_t cx_umap;
+  for (const auto& pair : Atab.qubits_) {
+    cx_umap.insert({Qubit(pair.right), pair.left});
+  }
+  cx_circ.rename_units(cx_umap);
+  inner_circ.append(cx_circ);
 
   // Synthesise multi_diag_ops individually
   for (const PGOp_ptr& pgop : multi_diag_ops)
