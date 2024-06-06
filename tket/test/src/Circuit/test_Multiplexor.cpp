@@ -616,8 +616,7 @@ SCENARIO("Test MultiplexedTensoredU2Box utilities", "[boxes]") {
     REQUIRE(check_multiplexor(op_map, c->dagger()));
     // Test transpose
     const MultiplexedTensoredU2Box transpose_box =
-        static_cast<const MultiplexedTensoredU2Box
-        &>(*multiplexor.transpose());
+        static_cast<const MultiplexedTensoredU2Box &>(*multiplexor.transpose());
     std::shared_ptr<Circuit> d = transpose_box.to_circuit();
     REQUIRE(check_multiplexor(op_map, d->transpose()));
   }
@@ -627,8 +626,8 @@ SCENARIO("Test MultiplexedTensoredU2Box exceptions", "[boxes]") {
     ctrl_tensored_op_map_t op_map;
     REQUIRE_THROWS_MATCHES(
         MultiplexedTensoredU2Box(op_map), std::invalid_argument,
-        MessageContains(
-            "The op_map argument passed to MultiplexedTensoredU2Box cannot be empty."));
+        MessageContains("The op_map argument passed to "
+                        "MultiplexedTensoredU2Box cannot be empty."));
   }
   GIVEN("Bitstrings are too long") {
     std::vector<bool> bits(33);
@@ -653,12 +652,12 @@ SCENARIO("Test MultiplexedTensoredU2Box exceptions", "[boxes]") {
     REQUIRE_THROWS_MATCHES(
         MultiplexedTensoredU2Box(op_map), std::invalid_argument,
         MessageContains(
-            "Each tensored operation passed to MultiplexedTensoredU2Box must have the same number of U2 components"));
+            "Each tensored operation passed to MultiplexedTensoredU2Box must "
+            "have the same number of U2 components"));
   }
   GIVEN("Unsupported gate") {
     ctrl_tensored_op_map_t op_map = {
-        {{0, 1}, {get_op_ptr(OpType::H)}}, {{1, 0},
-        {get_op_ptr(OpType::CX)}}};
+        {{0, 1}, {get_op_ptr(OpType::H)}}, {{1, 0}, {get_op_ptr(OpType::CX)}}};
     REQUIRE_THROWS_MATCHES(
         MultiplexedTensoredU2Box(op_map), BadOpType,
         MessageContains("Ops passed to MultiplexedTensoredU2Box must be "
