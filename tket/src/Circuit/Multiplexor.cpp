@@ -753,6 +753,7 @@ void MultiplexedU2Box::generate_circuit() const {
   }
 
   circ.add_phase(decomp.phase);
+
   if (impl_diag_ &&
       (decomp.diag - Eigen::VectorXcd::Constant(1ULL << circ.n_qubits(), 1))
               .cwiseAbs()
@@ -931,9 +932,11 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
   unsigned reference_size = m_u2_decomps[0].first.commands.size();
   for (unsigned i = 0; i < m_u2_decomps.size(); i++) {
     // They all have the same number of controls & even if a unitary ends up
-    // being identity, we still capture that A few things we will do later rely
+    // being identity, we still capture that 
+    // A few things we will do later rely
     // on this, so worth double checking here
     TKET_ASSERT(reference_size == m_u2_decomps[i].first.commands.size());
+    // We also take this loop as a chance to add phase to the circuit
     circ.add_phase(m_u2_decomps[i].first.phase);
   }
 
@@ -956,7 +959,9 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
           TKET_ASSERT(false);
       }
     }
-  }
+  } 
+
+  std::cout << "Multiplexed U1 Section Added " << std::endl;
 
   // We have now implemented the U1 + CX segment of the circuit construction
   // with interleaving
@@ -998,6 +1003,7 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
     all_multiplexed_rz.push_back(multip_rz);
     all_diag_vec.push_back(diag_vec);
   }
+  std::cout << "Diag and Multiplexed Rz components recovered" << std::endl;
   // We now have a Vector of Multiplexed-Rz gates to add along with a Vector of
   // compensating Diagonal gate over the control qubits First we add the
   // Multiplexed-Rz gates
@@ -1010,11 +1016,19 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
     if (!multiplexor_args.empty()) {
       std::vector<unsigned> args(n_controls_);
       std::iota(args.begin(), args.end(), 0);
-      std::rotate(args.begin(), args.begin() + target, args.end());
+
+      std::rotate(args.begin(), args.begin() + (target % n_controls_), args.end());
       args.push_back(target + n_controls_);
+      std::cout << "Qubits for Multiplexed-Rz: " << std::endl;
+      for(auto jj : args){
+        std::cout << jj <<  " ";
+      }
+      std::cout << std::endl;
       circ.add_box(MultiplexedRotationBox(all_multiplexed_rz[target]), args);
     }
   }
+
+  std::cout << "Multiplexed Rz added " << std::endl;
   // Second we add the Diagonal gate
   // First we merge the diagonal vectors into one
   Eigen::VectorXcd combined_diag_vec =
@@ -1038,7 +1052,7 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
       combined_diag_vec[rotated_index] *= diag_vec[index];
     }
   }
-
+  std::cout << "Diagonal gates merged" << std::endl;
   // Now add the combined diagonal vector to the circuit
   if ((combined_diag_vec - Eigen::VectorXcd::Constant(1ULL << n_controls_, 1))
           .cwiseAbs()
@@ -1047,6 +1061,7 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
     std::iota(std::begin(args), std::end(args), 0);
     circ.add_box(DiagonalBox(combined_diag_vec), args);
   }
+  std::cout << "Diagonal vector box added " << std::endl;
   circ_ = std::make_shared<Circuit>(circ);
 }
 

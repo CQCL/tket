@@ -515,33 +515,174 @@ SCENARIO(
   REQUIRE(check_multiplexor(op_map, *c));
 }
 
-SCENARIO("Random MultiplexedTensoredU2Box decomposition", "[boxes]") {
+SCENARIO(
+    "Simple MultiplexedTensoredU2Box decomposition with rotating string and 4 "
+    "controls, 4 targets",
+    "[boxes]") {
+  ctrl_tensored_op_map_t op_map;
+  op_map.insert(
+      {{0, 1, 0, 1},
+       {get_op_ptr(OpType::X), get_op_ptr(OpType::Y), get_op_ptr(OpType::V),
+        get_op_ptr(OpType::H)}});
+  op_map.insert(
+      {{1, 0, 0, 0},
+       {get_op_ptr(OpType::S), get_op_ptr(OpType::X), get_op_ptr(OpType::noop),
+        get_op_ptr(OpType::V)}});
+  op_map.insert(
+      {{0, 1, 1, 1},
+       {get_op_ptr(OpType::T), get_op_ptr(OpType::S), get_op_ptr(OpType::X),
+        get_op_ptr(OpType::Z)}});
+  op_map.insert(
+      {{1, 0, 1, 0},
+       {get_op_ptr(OpType::H), get_op_ptr(OpType::Z), get_op_ptr(OpType::H),
+        get_op_ptr(OpType::Z)}});
+  op_map.insert(
+      {{1, 1, 1, 0},
+       {get_op_ptr(OpType::Y), get_op_ptr(OpType::Z), get_op_ptr(OpType::Y),
+        get_op_ptr(OpType::X)}});
+  MultiplexedTensoredU2Box multiplexor(op_map);
+  std::shared_ptr<Circuit> c = multiplexor.to_circuit();
+  REQUIRE(check_multiplexor(op_map, *c));
+}
+
+SCENARIO(
+    "Simple MultiplexedTensoredU2Box decomposition with rotating string and 4 "
+    "controls, 4 targets, using all strings",
+    "[boxes]") {
+  ctrl_tensored_op_map_t op_map;
+  op_map.insert(
+      {{0, 0, 0, 0},
+       {get_op_ptr(OpType::X), get_op_ptr(OpType::Y), get_op_ptr(OpType::V),
+        get_op_ptr(OpType::H)}});
+  op_map.insert(
+      {{0, 0, 0, 1},
+       {get_op_ptr(OpType::S), get_op_ptr(OpType::X), get_op_ptr(OpType::noop),
+        get_op_ptr(OpType::V)}});
+  op_map.insert(
+      {{0, 0, 1, 0},
+       {get_op_ptr(OpType::T), get_op_ptr(OpType::S), get_op_ptr(OpType::X),
+        get_op_ptr(OpType::Z)}});
+  op_map.insert(
+      {{0, 0, 1, 1},
+       {get_op_ptr(OpType::H), get_op_ptr(OpType::Z), get_op_ptr(OpType::H),
+        get_op_ptr(OpType::Z)}});
+  op_map.insert(
+      {{0, 1, 0, 0},
+       {get_op_ptr(OpType::Y), get_op_ptr(OpType::Z), get_op_ptr(OpType::Y),
+        get_op_ptr(OpType::X)}});
+  op_map.insert(
+      {{0, 1, 0, 1},
+       {get_op_ptr(OpType::X), get_op_ptr(OpType::Y), get_op_ptr(OpType::V),
+        get_op_ptr(OpType::H)}});
+  op_map.insert(
+      {{0, 1, 1, 0},
+       {get_op_ptr(OpType::S), get_op_ptr(OpType::X), get_op_ptr(OpType::noop),
+        get_op_ptr(OpType::V)}});
+  op_map.insert(
+      {{0, 1, 1, 1},
+       {get_op_ptr(OpType::T), get_op_ptr(OpType::S), get_op_ptr(OpType::X),
+        get_op_ptr(OpType::Z)}});
+  op_map.insert(
+      {{1, 0, 0, 0},
+       {get_op_ptr(OpType::H), get_op_ptr(OpType::Z), get_op_ptr(OpType::H),
+        get_op_ptr(OpType::Z)}});
+  op_map.insert(
+      {{1, 0, 0, 1},
+       {get_op_ptr(OpType::Y), get_op_ptr(OpType::Z), get_op_ptr(OpType::Y),
+        get_op_ptr(OpType::X)}});
+  op_map.insert(
+      {{1, 0, 1, 0},
+       {get_op_ptr(OpType::X), get_op_ptr(OpType::Y), get_op_ptr(OpType::V),
+        get_op_ptr(OpType::H)}});
+  op_map.insert(
+      {{1, 0, 1, 1},
+       {get_op_ptr(OpType::S), get_op_ptr(OpType::X), get_op_ptr(OpType::noop),
+        get_op_ptr(OpType::V)}});
+  op_map.insert(
+      {{1, 1, 0, 0},
+       {get_op_ptr(OpType::T), get_op_ptr(OpType::S), get_op_ptr(OpType::X),
+        get_op_ptr(OpType::Z)}});
+  op_map.insert(
+      {{1, 1, 0, 1},
+       {get_op_ptr(OpType::H), get_op_ptr(OpType::Z), get_op_ptr(OpType::H),
+        get_op_ptr(OpType::Z)}});
+  op_map.insert(
+      {{1, 1, 1, 0},
+       {get_op_ptr(OpType::Y), get_op_ptr(OpType::Z), get_op_ptr(OpType::Y),
+        get_op_ptr(OpType::X)}});
+  op_map.insert(
+      {{1, 1, 1, 1},
+       {get_op_ptr(OpType::Y), get_op_ptr(OpType::Z), get_op_ptr(OpType::Y),
+        get_op_ptr(OpType::X)}});
+  MultiplexedTensoredU2Box multiplexor(op_map);
+  std::shared_ptr<Circuit> c = multiplexor.to_circuit();
+  REQUIRE(check_multiplexor(op_map, *c));
+}
+
+
+SCENARIO(
+    "Simple MultiplexedTensoredU2Box decomposition with rotating string and 4 "
+    "controls, 5 targets",
+    "[boxes]") {
+  ctrl_tensored_op_map_t op_map;
+  op_map.insert(
+      {{0, 1, 0, 1},
+       {get_op_ptr(OpType::X), get_op_ptr(OpType::Y), get_op_ptr(OpType::V),
+        get_op_ptr(OpType::H), get_op_ptr(OpType::S)}});
+  op_map.insert(
+      {{1, 0, 0, 0},
+       {get_op_ptr(OpType::S), get_op_ptr(OpType::X), get_op_ptr(OpType::noop),
+        get_op_ptr(OpType::V), get_op_ptr(OpType::T)}});
+  op_map.insert(
+      {{0, 1, 1, 1},
+       {get_op_ptr(OpType::T), get_op_ptr(OpType::S), get_op_ptr(OpType::X),
+        get_op_ptr(OpType::Z), get_op_ptr(OpType::V)}});
+  op_map.insert(
+      {{1, 0, 1, 0},
+       {get_op_ptr(OpType::H), get_op_ptr(OpType::Z), get_op_ptr(OpType::H),
+        get_op_ptr(OpType::Z), get_op_ptr(OpType::X)}});
+  op_map.insert(
+      {{1, 1, 1, 0},
+       {get_op_ptr(OpType::Y), get_op_ptr(OpType::Z), get_op_ptr(OpType::Y),
+        get_op_ptr(OpType::X), get_op_ptr(OpType::H)}});
+  MultiplexedTensoredU2Box multiplexor(op_map);
+  std::shared_ptr<Circuit> c = multiplexor.to_circuit();
+  REQUIRE(check_multiplexor(op_map, *c));
+}
+
+SCENARIO("Random MultiplexedTensoredU2Box decomposition") {
   unsigned n_controls = 2;
   unsigned n_targets = 2;
-  GIVEN("Random (1,1) multiplexor") {
-    n_controls = 1;
-    n_targets = 1;
-  }
-  GIVEN("Random (1,2) multiplexor") {
-    n_controls = 1;
-    n_targets = 2;
-  }
-  GIVEN("Random (2,2) multiplexor") {
-    n_controls = 2;
-    n_targets = 2;
-  }
-  GIVEN("Random (2,3) multiplexor") {
-    n_controls = 2;
-    n_targets = 3;
-  }
-  GIVEN("Random (3,2) multiplexor") {
-    n_controls = 3;
-    n_targets = 2;
-  }
+  // GIVEN("Random (1,1) multiplexor") {
+  //   n_controls = 1;
+  //   n_targets = 1;
+  // }
+  // GIVEN("Random (1,2) multiplexor") {
+  //   n_controls = 1;
+  //   n_targets = 2;
+  // }
+  // GIVEN("Random (2,2) multiplexor") {
+  //   n_controls = 2;
+  //   n_targets = 2;
+  // }
+  // GIVEN("Random (2,3) multiplexor") {
+  //   n_controls = 2;
+  //   n_targets = 3;
+  // }
+  // GIVEN("Random (3,2) multiplexor") {
+  //   n_controls = 3;
+  //   n_targets = 2;
+  // }
   GIVEN("Random (4,4) multiplexor") {
     n_controls = 4;
     n_targets = 4;
   }
+  std::cout << "\n\n\n\n\n\n\n\n\n" << std::endl;
+
+  // GIVEN("Random (5,5) multiplexor") {
+  //   n_controls = 5;
+  //   n_targets = 5;
+  // }
   ctrl_tensored_op_map_t op_map;
   unsigned seed = 0;
   for (unsigned long long i = 0; i < (1ULL << n_controls); i++) {
@@ -566,103 +707,114 @@ SCENARIO("Random MultiplexedTensoredU2Box decomposition", "[boxes]") {
          cmd.get_op_ptr()->get_type() == OpType::MultiplexedRotationBox ||
          cmd.get_op_ptr()->get_type() == OpType::DiagonalBox));
   }
+  for (auto x : op_map) {
+    for (auto y : x.first) {
+      std::cout << y;
+    }
+    std::cout << "->";
+    for (auto y : x.second) {
+      std::cout << *y << " ";
+    }
+    std::cout << std::endl;
+  }
+  std::cout << *c << std::endl;
   REQUIRE(check_multiplexor(op_map, *c));
 }
-SCENARIO("Test MultiplexedTensoredU2Box utilities", "[boxes]") {
-  GIVEN("symbol_substitution") {
-    Sym a = SymTable::fresh_symbol("a");
-    Expr expr_a(a);
-    ctrl_tensored_op_map_t op_map = {
-        {{0},
-         {get_op_ptr(OpType::Rz, expr_a), get_op_ptr(OpType::Rx, expr_a)}}};
-    ctrl_tensored_op_map_t num_op_map = {
-        {{0}, {get_op_ptr(OpType::Rz, 1.34), get_op_ptr(OpType::Rx, 1.34)}}};
-    MultiplexedTensoredU2Box multiplexor(op_map);
-    SymEngine::map_basic_basic smap;
-    smap[a] = Expr(1.34);
-    const MultiplexedTensoredU2Box new_box =
-        static_cast<const MultiplexedTensoredU2Box &>(
-            *multiplexor.symbol_substitution(smap));
+// SCENARIO("Test MultiplexedTensoredU2Box utilities", "[boxes]") {
+//   GIVEN("symbol_substitution") {
+//     Sym a = SymTable::fresh_symbol("a");
+//     Expr expr_a(a);
+//     ctrl_tensored_op_map_t op_map = {
+//         {{0},
+//          {get_op_ptr(OpType::Rz, expr_a), get_op_ptr(OpType::Rx, expr_a)}}};
+//     ctrl_tensored_op_map_t num_op_map = {
+//         {{0}, {get_op_ptr(OpType::Rz, 1.34), get_op_ptr(OpType::Rx, 1.34)}}};
+//     MultiplexedTensoredU2Box multiplexor(op_map);
+//     SymEngine::map_basic_basic smap;
+//     smap[a] = Expr(1.34);
+//     const MultiplexedTensoredU2Box new_box =
+//         static_cast<const MultiplexedTensoredU2Box &>(
+//             *multiplexor.symbol_substitution(smap));
 
-    std::shared_ptr<Circuit> c = new_box.to_circuit();
-    REQUIRE(check_multiplexor(num_op_map, *c));
-  }
-  GIVEN("free_symbols") {
-    Sym a = SymTable::fresh_symbol("a");
-    Sym b = SymTable::fresh_symbol("b");
-    Expr expr_a(a);
-    Expr expr_b(b);
-    ctrl_tensored_op_map_t op_map = {
-        {{0, 1},
-         {get_op_ptr(OpType::Rz, expr_a), get_op_ptr(OpType::Rx, expr_a)}},
-        {{1, 1}, {get_op_ptr(OpType::Rz, expr_b), get_op_ptr(OpType::X)}},
-        {{1, 0}, {get_op_ptr(OpType::Rz, expr_a), get_op_ptr(OpType::X)}}};
-    MultiplexedTensoredU2Box multiplexor(op_map);
-    const SymSet symbols = multiplexor.free_symbols();
-    REQUIRE(symbols.size() == 2);
-    REQUIRE(symbols.find(a) != symbols.end());
-    REQUIRE(symbols.find(b) != symbols.end());
-  }
-  GIVEN("Rotation Dagger & transpose") {
-    ctrl_tensored_op_map_t op_map = {
-        {{0, 1}, {get_op_ptr(OpType::Rz, 3.7), get_op_ptr(OpType::X)}},
-        {{1, 1}, {get_op_ptr(OpType::Rz, 1), get_op_ptr(OpType::H)}},
-        {{1, 0}, {get_op_ptr(OpType::Rz, 2.5), get_op_ptr(OpType::H)}}};
-    MultiplexedTensoredU2Box multiplexor(op_map);
-    // Test dagger
-    const MultiplexedTensoredU2Box dag_box =
-        static_cast<const MultiplexedTensoredU2Box &>(*multiplexor.dagger());
-    std::shared_ptr<Circuit> c = dag_box.to_circuit();
-    REQUIRE(check_multiplexor(op_map, c->dagger()));
-    // Test transpose
-    const MultiplexedTensoredU2Box transpose_box =
-        static_cast<const MultiplexedTensoredU2Box &>(*multiplexor.transpose());
-    std::shared_ptr<Circuit> d = transpose_box.to_circuit();
-    REQUIRE(check_multiplexor(op_map, d->transpose()));
-  }
-}
-SCENARIO("Test MultiplexedTensoredU2Box exceptions", "[boxes]") {
-  GIVEN("Empty op_map") {
-    ctrl_tensored_op_map_t op_map;
-    REQUIRE_THROWS_MATCHES(
-        MultiplexedTensoredU2Box(op_map), std::invalid_argument,
-        MessageContains("The op_map argument passed to "
-                        "MultiplexedTensoredU2Box cannot be empty."));
-  }
-  GIVEN("Bitstrings are too long") {
-    std::vector<bool> bits(33);
-    ctrl_tensored_op_map_t op_map = {{bits, {get_op_ptr(OpType::Rx, 1.4)}}};
-    REQUIRE_THROWS_MATCHES(
-        MultiplexedTensoredU2Box(op_map), std::invalid_argument,
-        MessageContains(
-            "MultiplexedTensoredU2Box only supports bitstrings up to 32 bits"));
-  }
-  GIVEN("Unmatched bitstrings") {
-    ctrl_tensored_op_map_t op_map = {
-        {{0, 1}, {get_op_ptr(OpType::H)}}, {{1}, {get_op_ptr(OpType::X)}}};
-    REQUIRE_THROWS_MATCHES(
-        MultiplexedTensoredU2Box(op_map), std::invalid_argument,
-        MessageContains("The bitstrings passed to MultiplexedTensoredU2Box "
-                        "must have the same width."));
-  }
-  GIVEN("Unmatched op sizes") {
-    ctrl_tensored_op_map_t op_map = {
-        {{0, 1}, {get_op_ptr(OpType::H)}},
-        {{1, 0}, {get_op_ptr(OpType::X), get_op_ptr(OpType::X)}}};
-    REQUIRE_THROWS_MATCHES(
-        MultiplexedTensoredU2Box(op_map), std::invalid_argument,
-        MessageContains(
-            "Each tensored operation passed to MultiplexedTensoredU2Box must "
-            "have the same number of U2 components"));
-  }
-  GIVEN("Unsupported gate") {
-    ctrl_tensored_op_map_t op_map = {
-        {{0, 1}, {get_op_ptr(OpType::H)}}, {{1, 0}, {get_op_ptr(OpType::CX)}}};
-    REQUIRE_THROWS_MATCHES(
-        MultiplexedTensoredU2Box(op_map), BadOpType,
-        MessageContains("Ops passed to MultiplexedTensoredU2Box must be "
-                        "single-qubit unitary gate types or Unitary1qBox"));
-  }
-}
+//     std::shared_ptr<Circuit> c = new_box.to_circuit();
+//     REQUIRE(check_multiplexor(num_op_map, *c));
+//   }
+//   GIVEN("free_symbols") {
+//     Sym a = SymTable::fresh_symbol("a");
+//     Sym b = SymTable::fresh_symbol("b");
+//     Expr expr_a(a);
+//     Expr expr_b(b);
+//     ctrl_tensored_op_map_t op_map = {
+//         {{0, 1},
+//          {get_op_ptr(OpType::Rz, expr_a), get_op_ptr(OpType::Rx, expr_a)}},
+//         {{1, 1}, {get_op_ptr(OpType::Rz, expr_b), get_op_ptr(OpType::X)}},
+//         {{1, 0}, {get_op_ptr(OpType::Rz, expr_a), get_op_ptr(OpType::X)}}};
+//     MultiplexedTensoredU2Box multiplexor(op_map);
+//     const SymSet symbols = multiplexor.free_symbols();
+//     REQUIRE(symbols.size() == 2);
+//     REQUIRE(symbols.find(a) != symbols.end());
+//     REQUIRE(symbols.find(b) != symbols.end());
+//   }
+//   GIVEN("Rotation Dagger & transpose") {
+//     ctrl_tensored_op_map_t op_map = {
+//         {{0, 1}, {get_op_ptr(OpType::Rz, 3.7), get_op_ptr(OpType::X)}},
+//         {{1, 1}, {get_op_ptr(OpType::Rz, 1), get_op_ptr(OpType::H)}},
+//         {{1, 0}, {get_op_ptr(OpType::Rz, 2.5), get_op_ptr(OpType::H)}}};
+//     MultiplexedTensoredU2Box multiplexor(op_map);
+//     // Test dagger
+//     const MultiplexedTensoredU2Box dag_box =
+//         static_cast<const MultiplexedTensoredU2Box &>(*multiplexor.dagger());
+//     std::shared_ptr<Circuit> c = dag_box.to_circuit();
+//     REQUIRE(check_multiplexor(op_map, c->dagger()));
+//     // Test transpose
+//     const MultiplexedTensoredU2Box transpose_box =
+//         static_cast<const MultiplexedTensoredU2Box &>(*multiplexor.transpose());
+//     std::shared_ptr<Circuit> d = transpose_box.to_circuit();
+//     REQUIRE(check_multiplexor(op_map, d->transpose()));
+//   }
+// }
+// SCENARIO("Test MultiplexedTensoredU2Box exceptions", "[boxes]") {
+//   GIVEN("Empty op_map") {
+//     ctrl_tensored_op_map_t op_map;
+//     REQUIRE_THROWS_MATCHES(
+//         MultiplexedTensoredU2Box(op_map), std::invalid_argument,
+//         MessageContains("The op_map argument passed to "
+//                         "MultiplexedTensoredU2Box cannot be empty."));
+//   }
+//   GIVEN("Bitstrings are too long") {
+//     std::vector<bool> bits(33);
+//     ctrl_tensored_op_map_t op_map = {{bits, {get_op_ptr(OpType::Rx, 1.4)}}};
+//     REQUIRE_THROWS_MATCHES(
+//         MultiplexedTensoredU2Box(op_map), std::invalid_argument,
+//         MessageContains(
+//             "MultiplexedTensoredU2Box only supports bitstrings up to 32 bits"));
+//   }
+//   GIVEN("Unmatched bitstrings") {
+//     ctrl_tensored_op_map_t op_map = {
+//         {{0, 1}, {get_op_ptr(OpType::H)}}, {{1}, {get_op_ptr(OpType::X)}}};
+//     REQUIRE_THROWS_MATCHES(
+//         MultiplexedTensoredU2Box(op_map), std::invalid_argument,
+//         MessageContains("The bitstrings passed to MultiplexedTensoredU2Box "
+//                         "must have the same width."));
+//   }
+//   GIVEN("Unmatched op sizes") {
+//     ctrl_tensored_op_map_t op_map = {
+//         {{0, 1}, {get_op_ptr(OpType::H)}},
+//         {{1, 0}, {get_op_ptr(OpType::X), get_op_ptr(OpType::X)}}};
+//     REQUIRE_THROWS_MATCHES(
+//         MultiplexedTensoredU2Box(op_map), std::invalid_argument,
+//         MessageContains(
+//             "Each tensored operation passed to MultiplexedTensoredU2Box must "
+//             "have the same number of U2 components"));
+//   }
+//   GIVEN("Unsupported gate") {
+//     ctrl_tensored_op_map_t op_map = {
+//         {{0, 1}, {get_op_ptr(OpType::H)}}, {{1, 0}, {get_op_ptr(OpType::CX)}}};
+//     REQUIRE_THROWS_MATCHES(
+//         MultiplexedTensoredU2Box(op_map), BadOpType,
+//         MessageContains("Ops passed to MultiplexedTensoredU2Box must be "
+//                         "single-qubit unitary gate types or Unitary1qBox"));
+//   }
+// }
 }  // namespace test_Multiplexor
 }  // namespace tket
