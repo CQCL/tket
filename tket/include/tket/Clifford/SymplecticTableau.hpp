@@ -65,8 +65,8 @@ class SymplecticTableau {
    * gate application and validity checks.
    *
    * It is expected that all Pauli strings in a tableau should be linearly
-   * independent, so a validity check is provided. A utility for checking the
-   * mutual commutativity of terms is also provided.
+   * independent, so a rank method is provided for testing. A utility for
+   * checking the mutual commutativity of terms is also provided.
    *
    * This serves as a base class for:
    * - UnitaryTableau where there is both a Z row and an X row for each input
