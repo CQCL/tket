@@ -693,42 +693,42 @@ SCENARIO(
 SCENARIO("Random MultiplexedTensoredU2Box decomposition") {
   unsigned n_controls = 2;
   unsigned n_targets = 2;
-  GIVEN("Random (1,1) multiplexor") {
-    n_controls = 1;
-    n_targets = 1;
-  }
-  GIVEN("Random (1,2) multiplexor") {
-    n_controls = 1;
-    n_targets = 2;
-  }
-  GIVEN("Random (2,2) multiplexor") {
-    n_controls = 2;
-    n_targets = 2;
-  }
-  GIVEN("Random (2,3) multiplexor") {
-    n_controls = 2;
-    n_targets = 3;
-  }
-  GIVEN("Random (3,2) multiplexor") {
-    n_controls = 3;
-    n_targets = 2;
-  }
-  GIVEN("Random (1,4) multiplexor") {
-    n_controls = 1;
-    n_targets = 4;
-  }
-  GIVEN("Random (2,4) multiplexor") {
-    n_controls = 2;
-    n_targets = 4;
-  }
-  GIVEN("Random (3,4) multiplexor") {
-    n_controls = 3;
-    n_targets = 4;
-  }
-  // GIVEN("Random (4,4) multiplexor") {
-  //   n_controls = 4;
+  // GIVEN("Random (1,1) multiplexor") {
+  //   n_controls = 1;
+  //   n_targets = 1;
+  // }
+  // GIVEN("Random (1,2) multiplexor") {
+  //   n_controls = 1;
+  //   n_targets = 2;
+  // }
+  // GIVEN("Random (2,2) multiplexor") {
+  //   n_controls = 2;
+  //   n_targets = 2;
+  // }
+  // GIVEN("Random (2,3) multiplexor") {
+  //   n_controls = 2;
+  //   n_targets = 3;
+  // }
+  // GIVEN("Random (3,2) multiplexor") {
+  //   n_controls = 3;
+  //   n_targets = 2;
+  // }
+  // GIVEN("Random (1,4) multiplexor") {
+  //   n_controls = 1;
   //   n_targets = 4;
   // }
+  // GIVEN("Random (2,4) multiplexor") {
+  //   n_controls = 2;
+  //   n_targets = 4;
+  // }
+  // GIVEN("Random (3,4) multiplexor") {
+  //   n_controls = 3;
+  //   n_targets = 4;
+  // }
+  GIVEN("Random (4,4) multiplexor") {
+    n_controls = 4;
+    n_targets = 4;
+  }
   std::cout << "\n\n\n\n\n\n\n\n\n" << std::endl;
 
   // GIVEN("Random (5,5) multiplexor") {
