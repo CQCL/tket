@@ -978,11 +978,6 @@ void add_multi_rz(
       std::rotate(
           args.begin(), args.begin() + (target % n_controls_), args.end());
       args.push_back(target + n_controls_);
-      std::cout << "Qubits for Multiplexed-Rz: " << std::endl;
-      for (auto jj : args) {
-        std::cout << jj << " ";
-      }
-      std::cout << std::endl;
       circ.add_box(MultiplexedRotationBox(all_multiplexed_rz[target]), args);
     }
   }
@@ -990,14 +985,15 @@ void add_multi_rz(
 }
 
 Eigen::VectorXcd combine_diagonals(
-    const std::vector<Eigen::VectorXcd> &all_diag_vec, unsigned n_controls_,
+    const std::vector<Eigen::VectorXcd> &all_diags, unsigned n_controls_,
     unsigned n_targets_) {
   Eigen::VectorXcd combined_diag_vec =
       Eigen::VectorXcd::Constant(1ULL << n_controls_, 1);
+  TKET_ASSERT(all_diags.size() == n_targets_);
   for (unsigned rotate = 0; rotate < n_targets_; rotate++) {
-    Eigen::VectorXcd diag_vec = all_diag_vec[rotate];
+    Eigen::VectorXcd diag_vec = all_diags[rotate];
     TKET_ASSERT(diag_vec.size() == combined_diag_vec.size());
-    // the "rotate" indexed diagonal vector in all_diag_vec
+    // the "rotate" indexed diagonal vector in all_diags
     // will have indexing corresponding to a left rotation
     // of the input bit strings of "rotate"
     for (unsigned index = 0; index < diag_vec.size(); index++) {
@@ -1048,18 +1044,18 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
   // Multiplexed-Rz on the target qubit and a Diagonal gate over the control
   // register
   std::vector<ctrl_op_map_t> all_multiplexed_rz;
-  std::vector<Eigen::VectorXcd> all_diag_vec;
+  std::vector<Eigen::VectorXcd> all_diags;
   for (unsigned i = 0; i < m_u2_decomps.size(); i++) {
     std::pair<ctrl_op_map_t, Eigen::VectorXcd> disentangled =
         disentangle_final_qubit_from_diagonal(
             m_u2_decomps[i].diag, n_controls_);
     all_multiplexed_rz.push_back(disentangled.first);
-    all_diag_vec.push_back(disentangled.second);
+    all_diags.push_back(disentangled.second);
   }
 
   // Final we merge the diagonals over the same qubits into a combined operator
   Eigen::VectorXcd combined_diag_vec =
-      combine_diagonals(all_diag_vec, n_controls_, n_targets_);
+      combine_diagonals(all_diags, n_controls_, n_targets_);
 
   // Now we can construct the circuit - first we add the U1 + CX segment of the
   // circuit construction with interleaving

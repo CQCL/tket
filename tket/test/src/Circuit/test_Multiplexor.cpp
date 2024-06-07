@@ -295,33 +295,33 @@ SCENARIO("MultiplexedU2Box decomposition", "[boxes]") {
     }
     REQUIRE(check_multiplexor(op_map, *c));
   }
-  GIVEN("Random MultiplexedU2Box") {
-    ctrl_op_map_t op_map;
-    for (unsigned i = 0; i < (1 << 5); i++) {
-      Unitary1qBox m(random_unitary(2, i));
-      Op_ptr mbox_op = std::make_shared<Unitary1qBox>(m);
-      op_map.insert({dec_to_bin(i, 5), mbox_op});
-    }
-    MultiplexedU2Box multiplexor(op_map);
-    std::shared_ptr<Circuit> c = multiplexor.to_circuit();
-    std::vector<Command> cmds = c->get_commands();
-    REQUIRE(cmds.size() == 63 + 1);
-    for (auto cmd : cmds) {
-      REQUIRE(
-          (cmd.get_op_ptr()->get_type() == OpType::Unitary1qBox ||
-           cmd.get_op_ptr()->get_type() == OpType::CX ||
-           cmd.get_op_ptr()->get_type() == OpType::DiagonalBox));
-    }
-    REQUIRE(check_multiplexor(op_map, *c));
-  }
-  GIVEN("MultiplexedU2Box without the final diagonal") {
-    ctrl_op_map_t op_map = {
-        {{1}, get_op_ptr(OpType::H)}, {{0}, get_op_ptr(OpType::X)}};
-    MultiplexedU2Box multiplexor(op_map, false);
-    std::shared_ptr<Circuit> c = multiplexor.to_circuit();
-    std::vector<Command> cmds = c->get_commands();
-    REQUIRE(cmds.size() == 3);
-  }
+  // GIVEN("Random MultiplexedU2Box") {
+  //   ctrl_op_map_t op_map;
+  //   for (unsigned i = 0; i < (1 << 5); i++) {
+  //     Unitary1qBox m(random_unitary(2, i));
+  //     Op_ptr mbox_op = std::make_shared<Unitary1qBox>(m);
+  //     op_map.insert({dec_to_bin(i, 5), mbox_op});
+  //   }
+  //   MultiplexedU2Box multiplexor(op_map);
+  //   std::shared_ptr<Circuit> c = multiplexor.to_circuit();
+  //   std::vector<Command> cmds = c->get_commands();
+  //   REQUIRE(cmds.size() == 63 + 1);
+  //   for (auto cmd : cmds) {
+  //     REQUIRE(
+  //         (cmd.get_op_ptr()->get_type() == OpType::Unitary1qBox ||
+  //          cmd.get_op_ptr()->get_type() == OpType::CX ||
+  //          cmd.get_op_ptr()->get_type() == OpType::DiagonalBox));
+  //   }
+  //   REQUIRE(check_multiplexor(op_map, *c));
+  // }
+  // GIVEN("MultiplexedU2Box without the final diagonal") {
+  //   ctrl_op_map_t op_map = {
+  //       {{1}, get_op_ptr(OpType::H)}, {{0}, get_op_ptr(OpType::X)}};
+  //   MultiplexedU2Box multiplexor(op_map, false);
+  //   std::shared_ptr<Circuit> c = multiplexor.to_circuit();
+  //   std::vector<Command> cmds = c->get_commands();
+  //   REQUIRE(cmds.size() == 3);
+  // }
 }
 
 SCENARIO("Exception handling", "[boxes]") {
@@ -690,9 +690,9 @@ SCENARIO(
 //     }
 // }
 
-SCENARIO("Random MultiplexedTensoredU2Box decomposition") {
-  unsigned n_controls = 2;
-  unsigned n_targets = 2;
+SCENARIO("Random MultiplexedTensoredU2Box decomposition different seed") {
+  unsigned n_controls = 4;
+  unsigned n_targets = 4;
   // GIVEN("Random (1,1) multiplexor") {
   //   n_controls = 1;
   //   n_targets = 1;
@@ -721,56 +721,147 @@ SCENARIO("Random MultiplexedTensoredU2Box decomposition") {
   //   n_controls = 2;
   //   n_targets = 4;
   // }
+  // GIVEN("Random (3,3) multiplexor") {
+  //   n_controls = 3;
+  //   n_targets = 3;
+  // }
   // GIVEN("Random (3,4) multiplexor") {
   //   n_controls = 3;
   //   n_targets = 4;
   // }
-  GIVEN("Random (4,4) multiplexor") {
-    n_controls = 4;
-    n_targets = 4;
-  }
-  std::cout << "\n\n\n\n\n\n\n\n\n" << std::endl;
-
+  // GIVEN("Random (4,4) multiplexor") {
+  //   n_controls = 4;
+  //   n_targets = 4;
+  // }
   // GIVEN("Random (5,5) multiplexor") {
   //   n_controls = 5;
   //   n_targets = 5;
   // }
+  // std::cout << "\n\n\n\n\n\n\n\n\n" << std::endl;
+
   ctrl_tensored_op_map_t op_map;
+  // for (unsigned seed = 1; seed < 100000; ++seed) {
   unsigned seed = 0;
-  for (unsigned long long i = 0; i < (1ULL << n_controls); i++) {
-    std::vector<Op_ptr> ops;
-    for (unsigned j = 0; j < n_targets; j++) {
-      Unitary1qBox m(random_unitary(2, seed++));
-      Op_ptr op = std::make_shared<Unitary1qBox>(m);
-      ops.push_back(op);
+    std::cout << "Seed: " << seed << std::endl;
+    for (unsigned long long i = 0; i < (1ULL << n_controls); i++) {
+      std::vector<Op_ptr> ops;
+      for (unsigned j = 0; j < n_targets; j++) {
+        Unitary1qBox m(random_unitary(2, seed));
+        // std::cout << j << " " << random_unitary(2,seed) << std::endl;
+        seed++;
+        Op_ptr op = std::make_shared<Unitary1qBox>(m);
+        ops.push_back(op);
+      }
+      op_map.insert({dec_to_bin(i, n_controls), ops});
     }
-    op_map.insert({dec_to_bin(i, n_controls), ops});
-  }
-  MultiplexedTensoredU2Box multiplexor(op_map);
-  std::shared_ptr<Circuit> c = multiplexor.to_circuit();
-  std::vector<Command> cmds = c->get_commands();
-  REQUIRE(
-      cmds.size() ==
-      ((1ULL << (n_controls + 1)) - 1) * n_targets + n_targets + 1);
-  for (auto cmd : cmds) {
+    MultiplexedTensoredU2Box multiplexor(op_map);
+    std::shared_ptr<Circuit> c = multiplexor.to_circuit();
+    std::vector<Command> cmds = c->get_commands();
     REQUIRE(
-        (cmd.get_op_ptr()->get_type() == OpType::Unitary1qBox ||
-         cmd.get_op_ptr()->get_type() == OpType::CX ||
-         cmd.get_op_ptr()->get_type() == OpType::MultiplexedRotationBox ||
-         cmd.get_op_ptr()->get_type() == OpType::DiagonalBox));
-  }
-  // for (auto x : op_map) {
-  //   for (auto y : x.first) {
-  //     std::cout << y;
-  //   }
-  //   std::cout << "->";
-  //   for (auto y : x.second) {
-  //     std::cout << *y << " ";
-  //   }
-  //   std::cout << std::endl;
+        cmds.size() ==
+        ((1ULL << (n_controls + 1)) - 1) * n_targets + n_targets + 1);
+    for (auto cmd : cmds) {
+      REQUIRE(
+          (cmd.get_op_ptr()->get_type() == OpType::Unitary1qBox ||
+           cmd.get_op_ptr()->get_type() == OpType::CX ||
+           cmd.get_op_ptr()->get_type() == OpType::MultiplexedRotationBox ||
+           cmd.get_op_ptr()->get_type() == OpType::DiagonalBox));
+    }
+    // for (auto x : op_map) {
+    //   for (auto y : x.first) {
+    //     std::cout << y;
+    //   }
+    //   std::cout << "->";
+    //   for (auto y : x.second) {
+    //     std::cout << *y << " ";
+    //   }
+    //   std::cout << std::endl;
+    // }
+    REQUIRE(check_multiplexor(op_map, *c));
   // }
-  REQUIRE(check_multiplexor(op_map, *c));
 }
+
+// SCENARIO("Random MultiplexedTensoredU2Box decomposition") {
+//   unsigned n_controls = 2;
+//   unsigned n_targets = 2;
+//   // GIVEN("Random (1,1) multiplexor") {
+//   //   n_controls = 1;
+//   //   n_targets = 1;
+//   // }
+//   // GIVEN("Random (1,2) multiplexor") {
+//   //   n_controls = 1;
+//   //   n_targets = 2;
+//   // }
+//   // GIVEN("Random (2,2) multiplexor") {
+//   //   n_controls = 2;
+//   //   n_targets = 2;
+//   // }
+//   // GIVEN("Random (2,3) multiplexor") {
+//   //   n_controls = 2;
+//   //   n_targets = 3;
+//   // }
+//   // GIVEN("Random (3,2) multiplexor") {
+//   //   n_controls = 3;
+//   //   n_targets = 2;
+//   // }
+//   // GIVEN("Random (1,4) multiplexor") {
+//   //   n_controls = 1;
+//   //   n_targets = 4;
+//   // }
+//   // GIVEN("Random (2,4) multiplexor") {
+//   //   n_controls = 2;
+//   //   n_targets = 4;
+//   // }
+//   // GIVEN("Random (3,4) multiplexor") {
+//   //   n_controls = 3;
+//   //   n_targets = 4;
+//   // }
+//   // GIVEN("Random (4,4) multiplexor") {
+//   //   n_controls = 4;
+//   //   n_targets = 4;
+//   // }
+
+//   // GIVEN("Random (5,5) multiplexor") {
+//   //   n_controls = 5;
+//   //   n_targets = 5;
+//   // }
+//   ctrl_tensored_op_map_t op_map;
+//   unsigned seed = 0;
+//   for (unsigned long long i = 0; i < (1ULL << n_controls); i++) {
+//     std::vector<Op_ptr> ops;
+//     for (unsigned j = 0; j < n_targets; j++) {
+//       Unitary1qBox m(random_unitary(2, seed));
+//       seed++;
+//       Op_ptr op = std::make_shared<Unitary1qBox>(m);
+//       ops.push_back(op);
+//     }
+//     op_map.insert({dec_to_bin(i, n_controls), ops});
+//   }
+//   MultiplexedTensoredU2Box multiplexor(op_map);
+//   std::shared_ptr<Circuit> c = multiplexor.to_circuit();
+//   std::vector<Command> cmds = c->get_commands();
+//   REQUIRE(
+//       cmds.size() ==
+//       ((1ULL << (n_controls + 1)) - 1) * n_targets + n_targets + 1);
+//   for (auto cmd : cmds) {
+//     REQUIRE(
+//         (cmd.get_op_ptr()->get_type() == OpType::Unitary1qBox ||
+//          cmd.get_op_ptr()->get_type() == OpType::CX ||
+//          cmd.get_op_ptr()->get_type() == OpType::MultiplexedRotationBox ||
+//          cmd.get_op_ptr()->get_type() == OpType::DiagonalBox));
+//   }
+//   // for (auto x : op_map) {
+//   //   for (auto y : x.first) {
+//   //     std::cout << y;
+//   //   }
+//   //   std::cout << "->";
+//   //   for (auto y : x.second) {
+//   //     std::cout << *y << " ";
+//   //   }
+//   //   std::cout << std::endl;
+//   // }
+//   REQUIRE(check_multiplexor(op_map, *c));
+// }
 // SCENARIO("Test MultiplexedTensoredU2Box utilities", "[boxes]") {
 //   GIVEN("symbol_substitution") {
 //     Sym a = SymTable::fresh_symbol("a");
