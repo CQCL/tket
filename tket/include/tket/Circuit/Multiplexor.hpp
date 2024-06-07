@@ -97,8 +97,9 @@ class MultiplexorBox : public Box {
 };
 
 struct GateSpec {
-  // TODO: this struct is a little confused as only CX needs qubit, only Unitary1QBox needs matrix and
-  // only Rotation gates need angle. ... should probably make them optional ...
+  // TODO: this struct is a little confused as only CX needs qubit, only
+  // Unitary1QBox needs matrix and only Rotation gates need angle. ... should
+  // probably make them optional ...
   OpType type;
   unsigned qubit;
   Eigen::Matrix2cd matrix;
