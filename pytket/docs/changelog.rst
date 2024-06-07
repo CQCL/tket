@@ -9,6 +9,7 @@ Features:
 * Add ``OpType.CnRx`` and ``OpType.CnRz``.
 * Add ``AutoRebase`` and ``AutoSquash`` passes.
   Deprecate ``auto_rebase_pass`` and ``auto_squash_pass``.
+* Improve depth of circuit produced by ``MultiplexedTensoredU2Box``.
 
 Fixes:
 

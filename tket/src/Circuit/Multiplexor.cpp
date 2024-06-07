@@ -118,20 +118,16 @@ static void recursive_demultiplex_rotation(
   }
   if (q_angles.size() == 1) {
     // base step
-    // circ.add_op<unsigned>(axis, q_angles[0], {total_qubits - 1});
     commands.push_back(
         GateSpec(axis, 0, Eigen::Matrix2cd::Identity(), q_angles[0]));
   } else {
     recursive_demultiplex_rotation(
         q_angles, axis, total_qubits, commands, RecursionNodeType::Left);
   }
-  // circ.add_op<unsigned>(
-  // OpType::CX, {total_qubits - n_qubits, total_qubits - 1});
   commands.push_back(GateSpec(
       OpType::CX, total_qubits - n_qubits, Eigen::Matrix2cd::Identity(), 0));
   if (p_angles.size() == 1) {
     // base step
-    // circ.add_op<unsigned>(axis, p_angles[0], {total_qubits - 1});
     commands.push_back(
         GateSpec(axis, 0, Eigen::Matrix2cd::Identity(), p_angles[0]));
   } else {
@@ -140,8 +136,6 @@ static void recursive_demultiplex_rotation(
   }
   if (node_type == RecursionNodeType::Root) {
     // for the root step, we implement UCR = CX P CX Q
-    // circ.add_op<unsigned>(
-    // OpType::CX, {total_qubits - n_qubits, total_qubits - 1});
     commands.push_back(GateSpec(
         OpType::CX, total_qubits - n_qubits, Eigen::Matrix2cd::Identity(), 0));
   }
@@ -579,7 +573,6 @@ std::vector<GateSpec> MultiplexedRotationBox::decompose() const {
   std::vector<GateSpec> commands;
   OpType axis = axis_;
   if (axis_ == OpType::Rx) {
-    // circ.add_op<unsigned>(OpType::H, {n_controls_});
     commands.push_back(
         GateSpec(OpType::H, n_controls_, Eigen::Matrix2cd::Identity(), 0));
     axis = OpType::Rz;
@@ -587,7 +580,6 @@ std::vector<GateSpec> MultiplexedRotationBox::decompose() const {
   recursive_demultiplex_rotation(
       rotations, axis, n_controls_ + 1, commands, RecursionNodeType::Root);
   if (axis_ == OpType::Rx) {
-    // circ.add_op<unsigned>(OpType::H, {n_controls_});
     commands.push_back(
         GateSpec(OpType::H, n_controls_, Eigen::Matrix2cd::Identity(), 0));
   }
@@ -1005,21 +997,42 @@ void add_multi_rz(
     Circuit &circ, const std::vector<ctrl_op_map_t> &all_multiplexed_rz,
     unsigned n_controls_, unsigned n_targets_) {
   TKET_ASSERT(all_multiplexed_rz.size() == n_targets_);
+  std::vector<std::vector<GateSpec>> all_decomps;
+  // First get all GateSpec by constructing and decomposing
+  // MultiplexedRotationBox
   for (unsigned target = 0; target < n_targets_; target++) {
-    ctrl_op_map_t multiplexor_args = all_multiplexed_rz[target];
-    // n.b. we skim angle arguments if they're below some threshold
-    // therefore we check before adding to make sure we aren't adding
-    // "empty" multiplexed rz
-    if (!multiplexor_args.empty()) {
-      std::vector<unsigned> args(n_controls_);
-      std::iota(args.begin(), args.end(), 0);
-      // The "target" number MultiplexedU2 will have had its corresponding
-      // bitstrings left rotated by target % n_controls_
-      // Therefore we also need to rotate the control qubits to match this
-      std::rotate(
-          args.begin(), args.begin() + (target % n_controls_), args.end());
-      args.push_back(target + n_controls_);
-      circ.add_box(MultiplexedRotationBox(all_multiplexed_rz[target]), args);
+    all_decomps.push_back(
+        MultiplexedRotationBox(all_multiplexed_rz[target]).decompose());
+  }
+  TKET_ASSERT(!all_decomps.empty());
+  unsigned reference_size = all_decomps[0].size();
+  // TODO: is there a neater way to incorporate this check? It should always be
+  // true but if it weren't the effects might be quite bad, so I want to keep it
+  for (unsigned i = 1; i < all_decomps.size(); i++) {
+    TKET_ASSERT(reference_size == all_decomps[i].size());
+  }
+
+  // Then iterate through all the commands, adding them to the circuit
+  // in an interleaved manner
+  for (unsigned i = 0; i < reference_size; i++) {
+    for (unsigned target = 0; target < all_decomps.size(); target++) {
+      GateSpec gate = all_decomps[target][i];
+      switch (gate.type) {
+        case OpType::CX:
+          // we also need to map gate.qubit to the correct qubit
+          // we know that the bitstrings for the "target"th target have been
+          // left rotated by "target", so:
+          circ.add_op<unsigned>(
+              OpType::CX, {(gate.qubit + (target % n_targets_)) % n_controls_,
+                           n_controls_ + target});
+          break;
+        case OpType::Rz:
+          circ.add_op<unsigned>(OpType::Rz, gate.angle, {n_controls_ + target});
+          break;
+        default:
+          // this should never be hit
+          TKET_ASSERT(false);
+      }
     }
   }
   return;
