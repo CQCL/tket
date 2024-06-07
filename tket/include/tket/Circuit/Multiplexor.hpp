@@ -96,6 +96,18 @@ class MultiplexorBox : public Box {
   ctrl_op_map_t op_map_;
 };
 
+struct GateSpec {
+  OpType type;
+  unsigned qubit;
+  Eigen::Matrix2cd matrix;
+  Expr angle;
+
+  GateSpec(
+      const OpType &type_, unsigned qubit_, const Eigen::Matrix2cd &matrix_,
+      Expr angle_)
+      : type(type_), qubit(qubit_), matrix(matrix_), angle(angle_) {}
+};
+
 /**
  * Multiplexed single-axis rotations
  */
@@ -139,6 +151,8 @@ class MultiplexedRotationBox : public Box {
 
   static nlohmann::json to_json(const Op_ptr &op);
 
+  std::vector<GateSpec> decompose() const;
+
  protected:
   /**
    * @brief Implement multiplexed rotation
@@ -154,16 +168,6 @@ class MultiplexedRotationBox : public Box {
   unsigned n_controls_;
   ctrl_op_map_t op_map_;
   OpType axis_;
-};
-
-struct GateSpec {
-  OpType type;
-  unsigned qubit;
-  Eigen::Matrix2cd matrix;
-
-  GateSpec(
-      const OpType &type_, unsigned qubit_, const Eigen::Matrix2cd &matrix_)
-      : type(type_), qubit(qubit_), matrix(matrix_) {}
 };
 
 struct MultiplexedU2Commands {

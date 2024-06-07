@@ -100,7 +100,7 @@ enum class RecursionNodeType { Left = 0, Right = 1, Root = 2 };
  */
 static void recursive_demultiplex_rotation(
     const std::vector<Expr> &angles, const OpType &axis, unsigned total_qubits,
-    Circuit &circ, const RecursionNodeType &node_type) {
+    std::vector<GateSpec> &commands, const RecursionNodeType &node_type) {
   unsigned n_rotations = angles.size();
   unsigned n_qubits = (unsigned)log2(n_rotations) + 1;
   unsigned mid = (unsigned)(n_rotations / 2);
@@ -118,24 +118,32 @@ static void recursive_demultiplex_rotation(
   }
   if (q_angles.size() == 1) {
     // base step
-    circ.add_op<unsigned>(axis, q_angles[0], {total_qubits - 1});
+    // circ.add_op<unsigned>(axis, q_angles[0], {total_qubits - 1});
+    commands.push_back(
+        GateSpec(axis, 0, Eigen::Matrix2cd::Identity(), q_angles[0]));
   } else {
     recursive_demultiplex_rotation(
-        q_angles, axis, total_qubits, circ, RecursionNodeType::Left);
+        q_angles, axis, total_qubits, commands, RecursionNodeType::Left);
   }
-  circ.add_op<unsigned>(
-      OpType::CX, {total_qubits - n_qubits, total_qubits - 1});
+  // circ.add_op<unsigned>(
+  // OpType::CX, {total_qubits - n_qubits, total_qubits - 1});
+  commands.push_back(GateSpec(
+      OpType::CX, total_qubits - n_qubits, Eigen::Matrix2cd::Identity(), 0));
   if (p_angles.size() == 1) {
     // base step
-    circ.add_op<unsigned>(axis, p_angles[0], {total_qubits - 1});
+    // circ.add_op<unsigned>(axis, p_angles[0], {total_qubits - 1});
+    commands.push_back(
+        GateSpec(axis, 0, Eigen::Matrix2cd::Identity(), p_angles[0]));
   } else {
     recursive_demultiplex_rotation(
-        p_angles, axis, total_qubits, circ, RecursionNodeType::Right);
+        p_angles, axis, total_qubits, commands, RecursionNodeType::Right);
   }
   if (node_type == RecursionNodeType::Root) {
     // for the root step, we implement UCR = CX P CX Q
-    circ.add_op<unsigned>(
-        OpType::CX, {total_qubits - n_qubits, total_qubits - 1});
+    // circ.add_op<unsigned>(
+    // OpType::CX, {total_qubits - n_qubits, total_qubits - 1});
+    commands.push_back(GateSpec(
+        OpType::CX, total_qubits - n_qubits, Eigen::Matrix2cd::Identity(), 0));
   }
 }
 
@@ -320,19 +328,19 @@ static void recursive_demultiplex_u2(
   // add v
   if (v_list.size() == 1) {
     Eigen::Matrix2cd v_prime = V_MULT * v_list[0] * left_compose;
-    commands.push_back(GateSpec(OpType::U1, 0, v_prime));
+    commands.push_back(GateSpec(OpType::U1, 0, v_prime, 0));
   } else {
     recursive_demultiplex_u2(
         v_list, total_qubits, commands, phase, ucrzs, left_compose, V_MULT);
   }
   // add CX
   commands.push_back(GateSpec(
-      OpType::CX, total_qubits - n_qubits, Eigen::Matrix2cd::Identity()));
+      OpType::CX, total_qubits - n_qubits, Eigen::Matrix2cd::Identity(), 0));
   phase = phase + 1.75;
   // add u
   if (u_list.size() == 1) {
     Eigen::Matrix2cd u_prime = right_compose * u_list[0] * U_MULT;
-    commands.push_back(GateSpec(OpType::U1, 0, u_prime));
+    commands.push_back(GateSpec(OpType::U1, 0, u_prime, 0));
 
   } else {
     recursive_demultiplex_u2(
@@ -556,14 +564,7 @@ Op_ptr MultiplexedRotationBox::from_json(const nlohmann::json &j) {
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
 }
 
-void MultiplexedRotationBox::generate_circuit() const {
-  Circuit circ(n_controls_ + 1);
-  if (n_controls_ == 0) {
-    auto it = op_map_.begin();
-    circ.add_op<unsigned>(it->second, {0});
-    circ_ = std::make_shared<Circuit>(circ);
-    return;
-  }
+std::vector<GateSpec> MultiplexedRotationBox::decompose() const {
   unsigned long long n_rotations = 1ULL << n_controls_;
   std::vector<Expr> rotations(n_rotations);
   // convert op_map to a vector of 2^n_controls_ angles
@@ -575,16 +576,56 @@ void MultiplexedRotationBox::generate_circuit() const {
       rotations[i] = it->second->get_params()[0];
     }
   }
+  std::vector<GateSpec> commands;
   OpType axis = axis_;
   if (axis_ == OpType::Rx) {
-    circ.add_op<unsigned>(OpType::H, {n_controls_});
+    // circ.add_op<unsigned>(OpType::H, {n_controls_});
+    commands.push_back(
+        GateSpec(OpType::H, n_controls_, Eigen::Matrix2cd::Identity(), 0));
     axis = OpType::Rz;
   }
   recursive_demultiplex_rotation(
-      rotations, axis, n_controls_ + 1, circ, RecursionNodeType::Root);
+      rotations, axis, n_controls_ + 1, commands, RecursionNodeType::Root);
   if (axis_ == OpType::Rx) {
-    circ.add_op<unsigned>(OpType::H, {n_controls_});
+    // circ.add_op<unsigned>(OpType::H, {n_controls_});
+    commands.push_back(
+        GateSpec(OpType::H, n_controls_, Eigen::Matrix2cd::Identity(), 0));
   }
+  return commands;
+}
+
+void MultiplexedRotationBox::generate_circuit() const {
+  Circuit circ(n_controls_ + 1);
+  if (n_controls_ == 0) {
+    auto it = op_map_.begin();
+    circ.add_op<unsigned>(it->second, {0});
+    circ_ = std::make_shared<Circuit>(circ);
+    return;
+  }
+
+  for (const GateSpec &gs : this->decompose()) {
+    switch (gs.type) {
+      case OpType::CX:
+        circ.add_op<unsigned>(OpType::CX, {gs.qubit, n_controls_});
+        break;
+      case OpType::Rx:
+        circ.add_op<unsigned>(OpType::Rx, gs.angle, {n_controls_});
+        break;
+      case OpType::Ry:
+        circ.add_op<unsigned>(OpType::Ry, gs.angle, {n_controls_});
+        break;
+      case OpType::Rz:
+        circ.add_op<unsigned>(OpType::Rz, gs.angle, {n_controls_});
+        break;
+      case OpType::H:
+        circ.add_op<unsigned>(OpType::H, {n_controls_});
+        break;
+      default:
+        // this should never be hit
+        TKET_ASSERT(false);
+    }
+  }
+
   circ_ = std::make_shared<Circuit>(circ);
 }
 
