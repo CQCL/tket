@@ -619,7 +619,6 @@ SCENARIO(
   REQUIRE(check_multiplexor(op_map, *c));
 }
 
-
 SCENARIO(
     "Simple MultiplexedTensoredU2Box decomposition with rotating string and 4 "
     "controls, 5 targets",
@@ -650,33 +649,86 @@ SCENARIO(
   REQUIRE(check_multiplexor(op_map, *c));
 }
 
+// // Function to rotate an index to the right by a given amount
+// unsigned int rotate_right(unsigned int index, unsigned int n_controls_,
+// unsigned int rotate) {
+//     unsigned int rotate_value = rotate % n_controls_;
+//     unsigned int rotated_index =
+//         (index >> rotate_value) |
+//         ((index << (n_controls_ - rotate_value)) & ((1 << n_controls_) - 1));
+//     return rotated_index;
+// }
+
+// SCENARIO("rotating") {
+//     // Number of bits in the bitstring
+//     unsigned int n_controls_ = 4; // Example with 5 bits
+
+//     // Example indices and rotation values to test
+//     unsigned int indices[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+//     14, 15};
+//     // unsigned int rotations[] = {1, 2, 3, 4, 5};
+
+//     unsigned int rotations[] = {3};
+//     // Test each combination of index and rotation
+//     for (unsigned int index : indices) {
+//         for (unsigned int rotate : rotations) {
+//             // Perform the rotation
+//             unsigned int rotated_index = rotate_right(index, n_controls_,
+//             rotate);
+
+//             // Convert to bitsets for display
+//             std::bitset<4> original_bits(index); // Change the size according
+//             to n_controls_ std::bitset<4> rotated_bits(rotated_index);
+
+//             // Print the results
+//             std::cout << "Index: " << original_bits << " (" << index << ")"
+//                       << ", Rotate by: " << rotate
+//                       << ", Rotated: " << rotated_bits << " (" <<
+//                       rotated_index << ")" << std::endl;
+//         }
+//         std::cout << std::endl;
+//     }
+// }
+
 SCENARIO("Random MultiplexedTensoredU2Box decomposition") {
   unsigned n_controls = 2;
   unsigned n_targets = 2;
-  // GIVEN("Random (1,1) multiplexor") {
-  //   n_controls = 1;
-  //   n_targets = 1;
-  // }
-  // GIVEN("Random (1,2) multiplexor") {
-  //   n_controls = 1;
-  //   n_targets = 2;
-  // }
-  // GIVEN("Random (2,2) multiplexor") {
-  //   n_controls = 2;
-  //   n_targets = 2;
-  // }
-  // GIVEN("Random (2,3) multiplexor") {
-  //   n_controls = 2;
-  //   n_targets = 3;
-  // }
-  // GIVEN("Random (3,2) multiplexor") {
-  //   n_controls = 3;
-  //   n_targets = 2;
-  // }
-  GIVEN("Random (4,4) multiplexor") {
-    n_controls = 4;
+  GIVEN("Random (1,1) multiplexor") {
+    n_controls = 1;
+    n_targets = 1;
+  }
+  GIVEN("Random (1,2) multiplexor") {
+    n_controls = 1;
+    n_targets = 2;
+  }
+  GIVEN("Random (2,2) multiplexor") {
+    n_controls = 2;
+    n_targets = 2;
+  }
+  GIVEN("Random (2,3) multiplexor") {
+    n_controls = 2;
+    n_targets = 3;
+  }
+  GIVEN("Random (3,2) multiplexor") {
+    n_controls = 3;
+    n_targets = 2;
+  }
+  GIVEN("Random (1,4) multiplexor") {
+    n_controls = 1;
     n_targets = 4;
   }
+  GIVEN("Random (2,4) multiplexor") {
+    n_controls = 2;
+    n_targets = 4;
+  }
+  GIVEN("Random (3,4) multiplexor") {
+    n_controls = 3;
+    n_targets = 4;
+  }
+  // GIVEN("Random (4,4) multiplexor") {
+  //   n_controls = 4;
+  //   n_targets = 4;
+  // }
   std::cout << "\n\n\n\n\n\n\n\n\n" << std::endl;
 
   // GIVEN("Random (5,5) multiplexor") {
@@ -707,17 +759,16 @@ SCENARIO("Random MultiplexedTensoredU2Box decomposition") {
          cmd.get_op_ptr()->get_type() == OpType::MultiplexedRotationBox ||
          cmd.get_op_ptr()->get_type() == OpType::DiagonalBox));
   }
-  for (auto x : op_map) {
-    for (auto y : x.first) {
-      std::cout << y;
-    }
-    std::cout << "->";
-    for (auto y : x.second) {
-      std::cout << *y << " ";
-    }
-    std::cout << std::endl;
-  }
-  std::cout << *c << std::endl;
+  // for (auto x : op_map) {
+  //   for (auto y : x.first) {
+  //     std::cout << y;
+  //   }
+  //   std::cout << "->";
+  //   for (auto y : x.second) {
+  //     std::cout << *y << " ";
+  //   }
+  //   std::cout << std::endl;
+  // }
   REQUIRE(check_multiplexor(op_map, *c));
 }
 // SCENARIO("Test MultiplexedTensoredU2Box utilities", "[boxes]") {
@@ -768,7 +819,8 @@ SCENARIO("Random MultiplexedTensoredU2Box decomposition") {
 //     REQUIRE(check_multiplexor(op_map, c->dagger()));
 //     // Test transpose
 //     const MultiplexedTensoredU2Box transpose_box =
-//         static_cast<const MultiplexedTensoredU2Box &>(*multiplexor.transpose());
+//         static_cast<const MultiplexedTensoredU2Box
+//         &>(*multiplexor.transpose());
 //     std::shared_ptr<Circuit> d = transpose_box.to_circuit();
 //     REQUIRE(check_multiplexor(op_map, d->transpose()));
 //   }
@@ -787,7 +839,8 @@ SCENARIO("Random MultiplexedTensoredU2Box decomposition") {
 //     REQUIRE_THROWS_MATCHES(
 //         MultiplexedTensoredU2Box(op_map), std::invalid_argument,
 //         MessageContains(
-//             "MultiplexedTensoredU2Box only supports bitstrings up to 32 bits"));
+//             "MultiplexedTensoredU2Box only supports bitstrings up to 32
+//             bits"));
 //   }
 //   GIVEN("Unmatched bitstrings") {
 //     ctrl_tensored_op_map_t op_map = {
@@ -804,12 +857,13 @@ SCENARIO("Random MultiplexedTensoredU2Box decomposition") {
 //     REQUIRE_THROWS_MATCHES(
 //         MultiplexedTensoredU2Box(op_map), std::invalid_argument,
 //         MessageContains(
-//             "Each tensored operation passed to MultiplexedTensoredU2Box must "
-//             "have the same number of U2 components"));
+//             "Each tensored operation passed to MultiplexedTensoredU2Box must
+//             " "have the same number of U2 components"));
 //   }
 //   GIVEN("Unsupported gate") {
 //     ctrl_tensored_op_map_t op_map = {
-//         {{0, 1}, {get_op_ptr(OpType::H)}}, {{1, 0}, {get_op_ptr(OpType::CX)}}};
+//         {{0, 1}, {get_op_ptr(OpType::H)}}, {{1, 0},
+//         {get_op_ptr(OpType::CX)}}};
 //     REQUIRE_THROWS_MATCHES(
 //         MultiplexedTensoredU2Box(op_map), BadOpType,
 //         MessageContains("Ops passed to MultiplexedTensoredU2Box must be "
