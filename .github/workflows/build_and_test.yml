@@ -282,15 +282,9 @@ jobs:
       with:
         python-version: '3.12'
     - name: Build pytket
-      if: github.event_name != 'schedule'
       run: |
         cd pytket
         pip install -e .[ZX] -v
-    - name: Build pytket
-      if: github.event_name == 'schedule' # https://github.com/CQCL/tket/issues/1242
-      run: |
-        cd pytket
-        pip install -e . -v
     - name: Run doctests
       run: |
         cd pytket

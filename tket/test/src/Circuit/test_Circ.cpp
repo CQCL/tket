@@ -1012,11 +1012,34 @@ SCENARIO(
   }
 
   test.add_blank_wires(8);
-  int n = test.n_vertices();
+  REQUIRE(test.n_bits() == 0);
+  REQUIRE(test.n_qubits() == 10);
   test.remove_blank_wires();
-  int m = test.n_vertices();
-  REQUIRE(n == 22);
-  REQUIRE(m == 6);
+  REQUIRE(test.n_bits() == 0);
+  REQUIRE(test.n_qubits() == 2);
+  test.assert_valid();
+}
+
+SCENARIO(
+    "Test a circuit with blank wires can have the blank wires removed keeping "
+    "classical",
+    "[blank_wires]") {
+  Circuit test(4, 2);
+  test.add_op<unsigned>(OpType::CX, {0, 1});
+  test.add_op<unsigned>(OpType::Z, {0});
+
+  WHEN("Check Commands work correctly") {
+    std::vector<Command> coms = test.get_commands();
+    REQUIRE(*coms[0].get_op_ptr() == *get_op_ptr(OpType::CX));
+    REQUIRE(*coms[1].get_op_ptr() == *get_op_ptr(OpType::Z));
+  }
+
+  test.add_blank_wires(8);
+  REQUIRE(test.n_bits() == 2);
+  REQUIRE(test.n_qubits() == 12);
+  test.remove_blank_wires(true);
+  REQUIRE(test.n_bits() == 2);
+  REQUIRE(test.n_qubits() == 2);
   test.assert_valid();
 }
 
