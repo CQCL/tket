@@ -329,6 +329,7 @@ static void recursive_demultiplex_u2(
   // add CX
   commands.push_back(GateSpec(
       OpType::CX, total_qubits - n_qubits, std::nullopt, std::nullopt));
+  std::cout << 
   phase += 1.75;
   // add u
   if (u_list.size() == 1) {
@@ -728,8 +729,8 @@ MultiplexedU2Commands MultiplexedU2Box::decompose() const {
     ucrzs[i] = std::vector<double>(1ULL << (i + 1), 0.0);
   }
 
-  std::vector<GateSpec> commands;
-  float phase;
+  std::vector<GateSpec> commands = {};
+  float phase = 0;
   recursive_demultiplex_u2(
       unitaries, n_controls_ + 1, commands, phase, ucrzs,
       Eigen::Matrix2cd::Identity(), Eigen::Matrix2cd::Identity());
