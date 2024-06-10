@@ -1010,8 +1010,6 @@ void add_multi_rz(
   }
   TKET_ASSERT(!all_decomps.empty());
   unsigned reference_size = all_decomps[0].size();
-  // TODO: is there a neater way to incorporate this check? It should always be
-  // true but if it weren't the effects might be quite bad, so I want to keep it
   for (unsigned i = 1; i < all_decomps.size(); i++) {
     TKET_ASSERT(reference_size == all_decomps[i].size());
   }

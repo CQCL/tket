@@ -93,7 +93,7 @@ static bool check_multiplexor(
   Circuit circ_copy(circ);
   circ_copy.decompose_boxes_recursively();
   Eigen::MatrixXcd circ_u = tket_sim::get_unitary(circ_copy);
-  return (correct_u - circ_u).cwiseAbs().sum() < ERR_EPS;
+  return (correct_u - circ_u).cwiseAbs().sum() < 2e-9;
 }
 
 SCENARIO("MultiplexorBox decomposition", "[boxes]") {
