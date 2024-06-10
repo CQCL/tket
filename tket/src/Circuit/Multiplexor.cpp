@@ -1021,15 +1021,15 @@ void add_multi_rz(
   for (unsigned i = 0; i < reference_size; i++) {
     for (unsigned target = 0; target < all_decomps.size(); target++) {
       GateSpec gate = all_decomps[target][i];
+      unsigned rotated_index;
       switch (gate.type) {
         case OpType::CX:
           // we also need to map gate.qubit to the correct qubit
           // we know that the bitstrings for the "target"th target have been
           // left rotated by "target", so:
-
+          rotated_index = (*gate.qubit + (target % n_targets_)) % n_controls_;
           circ.add_op<unsigned>(
-              OpType::CX, {(*gate.qubit + (target % n_targets_)) % n_controls_,
-                           n_controls_ + target});
+              OpType::CX, {rotated_index, n_controls_ + target});
           break;
         case OpType::Rz:
           circ.add_op<unsigned>(
@@ -1063,14 +1063,23 @@ Eigen::VectorXcd combine_diagonals(
       unsigned rotate_value = rotate % n_controls_;
       std::vector<bool> as_bits = dec_to_bin(index, n_controls_);
       // right rotate
+      std::cout << "\n" << std::endl;
+      std::cout << "Original index: " << index << std::endl;
+      std::cout << "Original bits: ";
+      for(auto b : as_bits){
+        std::cout << b;
+      }
       std::rotate(
           as_bits.begin(), as_bits.begin() + (as_bits.size() - rotate_value),
           as_bits.end());
+      std::cout << "\nRotate by: " << rotate_value << std::endl;
       unsigned rotated_index = bin_to_dec(as_bits);
-      // unsigned rotated_index =
-      //     (index >> rotate_value) |
-      //     ((index << (n_controls_ - rotate_value)) & ((1 << n_controls_) -
-      //     1));
+
+      std::cout << "Rotated Index: " << rotated_index << std::endl;
+      std::cout << "Rotated bits: ";
+      for(auto b : as_bits){
+        std::cout << b;
+      }
       TKET_ASSERT(rotated_index <= combined_diag_vec.size());
       // This gives a new index for updating the correct element of the
       // diagonal vector
