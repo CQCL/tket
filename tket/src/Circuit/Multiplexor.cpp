@@ -118,18 +118,16 @@ static void recursive_demultiplex_rotation(
   }
   if (q_angles.size() == 1) {
     // base step
-    commands.push_back(
-        GateSpec(axis, 0, Eigen::Matrix2cd::Identity(), q_angles[0]));
+    commands.push_back(GateSpec(axis, std::nullopt, std::nullopt, q_angles[0]));
   } else {
     recursive_demultiplex_rotation(
         q_angles, axis, total_qubits, commands, RecursionNodeType::Left);
   }
   commands.push_back(GateSpec(
-      OpType::CX, total_qubits - n_qubits, Eigen::Matrix2cd::Identity(), 0));
+      OpType::CX, total_qubits - n_qubits, std::nullopt, std::nullopt));
   if (p_angles.size() == 1) {
     // base step
-    commands.push_back(
-        GateSpec(axis, 0, Eigen::Matrix2cd::Identity(), p_angles[0]));
+    commands.push_back(GateSpec(axis, std::nullopt, std::nullopt, p_angles[0]));
   } else {
     recursive_demultiplex_rotation(
         p_angles, axis, total_qubits, commands, RecursionNodeType::Right);
@@ -137,7 +135,7 @@ static void recursive_demultiplex_rotation(
   if (node_type == RecursionNodeType::Root) {
     // for the root step, we implement UCR = CX P CX Q
     commands.push_back(GateSpec(
-        OpType::CX, total_qubits - n_qubits, Eigen::Matrix2cd::Identity(), 0));
+        OpType::CX, total_qubits - n_qubits, std::nullopt, std::nullopt));
   }
 }
 
@@ -322,19 +320,21 @@ static void recursive_demultiplex_u2(
   // add v
   if (v_list.size() == 1) {
     Eigen::Matrix2cd v_prime = V_MULT * v_list[0] * left_compose;
-    commands.push_back(GateSpec(OpType::U1, 0, v_prime, 0));
+    commands.push_back(
+        GateSpec(OpType::U1, std::nullopt, v_prime, std::nullopt));
   } else {
     recursive_demultiplex_u2(
         v_list, total_qubits, commands, phase, ucrzs, left_compose, V_MULT);
   }
   // add CX
   commands.push_back(GateSpec(
-      OpType::CX, total_qubits - n_qubits, Eigen::Matrix2cd::Identity(), 0));
+      OpType::CX, total_qubits - n_qubits, std::nullopt, std::nullopt));
   phase += 1.75;
   // add u
   if (u_list.size() == 1) {
     Eigen::Matrix2cd u_prime = right_compose * u_list[0] * U_MULT;
-    commands.push_back(GateSpec(OpType::U1, 0, u_prime, 0));
+    commands.push_back(
+        GateSpec(OpType::U1, std::nullopt, u_prime, std::nullopt));
   } else {
     recursive_demultiplex_u2(
         u_list, total_qubits, commands, phase, ucrzs, U_MULT, right_compose);
@@ -573,14 +573,14 @@ std::vector<GateSpec> MultiplexedRotationBox::decompose() const {
   OpType axis = axis_;
   if (axis_ == OpType::Rx) {
     commands.push_back(
-        GateSpec(OpType::H, n_controls_, Eigen::Matrix2cd::Identity(), 0));
+        GateSpec(OpType::H, n_controls_, std::nullopt, std::nullopt));
     axis = OpType::Rz;
   }
   recursive_demultiplex_rotation(
       rotations, axis, n_controls_ + 1, commands, RecursionNodeType::Root);
   if (axis_ == OpType::Rx) {
     commands.push_back(
-        GateSpec(OpType::H, n_controls_, Eigen::Matrix2cd::Identity(), 0));
+        GateSpec(OpType::H, n_controls_, std::nullopt, std::nullopt));
   }
   return commands;
 }
@@ -733,6 +733,8 @@ MultiplexedU2Commands MultiplexedU2Box::decompose() const {
   recursive_demultiplex_u2(
       unitaries, n_controls_ + 1, commands, phase, ucrzs,
       Eigen::Matrix2cd::Identity(), Eigen::Matrix2cd::Identity());
+  std::cout << "Final Phase: " << phase << std::endl;
+  std::cout << "N commands: " << commands.size() << std::endl;
   // convert the ucrzs to a diagonal matrix
   Eigen::VectorXcd diag =
       Eigen::VectorXcd::Constant(1ULL << (n_controls_ + 1), 1);
@@ -775,13 +777,9 @@ void MultiplexedU2Box::generate_circuit() const {
     switch (gc.type) {
       case OpType::CX:
         circ.add_op<unsigned>(OpType::CX, {*gc.qubit, n_controls_});
-        TKET_ASSERT(gc.matrix == Eigen::Matrix2cd::Identity());
-        TKET_ASSERT(gc.angle == 0);
         break;
       case OpType::U1:
         circ.add_box(Unitary1qBox(*gc.matrix), {n_controls_});
-        TKET_ASSERT(gc.qubit == 0);
-        TKET_ASSERT(gc.angle == 0);
         break;
       default:
         // this should never be hit
@@ -953,11 +951,6 @@ void add_cx_u1(
           rotated_index = (*gate.qubit + (target % n_targets_)) % n_controls_;
           circ.add_op<unsigned>(
               OpType::CX, {rotated_index, n_controls_ + target});
-          std::cout << "Original Index: " << *gate.qubit
-                    << " | Rotated by: " << target
-                    << " | to get: " << rotated_index << " | Given there are "
-                    << n_controls_ << " Qubits." << std::endl;
-
           break;
         case OpType::U1:
           circ.add_box(Unitary1qBox(*gate.matrix), {n_controls_ + target});
