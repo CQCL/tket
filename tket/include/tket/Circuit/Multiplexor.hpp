@@ -101,13 +101,14 @@ struct GateSpec {
   // Unitary1QBox needs matrix and only Rotation gates need angle. ... should
   // probably make them optional ...
   OpType type;
-  unsigned qubit;
-  Eigen::Matrix2cd matrix;
-  Expr angle;
+  std::optional<unsigned> qubit;
+  std::optional<Eigen::Matrix2cd> matrix;
+  std::optional<Expr> angle;
 
   GateSpec(
-      const OpType &type_, unsigned qubit_, const Eigen::Matrix2cd &matrix_,
-      Expr angle_)
+      const OpType &type_, std::optional<unsigned> qubit_,
+      const std::optional<Eigen::Matrix2cd> &matrix_,
+      std::optional<Expr> angle_)
       : type(type_), qubit(qubit_), matrix(matrix_), angle(angle_) {}
 };
 

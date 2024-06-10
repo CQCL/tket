@@ -330,12 +330,11 @@ static void recursive_demultiplex_u2(
   // add CX
   commands.push_back(GateSpec(
       OpType::CX, total_qubits - n_qubits, Eigen::Matrix2cd::Identity(), 0));
-  phase = phase + 1.75;
+  phase += 1.75;
   // add u
   if (u_list.size() == 1) {
     Eigen::Matrix2cd u_prime = right_compose * u_list[0] * U_MULT;
     commands.push_back(GateSpec(OpType::U1, 0, u_prime, 0));
-
   } else {
     recursive_demultiplex_u2(
         u_list, total_qubits, commands, phase, ucrzs, U_MULT, right_compose);
@@ -598,16 +597,16 @@ void MultiplexedRotationBox::generate_circuit() const {
   for (const GateSpec &gs : this->decompose()) {
     switch (gs.type) {
       case OpType::CX:
-        circ.add_op<unsigned>(OpType::CX, {gs.qubit, n_controls_});
+        circ.add_op<unsigned>(OpType::CX, {*gs.qubit, n_controls_});
         break;
       case OpType::Rx:
-        circ.add_op<unsigned>(OpType::Rx, gs.angle, {n_controls_});
+        circ.add_op<unsigned>(OpType::Rx, *gs.angle, {n_controls_});
         break;
       case OpType::Ry:
-        circ.add_op<unsigned>(OpType::Ry, gs.angle, {n_controls_});
+        circ.add_op<unsigned>(OpType::Ry, *gs.angle, {n_controls_});
         break;
       case OpType::Rz:
-        circ.add_op<unsigned>(OpType::Rz, gs.angle, {n_controls_});
+        circ.add_op<unsigned>(OpType::Rz, *gs.angle, {n_controls_});
         break;
       case OpType::H:
         circ.add_op<unsigned>(OpType::H, {n_controls_});
@@ -722,6 +721,7 @@ MultiplexedU2Commands MultiplexedU2Box::decompose() const {
       }
     }
   }
+
   // initialise the ucrz list
   std::vector<std::vector<double>> ucrzs(n_controls_);
   for (unsigned i = 0; i < n_controls_; i++) {
@@ -774,10 +774,14 @@ void MultiplexedU2Box::generate_circuit() const {
     // n.b. with zero indexing "n_controls" corresponds to the target qubit
     switch (gc.type) {
       case OpType::CX:
-        circ.add_op<unsigned>(OpType::CX, {gc.qubit, n_controls_});
+        circ.add_op<unsigned>(OpType::CX, {*gc.qubit, n_controls_});
+        TKET_ASSERT(gc.matrix == Eigen::Matrix2cd::Identity());
+        TKET_ASSERT(gc.angle == 0);
         break;
       case OpType::U1:
-        circ.add_box(Unitary1qBox(gc.matrix), {n_controls_});
+        circ.add_box(Unitary1qBox(*gc.matrix), {n_controls_});
+        TKET_ASSERT(gc.qubit == 0);
+        TKET_ASSERT(gc.angle == 0);
         break;
       default:
         // this should never be hit
@@ -940,17 +944,23 @@ void add_cx_u1(
   for (unsigned i = 0; i < reference_size; i++) {
     for (unsigned target = 0; target < m_u2_decomps.size(); target++) {
       GateSpec gate = m_u2_decomps[target].commands[i];
+      unsigned rotated_index;
       switch (gate.type) {
         case OpType::CX:
           // we also need to map gate.qubit to the correct qubit
           // we know that the bitstrings for the "target"th target have been
           // left rotated by "target", so:
+          rotated_index = (*gate.qubit + (target % n_targets_)) % n_controls_;
           circ.add_op<unsigned>(
-              OpType::CX, {(gate.qubit + (target % n_targets_)) % n_controls_,
-                           n_controls_ + target});
+              OpType::CX, {rotated_index, n_controls_ + target});
+          std::cout << "Original Index: " << *gate.qubit
+                    << " | Rotated by: " << target
+                    << " | to get: " << rotated_index << " | Given there are "
+                    << n_controls_ << " Qubits." << std::endl;
+
           break;
         case OpType::U1:
-          circ.add_box(Unitary1qBox(gate.matrix), {n_controls_ + target});
+          circ.add_box(Unitary1qBox(*gate.matrix), {n_controls_ + target});
           break;
         default:
           // this should never be hit
@@ -1022,12 +1032,14 @@ void add_multi_rz(
           // we also need to map gate.qubit to the correct qubit
           // we know that the bitstrings for the "target"th target have been
           // left rotated by "target", so:
+
           circ.add_op<unsigned>(
-              OpType::CX, {(gate.qubit + (target % n_targets_)) % n_controls_,
+              OpType::CX, {(*gate.qubit + (target % n_targets_)) % n_controls_,
                            n_controls_ + target});
           break;
         case OpType::Rz:
-          circ.add_op<unsigned>(OpType::Rz, gate.angle, {n_controls_ + target});
+          circ.add_op<unsigned>(
+              OpType::Rz, *gate.angle, {n_controls_ + target});
           break;
         default:
           // this should never be hit
@@ -1036,25 +1048,6 @@ void add_multi_rz(
     }
   }
   return;
-}
-
-std::vector<bool> index_as_bits(unsigned int value, unsigned int bit_length) {
-  std::vector<bool> index_bits(bit_length, false);
-  for (unsigned int i = 0; i < bit_length; ++i) {
-    index_bits[bit_length - 1 - i] = (value & (1 << i)) != 0;
-  }
-  return index_bits;
-}
-
-unsigned int bits_as_index(const std::vector<bool> &index_bits) {
-  unsigned int result = 0;
-  unsigned int bit_length = index_bits.size();
-  for (unsigned int i = 0; i < bit_length; ++i) {
-    if (index_bits[i]) {
-      result |= (1 << (bit_length - 1 - i));
-    }
-  }
-  return result;
 }
 
 Eigen::VectorXcd combine_diagonals(
@@ -1074,12 +1067,12 @@ Eigen::VectorXcd combine_diagonals(
       // the value "index", convert it to a bitstring, right
       // rotate it by "rotate" and convert it back an integer.
       unsigned rotate_value = rotate % n_controls_;
-      std::vector<bool> as_bits = index_as_bits(index, n_controls_);
+      std::vector<bool> as_bits = dec_to_bin(index, n_controls_);
       // right rotate
       std::rotate(
           as_bits.begin(), as_bits.begin() + (as_bits.size() - rotate_value),
           as_bits.end());
-      unsigned rotated_index = bits_as_index(as_bits);
+      unsigned rotated_index = bin_to_dec(as_bits);
       // unsigned rotated_index =
       //     (index >> rotate_value) |
       //     ((index << (n_controls_ - rotate_value)) & ((1 << n_controls_) -
