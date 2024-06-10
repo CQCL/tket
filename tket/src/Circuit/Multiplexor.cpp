@@ -329,7 +329,7 @@ static void recursive_demultiplex_u2(
   // add CX
   commands.push_back(GateSpec(
       OpType::CX, total_qubits - n_qubits, std::nullopt, std::nullopt));
-  // std::cout << 
+
   phase += 1.75;
   // add u
   if (u_list.size() == 1) {

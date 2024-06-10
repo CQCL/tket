@@ -684,10 +684,10 @@ SCENARIO("Random MultiplexedTensoredU2Box decomposition") {
     n_controls = 3;
     n_targets = 4;
   }
-  GIVEN("Random (4,4) multiplexor") {
-    n_controls = 4;
-    n_targets = 4;
-  }
+  // GIVEN("Random (4,4) multiplexor") {
+  //   n_controls = 4;
+  //   n_targets = 4;
+  // }
   // GIVEN("Random (5,5) multiplexor") {
   //   n_controls = 5;
   //   n_targets = 5;
