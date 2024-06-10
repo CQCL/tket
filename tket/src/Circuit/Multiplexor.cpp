@@ -924,7 +924,7 @@ Op_ptr MultiplexedTensoredU2Box::from_json(const nlohmann::json &j) {
 void add_cx_u1(
     Circuit &circ, const std::vector<MultiplexedU2Commands> &m_u2_decomps,
     unsigned n_controls_, unsigned n_targets_) {
-  TKET_ASSERT(!m_u2_decomps.empty());
+  TKET_ASSERT(m_u2_decomps.size() == n_targets_);
   // Each Multiplexor Decomposition will be up to some global phase
   // First we add these phase contributions to the circuit
   unsigned reference_size = m_u2_decomps[0].commands.size();
@@ -1038,6 +1038,25 @@ void add_multi_rz(
   return;
 }
 
+std::vector<bool> index_as_bits(unsigned int value, unsigned int bit_length) {
+  std::vector<bool> index_bits(bit_length, false);
+  for (unsigned int i = 0; i < bit_length; ++i) {
+    index_bits[bit_length - 1 - i] = (value & (1 << i)) != 0;
+  }
+  return index_bits;
+}
+
+unsigned int bits_as_index(const std::vector<bool> &index_bits) {
+  unsigned int result = 0;
+  unsigned int bit_length = index_bits.size();
+  for (unsigned int i = 0; i < bit_length; ++i) {
+    if (index_bits[i]) {
+      result |= (1 << (bit_length - 1 - i));
+    }
+  }
+  return result;
+}
+
 Eigen::VectorXcd combine_diagonals(
     const std::vector<Eigen::VectorXcd> &all_diags, unsigned n_controls_,
     unsigned n_targets_) {
@@ -1055,9 +1074,16 @@ Eigen::VectorXcd combine_diagonals(
       // the value "index", convert it to a bitstring, right
       // rotate it by "rotate" and convert it back an integer.
       unsigned rotate_value = rotate % n_controls_;
-      unsigned rotated_index =
-          (index >> rotate_value) |
-          ((index << (n_controls_ - rotate_value)) & ((1 << n_controls_) - 1));
+      std::vector<bool> as_bits = index_as_bits(index, n_controls_);
+      // right rotate
+      std::rotate(
+          as_bits.begin(), as_bits.begin() + (as_bits.size() - rotate_value),
+          as_bits.end());
+      unsigned rotated_index = bits_as_index(as_bits);
+      // unsigned rotated_index =
+      //     (index >> rotate_value) |
+      //     ((index << (n_controls_ - rotate_value)) & ((1 << n_controls_) -
+      //     1));
       TKET_ASSERT(rotated_index <= combined_diag_vec.size());
       // This gives a new index for updating the correct element of the
       // diagonal vector
