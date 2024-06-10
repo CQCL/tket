@@ -734,8 +734,6 @@ MultiplexedU2Commands MultiplexedU2Box::decompose() const {
   recursive_demultiplex_u2(
       unitaries, n_controls_ + 1, commands, phase, ucrzs,
       Eigen::Matrix2cd::Identity(), Eigen::Matrix2cd::Identity());
-  std::cout << "Final Phase: " << phase << std::endl;
-  std::cout << "N commands: " << commands.size() << std::endl;
   // convert the ucrzs to a diagonal matrix
   Eigen::VectorXcd diag =
       Eigen::VectorXcd::Constant(1ULL << (n_controls_ + 1), 1);
@@ -950,10 +948,12 @@ void add_cx_u1(
           // we know that the bitstrings for the "target"th target have been
           // left rotated by "target", so:
           rotated_index = (*gate.qubit + (target % n_targets_)) % n_controls_;
+          TKET_ASSERT(i % 2 == 1);
           circ.add_op<unsigned>(
               OpType::CX, {rotated_index, n_controls_ + target});
           break;
         case OpType::U1:
+          TKET_ASSERT(i % 2 == 0);
           circ.add_box(Unitary1qBox(*gate.matrix), {n_controls_ + target});
           break;
         default:
@@ -1063,23 +1063,10 @@ Eigen::VectorXcd combine_diagonals(
       unsigned rotate_value = rotate % n_controls_;
       std::vector<bool> as_bits = dec_to_bin(index, n_controls_);
       // right rotate
-      std::cout << "\n" << std::endl;
-      std::cout << "Original index: " << index << std::endl;
-      std::cout << "Original bits: ";
-      for(auto b : as_bits){
-        std::cout << b;
-      }
       std::rotate(
           as_bits.begin(), as_bits.begin() + (as_bits.size() - rotate_value),
           as_bits.end());
-      std::cout << "\nRotate by: " << rotate_value << std::endl;
       unsigned rotated_index = bin_to_dec(as_bits);
-
-      std::cout << "Rotated Index: " << rotated_index << std::endl;
-      std::cout << "Rotated bits: ";
-      for(auto b : as_bits){
-        std::cout << b;
-      }
       TKET_ASSERT(rotated_index <= combined_diag_vec.size());
       // This gives a new index for updating the correct element of the
       // diagonal vector

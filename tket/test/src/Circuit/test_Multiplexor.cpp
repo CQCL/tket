@@ -684,14 +684,14 @@ SCENARIO("Random MultiplexedTensoredU2Box decomposition") {
     n_controls = 3;
     n_targets = 4;
   }
-  // GIVEN("Random (4,4) multiplexor") {
-  //   n_controls = 4;
-  //   n_targets = 4;
-  // }
-  // GIVEN("Random (5,5) multiplexor") {
-  //   n_controls = 5;
-  //   n_targets = 5;
-  // }
+  GIVEN("Random (4,4) multiplexor") {
+    n_controls = 4;
+    n_targets = 4;
+  }
+  GIVEN("Random (5,5) multiplexor") {
+    n_controls = 5;
+    n_targets = 5;
+  }
   ctrl_tensored_op_map_t op_map;
   unsigned seed = 0;
   for (unsigned long long i = 0; i < (1ULL << n_controls); i++) {
@@ -707,9 +707,6 @@ SCENARIO("Random MultiplexedTensoredU2Box decomposition") {
   MultiplexedTensoredU2Box multiplexor(op_map);
   std::shared_ptr<Circuit> c = multiplexor.to_circuit();
   std::vector<Command> cmds = c->get_commands();
-  // REQUIRE(
-  // cmds.size() ==
-  // ((1ULL << (n_controls + 1)) - 1) * n_targets + n_targets + 1);
   for (auto cmd : cmds) {
     REQUIRE(
         (cmd.get_op_ptr()->get_type() == OpType::Unitary1qBox ||
