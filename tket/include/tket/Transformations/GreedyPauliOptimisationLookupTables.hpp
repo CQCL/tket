@@ -162,6 +162,41 @@ const static std::unordered_map<
         {{1, 1}, {TQEType::XZ, TQEType::YZ, TQEType::ZX, TQEType::ZY}}};
 
 /**
+ * @brief Maps a pair of entries in a singlet support vector
+ * to a set of 4 TQE gates that will return a support with at least one 0
+ */
+const static std::unordered_map<
+    std::pair<unsigned, unsigned>, std::vector<TQEType>, hash_pair>
+    ALL_SINGLET_PAIR_REDUCTION_TQES = {
+        {{0, 1},
+         {TQEType::XY, TQEType::YX, TQEType::ZY, TQEType::XZ, TQEType::YY,
+          TQEType::ZZ}},
+        {{1, 0},
+         {TQEType::XX, TQEType::XZ, TQEType::YY, TQEType::XY, TQEType::YX,
+          TQEType::YZ}},
+        {{0, 2},
+         {TQEType::XY, TQEType::YX, TQEType::ZY, TQEType::XX, TQEType::YY,
+          TQEType::ZX}},
+        {{2, 0},
+         {TQEType::XX, TQEType::XZ, TQEType::YY, TQEType::XY, TQEType::YX,
+          TQEType::YZ}},
+        {{0, 3},
+         {TQEType::YX, TQEType::YZ, TQEType::XX, TQEType::XZ, TQEType::ZZ,
+          TQEType::ZX}},
+        {{3, 0},
+         {TQEType::XY, TQEType::ZY, TQEType::XX, TQEType::XZ, TQEType::ZZ,
+          TQEType::ZX}},
+        {{2, 2}, {TQEType::XY, TQEType::XZ, TQEType::YX, TQEType::ZX}},
+        {{3, 2}, {TQEType::XX, TQEType::YY, TQEType::YZ, TQEType::ZX}},
+        {{1, 2}, {TQEType::XX, TQEType::YX, TQEType::ZY, TQEType::ZZ}},
+        {{2, 3}, {TQEType::XX, TQEType::XZ, TQEType::YY, TQEType::ZY}},
+        {{3, 3}, {TQEType::XY, TQEType::YX, TQEType::YZ, TQEType::ZY}},
+        {{1, 3}, {TQEType::XY, TQEType::YY, TQEType::ZX, TQEType::ZZ}},
+        {{2, 1}, {TQEType::XX, TQEType::XY, TQEType::YZ, TQEType::ZZ}},
+        {{3, 1}, {TQEType::XZ, TQEType::YX, TQEType::YY, TQEType::ZZ}},
+        {{1, 1}, {TQEType::XZ, TQEType::YZ, TQEType::ZX, TQEType::ZY}}};
+
+/**
  * @brief Transform a pair of entries in a factor support vector using a TQE
  */
 const static std::unordered_map<

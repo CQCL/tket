@@ -15,6 +15,7 @@
 #pragma once
 
 #include "Transform.hpp"
+#include "tket/Architecture/Architecture.hpp"
 #include "tket/Circuit/Circuit.hpp"
 
 namespace tket {
@@ -55,6 +56,8 @@ enum class LocalCliffordType {
  */
 using TQE = std::tuple<TQEType, unsigned, unsigned>;
 
+typedef std::vector<unsigned> pauli_letter_distances_t;
+
 /**
  * @brief A Pauli exponential described by its commutation relations
  * with the rows in a reference Clifford tableau.
@@ -91,6 +94,20 @@ class PauliExpNode {
    */
   int tqe_cost_increase(const TQE& tqe) const;
 
+  int aas_tqe_cost_increase(
+      const TQE& tqe, std::shared_ptr<Architecture> architecture,
+      const std::map<unsigned, Node>& node_mapping) const;
+
+  /**
+   * @brief For each pair of indices in the support_vec_, returns
+   * a vector where value n at index d gives the number of pairs at
+   * distance index on the architecure graph
+   */
+  pauli_letter_distances_t all_distances(
+      const std::vector<unsigned>& support,
+      std::shared_ptr<Architecture> architecture,
+      const std::map<unsigned, Node>& node_mapping) const;
+
   /**
    * @brief Update the support vector with a TQE gate
    *
@@ -106,6 +123,13 @@ class PauliExpNode {
    * @return std::vector<std::tuple<TQEType, unsigned, unsigned>>
    */
   std::vector<TQE> reduction_tqes() const;
+
+  /**
+   * @brief return all TQE gates
+   *
+   * @return std::vector<std::pair<unsigned, unsigned>>
+   */
+  std::vector<TQE> reduction_tqes_all_letters() const;
 
   /**
    * @brief Return the index and value of the first support
