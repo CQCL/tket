@@ -324,7 +324,60 @@ SCENARIO("Test arbitrary circuit with architecture") {
   REQUIRE(Transforms::aas_greedy_pauli_optimisation(a).apply(d));
   REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
   std::cout << d << std::endl;
-  std::cout << d.count_n_qubit_gates(2) << " " << copy.count_n_qubit_gates(2) << std::endl;
+  std::cout << d.count_n_qubit_gates(2) << " " << copy.count_n_qubit_gates(2)
+            << std::endl;
 }
+
+SCENARIO(
+    "Dense CX circuits route succesfully on smart placement unfriendly "
+    "architecture.") {
+  GIVEN("Complex CX circuits, big ring") {
+    Circuit circ(14);
+    for (unsigned x = 0; x < 13; ++x) {
+      for (unsigned y = 0; y + 1 < x; ++y) {
+        if (x % 2) {
+          add_2qb_gates(circ, OpType::CX, {{x, y}, {y + 1, y}});
+          add_1qb_gates(circ, OpType::H, {{x, y, y + 1}});
+          circ.add_op<unsigned>(OpType::Rx, 0.13, {x});
+        } else {
+          add_2qb_gates(circ, OpType::CX, {{y, x}, {y, y + 1}});
+          add_1qb_gates(circ, OpType::S, {{x, y, y + 1}});
+          circ.add_op<unsigned>(OpType::Ry, 0.49, {x});
+        }
+        add_1qb_gates(circ, OpType::Vdg, {x, y});
+      }
+    }
+    Architecture arc(std::vector<std::pair<unsigned, unsigned>>{
+        {0, 1},
+        {2, 0},
+        {2, 4},
+        {6, 4},
+        {8, 6},
+        {8, 10},
+        {12, 10},
+        {3, 1},
+        {3, 5},
+        {7, 5},
+        {7, 9},
+        {11, 9},
+        {11, 13},
+        {12, 13},
+        {6, 7}});
+
+    std::shared_ptr<Architecture> a = std::make_shared<Architecture>(arc);
+    Circuit copy(circ);
+    std::cout << circ.count_n_qubit_gates(2) << std::endl;
+    REQUIRE(Transforms::aas_greedy_pauli_optimisation(a).apply(circ));
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
+    std::cout << circ.count_n_qubit_gates(2) << " "
+              << copy.count_n_qubit_gates(2) << std::endl;
+    // MappingManager mm(std::make_shared<Architecture>(arc));
+    // REQUIRE(mm.route_circuit(
+    //     circ, {std::make_shared<LexiLabellingMethod>(),
+    //            std::make_shared<LexiRouteRoutingMethod>()}));
+    // REQUIRE(respects_connectivity_constraints(circ, arc, false, true));
+  }
+}
+
 }  // namespace test_GreedyPauliSimp
 }  // namespace tket

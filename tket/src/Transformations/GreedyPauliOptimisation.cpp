@@ -169,9 +169,8 @@ std::vector<unsigned> PauliExpNode::get_updated_support(const TQE& tqe) const {
   return updated;
 }
 
-bool PauliExpNode::updates_support(const TQE& tqe) const{
+bool PauliExpNode::updates_support(const TQE& tqe) const {
   return !(this->get_updated_support(tqe) == this->support_vec_);
-
 }
 
 pauli_letter_distances_t PauliExpNode::get_updated_distance(
@@ -909,7 +908,8 @@ static void aas_pauli_exps_synthesis(
     }
 
     // std::cout << "Number of candidates produced: " << tqe_candidates.size()
-    //           << " | number of remaining rotation sets " << rotation_sets.size()
+    //           << " | number of remaining rotation sets " <<
+    //           rotation_sets.size()
     //           << " | number of remaining exponetials in set: "
     //           << first_set.size() << std::endl;
     // std::cout << "All remaining exponentials: " << std::endl;
@@ -939,14 +939,14 @@ static void aas_pauli_exps_synthesis(
       bool updates_one = false;
       for (const unsigned& index : min_nodes_indices) {
         PauliExpNode pen = first_set[index];
-        if(!updates_one && pen.updates_support(tqe)) updates_one = true;
-          pauli_letter_distances_t d = pen.get_updated_distance(
-              tqe, architecture, node_mapping);
-          TKET_ASSERT(letter_distances.size() == d.size());
-          for (unsigned i = 0; i < d.size(); i++) {
-            letter_distances[i] += d[i];
+        if (!updates_one && pen.updates_support(tqe)) updates_one = true;
+        pauli_letter_distances_t d =
+            pen.get_updated_distance(tqe, architecture, node_mapping);
+        TKET_ASSERT(letter_distances.size() == d.size());
+        for (unsigned i = 0; i < d.size(); i++) {
+          letter_distances[i] += d[i];
         }
-          updated_supports.push_back(pen.get_updated_support(tqe));
+        updated_supports.push_back(pen.get_updated_support(tqe));
       }
 
       // Calculate total distance
@@ -960,8 +960,8 @@ static void aas_pauli_exps_synthesis(
       //   std::cout << p << " ";
       // }
       // std::cout << std::endl;
-      // std::cout << "It also produces the following updated supports: " << std::endl;
-      // for(auto p : updated_supports){
+      // std::cout << "It also produces the following updated supports: " <<
+      // std::endl; for(auto p : updated_supports){
       //   for(auto i :p){
       //     std::cout << i;
       //   }
@@ -970,7 +970,7 @@ static void aas_pauli_exps_synthesis(
       // std::cout << "Finally is it valid? " << updates_one << std::endl;
 
       // If candidate_tqe is not set, set it with the current candidate
-      if(!updates_one) continue; 
+      if (!updates_one) continue;
       if (!candidate_tqe.has_value()) {
         candidate_tqe.emplace(total_distance, tqe, letter_distances);
         continue;
