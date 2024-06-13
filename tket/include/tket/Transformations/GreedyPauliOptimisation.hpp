@@ -129,7 +129,9 @@ class PauliExpNode {
    *
    * @return std::vector<std::pair<unsigned, unsigned>>
    */
-  std::vector<TQE> reduction_tqes_all_letters() const;
+  std::vector<TQE> reduction_tqes_all_letters(
+      std::shared_ptr<Architecture> architecture,
+      const std::map<unsigned, Node>& node_mapping) const;
 
   /**
    * @brief Return the index and value of the first support
@@ -137,6 +139,8 @@ class PauliExpNode {
    * @return std::pair<unsigned, unsigned>
    */
   std::pair<unsigned, unsigned> first_support() const;
+
+  void pad_support_vector(unsigned width);
 
  private:
   std::vector<unsigned> support_vec_;
@@ -229,11 +233,16 @@ enum class SupportType : unsigned {
  * @return Circuit
  */
 Circuit greedy_pauli_graph_synthesis(
-    const Circuit& circ, double discount_rate = 0.7, double depth_weight = 0.3);
+    const Circuit& circ, double discount_rate = 0.7, double depth_weight = 0.3,
+    std::optional<std::shared_ptr<Architecture>> architecture = std::nullopt);
 }  // namespace GreedyPauliSimp
 
 Transform greedy_pauli_optimisation(
     double discount_rate = 0.7, double depth_weight = 0.3);
+
+Transform aas_greedy_pauli_optimisation(
+    std::shared_ptr<Architecture> architecture, double discount_rate = 0.7,
+    double depth_weight = 0.3);
 
 }  // namespace Transforms
 

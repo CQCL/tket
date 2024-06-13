@@ -17,6 +17,7 @@
 #include <optional>
 
 #include "testutil.hpp"
+#include "tket/Architecture/Architecture.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
@@ -289,6 +290,39 @@ SCENARIO("Test GreedyPauliSimp pass construction") {
     CHECK(gen_greedy_pauli_simp(0.3, 0.5)->apply(cu));
     REQUIRE(test_unitary_comparison(c, cu.get_circ_ref(), true));
   }
+}
+
+SCENARIO("Test arbitrary circuit with architecture") {
+  Architecture architecture({{0, 1}, {1, 2}, {2, 3}, {3, 4}});
+  Circuit circ(5);
+  circ.add_op<unsigned>(OpType::X, {0});
+  circ.add_op<unsigned>(OpType::SWAP, {1, 2});
+  circ.add_op<unsigned>(OpType::Rz, 0.1, {1});
+  circ.add_op<unsigned>(OpType::CX, {0, 2});
+  circ.add_op<unsigned>(OpType::SWAP, {2, 3});
+  circ.add_op<unsigned>(OpType::Ry, 0.2, {3});
+  circ.add_op<unsigned>(OpType::Ry, 0.15, {2});
+  circ.add_op<unsigned>(OpType::H, {3});
+  circ.add_op<unsigned>(OpType::Rz, 0.3, {4});
+  circ.add_op<unsigned>(OpType::CZ, {1, 4});
+  circ.add_op<unsigned>(OpType::ZZMax, {1, 2});
+  circ.add_op<unsigned>(OpType::T, {4});
+  circ.add_op<unsigned>(OpType::X, {0});
+  circ.add_op<unsigned>(OpType::ZZPhase, 0.7, {3, 2});
+  circ.add_op<unsigned>(OpType::T, {3});
+  circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+  circ.add_op<unsigned>(OpType::Z, {2});
+  circ.add_op<unsigned>(OpType::SWAP, {3, 1});
+  circ.add_op<unsigned>(OpType::CX, {1, 4});
+  circ.add_op<unsigned>(OpType::T, {0});
+  circ.add_op<unsigned>(OpType::CY, {0, 2});
+  circ.add_op<unsigned>(OpType::SWAP, {1, 2});
+  Circuit d(circ);
+  std::shared_ptr<Architecture> a =
+      std::make_shared<Architecture>(architecture);
+  REQUIRE(Transforms::aas_greedy_pauli_optimisation(a).apply(d));
+
+  std::cout << d << std::endl;
 }
 }  // namespace test_GreedyPauliSimp
 }  // namespace tket

@@ -428,6 +428,23 @@ PYBIND11_MODULE(transform, m) {
           "\n:return: a pass to perform the simplification",
           py::arg("discount_rate") = 0.7, py::arg("depth_weight") = 0.3)
       .def_static(
+          "AASGreedyPauliSimp", &Transforms::aas_greedy_pauli_optimisation,
+          "Convert a circuit into a graph of Pauli "
+          "gadgets to account for commutation and phase folding, and "
+          "resynthesises them using a greedy algorithm adapted from "
+          "arxiv.org/abs/2103.08602. The method for synthesising the "
+          "final Clifford operator is adapted from "
+          "arxiv.org/abs/2305.10966. The approach for making the circuit "
+          "architecture aware is based on arXiv:1902.08091"
+          "\n\n:param discount_rate: Rate used to discount the cost impact "
+          "from "
+          "gadgets that are further away. Default to 0.7."
+          "\n:param depth_weight:  Degree of depth optimisation. Default to "
+          "0.3."
+          "\n:return: a pass to perform the simplification",
+          py::arg("architecture"), py::arg("discount_rate") = 0.7,
+          py::arg("depth_weight") = 0.3)
+      .def_static(
           "ZZPhaseToRz", &Transforms::ZZPhase_to_Rz,
           "Fixes all ZZPhase gate angles to [-1, 1) half turns.")
       .def_static(

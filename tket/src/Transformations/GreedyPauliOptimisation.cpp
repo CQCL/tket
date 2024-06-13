@@ -126,7 +126,8 @@ pauli_letter_distances_t PauliExpNode::all_distances(
     const std::vector<unsigned>& support,
     std::shared_ptr<Architecture> architecture,
     const std::map<unsigned, Node>& node_mapping) const {
-  pauli_letter_distances_t letter_distances(architecture->get_diameter(), 0);
+  pauli_letter_distances_t letter_distances(
+      architecture->get_diameter() + 1, 0);
   for (unsigned i = 0; i < support.size() - 1; i++) {
     for (unsigned j = i + 1; j < support.size(); j++) {
       // pauli strings are detailed as unsigned ints where 0 => Identity
@@ -134,7 +135,6 @@ pauli_letter_distances_t PauliExpNode::all_distances(
       TKET_ASSERT(it != node_mapping.end());
       auto jt = node_mapping.find(j);
       TKET_ASSERT(jt != node_mapping.end());
-
       if (support[i] > 0 && support[j] > 0)
         letter_distances[architecture->get_distance(it->second, jt->second)] +=
             1;
@@ -157,13 +157,17 @@ int PauliExpNode::aas_tqe_cost_increase(
     const TQE& tqe, std::shared_ptr<Architecture> architecture,
     const std::map<unsigned, Node>& node_mapping) const {
   std::vector<unsigned> comparison = support_vec_;
-  unsigned supp0 = support_vec_[std::get<1>(tqe)];
-  unsigned supp1 = support_vec_[std::get<2>(tqe)];
+  unsigned index0 = std::get<1>(tqe);
+  unsigned index1 = std::get<2>(tqe);
+  TKET_ASSERT(index0 < support_vec_.size());
+  TKET_ASSERT(index1 < support_vec_.size());
+  unsigned supp0 = support_vec_[index0];
+  unsigned supp1 = support_vec_[index1];
   unsigned new_supp0, new_supp1;
   std::tie(new_supp0, new_supp1) =
       SINGLET_PAIR_TRANSFORMATION_MAP.at({std::get<0>(tqe), supp0, supp1});
-  comparison[std::get<1>(tqe)] = new_supp0;
-  comparison[std::get<2>(tqe)] = new_supp1;
+  comparison[index0] = new_supp0;
+  comparison[index1] = new_supp1;
 
   // how do we put a number to this? minimum is better so can start easy
   // first get distances
@@ -171,6 +175,7 @@ int PauliExpNode::aas_tqe_cost_increase(
       this->all_distances(support_vec_, architecture, node_mapping);
   pauli_letter_distances_t new_distances =
       this->all_distances(comparison, architecture, node_mapping);
+
   // for distance d, if old_distances[d] - new_distances[d] < 0, then that entry
   // has increased given this, increased distances at larger d add a larger
   // contribution & vice
@@ -214,23 +219,69 @@ std::vector<TQE> PauliExpNode::reduction_tqes() const {
   return tqes;
 }
 
-std::vector<TQE> PauliExpNode::reduction_tqes_all_letters() const {
+std::vector<TQE> PauliExpNode::reduction_tqes_all_letters(
+    std::shared_ptr<Architecture> architecture,
+    const std::map<unsigned, Node>& node_mapping) const {
   std::vector<TQE> tqes;
   // qubits with support
   std::vector<unsigned> sqs;
+  // First we try to find Architecture permitted options that
+  // will convert a Pauli letter to an Identity
   for (unsigned i = 0; i < support_vec_.size(); i++) {
     if (support_vec_[i] > 0) sqs.push_back(i);
   }
-
-  for (unsigned i = 0; i < sqs.size() - 1; i++) {
-    for (unsigned j = i + 1; j < sqs.size(); j++) {
-      std::vector<TQEType> tqe_types = ALL_SINGLET_PAIR_REDUCTION_TQES.at(
-          {support_vec_[sqs[i]], support_vec_[sqs[j]]});
-      for (const TQEType& tt : tqe_types) {
-        tqes.push_back({tt, sqs[i], sqs[j]});
+  for (unsigned i = 0; i < sqs.size(); i++) {
+    for (unsigned j = 0; j < sqs.size(); j++) {
+      if (i == j) continue;
+      unsigned index_i = sqs[i];
+      unsigned index_j = sqs[j];
+      auto it = node_mapping.find(index_i);
+      auto jt = node_mapping.find(index_j);
+      TKET_ASSERT(it != node_mapping.end());
+      TKET_ASSERT(jt != node_mapping.end());
+      Node node_i = it->second;
+      Node node_j = jt->second;
+      if (architecture->edge_exists(node_i, node_j) ||
+          architecture->edge_exists(node_j, node_i)) {
+        std::cout << "permitted indices: " << sqs[i] << " " << sqs[j]
+                  << std::endl;
+        std::vector<TQEType> tqe_types = ALL_SINGLET_PAIR_REDUCTION_TQES.at(
+            {support_vec_[sqs[i]], support_vec_[sqs[j]]});
+        for (const TQEType& tt : tqe_types) {
+          tqes.push_back({tt, sqs[i], sqs[j]});
+        }
       }
     }
   }
+  if (!tqes.empty()) {
+    return tqes;
+  }
+  for (unsigned i = 0; i < support_vec_.size() - 1; i++) {
+    for (unsigned j = 0; j < support_vec_.size(); j++) {
+      if (i == j) continue;
+      if (!(support_vec_[i] > 0 || support_vec_[j] > 0)) continue;
+      auto it = node_mapping.find(i);
+      auto jt = node_mapping.find(j);
+      TKET_ASSERT(it != node_mapping.end());
+      TKET_ASSERT(jt != node_mapping.end());
+      Node node_i = it->second;
+      Node node_j = jt->second;
+      if (architecture->edge_exists(node_i, node_j) ||
+          architecture->edge_exists(node_j, node_i)) {
+        std::cout << "Edge on following is permitted: " << support_vec_[i]
+                  << " " << support_vec_[j] << " " << i << " " << j
+                  << std::endl;
+        std::vector<TQEType> tqe_types = ALL_SINGLET_PAIR_REDUCTION_TQES.at(
+            {support_vec_[i], support_vec_[j]});
+        TKET_ASSERT(tqe_types.size() > 0);
+        for (const TQEType& tt : tqe_types) {
+          std::cout << i << " " << sqs.size() << " " << sqs[i] << " " << sqs[j] << std::endl;
+          tqes.push_back({tt, i, j});
+        }
+      }
+    }
+  }
+  TKET_ASSERT(!tqes.empty());
   return tqes;
 }
 
@@ -242,6 +293,12 @@ std::pair<unsigned, unsigned> PauliExpNode::first_support() const {
   }
   // Should be impossible to reach here
   TKET_ASSERT(false);
+}
+
+void PauliExpNode::pad_support_vector(unsigned width) {
+  while (support_vec_.size() < width) {
+    support_vec_.push_back(0);
+  }
 }
 
 TableauRowNode::TableauRowNode(std::vector<unsigned> support_vec)
@@ -427,6 +484,8 @@ static double aas_pauliexp_tqe_cost(
 static TQE minmax_selection(
     const std::map<TQE, std::vector<double>>& tqe_candidates_cost,
     const std::vector<double>& weights) {
+  std::cout << "tqe candidates cost size: " << tqe_candidates_cost.size()
+            << std::endl;
   TKET_ASSERT(tqe_candidates_cost.size() > 0);
   size_t n_costs = tqe_candidates_cost.begin()->second.size();
   TKET_ASSERT(n_costs == weights.size());
@@ -790,6 +849,7 @@ static void pauli_exps_synthesis(
       tqe_candidates.insert(
           node_reducing_tqes.begin(), node_reducing_tqes.end());
     }
+
     // for each tqe we compute costs which might subject to normalisation
     std::map<TQE, std::vector<double>> tqe_candidates_cost;
     for (const TQE& tqe : tqe_candidates) {
@@ -846,10 +906,18 @@ static void aas_pauli_exps_synthesis(
     std::set<TQE> tqe_candidates;
     for (const unsigned& index : min_nodes_indices) {
       std::vector<TQE> node_reducing_tqes =
-          first_set[index].reduction_tqes_all_letters();
+          first_set[index].reduction_tqes_all_letters(
+              architecture, node_mapping);
+      std::cout << "n of cool new candidates produced: " << node_reducing_tqes.size() << std::endl;
       tqe_candidates.insert(
           node_reducing_tqes.begin(), node_reducing_tqes.end());
     }
+
+    std::cout << "Number of candidates produced: " << tqe_candidates.size()
+              << " | number of remaining rotation sets " << rotation_sets.size()
+              << " | number of remaining exponetials in set: "
+              << first_set.size() << std::endl;
+
     // for each tqe we compute costs which might subject to normalisation
     std::map<TQE, std::vector<double>> tqe_candidates_cost;
     for (const TQE& tqe : tqe_candidates) {
@@ -864,12 +932,22 @@ static void aas_pauli_exps_synthesis(
              {aas_pauliexp_tqe_cost(
                   discount_rate, rotation_sets, rows, tqe, architecture,
                   node_mapping),
-              static_cast<double>(depth_tracker.gate_depth(
-                  std::get<1>(tqe), std::get<2>(tqe)))}});
+              // static_cast<double>(depth_tracker.gate_depth(
+              //     std::get<1>(tqe), std::get<2>(tqe)))}});
+              static_cast<double>(1)}});
       }
     }
     // select the best one
+    std::cout << "All costs: " << std::endl;
+    for (auto c : tqe_candidates_cost) {
+      std::cout << std::get<1>(c.first) << " " << std::get<2>(c.first) << " "
+                << c.second[0] << " " << c.second[1] << std::endl;
+    }
     TQE selected_tqe = select_pauliexp_tqe(tqe_candidates_cost, depth_weight);
+
+    // std::cout << "What did it pick? " << std::get<1>(selected_tqe) << " " <<
+    // std::get<2>(selected_tqe) << std::endl;
+
     // apply TQE
     apply_tqe_to_circ(selected_tqe, circ);
     apply_tqe_to_tableau(selected_tqe, tab);
@@ -939,7 +1017,8 @@ static std::pair<bool, Expr> is_trivial_pauliexp(
 }
 
 Circuit greedy_pauli_graph_synthesis(
-    const Circuit& circ, double discount_rate, double depth_weight) {
+    const Circuit& circ, double discount_rate, double depth_weight,
+    std::optional<std::shared_ptr<Architecture>> architecture) {
   // c is the circuit we are trying to build
   Circuit c(circ.all_qubits(), circ.all_bits());
   std::optional<std::string> name = circ.get_name();
@@ -1051,12 +1130,18 @@ Circuit greedy_pauli_graph_synthesis(
     }
   }
   // add identity TableauRowNodes
-  for (unsigned i = 0; i < n_qubits; i++) {
+  // the tableau width is either set to the number of qubits or the number of
+  // nodes depending on whether the architecture is present
+  unsigned tableau_width = n_qubits;
+  if (architecture) {
+    tableau_width = (*architecture)->n_nodes();
+  }
+  for (unsigned i = 0; i < tableau_width; i++) {
     std::vector<unsigned> support_vec;
     // identity rows
     std::map<Qubit, Pauli> p;
     std::map<Qubit, Pauli> q;
-    for (unsigned j = 0; j < n_qubits; j++) {
+    for (unsigned j = 0; j < tableau_width; j++) {
       if (j == i) {
         p.insert({Qubit(j), Pauli::Z});
         q.insert({Qubit(j), Pauli::X});
@@ -1067,7 +1152,7 @@ Circuit greedy_pauli_graph_synthesis(
     }
     SpPauliStabiliser stab_p(p);
     SpPauliStabiliser stab_q(q);
-    for (unsigned row_index = 0; row_index < n_qubits; row_index++) {
+    for (unsigned row_index = 0; row_index < tableau_width; row_index++) {
       SpPauliStabiliser zrow = tab.get_zrow(Qubit(row_index));
       SpPauliStabiliser xrow = tab.get_xrow(Qubit(row_index));
       bool lpx = !xrow.commutes_with(stab_p);
@@ -1079,9 +1164,34 @@ Circuit greedy_pauli_graph_synthesis(
     rows.push_back(TableauRowNode(support_vec));
   }
   DepthTracker depth_tracker(n_qubits);
-  // synthesise Pauli exps
-  pauli_exps_synthesis(
-      rotation_sets, rows, tab, c, discount_rate, depth_weight, depth_tracker);
+
+  // here we also concern ourselves with architecture
+  // essentially, if architecture contains an architecture we use it, else we
+  // don't ...
+  if (architecture) {
+    // synthesise Pauli exps
+    // TODO: Replace naive node mapping with something from graph placement ...
+    std::map<unsigned, Node> node_mapping;
+    std::shared_ptr<Architecture> arc = *architecture;
+    TKET_ASSERT(arc->n_nodes() >= circ.n_qubits());
+    std::vector<Node> nodes = arc->get_all_nodes_vec();
+    for (unsigned i = 0; i < nodes.size(); i++) {
+      node_mapping.insert({i, nodes[i]});
+    }
+    for (std::vector<PauliExpNode>& pexns : rotation_sets) {
+      for (PauliExpNode& pexn : pexns) {
+        pexn.pad_support_vector(nodes.size());
+      }
+    }
+    aas_pauli_exps_synthesis(
+        rotation_sets, rows, tab, c, discount_rate, depth_weight, depth_tracker,
+        arc, node_mapping);
+  } else {
+    // synthesise Pauli exps
+    pauli_exps_synthesis(
+        rotation_sets, rows, tab, c, discount_rate, depth_weight,
+        depth_tracker);
+  }
   // synthesise the tableau
   tableau_row_nodes_synthesis(rows, tab, c, depth_weight, depth_tracker);
   unit_map_t rev_unit_map;
@@ -1101,7 +1211,20 @@ Transform greedy_pauli_optimisation(double discount_rate, double depth_weight) {
     synthesise_pauli_graph(PauliSynthStrat::Sets, CXConfigType::Snake)
         .apply(circ);
     circ = GreedyPauliSimp::greedy_pauli_graph_synthesis(
-        circ, discount_rate, depth_weight);
+        circ, discount_rate, depth_weight, std::nullopt);
+    singleq_clifford_sweep().apply(circ);
+    return true;
+  });
+}
+
+Transform aas_greedy_pauli_optimisation(
+    std::shared_ptr<Architecture> architecture, double discount_rate,
+    double depth_weight) {
+  return Transform([architecture, discount_rate, depth_weight](Circuit& circ) {
+    synthesise_pauli_graph(PauliSynthStrat::Sets, CXConfigType::Snake)
+        .apply(circ);
+    circ = GreedyPauliSimp::greedy_pauli_graph_synthesis(
+        circ, discount_rate, depth_weight, architecture);
     singleq_clifford_sweep().apply(circ);
     return true;
   });
