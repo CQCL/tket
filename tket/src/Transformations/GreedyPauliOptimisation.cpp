@@ -926,7 +926,7 @@ static void aas_pauli_exps_synthesis(
       TKET_ASSERT(it != node_mapping.end());
       auto jt = node_mapping.find(std::get<2>(tqe));
       TKET_ASSERT(jt != node_mapping.end());
-      if (architecture->edge_exists(it->second, jt->second)) {
+      // if (architecture->edge_exists(it->second, jt->second)) {
         tqe_candidates_cost.insert(
             {tqe,
              {aas_pauliexp_tqe_cost(
@@ -935,7 +935,7 @@ static void aas_pauli_exps_synthesis(
               // static_cast<double>(depth_tracker.gate_depth(
               //     std::get<1>(tqe), std::get<2>(tqe)))}});
               static_cast<double>(1)}});
-      }
+      // }
     }
     // select the best one
     std::cout << "All costs: " << std::endl;
