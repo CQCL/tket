@@ -94,6 +94,14 @@ class PauliExpNode {
    */
   int tqe_cost_increase(const TQE& tqe) const;
 
+  std::vector<unsigned> get_updated_support(const TQE& tqe) const;
+
+  bool updates_support(const TQE& tqe) const;
+
+  pauli_letter_distances_t get_updated_distance(
+      const TQE& tqe, std::shared_ptr<Architecture> architecture,
+      const std::map<unsigned, Node>& node_mapping) const;
+
   int aas_tqe_cost_increase(
       const TQE& tqe, std::shared_ptr<Architecture> architecture,
       const std::map<unsigned, Node>& node_mapping) const;
@@ -141,6 +149,13 @@ class PauliExpNode {
   std::pair<unsigned, unsigned> first_support() const;
 
   void pad_support_vector(unsigned width);
+
+  void print() const {
+    for (auto p : support_vec_) {
+      std::cout << p;
+    }
+    std::cout << std::endl;
+  }
 
  private:
   std::vector<unsigned> support_vec_;

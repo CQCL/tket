@@ -318,11 +318,13 @@ SCENARIO("Test arbitrary circuit with architecture") {
   circ.add_op<unsigned>(OpType::CY, {0, 2});
   circ.add_op<unsigned>(OpType::SWAP, {1, 2});
   Circuit d(circ);
+  Circuit copy(d);
   std::shared_ptr<Architecture> a =
       std::make_shared<Architecture>(architecture);
   REQUIRE(Transforms::aas_greedy_pauli_optimisation(a).apply(d));
-
+  REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
   std::cout << d << std::endl;
+  std::cout << d.count_n_qubit_gates(2) << " " << copy.count_n_qubit_gates(2) << std::endl;
 }
 }  // namespace test_GreedyPauliSimp
 }  // namespace tket

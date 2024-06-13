@@ -153,6 +153,34 @@ int PauliExpNode::tqe_cost_increase(const TQE& tqe) const {
   return (new_supp0 > 0) + (new_supp1 > 0) - (supp0 > 0) - (supp1 > 0);
 }
 
+std::vector<unsigned> PauliExpNode::get_updated_support(const TQE& tqe) const {
+  std::vector<unsigned> updated = support_vec_;
+  unsigned index0 = std::get<1>(tqe);
+  unsigned index1 = std::get<2>(tqe);
+  TKET_ASSERT(index0 < support_vec_.size());
+  TKET_ASSERT(index1 < support_vec_.size());
+  unsigned supp0 = support_vec_[index0];
+  unsigned supp1 = support_vec_[index1];
+  unsigned new_supp0, new_supp1;
+  std::tie(new_supp0, new_supp1) =
+      SINGLET_PAIR_TRANSFORMATION_MAP.at({std::get<0>(tqe), supp0, supp1});
+  updated[index0] = new_supp0;
+  updated[index1] = new_supp1;
+  return updated;
+}
+
+bool PauliExpNode::updates_support(const TQE& tqe) const{
+  return !(this->get_updated_support(tqe) == this->support_vec_);
+
+}
+
+pauli_letter_distances_t PauliExpNode::get_updated_distance(
+    const TQE& tqe, std::shared_ptr<Architecture> architecture,
+    const std::map<unsigned, Node>& node_mapping) const {
+  return this->all_distances(
+      this->get_updated_support(tqe), architecture, node_mapping);
+}
+
 int PauliExpNode::aas_tqe_cost_increase(
     const TQE& tqe, std::shared_ptr<Architecture> architecture,
     const std::map<unsigned, Node>& node_mapping) const {
@@ -243,8 +271,6 @@ std::vector<TQE> PauliExpNode::reduction_tqes_all_letters(
       Node node_j = jt->second;
       if (architecture->edge_exists(node_i, node_j) ||
           architecture->edge_exists(node_j, node_i)) {
-        std::cout << "permitted indices: " << sqs[i] << " " << sqs[j]
-                  << std::endl;
         std::vector<TQEType> tqe_types = ALL_SINGLET_PAIR_REDUCTION_TQES.at(
             {support_vec_[sqs[i]], support_vec_[sqs[j]]});
         for (const TQEType& tt : tqe_types) {
@@ -256,6 +282,8 @@ std::vector<TQE> PauliExpNode::reduction_tqes_all_letters(
   if (!tqes.empty()) {
     return tqes;
   }
+  // If the above is empty, then we try to ind Architecture permitted options
+  // that will convert an Identity to a Pauli letter
   for (unsigned i = 0; i < support_vec_.size() - 1; i++) {
     for (unsigned j = 0; j < support_vec_.size(); j++) {
       if (i == j) continue;
@@ -268,14 +296,10 @@ std::vector<TQE> PauliExpNode::reduction_tqes_all_letters(
       Node node_j = jt->second;
       if (architecture->edge_exists(node_i, node_j) ||
           architecture->edge_exists(node_j, node_i)) {
-        std::cout << "Edge on following is permitted: " << support_vec_[i]
-                  << " " << support_vec_[j] << " " << i << " " << j
-                  << std::endl;
         std::vector<TQEType> tqe_types = ALL_SINGLET_PAIR_REDUCTION_TQES.at(
             {support_vec_[i], support_vec_[j]});
         TKET_ASSERT(tqe_types.size() > 0);
         for (const TQEType& tt : tqe_types) {
-          std::cout << i << " " << sqs.size() << " " << sqs[i] << " " << sqs[j] << std::endl;
           tqes.push_back({tt, i, j});
         }
       }
@@ -454,38 +478,11 @@ static double default_pauliexp_tqe_cost(
   return exp_cost + tab_cost;
 }
 
-// return the weighted sum of the cost increases on remaining nodes
-// we discount the weight after each set
-static double aas_pauliexp_tqe_cost(
-    const double discount_rate,
-    const std::vector<std::vector<PauliExpNode>>& rotation_sets,
-    const std::vector<TableauRowNode>& rows, const TQE& tqe,
-    std::shared_ptr<Architecture> architecture,
-    const std::map<unsigned, Node>& node_mapping) {
-  double discount = 1 / (1 + discount_rate);
-  double weight = 1;
-  double exp_cost = 0;
-  double tab_cost = 0;
-  for (const std::vector<PauliExpNode>& rotation_set : rotation_sets) {
-    for (const PauliExpNode& node : rotation_set) {
-      exp_cost +=
-          weight * node.aas_tqe_cost_increase(tqe, architecture, node_mapping);
-    }
-    weight *= discount;
-  }
-  for (const TableauRowNode& node : rows) {
-    tab_cost += weight * node.tqe_cost_increase(tqe);
-  }
-  return exp_cost + tab_cost;
-}
-
 // given a map from TQE to a vector of costs, select the one with the minimum
 // weighted sum of minmax-normalised costs
 static TQE minmax_selection(
     const std::map<TQE, std::vector<double>>& tqe_candidates_cost,
     const std::vector<double>& weights) {
-  std::cout << "tqe candidates cost size: " << tqe_candidates_cost.size()
-            << std::endl;
   TKET_ASSERT(tqe_candidates_cost.size() > 0);
   size_t n_costs = tqe_candidates_cost.begin()->second.size();
   TKET_ASSERT(n_costs == weights.size());
@@ -883,8 +880,7 @@ static void pauli_exps_synthesis(
 static void aas_pauli_exps_synthesis(
     std::vector<std::vector<PauliExpNode>>& rotation_sets,
     std::vector<TableauRowNode>& rows, UnitaryRevTableau& tab, Circuit& circ,
-    double discount_rate, double depth_weight, DepthTracker& depth_tracker,
-    std::shared_ptr<Architecture> architecture,
+    DepthTracker& depth_tracker, std::shared_ptr<Architecture> architecture,
     const std::map<unsigned, Node>& node_mapping) {
   while (true) {
     while (consume_available_rotations(
@@ -908,47 +904,95 @@ static void aas_pauli_exps_synthesis(
       std::vector<TQE> node_reducing_tqes =
           first_set[index].reduction_tqes_all_letters(
               architecture, node_mapping);
-      std::cout << "n of cool new candidates produced: " << node_reducing_tqes.size() << std::endl;
       tqe_candidates.insert(
           node_reducing_tqes.begin(), node_reducing_tqes.end());
     }
 
-    std::cout << "Number of candidates produced: " << tqe_candidates.size()
-              << " | number of remaining rotation sets " << rotation_sets.size()
-              << " | number of remaining exponetials in set: "
-              << first_set.size() << std::endl;
-
+    // std::cout << "Number of candidates produced: " << tqe_candidates.size()
+    //           << " | number of remaining rotation sets " << rotation_sets.size()
+    //           << " | number of remaining exponetials in set: "
+    //           << first_set.size() << std::endl;
+    // std::cout << "All remaining exponentials: " << std::endl;
+    // for (auto r : rotation_sets) {
+    //   std::cout << "New Set: " << std::endl;
+    //   for (auto a : r) {
+    //     a.print();
+    //   }
+    // }
+    // std::cout << "Min node indices: ";
+    // for(auto i : min_nodes_indices){
+    //   std::cout << i;
+    // }
+    // std::cout << std::endl;
     // for each tqe we compute costs which might subject to normalisation
-    std::map<TQE, std::vector<double>> tqe_candidates_cost;
+    // std::map<TQE, std::vector<double>> tqe_candidates_cost;
+    // std::pair<TQE, pauli_letter_distances
+
+    std::optional<std::tuple<unsigned, TQE, pauli_letter_distances_t>>
+        candidate_tqe;
     for (const TQE& tqe : tqe_candidates) {
-      // TODO: this assumes bidirectional edges, is this ok?
-      auto it = node_mapping.find(std::get<1>(tqe));
-      TKET_ASSERT(it != node_mapping.end());
-      auto jt = node_mapping.find(std::get<2>(tqe));
-      TKET_ASSERT(jt != node_mapping.end());
-      if (architecture->edge_exists(it->second, jt->second)) {
-        tqe_candidates_cost.insert(
-            {tqe,
-             {aas_pauliexp_tqe_cost(
-                  discount_rate, rotation_sets, rows, tqe, architecture,
-                  node_mapping),
-              // static_cast<double>(depth_tracker.gate_depth(
-              //     std::get<1>(tqe), std::get<2>(tqe)))}});
-              static_cast<double>(1)}});
+      // First generate a distances object
+      pauli_letter_distances_t letter_distances(
+          architecture->get_diameter() + 1, 0);
+      // for(const PauliExpNode &pen : rotation_sets[0]){
+      std::vector<std::vector<unsigned>> updated_supports = {};
+      bool updates_one = false;
+      for (const unsigned& index : min_nodes_indices) {
+        PauliExpNode pen = first_set[index];
+        if(!updates_one && pen.updates_support(tqe)) updates_one = true;
+          pauli_letter_distances_t d = pen.get_updated_distance(
+              tqe, architecture, node_mapping);
+          TKET_ASSERT(letter_distances.size() == d.size());
+          for (unsigned i = 0; i < d.size(); i++) {
+            letter_distances[i] += d[i];
+        }
+          updated_supports.push_back(pen.get_updated_support(tqe));
+      }
+
+      // Calculate total distance
+      unsigned total_distance =
+          std::accumulate(letter_distances.begin(), letter_distances.end(), 0);
+      // std::cout << "\nTQE on qubits: " << std::get<1>(tqe) << " "
+      //           << std::get<2>(tqe)
+      //           << " has accumluated distance: " << total_distance
+      //           << " and the distance vector: ";
+      // for (auto p : letter_distances) {
+      //   std::cout << p << " ";
+      // }
+      // std::cout << std::endl;
+      // std::cout << "It also produces the following updated supports: " << std::endl;
+      // for(auto p : updated_supports){
+      //   for(auto i :p){
+      //     std::cout << i;
+      //   }
+      //   std::cout << std::endl;
+      // }
+      // std::cout << "Finally is it valid? " << updates_one << std::endl;
+
+      // If candidate_tqe is not set, set it with the current candidate
+      if(!updates_one) continue; 
+      if (!candidate_tqe.has_value()) {
+        candidate_tqe.emplace(total_distance, tqe, letter_distances);
+        continue;
+      }
+      // Compare total distances
+      if (total_distance <= std::get<0>(*candidate_tqe)) {
+        if (letter_distances > std::get<2>(*candidate_tqe)) {
+          candidate_tqe.emplace(total_distance, tqe, letter_distances);
+        }
       }
     }
-    // select the best one
-    std::cout << "All costs: " << std::endl;
-    for (auto c : tqe_candidates_cost) {
-      std::cout << std::get<1>(c.first) << " " << std::get<2>(c.first) << " "
-                << c.second[0] << " " << c.second[1] << std::endl;
-    }
-    TQE selected_tqe = select_pauliexp_tqe(tqe_candidates_cost, depth_weight);
-
-    // std::cout << "What did it pick? " << std::get<1>(selected_tqe) << " " <<
-    // std::get<2>(selected_tqe) << std::endl;
 
     // apply TQE
+    TQE selected_tqe = std::get<1>(*candidate_tqe);
+    // std::cout << "Our winner is TQE on qubits: " << std::get<1>(selected_tqe)
+    //           << " " << std::get<2>(selected_tqe)
+    //           << " has accumluated distance: " << std::get<0>(*candidate_tqe)
+    //           << " and the distance vector: ";
+    // for (auto p : std::get<2>(*candidate_tqe)) {
+    //   std::cout << p << " ";
+    // }
+
     apply_tqe_to_circ(selected_tqe, circ);
     apply_tqe_to_tableau(selected_tqe, tab);
     depth_tracker.add_2q_gate(
@@ -1184,8 +1228,7 @@ Circuit greedy_pauli_graph_synthesis(
       }
     }
     aas_pauli_exps_synthesis(
-        rotation_sets, rows, tab, c, discount_rate, depth_weight, depth_tracker,
-        arc, node_mapping);
+        rotation_sets, rows, tab, c, depth_tracker, arc, node_mapping);
   } else {
     // synthesise Pauli exps
     pauli_exps_synthesis(
