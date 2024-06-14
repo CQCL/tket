@@ -33,6 +33,7 @@ from pytket.backends.backendinfo import BackendInfo
 
 binary_digits = st.sampled_from((0, 1))
 uint32 = st.integers(min_value=1, max_value=1 << 32 - 1)
+uint64 = st.integers(min_value=1, max_value=1 << 64 - 1)
 reg_name_regex = re.compile("[a-z][a-zA-Z0-9_]*")
 
 

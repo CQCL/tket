@@ -308,8 +308,8 @@ std::optional<std::shared_ptr<const ClassicalTransformOp>> classical_transform(
   unsigned n = op->get_desc().n_qubits().value();
   unsigned pow2n = 1u << n;
   TKET_ASSERT(U->cols() == pow2n);
-  std::vector<uint32_t> values(pow2n);
-  for (uint32_t J = 0; J < pow2n; J++) {
+  std::vector<uint64_t> values(pow2n);
+  for (uint64_t J = 0; J < pow2n; J++) {
     // Look at the column U[*,J]. Is there a unique nonzero element?
     std::optional<unsigned> I = unique_unit_row(*U, J);
     if (!I) return std::nullopt;

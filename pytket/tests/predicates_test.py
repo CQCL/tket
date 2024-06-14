@@ -24,6 +24,7 @@ from pytket.circuit import (
     Unitary2qBox,
     Node,
     Qubit,
+    Bit,
     UnitID,
     Conditional,
 )
@@ -62,7 +63,10 @@ from pytket.passes import (
     SimplifyInitial,
     RemoveBarriers,
     PauliSquash,
+    AutoRebase,
+    AutoSquash,
     auto_rebase_pass,
+    auto_squash_pass,
     ZZPhaseToRz,
     CnXPairwiseDecomposition,
     RemoveImplicitQubitPermutation,
@@ -404,7 +408,7 @@ def test_RebaseOQC_and_SynthesiseOQC() -> None:
     u_before_oqc = circ3.get_unitary()
     assert np.allclose(u, u_before_oqc)
 
-    auto_rebase_pass(oqc_gateset).apply(circ3)
+    AutoRebase(oqc_gateset).apply(circ3)
     assert oqc_gateset_pred.verify(circ3)
     u_before_rebase_tket = circ3.get_unitary()
     assert np.allclose(u, u_before_rebase_tket)
@@ -869,7 +873,7 @@ def test_conditional_phase() -> None:
     c.H(1, condition_bits=[0], condition_value=1)
     c.Measure(1, 1)
     target_gateset = {OpType.TK1, OpType.CX}
-    rebase = auto_rebase_pass(target_gateset)
+    rebase = AutoRebase(target_gateset)
     rebase.apply(c)
     cond_cmds = [cmd for cmd in c.get_commands() if cmd.op.type == OpType.Conditional]
     assert len(cond_cmds) > 0
@@ -882,7 +886,10 @@ def test_conditional_phase() -> None:
 
 
 def test_flatten_relabel_pass() -> None:
-    c = Circuit(3)
+    c = Circuit(3, 3)
+    c.add_bit(Bit("d", 0))
+    c.add_bit(Bit("d", 1))
+    c.add_c_register("e", 5)
     c.H(1).H(2)
     rename_map: RenameUnitsMap = dict()
     rename_map[Qubit(0)] = Qubit("a", 4)
@@ -898,6 +905,10 @@ def test_flatten_relabel_pass() -> None:
     assert cu.initial_map[Qubit("a", 4)] == Qubit("a", 4)
     assert cu.initial_map[Qubit("b", 7)] == Qubit("a", 1)
     assert cu.circuit.qubits == [Qubit("a", 0), Qubit("a", 1)]
+    assert cu.circuit.n_bits == 10
+    assert cu.circuit.get_c_register("c").size == 3
+    assert cu.circuit.get_c_register("d").size == 2
+    assert cu.circuit.get_c_register("e").size == 5
 
     # test default argument
     c = Circuit()
@@ -1069,6 +1080,19 @@ def test_SynthesiseOQC_deprecation(capfd: Any) -> None:
     assert "[warn]" in out
     assert "deprecated" in out
     logging.set_level(logging.level.err)
+
+
+def test_auto_rebase_deprecation(recwarn: Any) -> None:
+    p = auto_rebase_pass({OpType.TK1, OpType.CX})
+    assert len(recwarn) == 1
+    w = recwarn.pop(DeprecationWarning)
+    assert issubclass(w.category, DeprecationWarning)
+    assert "deprecated" in str(w.message)
+    p = auto_squash_pass({OpType.TK1})
+    assert len(recwarn) == 1
+    w = recwarn.pop(DeprecationWarning)
+    assert issubclass(w.category, DeprecationWarning)
+    assert "deprecated" in str(w.message)
 
 
 if __name__ == "__main__":

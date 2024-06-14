@@ -30,4 +30,3 @@ pytket.passes.auto_rebase
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automodule:: pytket.passes.auto_rebase
     :members: auto_rebase_pass, auto_squash_pass
-    

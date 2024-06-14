@@ -973,6 +973,9 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(LinePlacement, gen_placement_pass(la_place))
   COMPPASSJSONTEST(GraphPlacement, gen_placement_pass(ga_place))
   COMPPASSJSONTEST(RoundAngles, RoundAngles(8, true))
+  COMPPASSJSONTEST(
+      AutoSquash, gen_auto_squash_pass({OpType::TK1, OpType::H, OpType::T}))
+  COMPPASSJSONTEST(AutoRebase, gen_auto_rebase_pass({OpType::U3, OpType::CX}))
 #undef COMPPASSJSONTEST
   GIVEN("PauliExponentials") {
     Circuit circ = CircuitsForTesting::get().uccsd;

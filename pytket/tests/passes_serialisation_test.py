@@ -41,7 +41,6 @@ from pytket.passes import (
     DefaultMappingPass,
     AASRouting,
     SquashCustom,
-    GreedyPauliSimp,
 )
 from pytket.mapping import (
     LexiLabellingMethod,
@@ -292,6 +291,13 @@ TWO_WAY_PARAM_PASSES = {
     ),
     "GreedyPauliSimp": standard_pass_dict(
         {"name": "GreedyPauliSimp", "discount_rate": 0.4, "depth_weight": 0.5}
+    ),
+    # lists must be sorted by OpType value
+    "AutoSquash": standard_pass_dict(
+        {"name": "AutoSquash", "basis_singleqs": ["Rz", "TK1"]}
+    ),
+    "AutoRebase": standard_pass_dict(
+        {"name": "AutoRebase", "basis_allowed": ["H", "TK1", "CX"], "allow_swaps": True}
     ),
 }
 

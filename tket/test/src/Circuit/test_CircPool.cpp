@@ -50,7 +50,21 @@ SCENARIO("Simple CircPool identities") {
     orig.add_op<unsigned>(OpType::CX, {0, 1});
     res = CircPool::CX_using_AAMS();
   }
-
+  GIVEN("TK2_using_TK2") {
+    orig = Circuit(2);
+    orig.add_op<unsigned>(OpType::TK2, {0.2, 0.3, 0.4}, {0, 1});
+    res = CircPool::TK2_using_TK2(0.2, 0.3, 0.4);
+  }
+  GIVEN("tk1_to_u3") {
+    orig = Circuit(1);
+    orig.add_op<unsigned>(OpType::TK1, {0.2, 0.3, 0.4}, {0});
+    res = CircPool::tk1_to_u3(0.2, 0.3, 0.4);
+  }
+  GIVEN("tk1_to_rxry") {
+    orig = Circuit(1);
+    orig.add_op<unsigned>(OpType::TK1, {0.2, 0.3, 0.4}, {0});
+    res = CircPool::tk1_to_rxry(0.2, 0.3, 0.4);
+  }
   auto u_orig = tket_sim::get_unitary(orig);
   auto u_res = tket_sim::get_unitary(res);
   REQUIRE(u_res.isApprox(u_orig));
