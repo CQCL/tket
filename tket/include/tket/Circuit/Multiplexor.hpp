@@ -105,11 +105,13 @@ struct GateSpec {
   std::optional<Eigen::Matrix2cd> matrix;
   std::optional<Expr> angle;
 
-  GateSpec(
-      const OpType &type_, std::optional<unsigned> qubit_,
-      const std::optional<Eigen::Matrix2cd> &matrix_,
-      std::optional<Expr> angle_)
-      : type(type_), qubit(qubit_), matrix(matrix_), angle(angle_) {}
+  GateSpec(const OpType &type_, unsigned qubit_) : type(type_), qubit(qubit_) {}
+
+  GateSpec(const OpType &type_, const Eigen::Matrix2cd &matrix_)
+      : type(type_), matrix(matrix_) {}
+
+  GateSpec(const OpType &type_, const Expr &angle_)
+      : type(type_), angle(angle_) {}
 };
 
 /**

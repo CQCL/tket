@@ -118,24 +118,22 @@ static void recursive_demultiplex_rotation(
   }
   if (q_angles.size() == 1) {
     // base step
-    commands.push_back(GateSpec(axis, std::nullopt, std::nullopt, q_angles[0]));
+    commands.push_back(GateSpec(axis, q_angles[0]));
   } else {
     recursive_demultiplex_rotation(
         q_angles, axis, total_qubits, commands, RecursionNodeType::Left);
   }
-  commands.push_back(GateSpec(
-      OpType::CX, total_qubits - n_qubits, std::nullopt, std::nullopt));
+  commands.push_back(GateSpec(OpType::CX, total_qubits - n_qubits));
   if (p_angles.size() == 1) {
     // base step
-    commands.push_back(GateSpec(axis, std::nullopt, std::nullopt, p_angles[0]));
+    commands.push_back(GateSpec(axis, p_angles[0]));
   } else {
     recursive_demultiplex_rotation(
         p_angles, axis, total_qubits, commands, RecursionNodeType::Right);
   }
   if (node_type == RecursionNodeType::Root) {
     // for the root step, we implement UCR = CX P CX Q
-    commands.push_back(GateSpec(
-        OpType::CX, total_qubits - n_qubits, std::nullopt, std::nullopt));
+    commands.push_back(GateSpec(OpType::CX, total_qubits - n_qubits));
   }
 }
 
@@ -320,22 +318,19 @@ static void recursive_demultiplex_u2(
   // add v
   if (v_list.size() == 1) {
     Eigen::Matrix2cd v_prime = V_MULT * v_list[0] * left_compose;
-    commands.push_back(
-        GateSpec(OpType::U1, std::nullopt, v_prime, std::nullopt));
+    commands.push_back(GateSpec(OpType::U1, v_prime));
   } else {
     recursive_demultiplex_u2(
         v_list, total_qubits, commands, phase, ucrzs, left_compose, V_MULT);
   }
   // add CX
-  commands.push_back(GateSpec(
-      OpType::CX, total_qubits - n_qubits, std::nullopt, std::nullopt));
+  commands.push_back(GateSpec(OpType::CX, total_qubits - n_qubits));
 
   phase += 1.75;
   // add u
   if (u_list.size() == 1) {
     Eigen::Matrix2cd u_prime = right_compose * u_list[0] * U_MULT;
-    commands.push_back(
-        GateSpec(OpType::U1, std::nullopt, u_prime, std::nullopt));
+    commands.push_back(GateSpec(OpType::U1, u_prime));
   } else {
     recursive_demultiplex_u2(
         u_list, total_qubits, commands, phase, ucrzs, U_MULT, right_compose);
@@ -573,15 +568,13 @@ std::vector<GateSpec> MultiplexedRotationBox::decompose() const {
   std::vector<GateSpec> commands;
   OpType axis = axis_;
   if (axis_ == OpType::Rx) {
-    commands.push_back(
-        GateSpec(OpType::H, n_controls_, std::nullopt, std::nullopt));
+    commands.push_back(GateSpec(OpType::H, n_controls_));
     axis = OpType::Rz;
   }
   recursive_demultiplex_rotation(
       rotations, axis, n_controls_ + 1, commands, RecursionNodeType::Root);
   if (axis_ == OpType::Rx) {
-    commands.push_back(
-        GateSpec(OpType::H, n_controls_, std::nullopt, std::nullopt));
+    commands.push_back(GateSpec(OpType::H, n_controls_));
   }
   return commands;
 }
