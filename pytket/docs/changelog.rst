@@ -1,16 +1,18 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.29.0 (June 2024)
+------------------
 
 Features:
 
 * Add ``OpType.CnRx`` and ``OpType.CnRz``.
 * Add ``AutoRebase`` and ``AutoSquash`` passes.
   Deprecate ``auto_rebase_pass`` and ``auto_squash_pass``.
-* Add new parameter to `remove_blank_wires` to allow to keep empty classical bits.
 * Improve depth of circuit produced by ``MultiplexedTensoredU2Box``.
+* Add new parameter to `remove_blank_wires` to allow to keep empty classical bits
+* Support classical transforms and predicates, and QASM registers, with up to 64
+  bits.
 
 Fixes:
 

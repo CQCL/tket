@@ -16,7 +16,6 @@
  in to primitive logical operations."""
 import copy
 from heapq import heappop, heappush
-from math import ceil, log2
 from typing import (
     Callable,
     Dict,
@@ -155,6 +154,15 @@ def int_to_bools(val: Constant, width: int) -> List[bool]:
     return list(map(bool, map(int, reversed(f"{val:0{width}b}"[-width:]))))
 
 
+def get_bit_width(x: int) -> int:
+    assert x >= 0
+    c = 0
+    while x:
+        x >>= 1
+        c += 1
+    return c
+
+
 def _gen_walk(
     var_type: VarType, newcirc: Circuit, heap: VarHeap
 ) -> Callable[[Union[RegLogicExp, BitLogicExp], Optional[Dict]], Variable,]:
@@ -190,7 +198,7 @@ def _gen_walk(
             newcirc.add_c_setbits([bool(val)], [var], **kwargs)
         else:
             assert isinstance(var, BitRegister)
-            bit_width = ceil(log2(val + 1)) if val else 1
+            bit_width = get_bit_width(val) if val else 1
             # make sure register size matches constant and add bits to circuit
             assert bit_width <= _TEMP_REG_SIZE
             reg = copy.copy(var)

@@ -107,7 +107,7 @@ def _add_condition(
         target_bits = pred_exp.to_list()
 
     minval = 0
-    maxval = (1 << 32) - 1
+    maxval = (1 << 64) - 1
     if isinstance(condition, RegLt):
         maxval = pred_val - 1
     elif isinstance(condition, RegGt):
