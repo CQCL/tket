@@ -28,6 +28,12 @@
 #include "tket/Transformations/GreedyPauliOptimisation.hpp"
 #include "tket/Utils/Expression.hpp"
 
+
+
+#include "tket/Mapping/LexiLabelling.hpp"
+#include "tket/Mapping/LexiRoute.hpp"
+#include "tket/Mapping/MappingManager.hpp" 
+
 namespace tket {
 namespace test_GreedyPauliSimp {
 
@@ -366,16 +372,20 @@ SCENARIO(
 
     std::shared_ptr<Architecture> a = std::make_shared<Architecture>(arc);
     Circuit copy(circ);
+    Circuit copy2(circ);
     std::cout << circ.count_n_qubit_gates(2) << std::endl;
     REQUIRE(Transforms::aas_greedy_pauli_optimisation(a).apply(circ));
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
     std::cout << circ.count_n_qubit_gates(2) << " "
               << copy.count_n_qubit_gates(2) << std::endl;
-    // MappingManager mm(std::make_shared<Architecture>(arc));
-    // REQUIRE(mm.route_circuit(
-    //     circ, {std::make_shared<LexiLabellingMethod>(),
-    //            std::make_shared<LexiRouteRoutingMethod>()}));
-    // REQUIRE(respects_connectivity_constraints(circ, arc, false, true));
+    MappingManager mm(a);
+    REQUIRE(mm.route_circuit(
+        copy2, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
+    std::cout << circ.count_n_qubit_gates(2) << " "
+              << copy.count_n_qubit_gates(2) <<  " " << copy2.count_n_qubit_gates(2) << std::endl;
+
+        std::cout << circ << std::endl;
   }
 }
 

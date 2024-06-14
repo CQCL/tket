@@ -907,27 +907,6 @@ static void aas_pauli_exps_synthesis(
           node_reducing_tqes.begin(), node_reducing_tqes.end());
     }
 
-    // std::cout << "Number of candidates produced: " << tqe_candidates.size()
-    //           << " | number of remaining rotation sets " <<
-    //           rotation_sets.size()
-    //           << " | number of remaining exponetials in set: "
-    //           << first_set.size() << std::endl;
-    // std::cout << "All remaining exponentials: " << std::endl;
-    // for (auto r : rotation_sets) {
-    //   std::cout << "New Set: " << std::endl;
-    //   for (auto a : r) {
-    //     a.print();
-    //   }
-    // }
-    // std::cout << "Min node indices: ";
-    // for(auto i : min_nodes_indices){
-    //   std::cout << i;
-    // }
-    // std::cout << std::endl;
-    // for each tqe we compute costs which might subject to normalisation
-    // std::map<TQE, std::vector<double>> tqe_candidates_cost;
-    // std::pair<TQE, pauli_letter_distances
-
     std::optional<std::tuple<unsigned, TQE, pauli_letter_distances_t>>
         candidate_tqe;
     for (const TQE& tqe : tqe_candidates) {
@@ -952,22 +931,6 @@ static void aas_pauli_exps_synthesis(
       // Calculate total distance
       unsigned total_distance =
           std::accumulate(letter_distances.begin(), letter_distances.end(), 0);
-      // std::cout << "\nTQE on qubits: " << std::get<1>(tqe) << " "
-      //           << std::get<2>(tqe)
-      //           << " has accumluated distance: " << total_distance
-      //           << " and the distance vector: ";
-      // for (auto p : letter_distances) {
-      //   std::cout << p << " ";
-      // }
-      // std::cout << std::endl;
-      // std::cout << "It also produces the following updated supports: " <<
-      // std::endl; for(auto p : updated_supports){
-      //   for(auto i :p){
-      //     std::cout << i;
-      //   }
-      //   std::cout << std::endl;
-      // }
-      // std::cout << "Finally is it valid? " << updates_one << std::endl;
 
       // If candidate_tqe is not set, set it with the current candidate
       if (!updates_one) continue;
@@ -985,13 +948,6 @@ static void aas_pauli_exps_synthesis(
 
     // apply TQE
     TQE selected_tqe = std::get<1>(*candidate_tqe);
-    // std::cout << "Our winner is TQE on qubits: " << std::get<1>(selected_tqe)
-    //           << " " << std::get<2>(selected_tqe)
-    //           << " has accumluated distance: " << std::get<0>(*candidate_tqe)
-    //           << " and the distance vector: ";
-    // for (auto p : std::get<2>(*candidate_tqe)) {
-    //   std::cout << p << " ";
-    // }
 
     apply_tqe_to_circ(selected_tqe, circ);
     apply_tqe_to_tableau(selected_tqe, tab);
@@ -1236,6 +1192,8 @@ Circuit greedy_pauli_graph_synthesis(
         depth_tracker);
   }
   // synthesise the tableau
+
+
   tableau_row_nodes_synthesis(rows, tab, c, depth_weight, depth_tracker);
   unit_map_t rev_unit_map;
   for (const auto& pair : unit_map) {
