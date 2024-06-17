@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Features:
+
+* Improve depth of circuit produced by ``MultiplexedTensoredU2Box``.
+
 1.29.0 (June 2024)
 ------------------
 
