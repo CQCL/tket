@@ -37,8 +37,8 @@ GrayCode gen_graycode(unsigned m_controls) {
   return gc;
 }
 
-uint64_t reverse_bits(uint64_t v, unsigned w) {
-  uint64_t r = 0;
+uint32_t reverse_bits(uint32_t v, unsigned w) {
+  uint32_t r = 0;
   for (unsigned i = w; i--;) {
     r |= (v & 1) << i;
     v >>= 1;

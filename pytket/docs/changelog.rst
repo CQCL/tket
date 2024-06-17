@@ -1,6 +1,15 @@
 Changelog
 =========
 
+1.29.1 (June 2024)
+------------------
+
+Features:
+
+* Improve depth of circuit produced by ``MultiplexedTensoredU2Box``.
+* Revert support of classical transforms and predicates, and QASM registers,
+  with up to 64 bits. (Revert maximum width to 32.)
+
 1.29.0 (June 2024)
 ------------------
 

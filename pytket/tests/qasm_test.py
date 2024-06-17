@@ -955,14 +955,6 @@ measure q[0] -> c[0];
     )
 
 
-def test_range_with_maxwidth() -> None:
-    c = Circuit(1)
-    a = c.add_c_register("a", 8)
-    c.X(0, condition=reg_geq(a, 1))
-    qasm = circuit_to_qasm_str(c, header="hqslib1", maxwidth=63)
-    assert "if(a>=1) x q[0];" in qasm
-
-
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()

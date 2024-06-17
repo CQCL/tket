@@ -96,6 +96,24 @@ class MultiplexorBox : public Box {
   ctrl_op_map_t op_map_;
 };
 
+struct GateSpec {
+  // TODO: this struct is a little confused as only CX needs qubit, only
+  // Unitary1QBox needs matrix and only Rotation gates need angle. ... should
+  // probably make them optional ...
+  OpType type;
+  std::optional<unsigned> qubit;
+  std::optional<Eigen::Matrix2cd> matrix;
+  std::optional<Expr> angle;
+
+  GateSpec(const OpType &type_, unsigned qubit_) : type(type_), qubit(qubit_) {}
+
+  GateSpec(const OpType &type_, const Eigen::Matrix2cd &matrix_)
+      : type(type_), matrix(matrix_) {}
+
+  GateSpec(const OpType &type_, const Expr &angle_)
+      : type(type_), angle(angle_) {}
+};
+
 /**
  * Multiplexed single-axis rotations
  */
@@ -139,6 +157,8 @@ class MultiplexedRotationBox : public Box {
 
   static nlohmann::json to_json(const Op_ptr &op);
 
+  std::vector<GateSpec> decompose() const;
+
  protected:
   /**
    * @brief Implement multiplexed rotation
@@ -154,6 +174,17 @@ class MultiplexedRotationBox : public Box {
   unsigned n_controls_;
   ctrl_op_map_t op_map_;
   OpType axis_;
+};
+
+struct MultiplexedU2Commands {
+  std::vector<GateSpec> commands;
+  Eigen::VectorXcd diag;
+  float phase;
+
+  MultiplexedU2Commands(
+      const std::vector<GateSpec> &commands_, const Eigen::VectorXcd &diag_,
+      float phase_)
+      : commands(commands_), diag(diag_), phase(phase_) {}
 };
 
 /**
@@ -205,11 +236,12 @@ class MultiplexedU2Box : public Box {
 
   /**
    * @brief Decompose the multiplexor into a sequence of interleaving CX and
-   * single qubit gates followed by a diagonal matrix
+   * single qubit gates followed by a diagonal matrix, given as command
+   * descriptions and a diagonal vector
    *
-   * @return std::pair<Circuit, Eigen::VectorXcd>
+   * @return  MultiplexedU2Commands
    */
-  std::pair<Circuit, Eigen::VectorXcd> decompose() const;
+  MultiplexedU2Commands decompose() const;
 
  protected:
   /**
