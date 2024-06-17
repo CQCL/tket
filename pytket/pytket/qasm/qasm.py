@@ -1140,18 +1140,7 @@ def _retrieve_registers(
 
 
 def _parse_range(minval: int, maxval: int, maxwidth: int) -> Tuple[str, int]:
-    if maxwidth > 64:
-        raise NotImplementedError("Register width exceeds maximum of 64.")
-
     REGMAX = (1 << maxwidth) - 1
-
-    if minval > REGMAX:
-        raise NotImplementedError("Range's lower bound exceeds register capacity.")
-    elif minval > maxval:
-        raise NotImplementedError("Range's lower bound exceeds upper bound.")
-    elif maxval > REGMAX:
-        maxval = REGMAX
-
     if minval == maxval:
         return ("==", minval)
     elif minval == 0:

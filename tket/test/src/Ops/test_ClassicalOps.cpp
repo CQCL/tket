@@ -461,7 +461,7 @@ SCENARIO("Reverse slicing of mixed circuits") {
 
 SCENARIO("Pure classical operations") {
   GIVEN("A pure classical circuit") {
-    std::vector<uint64_t> and_table = {0, 1, 2, 7, 0, 1, 2, 7};
+    std::vector<uint32_t> and_table = {0, 1, 2, 7, 0, 1, 2, 7};
     std::shared_ptr<ClassicalTransformOp> and_ttop =
         std::make_shared<ClassicalTransformOp>(3, and_table);
     for (unsigned i = 0; i < 2; i++) {
@@ -475,10 +475,10 @@ SCENARIO("Pure classical operations") {
       }
     }
 
-    uint64_t a = 2, b = 6;
+    uint32_t a = 2, b = 6;
     std::shared_ptr<RangePredicateOp> rpop =
         std::make_shared<RangePredicateOp>(3, a, b);
-    for (uint64_t x = 0; x < 8; x++) {
+    for (uint32_t x = 0; x < 8; x++) {
       REQUIRE(
           rpop->eval(
               {(bool)(x & 1), (bool)((x >> 1) & 1), (bool)((x >> 2) & 1)})[0] ==
