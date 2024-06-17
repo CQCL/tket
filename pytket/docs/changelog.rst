@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.29.1 (June 2024)
+------------------
 
 Features:
 
