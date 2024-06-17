@@ -135,18 +135,18 @@ class ClassicalTransformOp : public ClassicalEvalOp {
    * @param values table of binary-encoded values
    * @param name name of operation
    *
-   * @pre n <= 64
+   * @pre n <= 32
    */
   ClassicalTransformOp(
-      unsigned n, const std::vector<uint64_t> &values,
+      unsigned n, const std::vector<uint32_t> &values,
       const std::string &name = "ClassicalTransform");
 
   std::vector<bool> eval(const std::vector<bool> &x) const override;
 
-  std::vector<uint64_t> get_values() const { return values_; }
+  std::vector<uint32_t> get_values() const { return values_; }
 
  private:
-  const std::vector<uint64_t> values_;
+  const std::vector<uint32_t> values_;
 };
 
 /**
@@ -341,15 +341,15 @@ class RangePredicateOp : public PredicateOp {
    * @param b upper bound in little-endian encoding
    */
   RangePredicateOp(
-      unsigned n, uint64_t a = 0,
-      uint64_t b = std::numeric_limits<uint64_t>::max())
+      unsigned n, uint32_t a = 0,
+      uint32_t b = std::numeric_limits<uint32_t>::max())
       : PredicateOp(OpType::RangePredicate, n, "RangePredicate"), a(a), b(b) {}
 
   std::string get_name(bool latex) const override;
 
-  uint64_t upper() const { return b; }
+  uint32_t upper() const { return b; }
 
-  uint64_t lower() const { return a; }
+  uint32_t lower() const { return a; }
 
   std::vector<bool> eval(const std::vector<bool> &x) const override;
 
@@ -359,8 +359,8 @@ class RangePredicateOp : public PredicateOp {
   bool is_equal(const Op &other) const override;
 
  private:
-  uint64_t a;
-  uint64_t b;
+  uint32_t a;
+  uint32_t b;
 };
 
 /**
@@ -378,7 +378,7 @@ class ExplicitPredicateOp : public PredicateOp {
    * @param values table of values
    * @param name name of operation
    *
-   * @pre n <= 64
+   * @pre n <= 32
    */
   ExplicitPredicateOp(
       unsigned n, const std::vector<bool> &values,

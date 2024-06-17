@@ -77,9 +77,9 @@ bimap_to_map(MapT& bm) {
 }
 
 /**
- * Reverse bits 0,1,...,w-1 of the number v, assuming v < 2^w and w <= 64.
+ * Reverse bits 0,1,...,w-1 of the number v, assuming v < 2^w and w <= 32.
  */
-uint64_t reverse_bits(uint64_t v, unsigned w);
+uint32_t reverse_bits(uint32_t v, unsigned w);
 
 /**
  * @brief
