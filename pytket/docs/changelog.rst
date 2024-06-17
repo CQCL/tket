@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Feature:
+
+* Revert keeping of blank classical wires when running
+  ``FlattenRelabelRegistersPass``.
+
 1.29.1 (June 2024)
 ------------------
 

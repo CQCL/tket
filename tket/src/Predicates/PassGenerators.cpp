@@ -357,7 +357,7 @@ PassPtr gen_flatten_relabel_registers_pass(const std::string& label) {
   Transform t =
       Transform([=](Circuit& circuit, std::shared_ptr<unit_bimaps_t> maps) {
         unsigned n_qubits = circuit.n_qubits();
-        circuit.remove_blank_wires(true);
+        circuit.remove_blank_wires(false);
         bool changed = circuit.n_qubits() < n_qubits;
         std::map<Qubit, Qubit> relabelling_map;
         std::vector<Qubit> all_qubits = circuit.all_qubits();
