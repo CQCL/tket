@@ -141,6 +141,15 @@ def test_circuit_dagger() -> None:
     assert commands[1].op.get_matrix().all() == u.conj().transpose().all()
 
 
+def test_circuit_dagger_transpose_with_barriers() -> None:
+    c = Circuit(2).S(0).add_barrier([0, 1]).CX(0, 1)
+    c_d = c.dagger()
+    assert c_d == Circuit(2).CX(0, 1).add_barrier([0, 1]).Sdg(0)
+    c = Circuit(2).Ry(0.3, 0).add_barrier([0, 1]).CX(0, 1)
+    c_t = c.transpose()
+    assert c_t == Circuit(2).CX(0, 1).add_barrier([0, 1]).Ry(-0.3, 0)
+
+
 # TKET-1365 bug
 def test_cnx_dagger() -> None:
     c = Circuit(2)
@@ -1527,6 +1536,21 @@ def test_pickle_bit() -> None:
         assert b == pickle.loads(pickle.dumps(b))
 
 
+def test_cnrx_cnrz() -> None:
+    c1rx = Circuit(2)
+    c1rx.add_gate(OpType.CnRx, 0.3, [0, 1])
+    crx = Circuit(2)
+    crx.add_gate(OpType.CRx, 0.3, [0, 1])
+
+    c1rz = Circuit(2)
+    c1rz.add_gate(OpType.CnRz, 0.3, [0, 1])
+    crz = Circuit(2)
+    crz.add_gate(OpType.CRz, 0.3, [0, 1])
+
+    assert np.allclose(c1rz.get_unitary(), crz.get_unitary())
+    assert np.allclose(c1rx.get_unitary(), crx.get_unitary())
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
@@ -1542,3 +1566,4 @@ if __name__ == "__main__":
     test_multi_controlled_gates()
     test_counting_n_qubit_gates()
     test_pauliexp_pair_box_serialisation()
+    test_cnrx_cnrz()

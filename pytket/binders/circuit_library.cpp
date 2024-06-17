@@ -234,6 +234,9 @@ PYBIND11_MODULE(circuit_library, library_m) {
       "Either the exact TK2, or a wire swap encoded in the implicit qubit "
       "permutation of the Circuit and single qubit gates.");
   library_m.def(
+      "TK2_using_TK2", &CircPool::TK2_using_TK2,
+      "A circuit of a single TK2 gate with given parameters");
+  library_m.def(
       "approx_TK2_using_1xZZPhase", &CircPool::approx_TK2_using_1xZZPhase,
       "Approximate equivalent to TK2, using 1 ZZPhase gate and single-qubit "
       "gates. Only requires the first angle of the TK2 gate.");
@@ -286,14 +289,24 @@ PYBIND11_MODULE(circuit_library, library_m) {
       "TK1_to_RzRx", &CircPool::tk1_to_rzrx,
       "A tk1 equivalent circuit given tk1 parameters in terms of Rz, Rx");
   library_m.def(
+      "TK1_to_RxRy", &CircPool::tk1_to_rxry,
+      "A tk1 equivalent circuit given tk1 parameters in terms of Rx, Ry");
+  library_m.def(
       "TK1_to_RzH", &CircPool::tk1_to_rzh,
       "A tk1 equivalent circuit given tk1 parameters in terms of Rz, H");
   library_m.def(
       "TK1_to_RzSX", &CircPool::tk1_to_rzsx,
       "A tk1 equivalent circuit given tk1 parameters in terms of Rz, Sx");
   library_m.def(
+      "TK1_to_RzXSX", &CircPool::tk1_to_rzxsx,
+      "A tk1 equivalent circuit given tk1 parameters in terms of Rz, X, Sx");
+  library_m.def(
       "TK1_to_TK1", &CircPool::tk1_to_tk1,
       "A circuit of a single tk1 gate with given parameters");
+  library_m.def(
+      "TK1_to_U3", &CircPool::tk1_to_u3,
+      "A tk1 equivalent circuit given tk1 parameters in terms of U3 and global "
+      "phase");
   library_m.def(
       "Rx_using_GPI", &CircPool::Rx_using_GPI,
       "Equivalent to Rx, using GPI and GPI2 gates");

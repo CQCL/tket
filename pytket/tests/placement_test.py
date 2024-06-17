@@ -191,6 +191,15 @@ def test_place_fully_connected() -> None:
     assert qbs[3].reg_name == "fcNode"
     assert qbs[4].reg_name == "fcNode"
 
+    fc5 = FullyConnected(5, "fcNodetest")
+    place_fully_connected(c, fc5)
+    qbs = c.qubits
+    assert qbs[0].reg_name == "fcNodetest"
+    assert qbs[1].reg_name == "fcNodetest"
+    assert qbs[2].reg_name == "fcNodetest"
+    assert qbs[3].reg_name == "fcNodetest"
+    assert qbs[4].reg_name == "fcNodetest"
+
 
 def test_big_placement() -> None:
     # TKET-1275

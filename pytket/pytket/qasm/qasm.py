@@ -52,7 +52,6 @@ from pytket._tket.circuit import (
     CopyBitsOp,
     MultiBitOp,
     WASMOp,
-    CustomGate,
     BarrierOp,
 )
 from pytket._tket.unit_id import _TEMP_BIT_NAME
@@ -80,7 +79,7 @@ from pytket.circuit.logic_exp import (
     create_logic_exp,
 )
 from pytket.qasm.grammar import grammar
-from pytket.passes import auto_rebase_pass, DecomposeBoxes, RemoveRedundancies
+from pytket.passes import AutoRebase, DecomposeBoxes, RemoveRedundancies
 from pytket.wasm import WasmFileHandler
 
 
@@ -1141,7 +1140,18 @@ def _retrieve_registers(
 
 
 def _parse_range(minval: int, maxval: int, maxwidth: int) -> Tuple[str, int]:
+    if maxwidth > 64:
+        raise NotImplementedError("Register width exceeds maximum of 64.")
+
     REGMAX = (1 << maxwidth) - 1
+
+    if minval > REGMAX:
+        raise NotImplementedError("Range's lower bound exceeds register capacity.")
+    elif minval > maxval:
+        raise NotImplementedError("Range's lower bound exceeds upper bound.")
+    elif maxval > REGMAX:
+        maxval = REGMAX
+
     if minval == maxval:
         return ("==", minval)
     elif minval == 0:
@@ -1197,7 +1207,7 @@ def _get_gate_circuit(
         gate_circ.add_gate(optype, exprs, unitids)
     else:
         gate_circ.add_gate(optype, unitids)
-    auto_rebase_pass({OpType.CX, OpType.U3}).apply(gate_circ)
+    AutoRebase({OpType.CX, OpType.U3}).apply(gate_circ)
     RemoveRedundancies().apply(gate_circ)
 
     return gate_circ

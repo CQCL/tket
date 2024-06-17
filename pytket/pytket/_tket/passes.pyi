@@ -9,7 +9,7 @@ import pytket._tket.transform
 import pytket._tket.unit_id
 import sympy
 import typing
-__all__ = ['AASRouting', 'Audit', 'BasePass', 'CNotSynthType', 'CXMappingPass', 'CliffordPushThroughMeasures', 'CliffordResynthesis', 'CliffordSimp', 'CnXPairwiseDecomposition', 'CommuteThroughMultis', 'ComposePhasePolyBoxes', 'ContextSimp', 'CustomPass', 'CustomRoutingPass', 'DecomposeArbitrarilyControlledGates', 'DecomposeBoxes', 'DecomposeClassicalExp', 'DecomposeMultiQubitsCX', 'DecomposeSingleQubitsTK1', 'DecomposeSwapsToCXs', 'DecomposeSwapsToCircuit', 'DecomposeTK2', 'Default', 'DefaultMappingPass', 'DelayMeasures', 'EulerAngleReduction', 'FlattenRegisters', 'FlattenRelabelRegistersPass', 'FullMappingPass', 'FullPeepholeOptimise', 'GlobalisePhasedX', 'GreedyPauliSimp', 'GuidedPauliSimp', 'HamPath', 'KAKDecomposition', 'NaivePlacementPass', 'NormaliseTK2', 'OptimisePhaseGadgets', 'PauliExponentials', 'PauliSimp', 'PauliSquash', 'PeepholeOptimise2Q', 'PlacementPass', 'RebaseCustom', 'RebaseTket', 'Rec', 'RemoveBarriers', 'RemoveDiscarded', 'RemoveImplicitQubitPermutation', 'RemoveRedundancies', 'RenameQubitsPass', 'RepeatPass', 'RepeatUntilSatisfiedPass', 'RepeatWithMetricPass', 'RoundAngles', 'RoutingPass', 'SWAP', 'SafetyMode', 'SequencePass', 'SimplifyInitial', 'SimplifyMeasured', 'SquashCustom', 'SquashRzPhasedX', 'SquashTK1', 'SynthesiseOQC', 'SynthesiseTK', 'SynthesiseTket', 'SynthesiseUMD', 'ThreeQubitSquash', 'ZXGraphlikeOptimisation', 'ZZPhaseToRz']
+__all__ = ['AASRouting', 'Audit', 'AutoRebase', 'AutoSquash', 'BasePass', 'CNotSynthType', 'CXMappingPass', 'CliffordPushThroughMeasures', 'CliffordResynthesis', 'CliffordSimp', 'CnXPairwiseDecomposition', 'CommuteThroughMultis', 'ComposePhasePolyBoxes', 'ContextSimp', 'CustomPass', 'CustomRoutingPass', 'DecomposeArbitrarilyControlledGates', 'DecomposeBoxes', 'DecomposeClassicalExp', 'DecomposeMultiQubitsCX', 'DecomposeSingleQubitsTK1', 'DecomposeSwapsToCXs', 'DecomposeSwapsToCircuit', 'DecomposeTK2', 'Default', 'DefaultMappingPass', 'DelayMeasures', 'EulerAngleReduction', 'FlattenRegisters', 'FlattenRelabelRegistersPass', 'FullMappingPass', 'FullPeepholeOptimise', 'GlobalisePhasedX', 'GreedyPauliSimp', 'GuidedPauliSimp', 'HamPath', 'KAKDecomposition', 'NaivePlacementPass', 'NormaliseTK2', 'OptimisePhaseGadgets', 'PauliExponentials', 'PauliSimp', 'PauliSquash', 'PeepholeOptimise2Q', 'PlacementPass', 'RebaseCustom', 'RebaseTket', 'Rec', 'RemoveBarriers', 'RemoveDiscarded', 'RemoveImplicitQubitPermutation', 'RemoveRedundancies', 'RenameQubitsPass', 'RepeatPass', 'RepeatUntilSatisfiedPass', 'RepeatWithMetricPass', 'RoundAngles', 'RoutingPass', 'SWAP', 'SafetyMode', 'SequencePass', 'SimplifyInitial', 'SimplifyMeasured', 'SquashCustom', 'SquashRzPhasedX', 'SquashTK1', 'SynthesiseOQC', 'SynthesiseTK', 'SynthesiseTket', 'SynthesiseUMD', 'ThreeQubitSquash', 'ZXGraphlikeOptimisation', 'ZZPhaseToRz']
 class BasePass:
     """
     Base class for passes.
@@ -219,6 +219,21 @@ def AASRouting(arc: pytket._tket.architecture.Architecture, **kwargs: Any) -> Ba
     :param \\**kwargs: parameters for routing (described above)
     :return: a pass to perform the remapping
     """
+def AutoRebase(gateset: set[pytket._tket.circuit.OpType], allow_swaps: bool = False) -> BasePass:
+    """
+    Attempt to generate a rebase pass automatically for the given target gateset. Checks if there are known existing decompositions to target gateset and TK1 to target gateset and uses those to construct a custom rebase.
+    Raises an error if no known decompositions can be found, in which case try using :py:class:`RebaseCustom` with your own decompositions.
+    
+    :param gateset: Set of supported OpTypes, target gate set. (in addition, Measure, Reset and Collapse operations are always allowed and are left alone; conditional operations may be present; and Phase gates may also be introduced by the rebase)
+    :param allow_swaps: Whether to allow implicit wire swaps. Default to False.
+    """
+def AutoSquash(singleqs: set[pytket._tket.circuit.OpType]) -> BasePass:
+    """
+    Attempt to generate a squash pass automatically for the given target single qubit gateset.
+    Raises an error if no known TK1 decomposition can be found based on the given gateset, in which case try using :py:class:`SquashCustom` with your own decomposition.
+    
+    :param singleqs: The types of single qubit gates in the target gate set. This pass will only affect sequences of gates that are already in this set.
+    """
 def CXMappingPass(arc: pytket._tket.architecture.Architecture, placer: pytket._tket.placement.Placement, **kwargs: Any) -> BasePass:
     """
     Construct a pass to convert all gates to CX, relabel :py:class:`Circuit` Qubits to :py:class:`Architecture` Nodes, route to the connectivty graph of a :py:class:`Architecture` and decompose additional routing gates (SWAP and BRIDGE) to CX gates.
@@ -291,7 +306,7 @@ def CustomRoutingPass(arc: pytket._tket.architecture.Architecture, config: typin
     """
 def DecomposeArbitrarilyControlledGates() -> BasePass:
     """
-    Decomposes CCX, CnX, CnY, CnZ, and CnRy gates into CX and single-qubit gates.
+    Decomposes CCX, CnX, CnY, CnZ, CnRy, CnRz and CnRx gates into CX and single-qubit gates.
     """
 def DecomposeBoxes(excluded_types: set[pytket._tket.circuit.OpType] = set(), excluded_opgroups: set[str] = set()) -> BasePass:
     """

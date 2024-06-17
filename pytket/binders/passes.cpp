@@ -453,7 +453,7 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "DecomposeArbitrarilyControlledGates",
       &DecomposeArbitrarilyControlledGates,
-      "Decomposes CCX, CnX, CnY, CnZ, and CnRy gates into "
+      "Decomposes CCX, CnX, CnY, CnZ, CnRy, CnRz and CnRx gates into "
       "CX and single-qubit gates.");
   m.def(
       "DecomposeBoxes", &DecomposeBoxes,
@@ -567,6 +567,17 @@ PYBIND11_MODULE(passes, m) {
       py::arg("singleqs"), py::arg("tk1_replacement"),
       py::arg("always_squash_symbols") = false);
   m.def(
+      "AutoSquash", &gen_auto_squash_pass,
+      "Attempt to generate a squash pass automatically for the given target "
+      "single qubit gateset.\n"
+      "Raises an error if no known TK1 decomposition can be found based on the "
+      "given gateset, in which case try using :py:class:`SquashCustom` with "
+      "your own decomposition."
+      "\n\n:param singleqs: The types of single qubit gates in the target "
+      "gate set. This pass will only affect sequences of gates that are "
+      "already in this set.",
+      py::arg("singleqs"));
+  m.def(
       "DelayMeasures", &DelayMeasures,
       "Commutes Measure operations to the end of the circuit. Throws an "
       "exception when this is not possible because of gates following the "
@@ -660,7 +671,21 @@ PYBIND11_MODULE(passes, m) {
       "conditional and phase operations, and Measure, Reset and Collapse)",
       py::arg("gateset"), py::arg("tk2_replacement"),
       py::arg("tk1_replacement"));
-
+  m.def(
+      "AutoRebase", &gen_auto_rebase_pass,
+      "Attempt to generate a rebase pass automatically for the given target "
+      "gateset. Checks if there are known existing decompositions "
+      "to target gateset and TK1 to target gateset and uses those to construct "
+      "a custom rebase.\n"
+      "Raises an error if no known decompositions can be found, in which case "
+      "try using :py:class:`RebaseCustom` with your own decompositions.\n\n"
+      ":param gateset: Set of supported OpTypes, target gate set. "
+      "(in addition, Measure, Reset and Collapse operations are always allowed "
+      "and are left alone; conditional operations may be present; and Phase "
+      "gates may also be introduced by the rebase)\n"
+      ":param allow_swaps: Whether to allow implicit wire swaps. Default to "
+      "False.",
+      py::arg("gateset"), py::arg("allow_swaps") = false);
   m.def(
       "EulerAngleReduction", &gen_euler_pass,
       "Uses Euler angle decompositions to squash all chains of P and Q "

@@ -54,7 +54,8 @@ Circuit CX_circ_from_multiq(const Op_ptr op);
 Circuit CX_ZX_circ_from_op(const Op_ptr op);
 
 /**
- * Replace CnRy, CnX, CnZ, CnY with 2-qubit gates and single qubit gates
+ * Replace CnRy, CnRx, CnRz, CnX, CnZ, CnY with 2-qubit gates and single qubit
+ * gates
  *
  * @param op operation
  * @param two_q_type whether rebase 2-q gates to CX or TK2

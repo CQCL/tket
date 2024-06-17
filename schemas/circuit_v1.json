@@ -154,13 +154,13 @@
             },
             "lower": {
               "type": "integer",
-              "maximum": 4294967295,
-              "description": "The inclusive minimum of the RangePredicate as a uint32."
+              "maximum": 18446744073709551615,
+              "description": "The inclusive minimum of the RangePredicate as a uint64."
             },
             "upper": {
               "type": "integer",
-              "maximum": 4294967295,
-              "description": "The inclusive maximum of the RangePredicate as a uint32."
+              "maximum": 18446744073709551615,
+              "description": "The inclusive maximum of the RangePredicate as a uint64."
             }
           },
           "required": [

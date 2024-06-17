@@ -117,6 +117,10 @@ struct GateUnitaryMatrixImplementations {
   // to have a sparse version.
   static Eigen::MatrixXcd CnRy(unsigned int number_of_qubits, double alpha);
 
+  static Eigen::MatrixXcd CnRx(unsigned int number_of_qubits, double alpha);
+
+  static Eigen::MatrixXcd CnRz(unsigned int number_of_qubits, double alpha);
+
   static Eigen::MatrixXcd CnX(unsigned int number_of_qubits);
 
   static Eigen::MatrixXcd CnZ(unsigned int number_of_qubits);

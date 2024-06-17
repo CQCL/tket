@@ -609,6 +609,20 @@ enum class OpType {
   CnRy,
 
   /**
+   * Multiply-controlled \ref OpType::Rx
+   *
+   * The phase parameter is defined modulo \f$ 4 \f$.
+   */
+  CnRx,
+
+  /**
+   * Multiply-controlled \ref OpType::Rz
+   *
+   * The phase parameter is defined modulo \f$ 4 \f$.
+   */
+  CnRz,
+
+  /**
    * Multiply-controlled \ref OpType::X
    */
   CnX,
