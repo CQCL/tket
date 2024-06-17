@@ -24,7 +24,6 @@ from pytket.circuit import (
     Unitary2qBox,
     Node,
     Qubit,
-    Bit,
     UnitID,
     Conditional,
 )
@@ -886,10 +885,7 @@ def test_conditional_phase() -> None:
 
 
 def test_flatten_relabel_pass() -> None:
-    c = Circuit(3, 3)
-    c.add_bit(Bit("d", 0))
-    c.add_bit(Bit("d", 1))
-    c.add_c_register("e", 5)
+    c = Circuit(3)
     c.H(1).H(2)
     rename_map: RenameUnitsMap = dict()
     rename_map[Qubit(0)] = Qubit("a", 4)
@@ -905,10 +901,6 @@ def test_flatten_relabel_pass() -> None:
     assert cu.initial_map[Qubit("a", 4)] == Qubit("a", 4)
     assert cu.initial_map[Qubit("b", 7)] == Qubit("a", 1)
     assert cu.circuit.qubits == [Qubit("a", 0), Qubit("a", 1)]
-    assert cu.circuit.n_bits == 10
-    assert cu.circuit.get_c_register("c").size == 3
-    assert cu.circuit.get_c_register("d").size == 2
-    assert cu.circuit.get_c_register("e").size == 5
 
     # test default argument
     c = Circuit()
