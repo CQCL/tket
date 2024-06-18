@@ -36,3 +36,9 @@ if not pytket_config_file.exists():
     config.write_file(pytket_config_file)
 
 __path__ = __import__("pkgutil").extend_path(__path__, __name__)
+
+"""Flag indicating 64-bit support.
+
+If True, classical transforms and predicates, and QASM registers, with up to 64
+bits are supported."""
+bit_width_64 = True
