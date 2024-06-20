@@ -84,13 +84,9 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     faqs.rst
 
 .. toctree::
-    :caption: pytket documentation:
+    :caption: pytket extensions:
     
-    pytket API docs <https://tket.quantinuum.com/api-docs/>
     extensions.rst
-    Manual <https://tket.quantinuum.com/user-manual>
-    Example notebooks <https://tket.quantinuum.com/examples>
-    TKET website <https://tket.quantinuum.com/>
 
 .. toctree::
     :caption: API Reference:
