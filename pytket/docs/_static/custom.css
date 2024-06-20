@@ -35,7 +35,6 @@ html[data-theme=light] {
 .sig-name {
     font-size: 1.25rem;
 }
-
-/* .navbar-header-items {
-    di
-} */
+.navbar-header-items, .bd-header__inner, .navbar-item, .navbar-header-items__center  {
+    display: contents;
+}
