@@ -104,7 +104,7 @@ html_theme_options = {
     "use_repository_button": True,
     "use_issues_button": True,
     "navigation_with_keys": True,
-    "navbar_start": ["navbar-root-logo"],
+    # "navbar_start": ["navbar-root-logo"],
     "navbar_center": ["navbar-nav"],
     "logo": {
         "image_light": "_static/Quantinuum_logo_black.png",

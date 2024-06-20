@@ -1,0 +1,53 @@
+{% extends '!layout.html' %}
+
+{% block extrahead %}
+<script>
+
+  const navTextLinks = [
+  {
+    title: 'Item 1',
+    href: 'somewhere',
+    pathMatch: 'somewhere',  },
+  {
+    title: 'Item 2',
+    href: 'somewhere',
+    pathMatch: 'somewhere',
+  },
+  {
+    title: 'Item 3',
+    href: 'somewhere',
+    pathMatch: 'somewhere',
+  },
+  {
+    title: 'Item4',
+    href: 'somewhere',
+    pathMatch: 'somewhere',
+  },
+  ]
+
+  const navProductName = "H-Series"
+
+  const navIconLinks = [
+  {
+    title: 'Item 1',
+    href: 'somewhere',
+    pathMatch: 'somewhere',
+        iconImageURL: 'https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg'
+  },
+  ]
+</script>
+<link rel="stylesheet" href="/_static/tokens.css" />
+<link rel="stylesheet" href="/_static/styles.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+  />
+{% endblock %}
+
+
+{% block footer %}
+<script type="text/javascript" src="/_static/nav.global.js"></script>
+{% endblock %}
+   
