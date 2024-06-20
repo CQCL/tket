@@ -1,5 +1,5 @@
-pytket extensions
-=================
+Extension packages
+==================
 
 The pytket extensions are separate python modules which allow pytket to interface with backends from a range of providers including quantum devices from Quantinuum and IBM.
 In pytket a ``Backend`` represents a connection to a QPU (Quantum Processing Unit) or simulator for processing quantum circuits. One can also access additional quantum devices and simulators via the cloud through the extensions for `Braket <https://tket.quantinuum.com/extensions/pytket-braket/api.html#pytket.extensions.braket.BraketBackend>`_ . 
