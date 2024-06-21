@@ -38,3 +38,13 @@ html[data-theme=light] {
 .navbar-header-items, .bd-header__inner, .navbar-item, .navbar-header-items__center  {
     display: contents;
 }
+
+.navbar-brand {
+    display: none;
+    margin-bottom: -1rem;
+}
+
+.sidebar-primary-items__start {
+    margin-top: -1rem;
+}
+

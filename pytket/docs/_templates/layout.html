@@ -1,32 +1,31 @@
 {% extends '!layout.html' %}
 
 {% block extrahead %}
-{{ super() }}
 <script>
 
   const navTextLinks = [
   {
-    title: 'Item 1',
+    title: 'API Docs',
     href: 'somewhere',
     pathMatch: 'somewhere',  },
   {
-    title: 'Item 2',
+    title: 'Examples',
     href: 'somewhere',
     pathMatch: 'somewhere',
   },
   {
-    title: 'Item 3',
+    title: 'Blog',
     href: 'somewhere',
     pathMatch: 'somewhere',
   },
   {
-    title: 'Item4',
+    title: 'User Manual',
     href: 'somewhere',
     pathMatch: 'somewhere',
   },
   ]
 
-  const navProductName = "H-Series"
+  const navProductName = "TKET"
 
   const navIconLinks = [
   {
@@ -45,10 +44,25 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
   />
+
 {% endblock %}
 
+{% block extrabody %}
+<!-- Custom HTML to be added at the top of the body -->
+
+{% endblock %}
 
 {% block footer %}
+<script>
+ // Manually inject nav html elements.
+  const nav = document.createElement('nav')
+  nav.style = "all:unset;position:sticky;top:0;z-index:1021;width:100%;"
+  const header = document.createElement('header')
+  header.classList.add("nexus-nav")
+  nav.appendChild(header)
+  document.body.prepend(nav)
+</script>
 <script type="text/javascript" src="/_static/nav.global.js"></script>
+{{ super() }}
 {% endblock %}
    

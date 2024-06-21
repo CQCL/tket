@@ -101,18 +101,9 @@ html_theme = "sphinx_book_theme"
 html_theme_options = {
     "show_toc_level": 2,
     "repository_url": "https://github.com/CQCL/tket",
-    "use_repository_button": True,
+    "use_repository_button": False,
     "use_issues_button": True,
     "navigation_with_keys": True,
-    # "navbar_start": ["navbar-root-logo"],
-    # "navbar_center": ["navbar-nav"],
-    "logo": {
-        "image_light": "_static/Quantinuum_logo_black.png",
-        "image_dark": "_static/Quantinuum_logo_white.png",
-    },
-}
-html_context = {
-    "custom_html_top": "_templates/custom_layout.html",
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
