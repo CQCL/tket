@@ -48,3 +48,10 @@ html[data-theme=light] {
     margin-top: -1rem;
 }
 
+.bd-sidebar, .bd-header-article, .bd-sidebar-secondary {
+    /* position: fixed; */
+    /* inset: 0; */
+    top: calc(3.5rem - 0px);
+
+}
+
