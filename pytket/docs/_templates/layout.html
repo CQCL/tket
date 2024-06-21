@@ -1,6 +1,8 @@
-{% extends '!layout.html' %}
+{% extends "pydata_sphinx_theme/layout.html" %}
+{# ref: https://github.com/pydata/pydata-sphinx-theme/blob/master/src/pydata_sphinx_theme/theme/pydata_sphinx_theme/layout.html #}
 
 {% block extrahead %}
+{{ super() }}
 <script>
 
   const navTextLinks = [
@@ -59,22 +61,14 @@
 
 {% endblock %}
 
-{% block extrabody %}
-<!-- Custom HTML to be added at the top of the body -->
-
+{% block body_tag %}
+<nav style="all:unset;position:sticky;top:0;z-index:1021;width:100%;">
+    <header class="nexus-nav"></header>
+</nav>
+{{ super() }}
 {% endblock %}
 
 {% block footer %}
-<script>
- // Manually inject nav html elements.
-  const nav = document.createElement('nav')
-  nav.style = "all:unset;position:sticky;top:0;z-index:1021;width:100%;"
-  const header = document.createElement('header')
-  header.classList.add("nexus-nav")
-  nav.appendChild(header)  
-  document.body.prepend(nav)
-</script>
 <script type="text/javascript" src="/_static/nav.global.js"></script>
-{{ super() }}
+
 {% endblock %}
-   
