@@ -83,12 +83,10 @@ class ResultHandle(Sequence):
         return len(self._identifiers)
 
     @overload
-    def __getitem__(self, key: int) -> BasicHashType:
-        ...
+    def __getitem__(self, key: int) -> BasicHashType: ...
 
     @overload
-    def __getitem__(self, key: slice) -> Tuple[BasicHashType, ...]:
-        ...
+    def __getitem__(self, key: slice) -> Tuple[BasicHashType, ...]: ...
 
     def __getitem__(
         self, key: Union[int, slice]
