@@ -7,7 +7,7 @@ on:
 jobs:
   lint:
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -16,7 +16,7 @@ jobs:
       with:
         python-version: '3.x'
     - name: Install black and pylint
-      run: pip install black~=22.3 pylint~=2.13,!=2.13.6
+      run: pip install black>=24.4.2 pylint>=3.2.3
     - name: Check files are formatted with black
       run: |
         # Paths specified to avoid formatting submodules
