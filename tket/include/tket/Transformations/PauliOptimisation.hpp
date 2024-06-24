@@ -26,7 +26,7 @@ namespace Transforms {
     The additional greedy strategy applies two-qubit Clifford gates
     in a greedy fashion and delays the un-computation to the very end.
 */
-enum class PauliSynthStrat { Individual, Pairwise, Sets };
+enum class PauliSynthStrat { Individual, Pairwise, Sets, Greedy };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(
     PauliSynthStrat, {{PauliSynthStrat::Individual, "Individual"},

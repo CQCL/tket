@@ -715,6 +715,7 @@ SCENARIO("TermSequenceBox", "[boxes]") {
         pbox.get_partition_strategy() == PauliPartitionStrat::CommutingSets);
     REQUIRE(pbox.get_graph_colouring() == GraphColourMethod::Lazy);
     REQUIRE(pbox.get_cx_config() == CXConfigType::Tree);
+    REQUIRE(pbox.get_depth_weight() == 0.3);
     REQUIRE(pbox.get_pauli_gadgets() == pgadgets);
   }
   GIVEN("is_clifford test cases") {
@@ -1138,6 +1139,38 @@ SCENARIO("TermSequenceBox", "[boxes]") {
     REQUIRE(gadgets2.size() == 1);
     REQUIRE(gadgets2[0].string == paulis4);
     REQUIRE(gadgets2[0].coeff == phase4);
+  }
+  GIVEN("circuit construction, PauliSynthStrat::Greedy") {
+    auto paulis0 = std::vector<Pauli>{Pauli::X, Pauli::I, Pauli::I};
+    auto paulis1 = std::vector<Pauli>{Pauli::Y, Pauli::X, Pauli::Z};
+    auto paulis2 = std::vector<Pauli>{Pauli::I, Pauli::Y, Pauli::I};
+    auto paulis3 = std::vector<Pauli>{Pauli::I, Pauli::I, Pauli::Z};
+    // the synthesis should be smart enough to implement paulis0, paulis2
+    // and paulis4 first
+    auto phase0 = Expr(0.25);
+    auto phase1 = Expr(0.4);
+    auto phase2 = Expr(1.3);
+    auto phase3 = Expr(1.7);
+    auto synth_strat = Transforms::PauliSynthStrat::Greedy;
+    // The following has no effect
+    auto partition_strat = PauliPartitionStrat::CommutingSets;
+    auto colouring_method = GraphColourMethod::Lazy;
+    auto cx_config = CXConfigType::Snake;
+    auto box = TermSequenceBox(
+        {{paulis0, phase0},
+         {paulis1, phase1},
+         {paulis2, phase2},
+         {paulis3, phase3}},
+        synth_strat, partition_strat, colouring_method, cx_config, 0.2);
+    Circuit c = *box.to_circuit();
+    std::vector<Command> coms = c.get_commands();
+    Op_ptr op0 = coms[0].get_op_ptr();
+    Op_ptr op1 = coms[1].get_op_ptr();
+    Op_ptr op2 = coms[2].get_op_ptr();
+    REQUIRE(op0->get_type() == OpType::TK1);
+    REQUIRE(op1->get_type() == OpType::TK1);
+    REQUIRE(op2->get_type() == OpType::TK1);
+    REQUIRE(c.count_n_qubit_gates(2) <= 4);
   }
 }
 }  // namespace test_PauliExpBoxes

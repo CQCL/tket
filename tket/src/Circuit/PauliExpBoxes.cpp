@@ -21,6 +21,8 @@
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
 #include "tket/Ops/OpJsonFactory.hpp"
+#include "tket/Transformations/CliffordOptimisation.hpp"
+#include "tket/Transformations/GreedyPauliOptimisation.hpp"
 
 namespace tket {
 
@@ -374,13 +376,14 @@ TermSequenceBox::TermSequenceBox(
     const std::vector<SymPauliTensor> &pauli_gadgets,
     Transforms::PauliSynthStrat synth_strategy,
     PauliPartitionStrat partition_strategy, GraphColourMethod graph_colouring,
-    CXConfigType cx_configuration)
+    CXConfigType cx_configuration, double depth_weight)
     : Box(OpType::TermSequenceBox),
       pauli_gadgets_(pauli_gadgets),
       synth_strategy_(synth_strategy),
       partition_strategy_(partition_strategy),
       graph_colouring_(graph_colouring),
-      cx_configuration_(cx_configuration) {
+      cx_configuration_(cx_configuration),
+      depth_weight_(depth_weight) {
   // check at least one gadget
   if (pauli_gadgets.empty()) {
     signature_ = op_signature_t(0, EdgeType::Quantum);
@@ -404,7 +407,8 @@ TermSequenceBox::TermSequenceBox(const TermSequenceBox &other)
       synth_strategy_(other.synth_strategy_),
       partition_strategy_(other.partition_strategy_),
       graph_colouring_(other.graph_colouring_),
-      cx_configuration_(other.cx_configuration_) {}
+      cx_configuration_(other.cx_configuration_),
+      depth_weight_(other.depth_weight_) {}
 
 TermSequenceBox::TermSequenceBox() : TermSequenceBox({{{}, 0}}) {}
 
@@ -431,7 +435,7 @@ Op_ptr TermSequenceBox::dagger() const {
   }
   return std::make_shared<TermSequenceBox>(
       dagger_gadgets, synth_strategy_, partition_strategy_, graph_colouring_,
-      cx_configuration_);
+      cx_configuration_, depth_weight_);
 }
 
 Op_ptr TermSequenceBox::transpose() const {
@@ -443,7 +447,7 @@ Op_ptr TermSequenceBox::transpose() const {
   }
   return std::make_shared<TermSequenceBox>(
       transpose_gadgets, synth_strategy_, partition_strategy_, graph_colouring_,
-      cx_configuration_);
+      cx_configuration_, depth_weight_);
 }
 
 Op_ptr TermSequenceBox::symbol_substitution(
@@ -454,7 +458,7 @@ Op_ptr TermSequenceBox::symbol_substitution(
   }
   return std::make_shared<TermSequenceBox>(
       symbol_sub_gadgets, synth_strategy_, partition_strategy_,
-      graph_colouring_, cx_configuration_);
+      graph_colouring_, cx_configuration_, depth_weight_);
 }
 
 bool TermSequenceBox::is_equal(const Op &op_other) const {
@@ -465,6 +469,7 @@ bool TermSequenceBox::is_equal(const Op &op_other) const {
   if (partition_strategy_ != other.partition_strategy_) return false;
   if (graph_colouring_ != other.graph_colouring_) return false;
   if (cx_configuration_ != other.cx_configuration_) return false;
+  if (depth_weight_ != other.depth_weight_) return false;
   return std::equal(
       pauli_gadgets_.begin(), pauli_gadgets_.end(),
       other.pauli_gadgets_.begin(), other.pauli_gadgets_.end(),
@@ -493,6 +498,8 @@ CXConfigType TermSequenceBox::get_cx_config() const {
   return cx_configuration_;
 }
 
+double TermSequenceBox::get_depth_weight() const { return depth_weight_; }
+
 nlohmann::json TermSequenceBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const TermSequenceBox &>(*op);
   nlohmann::json j = core_box_json(box);
@@ -506,6 +513,7 @@ nlohmann::json TermSequenceBox::to_json(const Op_ptr &op) {
   j["partition_strategy"] = box.get_partition_strategy();
   j["graph_colouring"] = box.get_graph_colouring();
   j["cx_config"] = box.get_cx_config();
+  j["depth_weight"] = box.get_depth_weight();
 
   return j;
 }
@@ -521,7 +529,8 @@ Op_ptr TermSequenceBox::from_json(const nlohmann::json &j) {
       gadgets, j.at("synth_strategy").get<Transforms::PauliSynthStrat>(),
       j.at("partition_strategy").get<PauliPartitionStrat>(),
       j.at("graph_colouring").get<GraphColourMethod>(),
-      j.at("cx_config").get<CXConfigType>());
+      j.at("cx_config").get<CXConfigType>(),
+      j.at("depth_weight").get<double>());
   return set_box_id(
       box,
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
@@ -633,6 +642,16 @@ void TermSequenceBox::generate_circuit() const {
             PauliExpCommutingSetBox(commuting_gadgets, this->cx_configuration_),
             circ.all_qubits());
       }
+      break;
+    }
+    case Transforms::PauliSynthStrat::Greedy: {
+      std::vector<SymPauliTensor> unordered_gadgets;
+      for (const auto &pair : reduced_pauli_gadgets) {
+        unordered_gadgets.push_back(SymPauliTensor(pair.first, pair.second));
+      }
+      circ = Transforms::GreedyPauliSimp::greedy_pauli_set_synthesis(
+          unordered_gadgets, this->depth_weight_);
+      Transforms::singleq_clifford_sweep().apply(circ);
       break;
     }
     default: {
