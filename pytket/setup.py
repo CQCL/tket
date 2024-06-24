@@ -191,7 +191,7 @@ setup(
     packages=setuptools.find_packages() + ["pytket.qasm.includes"],
     install_requires=[
         "sympy ~=1.6",
-        "numpy >=1.21.4, <2.0",
+        "numpy >= 1.26.4",
         "lark ~=1.1",
         "scipy ~=1.13",
         "networkx >= 2.8.8",
