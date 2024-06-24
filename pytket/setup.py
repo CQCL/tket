@@ -203,8 +203,9 @@ setup(
     ],
     extras_require={
         "ZX": [
-            "quimb ~= 1.8",
-            "autoray >= 0.6.1",
+            "numba >= 0.60.0",
+            "quimb >= 1.8.2",
+            "autoray >= 0.6.12",
         ],
     },
     ext_modules=[
