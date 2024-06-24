@@ -22,13 +22,17 @@ namespace Transforms {
 
 /* Dictates whether synthesis of a PauliGraph should
     be done on the Paulis individually, making use of the pairwise
-    interactions or collecting into mutually commuting sets. */
+    interactions or collecting into mutually commuting sets.
+    The additional greedy strategy applies two-qubit Clifford gates
+    in a greedy fashion and delays the un-computation to the very end.
+*/
 enum class PauliSynthStrat { Individual, Pairwise, Sets };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(
     PauliSynthStrat, {{PauliSynthStrat::Individual, "Individual"},
                       {PauliSynthStrat::Pairwise, "Pairwise"},
-                      {PauliSynthStrat::Sets, "Sets"}});
+                      {PauliSynthStrat::Sets, "Sets"},
+                      {PauliSynthStrat::Greedy, "Greedy"}});
 
 Transform pairwise_pauli_gadgets(CXConfigType cx_config = CXConfigType::Snake);
 
