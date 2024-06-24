@@ -20,6 +20,7 @@
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/PauliGraphRefactor/Converters.hpp"
 #include "tket/PauliGraphRefactor/PauliGraph.hpp"
+#include "tket/Transformations/CliffordReductionPass.hpp"
 
 namespace tket {
 namespace test_PauliGraph3 {
@@ -800,6 +801,35 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
       PauliGraph res_pg = circuit_to_pauli_graph3(res);
       std::list<PGOp_ptr> res_sequence = res_pg.pgop_sequence();
       CHECK(comp_seqs(res_sequence, correct_sequence));
+    }
+  }
+  GIVEN("A circuit with initialisations, discards, and implicit permutations") {
+    Circuit circ(4);
+    circ.qubit_create(Qubit(0));
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {3});
+    circ.add_op<unsigned>(OpType::CX, {1, 3});
+    circ.add_op<unsigned>(OpType::CX, {3, 1});
+    circ.qubit_discard(Qubit(2));
+    REQUIRE(Transforms::clifford_reduction(true).apply(circ));
+    PauliGraph pg = circuit_to_pauli_graph3(circ);
+    REQUIRE_NOTHROW(pg.verify());
+    WHEN("General individual synthesis") {
+      Circuit res = pauli_graph3_to_circuit_individual(pg);
+      res.decompose_boxes_recursively();
+      CHECK(res.created_qubits() == qubit_vector_t{Qubit(0)});
+      CHECK(res.discarded_qubits() == qubit_vector_t{Qubit(2)});
+      REQUIRE(test_unitary_comparison(circ, res, true));
+    }
+    WHEN("General setwise synthesis") {
+      Circuit res = pauli_graph3_to_circuit_sets(pg);
+      res.decompose_boxes_recursively();
+      CHECK(res.created_qubits() == qubit_vector_t{Qubit(0)});
+      CHECK(res.discarded_qubits() == qubit_vector_t{Qubit(2)});
+      REQUIRE(test_unitary_comparison(circ, res, true));
     }
   }
   GIVEN("A symbolic circuit") {

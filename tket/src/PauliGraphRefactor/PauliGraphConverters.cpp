@@ -403,9 +403,13 @@ pg::PauliGraph circuit_to_pauli_graph3(
       res.add_vertex_at_end(pgop);
   }
   std::list<ChoiMixTableau::row_tensor_t> final_rows;
+  qubit_map_t implicit_perm = circ.implicit_qubit_permutation();
   for (const Qubit& q : final_u.get_qubits()) {
-    final_rows.push_back({final_u.get_zrow(q), SpPauliStabiliser(q, Pauli::Z)});
-    final_rows.push_back({final_u.get_xrow(q), SpPauliStabiliser(q, Pauli::X)});
+    Qubit out_q = implicit_perm.at(q);
+    final_rows.push_back(
+        {final_u.get_zrow(q), SpPauliStabiliser(out_q, Pauli::Z)});
+    final_rows.push_back(
+        {final_u.get_xrow(q), SpPauliStabiliser(out_q, Pauli::X)});
   }
   ChoiMixTableau final_cm(final_rows);
   for (const Qubit& q : circ.discarded_qubits()) final_cm.discard_qubit(q);
@@ -681,23 +685,29 @@ Circuit pauli_graph3_to_circuit_individual(
       bit_vector_t{bits.begin(), bits.end()});
   std::list<PGOp_ptr> pgop_sequence = pg.pgop_sequence();
   for (const PGOp_ptr& pgop : pgop_sequence) {
-    if (pgop->get_type() == PGOpType::InputTableau ||
-        pgop->get_type() == PGOpType::OutputTableau) {
-      ChoiMixTableau tab(0);
-      if (pgop->get_type() == PGOpType::InputTableau) {
-        PGInputTableau& tab_op = dynamic_cast<PGInputTableau&>(*pgop);
-        tab = tab_op.to_cm_tableau();
-      } else {
-        PGOutputTableau& tab_op = dynamic_cast<PGOutputTableau&>(*pgop);
-        tab = tab_op.to_cm_tableau();
-      }
-      std::pair<Circuit, qubit_map_t> tab_circ =
-          cm_tableau_to_exact_circuit(tab, cx_config);
+    if (pgop->get_type() == PGOpType::InputTableau) {
+      PGInputTableau& tab_op = dynamic_cast<PGInputTableau&>(*pgop);
+      ChoiMixTableau tab = tab_op.to_cm_tableau();
+      // Set this as the new circuit so that any initialisations are applied
+      // without adding Reset operations; need to readd all bits and any qubits
+      // that weren't included in the tableau
       qubit_map_t perm;
-      for (const std::pair<const Qubit, Qubit>& p : tab_circ.second)
-        perm.insert({p.second, p.first});
-      tab_circ.first.permute_boundary_output(perm);
-      circ.append(tab_circ.first);
+      std::tie(circ, perm) = cm_tableau_to_exact_circuit(tab, cx_config);
+      qubit_map_t rev_perm;
+      for (const std::pair<const Qubit, Qubit>& p : perm)
+        rev_perm.insert({p.second, p.first});
+      circ.permute_boundary_output(perm);
+      for (const Qubit& q : qubits) circ.add_qubit(q, false);
+      for (const Bit& b : bits) circ.add_bit(b, false);
+    } else if (pgop->get_type() == PGOpType::OutputTableau) {
+      PGOutputTableau& tab_op = dynamic_cast<PGOutputTableau&>(*pgop);
+      ChoiMixTableau tab = tab_op.to_cm_tableau();
+      auto [tab_circ, perm] = cm_tableau_to_exact_circuit(tab, cx_config);
+      qubit_map_t rev_perm;
+      for (const std::pair<const Qubit, Qubit>& p : perm)
+        rev_perm.insert({p.second, p.first});
+      tab_circ.permute_boundary_output(rev_perm);
+      circ.append(tab_circ);
     } else {
       circ.append(pgop_to_circuit(pgop));
     }
@@ -719,9 +729,17 @@ Circuit pauli_graph3_to_circuit_sets(
     PGOp_ptr pgop = pg.get_vertex_PGOp_ptr(*itab_v);
     PGInputTableau& tab_op = dynamic_cast<PGInputTableau&>(*pgop);
     ChoiMixTableau cmtab = tab_op.to_cm_tableau();
-    UnitaryTableau in_utab = cm_tableau_to_unitary_tableau(cmtab);
-    Circuit in_cliff_circuit = unitary_tableau_to_circuit(in_utab);
-    circ.append(in_cliff_circuit);
+    // Set this as the new circuit so that any initialisations are applied
+    // without adding Reset operations; need to readd all bits and any qubits
+    // that weren't included in the tableau
+    qubit_map_t perm;
+    std::tie(circ, perm) = cm_tableau_to_exact_circuit(cmtab, cx_config);
+    qubit_map_t rev_perm;
+    for (const std::pair<const Qubit, Qubit>& p : perm)
+      rev_perm.insert({p.second, p.first});
+    circ.permute_boundary_output(rev_perm);
+    for (const Qubit& q : qubits) circ.add_qubit(q, false);
+    for (const Bit& b : bits) circ.add_bit(b, false);
     // Remove the input tableau from the first commuting set
     auto first_set = commuting_sets.begin();
     for (auto it = first_set->begin(); it != first_set->end(); ++it) {
@@ -776,9 +794,14 @@ Circuit pauli_graph3_to_circuit_sets(
     PGOp_ptr pgop = pg.get_vertex_PGOp_ptr(*otab_v);
     PGOutputTableau& tab_op = dynamic_cast<PGOutputTableau&>(*pgop);
     ChoiMixTableau cmtab = tab_op.to_cm_tableau();
-    UnitaryTableau out_utab = cm_tableau_to_unitary_tableau(cmtab);
-    Circuit out_cliff_circuit = unitary_tableau_to_circuit(out_utab);
-    circ.append(out_cliff_circuit);
+    // UnitaryTableau out_utab = cm_tableau_to_unitary_tableau(cmtab);
+    // Circuit out_cliff_circuit = unitary_tableau_to_circuit(out_utab);
+    auto [tab_circ, perm] = cm_tableau_to_exact_circuit(cmtab, cx_config);
+    qubit_map_t rev_perm;
+    for (const std::pair<const Qubit, Qubit>& p : perm)
+      rev_perm.insert({p.second, p.first});
+    tab_circ.permute_boundary_output(rev_perm);
+    circ.append(tab_circ);
   }
 
   return circ;
@@ -793,7 +816,7 @@ Circuit pauli_graph3_to_circuit_sets(
 // the end and checking they can all be performed simultaneously
 std::pair<std::list<PGOp_ptr>, std::map<Qubit, Bit>> rotations_and_end_measures(
     const pg::PauliGraph& pg, const std::optional<UnitaryTableau>& out_tab) {
-  std::list<PGOp_ptr> all_pgops = pg.pgop_sequence();
+  std::list<PGOp_ptr> all_pgops = pg.pgop_sequence_boost();
   std::list<PGOp_ptr> rotations;
   std::list<PGOp_ptr> measures;
   for (const PGOp_ptr& pgp : all_pgops) {

@@ -357,6 +357,54 @@ void PauliGraph::verify() const {
     throw PGError("Cannot obtain a topological ordering of PauliGraph");
 }
 
+/** A graph data structure compatible with boost::topological_sort into which we
+ * will combine the classical and quantum dependencies. The kind of dependency
+ * does not need to be tracked as this will only exist ephemerally to build a
+ * topological sort of the PGOps
+ */
+typedef boost::adjacency_list<
+    boost::listS, boost::listS, boost::bidirectionalS,
+    boost::property<boost::vertex_index_t, int, PGVert>>
+    CombiDAG;
+typedef boost::graph_traits<CombiDAG>::vertex_descriptor CombiVert;
+typedef boost::graph_traits<CombiDAG>::edge_descriptor CombiEdge;
+typedef boost::adj_list_vertex_property_map<
+    CombiDAG, int, int&, boost::vertex_index_t>
+    CombiVIndex;
+
+std::list<PGOp_ptr> PauliGraph::pgop_sequence_boost() const {
+  // Build a graph combining the classical and quantum dependencies to get a
+  // graph containing every dependency
+  CombiDAG combi_graph;
+  std::map<PGVert, CombiVert> vmap;
+  BGL_FORALL_VERTICES(v, c_graph_, PGClassicalGraph) {
+    CombiVert cv = boost::add_vertex(combi_graph);
+    combi_graph[cv] = v;
+    vmap.insert({v, cv});
+  }
+  BGL_FORALL_EDGES(e, c_graph_, PGClassicalGraph) {
+    PGVert s = boost::source(e, c_graph_);
+    PGVert t = boost::target(e, c_graph_);
+    boost::add_edge(vmap[s], vmap[t], combi_graph);
+  }
+  for (const PGPauli& r_pauli : pauli_index_.get<TagID>()) {
+    for (const PGPauli& c_pauli : pauli_index_.get<TagID>()) {
+      if (pauli_ac_(r_pauli.index, c_pauli.index))
+        boost::add_edge(vmap[c_pauli.vert], vmap[r_pauli.vert], combi_graph);
+    }
+  }
+
+  // Call boost::topological_sort to obtain an ordering
+  CombiVIndex index = boost::get(boost::vertex_index, combi_graph);
+  int i = 0;
+  BGL_FORALL_VERTICES(v, combi_graph, CombiDAG) { boost::put(index, v, i++); }
+  std::list<CombiVert> vertices;
+  boost::topological_sort(combi_graph, std::front_inserter(vertices));
+  std::list<PGOp_ptr> pgops;
+  for (const CombiVert& v : vertices) pgops.push_back(c_graph_[combi_graph[v]]);
+  return pgops;
+}
+
 std::list<PGOp_ptr> PauliGraph::pgop_sequence() const {
   std::list<PGOp_ptr> sequence;
   std::list<std::list<PGOp_ptr>> set_list = pgop_commuting_sets();

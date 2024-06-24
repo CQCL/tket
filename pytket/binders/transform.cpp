@@ -21,6 +21,7 @@
 #include <functional>
 
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/PauliGraphRefactor/PauliOptimisation.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Transformations/CliffordOptimisation.hpp"
 #include "tket/Transformations/Combinator.hpp"
@@ -71,6 +72,29 @@ PYBIND11_MODULE(transform, m) {
       .value(
           "Sets", Transforms::PauliSynthStrat::Sets,
           "Synthesise gadgets in commuting sets");
+  py::enum_<Transforms::PauliSynthStrat3>(
+      m, "PauliSynthStrat3",
+      "Enum for available strategies to synthesise extended PauliGraph "
+      "operations")
+      .value(
+          "Individual", Transforms::PauliSynthStrat3::Individual,
+          "Synthesise gadgets individually; limited to only unitary circuits "
+          "with end-of-circuit measurements")
+      .value(
+          "Pairwise", Transforms::PauliSynthStrat3::Pairwise,
+          "Synthesise gadgets using an efficient pairwise strategy "
+          "from Cowtan et al (https://arxiv.org/abs/1906.01734); limited to "
+          "only unitary circuits with end-of-circuit measurements")
+      .value(
+          "Sets", Transforms::PauliSynthStrat3::Sets,
+          "Synthesise gadgets in commuting sets; limited to only unitary "
+          "circuits with end-of-circuit measurements")
+      .value(
+          "ExtIndividual", Transforms::PauliSynthStrat3::ExtIndividual,
+          "Synthesise gadgets individually; supports arbitrary circuits")
+      .value(
+          "ExtSets", Transforms::PauliSynthStrat3::ExtSets,
+          "Synthesise gadgets in commuting sets; supports arbitrary circuits");
 
   py::class_<Transform>(
       m, "Transform", "An in-place transformation of a :py:class:`Circuit`.")

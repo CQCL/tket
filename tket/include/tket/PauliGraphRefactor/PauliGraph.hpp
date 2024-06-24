@@ -223,8 +223,13 @@ class PauliGraph {
   /**
    * Returns all PGOps in a valid topological sort of the diagram. The exact
    * order depends on the internal order of vertices in c_graph_.
+   *
+   * pgop_sequence_boost() specifically combines the classical and quantum
+   * dependencies into one graph and calls boost::topological_sort to mimic the
+   * exact behaviour of the legacy PauliGraph.
    */
   std::list<PGOp_ptr> pgop_sequence() const;
+  std::list<PGOp_ptr> pgop_sequence_boost() const;
 
   std::list<std::list<PGOp_ptr>> pgop_commuting_sets() const;
 

@@ -21,6 +21,7 @@
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Mapping/LexiRoute.hpp"
 #include "tket/Mapping/RoutingMethod.hpp"
+#include "tket/PauliGraphRefactor/PauliOptimisation.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
@@ -331,6 +332,13 @@ PassPtr gen_pairwise_pauli_gadgets(
 of PauliExpBoxes */
 PassPtr gen_pauli_exponentials(
     Transforms::PauliSynthStrat strat = Transforms::PauliSynthStrat::Sets,
+    CXConfigType cx_config = CXConfigType::Snake);
+
+/** generates an optimisation pass that converts a circuit into a graph of the
+ * non-Clifford ops, revealing higher-level commutations, before resynthesising
+ * in small units */
+PassPtr gen_pauli_exponentials3(
+    Transforms::PauliSynthStrat3 strat = Transforms::PauliSynthStrat3::Sets,
     CXConfigType cx_config = CXConfigType::Snake);
 
 /* generates an optimisation pass that converts a circuit into a graph

@@ -966,6 +966,25 @@ PassPtr gen_pauli_exponentials(
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
+PassPtr gen_pauli_exponentials3(
+    Transforms::PauliSynthStrat3 strat, CXConfigType cx_config) {
+  Transform t = Transforms::synthesise_pauli_graph3(strat, cx_config);
+  PredicateClassGuarantees g_postcons = {
+      {typeid(NoMidMeasurePredicate), Guarantee::Clear},
+      {typeid(GateSetPredicate), Guarantee::Clear},
+      {typeid(ConnectivityPredicate), Guarantee::Clear},
+      {typeid(NoWireSwapsPredicate), Guarantee::Clear}};
+  PostConditions postcon{{}, g_postcons, Guarantee::Preserve};
+
+  // record pass config
+  nlohmann::json j;
+  j["name"] = "PauliExponentials3";
+  j["cx_config"] = cx_config;
+  j["pauli_synth_strat"] = strat;
+
+  return std::make_shared<StandardPass>(PredicatePtrMap{}, t, postcon, j);
+}
+
 PassPtr gen_synthesise_pauli_graph(
     Transforms::PauliSynthStrat strat, CXConfigType cx_config) {
   std::vector<PassPtr> seq = {
