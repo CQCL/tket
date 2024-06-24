@@ -60,7 +60,7 @@ extensions = [
     "sphinx_copybutton",
     "jupyter_sphinx",
     "enum_tools.autoenum",
-    "quantinuum_docs_theme"
+    "quantinuum_docs_theme",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -105,50 +105,49 @@ html_theme_options = {
     "use_repository_button": False,
     "use_issues_button": True,
     "navigation_with_keys": True,
-    'navTextLinks' : [
-  {
-    'title': 'API Docs',
-    'href': '/api-docs',
-    'pathMatch': 'somewhere',  },
-  {
-    'title': 'Examples',
-    'href': '/examples',
-    'pathMatch': 'somewhere',
-  },
-  {
-    'title': 'Blog',
-    'href': '/blog/',
-    'pathMatch': 'somewhere',
-  },
-  {
-    'title': 'User Manual',
-    'href': '/user-manual',
-    'pathMatch': 'somewhere',
-  },
-  ],
-
-  'navProductName': "TKET",
-
-  'navIconLinks': [
-  {
-   'title': 'TKET Github',
-    'href': 'https://github.com/CQCL/tket',
-    'pathMatch': 'somewhere',
-        'iconImageURL': '/_static/github.svg'
-  },
-  {
-    'title': 'TKET Slack Channel',
-    'href': 'https://tketusers.slack.com/',
-    'pathMatch': 'somewhere',
-        'iconImageURL': '/_static/slack.svg'
-  },
-  {
-    'title': 'TKET Stack Exchange',
-    'href': 'https://quantumcomputing.stackexchange.com/questions/tagged/pytket',
-    'pathMatch': 'somewhere',
-        'iconImageURL': '/_static/stack.svg'
-  },
-  ]
+    "navTextLinks": [
+        {
+            "title": "API Docs",
+            "href": "/api-docs",
+            "pathMatch": "somewhere",
+        },
+        {
+            "title": "Examples",
+            "href": "/examples",
+            "pathMatch": "somewhere",
+        },
+        {
+            "title": "Blog",
+            "href": "/blog/",
+            "pathMatch": "somewhere",
+        },
+        {
+            "title": "User Manual",
+            "href": "/user-manual",
+            "pathMatch": "somewhere",
+        },
+    ],
+    "navProductName": "TKET",
+    "navIconLinks": [
+        {
+            "title": "TKET Github",
+            "href": "https://github.com/CQCL/tket",
+            "pathMatch": "somewhere",
+            "iconImageURL": "/_static/github.svg",
+        },
+        {
+            "title": "TKET Slack Channel",
+            "href": "https://tketusers.slack.com/",
+            "pathMatch": "somewhere",
+            "iconImageURL": "/_static/slack.svg",
+        },
+        {
+            "title": "TKET Stack Exchange",
+            "href": "https://quantumcomputing.stackexchange.com/questions/tagged/pytket",
+            "pathMatch": "somewhere",
+            "iconImageURL": "/_static/stack.svg",
+        },
+    ],
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
