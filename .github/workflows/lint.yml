@@ -24,4 +24,4 @@ jobs:
     - name: pylint check
       run: |
         cd pytket
-        pylint pytket/
+        pylint --ignore-paths=pytket/_tket pytket/
