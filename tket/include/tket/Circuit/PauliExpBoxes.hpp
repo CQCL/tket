@@ -213,7 +213,8 @@ class TermSequenceBox : public Box {
       PauliPartitionStrat partition_strategy =
           PauliPartitionStrat::CommutingSets,
       GraphColourMethod graph_colouring = GraphColourMethod::Lazy,
-      CXConfigType cx_configuration = CXConfigType::Tree);
+      CXConfigType cx_configuration = CXConfigType::Tree,
+      double depth_weight = 0.3);
 
   /**
    * Construct from the empty vector
@@ -253,6 +254,10 @@ class TermSequenceBox : public Box {
   /** Get the cx config parameter (affects box decomposition) */
   CXConfigType get_cx_config() const;
 
+  /** Tuning parameter for depth optimisation, only applies to
+   * PauliPartitionStrat::Greedy */
+  double get_depth_weight() const;
+
   Op_ptr dagger() const override;
 
   Op_ptr transpose() const override;
@@ -273,6 +278,7 @@ class TermSequenceBox : public Box {
   PauliPartitionStrat partition_strategy_;
   GraphColourMethod graph_colouring_;
   CXConfigType cx_configuration_;
+  double depth_weight_;
 };
 
 /**

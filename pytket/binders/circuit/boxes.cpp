@@ -368,27 +368,32 @@ void init_boxes(py::module &m) {
                           &pauli_gadgets,
                       Transforms::PauliSynthStrat synth_strat,
                       PauliPartitionStrat partition_strat,
-                      GraphColourMethod graph_colouring,
-                      CXConfigType cx_config) {
+                      GraphColourMethod graph_colouring, CXConfigType cx_config,
+                      double depth_weight) {
             std::vector<SymPauliTensor> gadgets;
             for (const std::pair<py::tket_custom::SequenceVec<Pauli>, Expr> &g :
                  pauli_gadgets)
               gadgets.push_back(SymPauliTensor(g.first, g.second));
             return TermSequenceBox(
                 gadgets, synth_strat, partition_strat, graph_colouring,
-                cx_config);
+                cx_config, depth_weight);
           }),
           "Construct a set of Pauli exponentials of the "
           "form"
           " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
           "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
           ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters "
-          ":math:`t_j, j \\in \\{0, 1, \\cdots \\}`.",
+          ":math:`t_j, j \\in \\{0, 1, \\cdots \\}`.\n"
+          "`depth_weight` controls the degree of depth optimisation and only "
+          "applies to synthesis_strategy `PauliSynthStrat:Greedy`. "
+          "`partitioning_strategy`, `graph_colouring`, and `cx_config_type` "
+          "have no effect if `PauliSynthStrat:Greedy` is used.",
           py::arg("pauli_gadgets"),
           py::arg("synthesis_strategy") = Transforms::PauliSynthStrat::Sets,
           py::arg("partitioning_strategy") = PauliPartitionStrat::CommutingSets,
           py::arg("graph_colouring") = GraphColourMethod::Lazy,
-          py::arg("cx_config_type") = CXConfigType::Tree)
+          py::arg("cx_config_type") = CXConfigType::Tree,
+          py::arg("depth_weight") = 0.3)
       .def(
           "get_circuit",
           [](TermSequenceBox &pbox) { return *pbox.to_circuit(); },
@@ -414,7 +419,10 @@ void init_boxes(py::module &m) {
           ":return: graph colouring method")
       .def(
           "get_cx_config", &TermSequenceBox::get_cx_config,
-          ":return: cx decomposition method");
+          ":return: cx decomposition method")
+      .def(
+          "get_depth_weight", &TermSequenceBox::get_depth_weight,
+          ":return: depth tuning parameter");
 
   py::enum_<ToffoliBoxSynthStrat>(
       m, "ToffoliBoxSynthStrat",

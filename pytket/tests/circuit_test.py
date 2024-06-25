@@ -72,7 +72,7 @@ from pytket.passes import (
     DecomposeBoxes,
     RemoveRedundancies,
 )
-from pytket.transform import Transform
+from pytket.transform import Transform, PauliSynthStrat
 
 import numpy as np
 from scipy.linalg import block_diag
@@ -1549,6 +1549,25 @@ def test_cnrx_cnrz() -> None:
 
     assert np.allclose(c1rz.get_unitary(), crz.get_unitary())
     assert np.allclose(c1rx.get_unitary(), crx.get_unitary())
+
+
+def greedy_TermSequenceBox() -> None:
+    tseqbox = TermSequenceBox(
+        [
+            ([Pauli.X, Pauli.I, Pauli.I], 0.3),
+            ([Pauli.I, Pauli.Y, Pauli.I], 0.2),
+            ([Pauli.I, Pauli.I, Pauli.Z], 1.1),
+            ([Pauli.X, Pauli.Z, Pauli.I], 1.8),
+        ],
+        synthesis_strategy=PauliSynthStrat.Greedy,
+        depth_weight=0.28,
+    )
+    c = tseqbox.get_circuit()
+    cmds = c.get_commands()
+    assert cmds[0].op.type == OpType.TK1
+    assert cmds[1].op.type == OpType.TK1
+    assert cmds[2].op.type == OpType.TK1
+    assert c.n_2qb_gates() <= 2
 
 
 if __name__ == "__main__":

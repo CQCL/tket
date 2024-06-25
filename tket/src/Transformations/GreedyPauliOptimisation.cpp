@@ -772,6 +772,70 @@ static std::pair<bool, Expr> is_trivial_pauliexp(
   }
   return {false, 0};
 }
+Circuit greedy_pauli_set_synthesis(
+    const std::vector<SymPauliTensor>& unordered_set, double depth_weight) {
+  if (unordered_set.size() == 0) {
+    return Circuit();
+  }
+  unsigned n_qubits = unordered_set[0].string.size();
+
+  Circuit c(n_qubits);
+  std::vector<std::vector<PauliExpNode>> rotation_sets{{}};
+  std::vector<TableauRowNode> rows;
+  for (auto& pauli : unordered_set) {
+    std::vector<unsigned> support_vec;
+    TKET_ASSERT(pauli.string.size() == n_qubits);
+    for (unsigned i = 0; i < n_qubits; i++) {
+      if (pauli.string[i] == Pauli::I) {
+        support_vec.push_back(0);
+      } else if (pauli.string[i] == Pauli::Z) {
+        support_vec.push_back(1);
+      } else if (pauli.string[i] == Pauli::X) {
+        support_vec.push_back(2);
+      } else {
+        support_vec.push_back(3);
+      }
+    }
+    rotation_sets[0].push_back(PauliExpNode(support_vec, pauli.coeff));
+  }
+  UnitaryRevTableau tab(n_qubits);
+  // add identity TableauRowNodes
+  for (unsigned i = 0; i < n_qubits; i++) {
+    std::vector<unsigned> support_vec;
+    // identity rows
+    std::map<Qubit, Pauli> p;
+    std::map<Qubit, Pauli> q;
+    for (unsigned j = 0; j < n_qubits; j++) {
+      if (j == i) {
+        p.insert({Qubit(j), Pauli::Z});
+        q.insert({Qubit(j), Pauli::X});
+      } else {
+        p.insert({Qubit(j), Pauli::I});
+        q.insert({Qubit(j), Pauli::I});
+      }
+    }
+    SpPauliStabiliser stab_p(p);
+    SpPauliStabiliser stab_q(q);
+    for (unsigned row_index = 0; row_index < n_qubits; row_index++) {
+      SpPauliStabiliser zrow = tab.get_zrow(Qubit(row_index));
+      SpPauliStabiliser xrow = tab.get_xrow(Qubit(row_index));
+      bool lpx = !xrow.commutes_with(stab_p);
+      bool lpz = !zrow.commutes_with(stab_p);
+      bool lqx = !xrow.commutes_with(stab_q);
+      bool lqz = !zrow.commutes_with(stab_q);
+      support_vec.push_back(8 * lpx + 4 * lpz + 2 * lqx + lqz);
+    }
+    rows.push_back(TableauRowNode(support_vec));
+  }
+  DepthTracker depth_tracker(n_qubits);
+  // synthesise Pauli exps
+  pauli_exps_synthesis(
+      rotation_sets, rows, tab, c, 0, depth_weight, depth_tracker);
+  // synthesise the tableau
+  tableau_row_nodes_synthesis(rows, tab, c, depth_weight, depth_tracker);
+  c.replace_SWAPs();
+  return c;
+}
 
 Circuit greedy_pauli_graph_synthesis(
     const Circuit& circ, double discount_rate, double depth_weight) {
