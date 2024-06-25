@@ -16,7 +16,7 @@ jobs:
       with:
         python-version: '3.x'
     - name: Install black and pylint
-      run: pip install black>=24.4.2 pylint>=3.2.3
+      run: pip install black pylint
     - name: Check files are formatted with black
       run: |
         # Paths specified to avoid formatting submodules
