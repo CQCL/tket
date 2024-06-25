@@ -563,8 +563,7 @@ class Backend(ABC):
         n_shots: Union[None, int, Sequence[Optional[int]]],
         n_circuits: int,
         optional: Literal[False],
-    ) -> List[int]:
-        ...
+    ) -> List[int]: ...
 
     @overload
     @staticmethod
@@ -573,8 +572,7 @@ class Backend(ABC):
         n_circuits: int,
         optional: Literal[True],
         set_zero: Literal[True],
-    ) -> List[int]:
-        ...
+    ) -> List[int]: ...
 
     @overload
     @staticmethod
@@ -583,8 +581,7 @@ class Backend(ABC):
         n_circuits: int,
         optional: bool = True,
         set_zero: bool = False,
-    ) -> Union[List[Optional[int]], List[int]]:
-        ...
+    ) -> Union[List[Optional[int]], List[int]]: ...
 
     @staticmethod
     def _get_n_shots_as_list(
