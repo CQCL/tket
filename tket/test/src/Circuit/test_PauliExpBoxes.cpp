@@ -1145,12 +1145,14 @@ SCENARIO("TermSequenceBox", "[boxes]") {
     auto paulis1 = std::vector<Pauli>{Pauli::Y, Pauli::X, Pauli::Z};
     auto paulis2 = std::vector<Pauli>{Pauli::I, Pauli::Y, Pauli::I};
     auto paulis3 = std::vector<Pauli>{Pauli::I, Pauli::I, Pauli::Z};
-    // the synthesis should be smart enough to implement paulis0, paulis2
-    // and paulis4 first
+    auto paulis4 = std::vector<Pauli>{Pauli::Y, Pauli::I, Pauli::X};
+    // the synthesis should implement paulis0, paulis2
+    // and paulis3 first and then paulis4, paulis1
     auto phase0 = Expr(0.25);
     auto phase1 = Expr(0.4);
     auto phase2 = Expr(1.3);
     auto phase3 = Expr(1.7);
+    auto phase4 = Expr(0.6);
     auto synth_strat = Transforms::PauliSynthStrat::Greedy;
     // The following has no effect
     auto partition_strat = PauliPartitionStrat::CommutingSets;
@@ -1160,7 +1162,8 @@ SCENARIO("TermSequenceBox", "[boxes]") {
         {{paulis0, phase0},
          {paulis1, phase1},
          {paulis2, phase2},
-         {paulis3, phase3}},
+         {paulis3, phase3},
+         {paulis4, phase4}},
         synth_strat, partition_strat, colouring_method, cx_config, 0.2);
     Circuit c = *box.to_circuit();
     std::vector<Command> coms = c.get_commands();
@@ -1170,7 +1173,20 @@ SCENARIO("TermSequenceBox", "[boxes]") {
     REQUIRE(op0->get_type() == OpType::TK1);
     REQUIRE(op1->get_type() == OpType::TK1);
     REQUIRE(op2->get_type() == OpType::TK1);
-    REQUIRE(c.count_n_qubit_gates(2) <= 4);
+    REQUIRE(c.count_n_qubit_gates(2) <= 6);
+    // check the unitary
+    Circuit d(3);
+    PauliExpBox pbox0(SymPauliTensor(paulis0, phase0));
+    PauliExpBox pbox1(SymPauliTensor(paulis1, phase1));
+    PauliExpBox pbox2(SymPauliTensor(paulis2, phase2));
+    PauliExpBox pbox3(SymPauliTensor(paulis3, phase3));
+    PauliExpBox pbox4(SymPauliTensor(paulis4, phase4));
+    d.add_box(pbox0, {0, 1, 2});
+    d.add_box(pbox2, {0, 1, 2});
+    d.add_box(pbox3, {0, 1, 2});
+    d.add_box(pbox4, {0, 1, 2});
+    d.add_box(pbox1, {0, 1, 2});
+    REQUIRE(test_unitary_comparison(c, d, true));
   }
 }
 }  // namespace test_PauliExpBoxes
