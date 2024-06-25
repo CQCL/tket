@@ -163,9 +163,10 @@ def get_bit_width(x: int) -> int:
     return c
 
 
-def _gen_walk(
-    var_type: VarType, newcirc: Circuit, heap: VarHeap
-) -> Callable[[Union[RegLogicExp, BitLogicExp], Optional[Dict]], Variable,]:
+def _gen_walk(var_type: VarType, newcirc: Circuit, heap: VarHeap) -> Callable[
+    [Union[RegLogicExp, BitLogicExp], Optional[Dict]],
+    Variable,
+]:
     """Generate a recursive walk method for decomposing an expression tree."""
     # map operation enum to circuit method
     _method_map = {
