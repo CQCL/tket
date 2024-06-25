@@ -141,6 +141,9 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a98f0c3ce3e72b35ada246992f3246efe" id="r_a98f0c3ce3e72b35ada246992f3246efe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a98f0c3ce3e72b35ada246992f3246efe">greedy_pauli_set_synthesis</a> (const std::vector&lt; <a class="el" href="namespacetket.html#ad5f7b9aaddfa158da0f7b68516b32cc7">SymPauliTensor</a> &gt; &amp;unordered_set, double depth_weight=0.3)</td></tr>
+<tr class="memdesc:a98f0c3ce3e72b35ada246992f3246efe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesise a set of unordered Pauli exponentials by applying Clifford gates and single qubit rotations in a greedy fashion.  <br /></td></tr>
+<tr class="separator:a98f0c3ce3e72b35ada246992f3246efe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1f54c4347de9f251c341d0bc78da37b" id="r_ad1f54c4347de9f251c341d0bc78da37b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#ad1f54c4347de9f251c341d0bc78da37b">greedy_pauli_graph_synthesis</a> (const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, double discount_rate=0.7, double depth_weight=0.3)</td></tr>
 <tr class="memdesc:ad1f54c4347de9f251c341d0bc78da37b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given a circuit consists of PauliExpBoxes followed by clifford gates, and end-of-circuit measurements, implement the PauliExpBoxes and the final clifford subcircuit by applying Clifford gates and single qubit rotations in a greedy fashion.  <br /></td></tr>
 <tr class="separator:ad1f54c4347de9f251c341d0bc78da37b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -308,7 +311,48 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8cpp_source.html#l00776">776</a> of file <a class="el" href="GreedyPauliOptimisation_8cpp_source.html">GreedyPauliOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8cpp_source.html#l00840">840</a> of file <a class="el" href="GreedyPauliOptimisation_8cpp_source.html">GreedyPauliOptimisation.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a98f0c3ce3e72b35ada246992f3246efe" name="a98f0c3ce3e72b35ada246992f3246efe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98f0c3ce3e72b35ada246992f3246efe">&#9670;&#160;</a></span>greedy_pauli_set_synthesis()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::Transforms::GreedyPauliSimp::greedy_pauli_set_synthesis </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="namespacetket.html#ad5f7b9aaddfa158da0f7b68516b32cc7">SymPauliTensor</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>unordered_set</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>depth_weight</em> = <code>0.3</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Synthesise a set of unordered Pauli exponentials by applying Clifford gates and single qubit rotations in a greedy fashion. </p>
+<p>Assume all Pauli strings have the same length.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">unordered_set</td><td></td></tr>
+    <tr><td class="paramname">depth_weight</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8cpp_source.html#l00775">775</a> of file <a class="el" href="GreedyPauliOptimisation_8cpp_source.html">GreedyPauliOptimisation.cpp</a>.</p>
 
 </div>
 </div>
