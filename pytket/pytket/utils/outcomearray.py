@@ -118,7 +118,7 @@ class OutcomeArray(np.ndarray):
             array = OutcomeArray.from_readouts(np.fliplr(self.to_readouts()))
         bitcapacity = array.shape[-1] * 8
         intify = lambda bytear: reduce(
-            operator.or_, (num << (8 * i) for i, num in enumerate(bytear[::-1])), 0
+            operator.or_, (int(num) << (8 * i) for i, num in enumerate(bytear[::-1])), 0
         ) >> (bitcapacity - array.width)
         intar = np.apply_along_axis(intify, -1, array)
         return list(intar)

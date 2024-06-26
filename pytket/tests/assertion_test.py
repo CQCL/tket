@@ -80,7 +80,7 @@ def test_assertion_init() -> None:
 
 def test_assertion() -> None:
     # P =|00><00| tensor I + |111><111|
-    P = np.zeros((8, 8), dtype=np.complex_)
+    P = np.zeros((8, 8), dtype=np.complex128)
     P[0, 0] = 1
     P[1, 1] = 1
     P[7, 7] = 1

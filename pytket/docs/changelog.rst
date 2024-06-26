@@ -7,6 +7,8 @@ Unreleased
 * Support classical transforms and predicates, and QASM registers, with up to 64
   bits. Add an attribute to the pytket module to assert this.
 * Add `PauliSynthStrat.Greedy` strategy to `TermSequenceBox`.
+* Update version requirements on dependencies, removing all upper bounds (in
+  particular allowing compatibility with numpy 2.0).
 
 1.29.2 (June 2024)
 ------------------
