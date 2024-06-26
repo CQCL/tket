@@ -422,7 +422,7 @@ def test_exp_to_circ() -> None:
     u = (
         np.asarray(
             [[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]],
-            dtype=np.complex_,
+            dtype=np.complex128,
         )
         * -PI
         / 4
