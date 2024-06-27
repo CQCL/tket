@@ -14,6 +14,7 @@ jupyter-sphinx = "^0.5.3"
 ipykernel = "^6.29.4"
 enum-tools = {extras = ["sphinx"], version = "^0.12.0"}
 quantinuum-docs-theme = {git = "https://github.com/aidanCQ/qui-sphinx.git", rev = "dist"}
+pytket = "^1.29.2"
 
 
 [build-system]
