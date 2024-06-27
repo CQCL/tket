@@ -70,7 +70,13 @@ PYBIND11_MODULE(transform, m) {
           "from Cowtan et al (https://arxiv.org/abs/1906.01734)")
       .value(
           "Sets", Transforms::PauliSynthStrat::Sets,
-          "Synthesise gadgets in commuting sets");
+          "Synthesise gadgets in commuting sets")
+      .value(
+          "Greedy", Transforms::PauliSynthStrat::Greedy,
+          "Synthesise gadgets using a greedy algorithm adapted from "
+          "arxiv.org/abs/2103.08602. This strategy is currently only accepted "
+          "by `TermSequenceBox`. For synthesising general circuits try using "
+          "`GreedyPauliSimp`.");
 
   py::class_<Transform>(
       m, "Transform", "An in-place transformation of a :py:class:`Circuit`.")

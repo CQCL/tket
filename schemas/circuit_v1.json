@@ -834,9 +834,10 @@
               "synth_strategy",
               "partition_strategy",
               "graph_colouring",
-              "cx_config"
+              "cx_config",
+              "depth_weight"
             ],
-            "maxProperties": 7
+            "maxProperties": 8
           }
         },
         {

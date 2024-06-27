@@ -3775,9 +3775,10 @@ class TermSequenceBox(Op):
     """
     An unordered collection of Pauli exponentials that can be synthesised in any order, causing a change in the unitary operation. Synthesis order depends on the synthesis strategy chosen only.
     """
-    def __init__(self, pauli_gadgets: typing.Sequence[tuple[typing.Sequence[pytket._tket.pauli.Pauli], sympy.Expr | float]], synthesis_strategy: pytket._tket.transform.PauliSynthStrat = pytket._tket.transform.PauliSynthStrat.Sets, partitioning_strategy: pytket._tket.partition.PauliPartitionStrat = pytket._tket.partition.PauliPartitionStrat.CommutingSets, graph_colouring: pytket._tket.partition.GraphColourMethod = pytket._tket.partition.GraphColourMethod.Lazy, cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
+    def __init__(self, pauli_gadgets: typing.Sequence[tuple[typing.Sequence[pytket._tket.pauli.Pauli], sympy.Expr | float]], synthesis_strategy: pytket._tket.transform.PauliSynthStrat = pytket._tket.transform.PauliSynthStrat.Sets, partitioning_strategy: pytket._tket.partition.PauliPartitionStrat = pytket._tket.partition.PauliPartitionStrat.CommutingSets, graph_colouring: pytket._tket.partition.GraphColourMethod = pytket._tket.partition.GraphColourMethod.Lazy, cx_config_type: CXConfigType = CXConfigType.Tree, depth_weight: float = 0.3) -> None:
         """
         Construct a set of Pauli exponentials of the form :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes \\sigma_1 \\otimes \\cdots}` from Pauli operator strings :math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters :math:`t_j, j \\in \\{0, 1, \\cdots \\}`.
+        `depth_weight` controls the degree of depth optimisation and only applies to synthesis_strategy `PauliSynthStrat:Greedy`. `partitioning_strategy`, `graph_colouring`, and `cx_config_type` have no effect if `PauliSynthStrat:Greedy` is used.
         """
     def get_circuit(self) -> Circuit:
         """
@@ -3786,6 +3787,10 @@ class TermSequenceBox(Op):
     def get_cx_config(self) -> CXConfigType:
         """
         :return: cx decomposition method
+        """
+    def get_depth_weight(self) -> float:
+        """
+        :return: depth tuning parameter
         """
     def get_graph_colouring_method(self) -> pytket._tket.partition.GraphColourMethod:
         """
