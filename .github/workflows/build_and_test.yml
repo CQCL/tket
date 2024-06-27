@@ -306,6 +306,7 @@ jobs:
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       timeout-minutes: 20
       run: |
+        pip install poetry==1.6.1
         cd pytket/docs
         poetry install
         cd ../../
