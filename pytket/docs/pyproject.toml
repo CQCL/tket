@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "docs"
+version = "0.1.0"
+description = ""
+authors = ["aidanCQ <aidan.keay@quantinuum.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+sphinx = "^7.3.7"
+sphinx-autodoc-annotation = "^1.0.post1"
+sphinx-copybutton = "^0.5.2"
+jupyter-sphinx = "^0.5.3"
+ipykernel = "^6.29.4"
+enum-tools = {extras = ["sphinx"], version = "^0.12.0"}
+quantinuum-docs-theme = {git = "https://github.com/aidanCQ/qui-sphinx.git", rev = "dist"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
