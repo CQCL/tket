@@ -100,11 +100,6 @@ html_theme = "quantinuum_docs_theme"
 #
 
 html_theme_options = {
-    # "show_toc_level": 2,
-    # "repository_url": "https://github.com/CQCL/tket",
-    # "use_repository_button": False,
-    # "use_issues_button": True,
-    # "navigation_with_keys": True,
     "navTextLinks": [
         {
             "title": "API Docs",
