@@ -1617,24 +1617,6 @@ files = [
 cffi = {version = "*", markers = "implementation_name == \"pypy\""}
 
 [[package]]
-name = "quantinuum-docs-theme"
-version = "0.1.0"
-description = ""
-optional = false
-python-versions = "^3.10"
-files = []
-develop = false
-
-[package.dependencies]
-furo = "^2024.5.6"
-
-[package.source]
-type = "git"
-url = "https://github.com/aidanCQ/qui-sphinx.git"
-reference = "dist"
-resolved_reference = "ec2638707b8173b51f6c474f2d19f0c80bf82dc4"
-
-[[package]]
 name = "qwasm"
 version = "1.0.1"
 description = "WebAssembly decoder & disassembler"
@@ -2438,4 +2420,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "0f8f56b6ab740cfe5e5124a68428b108a8c14ce199fe26717e078c63a518d2c8"
+content-hash = "4322232def4e2ae451569cdc887f11bd34bc00c5804906945e4a876e8e385f34"

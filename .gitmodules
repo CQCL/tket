@@ -1,0 +1,4 @@
+[submodule "pytket/docs/qui-sphinx"]
+	path = pytket/docs/qui-sphinx
+	url = https://github.com/aidanCQ/qui-sphinx.git
+	branch = dist
