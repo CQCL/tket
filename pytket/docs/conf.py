@@ -43,8 +43,6 @@ version = "1.29"
 release = "1.29.2"
 
 
-
-
 # -- General configuration ---------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -92,7 +90,7 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 #
 html_theme = "furo"
 templates_path = ["./qui-sphinx/_templates/"]
-html_static_path = ['./qui-sphinx/_static/', '_static/']
+html_static_path = ["./qui-sphinx/_static/", "_static/"]
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
