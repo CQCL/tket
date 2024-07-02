@@ -9,6 +9,7 @@ Unreleased
 * Add `PauliSynthStrat.Greedy` strategy to `TermSequenceBox`.
 * Update version requirements on dependencies, removing all upper bounds (in
   particular allowing compatibility with numpy 2.0).
+* Fix bug in `CliffordResynthesis()` pass.
 
 1.29.2 (June 2024)
 ------------------

@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <algorithm>
 #include <catch2/catch_test_macros.hpp>
+#include <vector>
 
 #include "../testutil.hpp"
 #include "tket/Circuit/Circuit.hpp"
@@ -23,7 +25,7 @@
 namespace tket {
 namespace test_CliffordResynthesis {
 
-void check_clifford_resynthesis(const Circuit& c) {
+void check_clifford_resynthesis(const Circuit &c) {
   Circuit c0 = c;
   CompilationUnit cu(c0);
   gen_clifford_resynthesis_pass()->apply(cu);
@@ -119,6 +121,28 @@ SCENARIO("SynthesiseCliffordResynthesis correctness") {
     Circuit c(2);
     c.add_op<unsigned>(OpType::NPhasedX, {0.5, 0.0}, {0, 1});
     check_clifford_resynthesis(c);
+  }
+
+  GIVEN("A troublesome circuit (3)") {
+    // https://github.com/CQCL/tket/issues/1468
+    Circuit c0(6);
+    c0.add_op<unsigned>(OpType::XXPhase, 0.5, {1, 4});
+    c0.add_op<unsigned>(OpType::XXPhase, 1.5, {2, 3});
+    c0.add_op<unsigned>(OpType::XXPhase, 2.5, {1, 3});
+    c0.add_op<unsigned>(OpType::YYPhase, 0.5, {4, 5});
+    c0.add_op<unsigned>(OpType::YYPhase, 1.5, {4, 2});
+    c0.add_op<unsigned>(OpType::YYPhase, 2.5, {3, 1});
+    c0.add_op<unsigned>(OpType::ZZPhase, 0.5, {0, 3});
+    c0.add_op<unsigned>(OpType::ZZPhase, 1.5, {4, 1});
+    c0.add_op<unsigned>(OpType::ZZPhase, 2.5, {0, 5});
+    CompilationUnit cu(c0);
+    gen_clifford_resynthesis_pass()->apply(cu);
+    Circuit c1 = cu.get_circ_ref();
+    std::vector<Command> cmds = c1.get_commands();
+    CHECK(std::all_of(cmds.begin(), cmds.end(), [](const Command &cmd) {
+      return cmd.get_op_ptr()->is_clifford();
+    }));
+    CHECK(c1.count_n_qubit_gates(2) <= c0.count_n_qubit_gates(2));
   }
 }
 
