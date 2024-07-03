@@ -428,7 +428,7 @@ PYBIND11_MODULE(transform, m) {
           "\n:return: a pass to perform the simplification",
           py::arg("discount_rate") = 0.7, py::arg("depth_weight") = 0.3)
       .def_static(
-          "AASGreedyPauliSimp", &Transforms::aas_greedy_pauli_optimisation,
+          "AASGreedyPauliSimp", &Transforms::aa_greedy_pauli_optimisation,
           "Convert a circuit into a graph of Pauli "
           "gadgets to account for commutation and phase folding, and "
           "resynthesises them using a greedy algorithm adapted from "

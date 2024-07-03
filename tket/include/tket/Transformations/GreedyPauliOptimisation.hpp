@@ -94,6 +94,17 @@ class PauliExpNode {
    */
   int tqe_cost_increase(const TQE& tqe) const;
 
+  /**
+   * @brief Weighted sum over number of Pauli letters
+   * with no adjacent non-identities and distances
+   * between letters.
+   *
+   * @return unsigned
+   */
+  double aa_tqe_cost_increase(
+      const TQE& tqe, std::shared_ptr<Architecture> architecture,
+      const std::map<unsigned, Node>& node_mapping) const;
+
   std::vector<unsigned> get_updated_support(const TQE& tqe) const;
 
   bool updates_support(const TQE& tqe) const;
@@ -255,7 +266,7 @@ Circuit greedy_pauli_graph_synthesis(
 Transform greedy_pauli_optimisation(
     double discount_rate = 0.7, double depth_weight = 0.3);
 
-Transform aas_greedy_pauli_optimisation(
+Transform aa_greedy_pauli_optimisation(
     std::shared_ptr<Architecture> architecture, double discount_rate = 0.7,
     double depth_weight = 0.3);
 
