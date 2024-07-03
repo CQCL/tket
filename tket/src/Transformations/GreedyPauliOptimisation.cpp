@@ -1341,7 +1341,8 @@ Circuit greedy_pauli_graph_synthesis(
       }
     }
     aa_pauli_exps_synthesis(
-        rotation_sets, rows, tab, c, discount_rate, depth_weight, depth_tracker, arc, node_mapping);
+        rotation_sets, rows, tab, c, discount_rate, depth_weight, depth_tracker,
+        arc, node_mapping);
   } else {
     // synthesise Pauli exps
     pauli_exps_synthesis(
