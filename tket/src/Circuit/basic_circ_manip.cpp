@@ -33,27 +33,51 @@ namespace tket {
 // this method removes them and removes the vertices
 // from boundaries
 void Circuit::remove_blank_wires(bool keep_blank_classical_wires) {
-  VertexList bin;
-  unit_vector_t unused_units;
-  const Op_ptr noop = get_op_ptr(OpType::noop);
-  for (const BoundaryElement& el : boundary.get<TagID>()) {
-    if (!keep_blank_classical_wires || el.type() == UnitType::Qubit) {
-      Vertex in = el.in_;
-      Vertex out = el.out_;
-      VertexVec succs = get_successors(in);
-      if (succs.size() == 1 && succs.front() == out) {
-        dag[in].op = noop;
-        bin.push_back(in);
-        dag[out].op = noop;
-        bin.push_back(out);
-        unused_units.push_back(el.id_);
+  bool found_empty_bit_at_end = true;
+  while (found_empty_bit_at_end) {
+    found_empty_bit_at_end = false;
+    VertexList bin;
+    unit_vector_t unused_units;
+    const Op_ptr noop = get_op_ptr(OpType::noop);
+
+    for (const BoundaryElement& el : boundary.get<TagID>()) {
+      if (!keep_blank_classical_wires || el.type() == UnitType::Qubit) {
+        Vertex in = el.in_;
+        Vertex out = el.out_;
+        VertexVec succs = get_successors(in);
+
+        bool remove_op = false;
+
+        // check if the unitid is unused
+        if (succs.front() == out && succs.size() == 1) {
+          remove_op = true;
+        }
+
+        // check if the unused unitid is a bit in a register of dim 1
+        if (remove_op && el.type() == UnitType::Bit && el.id_.reg_dim() == 1) {
+          // check if the empty bit is at the end of a register
+          if (get_reg(el.id_.reg_name()).size() != (el.id_.index()[0] + 1)) {
+            remove_op = false;
+          } else {
+            // rerun while loop
+            found_empty_bit_at_end = true;
+          }
+        }
+
+        if (remove_op) {
+          dag[in].op = noop;
+          bin.push_back(in);
+          dag[out].op = noop;
+          bin.push_back(out);
+          unused_units.push_back(el.id_);
+        }
       }
     }
+    for (const UnitID& u : unused_units) {
+      boundary.get<TagID>().erase(u);
+    }
+    remove_vertices(bin, GraphRewiring::No, VertexDeletion::Yes);
   }
-  for (const UnitID& u : unused_units) {
-    boundary.get<TagID>().erase(u);
-  }
-  remove_vertices(bin, GraphRewiring::No, VertexDeletion::Yes);
 }
 
 void Circuit::remove_noops() {
