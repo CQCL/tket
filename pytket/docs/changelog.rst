@@ -10,6 +10,9 @@ Unreleased
 * Update version requirements on dependencies, removing all upper bounds (in
   particular allowing compatibility with numpy 2.0).
 * Fix bug in `CliffordResynthesis()` pass.
+* Remove deprecated `SynthesiseOQC` pass.
+* Deprecate `SynthesiseUMD` pass.
+* Remove deprecated `ConstPredicate`.
 
 1.29.2 (June 2024)
 ------------------
