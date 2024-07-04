@@ -523,6 +523,8 @@ class BackendResult:
         This method is deprecated. Please use :py:meth:`get_empirical_distribution` or
         :py:meth:`get_probability_distribution` instead.
 
+        DEPRECATED: will be removed after pytket 1.32.
+
         :param units: Optionally provide the Qubits or Bits
             to marginalise the distribution over, defaults to None
         :type units: Optional[Sequence[UnitID]], optional
