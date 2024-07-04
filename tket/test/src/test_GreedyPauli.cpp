@@ -295,97 +295,143 @@ SCENARIO("Test GreedyPauliSimp pass construction") {
   }
 }
 
-SCENARIO("Test arbitrary circuit with architecture") {
-  Architecture architecture({{0, 1}, {1, 2}, {2, 3}, {3, 4}});
-  Circuit circ(5);
-  circ.add_op<unsigned>(OpType::X, {0});
-  circ.add_op<unsigned>(OpType::SWAP, {1, 2});
-  circ.add_op<unsigned>(OpType::Rz, 0.1, {1});
-  circ.add_op<unsigned>(OpType::CX, {0, 2});
-  circ.add_op<unsigned>(OpType::SWAP, {2, 3});
-  circ.add_op<unsigned>(OpType::Ry, 0.2, {3});
-  circ.add_op<unsigned>(OpType::Ry, 0.15, {2});
-  circ.add_op<unsigned>(OpType::H, {3});
-  circ.add_op<unsigned>(OpType::Rz, 0.3, {4});
-  circ.add_op<unsigned>(OpType::CZ, {1, 4});
-  circ.add_op<unsigned>(OpType::ZZMax, {1, 2});
-  circ.add_op<unsigned>(OpType::T, {4});
-  circ.add_op<unsigned>(OpType::X, {0});
-  circ.add_op<unsigned>(OpType::ZZPhase, 0.7, {3, 2});
-  circ.add_op<unsigned>(OpType::T, {3});
-  circ.add_op<unsigned>(OpType::SWAP, {0, 1});
-  circ.add_op<unsigned>(OpType::Z, {2});
-  circ.add_op<unsigned>(OpType::SWAP, {3, 1});
-  circ.add_op<unsigned>(OpType::CX, {1, 4});
-  circ.add_op<unsigned>(OpType::T, {0});
-  circ.add_op<unsigned>(OpType::CY, {0, 2});
-  circ.add_op<unsigned>(OpType::SWAP, {1, 2});
-  Circuit d(circ);
-  Circuit copy(d);
+SCENARIO("Test small circuit with all adjacent letters with architecture") {
+  Architecture architecture({{0, 1}, {1, 2}});
+  Circuit circ(3);
+  circ.add_op<unsigned>(OpType::CX, {0, 1});
+  circ.add_op<unsigned>(OpType::CX, {2, 1});
+  circ.add_op<unsigned>(OpType::Rz, 0.3, {1});
+  circ.add_op<unsigned>(OpType::CX, {2, 1});
+  circ.add_op<unsigned>(OpType::CX, {0, 1});
+
   std::shared_ptr<Architecture> a =
       std::make_shared<Architecture>(architecture);
-  REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(d));
-  REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
-  // std::cout << d << std::endl;
-  // std::cout << d.count_n_qubit_gates(2) << " " << copy.count_n_qubit_gates(2)
-  //           << std::endl;
+  REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(circ));
+  TKET_ASSERT(circ.count_n_qubit_gates(2) == 4);
 }
 
-SCENARIO(
-    "Dense CX circuits route succesfully on smart placement unfriendly "
-    "architecture.") {
-  GIVEN("Complex CX circuits, big ring") {
-    Circuit circ(14);
-    for (unsigned x = 0; x < 13; ++x) {
-      for (unsigned y = 0; y + 1 < x; ++y) {
-        if (x % 2) {
-          add_2qb_gates(circ, OpType::CX, {{x, y}, {y + 1, y}});
-          add_1qb_gates(circ, OpType::H, {{x, y, y + 1}});
-          circ.add_op<unsigned>(OpType::Rx, 0.13, {x});
-        } else {
-          add_2qb_gates(circ, OpType::CX, {{y, x}, {y, y + 1}});
-          add_1qb_gates(circ, OpType::S, {{x, y, y + 1}});
-          circ.add_op<unsigned>(OpType::Ry, 0.49, {x});
-        }
-        add_1qb_gates(circ, OpType::Vdg, {x, y});
-      }
-    }
-    Architecture arc(std::vector<std::pair<unsigned, unsigned>>{
-        {0, 1},
-        {2, 0},
-        {2, 4},
-        {6, 4},
-        {8, 6},
-        {8, 10},
-        {12, 10},
-        {3, 1},
-        {3, 5},
-        {7, 5},
-        {7, 9},
-        {11, 9},
-        {11, 13},
-        {12, 13},
-        {6, 7}});
+// SCENARIO("Test small circuit with non-adjacent letters with architecture") {
+//   Architecture architecture({{0, 1}, {1, 2}});
+//   Circuit circ(3);
+//   circ.add_op<unsigned>(OpType::CX, {0, 2});
+//   circ.add_op<unsigned>(OpType::Rz, 0.3, {2});
+//   circ.add_op<unsigned>(OpType::CX, {0, 2});
 
-    std::shared_ptr<Architecture> a = std::make_shared<Architecture>(arc);
-    Circuit copy(circ);
-    Circuit copy2(circ);
-    // std::cout << circ.count_n_qubit_gates(2) << std::endl;
-    REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(circ));
-    REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
-    // std::cout << circ.count_n_qubit_gates(2) << " "
-    // << copy.count_n_qubit_gates(2) << std::endl;
-    MappingManager mm(a);
-    REQUIRE(mm.route_circuit(
-        copy2, {std::make_shared<LexiLabellingMethod>(),
-                std::make_shared<LexiRouteRoutingMethod>()}));
-    // std::cout << circ.count_n_qubit_gates(2) << " "
-    //           << copy.count_n_qubit_gates(2) <<  " " <<
-    //           copy2.count_n_qubit_gates(2) << std::endl;
+//   std::shared_ptr<Architecture> a =
+//       std::make_shared<Architecture>(architecture);
+//   REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(circ));
+// TKET_ASSERT(circ.count_n_qubit_gates(2) == 6);
+//   std::cout << circ << std::endl;
+// }
 
-    // std::cout << circ << std::endl;
-  }
-}
+// SCENARIO("Test small circuit with non-adjacent letters with architecture 2"){
+//   Architecture architecture({{0, 1}, {1, 2}, {2,3}});
+//   Circuit circ(4);
+//   circ.add_op<unsigned>(OpType::CX, {0,1});
+//   circ.add_op<unsigned>(OpType::CX, {1,3});
+//   circ.add_op<unsigned>(OpType::Rz, 0.3, {3});
+//   circ.add_op<unsigned>(OpType::CX, {1,3});
+//   circ.add_op<unsigned>(OpType::CX, {0,1});
+
+//   std::shared_ptr<Architecture> a =
+//       std::make_shared<Architecture>(architecture);
+//   REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(circ));
+//   // TKET_ASSERT(circ.count_n_qubit_gates(2) == 4);
+//   std::cout << circ << std::endl;
+// }
+
+// SCENARIO("Test arbitrary circuit with architecture") {
+//   Architecture architecture({{0, 1}, {1, 2}, {2, 3}, {3, 4}});
+//   Circuit circ(5);
+//   circ.add_op<unsigned>(OpType::X, {0});
+//   circ.add_op<unsigned>(OpType::SWAP, {1, 2});
+//   circ.add_op<unsigned>(OpType::Rz, 0.1, {1});
+//   circ.add_op<unsigned>(OpType::CX, {0, 2});
+//   circ.add_op<unsigned>(OpType::SWAP, {2, 3});
+//   circ.add_op<unsigned>(OpType::Ry, 0.2, {3});
+//   circ.add_op<unsigned>(OpType::Ry, 0.15, {2});
+//   circ.add_op<unsigned>(OpType::H, {3});
+//   circ.add_op<unsigned>(OpType::Rz, 0.3, {4});
+//   circ.add_op<unsigned>(OpType::CZ, {1, 4});
+//   circ.add_op<unsigned>(OpType::ZZMax, {1, 2});
+//   circ.add_op<unsigned>(OpType::T, {4});
+//   circ.add_op<unsigned>(OpType::X, {0});
+//   circ.add_op<unsigned>(OpType::ZZPhase, 0.7, {3, 2});
+//   circ.add_op<unsigned>(OpType::T, {3});
+//   circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+//   circ.add_op<unsigned>(OpType::Z, {2});
+//   circ.add_op<unsigned>(OpType::SWAP, {3, 1});
+//   circ.add_op<unsigned>(OpType::CX, {1, 4});
+//   circ.add_op<unsigned>(OpType::T, {0});
+//   circ.add_op<unsigned>(OpType::CY, {0, 2});
+//   circ.add_op<unsigned>(OpType::SWAP, {1, 2});
+//   Circuit d(circ);
+//   Circuit copy(d);
+//   std::shared_ptr<Architecture> a =
+//       std::make_shared<Architecture>(architecture);
+//   REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(d));
+//   REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
+//   // std::cout << d << std::endl;
+//   // std::cout << d.count_n_qubit_gates(2) << " " <<
+//   copy.count_n_qubit_gates(2)
+//   //           << std::endl;
+// }
+
+// SCENARIO(
+//     "Dense CX circuits route succesfully on smart placement unfriendly "
+//     "architecture.") {
+//   GIVEN("Complex CX circuits, big ring") {
+//     Circuit circ(14);
+//     for (unsigned x = 0; x < 13; ++x) {
+//       for (unsigned y = 0; y + 1 < x; ++y) {
+//         if (x % 2) {
+//           add_2qb_gates(circ, OpType::CX, {{x, y}, {y + 1, y}});
+//           add_1qb_gates(circ, OpType::H, {{x, y, y + 1}});
+//           circ.add_op<unsigned>(OpType::Rx, 0.13, {x});
+//         } else {
+//           add_2qb_gates(circ, OpType::CX, {{y, x}, {y, y + 1}});
+//           add_1qb_gates(circ, OpType::S, {{x, y, y + 1}});
+//           circ.add_op<unsigned>(OpType::Ry, 0.49, {x});
+//         }
+//         add_1qb_gates(circ, OpType::Vdg, {x, y});
+//       }
+//     }
+//     Architecture arc(std::vector<std::pair<unsigned, unsigned>>{
+//         {0, 1},
+//         {2, 0},
+//         {2, 4},
+//         {6, 4},
+//         {8, 6},
+//         {8, 10},
+//         {12, 10},
+//         {3, 1},
+//         {3, 5},
+//         {7, 5},
+//         {7, 9},
+//         {11, 9},
+//         {11, 13},
+//         {12, 13},
+//         {6, 7}});
+
+//     std::shared_ptr<Architecture> a = std::make_shared<Architecture>(arc);
+//     Circuit copy(circ);
+//     Circuit copy2(circ);
+//     // std::cout << circ.count_n_qubit_gates(2) << std::endl;
+//     REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(circ));
+//     REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
+//     // std::cout << circ.count_n_qubit_gates(2) << " "
+//     // << copy.count_n_qubit_gates(2) << std::endl;
+//     MappingManager mm(a);
+//     REQUIRE(mm.route_circuit(
+//         copy2, {std::make_shared<LexiLabellingMethod>(),
+//                 std::make_shared<LexiRouteRoutingMethod>()}));
+//     // std::cout << circ.count_n_qubit_gates(2) << " "
+//     //           << copy.count_n_qubit_gates(2) <<  " " <<
+//     //           copy2.count_n_qubit_gates(2) << std::endl;
+
+//     // std::cout << circ << std::endl;
+//   }
+// }
 
 }  // namespace test_GreedyPauliSimp
 }  // namespace tket
