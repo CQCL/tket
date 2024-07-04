@@ -3,22 +3,22 @@ const navConfig = {
     "navTextLinks": [
     {
         "title": "API Docs",
-        "href": "api-docs",
+        "href": "../api-docs",
         "pathMatch": "somewhere",
     },
     {
         "title": "Examples",
-        "href": "examples",
+        "href": "../examples",
         "pathMatch": "somewhere",
     },
     {
         "title": "Blog",
-        "href": "blog/",
+        "href": "../blog/",
         "pathMatch": "somewhere",
     },
     {
         "title": "User Manual",
-        "href": "user-manual",
+        "href": "../user-manual",
         "pathMatch": "somewhere",
     },
 ],
