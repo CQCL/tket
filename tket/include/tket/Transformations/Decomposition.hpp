@@ -76,11 +76,6 @@ Transform decompose_XY();
 // Produces: Rz, Rx and any multi-qubit gates
 Transform decompose_tk1_to_rzrx();
 
-// replaces CXs with ECR, SX, Rz
-// Expects: CX and any single-qubit gates
-// Produces: ECR and any single-qubit gates
-Transform decompose_CX_to_ECR();
-
 // replaces CXs with ZZMax
 // Expects: CX and any single-qubit gates
 // Produces: ZZMax and any single-qubit gates

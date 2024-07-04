@@ -923,7 +923,6 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(RemoveRedundancies, RemoveRedundancies())
   COMPPASSJSONTEST(SynthesiseTK, SynthesiseTK())
   COMPPASSJSONTEST(SynthesiseTket, SynthesiseTket())
-  COMPPASSJSONTEST(SynthesiseOQC, SynthesiseOQC())
   COMPPASSJSONTEST(SynthesiseUMD, SynthesiseUMD())
   COMPPASSJSONTEST(SquashTK1, SquashTK1())
   COMPPASSJSONTEST(SquashRzPhasedX, SquashRzPhasedX())

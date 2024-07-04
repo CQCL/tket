@@ -33,6 +33,7 @@ from pytket.passes import (
     SequencePass,
     RemoveRedundancies,
     SynthesiseTket,
+    SynthesiseTK,
     SynthesiseUMD,
     RepeatUntilSatisfiedPass,
     CommuteThroughMultis,
@@ -75,7 +76,6 @@ from pytket.passes import (
     CliffordResynthesis,
     CliffordPushThroughMeasures,
     CliffordSimp,
-    SynthesiseOQC,
     ZXGraphlikeOptimisation,
     GreedyPauliSimp,
 )
@@ -94,7 +94,6 @@ from pytket.mapping import (
 from pytket.architecture import Architecture
 from pytket.placement import Placement, GraphPlacement
 from pytket.transform import Transform, PauliSynthStrat, CXConfigType
-from pytket.passes import SynthesiseOQC
 import numpy as np
 from sympy import Symbol
 from typing import Dict, Any, List
@@ -137,7 +136,7 @@ def test_compilation_unit_generation() -> None:
 
 
 def test_compilerpass_seq() -> None:
-    passlist = [SynthesiseTket(), SynthesiseOQC(), SynthesiseUMD()]
+    passlist = [SynthesiseTket(), SynthesiseTK(), SynthesiseUMD()]
     seq = SequencePass(passlist)
     circ = Circuit(2)
     circ.X(0).Z(1)
@@ -374,47 +373,6 @@ def test_rename_qubits_pass() -> None:
 
 def gate_count_metric(circ: Circuit) -> int:
     return int(circ.n_gates)
-
-
-def test_RebaseOQC_and_SynthesiseOQC() -> None:
-    oqc_gateset = {OpType.SX, OpType.Rz, OpType.ECR}
-    oqc_gateset_pred = GateSetPredicate(oqc_gateset)
-    circ = Circuit(3)
-    circ.CX(0, 1)
-    circ.H(0)
-    circ.Z(1)
-    circ.CX(0, 2)
-    circ.Rx(1.5, 2)
-    circ.CX(2, 1)
-    circ.X(2)
-    circ.CX(1, 0)
-    circ.CX(0, 1)
-    u = circ.get_unitary()
-    # Test SynthesiseOQC
-    circ2 = circ.copy()
-    SynthesiseOQC().apply(circ2)
-    assert oqc_gateset_pred.verify(circ2)
-
-    u_with_oqc = circ2.get_unitary()
-    assert np.allclose(u, u_with_oqc)
-
-    RebaseTket().apply(circ2)
-    u2 = circ2.get_unitary()
-    assert np.allclose(u, u2)
-
-    # Test RebaseOQC
-    circ3 = circ.copy()
-    u_before_oqc = circ3.get_unitary()
-    assert np.allclose(u, u_before_oqc)
-
-    AutoRebase(oqc_gateset).apply(circ3)
-    assert oqc_gateset_pred.verify(circ3)
-    u_before_rebase_tket = circ3.get_unitary()
-    assert np.allclose(u, u_before_rebase_tket)
-
-    RebaseTket().apply(circ3)
-    u3 = circ3.get_unitary()
-    assert np.allclose(u, u3)
 
 
 def test_SynthesiseTket_creation() -> None:
@@ -1065,15 +1023,6 @@ def greedy_pauli_synth() -> None:
     assert d.name == "test"
 
 
-def test_SynthesiseOQC_deprecation(capfd: Any) -> None:
-    logging.set_level(logging.level.warn)
-    p = SynthesiseOQC()
-    out = capfd.readouterr().out
-    assert "[warn]" in out
-    assert "deprecated" in out
-    logging.set_level(logging.level.err)
-
-
 def test_auto_rebase_deprecation(recwarn: Any) -> None:
     p = auto_rebase_pass({OpType.TK1, OpType.CX})
     assert len(recwarn) == 1
@@ -1101,7 +1050,6 @@ if __name__ == "__main__":
     test_squash_chains()
     test_apply_pass_with_callbacks()
     test_remove_barriers()
-    test_RebaseOQC_and_SynthesiseOQC()
     test_ZZPhaseToRz()
     test_flatten_relabel_pass()
     test_rebase_custom_tk2()

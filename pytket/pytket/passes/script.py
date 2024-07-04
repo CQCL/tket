@@ -43,7 +43,6 @@ from pytket.passes import (
     SimplifyInitial,
     SimplifyMeasured,
     SynthesiseTket,
-    SynthesiseOQC,
     SynthesiseUMD,
     ThreeQubitSquash,
 )
@@ -88,7 +87,6 @@ basic_pass:
     | simplify_initial_no_classical
     | simplify_measured
     | synthesise_tket
-    | synthesise_oqc
     | synthesise_umd
     | three_qubit_squash
 seq_pass: "[" pass_list "]"
@@ -131,7 +129,6 @@ simplify_initial: "SimplifyInitial"
 simplify_initial_no_classical: "SimplifyInitialNoClassical"
 simplify_measured: "SimplifyMeasured"
 synthesise_tket: "SynthesiseTket"
-synthesise_oqc: "SynthesiseOQC"
 synthesise_umd: "SynthesiseUMD"
 three_qubit_squash: "ThreeQubitSquash"
 
@@ -300,9 +297,6 @@ class PassTransformer(Transformer):
 
     def synthesise_tket(self, t: List) -> BasePass:
         return SynthesiseTket()
-
-    def synthesise_oqc(self, t: List) -> BasePass:
-        return SynthesiseOQC()
 
     def synthesise_umd(self, t: List) -> BasePass:
         return SynthesiseUMD()

@@ -127,17 +127,6 @@ Transform optimise_via_PhaseGadget(CXConfigType cx_config) {
          synthesise_tket();
 }
 
-Transform synthesise_OQC() {
-  return Transform([](Circuit &circ) {
-    Transform rep_zx = squash_1qb_to_pqp(OpType::Rx, OpType::Rz) >>
-                       commute_through_multis() >> remove_redundancies();
-    Transform seq = decompose_multi_qubits_CX() >> decompose_CX_to_ECR() >>
-                    decompose_ZX() >> repeat(rep_zx) >> rebase_OQC() >>
-                    commute_through_multis() >> remove_redundancies();
-    return seq.apply(circ);
-  });
-}
-
 // TODO: Make the XXPhase gates combine
 Transform synthesise_UMD() {
   return Transform([](Circuit &circ) {
