@@ -846,8 +846,8 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "CliffordResynthesis", &gen_clifford_resynthesis_pass,
-      "An optimisation pass that resynhesises all Clifford subcircuits and "
-      "then applies some rewrite rules to simplify them further."
+      "An optimisation pass that resynthesises Clifford subcircuits, trying "
+      "to reduce the 2-qubit gate count as much as possible."
       "\n\n:param transform: optional user-provided resynthesis method to "
       "apply to all Clifford subcircuits (a function taking a Clifford "
       "circuit as an argument and returning an equivalent circuit); if not "

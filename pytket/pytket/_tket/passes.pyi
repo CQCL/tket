@@ -250,7 +250,7 @@ def CliffordPushThroughMeasures() -> BasePass:
     """
 def CliffordResynthesis(transform: typing.Callable[[pytket._tket.circuit.Circuit], pytket._tket.circuit.Circuit] | None = None, allow_swaps: bool = True) -> BasePass:
     """
-    An optimisation pass that resynhesises all Clifford subcircuits and then applies some rewrite rules to simplify them further.
+    An optimisation pass that resynthesises Clifford subcircuits, trying to reduce the 2-qubit gate count as much as possible.
     
     :param transform: optional user-provided resynthesis method to apply to all Clifford subcircuits (a function taking a Clifford circuit as an argument and returning an equivalent circuit); if not provided, a default resynthesis method is applied
     :param allow_swaps: whether the rewriting may introduce wire swaps (only relevant to the default resynthesis method used when the `transform` argument is not provided)
