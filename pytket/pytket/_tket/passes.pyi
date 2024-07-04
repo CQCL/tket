@@ -633,7 +633,7 @@ def SynthesiseTket() -> BasePass:
     """
 def SynthesiseUMD() -> BasePass:
     """
-    Optimises and converts all gates to XXPhase, PhasedX, Rz and Phase.
+    Optimises and converts all gates to XXPhase, PhasedX, Rz and Phase. DEPRECATED: will be removed after pytket 1.32.
     """
 def ThreeQubitSquash(allow_swaps: bool = True) -> BasePass:
     """
