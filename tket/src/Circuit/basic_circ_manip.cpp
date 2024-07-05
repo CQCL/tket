@@ -31,7 +31,9 @@ namespace tket {
 
 // if there are any blank wires in the circuit,
 // this method removes them and removes the vertices
-// from boundaries
+// from boundaries, if they are quantum wires, or if
+// they are empty classical wires if there are no 
+// used bits with a higher index in the same register. 
 void Circuit::remove_blank_wires(bool keep_blank_classical_wires) {
   VertexList bin;
   unit_vector_t unused_units;
