@@ -2265,7 +2265,7 @@ class Circuit:
         """
     def remove_blank_wires(self, keep_blank_classical_wires: bool = False) -> None:
         """
-        Removes any Input-Output pairs in the DAG with no intervening operations, i.e. removes untouched qubits/bits from the circuit. This may occur when optimisations recognise that the operations on a qubit reduce to the identity, or when routing adds wires to "fill out" the architecture. This operation will only remove empty classical wires if there are not used bit in the same register later on. 
+        Removes any Input-Output pairs in the DAG with no intervening operations, i.e. removes untouched qubits/bits from the circuit. This may occur when optimisations recognise that the operations on a qubit reduce to the identity, or when routing adds wires to "fill out" the architecture. This operation will only remove empty classical wires if there are no used bits with a higher index in the same register. 
         
         :param keep_blank_classical_wires: select if empty classical wires should not be removed
         """
