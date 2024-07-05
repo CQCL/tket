@@ -230,6 +230,8 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
+      with: 
+        submodules: true
     - name: Select Python 3.12
       uses: actions/setup-python@v5
       with:
@@ -306,9 +308,13 @@ jobs:
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       timeout-minutes: 20
       run: |
-        pip install -r pytket/docs/requirements.txt
-        ./.github/workflows/build-docs
-    - name: Upload artefact
+        pip install poetry==1.6.1
+        cd pytket/docs
+        poetry install
+        cd ../../
+        poetry run -C pytket/docs ./.github/workflows/build-docs
+        
+    - name: Upload artifact
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/upload-artifact@v4
       with:
