@@ -200,6 +200,12 @@ void PauliExpNode::pad_support_vector(unsigned width) {
   }
 }
 
+unsigned PauliExpNode::support() const {
+  return this->support_vec_.size() -
+         std::count(this->support_vec_.begin(), this->support_vec_.end(), 0) -
+         1;
+}
+
 TableauRowNode::TableauRowNode(std::vector<unsigned> support_vec)
     : support_vec_(support_vec) {
   n_weaks_ = 0;
@@ -357,74 +363,77 @@ static double default_pauliexp_tqe_cost(
 // weighted sum of minmax-normalised costs
 static TQE minmax_selection(
     const std::map<TQE, std::vector<double>>& tqe_candidates_cost,
-    const std::vector<double>& weights) {
+    const std::pair<double, double>& weights) {
+  // each TQE has a cost for each Node
   TKET_ASSERT(tqe_candidates_cost.size() > 0);
-  size_t n_costs = tqe_candidates_cost.begin()->second.size();
-  TKET_ASSERT(n_costs == weights.size());
-  // for each cost type, store its min and max
-  std::vector<double> mins = tqe_candidates_cost.begin()->second;
-  std::vector<double> maxs = tqe_candidates_cost.begin()->second;
+  std::vector<double> first_costs = tqe_candidates_cost.begin()->second;
+  TKET_ASSERT(first_costs.size() == 2);
+
+  double min_lookahead = first_costs[0];
+  double min_depth = first_costs[1];
+  double max_lookahead = min_lookahead;
+  double max_depth = min_depth;
+
   for (const auto& pair : tqe_candidates_cost) {
-    TKET_ASSERT(pair.second.size() == n_costs);
-    for (unsigned cost_index = 0; cost_index < n_costs; cost_index++) {
-      if (pair.second[cost_index] < mins[cost_index]) {
-        mins[cost_index] = pair.second[cost_index];
-      }
-      if (pair.second[cost_index] > maxs[cost_index]) {
-        maxs[cost_index] = pair.second[cost_index];
-      }
-    }
+    TKET_ASSERT(pair.second.size() == 2);
+    double lookahead = pair.second[0];
+    double depth = pair.second[1];
+
+    min_lookahead = std::min(min_lookahead, lookahead);
+    min_depth = std::min(min_depth, depth);
+
+    max_lookahead = std::max(max_lookahead, lookahead);
+    max_depth = std::max(max_depth, depth);
   }
-  // valid_indices stores the indices of the costs where min!=max
-  std::vector<unsigned> valid_indices;
-  for (unsigned cost_index = 0; cost_index < n_costs; cost_index++) {
-    if (mins[cost_index] != maxs[cost_index]) {
-      valid_indices.push_back(cost_index);
-    }
+
+  // We have four cases:
+  // (1) If the lookahead and depth costs are the same for every TQE then we
+  // just return any of them
+  if (min_lookahead == max_lookahead && min_depth == max_depth) {
+    return tqe_candidates_cost.begin()->first;
   }
-  // if all have the same cost, return the first one
-  if (valid_indices.size() == 0) {
-    TQE min_tqe = tqe_candidates_cost.begin()->first;
-    return min_tqe;
+
+  // (2) If the lookahead varies but the depth doesn't then we return the
+  // minimum lookahead cost
+  if (min_lookahead != max_lookahead && min_depth == max_depth) {
+    return std::min_element(
+               tqe_candidates_cost.begin(), tqe_candidates_cost.end(),
+               [](const auto& left, const auto& right) {
+                 return left.second[0] < right.second[0];
+               })
+        ->first;
   }
-  // if only one cost variable, no need to normalise
-  if (valid_indices.size() == 1) {
-    auto it = tqe_candidates_cost.begin();
-    double min_cost = it->second[valid_indices[0]];
-    TQE min_tqe = it->first;
-    for (; it != tqe_candidates_cost.end(); it++) {
-      if (it->second[valid_indices[0]] < min_cost) {
-        min_tqe = it->first;
-        min_cost = it->second[valid_indices[0]];
-      }
-    }
-    return min_tqe;
+
+  // (3) If the depth varies but the lookahead doesn't then we return the
+  // minimum depth cost
+  if (min_lookahead == max_lookahead && min_depth != max_depth) {
+    return std::min_element(
+               tqe_candidates_cost.begin(), tqe_candidates_cost.end(),
+               [](const auto& left, const auto& right) {
+                 return left.second[1] < right.second[1];
+               })
+        ->first;
   }
-  // find the tqe with the minimum normalised cost
-  auto it = tqe_candidates_cost.begin();
-  double min_cost = 0;
-  TQE min_tqe = it->first;
-  // initialise min_cost
-  for (const auto& cost_index : valid_indices) {
-    min_cost += weights[cost_index] *
-                (it->second[cost_index] - mins[cost_index]) /
-                (maxs[cost_index] - mins[cost_index]);
-  }
-  it++;
-  // iterate all tqes
-  for (; it != tqe_candidates_cost.end(); it++) {
-    double cost = 0;
-    for (const auto& cost_index : valid_indices) {
-      cost += weights[cost_index] *
-              (it->second[cost_index] - mins[cost_index]) /
-              (maxs[cost_index] - mins[cost_index]);
-    }
-    if (cost < min_cost) {
-      min_cost = cost;
-      min_tqe = it->first;
-    }
-  }
-  return min_tqe;
+
+  // (4) Else we return the tqe with the minimum normalised cost
+  return std::min_element(
+             tqe_candidates_cost.begin(), tqe_candidates_cost.end(),
+             [&](const auto& left, const auto& right) {
+               double left_cost =
+                   weights.first * (left.second[0] - min_lookahead) /
+                       (max_lookahead - min_lookahead) +
+                   weights.second * (left.second[1] - min_depth) /
+                       (max_depth - min_depth);
+
+               double right_cost =
+                   weights.first * (right.second[0] - min_lookahead) /
+                       (max_lookahead - min_lookahead) +
+                   weights.second * (right.second[1] - min_depth) /
+                       (max_depth - min_depth);
+
+               return left_cost < right_cost;
+             })
+      ->first;
 }
 
 static TQE select_pauliexp_tqe(
@@ -833,7 +842,7 @@ pauli_letter_distances_t PauliExpNode::get_updated_distance(
   pauli_letter_distances_t all_distances = this->all_distances(
       this->get_updated_support(tqe), architecture, node_mapping);
 
-  std::cout << "For some unknown TQE | support:";
+  std::cout << "For some unknown TQE & changing Node | support:";
   for (auto x : this->support_vec_) {
     std::cout << x;
   }
@@ -846,20 +855,29 @@ pauli_letter_distances_t PauliExpNode::get_updated_distance(
     std::cout << x;
   }
   std::cout << std::endl;
+
   return all_distances;
 }
 
 double PauliExpNode::aa_tqe_cost_increase(
     const TQE& tqe, std::shared_ptr<Architecture> architecture,
-    const std::map<unsigned, Node>& node_mapping) const {
-  // TODO: cost function not leading to termination with minmax!
+    const std::map<unsigned, Node>& node_mapping,
+    unsigned n_comparisons) const {
   pauli_letter_distances_t updated_distances =
       this->get_updated_distance(tqe, architecture, node_mapping);
+
   double cost = 0;
-  for (unsigned i = 0; i < updated_distances.size(); i++) {
-    cost += updated_distances[i] / (i + 1);
+  // TODO: can change to just use n_comparisons as its copied anyway
+  int count_comparisons = n_comparisons;
+  for (unsigned i = 0; i < updated_distances.size() && count_comparisons > 0;
+       i++) {
+    unsigned n_entries = updated_distances[i];
+    cost += double(n_entries) / double(i + 1);
+    count_comparisons -= n_entries;
+    // std::cout << count_comparisons << " " << " " << n_entries << " " << i + 1
+    //           << " " << double(n_entries) / double(i + 1) << std::endl;
   }
-  return double(updated_distances.size()) - cost;
+  return cost;
 }
 
 // return the weighted sum of the cost increases on remaining nodes
@@ -873,19 +891,27 @@ static double aa_pauliexp_tqe_cost(
   double discount = 1 / (1 + discount_rate);
   double weight = 1;
   double exp_cost = 0;
-  double tab_cost = 0;
+  exp_cost = rows.size();
+  exp_cost = double(0);
+  // double tab_cost = 0;
+  // First we work out the number of comparisons to make
+  // As it's possible to remove a letter,
   for (const std::vector<PauliExpNode>& rotation_set : rotation_sets) {
     for (const PauliExpNode& node : rotation_set) {
-      exp_cost +=
-          weight * node.aa_tqe_cost_increase(tqe, architecture, node_mapping);
+      unsigned support = node.support();
+      TKET_ASSERT(support >= 0);
+      unsigned n_comparisons = (support * (support + 1)) / 2;
+      exp_cost += weight * node.aa_tqe_cost_increase(
+                               tqe, architecture, node_mapping, n_comparisons);
     }
     weight *= discount;
   }
-  for (const TableauRowNode& node : rows) {
-    tab_cost += weight * node.tqe_cost_increase(tqe);
-  }
-  std::cout << "Exp: " << exp_cost << " Tab:" << tab_cost << std::endl;
-  return exp_cost + tab_cost;
+  // for (const TableauRowNode& node : rows) {
+  //   tab_cost += weight * node.tqe_cost_increase(tqe);
+  // }
+  std::cout << "Exp: " << exp_cost << std::endl;
+  // return exp_cost + tab_cost;
+  return exp_cost;
 }
 
 /**
@@ -914,12 +940,12 @@ static void aa_pauli_exps_synthesis(
         min_cost = node_cost;
       }
     }
-    std::cout << "Remaining Nodes: " << std::endl;
+    std::cout << "\n\nRemaining Nodes: " << std::endl;
     for (unsigned i = 0; i < first_set.size(); i++) {
       std::cout << i << " ";
       first_set[i].print();
-      std::cout << std::endl;
     }
+    std::cout << std::endl;
     std::set<TQE> tqe_candidates;
     for (const unsigned& index : min_nodes_indices) {
       std::vector<TQE> node_reducing_tqes =
@@ -931,6 +957,7 @@ static void aa_pauli_exps_synthesis(
 
     // for each tqe we compute costs which might subject to normalisation
     std::map<TQE, std::vector<double>> tqe_candidates_cost;
+    std::cout << "Number of candidates: " << tqe_candidates.size() << std::endl;
     for (const TQE& tqe : tqe_candidates) {
       std::cout << "\nNew TQE on entries: " << std::get<1>(tqe) << " "
                 << std::get<2>(tqe) << std::endl;

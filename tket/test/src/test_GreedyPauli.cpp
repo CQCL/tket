@@ -308,74 +308,158 @@ SCENARIO("Test small circuit with all adjacent letters with architecture") {
       std::make_shared<Architecture>(architecture);
   REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(circ));
   TKET_ASSERT(circ.count_n_qubit_gates(2) == 4);
+  std::cout << circ << std::endl;
 }
 
-// SCENARIO("Test small circuit with non-adjacent letters with architecture") {
-//   Architecture architecture({{0, 1}, {1, 2}});
-//   Circuit circ(3);
-//   circ.add_op<unsigned>(OpType::CX, {0, 2});
-//   circ.add_op<unsigned>(OpType::Rz, 0.3, {2});
-//   circ.add_op<unsigned>(OpType::CX, {0, 2});
+SCENARIO("Test small circuit with non-adjacent letters with architecture") {
+  Architecture architecture({{0, 1}, {1, 2}});
+  Circuit circ(3);
+  circ.add_op<unsigned>(OpType::CX, {0, 2});
+  circ.add_op<unsigned>(OpType::Rz, 0.3, {2});
+  circ.add_op<unsigned>(OpType::CX, {0, 2});
 
-//   std::shared_ptr<Architecture> a =
-//       std::make_shared<Architecture>(architecture);
-//   REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(circ));
-// TKET_ASSERT(circ.count_n_qubit_gates(2) == 6);
-//   std::cout << circ << std::endl;
-// }
+  std::shared_ptr<Architecture> a =
+      std::make_shared<Architecture>(architecture);
+  REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(circ));
+  TKET_ASSERT(circ.count_n_qubit_gates(2) == 5);
+  // std::cout << circ << std::endl;
+}
 
-// SCENARIO("Test small circuit with non-adjacent letters with architecture 2"){
-//   Architecture architecture({{0, 1}, {1, 2}, {2,3}});
-//   Circuit circ(4);
-//   circ.add_op<unsigned>(OpType::CX, {0,1});
-//   circ.add_op<unsigned>(OpType::CX, {1,3});
-//   circ.add_op<unsigned>(OpType::Rz, 0.3, {3});
-//   circ.add_op<unsigned>(OpType::CX, {1,3});
-//   circ.add_op<unsigned>(OpType::CX, {0,1});
+SCENARIO("Test small circuit with non-adjacent letters with architecture 2") {
+  Architecture architecture({{0, 1}, {1, 2}, {2, 3}});
+  Circuit circ(4);
+  circ.add_op<unsigned>(OpType::CX, {0, 1});
+  circ.add_op<unsigned>(OpType::CX, {1, 3});
+  circ.add_op<unsigned>(OpType::Rz, 0.3, {3});
+  circ.add_op<unsigned>(OpType::CX, {1, 3});
+  circ.add_op<unsigned>(OpType::CX, {0, 1});
 
-//   std::shared_ptr<Architecture> a =
-//       std::make_shared<Architecture>(architecture);
-//   REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(circ));
-//   // TKET_ASSERT(circ.count_n_qubit_gates(2) == 4);
-//   std::cout << circ << std::endl;
-// }
+  std::shared_ptr<Architecture> a =
+      std::make_shared<Architecture>(architecture);
+  REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(circ));
+  // TKET_ASSERT(circ.count_n_qubit_gates(2) == 4);
+  // std::cout << circ << std::endl;
+}
 
-// SCENARIO("Test arbitrary circuit with architecture") {
-//   Architecture architecture({{0, 1}, {1, 2}, {2, 3}, {3, 4}});
-//   Circuit circ(5);
-//   circ.add_op<unsigned>(OpType::X, {0});
-//   circ.add_op<unsigned>(OpType::SWAP, {1, 2});
-//   circ.add_op<unsigned>(OpType::Rz, 0.1, {1});
-//   circ.add_op<unsigned>(OpType::CX, {0, 2});
-//   circ.add_op<unsigned>(OpType::SWAP, {2, 3});
-//   circ.add_op<unsigned>(OpType::Ry, 0.2, {3});
-//   circ.add_op<unsigned>(OpType::Ry, 0.15, {2});
-//   circ.add_op<unsigned>(OpType::H, {3});
-//   circ.add_op<unsigned>(OpType::Rz, 0.3, {4});
-//   circ.add_op<unsigned>(OpType::CZ, {1, 4});
-//   circ.add_op<unsigned>(OpType::ZZMax, {1, 2});
-//   circ.add_op<unsigned>(OpType::T, {4});
-//   circ.add_op<unsigned>(OpType::X, {0});
-//   circ.add_op<unsigned>(OpType::ZZPhase, 0.7, {3, 2});
-//   circ.add_op<unsigned>(OpType::T, {3});
-//   circ.add_op<unsigned>(OpType::SWAP, {0, 1});
-//   circ.add_op<unsigned>(OpType::Z, {2});
-//   circ.add_op<unsigned>(OpType::SWAP, {3, 1});
-//   circ.add_op<unsigned>(OpType::CX, {1, 4});
-//   circ.add_op<unsigned>(OpType::T, {0});
-//   circ.add_op<unsigned>(OpType::CY, {0, 2});
-//   circ.add_op<unsigned>(OpType::SWAP, {1, 2});
-//   Circuit d(circ);
-//   Circuit copy(d);
-//   std::shared_ptr<Architecture> a =
-//       std::make_shared<Architecture>(architecture);
-//   REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(d));
-//   REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
-//   // std::cout << d << std::endl;
-//   // std::cout << d.count_n_qubit_gates(2) << " " <<
-//   copy.count_n_qubit_gates(2)
-//   //           << std::endl;
-// }
+SCENARIO("Test arbitrary circuit with architecture") {
+  Architecture architecture({{0, 1}, {1, 2}, {2, 3}, {3, 4}});
+  Circuit circ(5);
+  circ.add_op<unsigned>(OpType::X, {0});
+  circ.add_op<unsigned>(OpType::SWAP, {1, 2});
+  circ.add_op<unsigned>(OpType::Rz, 0.1, {1});
+  circ.add_op<unsigned>(OpType::CX, {0, 2});
+  circ.add_op<unsigned>(OpType::SWAP, {2, 3});
+  circ.add_op<unsigned>(OpType::Ry, 0.2, {3});
+  circ.add_op<unsigned>(OpType::Ry, 0.15, {2});
+  circ.add_op<unsigned>(OpType::H, {3});
+  circ.add_op<unsigned>(OpType::Rz, 0.3, {4});
+  circ.add_op<unsigned>(OpType::CZ, {1, 4});
+  circ.add_op<unsigned>(OpType::ZZMax, {1, 2});
+  circ.add_op<unsigned>(OpType::T, {4});
+  circ.add_op<unsigned>(OpType::X, {0});
+  circ.add_op<unsigned>(OpType::ZZPhase, 0.7, {3, 2});
+  circ.add_op<unsigned>(OpType::T, {3});
+  circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+  circ.add_op<unsigned>(OpType::Z, {2});
+  circ.add_op<unsigned>(OpType::SWAP, {3, 1});
+  circ.add_op<unsigned>(OpType::CX, {1, 4});
+  circ.add_op<unsigned>(OpType::T, {0});
+  circ.add_op<unsigned>(OpType::CY, {0, 2});
+  circ.add_op<unsigned>(OpType::SWAP, {1, 2});
+  Circuit d(circ);
+  Circuit copy(d);
+  std::shared_ptr<Architecture> a =
+      std::make_shared<Architecture>(architecture);
+  REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(d));
+  REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
+  // std::cout << d << std::endl;
+  // std::cout << d.count_n_qubit_gates(2) << " " << copy.count_n_qubit_gates(2)
+  //           << std::endl;
+}
+
+SCENARIO("Four Qubit PauliExpBox Circuit") {
+  Architecture architecture({{0, 1}, {1, 2}, {2, 3}});
+  Circuit circ(4);
+  circ.add_box(PauliExpBox(SymPauliTensor({Pauli::X, Pauli::X}, 0.3)), {0, 1});
+  circ.add_box(PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Y}, -0.1)), {2, 3});
+  circ.add_box(
+      PauliExpPairBox(
+          SymPauliTensor({Pauli::X, Pauli::Z}, 1.0),
+          SymPauliTensor({Pauli::Z, Pauli::X}, 0.4)),
+      {0, 2});
+  circ.add_box(
+      PauliExpCommutingSetBox({
+          {{Pauli::I, Pauli::Y, Pauli::I}, -0.1},
+          {{Pauli::X, Pauli::Y, Pauli::Z}, -1.2},
+          {{Pauli::X, Pauli::Y, Pauli::Z}, 0.5},
+      }),
+      {1, 2, 3});
+  circ.add_op<unsigned>(OpType::CX, {0, 2});
+  circ.add_op<unsigned>(OpType::SWAP, {2, 3});
+  circ.add_op<unsigned>(OpType::H, {3});
+  circ.add_op<unsigned>(OpType::CZ, {1, 3});
+  Transforms::decomp_boxes().apply(circ);
+  Circuit d(circ);
+  Circuit copy(d);
+  std::shared_ptr<Architecture> a =
+      std::make_shared<Architecture>(architecture);
+  REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(d));
+  REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
+  std::cout << "Peb style: " << d.count_n_qubit_gates(2) << " "
+            << copy.count_n_qubit_gates(2) << std::endl;
+}
+
+SCENARIO("Seven Qubit PauliExpBox Circuit") {
+  Architecture architecture({{0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}});
+  Circuit circ(7);
+  circ.add_box(PauliExpBox(SymPauliTensor({Pauli::X, Pauli::X}, 0.3)), {0, 1});
+  circ.add_box(PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Y}, -0.1)), {2, 3});
+  circ.add_box(
+      PauliExpPairBox(
+          SymPauliTensor({Pauli::X, Pauli::Z}, 1.0),
+          SymPauliTensor({Pauli::Z, Pauli::X}, 0.4)),
+      {0, 2});
+  circ.add_box(
+      PauliExpCommutingSetBox({
+          {{Pauli::I, Pauli::Y, Pauli::I}, -0.1},
+          {{Pauli::X, Pauli::Y, Pauli::Z}, -1.2},
+          {{Pauli::X, Pauli::Y, Pauli::Z}, 0.5},
+      }),
+      {1, 2, 3});
+
+  circ.add_box(
+      PauliExpBox(SymPauliTensor(
+          {Pauli::X, Pauli::X, Pauli::Y, Pauli::Z, Pauli::X}, 0.3)),
+      {0, 1, 4, 5, 6});
+  circ.add_box(
+      PauliExpBox(SymPauliTensor(
+          {Pauli::X, Pauli::Y, Pauli::Y, Pauli::Y, Pauli::Z}, 0.3)),
+      {0, 1, 2, 5, 4});
+  circ.add_box(
+      PauliExpBox(SymPauliTensor(
+          {Pauli::Y, Pauli::X, Pauli::X, Pauli::Y, Pauli::Z}, 0.3)),
+      {0, 2, 4, 5, 3});
+  circ.add_box(
+      PauliExpBox(SymPauliTensor(
+          {Pauli::Z, Pauli::Z, Pauli::X, Pauli::X, Pauli::Y}, 0.3)),
+      {3, 1, 4, 5, 2});
+
+  circ.add_op<unsigned>(OpType::CX, {0, 2});
+  circ.add_op<unsigned>(OpType::SWAP, {2, 3});
+  circ.add_op<unsigned>(OpType::H, {3});
+  circ.add_op<unsigned>(OpType::CZ, {1, 3});
+  circ.add_op<unsigned>(OpType::CZ, {5, 3});
+  circ.add_op<unsigned>(OpType::H, {6});
+  Transforms::decomp_boxes().apply(circ);
+  Circuit d(circ);
+  Circuit copy(d);
+  std::shared_ptr<Architecture> a =
+      std::make_shared<Architecture>(architecture);
+  REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(d));
+  REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
+  std::cout << "Peb 2: " << d.count_n_qubit_gates(2) << " "
+            << copy.count_n_qubit_gates(2) << std::endl;
+}
 
 // SCENARIO(
 //     "Dense CX circuits route succesfully on smart placement unfriendly "
@@ -417,7 +501,7 @@ SCENARIO("Test small circuit with all adjacent letters with architecture") {
 //     Circuit copy(circ);
 //     Circuit copy2(circ);
 //     // std::cout << circ.count_n_qubit_gates(2) << std::endl;
-//     REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(circ));
+//     REQUIRE(Transforms::aa_greedy_pauli_optimisation(a, 1).apply(circ));
 //     REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
 //     // std::cout << circ.count_n_qubit_gates(2) << " "
 //     // << copy.count_n_qubit_gates(2) << std::endl;
