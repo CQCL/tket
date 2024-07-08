@@ -1,0 +1,4 @@
+[submodule "pytket/docs/quantinuum-sphinx"]
+	path = pytket/docs/quantinuum-sphinx
+	url = https://github.com/CQCL/quantinuum-sphinx.git
+	branch = dist
