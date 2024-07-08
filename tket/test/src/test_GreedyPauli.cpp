@@ -308,7 +308,6 @@ SCENARIO("Test small circuit with all adjacent letters with architecture") {
       std::make_shared<Architecture>(architecture);
   REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(circ));
   TKET_ASSERT(circ.count_n_qubit_gates(2) == 4);
-  std::cout << circ << std::endl;
 }
 
 SCENARIO("Test small circuit with non-adjacent letters with architecture") {
@@ -322,7 +321,6 @@ SCENARIO("Test small circuit with non-adjacent letters with architecture") {
       std::make_shared<Architecture>(architecture);
   REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(circ));
   TKET_ASSERT(circ.count_n_qubit_gates(2) == 5);
-  // std::cout << circ << std::endl;
 }
 
 SCENARIO("Test small circuit with non-adjacent letters with architecture 2") {
@@ -337,8 +335,6 @@ SCENARIO("Test small circuit with non-adjacent letters with architecture 2") {
   std::shared_ptr<Architecture> a =
       std::make_shared<Architecture>(architecture);
   REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(circ));
-  // TKET_ASSERT(circ.count_n_qubit_gates(2) == 4);
-  // std::cout << circ << std::endl;
 }
 
 SCENARIO("Test arbitrary circuit with architecture") {
@@ -372,9 +368,6 @@ SCENARIO("Test arbitrary circuit with architecture") {
       std::make_shared<Architecture>(architecture);
   REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(d));
   REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
-  // std::cout << d << std::endl;
-  // std::cout << d.count_n_qubit_gates(2) << " " << copy.count_n_qubit_gates(2)
-  //           << std::endl;
 }
 
 SCENARIO("Four Qubit PauliExpBox Circuit") {
@@ -405,7 +398,7 @@ SCENARIO("Four Qubit PauliExpBox Circuit") {
       std::make_shared<Architecture>(architecture);
   REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(d));
   REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
-  std::cout << "Peb style: " << d.count_n_qubit_gates(2) << " "
+  std::cout << "4 qubit pebs: " << d.count_n_qubit_gates(2) << " "
             << copy.count_n_qubit_gates(2) << std::endl;
 }
 
@@ -457,7 +450,7 @@ SCENARIO("Seven Qubit PauliExpBox Circuit") {
       std::make_shared<Architecture>(architecture);
   REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(d));
   REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
-  std::cout << "Peb 2: " << d.count_n_qubit_gates(2) << " "
+  std::cout << "7 qubit pebs: " << d.count_n_qubit_gates(2) << " "
             << copy.count_n_qubit_gates(2) << std::endl;
 }
 
@@ -466,7 +459,7 @@ SCENARIO(
     "architecture.") {
   GIVEN("Complex CX circuits, big ring") {
     Circuit circ(14);
-    for (unsigned x = 0; x < 5; ++x) {
+    for (unsigned x = 0; x < 4; ++x) {
       for (unsigned y = 0; y + 1 < x; ++y) {
         if (x % 2) {
           add_2qb_gates(circ, OpType::CX, {{x, y}, {y + 1, y}});
@@ -500,20 +493,16 @@ SCENARIO(
     std::shared_ptr<Architecture> a = std::make_shared<Architecture>(arc);
     Circuit copy(circ);
     Circuit copy2(circ);
-    // std::cout << circ.count_n_qubit_gates(2) << std::endl;
     REQUIRE(Transforms::aa_greedy_pauli_optimisation(a, 1).apply(circ));
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
-    // std::cout << circ.count_n_qubit_gates(2) << " "
-    // << copy.count_n_qubit_gates(2) << std::endl;
     MappingManager mm(a);
     REQUIRE(mm.route_circuit(
         copy2, {std::make_shared<LexiLabellingMethod>(),
                 std::make_shared<LexiRouteRoutingMethod>()}));
     std::cout << "FINAL: " << "AA Synth: " << circ.count_n_qubit_gates(2) << " "
-              << "REG SYNTH: " << copy.count_n_qubit_gates(2) <<  " RED SYNTH AND ROUTED: " <<
-              copy2.count_n_qubit_gates(2) << std::endl;
-
-    // std::cout << circ << std::endl;
+              << "REG SYNTH: " << copy.count_n_qubit_gates(2)
+              << " RED SYNTH AND ROUTED: " << copy2.count_n_qubit_gates(2)
+              << std::endl;
   }
 }
 

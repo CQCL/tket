@@ -396,8 +396,6 @@ static TQE minmax_selection(
   // (2) If the lookahead varies but the depth doesn't then we return the
   // minimum lookahead cost
   if (min_lookahead != max_lookahead && min_depth == max_depth) {
-    std::cout << "Not mixed cases, should then be here? " << min_lookahead
-              << " " << max_lookahead << std::endl;
     return std::min_element(
                tqe_candidates_cost.begin(), tqe_candidates_cost.end(),
                [](const auto& left, const auto& right) {
@@ -417,8 +415,6 @@ static TQE minmax_selection(
         ->first;
   }
 
-  std::cout << "Mixed case! " << min_lookahead << " " << max_lookahead << " "
-            << min_depth << " " << max_depth << " " << std::endl;
   // (4) Else we return the tqe with the minimum normalised cost
   return std::min_element(
              tqe_candidates_cost.begin(), tqe_candidates_cost.end(),
@@ -846,20 +842,6 @@ pauli_letter_distances_t PauliExpNode::get_updated_distance(
   pauli_letter_distances_t all_distances = this->all_distances(
       this->get_updated_support(tqe), architecture, node_mapping);
 
-  std::cout << "For some unknown TQE on qubits: " << std::get<1>(tqe) << " " << std::get<2>(tqe) << " & changing Node | support:";
-  for (auto x : this->support_vec_) {
-    std::cout << x;
-  }
-  std::cout << " | updated support:";
-  for (auto x : updated_support) {
-    std::cout << x;
-  }
-  std::cout << " | distances:";
-  for (auto x : all_distances) {
-    std::cout << x;
-  }
-  std::cout << std::endl;
-
   return all_distances;
 }
 
@@ -879,7 +861,6 @@ double PauliExpNode::aa_tqe_cost_increase(
     // cost += double(n_entries) / double(i + 1);
     count_comparisons -= n_entries;
   }
-  std::cout << "Cost: " << cost << std::endl;
   return cost;
 }
 
@@ -919,8 +900,10 @@ static double aa_pauliexp_tqe_cost(
   double discount = 1 / (1 + discount_rate);
   double weight = 1;
   double exp_cost = 0;
-  exp_cost = rows.size();
-  exp_cost = double(0);
+  exp_cost = rows.size();  // TODO: this is just to stop compile errors while I
+                           // remove TableauRowNode costing
+  // definitely remove later !
+  exp_cost = 0;
   // double tab_cost = 0;
   // First we work out the number of comparisons to make
   // As it's possible to remove a letter,
@@ -940,7 +923,6 @@ static double aa_pauliexp_tqe_cost(
   // for (const TableauRowNode& node : rows) {
   //   tab_cost += weight * node.tqe_cost_increase(tqe);
   // }
-  std::cout << "Exp: " << exp_cost << std::endl;
   // return exp_cost + tab_cost;
   return exp_cost;
 }
@@ -972,12 +954,7 @@ static void aa_pauli_exps_synthesis(
         min_cost = node_cost;
       }
     }
-    std::cout << "\n\nRemaining Nodes: " << std::endl;
-    for (unsigned i = 0; i < first_set.size(); i++) {
-      std::cout << i << " ";
-      first_set[i].print();
-    }
-    std::cout << std::endl;
+
     std::set<TQE> tqe_candidates;
     for (const unsigned& index : min_nodes_indices) {
       std::vector<TQE> node_reducing_tqes =
@@ -989,15 +966,13 @@ static void aa_pauli_exps_synthesis(
 
     // for each tqe we compute costs which might subject to normalisation
     std::map<TQE, std::vector<double>> tqe_candidates_cost;
-    std::cout << "Number of candidates: " << tqe_candidates.size() << std::endl;
     for (const TQE& tqe : tqe_candidates) {
-      std::cout << "\nNew TQE on entries: " << std::get<1>(tqe) << " "
-                << std::get<2>(tqe) << std::endl;
       // For each TQE, we first compare if the cost is smaller for the "first"
       // node in the rotation set If this is true, then we allow it to cost all
       // rotation sets, considering the Tableau This helps the algorithm
       // terminate
-      if (first_set[min_nodes_indices[0]].decreases(tqe, architecture, node_mapping)) {
+      if (first_set[min_nodes_indices[0]].decreases(
+              tqe, architecture, node_mapping)) {
         tqe_candidates_cost.insert(
             {tqe,
              {aa_pauliexp_tqe_cost(
@@ -1012,7 +987,6 @@ static void aa_pauli_exps_synthesis(
     // We relax the "decreases" constraint, now preserving only moves that
     // remove a qubit
     if (tqe_candidates_cost.empty()) {
-      std::cout << "\n\n\n\nREMOVES CASES: " << std::endl;
       for (const TQE& tqe : tqe_candidates) {
         // For each TQE, we first compare if the cost is smaller for the
         // "first"
@@ -1020,16 +994,15 @@ static void aa_pauli_exps_synthesis(
         // all
         // rotation sets, considering the Tableau This helps the algorithm
         // terminate
-        if (first_set[min_nodes_indices[0]].removes(tqe, architecture, node_mapping)) {
-          std::cout << "\nRemoves" << std::endl;
+        if (first_set[min_nodes_indices[0]].removes(
+                tqe, architecture, node_mapping)) {
           tqe_candidates_cost.insert(
               {tqe,
                {aa_pauliexp_tqe_cost(
-                    discount_rate, {{first_set[min_nodes_indices[0]]}}, rows, tqe,
-                    architecture, node_mapping, false),
+                    discount_rate, {{first_set[min_nodes_indices[0]]}}, rows,
+                    tqe, architecture, node_mapping, false),
                 static_cast<double>(depth_tracker.gate_depth(
                     std::get<1>(tqe), std::get<2>(tqe)))}});
-          std::cout << std::endl;
         }
       }
     }
