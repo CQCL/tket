@@ -31,25 +31,56 @@ namespace tket {
 
 // if there are any blank wires in the circuit,
 // this method removes them and removes the vertices
-// from boundaries
+// from boundaries, if they are quantum wires, or if
+// they are empty classical wires if there are no
+// used bits with a higher index in the same register.
 void Circuit::remove_blank_wires(bool keep_blank_classical_wires) {
   VertexList bin;
   unit_vector_t unused_units;
   const Op_ptr noop = get_op_ptr(OpType::noop);
+  std::set<std::string> bit_names;
+
   for (const BoundaryElement& el : boundary.get<TagID>()) {
-    if (!keep_blank_classical_wires || el.type() == UnitType::Qubit) {
+    if (el.type() == UnitType::Qubit) {
       Vertex in = el.in_;
       Vertex out = el.out_;
       VertexVec succs = get_successors(in);
-      if (succs.size() == 1 && succs.front() == out) {
+      if (succs.front() == out && succs.size() == 1) {
         dag[in].op = noop;
         bin.push_back(in);
         dag[out].op = noop;
         bin.push_back(out);
         unused_units.push_back(el.id_);
       }
+    } else if (
+        !keep_blank_classical_wires && el.type() == UnitType::Bit &&
+        el.id_.reg_dim() == 1) {
+      bit_names.insert(el.id_.reg_name());
     }
   }
+
+  for (auto bit_name : bit_names) {
+    for (unsigned reg_size = get_reg(bit_name).size(); reg_size > 0;
+         --reg_size) {
+      boundary_t::iterator unit_found =
+          boundary.get<TagID>().find(Bit(bit_name, reg_size - 1));
+      if (unit_found != boundary.get<TagID>().end()) {
+        Vertex in = unit_found->in_;
+        Vertex out = unit_found->out_;
+        VertexVec succs = get_successors(in);
+        if (succs.front() == out && succs.size() == 1) {
+          dag[in].op = noop;
+          bin.push_back(in);
+          dag[out].op = noop;
+          bin.push_back(out);
+          unused_units.push_back(unit_found->id_);
+        } else {
+          break;
+        }
+      }
+    }
+  }
+
   for (const UnitID& u : unused_units) {
     boundary.get<TagID>().erase(u);
   }

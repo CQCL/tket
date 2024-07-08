@@ -26,6 +26,7 @@ from pytket.circuit import (
     Qubit,
     UnitID,
     Conditional,
+    Bit,
 )
 from pytket.circuit.named_types import ParamType, RenameUnitsMap
 from pytket.pauli import Pauli
@@ -907,6 +908,16 @@ def test_flatten_relabel_pass() -> None:
     c.add_q_register("p", 4)
     FlattenRelabelRegistersPass().apply(c)
     assert all(q.reg_name == "q" for q in c.qubits)
+
+
+def test_remove_blank_wires_pass() -> None:
+    c = Circuit(2, 4)
+    c.Measure(0, 1)
+
+    cu = CompilationUnit(c)
+    FlattenRelabelRegistersPass("a").apply(cu)
+    assert cu.circuit.qubits == [Qubit("a", 0)]
+    assert cu.circuit.bits == [Bit("c", 0), Bit("c", 1)]
 
 
 def test_round_angles_pass() -> None:
