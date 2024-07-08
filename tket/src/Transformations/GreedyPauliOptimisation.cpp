@@ -846,7 +846,7 @@ pauli_letter_distances_t PauliExpNode::get_updated_distance(
   pauli_letter_distances_t all_distances = this->all_distances(
       this->get_updated_support(tqe), architecture, node_mapping);
 
-  std::cout << "For some unknown TQE & changing Node | support:";
+  std::cout << "For some unknown TQE on qubits: " << std::get<1>(tqe) << " " << std::get<2>(tqe) << " & changing Node | support:";
   for (auto x : this->support_vec_) {
     std::cout << x;
   }
@@ -875,7 +875,8 @@ double PauliExpNode::aa_tqe_cost_increase(
   for (unsigned i = 0; i < updated_distances.size() && count_comparisons > 0;
        i++) {
     unsigned n_entries = updated_distances[i];
-    cost += double(n_entries) / double(updated_distances.size() - i - 1);
+    cost += double(n_entries) / double(updated_distances.size() - i);
+    // cost += double(n_entries) / double(i + 1);
     count_comparisons -= n_entries;
   }
   std::cout << "Cost: " << cost << std::endl;
