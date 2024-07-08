@@ -30,6 +30,8 @@ static SymplecticTableau id_tab(unsigned n) {
   return SymplecticTableau(xmat, zmat, VectorXb::Zero(2 * n));
 }
 
+ChoiMixTableau::ChoiMixTableau() : tab_({}), col_index_() {}
+
 ChoiMixTableau::ChoiMixTableau(unsigned n) : tab_(id_tab(n)), col_index_() {
   for (unsigned i = 0; i < n; ++i) {
     col_index_.insert({{Qubit(i), TableauSegment::Input}, i});
@@ -528,22 +530,37 @@ void ChoiMixTableau::add_qubit(const Qubit& qb, TableauSegment seg) {
   tab_.zmat.block(0, n_cols, n_rows, 1) = MatrixXb::Zero(n_rows, 1);
 }
 
-void ChoiMixTableau::remove_row(unsigned row) {
-  if (row >= get_n_rows())
-    throw std::invalid_argument(
-        "Cannot remove row " + std::to_string(row) + " from tableau with " +
-        std::to_string(get_n_rows()) + " rows");
-  unsigned n_rows = get_n_rows();
-  unsigned n_cols = get_n_boundaries();
-  if (row < n_rows - 1) {
-    tab_.xmat.row(row) = tab_.xmat.row(n_rows - 1);
-    tab_.zmat.row(row) = tab_.zmat.row(n_rows - 1);
-    tab_.phase(row) = tab_.phase(n_rows - 1);
+unsigned ChoiMixTableau::add_row(row_tensor_t row, bool extend_for_new_qubits) {
+  // Verify that all qubits in the row are present in the tableau
+  for (const std::pair<const Qubit, Pauli>& qp : row.first.string) {
+    if (col_index_.left.find(col_key_t{qp.first, TableauSegment::Input}) ==
+        col_index_.left.end()) {
+      if (extend_for_new_qubits)
+        add_qubit(qp.first, TableauSegment::Input);
+      else
+        throw std::logic_error(
+            "Could not add row to ChoiMixTableau - it contains input Qubits "
+            "not registered in the tableau");
+    }
   }
-  tab_.xmat.conservativeResize(n_rows - 1, n_cols);
-  tab_.zmat.conservativeResize(n_rows - 1, n_cols);
-  tab_.phase.conservativeResize(n_rows - 1);
+  for (const std::pair<const Qubit, Pauli>& qp : row.second.string) {
+    if (col_index_.left.find(col_key_t{qp.first, TableauSegment::Output}) ==
+        col_index_.left.end()) {
+      if (extend_for_new_qubits)
+        add_qubit(qp.first, TableauSegment::Output);
+      else
+        throw std::logic_error(
+            "Could not add row to ChoiMixTableau - it contains output Qubits "
+            "not registered in the tableau");
+    }
+  }
+  // Transpose the input segment
+  row.first.transpose();
+  // Add row to the underlying SymplecticTableau
+  return tab_.add_row(row_tensor_to_stab(row));
 }
+
+void ChoiMixTableau::remove_row(unsigned row) { tab_.remove_row(row); }
 
 void ChoiMixTableau::remove_col(unsigned col) {
   if (col >= get_n_boundaries())

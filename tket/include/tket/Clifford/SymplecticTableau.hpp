@@ -112,6 +112,19 @@ class SymplecticTableau {
   PauliStabiliser get_pauli(unsigned i) const;
 
   /**
+   * Add a new row to the tableau.
+   * Returns the index to the new row (since it is added to the bottom of the
+   * tableau, this will always match the number of rows before the addition)
+   */
+  unsigned add_row(const PauliStabiliser &row);
+
+  /**
+   * Removes a row from the tableau.
+   * The final row is shifted into its place.
+   */
+  void remove_row(unsigned row);
+
+  /**
    * Format in output stream as a binary tableau
    * Prints as "xmat zmat phase"
    */
