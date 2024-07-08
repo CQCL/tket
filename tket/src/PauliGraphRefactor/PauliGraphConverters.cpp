@@ -417,8 +417,25 @@ pg::PauliGraph circuit_to_pauli_graph3(
   return res;
 }
 
+/**
+ * A helper struct to represent the circuit used to synthesise a single PGOp.
+ *
+ * The general structure used for individual synthesis is C^\dagger O C, where O
+ * is some op (in this case, op applied to args), and C is a Clifford circuit.
+ *
+ * This Clifford circuit is not unique, but must be a solution to a particular
+ * diagonalisation problem, reducing the active Pauli strings of the PGOp to Z
+ * or X on particular qubits, just so that the op is conjugated correctly.
+ *
+ * We represent this diagonalisation problem with a tableau mapping active Pauli
+ * strings on the input space to args on the output space.
+ *
+ * In the case of recursive PGOps such as conditionals and qcontrols, the
+ * tableau must, in particular, solve the constraints of the inner PGOp, so it
+ * is enough to just add new rows to solve the controls in addition.
+ */
 struct IndividualSynth {
-  std::list<ChoiMixTableau::row_tensor_t> rows;
+  ChoiMixTableau tableau;
   Op_ptr op;
   unit_vector_t args;
 };
@@ -430,7 +447,8 @@ IndividualSynth synth_pgop(const PGOp_ptr& pgop) {
     case PGOpType::Rotation: {
       PGRotation& rot = dynamic_cast<PGRotation&>(*pgop);
       return IndividualSynth{
-          {{rot.port(0), SpPauliStabiliser(Qubit(0), Pauli::Z)}},
+          ChoiMixTableau(
+              {{rot.port(0), SpPauliStabiliser(Qubit(0), Pauli::Z)}}),
           get_op_ptr(OpType::Rz, rot.get_angle()),
           {Qubit(0)}};
     }
@@ -455,28 +473,32 @@ IndividualSynth synth_pgop(const PGOp_ptr& pgop) {
         }
       }
       return IndividualSynth{
-          {{crot.port(0), SpPauliStabiliser(Qubit(0), Pauli::Z)}},
+          ChoiMixTableau(
+              {{crot.port(0), SpPauliStabiliser(Qubit(0), Pauli::Z)}}),
           op,
           {Qubit(0)}};
     }
     case PGOpType::Measure: {
       PGMeasure& meas = dynamic_cast<PGMeasure&>(*pgop);
       return IndividualSynth{
-          {{meas.port(0), SpPauliStabiliser(Qubit(0), Pauli::Z)}},
+          ChoiMixTableau(
+              {{meas.port(0), SpPauliStabiliser(Qubit(0), Pauli::Z)}}),
           get_op_ptr(OpType::Measure),
           {Qubit(0), meas.get_target()}};
     }
     case PGOpType::Decoherence: {
       return IndividualSynth{
-          {{pgop->port(0), SpPauliStabiliser(Qubit(0), Pauli::Z)}},
+          ChoiMixTableau(
+              {{pgop->port(0), SpPauliStabiliser(Qubit(0), Pauli::Z)}}),
           get_op_ptr(OpType::Collapse),
           {Qubit(0)}};
     }
     case PGOpType::Reset: {
       PGReset& reset = dynamic_cast<PGReset&>(*pgop);
       return IndividualSynth{
-          {{reset.get_stab(), SpPauliStabiliser(Qubit(0), Pauli::Z)},
-           {reset.get_destab(), SpPauliStabiliser(Qubit(0), Pauli::X)}},
+          ChoiMixTableau(
+              {{reset.get_stab(), SpPauliStabiliser(Qubit(0), Pauli::Z)},
+               {reset.get_destab(), SpPauliStabiliser(Qubit(0), Pauli::X)}}),
           get_op_ptr(OpType::Reset),
           {Qubit(0)}};
     }
@@ -487,7 +509,7 @@ IndividualSynth synth_pgop(const PGOp_ptr& pgop) {
       for (const Bit& b : cond.get_args()) args.push_back(b);
       for (const UnitID& u : inner_synth.args) args.push_back(u);
       return IndividualSynth{
-          inner_synth.rows,
+          inner_synth.tableau,
           std::make_shared<Conditional>(
               inner_synth.op, cond.get_args().size(), cond.get_value()),
           args};
@@ -499,7 +521,7 @@ IndividualSynth synth_pgop(const PGOp_ptr& pgop) {
       unsigned qi = synth.args.size();
       for (const SpPauliStabiliser& cp : qctrl.get_control_paulis()) {
         Qubit q(qi);
-        synth.rows.push_back({cp, SpPauliStabiliser(q, Pauli::Z)});
+        synth.tableau.add_row({cp, SpPauliStabiliser(q, Pauli::Z)});
         ctrl_qubits.push_back(q);
         ++qi;
       }
@@ -517,7 +539,7 @@ IndividualSynth synth_pgop(const PGOp_ptr& pgop) {
           mptb.get_control_paulis();
       for (unsigned qi = 0; qi < control_paulis.size(); ++qi) {
         Qubit q(qi);
-        synth.rows.push_back(
+        synth.tableau.add_row(
             {control_paulis.at(qi), SpPauliStabiliser(q, Pauli::Z)});
         synth.args.push_back(q);
       }
@@ -525,9 +547,9 @@ IndividualSynth synth_pgop(const PGOp_ptr& pgop) {
           mptb.get_target_paulis();
       for (unsigned qi = 0; 2 * qi < target_paulis.size(); ++qi) {
         Qubit q(control_paulis.size() + qi);
-        synth.rows.push_back(
+        synth.tableau.add_row(
             {target_paulis.at(2 * qi), SpPauliStabiliser(q, Pauli::Z)});
-        synth.rows.push_back(
+        synth.tableau.add_row(
             {target_paulis.at(2 * qi + 1), SpPauliStabiliser(q, Pauli::X)});
         synth.args.push_back(q);
       }
@@ -601,11 +623,11 @@ IndividualSynth synth_pgop(const PGOp_ptr& pgop) {
           mpr.get_control_paulis();
       for (unsigned qi = 0; qi < control_paulis.size(); ++qi) {
         Qubit q(qi);
-        synth.rows.push_back(
+        synth.tableau.add_row(
             {control_paulis.at(qi), SpPauliStabiliser(q, Pauli::Z)});
         synth.args.push_back(q);
       }
-      synth.rows.push_back(
+      synth.tableau.add_row(
           {mpr.get_target_pauli(),
            SpPauliStabiliser(Qubit(control_paulis.size()), Pauli::Z)});
       synth.args.push_back(Qubit(control_paulis.size()));
@@ -621,9 +643,9 @@ IndividualSynth synth_pgop(const PGOp_ptr& pgop) {
       PGBox& box = dynamic_cast<PGBox&>(*pgop);
       IndividualSynth res;
       for (unsigned i = 0; 2 * i < box.n_paulis(); ++i) {
-        res.rows.push_back(
+        res.tableau.add_row(
             {box.port(2 * i), SpPauliStabiliser(Qubit(i), Pauli::Z)});
-        res.rows.push_back(
+        res.tableau.add_row(
             {box.port(2 * i + 1), SpPauliStabiliser(Qubit(i), Pauli::X)});
       }
       res.op = box.get_op();
@@ -640,11 +662,11 @@ IndividualSynth synth_pgop(const PGOp_ptr& pgop) {
     case PGOpType::StabAssertion: {
       PGStabAssertion& stab = dynamic_cast<PGStabAssertion&>(*pgop);
       return IndividualSynth{
-          {
+          ChoiMixTableau({
               {stab.get_stab(), SpPauliStabiliser(Qubit(0), Pauli::Z)},
               {stab.get_anc_z(), SpPauliStabiliser(Qubit(1), Pauli::Z)},
               {stab.get_anc_x(), SpPauliStabiliser(Qubit(1), Pauli::X)},
-          },
+          }),
           std::make_shared<StabiliserAssertionBox>(
               PauliStabiliserVec{PauliStabiliser({Pauli::Z}, 0)}),
           {Qubit(0), Qubit(1), stab.get_target()}};
@@ -659,8 +681,8 @@ IndividualSynth synth_pgop(const PGOp_ptr& pgop) {
 
 Circuit pgop_to_circuit(const PGOp_ptr& pgop) {
   IndividualSynth synth_data = synth_pgop(pgop);
-  ChoiMixTableau diag_tab(synth_data.rows);
-  auto [diag_circ, qb_map] = cm_tableau_to_unitary_extension_circuit(diag_tab);
+  auto [diag_circ, qb_map] =
+      cm_tableau_to_unitary_extension_circuit(synth_data.tableau);
   Circuit diag_dag = diag_circ.dagger();
   unit_vector_t new_args;
   for (const UnitID& u : synth_data.args) {
@@ -1084,7 +1106,8 @@ PGOpCommutingSetBox::PGOpCommutingSetBox(
     // Deep copy PGOps since PGOp_ptr is not const
     pgops_.push_back((*it)->clone());
     // Check every qubit is in qubit_indices
-    for (const SpPauliStabiliser& pauli : (*it)->active_paulis()) {
+    for (unsigned port = 0; port < (*it)->n_paulis(); ++port) {
+      const SpPauliStabiliser& pauli = (*it)->port(port);
       for (const std::pair<const Qubit, Pauli>& qp : pauli.string) {
         if (qubit_indices_.left.find(qp.first) == qubit_indices_.left.end())
           throw PGError(
@@ -1251,8 +1274,11 @@ void PGOpCommutingSetBox::generate_circuit() const {
    * Clifford conjugation is guaranteed to leave it on disjoint qubits from all
    * other PGOps).
    *
-   * At the same time, we form the rows for the diagonalisation problem (split
-   * into ac_pair_rows and c_rows).
+   * At the same time, we form the rows for the diagonalisation problem, split
+   * into `ac_pair_rows` (to reduce anti-commuting pairs down to individual
+   * qubits, from which they can be treated as ancilla qubits at the point of
+   * synthesis during GraySynth) and `c_rows` (to diagonalise any remaining
+   * active Paulis, making them viable parity terms for GraySynth).
    */
   std::list<ChoiMixTableau::row_tensor_t> ac_pair_rows;
   std::list<ChoiMixTableau::row_tensor_t> c_rows;
@@ -1262,16 +1288,26 @@ void PGOpCommutingSetBox::generate_circuit() const {
   for (const PGOp_ptr& pgop : pgops_) {
     PGOp_signature sig = pgop->pauli_signature();
     for (const std::pair<SpPauliStabiliser, SpPauliStabiliser>& ac_pair :
-         sig.ac_pairs) {
-      // All of the anti-commuting pairs are guaranteed to appear uniquely since
-      // the PGOps must commute
+         sig.anti_comm_pairs) {
+      /**
+       * All of the anti-commuting pairs are guaranteed to appear uniquely
+       * since the PGOps must commute.
+       *
+       * The choice of qubit name on the output space here (i.e. `qb_it`) is
+       * irrelevant so long as they are independent for each pair of rows. This
+       * is because `cm_tableau_to_unitary_extension_circuit` solves the
+       * diagonalisation circuit up to a permutation over the outputs which is
+       * returned, so the choice of qubit names used here will only affect the
+       * final permutation. We just pick qubit names that already exist in the
+       * circuit for convenience.
+       */
       ac_pair_rows.push_back(
           {ac_pair.first, SpPauliStabiliser(*qb_it, Pauli::Z)});
       ac_pair_rows.push_back(
           {ac_pair.second, SpPauliStabiliser(*qb_it, Pauli::X)});
       ++qb_it;
     }
-    for (const SpPauliStabiliser& c_pauli : sig.c) {
+    for (const SpPauliStabiliser& c_pauli : sig.comm_set) {
       // However, the commuting rows may appear multiple times or be generated
       // by a subset; we will filter them by gaussian elimination and removing
       // empty rows
@@ -1280,8 +1316,8 @@ void PGOpCommutingSetBox::generate_circuit() const {
     // Clone so we don't accidentally change the Box when we conjugate
     PGOp_ptr cl = pgop->clone();
     // Filter based on recorded commuting ports
-    if (sig.c.size() == 1)
-      single_diag_ops.push_back({*sig.c.begin(), cl});
+    if (sig.comm_set.size() == 1)
+      single_diag_ops.push_back({*sig.comm_set.begin(), cl});
     else
       multi_diag_ops.push_back(cl);
   }
@@ -1395,10 +1431,11 @@ void PGOpCommutingSetBox::generate_circuit() const {
         for (unsigned p = 0; p < pgop->n_paulis(); ++p)
           pgop->port(p) = Atab.get_row_product(pgop->port(p));
         IndividualSynth synth = synth_pgop(pgop);
-        // synth.rows should describe a qubit permutation, telling us which
+        // synth.tableau should describe a qubit permutation, telling us which
         // Qubits to place synth.op on
         std::map<Qubit, Qubit> position_map;
-        for (ChoiMixTableau::row_tensor_t& row : synth.rows) {
+        for (unsigned i = 0; i < synth.tableau.get_n_rows(); ++i) {
+          ChoiMixTableau::row_tensor_t row = synth.tableau.get_row(i);
           row.first.compress();
           TKET_ASSERT(row.first.size() == 1);
           row.second.compress();

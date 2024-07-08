@@ -82,21 +82,19 @@ bool PGBox::is_equal(const PGOp& op_other) const {
 
 unsigned PGBox::n_paulis() const { return paulis_.size(); }
 
-std::vector<SpPauliStabiliser> PGBox::active_paulis() const { return paulis_; }
-
 PGOp_signature PGBox::pauli_signature() const {
   PGOp_signature sig;
   for (auto it = paulis_.begin(); it != paulis_.end();) {
     SpPauliStabiliser zp = *it;
     ++it;
     TKET_ASSERT(it != paulis_.end());
-    sig.ac_pairs.push_back({zp, *it});
+    sig.anti_comm_pairs.push_back({zp, *it});
     ++it;
   }
   return sig;
 }
 
-SpPauliStabiliser& PGBox::port(unsigned p) {
+const SpPauliStabiliser& PGBox::port(unsigned p) const {
   if (p >= paulis_.size())
     throw PGError(
         "Cannot dereference port " + std::to_string(p) +
@@ -241,28 +239,22 @@ unsigned PGMultiplexedTensoredBox::n_paulis() const {
   return control_paulis_.size() + target_paulis_.size();
 }
 
-std::vector<SpPauliStabiliser> PGMultiplexedTensoredBox::active_paulis() const {
-  std::vector<SpPauliStabiliser> aps = control_paulis_;
-  aps.insert(aps.end(), target_paulis_.begin(), target_paulis_.end());
-  return aps;
-}
-
 PGOp_signature PGMultiplexedTensoredBox::pauli_signature() const {
   PGOp_signature sig;
   for (auto it = control_paulis_.begin(); it != control_paulis_.end(); ++it) {
-    sig.c.push_back(*it);
+    sig.comm_set.push_back(*it);
   }
   for (auto it = target_paulis_.begin(); it != target_paulis_.end();) {
     SpPauliStabiliser zp = *it;
     ++it;
     TKET_ASSERT(it != target_paulis_.end());
-    sig.ac_pairs.push_back({zp, *it});
+    sig.anti_comm_pairs.push_back({zp, *it});
     ++it;
   }
   return sig;
 }
 
-SpPauliStabiliser& PGMultiplexedTensoredBox::port(unsigned p) {
+const SpPauliStabiliser& PGMultiplexedTensoredBox::port(unsigned p) const {
   if (p < control_paulis_.size()) return control_paulis_.at(p);
   if (p < control_paulis_.size() + target_paulis_.size())
     return target_paulis_.at(p - control_paulis_.size());

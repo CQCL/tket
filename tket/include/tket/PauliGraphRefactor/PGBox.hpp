@@ -24,7 +24,7 @@ namespace pg {
 /**
  * PGOp for PGOpType::Box, representing an arbitrary Op conjugated by some
  * Clifford circuit. For each qubit the Op acts on, we maintain two
- * active_paulis corresponding to the Pauli operators mapped into +Z and +X by
+ * active Paulis corresponding to the Pauli operators mapped into +Z and +X by
  * the conjugating circuit. This allows it to be resynthesised as a unitary
  * extension circuit for the corresponding ChoiMixTableau.
  */
@@ -67,9 +67,8 @@ class PGBox : public PGOp {
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
   virtual unsigned n_paulis() const override;
-  virtual std::vector<SpPauliStabiliser> active_paulis() const override;
   virtual PGOp_signature pauli_signature() const override;
-  virtual SpPauliStabiliser& port(unsigned p) override;
+  virtual const SpPauliStabiliser& port(unsigned p) const override;
   virtual bit_vector_t read_bits() const override;
   virtual bit_vector_t write_bits() const override;
 
@@ -89,7 +88,7 @@ class PGBox : public PGOp {
  * PGOp for PGOpType::MultiplexedTensoredBox, encapsulating tensor products of
  * Ops conditioned on different values of the state of some qubits.
  *
- * active_paulis lists first the paulis into which the control qubits are
+ * The first ports give the paulis into which the control qubits are
  * encoded, followed by iterating over the target qubits and giving the Pauli
  * operators mapped into +Z and +X by the conjugating circuit.
  */
@@ -139,9 +138,8 @@ class PGMultiplexedTensoredBox : public PGOp {
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
   virtual unsigned n_paulis() const override;
-  virtual std::vector<SpPauliStabiliser> active_paulis() const override;
   virtual PGOp_signature pauli_signature() const override;
-  virtual SpPauliStabiliser& port(unsigned p) override;
+  virtual const SpPauliStabiliser& port(unsigned p) const override;
 
  protected:
   std::map<std::vector<bool>, std::vector<Op_ptr>> op_map_;

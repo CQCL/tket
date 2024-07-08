@@ -32,8 +32,10 @@ PGOp::~PGOp() {}
 PGOp::PGOp(PGOpType type) : type_(type) {}
 
 bool PGOp::commutes_with(const PGOp& other) const {
-  for (const SpPauliStabiliser& t : active_paulis()) {
-    for (const SpPauliStabiliser& ot : other.active_paulis()) {
+  for (unsigned p = 0; p < n_paulis(); ++p) {
+    const SpPauliStabiliser& t = port(p);
+    for (unsigned op = 0; op < other.n_paulis(); ++op) {
+      const SpPauliStabiliser& ot = other.port(op);
       if (!t.commutes_with(ot)) return false;
     }
   }
@@ -54,6 +56,10 @@ bool PGOp::commutes_with(const PGOp& other) const {
 }
 
 unsigned PGOp::n_paulis() const { return 1; }
+
+SpPauliStabiliser& PGOp::port(unsigned p) {
+  return const_cast<SpPauliStabiliser&>(const_cast<const PGOp*>(this)->port(p));
+}
 
 bit_vector_t PGOp::read_bits() const { return {}; }
 
@@ -97,13 +103,9 @@ bool PGRotation::is_equal(const PGOp& op_other) const {
   return (tensor_ == other.tensor_) && equiv_expr(angle_, other.angle_, 2.);
 }
 
-std::vector<SpPauliStabiliser> PGRotation::active_paulis() const {
-  return {tensor_};
-}
-
 PGOp_signature PGRotation::pauli_signature() const { return {{}, {tensor_}}; }
 
-SpPauliStabiliser& PGRotation::port(unsigned p) {
+const SpPauliStabiliser& PGRotation::port(unsigned p) const {
   if (p != 0)
     throw PGError(
         "Cannot dereference port on PGRotation: " + std::to_string(p));
@@ -148,15 +150,11 @@ bool PGCliffordRot::is_equal(const PGOp& op_other) const {
   return (tensor_ == other.tensor_) && (angle_ % 4 == other.angle_ % 4);
 }
 
-std::vector<SpPauliStabiliser> PGCliffordRot::active_paulis() const {
-  return {tensor_};
-}
-
 PGOp_signature PGCliffordRot::pauli_signature() const {
   return {{}, {tensor_}};
 }
 
-SpPauliStabiliser& PGCliffordRot::port(unsigned p) {
+const SpPauliStabiliser& PGCliffordRot::port(unsigned p) const {
   if (p != 0)
     throw PGError(
         "Cannot dereference port on PGCliffordRot: " + std::to_string(p));
@@ -199,13 +197,9 @@ bool PGMeasure::is_equal(const PGOp& op_other) const {
   return (tensor_ == other.tensor_) && (target_ == other.target_);
 }
 
-std::vector<SpPauliStabiliser> PGMeasure::active_paulis() const {
-  return {tensor_};
-}
-
 PGOp_signature PGMeasure::pauli_signature() const { return {{}, {tensor_}}; }
 
-SpPauliStabiliser& PGMeasure::port(unsigned p) {
+const SpPauliStabiliser& PGMeasure::port(unsigned p) const {
   if (p != 0)
     throw PGError("Cannot dereference port on PGMeasure: " + std::to_string(p));
   return tensor_;
@@ -248,15 +242,11 @@ bool PGDecoherence::is_equal(const PGOp& op_other) const {
   return tensor_ == other.tensor_;
 }
 
-std::vector<SpPauliStabiliser> PGDecoherence::active_paulis() const {
-  return {tensor_};
-}
-
 PGOp_signature PGDecoherence::pauli_signature() const {
   return {{}, {tensor_}};
 }
 
-SpPauliStabiliser& PGDecoherence::port(unsigned p) {
+const SpPauliStabiliser& PGDecoherence::port(unsigned p) const {
   if (p != 0)
     throw PGError(
         "Cannot dereference port on PGDecoherence: " + std::to_string(p));
@@ -301,15 +291,11 @@ bool PGReset::is_equal(const PGOp& op_other) const {
 
 unsigned PGReset::n_paulis() const { return 2; }
 
-std::vector<SpPauliStabiliser> PGReset::active_paulis() const {
-  return {stab_, destab_};
-}
-
 PGOp_signature PGReset::pauli_signature() const {
   return {{{stab_, destab_}}, {}};
 }
 
-SpPauliStabiliser& PGReset::port(unsigned p) {
+const SpPauliStabiliser& PGReset::port(unsigned p) const {
   if (p == 0)
     return stab_;
   else if (p == 1)
@@ -370,15 +356,13 @@ bool PGConditional::is_equal(const PGOp& op_other) const {
 
 unsigned PGConditional::n_paulis() const { return inner_->n_paulis(); }
 
-std::vector<SpPauliStabiliser> PGConditional::active_paulis() const {
-  return inner_->active_paulis();
-}
-
 PGOp_signature PGConditional::pauli_signature() const {
   return inner_->pauli_signature();
 }
 
-SpPauliStabiliser& PGConditional::port(unsigned p) { return inner_->port(p); }
+const SpPauliStabiliser& PGConditional::port(unsigned p) const {
+  return inner_->port(p);
+}
 
 bit_vector_t PGConditional::read_bits() const {
   bit_vector_t bits = inner_->read_bits();
@@ -453,20 +437,14 @@ unsigned PGQControl::n_paulis() const {
   return control_paulis_.size() + inner_->n_paulis();
 }
 
-std::vector<SpPauliStabiliser> PGQControl::active_paulis() const {
-  std::vector<SpPauliStabiliser> aps = control_paulis_;
-  std::vector<SpPauliStabiliser> inner_aps = inner_->active_paulis();
-  aps.insert(aps.end(), inner_aps.begin(), inner_aps.end());
-  return aps;
-}
-
 PGOp_signature PGQControl::pauli_signature() const {
   PGOp_signature sig = inner_->pauli_signature();
-  sig.c.insert(sig.c.begin(), control_paulis_.begin(), control_paulis_.end());
+  sig.comm_set.insert(
+      sig.comm_set.begin(), control_paulis_.begin(), control_paulis_.end());
   return sig;
 }
 
-SpPauliStabiliser& PGQControl::port(unsigned p) {
+const SpPauliStabiliser& PGQControl::port(unsigned p) const {
   if (p < control_paulis_.size())
     return control_paulis_.at(p);
   else
@@ -567,12 +545,6 @@ unsigned PGMultiplexedRotation::n_paulis() const {
   return control_paulis_.size() + 1;
 }
 
-std::vector<SpPauliStabiliser> PGMultiplexedRotation::active_paulis() const {
-  std::vector<SpPauliStabiliser> aps = control_paulis_;
-  aps.push_back(target_pauli_);
-  return aps;
-}
-
 PGOp_signature PGMultiplexedRotation::pauli_signature() const {
   std::list<SpPauliStabiliser> ps;
   ps.insert(ps.begin(), control_paulis_.begin(), control_paulis_.end());
@@ -580,7 +552,7 @@ PGOp_signature PGMultiplexedRotation::pauli_signature() const {
   return {{}, ps};
 }
 
-SpPauliStabiliser& PGMultiplexedRotation::port(unsigned p) {
+const SpPauliStabiliser& PGMultiplexedRotation::port(unsigned p) const {
   if (p == control_paulis_.size())
     return target_pauli_;
   else if (p < control_paulis_.size())
@@ -643,15 +615,11 @@ bool PGStabAssertion::is_equal(const PGOp& op_other) const {
 
 unsigned PGStabAssertion::n_paulis() const { return 3; }
 
-std::vector<SpPauliStabiliser> PGStabAssertion::active_paulis() const {
-  return {stab_, anc_z_, anc_x_};
-}
-
 PGOp_signature PGStabAssertion::pauli_signature() const {
   return {{{anc_z_, anc_x_}}, {stab_}};
 }
 
-SpPauliStabiliser& PGStabAssertion::port(unsigned p) {
+const SpPauliStabiliser& PGStabAssertion::port(unsigned p) const {
   switch (p) {
     case 0:
       return stab_;
@@ -722,13 +690,6 @@ bool PGInputTableau::is_equal(const PGOp& op_other) const {
 
 unsigned PGInputTableau::n_paulis() const { return rows_.size(); }
 
-std::vector<SpPauliStabiliser> PGInputTableau::active_paulis() const {
-  std::vector<SpPauliStabiliser> paulis;
-  for (const ChoiMixTableau::row_tensor_t& row : rows_)
-    paulis.push_back(row.second);
-  return paulis;
-}
-
 PGOp_signature PGInputTableau::pauli_signature() const {
   ChoiMixTableau tab(
       std::list<ChoiMixTableau::row_tensor_t>{rows_.begin(), rows_.end()});
@@ -755,19 +716,20 @@ PGOp_signature PGInputTableau::pauli_signature() const {
         // for r2
         used_rows.insert(r);
         used_rows.insert(r2);
-        sig.ac_pairs.push_back({tab.get_row(r2).second, tab.get_row(r).second});
+        sig.anti_comm_pairs.push_back(
+            {tab.get_row(r2).second, tab.get_row(r).second});
         break;
       }
     }
   }
   for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
     if (used_rows.find(r) == used_rows.end())
-      sig.c.push_back(tab.get_row(r).second);
+      sig.comm_set.push_back(tab.get_row(r).second);
   }
   return sig;
 }
 
-SpPauliStabiliser& PGInputTableau::port(unsigned p) {
+const SpPauliStabiliser& PGInputTableau::port(unsigned p) const {
   if (p >= rows_.size())
     throw PGError(
         "Cannot dereference port on PGInputTableau: " + std::to_string(p));
@@ -829,13 +791,6 @@ bool PGOutputTableau::is_equal(const PGOp& op_other) const {
 
 unsigned PGOutputTableau::n_paulis() const { return rows_.size(); }
 
-std::vector<SpPauliStabiliser> PGOutputTableau::active_paulis() const {
-  std::vector<SpPauliStabiliser> paulis;
-  for (const ChoiMixTableau::row_tensor_t& row : rows_)
-    paulis.push_back(row.first);
-  return paulis;
-}
-
 PGOp_signature PGOutputTableau::pauli_signature() const {
   ChoiMixTableau tab(
       std::list<ChoiMixTableau::row_tensor_t>{rows_.begin(), rows_.end()});
@@ -862,19 +817,20 @@ PGOp_signature PGOutputTableau::pauli_signature() const {
         // for r2
         used_rows.insert(r);
         used_rows.insert(r2);
-        sig.ac_pairs.push_back({tab.get_row(r2).first, tab.get_row(r).first});
+        sig.anti_comm_pairs.push_back(
+            {tab.get_row(r2).first, tab.get_row(r).first});
         break;
       }
     }
   }
   for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
     if (used_rows.find(r) == used_rows.end())
-      sig.c.push_back(tab.get_row(r).first);
+      sig.comm_set.push_back(tab.get_row(r).first);
   }
   return sig;
 }
 
-SpPauliStabiliser& PGOutputTableau::port(unsigned p) {
+const SpPauliStabiliser& PGOutputTableau::port(unsigned p) const {
   if (p >= rows_.size())
     throw PGError(
         "Cannot dereference port on PGOutputTableau: " + std::to_string(p));

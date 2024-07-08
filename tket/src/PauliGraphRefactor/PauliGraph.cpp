@@ -132,14 +132,13 @@ PGVert PauliGraph::add_vertex_at_end(PGOp_ptr op) {
     final_tableau_ = v;
   }
   // Find ancestors in the anticommutation matrix
-  std::vector<SpPauliStabiliser> active = op->active_paulis();
-  for (unsigned i = 0; i < active.size(); ++i) {
+  for (unsigned i = 0; i < op->n_paulis(); ++i) {
     for (const PGPauli& prev_pauli : pauli_index_.get<TagID>()) {
       if (prev_pauli.vert == v) continue;
       PGOp_ptr other_op = c_graph_[prev_pauli.vert];
       SpPauliStabiliser other_pauli = other_op->port(prev_pauli.port);
       pauli_ac_(mat_offset + i, prev_pauli.index) =
-          !active.at(i).commutes_with(other_pauli);
+          !op->port(i).commutes_with(other_pauli);
     }
   }
   // Find classical predecessors
@@ -274,9 +273,8 @@ void PauliGraph::verify() const {
       }
       // Check Pauli history contains all anti-commuting terms and all active
       // qubits are registered
-      std::vector<SpPauliStabiliser> paulis = op->active_paulis();
       for (auto it = range.first; it != range.second; ++it) {
-        const SpPauliStabiliser& tensor = paulis.at(it->port);
+        const SpPauliStabiliser& tensor = op->port(it->port);
         for (const std::pair<const Qubit, Pauli>& qp : tensor.string) {
           if (qubits_.find(qp.first) == qubits_.end())
             throw PGError(
