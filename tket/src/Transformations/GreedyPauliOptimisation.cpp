@@ -997,7 +997,7 @@ static void aa_pauli_exps_synthesis(
       // node in the rotation set If this is true, then we allow it to cost all
       // rotation sets, considering the Tableau This helps the algorithm
       // terminate
-      if (first_set[0].decreases(tqe, architecture, node_mapping)) {
+      if (first_set[min_nodes_indices[0]].decreases(tqe, architecture, node_mapping)) {
         tqe_candidates_cost.insert(
             {tqe,
              {aa_pauliexp_tqe_cost(
@@ -1007,10 +1007,10 @@ static void aa_pauli_exps_synthesis(
                   std::get<1>(tqe), std::get<2>(tqe)))}});
       }
     }
-    // // If this happens, it probably means we need to make a qubit "lonely"
-    // // and we're trying to avoid this
-    // // We relax the "decreases" constraint, now preserving only moves that
-    // // remove a qubit
+    // If this happens, it probably means we need to make a qubit "lonely"
+    // and we're trying to avoid this
+    // We relax the "decreases" constraint, now preserving only moves that
+    // remove a qubit
     if (tqe_candidates_cost.empty()) {
       std::cout << "\n\n\n\nREMOVES CASES: " << std::endl;
       for (const TQE& tqe : tqe_candidates) {
@@ -1020,12 +1020,12 @@ static void aa_pauli_exps_synthesis(
         // all
         // rotation sets, considering the Tableau This helps the algorithm
         // terminate
-        if (first_set[0].removes(tqe, architecture, node_mapping)) {
+        if (first_set[min_nodes_indices[0]].removes(tqe, architecture, node_mapping)) {
           std::cout << "\nRemoves" << std::endl;
           tqe_candidates_cost.insert(
               {tqe,
                {aa_pauliexp_tqe_cost(
-                    discount_rate, {{rotation_sets[0][0]}}, rows, tqe,
+                    discount_rate, {{first_set[min_nodes_indices[0]]}}, rows, tqe,
                     architecture, node_mapping, false),
                 static_cast<double>(depth_tracker.gate_depth(
                     std::get<1>(tqe), std::get<2>(tqe)))}});
