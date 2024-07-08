@@ -396,6 +396,8 @@ static TQE minmax_selection(
   // (2) If the lookahead varies but the depth doesn't then we return the
   // minimum lookahead cost
   if (min_lookahead != max_lookahead && min_depth == max_depth) {
+    std::cout << "Not mixed cases, should then be here? " << min_lookahead
+              << " " << max_lookahead << std::endl;
     return std::min_element(
                tqe_candidates_cost.begin(), tqe_candidates_cost.end(),
                [](const auto& left, const auto& right) {
@@ -415,6 +417,8 @@ static TQE minmax_selection(
         ->first;
   }
 
+  std::cout << "Mixed case! " << min_lookahead << " " << max_lookahead << " "
+            << min_depth << " " << max_depth << " " << std::endl;
   // (4) Else we return the tqe with the minimum normalised cost
   return std::min_element(
              tqe_candidates_cost.begin(), tqe_candidates_cost.end(),
@@ -865,19 +869,41 @@ double PauliExpNode::aa_tqe_cost_increase(
     unsigned n_comparisons) const {
   pauli_letter_distances_t updated_distances =
       this->get_updated_distance(tqe, architecture, node_mapping);
-
   double cost = 0;
   // TODO: can change to just use n_comparisons as its copied anyway
   int count_comparisons = n_comparisons;
   for (unsigned i = 0; i < updated_distances.size() && count_comparisons > 0;
        i++) {
     unsigned n_entries = updated_distances[i];
-    cost += double(n_entries) / double(i + 1);
+    cost += double(n_entries) / double(updated_distances.size() - i - 1);
     count_comparisons -= n_entries;
-    // std::cout << count_comparisons << " " << " " << n_entries << " " << i + 1
-    //           << " " << double(n_entries) / double(i + 1) << std::endl;
   }
+  std::cout << "Cost: " << cost << std::endl;
   return cost;
+}
+
+bool PauliExpNode::decreases(
+    const TQE& tqe, std::shared_ptr<Architecture> architecture,
+    const std::map<unsigned, Node>& node_mapping) const {
+  pauli_letter_distances_t current_distances =
+      this->all_distances(this->support_vec_, architecture, node_mapping);
+  pauli_letter_distances_t updated_distances =
+      this->get_updated_distance(tqe, architecture, node_mapping);
+  return std::lexicographical_compare(
+      updated_distances.begin(), updated_distances.end(),
+      current_distances.begin(), current_distances.end());
+}
+bool PauliExpNode::removes(
+    const TQE& tqe, std::shared_ptr<Architecture> architecture,
+    const std::map<unsigned, Node>& node_mapping) const {
+  pauli_letter_distances_t current_distances =
+      this->all_distances(this->support_vec_, architecture, node_mapping);
+  pauli_letter_distances_t updated_distances =
+      this->get_updated_distance(tqe, architecture, node_mapping);
+  return int(std::accumulate(
+             current_distances.begin(), current_distances.end(), 0)) >
+         int(std::accumulate(
+             updated_distances.begin(), updated_distances.end(), 0));
 }
 
 // return the weighted sum of the cost increases on remaining nodes
@@ -887,7 +913,8 @@ static double aa_pauliexp_tqe_cost(
     const std::vector<std::vector<PauliExpNode>>& rotation_sets,
     const std::vector<TableauRowNode>& rows, const TQE& tqe,
     std::shared_ptr<Architecture> architecture,
-    const std::map<unsigned, Node>& node_mapping) {
+    const std::map<unsigned, Node>& node_mapping,
+    bool reduce_comparisons = true) {
   double discount = 1 / (1 + discount_rate);
   double weight = 1;
   double exp_cost = 0;
@@ -900,7 +927,10 @@ static double aa_pauliexp_tqe_cost(
     for (const PauliExpNode& node : rotation_set) {
       unsigned support = node.support();
       TKET_ASSERT(support >= 0);
-      unsigned n_comparisons = (support * (support + 1)) / 2;
+      unsigned n_comparisons = support;
+      if (reduce_comparisons) {
+        n_comparisons = (support * (support + 1)) / 2;
+      }
       exp_cost += weight * node.aa_tqe_cost_increase(
                                tqe, architecture, node_mapping, n_comparisons);
     }
@@ -926,8 +956,9 @@ static void aa_pauli_exps_synthesis(
   while (true) {
     while (consume_available_rotations(
         rotation_sets, tab, circ, depth_tracker));  // do nothing
-    if (rotation_sets.size() == 0) break;
+    if (rotation_sets.empty()) break;
     std::vector<PauliExpNode>& first_set = rotation_sets[0];
+    TKET_ASSERT(!first_set.empty());
     // get nodes with min cost
     std::vector<unsigned> min_nodes_indices = {0};
     unsigned min_cost = first_set[0].tqe_cost();
@@ -961,14 +992,47 @@ static void aa_pauli_exps_synthesis(
     for (const TQE& tqe : tqe_candidates) {
       std::cout << "\nNew TQE on entries: " << std::get<1>(tqe) << " "
                 << std::get<2>(tqe) << std::endl;
-      tqe_candidates_cost.insert(
-          {tqe,
-           {aa_pauliexp_tqe_cost(
-                discount_rate, rotation_sets, rows, tqe, architecture,
-                node_mapping),
-            static_cast<double>(depth_tracker.gate_depth(
-                std::get<1>(tqe), std::get<2>(tqe)))}});
+      // For each TQE, we first compare if the cost is smaller for the "first"
+      // node in the rotation set If this is true, then we allow it to cost all
+      // rotation sets, considering the Tableau This helps the algorithm
+      // terminate
+      if (first_set[0].decreases(tqe, architecture, node_mapping)) {
+        tqe_candidates_cost.insert(
+            {tqe,
+             {aa_pauliexp_tqe_cost(
+                  discount_rate, rotation_sets, rows, tqe, architecture,
+                  node_mapping),
+              static_cast<double>(depth_tracker.gate_depth(
+                  std::get<1>(tqe), std::get<2>(tqe)))}});
+      }
     }
+    // // If this happens, it probably means we need to make a qubit "lonely"
+    // // and we're trying to avoid this
+    // // We relax the "decreases" constraint, now preserving only moves that
+    // // remove a qubit
+    if (tqe_candidates_cost.empty()) {
+      std::cout << "\n\n\n\nREMOVES CASES: " << std::endl;
+      for (const TQE& tqe : tqe_candidates) {
+        // For each TQE, we first compare if the cost is smaller for the
+        // "first"
+        // node in the rotation set If this is true, then we allow it to cost
+        // all
+        // rotation sets, considering the Tableau This helps the algorithm
+        // terminate
+        if (first_set[0].removes(tqe, architecture, node_mapping)) {
+          std::cout << "\nRemoves" << std::endl;
+          tqe_candidates_cost.insert(
+              {tqe,
+               {aa_pauliexp_tqe_cost(
+                    discount_rate, {{rotation_sets[0][0]}}, rows, tqe,
+                    architecture, node_mapping, false),
+                static_cast<double>(depth_tracker.gate_depth(
+                    std::get<1>(tqe), std::get<2>(tqe)))}});
+          std::cout << std::endl;
+        }
+      }
+    }
+
     // select the best one
     TQE selected_tqe = select_pauliexp_tqe(tqe_candidates_cost, depth_weight);
 

@@ -124,6 +124,14 @@ class PauliExpNode {
       std::shared_ptr<Architecture> architecture,
       const std::map<unsigned, Node>& node_mapping) const;
 
+  bool decreases(
+      const TQE& tqe, std::shared_ptr<Architecture> architecture,
+      const std::map<unsigned, Node>& node_mapping) const;
+
+  bool removes(
+      const TQE& tqe, std::shared_ptr<Architecture> architecture,
+      const std::map<unsigned, Node>& node_mapping) const;
+
   /**
    * @brief Update the support vector with a TQE gate
    *
