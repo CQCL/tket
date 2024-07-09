@@ -45,7 +45,7 @@ in {
       graphviz
       networkx
       jinja2
-      sympy
+      super.sympy'
       scipy
       numpy
       typing-extensions
