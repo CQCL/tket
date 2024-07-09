@@ -27,6 +27,7 @@
 #include "tket/Mapping/MappingManager.hpp"
 #include "tket/PauliGraph/PauliGraph.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
+#include "tket/Transformations/CliffordOptimisation.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/GreedyPauliOptimisation.hpp"
 #include "tket/Utils/Expression.hpp"
@@ -459,7 +460,7 @@ SCENARIO(
     "architecture.") {
   GIVEN("Complex CX circuits, big ring") {
     Circuit circ(14);
-    for (unsigned x = 0; x < 4; ++x) {
+    for (unsigned x = 0; x < 10; ++x) {
       for (unsigned y = 0; y + 1 < x; ++y) {
         if (x % 2) {
           add_2qb_gates(circ, OpType::CX, {{x, y}, {y + 1, y}});
@@ -493,8 +494,9 @@ SCENARIO(
     std::shared_ptr<Architecture> a = std::make_shared<Architecture>(arc);
     Circuit copy(circ);
     Circuit copy2(circ);
-    REQUIRE(Transforms::aa_greedy_pauli_optimisation(a, 1).apply(circ));
+    REQUIRE(Transforms::aa_greedy_pauli_optimisation(a).apply(circ));
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(copy));
+    // Transforms::push_cliffords_through_measures().apply(circ);
     MappingManager mm(a);
     REQUIRE(mm.route_circuit(
         copy2, {std::make_shared<LexiLabellingMethod>(),

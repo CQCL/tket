@@ -106,13 +106,22 @@ class PauliExpNode {
       const std::map<unsigned, Node>& node_mapping,
       unsigned n_comparisons) const;
 
-  std::vector<unsigned> get_updated_support(const TQE& tqe) const;
+  double aa_tqe_pair_cost_increase(
+      const std::pair<TQE, TQE>& tqe_pair,
+      std::shared_ptr<Architecture> architecture,
+      const std::map<unsigned, Node>& node_mapping,
+      unsigned n_comparisons) const;
 
   bool updates_support(const TQE& tqe) const;
 
   pauli_letter_distances_t get_updated_distance(
       const TQE& tqe, std::shared_ptr<Architecture> architecture,
-      const std::map<unsigned, Node>& node_mapping) const;
+      const std::map<unsigned, Node>& node_mapping, bool lonely = true) const;
+
+  pauli_letter_distances_t get_updated_distance_swap(
+      const std::pair<TQE, TQE>& tqe_pair,
+      std::shared_ptr<Architecture> architecture,
+      const std::map<unsigned, Node>& node_mapping, bool lonely = true) const;
 
   /**
    * @brief For each pair of indices in the support_vec_, returns
@@ -122,15 +131,7 @@ class PauliExpNode {
   pauli_letter_distances_t all_distances(
       const std::vector<unsigned>& support,
       std::shared_ptr<Architecture> architecture,
-      const std::map<unsigned, Node>& node_mapping) const;
-
-  bool decreases(
-      const TQE& tqe, std::shared_ptr<Architecture> architecture,
-      const std::map<unsigned, Node>& node_mapping) const;
-
-  bool removes(
-      const TQE& tqe, std::shared_ptr<Architecture> architecture,
-      const std::map<unsigned, Node>& node_mapping) const;
+      const std::map<unsigned, Node>& node_mapping, bool lonely = true) const;
 
   /**
    * @brief Update the support vector with a TQE gate
@@ -147,6 +148,10 @@ class PauliExpNode {
    * @return std::vector<std::tuple<TQEType, unsigned, unsigned>>
    */
   std::vector<TQE> reduction_tqes() const;
+
+  std::vector<std::pair<TQE, TQE>> reduction_tqe_pairs(
+      std::shared_ptr<Architecture> architecture,
+      const std::map<unsigned, Node>& node_mapping) const;
 
   /**
    * @brief return all TQE gates

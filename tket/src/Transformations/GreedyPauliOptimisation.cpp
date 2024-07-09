@@ -132,14 +132,15 @@ int PauliExpNode::tqe_cost_increase(const TQE& tqe) const {
   return (new_supp0 > 0) + (new_supp1 > 0) - (supp0 > 0) - (supp1 > 0);
 }
 
-std::vector<unsigned> PauliExpNode::get_updated_support(const TQE& tqe) const {
-  std::vector<unsigned> updated = support_vec_;
+static std::vector<unsigned> get_updated_support(
+    const TQE& tqe, const std::vector<unsigned>& support_vec) {
+  std::vector<unsigned> updated = support_vec;
   unsigned index0 = std::get<1>(tqe);
   unsigned index1 = std::get<2>(tqe);
-  TKET_ASSERT(index0 < support_vec_.size());
-  TKET_ASSERT(index1 < support_vec_.size());
-  unsigned supp0 = support_vec_[index0];
-  unsigned supp1 = support_vec_[index1];
+  TKET_ASSERT(index0 < support_vec.size());
+  TKET_ASSERT(index1 < support_vec.size());
+  unsigned supp0 = support_vec[index0];
+  unsigned supp1 = support_vec[index1];
   unsigned new_supp0, new_supp1;
   std::tie(new_supp0, new_supp1) =
       SINGLET_PAIR_TRANSFORMATION_MAP.at({std::get<0>(tqe), supp0, supp1});
@@ -149,7 +150,7 @@ std::vector<unsigned> PauliExpNode::get_updated_support(const TQE& tqe) const {
 }
 
 bool PauliExpNode::updates_support(const TQE& tqe) const {
-  return !(this->get_updated_support(tqe) == this->support_vec_);
+  return !(get_updated_support(tqe, this->support_vec_) == this->support_vec_);
 }
 
 void PauliExpNode::update(const TQE& tqe) {
@@ -436,6 +437,84 @@ static TQE minmax_selection(
       ->first;
 }
 
+// given a map from TQE to a vector of costs, select the one with the minimum
+// weighted sum of minmax-normalised costs
+static std::pair<TQE, TQE> minmax_selection_pair(
+    const std::map<std::pair<TQE, TQE>, std::vector<double>>&
+        tqe_candidates_cost,
+    const std::pair<double, double>& weights) {
+  // each TQE has a cost for each Node
+  TKET_ASSERT(tqe_candidates_cost.size() > 0);
+  std::vector<double> first_costs = tqe_candidates_cost.begin()->second;
+  TKET_ASSERT(first_costs.size() == 2);
+
+  double min_lookahead = first_costs[0];
+  double min_depth = first_costs[1];
+  double max_lookahead = min_lookahead;
+  double max_depth = min_depth;
+
+  for (const auto& pair : tqe_candidates_cost) {
+    TKET_ASSERT(pair.second.size() == 2);
+    double lookahead = pair.second[0];
+    double depth = pair.second[1];
+
+    min_lookahead = std::min(min_lookahead, lookahead);
+    min_depth = std::min(min_depth, depth);
+
+    max_lookahead = std::max(max_lookahead, lookahead);
+    max_depth = std::max(max_depth, depth);
+  }
+
+  // We have four cases:
+  // (1) If the lookahead and depth costs are the same for every TQE then we
+  // just return any of them
+  if (min_lookahead == max_lookahead && min_depth == max_depth) {
+    return tqe_candidates_cost.begin()->first;
+  }
+
+  // (2) If the lookahead varies but the depth doesn't then we return the
+  // minimum lookahead cost
+  if (min_lookahead != max_lookahead && min_depth == max_depth) {
+    return std::min_element(
+               tqe_candidates_cost.begin(), tqe_candidates_cost.end(),
+               [](const auto& left, const auto& right) {
+                 return left.second[0] < right.second[0];
+               })
+        ->first;
+  }
+
+  // (3) If the depth varies but the lookahead doesn't then we return the
+  // minimum depth cost
+  if (min_lookahead == max_lookahead && min_depth != max_depth) {
+    return std::min_element(
+               tqe_candidates_cost.begin(), tqe_candidates_cost.end(),
+               [](const auto& left, const auto& right) {
+                 return left.second[1] < right.second[1];
+               })
+        ->first;
+  }
+
+  // (4) Else we return the tqe with the minimum normalised cost
+  return std::min_element(
+             tqe_candidates_cost.begin(), tqe_candidates_cost.end(),
+             [&](const auto& left, const auto& right) {
+               double left_cost =
+                   weights.first * (left.second[0] - min_lookahead) /
+                       (max_lookahead - min_lookahead) +
+                   weights.second * (left.second[1] - min_depth) /
+                       (max_depth - min_depth);
+
+               double right_cost =
+                   weights.first * (right.second[0] - min_lookahead) /
+                       (max_lookahead - min_lookahead) +
+                   weights.second * (right.second[1] - min_depth) /
+                       (max_depth - min_depth);
+
+               return left_cost < right_cost;
+             })
+      ->first;
+}
+
 static TQE select_pauliexp_tqe(
     const std::map<TQE, std::vector<double>>& tqe_candidates_cost,
     double depth_weight) {
@@ -621,8 +700,8 @@ static void tableau_row_nodes_synthesis(
 
 /**
  * @brief Given a vector of sets of PauliExpNode, implement any node in the
- * first set where the tqe_cost is zero. Remove implemented nodes and the first
- * set if empty.
+ * first set where the tqe_cost is zero. Remove implemented nodes and the
+ * first set if empty.
  *
  * @param rotation_sets
  * @param tab
@@ -906,11 +985,10 @@ static std::vector<std::pair<TQE, TQE>> get_yi_swaps(
        std::make_tuple(TQEType::ZY, identity, y_letter)});
   yi_swaps.push_back(
       {std::make_tuple(TQEType::YZ, identity, y_letter),
-       std::make_tuple(TQEType::ZZY, identity, y_letter)});
+       std::make_tuple(TQEType::ZY, identity, y_letter)});
 
   return yi_swaps;
 }
-
 
 std::vector<std::pair<TQE, TQE>> PauliExpNode::reduction_tqe_pairs(
     std::shared_ptr<Architecture> architecture,
@@ -926,51 +1004,48 @@ std::vector<std::pair<TQE, TQE>> PauliExpNode::reduction_tqe_pairs(
       auto jt = node_mapping.find(index_j);
       TKET_ASSERT(jt != node_mapping.end());
       Node node_j = jt->second;
-      //
-      if (support_vec_[i] > 0 && support_vec_[j] == 0) {
-        switch (support_vec_[i]) {
-          case 1:  // Z
-            std::vector<std::pair<TQE, TQE>> zi_swaps = get_zi_swaps(i, j);
-            tqe_pairs.insert(tqe_pairs.end(), zi_swaps.begin(), zi_swaps.end());
-            break;
-          case 2:  // X
-            std::vector<std::pair<TQE, TQE>> xi_swaps = get_xi_swaps(i, j);
-            tqe_pairs.insert(tqe_pairs.end(), xi_swaps.begin(), xi_swaps.end());
-            break;
-          case 3:  // Y
-            std::vector<std::pair<TQE, TQE>> yi = get_yi_swaps(i, j);
-            tqe_pairs.insert(tqe_pairs.end(), yi_swaps.begin(), yi_swaps.end());
-            break;
-          default:
-            // considering we check support_vec_[i] > 0
-            // and the values should only ever be 0,1,2,3
-            // we know this should never occurr
-            TKET_ASSERT(false);
+      if (architecture->edge_exists(node_i, node_j) ||
+          architecture->edge_exists(node_j, node_i)) {
+        if (support_vec_[i] > 0 && support_vec_[j] == 0) {
+          TKET_ASSERT(support_vec_[i] < 4);
+          std::vector<std::pair<TQE, TQE>> swaps;
+          switch (support_vec_[i]) {
+            case 1:  // Z
+              swaps = get_zi_swaps(i, j);
+              tqe_pairs.insert(tqe_pairs.end(), swaps.begin(), swaps.end());
+              break;
+            case 2:  // X
+              swaps = get_xi_swaps(i, j);
+              tqe_pairs.insert(tqe_pairs.end(), swaps.begin(), swaps.end());
+              break;
+            case 3:  // Y
+              swaps = get_yi_swaps(i, j);
+              tqe_pairs.insert(tqe_pairs.end(), swaps.begin(), swaps.end());
+              break;
+          }
         }
-      }
-      if (support_vec_[i] == 0 && support_vec_[j] > 0) {
-        switch (support_vec_[j]) {
-          case 1:  // Z
-            std::vector<std::pair<TQE, TQE>> zi_swaps = get_zi_swaps(j, i);
-            tqe_pairs.insert(tqe_pairs.end(), zi_swaps.begin(), zi_swaps.end());
-            break;
-          case 2:  // X
-            std::vector<std::pair<TQE, TQE>> xi_swaps = get_xi_swaps(j, i);
-            tqe_pairs.insert(tqe_pairs.end(), xi_swaps.begin(), xi_swaps.end());
-            break;
-          case 3:  // Y
-            std::vector<std::pair<TQE, TQE>> yi = get_yi_swaps(j, i);
-            tqe_pairs.insert(tqe_pairs.end(), yi_swaps.begin(), yi_swaps.end());
-            break;
-          default:
-            // considering we check support_vec_[j] > 0
-            // and the values should only ever be 0,1,2,3
-            // we know this should never occur
-            TKET_ASSERT(false);
+        if (support_vec_[i] == 0 && support_vec_[j] > 0) {
+          TKET_ASSERT(support_vec_[j] < 4);
+          std::vector<std::pair<TQE, TQE>> swaps;
+          switch (support_vec_[j]) {
+            case 1:  // Z
+              swaps = get_zi_swaps(j, i);
+              tqe_pairs.insert(tqe_pairs.end(), swaps.begin(), swaps.end());
+              break;
+            case 2:  // X
+              swaps = get_xi_swaps(j, i);
+              tqe_pairs.insert(tqe_pairs.end(), swaps.begin(), swaps.end());
+              break;
+            case 3:  // Y
+              swaps = get_yi_swaps(j, i);
+              tqe_pairs.insert(tqe_pairs.end(), swaps.begin(), swaps.end());
+              break;
+          }
         }
       }
     }
   }
+  return tqe_pairs;
 }
 
 std::vector<TQE> PauliExpNode::reduction_tqes_all_letters(
@@ -1012,12 +1087,12 @@ std::vector<TQE> PauliExpNode::reduction_tqes_all_letters(
 pauli_letter_distances_t PauliExpNode::all_distances(
     const std::vector<unsigned>& support,
     std::shared_ptr<Architecture> architecture,
-    const std::map<unsigned, Node>& node_mapping) const {
+    const std::map<unsigned, Node>& node_mapping, bool lonely) const {
   pauli_letter_distances_t letter_distances(
       architecture->get_diameter() + 1, 0);
-  std::vector<bool> lonely(support.size(), true);
+  std::vector<bool> lonely_qs(support.size(), true);
   for (unsigned i = 0; i < support.size(); i++) {
-    if (support[i] == 0) lonely[i] = false;
+    if (support[i] == 0) lonely_qs[i] = false;
     for (unsigned j = i + 1; j < support.size(); j++) {
       // pauli strings are detailed as unsigned ints where 0 => Identity
       auto it = node_mapping.find(i);
@@ -1027,10 +1102,10 @@ pauli_letter_distances_t PauliExpNode::all_distances(
       if (support[i] > 0 && support[j] > 0) {
         unsigned distance = architecture->get_distance(it->second, jt->second);
         if (distance == 1) {
-          TKET_ASSERT(i < lonely.size());
-          TKET_ASSERT(j < lonely.size());
-          lonely[i] = false;
-          lonely[j] = false;
+          TKET_ASSERT(i < lonely_qs.size());
+          TKET_ASSERT(j < lonely_qs.size());
+          lonely_qs[i] = false;
+          lonely_qs[j] = false;
         }
         letter_distances[distance] += 1;
       }
@@ -1040,11 +1115,12 @@ pauli_letter_distances_t PauliExpNode::all_distances(
   //   vector to
   // count the number of strings with no adjacent elements
   TKET_ASSERT(letter_distances[0] == 0);
-  // we check the accumulated distances as if they're all 0, then we don't wnat
-  // to edit
+  // we check the accumulated distances as if they're all 0, then we don't
+  // wnat to edit
   if (std::accumulate(letter_distances.begin(), letter_distances.end(), 0) !=
-      0) {
-    letter_distances[0] = std::count(lonely.begin(), lonely.end(), true);
+          0 &&
+      lonely) {
+    letter_distances[0] = std::count(lonely_qs.begin(), lonely_qs.end(), true);
   }
 
   return letter_distances;
@@ -1052,12 +1128,25 @@ pauli_letter_distances_t PauliExpNode::all_distances(
 
 pauli_letter_distances_t PauliExpNode::get_updated_distance(
     const TQE& tqe, std::shared_ptr<Architecture> architecture,
-    const std::map<unsigned, Node>& node_mapping) const {
-  std::vector<unsigned> updated_support = this->get_updated_support(tqe);
-  pauli_letter_distances_t all_distances = this->all_distances(
-      this->get_updated_support(tqe), architecture, node_mapping);
+    const std::map<unsigned, Node>& node_mapping, bool lonely) const {
+  std::vector<unsigned> updated_support =
+      get_updated_support(tqe, this->support_vec_);
+  pauli_letter_distances_t all_distances =
+      this->all_distances(updated_support, architecture, node_mapping, lonely);
 
   return all_distances;
+}
+
+pauli_letter_distances_t PauliExpNode::get_updated_distance_swap(
+    const std::pair<TQE, TQE>& tqe_pair,
+    std::shared_ptr<Architecture> architecture,
+    const std::map<unsigned, Node>& node_mapping, bool lonely) const {
+  std::vector<unsigned> updated_support_0 =
+      get_updated_support(tqe_pair.first, this->support_vec_);
+  std::vector<unsigned> updated_support_1 =
+      get_updated_support(tqe_pair.second, updated_support_0);
+  return this->all_distances(
+      updated_support_1, architecture, node_mapping, lonely);
 }
 
 double PauliExpNode::aa_tqe_cost_increase(
@@ -1077,30 +1166,6 @@ double PauliExpNode::aa_tqe_cost_increase(
     count_comparisons -= n_entries;
   }
   return cost;
-}
-
-bool PauliExpNode::decreases(
-    const TQE& tqe, std::shared_ptr<Architecture> architecture,
-    const std::map<unsigned, Node>& node_mapping) const {
-  pauli_letter_distances_t current_distances =
-      this->all_distances(this->support_vec_, architecture, node_mapping);
-  pauli_letter_distances_t updated_distances =
-      this->get_updated_distance(tqe, architecture, node_mapping);
-  return std::lexicographical_compare(
-      updated_distances.begin(), updated_distances.end(),
-      current_distances.begin(), current_distances.end());
-}
-bool PauliExpNode::removes(
-    const TQE& tqe, std::shared_ptr<Architecture> architecture,
-    const std::map<unsigned, Node>& node_mapping) const {
-  pauli_letter_distances_t current_distances =
-      this->all_distances(this->support_vec_, architecture, node_mapping);
-  pauli_letter_distances_t updated_distances =
-      this->get_updated_distance(tqe, architecture, node_mapping);
-  return int(std::accumulate(
-             current_distances.begin(), current_distances.end(), 0)) >
-         int(std::accumulate(
-             updated_distances.begin(), updated_distances.end(), 0));
 }
 
 // return the weighted sum of the cost increases on remaining nodes
@@ -1158,6 +1223,78 @@ static TQE aa_pick_tqe(
   // select the best one
   return select_pauliexp_tqe(tqe_candidates_cost, depth_weight);
 }
+
+double PauliExpNode::aa_tqe_pair_cost_increase(
+    const std::pair<TQE, TQE>& tqe_pair,
+    std::shared_ptr<Architecture> architecture,
+    const std::map<unsigned, Node>& node_mapping,
+    unsigned n_comparisons) const {
+  pauli_letter_distances_t updated_distances = this->get_updated_distance_swap(
+      tqe_pair, architecture, node_mapping, true);
+  double cost = 0;
+  // TODO: can change to just use n_comparisons as its copied anyway
+  int count_comparisons = n_comparisons;
+  for (unsigned i = 0; i < updated_distances.size() && count_comparisons > 0;
+       i++) {
+    unsigned n_entries = updated_distances[i];
+    cost += double(n_entries) / double(updated_distances.size() - i);
+    // cost += double(n_entries) / double(i + 1);
+    count_comparisons -= n_entries;
+  }
+  return cost;
+}
+
+// return the weighted sum of the cost increases on remaining nodes
+// we discount the weight after each set
+static double aa_pauliexp_tqe_pair_cost(
+    const double discount_rate,
+    const std::vector<std::vector<PauliExpNode>>& rotation_sets,
+    const std::pair<TQE, TQE>& tqe_pair,
+    std::shared_ptr<Architecture> architecture,
+    const std::map<unsigned, Node>& node_mapping,
+    bool reduce_comparisons = true) {
+  double discount = 1 / (1 + discount_rate);
+  double weight = 1;
+  double exp_cost = 0;
+  // First we work out the number of comparisons to make
+  // As it's possible to remove a letter,
+  for (const std::vector<PauliExpNode>& rotation_set : rotation_sets) {
+    for (const PauliExpNode& node : rotation_set) {
+      unsigned support = node.support();
+      TKET_ASSERT(support >= 0);
+      unsigned n_comparisons = support;
+      if (reduce_comparisons) {
+        n_comparisons = (support * (support + 1)) / 2;
+      }
+      exp_cost +=
+          weight * node.aa_tqe_pair_cost_increase(
+                       tqe_pair, architecture, node_mapping, n_comparisons);
+    }
+    weight *= discount;
+  }
+  return exp_cost;
+}
+
+static std::pair<TQE, TQE> aa_pick_tqe_pair(
+    const std::set<std::pair<TQE, TQE>>& candidate_tqes,
+    const std::vector<std::vector<PauliExpNode>>& rotation_sets,
+    double discount_rate, double depth_weight, DepthTracker& depth_tracker,
+    std::shared_ptr<Architecture> architecture,
+    const std::map<unsigned, Node>& node_mapping) {
+  std::map<std::pair<TQE, TQE>, std::vector<double>> tqe_candidates_cost;
+  for (const std::pair<TQE, TQE>& tqe_pair : candidate_tqes) {
+    tqe_candidates_cost.insert(
+        {tqe_pair,
+         {aa_pauliexp_tqe_pair_cost(
+              discount_rate, rotation_sets, tqe_pair, architecture,
+              node_mapping),
+          static_cast<double>(depth_tracker.gate_depth(
+              std::get<1>(tqe_pair.first), std::get<2>(tqe_pair.first)))}});
+  }
+  // select the best one
+  return minmax_selection_pair(tqe_candidates_cost, {1, depth_weight});
+}
+
 /**
  * @brief Synthesise a vector of unordered rotation sets to an architecture
  */
@@ -1176,11 +1313,11 @@ static void aa_pauli_exps_synthesis(
     TKET_ASSERT(!first_set.empty());
 
     // TODO: we will later change this to find minimimum cost nodes
-    // in first set. For now we always look at the first rotation, regardless if
-    // others may be "better" to look at
+    // in first set. For now we always look at the first rotation, regardless
+    // if others may be "better" to look at
 
-    // (1a) Generate a set of TQE gates between adjacent Pauli letters. Note we
-    // will use "Pauli letters" to refer to X,Y,Z, NOT I
+    // (1a) Generate a set of TQE gates between adjacent Pauli letters. Note
+    // we will use "Pauli letters" to refer to X,Y,Z, NOT I
     PauliExpNode first_node = first_set[0];
     std::vector<TQE> possible_tqes = first_node.reduction_tqes();
     std::vector<TQE> candidate_tqes;
@@ -1200,18 +1337,18 @@ static void aa_pauli_exps_synthesis(
         candidate_tqes.push_back(tqe);
       }
     }
-
     if (!candidate_tqes.empty()) {
-      // (2a) Lexicographically compare this set of TQE gates to get equivalent
-      // options
+      // (2a) Lexicographically compare this set of TQE gates to get
+      // equivalent options
       auto it = candidate_tqes.begin();
       std::set<TQE> best_tqes = {*it};
-      pauli_letter_distances_t best_distances =
-          first_node.get_updated_distance(*it, architecture, node_mapping);
+      pauli_letter_distances_t best_distances = first_node.get_updated_distance(
+          *it, architecture, node_mapping, false);
       ++it;
       for (; it != candidate_tqes.end(); ++it) {
         pauli_letter_distances_t comparison_distances =
-            first_node.get_updated_distance(*it, architecture, node_mapping);
+            first_node.get_updated_distance(
+                *it, architecture, node_mapping, false);
         // TODO: Check lexicographical compare is right way round
         if (std::lexicographical_compare(
                 best_distances.begin(), best_distances.end(),
@@ -1222,6 +1359,15 @@ static void aa_pauli_exps_synthesis(
           best_tqes.insert(*it);
         }
       }
+      // std::cout << best_tqes.size() << " TQES were deemed lexicographically
+      // equal with distances: "; for(auto x : best_distances){
+      //   std::cout << x;
+      // }
+      // std::cout << std::endl;
+      // std::cout << "On pairs of qubits: " << std::endl;
+      // for(auto t : best_tqes){
+      //   std::cout << std::get<1>(t) << " " << std::get<2>(t) << std::endl;
+      // }
       // (3a) Use minmax costing to pick "best" option based on future nodes
       TQE selected_tqe = aa_pick_tqe(
           best_tqes, rotation_sets, rows, discount_rate, depth_weight,
@@ -1241,66 +1387,67 @@ static void aa_pauli_exps_synthesis(
         row.update(selected_tqe);
       }
     } else {
-      // (1b) If set of TQE gates is empty (due to their being no adjacent Pauli
-      // letters), then generate a set of pairs of TQE gates that will swap a
-      // {Pauli, I} pair
+      // (1b) If set of TQE gates is empty (due to their being no adjacent
+      // Pauli letters), then generate a set of pairs of TQE gates that will
+      // swap a {Pauli, I} pair
+      // TODO: n.b, this is going to massively replicate work as when we
+      // lexicographically compare we don't care about the TQE gates
+      // themselves, just which edges the swaps are along If this works, we
+      // can re-plumb this to only check "swaps" at the lexi compare and then
+      // realise them as TQE gate slater
       std::vector<std::pair<TQE, TQE>> possible_tqe_pairs =
           first_node.reduction_tqe_pairs(architecture, node_mapping);
 
-      // (2b) Lexicographically copmare this set of TQE gates to get equivalent
-      // options
-
-      // (3b) Use minmax costing to pick "best" option based on future nodes
-    }
-
-    // get nodes with minimimum cos
-    // get nodes with min cost
-    // std::vector<unsigned> min_nodes_indices = {0};
-    // unsigned min_cost = first_set[0].tqe_cost();
-    // for (unsigned i = 1; i < first_set.size(); i++) {
-    //   unsigned node_cost = first_set[i].tqe_cost();
-    //   if (node_cost == min_cost) {
-    //     min_nodes_indices.push_back(i);
-    //   } else if (node_cost < min_cost) {
-    //     min_nodes_indices = {i};
-    //     min_cost = node_cost;
-    //   }
-    // }
-
-    std::set<TQE> tqe_candidates;
-    for (const auto& pen : first_set) {
-      std::vector<TQE> node_reducing_tqes =
-          pen.reduction_tqes_all_letters(architecture, node_mapping);
-      tqe_candidates.insert(
-          node_reducing_tqes.begin(), node_reducing_tqes.end());
-    }
-
-    // for each tqe we compute costs which might subject to normalisation
-    std::map<TQE, std::vector<double>> tqe_candidates_cost;
-    for (const TQE& tqe : tqe_candidates) {
-      tqe_candidates_cost.insert(
-          {tqe,
-           {aa_pauliexp_tqe_cost(
-                discount_rate, rotation_sets, rows, tqe, architecture,
-                node_mapping),
-            static_cast<double>(depth_tracker.gate_depth(
-                std::get<1>(tqe), std::get<2>(tqe)))}});
-    }
-    // select the best one
-    TQE selected_tqe = select_pauliexp_tqe(tqe_candidates_cost, depth_weight);
-
-    // apply TQE
-    apply_tqe_to_circ(selected_tqe, circ);
-    apply_tqe_to_tableau(selected_tqe, tab);
-    depth_tracker.add_2q_gate(
-        std::get<1>(selected_tqe), std::get<2>(selected_tqe));
-    for (std::vector<PauliExpNode>& rotation_set : rotation_sets) {
-      for (PauliExpNode& node : rotation_set) {
-        node.update(selected_tqe);
+      // (2b) Lexicographically compare this set of TQE gates to get
+      // equivalent options
+      auto it = possible_tqe_pairs.begin();
+      std::set<std::pair<TQE, TQE>> best_tqes = {*it};
+      pauli_letter_distances_t best_distances =
+          first_node.get_updated_distance_swap(
+              *it, architecture, node_mapping, false);
+      ++it;
+      while (it != possible_tqe_pairs.end()) {
+        pauli_letter_distances_t comparison_distances =
+            first_node.get_updated_distance_swap(
+                *it, architecture, node_mapping, false);
+        // TODO: Check lexicographical compare is right way round
+        if (std::lexicographical_compare(
+                best_distances.begin(), best_distances.end(),
+                comparison_distances.begin(), comparison_distances.end())) {
+          best_tqes = {*it};
+          best_distances = comparison_distances;
+        } else if (best_distances == comparison_distances) {
+          best_tqes.insert(*it);
+        }
+        ++it;
       }
-    }
-    for (TableauRowNode& row : rows) {
-      row.update(selected_tqe);
+      // (3b) Use minmax costing to pick "best" option based on future nodes
+
+      std::pair<TQE, TQE> selected_tqe_pair = aa_pick_tqe_pair(
+          best_tqes, rotation_sets, discount_rate, depth_weight, depth_tracker,
+          architecture, node_mapping);
+
+      // (4a) Apply TQE to circuit
+      apply_tqe_to_circ(selected_tqe_pair.first, circ);
+      apply_tqe_to_circ(selected_tqe_pair.second, circ);
+      apply_tqe_to_tableau(selected_tqe_pair.first, tab);
+      apply_tqe_to_tableau(selected_tqe_pair.second, tab);
+      depth_tracker.add_2q_gate(
+          std::get<1>(selected_tqe_pair.first),
+          std::get<2>(selected_tqe_pair.first));
+      depth_tracker.add_2q_gate(
+          std::get<1>(selected_tqe_pair.first),
+          std::get<2>(selected_tqe_pair.first));
+      for (std::vector<PauliExpNode>& rotation_set : rotation_sets) {
+        for (PauliExpNode& node : rotation_set) {
+          node.update(selected_tqe_pair.first);
+          node.update(selected_tqe_pair.second);
+        }
+      }
+      for (TableauRowNode& row : rows) {
+        row.update(selected_tqe_pair.first);
+        row.update(selected_tqe_pair.second);
+      }
     }
   }
 }
@@ -1395,8 +1542,8 @@ Circuit greedy_pauli_graph_synthesis(
   }
   std::vector<std::vector<PauliExpNode>> rotation_sets;
   std::vector<TableauRowNode> rows;
-  // use forward Tableau to update the paulis by commuting the tableau to the
-  // front
+  // use forward Tableau to update the paulis by commuting the tableau to
+  // the front
   UnitaryTableau forward_tab = circuit_to_unitary_tableau(cliff);
   // Tableau used for tracking Cliffords throughout the synthesis
   // TODO: this can be potentially made redundant
@@ -1471,8 +1618,8 @@ Circuit greedy_pauli_graph_synthesis(
     }
   }
   // add identity TableauRowNodes
-  // the tableau width is either set to the number of qubits or the number of
-  // nodes depending on whether the architecture is present
+  // the tableau width is either set to the number of qubits or the number
+  // of nodes depending on whether the architecture is present
   unsigned tableau_width = n_qubits;
   if (architecture) {
     tableau_width = (*architecture)->n_nodes();
@@ -1507,11 +1654,12 @@ Circuit greedy_pauli_graph_synthesis(
   DepthTracker depth_tracker(n_qubits);
 
   // here we also concern ourselves with architecture
-  // essentially, if architecture contains an architecture we use it, else we
-  // don't ...
+  // essentially, if architecture contains an architecture we use it, else
+  // we don't ...
   if (architecture) {
     // synthesise Pauli exps
-    // TODO: Replace naive node mapping with something from graph placement ...
+    // TODO: Replace naive node mapping with something from graph placement
+    // ...
     std::map<unsigned, Node> node_mapping;
     std::shared_ptr<Architecture> arc = *architecture;
     TKET_ASSERT(arc->n_nodes() >= circ.n_qubits());
