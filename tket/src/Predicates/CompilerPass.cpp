@@ -413,8 +413,6 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = SynthesiseTK();
     } else if (passname == "SynthesiseTket") {
       pp = SynthesiseTket();
-    } else if (passname == "SynthesiseOQC") {
-      pp = SynthesiseOQC();
     } else if (passname == "SynthesiseUMD") {
       pp = SynthesiseUMD();
     } else if (passname == "SquashTK1") {

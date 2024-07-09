@@ -250,23 +250,6 @@ SCENARIO("Building rebases with rebase_factory") {
     StateVector s1 = tket_sim::get_statevector(c);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
   }
-  GIVEN("A circuit to be rebased to OQC gateset") {
-    Circuit c(2);
-    c.add_op<unsigned>(OpType::CX, {0, 1});
-    c.add_op<unsigned>(OpType::T, {0});
-    c.add_op<unsigned>(OpType::Rx, 0.34, {0});
-    c.add_op<unsigned>(OpType::T, {0});
-    c.add_op<unsigned>(OpType::Ry, 0.34, {0});
-    c.add_op<unsigned>(OpType::H, {0});
-    const auto s0 = tket_sim::get_statevector(c);
-    REQUIRE(Transforms::rebase_OQC().apply(c));
-    REQUIRE(
-        c.count_gates(OpType::ECR) + c.count_gates(OpType::Rz) +
-            c.count_gates(OpType::SX) ==
-        c.n_gates());
-    StateVector s1 = tket_sim::get_statevector(c);
-    REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
-  }
   GIVEN("A UCCSD example") {
     auto circ = CircuitsForTesting::get().uccsd;
     const StateVector s0 = tket_sim::get_statevector(circ);

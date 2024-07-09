@@ -12,6 +12,9 @@ Unreleased
 * Fix bug in `CliffordResynthesis()` pass.
 * Update `FlattenRelabelRegistersPass` and `remove_blank_wires` to only
   remove unused classical bits at the end of a register
+* Remove deprecated `SynthesiseOQC` pass.
+* Deprecate `SynthesiseUMD` pass.
+* Remove deprecated `ConstPredicate`.
 
 1.29.2 (June 2024)
 ------------------

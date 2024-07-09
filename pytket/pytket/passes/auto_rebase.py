@@ -19,7 +19,10 @@ from pytket.passes import AutoRebase, AutoSquash, BasePass
 
 
 class NoAutoRebase(Exception):
-    """Automatic rebase could not be found."""
+    """Automatic rebase could not be found.
+
+    "DEPRECATED: will be removed after pytket 1.33."
+    """
 
     def __init__(self, *args: object, **kwargs: dict) -> None:
         warnings.warn(

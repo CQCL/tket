@@ -61,10 +61,6 @@ Transform rebase_projectq();
 // Singleqs: Rz, H
 Transform rebase_UFR();
 
-// Multiqs: ECR
-// Singleqs: Rz, SX
-Transform rebase_OQC();
-
 // Multiqs: ZZMax
 // Singleqs: Rz, PhasedX
 Transform rebase_HQS();

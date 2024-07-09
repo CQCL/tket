@@ -1389,120 +1389,6 @@ SCENARIO("Decomposition of multi-qubit gates") {
   }
 }
 
-SCENARIO("Testing Synthesis OQC") {
-  GIVEN("single qubit circuit 1") {
-    Circuit circ(1);
-    circ.add_op<unsigned>(OpType::H, {0});
-    circ.add_op<unsigned>(OpType::Z, {0});
-    circ.add_op<unsigned>(OpType::X, {0});
-    Circuit circ2(circ);
-    Transforms::synthesise_OQC().apply(circ);
-    REQUIRE(test_unitary_comparison(circ, circ2));
-  }
-  GIVEN("Single qubit circuit 2") {
-    Circuit circ(1);
-    circ.add_op<unsigned>(OpType::H, {0});
-    Circuit circ2(circ);
-    Transforms::synthesise_OQC().apply(circ);
-    REQUIRE(test_unitary_comparison(circ, circ2));
-  }
-  GIVEN("Circuit containing a single CX") {
-    Circuit circ(2);
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    Circuit circ2(circ);
-    REQUIRE(Transforms::rebase_OQC().apply(circ));
-    REQUIRE(Transforms::synthesise_OQC().apply(circ2));
-    REQUIRE(circ.n_gates() == 5);
-    REQUIRE(circ2.n_gates() == 5);
-    REQUIRE(test_unitary_comparison(circ, circ2));
-  }
-
-  GIVEN("Circuit containing a single ECR") {
-    Circuit circ(2);
-    circ.add_op<unsigned>(OpType::Z, {0});
-    circ.add_op<unsigned>(OpType::X, {1});
-    circ.add_op<unsigned>(OpType::ECR, {0, 1});
-    circ.add_op<unsigned>(OpType::Z, {0});
-    circ.add_op<unsigned>(OpType::X, {1});
-    REQUIRE(Transforms::synthesise_OQC().apply(circ));
-    // X gates commute with ECR
-    REQUIRE(circ.n_gates() == 3);
-  }
-  GIVEN("Circuit containing 2 2-qubit gates") {
-    Circuit circ(2);
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    std::vector<Expr> vec{0.5};
-    const Op_ptr op_z = get_op_ptr(OpType::Rz, vec);
-    const Op_ptr op_x = get_op_ptr(OpType::Rx, vec);
-    circ.add_op<unsigned>(op_z, {0});
-    circ.add_op<unsigned>(op_x, {1});
-    circ.add_op<unsigned>(OpType::ECR, {0, 1});
-    Transforms::synthesise_OQC().apply(circ);
-    REQUIRE(circ.n_gates() == 8);
-    REQUIRE(circ.count_gates(OpType::ECR) == 2);
-  }
-
-  GIVEN("Circuit containing 2 2-qubit gates") {
-    Circuit circ(2);
-    std::vector<Expr> vec{1.5};
-    const Op_ptr op_z = get_op_ptr(OpType::Rz, vec);
-    const Op_ptr op_x = get_op_ptr(OpType::Rx, vec);
-    std::vector<Expr> vec2{-1.5};
-    const Op_ptr op_z2 = get_op_ptr(OpType::Rz, vec2);
-    const Op_ptr op_x2 = get_op_ptr(OpType::Rx, vec2);
-    circ.add_op<unsigned>(op_z, {0});
-    circ.add_op<unsigned>(op_x, {1});
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    circ.add_op<unsigned>(op_z2, {0});
-    circ.add_op<unsigned>(op_x2, {1});
-    REQUIRE(Transforms::synthesise_OQC().apply(circ));
-    REQUIRE(circ.n_gates() == 5);
-  }
-
-  GIVEN("An empty circuit") {
-    Circuit circ(7);
-    REQUIRE(!Transforms::synthesise_OQC().apply(circ));
-  }
-  GIVEN("A circuit with params=0") {
-    Circuit circ(3);
-    std::vector<Expr> param = {0.};
-    circ.add_op<unsigned>(OpType::Rx, param, {0});
-    circ.add_op<unsigned>(OpType::Ry, param, {0});
-    circ.add_op<unsigned>(OpType::Rx, param, {0});
-    circ.add_op<unsigned>(OpType::Ry, param, {0});
-    circ.add_op<unsigned>(OpType::Rx, param, {1});
-    circ.add_op<unsigned>(OpType::Ry, param, {1});
-    circ.add_op<unsigned>(OpType::Rx, param, {1});
-    circ.add_op<unsigned>(OpType::Ry, param, {1});
-    circ.add_op<unsigned>(OpType::Rx, param, {2});
-    Transforms::synthesise_OQC().apply(circ);
-    REQUIRE(circ.n_gates() == 0);
-  }
-  GIVEN("A nasty parameterised circuit") {
-    Circuit circ(2);
-    std::vector<Expr> params1 = {0.5, 1., 0.854851};
-    std::vector<Expr> params2 = {0.5, 0., 1.854851};
-    circ.add_op<unsigned>(OpType::U3, params1, {0});
-    circ.add_op<unsigned>(OpType::U3, params2, {1});
-    circ.add_op<unsigned>(OpType::S, {0});
-    circ.add_op<unsigned>(OpType::CX, {1, 0});
-    std::vector<Expr> params3 = {0.142538};
-    std::vector<Expr> params4 = {-0.142538};
-    circ.add_op<unsigned>(OpType::Rz, params3, {0});
-    circ.add_op<unsigned>(OpType::Ry, params4, {1});
-    circ.add_op<unsigned>(OpType::CX, {1, 0});
-    std::vector<Expr> params5 = {0.5};
-    circ.add_op<unsigned>(OpType::Ry, params5, {1});
-    circ.add_op<unsigned>(OpType::CX, {1, 0});
-    circ.add_op<unsigned>(OpType::Sdg, {1});
-    std::vector<Expr> params6 = {0.5, 0.145149, 0.};
-    std::vector<Expr> params7 = {0.5, 1.145149, 1.};
-    Circuit circ2(circ);
-    Transforms::synthesise_OQC().apply(circ);
-    REQUIRE(test_unitary_comparison(circ, circ2));
-  }
-}
-
 SCENARIO("Test synthesise_UMD") {
   GIVEN("3 expressions which =0") {
     Expr a = 0.;
@@ -2208,7 +2094,6 @@ SCENARIO("Synthesis with conditional gates") {
   c.add_conditional_gate<unsigned>(OpType::CnRx, {0.25}, {0, 1, 2}, {0, 1}, 0);
   c.add_conditional_gate<unsigned>(OpType::CnRz, {0.25}, {0, 1, 2}, {0, 1}, 0);
   c.add_measure(2, 2);
-  check_conditions(SynthesiseOQC(), c);
   check_conditions(SynthesiseTK(), c);
   check_conditions(SynthesiseTket(), c);
   check_conditions(SynthesiseUMD(), c);

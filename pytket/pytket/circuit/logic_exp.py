@@ -806,7 +806,3 @@ def create_predicate_exp(op: Ops, args: Sequence[ArgType]) -> PredicateExp:
         assert isinstance(args[1], (RegLogicExp, BitRegister, int))
         return RegGeq(args[0], args[1])
     raise ValueError("op type not supported")
-
-
-#  ConstPredicate is deprecated in favour of PredicateExp
-ConstPredicate = PredicateExp
