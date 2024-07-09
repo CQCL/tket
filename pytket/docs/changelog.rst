@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.30.0 (July 2024)
+------------------
 
 * Support classical transforms and predicates, and QASM registers, with up to 64
   bits. Add an attribute to the pytket module to assert this.
