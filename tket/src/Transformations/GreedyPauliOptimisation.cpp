@@ -758,6 +758,221 @@ static void pauli_exps_synthesis(
   }
 }
 
+static std::vector<std::pair<TQE, TQE>> get_zi_swaps(
+    unsigned identity, unsigned z_letter) {
+  std::vector<std::pair<TQE, TQE>> zi_swaps;
+  // (0,1) -> (1,1): ZX, ZY
+  // (1,1) -> (1,0): XZ, YZ
+  zi_swaps.push_back(
+      {std::make_tuple(TQEType::ZX, identity, z_letter),
+       std::make_tuple(TQEType::YZ, identity, z_letter)});
+  zi_swaps.push_back(
+      {std::make_tuple(TQEType::ZX, identity, z_letter),
+       std::make_tuple(TQEType::XZ, identity, z_letter)});
+  zi_swaps.push_back(
+      {std::make_tuple(TQEType::ZY, identity, z_letter),
+       std::make_tuple(TQEType::YZ, identity, z_letter)});
+  zi_swaps.push_back(
+      {std::make_tuple(TQEType::ZY, identity, z_letter),
+       std::make_tuple(TQEType::XZ, identity, z_letter)});
+
+  // (0,1) -> (2,1): XX, XY
+  // (2,1) -> (2,0): YZ, ZZ
+  zi_swaps.push_back(
+      {std::make_tuple(TQEType::XX, identity, z_letter),
+       std::make_tuple(TQEType::YZ, identity, z_letter)});
+  zi_swaps.push_back(
+      {std::make_tuple(TQEType::XX, identity, z_letter),
+       std::make_tuple(TQEType::ZZ, identity, z_letter)});
+  zi_swaps.push_back(
+      {std::make_tuple(TQEType::XY, identity, z_letter),
+       std::make_tuple(TQEType::YZ, identity, z_letter)});
+  zi_swaps.push_back(
+      {std::make_tuple(TQEType::XY, identity, z_letter),
+       std::make_tuple(TQEType::ZZ, identity, z_letter)});
+
+  // (0,1) -> (3,1): YY, YX
+  // (3,1) -> (3,0): XZ, ZZ
+  zi_swaps.push_back(
+      {std::make_tuple(TQEType::YY, identity, z_letter),
+       std::make_tuple(TQEType::XZ, identity, z_letter)});
+  zi_swaps.push_back(
+      {std::make_tuple(TQEType::YY, identity, z_letter),
+       std::make_tuple(TQEType::ZZ, identity, z_letter)});
+  zi_swaps.push_back(
+      {std::make_tuple(TQEType::YX, identity, z_letter),
+       std::make_tuple(TQEType::XZ, identity, z_letter)});
+  zi_swaps.push_back(
+      {std::make_tuple(TQEType::YX, identity, z_letter),
+       std::make_tuple(TQEType::ZZ, identity, z_letter)});
+
+  return zi_swaps;
+}
+
+static std::vector<std::pair<TQE, TQE>> get_xi_swaps(
+    unsigned identity, unsigned x_letter) {
+  std::vector<std::pair<TQE, TQE>> xi_swaps;
+  // (0,2) -> (1,2): ZZ, ZY
+  // (1,2) -> (1,0): XX, YX
+  xi_swaps.push_back(
+      {std::make_tuple(TQEType::ZZ, identity, x_letter),
+       std::make_tuple(TQEType::XX, identity, x_letter)});
+  xi_swaps.push_back(
+      {std::make_tuple(TQEType::ZY, identity, x_letter),
+       std::make_tuple(TQEType::XX, identity, x_letter)});
+  xi_swaps.push_back(
+      {std::make_tuple(TQEType::ZZ, identity, x_letter),
+       std::make_tuple(TQEType::YZ, identity, x_letter)});
+  xi_swaps.push_back(
+      {std::make_tuple(TQEType::ZY, identity, x_letter),
+       std::make_tuple(TQEType::YX, identity, x_letter)});
+
+  // (0,2) -> (2,2): XZ, XY
+  // (2,2) -> (2,0): YX, ZX
+  xi_swaps.push_back(
+      {std::make_tuple(TQEType::XZ, identity, x_letter),
+       std::make_tuple(TQEType::YX, identity, x_letter)});
+  xi_swaps.push_back(
+      {std::make_tuple(TQEType::XY, identity, x_letter),
+       std::make_tuple(TQEType::YX, identity, x_letter)});
+  xi_swaps.push_back(
+      {std::make_tuple(TQEType::XZ, identity, x_letter),
+       std::make_tuple(TQEType::ZX, identity, x_letter)});
+  xi_swaps.push_back(
+      {std::make_tuple(TQEType::XY, identity, x_letter),
+       std::make_tuple(TQEType::ZX, identity, x_letter)});
+
+  // (0,2) -> (3,2): YY, YZ
+  // (3,2) -> (3,0): XX, ZX
+  xi_swaps.push_back(
+      {std::make_tuple(TQEType::YY, identity, x_letter),
+       std::make_tuple(TQEType::XX, identity, x_letter)});
+  xi_swaps.push_back(
+      {std::make_tuple(TQEType::YY, identity, x_letter),
+       std::make_tuple(TQEType::ZX, identity, x_letter)});
+  xi_swaps.push_back(
+      {std::make_tuple(TQEType::YZ, identity, x_letter),
+       std::make_tuple(TQEType::XX, identity, x_letter)});
+  xi_swaps.push_back(
+      {std::make_tuple(TQEType::YZ, identity, x_letter),
+       std::make_tuple(TQEType::ZX, identity, x_letter)});
+
+  return xi_swaps;
+}
+
+static std::vector<std::pair<TQE, TQE>> get_yi_swaps(
+    unsigned identity, unsigned y_letter) {
+  std::vector<std::pair<TQE, TQE>> yi_swaps;
+  // (0,3) -> (1,3): ZZ, ZX
+  // (1,3) -> (1,0): XY, YY
+  yi_swaps.push_back(
+      {std::make_tuple(TQEType::ZZ, identity, y_letter),
+       std::make_tuple(TQEType::XY, identity, y_letter)});
+  yi_swaps.push_back(
+      {std::make_tuple(TQEType::ZX, identity, y_letter),
+       std::make_tuple(TQEType::XY, identity, y_letter)});
+  yi_swaps.push_back(
+      {std::make_tuple(TQEType::ZZ, identity, y_letter),
+       std::make_tuple(TQEType::YY, identity, y_letter)});
+  yi_swaps.push_back(
+      {std::make_tuple(TQEType::ZX, identity, y_letter),
+       std::make_tuple(TQEType::YY, identity, y_letter)});
+
+  // (0,3) -> (2,3): XZ, XX
+  // (2,3) -> (2,0): YY, ZY
+  yi_swaps.push_back(
+      {std::make_tuple(TQEType::XZ, identity, y_letter),
+       std::make_tuple(TQEType::YY, identity, y_letter)});
+  yi_swaps.push_back(
+      {std::make_tuple(TQEType::XX, identity, y_letter),
+       std::make_tuple(TQEType::YY, identity, y_letter)});
+  yi_swaps.push_back(
+      {std::make_tuple(TQEType::XZ, identity, y_letter),
+       std::make_tuple(TQEType::ZY, identity, y_letter)});
+  yi_swaps.push_back(
+      {std::make_tuple(TQEType::XX, identity, y_letter),
+       std::make_tuple(TQEType::ZY, identity, y_letter)});
+
+  // (0,3) -> (3,3): YX, YZ
+  // (3,3) -> (3,0): XY, ZY
+  yi_swaps.push_back(
+      {std::make_tuple(TQEType::YX, identity, y_letter),
+       std::make_tuple(TQEType::XY, identity, y_letter)});
+  yi_swaps.push_back(
+      {std::make_tuple(TQEType::YZ, identity, y_letter),
+       std::make_tuple(TQEType::XY, identity, y_letter)});
+  yi_swaps.push_back(
+      {std::make_tuple(TQEType::YX, identity, y_letter),
+       std::make_tuple(TQEType::ZY, identity, y_letter)});
+  yi_swaps.push_back(
+      {std::make_tuple(TQEType::YZ, identity, y_letter),
+       std::make_tuple(TQEType::ZZY, identity, y_letter)});
+
+  return yi_swaps;
+}
+
+
+std::vector<std::pair<TQE, TQE>> PauliExpNode::reduction_tqe_pairs(
+    std::shared_ptr<Architecture> architecture,
+    const std::map<unsigned, Node>& node_mapping) const {
+  std::vector<std::pair<TQE, TQE>> tqe_pairs;
+  for (unsigned i = 0; i < this->support_vec_.size(); i++) {
+    unsigned index_i = i;
+    auto it = node_mapping.find(index_i);
+    TKET_ASSERT(it != node_mapping.end());
+    Node node_i = it->second;
+    for (unsigned j = i + 1; j < this->support_vec_.size(); j++) {
+      unsigned index_j = j;
+      auto jt = node_mapping.find(index_j);
+      TKET_ASSERT(jt != node_mapping.end());
+      Node node_j = jt->second;
+      //
+      if (support_vec_[i] > 0 && support_vec_[j] == 0) {
+        switch (support_vec_[i]) {
+          case 1:  // Z
+            std::vector<std::pair<TQE, TQE>> zi_swaps = get_zi_swaps(i, j);
+            tqe_pairs.insert(tqe_pairs.end(), zi_swaps.begin(), zi_swaps.end());
+            break;
+          case 2:  // X
+            std::vector<std::pair<TQE, TQE>> xi_swaps = get_xi_swaps(i, j);
+            tqe_pairs.insert(tqe_pairs.end(), xi_swaps.begin(), xi_swaps.end());
+            break;
+          case 3:  // Y
+            std::vector<std::pair<TQE, TQE>> yi = get_yi_swaps(i, j);
+            tqe_pairs.insert(tqe_pairs.end(), yi_swaps.begin(), yi_swaps.end());
+            break;
+          default:
+            // considering we check support_vec_[i] > 0
+            // and the values should only ever be 0,1,2,3
+            // we know this should never occurr
+            TKET_ASSERT(false);
+        }
+      }
+      if (support_vec_[i] == 0 && support_vec_[j] > 0) {
+        switch (support_vec_[j]) {
+          case 1:  // Z
+            std::vector<std::pair<TQE, TQE>> zi_swaps = get_zi_swaps(j, i);
+            tqe_pairs.insert(tqe_pairs.end(), zi_swaps.begin(), zi_swaps.end());
+            break;
+          case 2:  // X
+            std::vector<std::pair<TQE, TQE>> xi_swaps = get_xi_swaps(j, i);
+            tqe_pairs.insert(tqe_pairs.end(), xi_swaps.begin(), xi_swaps.end());
+            break;
+          case 3:  // Y
+            std::vector<std::pair<TQE, TQE>> yi = get_yi_swaps(j, i);
+            tqe_pairs.insert(tqe_pairs.end(), yi_swaps.begin(), yi_swaps.end());
+            break;
+          default:
+            // considering we check support_vec_[j] > 0
+            // and the values should only ever be 0,1,2,3
+            // we know this should never occur
+            TKET_ASSERT(false);
+        }
+      }
+    }
+  }
+}
+
 std::vector<TQE> PauliExpNode::reduction_tqes_all_letters(
     std::shared_ptr<Architecture> architecture,
     const std::map<unsigned, Node>& node_mapping) const {
@@ -767,7 +982,7 @@ std::vector<TQE> PauliExpNode::reduction_tqes_all_letters(
   std::vector<TQE> tqes;
   for (unsigned i = 0; i < this->support_vec_.size(); i++) {
     for (unsigned j = i + 1; j < this->support_vec_.size(); j++) {
-      if (support_vec_[i] > 0 || support_vec_[j] > 0) {
+      if (support_vec_[i] > 0 && support_vec_[j] > 0) {
         unsigned index_i = i;
         unsigned index_j = j;
         auto it = node_mapping.find(index_i);
@@ -900,11 +1115,7 @@ static double aa_pauliexp_tqe_cost(
   double discount = 1 / (1 + discount_rate);
   double weight = 1;
   double exp_cost = 0;
-  exp_cost = rows.size();  // TODO: this is just to stop compile errors while I
-                           // remove TableauRowNode costing
-  // definitely remove later !
-  exp_cost = 0;
-  // double tab_cost = 0;
+  double tab_cost = 0;
   // First we work out the number of comparisons to make
   // As it's possible to remove a letter,
   for (const std::vector<PauliExpNode>& rotation_set : rotation_sets) {
@@ -920,13 +1131,33 @@ static double aa_pauliexp_tqe_cost(
     }
     weight *= discount;
   }
-  // for (const TableauRowNode& node : rows) {
-  //   tab_cost += weight * node.tqe_cost_increase(tqe);
-  // }
-  // return exp_cost + tab_cost;
-  return exp_cost;
+  for (const TableauRowNode& node : rows) {
+    tab_cost += weight * node.tqe_cost_increase(tqe);
+  }
+  return exp_cost + tab_cost;
 }
 
+static TQE aa_pick_tqe(
+    const std::set<TQE>& candidate_tqes,
+    const std::vector<std::vector<PauliExpNode>>& rotation_sets,
+    const std::vector<TableauRowNode>& rows, double discount_rate,
+    double depth_weight, DepthTracker& depth_tracker,
+    std::shared_ptr<Architecture> architecture,
+    const std::map<unsigned, Node>& node_mapping) {
+  std::map<TQE, std::vector<double>> tqe_candidates_cost;
+  for (const TQE& tqe : candidate_tqes) {
+    tqe_candidates_cost.insert(
+        {tqe,
+         {aa_pauliexp_tqe_cost(
+              discount_rate, rotation_sets, rows, tqe, architecture,
+              node_mapping),
+          static_cast<double>(
+              depth_tracker.gate_depth(std::get<1>(tqe), std::get<2>(tqe)))}});
+  }
+
+  // select the best one
+  return select_pauliexp_tqe(tqe_candidates_cost, depth_weight);
+}
 /**
  * @brief Synthesise a vector of unordered rotation sets to an architecture
  */
@@ -940,26 +1171,106 @@ static void aa_pauli_exps_synthesis(
     while (consume_available_rotations(
         rotation_sets, tab, circ, depth_tracker));  // do nothing
     if (rotation_sets.empty()) break;
+
     std::vector<PauliExpNode>& first_set = rotation_sets[0];
     TKET_ASSERT(!first_set.empty());
-    // get nodes with min cost
-    std::vector<unsigned> min_nodes_indices = {0};
-    unsigned min_cost = first_set[0].tqe_cost();
-    for (unsigned i = 1; i < first_set.size(); i++) {
-      unsigned node_cost = first_set[i].tqe_cost();
-      if (node_cost == min_cost) {
-        min_nodes_indices.push_back(i);
-      } else if (node_cost < min_cost) {
-        min_nodes_indices = {i};
-        min_cost = node_cost;
+
+    // TODO: we will later change this to find minimimum cost nodes
+    // in first set. For now we always look at the first rotation, regardless if
+    // others may be "better" to look at
+
+    // (1a) Generate a set of TQE gates between adjacent Pauli letters. Note we
+    // will use "Pauli letters" to refer to X,Y,Z, NOT I
+    PauliExpNode first_node = first_set[0];
+    std::vector<TQE> possible_tqes = first_node.reduction_tqes();
+    std::vector<TQE> candidate_tqes;
+    for (const TQE& tqe : possible_tqes) {
+      // TODO: we should check architecture in a `reduction_tqes` rewrite, not
+      // here (but will work for now!)
+      unsigned q1 = std::get<1>(tqe);
+      unsigned q2 = std::get<2>(tqe);
+      auto it = node_mapping.find(q1);
+      auto jt = node_mapping.find(q2);
+      TKET_ASSERT(it != node_mapping.end());
+      TKET_ASSERT(jt != node_mapping.end());
+      Node node_1 = it->second;
+      Node node_2 = jt->second;
+      if (architecture->edge_exists(node_1, node_2) ||
+          architecture->edge_exists(node_2, node_1)) {
+        candidate_tqes.push_back(tqe);
       }
     }
 
+    if (!candidate_tqes.empty()) {
+      // (2a) Lexicographically compare this set of TQE gates to get equivalent
+      // options
+      auto it = candidate_tqes.begin();
+      std::set<TQE> best_tqes = {*it};
+      pauli_letter_distances_t best_distances =
+          first_node.get_updated_distance(*it, architecture, node_mapping);
+      ++it;
+      for (; it != candidate_tqes.end(); ++it) {
+        pauli_letter_distances_t comparison_distances =
+            first_node.get_updated_distance(*it, architecture, node_mapping);
+        // TODO: Check lexicographical compare is right way round
+        if (std::lexicographical_compare(
+                best_distances.begin(), best_distances.end(),
+                comparison_distances.begin(), comparison_distances.end())) {
+          best_tqes = {*it};
+          best_distances = comparison_distances;
+        } else if (best_distances == comparison_distances) {
+          best_tqes.insert(*it);
+        }
+      }
+      // (3a) Use minmax costing to pick "best" option based on future nodes
+      TQE selected_tqe = aa_pick_tqe(
+          best_tqes, rotation_sets, rows, discount_rate, depth_weight,
+          depth_tracker, architecture, node_mapping);
+
+      // (4a) Apply TQE to circuit
+      apply_tqe_to_circ(selected_tqe, circ);
+      apply_tqe_to_tableau(selected_tqe, tab);
+      depth_tracker.add_2q_gate(
+          std::get<1>(selected_tqe), std::get<2>(selected_tqe));
+      for (std::vector<PauliExpNode>& rotation_set : rotation_sets) {
+        for (PauliExpNode& node : rotation_set) {
+          node.update(selected_tqe);
+        }
+      }
+      for (TableauRowNode& row : rows) {
+        row.update(selected_tqe);
+      }
+    } else {
+      // (1b) If set of TQE gates is empty (due to their being no adjacent Pauli
+      // letters), then generate a set of pairs of TQE gates that will swap a
+      // {Pauli, I} pair
+      std::vector<std::pair<TQE, TQE>> possible_tqe_pairs =
+          first_node.reduction_tqe_pairs(architecture, node_mapping);
+
+      // (2b) Lexicographically copmare this set of TQE gates to get equivalent
+      // options
+
+      // (3b) Use minmax costing to pick "best" option based on future nodes
+    }
+
+    // get nodes with minimimum cos
+    // get nodes with min cost
+    // std::vector<unsigned> min_nodes_indices = {0};
+    // unsigned min_cost = first_set[0].tqe_cost();
+    // for (unsigned i = 1; i < first_set.size(); i++) {
+    //   unsigned node_cost = first_set[i].tqe_cost();
+    //   if (node_cost == min_cost) {
+    //     min_nodes_indices.push_back(i);
+    //   } else if (node_cost < min_cost) {
+    //     min_nodes_indices = {i};
+    //     min_cost = node_cost;
+    //   }
+    // }
+
     std::set<TQE> tqe_candidates;
-    for (const unsigned& index : min_nodes_indices) {
+    for (const auto& pen : first_set) {
       std::vector<TQE> node_reducing_tqes =
-          first_set[index].reduction_tqes_all_letters(
-              architecture, node_mapping);
+          pen.reduction_tqes_all_letters(architecture, node_mapping);
       tqe_candidates.insert(
           node_reducing_tqes.begin(), node_reducing_tqes.end());
     }
@@ -967,46 +1278,14 @@ static void aa_pauli_exps_synthesis(
     // for each tqe we compute costs which might subject to normalisation
     std::map<TQE, std::vector<double>> tqe_candidates_cost;
     for (const TQE& tqe : tqe_candidates) {
-      // For each TQE, we first compare if the cost is smaller for the "first"
-      // node in the rotation set If this is true, then we allow it to cost all
-      // rotation sets, considering the Tableau This helps the algorithm
-      // terminate
-      if (first_set[min_nodes_indices[0]].decreases(
-              tqe, architecture, node_mapping)) {
-        tqe_candidates_cost.insert(
-            {tqe,
-             {aa_pauliexp_tqe_cost(
-                  discount_rate, rotation_sets, rows, tqe, architecture,
-                  node_mapping),
-              static_cast<double>(depth_tracker.gate_depth(
-                  std::get<1>(tqe), std::get<2>(tqe)))}});
-      }
+      tqe_candidates_cost.insert(
+          {tqe,
+           {aa_pauliexp_tqe_cost(
+                discount_rate, rotation_sets, rows, tqe, architecture,
+                node_mapping),
+            static_cast<double>(depth_tracker.gate_depth(
+                std::get<1>(tqe), std::get<2>(tqe)))}});
     }
-    // If this happens, it probably means we need to make a qubit "lonely"
-    // and we're trying to avoid this
-    // We relax the "decreases" constraint, now preserving only moves that
-    // remove a qubit
-    if (tqe_candidates_cost.empty()) {
-      for (const TQE& tqe : tqe_candidates) {
-        // For each TQE, we first compare if the cost is smaller for the
-        // "first"
-        // node in the rotation set If this is true, then we allow it to cost
-        // all
-        // rotation sets, considering the Tableau This helps the algorithm
-        // terminate
-        if (first_set[min_nodes_indices[0]].removes(
-                tqe, architecture, node_mapping)) {
-          tqe_candidates_cost.insert(
-              {tqe,
-               {aa_pauliexp_tqe_cost(
-                    discount_rate, {{first_set[min_nodes_indices[0]]}}, rows,
-                    tqe, architecture, node_mapping, false),
-                static_cast<double>(depth_tracker.gate_depth(
-                    std::get<1>(tqe), std::get<2>(tqe)))}});
-        }
-      }
-    }
-
     // select the best one
     TQE selected_tqe = select_pauliexp_tqe(tqe_candidates_cost, depth_weight);
 
