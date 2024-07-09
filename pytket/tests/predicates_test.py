@@ -725,7 +725,7 @@ def test_simplify_initial_symbolic() -> None:
     # Symbolic circuits should be left alone, no error
     c = Circuit(1)
     c.qubit_create(Qubit(0))
-    c.Rx(Symbol("a"), 0)  # type: ignore
+    c.Rx(Symbol("a"), 0)
     c.measure_all()
     c1 = c.copy()
     SimplifyInitial(allow_classical=False).apply(c)

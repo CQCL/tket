@@ -29,7 +29,7 @@ import strategies as st  # type: ignore
 
 
 def test_QubitPauliOperator_addition() -> None:
-    x = Symbol("x")  # type: ignore
+    x = Symbol("x")
     qpo = QubitPauliOperator()
     qpo += QubitPauliOperator(
         {
@@ -49,9 +49,9 @@ def test_QubitPauliOperator_addition() -> None:
 
 
 def test_QubitPauliOperator_scalarmult() -> None:
-    y = Symbol("y")  # type: ignore
+    y = Symbol("y")
     qpo = QubitPauliOperator({QubitPauliString(Qubit("q"), Pauli.X): y})
-    x = Symbol("x")  # type: ignore
+    x = Symbol("x")
     qpo2 = x * qpo
     qpo3 = qpo * x
     assert qpo2 == qpo3
@@ -61,9 +61,9 @@ def test_QubitPauliOperator_scalarmult() -> None:
 
 
 def test_QubitPauliOperator_opmult() -> None:
-    y = Symbol("y")  # type: ignore
+    y = Symbol("y")
     qpo = QubitPauliOperator({QubitPauliString(Qubit(0), Pauli.Z): y})
-    x = Symbol("x")  # type: ignore
+    x = Symbol("x")
     qpo2 = QubitPauliOperator({QubitPauliString(Qubit(0), Pauli.X): x})
     qpo3 = qpo * qpo2  # order matters!
     assert qpo3._dict[QubitPauliString(Qubit(0), Pauli.Y)] == 1j * x * y
@@ -73,7 +73,7 @@ def test_QubitPauliOperator_opmult() -> None:
 
 def test_QubitPauliOperator_substitution() -> None:
     qps = QubitPauliString(Qubit(0), Pauli.X)
-    e = Symbol("e")  # type: ignore
+    e = Symbol("e")
     exp = e + 5
     qpo = QubitPauliOperator({qps: exp})
     qpo.subs({e: 1})
@@ -91,7 +91,7 @@ def test_QubitPauliOperator_io() -> None:
     qps1 = pickle.loads(string_data)
     assert qps0 == qps1
     qps2 = QubitPauliString(Qubit(2), Pauli.Z)
-    a = Symbol("a")  # type: ignore
+    a = Symbol("a")
     op = QubitPauliOperator({qps1: a, qps2: 3.1})
     op_data = pickle.dumps(op)
     op2 = pickle.loads(op_data)
@@ -146,7 +146,7 @@ def test_QubitPauliOperator_compression() -> None:
     qpsXY = QubitPauliString(qbs, [Pauli.X, Pauli.Y])
     qpsZI = QubitPauliString(qbs, [Pauli.Z, Pauli.I])
     qpsYY = QubitPauliString(qbs, [Pauli.Y, Pauli.Y])
-    x = Symbol("x")  # type: ignore
+    x = Symbol("x")
     op = QubitPauliOperator({qpsXY: 2, qpsZI: 1e-11j * x, qpsYY: 1e-11 * x + 1j})
     op.compress()
     with pytest.raises(KeyError) as errorinfo:
@@ -155,8 +155,8 @@ def test_QubitPauliOperator_compression() -> None:
     assert op[qpsXY] == 2
     assert re(op[qpsYY]) == 0
     assert im(op[qpsYY])
-    assert op[qpsYY].subs({x: 0.001}).equals(1.0j)  # type: ignore
-    assert op[qpsYY].subs({x: 10}).equals(1.0j)  # type: ignore
+    assert op[qpsYY].subs({x: 0.001}).equals(1.0j)
+    assert op[qpsYY].subs({x: 10}).equals(1.0j)
 
 
 if __name__ == "__main__":
@@ -185,7 +185,7 @@ def test_QubitPauliOperator_serialization() -> None:
     qps = [Qubit(i) for i in range(2)]
     qpsXY = QubitPauliString(qps, [Pauli.X, Pauli.Y])
     qpsZI = QubitPauliString(qps, [Pauli.Z, Pauli.I])
-    op = QubitPauliOperator({qpsXY: 2, qpsZI: 1j})
+    op = QubitPauliOperator({qpsXY: 2.0, qpsZI: 1j})
 
     serializable = op.to_list()
     assert QubitPauliOperator.from_list(serializable) == op
@@ -197,7 +197,7 @@ def test_QubitPauliOperator_serialization_symbolic() -> None:
     qps = [Qubit(i) for i in range(2)]
     qpsXY = QubitPauliString(qps, [Pauli.X, Pauli.Y])
     qpsZI = QubitPauliString(qps, [Pauli.Z, Pauli.I])
-    x = Symbol("x")  # type: ignore
+    x = Symbol("x")
     op = QubitPauliOperator({qpsXY: 2 * x, qpsZI: 1j})
 
     serializable = op.to_list()

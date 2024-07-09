@@ -222,7 +222,7 @@ def tensor_from_quantum_diagram(diag: ZXDiagram) -> np.ndarray:
                 "supports diagrams consisting of only quantum components"
             )
     diag_copy = ZXDiagram(diag)
-    diag_copy.multiply_scalar(1 / sympy.sqrt(diag.scalar))  # type: ignore
+    diag_copy.multiply_scalar(1 / sympy.sqrt(diag.scalar))
     Rewrite.basic_wires().apply(diag_copy)
     return _tensor_from_basic_diagram(diag_copy)
 

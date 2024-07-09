@@ -648,8 +648,8 @@ def test_symbolic_conversion(circ: Circuit) -> None:
 
     substitutions = [(sym, val) for sym, val in zip(free_symbs, bind_vals)]
     circ.symbol_substitution(dict(substitutions))
-    sym_unitary = sym_unitary.subs(substitutions)  # type: ignore
-    sym_state = sym_state.subs(substitutions)  # type: ignore
+    sym_unitary = sym_unitary.subs(substitutions)
+    sym_state = sym_state.subs(substitutions)
 
     numeric_unitary = np.array(sym_unitary).astype(np.complex128)
     numeric_state = np.array(sym_state).astype(np.complex128)
