@@ -185,7 +185,7 @@ def test_QubitPauliOperator_serialization() -> None:
     qps = [Qubit(i) for i in range(2)]
     qpsXY = QubitPauliString(qps, [Pauli.X, Pauli.Y])
     qpsZI = QubitPauliString(qps, [Pauli.Z, Pauli.I])
-    op = QubitPauliOperator({qpsXY: 2, qpsZI: 1j})
+    op = QubitPauliOperator({qpsXY: 2.0, qpsZI: 1j})
 
     serializable = op.to_list()
     assert QubitPauliOperator.from_list(serializable) == op
