@@ -10,6 +10,8 @@ Unreleased
 * Update version requirements on dependencies, removing all upper bounds (in
   particular allowing compatibility with numpy 2.0).
 * Fix bug in `CliffordResynthesis()` pass.
+* Update `FlattenRelabelRegistersPass` and `remove_blank_wires` to only
+  remove unused classical bits at the end of a register
 * Remove deprecated `SynthesiseOQC` pass.
 * Deprecate `SynthesiseUMD` pass.
 * Remove deprecated `ConstPredicate`.
