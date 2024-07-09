@@ -486,7 +486,7 @@ def test_classical_and_cptp() -> None:
 def test_tensor_errors() -> None:
     # A symbolic generator
     diag = ZXDiagram(0, 1, 0, 0)
-    v = diag.add_vertex(ZXType.XSpider, sympify("2*a"))  # type: ignore
+    v = diag.add_vertex(ZXType.XSpider, sympify("2*a"))
     diag.add_wire(v, diag.get_boundary()[0])
     with pytest.raises(ValueError) as exc_info:
         tensor_from_quantum_diagram(diag)
@@ -494,7 +494,7 @@ def test_tensor_errors() -> None:
 
     # A symbolic scalar
     diag.set_vertex_ZXGen(v, PhasedGen(ZXType.XSpider, 0.5))
-    diag.multiply_scalar(sympify("2*a"))  # type: ignore
+    diag.multiply_scalar(sympify("2*a"))
     with pytest.raises(ValueError) as exc_info:
         tensor_from_quantum_diagram(diag)
     assert "symbolic scalar" in exc_info.value.args[0]

@@ -106,7 +106,7 @@ def test_op_free_symbols() -> None:
     c.add_barrier([0, 1])
     op = c.get_commands()[0].op
     assert op.free_symbols() == set()
-    alpha = Symbol("alpha")  # type: ignore
+    alpha = Symbol("alpha")
     c.Rx(alpha, 0)
     op = c.get_commands()[1].op
     assert op.free_symbols() == {alpha}
@@ -293,11 +293,11 @@ def test_circuit_gen_ids() -> None:
 
 def test_symbolic_ops() -> None:
     c = Circuit(2)
-    alpha = Symbol("alpha")  # type: ignore
+    alpha = Symbol("alpha")
     c.Rx(alpha, 0)
     beta = fresh_symbol("alpha")
     c.CRz(beta * 2, 1, 0)
-    gamma = Symbol("gamma")  # type: ignore
+    gamma = Symbol("gamma")
     # https://github.com/CQCL/tket/issues/1068
     c.Rz(exp(gamma), 1)
     s_map = {alpha: 0.5, beta: 3.2, gamma: 1}
@@ -307,7 +307,7 @@ def test_symbolic_ops() -> None:
     assert not c.is_symbolic()
 
     commands = c.get_commands()
-    assert beta.__str__() == "alpha_1"  # type: ignore
+    assert beta.__str__() == "alpha_1"
     assert np.allclose(np.asarray(commands[0].op.params), [0.5], atol=1e-10)
     assert np.allclose(np.asarray(commands[1].op.params), [2.4], atol=1e-10)
     assert np.allclose(np.asarray(commands[2].op.params), [math.e], atol=1e-10)
@@ -316,7 +316,7 @@ def test_symbolic_ops() -> None:
 def test_symbolic_circbox() -> None:
     c = Circuit(2)
     c_outer = Circuit(2)
-    alpha = Symbol("alpha")  # type: ignore
+    alpha = Symbol("alpha")
     c.Rx(alpha, 0)
     beta = fresh_symbol("alpha")
     c.CRz(beta * 2, 1, 0)
@@ -359,7 +359,7 @@ def test_sympy_conversion() -> None:
         tree_str = str(type(expr)).rsplit(".", 1)[-1].split("'")[0]
         if len(expr.args) != 0:
             tree_str += " ("
-            tree_str += ", ".join([get_type_tree(a) for a in expr.args])  # type: ignore
+            tree_str += ", ".join([get_type_tree(a) for a in expr.args])
             tree_str += ")"
         return tree_str
 
@@ -375,7 +375,7 @@ def test_sympy_conversion() -> None:
     }
     for expr_string, type_tree in test_dict.items():
         c = Circuit(1)
-        c.Rz(sympify(expr_string), 0)  # type: ignore
+        c.Rz(sympify(expr_string), 0)
         com = c.get_commands()[0]
         param0 = com.op.params[0]
         assert isinstance(param0, Expr)
@@ -505,24 +505,24 @@ def test_boxes() -> None:
     d.add_expbox(ebox, 3, 2)
 
     paulis = [Pauli.X, Pauli.Z, Pauli.X]
-    pbox = PauliExpBox(paulis, Symbol("alpha"))  # type: ignore
+    pbox = PauliExpBox(paulis, Symbol("alpha"))
     assert pbox.type == OpType.PauliExpBox
     d.add_pauliexpbox(pbox, [3, 2, 1])
 
     ppairbox = PauliExpPairBox(
         [Pauli.I, Pauli.X, Pauli.Y, Pauli.Z],
-        Symbol("alpha"),  # type: ignore
+        Symbol("alpha"),
         [Pauli.Y, Pauli.I, Pauli.I, Pauli.X],
-        Symbol("beta"),  # type: ignore
+        Symbol("beta"),
     )
     assert ppairbox.type == OpType.PauliExpPairBox
     d.add_pauliexppairbox(ppairbox, [3, 2, 1, 0])
 
     psetbox = PauliExpCommutingSetBox(
         [
-            ([Pauli.X, Pauli.X, Pauli.X, Pauli.Y], Symbol("alpha")),  # type: ignore
-            ([Pauli.X, Pauli.X, Pauli.Y, Pauli.X], Symbol("beta")),  # type: ignore
-            ([Pauli.X, Pauli.Y, Pauli.X, Pauli.X], Symbol("gamma")),  # type: ignore
+            ([Pauli.X, Pauli.X, Pauli.X, Pauli.Y], Symbol("alpha")),
+            ([Pauli.X, Pauli.X, Pauli.Y, Pauli.X], Symbol("beta")),
+            ([Pauli.X, Pauli.Y, Pauli.X, Pauli.X], Symbol("gamma")),
         ]
     )
     assert psetbox.type == OpType.PauliExpCommutingSetBox
@@ -530,9 +530,9 @@ def test_boxes() -> None:
 
     tseqbox = TermSequenceBox(
         [
-            ([Pauli.X, Pauli.X, Pauli.X, Pauli.Y], Symbol("alpha")),  # type: ignore
-            ([Pauli.X, Pauli.X, Pauli.Y, Pauli.X], Symbol("beta")),  # type: ignore
-            ([Pauli.X, Pauli.Y, Pauli.X, Pauli.X], Symbol("gamma")),  # type: ignore
+            ([Pauli.X, Pauli.X, Pauli.X, Pauli.Y], Symbol("alpha")),
+            ([Pauli.X, Pauli.X, Pauli.Y, Pauli.X], Symbol("beta")),
+            ([Pauli.X, Pauli.Y, Pauli.X, Pauli.X], Symbol("gamma")),
         ]
     )
     assert tseqbox.type == OpType.TermSequenceBox
@@ -550,7 +550,7 @@ def test_boxes() -> None:
     pauli_exp = pauli_exps[0]
     assert isinstance(pauli_exp, PauliExpBox)
     assert pauli_exp.get_paulis() == paulis
-    assert pauli_exp.get_phase() == Symbol("alpha")  # type: ignore
+    assert pauli_exp.get_phase() == Symbol("alpha")
 
     boxes = (cbox, mbox, u2qbox, u3qbox, ebox, pbox, qcbox)
     assert all(box == box for box in boxes)
@@ -770,8 +770,8 @@ def test_u1q_stability() -> None:
 
 
 def test_custom_gates() -> None:
-    a = Symbol("a")  # type: ignore
-    b = Symbol("b")  # type: ignore
+    a = Symbol("a")
+    b = Symbol("b")
     setup = Circuit(3)
     setup.CX(0, 1)
     setup.Rz(a + 0.5, 2)
@@ -798,7 +798,7 @@ def test_custom_gates() -> None:
 def test_errors() -> None:
     # TKET-289
     c = Circuit(1)
-    a = Symbol("a")  # type: ignore
+    a = Symbol("a")
     c.Rz(a, 0)
     c.Rz(0.5, 0)
     c.Rz(0, 0)

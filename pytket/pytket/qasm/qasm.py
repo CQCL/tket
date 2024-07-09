@@ -875,9 +875,7 @@ class CircuitTransformer(Transformer):
             comparison_circ = _get_gate_circuit(
                 PARAM_EXTRA_COMMANDS[gate],
                 qubit_args,
-                [
-                    Symbol("param" + str(index) + "/pi") for index in range(len(symbols))  # type: ignore
-                ],
+                [Symbol("param" + str(index) + "/pi") for index in range(len(symbols))],
             )
             # checks that each command has same string
             existing_op = all(
@@ -1203,7 +1201,7 @@ def _get_gate_circuit(
     for q in qubits:
         gate_circ.add_qubit(q)
     if symbols:
-        exprs = [symbol.as_expr() for symbol in symbols]  # type: ignore
+        exprs = [symbol.as_expr() for symbol in symbols]
         gate_circ.add_gate(optype, exprs, unitids)
     else:
         gate_circ.add_gate(optype, unitids)
@@ -1370,8 +1368,10 @@ class QasmWriter:
         if n_params is not None:
             # need to add parameters to gate definition
             s += "("
-            symbols = [Symbol("param" + str(index) + "/pi") for index in range(n_params)]  # type: ignore
-            symbols_header = [Symbol("param" + str(index)) for index in range(n_params)]  # type: ignore
+            symbols = [
+                Symbol("param" + str(index) + "/pi") for index in range(n_params)
+            ]
+            symbols_header = [Symbol("param" + str(index)) for index in range(n_params)]
             for symbol in symbols_header[:-1]:
                 s += symbol.name + ", "
             s += symbols_header[-1].name + ") "
@@ -1580,7 +1580,7 @@ class QasmWriter:
         # that 0 <= param < 4
         if param > 1:
             # first get in to 0 <= param < 2 range
-            param = Decimal(str(param)) % Decimal("2")  # type: ignore
+            param = Decimal(str(param)) % Decimal("2")
             # then flip 1 <= param < 2  range into
             # -1 <= param < 0
             if param > 1:

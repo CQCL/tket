@@ -717,7 +717,7 @@ def test_cu3_removal() -> None:
 
 def test_symbol_squash() -> None:
     # Test simplification of symbolic angles when squashing.
-    a = Symbol("a")  # type: ignore
+    a = Symbol("a")
     circ = Circuit(1)
     circ.Ry(0.5, 0).Rz(a, 0).Ry(0.5, 0)
     circ1 = circ.copy()
@@ -741,7 +741,7 @@ def test_symbol_squash() -> None:
 
 
 def symbolic_test_circ(n: int) -> Circuit:
-    a = Symbol("a")  # type: ignore
+    a = Symbol("a")
     circ = Circuit(n)
     for i in range(n - 1, 0, -1):
         circ.CX(i, i - 1)
@@ -762,7 +762,7 @@ def test_symbol_pauli_squash_1() -> None:
     circ1 = circ.copy()
     assert PauliSquash().apply(circ1)
     for x in np.arange(0.0, 4.0, 0.4):
-        smap = {Symbol("a"): x}  # type: ignore
+        smap = {Symbol("a"): x}
         c = circ.copy()
         c.symbol_substitution(smap)
         u = c.get_unitary()
@@ -780,7 +780,7 @@ def test_symbol_pauli_squash_2() -> None:
     circ1 = circ.copy()
     assert PauliSquash().apply(circ1)
     for x in np.arange(0.0, 4.0, 0.4):
-        smap = {Symbol("a"): x}  # type: ignore
+        smap = {Symbol("a"): x}
         c = circ.copy()
         c.symbol_substitution(smap)
         u = c.get_unitary()
