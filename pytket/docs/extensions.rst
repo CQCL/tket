@@ -132,7 +132,7 @@ Other
    pytket-qir <https://tket.quantinuum.com/extensions/pytket-qir>
    pytket-qiskit <https://tket.quantinuum.com/extensions/pytket-qiskit>
    pytket-quantinuum <https://tket.quantinuum.com/extensions/pytket-quantinuum>
-   pytket-cutensornet <https://tket.quantinuum.com/extensions/pytket-cutensornet> 
+   pytket-cutensornet <https://cqcl.github.io/pytket-cutensornet/api/index.html> 
    pytket-qulacs <https://tket.quantinuum.com/extensions/pytket-qulacs>
    pytket-qujax <https://tket.quantinuum.com/extensions/pytket-qujax>
    pytket-stim <https://tket.quantinuum.com/extensions/pytket-stim>
