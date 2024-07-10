@@ -1550,7 +1550,7 @@ def test_cnrx_cnrz() -> None:
     assert np.allclose(c1rz.get_unitary(), crz.get_unitary())
     assert np.allclose(c1rx.get_unitary(), crx.get_unitary())
 
-
+    
 def greedy_TermSequenceBox() -> None:
     tseqbox = TermSequenceBox(
         [

@@ -24,6 +24,7 @@ from pytket.circuit import (
     Unitary2qBox,
     Node,
     Qubit,
+    Bit,
     UnitID,
     Conditional,
     Bit,
@@ -375,7 +376,7 @@ def test_rename_qubits_pass() -> None:
 def gate_count_metric(circ: Circuit) -> int:
     return int(circ.n_gates)
 
-
+  
 def test_SynthesiseTket_creation() -> None:
     # my_synthesise_tket should act on a CompilationUnit the same as SynthesiseTket
     seq_pass = SequencePass([CommuteThroughMultis(), RemoveRedundancies()])
@@ -844,7 +845,10 @@ def test_conditional_phase() -> None:
 
 
 def test_flatten_relabel_pass() -> None:
-    c = Circuit(3)
+    c = Circuit(3, 3)
+    c.add_bit(Bit("d", 0))
+    c.add_bit(Bit("d", 1))
+    c.add_c_register("e", 5)
     c.H(1).H(2)
     rename_map: RenameUnitsMap = dict()
     rename_map[Qubit(0)] = Qubit("a", 4)
@@ -860,6 +864,10 @@ def test_flatten_relabel_pass() -> None:
     assert cu.initial_map[Qubit("a", 4)] == Qubit("a", 4)
     assert cu.initial_map[Qubit("b", 7)] == Qubit("a", 1)
     assert cu.circuit.qubits == [Qubit("a", 0), Qubit("a", 1)]
+    assert cu.circuit.n_bits == 10
+    assert cu.circuit.get_c_register("c").size == 3
+    assert cu.circuit.get_c_register("d").size == 2
+    assert cu.circuit.get_c_register("e").size == 5
 
     # test default argument
     c = Circuit()
@@ -1032,6 +1040,19 @@ def greedy_pauli_synth() -> None:
     assert pss.apply(d)
     assert np.allclose(circ.get_unitary(), d.get_unitary())
     assert d.name == "test"
+
+
+def test_auto_rebase_deprecation(recwarn: Any) -> None:
+    p = auto_rebase_pass({OpType.TK1, OpType.CX})
+    assert len(recwarn) == 1
+    w = recwarn.pop(DeprecationWarning)
+    assert issubclass(w.category, DeprecationWarning)
+    assert "deprecated" in str(w.message)
+    p = auto_squash_pass({OpType.TK1})
+    assert len(recwarn) == 1
+    w = recwarn.pop(DeprecationWarning)
+    assert issubclass(w.category, DeprecationWarning)
+    assert "deprecated" in str(w.message)
 
 
 def test_auto_rebase_deprecation(recwarn: Any) -> None:

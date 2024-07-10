@@ -434,7 +434,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "architecture. This operation will only remove empty classical wires "
           "if there are no used bits with a higher index in the same register. "
           "\n\n:param "
-          "keep_blank_classical_wires: select if "
+          "architecture.\n\n:param keep_blank_classical_wires: select if "
           "empty classical wires should not be removed",
           py::arg("keep_blank_classical_wires") = false)
       .def(
