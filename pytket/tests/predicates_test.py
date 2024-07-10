@@ -376,7 +376,7 @@ def test_rename_qubits_pass() -> None:
 def gate_count_metric(circ: Circuit) -> int:
     return int(circ.n_gates)
 
-  
+
 def test_SynthesiseTket_creation() -> None:
     # my_synthesise_tket should act on a CompilationUnit the same as SynthesiseTket
     seq_pass = SequencePass([CommuteThroughMultis(), RemoveRedundancies()])
