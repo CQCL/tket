@@ -903,6 +903,18 @@ PYBIND11_MODULE(passes, m) {
       py::arg("strat") = Transforms::PauliSynthStrat::Sets,
       py::arg("cx_config") = CXConfigType::Snake);
   m.def(
+      "PauliExponentials3", &gen_pauli_exponentials3,
+      "Construct a pass that resynthesises the circuit via the PauliGraph "
+      "formalism, abstracting away all Clifford gates to leave higher-level "
+      "operators like Pauli exponentials in place of rotations or Pauli "
+      "measurements."
+      "\n\n:param strat: A synthesis strategy for the Pauli graph."
+      "\n:param cx_config: A CX configuration strategy to prefer during "
+      "synthesis."
+      "\n:return: a pass to perform the simplification",
+      py::arg("strat") = Transforms::PauliSynthStrat3::Sets,
+      py::arg("cx_config") = CXConfigType::Snake);
+  m.def(
       "PauliSimp", &gen_synthesise_pauli_graph,
       "Construct a pass that converts a circuit into a graph of Pauli "
       "gadgets to account for commutation and phase folding, and "

@@ -14,11 +14,12 @@
 
 #pragma once
 
-#include "DiagUtils.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
 
 namespace tket {
+
+typedef std::list<std::pair<OpType, qubit_vector_t>> Conjugations;
 
 /**
  * Check whether there are any qubits which only requires a single

@@ -132,14 +132,13 @@ PGVert PauliGraph::add_vertex_at_end(PGOp_ptr op) {
     final_tableau_ = v;
   }
   // Find ancestors in the anticommutation matrix
-  std::vector<SpPauliStabiliser> active = op->active_paulis();
-  for (unsigned i = 0; i < active.size(); ++i) {
+  for (unsigned i = 0; i < op->n_paulis(); ++i) {
     for (const PGPauli& prev_pauli : pauli_index_.get<TagID>()) {
       if (prev_pauli.vert == v) continue;
       PGOp_ptr other_op = c_graph_[prev_pauli.vert];
       SpPauliStabiliser other_pauli = other_op->port(prev_pauli.port);
       pauli_ac_(mat_offset + i, prev_pauli.index) =
-          !active.at(i).commutes_with(other_pauli);
+          !op->port(i).commutes_with(other_pauli);
     }
   }
   // Find classical predecessors
@@ -274,9 +273,8 @@ void PauliGraph::verify() const {
       }
       // Check Pauli history contains all anti-commuting terms and all active
       // qubits are registered
-      std::vector<SpPauliStabiliser> paulis = op->active_paulis();
       for (auto it = range.first; it != range.second; ++it) {
-        const SpPauliStabiliser& tensor = paulis.at(it->port);
+        const SpPauliStabiliser& tensor = op->port(it->port);
         for (const std::pair<const Qubit, Pauli>& qp : tensor.string) {
           if (qubits_.find(qp.first) == qubits_.end())
             throw PGError(
@@ -357,8 +355,64 @@ void PauliGraph::verify() const {
     throw PGError("Cannot obtain a topological ordering of PauliGraph");
 }
 
+/** A graph data structure compatible with boost::topological_sort into which we
+ * will combine the classical and quantum dependencies. The kind of dependency
+ * does not need to be tracked as this will only exist ephemerally to build a
+ * topological sort of the PGOps
+ */
+typedef boost::adjacency_list<
+    boost::listS, boost::listS, boost::bidirectionalS,
+    boost::property<boost::vertex_index_t, int, PGVert>>
+    CombiDAG;
+typedef boost::graph_traits<CombiDAG>::vertex_descriptor CombiVert;
+typedef boost::graph_traits<CombiDAG>::edge_descriptor CombiEdge;
+typedef boost::adj_list_vertex_property_map<
+    CombiDAG, int, int&, boost::vertex_index_t>
+    CombiVIndex;
+
+std::list<PGOp_ptr> PauliGraph::pgop_sequence_boost() const {
+  // Build a graph combining the classical and quantum dependencies to get a
+  // graph containing every dependency
+  CombiDAG combi_graph;
+  std::map<PGVert, CombiVert> vmap;
+  BGL_FORALL_VERTICES(v, c_graph_, PGClassicalGraph) {
+    CombiVert cv = boost::add_vertex(combi_graph);
+    combi_graph[cv] = v;
+    vmap.insert({v, cv});
+  }
+  BGL_FORALL_EDGES(e, c_graph_, PGClassicalGraph) {
+    PGVert s = boost::source(e, c_graph_);
+    PGVert t = boost::target(e, c_graph_);
+    boost::add_edge(vmap[s], vmap[t], combi_graph);
+  }
+  for (const PGPauli& r_pauli : pauli_index_.get<TagID>()) {
+    for (const PGPauli& c_pauli : pauli_index_.get<TagID>()) {
+      if (pauli_ac_(r_pauli.index, c_pauli.index))
+        boost::add_edge(vmap[c_pauli.vert], vmap[r_pauli.vert], combi_graph);
+    }
+  }
+
+  // Call boost::topological_sort to obtain an ordering
+  CombiVIndex index = boost::get(boost::vertex_index, combi_graph);
+  int i = 0;
+  BGL_FORALL_VERTICES(v, combi_graph, CombiDAG) { boost::put(index, v, i++); }
+  std::list<CombiVert> vertices;
+  boost::topological_sort(combi_graph, std::front_inserter(vertices));
+  std::list<PGOp_ptr> pgops;
+  for (const CombiVert& v : vertices) pgops.push_back(c_graph_[combi_graph[v]]);
+  return pgops;
+}
+
 std::list<PGOp_ptr> PauliGraph::pgop_sequence() const {
   std::list<PGOp_ptr> sequence;
+  std::list<std::list<PGOp_ptr>> set_list = pgop_commuting_sets();
+  for (const std::list<PGOp_ptr>& set : set_list)
+    sequence.insert(sequence.end(), set.begin(), set.end());
+  return sequence;
+}
+
+std::list<std::list<PGOp_ptr>> PauliGraph::pgop_commuting_sets() const {
+  std::list<std::list<PGOp_ptr>> set_list;
   sequence_set_t<PGVert> remaining;
   BGL_FORALL_VERTICES(v, c_graph_, PGClassicalGraph) { remaining.insert(v); }
   while (!remaining.empty()) {
@@ -385,13 +439,15 @@ std::list<PGOp_ptr> PauliGraph::pgop_sequence() const {
       }
       if (initial) initials.push_back(v);
     }
+    std::list<PGOp_ptr> initial_ops;
+    for (const PGVert& v : initials) initial_ops.push_back(c_graph_[v]);
+    set_list.push_back(initial_ops);
     auto& lookup = remaining.get<TagKey>();
     for (const PGVert& v : initials) {
-      sequence.push_back(c_graph_[v]);
       lookup.erase(lookup.find(v));
     }
   }
-  return sequence;
+  return set_list;
 }
 
 void PauliGraph::symbol_substitution(

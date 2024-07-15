@@ -70,6 +70,11 @@ class ChoiMixTableau {
   tableau_col_index_t col_index_;
 
   /**
+   * Default constructor for a tableau with no registered qubits. Add qubits and
+   * rows via add_qubit() and add_row().
+   */
+  explicit ChoiMixTableau();
+  /**
    * Construct the tableau for the identity unitary over n qubits (given default
    * qubit names).
    */
@@ -207,6 +212,17 @@ class ChoiMixTableau {
       const Qubit& qb, TableauSegment seg = TableauSegment::Output);
 
   void add_qubit(const Qubit& qb, TableauSegment seg = TableauSegment::Output);
+
+  /**
+   * Add a new row to the tableau.
+   * Returns the index to the new row (since it is added to the bottom of the
+   * tableau, this will always match the number of rows before the addition)
+   *
+   * If \p extend_for_new_qubits is true, any qubit in \p row that isn't
+   * registered in the tableau will be added first. If false, then an exception
+   * is thrown if any new qubit is encountered.
+   */
+  unsigned add_row(row_tensor_t row, bool extend_for_new_qubits = true);
 
   /**
    * Removes a row from the tableau.

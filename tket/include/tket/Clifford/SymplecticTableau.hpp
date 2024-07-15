@@ -65,8 +65,8 @@ class SymplecticTableau {
    * gate application and validity checks.
    *
    * It is expected that all Pauli strings in a tableau should be linearly
-   * independent, so a validity check is provided. A utility for checking the
-   * mutual commutativity of terms is also provided.
+   * independent, so a rank method is provided for testing. A utility for
+   * checking the mutual commutativity of terms is also provided.
    *
    * This serves as a base class for:
    * - UnitaryTableau where there is both a Z row and an X row for each input
@@ -110,6 +110,19 @@ class SymplecticTableau {
    * Read off a row as a Pauli string
    */
   PauliStabiliser get_pauli(unsigned i) const;
+
+  /**
+   * Add a new row to the tableau.
+   * Returns the index to the new row (since it is added to the bottom of the
+   * tableau, this will always match the number of rows before the addition)
+   */
+  unsigned add_row(const PauliStabiliser &row);
+
+  /**
+   * Removes a row from the tableau.
+   * The final row is shifted into its place.
+   */
+  void remove_row(unsigned row);
 
   /**
    * Format in output stream as a binary tableau

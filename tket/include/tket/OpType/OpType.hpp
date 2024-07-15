@@ -683,6 +683,11 @@ enum class OpType {
   TermSequenceBox,
 
   /**
+   * See \ref PGOpCommutingSetBox
+   */
+  PGOpCommutingSetBox,
+
+  /**
    * NYI
    */
   CliffBox,

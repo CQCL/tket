@@ -49,8 +49,6 @@ typedef boost::adj_list_vertex_property_map<
     PauliDAG, int, int &, boost::vertex_index_t>
     PauliVIndex;
 
-typedef std::list<std::pair<OpType, qubit_vector_t>> Conjugations;
-
 class Circuit;
 
 class MidCircuitMeasurementNotAllowed : public std::logic_error {

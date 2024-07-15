@@ -72,24 +72,12 @@ SymplecticTableau::SymplecticTableau(
 }
 
 SymplecticTableau::SymplecticTableau(const PauliStabiliserVec &rows) {
-  unsigned n_rows = rows.size();
   unsigned n_qubits = 0;
-  if (n_rows != 0) n_qubits = rows[0].string.size();
-  xmat = MatrixXb::Zero(n_rows, n_qubits);
-  zmat = MatrixXb::Zero(n_rows, n_qubits);
-  phase = VectorXb::Zero(n_rows);
-  for (unsigned i = 0; i < n_rows; ++i) {
-    const PauliStabiliser &stab = rows[i];
-    if (stab.string.size() != n_qubits)
-      throw std::invalid_argument(
-          "Tableau must have the same number of qubits in each row.");
-    for (unsigned q = 0; q < n_qubits; ++q) {
-      const Pauli &p = stab.get(q);
-      xmat(i, q) = (p == Pauli::X) || (p == Pauli::Y);
-      zmat(i, q) = (p == Pauli::Z) || (p == Pauli::Y);
-    }
-    phase(i) = stab.is_real_negative();
-  }
+  if (!rows.empty()) n_qubits = rows[0].string.size();
+  xmat = MatrixXb::Zero(0, n_qubits);
+  zmat = MatrixXb::Zero(0, n_qubits);
+  phase = VectorXb::Zero(0);
+  for (const PauliStabiliser &row : rows) add_row(row);
 }
 
 unsigned SymplecticTableau::get_n_rows() const { return xmat.rows(); }
@@ -102,6 +90,41 @@ PauliStabiliser SymplecticTableau::get_pauli(unsigned i) const {
     str[q] = BoolPauli{xmat(i, q), zmat(i, q)}.to_pauli();
   }
   return PauliStabiliser(str, phase(i) ? 2 : 0);
+}
+
+unsigned SymplecticTableau::add_row(const PauliStabiliser &row) {
+  unsigned n_rows = get_n_rows();
+  unsigned n_cols = get_n_qubits();
+  if (row.string.size() != n_cols)
+    throw std::invalid_argument(
+        "Tableau must have the same number of qubits in each row.");
+  xmat.conservativeResize(n_rows + 1, n_cols);
+  zmat.conservativeResize(n_rows + 1, n_cols);
+  phase.conservativeResize(n_rows + 1);
+  for (unsigned q = 0; q < n_cols; ++q) {
+    const Pauli &p = row.get(q);
+    xmat(n_rows, q) = (p == Pauli::X) || (p == Pauli::Y);
+    zmat(n_rows, q) = (p == Pauli::Z) || (p == Pauli::Y);
+  }
+  phase(n_rows) = row.is_real_negative();
+  return n_rows;
+}
+
+void SymplecticTableau::remove_row(unsigned row) {
+  if (row >= get_n_rows())
+    throw std::invalid_argument(
+        "Cannot remove row " + std::to_string(row) + " from tableau with " +
+        std::to_string(get_n_rows()) + " rows");
+  unsigned n_rows = get_n_rows();
+  unsigned n_cols = get_n_qubits();
+  if (row < n_rows - 1) {
+    xmat.row(row) = xmat.row(n_rows - 1);
+    zmat.row(row) = zmat.row(n_rows - 1);
+    phase(row) = phase(n_rows - 1);
+  }
+  xmat.conservativeResize(n_rows - 1, n_cols);
+  zmat.conservativeResize(n_rows - 1, n_cols);
+  phase.conservativeResize(n_rows - 1);
 }
 
 std::ostream &operator<<(std::ostream &os, const SymplecticTableau &tab) {

@@ -14,9 +14,15 @@
 
 #include "tket/PauliGraphRefactor/PGBox.hpp"
 
+#include <tkassert/Assert.hpp>
+
 namespace tket {
 
 namespace pg {
+
+/**
+ * PGBox Implementation
+ */
 
 Op_ptr PGBox::get_op() const { return op_; }
 
@@ -55,6 +61,10 @@ PGOp_ptr PGBox::symbol_substitution(
     return PGOp_ptr();
 }
 
+PGOp_ptr PGBox::clone() const {
+  return std::make_shared<PGBox>(op_, args_, paulis_);
+}
+
 std::string PGBox::get_name(bool latex) const {
   std::stringstream str;
   str << op_->get_name(latex) << "(";
@@ -72,9 +82,19 @@ bool PGBox::is_equal(const PGOp& op_other) const {
 
 unsigned PGBox::n_paulis() const { return paulis_.size(); }
 
-std::vector<SpPauliStabiliser> PGBox::active_paulis() const { return paulis_; }
+PGOp_signature PGBox::pauli_signature() const {
+  PGOp_signature sig;
+  for (auto it = paulis_.begin(); it != paulis_.end();) {
+    SpPauliStabiliser zp = *it;
+    ++it;
+    TKET_ASSERT(it != paulis_.end());
+    sig.anti_comm_pairs.push_back({zp, *it});
+    ++it;
+  }
+  return sig;
+}
 
-SpPauliStabiliser& PGBox::port(unsigned p) {
+const SpPauliStabiliser& PGBox::port(unsigned p) const {
   if (p >= paulis_.size())
     throw PGError(
         "Cannot dereference port " + std::to_string(p) +
@@ -98,6 +118,150 @@ bit_vector_t PGBox::write_bits() const {
     if (sig.at(i) == EdgeType::Classical) writes.push_back(Bit(args_.at(i)));
   }
   return writes;
+}
+
+/**
+ * PGMultiplexedTensoredBox Implementation
+ */
+
+const std::map<std::vector<bool>, std::vector<Op_ptr>>&
+PGMultiplexedTensoredBox::get_op_map() const {
+  return op_map_;
+}
+
+const std::vector<SpPauliStabiliser>&
+PGMultiplexedTensoredBox::get_control_paulis() const {
+  return control_paulis_;
+}
+
+const std::vector<SpPauliStabiliser>&
+PGMultiplexedTensoredBox::get_target_paulis() const {
+  return target_paulis_;
+}
+
+PGMultiplexedTensoredBox::PGMultiplexedTensoredBox(
+    const std::map<std::vector<bool>, std::vector<Op_ptr>>& op_map,
+    const std::vector<SpPauliStabiliser>& control_paulis,
+    const std::vector<SpPauliStabiliser>& target_paulis)
+    : PGOp(PGOpType::MultiplexedTensoredBox),
+      op_map_(op_map),
+      control_paulis_(control_paulis),
+      target_paulis_(target_paulis) {
+  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
+    if (it->first.size() != control_paulis_.size())
+      throw PGError(
+          "PGMultiplexedTensoredBox: Size mismatch between number of controls "
+          "and length of values in op_map");
+    unsigned total_qubits = 0;
+    for (const Op_ptr& op : it->second) total_qubits += op->n_qubits();
+    if (total_qubits * 2 != target_paulis_.size())
+      throw PGError(
+          "PGMultiplexedTensoredBox: Size mismatch between the number of "
+          "qubits in tensored op and number of target qubits expected.");
+  }
+}
+
+SymSet PGMultiplexedTensoredBox::free_symbols() const {
+  SymSet sset;
+  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
+    for (const Op_ptr& op : it->second) {
+      SymSet it_sset = op->free_symbols();
+      sset.insert(it_sset.begin(), it_sset.end());
+    }
+  }
+  return sset;
+}
+
+PGOp_ptr PGMultiplexedTensoredBox::symbol_substitution(
+    const SymEngine::map_basic_basic& sub_map) const {
+  std::map<std::vector<bool>, std::vector<Op_ptr>> new_op_map = op_map_;
+  bool any_changed = false;
+  for (auto it = new_op_map.begin(); it != new_op_map.end(); ++it) {
+    for (auto op_it = it->second.begin(); op_it != it->second.end(); ++op_it) {
+      Op_ptr new_op = (*op_it)->symbol_substitution(sub_map);
+      if (new_op) {
+        *op_it = new_op;
+        any_changed = true;
+      }
+    }
+  }
+  if (any_changed)
+    return std::make_shared<PGMultiplexedTensoredBox>(
+        new_op_map, control_paulis_, target_paulis_);
+  else
+    return PGOp_ptr();
+}
+
+PGOp_ptr PGMultiplexedTensoredBox::clone() const {
+  return std::make_shared<PGMultiplexedTensoredBox>(
+      op_map_, control_paulis_, target_paulis_);
+}
+
+std::string PGMultiplexedTensoredBox::get_name(bool latex) const {
+  std::stringstream str;
+  str << "qswitch [";
+  if (!control_paulis_.empty()) {
+    str << control_paulis_.at(0).to_str();
+    for (unsigned i = 1; i < control_paulis_.size(); ++i) {
+      str << ", " << control_paulis_.at(i).to_str();
+    }
+  }
+  str << "]";
+  bool first = true;
+  for (auto it = op_map_.begin(); it != op_map_.end(); ++it) {
+    if (!first) {
+      str << ", ";
+    }
+    for (bool b : it->first) {
+      str << (b ? "1" : "0");
+    }
+    str << "->[";
+    bool first_op = true;
+    for (auto op_it = it->second.begin(); op_it != it->second.end(); ++op_it) {
+      if (!first_op) str << " x ";
+      str << (*op_it)->get_name(latex);
+      first_op = false;
+    }
+    str << "]";
+    first = false;
+  }
+  return str.str();
+}
+
+bool PGMultiplexedTensoredBox::is_equal(const PGOp& op_other) const {
+  const PGMultiplexedTensoredBox& other =
+      dynamic_cast<const PGMultiplexedTensoredBox&>(op_other);
+  return (control_paulis_ == other.control_paulis_) &&
+         (target_paulis_ == other.target_paulis_) && (op_map_ == other.op_map_);
+}
+
+unsigned PGMultiplexedTensoredBox::n_paulis() const {
+  return control_paulis_.size() + target_paulis_.size();
+}
+
+PGOp_signature PGMultiplexedTensoredBox::pauli_signature() const {
+  PGOp_signature sig;
+  for (auto it = control_paulis_.begin(); it != control_paulis_.end(); ++it) {
+    sig.comm_set.push_back(*it);
+  }
+  for (auto it = target_paulis_.begin(); it != target_paulis_.end();) {
+    SpPauliStabiliser zp = *it;
+    ++it;
+    TKET_ASSERT(it != target_paulis_.end());
+    sig.anti_comm_pairs.push_back({zp, *it});
+    ++it;
+  }
+  return sig;
+}
+
+const SpPauliStabiliser& PGMultiplexedTensoredBox::port(unsigned p) const {
+  if (p < control_paulis_.size()) return control_paulis_.at(p);
+  if (p < control_paulis_.size() + target_paulis_.size())
+    return target_paulis_.at(p - control_paulis_.size());
+  else
+    throw PGError(
+        "Cannot dereference port of PGMultiplexedTensoredBox: " +
+        std::to_string(p));
 }
 
 }  // namespace pg
