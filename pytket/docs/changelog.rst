@@ -5,6 +5,7 @@ Changelog
 ------------
 
 * add scratch_reg_resize_pass for decomposing temp bit register
+* Update to pytket-circuit-renderer 0.9.
 
 1.30.0 (July 2024)
 ------------------
