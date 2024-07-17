@@ -1,6 +1,11 @@
 Changelog
 =========
 
+(unreleased)
+------------
+
+* add scratch_reg_resize_pass for decomposing temp bit register
+
 1.30.0 (July 2024)
 ------------------
 
