@@ -1005,9 +1005,6 @@ void add_multi_rz(
     } else {
       all_decomps.push_back({});
     }
-    // for the construction to work, we need to keep some semblance of ordering
-    // for the interleaving - so we return a bunch of "Identity" GateSpec N.B.
-    // it is not an expected circumstance for this to be empty!
   }
   TKET_ASSERT(!all_decomps.empty());
   unsigned reference_size = 0;
