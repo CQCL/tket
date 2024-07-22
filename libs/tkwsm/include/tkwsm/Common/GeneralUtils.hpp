@@ -23,7 +23,7 @@
 #include <utility>
 #include <vector>
 
-#include "SpecialExceptions.hpp"
+#include "tkwsm/Common/SpecialExceptions.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

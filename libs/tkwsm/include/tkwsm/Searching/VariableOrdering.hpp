@@ -15,7 +15,7 @@
 #pragma once
 #include <optional>
 
-#include "../GraphTheoretic/GeneralStructs.hpp"
+#include "tkwsm/GraphTheoretic/GeneralStructs.hpp"
 
 namespace tket {
 class RNG;

@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "DynamicTokenTracker.hpp"
+#include "tktokenswap/DynamicTokenTracker.hpp"
 
 namespace tket {
 namespace tsa_internal {

@@ -12,16 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "TrivialTSA.hpp"
+#include "tktokenswap/TrivialTSA.hpp"
 
 #include <sstream>
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
 
-#include "CyclicShiftCostEstimate.hpp"
 #include "tktokenswap/DistanceFunctions.hpp"
 #include "tktokenswap/GeneralFunctions.hpp"
 #include "tktokenswap/VertexSwapResult.hpp"
+
+#include "CyclicShiftCostEstimate.hpp"
 
 using std::vector;
 

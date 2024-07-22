@@ -70,7 +70,7 @@ target_include_directories(tktokenswap PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tktokenswap>)
 target_link_libraries(tktokenswap PRIVATE tklog::tklog)
 target_link_libraries(tktokenswap PUBLIC tkassert::tkassert)
-target_link_libraries(tktokenswap PRIVATE tkrng::tkrng)
+target_link_libraries(tktokenswap PUBLIC tkrng::tkrng)
 target_link_libraries(tktokenswap PRIVATE Boost::headers)
 
 IF(APPLE)

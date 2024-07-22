@@ -15,15 +15,15 @@
 #pragma once
 #include <memory>
 
-#include "../GraphTheoretic/DomainInitialiser.hpp"
-#include "../Reducing/DerivedGraphsReducer.hpp"
-#include "../Reducing/DistancesReducer.hpp"
-#include "../Reducing/HallSetReduction.hpp"
-#include "../Reducing/ReducerWrapper.hpp"
-#include "DomainsAccessor.hpp"
-#include "NodeListTraversal.hpp"
-#include "NodesRawData.hpp"
-#include "WeightCalculator.hpp"
+#include "tkwsm/GraphTheoretic/DomainInitialiser.hpp"
+#include "tkwsm/Reducing/DerivedGraphsReducer.hpp"
+#include "tkwsm/Reducing/DistancesReducer.hpp"
+#include "tkwsm/Reducing/HallSetReduction.hpp"
+#include "tkwsm/Reducing/ReducerWrapper.hpp"
+#include "tkwsm/Searching/DomainsAccessor.hpp"
+#include "tkwsm/Searching/NodeListTraversal.hpp"
+#include "tkwsm/Searching/NodesRawData.hpp"
+#include "tkwsm/Searching/WeightCalculator.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

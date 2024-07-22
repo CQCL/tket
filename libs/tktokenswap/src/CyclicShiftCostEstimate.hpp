@@ -16,7 +16,7 @@
 
 #include <limits>
 
-#include "DistancesInterface.hpp"
+#include "tktokenswap/DistancesInterface.hpp"
 
 namespace tket {
 namespace tsa_internal {

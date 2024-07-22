@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #pragma once
-#include "ReducerWrapper.hpp"
+#include "tkwsm/Reducing/ReducerWrapper.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

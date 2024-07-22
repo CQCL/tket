@@ -18,7 +18,7 @@
 #include <sstream>
 #include <tkassert/Assert.hpp>
 
-#include "VectorListHybridSkeleton.hpp"
+#include "tktokenswap/VectorListHybridSkeleton.hpp"
 
 namespace tket {
 

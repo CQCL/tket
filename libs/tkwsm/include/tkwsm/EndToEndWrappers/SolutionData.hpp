@@ -15,8 +15,8 @@
 #pragma once
 #include <optional>
 
-#include "../GraphTheoretic/GeneralStructs.hpp"
-#include "SolutionWSM.hpp"
+#include "tkwsm/GraphTheoretic/GeneralStructs.hpp"
+#include "tkwsm/EndToEndWrappers/SolutionWSM.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

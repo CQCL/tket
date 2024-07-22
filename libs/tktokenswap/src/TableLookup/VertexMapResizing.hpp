@@ -19,7 +19,7 @@
 #include <set>
 #include <vector>
 
-#include "../VertexMappingFunctions.hpp"
+#include "tktokenswap/VertexMappingFunctions.hpp"
 #include "tktokenswap/NeighboursInterface.hpp"
 
 namespace tket {

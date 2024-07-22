@@ -16,7 +16,7 @@
 
 #include <set>
 
-#include "PartialTsaInterface.hpp"
+#include "tktokenswap/PartialTsaInterface.hpp"
 
 namespace tket {
 namespace tsa_internal {

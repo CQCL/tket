@@ -17,7 +17,7 @@
 #include <map>
 #include <vector>
 
-#include "SwapConversion.hpp"
+#include "tktokenswap/SwapConversion.hpp"
 
 namespace tket {
 namespace tsa_internal {

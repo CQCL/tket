@@ -18,7 +18,7 @@
 #include <set>
 #include <stdexcept>
 
-#include "VertexMappingFunctions.hpp"
+#include "tktokenswap/VertexMappingFunctions.hpp"
 #include "tktokenswap/DistancesInterface.hpp"
 
 namespace tket {
