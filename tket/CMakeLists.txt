@@ -15,6 +15,9 @@
 cmake_minimum_required(VERSION 3.23)
 project(tket CXX)
 
+cmake_policy(SET CMP0022 NEW)
+
+
 list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
 
 find_package(Boost CONFIG REQUIRED)
@@ -108,14 +111,14 @@ endif()
 target_include_directories(tket PUBLIC
     $<INSTALL_INTERFACE:include/tket>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tket>)
-target_link_libraries(tket PRIVATE Boost::headers)
-target_link_libraries(tket PRIVATE symengine::symengine)
-target_link_libraries(tket PRIVATE Eigen3::Eigen)
-target_link_libraries(tket PRIVATE nlohmann_json::nlohmann_json)
-target_link_libraries(tket PRIVATE tklog::tklog)
-target_link_libraries(tket PRIVATE tkassert::tkassert)
-target_link_libraries(tket PRIVATE tkrng::tkrng)
-target_link_libraries(tket PRIVATE tktokenswap::tktokenswap)
+target_link_libraries(tket PUBLIC Boost::headers)
+target_link_libraries(tket PUBLIC symengine::symengine)
+target_link_libraries(tket PUBLIC Eigen3::Eigen)
+target_link_libraries(tket PUBLIC nlohmann_json::nlohmann_json)
+target_link_libraries(tket PUBLIC tklog::tklog)
+target_link_libraries(tket PUBLIC tkassert::tkassert)
+target_link_libraries(tket PUBLIC tkrng::tkrng)
+target_link_libraries(tket PUBLIC tktokenswap::tktokenswap)
 target_link_libraries(tket PRIVATE tkwsm::tkwsm)
 IF(APPLE)
     target_link_libraries(tket PRIVATE "-flat_namespace")
@@ -443,16 +446,13 @@ include(GNUInstallDirs)
 set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/tket)
 
 install(TARGETS tket
-    EXPORT tket-targets
-    FILE_SET HEADERS)
-
-if(MSVC)
-    install(TARGETS tket
+        EXPORT tket-targets
+        FILE_SET HEADERS
         RUNTIME DESTINATION bin
-        RUNTIME DESTINATION lib
         ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib)
-endif()
+        LIBRARY DESTINATION lib
+        INCLUDES DESTINATION include
+)
 
 install(EXPORT tket-targets
     FILE tketTargets.cmake
@@ -462,7 +462,8 @@ install(EXPORT tket-targets
 
 include(CMakePackageConfigHelpers)
 
-configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/tketConfig.cmake.in
+configure_package_config_file(
+    ${CMAKE_CURRENT_LIST_DIR}/cmake/tketConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/tketConfig.cmake
     INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
 )
@@ -472,8 +473,9 @@ install(FILES
     DESTINATION ${INSTALL_CONFIGDIR}
 )
 
-export(EXPORT tket-targets
-    FILE ${CMAKE_CURRENT_BINARY_DIR}/tketTargets.cmake
-    NAMESPACE tket::)
+#install(EXPORT tket-targets
+#    FILE ${CMAKE_CURRENT_BINARY_DIR}/tketTargets.cmake
+#    NAMESPACE tket::
+#    DESTINATION ${INSTALL_CONFIGDIR}/cmake/)
 
 export(PACKAGE tket)
