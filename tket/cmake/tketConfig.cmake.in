@@ -1,5 +1,16 @@
+@PACKAGE_INIT@
+
 get_filename_component(TKET_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
 include(CMakeFindDependencyMacro)
+
+find_package(Boost CONFIG REQUIRED)
+find_package(SymEngine CONFIG REQUIRED)
+find_package(Eigen3 CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(tklog CONFIG REQUIRED)
+find_package(tkassert CONFIG REQUIRED)
+find_package(tkrng CONFIG REQUIRED)
+find_package(tktokenswap CONFIG REQUIRED)
 
 if(NOT TARGET tket::tket)
     include("${TKET_CMAKE_DIR}/tketTargets.cmake")
