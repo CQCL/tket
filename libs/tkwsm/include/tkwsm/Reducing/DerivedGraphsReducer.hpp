@@ -13,9 +13,9 @@
 // limitations under the License.
 
 #pragma once
-#include "../GraphTheoretic/DerivedGraphs.hpp"
-#include "../GraphTheoretic/DerivedGraphsCalculator.hpp"
-#include "ReducerWrapper.hpp"
+#include "tkwsm/GraphTheoretic/DerivedGraphs.hpp"
+#include "tkwsm/GraphTheoretic/DerivedGraphsCalculator.hpp"
+#include "tkwsm/Reducing/ReducerWrapper.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

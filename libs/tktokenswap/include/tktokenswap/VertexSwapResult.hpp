@@ -18,7 +18,7 @@
 #include <optional>
 #include <utility>
 
-#include "VertexMappingFunctions.hpp"
+#include "tktokenswap/VertexMappingFunctions.hpp"
 
 namespace tket {
 namespace tsa_internal {

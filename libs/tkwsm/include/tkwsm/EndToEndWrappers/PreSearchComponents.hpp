@@ -18,8 +18,8 @@
 #include <string>
 #include <utility>
 
-#include "../GraphTheoretic/NearNeighboursData.hpp"
-#include "../GraphTheoretic/NeighboursData.hpp"
+#include "tkwsm/GraphTheoretic/NearNeighboursData.hpp"
+#include "tkwsm/GraphTheoretic/NeighboursData.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

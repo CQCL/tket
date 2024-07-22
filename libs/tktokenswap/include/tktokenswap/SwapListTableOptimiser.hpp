@@ -17,9 +17,9 @@
 
 #include <set>
 
-#include "PartialMappingLookup.hpp"
-#include "SwapListSegmentOptimiser.hpp"
-#include "VertexMapResizing.hpp"
+#include "tktokenswap/PartialMappingLookup.hpp"
+#include "tktokenswap/SwapListSegmentOptimiser.hpp"
+#include "tktokenswap/VertexMapResizing.hpp"
 #include "tktokenswap/SwapListOptimiser.hpp"
 
 /// TODO: The swap table optimiser currently tries to optimise many segments;

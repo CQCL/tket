@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include "DistancesInterface.hpp"
-#include "NeighboursInterface.hpp"
-#include "RiverFlowPathFinder.hpp"
-#include "VertexMappingFunctions.hpp"
+#include "tktokenswap/DistancesInterface.hpp"
+#include "tktokenswap/NeighboursInterface.hpp"
+#include "tktokenswap/RiverFlowPathFinder.hpp"
+#include "tktokenswap/VertexMappingFunctions.hpp"
 
 namespace tket {
 namespace tsa_internal {

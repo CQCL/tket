@@ -19,8 +19,8 @@
 #include <set>
 #include <vector>
 
-#include "PartialMappingLookup.hpp"
-#include "VertexMapResizing.hpp"
+#include "tktokenswap/PartialMappingLookup.hpp"
+#include "tktokenswap/VertexMapResizing.hpp"
 #include "tktokenswap/SwapFunctions.hpp"
 
 namespace tket {

@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "RiverFlowPathFinder.hpp"
+#include "tktokenswap/RiverFlowPathFinder.hpp"
 
 #include <sstream>
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
 
-#include "SwapFunctions.hpp"
+#include "tktokenswap/SwapFunctions.hpp"
 
 using std::vector;
 

@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CyclesCandidateManager.hpp"
+#include "tktokenswap/CyclesCandidateManager.hpp"
 
 #include <algorithm>
 #include <boost/functional/hash.hpp>
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
 
-#include "VertexSwapResult.hpp"
+#include "tktokenswap/VertexSwapResult.hpp"
 
 using std::vector;
 

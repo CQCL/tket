@@ -17,8 +17,8 @@
 #include <optional>
 #include <utility>
 
-#include "FilterUtils.hpp"
-#include "GeneralStructs.hpp"
+#include "tkwsm/GraphTheoretic/FilterUtils.hpp"
+#include "tkwsm/GraphTheoretic/GeneralStructs.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

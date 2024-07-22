@@ -15,7 +15,7 @@
 #pragma once
 #include <forward_list>
 
-#include "GeneralStructs.hpp"
+#include "tkwsm/GraphTheoretic/GeneralStructs.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
