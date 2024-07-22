@@ -57,7 +57,7 @@ class CMakeBuild(build_ext):
             os.path.dirname(self.get_ext_fullpath(self.extensions[0].name))
         )
         extsource = self.extensions[0].sourcedir
-        build_dir = os.path.join(extsource, "build")
+        build_dir = os.path.join(extsource, "cmake_build")
         shutil.rmtree(build_dir, ignore_errors=True)
         os.mkdir(build_dir)
         install_dir = os.getenv("INSTALL_DIR")
@@ -75,9 +75,8 @@ class CMakeBuild(build_ext):
         )
         subprocess.run(["cmake", "--install", os.curdir], cwd=build_dir)
         lib_folder = os.path.join(install_dir, "lib")
-        lib_names = ["libtklog.so", "libtket.so"]
         ext_suffix = get_config_var("EXT_SUFFIX")
-        lib_names.extend(f"{binder}{ext_suffix}" for binder in binders)
+        lib_names = [f"{binder}{ext_suffix}" for binder in binders]
         # TODO make the above generic
         os.makedirs(extdir, exist_ok=True)
         for lib_name in lib_names:
@@ -128,38 +127,10 @@ class ConanBuild(build_ext):
                     shutil.copy(libpath, extdir)
 
 
-class NixBuild(build_ext):
-    def run(self):
-        self.check_extensions_list(self.extensions)
-        extdir = os.path.abspath(
-            os.path.dirname(self.get_ext_fullpath(self.extensions[0].name))
-        )
-        if os.path.exists(extdir):
-            shutil.rmtree(extdir)
-        os.makedirs(extdir)
-
-        nix_ldflags = os.environ["NIX_LDFLAGS"].split()
-        build_inputs = os.environ["propagatedBuildInputs"].split()
-
-        binders = [f"{l}/lib" for l in build_inputs if "-binders" in l]
-        for binder in binders:
-            for lib in os.listdir(binder):
-                libpath = os.path.join(binder, lib)
-                if not os.path.isdir(libpath):
-                    shutil.copy(libpath, extdir)
-
-        for interface_file in os.listdir("pytket/_tket"):
-            if interface_file.endswith(".pyi") or interface_file.endswith(".py"):
-                shutil.copy(os.path.join("pytket/_tket", interface_file), extdir)
-
-
 plat_name = os.getenv("WHEEL_PLAT_NAME")
 
-
 def get_build_ext():
-    if os.getenv("USE_NIX"):
-        return NixBuild
-    elif os.getenv("NO_CONAN"):
+    if os.getenv("NO_CONAN"):
         return CMakeBuild
     else:
         return ConanBuild
@@ -228,6 +199,12 @@ setup(
         "Topic :: Scientific/Engineering",
     ],
     include_package_data=True,
-    package_data={"pytket": ["py.typed"]},
+    package_data={
+        "pytket": [
+            "py.typed",
+            "circuit/display/js/*.js",
+            "circuit/display/static/*.html"
+        ]
+    },
     zip_safe=False,
 )
