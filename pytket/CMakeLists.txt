@@ -17,11 +17,6 @@ project(pytket CXX)
 add_definitions(-DPYBIND11_DETAILED_ERROR_MESSAGES)
 
 find_package(tket CONFIG REQUIRED)
-#find_package(gmp CONFIG)
-#if (NOT gmp_FOUND)
-#    find_package(PkgConfig REQUIRED)
-#    pkg_search_module(gmp REQUIRED IMPORTED_TARGET gmp)
-#endif()
 find_package(pybind11 CONFIG REQUIRED)
 find_package(pybind11_json CONFIG REQUIRED)
 
@@ -62,9 +57,6 @@ endif()
 if (NOT TARGET pybind11_json::pybind11_json)
     add_library(pybind11_json::pybind11_json ALIAS pybind11_json)
 endif()
-#if (NOT TARGET gmp::gmp)
-#    add_library(gmp::gmp ALIAS PkgConfig::gmp)
-#endif()
 
 list(APPEND lib_deps
     tket::tket

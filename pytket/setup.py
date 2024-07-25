@@ -57,12 +57,23 @@ class CMakeBuild(build_ext):
             os.path.dirname(self.get_ext_fullpath(self.extensions[0].name))
         )
         extsource = self.extensions[0].sourcedir
-        build_dir = os.path.join(extsource, "cmake_build")
-        shutil.rmtree(build_dir, ignore_errors=True)
-        os.mkdir(build_dir)
+        build_dir = os.getenv("BUILD_DIR") or os.path.join(extsource, "build")
+        if os.path.exists(build_dir):
+            # Remove contents of build_dir, but not the directory itself.
+            # This avoids issues with a BUILD_DIR being provided but with
+            # permission settings that prevent it being removed.
+            for f in os.listdir(build_dir):
+                fpath = os.path.join(build_dir, f)
+                if os.path.isdir(fpath):
+                    shutil.rmtree(fpath)
+                else:
+                    os.remove(fpath)
+        else:
+            os.mkdir(build_dir)
+
         install_dir = os.getenv("INSTALL_DIR")
         subprocess.run(
-            ["cmake", f"-DCMAKE_INSTALL_PREFIX={install_dir}", os.pardir], cwd=build_dir
+            ["cmake", f"-DCMAKE_INSTALL_PREFIX={install_dir}", os.path.abspath(os.curdir)], cwd=build_dir
         )
         subprocess.run(
             [

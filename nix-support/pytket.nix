@@ -59,6 +59,7 @@ in {
       # and to build in a temporary directory.
       export NO_CONAN=1;
       export INSTALL_DIR=$(mktemp -d);
+      export BUILD_DIR=$(mktemp -d);
     '';
     checkInputs = with super.python3.pkgs; [
       mypy

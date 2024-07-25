@@ -16,6 +16,7 @@ cmake_minimum_required(VERSION 3.23)
 project(test-tket CXX)
 
 find_package(tket CONFIG REQUIRED)
+find_package(Catch2 CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -68,7 +69,7 @@ SET(TEST_UTILS
     src/Simulation/ComparisonFunctions.cpp)
 
 add_executable(test-tket ${TEST_UTILS} ${TEST_SOURCES})
-target_link_libraries(test-tket PRIVATE tket::tket)
+target_link_libraries(test-tket PRIVATE tket::tket Catch2::Catch2WithMain)
 
 set(WITH_COVERAGE no CACHE BOOL "Link library with profiling for test coverage")
 IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
