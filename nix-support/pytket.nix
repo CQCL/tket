@@ -83,6 +83,6 @@ in {
       cd test_root/tests;
       python -m pytest -s .
     '';
-    doCheck = false; #TODO revert to true
+    doCheck = true;
   };
 }
