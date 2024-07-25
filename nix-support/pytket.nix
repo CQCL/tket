@@ -70,16 +70,18 @@ in {
       hypothesis
       docker
       opt-einsum
-    ] ++ [jsonschema-4180];
+      jsonschema-4180
+    ];
     checkPhase = ''
       export HOME=$TMPDIR;
+      cp -r ${../schemas} $HOME/schemas;
 
       # run mypy
-      python -m mypy --config-file=mypy.ini --no-incremental -p pytket -p test_root.tests;
+      python -m mypy --config-file=mypy.ini --no-incremental -p pytket -p tests;
 
       # run tests
-      chmod 700 $TMPDIR/test_root/tests/qasm_test_files;
-      cd test_root/tests;
+      chmod 700 $HOME/pytket/tests/qasm_test_files;
+      cd tests;
       python -m pytest -s .
     '';
     doCheck = true;
