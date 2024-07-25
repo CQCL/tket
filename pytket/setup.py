@@ -73,7 +73,12 @@ class CMakeBuild(build_ext):
 
         install_dir = os.getenv("INSTALL_DIR")
         subprocess.run(
-            ["cmake", f"-DCMAKE_INSTALL_PREFIX={install_dir}", os.path.abspath(os.curdir)], cwd=build_dir
+            [
+                "cmake",
+                f"-DCMAKE_INSTALL_PREFIX={install_dir}",
+                os.path.abspath(os.curdir),
+            ],
+            cwd=build_dir,
         )
         subprocess.run(
             [
@@ -139,6 +144,7 @@ class ConanBuild(build_ext):
 
 
 plat_name = os.getenv("WHEEL_PLAT_NAME")
+
 
 def get_build_ext():
     if os.getenv("NO_CONAN"):
@@ -214,7 +220,7 @@ setup(
         "pytket": [
             "py.typed",
             "circuit/display/js/*.js",
-            "circuit/display/static/*.html"
+            "circuit/display/static/*.html",
         ]
     },
     zip_safe=False,
