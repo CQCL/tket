@@ -1,6 +1,5 @@
 self: super:
 let
-  #postFixup = import ./includes-fixup.nix;
   # only import necessary directories so that changes to unrelated
   # files inside of ../tket won't trigger a rebuild
   src = super.stdenv.mkDerivation {
@@ -35,6 +34,5 @@ in {
       "-DBUILD_TKET_PROPTEST=OFF"
     ];
     doCheck = true;
-    #inherit postFixup;
   };
 }
