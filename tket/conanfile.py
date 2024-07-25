@@ -76,12 +76,6 @@ class TketConan(ConanFile):
         tc.variables["PROFILE_COVERAGE"] = self.options.profile_coverage
         if self.build_test():
             tc.variables["BUILD_TKET_TEST"] = True
-            architectures_dir = os.path.join(
-                self.source_folder, "test/src/test_architectures"
-            )
-            copy(self, "*.json", architectures_dir, self.build_folder)
-            circuits_dir = os.path.join(self.source_folder, "test/src/test_circuits")
-            copy(self, "*.json", circuits_dir, self.build_folder)
         if self.build_proptest():
             tc.variables["BUILD_TKET_PROPTEST"] = True
         tc.generate()
@@ -97,9 +91,9 @@ class TketConan(ConanFile):
         cmake.configure()
         cmake.build()
         if self.build_test():
-            self.run(os.path.join(self.test_folder(), "test-tket"))
+            self.run("./test-tket", cwd=self.test_folder())
         if self.build_proptest():
-            self.run(os.path.join(self.proptest_folder(), "proptest-tket"))
+            self.run(f"./proptest-tket", cwd=self.proptest_folder())
 
     def package(self):
         cmake = CMake(self)
