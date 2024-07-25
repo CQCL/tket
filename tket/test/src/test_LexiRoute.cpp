@@ -1626,7 +1626,7 @@ SCENARIO("Lexi relabel with partially mapped circuit") {
 }
 
 SCENARIO("Test failing case") {
-  std::ifstream circuit_file("lexiroute_circuit.json");
+  std::ifstream circuit_file("test_circuits/lexiroute_circuit.json");
   nlohmann::json j = nlohmann::json::parse(circuit_file);
   auto c = j.get<Circuit>();
   Architecture arc(std::vector<std::pair<unsigned, unsigned>>{
@@ -2173,7 +2173,7 @@ SCENARIO(
         {5, 6},  {5, 9},   {6, 8},   {7, 8},  {9, 8},  {9, 10},
         {11, 3}, {11, 10}, {11, 12}, {12, 2}, {13, 1}, {13, 12}};
     Architecture architecture(coupling_map);
-    std::ifstream circuit_file("lexiroute_circuit_relabel_to_ancilla.json");
+    std::ifstream circuit_file("test_circuits/lexiroute_circuit_relabel_to_ancilla.json");
     nlohmann::json j = nlohmann::json::parse(circuit_file);
     auto c = j.get<Circuit>();
     std::map<Qubit, Node> p_map = {
@@ -2334,10 +2334,10 @@ SCENARIO(
 }
 SCENARIO("Lexi route produces incorrect bimaps") {
   // segfault Github #777
-  std::ifstream arch_file("ibm_montreal.json");
+  std::ifstream arch_file("test_architectures/ibm_montreal.json");
   nlohmann::json j_arch = nlohmann::json::parse(arch_file);
   auto arch = j_arch.get<Architecture>();
-  std::ifstream circ_file("bug777_circuit.json");
+  std::ifstream circ_file("test_circuits/bug777_circuit.json");
   nlohmann::json j_circ = nlohmann::json::parse(circ_file);
   auto circ = j_circ.get<Circuit>();
   std::map<Qubit, Node> p_map = {

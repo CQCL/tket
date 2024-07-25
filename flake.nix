@@ -27,9 +27,10 @@
         };
         devShells = {
           default = pkgs.mkShell { buildInputs = [ pkgs.tket pkgs.pytket ]; };
+          conan = pkgs.mkShell { buildInputs = with pkgs; [ conan cmake ninja gcc python3 ]; };
         };
         checks = {
-          tket-tests = pkgs.run-tket-tests;
+          tket-tests = pkgs.tket;
           pytket-tests = pkgs.pytket;
         };
       });
