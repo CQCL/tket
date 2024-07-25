@@ -473,9 +473,8 @@ install(FILES
     DESTINATION ${INSTALL_CONFIGDIR}
 )
 
-#install(EXPORT tket-targets
-#    FILE ${CMAKE_CURRENT_BINARY_DIR}/tketTargets.cmake
-#    NAMESPACE tket::
-#    DESTINATION ${INSTALL_CONFIGDIR}/cmake/)
+export(EXPORT tket-targets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/tketTargets.cmake
+    NAMESPACE tket::)
 
 export(PACKAGE tket)
