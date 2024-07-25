@@ -18,11 +18,10 @@
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
 
+#include "CyclicShiftCostEstimate.hpp"
 #include "tktokenswap/DistanceFunctions.hpp"
 #include "tktokenswap/GeneralFunctions.hpp"
 #include "tktokenswap/VertexSwapResult.hpp"
-
-#include "CyclicShiftCostEstimate.hpp"
 
 using std::vector;
 

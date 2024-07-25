@@ -20,8 +20,8 @@
 #include <vector>
 
 #include "tktokenswap/PartialMappingLookup.hpp"
-#include "tktokenswap/VertexMapResizing.hpp"
 #include "tktokenswap/SwapFunctions.hpp"
+#include "tktokenswap/VertexMapResizing.hpp"
 
 namespace tket {
 namespace tsa_internal {

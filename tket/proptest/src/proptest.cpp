@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <cmath>
-
 #include <rapidcheck.h>
 
+#include <cmath>
+
+#include "ComparisonFunctions.hpp"
 #include "tket/Architecture/Architecture.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
@@ -24,8 +25,6 @@
 #include "tket/Predicates/Predicates.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
 #include "tket/Transformations/Transform.hpp"
-
-#include "ComparisonFunctions.hpp"
 
 using namespace tket;
 

@@ -17,10 +17,10 @@
 #include <optional>
 #include <tkrng/RNG.hpp>
 
+#include "tkwsm/GraphTheoretic/GeneralStructs.hpp"
 #include "tkwsm/InitPlacement/FastRandomBits.hpp"
 #include "tkwsm/InitPlacement/MonteCarloManager.hpp"
 #include "tkwsm/InitPlacement/SolutionJumper.hpp"
-#include "tkwsm/GraphTheoretic/GeneralStructs.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

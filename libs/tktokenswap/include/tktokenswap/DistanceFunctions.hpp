@@ -18,8 +18,8 @@
 #include <set>
 #include <stdexcept>
 
-#include "tktokenswap/VertexMappingFunctions.hpp"
 #include "tktokenswap/DistancesInterface.hpp"
+#include "tktokenswap/VertexMappingFunctions.hpp"
 
 namespace tket {
 namespace tsa_internal {

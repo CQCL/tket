@@ -18,9 +18,9 @@
 #include <set>
 
 #include "tktokenswap/PartialMappingLookup.hpp"
+#include "tktokenswap/SwapListOptimiser.hpp"
 #include "tktokenswap/SwapListSegmentOptimiser.hpp"
 #include "tktokenswap/VertexMapResizing.hpp"
-#include "tktokenswap/SwapListOptimiser.hpp"
 
 /// TODO: The swap table optimiser currently tries to optimise many segments;
 /// solving ~2300 problems with Best TSA takes ~20 seconds, most of which
