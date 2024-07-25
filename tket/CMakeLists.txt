@@ -435,6 +435,9 @@ target_sources(tket
         include/tket/Predicates/Predicates.hpp
     )
 
+if (BUILD_TKET_TEST OR BUILD_TKET_PROPTEST)
+    enable_testing()
+endif()
 if (BUILD_TKET_TEST)
     add_subdirectory(test)
 endif()

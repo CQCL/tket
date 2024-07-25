@@ -5,7 +5,7 @@
     tket.cachix.org-1:ACdm5Zg19qPL0PpvUwTPPiIx8SEUy+D/uqa9vKJFwh0=
     cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
   '';
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs";
   inputs.flake-utils.url = "github:numtide/flake-utils";
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
@@ -27,9 +27,10 @@
         };
         devShells = {
           default = pkgs.mkShell { buildInputs = [ pkgs.tket pkgs.pytket ]; };
+          conan = pkgs.mkShell { buildInputs = with pkgs; [ conan cmake ninja gcc python3 ]; };
         };
         checks = {
-          tket-tests = pkgs.run-tket-tests;
+          tket-tests = pkgs.tket;
           pytket-tests = pkgs.pytket;
         };
       });

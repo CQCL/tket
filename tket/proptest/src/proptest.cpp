@@ -14,8 +14,8 @@
 
 #include <cmath>
 
-#include "ComparisonFunctions.hpp"
-#include "rapidcheck.h"
+#include <rapidcheck.h>
+
 #include "tket/Architecture/Architecture.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
@@ -24,6 +24,8 @@
 #include "tket/Predicates/Predicates.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
 #include "tket/Transformations/Transform.hpp"
+
+#include "ComparisonFunctions.hpp"
 
 using namespace tket;
 
