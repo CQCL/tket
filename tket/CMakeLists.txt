@@ -452,6 +452,7 @@ install(TARGETS tket
         EXPORT tket-targets
         FILE_SET HEADERS
         RUNTIME DESTINATION bin
+        RUNTIME DESTINATION lib
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
         INCLUDES DESTINATION include
