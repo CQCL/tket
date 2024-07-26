@@ -74,5 +74,11 @@ jobs:
       if: github.event_name != 'schedule'
       run: |
         PKGPATH=`./rootpath tket.json tket`
-        cd ${PKGPATH}/bin && valgrind --error-exitcode=1 ./test-tket
+        echo "Package path: ${PKGPATH}"
+        echo "Contents"
+        find $PKGPATH
+        echo "Changing to bin directory"
+        cd ${PKGPATH}/bin
+        find
+        valgrind --error-exitcode=1 ./test-tket
 
