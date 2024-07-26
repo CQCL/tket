@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
   release:
     types: [published]
-  pull_request:
 
 jobs:
 
@@ -62,15 +61,6 @@ jobs:
     needs: build_wheels
 
     steps:
-
-      - name: temp Post to a Slack channel
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          channel-id: 'C07E80TL2LB'
-          slack-message: 'Release tag: ${{ github.event.pull_request.head.ref }}'
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.PYTKET_BENCHMARKING_SLACK_BOT_TOKEN }}
-          RETURN_TEST: ${{ env.RETURN_TEST }}
       
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -113,7 +103,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'G01CP0YFFA7'
-          slack-message: '${{ env.RETURN_TEST }} Release tag: ${{ github.event.release.tag_name }}'
+          slack-message: '${{ env.RETURN_TEST }} Release tag: ${{ github.event.release.tag_name }}.'
         env:
           SLACK_BOT_TOKEN: ${{ secrets.PYTKET_BENCHMARKING_SLACK_BOT_TOKEN }}
           RETURN_TEST: ${{ env.RETURN_TEST }}
