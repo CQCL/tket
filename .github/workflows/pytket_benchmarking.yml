@@ -64,7 +64,6 @@ jobs:
     steps:
 
       - name: temp Post to a Slack channel
-        id: slack
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'C07E80TL2LB'
