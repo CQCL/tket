@@ -135,7 +135,7 @@ def overload_add_wasm_to_reg(
     if args_wasm is None:
         args_wasm = [0]
 
-    if filehandler._check_file:
+    if filehandler.checked:
         for reg in list_i:
             if reg.size > 32:
                 raise ValueError(
