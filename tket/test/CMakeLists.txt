@@ -44,7 +44,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?Clang")
     # remove -Wno-deprecated-declarations once https://github.com/boostorg/boost/issues/688 is resolved
 endif()
 
-FILE(GLOB_RECURSE JSON_FILES src/*.json)
 FILE(GLOB_RECURSE TEST_SOURCES src/test_*.cpp)
 SET(TEST_UTILS
     src/tests_main.cpp
@@ -72,17 +71,22 @@ SET(TEST_UTILS
 add_executable(test-tket ${TEST_UTILS} ${TEST_SOURCES})
 target_link_libraries(test-tket PUBLIC tket Catch2::Catch2WithMain)
 
-add_custom_target(copy-test_circuits ALL
+add_custom_target(copy-test-data-dirs ALL
+    COMMENT "Copying test data directories to build directory"
+    COMMAND ${CMAKE_COMMAND} -E make_directory
+        $<TARGET_FILE_DIR:test-tket>/test_circuits
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/test_circuits
-    ${CMAKE_CURRENT_BINARY_DIR}/test_circuits)
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/test_circuits
+        $<TARGET_FILE_DIR:test-tket>/test_circuits
 
-add_custom_target(copy-test_architectures ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory
+        $<TARGET_FILE_DIR:test-tket>/test_architectures
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/test_architectures
-    ${CMAKE_CURRENT_BINARY_DIR}/test_architectures)
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/test_architectures
+        $<TARGET_FILE_DIR:test-tket>/test_architectures
+)
+add_dependencies(test-tket copy-test-data-dirs)
 
-add_dependencies(test-tket copy-test_circuits copy-test_architectures)
 catch_discover_tests(test-tket)
 
 set(WITH_COVERAGE no CACHE BOOL "Link library with profiling for test coverage")
@@ -92,7 +96,10 @@ IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     ENDIF()
 ENDIF()
 
-install(FILES ${JSON_FILES} DESTINATION bin)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/test_circuits
+        DESTINATION bin)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/test_architectures
+        DESTINATION bin)
 
 install(TARGETS test-tket DESTINATION "."
         RUNTIME DESTINATION bin
