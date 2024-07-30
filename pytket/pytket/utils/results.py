@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Dict, List, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 
 import numpy as np
 from pytket.circuit import BasisOrder
 
 StateTuple = Tuple[int, ...]
 CountsDict = Dict[StateTuple, Union[int, float]]
-KwargTypes = Union[int, float, str, None]
+KwargTypes = Any
 
 
 class BitPermuter:
