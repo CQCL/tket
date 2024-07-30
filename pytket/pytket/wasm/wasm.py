@@ -288,7 +288,8 @@ class WasmFileHandler(WasmModuleHandler):
 
     def __init__(self, filepath: str, check_file: bool = True, int_size: int = 32):
         """
-        Construct a wasm file handler
+        Construct a wasm file handler using a filepath to read a wasm module into
+        memory.
 
         :param filepath: Path to the wasm file
         :type filepath: str
