@@ -32,7 +32,7 @@ from qwasm import (  # type: ignore
 
 
 class WasmModuleHandler:
-    """Construct and optionally check a WASM module for use in Pytket WASM Ops."""
+    """Construct and optionally check a WASM module for use in WASM Ops."""
 
     checked: bool
     _int_size: int
@@ -284,7 +284,7 @@ class WasmModuleHandler:
 
 
 class WasmFileHandler(WasmModuleHandler):
-    """Construct and optionally check a WASM module from a file for use in Pytket WASM Ops."""
+    """Construct and optionally check a WASM module from a file for use in WASM Ops."""
 
     def __init__(self, filepath: str, check_file: bool = True, int_size: int = 32):
         """
