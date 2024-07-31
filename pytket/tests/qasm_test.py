@@ -35,6 +35,7 @@ from pytket.circuit import (
     if_not_bit,
     BitRegister,
     CustomGate,
+    RangePredicateOp,
 )
 from pytket.circuit.decompose_classical import DecomposeClassicalError
 from pytket.circuit.logic_exp import BitWiseOp, create_bit_logic_exp
@@ -985,6 +986,17 @@ if(c[0]==1) c[3] = c[1];
 if(c[0]==1) c[4] = c[2];
 """
     )
+
+
+def test_conditional_range_predicate() -> None:
+    range_predicate = RangePredicateOp(6, 0, 27)
+    c = Circuit(0, 8)
+    c.add_gate(range_predicate, [0, 1, 2, 3, 4, 5, 6], condition=Bit(7))
+    with pytest.raises(Exception) as errorinfo:
+        circuit_to_qasm_str(c, header="hqslib1")
+        assert "Conditional RangePredicate is currently unsupported." in str(
+            errorinfo.value
+        )
 
 
 def test_range_with_maxwidth() -> None:
