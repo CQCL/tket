@@ -13,10 +13,16 @@ Windows. To install, run
     pip install pytket
 
 
-.. admonition:: Known issue installing pytket
+.. admonition:: Known issue installing pytket (Added 2nd August 2024)
    :class: attention
 
-   Due to the removal of the `types-pkg_resources` package from pypi there will likely be issues when installing old versions of pytket. It is recommend to use pytket `>1.31` where possible. 
+   Due to the removal of the `types-pkg_resources` package from pypi there will likely be issues when installing old versions of pytket. It is recommend to use pytket `>=1.31` where possible.
+
+   If you require using a version of pytket older than 1.31 then you can try the following.
+
+   
+    `pip install types-pkg-resources==0.1.3 pytket==1.29.1` 
+
 
 If you have issues installing ``pytket`` please visit the `installation troubleshooting <https://tket.quantinuum.com/api-docs/install.html>`_ page.
 
