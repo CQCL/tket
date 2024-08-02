@@ -197,7 +197,6 @@ setup(
         "networkx >= 2.8.8",
         "graphviz >= 0.20.3",
         "jinja2 >= 3.1.4",
-        "types-pkg_resources >= 0.1.3",
         "typing-extensions >= 4.12.2",
         "qwasm >= 1.0.1",
     ],
