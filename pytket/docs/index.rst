@@ -21,7 +21,7 @@ Windows. To install, run
    If you require using a version of pytket older than 1.31 then you can try the following.
 
    
-    `pip install types-pkg-resources==0.1.3 pytket==1.29.1` 
+    `pip install types-pkg-resources==0.1.3 pytket==<set version>` 
 
 
 If you have issues installing ``pytket`` please visit the `installation troubleshooting <https://tket.quantinuum.com/api-docs/install.html>`_ page.
