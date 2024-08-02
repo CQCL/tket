@@ -198,7 +198,6 @@ setup(
         "graphviz >= 0.20.3",
         "jinja2 >= 3.1.4",
         "typing-extensions >= 4.12.2",
-        "types-setuptools",
         "qwasm >= 1.0.1",
     ],
     extras_require={
