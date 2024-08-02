@@ -812,5 +812,11 @@ SCENARIO("Test MultiplexedTensoredU2Box exceptions", "[boxes]") {
                         "single-qubit unitary gate types or Unitary1qBox"));
   }
 }
+SCENARIO("Test MultiplexedTensoredU2Box value error") {
+  ctrl_tensored_op_map_t op_map = {
+      {{0}, {get_op_ptr(OpType::X)}}, {{1}, {get_op_ptr(OpType::Y)}}};
+  MultiplexedTensoredU2Box box(op_map);
+  REQUIRE(box.to_circuit());
+}
 }  // namespace test_Multiplexor
 }  // namespace tket

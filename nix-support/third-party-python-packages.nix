@@ -32,17 +32,6 @@ self: super: {
     nativeBuildInputs = with super.python3Packages; [ setuptools ];
     doCheck = false;
   };
-  types-pkg_resources = let
-    pname = "types-pkg_resources";
-    version = "0.1.3";
-  in super.python3.pkgs.buildPythonPackage {
-    inherit pname version;
-    src = super.fetchPypi {
-      inherit pname version;
-      sha256 = "sha256:g0qbjT2+o0NWL9mdXTNZpyb2v503M7zNK08wlvurna4=";
-    };
-    doCheck = false;
-  };
   sympy' = super.python3.pkgs.buildPythonPackage rec{
     # version bump - nixpkgs' version is 1.12 at the time of writing
     pname = "sympy";

@@ -1,6 +1,16 @@
 Changelog
 =========
 
+1.31.0 (August 2024)
+--------------------
+
+* Remove unnecessary types-pkg_resources dependency due to package being yanked from pypi
+* add scratch_reg_resize_pass for decomposing temp bit register
+* Update to pytket-circuit-renderer 0.9.
+
+Fixes:
+* Fix MultiplexedTensoredU2Box passing MultiplexedRotationBox an empty argument
+
 1.30.0 (July 2024)
 ------------------
 

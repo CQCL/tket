@@ -998,37 +998,50 @@ void add_multi_rz(
   // First get all GateSpec by constructing and decomposing
   // MultiplexedRotationBox
   for (unsigned target = 0; target < n_targets_; target++) {
-    all_decomps.push_back(
-        MultiplexedRotationBox(all_multiplexed_rz[target]).decompose());
+    ctrl_op_map_t map = all_multiplexed_rz[target];
+    if (!map.empty()) {
+      all_decomps.push_back(
+          MultiplexedRotationBox(all_multiplexed_rz[target]).decompose());
+    } else {
+      all_decomps.push_back({});
+    }
   }
   TKET_ASSERT(!all_decomps.empty());
-  unsigned reference_size = all_decomps[0].size();
-  for (unsigned i = 1; i < all_decomps.size(); i++) {
+  unsigned reference_size = 0;
+  for (unsigned i = 0; i < all_decomps.size(); i++) {
+    if (!all_decomps[i].empty() && !reference_size) {
+      reference_size = all_decomps[i].size();
+    }
     TKET_ASSERT(reference_size == all_decomps[i].size());
   }
+
+  // => no MultiplexedRz so we can carry on
+  if (!reference_size) return;
 
   // Then iterate through all the commands, adding them to the circuit
   // in an interleaved manner
   for (unsigned i = 0; i < reference_size; i++) {
     for (unsigned target = 0; target < all_decomps.size(); target++) {
-      GateSpec gate = all_decomps[target][i];
-      unsigned rotated_index;
-      switch (gate.type) {
-        case OpType::CX:
-          // we also need to map gate.qubit to the correct qubit
-          // we know that the bitstrings for the "target"th target have been
-          // left rotated by "target", so:
-          rotated_index = (*gate.qubit + (target % n_targets_)) % n_controls_;
-          circ.add_op<unsigned>(
-              OpType::CX, {rotated_index, n_controls_ + target});
-          break;
-        case OpType::Rz:
-          circ.add_op<unsigned>(
-              OpType::Rz, *gate.angle, {n_controls_ + target});
-          break;
-        default:
-          // this should never be hit
-          TKET_ASSERT(false);
+      if (!all_decomps[target].empty()) {
+        GateSpec gate = all_decomps[target][i];
+        unsigned rotated_index;
+        switch (gate.type) {
+          case OpType::CX:
+            // we also need to map gate.qubit to the correct qubit
+            // we know that the bitstrings for the "target"th target have been
+            // left rotated by "target", so:
+            rotated_index = (*gate.qubit + (target % n_targets_)) % n_controls_;
+            circ.add_op<unsigned>(
+                OpType::CX, {rotated_index, n_controls_ + target});
+            break;
+          case OpType::Rz:
+            circ.add_op<unsigned>(
+                OpType::Rz, *gate.angle, {n_controls_ + target});
+            break;
+          default:
+            // this should never be hit
+            TKET_ASSERT(false);
+        }
       }
     }
   }
