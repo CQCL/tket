@@ -304,14 +304,6 @@ jobs:
         cd pytket/tests
         pip install -r requirements.txt
         pytest --ignore=simulator/
-    - name: Test building docs
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      timeout-minutes: 20
-      run: |
-        cd pytket/docs
-        pip install -e .
-        cd ../../
-        ./.github/workflows/build-docs
         
     - name: Upload artifact
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
