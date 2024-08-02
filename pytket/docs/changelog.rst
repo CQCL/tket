@@ -4,7 +4,7 @@ Changelog
 1.31.0 (August 2024)
 --------------------
 
-* remove types-pkg_resources dependency
+* Remove unnecessary types-pkg_resources dependency due to package  being yanked from pypi
 * add scratch_reg_resize_pass for decomposing temp bit register
 * Update to pytket-circuit-renderer 0.9.
 
