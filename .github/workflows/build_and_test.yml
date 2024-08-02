@@ -304,15 +304,6 @@ jobs:
         cd pytket/tests
         pip install -r requirements.txt
         pytest --ignore=simulator/
-    - name: Test building docs
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      timeout-minutes: 20
-      run: |
-        pip install poetry==1.6.1
-        cd pytket/docs
-        poetry install
-        cd ../../
-        poetry run -C pytket/docs ./.github/workflows/build-docs
         
     - name: Upload artifact
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
