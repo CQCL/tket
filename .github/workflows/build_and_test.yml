@@ -311,7 +311,7 @@ jobs:
         cd pytket/docs
         pip install -e .
         cd ../../
-        python -m  run -C pytket/docs ./.github/workflows/build-docs
+        ./.github/workflows/build-docs
         
     - name: Upload artifact
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
