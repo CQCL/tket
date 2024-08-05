@@ -4,7 +4,7 @@ Changelog
 1.31.1 (August 2024)
 --------------------
 
-* Fix issue in pytket-circuit-renderer 0.9.
+* Fix issue with css styles in pytket-circuit-renderer 0.9.
 
 1.31.0 (August 2024)
 --------------------
