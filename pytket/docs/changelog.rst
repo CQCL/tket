@@ -1,8 +1,50 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.31.0 (August 2024)
+--------------------
+
+* Remove unnecessary types-pkg_resources dependency due to package being yanked from pypi
+* add scratch_reg_resize_pass for decomposing temp bit register
+* Update to pytket-circuit-renderer 0.9.
+
+Fixes:
+* Fix MultiplexedTensoredU2Box passing MultiplexedRotationBox an empty argument
+
+1.30.0 (July 2024)
+------------------
+
+* Support classical transforms and predicates, and QASM registers, with up to 64
+  bits. Add an attribute to the pytket module to assert this.
+* Add `PauliSynthStrat.Greedy` strategy to `TermSequenceBox`.
+* Update version requirements on dependencies, removing all upper bounds (in
+  particular allowing compatibility with numpy 2.0).
+* Fix bug in `CliffordResynthesis()` pass.
+* Update `FlattenRelabelRegistersPass` and `remove_blank_wires` to only
+  remove unused classical bits at the end of a register
+* Remove deprecated `SynthesiseOQC` pass.
+* Deprecate `SynthesiseUMD` pass.
+* Remove deprecated `ConstPredicate`.
+
+1.29.2 (June 2024)
+------------------
+
+Feature:
+
+* Revert keeping of blank classical wires when running
+  ``FlattenRelabelRegistersPass``.
+
+1.29.1 (June 2024)
+------------------
+
+Features:
+
+* Improve depth of circuit produced by ``MultiplexedTensoredU2Box``.
+* Revert support of classical transforms and predicates, and QASM registers,
+  with up to 64 bits. (Revert maximum width to 32.)
+
+1.29.0 (June 2024)
+------------------
 
 Features:
 
@@ -10,6 +52,8 @@ Features:
 * Add ``AutoRebase`` and ``AutoSquash`` passes.
   Deprecate ``auto_rebase_pass`` and ``auto_squash_pass``.
 * Add new parameter to `remove_blank_wires` to allow to keep empty classical bits
+* Support classical transforms and predicates, and QASM registers, with up to 64
+  bits.
 
 Fixes:
 

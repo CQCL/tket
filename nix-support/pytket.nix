@@ -40,12 +40,11 @@ in {
     propagatedBuildInputs = with super.python3.pkgs; [
       self.binders
       super.lark
-      super.types-pkg_resources
       super.qwasm
       graphviz
       networkx
       jinja2
-      sympy
+      super.sympy'
       scipy
       numpy
       typing-extensions

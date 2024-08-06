@@ -72,7 +72,7 @@ from pytket.circuit.named_types import RenameUnitsMap
 
 from pytket.passes import DecomposeClassicalExp, FlattenRegisters
 
-from strategies import reg_name_regex, binary_digits, uint32  # type: ignore
+from strategies import reg_name_regex, binary_digits, uint32, uint64  # type: ignore
 
 curr_file_path = Path(__file__).resolve().parent
 
@@ -840,7 +840,7 @@ def primitive_reg_logic_exps(
                 RegGeq,
             ),
         ):
-            const_compare = draw(uint32)
+            const_compare = draw(uint64)
             args.append(const_compare)
         else:
             args.append(draw(bit_regs))
@@ -854,8 +854,8 @@ def primitive_reg_logic_exps(
 @given(
     reg_exp=primitive_reg_logic_exps(),
     constants=strategies.tuples(
-        uint32,
-        uint32,
+        uint64,
+        uint64,
     ),
 )
 def test_reg_exp(reg_exp: RegLogicExp, constants: Tuple[int, int]) -> None:
@@ -929,7 +929,7 @@ def composite_bit_logic_exps(
 def composite_reg_logic_exps(
     draw: DrawType,
     regs: SearchStrategy[BitRegister] = bit_register(),
-    constants: SearchStrategy[int] = uint32,
+    constants: SearchStrategy[int] = uint64,
     operators: SearchStrategy[Callable] = strategies.sampled_from(
         [
             operator.and_,
@@ -979,7 +979,7 @@ def reg_const_predicates(
     operators: SearchStrategy[
         Callable[[Union[RegLogicExp, BitRegister], int], PredicateExp]
     ] = strategies.sampled_from([reg_eq, reg_neq, reg_lt, reg_gt, reg_leq, reg_geq]),
-    constants: SearchStrategy[int] = uint32,
+    constants: SearchStrategy[int] = uint64,
 ) -> PredicateExp:
     return draw(operators)(draw(exp), draw(constants))  # type: ignore
 
@@ -1131,10 +1131,10 @@ def test_decomposition_known() -> None:
     )
     check_serialization_roundtrip(circ)
 
-    temp_bits = BitRegister(_TEMP_BIT_NAME, 32)
+    temp_bits = BitRegister(_TEMP_BIT_NAME, 64)
 
     def temp_reg(i: int) -> BitRegister:
-        return BitRegister(f"{_TEMP_BIT_REG_BASE}_{i}", 32)
+        return BitRegister(f"{_TEMP_BIT_REG_BASE}_{i}", 64)
 
     for b in (temp_bits[i] for i in range(0, 10)):
         conditioned_circ.add_bit(b)
@@ -1170,13 +1170,13 @@ def test_decomposition_known() -> None:
     conditioned_circ.add_c_range_predicate(5, 5, registers_lists[2], temp_bits[5])
     conditioned_circ.Y(qreg[4], condition_bits=[temp_bits[5]], condition_value=0)
     conditioned_circ.add_c_range_predicate(
-        4, 4294967295, registers_lists[3], temp_bits[6]
+        4, 18446744073709551615, registers_lists[3], temp_bits[6]
     )
     conditioned_circ.Z(qreg[5], condition_bits=[temp_bits[6]], condition_value=1)
     conditioned_circ.add_c_range_predicate(0, 6, registers_lists[4], temp_bits[7])
     conditioned_circ.S(qreg[6], condition_bits=[temp_bits[7]], condition_value=1)
     conditioned_circ.add_c_range_predicate(
-        3, 4294967295, registers_lists[5], temp_bits[8]
+        3, 18446744073709551615, registers_lists[5], temp_bits[8]
     )
     conditioned_circ.T(qreg[7], condition_bits=[temp_bits[8]], condition_value=1)
 
@@ -1196,7 +1196,7 @@ def test_decomposition_known() -> None:
         decomposed_circ.add_bit(b)
 
     decomposed_circ.add_c_register(BitRegister(f"{_TEMP_BIT_REG_BASE}_0", 3))
-    decomposed_circ.add_c_register(BitRegister(f"{_TEMP_BIT_REG_BASE}_1", 32))
+    decomposed_circ.add_c_register(BitRegister(f"{_TEMP_BIT_REG_BASE}_1", 64))
 
     decomposed_circ.H(qreg[0], condition_bits=[bits[0]], condition_value=1)
     decomposed_circ.X(qreg[0], condition_bits=[bits[1]], condition_value=1)
@@ -1211,11 +1211,11 @@ def test_decomposition_known() -> None:
     decomposed_circ.add_c_range_predicate(0, 5, registers_lists[1], temp_bits[4])
     decomposed_circ.add_c_range_predicate(5, 5, registers_lists[2], temp_bits[5])
     decomposed_circ.add_c_range_predicate(
-        4, 4294967295, registers_lists[3], temp_bits[6]
+        4, 18446744073709551615, registers_lists[3], temp_bits[6]
     )
     decomposed_circ.add_c_range_predicate(0, 6, registers_lists[4], temp_bits[7])
     decomposed_circ.add_c_range_predicate(
-        3, 4294967295, registers_lists[5], temp_bits[8]
+        3, 18446744073709551615, registers_lists[5], temp_bits[8]
     )
 
     decomposed_circ.add_c_xor(bits[5], bits[6], temp_bits[2])

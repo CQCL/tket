@@ -392,7 +392,7 @@ SCENARIO("Test Circuit serialization") {
          {{Pauli::I, Pauli::Y, Pauli::I, Pauli::Z, Pauli::Y}, 1.178},
          {{Pauli::X, Pauli::X, Pauli::I, Pauli::Y, Pauli::I}, -0.911}},
         Transforms::PauliSynthStrat::Sets, PauliPartitionStrat::CommutingSets,
-        GraphColourMethod::Lazy, CXConfigType::Snake);
+        GraphColourMethod::Lazy, CXConfigType::Snake, 0.4);
     c.add_box(pbox, {0, 1, 2, 3, 4});
     nlohmann::json j_pbox = c;
     const Circuit new_c = j_pbox.get<Circuit>();
@@ -405,6 +405,7 @@ SCENARIO("Test Circuit serialization") {
     REQUIRE(p_b.get_partition_strategy() == pbox.get_partition_strategy());
     REQUIRE(p_b.get_graph_colouring() == pbox.get_graph_colouring());
     REQUIRE(p_b.get_cx_config() == pbox.get_cx_config());
+    REQUIRE(p_b.get_depth_weight() == pbox.get_depth_weight());
     REQUIRE(p_b == pbox);
   }
 
@@ -922,7 +923,6 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(RemoveRedundancies, RemoveRedundancies())
   COMPPASSJSONTEST(SynthesiseTK, SynthesiseTK())
   COMPPASSJSONTEST(SynthesiseTket, SynthesiseTket())
-  COMPPASSJSONTEST(SynthesiseOQC, SynthesiseOQC())
   COMPPASSJSONTEST(SynthesiseUMD, SynthesiseUMD())
   COMPPASSJSONTEST(SquashTK1, SquashTK1())
   COMPPASSJSONTEST(SquashRzPhasedX, SquashRzPhasedX())

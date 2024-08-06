@@ -82,11 +82,6 @@ Transform synthesise_tk();
  */
 Transform synthesise_tket();
 
-// converts a circuit into the OQC primitives (Rz, SX, ECR gates)
-// Expects: any gates
-// Produces: Rz, SX, ECR
-Transform synthesise_OQC();
-
 // converts a circuit into the UMD primitives (Rz, PhasedX, XXPhase) whilst
 // optimising Expects: Any gate set Produces: XXPhase, PhasedX, Rz
 Transform synthesise_UMD();

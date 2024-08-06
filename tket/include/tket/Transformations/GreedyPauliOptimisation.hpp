@@ -206,6 +206,20 @@ enum class SupportType : unsigned {
  */
 Circuit greedy_pauli_graph_synthesis(
     const Circuit& circ, double discount_rate = 0.7, double depth_weight = 0.3);
+
+/**
+ * @brief Synthesise a set of unordered Pauli exponentials by applying Clifford
+ * gates and single qubit rotations in a greedy fashion. Assume all Pauli
+ * strings have the same length.
+ *
+ * @param unordered_set
+ * @param depth_weight
+ * @return Circuit
+ */
+Circuit greedy_pauli_set_synthesis(
+    const std::vector<SymPauliTensor>& unordered_set,
+    double depth_weight = 0.3);
+
 }  // namespace GreedyPauliSimp
 
 Transform greedy_pauli_optimisation(

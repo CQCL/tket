@@ -420,23 +420,6 @@ Transform decompose_tk1_to_rzrx() {
   });
 }
 
-Transform decompose_CX_to_ECR() {
-  return Transform([](Circuit &circ) {
-    bool success = false;
-    auto [i, end] = boost::vertices(circ.dag);
-    for (auto next = i; i != end; i = next) {
-      ++next;
-      if (circ.get_OpType_from_Vertex(*i) == OpType::CX) {
-        success = true;
-        Subcircuit sub{circ.get_in_edges(*i), circ.get_all_out_edges(*i), {*i}};
-        circ.substitute(
-            CircPool::CX_using_ECR(), sub, Circuit::VertexDeletion::Yes);
-      }
-    }
-    return success;
-  });
-}
-
 Transform decompose_CX_to_HQS2() {
   return Transform([](Circuit &circ) {
     bool success = false;

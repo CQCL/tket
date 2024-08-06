@@ -14,6 +14,7 @@
 
 #include "tket/Ops/ClassicalOps.hpp"
 
+#include <cstdint>
 #include <tkassert/Assert.hpp>
 
 #include "tket/OpType/OpType.hpp"
@@ -21,12 +22,12 @@
 
 namespace tket {
 
-static uint32_t u32_from_boolvec(const std::vector<bool> &x) {
+static uint64_t u64_from_boolvec(const std::vector<bool> &x) {
   unsigned n = x.size();
-  if (n > 32) {
-    throw std::domain_error("Vector of bool exceeds maximum size (32)");
+  if (n > 64) {
+    throw std::domain_error("Vector of bool exceeds maximum size (64)");
   }
-  uint32_t X = 0;
+  uint64_t X = 0;
   for (unsigned i = 0; i < n; i++) {
     if (x[i]) X |= (1u << i);
   }
@@ -99,8 +100,8 @@ static std::shared_ptr<ClassicalEvalOp> classical_from_json(
     case OpType::RangePredicate:
       return std::make_shared<RangePredicateOp>(
           j_class.at("n_i").get<unsigned>(),
-          j_class.at("lower").get<unsigned>(),
-          j_class.at("upper").get<unsigned>());
+          j_class.at("lower").get<uint64_t>(),
+          j_class.at("upper").get<uint64_t>());
     case OpType::CopyBits:
       return std::make_shared<CopyBitsOp>(j_class.at("n_i").get<unsigned>());
     case OpType::SetBits:
@@ -119,7 +120,7 @@ static std::shared_ptr<ClassicalEvalOp> classical_from_json(
     case OpType::ClassicalTransform:
       return std::make_shared<ClassicalTransformOp>(
           j_class.at("n_io").get<unsigned>(),
-          j_class.at("values").get<std::vector<uint32_t>>(),
+          j_class.at("values").get<std::vector<uint64_t>>(),
           j_class.at("name").get<std::string>());
     default:
       throw JsonError(
@@ -207,9 +208,9 @@ bool ClassicalEvalOp::is_equal(const Op &op_other) const {
   if (n_io_ != other.get_n_io()) return false;
   if (n_o_ != other.get_n_o()) return false;
   unsigned N = n_i_ + n_io_;
-  uint32_t xlim = 1u << N;
+  uint64_t xlim = 1u << N;
   std::vector<bool> v(N);
-  for (uint32_t x = 0; x < xlim; x++) {
+  for (uint64_t x = 0; x < xlim; x++) {
     for (unsigned i = 0; i < N; i++) {
       v[i] = (x >> i) & 1;
     }
@@ -219,11 +220,11 @@ bool ClassicalEvalOp::is_equal(const Op &op_other) const {
 }
 
 ClassicalTransformOp::ClassicalTransformOp(
-    unsigned n, const std::vector<uint32_t> &values, const std::string &name)
+    unsigned n, const std::vector<uint64_t> &values, const std::string &name)
     : ClassicalEvalOp(OpType::ClassicalTransform, 0, n, 0, name),
       values_(values) {
-  if (n > 32) {
-    throw std::domain_error("Too many inputs/outputs (maximum is 32)");
+  if (n > 64) {
+    throw std::domain_error("Too many inputs/outputs (maximum is 64)");
   }
 }
 
@@ -231,7 +232,7 @@ std::vector<bool> ClassicalTransformOp::eval(const std::vector<bool> &x) const {
   if (x.size() != n_io_) {
     throw std::domain_error("Incorrect input size");
   }
-  uint32_t val = values_[u32_from_boolvec(x)];
+  uint64_t val = values_[u64_from_boolvec(x)];
   std::vector<bool> y(n_io_);
   for (unsigned j = 0; j < n_io_; j++) {
     y[j] = (val >> j) & 1;
@@ -319,7 +320,7 @@ std::vector<bool> RangePredicateOp::eval(const std::vector<bool> &x) const {
   if (x.size() != n_i_) {
     throw std::domain_error("Incorrect input size");
   }
-  uint32_t X = u32_from_boolvec(x);
+  uint64_t X = u64_from_boolvec(x);
   std::vector<bool> y(1);
   y[0] = (X >= a && X <= b);
   return y;
@@ -336,7 +337,7 @@ bool RangePredicateOp::is_equal(const Op &op_other) const {
 ExplicitPredicateOp::ExplicitPredicateOp(
     unsigned n, const std::vector<bool> &values, const std::string &name)
     : PredicateOp(OpType::ExplicitPredicate, n, name), values_(values) {
-  if (n > 32) {
+  if (n > 64) {
     throw std::domain_error("Too many inputs");
   }
 }
@@ -346,7 +347,7 @@ std::vector<bool> ExplicitPredicateOp::eval(const std::vector<bool> &x) const {
     throw std::domain_error("Incorrect input size");
   }
   std::vector<bool> y(1);
-  y[0] = values_[u32_from_boolvec(x)];
+  y[0] = values_[u64_from_boolvec(x)];
   return y;
 }
 
@@ -363,7 +364,7 @@ std::vector<bool> ExplicitModifierOp::eval(const std::vector<bool> &x) const {
     throw std::domain_error("Incorrect input size");
   }
   std::vector<bool> y(1);
-  y[0] = values_[u32_from_boolvec(x)];
+  y[0] = values_[u64_from_boolvec(x)];
   return y;
 }
 
@@ -416,14 +417,14 @@ bool MultiBitOp::is_equal(const Op &op_other) const {
 }
 
 std::shared_ptr<ClassicalTransformOp> ClassicalX() {
-  static const std::vector<uint32_t> values = {1, 0};
+  static const std::vector<uint64_t> values = {1, 0};
   static const std::shared_ptr<ClassicalTransformOp> op =
       std::make_shared<ClassicalTransformOp>(1, values, "ClassicalX");
   return op;
 }
 
 std::shared_ptr<ClassicalTransformOp> ClassicalCX() {
-  static const std::vector<uint32_t> values = {0, 3, 2, 1};
+  static const std::vector<uint64_t> values = {0, 3, 2, 1};
   static const std::shared_ptr<ClassicalTransformOp> op =
       std::make_shared<ClassicalTransformOp>(2, values, "ClassicalCX");
   return op;

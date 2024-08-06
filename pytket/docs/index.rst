@@ -13,6 +13,16 @@ Windows. To install, run
     pip install pytket
 
 
+.. admonition:: Known issue installing pytket (Added 2nd August 2024)
+   :class: attention
+
+   Due to the removal of the `types-pkg_resources` package from pypi there will likely be issues when installing old versions of pytket. It is recommend to use pytket `>=1.31` where possible.
+
+   If you require using a version of pytket older than 1.31 then you can try the following.
+
+   
+    `pip install types-pkg-resources==0.1.3 pytket==<set version>` 
+
 
 If you have issues installing ``pytket`` please visit the `installation troubleshooting <https://tket.quantinuum.com/api-docs/install.html>`_ page.
 
@@ -84,13 +94,9 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     faqs.rst
 
 .. toctree::
-    :caption: pytket documentation:
+    :caption: pytket extensions:
     
-    pytket API docs <https://tket.quantinuum.com/api-docs/>
     extensions.rst
-    Manual <https://tket.quantinuum.com/user-manual>
-    Example notebooks <https://tket.quantinuum.com/examples>
-    TKET website <https://tket.quantinuum.com/>
 
 .. toctree::
     :caption: API Reference:

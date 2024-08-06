@@ -16,11 +16,14 @@ class PauliSynthStrat:
       Pairwise : Synthesise gadgets using an efficient pairwise strategy from Cowtan et al (https://arxiv.org/abs/1906.01734)
     
       Sets : Synthesise gadgets in commuting sets
+    
+      Greedy : Synthesise gadgets using a greedy algorithm adapted from arxiv.org/abs/2103.08602. This strategy is currently only accepted by `TermSequenceBox`. For synthesising general circuits try using `GreedyPauliSimp`.
     """
+    Greedy: typing.ClassVar[PauliSynthStrat]  # value = <PauliSynthStrat.Greedy: 3>
     Individual: typing.ClassVar[PauliSynthStrat]  # value = <PauliSynthStrat.Individual: 0>
     Pairwise: typing.ClassVar[PauliSynthStrat]  # value = <PauliSynthStrat.Pairwise: 1>
     Sets: typing.ClassVar[PauliSynthStrat]  # value = <PauliSynthStrat.Sets: 2>
-    __members__: typing.ClassVar[dict[str, PauliSynthStrat]]  # value = {'Individual': <PauliSynthStrat.Individual: 0>, 'Pairwise': <PauliSynthStrat.Pairwise: 1>, 'Sets': <PauliSynthStrat.Sets: 2>}
+    __members__: typing.ClassVar[dict[str, PauliSynthStrat]]  # value = {'Individual': <PauliSynthStrat.Individual: 0>, 'Pairwise': <PauliSynthStrat.Pairwise: 1>, 'Sets': <PauliSynthStrat.Sets: 2>, 'Greedy': <PauliSynthStrat.Greedy: 3>}
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:

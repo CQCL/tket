@@ -9,7 +9,7 @@ import pytket._tket.transform
 import pytket._tket.unit_id
 import sympy
 import typing
-__all__ = ['AASRouting', 'Audit', 'AutoRebase', 'AutoSquash', 'BasePass', 'CNotSynthType', 'CXMappingPass', 'CliffordPushThroughMeasures', 'CliffordResynthesis', 'CliffordSimp', 'CnXPairwiseDecomposition', 'CommuteThroughMultis', 'ComposePhasePolyBoxes', 'ContextSimp', 'CustomPass', 'CustomRoutingPass', 'DecomposeArbitrarilyControlledGates', 'DecomposeBoxes', 'DecomposeClassicalExp', 'DecomposeMultiQubitsCX', 'DecomposeSingleQubitsTK1', 'DecomposeSwapsToCXs', 'DecomposeSwapsToCircuit', 'DecomposeTK2', 'Default', 'DefaultMappingPass', 'DelayMeasures', 'EulerAngleReduction', 'FlattenRegisters', 'FlattenRelabelRegistersPass', 'FullMappingPass', 'FullPeepholeOptimise', 'GlobalisePhasedX', 'GreedyPauliSimp', 'GuidedPauliSimp', 'HamPath', 'KAKDecomposition', 'NaivePlacementPass', 'NormaliseTK2', 'OptimisePhaseGadgets', 'PauliExponentials', 'PauliSimp', 'PauliSquash', 'PeepholeOptimise2Q', 'PlacementPass', 'RebaseCustom', 'RebaseTket', 'Rec', 'RemoveBarriers', 'RemoveDiscarded', 'RemoveImplicitQubitPermutation', 'RemoveRedundancies', 'RenameQubitsPass', 'RepeatPass', 'RepeatUntilSatisfiedPass', 'RepeatWithMetricPass', 'RoundAngles', 'RoutingPass', 'SWAP', 'SafetyMode', 'SequencePass', 'SimplifyInitial', 'SimplifyMeasured', 'SquashCustom', 'SquashRzPhasedX', 'SquashTK1', 'SynthesiseOQC', 'SynthesiseTK', 'SynthesiseTket', 'SynthesiseUMD', 'ThreeQubitSquash', 'ZXGraphlikeOptimisation', 'ZZPhaseToRz']
+__all__ = ['AASRouting', 'Audit', 'AutoRebase', 'AutoSquash', 'BasePass', 'CNotSynthType', 'CXMappingPass', 'CliffordPushThroughMeasures', 'CliffordResynthesis', 'CliffordSimp', 'CnXPairwiseDecomposition', 'CommuteThroughMultis', 'ComposePhasePolyBoxes', 'ContextSimp', 'CustomPass', 'CustomRoutingPass', 'DecomposeArbitrarilyControlledGates', 'DecomposeBoxes', 'DecomposeClassicalExp', 'DecomposeMultiQubitsCX', 'DecomposeSingleQubitsTK1', 'DecomposeSwapsToCXs', 'DecomposeSwapsToCircuit', 'DecomposeTK2', 'Default', 'DefaultMappingPass', 'DelayMeasures', 'EulerAngleReduction', 'FlattenRegisters', 'FlattenRelabelRegistersPass', 'FullMappingPass', 'FullPeepholeOptimise', 'GlobalisePhasedX', 'GreedyPauliSimp', 'GuidedPauliSimp', 'HamPath', 'KAKDecomposition', 'NaivePlacementPass', 'NormaliseTK2', 'OptimisePhaseGadgets', 'PauliExponentials', 'PauliSimp', 'PauliSquash', 'PeepholeOptimise2Q', 'PlacementPass', 'RebaseCustom', 'RebaseTket', 'Rec', 'RemoveBarriers', 'RemoveDiscarded', 'RemoveImplicitQubitPermutation', 'RemoveRedundancies', 'RenameQubitsPass', 'RepeatPass', 'RepeatUntilSatisfiedPass', 'RepeatWithMetricPass', 'RoundAngles', 'RoutingPass', 'SWAP', 'SafetyMode', 'SequencePass', 'SimplifyInitial', 'SimplifyMeasured', 'SquashCustom', 'SquashRzPhasedX', 'SquashTK1', 'SynthesiseTK', 'SynthesiseTket', 'SynthesiseUMD', 'ThreeQubitSquash', 'ZXGraphlikeOptimisation', 'ZZPhaseToRz']
 class BasePass:
     """
     Base class for passes.
@@ -250,7 +250,7 @@ def CliffordPushThroughMeasures() -> BasePass:
     """
 def CliffordResynthesis(transform: typing.Callable[[pytket._tket.circuit.Circuit], pytket._tket.circuit.Circuit] | None = None, allow_swaps: bool = True) -> BasePass:
     """
-    An optimisation pass that resynhesises all Clifford subcircuits and then applies some rewrite rules to simplify them further.
+    An optimisation pass that resynthesises Clifford subcircuits, trying to reduce the 2-qubit gate count as much as possible.
     
     :param transform: optional user-provided resynthesis method to apply to all Clifford subcircuits (a function taking a Clifford circuit as an argument and returning an equivalent circuit); if not provided, a default resynthesis method is applied
     :param allow_swaps: whether the rewriting may introduce wire swaps (only relevant to the default resynthesis method used when the `transform` argument is not provided)
@@ -623,10 +623,6 @@ def SquashTK1() -> BasePass:
     """
     Squash sequences of single-qubit gates to TK1 gates.
     """
-def SynthesiseOQC() -> BasePass:
-    """
-    Optimises and converts all gates to ECR, Rz, SX and Phase. DEPRECATED: will be removed after pytket 1.28.
-    """
 def SynthesiseTK() -> BasePass:
     """
     Optimises and converts all gates to TK2, TK1 and Phase gates.
@@ -637,7 +633,7 @@ def SynthesiseTket() -> BasePass:
     """
 def SynthesiseUMD() -> BasePass:
     """
-    Optimises and converts all gates to XXPhase, PhasedX, Rz and Phase.
+    Optimises and converts all gates to XXPhase, PhasedX, Rz and Phase. DEPRECATED: will be removed after pytket 1.32.
     """
 def ThreeQubitSquash(allow_swaps: bool = True) -> BasePass:
     """

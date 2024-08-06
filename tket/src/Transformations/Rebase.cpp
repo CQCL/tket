@@ -257,12 +257,6 @@ Transform rebase_UFR() {
       CircPool::tk1_to_rzh);
 }
 
-Transform rebase_OQC() {
-  return rebase_factory(
-      {OpType::ECR, OpType::Rz, OpType::SX}, CircPool::CX_using_ECR(),
-      CircPool::tk1_to_rzsx);
-}
-
 // Multiqs: ZZMax
 // Singleqs: Rz, PhasedX
 Transform rebase_HQS() {

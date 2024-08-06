@@ -32,15 +32,22 @@ self: super: {
     nativeBuildInputs = with super.python3Packages; [ setuptools ];
     doCheck = false;
   };
-  types-pkg_resources = let
-    pname = "types-pkg_resources";
-    version = "0.1.3";
-  in super.python3.pkgs.buildPythonPackage {
-    inherit pname version;
-    src = super.fetchPypi {
+  sympy' = super.python3.pkgs.buildPythonPackage rec{
+    # version bump - nixpkgs' version is 1.12 at the time of writing
+    pname = "sympy";
+    version = "1.13.0";
+    format = "setuptools";
+    src = super.python3Packages.fetchPypi {
       inherit pname version;
-      sha256 = "sha256:g0qbjT2+o0NWL9mdXTNZpyb2v503M7zNK08wlvurna4=";
+      sha256 = "sha256:O2r49NAIuaGmpCaLM1uYSyODXybR1gsFJuvHHUiiX1c=";
     };
+    nativeCheckInputs = [ super.glibcLocales ];
+    propagatedBuildInputs = [ super.python3Packages.mpmath ];
+    # tests take ~1h
     doCheck = false;
+    pythonImportsCheck = [ "sympy" ];
+    preCheck = ''
+      export LANG="en_US.UTF-8"
+    '';
   };
 }

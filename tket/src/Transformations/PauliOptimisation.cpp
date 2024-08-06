@@ -206,6 +206,11 @@ Transform synthesise_pauli_graph(
         circ = pauli_graph_to_pauli_exp_box_circuit_sets(pg, cx_config);
         break;
       }
+      case PauliSynthStrat::Greedy: {
+        throw Unsupported(
+            "PauliSynthStrat::Greedy is currently not supported. Try using "
+            "GreedyPauliSimp or a different PauliSynthStrat.");
+      }
       default:
         TKET_ASSERT(!"Unknown Pauli Synthesis Strategy");
     }

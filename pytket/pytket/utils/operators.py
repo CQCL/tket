@@ -24,14 +24,13 @@ from pytket.utils.serialization import complex_to_list, list_to_complex
 
 
 CoeffTypeAccepted = Union[int, float, complex, Expr]
-CoeffTypeConverted = Union[Expr]
 
 if TYPE_CHECKING:
     from scipy.sparse import csc_matrix
 
 
-def _coeff_convert(coeff: Union[CoeffTypeAccepted, str]) -> CoeffTypeConverted:
-    sympy_val = sympify(coeff)  # type: ignore
+def _coeff_convert(coeff: Union[CoeffTypeAccepted, str]) -> Expr:
+    sympy_val = sympify(coeff)
     if not isinstance(sympy_val, Expr):
         raise ValueError("Unsupported value for QubitPauliString coefficient")
     return sympy_val
@@ -65,7 +64,7 @@ class QubitPauliOperator:
         self,
         dictionary: Optional[Dict[QubitPauliString, CoeffTypeAccepted]] = None,
     ) -> None:
-        self._dict: Dict[QubitPauliString, CoeffTypeConverted] = dict()
+        self._dict: Dict[QubitPauliString, Expr] = dict()
         if dictionary:
             for key, value in dictionary.items():
                 self._dict[key] = _coeff_convert(value)
@@ -74,12 +73,10 @@ class QubitPauliOperator:
     def __repr__(self) -> str:
         return self._dict.__repr__()
 
-    def __getitem__(self, key: QubitPauliString) -> CoeffTypeConverted:
+    def __getitem__(self, key: QubitPauliString) -> Expr:
         return self._dict[key]
 
-    def get(
-        self, key: QubitPauliString, default: CoeffTypeAccepted
-    ) -> CoeffTypeConverted:
+    def get(self, key: QubitPauliString, default: CoeffTypeAccepted) -> Expr:
         return self._dict.get(key, _coeff_convert(default))
 
     def __setitem__(self, key: QubitPauliString, value: CoeffTypeAccepted) -> None:
@@ -94,10 +91,10 @@ class QubitPauliOperator:
         self._dict[key] = _coeff_convert(value)
         self._all_qubits.update(key.map.keys())
 
-    def __getstate__(self) -> Dict[QubitPauliString, CoeffTypeConverted]:
+    def __getstate__(self) -> Dict[QubitPauliString, Expr]:
         return self._dict
 
-    def __setstate__(self, _dict: Dict[QubitPauliString, CoeffTypeConverted]) -> None:
+    def __setstate__(self, _dict: Dict[QubitPauliString, Expr]) -> None:
         # values assumed to be already sympified
         self._dict = _dict
         self._collect_qubits()
@@ -202,7 +199,7 @@ class QubitPauliOperator:
         :return: Product operator
         :rtype: QubitPauliOperator
         """
-        return self * _coeff_convert(multiplier)
+        return self.__mul__(_coeff_convert(multiplier))
 
     @property
     def all_qubits(self) -> Set[Qubit]:
@@ -220,7 +217,7 @@ class QubitPauliOperator:
         :type symbol_dict: Dict[Symbol, complex]
         """
         for key, value in self._dict.items():
-            self._dict[key] = value.subs(symbol_dict)  # type: ignore
+            self._dict[key] = value.subs(symbol_dict)
 
     def to_list(self) -> List[Dict[str, Any]]:
         """Generate a list serialized representation of QubitPauliOperator,
@@ -234,7 +231,7 @@ class QubitPauliOperator:
             try:
                 coeff = complex_to_list(complex(v))
             except TypeError:
-                assert type(Expr(v)) == Expr  # type: ignore
+                assert type(Expr(v)) == Expr
                 coeff = str(v)
             ret.append(
                 {
@@ -256,7 +253,7 @@ class QubitPauliOperator:
         def get_qps(obj: Dict[str, Any]) -> QubitPauliString:
             return QubitPauliString.from_list(obj["string"])
 
-        def get_coeff(obj: Dict[str, Any]) -> CoeffTypeConverted:
+        def get_coeff(obj: Dict[str, Any]) -> Expr:
             coeff = obj["coefficient"]
             if type(coeff) is str:
                 return _coeff_convert(coeff)
@@ -381,7 +378,7 @@ class QubitPauliOperator:
 
         to_delete = []
         for key, value in self._dict.items():
-            placeholder = value.subs({s: 1 for s in value.free_symbols})  # type: ignore
+            placeholder = value.subs({s: 1 for s in value.free_symbols})
             if abs(re(placeholder)) <= abs_tol:
                 if abs(im(placeholder)) <= abs_tol:
                     to_delete.append(key)
