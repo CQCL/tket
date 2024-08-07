@@ -96,6 +96,9 @@ html_static_path = ["./quantinuum-sphinx/_static/", "_static/"]
 # documentation.
 #
 
+
+exclude_patterns = ["build/jupyter_execute/*", ".venv/*"]
+
 html_theme_options = {}
 
 # Custom sidebar templates, must be a dictionary that maps document names
