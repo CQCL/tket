@@ -1484,23 +1484,30 @@ class QasmWriter:
             # Conditional phase is ignored.
             return
         condstr = self.condition_string(op, variable)
-        self.strings.add_string(condstr)
-        self.add_op(op.op, args[op.width :])
+        self.add_op(op.op, args[op.width :], condstr)
 
-    def add_set_bits(self, op: SetBitsOp, args: List[Bit]) -> None:
+    def add_set_bits(
+        self, op: SetBitsOp, args: List[Bit], condstr: Optional[str]
+    ) -> None:
         creg_name = args[0].reg_name
         bits, vals = zip(*sorted(zip(args, op.values)))
         # check if whole register can be set at once
         if bits == tuple(self.cregs[creg_name].to_list()):
             value = int("".join(map(str, map(int, vals[::-1]))), 2)
+            if condstr is not None:
+                self.strings.add_string(condstr)
             self.strings.add_string(f"{creg_name} = {value};\n")
             self.mark_as_written(f"{creg_name}")
         else:
             for bit, value in zip(bits, vals):
+                if condstr is not None:
+                    self.strings.add_string(condstr)
                 self.strings.add_string(f"{bit} = {int(value)};\n")
                 self.mark_as_written(f"{bit}")
 
-    def add_copy_bits(self, op: CopyBitsOp, args: List[Bit]) -> None:
+    def add_copy_bits(
+        self, op: CopyBitsOp, args: List[Bit], condstr: Optional[str]
+    ) -> None:
         l_args = args[op.n_inputs :]
         r_args = args[: op.n_inputs]
         l_name = l_args[0].reg_name
@@ -1510,32 +1517,44 @@ class QasmWriter:
             l_args == self.cregs[l_name].to_list()
             and r_args == self.cregs[r_name].to_list()
         ):
+            if condstr is not None:
+                self.strings.add_string(condstr)
             self.strings.add_string(f"{l_name} = {r_name};\n")
             self.mark_as_written(f"{l_name}")
         else:
             for bit_l, bit_r in zip(l_args, r_args):
+                if condstr is not None:
+                    self.strings.add_string(condstr)
                 self.strings.add_string(f"{bit_l} = {bit_r};\n")
                 self.mark_as_written(f"{bit_l}")
 
-    def add_multi_bit(self, op: MultiBitOp, args: List[Bit]) -> None:
+    def add_multi_bit(
+        self, op: MultiBitOp, args: List[Bit], condstr: Optional[str]
+    ) -> None:
         assert len(args) >= 2
         registers_involved = [arg.reg_name for arg in args[:2]]
         if len(args) > 2 and args[2].reg_name not in registers_involved:
             # there is a distinct output register
             registers_involved.append(args[2].reg_name)
-        self.add_op(op.basic_op, [self.cregs[name] for name in registers_involved])  # type: ignore
+        self.add_op(op.basic_op, [self.cregs[name] for name in registers_involved], condstr)  # type: ignore
 
-    def add_explicit_op(self, op: Op, args: List[Bit]) -> None:
+    def add_explicit_op(self, op: Op, args: List[Bit], condstr: Optional[str]) -> None:
         # &, ^ and | gates
         opstr = str(op)
         if opstr not in _classical_gatestr_map:
             raise QASMUnsupportedError(f"Classical gate {opstr} not supported.")
+        if condstr is not None:
+            self.strings.add_string(condstr)
         self.strings.add_string(
             f"{args[-1]} = {args[0]} {_classical_gatestr_map[opstr]} {args[1]};\n"
         )
         self.mark_as_written(f"{args[-1]}")
 
-    def add_classical_exp_box(self, op: ClassicalExpBox, args: List[Bit]) -> None:
+    def add_classical_exp_box(
+        self, op: ClassicalExpBox, args: List[Bit], condstr: Optional[str]
+    ) -> None:
+        if condstr is not None:
+            self.strings.add_string(condstr)
         out_args = args[op.get_n_i() :]
         if len(out_args) == 1:
             self.strings.add_string(f"{out_args[0]} = {str(op.get_exp())};\n")
@@ -1554,7 +1573,7 @@ class QasmWriter:
                 " for writing to a single bit or whole registers."
             )
 
-    def add_wasm(self, op: WASMOp, args: List[Bit]) -> None:
+    def add_wasm(self, op: WASMOp, args: List[Bit], condstr: Optional[str]) -> None:
         inputs: List[str] = []
         outputs: List[str] = []
         for reglist, sizes in [(inputs, op.input_widths), (outputs, op.output_widths)]:
@@ -1565,17 +1584,23 @@ class QasmWriter:
                 if bits != list(self.cregs[regname]):
                     QASMUnsupportedError("WASM ops must act on entire registers.")
                 reglist.append(regname)
+        if condstr is not None:
+            self.strings.add_string(condstr)
         if outputs:
             self.strings.add_string(f"{', '.join(outputs)} = ")
         self.strings.add_string(f"{op.func_name}({', '.join(inputs)});\n")
         for variable in outputs:
             self.mark_as_written(variable)
 
-    def add_measure(self, args: List[UnitID]) -> None:
+    def add_measure(self, args: List[UnitID], condstr: Optional[str]) -> None:
+        if condstr is not None:
+            self.strings.add_string(condstr)
         self.strings.add_string(f"measure {args[0]} -> {args[1]};\n")
         self.mark_as_written(f"{args[1]}")
 
-    def add_zzphase(self, param: Union[float, Expr], args: List[UnitID]) -> None:
+    def add_zzphase(
+        self, param: Union[float, Expr], args: List[UnitID], condstr: Optional[str]
+    ) -> None:
         # as op.params returns reduced parameters, we can assume
         # that 0 <= param < 4
         if param > 1:
@@ -1585,6 +1610,8 @@ class QasmWriter:
             # -1 <= param < 0
             if param > 1:
                 param = -2 + param
+        if condstr is not None:
+            self.strings.add_string(condstr)
         self.strings.add_string("RZZ")
         self.write_params([param])
         self.write_args(args)
@@ -1598,13 +1625,21 @@ class QasmWriter:
         self.strings.add_string(" ")
         self.write_args(args)
 
-    def add_gate_noparams(self, op: Op, args: List[UnitID]) -> None:
+    def add_gate_noparams(
+        self, op: Op, args: List[UnitID], condstr: Optional[str]
+    ) -> None:
+        if condstr is not None:
+            self.strings.add_string(condstr)
         self.strings.add_string(_tk_to_qasm_noparams[op.type])
         self.strings.add_string(" ")
         self.write_args(args)
 
-    def add_gate_params(self, op: Op, args: List[UnitID]) -> None:
+    def add_gate_params(
+        self, op: Op, args: List[UnitID], condstr: Optional[str]
+    ) -> None:
         optype, params = _get_optype_and_params(op)
+        if condstr is not None:
+            self.strings.add_string(condstr)
         self.strings.add_string(_tk_to_qasm_params[optype])
         self.write_params(params)
         self.write_args(args)
@@ -1632,60 +1667,72 @@ class QasmWriter:
         mainstr = opstr + make_params_str(params) + make_args_str(args)
         return gatedefstr, mainstr
 
-    def add_op(self, op: Op, args: List[UnitID]) -> None:
+    def add_op(self, op: Op, args: List[UnitID], condstr: Optional[str] = None) -> None:
         optype, _params = _get_optype_and_params(op)
         if optype == OpType.RangePredicate:
             assert isinstance(op, RangePredicateOp)
+            if condstr is not None:
+                # https://github.com/CQCL/tket/issues/1508
+                raise QASMUnsupportedError(
+                    "Conditional RangePredicate is currently unsupported."
+                )
             self.add_range_predicate(op, cast(List[Bit], args))
         elif optype == OpType.Conditional:
             assert isinstance(op, Conditional)
+            # shouldn't have nested if statements
+            assert condstr is None
             self.add_conditional(op, args)
         elif optype == OpType.Phase:
             # global phase is ignored in QASM
             pass
         elif optype == OpType.SetBits:
             assert isinstance(op, SetBitsOp)
-            self.add_set_bits(op, cast(List[Bit], args))
+            self.add_set_bits(op, cast(List[Bit], args), condstr)
         elif optype == OpType.CopyBits:
             assert isinstance(op, CopyBitsOp)
-            self.add_copy_bits(op, cast(List[Bit], args))
+            self.add_copy_bits(op, cast(List[Bit], args), condstr)
         elif optype == OpType.MultiBit:
             assert isinstance(op, MultiBitOp)
-            self.add_multi_bit(op, cast(List[Bit], args))
+            self.add_multi_bit(op, cast(List[Bit], args), condstr)
         elif optype in (OpType.ExplicitPredicate, OpType.ExplicitModifier):
-            self.add_explicit_op(op, cast(List[Bit], args))
+            self.add_explicit_op(op, cast(List[Bit], args), condstr)
         elif optype == OpType.ClassicalExpBox:
             assert isinstance(op, ClassicalExpBox)
-            self.add_classical_exp_box(op, cast(List[Bit], args))
+            self.add_classical_exp_box(op, cast(List[Bit], args), condstr)
         elif optype == OpType.WASM:
             assert isinstance(op, WASMOp)
-            self.add_wasm(op, cast(List[Bit], args))
+            self.add_wasm(op, cast(List[Bit], args), condstr)
         elif optype == OpType.Measure:
-            self.add_measure(args)
+            self.add_measure(args, condstr)
         elif hqs_header(self.header) and optype == OpType.ZZPhase:
             # special handling for zzphase
             assert len(op.params) == 1
-            self.add_zzphase(op.params[0], args)
+            self.add_zzphase(op.params[0], args, condstr)
         elif optype == OpType.Barrier and self.header == "hqslib1_dev":
             assert isinstance(op, BarrierOp)
+            assert condstr is None
             self.add_data(op, args)
         elif (
             optype in _tk_to_qasm_noparams
             and _tk_to_qasm_noparams[optype] in self.include_module_gates
         ):
-            self.add_gate_noparams(op, args)
+            self.add_gate_noparams(op, args, condstr)
         elif (
             optype in _tk_to_qasm_params
             and _tk_to_qasm_params[optype] in self.include_module_gates
         ):
-            self.add_gate_params(op, args)
+            self.add_gate_params(op, args, condstr)
         elif optype in _tk_to_qasm_extra_noparams:
             gatedefstr, mainstr = self.add_extra_noparams(op, args)
             self.gatedefs += gatedefstr
+            if condstr is not None:
+                self.strings.add_string(condstr)
             self.strings.add_string(mainstr)
         elif optype in _tk_to_qasm_extra_params:
             gatedefstr, mainstr = self.add_extra_params(op, args)
             self.gatedefs += gatedefstr
+            if condstr is not None:
+                self.strings.add_string(condstr)
             self.strings.add_string(mainstr)
         else:
             raise QASMUnsupportedError(

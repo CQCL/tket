@@ -10,6 +10,7 @@ Changelog
 
 Fixes:
 * Fix MultiplexedTensoredU2Box passing MultiplexedRotationBox an empty argument
+* Fix incorrect QASM conversion of conditional multi-line ops.
 
 1.30.0 (July 2024)
 ------------------
