@@ -19,8 +19,8 @@
 #include <optional>
 #include <tkrng/RNG.hpp>
 
-#include "DistancesInterface.hpp"
-#include "NeighboursInterface.hpp"
+#include "tktokenswap/DistancesInterface.hpp"
+#include "tktokenswap/NeighboursInterface.hpp"
 
 namespace tket {
 namespace tsa_internal {

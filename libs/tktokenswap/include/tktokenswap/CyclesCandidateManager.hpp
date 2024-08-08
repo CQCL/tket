@@ -16,8 +16,8 @@
 
 #include <set>
 
-#include "CyclesGrowthManager.hpp"
-#include "PartialTsaInterface.hpp"
+#include "tktokenswap/CyclesGrowthManager.hpp"
+#include "tktokenswap/PartialTsaInterface.hpp"
 
 namespace tket {
 namespace tsa_internal {

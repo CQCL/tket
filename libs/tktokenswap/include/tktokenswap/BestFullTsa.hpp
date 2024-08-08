@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include "HybridTsa.hpp"
-#include "SwapListOptimiser.hpp"
-#include "SwapListTableOptimiser.hpp"
+#include "tktokenswap/HybridTsa.hpp"
+#include "tktokenswap/SwapListOptimiser.hpp"
+#include "tktokenswap/SwapListTableOptimiser.hpp"
 
 namespace tket {
 

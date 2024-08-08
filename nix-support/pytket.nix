@@ -17,30 +17,23 @@ let
     };
   });
 in {
-  binders = super.stdenv.mkDerivation {
-    name = "binders";
-    nativeBuildInputs = [
-      super.cmake
-      super.pkg-config
-      super.python3Packages.pybind11
-      super.pybind11_json
-    ];
-    cmakeFlags = [ "-DBUILD_SHARED_LIBS=ON" ];
-    propagatedBuildInputs = [
-      super.tket
-    ];
-    unpackPhase = ''
-      cp -r ${../pytket/binders} binders;
-      cp ${../pytket/CMakeLists.txt} CMakeLists.txt;
-    '';
-  };
   pytket = super.python3.pkgs.buildPythonPackage {
     pname = "pytket";
     inherit version;
-    propagatedBuildInputs = with super.python3.pkgs; [
-      self.binders
+    src = ../pytket;
+    nativeBuildInputs = with super.python3.pkgs; [
+      setuptools
+      super.cmake
+      super.pkg-config
+    ];
+    propagatedBuildInputs = [
+      super.tket
+      super.pybind11_json
+    ];
+    dependencies = with super.python3.pkgs; [
       super.lark
       super.qwasm
+      pybind11
       graphviz
       networkx
       jinja2
@@ -49,35 +42,24 @@ in {
       numpy
       typing-extensions
     ];
-
-    unpackPhase = ''
-      cp -r ${../pytket/pytket} pytket;
-      cp ${../pytket/package.md} package.md;
-      cp -r ${../schemas} schemas;
-      cp -r ${../pytket/mypy.ini} mypy.ini;
-
-      # The usual build depends on setuptools-scm to extract the version.
-      # We have already extracted the version within nix, so we can simply
-      # inject it into setup.py.
-      cat ${../pytket/setup.py} | sed 's/setup(/setup(version="${version}",/' > setup.py;
-
-      mkdir test_root;
-      cp -r ${../pytket/tests} test_root/tests;
-      # hardcode the version extracted from docs/conf.py.
-      chmod 755 pytket
-      echo '__version__ = "${version}"' > pytket/_version.py;
-    '';
+    configurePhase = "true"; # skip configure
+    #                          (by default it runs cmake, which we
+    #                           want python to manage instead)
     preBuild = ''
-      export USE_NIX=1;
-    '';
-    postFixup = ''
-      # these directories aren't copied by setup.py, so we do it manually
-      cp -r ${
-        ../pytket/pytket/circuit/display/js
-      } $out/lib/python${super.python3.pythonVersion}/site-packages/pytket/circuit/display/js;
-      cp -r ${
-        ../pytket/pytket/circuit/display/static
-      } $out/lib/python${super.python3.pythonVersion}/site-packages/pytket/circuit/display/static;
+      # explicitly provide the pytket version to setup.py
+      # and to _version.py, as we can't rely on git version
+      # information in nix.
+
+      cat ${../pytket/setup.py} \
+        | sed 's/setup(/setup(version="${version}",/' \
+        > setup.py;
+      echo '__version__ = "${version}"' > pytket/_version.py;
+      
+      # instruct python to build with cmake instead of conan,
+      # and to build in a temporary directory.
+      export NO_CONAN=1;
+      export INSTALL_DIR=$(mktemp -d);
+      export BUILD_DIR=$(mktemp -d);
     '';
     checkInputs = with super.python3.pkgs; [
       mypy
@@ -88,16 +70,18 @@ in {
       hypothesis
       docker
       opt-einsum
-    ] ++ [jsonschema-4180];
+      jsonschema-4180
+    ];
     checkPhase = ''
       export HOME=$TMPDIR;
+      cp -r ${../schemas} $HOME/schemas;
 
       # run mypy
-      python -m mypy --config-file=mypy.ini --no-incremental -p pytket -p test_root.tests;
+      python -m mypy --config-file=mypy.ini --no-incremental -p pytket -p tests;
 
       # run tests
-      chmod 700 $TMPDIR/test_root/tests/qasm_test_files;
-      cd test_root/tests;
+      chmod 700 $HOME/pytket/tests/qasm_test_files;
+      cd tests;
       python -m pytest -s .
     '';
     doCheck = true;

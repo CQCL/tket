@@ -17,7 +17,7 @@
 #include <optional>
 #include <utility>
 
-#include "GeneralStructs.hpp"
+#include "tkwsm/GraphTheoretic/GeneralStructs.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

@@ -16,8 +16,8 @@
 #include <boost/dynamic_bitset.hpp>
 #include <string>
 
-#include "../Common/LogicalStack.hpp"
-#include "../GraphTheoretic/DomainInitialiser.hpp"
+#include "tkwsm/Common/LogicalStack.hpp"
+#include "tkwsm/GraphTheoretic/DomainInitialiser.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

@@ -15,21 +15,9 @@
 cmake_minimum_required(VERSION 3.23)
 project(test-tket CXX)
 
-find_package(Boost CONFIG REQUIRED)
-find_package(gmp CONFIG)
-if (NOT gmp_FOUND)
-    find_package(PkgConfig REQUIRED)
-    pkg_search_module(gmp REQUIRED IMPORTED_TARGET gmp)
-endif()
-find_package(SymEngine CONFIG REQUIRED)
-find_package(Eigen3 CONFIG REQUIRED)
-find_package(nlohmann_json CONFIG REQUIRED)
-find_package(tklog CONFIG REQUIRED)
-find_package(tkassert CONFIG REQUIRED)
-find_package(tkrng CONFIG REQUIRED)
-find_package(tktokenswap CONFIG REQUIRED)
-find_package(tkwsm CONFIG REQUIRED)
 find_package(Catch2 CONFIG REQUIRED)
+include(CTest)
+include(Catch)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -56,8 +44,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?Clang")
     # remove -Wno-deprecated-declarations once https://github.com/boostorg/boost/issues/688 is resolved
 endif()
 
-add_executable(test-tket
-    # test utils:
+FILE(GLOB_RECURSE TEST_SOURCES src/test_*.cpp)
+SET(TEST_UTILS
     src/tests_main.cpp
     src/testutil.cpp
     src/CircuitsForTesting.cpp
@@ -78,125 +66,28 @@ add_executable(test-tket
     src/TokenSwapping/TestUtils/ProblemGeneration.cpp
     src/TokenSwapping/TestUtils/TestStatsStructs.cpp
     src/Gate/GatesData.cpp
-    src/Simulation/ComparisonFunctions.cpp
-    # test sources:
-    src/Utils/test_CosSinDecomposition.cpp
-    src/Utils/test_HelperFunctions.cpp
-    src/Utils/test_MatrixAnalysis.cpp
-    src/Graphs/test_GraphColouring.cpp
-    src/Graphs/test_GraphFindComponents.cpp
-    src/Graphs/test_GraphFindMaxClique.cpp
-    src/Graphs/test_GraphUtils.cpp
-    src/Graphs/test_DirectedGraph.cpp
-    src/Graphs/test_ArticulationPoints.cpp
-    src/Graphs/test_TreeSearch.cpp
-    src/TokenSwapping/test_ArchitectureMappingEndToEnd.cpp
-    src/TokenSwapping/test_BestTsaFixedSwapSequences.cpp
-    src/TokenSwapping/test_DistancesFromArchitecture.cpp
-    src/TokenSwapping/test_FullTsa.cpp
-    src/TokenSwapping/test_RiverFlowPathFinder.cpp
-    src/TokenSwapping/test_SwapsFromQubitMapping.cpp
-    src/TokenSwapping/test_VariousPartialTsa.cpp
-    src/Architecture/test_SubgraphMonomorphisms.cpp
-    src/test_PauliTensor.cpp
-    src/Ops/test_ClassicalOps.cpp
-    src/Ops/test_Expression.cpp
-    src/Ops/test_Ops.cpp
-    src/OpType/test_OpTypeFunctions.cpp
-    src/Passes/test_CliffordResynthesis.cpp
-    src/Passes/test_SynthesiseTK.cpp
-    src/Passes/test_SynthesiseTket.cpp
-    src/Gate/test_Rotation.cpp
-    src/Gate/test_GateUnitaryMatrix.cpp
-    src/Simulation/test_CircuitSimulator.cpp
-    src/Simulation/test_PauliExpBoxUnitaryCalculator.cpp
-    src/Circuit/test_Boxes.cpp
-    src/Circuit/test_PauliExpBoxes.cpp
-    src/Circuit/test_Circ.cpp
-    src/Circuit/test_CircPool.cpp
-    src/Circuit/test_Symbolic.cpp
-    src/Circuit/test_ThreeQubitConversion.cpp
-    src/Circuit/test_Multiplexor.cpp
-    src/Circuit/test_StatePreparation.cpp
-    src/Circuit/test_DiagonalBox.cpp
-    src/Circuit/test_ToffoliBox.cpp
-    src/Circuit/test_ConjugationBox.cpp
-    src/Circuit/test_DummyBox.cpp
-    src/test_UnitaryTableau.cpp
-    src/test_ChoiMixTableau.cpp
-    src/test_Diagonalisation.cpp
-    src/test_PhasePolynomials.cpp
-    src/test_PauliGraph.cpp
-    src/test_Architectures.cpp
-    src/test_ArchitectureAwareSynthesis.cpp
-    src/Placement/test_GraphPlacement.cpp
-    src/Placement/test_LinePlacement.cpp
-    src/Placement/test_NoiseAwarePlacement.cpp
-    src/Placement/test_Placement.cpp
-    src/Placement/test_NeighbourPlacements.cpp
-    src/Transformations/test_RedundancyRemoval.cpp
-    src/test_MappingVerification.cpp
-    src/test_MappingFrontier.cpp
-    src/test_RoutingMethod.cpp
-    src/test_MappingManager.cpp
-    src/test_LexicographicalComparison.cpp
-    src/test_LexiRoute.cpp
-    src/test_AASRoute.cpp
-    src/test_MultiGateReorder.cpp
-    src/test_BoxDecompRoutingMethod.cpp
-    src/test_RoutingPasses.cpp
-    src/test_DeviceCharacterisation.cpp
-    src/test_Clifford.cpp
-    src/test_MeasurementSetup.cpp
-    src/test_Partition.cpp
-    src/test_MeasurementReduction.cpp
-    src/test_PhaseGadget.cpp
-    src/test_Rebase.cpp
-    src/test_PhasedXFrontier.cpp
-    src/test_GlobalisePhasedX.cpp
-    src/test_Synthesis.cpp
-    src/test_TwoQubitCanonical.cpp
-    src/test_ControlDecomp.cpp
-    src/test_Combinators.cpp
-    src/test_Predicates.cpp
-    src/test_CompilerPass.cpp
-    src/test_ContextOpt.cpp
-    src/test_FrameRandomisation.cpp
-    src/test_Assertion.cpp
-    src/test_json.cpp
-    src/test_Path.cpp
-    src/test_SteinerTree.cpp
-    src/test_SteinerForest.cpp
-    src/test_wasm.cpp
-    src/test_RoundAngles.cpp
-    src/test_GreedyPauli.cpp
-    src/ZX/test_ZXDiagram.cpp
-    src/ZX/test_ZXAxioms.cpp
-    src/ZX/test_ZXSimp.cpp
-    src/ZX/test_ZXRebase.cpp
-    src/ZX/test_Flow.cpp
-    src/ZX/test_ZXConverters.cpp
-    src/ZX/test_ZXExtraction.cpp
-    )
+    src/Simulation/ComparisonFunctions.cpp)
 
-if (NOT TARGET gmp::gmp)
-    add_library(gmp::gmp ALIAS PkgConfig::gmp)
-endif()
-if (NOT TARGET symengine::symengine)
-    add_library(symengine::symengine ALIAS symengine)
-endif()
+add_executable(test-tket ${TEST_UTILS} ${TEST_SOURCES})
+target_link_libraries(test-tket PUBLIC tket Catch2::Catch2WithMain)
 
-target_link_libraries(test-tket PRIVATE tket)
-target_link_libraries(test-tket PRIVATE Boost::headers)
-target_link_libraries(test-tket PRIVATE gmp::gmp)
-target_link_libraries(test-tket PRIVATE symengine::symengine)
-target_link_libraries(test-tket PRIVATE Eigen3::Eigen)
-target_link_libraries(test-tket PRIVATE Catch2::Catch2WithMain)
-target_link_libraries(test-tket PRIVATE tklog::tklog)
-target_link_libraries(test-tket PRIVATE tkrng::tkrng)
-target_link_libraries(test-tket PRIVATE tkassert::tkassert)
-target_link_libraries(test-tket PRIVATE tktokenswap::tktokenswap)
-target_link_libraries(test-tket PRIVATE nlohmann_json::nlohmann_json)
+add_custom_target(copy-test-data-dirs ALL
+    COMMENT "Copying test data directories to build directory"
+    COMMAND ${CMAKE_COMMAND} -E make_directory
+        $<TARGET_FILE_DIR:test-tket>/test_circuits
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/test_circuits
+        $<TARGET_FILE_DIR:test-tket>/test_circuits
+
+    COMMAND ${CMAKE_COMMAND} -E make_directory
+        $<TARGET_FILE_DIR:test-tket>/test_architectures
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/test_architectures
+        $<TARGET_FILE_DIR:test-tket>/test_architectures
+)
+add_dependencies(test-tket copy-test-data-dirs)
+
+catch_discover_tests(test-tket)
 
 set(WITH_COVERAGE no CACHE BOOL "Link library with profiling for test coverage")
 IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -205,11 +96,9 @@ IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     ENDIF()
 ENDIF()
 
-install(FILES
-            src/test_circuits/lexiroute_circuit.json
-            src/test_circuits/lexiroute_circuit_relabel_to_ancilla.json
-            src/test_circuits/bug777_circuit.json
-            src/test_architectures/ibm_montreal.json
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/test_circuits
+        DESTINATION bin)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/test_architectures
         DESTINATION bin)
 
 install(TARGETS test-tket DESTINATION "."

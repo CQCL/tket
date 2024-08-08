@@ -16,11 +16,11 @@
 #include <chrono>
 #include <memory>
 
-#include "../GraphTheoretic/NeighboursData.hpp"
-#include "../GraphTheoretic/VertexRelabelling.hpp"
-#include "../Searching/SearchBranch.hpp"
-#include "MainSolverParameters.hpp"
-#include "SolutionData.hpp"
+#include "tkwsm/EndToEndWrappers/MainSolverParameters.hpp"
+#include "tkwsm/EndToEndWrappers/SolutionData.hpp"
+#include "tkwsm/GraphTheoretic/NeighboursData.hpp"
+#include "tkwsm/GraphTheoretic/VertexRelabelling.hpp"
+#include "tkwsm/Searching/SearchBranch.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

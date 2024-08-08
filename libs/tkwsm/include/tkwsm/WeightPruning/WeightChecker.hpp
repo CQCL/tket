@@ -16,8 +16,8 @@
 #include <memory>
 #include <optional>
 
-#include "../GraphTheoretic/GeneralStructs.hpp"
-#include "WeightNogoodDetectorManager.hpp"
+#include "tkwsm/GraphTheoretic/GeneralStructs.hpp"
+#include "tkwsm/WeightPruning/WeightNogoodDetectorManager.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
