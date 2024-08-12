@@ -58,7 +58,7 @@ class WasmModuleHandler:
         :type wasm_module: bytes
         :param check: If ``True`` checks file for compatibility with wasm
           standards. If ``False`` checks are skipped.
-        :type check_file: bool
+        :type check: bool
         :param int_size: length of the integer that is used in the wasm file
         :type int_size: int
         """
@@ -94,6 +94,9 @@ class WasmModuleHandler:
         and marks the module as checked so that subsequent checking is not
         required.
         """
+        if self.checked:
+            return
+        
         function_signatures: list = []
         function_names: list = []
         _func_lookup = {}
@@ -187,22 +190,25 @@ class WasmModuleHandler:
         if self._functions["init"][1] != 0:
             raise ValueError("init function should not have any results")
 
+        # Mark the module as checked, which indicates that function
+        # signatures are available and that it does not need
+        # to be checked again.
         self.checked = True
 
-    @deprecated("Use public property checked instead.")
+    @deprecated("Use public property `checked` instead.")
     def _check_file(self) -> bool:
         return self.checked
 
     def __str__(self) -> str:
         """str representation of the wasm module"""
-        return self.module_uid
+        return self.uid
 
     def __repr__(self) -> str:
         """str representation of the contents of the wasm file.
 
         Will implicitly check the module if it has not been checked already.
         """
-        result = f"Functions in wasm file with the uid {self.module_uid}:\n"
+        result = f"Functions in wasm file with the uid {self.uid}:\n"
         for x in self.functions:
             result += f"function '{x}' with "
             result += f"{self.functions[x][0]} i{self._int_size} parameter(s)"
@@ -225,18 +231,18 @@ class WasmModuleHandler:
         """The WASM content as base64 encoded bytecode."""
         return base64.b64encode(self._wasm_module)
 
-    @deprecated("Use public property bytecode_base64 instead.")
+    @deprecated("Use public property `bytecode_base64` instead.")
     def _wasm_file_encoded(self) -> bytes:
         return self.bytecode_base64
 
     @cached_property
-    def module_uid(self) -> str:
+    def uid(self) -> str:
         """A unique identifier for the module calculated from its' checksum."""
         return hashlib.sha256(self.bytecode_base64).hexdigest()
 
-    @deprecated("Use public property module_uid instead.")
+    @deprecated("Use public property `uid` instead.")
     def _wasmfileuid(self) -> str:
-        return self.module_uid
+        return self.uid
 
     def check_function(
         self, function_name: str, number_of_parameters: int, number_of_returns: int
@@ -268,8 +274,7 @@ class WasmModuleHandler:
 
         Will check the module if it has not been checked already.
         """
-        if not self.checked:
-            self.check()
+        self.check()
         return self._functions
 
     @cached_property
@@ -278,8 +283,7 @@ class WasmModuleHandler:
 
         Will check the module if it has not been checked already.
         """
-        if not self.checked:
-            self.check()
+        self.check()
         return self._unsupported_functions
 
 
