@@ -119,9 +119,9 @@ cmake --install .
 
 ```
 cd ${TMP_DIR}
-wget https://github.com/pybind/pybind11/archive/refs/tags/v2.13.1.tar.gz
-tar xzvf v2.13.1.tar.gz
-cd pybind11-2.13.1/
+wget https://github.com/pybind/pybind11/archive/refs/tags/v2.13.2.tar.gz
+tar xzvf v2.13.2.tar.gz
+cd pybind11-2.13.2/
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DPYBIND11_TEST=OFF ..
