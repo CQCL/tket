@@ -2,7 +2,7 @@ diff --git a/cmake/SymEngineConfig.cmake.in b/cmake/SymEngineConfig.cmake.in
 index dbfc80ba..d3a390b8 100644
 --- a/cmake/SymEngineConfig.cmake.in
 +++ b/cmake/SymEngineConfig.cmake.in
-@@ -107,11 +107,11 @@ endif()
+@@ -109,11 +109,11 @@ endif()
 
  list(REMOVE_DUPLICATES SYMENGINE_INCLUDE_DIRS)
 
