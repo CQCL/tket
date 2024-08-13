@@ -19,7 +19,7 @@ in {
   tket = super.stdenv.mkDerivation {
     name = "tket";
     inherit src;
-    nativeBuildInputs = [ super.cmake ];
+    nativeBuildInputs = [ super.cmake super.pkg-config ];
     propagatedBuildInputs = super.tklibs
       ++ (with super; [ boost symengine eigen nlohmann_json ]);
     # TODO: add rapidcheck once nixpkgs packaging is correctly implemented.
