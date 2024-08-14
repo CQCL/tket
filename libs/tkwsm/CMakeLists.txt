@@ -68,9 +68,9 @@ ENDIF()
 target_include_directories(tkwsm PUBLIC
     $<INSTALL_INTERFACE:include/tkwsm>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tkwsm>)
-target_link_libraries(tkwsm PRIVATE tkassert::tkassert)
-target_link_libraries(tkwsm PRIVATE tkrng::tkrng)
-target_link_libraries(tkwsm PRIVATE Boost::headers)
+target_link_libraries(tkwsm PUBLIC tkassert::tkassert)
+target_link_libraries(tkwsm PUBLIC tkrng::tkrng)
+target_link_libraries(tkwsm PUBLIC Boost::headers)
 IF(APPLE)
     target_link_libraries(tkwsm PRIVATE "-flat_namespace")
 ENDIF()

@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "CyclesPartialTsa.hpp"
-#include "TrivialTSA.hpp"
+#include "tktokenswap/CyclesPartialTsa.hpp"
+#include "tktokenswap/TrivialTSA.hpp"
 
 namespace tket {
 namespace tsa_internal {

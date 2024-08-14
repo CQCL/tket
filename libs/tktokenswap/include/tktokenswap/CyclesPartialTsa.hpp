@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "CyclesCandidateManager.hpp"
-#include "PartialTsaInterface.hpp"
+#include "tktokenswap/CyclesCandidateManager.hpp"
+#include "tktokenswap/PartialTsaInterface.hpp"
 
 namespace tket {
 namespace tsa_internal {

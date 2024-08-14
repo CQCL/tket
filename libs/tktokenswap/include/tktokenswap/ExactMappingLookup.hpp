@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "CanonicalRelabelling.hpp"
+#include "tktokenswap/CanonicalRelabelling.hpp"
 
 namespace tket {
 namespace tsa_internal {

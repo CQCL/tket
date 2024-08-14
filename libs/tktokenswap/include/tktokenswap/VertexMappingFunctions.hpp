@@ -18,7 +18,7 @@
 #include <optional>
 #include <utility>
 
-#include "SwapFunctions.hpp"
+#include "tktokenswap/SwapFunctions.hpp"
 
 namespace tket {
 

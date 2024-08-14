@@ -16,21 +16,7 @@ cmake_minimum_required(VERSION 3.23)
 project(pytket CXX)
 add_definitions(-DPYBIND11_DETAILED_ERROR_MESSAGES)
 
-find_package(Boost CONFIG REQUIRED)
-find_package(Eigen3 CONFIG REQUIRED)
 find_package(tket CONFIG REQUIRED)
-find_package(tklog CONFIG REQUIRED)
-find_package(tkassert CONFIG REQUIRED)
-find_package(tkrng CONFIG REQUIRED)
-find_package(tktokenswap CONFIG REQUIRED)
-find_package(tkwsm CONFIG REQUIRED)
-find_package(tkassert CONFIG REQUIRED)
-find_package(gmp CONFIG)
-if (NOT gmp_FOUND)
-    find_package(PkgConfig REQUIRED)
-    pkg_search_module(gmp REQUIRED IMPORTED_TARGET gmp)
-endif()
-find_package(SymEngine CONFIG REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
 find_package(pybind11_json CONFIG REQUIRED)
 
@@ -71,22 +57,11 @@ endif()
 if (NOT TARGET pybind11_json::pybind11_json)
     add_library(pybind11_json::pybind11_json ALIAS pybind11_json)
 endif()
-if (NOT TARGET gmp::gmp)
-    add_library(gmp::gmp ALIAS PkgConfig::gmp)
-endif()
-if (NOT TARGET symengine::symengine)
-    add_library(symengine::symengine ALIAS symengine)
-endif()
 
 list(APPEND lib_deps
     tket::tket
-    tklog::tklog
-    tkassert::tkassert
     pybind11::headers
-    pybind11_json::pybind11_json
-    Eigen3::Eigen
-    gmp::gmp
-    symengine::symengine)
+    pybind11_json::pybind11_json)
 if (WIN32)
     list(APPEND lib_deps bcrypt) # For boost::uuid
 endif()

@@ -16,7 +16,7 @@
 #include <boost/dynamic_bitset.hpp>
 #include <tkassert/Assert.hpp>
 
-#include "../GraphTheoretic/GeneralStructs.hpp"
+#include "tkwsm/GraphTheoretic/GeneralStructs.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

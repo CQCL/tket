@@ -15,20 +15,6 @@
 cmake_minimum_required(VERSION 3.23)
 project(proptest-tket CXX)
 
-find_package(Boost CONFIG REQUIRED)
-find_package(gmp CONFIG)
-if (NOT gmp_FOUND)
-    find_package(PkgConfig REQUIRED)
-    pkg_search_module(gmp REQUIRED IMPORTED_TARGET gmp)
-endif()
-find_package(SymEngine CONFIG REQUIRED)
-find_package(Eigen3 CONFIG REQUIRED)
-find_package(nlohmann_json CONFIG REQUIRED)
-find_package(tklog CONFIG REQUIRED)
-find_package(tkassert CONFIG REQUIRED)
-find_package(tkrng CONFIG REQUIRED)
-find_package(tktokenswap CONFIG REQUIRED)
-find_package(tkwsm CONFIG REQUIRED)
 find_package(rapidcheck CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -61,25 +47,14 @@ add_executable(proptest-tket
     src/proptest.cpp
 )
 
-if (NOT TARGET gmp::gmp)
-    add_library(gmp::gmp ALIAS PkgConfig::gmp)
-endif()
-if (NOT TARGET symengine::symengine)
-    add_library(symengine::symengine ALIAS symengine)
-endif()
 if (NOT TARGET rapidcheck::rapidcheck)
     add_library(rapidcheck::rapidcheck ALIAS rapidcheck)
 endif()
 
 target_link_libraries(proptest-tket PRIVATE tket)
-target_link_libraries(proptest-tket PRIVATE Boost::headers)
-target_link_libraries(proptest-tket PRIVATE gmp::gmp)
-target_link_libraries(proptest-tket PRIVATE symengine::symengine)
-target_link_libraries(proptest-tket PRIVATE Eigen3::Eigen)
-target_link_libraries(proptest-tket PRIVATE tklog::tklog)
-target_link_libraries(proptest-tket PRIVATE tkassert::tkassert)
-target_link_libraries(proptest-tket PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(proptest-tket PRIVATE rapidcheck::rapidcheck)
+
+
 
 install(TARGETS proptest-tket DESTINATION "."
         RUNTIME DESTINATION bin

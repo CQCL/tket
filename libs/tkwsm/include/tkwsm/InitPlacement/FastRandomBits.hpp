@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #pragma once
-#include "../GraphTheoretic/GeneralStructs.hpp"
+#include "tkwsm/GraphTheoretic/GeneralStructs.hpp"
 
 namespace tket {
 class RNG;

@@ -1,9 +1,8 @@
 self: super:
 let
-  postFixup = import ./includes-fixup.nix;
   # only import necessary directories so that changes to unrelated
   # files inside of ../tket won't trigger a rebuild
-  tket-without-tests = super.stdenv.mkDerivation {
+  src = super.stdenv.mkDerivation {
     name = "tket-sources";
     phases = [ "installPhase" ];
     installPhase = ''
@@ -11,34 +10,29 @@ let
       cp -r ${../tket/cmake} $out/cmake;
       cp -r ${../tket/include} $out/include;
       cp -r ${../tket/src} $out/src;
-      cp -r ${../tket/CMakeLists.txt} $out/CMakeLists.txt;
+      cp -r ${../tket/test} $out/test;
+      cp -r ${../tket/proptest} $out/proptest;
+      cp ${../tket/CMakeLists.txt} $out/CMakeLists.txt;
     '';
   };
 in {
   tket = super.stdenv.mkDerivation {
     name = "tket";
-    src = tket-without-tests;
-    nativeBuildInputs = [ super.cmake ];
-    propagatedBuildInputs = super.tklibs
-      ++ [ super.boost super.symengine super.eigen super.nlohmann_json ];
-    cmakeFlags = [ "-DBUILD_SHARED_LIBS=ON" "-DINSTALL_NAME_DIR=OFF" ];
-    inherit postFixup;
-  };
-
-  tket-tests = super.stdenv.mkDerivation {
-    name = "tket-tests";
-    src = ../tket/test;
+    inherit src;
     nativeBuildInputs = [ super.cmake super.pkg-config ];
-    buildInputs = [ self.tket super.catch2_3 ];
-  };
-  run-tket-tests = super.stdenv.mkDerivation {
-    name = "run-tket-tests";
-    stages = [ "build" ];
-    buildCommand = ''
-      pushd ${self.tket-tests}/bin;
-      mkdir -p $out;
-      ./test-tket > $out/test_result.txt;
-      popd;
-    '';
+    propagatedBuildInputs = super.tklibs
+      ++ (with super; [ boost symengine eigen nlohmann_json ]);
+    # TODO: add rapidcheck once nixpkgs packaging is correctly implemented.
+    # At current the package fails because the .pc files incorrectly reference
+    # the library dir rather than the dev dir.
+    # See https://github.com/NixOS/nixpkgs/issues/296348
+    buildInputs = with super; [ catch2_3 ];
+    cmakeFlags = [
+      "-DBUILD_SHARED_LIBS=ON"
+      "-DINSTALL_NAME_DIR=OFF"
+      "-DBUILD_TKET_TEST=ON"
+      "-DBUILD_TKET_PROPTEST=OFF"
+    ];
+    doCheck = true;
   };
 }

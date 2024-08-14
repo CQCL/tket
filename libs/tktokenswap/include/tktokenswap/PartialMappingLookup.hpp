@@ -19,7 +19,7 @@
 #include <set>
 #include <vector>
 
-#include "ExactMappingLookup.hpp"
+#include "tktokenswap/ExactMappingLookup.hpp"
 
 namespace tket {
 namespace tsa_internal {

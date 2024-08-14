@@ -15,9 +15,17 @@
 cmake_minimum_required(VERSION 3.23)
 project(tket CXX)
 
+cmake_policy(SET CMP0022 NEW)
+
+
 list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
 
 find_package(Boost CONFIG REQUIRED)
+find_package(gmp CONFIG)
+if (NOT gmp_FOUND)
+    find_package(PkgConfig REQUIRED)
+    pkg_search_module(gmp REQUIRED IMPORTED_TARGET gmp)
+endif()
 find_package(SymEngine CONFIG REQUIRED)
 find_package(Eigen3 CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
@@ -31,6 +39,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(INSTALL_NAME_DIR "Set the install name dir for the library to @loader_path for Apple targets" ON)
+option(BUILD_TKET_TEST "Build the test suite" OFF)
+option(BUILD_TKET_PROPTEST "Build the property test suite" OFF)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
@@ -104,19 +114,23 @@ ENDIF()
 if (NOT TARGET symengine::symengine)
     add_library(symengine::symengine ALIAS symengine)
 endif()
+if (NOT TARGET gmp::gmp)
+    add_library(gmp::gmp ALIAS PkgConfig::gmp)
+endif()
 
 target_include_directories(tket PUBLIC
     $<INSTALL_INTERFACE:include/tket>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tket>)
-target_link_libraries(tket PRIVATE Boost::headers)
-target_link_libraries(tket PRIVATE symengine::symengine)
-target_link_libraries(tket PRIVATE Eigen3::Eigen)
-target_link_libraries(tket PRIVATE nlohmann_json::nlohmann_json)
-target_link_libraries(tket PRIVATE tklog::tklog)
-target_link_libraries(tket PRIVATE tkassert::tkassert)
-target_link_libraries(tket PRIVATE tkrng::tkrng)
-target_link_libraries(tket PRIVATE tktokenswap::tktokenswap)
+target_link_libraries(tket PUBLIC Boost::headers)
+target_link_libraries(tket PUBLIC symengine::symengine)
+target_link_libraries(tket PUBLIC Eigen3::Eigen)
+target_link_libraries(tket PUBLIC nlohmann_json::nlohmann_json)
+target_link_libraries(tket PUBLIC tklog::tklog)
+target_link_libraries(tket PUBLIC tkassert::tkassert)
+target_link_libraries(tket PUBLIC tkrng::tkrng)
+target_link_libraries(tket PUBLIC tktokenswap::tktokenswap)
 target_link_libraries(tket PRIVATE tkwsm::tkwsm)
+target_link_libraries(tket PRIVATE gmp::gmp)
 IF(APPLE)
     target_link_libraries(tket PRIVATE "-flat_namespace")
 ENDIF()
@@ -432,6 +446,9 @@ target_sources(tket
         include/tket/Predicates/Predicates.hpp
     )
 
+if (BUILD_TKET_TEST OR BUILD_TKET_PROPTEST)
+    enable_testing()
+endif()
 if (BUILD_TKET_TEST)
     add_subdirectory(test)
 endif()
@@ -443,16 +460,14 @@ include(GNUInstallDirs)
 set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/tket)
 
 install(TARGETS tket
-    EXPORT tket-targets
-    FILE_SET HEADERS)
-
-if(MSVC)
-    install(TARGETS tket
+        EXPORT tket-targets
+        FILE_SET HEADERS
         RUNTIME DESTINATION bin
         RUNTIME DESTINATION lib
         ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib)
-endif()
+        LIBRARY DESTINATION lib
+        INCLUDES DESTINATION include
+)
 
 install(EXPORT tket-targets
     FILE tketTargets.cmake
@@ -462,7 +477,8 @@ install(EXPORT tket-targets
 
 include(CMakePackageConfigHelpers)
 
-configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/tketConfig.cmake.in
+configure_package_config_file(
+    ${CMAKE_CURRENT_LIST_DIR}/cmake/tketConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/tketConfig.cmake
     INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
 )
