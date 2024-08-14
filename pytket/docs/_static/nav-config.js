@@ -1,0 +1,1 @@
+// This is a blank navbar config. The actual navbar config is defined in a central repository.
