@@ -39,6 +39,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(INSTALL_NAME_DIR "Set the install name dir for the library to @loader_path for Apple targets" ON)
+option(BUILD_TKET_TEST "Build the test suite" OFF)
+option(BUILD_TKET_PROPTEST "Build the property test suite" OFF)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
