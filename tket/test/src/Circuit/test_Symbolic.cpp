@@ -14,6 +14,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <tket/Circuit/Circuit.hpp>
+#include <tket/Ops/ClassicalOps.hpp>
 #include <tket/Transformations/BasicOptimisation.hpp>
 #include <tket/Transformations/CliffordOptimisation.hpp>
 #include <tket/Transformations/OptimisationPass.hpp>
@@ -257,6 +258,29 @@ SCENARIO("Symbolic GPI, GPI2, AAMS") {
       }
     }
   }
+}
+
+SCENARIO("Symbolic substitution for classical operations") {
+  std::vector<uint64_t> and_table = {0, 1, 2, 7, 0, 1, 2, 7};
+  std::shared_ptr<ClassicalTransformOp> and_ttop =
+      std::make_shared<ClassicalTransformOp>(3, and_table);
+  std::shared_ptr<RangePredicateOp> rpop =
+      std::make_shared<RangePredicateOp>(3, 2, 6);
+  Circuit circ(1, 4);
+  circ.add_op<unsigned>(OpType::H, {0});
+  circ.add_op<unsigned>(and_ttop, {0, 1, 2});
+  circ.add_op<unsigned>(and_ttop, {1, 2, 3});
+  circ.add_op<unsigned>(rpop, {0, 1, 2, 3});
+  circ.add_op<unsigned>(AndOp(), {2, 3, 0});
+  circ.add_op<unsigned>(OrOp(), {0, 1, 2});
+  circ.add_op<unsigned>(NotOp(), {2, 3});
+  circ.add_op<unsigned>(ClassicalX(), {1});
+  circ.add_op<unsigned>(ClassicalCX(), {0, 1});
+  circ.add_op<unsigned>(AndWithOp(), {2, 3});
+  Circuit circ1(circ);
+  symbol_map_t symmap;
+  circ1.symbol_substitution(symmap);
+  REQUIRE(circ == circ1);
 }
 
 }  // namespace test_Symbolic
