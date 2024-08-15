@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+* Fix symbol substitution for classical operations.
+
+
 1.31.1 (August 2024)
 --------------------
 
