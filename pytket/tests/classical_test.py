@@ -72,6 +72,8 @@ from pytket.circuit.named_types import RenameUnitsMap
 
 from pytket.passes import DecomposeClassicalExp, FlattenRegisters
 
+from sympy import Symbol
+
 from strategies import reg_name_regex, binary_digits, uint32, uint64  # type: ignore
 
 curr_file_path = Path(__file__).resolve().parent
@@ -1479,6 +1481,15 @@ def test_box_equality_check() -> None:
     assert ceb1 != ceb2
     assert ceb1 == ceb1
     assert ceb1 == ClassicalExpBox(2, 0, 1, exp1)
+
+
+def test_sym_sub_range_pred() -> None:
+    c = Circuit(1, 2)
+    c.H(0, condition=reg_eq(BitRegister("c", 2), 3))
+    c1 = c.copy()
+    c.symbol_substitution({Symbol("a"): 0.5})
+
+    assert c == c1
 
 
 if __name__ == "__main__":
