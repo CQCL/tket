@@ -1476,26 +1476,6 @@ class QasmWriter:
         # in the mean time. (So we must watch for that, and remove the record from the
         # list if it is.)
         self.range_preds.append((variable, comparator, value, dest_bit, label))
-
-    def condition_string(self, op: Conditional, variable: str) -> str:
-        # Check whether the variable is actually in `self.range_preds`.
-        hits = [
-            (real_variable, comparator, value, label)
-            for (real_variable, comparator, value, dest_bit, label) in self.range_preds
-            if dest_bit == variable
-        ]
-        if not hits:
-            return f"if({variable}=={op.value}) "
-        else:
-            assert len(hits) == 1
-            real_variable, comparator, value, label = hits[0]
-            self.strings.del_string(label)
-            if op.value == 1:
-                return f"if({real_variable}{comparator}{value}) "
-            else:
-                assert op.value == 0
-                return f"if({real_variable}{_negate_comparator(comparator)}{value}) "
-
     def add_conditional(self, op: Conditional, args: List[UnitID]) -> None:
         control_bits = args[: op.width]
         if op.width == 1 and hqs_header(self.header):
@@ -1522,6 +1502,10 @@ class QasmWriter:
         if op.op.type == OpType.Phase:
             # Conditional phase is ignored.
             return
+        if op.op.type == OpType.RangePredicate:
+            raise QASMUnsupportedError(
+                "Conditional RangePredicate is currently unsupported."
+            )
         # we assign the condition to a scratch bit, which we will later remove
         # if the condition variable is unchanged.
         scratch_bit = self.fresh_scratch_bit()
