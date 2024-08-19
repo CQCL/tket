@@ -1429,18 +1429,11 @@ class QasmWriter:
         s += "}\n"
         return s
 
-    def mark_as_written(self, written_variable: str) -> None:
-        """Remove any references to the written-to variable in `self.range_preds`, so
-        that we don't try and replace instances of the variable with stale aliases.
-        """
-        hits = [
-            (variable, comparator, value, dest_bit, label)
-            for (variable, comparator, value, dest_bit, label) in self.range_preds
-            if variable == written_variable
-            or written_variable.startswith(variable + "[")
-        ]
-        for hit in hits:
-            self.range_preds.remove(hit)
+    def mark_as_written(self, label: int, written_variable: str) -> None:
+        if label in self.variable_writes:
+            self.variable_writes[label].append(written_variable)
+        else:
+            self.variable_writes[label] = [written_variable]
 
     def add_range_predicate(self, op: RangePredicateOp, args: List[Bit]) -> None:
         comparator, value = _parse_range(op.lower, op.upper, self.maxwidth)
@@ -1537,12 +1530,12 @@ class QasmWriter:
         # check if whole register can be set at once
         if bits == tuple(self.cregs[creg_name].to_list()):
             value = int("".join(map(str, map(int, vals[::-1]))), 2)
-            self.strings.add_string(f"{creg_name} = {value};\n")
-            self.mark_as_written(f"{creg_name}")
+            label = self.strings.add_string(f"{creg_name} = {value};\n")
+            self.mark_as_written(label, f"{creg_name}")
         else:
             for bit, value in zip(bits, vals):
-                self.strings.add_string(f"{bit} = {int(value)};\n")
-                self.mark_as_written(f"{bit}")
+                label = self.strings.add_string(f"{bit} = {int(value)};\n")
+                self.mark_as_written(label, f"{bit}")
 
     def add_copy_bits(self, op: CopyBitsOp, args: List[Bit]) -> None:
         l_args = args[op.n_inputs :]
@@ -1554,12 +1547,12 @@ class QasmWriter:
             l_args == self.cregs[l_name].to_list()
             and r_args == self.cregs[r_name].to_list()
         ):
-            self.strings.add_string(f"{l_name} = {r_name};\n")
-            self.mark_as_written(f"{l_name}")
+            label = self.strings.add_string(f"{l_name} = {r_name};\n")
+            self.mark_as_written(label, f"{l_name}")
         else:
             for bit_l, bit_r in zip(l_args, r_args):
-                self.strings.add_string(f"{bit_l} = {bit_r};\n")
-                self.mark_as_written(f"{bit_l}")
+                label = self.strings.add_string(f"{bit_l} = {bit_r};\n")
+                self.mark_as_written(label, f"{bit_l}")
 
     def add_multi_bit(self, op: MultiBitOp, args: List[Bit]) -> None:
         assert len(args) >= 2
@@ -1574,24 +1567,26 @@ class QasmWriter:
         opstr = str(op)
         if opstr not in _classical_gatestr_map:
             raise QASMUnsupportedError(f"Classical gate {opstr} not supported.")
-        self.strings.add_string(
+        label = self.strings.add_string(
             f"{args[-1]} = {args[0]} {_classical_gatestr_map[opstr]} {args[1]};\n"
         )
-        self.mark_as_written(f"{args[-1]}")
+        self.mark_as_written(label, f"{args[-1]}")
 
     def add_classical_exp_box(self, op: ClassicalExpBox, args: List[Bit]) -> None:
         out_args = args[op.get_n_i() :]
         if len(out_args) == 1:
-            self.strings.add_string(f"{out_args[0]} = {str(op.get_exp())};\n")
-            self.mark_as_written(f"{out_args[0]}")
+            label = self.strings.add_string(f"{out_args[0]} = {str(op.get_exp())};\n")
+            self.mark_as_written(label, f"{out_args[0]}")
         elif (
             out_args
             == self.cregs[out_args[0].reg_name].to_list()[
                 : op.get_n_io() + op.get_n_o()
             ]
         ):
-            self.strings.add_string(f"{out_args[0].reg_name} = {str(op.get_exp())};\n")
-            self.mark_as_written(f"{out_args[0].reg_name}")
+            label = self.strings.add_string(
+                f"{out_args[0].reg_name} = {str(op.get_exp())};\n"
+            )
+            self.mark_as_written(label, f"{out_args[0].reg_name}")
         else:
             raise QASMUnsupportedError(
                 f"ClassicalExpBox only supported"
@@ -1610,14 +1605,14 @@ class QasmWriter:
                     QASMUnsupportedError("WASM ops must act on entire registers.")
                 reglist.append(regname)
         if outputs:
-            self.strings.add_string(f"{', '.join(outputs)} = ")
+            label = self.strings.add_string(f"{', '.join(outputs)} = ")
         self.strings.add_string(f"{op.func_name}({', '.join(inputs)});\n")
         for variable in outputs:
-            self.mark_as_written(variable)
+            self.mark_as_written(label, variable)
 
     def add_measure(self, args: List[UnitID]) -> None:
-        self.strings.add_string(f"measure {args[0]} -> {args[1]};\n")
-        self.mark_as_written(f"{args[1]}")
+        label = self.strings.add_string(f"measure {args[0]} -> {args[1]};\n")
+        self.mark_as_written(label, f"{args[1]}")
 
     def add_zzphase(self, param: Union[float, Expr], args: List[UnitID]) -> None:
         # as op.params returns reduced parameters, we can assume
