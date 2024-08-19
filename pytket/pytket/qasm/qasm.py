@@ -1298,6 +1298,13 @@ def make_args_str(args: List[UnitID]) -> str:
     return s
 
 
+@dataclass
+class ScratchPredicate:
+    variable: str  # variable, e.g. "c[1]"
+    comparator: str  # comparator, e.g. "=="
+    value: int  # value, e.g. "1"
+    dest: str  # destination bit, e.g. "tk_SCRATCH_BIT[0]"
+
 class QasmWriter:
     """
     Helper class for converting a sequence of TKET Commands to QASM, and retrieving the
@@ -1324,19 +1331,10 @@ class QasmWriter:
         self.strings = LabelledStringList()
 
         # Record of `RangePredicate` operations that set a "scratch" bit to 0 or 1
-        # depending on the value of the predicate. This list is consulted when we
+        # depending on the value of the predicate. This map is consulted when we
         # encounter a `Conditional` operation to see if the condition bit is one of
-        # these scratch bits, which we can then replace with the original. Whenever a
-        # classical bit is written to, we remove any references to it from this list.
-        self.range_preds: List[
-            Tuple[
-                str,  # variable, e.g. "c[1]"
-                str,  # comparator, e.g. "=="
-                int,  # value, e.g. "1"
-                str,  # destination bit, e.g. "tk_SCRATCH_BIT[0]"
-                int,  # label, e.g. 42
-            ]
-        ] = []
+        # these scratch bits, which we can then replace with the original.
+        self.range_preds: Dict[int, ScratchPredicate] = dict()
 
         if include_gate_defs is None:
             self.include_gate_defs = self.include_module_gates
@@ -1468,7 +1466,11 @@ class QasmWriter:
         # (variable, comparator, value), provided that variable hasn't been written to
         # in the mean time. (So we must watch for that, and remove the record from the
         # list if it is.)
-        self.range_preds.append((variable, comparator, value, dest_bit, label))
+        # Note that we only perform such rewrites for internal scratch bits.
+        if dest_bit.startswith(_TEMP_BIT_NAME):
+            self.range_preds[label] = ScratchPredicate(
+                variable, comparator, value, dest_bit
+            )
     def add_conditional(self, op: Conditional, args: List[UnitID]) -> None:
         control_bits = args[: op.width]
         if op.width == 1 and hqs_header(self.header):
@@ -1509,6 +1511,9 @@ class QasmWriter:
                     f"if({variable}!={op.value}) " + f"{scratch_bit} = 0;\n",
                 ]
             )
+        )
+        self.range_preds[pred_label] = ScratchPredicate(
+            variable, "==", op.value, str(scratch_bit)
         )
         # we will later add condition to all lines starting from next_label
         next_label = self.strings.label
