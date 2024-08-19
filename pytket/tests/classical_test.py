@@ -540,14 +540,16 @@ def test_wasmfilehandler_invalid_file_1_e_64_no_check() -> None:
     )
 
 
-def test_wasmfilehandler_invalid_file_1_e_32_no_check_repr() -> None:
+def test_wasmfilehandler_invalid_file_1_e_32_unchecked_repr() -> None:
     w = wasm.WasmFileHandler(
         "wasm-generation/wasmfromcpp/invalid-with-print-2-emcc.wasm",
         int_size=32,
         check_file=False,
     )
-    with pytest.raises(ValueError):
+    assert (
         repr(w)
+        == "Unchecked wasm module file with the uid 139e7266b9dcc32dc5237ac2a43d8883847dee3c792e147528fae3984229cc5d"
+    )
 
 
 def test_wasmfilehandler_repr() -> None:

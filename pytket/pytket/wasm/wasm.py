@@ -32,7 +32,7 @@ from qwasm import (  # type: ignore
 
 
 class WasmModuleHandler:
-    """Construct and optionally check a WASM module for use in WASM Ops."""
+    """Construct and optionally check a wasm module for use in wasm Ops."""
 
     checked: bool
     _int_size: int
@@ -54,7 +54,7 @@ class WasmModuleHandler:
         """
         Construct a wasm module handler
 
-        :param wasm_module: A WASM module in binary format.
+        :param wasm_module: A wasm module in binary format.
         :type wasm_module: bytes
         :param check: If ``True`` checks file for compatibility with wasm
           standards. If ``False`` checks are skipped.
@@ -96,7 +96,7 @@ class WasmModuleHandler:
         """
         if self.checked:
             return
-        
+
         function_signatures: list = []
         function_names: list = []
         _func_lookup = {}
@@ -195,6 +195,7 @@ class WasmModuleHandler:
         # to be checked again.
         self.checked = True
 
+    @property
     @deprecated("Use public property `checked` instead.")
     def _check_file(self) -> bool:
         return self.checked
@@ -204,10 +205,10 @@ class WasmModuleHandler:
         return self.uid
 
     def __repr__(self) -> str:
-        """str representation of the contents of the wasm file.
+        """str representation of the contents of the wasm file."""
+        if not self.checked:
+            return f"Unchecked wasm module file with the uid {self.uid}"
 
-        Will implicitly check the module if it has not been checked already.
-        """
         result = f"Functions in wasm file with the uid {self.uid}:\n"
         for x in self.functions:
             result += f"function '{x}' with "
@@ -223,14 +224,15 @@ class WasmModuleHandler:
         return result
 
     def bytecode(self) -> bytes:
-        """The WASM content as bytecode"""
+        """The wasm content as bytecode"""
         return self._wasm_module
 
     @cached_property
     def bytecode_base64(self) -> bytes:
-        """The WASM content as base64 encoded bytecode."""
+        """The wasm content as base64 encoded bytecode."""
         return base64.b64encode(self._wasm_module)
 
+    @property
     @deprecated("Use public property `bytecode_base64` instead.")
     def _wasm_file_encoded(self) -> bytes:
         return self.bytecode_base64
@@ -240,6 +242,7 @@ class WasmModuleHandler:
         """A unique identifier for the module calculated from its' checksum."""
         return hashlib.sha256(self.bytecode_base64).hexdigest()
 
+    @property
     @deprecated("Use public property `uid` instead.")
     def _wasmfileuid(self) -> str:
         return self.uid
@@ -251,8 +254,8 @@ class WasmModuleHandler:
         Checks a given function name and signature if it is included and the
         module has previously been checked.
 
-        If the module has not been checked this function will always return
-        True.
+        If the module has not been checked this function with will raise a
+        ValueError.
 
         :param function_name: name of the function that is checked
         :type function_name: str
@@ -261,34 +264,46 @@ class WasmModuleHandler:
         :param number_of_returns: number of integer return values of the function
         :type number_of_returns: int
         :return: true if the signature and the name of the function is correct"""
+        if not self.checked:
+            raise ValueError(
+                "Cannot retrieve functions from an unchecked wasm module. Please call .check() first."
+            )
 
-        return not self.checked or (
+        return (
             (function_name in self._functions)
             and (self._functions[function_name][0] == number_of_parameters)
             and (self._functions[function_name][1] == number_of_returns)
         )
 
-    @cached_property
+    @property
     def functions(self) -> dict[str, tuple[int, int]]:
         """Retrieve the names of functions with the number of input and out arguments.
 
-        Will check the module if it has not been checked already.
+        If the module has not been checked this function with will raise a
+        ValueError.
         """
-        self.check()
+        if not self.checked:
+            raise ValueError(
+                "Cannot retrieve functions from an unchecked wasm module. Please call .check() first."
+            )
         return self._functions
 
-    @cached_property
+    @property
     def unsupported_functions(self) -> list[str]:
         """Retrieve the names of unsupported functions as a list of strings.
 
-        Will check the module if it has not been checked already.
+        If the module has not been checked this function with will raise a
+        ValueError.
         """
-        self.check()
+        if not self.checked:
+            raise ValueError(
+                "Cannot retrieve functions from an unchecked wasm module. Please call .check() first."
+            )
         return self._unsupported_functions
 
 
 class WasmFileHandler(WasmModuleHandler):
-    """Construct and optionally check a WASM module from a file for use in WASM Ops."""
+    """Construct and optionally check a wasm module from a file for use in wasm Ops."""
 
     def __init__(self, filepath: str, check_file: bool = True, int_size: int = 32):
         """

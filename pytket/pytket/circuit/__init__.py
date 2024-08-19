@@ -150,7 +150,11 @@ please use only registers of at most 32 bits"""
 please use only registers of at most 32 bits"""
                 )
 
-    if filehandler.check_function(funcname, len(list_i), len(list_o)):
+    # If the filehandler has not been checked we allow it to
+    # be added without checking the function arity.
+    if not filehandler.checked or filehandler.check_function(
+        funcname, len(list_i), len(list_o)
+    ):
         if (len(args_wasm)) > 0:
             self._add_w_register(max(args_wasm) + 1)
         return self._add_wasm(
