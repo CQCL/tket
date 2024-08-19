@@ -17,6 +17,7 @@ import os
 import re
 import uuid
 
+import itertools
 from collections import OrderedDict
 from importlib import import_module
 from itertools import chain, groupby
@@ -54,7 +55,7 @@ from pytket._tket.circuit import (
     WASMOp,
     BarrierOp,
 )
-from pytket._tket.unit_id import _TEMP_BIT_NAME
+from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
 from pytket.circuit import (
     Bit,
     BitRegister,
@@ -1215,16 +1216,26 @@ def hqs_header(header: str) -> bool:
     return header in ["hqslib1", "hqslib1_dev"]
 
 
+@dataclass
+class ConditionString:
+    variable: str  # variable, e.g. "c[1]"
+    comparator: str  # comparator, e.g. "=="
+    value: int  # value, e.g. "1"
+
+
 class LabelledStringList:
     """
     Wrapper class for an ordered sequence of strings, where each string has a unique
     label, returned when the string is added, and a string may be removed from the
     sequence given its label. There is a method to retrieve the concatenation of all
-    strings in order.
+    strings in order. The conditions (e.g. "if(c[0]==1)") for some strings are stored
+    separately in `conditions`. These conditions will be converted to text when retrieving
+    the full string.
     """
 
     def __init__(self) -> None:
         self.strings: OrderedDict[int, str] = OrderedDict()
+        self.conditions: Dict[int, ConditionString] = dict()
         self.label = 0
 
     def add_string(self, string: str) -> int:
@@ -1237,7 +1248,17 @@ class LabelledStringList:
         self.strings.pop(label, None)
 
     def get_full_string(self) -> str:
-        return "".join(self.strings.values())
+        strings = []
+        for l, s in self.strings.items():
+            condition = self.conditions.get(l)
+            if condition is not None:
+                strings.append(
+                    f"if({condition.variable}{condition.comparator}{condition.value}) "
+                    + s
+                )
+            else:
+                strings.append(s)
+        return "".join(strings)
 
 
 def make_params_str(params: Optional[List[Union[float, Expr]]]) -> str:
@@ -1345,6 +1366,24 @@ class QasmWriter:
             self.include_gate_defs = include_gate_defs
             self.cregs = {}
             self.qregs = {}
+
+        # for holding condition values when writing Conditional blocks
+        # the size changes when adding and removing scratch bits
+        self.scratch_reg = BitRegister(
+            next(
+                f"{_TEMP_BIT_REG_BASE}_{i}"
+                for i in itertools.count()
+                if f"{_TEMP_BIT_REG_BASE}_{i}" not in self.qregs
+            ),
+            0,
+        )
+        # if a string writes to some classical variables, the string label and
+        # the affected variables will be recorded.
+        self.variable_writes: Dict[int, List[str]] = dict()
+
+    def fresh_scratch_bit(self) -> Bit:
+        self.scratch_reg = BitRegister(self.scratch_reg.name, self.scratch_reg.size + 1)
+        return Bit(self.scratch_reg.name, self.scratch_reg.size - 1)
 
     def write_params(self, params: Optional[List[Union[float, Expr]]]) -> None:
         params_str = make_params_str(params)
@@ -1458,13 +1497,15 @@ class QasmWriter:
                 return f"if({real_variable}{_negate_comparator(comparator)}{value}) "
 
     def add_conditional(self, op: Conditional, args: List[UnitID]) -> None:
-        bits = args[: op.width]
-        control_bit = bits[0]
+        control_bits = args[: op.width]
         if op.width == 1 and hqs_header(self.header):
-            variable = str(control_bit)
+            variable = str(control_bits[0])
         else:
-            variable = control_bit.reg_name
-            if hqs_header(self.header) and bits != self.cregs[variable].to_list():
+            variable = control_bits[0].reg_name
+            if (
+                hqs_header(self.header)
+                and control_bits != self.cregs[variable].to_list()
+            ):
                 raise QASMUnsupportedError(
                     "hqslib1 QASM conditions must be an entire classical "
                     "register or a single bit"
@@ -1474,16 +1515,37 @@ class QasmWriter:
                 raise QASMUnsupportedError(
                     "OpenQASM conditions must be an entire classical register"
                 )
-            if bits != self.cregs[variable].to_list():
+            if control_bits != self.cregs[variable].to_list():
                 raise QASMUnsupportedError(
                     "OpenQASM conditions must be a single classical register"
                 )
         if op.op.type == OpType.Phase:
             # Conditional phase is ignored.
             return
-        condstr = self.condition_string(op, variable)
-        self.strings.add_string(condstr)
+        # we assign the condition to a scratch bit, which we will later remove
+        # if the condition variable is unchanged.
+        scratch_bit = self.fresh_scratch_bit()
+        pred_label = self.strings.add_string(
+            "".join(
+                [
+                    f"if({variable}=={op.value}) " + f"{scratch_bit} = 1;\n",
+                    f"if({variable}!={op.value}) " + f"{scratch_bit} = 0;\n",
+                ]
+            )
+        )
+        # we will later add condition to all lines starting from next_label
+        next_label = self.strings.label
         self.add_op(op.op, args[op.width :])
+        # add conditions to the lines after the predicate
+        is_new_line = True
+        for label in range(next_label, self.strings.label):
+            string = self.strings.get_string(label)
+            assert string is not None
+            if is_new_line and string != "\n":
+                self.strings.conditions[label] = ConditionString(
+                    str(scratch_bit), "==", 1
+                )
+            is_new_line = "\n" in string
 
     def add_set_bits(self, op: SetBitsOp, args: List[Bit]) -> None:
         creg_name = args[0].reg_name
@@ -1696,6 +1758,10 @@ class QasmWriter:
             reg_strings.add_string(f"qreg {reg.name}[{reg.size}];\n")
         for bit_reg in self.cregs.values():
             reg_strings.add_string(f"creg {bit_reg.name}[{bit_reg.size}];\n")
+        if self.scratch_reg.size > 0:
+            reg_strings.add_string(
+                f"creg {self.scratch_reg.name}[{self.scratch_reg.size}];\n"
+            )
         return (
             self.prefix
             + self.gatedefs
