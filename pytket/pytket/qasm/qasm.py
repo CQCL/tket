@@ -1332,7 +1332,6 @@ class QasmWriter:
                         "and uppercase letters, numbers, and underscores. "
                         "Try renaming the register with `rename_units` first."
                     )
-                self.strings.add_string(f"qreg {reg.name}[{reg.size}];\n")
             for bit_reg in self.cregs.values():
                 if regname_regex.match(bit_reg.name) is None:
                     raise QASMUnsupportedError(
@@ -1341,7 +1340,6 @@ class QasmWriter:
                         "lowercase and uppercase letters, numbers, and underscores. "
                         "Try renaming the register with `rename_units` first."
                     )
-                self.strings.add_string(f"creg {bit_reg.name}[{bit_reg.size}];\n")
         else:
             # gate definition, no header necessary for file
             self.include_gate_defs = include_gate_defs
@@ -1693,10 +1691,17 @@ class QasmWriter:
             )
 
     def finalize(self) -> str:
+        reg_strings = LabelledStringList()
+        for reg in self.qregs.values():
+            reg_strings.add_string(f"qreg {reg.name}[{reg.size}];\n")
+        for bit_reg in self.cregs.values():
+            reg_strings.add_string(f"creg {bit_reg.name}[{bit_reg.size}];\n")
         return (
             self.prefix
             + self.gatedefs
-            + _filtered_qasm_str(self.strings.get_full_string())
+            + _filtered_qasm_str(
+                reg_strings.get_full_string() + self.strings.get_full_string()
+            )
         )
 
 
