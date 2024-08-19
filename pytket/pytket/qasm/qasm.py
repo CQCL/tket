@@ -1229,8 +1229,8 @@ class LabelledStringList:
     label, returned when the string is added, and a string may be removed from the
     sequence given its label. There is a method to retrieve the concatenation of all
     strings in order. The conditions (e.g. "if(c[0]==1)") for some strings are stored
-    separately in `conditions`. These conditions will be converted to text when retrieving
-    the full string.
+    separately in `conditions`. These conditions will be converted to text when
+    retrieving the full string.
     """
 
     def __init__(self) -> None:
@@ -1509,9 +1509,10 @@ class QasmWriter:
             )
 
     def replace_condition(self, pred_label: int) -> bool:
-        """Given the label of a predicate p=(var, comp, value, dest, label), we scan the lines after p:
-        1.if dest is the condition of a conditional line we replace dest with the predicate
-            and do 2 for the inner command.
+        """Given the label of a predicate p=(var, comp, value, dest, label)
+        we scan the lines after p:
+        1.if dest is the condition of a conditional line we replace dest with
+            the predicate and do 2 for the inner command.
         2.if either the variable or the dest gets written, we stop.
         returns true if a replacement is made.
         """
@@ -1558,7 +1559,8 @@ class QasmWriter:
         return success
 
     def remove_unused_predicate(self, pred_label: int) -> bool:
-        """Given the label of a predicate p=(var, comp, value, dest, label), we remove p if dest never appears after p."""
+        """Given the label of a predicate p=(var, comp, value, dest, label),
+        we remove p if dest never appears after p."""
         assert pred_label in self.range_preds
         pred = self.range_preds[pred_label]
         for label in range(pred_label + 1, self.strings.label):
