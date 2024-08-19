@@ -1244,6 +1244,9 @@ class LabelledStringList:
         self.label += 1
         return label
 
+    def get_string(self, label: int) -> Optional[str]:
+        return self.strings.get(label, None)
+
     def del_string(self, label: int) -> None:
         self.strings.pop(label, None)
 
@@ -1304,6 +1307,35 @@ class ScratchPredicate:
     comparator: str  # comparator, e.g. "=="
     value: int  # value, e.g. "1"
     dest: str  # destination bit, e.g. "tk_SCRATCH_BIT[0]"
+
+
+def _vars_overlap(v: str, w: str) -> bool:
+    """check if two variables have overlapping bits"""
+    v_split = v.split("[")
+    w_split = w.split("[")
+    if v_split[0] != w_split[0]:
+        # different registers
+        return False
+    # e.g. (a[1], a), (a, a[1]), (a[1], a[1]), (a, a)
+    return len(v_split) != len(w_split) or v == w
+
+
+def _var_appears(v: str, s: str) -> bool:
+    """check if variable v appears in string s"""
+    v_split = v.split("[")
+    if len(v_split) == 1:
+        # check if v appears in s and is not surrounded by word characters
+        # e.g. a = a & b or a = a[1] & b[1]
+        return bool(re.search(r"(?<!\w)" + re.escape(v) + r"(?![\w])", s))
+    else:
+        if re.search(r"(?<!\w)" + re.escape(v), s):
+            # check if v appears in s and is not proceeded by word characters
+            # e.g. a[1] = a[1]
+            return True
+        # check the register of v appears in s
+        # e.g. a[1] = a & b
+        return bool(re.search(r"(?<!\w)" + re.escape(v_split[0]) + r"(?![\[\w])", s))
+
 
 class QasmWriter:
     """
@@ -1382,6 +1414,10 @@ class QasmWriter:
     def fresh_scratch_bit(self) -> Bit:
         self.scratch_reg = BitRegister(self.scratch_reg.name, self.scratch_reg.size + 1)
         return Bit(self.scratch_reg.name, self.scratch_reg.size - 1)
+
+    def remove_last_scratch_bit(self) -> None:
+        assert self.scratch_reg.size > 0
+        self.scratch_reg = BitRegister(self.scratch_reg.name, self.scratch_reg.size - 1)
 
     def write_params(self, params: Optional[List[Union[float, Expr]]]) -> None:
         params_str = make_params_str(params)
@@ -1471,6 +1507,74 @@ class QasmWriter:
             self.range_preds[label] = ScratchPredicate(
                 variable, comparator, value, dest_bit
             )
+
+    def replace_condition(self, pred_label: int) -> bool:
+        """Given the label of a predicate p=(var, comp, value, dest, label), we scan the lines after p:
+        1.if dest is the condition of a conditional line we replace dest with the predicate
+            and do 2 for the inner command.
+        2.if either the variable or the dest gets written, we stop.
+        returns true if a replacement is made.
+        """
+        assert pred_label in self.range_preds
+        success = False
+        pred = self.range_preds[pred_label]
+        line_labels = []
+        for label in range(pred_label + 1, self.strings.label):
+            string = self.strings.get_string(label)
+            if string is None:
+                continue
+            line_labels.append(label)
+            if "\n" not in string:
+                continue
+            written_variables: List[str] = []
+            # (label, condition)
+            conditions: List[Tuple[int, ConditionString]] = []
+            for l in line_labels:
+                written_variables.extend(self.variable_writes.get(l, []))
+                cond = self.strings.conditions.get(l)
+                if cond:
+                    conditions.append((l, cond))
+            if len(conditions) == 1 and pred.dest == conditions[0][1].variable:
+                # if the condition is dest, replace the condition with pred
+                success = True
+                if conditions[0][1].value == 1:
+                    self.strings.conditions[conditions[0][0]] = ConditionString(
+                        pred.variable, pred.comparator, pred.value
+                    )
+                else:
+                    assert conditions[0][1].value == 0
+                    self.strings.conditions[conditions[0][0]] = ConditionString(
+                        pred.variable,
+                        _negate_comparator(pred.comparator),
+                        pred.value,
+                    )
+            if any(_vars_overlap(pred.dest, v) for v in written_variables) or any(
+                _vars_overlap(pred.variable, v) for v in written_variables
+            ):
+                return success
+            line_labels.clear()
+            conditions.clear()
+            written_variables.clear()
+        return success
+
+    def remove_unused_predicate(self, pred_label: int) -> bool:
+        """Given the label of a predicate p=(var, comp, value, dest, label), we remove p if dest never appears after p."""
+        assert pred_label in self.range_preds
+        pred = self.range_preds[pred_label]
+        for label in range(pred_label + 1, self.strings.label):
+            string = self.strings.get_string(label)
+            if string is None:
+                continue
+            if (
+                _var_appears(pred.dest, string)
+                or label in self.strings.conditions
+                and _vars_overlap(pred.dest, self.strings.conditions[label].variable)
+            ):
+                return False
+        self.range_preds.pop(pred_label)
+        self.strings.del_string(pred_label)
+        return True
+
     def add_conditional(self, op: Conditional, args: List[UnitID]) -> None:
         control_bits = args[: op.width]
         if op.width == 1 and hqs_header(self.header):
@@ -1528,6 +1632,11 @@ class QasmWriter:
                     str(scratch_bit), "==", 1
                 )
             is_new_line = "\n" in string
+        if self.replace_condition(pred_label) and self.remove_unused_predicate(
+            pred_label
+        ):
+            # remove the unused scratch bit
+            self.remove_last_scratch_bit()
 
     def add_set_bits(self, op: SetBitsOp, args: List[Bit]) -> None:
         creg_name = args[0].reg_name
@@ -1737,6 +1846,13 @@ class QasmWriter:
             )
 
     def finalize(self) -> str:
+        # try removing unused predicates
+        pred_labels = list(self.range_preds.keys())
+        for label in pred_labels:
+            # try replacing conditions with a predicate
+            self.replace_condition(label)
+            # try removing the predicate
+            self.remove_unused_predicate(label)
         reg_strings = LabelledStringList()
         for reg in self.qregs.values():
             reg_strings.add_string(f"qreg {reg.name}[{reg.size}];\n")
