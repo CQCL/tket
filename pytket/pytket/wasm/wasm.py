@@ -266,7 +266,8 @@ class WasmModuleHandler:
         :return: true if the signature and the name of the function is correct"""
         if not self.checked:
             raise ValueError(
-                "Cannot retrieve functions from an unchecked wasm module. Please call .check() first."
+                "Cannot retrieve functions from an unchecked wasm module."
+                " Please call .check() first."
             )
 
         return (
@@ -284,7 +285,8 @@ class WasmModuleHandler:
         """
         if not self.checked:
             raise ValueError(
-                "Cannot retrieve functions from an unchecked wasm module. Please call .check() first."
+                "Cannot retrieve functions from an unchecked wasm module."
+                " Please call .check() first."
             )
         return self._functions
 
@@ -297,7 +299,8 @@ class WasmModuleHandler:
         """
         if not self.checked:
             raise ValueError(
-                "Cannot retrieve functions from an unchecked wasm module. Please call .check() first."
+                "Cannot retrieve functions from an unchecked wasm module."
+                " Please call .check() first."
             )
         return self._unsupported_functions
 
