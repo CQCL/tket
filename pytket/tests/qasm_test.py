@@ -1057,7 +1057,7 @@ if(e[0]==0) measure q[1] -> f[1];
     e = c.add_c_register("e", 2)
     f = c.add_c_register("f", 3)
     c.add_gate(range_predicate, [d[0], d[1], d[2], e[0]])
-    c.add_c_setbits([0], [e[0]], condition=e[0])
+    c.add_c_setbits([False], [e[0]], condition=e[0])
     c.add_gate(OpType.Measure, [Qubit(0), f[0]], condition=e[0])
     qasm = circuit_to_qasm_str(c, header="hqslib1")
     assert (
