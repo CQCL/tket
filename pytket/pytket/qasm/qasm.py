@@ -17,6 +17,7 @@ import os
 import re
 import uuid
 
+import itertools
 from collections import OrderedDict
 from importlib import import_module
 from itertools import chain, groupby
@@ -54,7 +55,7 @@ from pytket._tket.circuit import (
     WASMOp,
     BarrierOp,
 )
-from pytket._tket.unit_id import _TEMP_BIT_NAME
+from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
 from pytket.circuit import (
     Bit,
     BitRegister,
@@ -1215,16 +1216,26 @@ def hqs_header(header: str) -> bool:
     return header in ["hqslib1", "hqslib1_dev"]
 
 
+@dataclass
+class ConditionString:
+    variable: str  # variable, e.g. "c[1]"
+    comparator: str  # comparator, e.g. "=="
+    value: int  # value, e.g. "1"
+
+
 class LabelledStringList:
     """
     Wrapper class for an ordered sequence of strings, where each string has a unique
     label, returned when the string is added, and a string may be removed from the
     sequence given its label. There is a method to retrieve the concatenation of all
-    strings in order.
+    strings in order. The conditions (e.g. "if(c[0]==1)") for some strings are stored
+    separately in `conditions`. These conditions will be converted to text when
+    retrieving the full string.
     """
 
     def __init__(self) -> None:
         self.strings: OrderedDict[int, str] = OrderedDict()
+        self.conditions: Dict[int, ConditionString] = dict()
         self.label = 0
 
     def add_string(self, string: str) -> int:
@@ -1233,11 +1244,24 @@ class LabelledStringList:
         self.label += 1
         return label
 
+    def get_string(self, label: int) -> Optional[str]:
+        return self.strings.get(label, None)
+
     def del_string(self, label: int) -> None:
         self.strings.pop(label, None)
 
     def get_full_string(self) -> str:
-        return "".join(self.strings.values())
+        strings = []
+        for l, s in self.strings.items():
+            condition = self.conditions.get(l)
+            if condition is not None:
+                strings.append(
+                    f"if({condition.variable}{condition.comparator}{condition.value}) "
+                    + s
+                )
+            else:
+                strings.append(s)
+        return "".join(strings)
 
 
 def make_params_str(params: Optional[List[Union[float, Expr]]]) -> str:
@@ -1277,6 +1301,42 @@ def make_args_str(args: List[UnitID]) -> str:
     return s
 
 
+@dataclass
+class ScratchPredicate:
+    variable: str  # variable, e.g. "c[1]"
+    comparator: str  # comparator, e.g. "=="
+    value: int  # value, e.g. "1"
+    dest: str  # destination bit, e.g. "tk_SCRATCH_BIT[0]"
+
+
+def _vars_overlap(v: str, w: str) -> bool:
+    """check if two variables have overlapping bits"""
+    v_split = v.split("[")
+    w_split = w.split("[")
+    if v_split[0] != w_split[0]:
+        # different registers
+        return False
+    # e.g. (a[1], a), (a, a[1]), (a[1], a[1]), (a, a)
+    return len(v_split) != len(w_split) or v == w
+
+
+def _var_appears(v: str, s: str) -> bool:
+    """check if variable v appears in string s"""
+    v_split = v.split("[")
+    if len(v_split) == 1:
+        # check if v appears in s and is not surrounded by word characters
+        # e.g. a = a & b or a = a[1] & b[1]
+        return bool(re.search(r"(?<!\w)" + re.escape(v) + r"(?![\w])", s))
+    else:
+        if re.search(r"(?<!\w)" + re.escape(v), s):
+            # check if v appears in s and is not proceeded by word characters
+            # e.g. a[1] = a[1]
+            return True
+        # check the register of v appears in s
+        # e.g. a[1] = a & b
+        return bool(re.search(r"(?<!\w)" + re.escape(v_split[0]) + r"(?![\[\w])", s))
+
+
 class QasmWriter:
     """
     Helper class for converting a sequence of TKET Commands to QASM, and retrieving the
@@ -1303,19 +1363,10 @@ class QasmWriter:
         self.strings = LabelledStringList()
 
         # Record of `RangePredicate` operations that set a "scratch" bit to 0 or 1
-        # depending on the value of the predicate. This list is consulted when we
+        # depending on the value of the predicate. This map is consulted when we
         # encounter a `Conditional` operation to see if the condition bit is one of
-        # these scratch bits, which we can then replace with the original. Whenever a
-        # classical bit is written to, we remove any references to it from this list.
-        self.range_preds: List[
-            Tuple[
-                str,  # variable, e.g. "c[1]"
-                str,  # comparator, e.g. "=="
-                int,  # value, e.g. "1"
-                str,  # destination bit, e.g. "tk_SCRATCH_BIT[0]"
-                int,  # label, e.g. 42
-            ]
-        ] = []
+        # these scratch bits, which we can then replace with the original.
+        self.range_preds: Dict[int, ScratchPredicate] = dict()
 
         if include_gate_defs is None:
             self.include_gate_defs = self.include_module_gates
@@ -1332,7 +1383,6 @@ class QasmWriter:
                         "and uppercase letters, numbers, and underscores. "
                         "Try renaming the register with `rename_units` first."
                     )
-                self.strings.add_string(f"qreg {reg.name}[{reg.size}];\n")
             for bit_reg in self.cregs.values():
                 if regname_regex.match(bit_reg.name) is None:
                     raise QASMUnsupportedError(
@@ -1341,12 +1391,33 @@ class QasmWriter:
                         "lowercase and uppercase letters, numbers, and underscores. "
                         "Try renaming the register with `rename_units` first."
                     )
-                self.strings.add_string(f"creg {bit_reg.name}[{bit_reg.size}];\n")
         else:
             # gate definition, no header necessary for file
             self.include_gate_defs = include_gate_defs
             self.cregs = {}
             self.qregs = {}
+
+        # for holding condition values when writing Conditional blocks
+        # the size changes when adding and removing scratch bits
+        self.scratch_reg = BitRegister(
+            next(
+                f"{_TEMP_BIT_REG_BASE}_{i}"
+                for i in itertools.count()
+                if f"{_TEMP_BIT_REG_BASE}_{i}" not in self.qregs
+            ),
+            0,
+        )
+        # if a string writes to some classical variables, the string label and
+        # the affected variables will be recorded.
+        self.variable_writes: Dict[int, List[str]] = dict()
+
+    def fresh_scratch_bit(self) -> Bit:
+        self.scratch_reg = BitRegister(self.scratch_reg.name, self.scratch_reg.size + 1)
+        return Bit(self.scratch_reg.name, self.scratch_reg.size - 1)
+
+    def remove_last_scratch_bit(self) -> None:
+        assert self.scratch_reg.size > 0
+        self.scratch_reg = BitRegister(self.scratch_reg.name, self.scratch_reg.size - 1)
 
     def write_params(self, params: Optional[List[Union[float, Expr]]]) -> None:
         params_str = make_params_str(params)
@@ -1392,18 +1463,11 @@ class QasmWriter:
         s += "}\n"
         return s
 
-    def mark_as_written(self, written_variable: str) -> None:
-        """Remove any references to the written-to variable in `self.range_preds`, so
-        that we don't try and replace instances of the variable with stale aliases.
-        """
-        hits = [
-            (variable, comparator, value, dest_bit, label)
-            for (variable, comparator, value, dest_bit, label) in self.range_preds
-            if variable == written_variable
-            or written_variable.startswith(variable + "[")
-        ]
-        for hit in hits:
-            self.range_preds.remove(hit)
+    def mark_as_written(self, label: int, written_variable: str) -> None:
+        if label in self.variable_writes:
+            self.variable_writes[label].append(written_variable)
+        else:
+            self.variable_writes[label] = [written_variable]
 
     def add_range_predicate(self, op: RangePredicateOp, args: List[Bit]) -> None:
         comparator, value = _parse_range(op.lower, op.upper, self.maxwidth)
@@ -1438,35 +1502,91 @@ class QasmWriter:
         # (variable, comparator, value), provided that variable hasn't been written to
         # in the mean time. (So we must watch for that, and remove the record from the
         # list if it is.)
-        self.range_preds.append((variable, comparator, value, dest_bit, label))
+        # Note that we only perform such rewrites for internal scratch bits.
+        if dest_bit.startswith(_TEMP_BIT_NAME):
+            self.range_preds[label] = ScratchPredicate(
+                variable, comparator, value, dest_bit
+            )
 
-    def condition_string(self, op: Conditional, variable: str) -> str:
-        # Check whether the variable is actually in `self.range_preds`.
-        hits = [
-            (real_variable, comparator, value, label)
-            for (real_variable, comparator, value, dest_bit, label) in self.range_preds
-            if dest_bit == variable
-        ]
-        if not hits:
-            return f"if({variable}=={op.value}) "
-        else:
-            assert len(hits) == 1
-            real_variable, comparator, value, label = hits[0]
-            self.strings.del_string(label)
-            if op.value == 1:
-                return f"if({real_variable}{comparator}{value}) "
-            else:
-                assert op.value == 0
-                return f"if({real_variable}{_negate_comparator(comparator)}{value}) "
+    def replace_condition(self, pred_label: int) -> bool:
+        """Given the label of a predicate p=(var, comp, value, dest, label)
+        we scan the lines after p:
+        1.if dest is the condition of a conditional line we replace dest with
+            the predicate and do 2 for the inner command.
+        2.if either the variable or the dest gets written, we stop.
+        returns true if a replacement is made.
+        """
+        assert pred_label in self.range_preds
+        success = False
+        pred = self.range_preds[pred_label]
+        line_labels = []
+        for label in range(pred_label + 1, self.strings.label):
+            string = self.strings.get_string(label)
+            if string is None:
+                continue
+            line_labels.append(label)
+            if "\n" not in string:
+                continue
+            written_variables: List[str] = []
+            # (label, condition)
+            conditions: List[Tuple[int, ConditionString]] = []
+            for l in line_labels:
+                written_variables.extend(self.variable_writes.get(l, []))
+                cond = self.strings.conditions.get(l)
+                if cond:
+                    conditions.append((l, cond))
+            if len(conditions) == 1 and pred.dest == conditions[0][1].variable:
+                # if the condition is dest, replace the condition with pred
+                success = True
+                if conditions[0][1].value == 1:
+                    self.strings.conditions[conditions[0][0]] = ConditionString(
+                        pred.variable, pred.comparator, pred.value
+                    )
+                else:
+                    assert conditions[0][1].value == 0
+                    self.strings.conditions[conditions[0][0]] = ConditionString(
+                        pred.variable,
+                        _negate_comparator(pred.comparator),
+                        pred.value,
+                    )
+            if any(_vars_overlap(pred.dest, v) for v in written_variables) or any(
+                _vars_overlap(pred.variable, v) for v in written_variables
+            ):
+                return success
+            line_labels.clear()
+            conditions.clear()
+            written_variables.clear()
+        return success
+
+    def remove_unused_predicate(self, pred_label: int) -> bool:
+        """Given the label of a predicate p=(var, comp, value, dest, label),
+        we remove p if dest never appears after p."""
+        assert pred_label in self.range_preds
+        pred = self.range_preds[pred_label]
+        for label in range(pred_label + 1, self.strings.label):
+            string = self.strings.get_string(label)
+            if string is None:
+                continue
+            if (
+                _var_appears(pred.dest, string)
+                or label in self.strings.conditions
+                and _vars_overlap(pred.dest, self.strings.conditions[label].variable)
+            ):
+                return False
+        self.range_preds.pop(pred_label)
+        self.strings.del_string(pred_label)
+        return True
 
     def add_conditional(self, op: Conditional, args: List[UnitID]) -> None:
-        bits = args[: op.width]
-        control_bit = bits[0]
+        control_bits = args[: op.width]
         if op.width == 1 and hqs_header(self.header):
-            variable = str(control_bit)
+            variable = str(control_bits[0])
         else:
-            variable = control_bit.reg_name
-            if hqs_header(self.header) and bits != self.cregs[variable].to_list():
+            variable = control_bits[0].reg_name
+            if (
+                hqs_header(self.header)
+                and control_bits != self.cregs[variable].to_list()
+            ):
                 raise QASMUnsupportedError(
                     "hqslib1 QASM conditions must be an entire classical "
                     "register or a single bit"
@@ -1476,16 +1596,44 @@ class QasmWriter:
                 raise QASMUnsupportedError(
                     "OpenQASM conditions must be an entire classical register"
                 )
-            if bits != self.cregs[variable].to_list():
+            if control_bits != self.cregs[variable].to_list():
                 raise QASMUnsupportedError(
                     "OpenQASM conditions must be a single classical register"
                 )
         if op.op.type == OpType.Phase:
             # Conditional phase is ignored.
             return
-        condstr = self.condition_string(op, variable)
-        self.strings.add_string(condstr)
+        if op.op.type == OpType.RangePredicate:
+            raise QASMUnsupportedError(
+                "Conditional RangePredicate is currently unsupported."
+            )
+        # we assign the condition to a scratch bit, which we will later remove
+        # if the condition variable is unchanged.
+        scratch_bit = self.fresh_scratch_bit()
+        pred_label = self.strings.add_string(
+            f"if({variable}=={op.value}) " + f"{scratch_bit} = 1;\n"
+        )
+        self.range_preds[pred_label] = ScratchPredicate(
+            variable, "==", op.value, str(scratch_bit)
+        )
+        # we will later add condition to all lines starting from next_label
+        next_label = self.strings.label
         self.add_op(op.op, args[op.width :])
+        # add conditions to the lines after the predicate
+        is_new_line = True
+        for label in range(next_label, self.strings.label):
+            string = self.strings.get_string(label)
+            assert string is not None
+            if is_new_line and string != "\n":
+                self.strings.conditions[label] = ConditionString(
+                    str(scratch_bit), "==", 1
+                )
+            is_new_line = "\n" in string
+        if self.replace_condition(pred_label) and self.remove_unused_predicate(
+            pred_label
+        ):
+            # remove the unused scratch bit
+            self.remove_last_scratch_bit()
 
     def add_set_bits(self, op: SetBitsOp, args: List[Bit]) -> None:
         creg_name = args[0].reg_name
@@ -1493,12 +1641,12 @@ class QasmWriter:
         # check if whole register can be set at once
         if bits == tuple(self.cregs[creg_name].to_list()):
             value = int("".join(map(str, map(int, vals[::-1]))), 2)
-            self.strings.add_string(f"{creg_name} = {value};\n")
-            self.mark_as_written(f"{creg_name}")
+            label = self.strings.add_string(f"{creg_name} = {value};\n")
+            self.mark_as_written(label, f"{creg_name}")
         else:
             for bit, value in zip(bits, vals):
-                self.strings.add_string(f"{bit} = {int(value)};\n")
-                self.mark_as_written(f"{bit}")
+                label = self.strings.add_string(f"{bit} = {int(value)};\n")
+                self.mark_as_written(label, f"{bit}")
 
     def add_copy_bits(self, op: CopyBitsOp, args: List[Bit]) -> None:
         l_args = args[op.n_inputs :]
@@ -1510,12 +1658,12 @@ class QasmWriter:
             l_args == self.cregs[l_name].to_list()
             and r_args == self.cregs[r_name].to_list()
         ):
-            self.strings.add_string(f"{l_name} = {r_name};\n")
-            self.mark_as_written(f"{l_name}")
+            label = self.strings.add_string(f"{l_name} = {r_name};\n")
+            self.mark_as_written(label, f"{l_name}")
         else:
             for bit_l, bit_r in zip(l_args, r_args):
-                self.strings.add_string(f"{bit_l} = {bit_r};\n")
-                self.mark_as_written(f"{bit_l}")
+                label = self.strings.add_string(f"{bit_l} = {bit_r};\n")
+                self.mark_as_written(label, f"{bit_l}")
 
     def add_multi_bit(self, op: MultiBitOp, args: List[Bit]) -> None:
         assert len(args) >= 2
@@ -1530,24 +1678,26 @@ class QasmWriter:
         opstr = str(op)
         if opstr not in _classical_gatestr_map:
             raise QASMUnsupportedError(f"Classical gate {opstr} not supported.")
-        self.strings.add_string(
+        label = self.strings.add_string(
             f"{args[-1]} = {args[0]} {_classical_gatestr_map[opstr]} {args[1]};\n"
         )
-        self.mark_as_written(f"{args[-1]}")
+        self.mark_as_written(label, f"{args[-1]}")
 
     def add_classical_exp_box(self, op: ClassicalExpBox, args: List[Bit]) -> None:
         out_args = args[op.get_n_i() :]
         if len(out_args) == 1:
-            self.strings.add_string(f"{out_args[0]} = {str(op.get_exp())};\n")
-            self.mark_as_written(f"{out_args[0]}")
+            label = self.strings.add_string(f"{out_args[0]} = {str(op.get_exp())};\n")
+            self.mark_as_written(label, f"{out_args[0]}")
         elif (
             out_args
             == self.cregs[out_args[0].reg_name].to_list()[
                 : op.get_n_io() + op.get_n_o()
             ]
         ):
-            self.strings.add_string(f"{out_args[0].reg_name} = {str(op.get_exp())};\n")
-            self.mark_as_written(f"{out_args[0].reg_name}")
+            label = self.strings.add_string(
+                f"{out_args[0].reg_name} = {str(op.get_exp())};\n"
+            )
+            self.mark_as_written(label, f"{out_args[0].reg_name}")
         else:
             raise QASMUnsupportedError(
                 f"ClassicalExpBox only supported"
@@ -1566,14 +1716,14 @@ class QasmWriter:
                     QASMUnsupportedError("WASM ops must act on entire registers.")
                 reglist.append(regname)
         if outputs:
-            self.strings.add_string(f"{', '.join(outputs)} = ")
+            label = self.strings.add_string(f"{', '.join(outputs)} = ")
         self.strings.add_string(f"{op.func_name}({', '.join(inputs)});\n")
         for variable in outputs:
-            self.mark_as_written(variable)
+            self.mark_as_written(label, variable)
 
     def add_measure(self, args: List[UnitID]) -> None:
-        self.strings.add_string(f"measure {args[0]} -> {args[1]};\n")
-        self.mark_as_written(f"{args[1]}")
+        label = self.strings.add_string(f"measure {args[0]} -> {args[1]};\n")
+        self.mark_as_written(label, f"{args[1]}")
 
     def add_zzphase(self, param: Union[float, Expr], args: List[UnitID]) -> None:
         # as op.params returns reduced parameters, we can assume
@@ -1693,10 +1843,28 @@ class QasmWriter:
             )
 
     def finalize(self) -> str:
+        # try removing unused predicates
+        pred_labels = list(self.range_preds.keys())
+        for label in pred_labels:
+            # try replacing conditions with a predicate
+            self.replace_condition(label)
+            # try removing the predicate
+            self.remove_unused_predicate(label)
+        reg_strings = LabelledStringList()
+        for reg in self.qregs.values():
+            reg_strings.add_string(f"qreg {reg.name}[{reg.size}];\n")
+        for bit_reg in self.cregs.values():
+            reg_strings.add_string(f"creg {bit_reg.name}[{bit_reg.size}];\n")
+        if self.scratch_reg.size > 0:
+            reg_strings.add_string(
+                f"creg {self.scratch_reg.name}[{self.scratch_reg.size}];\n"
+            )
         return (
             self.prefix
             + self.gatedefs
-            + _filtered_qasm_str(self.strings.get_full_string())
+            + _filtered_qasm_str(
+                reg_strings.get_full_string() + self.strings.get_full_string()
+            )
         )
 
 
