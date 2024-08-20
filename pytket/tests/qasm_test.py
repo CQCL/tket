@@ -1025,11 +1025,11 @@ if(tk_SCRATCH_BITREG_0[0]==1) c[1] = 1;
 
 
 def test_conditional_range_predicate() -> None:
-    # remove once https://github.com/CQCL/tket/issues/1508
-    # is resolved
     range_predicate = RangePredicateOp(6, 0, 27)
     c = Circuit(0, 8)
     c.add_gate(range_predicate, [0, 1, 2, 3, 4, 5, 6], condition=Bit(7))
+    # remove once https://github.com/CQCL/tket/issues/1508
+    # is resolved
     with pytest.raises(Exception) as errorinfo:
         circuit_to_qasm_str(c, header="hqslib1")
         assert "Conditional RangePredicate is currently unsupported." in str(
