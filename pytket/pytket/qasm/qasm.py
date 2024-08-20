@@ -1611,12 +1611,7 @@ class QasmWriter:
         # if the condition variable is unchanged.
         scratch_bit = self.fresh_scratch_bit()
         pred_label = self.strings.add_string(
-            "".join(
-                [
-                    f"if({variable}=={op.value}) " + f"{scratch_bit} = 1;\n",
-                    f"if({variable}!={op.value}) " + f"{scratch_bit} = 0;\n",
-                ]
-            )
+            f"if({variable}=={op.value}) " + f"{scratch_bit} = 1;\n"
         )
         self.range_preds[pred_label] = ScratchPredicate(
             variable, "==", op.value, str(scratch_bit)

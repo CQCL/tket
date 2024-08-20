@@ -997,7 +997,6 @@ include "hqslib1.inc";
 creg c[3];
 creg tk_SCRATCH_BITREG_0[1];
 if(c[0]==1) tk_SCRATCH_BITREG_0[0] = 1;
-if(c[0]!=1) tk_SCRATCH_BITREG_0[0] = 0;
 if(c[0]==1) c[0] = 1;
 if(tk_SCRATCH_BITREG_0[0]==1) c[1] = 1;
 """
@@ -1019,7 +1018,6 @@ qreg q[1];
 creg c[3];
 creg tk_SCRATCH_BITREG_0[1];
 if(c==3) tk_SCRATCH_BITREG_0[0] = 1;
-if(c!=3) tk_SCRATCH_BITREG_0[0] = 0;
 if(c==3) c[0] = 1;
 if(tk_SCRATCH_BITREG_0[0]==1) c[1] = 1;
 """
