@@ -1002,9 +1002,33 @@ if(c[0]==1) c[0] = 1;
 if(tk_SCRATCH_BITREG_0[0]==1) c[1] = 1;
 """
     )
+    c = Circuit(1, 3)
+    c.add_c_setbits(
+        values=[True, True],
+        args=[Bit(0), Bit(1)],
+        condition_bits=[Bit(0), Bit(1), Bit(2)],
+        condition_value=3,
+    )
+    qasm = circuit_to_qasm_str(c, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+qreg q[1];
+creg c[3];
+creg tk_SCRATCH_BITREG_0[1];
+if(c==3) tk_SCRATCH_BITREG_0[0] = 1;
+if(c!=3) tk_SCRATCH_BITREG_0[0] = 0;
+if(c==3) c[0] = 1;
+if(tk_SCRATCH_BITREG_0[0]==1) c[1] = 1;
+"""
+    )
 
 
 def test_conditional_range_predicate() -> None:
+    # remove once https://github.com/CQCL/tket/issues/1508
+    # is resolved
     range_predicate = RangePredicateOp(6, 0, 27)
     c = Circuit(0, 8)
     c.add_gate(range_predicate, [0, 1, 2, 3, 4, 5, 6], condition=Bit(7))
