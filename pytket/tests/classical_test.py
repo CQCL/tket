@@ -1287,6 +1287,12 @@ def test_classical_ops() -> None:
     assert ceb.get_exp() == op2.get_exp()
 
 
+def test_range_predicate_properties() -> None:
+    range_predicate = RangePredicateOp(width=8, lower=3, upper=5)
+    assert range_predicate.lower == 3
+    assert range_predicate.upper == 5
+
+
 def test_add_expbox_bug() -> None:
     # previously a bug where if IO args weren't
     # at the back of the input iterator, the op signature
