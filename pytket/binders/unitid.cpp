@@ -119,6 +119,10 @@ PYBIND11_MODULE(unit_id, m) {
           "``UnitType.bit``");
 
   py::class_<Qubit, UnitID>(m, "Qubit", "A handle to a qubit")
+      .def("__copy__", [](const Qubit &id) { return Qubit(id); })
+      .def(
+          "__deepcopy__",
+          [](const Qubit &id, const py::dict &) { return Qubit(id); })
       .def(
           py::init<unsigned>(),
           "Constructs an id for some index in the default qubit "
@@ -172,6 +176,10 @@ PYBIND11_MODULE(unit_id, m) {
           "list representation of the Qubit.");
 
   py::class_<Bit, UnitID>(m, "Bit", "A handle to a bit")
+      .def("__copy__", [](const Bit &id) { return Bit(id); })
+      .def(
+          "__deepcopy__",
+          [](const Bit &id, const py::dict &) { return Bit(id); })
       .def(
           py::init<unsigned>(),
           "Constructs an id for some index in the default classical "
@@ -226,6 +234,10 @@ PYBIND11_MODULE(unit_id, m) {
           "list representation of the Bit.");
 
   py::class_<Node, Qubit>(m, "Node", "A handle to a device node")
+      .def("__copy__", [](const Node &id) { return Node(id); })
+      .def(
+          "__deepcopy__",
+          [](const Node &id, const py::dict &) { return Node(id); })
       .def(
           py::init<unsigned>(),
           "Constructs an id for some index in the default physical "
