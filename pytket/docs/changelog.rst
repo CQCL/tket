@@ -6,6 +6,7 @@ Unreleased
 
 * Fix symbol substitution for classical operations.
 * Fix incorrect QASM conversion of conditional multi-line ops.
+* Fix incorrect order of `lower` and `upper` properties of `RangePredicateOp`.
 
 
 1.31.1 (August 2024)
