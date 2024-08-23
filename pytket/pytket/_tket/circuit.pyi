@@ -3636,9 +3636,9 @@ class RangePredicateOp(ClassicalEvalOp):
     """
     A predicate defined by a range of values in binary encoding.
     """
-    def __init__(self, width: int, upper: int, lower: int) -> None:
+    def __init__(self, width: int, lower: int, upper: int) -> None:
         """
-        Construct from a bit width, an upper bound and a lower bound.
+        Construct from a bit width, a lower bound and an upper bound.
         """
     @property
     def lower(self) -> int:
