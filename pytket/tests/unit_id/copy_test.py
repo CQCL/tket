@@ -16,7 +16,7 @@ from copy import copy, deepcopy
 from pytket.unit_id import Bit, Qubit, Node
 
 
-def test_copying_qubits():
+def test_copying_qubits() -> None:
     q = Qubit(0)
 
     q1 = copy(q)
@@ -27,18 +27,18 @@ def test_copying_qubits():
     assert type(q2) is Qubit
 
 
-def test_copying_bits():
+def test_copying_bits() -> None:
     b = Bit(0)
 
     b1 = copy(b)
     b2 = deepcopy(b)
 
-    assert type(b) is Qubit
-    assert type(b1) is Qubit
-    assert type(b2) is Qubit
+    assert type(b) is Bit
+    assert type(b1) is Bit
+    assert type(b2) is Bit
 
 
-def test_copying_nodes():
+def test_copying_nodes() -> None:
     n = Node(0)
 
     n1 = copy(n)
