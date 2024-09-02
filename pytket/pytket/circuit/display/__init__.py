@@ -20,7 +20,8 @@ import tempfile
 import time
 import uuid
 import webbrowser
-from typing import Dict, Optional, Union, cast
+from dataclasses import dataclass, field
+from typing import List, Dict, Optional, Union, Literal, cast, Any
 
 from jinja2 import Environment, PrefixLoader, FileSystemLoader, nodes
 from jinja2.ext import Extension
@@ -28,6 +29,7 @@ from jinja2.utils import markupsafe
 from jinja2.parser import Parser
 
 from pytket.circuit import Circuit
+from pytket.config import PytketExtConfig
 
 
 # js scripts to be loaded must not be parsed as template files.
@@ -66,59 +68,39 @@ loader = PrefixLoader(
 jinja_env = Environment(loader=loader, extensions=[IncludeRawExtension])
 
 RenderCircuit = Union[Dict[str, Union[str, float, dict]], Circuit]
+Orientation = Literal["row"] | Literal["column"]
 
 
-class CircuitRenderer:
-    """Class to manage circuit rendering within a given jinja2 environment."""
+@dataclass(kw_only=True)
+class RenderOptions:
+    zx_style: Optional[bool] = None  # display zx style gates where possible.
+    condense_c_bits: Optional[bool] = (
+        None  # collapse classical bits into a single wire.
+    )
+    recursive: Optional[bool] = None  # display nested circuits inline.
+    condensed: Optional[bool] = None  # display circuit on one line only.
+    dark_theme: Optional[bool] = None  # use dark mode.
+    system_theme: Optional[bool] = (
+        None  # use the system theme mode (overrides dark mode).
+    )
+    transparent_bg: Optional[bool] = None  # transparent circuit background.
+    crop_params: Optional[bool] = None  # shorten parameter expressions for display.
+    interpret_math: Optional[bool] = (
+        None  # try to display parameters and box names as math.
+    )
 
-    _ALLOWED_RENDER_OPTIONS = {
-        "zx_style": "zxStyle",
-        "condense_c_bits": "condenseCBits",
-        "recursive": "recursive",
-        "condensed": "condensed",
-        "dark_theme": "darkTheme",
-        "system_theme": "systemTheme",
-        "transparent_bg": "transparentBg",
-        "crop_params": "cropParams",
-    }
-    zx_style: Optional[bool] = None
-    condense_c_bits: Optional[bool] = None
-    recursive: Optional[bool] = None
-    condensed: Optional[bool] = None
-    dark_theme: Optional[bool] = None
-    system_theme: Optional[bool] = None
-    transparent_bg: Optional[bool] = None
-    crop_params: Optional[bool] = None
-
-    _ALLOWED_CONFIG_OPTIONS = ["min_height", "min_width"]
-    min_height: str = "400px"
-    min_width: str = "500px"
-
-    def __init__(self, env: Environment):
-        self.env = env
-
-    def set_render_options(self, **kwargs: Union[bool, str]) -> None:
-        """
-        Set rendering defaults.
-
-        :param min_height: str, initial height of circuit display.
-        :param min_width: str, initial width of circuit display.
-        :param zx_style: bool, display zx style gates where possible.
-        :param condense_c_bits: bool, collapse classical bits into a single wire.
-        :param recursive: bool, display nested circuits inline.
-        :param condensed: bool, display circuit on one line only.
-        :param dark_theme: bool, use dark mode.
-        :param system_theme: bool, use the system theme mode.
-        :param transparent_bg: bool, remove the circuit background.
-        :param crop_params: bool, shorten parameter expressions for display.
-        """
-        for key, val in kwargs.items():
-            if key in self._ALLOWED_RENDER_OPTIONS and (
-                isinstance(val, bool) or val is None
-            ):
-                self.__setattr__(key, val)
-            elif key in self._ALLOWED_CONFIG_OPTIONS and isinstance(val, str):
-                self.__setattr__(key, val)
+    def __post_init__(self) -> None:
+        self.ALLOWED_RENDER_OPTIONS = {
+            "zx_style": "zxStyle",
+            "condense_c_bits": "condenseCBits",
+            "recursive": "recursive",
+            "condensed": "condensed",
+            "dark_theme": "darkTheme",
+            "system_theme": "systemTheme",
+            "transparent_bg": "transparentBg",
+            "crop_params": "cropParams",
+            "interpret_math": "interpretMath",
+        }
 
     def get_render_options(
         self, full: bool = False, _for_js: bool = False
@@ -132,33 +114,124 @@ class CircuitRenderer:
         """
         return {
             (js_key if _for_js else key): self.__getattribute__(key)
-            for key, js_key in self._ALLOWED_RENDER_OPTIONS.items()
+            for key, js_key in self.ALLOWED_RENDER_OPTIONS.items()
             if full or self.__getattribute__(key) is not None
         }
 
+
+@dataclass(kw_only=True)
+class CircuitDisplayConfig(PytketExtConfig):
+    ext_dict_key = "circuit_display"
+
+    # Layout options
+    min_height: str = "400px"
+    min_width: str = "500px"
+    orient: Orientation | None = None
+    render_options: RenderOptions = field(default_factory=RenderOptions)
+
+    @classmethod
+    def from_extension_dict(cls, ext_dict: Dict[str, Any]) -> "CircuitDisplayConfig":
+        return CircuitDisplayConfig(
+            min_height=ext_dict["min_height"] if "min_height" in ext_dict else None,
+            min_width=ext_dict["min_width"] if "min_width" in ext_dict else None,
+            orient=ext_dict["orient"] if "orient" in ext_dict else None,
+            render_options=RenderOptions(
+                **(ext_dict["render_options"] if "render_options" in ext_dict else {})
+            ),
+        )
+
+
+class CircuitRenderer:
+    """Class to manage circuit rendering within a given jinja2 environment."""
+
+    config: CircuitDisplayConfig
+
+    def __init__(self, env: Environment, config: CircuitDisplayConfig):
+        self.env = env
+        self.config = config
+
+    def set_render_options(self, **kwargs: Union[bool, str]) -> None:
+        """
+        Set rendering defaults.
+
+        :param min_height: str, initial height of circuit display.
+        :param min_width: str, initial width of circuit display.
+        :param orient: 'row' | 'column', stacking direction for multi-circuit display.
+        :param zx_style: bool, display zx style gates where possible.
+        :param condense_c_bits: bool, collapse classical bits into a single wire.
+        :param recursive: bool, display nested circuits inline.
+        :param condensed: bool, display circuit on one line only.
+        :param dark_theme: bool, use dark mode.
+        :param system_theme: bool, use the system theme mode.
+        :param transparent_bg: bool, remove the circuit background.
+        :param crop_params: bool, shorten parameter expressions for display.
+        :param interpret_math: bool, try to render params and box names as math.
+        """
+        for key, val in kwargs.items():
+            if key in self.config.render_options.ALLOWED_RENDER_OPTIONS and (
+                isinstance(val, bool) or val is None
+            ):
+                self.config.render_options.__setattr__(key, val)
+            if key in ["min_height", "min_width", "orient"] and isinstance(val, str):
+                self.config.__setattr__(key, val)
+
+    def get_render_options(
+        self, full: bool = False, _for_js: bool = False
+    ) -> Dict[str, bool]:
+        """
+        Get a dict of the current render options.
+
+        :param full: whether to list all available options, even if not set.
+        :param _for_js: Whether to convert options to js-compatible format,
+            for internal use only.
+        """
+        return self.config.render_options.get_render_options(full, _for_js)
+
+    def save_render_options(self) -> None:
+        """Save the current render options to pytket config."""
+        self.config.update_default_config_file()
+
     def render_circuit_as_html(
-        self, circuit: RenderCircuit, jupyter: bool = False
+        self,
+        circuit: RenderCircuit | List[RenderCircuit],
+        jupyter: bool = False,
+        orient: Orientation | None = None,
     ) -> Optional[str]:
         """
         Render a circuit as HTML for inline display.
 
-        :param circuit: the circuit to render.
+        :param circuit: the circuit(s) to render.
         :param jupyter: set to true to render generated HTML in cell output.
+        :param orient: the direction in which to stack circuits if multiple are present.
         """
-
-        if not isinstance(circuit, Circuit):
-            circuit = Circuit.from_dict(circuit)
+        circuit_dict: dict | List[dict]
+        if isinstance(circuit, list):
+            circuit_dict = [
+                (
+                    circ.to_dict()
+                    if isinstance(circ, Circuit)
+                    else Circuit.from_dict(circ).to_dict()
+                )
+                for circ in circuit
+            ]
+        else:
+            circuit_dict = (
+                circuit.to_dict()
+                if isinstance(circuit, Circuit)
+                else Circuit.from_dict(circuit).to_dict()
+            )
 
         uid = uuid.uuid4()
         html_template = self.env.get_template("html/circuit.html")
         html = html_template.render(
             {
-                "circuit_json": json.dumps(circuit.to_dict()),
+                "circuit_json": json.dumps(circuit_dict),
                 "uid": uid,
                 "jupyter": jupyter,
                 "display_options": json.dumps(self.get_render_options(_for_js=True)),
-                "min_height": self.min_height,
-                "min_width": self.min_width,
+                "min_height": self.config.min_height,
+                "min_width": self.config.min_width,
+                "view_format": orient or self.config.orient,
             }
         )
         if jupyter:
@@ -173,21 +246,30 @@ class CircuitRenderer:
             return None
         return html
 
-    def render_circuit_jupyter(self, circuit: RenderCircuit) -> None:
+    def render_circuit_jupyter(
+        self,
+        circuit: RenderCircuit | List[RenderCircuit],
+        orient: Orientation | None = None,
+    ) -> None:
         """Render a circuit as jupyter cell output.
 
-        :param circuit: the circuit to render.
+        :param circuit: the circuit(s) to render.
+        :param orient: the direction in which to stack circuits if multiple are present.
         """
-        self.render_circuit_as_html(circuit, True)
+        self.render_circuit_as_html(circuit, True, orient=orient)
 
     def view_browser(
-        self, circuit: RenderCircuit, browser_new: int = 2, sleep: int = 5
+        self,
+        circuit: RenderCircuit | List[RenderCircuit],
+        browser_new: int = 2,
+        sleep: int = 5,
     ) -> None:
         """Write circuit render html to a tempfile and open in browser.
 
         Waits for some time for browser to load then deletes tempfile.
 
         :param circuit: the Circuit or serialized Circuit to render.
+            Either a single circuit or a list of circuits to compare.
         :param browser_new: ``new`` parameter to ``webbrowser.open``, default 2.
         :param sleep: Number of seconds to sleep before deleting file, default 5.
 
@@ -208,9 +290,15 @@ class CircuitRenderer:
             os.remove(fp.name)
 
 
-def get_circuit_renderer() -> CircuitRenderer:
-    """Get a configurable instance of the circuit renderer."""
-    return CircuitRenderer(jinja_env)
+def get_circuit_renderer(config: CircuitDisplayConfig | None = None) -> CircuitRenderer:
+    """
+    Get a configurable instance of the circuit renderer.
+    :param config: CircuitDisplayConfig to control the default render options.
+    """
+    if config is None:
+        config = CircuitDisplayConfig.from_default_config_file()
+
+    return CircuitRenderer(jinja_env, config)
 
 
 # Export the render functions scoped to the default jinja environment.
