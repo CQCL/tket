@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.32.0 (September 2024)
+-----------------------
 
 * Fix symbol substitution for classical operations.
 * Fix incorrect QASM conversion of conditional multi-line ops.
