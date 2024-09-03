@@ -16,9 +16,12 @@
 
 #include <algorithm>
 #include <memory>
+#include <optional>
 #include <sstream>
 #include <string>
+#include <variant>
 
+#include "Utils/Expression.hpp"
 #include "tket/ArchAwareSynth/SteinerForest.hpp"
 #include "tket/Circuit/CircPool.hpp"
 #include "tket/Circuit/Circuit.hpp"
@@ -811,7 +814,14 @@ PassPtr DecomposeTK2(const Transforms::TwoQbFidelities& fid, bool allow_swaps) {
   j["allow_swaps"] = allow_swaps;
   nlohmann::json fid_json;
   fid_json["CX"] = fid.CX_fidelity;
-  fid_json["ZZPhase"] = "SERIALIZATION OF FUNCTIONS IS NOT SUPPORTED";
+  std::visit(
+      overloaded{
+          [](std::nullopt_t) { return; },
+          [&fid_json](double arg) { fid_json["ZZPhase"] = arg; },
+          [&fid_json](std::function<double(double)>) {
+            fid_json["ZZPhase"] = "SERIALIZATION OF FUNCTIONS IS NOT SUPPORTED";
+          }},
+      *fid.ZZPhase_fidelity);
   fid_json["ZZMax"] = fid.ZZMax_fidelity;
   j["fidelities"] = fid_json;
   return std::make_shared<StandardPass>(precons, t, postcons, j);

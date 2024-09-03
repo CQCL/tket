@@ -99,7 +99,7 @@ inline const Transform id =
 struct TwoQbFidelities {
   std::optional<double> CX_fidelity;
   std::optional<double> ZZMax_fidelity;
-  std::optional<std::function<double(double)>> ZZPhase_fidelity;
+  std::optional<std::variant<double, std::function<double(double)>>> ZZPhase_fidelity;
 };
 
 }  // namespace Transforms

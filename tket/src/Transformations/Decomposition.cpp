@@ -19,6 +19,7 @@
 // replace with c++20 <ranges> when available
 #include <boost/range/adaptor/filtered.hpp>
 #include <stdexcept>
+#include <type_traits>
 
 #include "tket/Architecture/Architecture.hpp"
 #include "tket/Circuit/CircPool.hpp"
@@ -616,7 +617,14 @@ static double best_noise_aware_decomposition(
     unsigned max_nzz = fid.ZZMax_fidelity ? 1 : 3;
     for (unsigned n_zz = 0; n_zz <= max_nzz; ++n_zz) {
       if (n_zz > 0) {
-        double gate_fid = (*fid.ZZPhase_fidelity)(angles[n_zz - 1]);
+        double gate_fid = std::visit(
+            overloaded{// Constant value
+                       [](double arg) { return arg; },
+                       // A value depending on the angle
+                       [angles, n_zz](std::function<double(double)> arg) {
+                         return (arg)(angles[n_zz - 1]);
+                       }},
+            *fid.ZZPhase_fidelity);
         if (gate_fid < 0 || gate_fid > 1) {
           throw std::domain_error(
               "ZZPhase_fidelity returned a value outside of [0, 1].");
@@ -857,7 +865,13 @@ Transform decompose_TK2(const TwoQbFidelities &fid, bool allow_swaps) {
     }
   }
   if (fid.ZZMax_fidelity && fid.ZZPhase_fidelity) {
-    if (*fid.ZZMax_fidelity < (*fid.ZZPhase_fidelity)(.5)) {
+    double ZZPhase_half = std::visit(
+        overloaded{// Half of the provided Value.
+                   [](double arg) { return arg * .5; },
+                   // A value depending on the input.
+                   [](std::function<double(double)> arg) { return (arg)(.5); }},
+        *fid.ZZPhase_fidelity);
+    if (*fid.ZZMax_fidelity < ZZPhase_half) {
       throw std::domain_error(
           "The ZZMax fidelity cannot be smaller than the ZZPhase(0.5) "
           "fidelity");
