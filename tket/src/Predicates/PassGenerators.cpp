@@ -814,12 +814,12 @@ PassPtr DecomposeTK2(const Transforms::TwoQbFidelities& fid, bool allow_swaps) {
   j["allow_swaps"] = allow_swaps;
   nlohmann::json fid_json;
   fid_json["CX"] = fid.CX_fidelity;
-  std::visit(
+  fid_json["ZZPhase"] = std::visit(
       overloaded{
-          [](std::nullopt_t) { return; },
-          [&fid_json](double arg) { fid_json["ZZPhase"] = arg; },
-          [&fid_json](std::function<double(double)>) {
-            fid_json["ZZPhase"] = "SERIALIZATION OF FUNCTIONS IS NOT SUPPORTED";
+          [](std::nullopt_t) { return nullptr; },
+          [](double arg) { return arg; },
+          [](std::function<double(double)>) {
+            return "SERIALIZATION OF FUNCTIONS IS NOT SUPPORTED";
           }},
       *fid.ZZPhase_fidelity);
   fid_json["ZZMax"] = fid.ZZMax_fidelity;

@@ -58,7 +58,7 @@ Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
     } else if (kwargstr == "ZZMax_fidelity") {
       fid.ZZMax_fidelity = py::cast<double>(kwarg.second);
     } else if (kwargstr == "ZZPhase_fidelity") {
-      fid.ZZPhase_fidelity = py::cast<Func>(kwarg.second);
+      fid.ZZPhase_fidelity = py::cast<std::variant<double, Func>>(kwarg.second);
     } else {
       throw py::type_error(
           "got an unexpected keyword argument '" + kwargstr + "'");
