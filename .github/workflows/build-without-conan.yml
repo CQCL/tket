@@ -96,9 +96,9 @@ jobs:
     - name: Install pybind11
       run: |
         cd ${TMP_DIR}
-        wget https://github.com/pybind/pybind11/archive/refs/tags/v2.13.4.tar.gz
-        tar xzvf v2.13.4.tar.gz
-        cd pybind11-2.13.4/
+        wget https://github.com/pybind/pybind11/archive/refs/tags/v2.13.5.tar.gz
+        tar xzvf v2.13.5.tar.gz
+        cd pybind11-2.13.5/
         mkdir build
         cd build
         cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DPYBIND11_TEST=OFF ..
