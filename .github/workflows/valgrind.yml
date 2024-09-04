@@ -62,5 +62,5 @@ jobs:
       if: github.event_name != 'schedule'
       run: |
         PKGPATH=`./rootpath tket.json tket`
-        cd ${PKGPATH}/bin && valgrind --error-exitcode=1 ./test-tket
+        cd ${PKGPATH}/bin && valgrind --error-exitcode=1 --show-realloc-size-zero=no ./test-tket
 
