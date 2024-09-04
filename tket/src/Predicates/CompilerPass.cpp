@@ -15,6 +15,7 @@
 #include "tket/Predicates/CompilerPass.hpp"
 
 #include <memory>
+#include <optional>
 #include <tklog/TketLog.hpp>
 
 #include "tket/Mapping/RoutingMethodJson.hpp"
@@ -394,7 +395,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       fid.ZZMax_fidelity =
           content.at("fidelities").at("ZZMax").get<std::optional<double>>();
       fid.ZZPhase_fidelity =
-          content.at("fidelities").at("ZZPhase").get<std::optional<double>>();
+          content.at("fidelities")
+              .value<std::optional<double>>("ZZPhase", std::nullopt);
       bool allow_swaps = content.at("allow_swaps").get<bool>();
       pp = DecomposeTK2(fid, allow_swaps);
     } else if (passname == "PeepholeOptimise2Q") {
