@@ -233,6 +233,7 @@ var menudata={children:[
 {text:"j",url:"globals.html#index_j"},
 {text:"l",url:"globals.html#index_l"},
 {text:"n",url:"globals.html#index_n"},
+{text:"o",url:"globals.html#index_o"},
 {text:"p",url:"globals.html#index_p"},
 {text:"r",url:"globals.html#index_r"},
 {text:"s",url:"globals.html#index_s"},
@@ -241,6 +242,7 @@ var menudata={children:[
 {text:"x",url:"globals.html#index_x"},
 {text:"y",url:"globals.html#index_y"},
 {text:"z",url:"globals.html#index_z"}]},
+{text:"Functions",url:"globals_func.html"},
 {text:"Variables",url:"globals_vars.html",children:[
 {text:"b",url:"globals_vars.html#index_b"},
 {text:"c",url:"globals_vars.html#index_c"},

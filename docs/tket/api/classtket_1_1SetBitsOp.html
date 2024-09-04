@@ -137,6 +137,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a07fff2cd4e0063a93dea7727d14d0342" id="r_a07fff2cd4e0063a93dea7727d14d0342"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1SetBitsOp.html#a07fff2cd4e0063a93dea7727d14d0342">SetBitsOp</a> (const std::vector&lt; bool &gt; &amp;values)</td></tr>
 <tr class="memdesc:a07fff2cd4e0063a93dea7727d14d0342"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from values.  <br /></td></tr>
 <tr class="separator:a07fff2cd4e0063a93dea7727d14d0342"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83d991fcda7ff9d0cfa14cf05e10d78f" id="r_a83d991fcda7ff9d0cfa14cf05e10d78f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1SetBitsOp.html#a83d991fcda7ff9d0cfa14cf05e10d78f">symbol_substitution</a> (const SymEngine::map_basic_basic &amp;) const override</td></tr>
+<tr class="memdesc:a83d991fcda7ff9d0cfa14cf05e10d78f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Operation with values for symbols substituted.  <br /></td></tr>
+<tr class="separator:a83d991fcda7ff9d0cfa14cf05e10d78f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a2aaa438b36ed5a6bf989d0b17cae32" id="r_a7a2aaa438b36ed5a6bf989d0b17cae32"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1SetBitsOp.html#a7a2aaa438b36ed5a6bf989d0b17cae32">get_name</a> (bool latex) const override</td></tr>
 <tr class="memdesc:a7a2aaa438b36ed5a6bf989d0b17cae32"><td class="mdescLeft">&#160;</td><td class="mdescRight">String representation.  <br /></td></tr>
 <tr class="separator:a7a2aaa438b36ed5a6bf989d0b17cae32"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -156,9 +159,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a890482f3c3b28d990d637c95af73d94e inherit pub_methods_classtket_1_1ClassicalOp" id="r_a890482f3c3b28d990d637c95af73d94e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ClassicalOp.html#a890482f3c3b28d990d637c95af73d94e">ClassicalOp</a> (<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> type, unsigned n_i, unsigned n_io, unsigned n_o, const std::string &amp;name=&quot;&quot;)</td></tr>
 <tr class="memdesc:a890482f3c3b28d990d637c95af73d94e inherit pub_methods_classtket_1_1ClassicalOp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="classtket_1_1ClassicalOp.html" title="A purely classical operation.">ClassicalOp</a> of specified shape.  <br /></td></tr>
 <tr class="separator:a890482f3c3b28d990d637c95af73d94e inherit pub_methods_classtket_1_1ClassicalOp"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6151df446afa2a7a0355ce640bcd5cc inherit pub_methods_classtket_1_1ClassicalOp" id="r_ae6151df446afa2a7a0355ce640bcd5cc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ClassicalOp.html#ae6151df446afa2a7a0355ce640bcd5cc">symbol_substitution</a> (const SymEngine::map_basic_basic &amp;) const override</td></tr>
-<tr class="memdesc:ae6151df446afa2a7a0355ce640bcd5cc inherit pub_methods_classtket_1_1ClassicalOp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Operation with values for symbols substituted.  <br /></td></tr>
-<tr class="separator:ae6151df446afa2a7a0355ce640bcd5cc inherit pub_methods_classtket_1_1ClassicalOp"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75e2ca0cab2ba773546e5003200f7c85 inherit pub_methods_classtket_1_1ClassicalOp" id="r_a75e2ca0cab2ba773546e5003200f7c85"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#ac74e9f3dd71c2a79be4ab7887d943fc2">SymSet</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ClassicalOp.html#a75e2ca0cab2ba773546e5003200f7c85">free_symbols</a> () const override</td></tr>
 <tr class="memdesc:a75e2ca0cab2ba773546e5003200f7c85 inherit pub_methods_classtket_1_1ClassicalOp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set of all free symbols occurring in operation parameters.  <br /></td></tr>
 <tr class="separator:a75e2ca0cab2ba773546e5003200f7c85 inherit pub_methods_classtket_1_1ClassicalOp"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -259,7 +259,7 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An operation to set some bits to specified values. </p>
 
-<p class="definition">Definition at line <a class="el" href="ClassicalOps_8hpp_source.html#l00276">276</a> of file <a class="el" href="ClassicalOps_8hpp_source.html">ClassicalOps.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClassicalOps_8hpp_source.html#l00282">282</a> of file <a class="el" href="ClassicalOps_8hpp_source.html">ClassicalOps.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a07fff2cd4e0063a93dea7727d14d0342" name="a07fff2cd4e0063a93dea7727d14d0342"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a07fff2cd4e0063a93dea7727d14d0342">&#9670;&#160;</a></span>SetBitsOp()</h2>
@@ -293,7 +293,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ClassicalOps_8hpp_source.html#l00283">283</a> of file <a class="el" href="ClassicalOps_8hpp_source.html">ClassicalOps.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClassicalOps_8hpp_source.html#l00289">289</a> of file <a class="el" href="ClassicalOps_8hpp_source.html">ClassicalOps.hpp</a>.</p>
 
 </div>
 </div>
@@ -392,7 +392,46 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClassicalOps_8hpp_source.html#l00289">289</a> of file <a class="el" href="ClassicalOps_8hpp_source.html">ClassicalOps.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClassicalOps_8hpp_source.html#l00300">300</a> of file <a class="el" href="ClassicalOps_8hpp_source.html">ClassicalOps.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a83d991fcda7ff9d0cfa14cf05e10d78f" name="a83d991fcda7ff9d0cfa14cf05e10d78f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a83d991fcda7ff9d0cfa14cf05e10d78f">&#9670;&#160;</a></span>symbol_substitution()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> tket::SetBitsOp::symbol_substitution </td>
+          <td>(</td>
+          <td class="paramtype">const SymEngine::map_basic_basic &amp;&#160;</td>
+          <td class="paramname"><em>sub_map</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Operation with values for symbols substituted. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sub_map</td><td>map from symbols to values</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>New operation with symbols substituted, or a null pointer if the operation type does not support symbols. </dd></dl>
+
+<p>Implements <a class="el" href="classtket_1_1Op.html#a1e06f818450f001dd255c902dd06c172">tket::Op</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="ClassicalOps_8hpp_source.html#l00293">293</a> of file <a class="el" href="ClassicalOps_8hpp_source.html">ClassicalOps.hpp</a>.</p>
 
 </div>
 </div>

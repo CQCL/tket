@@ -29,6 +29,7 @@ var searchData=
   ['orwithop_26',['OrWithOp',['../namespacetket.html#a0c453cabb4eaf6e3d0884ad58f16e261',1,'tket']]],
   ['other_5fend_27',['other_end',['../classtket_1_1zx_1_1ZXDiagram.html#a391f1db360e49847f4ca444f641910c0',1,'tket::zx::ZXDiagram']]],
   ['output_5fqubits_28',['output_qubits',['../classtket_1_1ChoiMixTableau.html#a95a64df3b4658484bf29dbd4750b50f1',1,'tket::ChoiMixTableau']]],
-  ['own_5findices_29',['own_indices',['../classtket_1_1PauliTensor.html#ad3a483e5cd2410864824bfea15ce61ab',1,'tket::PauliTensor::own_indices()'],['../namespacetket.html#a8144d6fd5cf846e4e123e6bfe93da564',1,'tket::own_indices()']]],
-  ['own_5fqubits_30',['own_qubits',['../classtket_1_1PauliTensor.html#abdad9b577e53dab58f57c7edb0f5332e',1,'tket::PauliTensor::own_qubits()'],['../namespacetket.html#a35703c90ac941018bcfdc9153a918fea',1,'tket::own_qubits()']]]
+  ['overloaded_29',['overloaded',['../Expression_8hpp.html#a0930706ccdcce4d25d36c7c80ecacb4f',1,'Expression.hpp']]],
+  ['own_5findices_30',['own_indices',['../classtket_1_1PauliTensor.html#ad3a483e5cd2410864824bfea15ce61ab',1,'tket::PauliTensor::own_indices()'],['../namespacetket.html#a8144d6fd5cf846e4e123e6bfe93da564',1,'tket::own_indices()']]],
+  ['own_5fqubits_31',['own_qubits',['../classtket_1_1PauliTensor.html#abdad9b577e53dab58f57c7edb0f5332e',1,'tket::PauliTensor::own_qubits()'],['../namespacetket.html#a35703c90ac941018bcfdc9153a918fea',1,'tket::own_qubits()']]]
 ];

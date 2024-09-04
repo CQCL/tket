@@ -5,5 +5,5 @@ var searchData=
   ['zxdiagrampybind_2',['ZXDiagramPybind',['../classtket_1_1zx_1_1ZXDiagram.html#a883d160f7e5a11997e640b984d37eff0',1,'tket::zx::ZXDiagram']]],
   ['zzmax_3',['ZZMax',['../GateUnitaryMatrixFixedMatrices_8cpp.html#ac08df0edeeb7f153c7f419cdaeed9c6d',1,'GateUnitaryMatrixFixedMatrices.cpp']]],
   ['zzmax_5ffidelity_4',['ZZMax_fidelity',['../structtket_1_1Transforms_1_1TwoQbFidelities.html#a3e633c284dda5f61f4bd9d59aeedd49d',1,'tket::Transforms::TwoQbFidelities']]],
-  ['zzphase_5ffidelity_5',['ZZPhase_fidelity',['../structtket_1_1Transforms_1_1TwoQbFidelities.html#a57bccc52af2c1e8542374c997e35be37',1,'tket::Transforms::TwoQbFidelities']]]
+  ['zzphase_5ffidelity_5',['ZZPhase_fidelity',['../structtket_1_1Transforms_1_1TwoQbFidelities.html#a72e6c81040792f288e638283d271560f',1,'tket::Transforms::TwoQbFidelities']]]
 ];
