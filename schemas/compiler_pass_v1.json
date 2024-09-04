@@ -320,6 +320,11 @@
               "type": ["number", "null"],
               "minimum": 0,
               "maximum": 1
+            },
+            "ZZPhase": {
+              "type": ["number", "null"],
+              "minimum": 0,
+              "maximum": 1
             }
           }
         },
