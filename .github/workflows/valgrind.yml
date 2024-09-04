@@ -28,7 +28,7 @@ jobs:
             - 'tket/**'
             - '.github/workflows/valgrind.yml'
   check:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: changes
     if: needs.changes.outputs.tket == 'true'
     steps:
@@ -69,10 +69,10 @@ jobs:
         mkdir -p ~/texmf/tex/latex
         wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
         PKGPATH=`./rootpath tket.json tket`
-        cd ${PKGPATH}/bin && valgrind --error-exitcode=1 ./test-tket [long],~[long]
+        cd ${PKGPATH}/bin && valgrind --error-exitcode=1 --show-realloc-size-zero=no ./test-tket [long],~[long]
     - name: Run tests under valgrind (basic)
       if: github.event_name != 'schedule'
       run: |
         PKGPATH=`./rootpath tket.json tket`
-        cd ${PKGPATH}/bin && valgrind --error-exitcode=1 ./test-tket
+        cd ${PKGPATH}/bin && valgrind --error-exitcode=1 --show-realloc-size-zero=no ./test-tket
 
