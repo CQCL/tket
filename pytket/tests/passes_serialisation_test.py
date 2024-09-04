@@ -299,6 +299,7 @@ TWO_WAY_PARAM_PASSES = {
     "AutoRebase": standard_pass_dict(
         {"name": "AutoRebase", "basis_allowed": ["H", "TK1", "CX"], "allow_swaps": True}
     ),
+    # ZZPhase must be a float and note a function.
     "DecomposeTK2": standard_pass_dict(
         {
             "name": "DecomposeTK2",

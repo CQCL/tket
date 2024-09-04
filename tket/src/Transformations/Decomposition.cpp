@@ -865,8 +865,8 @@ Transform decompose_TK2(const TwoQbFidelities &fid, bool allow_swaps) {
   }
   if (fid.ZZMax_fidelity && fid.ZZPhase_fidelity) {
     double ZZPhase_half = std::visit(
-        overloaded{// Half of the provided Value.
-                   [](double arg) { return arg * .5; },
+        overloaded{// A constant value.
+                   [](double arg) { return arg; },
                    // A value depending on the input.
                    [](std::function<double(double)> arg) { return (arg)(.5); }},
         *fid.ZZPhase_fidelity);
