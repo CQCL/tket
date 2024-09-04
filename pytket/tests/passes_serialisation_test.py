@@ -299,6 +299,17 @@ TWO_WAY_PARAM_PASSES = {
     "AutoRebase": standard_pass_dict(
         {"name": "AutoRebase", "basis_allowed": ["H", "TK1", "CX"], "allow_swaps": True}
     ),
+    "DecomposeTK2": standard_pass_dict(
+        {
+            "name": "DecomposeTK2",
+            "fidelities": {
+                "CX": None,
+                "ZZMax": 1.0,
+                "ZZPhase": 0.5,
+            },
+            "allow_swaps": True,
+        }
+    ),
 }
 
 # non-parametrized passes that satisfy pass.from_dict(d).to_dict()==d
