@@ -19,7 +19,6 @@
 // replace with c++20 <ranges> when available
 #include <boost/range/adaptor/filtered.hpp>
 #include <stdexcept>
-#include <type_traits>
 
 #include "tket/Architecture/Architecture.hpp"
 #include "tket/Circuit/CircPool.hpp"

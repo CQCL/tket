@@ -15,14 +15,10 @@
 #include "tket/Predicates/PassGenerators.hpp"
 
 #include <algorithm>
-#include <cstddef>
 #include <memory>
-#include <optional>
 #include <sstream>
 #include <string>
-#include <variant>
 
-#include "Utils/Expression.hpp"
 #include "tket/ArchAwareSynth/SteinerForest.hpp"
 #include "tket/Circuit/CircPool.hpp"
 #include "tket/Circuit/Circuit.hpp"
@@ -825,7 +821,7 @@ PassPtr DecomposeTK2(const Transforms::TwoQbFidelities& fid, bool allow_swaps) {
             }},
         fid.ZZPhase_fidelity.value());
   } else {
-    fid_json["ZZPhase"] = nullptr;
+    fid_json["ZZPhase"] = std::nullptr_t{};
   }
   fid_json["ZZMax"] = fid.ZZMax_fidelity;
   j["fidelities"] = fid_json;
