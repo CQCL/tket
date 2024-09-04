@@ -1,5 +1,8 @@
 name: valgrind check
 on:
+  push:
+    branches:
+      ae/test-valgrind-realloc0
   pull_request:
     branches:
       - main
@@ -12,25 +15,10 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+  
 jobs:
-  changes:
-    runs-on: ubuntu-24.04
-    outputs:
-      tket: ${{ steps.filter.outputs.tket }}
-    steps:
-    - uses: actions/checkout@v4
-    - uses: dorny/paths-filter@v3.0.2
-      id: filter
-      with:
-        base: ${{ github.ref }}
-        filters: |
-          tket:
-            - 'tket/**'
-            - '.github/workflows/valgrind.yml'
   check:
     runs-on: ubuntu-24.04
-    needs: changes
-    if: needs.changes.outputs.tket == 'true'
     steps:
     - uses: actions/checkout@v4
     - name: apt update
