@@ -72,6 +72,8 @@ from pytket.circuit.named_types import RenameUnitsMap
 
 from pytket.passes import DecomposeClassicalExp, FlattenRegisters
 
+from sympy import Symbol
+
 from strategies import reg_name_regex, binary_digits, uint32, uint64  # type: ignore
 
 curr_file_path = Path(__file__).resolve().parent
@@ -538,14 +540,16 @@ def test_wasmfilehandler_invalid_file_1_e_64_no_check() -> None:
     )
 
 
-def test_wasmfilehandler_invalid_file_1_e_32_no_check_repr() -> None:
+def test_wasmfilehandler_invalid_file_1_e_32_unchecked_repr() -> None:
     w = wasm.WasmFileHandler(
         "wasm-generation/wasmfromcpp/invalid-with-print-2-emcc.wasm",
         int_size=32,
         check_file=False,
     )
-    with pytest.raises(ValueError):
+    assert (
         repr(w)
+        == "Unchecked wasm module file with the uid 139e7266b9dcc32dc5237ac2a43d8883847dee3c792e147528fae3984229cc5d"
+    )
 
 
 def test_wasmfilehandler_repr() -> None:
@@ -1283,6 +1287,12 @@ def test_classical_ops() -> None:
     assert ceb.get_exp() == op2.get_exp()
 
 
+def test_range_predicate_properties() -> None:
+    range_predicate = RangePredicateOp(width=8, lower=3, upper=5)
+    assert range_predicate.lower == 3
+    assert range_predicate.upper == 5
+
+
 def test_add_expbox_bug() -> None:
     # previously a bug where if IO args weren't
     # at the back of the input iterator, the op signature
@@ -1479,6 +1489,15 @@ def test_box_equality_check() -> None:
     assert ceb1 != ceb2
     assert ceb1 == ceb1
     assert ceb1 == ClassicalExpBox(2, 0, 1, exp1)
+
+
+def test_sym_sub_range_pred() -> None:
+    c = Circuit(1, 2)
+    c.H(0, condition=reg_eq(BitRegister("c", 2), 3))
+    c1 = c.copy()
+    c.symbol_substitution({Symbol("a"): 0.5})
+
+    assert c == c1
 
 
 if __name__ == "__main__":

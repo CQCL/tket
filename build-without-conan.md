@@ -22,9 +22,9 @@ The versions should match the current requirements as specified in the relevant
 
 ```
 cd ${TMP_DIR}
-wget -O boost_1_85_0.tar.gz https://sourceforge.net/projects/boost/files/boost/1.85.0/boost_1_85_0.tar.gz/download
-tar xzvf boost_1_85_0.tar.gz
-cd boost_1_85_0/
+wget -O boost_1_86_0.tar.gz https://sourceforge.net/projects/boost/files/boost/1.86.0/boost_1_86_0.tar.gz/download
+tar xzvf boost_1_86_0.tar.gz
+cd boost_1_86_0/
 ./bootstrap.sh --prefix=${INSTALL_DIR}
 ./b2
 ./b2 install
@@ -91,9 +91,9 @@ cmake --install .
 
 ```
 cd ${TMP_DIR}
-wget https://github.com/catchorg/Catch2/archive/refs/tags/v3.6.0.tar.gz
-tar xzvf v3.6.0.tar.gz
-cd Catch2-3.6.0/
+wget https://github.com/catchorg/Catch2/archive/refs/tags/v3.7.0.tar.gz
+tar xzvf v3.7.0.tar.gz
+cd Catch2-3.7.0/
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
@@ -119,9 +119,9 @@ cmake --install .
 
 ```
 cd ${TMP_DIR}
-wget https://github.com/pybind/pybind11/archive/refs/tags/v2.13.1.tar.gz
-tar xzvf v2.13.1.tar.gz
-cd pybind11-2.13.1/
+wget https://github.com/pybind/pybind11/archive/refs/tags/v2.13.5.tar.gz
+tar xzvf v2.13.5.tar.gz
+cd pybind11-2.13.5/
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DPYBIND11_TEST=OFF ..

@@ -22,6 +22,7 @@
 #include <memory>
 
 #include "Op.hpp"
+#include "OpPtr.hpp"
 #include "tket/Utils/Json.hpp"
 
 namespace tket {
@@ -47,11 +48,6 @@ class ClassicalOp : public Op {
       OpType type, unsigned n_i, unsigned n_io, unsigned n_o,
       const std::string &name = "");
 
-  // Trivial overrides
-  Op_ptr symbol_substitution(
-      const SymEngine::map_basic_basic &) const override {
-    return std::make_shared<ClassicalOp>(*this);
-  }
   SymSet free_symbols() const override { return {}; }
   unsigned n_qubits() const override { return 0; }
 
@@ -141,6 +137,11 @@ class ClassicalTransformOp : public ClassicalEvalOp {
       unsigned n, const std::vector<uint64_t> &values,
       const std::string &name = "ClassicalTransform");
 
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &) const override {
+    return std::make_shared<ClassicalTransformOp>(*this);
+  }
+
   std::vector<bool> eval(const std::vector<bool> &x) const override;
 
   std::vector<uint64_t> get_values() const { return values_; }
@@ -170,6 +171,11 @@ class WASMOp : public ClassicalOp {
       unsigned _n, unsigned _ww_n, std::vector<unsigned> _width_i_parameter,
       std::vector<unsigned> _width_o_parameter, const std::string &_func_name,
       const std::string &_wasm_uid);
+
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &) const override {
+    return std::make_shared<WASMOp>(*this);
+  }
 
   /**
    * return if the op is external
@@ -284,6 +290,11 @@ class SetBitsOp : public ClassicalEvalOp {
       : ClassicalEvalOp(OpType::SetBits, 0, 0, values.size(), "SetBits"),
         values_(values) {}
 
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &) const override {
+    return std::make_shared<SetBitsOp>(*this);
+  }
+
   std::string get_name(bool latex) const override;
 
   std::vector<bool> get_values() const { return values_; }
@@ -303,6 +314,11 @@ class CopyBitsOp : public ClassicalEvalOp {
  public:
   explicit CopyBitsOp(unsigned n)
       : ClassicalEvalOp(OpType::CopyBits, n, 0, n, "CopyBits") {}
+
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &) const override {
+    return std::make_shared<CopyBitsOp>(*this);
+  }
 
   std::vector<bool> eval(const std::vector<bool> &x) const override;
 };
@@ -345,6 +361,11 @@ class RangePredicateOp : public PredicateOp {
       uint64_t b = std::numeric_limits<uint64_t>::max())
       : PredicateOp(OpType::RangePredicate, n, "RangePredicate"), a(a), b(b) {}
 
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &) const override {
+    return std::make_shared<RangePredicateOp>(*this);
+  }
+
   std::string get_name(bool latex) const override;
 
   uint64_t upper() const { return b; }
@@ -383,6 +404,11 @@ class ExplicitPredicateOp : public PredicateOp {
   ExplicitPredicateOp(
       unsigned n, const std::vector<bool> &values,
       const std::string &name = "ExplicitPredicate");
+
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &) const override {
+    return std::make_shared<ExplicitPredicateOp>(*this);
+  }
 
   std::vector<bool> eval(const std::vector<bool> &x) const override;
 
@@ -430,6 +456,11 @@ class ExplicitModifierOp : public ModifyingOp {
       unsigned n, const std::vector<bool> &values,
       const std::string &name = "ExplicitModifier");
 
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &) const override {
+    return std::make_shared<ExplicitModifierOp>(*this);
+  }
+
   std::vector<bool> eval(const std::vector<bool> &x) const override;
 
   std::vector<bool> get_values() const { return values_; }
@@ -447,6 +478,11 @@ class ExplicitModifierOp : public ModifyingOp {
 class MultiBitOp : public ClassicalEvalOp {
  public:
   MultiBitOp(std::shared_ptr<const ClassicalEvalOp> op, unsigned n);
+
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &) const override {
+    return std::make_shared<MultiBitOp>(*this);
+  }
 
   std::string get_name(bool latex) const override;
 

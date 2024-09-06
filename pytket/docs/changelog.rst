@@ -1,6 +1,27 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Features:
+
+* DecomposeTK2 pass and transform can now accept a float for ZZPhase_fidelity.
+* DecomposeTK2 pass now has a json representation when it contains no functions.
+
+1.32.0 (September 2024)
+-----------------------
+
+* Fix symbol substitution for classical operations.
+* Fix incorrect QASM conversion of conditional multi-line ops.
+* Fix incorrect order of `lower` and `upper` properties of `RangePredicateOp`.
+
+
+1.31.1 (August 2024)
+--------------------
+
+* Fix issue with css styles in pytket-circuit-renderer 0.9.
+
 1.31.0 (August 2024)
 --------------------
 

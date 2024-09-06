@@ -29,7 +29,7 @@ class Pybind11JsonConan(ConanFile):
 
     def requirements(self):
         self.requires("nlohmann_json/3.11.3")
-        self.requires("pybind11/2.13.1")
+        self.requires("pybind11/2.13.5")
 
     def source(self):
         get(

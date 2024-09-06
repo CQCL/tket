@@ -35,6 +35,7 @@ from pytket.circuit import (
     if_not_bit,
     BitRegister,
     CustomGate,
+    RangePredicateOp,
 )
 from pytket.circuit.decompose_classical import DecomposeClassicalError
 from pytket.circuit.logic_exp import BitWiseOp, create_bit_logic_exp
@@ -955,12 +956,147 @@ measure q[0] -> c[0];
     )
 
 
+def test_conditional_multi_line_ops() -> None:
+    # https://github.com/CQCL/tket/issues/1491
+    c = Circuit(0, 3)
+    c.add_c_setbits(values=[True, True], args=[Bit(1), Bit(2)], condition=Bit(0))
+    qasm = circuit_to_qasm_str(c, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+creg c[3];
+if(c[0]==1) c[1] = 1;
+if(c[0]==1) c[2] = 1;
+"""
+    )
+    c = Circuit(0, 5)
+    c.add_c_copybits(
+        args_in=[Bit(1), Bit(2)], args_out=[Bit(3), Bit(4)], condition=Bit(0)
+    )
+    qasm = circuit_to_qasm_str(c, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+creg c[5];
+if(c[0]==1) c[3] = c[1];
+if(c[0]==1) c[4] = c[2];
+"""
+    )
+    c = Circuit(0, 3)
+    c.add_c_setbits(values=[True, True], args=[Bit(0), Bit(1)], condition=Bit(0))
+    qasm = circuit_to_qasm_str(c, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+creg c[3];
+creg tk_SCRATCH_BITREG_0[1];
+if(c[0]==1) tk_SCRATCH_BITREG_0[0] = 1;
+if(c[0]==1) c[0] = 1;
+if(tk_SCRATCH_BITREG_0[0]==1) c[1] = 1;
+"""
+    )
+    c = Circuit(1, 3)
+    c.add_c_setbits(
+        values=[True, True],
+        args=[Bit(0), Bit(1)],
+        condition_bits=[Bit(0), Bit(1), Bit(2)],
+        condition_value=3,
+    )
+    qasm = circuit_to_qasm_str(c, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+qreg q[1];
+creg c[3];
+creg tk_SCRATCH_BITREG_0[1];
+if(c==3) tk_SCRATCH_BITREG_0[0] = 1;
+if(c==3) c[0] = 1;
+if(tk_SCRATCH_BITREG_0[0]==1) c[1] = 1;
+"""
+    )
+
+
+def test_conditional_range_predicate() -> None:
+    range_predicate = RangePredicateOp(6, 0, 27)
+    c = Circuit(0, 8)
+    c.add_gate(range_predicate, [0, 1, 2, 3, 4, 5, 6], condition=Bit(7))
+    # remove once https://github.com/CQCL/tket/issues/1508
+    # is resolved
+    with pytest.raises(Exception) as errorinfo:
+        circuit_to_qasm_str(c, header="hqslib1")
+        assert "Conditional RangePredicate is currently unsupported." in str(
+            errorinfo.value
+        )
+
+
 def test_range_with_maxwidth() -> None:
     c = Circuit(1)
     a = c.add_c_register("a", 8)
     c.X(0, condition=reg_geq(a, 1))
     qasm = circuit_to_qasm_str(c, header="hqslib1", maxwidth=63)
     assert "if(a>=1) x q[0];" in qasm
+
+
+def test_range_predicates_with_non_scratch_bits() -> None:
+    # https://github.com/CQCL/tket/issues/1530
+    range_predicate = RangePredicateOp(3, 0, 5)
+    c = Circuit(2)
+    d = c.add_c_register("d", 3)
+    e = c.add_c_register("e", 2)
+    f = c.add_c_register("f", 3)
+    c.add_gate(range_predicate, [d[0], d[1], d[2], e[0]])
+    c.add_gate(range_predicate, [f[0], f[1], f[2], e[0]])
+    c.add_gate(OpType.Measure, [Qubit(0), f[0]], condition=e[0])
+    c.add_gate(OpType.Measure, [Qubit(1), f[1]], condition=if_not_bit(e[0]))
+    qasm = circuit_to_qasm_str(c, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+qreg q[2];
+creg d[3];
+creg e[2];
+creg f[3];
+if(d<=5) e[0] = 1;
+if(d>5) e[0] = 0;
+if(f<=5) e[0] = 1;
+if(f>5) e[0] = 0;
+if(e[0]==1) measure q[0] -> f[0];
+if(e[0]==0) measure q[1] -> f[1];
+"""
+    )
+    c = Circuit(2)
+    d = c.add_c_register("d", 3)
+    e = c.add_c_register("e", 2)
+    f = c.add_c_register("f", 3)
+    c.add_gate(range_predicate, [d[0], d[1], d[2], e[0]])
+    c.add_c_setbits([False], [e[0]], condition=e[0])
+    c.add_gate(OpType.Measure, [Qubit(0), f[0]], condition=e[0])
+    qasm = circuit_to_qasm_str(c, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+qreg q[2];
+creg d[3];
+creg e[2];
+creg f[3];
+if(d<=5) e[0] = 1;
+if(d>5) e[0] = 0;
+if(e[0]==1) e[0] = 0;
+if(e[0]==1) measure q[0] -> f[0];
+"""
+    )
 
 
 if __name__ == "__main__":
