@@ -19,7 +19,6 @@
 #include "tket/OpType/OpTypeFunctions.hpp"
 #include "tket/Ops/BarrierOp.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
-#include "tket/Ops/MetaOp.hpp"
 #include "tket/Ops/OpPtr.hpp"
 #include "tket/Utils/Json.hpp"
 

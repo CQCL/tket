@@ -14,27 +14,19 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <numeric>
-#include <optional>
 
-#include "Simulation/ComparisonFunctions.hpp"
 #include "testutil.hpp"
-#include "tket/Characterisation/DeviceCharacterisation.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
-#include "tket/Mapping/LexiRoute.hpp"
 #include "tket/Mapping/MappingManager.hpp"
 #include "tket/Mapping/Verification.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/Predicates/CompilerPass.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Predicates/Predicates.hpp"
-#include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Transformations/Decomposition.hpp"
-#include "tket/Transformations/OptimisationPass.hpp"
-#include "tket/Transformations/Rebase.hpp"
 #include "tket/Transformations/Transform.hpp"
-#include "tket/Utils/HelperFunctions.hpp"
 
 namespace tket {
 

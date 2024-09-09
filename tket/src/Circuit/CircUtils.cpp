@@ -27,8 +27,6 @@
 #include "tket/Gate/GateUnitaryMatrixImplementations.hpp"
 #include "tket/Gate/Rotation.hpp"
 #include "tket/OpType/OpType.hpp"
-#include "tket/Ops/Op.hpp"
-#include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
 #include "tket/Utils/UnitID.hpp"

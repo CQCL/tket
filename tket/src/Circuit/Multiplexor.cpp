@@ -24,7 +24,6 @@
 #include "tket/Ops/OpJsonFactory.hpp"
 #include "tket/Utils/Constants.hpp"
 #include "tket/Utils/HelperFunctions.hpp"
-#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

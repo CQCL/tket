@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
-#include <numeric>
 
 #include "CircuitsForTesting.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
@@ -25,7 +24,6 @@
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/Rebase.hpp"
 #include "tket/Transformations/Transform.hpp"
-#include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 namespace test_Rebase {

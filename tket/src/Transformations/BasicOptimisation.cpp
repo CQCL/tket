@@ -26,7 +26,6 @@
 #include "tket/Circuit/DAGDefs.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/Transform.hpp"
-#include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
 #include "tket/Utils/UnitID.hpp"

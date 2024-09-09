@@ -15,8 +15,6 @@
 #include "tket/Architecture/NeighboursFromArchitecture.hpp"
 
 #include <algorithm>
-#include <sstream>
-#include <stdexcept>
 
 namespace tket {
 

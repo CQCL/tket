@@ -19,7 +19,6 @@
 
 #include "../testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
-#include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
@@ -27,7 +26,6 @@
 #include "tket/Gate/SymTable.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/Ops/OpPtr.hpp"
-#include "tket/Predicates/CompilerPass.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Utils/Constants.hpp"

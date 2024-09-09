@@ -23,7 +23,6 @@
 #include <vector>
 
 #include "tket/Graphs/Utils.hpp"
-#include "tket/Utils/GraphHeaders.hpp"
 
 namespace tket::graphs {
 

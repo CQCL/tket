@@ -18,7 +18,6 @@
 #include "tket/Converters/Converters.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeInfo.hpp"
-#include "tket/Ops/Op.hpp"
 #include "tket/PauliGraph/PauliGraph.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"

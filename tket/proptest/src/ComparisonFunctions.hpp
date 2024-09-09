@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "tket/Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/EigenConfig.hpp"
 
 namespace tket {
 namespace tket_sim {

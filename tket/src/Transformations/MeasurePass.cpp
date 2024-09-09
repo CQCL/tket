@@ -15,12 +15,10 @@
 #include "tket/Transformations/MeasurePass.hpp"
 
 #include <optional>
-#include <tuple>
 
 #include "tket/Circuit/DAGDefs.hpp"
 #include "tket/OpType/EdgeType.hpp"
 #include "tket/OpType/OpTypeFunctions.hpp"
-#include "tket/Ops/Op.hpp"
 #include "tket/Ops/OpPtr.hpp"
 #include "tket/Transformations/Transform.hpp"
 

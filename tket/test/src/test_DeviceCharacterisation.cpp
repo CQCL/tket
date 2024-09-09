@@ -15,7 +15,6 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "tket/Characterisation/DeviceCharacterisation.hpp"
-#include "tket/OpType/OpDesc.hpp"
 
 namespace tket {
 namespace test_DeviceCharacterisation {

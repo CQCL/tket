@@ -13,9 +13,7 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
-#include <random>
 
-#include "../testutil.hpp"
 #include "tket/Placement/Placement.hpp"
 
 namespace tket {

@@ -15,7 +15,6 @@
 #include <chrono>
 
 #include "tket/Placement/Placement.hpp"
-#include "tket/Utils/HelperFunctions.hpp"
 
 typedef std::chrono::steady_clock Clock;
 

@@ -26,7 +26,6 @@
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/PhaseOptimisation.hpp"
 #include "tket/Transformations/Transform.hpp"
-#include "tket/Utils/EigenConfig.hpp"
 
 namespace tket {
 namespace test_PhaseGadget {

@@ -24,7 +24,6 @@
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
-#include "tket/Mapping/LexiRoute.hpp"
 #include "tket/Mapping/MappingManager.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/Placement/Placement.hpp"
@@ -43,7 +42,6 @@
 #include "tket/Transformations/Rebase.hpp"
 #include "tket/Transformations/ThreeQubitSquash.hpp"
 #include "tket/Transformations/Transform.hpp"
-#include "tket/Utils/Json.hpp"
 
 namespace tket {
 
