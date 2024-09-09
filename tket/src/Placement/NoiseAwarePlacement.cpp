@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include "tket/Placement/Placement.hpp"
-#include "tket/Utils/HelperFunctions.hpp"
 
 namespace tket {
 

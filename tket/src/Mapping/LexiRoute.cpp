@@ -15,7 +15,6 @@
 #include "tket/Mapping/LexiRoute.hpp"
 
 #include "tket/Mapping/MappingFrontier.hpp"
-#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

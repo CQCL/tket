@@ -30,8 +30,6 @@
 #include "tket/OpType/OpType.hpp"
 #include "tket/Utils/Constants.hpp"
 #include "tket/Utils/CosSinDecomposition.hpp"
-#include "tket/Utils/EigenConfig.hpp"
-#include "tket/Utils/MatrixAnalysis.hpp"
 #include "tket/Utils/UnitID.hpp"
 
 namespace tket {

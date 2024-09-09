@@ -22,7 +22,6 @@
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Gate/GateUnitaryMatrix.hpp"
 #include "tket/Gate/SymTable.hpp"
-#include "tket/Transformations/CliffordReductionPass.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/Replacement.hpp"

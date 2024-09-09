@@ -26,7 +26,6 @@
 #include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/Transform.hpp"
-#include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {

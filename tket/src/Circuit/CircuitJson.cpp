@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include "tket/Circuit/Circuit.hpp"
-#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

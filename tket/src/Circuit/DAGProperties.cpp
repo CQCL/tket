@@ -15,11 +15,10 @@
 #include "DAGProperties.hpp"
 
 #include <algorithm>
+#include <tkassert/Assert.hpp>
 #include <tklog/TketLog.hpp>
 
-#include "tket/Circuit/Circuit.hpp"
 #include "tket/OpType/EdgeType.hpp"
-#include "tket/Utils/GraphHeaders.hpp"
 
 namespace tket {
 

@@ -16,7 +16,6 @@
 
 #include <cstdlib>
 #include <sstream>
-#include <string>
 #include <tklog/TketLog.hpp>
 #include <tktokenswap/SwapListOptimiser.hpp>
 

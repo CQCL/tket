@@ -14,11 +14,11 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <cstdlib>
-#include <fstream>
-#include <iostream>
 
-#include "tket/Circuit/ClassicalExpBox.hpp"
-#include "tket/Mapping/MappingManager.hpp"
+#include "tket/Architecture/Architecture.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Mapping/MappingFrontier.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 

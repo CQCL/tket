@@ -15,10 +15,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <optional>
 
-#include "testutil.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
-#include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/PhasedXFrontier.hpp"
 #include "tket/Utils/Expression.hpp"
 

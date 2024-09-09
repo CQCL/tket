@@ -20,7 +20,6 @@
 #include <vector>
 
 #include "../testutil.hpp"
-#include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DAGDefs.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
@@ -30,13 +29,11 @@
 #include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeFunctions.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
-#include "tket/Ops/Op.hpp"
 #include "tket/Ops/OpPtr.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/Replacement.hpp"
 #include "tket/Transformations/Transform.hpp"
-#include "tket/Utils/MatrixAnalysis.hpp"
 #include "tket/Utils/UnitID.hpp"
 
 namespace tket {

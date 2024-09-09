@@ -20,8 +20,6 @@
 #include "Utils/Expression.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Ops/OpJsonFactory.hpp"
-#include "tket/Utils/HelperFunctions.hpp"
-#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

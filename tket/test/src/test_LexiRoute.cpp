@@ -25,9 +25,7 @@
 #include "tket/Predicates/CompilationUnit.hpp"
 #include "tket/Predicates/CompilerPass.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
-#include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Transformations/Decomposition.hpp"
-#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

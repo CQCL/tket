@@ -19,7 +19,6 @@
 
 #include "tket/Graphs/AdjacencyData.hpp"
 #include "tket/Graphs/GraphColouring.hpp"
-#include "tket/Utils/GraphHeaders.hpp"
 
 namespace tket {
 

@@ -16,12 +16,8 @@
 
 #include <algorithm>
 #include <array>
-#include <iostream>
-#include <iterator>
 #include <memory>
-#include <numeric>
 #include <set>
-#include <string>
 #include <tkassert/Assert.hpp>
 
 #include "tket/Circuit/CircUtils.hpp"
@@ -34,7 +30,6 @@
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/Transform.hpp"
-#include "tket/Utils/GraphHeaders.hpp"
 
 namespace tket {
 

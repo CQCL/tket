@@ -14,8 +14,6 @@
 
 #pragma once
 
-#include "tket/Utils/MatrixAnalysis.hpp"
-
 namespace tket {
 class Circuit;
 namespace tket_sim {

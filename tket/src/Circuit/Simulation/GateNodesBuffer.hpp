@@ -17,7 +17,6 @@
 #include <memory>
 
 #include "GateNode.hpp"
-#include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 namespace tket_sim {

@@ -13,11 +13,8 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
-#include <random>
 #include <tket/Placement/NeighbourPlacements.hpp>
 #include <utility>
-
-#include "../testutil.hpp"
 
 namespace tket {
 namespace test_NeighbourPlacements {
