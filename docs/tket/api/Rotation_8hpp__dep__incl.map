@@ -1,31 +1,25 @@
 <map id="include/tket/Gate/Rotation.hpp" name="include/tket/Gate/Rotation.hpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="1116,5,1336,31"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="800,5,1020,31"/>
 <area shape="rect" id="Node000002" href="$StandardSquash_8hpp.html" title=" " alt="" coords="23,79,229,119"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1102,26,721,44,485,60,249,81,230,84,229,78,248,76,485,55,720,39,1102,21"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="787,31,538,51,249,81,230,84,229,78,248,76,538,46,786,25"/>
 <area shape="rect" id="Node000004" href="$StandardSquash_8cpp.html" title=" " alt="" coords="188,167,347,207"/>
-<area shape="poly" id="edge15_Node000001_Node000004" title=" " alt="" coords="1102,22,883,24,630,33,512,40,411,51,336,64,310,72,294,81,280,99,272,122,268,167,263,166,267,121,275,97,291,77,308,67,334,59,411,45,512,35,630,27,883,19,1102,16"/>
+<area shape="poly" id="edge12_Node000001_Node000004" title=" " alt="" coords="786,26,643,33,490,45,362,60,318,70,294,81,280,99,272,122,268,167,263,166,267,121,275,97,291,77,317,65,361,55,489,39,643,28,786,21"/>
 <area shape="rect" id="Node000005" href="$Boxes_8cpp.html" title=" " alt="" coords="305,86,462,111"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="1102,27,815,45,644,61,474,81,433,89,433,83,474,76,644,55,814,40,1102,22"/>
-<area shape="rect" id="Node000006" href="$CircPool_8cpp.html" title=" " alt="" coords="486,86,657,111"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="1102,32,899,52,669,81,627,89,626,83,668,76,898,47,1102,27"/>
-<area shape="rect" id="Node000007" href="$CircUtils_8cpp.html" title=" " alt="" coords="681,86,854,111"/>
-<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="1141,36,868,81,828,89,827,83,867,76,1140,30"/>
-<area shape="rect" id="Node000008" href="$ControlledGates_8cpp.html" title=" " alt="" coords="879,86,1101,111"/>
-<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="1180,37,1025,89,1024,83,1178,32"/>
-<area shape="rect" id="Node000009" href="$DiagonalBox_8cpp.html" title=" " alt="" coords="1125,86,1327,111"/>
-<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="1229,44,1229,86,1223,86,1223,44"/>
-<area shape="rect" id="Node000010" href="$Multiplexor_8cpp.html" title=" " alt="" coords="1351,86,1541,111"/>
-<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="1272,33,1415,83,1413,88,1270,38"/>
-<area shape="rect" id="Node000011" href="$StatePreparation_8cpp.html" title=" " alt="" coords="1566,86,1793,111"/>
-<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="1306,30,1614,83,1613,89,1305,36"/>
-<area shape="rect" id="Node000012" href="$ThreeQubitConversion_8cpp.html" title=" " alt="" coords="1817,86,2080,111"/>
-<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="1350,28,1805,76,1865,83,1864,89,1804,81,1350,34"/>
-<area shape="rect" id="Node000013" href="$ToffoliBox_8cpp.html" title=" " alt="" coords="2104,86,2287,111"/>
-<area shape="poly" id="edge12_Node000001_Node000013" title=" " alt="" coords="1350,21,1686,39,1889,54,2093,76,2139,83,2139,89,2092,81,1889,60,1685,44,1349,26"/>
-<area shape="rect" id="Node000014" href="$Rotation_8cpp.html" title=" " alt="" coords="2311,86,2474,111"/>
-<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="1350,18,1534,22,1771,32,2035,49,2300,76,2343,83,2342,89,2299,81,2035,54,1771,37,1534,27,1350,23"/>
-<area shape="rect" id="Node000015" href="$PQPSquash_8cpp.html" title=" " alt="" coords="2499,79,2649,119"/>
-<area shape="poly" id="edge14_Node000001_Node000015" title=" " alt="" coords="1350,16,1565,18,1848,26,2166,44,2328,58,2486,76,2499,78,2498,83,2486,81,2327,63,2165,49,1847,31,1564,23,1350,21"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="799,35,645,55,474,81,436,89,435,83,474,76,644,50,799,30"/>
+<area shape="rect" id="Node000006" href="$CircUtils_8cpp.html" title=" " alt="" coords="486,86,659,111"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="848,36,622,89,621,83,847,31"/>
+<area shape="rect" id="Node000007" href="$ControlledGates_8cpp.html" title=" " alt="" coords="684,86,907,111"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="883,41,814,88,811,84,880,36"/>
+<area shape="rect" id="Node000008" href="$Multiplexor_8cpp.html" title=" " alt="" coords="931,86,1121,111"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="940,36,1010,84,1007,88,937,41"/>
+<area shape="rect" id="Node000009" href="$StatePreparation_8cpp.html" title=" " alt="" coords="1146,86,1373,111"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="975,31,1209,83,1208,89,974,36"/>
+<area shape="rect" id="Node000010" href="$ThreeQubitConversion_8cpp.html" title=" " alt="" coords="1397,86,1660,111"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="1015,30,1385,76,1442,83,1441,89,1384,81,1015,35"/>
+<area shape="rect" id="Node000011" href="$Rotation_8cpp.html" title=" " alt="" coords="1685,86,1847,111"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="1034,22,1326,40,1500,55,1673,76,1715,83,1714,89,1672,81,1499,61,1326,45,1034,27"/>
+<area shape="rect" id="Node000012" href="$PQPSquash_8cpp.html" title=" " alt="" coords="1872,79,2023,119"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="1034,19,1198,24,1405,34,1632,51,1860,76,1872,78,1871,83,1859,81,1632,56,1404,39,1198,29,1034,24"/>
 <area shape="rect" id="Node000003" href="$PhasedXFrontier_8cpp.html" title=" " alt="" coords="5,167,164,207"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="113,132,96,168,91,165,109,130"/>
 <area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="170,123,238,164,235,169,167,128"/>

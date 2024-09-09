@@ -1,36 +1,32 @@
 <map id="include/tket/Mapping/LexiRouteRoutingMethod.hpp" name="include/tket/Mapping/LexiRouteRoutingMethod.hpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="614,5,833,45"/>
-<area shape="rect" id="Node000002" href="$RoutingMethodJson_8hpp.html" title=" " alt="" coords="409,93,589,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="662,53,549,96,547,91,661,48"/>
-<area shape="rect" id="Node000014" href="$LexiRouteRoutingMethod_8cpp.html" title=" " alt="" coords="613,93,833,133"/>
-<area shape="poly" id="edge20_Node000001_Node000014" title=" " alt="" coords="726,59,726,93,721,93,721,59"/>
-<area shape="rect" id="Node000003" href="$LexiRoute_8hpp.html" title=" " alt="" coords="680,181,839,221"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="570,135,703,179,702,184,569,140"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="491,5,710,45"/>
+<area shape="rect" id="Node000002" href="$RoutingMethodJson_8hpp.html" title=" " alt="" coords="287,93,467,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="540,53,427,96,425,91,538,48"/>
+<area shape="rect" id="Node000013" href="$LexiRouteRoutingMethod_8cpp.html" title=" " alt="" coords="491,93,711,133"/>
+<area shape="poly" id="edge17_Node000001_Node000013" title=" " alt="" coords="603,59,603,93,598,93,598,59"/>
+<area shape="rect" id="Node000003" href="$LexiRoute_8hpp.html" title=" " alt="" coords="577,181,736,221"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="452,135,596,179,595,184,450,140"/>
 <area shape="rect" id="Node000008" href="$RoutingMethodJson_8cpp.html" title=" " alt="" coords="5,357,209,397"/>
-<area shape="poly" id="edge18_Node000002_Node000008" title=" " alt="" coords="461,143,137,359,134,355,458,139"/>
-<area shape="rect" id="Node000011" href="$CompilerPass_8cpp.html" title=" " alt="" coords="1229,365,1461,390"/>
-<area shape="poly" id="edge19_Node000002_Node000011" title=" " alt="" coords="603,131,852,179,952,197,1031,210,1108,229,1202,267,1242,290,1280,316,1334,362,1331,367,1277,320,1239,294,1200,272,1106,234,1030,215,951,203,851,184,602,136"/>
-<area shape="poly" id="edge11_Node000003_Node000001" title=" " alt="" coords="807,172,828,154,844,132,850,113,844,95,832,80,818,67,785,48,787,43,821,63,836,76,848,92,855,113,848,135,832,158,811,176"/>
-<area shape="rect" id="Node000004" href="$AASLabelling_8hpp.html" title=" " alt="" coords="515,269,673,309"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="712,230,631,272,629,267,710,225"/>
-<area shape="rect" id="Node000006" href="$LexiLabelling_8hpp.html" title=" " alt="" coords="332,269,491,309"/>
-<area shape="poly" id="edge6_Node000003_Node000006" title=" " alt="" coords="670,227,488,272,487,267,669,222"/>
-<area shape="rect" id="Node000009" href="$PassGenerators_8cpp.html" title=" " alt="" coords="719,365,965,390"/>
-<area shape="poly" id="edge17_Node000003_Node000009" title=" " alt="" coords="766,234,773,271,787,308,808,339,831,363,827,366,804,342,782,311,768,272,760,235"/>
-<area shape="rect" id="Node000010" href="$PassGenerators_8hpp.html" title=" " alt="" coords="797,269,967,309"/>
-<area shape="poly" id="edge12_Node000003_Node000010" title=" " alt="" coords="799,227,856,267,853,271,796,231"/>
-<area shape="rect" id="Node000013" href="$LexiRoute_8cpp.html" title=" " alt="" coords="991,277,1189,302"/>
-<area shape="poly" id="edge16_Node000003_Node000013" title=" " alt="" coords="846,222,1047,274,1045,279,844,227"/>
-<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="575,258,507,135,512,132,579,256"/>
-<area shape="rect" id="Node000005" href="$AASLabelling_8cpp.html" title=" " alt="" coords="477,365,695,390"/>
-<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="594,323,590,364,584,364,588,323"/>
-<area shape="poly" id="edge7_Node000006_Node000002" title=" " alt="" coords="425,256,487,132,492,135,429,258"/>
+<area shape="poly" id="edge16_Node000002_Node000008" title=" " alt="" coords="349,145,129,359,125,355,346,141"/>
+<area shape="poly" id="edge11_Node000003_Node000001" title=" " alt="" coords="691,170,708,153,721,134,726,114,721,94,710,80,695,67,662,48,665,43,699,63,714,76,726,92,731,114,725,136,712,156,695,174"/>
+<area shape="rect" id="Node000004" href="$AASLabelling_8hpp.html" title=" " alt="" coords="931,269,1089,309"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="748,222,933,267,932,272,747,227"/>
+<area shape="rect" id="Node000006" href="$LexiLabelling_8hpp.html" title=" " alt="" coords="297,269,456,309"/>
+<area shape="poly" id="edge6_Node000003_Node000006" title=" " alt="" coords="583,228,439,272,437,267,581,223"/>
+<area shape="rect" id="Node000010" href="$PassGenerators_8hpp.html" title=" " alt="" coords="514,269,685,309"/>
+<area shape="poly" id="edge12_Node000003_Node000010" title=" " alt="" coords="638,234,614,271,610,268,634,232"/>
+<area shape="rect" id="Node000012" href="$LexiRoute_8cpp.html" title=" " alt="" coords="709,277,906,302"/>
+<area shape="poly" id="edge15_Node000003_Node000012" title=" " alt="" coords="703,226,789,274,786,279,700,230"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="958,266,862,224,748,184,673,165,614,155,478,136,466,134,467,129,478,131,615,150,674,160,749,179,864,219,960,261"/>
+<area shape="rect" id="Node000005" href="$AASLabelling_8cpp.html" title=" " alt="" coords="1003,365,1220,390"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="1045,316,1099,362,1096,366,1041,320"/>
+<area shape="poly" id="edge7_Node000006_Node000002" title=" " alt="" coords="374,256,374,134,379,134,379,256"/>
 <area shape="rect" id="Node000007" href="$LexiLabelling_8cpp.html" title=" " alt="" coords="234,365,453,390"/>
-<area shape="poly" id="edge8_Node000006_Node000007" title=" " alt="" coords="390,322,355,366,351,363,386,318"/>
-<area shape="poly" id="edge9_Node000006_Node000008" title=" " alt="" coords="332,316,175,360,173,355,330,311"/>
-<area shape="poly" id="edge10_Node000006_Node000009" title=" " alt="" coords="505,307,784,362,782,367,504,312"/>
-<area shape="poly" id="edge14_Node000010_Node000009" title=" " alt="" coords="870,323,850,365,845,363,865,321"/>
-<area shape="poly" id="edge13_Node000010_Node000011" title=" " alt="" coords="981,307,1282,362,1281,367,980,312"/>
-<area shape="rect" id="Node000012" href="$PassLibrary_8cpp.html" title=" " alt="" coords="989,365,1205,390"/>
-<area shape="poly" id="edge15_Node000010_Node000012" title=" " alt="" coords="942,312,1069,362,1067,367,941,317"/>
+<area shape="poly" id="edge8_Node000006_Node000007" title=" " alt="" coords="367,323,350,365,345,363,362,321"/>
+<area shape="poly" id="edge9_Node000006_Node000008" title=" " alt="" coords="305,316,167,360,165,355,304,311"/>
+<area shape="rect" id="Node000009" href="$PassGenerators_8cpp.html" title=" " alt="" coords="477,365,722,390"/>
+<area shape="poly" id="edge10_Node000006_Node000009" title=" " alt="" coords="439,312,571,362,569,367,437,317"/>
+<area shape="poly" id="edge14_Node000010_Node000009" title=" " alt="" coords="602,323,602,364,597,364,597,323"/>
+<area shape="rect" id="Node000011" href="$CompilerPass_8cpp.html" title=" " alt="" coords="746,365,978,390"/>
+<area shape="poly" id="edge13_Node000010_Node000011" title=" " alt="" coords="671,311,828,362,826,367,669,316"/>
 </map>

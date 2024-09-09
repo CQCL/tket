@@ -1,13 +1,11 @@
 <map id="include/tket/Circuit/PauliExpBoxes.hpp" name="include/tket/Circuit/PauliExpBoxes.hpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="487,5,635,45"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="412,5,560,45"/>
 <area shape="rect" id="Node000002" href="$PauliExpBoxes_8cpp.html" title=" " alt="" coords="5,101,217,126"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="474,46,172,103,171,98,473,41"/>
-<area shape="rect" id="Node000003" href="$DecomposeCircuit_8cpp.html" title=" " alt="" coords="241,93,413,133"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="498,53,379,96,378,91,496,48"/>
-<area shape="rect" id="Node000004" href="$PauliExpBoxUnitaryCalculator_8cpp.html" title=" " alt="" coords="437,93,684,133"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="563,59,563,93,558,93,558,59"/>
-<area shape="rect" id="Node000005" href="$PauliGraphConverters_8cpp.html" title=" " alt="" coords="708,93,899,133"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="628,47,751,91,749,96,626,52"/>
-<area shape="rect" id="Node000006" href="$GreedyPauliOptimisation_8cpp.html" title=" " alt="" coords="923,93,1137,133"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="649,40,928,91,927,96,648,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="399,49,162,103,161,98,398,44"/>
+<area shape="rect" id="Node000003" href="$PauliExpBoxUnitaryCalculator_8cpp.html" title=" " alt="" coords="241,93,488,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="450,55,393,95,390,91,447,51"/>
+<area shape="rect" id="Node000004" href="$PauliGraphConverters_8cpp.html" title=" " alt="" coords="512,93,703,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="525,51,582,91,579,95,522,55"/>
+<area shape="rect" id="Node000005" href="$GreedyPauliOptimisation_8cpp.html" title=" " alt="" coords="727,93,941,133"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="574,46,758,91,757,96,573,51"/>
 </map>
