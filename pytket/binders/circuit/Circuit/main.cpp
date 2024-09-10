@@ -34,11 +34,7 @@
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Circuit/ToffoliBox.hpp"
-#include "tket/Gate/OpPtrFunctions.hpp"
-#include "tket/Gate/SymTable.hpp"
 #include "tket/Mapping/Verification.hpp"
-#include "tket/Ops/Op.hpp"
-#include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

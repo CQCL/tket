@@ -15,6 +15,7 @@
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Converters/Converters.hpp"
+#include "tket/Diagonalisation/DiagUtils.hpp"
 #include "tket/Gate/Gate.hpp"
 
 namespace tket {

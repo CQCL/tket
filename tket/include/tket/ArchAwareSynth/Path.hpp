@@ -14,7 +14,6 @@
 
 #pragma once
 #include "tket/Architecture/Architecture.hpp"
-#include "tket/Placement/Placement.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
 #include "tket/Utils/UnitID.hpp"
 namespace tket {

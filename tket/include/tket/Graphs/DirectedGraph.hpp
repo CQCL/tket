@@ -17,18 +17,13 @@
 #include <algorithm>
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/iterator_range_core.hpp>
-#include <functional>
-#include <iostream>
 #include <map>
-#include <memory>
 #include <optional>
 #include <stdexcept>
-#include <type_traits>
 
 #include "tket/Graphs/AbstractGraph.hpp"
 #include "tket/Graphs/TreeSearch.hpp"
 #include "tket/Graphs/Utils.hpp"
-#include "tket/Utils/GraphHeaders.hpp"
 
 namespace tket::graphs {
 

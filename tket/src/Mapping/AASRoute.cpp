@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "tket/ArchAwareSynth/SteinerForest.hpp"
+#include "tket/Converters/PhasePoly.hpp"
 #include "tket/Mapping/AASRoute.hpp"
 
 namespace tket {

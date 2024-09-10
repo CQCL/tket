@@ -22,7 +22,6 @@
 #include <type_traits>
 #include <utility>
 
-#include "tket/Utils/BiMapHeaders.hpp"
 #include "tket/Utils/GraphHeaders.hpp"
 
 // Implemetation details of `Graphs/Utils.hpp`

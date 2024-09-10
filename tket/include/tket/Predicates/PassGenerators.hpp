@@ -17,12 +17,11 @@
 #include <optional>
 
 #include "CompilerPass.hpp"
-#include "tket/ArchAwareSynth/SteinerForest.hpp"
+#include "tket/ArchAwareSynth/SteinerTree.hpp"
 #include "tket/Circuit/Circuit.hpp"
-#include "tket/Mapping/LexiRoute.hpp"
 #include "tket/Mapping/RoutingMethod.hpp"
+#include "tket/Placement/Placement.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
-#include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
 
 namespace tket {

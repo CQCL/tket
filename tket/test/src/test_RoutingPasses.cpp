@@ -19,6 +19,7 @@
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
+#include "tket/Mapping/LexiRouteRoutingMethod.hpp"
 #include "tket/Mapping/MappingManager.hpp"
 #include "tket/Mapping/Verification.hpp"
 #include "tket/OpType/OpType.hpp"

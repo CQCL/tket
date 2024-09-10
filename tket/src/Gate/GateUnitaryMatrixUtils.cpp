@@ -18,6 +18,7 @@
 
 #include "tket/Gate/Gate.hpp"
 #include "tket/Gate/GateUnitaryMatrixError.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 namespace internal {

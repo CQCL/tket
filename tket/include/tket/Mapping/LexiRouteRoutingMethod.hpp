@@ -14,7 +14,6 @@
 
 #pragma once
 
-#include "tket/Mapping/LexiRoute.hpp"
 #include "tket/Mapping/RoutingMethod.hpp"
 
 namespace tket {

@@ -18,6 +18,7 @@
 #include "testutil.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
 #include "tket/Mapping/LexiRoute.hpp"
+#include "tket/Mapping/LexiRouteRoutingMethod.hpp"
 #include "tket/Mapping/MappingManager.hpp"
 #include "tket/Mapping/Verification.hpp"
 #include "tket/Ops/ClassicalOps.hpp"

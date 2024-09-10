@@ -18,6 +18,7 @@
 #include "tket/Gate/SymTable.hpp"
 #include "tket/Ops/BarrierOp.hpp"
 #include "tket/Ops/MetaOp.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
 
 namespace tket {
 

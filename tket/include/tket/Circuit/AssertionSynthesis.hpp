@@ -15,8 +15,6 @@
 #pragma once
 
 #include "Circuit.hpp"
-#include "tket/Utils/EigenConfig.hpp"
-#include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 

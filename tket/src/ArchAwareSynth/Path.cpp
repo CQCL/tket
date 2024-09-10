@@ -15,6 +15,8 @@
 #include "tket/ArchAwareSynth/Path.hpp"
 
 #include <stdexcept>
+#include "tket/Placement/Placement.hpp"
+#include "tket/Placement/QubitGraph.hpp"
 
 namespace tket {
 

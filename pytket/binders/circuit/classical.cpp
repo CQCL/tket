@@ -23,7 +23,6 @@
 #include "tket/Circuit/Conditional.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
 #include "tket/Ops/OpJsonFactory.hpp"
-#include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

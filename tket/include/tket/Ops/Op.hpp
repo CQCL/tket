@@ -24,14 +24,11 @@
 #include <ostream>
 #include <stdexcept>
 #include <string>
-#include <utility>
 #include <vector>
 
 #include "OpPtr.hpp"
 #include "tket/OpType/OpDesc.hpp"
-#include "tket/OpType/OpTypeFunctions.hpp"
 #include "tket/OpType/OpTypeInfo.hpp"
-#include "tket/Utils/Constants.hpp"
 #include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/Json.hpp"

@@ -17,7 +17,7 @@
 #include <string>
 
 #include "tket/OpType/OpType.hpp"
-#include "tket/Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/EigenConfig.hpp"
 
 namespace tket {
 class Gate;

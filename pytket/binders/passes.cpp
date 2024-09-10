@@ -21,6 +21,7 @@
 #include "tket/ArchAwareSynth/SteinerForest.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
 #include "tket/Mapping/LexiRoute.hpp"
+#include "tket/Mapping/LexiRouteRoutingMethod.hpp"
 #include "tket/Mapping/RoutingMethod.hpp"
 #include "tket/Predicates/CompilerPass.hpp"
 #include "tket/Predicates/PassGenerators.hpp"

@@ -18,6 +18,7 @@
 #include <optional>
 #include <tklog/TketLog.hpp>
 
+#include "tket/Mapping/RoutingMethodJson.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"

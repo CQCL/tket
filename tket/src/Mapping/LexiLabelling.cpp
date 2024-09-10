@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 #include "tket/Mapping/LexiLabelling.hpp"
+#include "tket/Mapping/LexiRoute.hpp"
 
 namespace tket {
 

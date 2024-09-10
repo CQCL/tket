@@ -15,7 +15,6 @@
 #pragma once
 
 #include <complex>
-#include <exception>
 #include <optional>
 
 // Workaround for Windows madness.

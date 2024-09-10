@@ -14,7 +14,8 @@
 
 #pragma once
 
-#include "tket/Utils/GraphHeaders.hpp"
+#include "tket/Graphs/DirectedGraph.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 

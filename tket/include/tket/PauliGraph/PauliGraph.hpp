@@ -14,7 +14,6 @@
 
 #pragma once
 
-#include <fstream>
 #include <stdexcept>
 
 #include "tket/Clifford/UnitaryTableau.hpp"

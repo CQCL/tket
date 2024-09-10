@@ -15,7 +15,6 @@
 #pragma once
 
 #include "tket/Architecture/Architecture.hpp"
-#include "tket/Utils/BiMapHeaders.hpp"
 #include "tket/Utils/UnitID.hpp"
 
 namespace tket {
