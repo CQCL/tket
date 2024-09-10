@@ -1099,6 +1099,31 @@ if(e[0]==1) measure q[0] -> f[0];
     )
 
 
+def test_multibitop() -> None:
+    # https://github.com/CQCL/tket/issues/1327
+    c = Circuit()
+    areg = c.add_c_register("a", 2)
+    breg = c.add_c_register("b", 2)
+    creg = c.add_c_register("c", 2)
+    c.add_c_and_to_registers(areg, breg, creg)
+    mbop = c.get_commands()[0].op
+    c.add_gate(mbop, [areg[0], areg[1], breg[0], breg[1], creg[0], creg[1]])
+    qasm = circuit_to_qasm_str(c, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+creg a[2];
+creg b[2];
+creg c[2];
+c = a & b;
+b[0] = a[0] & a[1];
+c[1] = b[1] & c[0];
+"""
+    )
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
