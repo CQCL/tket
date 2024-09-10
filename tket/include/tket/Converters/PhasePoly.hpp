@@ -14,10 +14,7 @@
 
 #pragma once
 #include "tket/Circuit/Boxes.hpp"
-#include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
-#include "tket/Utils/HelperFunctions.hpp"
-#include "tket/Utils/Json.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
 namespace tket {
 

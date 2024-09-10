@@ -17,7 +17,7 @@
 #include <typeindex>
 
 #include "tket/Architecture/Architecture.hpp"
-#include "tket/Transformations/Transform.hpp"
+#include "tket/Circuit/Circuit.hpp"
 
 namespace tket {
 class Predicate;

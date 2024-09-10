@@ -16,6 +16,9 @@
 
 #include <stdexcept>
 
+#include "tket/Placement/Placement.hpp"
+#include "tket/Placement/QubitGraph.hpp"
+
 namespace tket {
 
 namespace aas {

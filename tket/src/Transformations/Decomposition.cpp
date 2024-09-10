@@ -22,6 +22,7 @@
 
 #include "tket/Architecture/Architecture.hpp"
 #include "tket/Circuit/CircPool.hpp"
+#include "tket/Circuit/CircUtils.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Gate/GatePtr.hpp"
 #include "tket/OpType/OpType.hpp"

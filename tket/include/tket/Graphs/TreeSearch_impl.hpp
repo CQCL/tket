@@ -21,7 +21,6 @@
 #include <boost/property_map/property_map.hpp>
 #include <boost/range/iterator_range_core.hpp>
 #include <numeric>
-#include <type_traits>
 #include <utility>
 #include <vector>
 
