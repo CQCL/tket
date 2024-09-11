@@ -739,8 +739,7 @@ def test_pass_deserialisation_only() -> None:
     p00 = p0.get_sequence()[0]
     p01 = p0.get_sequence()[1]
     assert p00.to_dict()["pass_class"] == "SequencePass"
-    assert p01.to_dict()["StandardPass"]["name"] == "RebaseCustom"
-    assert p01.to_dict()["StandardPass"]["basis_cx_replacement"] == cx.to_dict()
+    assert p01.to_dict()["StandardPass"]["name"] == "AutoRebase"
     assert isinstance(p00, SequencePass)
     p000 = p00.get_sequence()[0]
     p001 = p00.get_sequence()[1]
@@ -750,7 +749,7 @@ def test_pass_deserialisation_only() -> None:
     assert isinstance(p000, SequencePass)
     p0000 = p000.get_sequence()[0]
     p0001 = p000.get_sequence()[1]
-    assert p0000.to_dict()["StandardPass"]["name"] == "RebaseCustom"
+    assert p0000.to_dict()["StandardPass"]["name"] == "AutoRebase"
     assert p0001.to_dict()["pass_class"] == "SequencePass"
     assert isinstance(p0001, SequencePass)
     p00010 = p0001.get_sequence()[0]
