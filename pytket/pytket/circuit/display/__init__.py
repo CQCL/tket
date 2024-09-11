@@ -21,7 +21,7 @@ import time
 import uuid
 import webbrowser
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional, Union, Literal, cast, Any
+from typing import Literal, cast, Any
 
 from jinja2 import Environment, PrefixLoader, FileSystemLoader, nodes
 from jinja2.ext import Extension
@@ -67,25 +67,21 @@ loader = PrefixLoader(
 
 jinja_env = Environment(loader=loader, extensions=[IncludeRawExtension])
 
-RenderCircuit = Union[Dict[str, Union[str, float, dict]], Circuit]
+RenderCircuit = dict[str, str | float | dict] | Circuit
 Orientation = Literal["row"] | Literal["column"]
 
 
 @dataclass(kw_only=True)
 class RenderOptions:
-    zx_style: Optional[bool] = None  # display zx style gates where possible.
-    condense_c_bits: Optional[bool] = (
-        None  # collapse classical bits into a single wire.
-    )
-    recursive: Optional[bool] = None  # display nested circuits inline.
-    condensed: Optional[bool] = None  # display circuit on one line only.
-    dark_theme: Optional[bool] = None  # use dark mode.
-    system_theme: Optional[bool] = (
-        None  # use the system theme mode (overrides dark mode).
-    )
-    transparent_bg: Optional[bool] = None  # transparent circuit background.
-    crop_params: Optional[bool] = None  # shorten parameter expressions for display.
-    interpret_math: Optional[bool] = (
+    zx_style: bool | None = None  # display zx style gates where possible.
+    condense_c_bits: bool | None = None  # collapse classical bits into a single wire.
+    recursive: bool | None = None  # display nested circuits inline.
+    condensed: bool | None = None  # display circuit on one line only.
+    dark_theme: bool | None = None  # use dark mode.
+    system_theme: bool | None = None  # use the system theme mode (overrides dark mode).
+    transparent_bg: bool | None = None  # transparent circuit background.
+    crop_params: bool | None = None  # shorten parameter expressions for display.
+    interpret_math: bool | None = (
         None  # try to display parameters and box names as math.
     )
 
@@ -104,7 +100,7 @@ class RenderOptions:
 
     def get_render_options(
         self, full: bool = False, _for_js: bool = False
-    ) -> Dict[str, bool]:
+    ) -> dict[str, bool]:
         """
         Get a dict of the current render options.
 
@@ -130,10 +126,10 @@ class CircuitDisplayConfig(PytketExtConfig):
     render_options: RenderOptions = field(default_factory=RenderOptions)
 
     @classmethod
-    def from_extension_dict(cls, ext_dict: Dict[str, Any]) -> "CircuitDisplayConfig":
+    def from_extension_dict(cls, ext_dict: dict[str, Any]) -> "CircuitDisplayConfig":
         return CircuitDisplayConfig(
-            min_height=ext_dict.get("min_height"),
-            min_width=ext_dict.get("min_width"),
+            min_height=str(ext_dict.get("min_height")),
+            min_width=str(ext_dict.get("min_width")),
             orient=ext_dict.get("orient"),
             render_options=RenderOptions(
                 **(ext_dict["render_options"] if "render_options" in ext_dict else {})
@@ -150,7 +146,7 @@ class CircuitRenderer:
         self.env = env
         self.config = config
 
-    def set_render_options(self, **kwargs: Union[bool, str]) -> None:
+    def set_render_options(self, **kwargs: bool | str) -> None:
         """
         Set rendering defaults.
 
@@ -177,7 +173,7 @@ class CircuitRenderer:
 
     def get_render_options(
         self, full: bool = False, _for_js: bool = False
-    ) -> Dict[str, bool]:
+    ) -> dict[str, bool]:
         """
         Get a dict of the current render options.
 
@@ -193,18 +189,19 @@ class CircuitRenderer:
 
     def render_circuit_as_html(
         self,
-        circuit: RenderCircuit | List[RenderCircuit],
+        circuit: RenderCircuit | list[RenderCircuit],
         jupyter: bool = False,
         orient: Orientation | None = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         """
         Render a circuit as HTML for inline display.
 
         :param circuit: the circuit(s) to render.
         :param jupyter: set to true to render generated HTML in cell output.
         :param orient: the direction in which to stack circuits if multiple are present.
+            One of 'row' or 'column'.
         """
-        circuit_dict: dict | List[dict]
+        circuit_dict: dict | list[dict]
         if isinstance(circuit, list):
             circuit_dict = [
                 (
@@ -248,7 +245,7 @@ class CircuitRenderer:
 
     def render_circuit_jupyter(
         self,
-        circuit: RenderCircuit | List[RenderCircuit],
+        circuit: RenderCircuit | list[RenderCircuit],
         orient: Orientation | None = None,
     ) -> None:
         """Render a circuit as jupyter cell output.
@@ -260,7 +257,7 @@ class CircuitRenderer:
 
     def view_browser(
         self,
-        circuit: RenderCircuit | List[RenderCircuit],
+        circuit: RenderCircuit | list[RenderCircuit],
         browser_new: int = 2,
         sleep: int = 5,
     ) -> None:
