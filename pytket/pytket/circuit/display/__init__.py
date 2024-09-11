@@ -268,7 +268,7 @@ class CircuitRenderer:
 
         Waits for some time for browser to load then deletes tempfile.
 
-        :param circuit: the Circuit or serialized Circuit to render.
+        :param circuit: the Circuit(s) or serialized Circuit(s) to render.
             Either a single circuit or a list of circuits to compare.
         :param browser_new: ``new`` parameter to ``webbrowser.open``, default 2.
         :param sleep: Number of seconds to sleep before deleting file, default 5.
