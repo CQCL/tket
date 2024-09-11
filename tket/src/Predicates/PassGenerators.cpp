@@ -481,7 +481,7 @@ PassPtr gen_cx_mapping_pass(
   OpTypeSet gate_set = all_single_qubit_types();
   gate_set.insert(OpType::CX);
   PassPtr rebase_pass =
-      gen_rebase_pass(gate_set, CircPool::CX(), CircPool::tk1_to_tk1);
+      gen_auto_rebase_pass(gate_set);
   PassPtr return_pass =
       rebase_pass >> gen_full_mapping_pass(arc, placement_ptr, config);
   if (delay_measures) return_pass = return_pass >> DelayMeasures();
