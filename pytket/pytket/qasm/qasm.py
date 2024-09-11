@@ -1397,6 +1397,8 @@ class QasmWriter:
             self.cregs = {}
             self.qregs = {}
 
+        self.cregs_as_bitseqs = set(tuple(creg) for creg in self.cregs.values())
+
         # for holding condition values when writing Conditional blocks
         # the size changes when adding and removing scratch bits
         self.scratch_reg = BitRegister(
@@ -1666,12 +1668,24 @@ class QasmWriter:
                 self.mark_as_written(label, f"{bit_l}")
 
     def add_multi_bit(self, op: MultiBitOp, args: List[Bit]) -> None:
-        assert len(args) >= 2
-        registers_involved = [arg.reg_name for arg in args[:2]]
-        if len(args) > 2 and args[2].reg_name not in registers_involved:
-            # there is a distinct output register
-            registers_involved.append(args[2].reg_name)
-        self.add_op(op.basic_op, [self.cregs[name] for name in registers_involved])  # type: ignore
+        basic_op = op.basic_op
+        basic_n = basic_op.n_inputs + basic_op.n_outputs + basic_op.n_input_outputs
+        n_args = len(args)
+        assert n_args % basic_n == 0
+        arity = n_args // basic_n
+
+        # If the operation is register-aligned we can write it more succinctly.
+        poss_regs = [
+            tuple(args[basic_n * i + j] for i in range(arity)) for j in range(basic_n)
+        ]
+        if all(poss_reg in self.cregs_as_bitseqs for poss_reg in poss_regs):
+            # The operation is register-aligned.
+            self.add_op(basic_op, [poss_regs[j][0].reg_name for j in range(basic_n)])  # type: ignore
+        else:
+            # The operation is not register-aligned.
+            for i in range(arity):
+                basic_args = args[basic_n * i : basic_n * (i + 1)]
+                self.add_op(basic_op, basic_args)
 
     def add_explicit_op(self, op: Op, args: List[Bit]) -> None:
         # &, ^ and | gates
