@@ -538,7 +538,6 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       bool delay_measures = content.at("delay_measures").get<bool>();
       pp = gen_default_mapping_pass(arc, delay_measures);
     } else if (passname == "CXMappingPass") {
-      // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
       Placement::Ptr place = content.at("placement").get<Placement::Ptr>();
       std::vector<RoutingMethodPtr> config = content.at("routing_config");

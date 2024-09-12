@@ -16,6 +16,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <nlohmann/json_fwd.hpp>
 #include <sstream>
 #include <string>
 
@@ -480,14 +481,28 @@ PassPtr gen_cx_mapping_pass(
     bool delay_measures) {
   OpTypeSet gate_set = all_single_qubit_types();
   gate_set.insert(OpType::CX);
-  PassPtr rebase_pass =
-      gen_auto_rebase_pass(gate_set);
+  PassPtr rebase_pass = gen_auto_rebase_pass(gate_set);
   PassPtr return_pass =
       rebase_pass >> gen_full_mapping_pass(arc, placement_ptr, config);
   if (delay_measures) return_pass = return_pass >> DelayMeasures();
   return_pass = return_pass >> rebase_pass >>
                 gen_decompose_routing_gates_to_cxs_pass(arc, directed_cx);
-  return return_pass;
+  Transform t{[=](Circuit& circ) {
+    CompilationUnit cu(circ);
+    bool changed = return_pass->apply(cu);
+    circ = cu.get_circ_ref();
+    return changed;
+  }};
+  PassConditions conditions = return_pass->get_conditions();
+  nlohmann::json j;
+  j["name"] = "CXMappingPass";
+  j["architecture"] = arc;
+  j["placement"] = placement_ptr;
+  j["routing_config"] = config;
+  j["directed"] = directed_cx;
+  j["delay_measures"] = delay_measures;
+  return std::make_shared<StandardPass>(
+      conditions.first, t, conditions.second, j);
 }
 
 PassPtr gen_routing_pass(
