@@ -8,6 +8,7 @@ Features:
 
 * DecomposeTK2 pass and transform can now accept a float for ZZPhase_fidelity.
 * DecomposeTK2 pass now has a json representation when it contains no functions.
+* Fix QASM conversion of non-register-aligned `MultiBitOp`.
 
 1.32.0 (September 2024)
 -----------------------
