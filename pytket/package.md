@@ -27,9 +27,7 @@ official Python distribution instead.
 
 API reference: https://tket.quantinuum.com/api-docs/
 
-To get started using pytket see the [user manual](https://tket.quantinuum.com/user-manual/).
-
-For worked examples using TKET see our [notebook examples](https://tket.quantinuum.com/examples).
+To get started using pytket see the [user guide](https://tket.quantinuum.com/user-guide/).
 
 ## Support and Discussion
 
