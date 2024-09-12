@@ -311,6 +311,16 @@ TWO_WAY_PARAM_PASSES = {
             "allow_swaps": True,
         }
     ),
+    "CXMappingPass": standard_pass_dict(
+        {
+            "name": "CXMappingPass",
+            "architecture": example_architecture,
+            "placement": example_placement,
+            "routing_config": example_routing_config,
+            "directed": True,
+            "delay_measures": True,
+        }
+    ),
 }
 
 # non-parametrized passes that satisfy pass.from_dict(d).to_dict()==d
@@ -369,16 +379,6 @@ ONE_WAY_PASSES = {
         {
             "name": "DefaultMappingPass",
             "architecture": example_architecture,
-            "delay_measures": True,
-        }
-    ),
-    "CXMappingPass": standard_pass_dict(
-        {
-            "name": "CXMappingPass",
-            "architecture": example_architecture,
-            "placement": example_placement,
-            "routing_config": example_routing_config,
-            "directed": True,
             "delay_measures": True,
         }
     ),
