@@ -30,10 +30,8 @@ patchy) is available
 The `pytket` (Python) API documentation is available
 [here](https://tket.quantinuum.com/api-docs).
 
-For getting started using pytket, check out the user manual and notebook examples.
+For getting started using pytket, check out the [user manual and notebook examples](https://tket.quantinuum.com/user-guide/).
 
-- User manual - https://tket.quantinuum.com/user-manual/
-- Notebook examples - https://tket.quantinuum.com/examples/
 
 The source content for the manual and notebook examples can be found in the [pytket-docs repository](https://github.com/CQCL/pytket-docs).
 
