@@ -2,9 +2,9 @@ pytket.circuit.Circuit
 ======================
 :py:class:`Circuit` objects provide an abstraction of quantum circuits. They consist of a set of qubits/quantum wires and a collection of operations applied to them in a given order. These wires have open inputs and outputs, rather than assuming any fixed input state.
 
-See the `pytket User Manual <https://tket.quantinuum.com/user-manual/manual_circuit.html>`_ for a step-by-step tutorial on constructing circuits.
+See the `pytket User Manual <https://tket.quantinuum.com/user-guide/manual/manual_circuit.html>`_ for a step-by-step tutorial on constructing circuits.
 
-See also the notebook tutorials on `circuit generation <https://tket.quantinuum.com/examples/circuit_generation_example.html>`_ and `circuit analysis <https://tket.quantinuum.com/examples/circuit_analysis_example.html>`_.
+See also the notebook tutorials on `circuit generation <https://tket.quantinuum.com/user-guide/examples/circuit_construction/circuit_generation_example.html>`_ and `circuit analysis <https://tket.quantinuum.com/user-guide/examples/circuit_construction/circuit_analysis_example.html>`_.
 
 
 Many of the :py:class:`Circuit` methods described below append a gate or box to
