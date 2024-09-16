@@ -1500,5 +1500,27 @@ def test_sym_sub_range_pred() -> None:
     assert c == c1
 
 
+def test_decompose_clexpbox_overwrite() -> None:
+    # https://github.com/CQCL/tket/issues/1582
+    circuit = Circuit(1, 3)
+    bits = circuit.bits
+    circuit.add_classicalexpbox_bit(
+        expression=bits[0] ^ (bits[1] ^ bits[2]), target=[bits[0]]
+    )
+    DecomposeClassicalExp().apply(circuit)
+    cmd0, cmd1 = circuit.get_commands()
+    op0, op1 = cmd0.op, cmd1.op
+    args0, args1 = cmd0.args, cmd1.args
+    assert op0.get_name() == "XOR"
+    assert op1.get_name() == "XOR"
+    assert len(args0) == 3
+    assert len(args1) == 2
+    assert args0[0] == bits[1]
+    assert args0[1] == bits[2]
+    assert args0[2] not in bits
+    assert args1[0] == args0[2]
+    assert args1[1] == bits[0]
+
+
 if __name__ == "__main__":
     test_wasm()
