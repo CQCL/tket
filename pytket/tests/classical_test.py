@@ -1196,11 +1196,12 @@ def test_decomposition_known() -> None:
 
     assert compare_commands_box(circ, conditioned_circ)
 
-    for b in (temp_bits[i] for i in range(0, 11)):
+    for b in (temp_bits[i] for i in range(0, 12)):
         decomposed_circ.add_bit(b)
 
     decomposed_circ.add_c_register(BitRegister(f"{_TEMP_BIT_REG_BASE}_0", 3))
     decomposed_circ.add_c_register(BitRegister(f"{_TEMP_BIT_REG_BASE}_1", 64))
+    decomposed_circ.add_c_register(BitRegister(f"{_TEMP_BIT_REG_BASE}_2", 64))
 
     decomposed_circ.H(qreg[0], condition_bits=[bits[0]], condition_value=1)
     decomposed_circ.X(qreg[0], condition_bits=[bits[1]], condition_value=1)
@@ -1222,10 +1223,10 @@ def test_decomposition_known() -> None:
         3, 18446744073709551615, registers_lists[5], temp_bits[8]
     )
 
-    decomposed_circ.add_c_xor(bits[5], bits[6], temp_bits[2])
-    decomposed_circ.add_c_and(bits[7], bits[8], temp_bits[10])
-    decomposed_circ.add_c_or(bits[4], temp_bits[2], temp_bits[2])
-    decomposed_circ.add_c_or(temp_bits[10], temp_bits[2], temp_bits[2])
+    decomposed_circ.add_c_xor(bits[5], bits[6], temp_bits[10])
+    decomposed_circ.add_c_and(bits[7], bits[8], temp_bits[11])
+    decomposed_circ.add_c_or(bits[4], temp_bits[10], temp_bits[10])
+    decomposed_circ.add_c_or(temp_bits[10], temp_bits[11], temp_bits[2])
     decomposed_circ.CX(
         qreg[1], qreg[2], condition_bits=[temp_bits[2]], condition_value=1
     )
@@ -1239,20 +1240,20 @@ def test_decomposition_known() -> None:
     decomposed_circ.S(qreg[6], condition_bits=[temp_bits[7]], condition_value=1)
     decomposed_circ.T(qreg[7], condition_bits=[temp_bits[8]], condition_value=1)
 
-    decomposed_circ.add_c_and_to_registers(registers[4], registers[3], temp_reg(0))
-    decomposed_circ.add_c_xor_to_registers(registers[6], registers[7], temp_reg(1))
+    decomposed_circ.add_c_and_to_registers(registers[4], registers[3], temp_reg(1))
+    decomposed_circ.add_c_xor_to_registers(registers[6], registers[7], temp_reg(2))
     decomposed_circ.add_c_or_to_registers(
-        temp_reg(0), BitRegister(temp_reg(1).name, 3), temp_reg(0)
+        temp_reg(1), BitRegister(temp_reg(2).name, 3), temp_reg(0)
     )
     decomposed_circ.add_c_range_predicate(3, 3, temp_reg(0).to_list()[:3], temp_bits[9])
     decomposed_circ.CX(
         qreg[3], qreg[4], condition_bits=[temp_bits[9]], condition_value=1
     )
     decomposed_circ.add_c_and(
-        bits[5], bits[3], bits[0], condition_bits=[bits[1]], condition_value=1
+        bits[5], bits[3], temp_bits[10], condition_bits=[bits[1]], condition_value=1
     )
     decomposed_circ.add_c_or(
-        bits[4], bits[0], bits[0], condition_bits=[bits[1]], condition_value=1
+        bits[4], temp_bits[10], bits[0], condition_bits=[bits[1]], condition_value=1
     )
     check_serialization_roundtrip(decomposed_circ)
     circ_copy = circ.copy()
