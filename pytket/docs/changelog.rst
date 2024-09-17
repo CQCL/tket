@@ -8,6 +8,8 @@ Features:
 
 * DecomposeTK2 pass and transform can now accept a float for ZZPhase_fidelity.
 * DecomposeTK2 pass now has a json representation when it contains no functions.
+* Add support for rendering multiple circuits at once.
+* Add option to save circuit renderer options to pytket config.
 
 Fixes:
 
@@ -20,9 +22,6 @@ Fixes:
 * Fix symbol substitution for classical operations.
 * Fix incorrect QASM conversion of conditional multi-line ops.
 * Fix incorrect order of `lower` and `upper` properties of `RangePredicateOp`.
-* Add support for rendering multiple circuits at once.
-* Add option to save circuit renderer options to pytket config.
-
 
 1.31.1 (August 2024)
 --------------------
