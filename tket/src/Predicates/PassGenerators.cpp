@@ -487,11 +487,12 @@ PassPtr gen_cx_mapping_pass(
   if (delay_measures) return_pass = return_pass >> DelayMeasures();
   return_pass = return_pass >> rebase_pass >>
                 gen_decompose_routing_gates_to_cxs_pass(arc, directed_cx);
-  Transform t{[=](Circuit& circ) {
+  Transform t{[=](Circuit& circ, std::shared_ptr<unit_bimaps_t> maps) {
+    MappingManager mm(std::make_shared<Architecture>(arc));
     CompilationUnit cu(circ);
     bool changed = return_pass->apply(cu);
     circ = cu.get_circ_ref();
-    return changed;
+    return changed || mm.route_circuit_with_maps(circ, config, maps);
   }};
   PassConditions conditions = return_pass->get_conditions();
   nlohmann::json j;
