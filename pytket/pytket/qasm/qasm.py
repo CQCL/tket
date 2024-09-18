@@ -54,6 +54,9 @@ from pytket._tket.circuit import (
     MultiBitOp,
     WASMOp,
     BarrierOp,
+    ClExprOp,
+    WiredClExpr,
+    ClExpr,
 )
 from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
 from pytket.circuit import (
@@ -65,6 +68,11 @@ from pytket.circuit import (
     Qubit,
     QubitRegister,
     UnitID,
+)
+from pytket.circuit.clexpr import (
+    has_reg_output,
+    clop_from_ops,
+    wired_clexpr_from_logic_exp,
 )
 from pytket.circuit.decompose_classical import int_to_bools
 from pytket.circuit.logic_exp import (
@@ -279,10 +287,6 @@ def _un_call_exp(op: "str") -> Callable[["CircuitTransformer", List[str]], str]:
         return f"{op}({vals[0]})"
 
     return f
-
-
-def _hashable_uid(arg: List) -> Tuple[str, int]:
-    return arg[0], arg[1][0]
 
 
 Reg = NewType("Reg", str)
@@ -668,51 +672,18 @@ class CircuitTransformer(Transformer):
     def cop(self, tree: Sequence[Iterable[CommandDict]]) -> Iterable[CommandDict]:
         return tree[0]
 
-    def _calc_exp_io(
-        self, exp: LogicExp, out_args: List
-    ) -> Tuple[List[List], Dict[str, Any]]:
-        all_inps: list[Tuple[str, int]] = []
-        for inp in exp.all_inputs_ordered():
-            if isinstance(inp, Bit):
-                all_inps.append((inp.reg_name, inp.index[0]))
-            else:
-                assert isinstance(inp, BitRegister)
-                for bit in inp:
-                    all_inps.append((bit.reg_name, bit.index[0]))
-        outs = (_hashable_uid(arg) for arg in out_args)
-        o = []
-        io = []
-        for out in outs:
-            if out in all_inps:
-                all_inps.remove(out)
-                io.append(out)
-            else:
-                o.append(out)
-
-        exp_args = list(
-            map(lambda x: [x[0], [x[1]]], chain.from_iterable((all_inps, io, o)))
+    def _clexpr_dict(self, exp: LogicExp, out_args: List[List]) -> CommandDict:
+        # Convert the LogicExp to a serialization of a command containing the
+        # corresponding ClExprOp.
+        wexpr, args = wired_clexpr_from_logic_exp(
+            exp, [Bit.from_list(arg) for arg in out_args]
         )
-        numbers_dict = {
-            "n_i": len(all_inps),
-            "n_io": len(io),
-            "n_o": len(o),
-        }
-        return exp_args, numbers_dict
-
-    def _cexpbox_dict(self, exp: LogicExp, args: List[List]) -> CommandDict:
-        box = {
-            "exp": exp.to_dict(),
-            "id": str(uuid.uuid4()),
-            "type": "ClassicalExpBox",
-        }
-        args, numbers = self._calc_exp_io(exp, args)
-        box.update(numbers)
         return {
-            "args": args,
             "op": {
-                "box": box,
-                "type": "ClassicalExpBox",
+                "type": "ClExpr",
+                "expr": wexpr.to_dict(),
             },
+            "args": [arg.to_list() for arg in args],
         }
 
     def assign(self, tree: List) -> Iterable[CommandDict]:
@@ -752,7 +723,7 @@ class CircuitTransformer(Transformer):
         args = args_uids[0]
         if isinstance(out_arg, List):
             if isinstance(exp, LogicExp):
-                yield self._cexpbox_dict(exp, args)
+                yield self._clexpr_dict(exp, args)
             elif isinstance(exp, (int, bool)):
                 assert exp in (0, 1, True, False)
                 yield {
@@ -769,9 +740,9 @@ class CircuitTransformer(Transformer):
         else:
             reg = out_arg
             if isinstance(exp, RegLogicExp):
-                yield self._cexpbox_dict(exp, args)
+                yield self._clexpr_dict(exp, args)
             elif isinstance(exp, BitLogicExp):
-                yield self._cexpbox_dict(exp, args[:1])
+                yield self._clexpr_dict(exp, args[:1])
             elif isinstance(exp, int):
                 yield {
                     "args": args,
@@ -1718,6 +1689,51 @@ class QasmWriter:
                 " for writing to a single bit or whole registers."
             )
 
+    def add_wired_clexpr(self, op: ClExprOp, args: List[Bit]) -> None:
+        wexpr: WiredClExpr = op.expr
+        # 1. Determine the mappings from bit variables to bits and from register
+        # variables to registers.
+        expr: ClExpr = wexpr.expr
+        bit_posn: dict[int, int] = wexpr.bit_posn
+        reg_posn: dict[int, list[int]] = wexpr.reg_posn
+        output_posn: list[int] = wexpr.output_posn
+        input_bits: dict[int, Bit] = {i: args[j] for i, j in bit_posn.items()}
+        input_regs: dict[int, BitRegister] = {}
+        all_cregs = set(self.cregs.values())
+        for i, posns in reg_posn.items():
+            reg_args = [args[j] for j in posns]
+            for creg in all_cregs:
+                if creg.to_list() == reg_args:
+                    input_regs[i] = creg
+                    break
+            else:
+                raise QASMUnsupportedError(
+                    f"ClExprOp ({wexpr}) contains a register variable (r{i}) "
+                    "that is not wired to any BitRegister in the circuit."
+                )
+        # 2. Write the left-hand side of the assignment.
+        output_repr: Optional[str] = None
+        output_args: list[Bit] = [args[j] for j in output_posn]
+        n_output_args = len(output_args)
+        expect_reg_output = has_reg_output(expr.op)
+        if n_output_args == 0:
+            raise QASMUnsupportedError("Expression has no output.")
+        elif n_output_args == 1:
+            output_arg = output_args[0]
+            output_repr = output_arg.reg_name if expect_reg_output else str(output_arg)
+        else:
+            if not expect_reg_output:
+                raise QASMUnsupportedError("Unexpected output for operation.")
+            for creg in all_cregs:
+                if creg.to_list() == output_args:
+                    output_repr = creg.name
+        self.strings.add_string(f"{output_repr} = ")
+        # 3. Write the right-hand side of the assignment.
+        self.strings.add_string(
+            expr.as_qasm(input_bits=input_bits, input_regs=input_regs)
+        )
+        self.strings.add_string(";\n")
+
     def add_wasm(self, op: WASMOp, args: List[Bit]) -> None:
         inputs: List[str] = []
         outputs: List[str] = []
@@ -1821,6 +1837,9 @@ class QasmWriter:
         elif optype == OpType.ClassicalExpBox:
             assert isinstance(op, ClassicalExpBox)
             self.add_classical_exp_box(op, cast(List[Bit], args))
+        elif optype == OpType.ClExpr:
+            assert isinstance(op, ClExprOp)
+            self.add_wired_clexpr(op, cast(List[Bit], args))
         elif optype == OpType.WASM:
             assert isinstance(op, WASMOp)
             self.add_wasm(op, cast(List[Bit], args))

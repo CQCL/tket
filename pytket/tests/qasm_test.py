@@ -432,8 +432,7 @@ def test_extended_qasm() -> None:
 
     assert circuit_to_qasm_str(c2, "hqslib1")
 
-    with pytest.raises(DecomposeClassicalError) as e:
-        DecomposeClassicalExp().apply(c)
+    assert not DecomposeClassicalExp().apply(c)
 
 
 def test_decomposable_extended() -> None:
