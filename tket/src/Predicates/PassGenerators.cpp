@@ -495,7 +495,7 @@ PassPtr gen_cx_mapping_pass(
     // Now try placement, falling back on "LinePlacement" if "GraphPlacement"
     // fails
     try {
-      changed = changed || placement_ptr->place(circ, maps);
+      changed = changed | placement_ptr->place(circ, maps);
     } catch (const std::runtime_error& e) {
       std::stringstream ss;
       ss << "PlacementPass failed with message: " << e.what()
@@ -503,20 +503,18 @@ PassPtr gen_cx_mapping_pass(
       tket_log()->warn(ss.str());
       Placement::Ptr line_placement_ptr = std::make_shared<LinePlacement>(
           placement_ptr->get_architecture_ref());
-      changed = changed || line_placement_ptr->place(circ, maps);
+      changed = changed | line_placement_ptr->place(circ, maps);
     }
     // Now route
     MappingManager mm(std::make_shared<Architecture>(arc));
-    changed = changed || mm.route_circuit_with_maps(circ, config, maps);
+    changed = changed | mm.route_circuit_with_maps(circ, config, maps);
 
     // Now decompose routing gates to cx gates (this won't change maps)
     CompilationUnit cu1(circ);
     if (delay_measures) {
-      changed = changed || DelayMeasures()->apply(cu1);
+      DelayMeasures()->apply(cu1);
     }
-    changed =
-        changed ||
-        gen_decompose_routing_gates_to_cxs_pass(arc, directed_cx)->apply(cu1);
+    gen_decompose_routing_gates_to_cxs_pass(arc, directed_cx)->apply(cu1);
     circ = cu1.get_circ_ref();
     return changed;
   }};
