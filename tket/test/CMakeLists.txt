@@ -107,6 +107,7 @@ add_executable(test-tket
     src/test_Assertion.cpp
     src/test_BoxDecompRoutingMethod.cpp
     src/test_ChoiMixTableau.cpp
+    src/test_ClExpr.cpp
     src/test_Clifford.cpp
     src/test_Combinators.cpp
     src/test_CompilerPass.cpp

@@ -15,6 +15,7 @@
 #include "tket/OpType/OpTypeInfo.hpp"
 
 #include <memory>
+#include <optional>
 
 #include "tket/OpType/OpType.hpp"
 
@@ -180,7 +181,8 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
        {"ClassicalExpBox", "ClassicalExpBox", {}, std::nullopt}},
       {OpType::MultiBit, {"MultiBit", "MultiBit", {}, std::nullopt}},
       {OpType::UnitaryTableauBox,
-       {"UnitaryTableauBox", "UnitaryTableauBox", {}, std::nullopt}}};
+       {"UnitaryTableauBox", "UnitaryTableauBox", {}, std::nullopt}},
+      {OpType::ClExpr, {"ClExpr", "ClExpr", {}, std::nullopt}}};
   static std::unique_ptr<const std::map<OpType, OpTypeInfo>> opinfo =
       std::make_unique<const std::map<OpType, OpTypeInfo>>(typeinfo);
   return *opinfo;
