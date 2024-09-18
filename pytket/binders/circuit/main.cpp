@@ -25,6 +25,7 @@
 #include "tket/Circuit/Command.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
 #include "tket/Gate/SymTable.hpp"
+#include "tket/OpType/OpType.hpp"
 #include "tket/Ops/BarrierOp.hpp"
 #include "tket/Ops/MetaOp.hpp"
 #include "tket/Ops/Op.hpp"
@@ -545,6 +546,7 @@ PYBIND11_MODULE(circuit, m) {
           "DiagonalBox", OpType::DiagonalBox,
           "A box for synthesising a diagonal unitary matrix into a sequence of "
           "multiplexed-Rz gates")
+      .value("ClExpr", OpType::ClExpr, "A classical expression")
       .def_static(
           "from_name",
           [](const py::str &name) { return json(name).get<OpType>(); },
