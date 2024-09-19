@@ -440,10 +440,10 @@ def test_decomposable_extended() -> None:
     fname = str(curr_file_path / "qasm_test_files/test18.qasm")
     out_fname = str(curr_file_path / "qasm_test_files/test18_output.qasm")
 
-    c = circuit_from_qasm_wasm(fname, "testfile.wasm")
+    c = circuit_from_qasm_wasm(fname, "testfile.wasm", maxwidth=64)
     DecomposeClassicalExp().apply(c)
 
-    out_qasm = circuit_to_qasm_str(c, "hqslib1")
+    out_qasm = circuit_to_qasm_str(c, "hqslib1", maxwidth=64)
     with open(out_fname) as f:
         assert out_qasm == f.read()
 

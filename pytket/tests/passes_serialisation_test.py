@@ -311,6 +311,16 @@ TWO_WAY_PARAM_PASSES = {
             "allow_swaps": True,
         }
     ),
+    "CXMappingPass": standard_pass_dict(
+        {
+            "name": "CXMappingPass",
+            "architecture": example_architecture,
+            "placement": example_placement,
+            "routing_config": example_routing_config,
+            "directed": True,
+            "delay_measures": True,
+        }
+    ),
 }
 
 # non-parametrized passes that satisfy pass.from_dict(d).to_dict()==d
@@ -369,16 +379,6 @@ ONE_WAY_PASSES = {
         {
             "name": "DefaultMappingPass",
             "architecture": example_architecture,
-            "delay_measures": True,
-        }
-    ),
-    "CXMappingPass": standard_pass_dict(
-        {
-            "name": "CXMappingPass",
-            "architecture": example_architecture,
-            "placement": example_placement,
-            "routing_config": example_routing_config,
-            "directed": True,
             "delay_measures": True,
         }
     ),
@@ -726,38 +726,6 @@ def test_pass_deserialisation_only() -> None:
         comppba_plac_pass.get_sequence()[1].to_dict()["StandardPass"]["name"]
         == "PlacementPass"
     )
-    # CXMappingPass
-    cxm_pass = CXMappingPass(arc, placer, directed_cx=True, delay_measures=True)
-    assert cxm_pass.to_dict()["pass_class"] == "SequencePass"
-    assert isinstance(cxm_pass, SequencePass)
-    p0 = cxm_pass.get_sequence()[0]
-    p1 = cxm_pass.get_sequence()[1]
-    assert p0.to_dict()["pass_class"] == "SequencePass"
-    assert p1.to_dict()["StandardPass"]["name"] == "DecomposeSwapsToCXs"
-    assert p1.to_dict()["StandardPass"]["directed"] == True
-    assert isinstance(p0, SequencePass)
-    p00 = p0.get_sequence()[0]
-    p01 = p0.get_sequence()[1]
-    assert p00.to_dict()["pass_class"] == "SequencePass"
-    assert p01.to_dict()["StandardPass"]["name"] == "RebaseCustom"
-    assert p01.to_dict()["StandardPass"]["basis_cx_replacement"] == cx.to_dict()
-    assert isinstance(p00, SequencePass)
-    p000 = p00.get_sequence()[0]
-    p001 = p00.get_sequence()[1]
-    assert p000.to_dict()["pass_class"] == "SequencePass"
-    assert p001.to_dict()["StandardPass"]["name"] == "DelayMeasures"
-    assert p001.to_dict()["StandardPass"]["allow_partial"] == False
-    assert isinstance(p000, SequencePass)
-    p0000 = p000.get_sequence()[0]
-    p0001 = p000.get_sequence()[1]
-    assert p0000.to_dict()["StandardPass"]["name"] == "RebaseCustom"
-    assert p0001.to_dict()["pass_class"] == "SequencePass"
-    assert isinstance(p0001, SequencePass)
-    p00010 = p0001.get_sequence()[0]
-    p00011 = p0001.get_sequence()[1]
-    assert p00010.to_dict()["StandardPass"]["name"] == "PlacementPass"
-    assert p00011.to_dict()["StandardPass"]["name"] == "RoutingPass"
-    assert check_arc_dict(arc, p00011.to_dict()["StandardPass"]["architecture"])
 
     # RepeatWithMetricPass
     def number_of_CX(circ: Circuit) -> int:
