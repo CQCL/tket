@@ -1,6 +1,30 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Features:
+
+* DecomposeTK2 pass and transform can now accept a float for ZZPhase_fidelity.
+* DecomposeTK2 pass now has a json representation when it contains no functions.
+* Add support for rendering multiple circuits at once.
+* Add option to save circuit renderer options to pytket config.
+* Make `CXMappingPass` into a `StandardPass` (with round-trip serialization and
+  deserialization).
+
+Fixes:
+
+* Fix QASM conversion of non-register-aligned `MultiBitOp`.
+* Fix `DecomposeClassicalExp()` when target occurs in expression.
+
+1.32.0 (September 2024)
+-----------------------
+
+* Fix symbol substitution for classical operations.
+* Fix incorrect QASM conversion of conditional multi-line ops.
+* Fix incorrect order of `lower` and `upper` properties of `RangePredicateOp`.
+
 1.31.1 (August 2024)
 --------------------
 

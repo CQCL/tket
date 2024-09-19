@@ -14,8 +14,6 @@
 
 #include "tket/Circuit/ResourceData.hpp"
 
-#include "tket/Utils/Json.hpp"
-
 namespace tket {
 
 bool ResourceData::operator==(const ResourceData& other) const {

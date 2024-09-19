@@ -20,7 +20,6 @@
 
 #include "../testutil.hpp"
 #include "GatesData.hpp"
-#include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Gate/Gate.hpp"

@@ -18,7 +18,6 @@
 #include <tkrng/RNG.hpp>
 #include <vector>
 
-#include "Simulation/ComparisonFunctions.hpp"
 #include "testutil.hpp"
 #include "tket/Circuit/CircPool.hpp"
 #include "tket/Circuit/Circuit.hpp"
@@ -35,7 +34,6 @@
 #include "tket/Predicates/CompilerPass.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
-#include "tket/Transformations/ContextualReduction.hpp"
 #include "tket/Transformations/MeasurePass.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"

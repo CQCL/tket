@@ -15,7 +15,7 @@
 #pragma once
 
 #include "tket/OpType/OpType.hpp"
-#include "tket/Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/EigenConfig.hpp"
 
 namespace tket {
 namespace internal {

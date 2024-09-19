@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <boost/graph/adjacency_list.hpp>
 #include <catch2/catch_test_macros.hpp>
-#include <iostream>
 #include <vector>
 
 #include "tket/Architecture/Architecture.hpp"

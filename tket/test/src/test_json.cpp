@@ -14,7 +14,6 @@
 
 #include <boost/range/join.hpp>
 #include <catch2/catch_test_macros.hpp>
-#include <iostream>
 
 #include "CircuitsForTesting.hpp"
 #include "testutil.hpp"
@@ -34,7 +33,6 @@
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Gate/SymTable.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
-#include "tket/Mapping/LexiRoute.hpp"
 #include "tket/Mapping/RoutingMethod.hpp"
 #include "tket/MeasurementSetup/MeasurementSetup.hpp"
 #include "tket/OpType/OpType.hpp"
@@ -940,6 +938,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(KAKDecomposition, KAKDecomposition(OpType::CX, 0.98))
   COMPPASSJSONTEST(
       DecomposeTK2, DecomposeTK2({0.98, std::nullopt, std::nullopt}, false))
+  COMPPASSJSONTEST(DecomposeTK2, DecomposeTK2({0.98, 0.98, 0.98}))
   COMPPASSJSONTEST(ThreeQubitSquash, ThreeQubitSquash(false))
   COMPPASSJSONTEST(
       EulerAngleReduction, gen_euler_pass(OpType::Rx, OpType::Ry, false))

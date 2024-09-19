@@ -19,7 +19,7 @@ from conan.errors import ConanInvalidConfiguration
 
 class TkwsmConan(ConanFile):
     name = "tkwsm"
-    version = "0.3.8"
+    version = "0.3.9"
     package_type = "library"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
@@ -72,4 +72,4 @@ class TkwsmConan(ConanFile):
     def requirements(self):
         self.requires("tkassert/0.3.4@tket/stable")
         self.requires("tkrng/0.3.3@tket/stable")
-        self.requires("boost/1.85.0", transitive_headers=True, transitive_libs=False)
+        self.requires("boost/1.86.0", transitive_headers=True, transitive_libs=False)

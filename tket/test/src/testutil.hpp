@@ -23,7 +23,6 @@
 #include <cstdlib>
 
 #include "tket/Circuit/Circuit.hpp"
-#include "tket/Utils/EigenConfig.hpp"
 
 namespace tket {
 

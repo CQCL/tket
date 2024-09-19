@@ -48,7 +48,7 @@ Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
     } else if (kwargstr == "ZZMax_fidelity") {
       fid.ZZMax_fidelity = py::cast<double>(kwarg.second);
     } else if (kwargstr == "ZZPhase_fidelity") {
-      fid.ZZPhase_fidelity = py::cast<Func>(kwarg.second);
+      fid.ZZPhase_fidelity = py::cast<std::variant<double, Func>>(kwarg.second);
     } else {
       throw py::type_error(
           "got an unexpected keyword argument '" + kwargstr + "'");
@@ -228,9 +228,9 @@ PYBIND11_MODULE(transform, m) {
           "`ZZPhase_fidelity`. If provided, the `CX` and `ZZMax` fidelities "
           "must be given by a single floating point fidelity. The `ZZPhase` "
           "fidelity is given as a lambda float -> float, mapping a ZZPhase "
-          "angle parameter to its fidelity. These parameters will be used "
-          "to return the optimal decomposition of each TK2 gate, taking "
-          "noise into consideration.\n\n"
+          "angle parameter to its fidelity, or by a single float. These "
+          "parameters will be used to return the optimal decomposition of each "
+          "TK2 gate, taking noise into consideration.\n\n"
           "Using the `allow_swaps=True` (default) option, qubits will be "
           "swapped when convenient to reduce the two-qubit gate count of the "
           "decomposed TK2.\n\n"

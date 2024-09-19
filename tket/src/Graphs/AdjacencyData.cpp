@@ -17,12 +17,9 @@
 #include <algorithm>
 #include <set>
 #include <sstream>
-#include <stdexcept>
 #include <tkassert/Assert.hpp>
 
-using std::exception;
 using std::map;
-using std::runtime_error;
 using std::set;
 using std::string;
 using std::stringstream;

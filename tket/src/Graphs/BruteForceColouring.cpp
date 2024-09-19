@@ -15,7 +15,6 @@
 #include "BruteForceColouring.hpp"
 
 #include <set>
-#include <sstream>
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
 

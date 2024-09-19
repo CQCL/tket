@@ -13,6 +13,10 @@ class Bit(UnitID):
         """
     def __and__(self: typing.Union[pytket.circuit.logic_exp.LogicExp, pytket._tket.unit_id.Bit, int], other: typing.Union[pytket.circuit.logic_exp.LogicExp, pytket._tket.unit_id.Bit, int]) -> pytket.circuit.logic_exp.BitLogicExp:
         ...
+    def __copy__(self) -> Bit:
+        ...
+    def __deepcopy__(self, arg0: dict) -> Bit:
+        ...
     def __eq__(self, arg0: typing.Any) -> bool:
         ...
     def __getstate__(self) -> tuple:
@@ -172,6 +176,10 @@ class Node(Qubit):
         """
         Construct Node instance from JSON serializable list representation of the Node.
         """
+    def __copy__(self) -> Node:
+        ...
+    def __deepcopy__(self, arg0: dict) -> Node:
+        ...
     @typing.overload
     def __init__(self, index: int) -> None:
         """
@@ -227,6 +235,10 @@ class Qubit(UnitID):
         """
         Construct Qubit instance from JSON serializable list representation of the Qubit.
         """
+    def __copy__(self) -> Qubit:
+        ...
+    def __deepcopy__(self, arg0: dict) -> Qubit:
+        ...
     def __getstate__(self) -> tuple:
         ...
     @typing.overload

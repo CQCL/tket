@@ -14,8 +14,6 @@
 
 #include "tket/Architecture/ArchitectureMapping.hpp"
 
-#include <sstream>
-#include <stdexcept>
 #include <tkassert/Assert.hpp>
 
 namespace tket {

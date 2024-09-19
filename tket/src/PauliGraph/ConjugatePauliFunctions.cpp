@@ -17,7 +17,6 @@
 #include <tkassert/Assert.hpp>
 
 #include "tket/OpType/OpTypeInfo.hpp"
-#include "tket/PauliGraph/PauliGraph.hpp"
 
 namespace tket {
 

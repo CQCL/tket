@@ -16,7 +16,6 @@
 #include <boost/graph/transitive_closure.hpp>
 #include <cstddef>
 #include <iterator>
-#include <memory>
 #include <optional>
 #include <tkassert/Assert.hpp>
 #include <vector>

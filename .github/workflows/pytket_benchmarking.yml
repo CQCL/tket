@@ -100,7 +100,7 @@ jobs:
 
       - name: Post to a Slack channel
         id: slack
-        uses: slackapi/slack-github-action@v1.26.0
+        uses: slackapi/slack-github-action@v1.27.0
         with:
           channel-id: 'G01CP0YFFA7'
           slack-message: '${{ env.RETURN_TEST }} Release tag: ${{ github.event.release.tag_name }}.'

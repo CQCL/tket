@@ -22,7 +22,6 @@
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
 #include "tket/Transformations/Transform.hpp"
-#include "tket/Utils/EigenConfig.hpp"
 
 namespace tket {
 namespace test_ContextOpt {

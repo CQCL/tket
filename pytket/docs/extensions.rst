@@ -121,6 +121,7 @@ Other
    :maxdepth: 0
 
    pytket-aqt <https://cqcl.github.io/pytket-aqt/api/index.html>
+   pytket-azure <https://tket.quantinuum.com/extensions/pytket-azure>
    pytket-braket <https://tket.quantinuum.com/extensions/pytket-braket>
    pytket-cirq <https://tket.quantinuum.com/extensions/pytket-cirq>
    pytket-iqm <https://tket.quantinuum.com/extensions/pytket-iqm>

@@ -14,10 +14,8 @@
 
 #include <boost/graph/adjacency_list.hpp>
 #include <catch2/catch_test_macros.hpp>
-#include <iostream>
 #include <vector>
 
-#include "boost/range/iterator_range_core.hpp"
 #include "tket/Graphs/DirectedGraph.hpp"
 #include "tket/Utils/UnitID.hpp"
 

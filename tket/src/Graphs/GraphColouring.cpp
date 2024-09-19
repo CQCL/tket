@@ -28,7 +28,6 @@
 #include "tket/Graphs/LargeCliquesResult.hpp"
 
 using std::exception;
-using std::map;
 using std::runtime_error;
 using std::set;
 using std::string;

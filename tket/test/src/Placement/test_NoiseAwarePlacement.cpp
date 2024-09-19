@@ -13,9 +13,7 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
-#include <random>
 
-#include "../testutil.hpp"
 #include "tket/Placement/Placement.hpp"
 
 namespace tket {
@@ -352,7 +350,9 @@ SCENARIO("Base NoiseAwarePlacement class") {
     circuit.add_op<unsigned>(OpType::CX, {4, 3});
     circuit.add_op<unsigned>(OpType::CX, {0, 5});
 
-    NoiseAwarePlacement placement(architecture);
+    NoiseAwarePlacement placement(
+        architecture, std::nullopt, std::nullopt, std::nullopt, 2000,
+        1000 /*increase default timeout*/);
     // note we allow for more matches than should be returned
     // as noise aware placement returns equal best weighted results
     // as it does additional cost with device characteristics

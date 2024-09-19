@@ -16,7 +16,6 @@
 #include <cstdlib>
 
 #include "../testutil.hpp"
-#include "tket/Utils/Constants.hpp"
 #include "tket/Utils/CosSinDecomposition.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
 

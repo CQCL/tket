@@ -1,22 +1,14 @@
-#include <algorithm>
 #include <catch2/catch_test_macros.hpp>
 
-#include "Simulation/ComparisonFunctions.hpp"
 #include "testutil.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Mapping/AASLabelling.hpp"
 #include "tket/Mapping/AASRoute.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
-#include "tket/Mapping/LexiRoute.hpp"
 #include "tket/Mapping/MappingManager.hpp"
 #include "tket/OpType/OpType.hpp"
-#include "tket/OpType/OpTypeFunctions.hpp"
 #include "tket/Predicates/CompilationUnit.hpp"
-#include "tket/Predicates/CompilerPass.hpp"
-#include "tket/Predicates/PassGenerators.hpp"
-#include "tket/Predicates/PassLibrary.hpp"
-#include "tket/Transformations/ContextualReduction.hpp"
 
 namespace tket {
 SCENARIO("Test aas route in RV3") {

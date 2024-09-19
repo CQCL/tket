@@ -15,11 +15,8 @@
 #include <Eigen/Core>
 #include <catch2/catch_test_macros.hpp>
 
-#include "testutil.hpp"
-#include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
-#include "tket/Converters/PhasePoly.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
 
 namespace tket {

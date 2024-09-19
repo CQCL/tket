@@ -16,7 +16,6 @@
 
 #include <tkassert/Assert.hpp>
 
-#include "tket/Ops/Op.hpp"
 #include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
 #include "tket/Utils/UnitID.hpp"
 

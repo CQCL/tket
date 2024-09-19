@@ -18,8 +18,6 @@
 
 #include "tket/Architecture/BestTsaWithArch.hpp"
 
-using std::vector;
-
 // Detailed algorithmic checks with quantitative benchmarks
 // are done elsewhere, so this is really just checking conversion.
 

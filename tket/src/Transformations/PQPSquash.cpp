@@ -16,7 +16,6 @@
 
 #include <memory>
 
-#include "tket/Circuit/DAGDefs.hpp"
 #include "tket/Gate/Rotation.hpp"
 #include "tket/OpType/OpTypeInfo.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
