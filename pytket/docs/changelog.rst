@@ -10,6 +10,8 @@ Features:
 * DecomposeTK2 pass now has a json representation when it contains no functions.
 * Add support for rendering multiple circuits at once.
 * Add option to save circuit renderer options to pytket config.
+* Make `CXMappingPass` into a `StandardPass` (with round-trip serialization and
+  deserialization).
 
 Fixes:
 
