@@ -348,7 +348,7 @@ PassPtr gen_clifford_push_through_pass() {
 
   PostConditions pc{{}, {}, Guarantee::Preserve};
   nlohmann::json j;
-  j["name"] = "CliffordPushThroughMeausres";
+  j["name"] = "CliffordPushThroughMeasures";
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
