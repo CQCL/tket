@@ -108,6 +108,13 @@ if __name__ == "__main__":
                 text = file.read()
                 text = stub_fixer.handle_args_kwargs_types(text)
                 text = stub_fixer.handle_numpy_stuff(text)
+                # Ignore types for the generated function _pybind11_conduit_v1_.
+                # Note that the annotations for args and kwargs were added by
+                # this script (above), so remove those too.
+                text = text.replace(
+                    "def _pybind11_conduit_v1_(*args: Any, **kwargs: Any):",
+                    "def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore",
+                )
 
             with path.open("w") as file:
                 file.write(text)
