@@ -1,3 +1,4 @@
+from typing import Any
 from __future__ import annotations
 import pytket._tket.circuit
 import pytket._tket.unit_id
@@ -8,6 +9,9 @@ class CliffordGen(ZXGen):
     """
     Specialisation of :py:class:`ZXGen` for arbitrary-arity, symmetric Clifford generators with a single boolean parameter.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, zxtype: ZXType, param: bool = False, qtype: QuantumType = QuantumType.Quantum) -> None:
         """
         Construct from a ZX type, parameter and quantum type.
@@ -21,6 +25,9 @@ class DirectedGen(ZXGen):
     """
     Specialisation of :py:class:`ZXGen` for asymmetric ZX generators which can be doubled to form a Quantum variant. Asymmetric effects handled by ports to distinguish operands.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, zxtype: ZXType, qtype: QuantumType) -> None:
         """
         Construct from a ZX type and quantum type.
@@ -39,6 +46,9 @@ class Flow:
     """
     Data structure for describing the Flow in a given MBQC-form :py:class:`ZXDiagram` object. Constructors are identification methods for different classes of Flow.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     @staticmethod
     def identify_causal_flow(diag: ZXDiagram) -> Flow:
         """
@@ -84,6 +94,9 @@ class PhasedGen(ZXGen):
     """
     Specialisation of :py:class:`ZXGen` for arbitrary-arity, symmetric generators with a single continuous parameter.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, zxtype: ZXType, param: sympy.Expr | float = 0.0, qtype: QuantumType = QuantumType.Quantum) -> None:
         """
         Construct from a ZX type, parameter and quantum type.
@@ -106,6 +119,9 @@ class QuantumType:
     Classical: typing.ClassVar[QuantumType]  # value = <QuantumType.Classical: 1>
     Quantum: typing.ClassVar[QuantumType]  # value = <QuantumType.Quantum: 0>
     __members__: typing.ClassVar[dict[str, QuantumType]]  # value = {'Quantum': <QuantumType.Quantum: 0>, 'Classical': <QuantumType.Classical: 1>}
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -136,6 +152,9 @@ class Rewrite:
     """
     An in-place transformation of a ZXDiagram.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     @staticmethod
     def basic_wires() -> Rewrite:
         """
@@ -263,6 +282,9 @@ class ZXBox(ZXGen):
     """
     Specialisation of :py:class:`ZXGen` for encapsulations of some other ZX diagrams. In general, arbitrary diagrams may be asymmetric tensors with both Quantum and Classical boundaries, so ports are used to distinguish each boundary.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, zxdiag: ZXDiagram) -> None:
         """
         Construct from a ZX diagram.
@@ -286,6 +308,9 @@ class ZXDiagram:
     """
     Undirected graphs for mixed process ZX diagrams. The boundary is an ordered list which may mix inputs, outputs, and "open" vertices (not specified to be inputs or outputs). Directed vertices (e.g. Boxes, Triangles, etc.) have numbered ports to distinguish different incident edges. The content of each vertex is given by a :py:class:`ZXGen` generator, describing the :py:class:`ZXType` (e.g. XSpider, Input, Triangle), the QuantumType for single/doubled versions of typical generators, and any parameters such as phase. Wires are undirected and have a :py:class:`ZXWireType` (e.g. Basic, Hadamard) and :py:class:`QuantumType` (a single wire or a doubled pair for a quantum system).
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     @typing.overload
     def __init__(self) -> None:
         """
@@ -534,6 +559,9 @@ class ZXGen:
     Encapsulates the information about the generator depicted by a given vertex in a :py:class:`ZXDiagram`.
     """
     @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
+    @staticmethod
     @typing.overload
     def create(type: ZXType, qtype: QuantumType = QuantumType.Quantum) -> ZXGen:
         """
@@ -612,6 +640,9 @@ class ZXType:
     ZSpider: typing.ClassVar[ZXType]  # value = <ZXType.ZSpider: 3>
     ZXBox: typing.ClassVar[ZXType]  # value = <ZXType.ZXBox: 13>
     __members__: typing.ClassVar[dict[str, ZXType]]  # value = {'Input': <ZXType.Input: 0>, 'Output': <ZXType.Output: 1>, 'Open': <ZXType.Open: 2>, 'ZSpider': <ZXType.ZSpider: 3>, 'XSpider': <ZXType.XSpider: 4>, 'Hbox': <ZXType.Hbox: 5>, 'XY': <ZXType.XY: 6>, 'XZ': <ZXType.XZ: 7>, 'YZ': <ZXType.YZ: 8>, 'PX': <ZXType.PX: 9>, 'PY': <ZXType.PY: 10>, 'PZ': <ZXType.PZ: 11>, 'Triangle': <ZXType.Triangle: 12>, 'ZXBox': <ZXType.ZXBox: 13>}
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -642,6 +673,9 @@ class ZXVert:
     """
     A handle to a vertex in a :py:class:`ZXDiagram`. Each instance is specific to a given :py:class:`ZXDiagram` instance and can be invalidated by rewrites. Exceptions or errors may occur if calling functions on a :py:class:`ZXVert` that is not present in the given :py:class:`ZXDiagram`.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __eq__(self, arg0: typing.Any) -> bool:
         ...
     def __hash__(self) -> int:
@@ -652,6 +686,9 @@ class ZXWire:
     """
     A handle to a wire in a :py:class:`ZXDiagram`. Each instance is specific to a given :py:class:`ZXDiagram` instance and can be invalidated by rewrites. Exceptions or errors may occur if calling functions on a :py:class:`ZXWire` that is not present in the given :py:class:`ZXDiagram`.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __eq__(self, arg0: typing.Any) -> bool:
         ...
     def __hash__(self) -> int:
@@ -669,6 +706,9 @@ class ZXWireType:
     Basic: typing.ClassVar[ZXWireType]  # value = <ZXWireType.Basic: 0>
     H: typing.ClassVar[ZXWireType]  # value = <ZXWireType.H: 1>
     __members__: typing.ClassVar[dict[str, ZXWireType]]  # value = {'Basic': <ZXWireType.Basic: 0>, 'H': <ZXWireType.H: 1>}
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:

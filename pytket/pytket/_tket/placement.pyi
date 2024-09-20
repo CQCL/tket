@@ -9,6 +9,9 @@ class GraphPlacement(Placement):
     """
     The GraphPlacement class, contains methods for getting maps between Circuit Qubits and Architecture Nodes and for relabelling Circuit Qubits.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, arc: pytket._tket.architecture.Architecture, maximum_matches: int = 1000, timeout: int = 1000, maximum_pattern_gates: int = 100, maximum_pattern_depth: int = 100) -> None:
         """
         The constructor for a GraphPlacement object. The Architecture object describes the connectivity between qubits. To find a qubit to node assignment, this method constructs a pattern graph where vertices are Circuit qubits and edges mean a pair of qubits have an interaction in the circuit, and then tries to find a weighted subgraph monomorphsim to the architecture connectivity, or target, graph. Edges in the pattern graph are weighted by the circuit depth at which the interaction between a pair of qubit occurs. The number of edges added to the pattern graph is effected by the maximum_pattern_gates and maximum_pattern_depth arguments. If no subgraph monomorphism can be found, lower edge weights are removed from the pattern graph, are more edges are added to the target graph. Edges added to the pattern graph are weighted lower to reflect what the distance between the Nodes they  are added between was on the original target graph. 
@@ -29,6 +32,9 @@ class LinePlacement(Placement):
     """
     The LinePlacement class, contains methods for getting maps between Circuit Qubits and Architecture Nodes and for relabelling Circuit Qubits.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, arc: pytket._tket.architecture.Architecture, maximum_line_gates: int = 100, maximum_line_depth: int = 100) -> None:
         """
         The constructor for a LinePlacement object. The Architecture object describes the connectivity between qubits. In this class, a reduced qubit interaction subgraph is constructed where each node has maximum outdegree 2 and does not construct a circle (i.e. lines). To place the Circuit, a Hamiltonian Path is found in the Architecture and this subgraph of lines is assigned along it.
@@ -43,6 +49,9 @@ class NoiseAwarePlacement(Placement):
     """
     The NoiseAwarePlacement class, contains methods for getting maps between Circuit Qubits and Architecture Nodes and for relabelling Circuit Qubits. It uses gate error rates and readout errors to find the best placement map.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, arc: pytket._tket.architecture.Architecture, node_errors: dict[pytket._tket.unit_id.Node, float] = {}, link_errors: dict[tuple[pytket._tket.unit_id.Node, pytket._tket.unit_id.Node], float] = {}, readout_errors: dict[pytket._tket.unit_id.Node, float] = {}, maximum_matches: int = 1000, timeout: int = 1000, maximum_pattern_gates: int = 100, maximum_pattern_depth: int = 100) -> None:
         """
         The constructor for a NoiseAwarePlacement object. The Architecture object describes the connectivity between qubits. The dictionaries passed as parameters indicate the average gate errors for single- and two-qubit gates as well as readouterrors.  If no error is given for a given node or pair of nodes,the fidelity is assumed to be 1.
@@ -66,6 +75,9 @@ class Placement:
     """
     The base Placement class, contains methods for getting maps between Circuit Qubits and Architecture Nodes and for relabelling Circuit Qubits.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     @staticmethod
     def from_dict(arg0: dict) -> Placement:
         """
