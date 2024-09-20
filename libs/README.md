@@ -29,6 +29,9 @@ README, to build the library `tkxxx` (from the root directory of the repo):
 conan create libs/tkxxx --build=missing -o "boost/*":header_only=True
 ```
 
+To build a library for consumption by another library, or by tket, you should
+add `--user tket --channel stable` to the `conan create` command.
+
 To build the unit tests:
 
 ```shell
