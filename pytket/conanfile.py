@@ -40,6 +40,6 @@ class pytketRecipe(ConanFile):
         self.requires("tktokenswap/0.3.9@tket/stable")
         self.requires("symengine/0.12.0")
         self.requires("gmp/6.3.0")
-        self.requires("pybind11/2.13.5")
+        self.requires("pybind11/2.13.6")
         self.requires("nlohmann_json/3.11.3")
         self.requires("pybind11_json/0.2.14")
