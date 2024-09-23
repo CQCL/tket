@@ -145,6 +145,10 @@ jobs:
         ccache -p
     - name: Build tket
       run: conan create tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
+    - name: Install pytket requirements
+      run: |
+        conan create recipes/pybind11
+        conan create recipes/pybind11_json/all --version 0.2.14
     - name: Set up Python (push)
       uses: actions/setup-python@v5
       with:
@@ -283,6 +287,10 @@ jobs:
         $env:TKET_VSGEN_CCACHE_EXE = '${{ steps.ccache-path.outputs.ccache_path }}'
         conan build tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
         conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
+    - name: Install pytket requirements
+      run: |
+        conan create recipes/pybind11
+        conan create recipes/pybind11_json/all --version 0.2.14
     - name: Set up Python 3.11
       uses: actions/setup-python@v5
       with:
