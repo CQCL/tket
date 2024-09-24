@@ -286,7 +286,6 @@ target_sources(tket
     PUBLIC FILE_SET HEADERS
     BASE_DIRS ${PROJECT_SOURCE_DIR}/include
     FILES
-        include/tket/Utils/BiMapHeaders.hpp
         include/tket/Utils/Constants.hpp
         include/tket/Utils/CosSinDecomposition.hpp
         include/tket/Utils/EigenConfig.hpp

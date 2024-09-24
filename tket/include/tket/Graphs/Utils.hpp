@@ -15,11 +15,11 @@
 #pragma once
 
 #include <algorithm>
+#include <boost/bimap.hpp>
 #include <boost/graph/copy.hpp>
 #include <set>
 
 #include "tket/Graphs/Utils_impl.hpp"
-#include "tket/Utils/BiMapHeaders.hpp"
 
 namespace tket::graphs {
 
