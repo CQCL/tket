@@ -19,7 +19,7 @@
  * @brief Include this file rather than including the Eigen headers directly
  */
 
-#include "tket/Utils/Json.hpp"
+#include <nlohmann/json.hpp>
 
 #if !defined(_MSC_VER)
 #pragma GCC diagnostic push
