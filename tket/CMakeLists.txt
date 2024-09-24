@@ -269,6 +269,7 @@ target_sources(tket
         src/Transformations/PhaseOptimisation.cpp
         src/Transformations/Decomposition.cpp
         src/Transformations/GreedyPauliOptimisation.cpp
+        src/Transformations/GreedyPauliOps.cpp
         src/Transformations/Replacement.cpp
         src/Transformations/MeasurePass.cpp
         src/Transformations/ContextualReduction.cpp
