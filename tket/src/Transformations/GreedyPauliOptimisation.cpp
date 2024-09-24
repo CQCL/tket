@@ -71,88 +71,82 @@ static void apply_tqe_to_circ(const TQE& tqe, Circuit& circ) {
   }
 }
 
-static void apply_tqe_to_tableau(const TQE& tqe, UnitaryRevTableau& tab) {
-  auto [gate_type, a_int, b_int] = tqe;
-  Qubit a(a_int);
-  Qubit b(b_int);
-  switch (gate_type) {
-    case TQEType::XX:
-      tab.apply_gate_at_end(OpType::H, {a});
-      tab.apply_gate_at_end(OpType::CX, {a, b});
-      tab.apply_gate_at_end(OpType::H, {a});
-      break;
-    case TQEType::XY:
-      tab.apply_gate_at_end(OpType::H, {a});
-      tab.apply_gate_at_end(OpType::CY, {a, b});
-      tab.apply_gate_at_end(OpType::H, {a});
-      break;
-    case TQEType::XZ:
-      tab.apply_gate_at_end(OpType::CX, {b, a});
-      break;
-    case TQEType::YX:
-      tab.apply_gate_at_end(OpType::H, {b});
-      tab.apply_gate_at_end(OpType::CY, {b, a});
-      tab.apply_gate_at_end(OpType::H, {b});
-      break;
-    case TQEType::YY:
-      tab.apply_gate_at_end(OpType::V, {a});
-      tab.apply_gate_at_end(OpType::CY, {a, b});
-      tab.apply_gate_at_end(OpType::Vdg, {a});
-      break;
-    case TQEType::YZ:
-      tab.apply_gate_at_end(OpType::CY, {b, a});
-      break;
-    case TQEType::ZX:
-      tab.apply_gate_at_end(OpType::CX, {a, b});
-      break;
-    case TQEType::ZY:
-      tab.apply_gate_at_end(OpType::CY, {a, b});
-      break;
-    case TQEType::ZZ:
-      tab.apply_gate_at_end(OpType::CZ, {a, b});
-      break;
+static CommuteType get_pauli_pair_commute_type(
+    const Pauli& p0, const Pauli& p1) {
+  if (p0 == Pauli::I && p1 == Pauli::I) {
+    return CommuteType.I;
   }
+  if (p0 == p1 || p0 == Pauli::I || p1 == Pauli::I) {
+    return CommuteType.C;
+  }
+  return CommuteType.A;
 }
 
-PauliExpNode::PauliExpNode(std::vector<unsigned> support_vec, Expr theta)
-    : support_vec_(support_vec), theta_(theta) {
-  tqe_cost_ = support_vec_.size() -
-              std::count(support_vec_.begin(), support_vec_.end(), 0) - 1;
+
+
+/*******************************************************************************
+ * Nodes implementation
+ ******************************************************************************/
+
+// PauliNode abstract class
+
+PauliNodeType PauliNode::get_type() const { return type_; }
+
+PauliNode::~PauliNode() {}
+
+PauliNode::PauliNode(PauliNodeType type) : type_(type) {}
+
+PauliNode::update(const OpType& /*sq_cliff*/, const unsigned& /*a*/) {
+  throw GreedyPauliSimpError("Single qubit Clifford update not implemented");
 }
 
-int PauliExpNode::tqe_cost_increase(const TQE& tqe) const {
-  unsigned supp0 = support_vec_[std::get<1>(tqe)];
-  unsigned supp1 = support_vec_[std::get<2>(tqe)];
-  unsigned new_supp0, new_supp1;
-  std::tie(new_supp0, new_supp1) =
-      SINGLET_PAIR_TRANSFORMATION_MAP.at({std::get<0>(tqe), supp0, supp1});
-  return (new_supp0 > 0) + (new_supp1 > 0) - (supp0 > 0) - (supp1 > 0);
+PauliNode::swap(const unsigned& /*a*/, const unsigned& /*b*/) {
+  throw GreedyPauliSimpError("SWAP update not implemented");
 }
 
-void PauliExpNode::update(const TQE& tqe) {
-  unsigned a = std::get<1>(tqe);
-  unsigned b = std::get<2>(tqe);
-  unsigned supp0 = support_vec_[a];
-  unsigned supp1 = support_vec_[b];
-  unsigned new_supp0, new_supp1;
-  std::tie(new_supp0, new_supp1) =
-      SINGLET_PAIR_TRANSFORMATION_MAP.at({std::get<0>(tqe), supp0, supp1});
-  support_vec_[a] = new_supp0;
-  support_vec_[b] = new_supp1;
-  tqe_cost_ += (new_supp0 > 0) + (new_supp1 > 0) - (supp0 > 0) - (supp1 > 0);
+// SingleNode
+
+SingleNode::SingleNode(std::vector<Pauli> string, bool sign)
+    : string_(string), sign_(sign) {
+  weight_ =
+      string_.size() - std::count(string_.begin(), string_.end(), Pauli.I);
 }
 
-std::vector<TQE> PauliExpNode::reduction_tqes() const {
+unsigned PauliRotation::tqe_cost() const { return weight_ - 1; }
+
+int SingleNode::tqe_cost_increase(const TQE& tqe) const {
+  auto [g, a, b] = tqe;
+  Pauli p0 = string_[a];
+  Pauli p1 = string_[b];
+  auto [new_p0, new_p1, sign] = TQE_PAULI_MAP.at({g, p0, p1});
+  return (p0 == Pauli::I) + (p1 == Pauli::I) - (new_p0 == Pauli.I) -
+         (new_p1 == Pauli::I);
+}
+
+void SingleNode::update(const TQE& tqe) {
+  auto [g, a, b] = tqe;
+  unsigned p0 = string_[a];
+  unsigned p1 = string_[b];
+  auto [new_p0, new_p1, sign] = TQE_PAULI_MAP.at({g, p0, p1});
+  string_[a] = new_p0;
+  string_[b] = new_p1;
+  weight_ += (p0 == Pauli::I) + (p1 == Pauli::I) - (new_p0 == Pauli.I) -
+             (new_p1 == Pauli::I);
+  if (!sign):
+    sign_ = ! sign_;
+}
+
+std::vector<TQE> SingleNode::reduction_tqes() const {
   std::vector<TQE> tqes;
   // qubits with support
   std::vector<unsigned> sqs;
-  for (unsigned i = 0; i < support_vec_.size(); i++) {
-    if (support_vec_[i] > 0) sqs.push_back(i);
+  for (unsigned i = 0; i < string_.size(); i++) {
+    if (string_[i] != Pauli.I) sqs.push_back(i);
   }
   for (unsigned i = 0; i < sqs.size() - 1; i++) {
     for (unsigned j = i + 1; j < sqs.size(); j++) {
-      std::vector<TQEType> tqe_types = SINGLET_PAIR_REDUCTION_TQES.at(
-          {support_vec_[sqs[i]], support_vec_[sqs[j]]});
+      std::vector<TQEType> tqe_types =
+          TQE_REDUCTION_MAP.at({string_[sqs[i]], string_[sqs[j]]});
       for (const TQEType& tt : tqe_types) {
         tqes.push_back({tt, sqs[i], sqs[j]});
       }
@@ -161,116 +155,163 @@ std::vector<TQE> PauliExpNode::reduction_tqes() const {
   return tqes;
 }
 
-std::pair<unsigned, unsigned> PauliExpNode::first_support() const {
-  for (unsigned i = 0; i < support_vec_.size(); i++) {
-    if (support_vec_[i] > 0) {
-      return {i, support_vec_[i]};
+std::pair<unsigned, Pauli> SingleNode::first_support() const {
+  for (unsigned i = 0; i < string_.size(); i++) {
+    if (string_[i] != Pauli.I) {
+      return {i, string_[i]};
     }
   }
   // Should be impossible to reach here
   TKET_ASSERT(false);
 }
 
-TableauRowNode::TableauRowNode(std::vector<unsigned> support_vec)
-    : support_vec_(support_vec) {
-  n_weaks_ = 0;
-  n_strongs_ = 0;
-  for (const unsigned& supp : support_vec_) {
-    SupportType st = FACTOR_WEAKNESS_MAP.at(supp);
-    if (st == SupportType::Strong) {
-      n_strongs_++;
-    } else if (st == SupportType::Weak) {
-      n_weaks_++;
+// ACPairNode
+
+ACPairNode::ACPairNode(
+    std::vector<Pauli> z_propagation, std::vector<Pauli> x_propagation,
+    bool z_sign, bool x_sign)
+    : z_propagation_(z_propagation),
+      x_propagation_(x_propagation),
+      z_sign_(z_sign),
+      x_sign_(x_sign) {
+  n_commute_entries_ = 0;
+  n_anti_commute_entries_ = 0;
+  for (unsigned i = 0; i < z_propagation_.size(); i++) {
+    CommuteType commute_type =
+        get_pauli_pair_commute_type(z_propagation_[i], x_propagation_[i]);
+    commute_type_vec_.push_back(commute_type);
+    if (commute_type == CommuteType.C) {
+      n_commute_entries_ += 1;
+    }
+    if (commute_type == CommuteType.A) {
+      n_anti_commute_entries_ += 1;
     }
   }
-  tqe_cost_ = static_cast<unsigned>(1.5 * (n_strongs_ - 1) + n_weaks_);
 }
 
-int TableauRowNode::tqe_cost_increase(const TQE& tqe) const {
-  unsigned supp0 = support_vec_[std::get<1>(tqe)];
-  unsigned supp1 = support_vec_[std::get<2>(tqe)];
-  unsigned new_supp0, new_supp1;
-  std::tie(new_supp0, new_supp1) =
-      FACTOR_PAIR_TRANSFORMATION_MAP.at({std::get<0>(tqe), supp0, supp1});
-  SupportType st_supp0 = FACTOR_WEAKNESS_MAP.at(supp0);
-  SupportType st_supp1 = FACTOR_WEAKNESS_MAP.at(supp1);
-  SupportType st_new_supp0 = FACTOR_WEAKNESS_MAP.at(new_supp0);
-  SupportType st_new_supp1 = FACTOR_WEAKNESS_MAP.at(new_supp1);
-  unsigned old_strongs =
-      (st_supp0 == SupportType::Strong) + (st_supp1 == SupportType::Strong);
-  unsigned old_weaks =
-      (st_supp0 == SupportType::Weak) + (st_supp1 == SupportType::Weak);
-  unsigned new_strongs = (st_new_supp0 == SupportType::Strong) +
-                         (st_new_supp1 == SupportType::Strong);
-  unsigned new_weaks =
-      (st_new_supp0 == SupportType::Weak) + (st_new_supp1 == SupportType::Weak);
-  int strong_increase = new_strongs - old_strongs;
-  int weak_increase = new_weaks - old_weaks;
-  return static_cast<int>(1.5 * strong_increase + weak_increase);
+unsigned ACPairNode::tqe_cost() const {
+  return static_cast<unsigned>(
+      1.5 * (n_anti_commute_entries_ - 1) + n_commute_entries_);
 }
 
-void TableauRowNode::update(const TQE& tqe) {
-  unsigned a = std::get<1>(tqe);
-  unsigned b = std::get<2>(tqe);
-  unsigned supp0 = support_vec_[a];
-  unsigned supp1 = support_vec_[b];
-  unsigned new_supp0, new_supp1;
-  std::tie(new_supp0, new_supp1) =
-      FACTOR_PAIR_TRANSFORMATION_MAP.at({std::get<0>(tqe), supp0, supp1});
-  support_vec_[a] = new_supp0;
-  support_vec_[b] = new_supp1;
-  SupportType st_supp0 = FACTOR_WEAKNESS_MAP.at(supp0);
-  SupportType st_supp1 = FACTOR_WEAKNESS_MAP.at(supp1);
-  SupportType st_new_supp0 = FACTOR_WEAKNESS_MAP.at(new_supp0);
-  SupportType st_new_supp1 = FACTOR_WEAKNESS_MAP.at(new_supp1);
-  unsigned old_strongs =
-      (st_supp0 == SupportType::Strong) + (st_supp1 == SupportType::Strong);
-  unsigned old_weaks =
-      (st_supp0 == SupportType::Weak) + (st_supp1 == SupportType::Weak);
-  unsigned new_strongs = (st_new_supp0 == SupportType::Strong) +
-                         (st_new_supp1 == SupportType::Strong);
-  unsigned new_weaks =
-      (st_new_supp0 == SupportType::Weak) + (st_new_supp1 == SupportType::Weak);
-  n_strongs_ += new_strongs - old_strongs;
-  n_weaks_ += new_weaks - old_weaks;
-  tqe_cost_ = static_cast<unsigned>(1.5 * (n_strongs_ - 1) + n_weaks_);
+int ACPairNode::tqe_cost_increase(const TQE& tqe) const {
+  auto [g, a, b] = tqe;
+  unsigned z_p0 = z_propagation_[a];
+  unsigned z_p1 = z_propagation_[b];
+  unsigned x_p0 = x_propagation_[a];
+  unsigned x_p1 = x_propagation_[b];
+  auto [new_z_p0, new_z_p1, z_sign] = TQE_PAULI_MAP.at({g, z_p0, z_p1});
+  auto [new_x_p0, new_x_p1, x_sign] = TQE_PAULI_MAP.at({g, x_p0, x_p1});
+  CommuteType new_a_type = get_pauli_pair_commute_type(new_z_p0, new_x_p0);
+  CommuteType new_b_type = get_pauli_pair_commute_type(new_z_p1, new_x_p1);
+  unsigned old_anti_commutes = (commute_type_vec_[a] == CommuteType::A) +
+                               (commute_type_vec_[b] == CommuteType::A);
+  unsigned old_commutes = (commute_type_vec_[a] == CommuteType::C) +
+                          (commute_type_vec_[b] == CommuteType::C);
+  unsigned new_anti_commutes =
+      (new_a_type == CommuteType::A) + (new_b_type == CommuteType::A);
+  unsigned new_commutes =
+      (new_a_type == CommuteType::C) + (new_b_type == CommuteType::C);
+  int anti_commute_increase = new_anti_commutes - old_anti_commutes;
+  int commute_increase = new_commutes - old_commutes;
+  return static_cast<int>(1.5 * anti_commute_increase + commute_increase);
 }
 
-std::vector<TQE> TableauRowNode::reduction_tqes() const {
+void ACPairNode::update(const TQE& tqe) {
+  auto [g, a, b] = tqe;
+  unsigned z_p0 = z_propagation_[a];
+  unsigned z_p1 = z_propagation_[b];
+  unsigned x_p0 = x_propagation_[a];
+  unsigned x_p1 = x_propagation_[b];
+  auto [new_z_p0, new_z_p1, z_sign] = TQE_PAULI_MAP.at({g, z_p0, z_p1});
+  auto [new_x_p0, new_x_p1, x_sign] = TQE_PAULI_MAP.at({g, x_p0, x_p1});
+  CommuteType new_a_type = get_pauli_pair_commute_type(new_z_p0, new_x_p0);
+  CommuteType new_b_type = get_pauli_pair_commute_type(new_z_p1, new_x_p1);
+  unsigned old_anti_commutes = (commute_type_vec_[a] == CommuteType::A) +
+                               (commute_type_vec_[b] == CommuteType::A);
+  unsigned old_commutes = (commute_type_vec_[a] == CommuteType::C) +
+                          (commute_type_vec_[b] == CommuteType::C);
+  unsigned new_anti_commutes =
+      (new_a_type == CommuteType::A) + (new_b_type == CommuteType::A);
+  unsigned new_commutes =
+      (new_a_type == CommuteType::C) + (new_b_type == CommuteType::C);
+  int anti_commute_increase = new_anti_commutes - old_anti_commutes;
+  int commute_increase = new_commutes - old_commutes;
+  n_anti_commute_entries_ += anti_commute_increase;
+  n_commute_entries_ += commute_increase;
+  commute_type_vec_[a] = new_a_type;
+  commute_type_vec_[b] = new_b_type;
+  z_propagation_[a] = new_z_p0;
+  z_propagation_[b] = new_z_p1;
+  x_propagation_[a] = new_x_p0;
+  x_propagation_[b] = new_x_p1;
+  if (!z_sign) {
+    z_sign_ = !z_sign_;
+  }
+  if (!x_sign) {
+    x_sign_ = !x_sign_;
+  }
+}
+
+void ACPairNode::update(const OpType& sq_cliff, const unsigned& a) {
+  auto [new_z_p, z_sign] =
+      SQ_CLIFF_MAP.at({sq_cliff, z_propagation_[a]}) auto [new_x_p, x_sign] =
+          SQ_CLIFF_MAP.at({sq_cliff, x_propagation_[a]}) z_propagation_[a] =
+              new_z_p x_propagation_[a] = new_x_p if (!z_sign) {
+    z_sign_ = !z_sign_;
+  }
+  if (!x_sign) {
+    x_sign_ = !x_sign_;
+  }
+}
+
+void ACPairNode::swap(const unsigned& a, const unsigned& b) {
+  std::swap(z_propagation_[a], z_propagation_[b]);
+  std::swap(x_propagation_[a], x_propagation_[b]);
+  std::swap(commute_type_vec_[a], commute_type_vec_[b]);
+}
+
+std::vector<TQE> ACPairNode::reduction_tqes() const {
   std::vector<TQE> tqes;
   // qubits with support
   std::vector<unsigned> sqs;
-  for (unsigned i = 0; i < support_vec_.size(); i++) {
-    if (support_vec_[i] > 0) sqs.push_back(i);
+  for (unsigned i = 0; i < commute_type_vec_.size(); i++) {
+    if (commute_type_vec_[i] != CommuteType::I) sqs.push_back(i);
   }
   for (unsigned i = 0; i < sqs.size() - 1; i++) {
     for (unsigned j = i + 1; j < sqs.size(); j++) {
       std::vector<TQEType> tqe_types;
       unsigned a = sqs[i];
       unsigned b = sqs[j];
-      unsigned supp0 = support_vec_[a];
-      unsigned supp1 = support_vec_[b];
-      SupportType st_supp0 = FACTOR_WEAKNESS_MAP.at(supp0);
-      SupportType st_supp1 = FACTOR_WEAKNESS_MAP.at(supp1);
-      if (st_supp0 == SupportType::Strong) {
-        if (st_supp1 == SupportType::Strong) {
-          // TQEs that transform a SS pair to WW
-          tqe_types = FACTOR_PAIR_SS_TO_WW_TQES.at({supp0, supp1});
+      CommuteType ctype0 = commute_type_vec_[a];
+      CommuteType ctype1 = commute_type_vec_[b];
+      if (ctype0 == CommuteType::A) {
+        if (ctype1 == CommuteType::A) {
+          // TQEs that transform a AA pair to CC
+          tqe_types = AA_TO_CC_MAP.at(
+              {z_propagation_[a], z_propagation_[b], x_propagation_[a],
+               x_propagation_[b]});
         } else {
-          // TQEs that transform a SW pair to a single strong
-          tqe_types = FACTOR_PAIR_SW_TO_SN_TQES.at({supp0, supp1});
+          // TQEs that transform a AC pair to AI
+          tqe_types = AC_TO_AI_MAP.at(
+              {z_propagation_[a], z_propagation_[b], x_propagation_[a],
+               x_propagation_[b]});
         }
       } else {
-        if (st_supp1 == SupportType::Strong) {
-          // TQEs that transform a WS pair to a single strong
-          tqe_types = FACTOR_PAIR_SW_TO_SN_TQES.at({supp1, supp0});
+        if (ctype1 == CommuteType::A) {
+          // TQEs that transform a CA pair to a IA
+          tqe_types = AC_TO_AI_MAP.at(
+              {z_propagation_[b], z_propagation_[a], x_propagation_[b],
+               x_propagation_[a]});
           // flip qubits
           a = sqs[j];
           b = sqs[i];
         } else {
-          // TQEs that transform a WW pair to a single weak, not always
+          // TQEs that transform a CC pair to CI or IC, not always
           // possible
-          tqe_types = FACTOR_PAIR_WW_TO_WN_OR_NW_TQES.at({supp0, supp1});
+          tqe_types = CC_TO_IC_OR_CI_MAP.at(
+              {z_propagation_[a], z_propagation_[b], x_propagation_[a],
+               x_propagation_[b]});
         }
       }
       for (const TQEType& tt : tqe_types) {
@@ -281,15 +322,26 @@ std::vector<TQE> TableauRowNode::reduction_tqes() const {
   return tqes;
 }
 
-std::pair<unsigned, unsigned> TableauRowNode::first_support() const {
-  for (unsigned i = 0; i < support_vec_.size(); i++) {
-    if (support_vec_[i] > 0) {
-      return {i, support_vec_[i]};
+std::tuple<unsigned, Pauli, Pauli> ACPairNode::first_support() const {
+  for (unsigned i = 0; i < commute_type_vec_.size(); i++) {
+    if (commute_type_vec_[i] != CommuteType::I) {
+      return {i, z_propagation_[i], x_propagation_[i]};
     }
   }
   // Should be impossible to reach here
   TKET_ASSERT(false);
 }
+
+// PauliRotation
+PauliRotation::PauliRotation(std::vector<Pauli> string, Expr theta)
+    : SingleNode(string, true), theta_(theta) {}
+
+// PauliPropagation
+PauliPropagation::PauliPropagation(
+    std::vector<Pauli> z_propagation, std::vector<Pauli> x_propagation,
+    bool z_sign, bool x_sign, unsigned qubit_index)
+    : ACPairNode(z_propagation, x_propagation, z_sign, x_sign),
+      qubit_index_(qubit_index) {}
 
 // return the sum of the cost increases on remaining tableau nodes
 static double default_tableau_tqe_cost(
@@ -301,6 +353,11 @@ static double default_tableau_tqe_cost(
   }
   return cost;
 }
+
+
+/*******************************************************************************
+ * Synthesis
+ ******************************************************************************/
 
 // return the weighted sum of the cost increases on remaining nodes
 // we discount the weight after each set

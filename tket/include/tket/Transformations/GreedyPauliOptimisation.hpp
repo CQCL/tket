@@ -23,6 +23,12 @@ namespace Transforms {
 
 namespace GreedyPauliSimp {
 
+class GreedyPauliSimpError : public std::logic_error {
+ public:
+  explicit GreedyPauliSimpError(const std::string& message)
+      : std::logic_error(message) {}
+};
+
 /**
  * @brief Types of 2-qubit entangled Clifford gates
  *
@@ -39,18 +45,26 @@ enum class TQEType : unsigned {
   ZZ,
 };
 
+enum class PauliNodeType {
+  // Pauli rotation
+  Rotation,
+  // Defines how a Pauli X and a Pauli Z on the same qubit
+  // get propagated from right to left through a Clifford operator.
+  Propagation,
+}
+
 /**
  * @brief The type of a pair of Pauli letters defined by
     their commutation relation
- * 
+ *
  */
-enum class COMMUTE_TYPE : unsigned {
-  // Both are identity
-  Identity,
-  // Anti-commute
-  AntiCommute,
-  // Commute and not both identity
-  Commute,
+enum class CommuteType : unsigned {
+  // Both are (I)dentity
+  I,
+  // (A)nti-commute
+  A,
+  // (C)ommute and not both identity
+  C,
 };
 
 /**
@@ -59,11 +73,158 @@ enum class COMMUTE_TYPE : unsigned {
  */
 using TQE = std::tuple<TQEType, unsigned, unsigned>;
 
+// Forwards declarations
+class PauliNode;
+typedef std::shared_ptr<PauliNode> PauliNode_ptr;
+
+class PauliNode {
+ public:
+  PauliNodeType get_type() const const = 0;
+  virtual unsigned tqe_cost() const = 0;
+  virtual int tqe_cost_increase(const TQE& tqe) const = 0;
+  virtual void update(const TQE& tqe) = 0;
+  virtual void update(const OpType& sq_cliff, const unsigned& a);
+  virtual void swap(const unsigned& a, const unsigned& b);
+  virtual std::vector<TQE> reduction_tqes() const = 0;
+  virtual ~PauliNode();
+}
+
+/**
+ * @brief A node defined by a single Pauli string
+ */
+class SingleNode : public PauliNode {
+ public:
+  /**
+   * @brief Construct a new SinglePauliNode object.
+   *
+   * @param string the Pauli string
+   */
+  SingleNode(std::vector<Pauli> string, bool sign);
+
+  /**
+   * @brief Number of TQEs required to reduce the weight to 1
+   *
+   * @return unsigned
+   */
+  unsigned tqe_cost() const override;
+
+  /**
+   * @brief Number of TQEs would required to reduce the weight to 1
+   * after the given TQE is applied
+   *
+   * @return unsigned
+   */
+  int tqe_cost_increase(const TQE& tqe) const override;
+
+  /**
+   * @brief Update the Pauli string with a TQE gate
+   *
+   * @param tqe
+   */
+  void update(const TQE& tqe) override;
+
+  /**
+   * @brief Return all possible TQE gates that will reduce the tqe cost by 1
+   *
+   * @return std::vector<std::tuple<TQEType, unsigned, unsigned>>
+   */
+  std::vector<TQE> reduction_tqes() const override;
+
+  /**
+   * @brief Return the index and value of the first non-identity
+   *
+   * @return std::pair<unsigned, Pauli>
+   */
+  std::pair<unsigned, Pauli> first_support() const;
+
+ protected:
+  std::vector<Pauli> string_;
+  bool sign_;
+  // extra cached data used by greedy synthesis
+  unsigned weight_;
+};
+
+/**
+ * @brief Node consists of a pair of anti-commuting Pauli strings
+ */
+class ACPairNode : public PauliNode {
+ public:
+  /**
+   * @brief Construct a new ACPairNode object
+   *
+   * @param z_propagation
+   * @param x_propagation
+   * @param z_sign
+   * @param x_sign
+   */
+  ACPairNode(
+      std::vector<Pauli> z_propagation, std::vector<Pauli> x_propagation,
+      bool z_sign, bool x_sign);
+
+  /**
+   * @brief Number of TQEs required to reduce the weight to 1
+   *
+   * @return unsigned
+   */
+  unsigned tqe_cost() const override;
+
+  /**
+   * @brief Number of TQEs would required to reduce the weight to 1
+   * after the given TQE is applied
+   *
+   * @return unsigned
+   */
+  int tqe_cost_increase(const TQE& tqe) const override;
+
+  /**
+   * @brief Update the support vector with a TQE gate
+   *
+   * @param tqe
+   */
+  void update(const TQE& tqe) override;
+
+  /**
+   * @brief Update the support vector with a single-qubit Clifford gate
+   *
+   * @param tqe
+   */
+  void update(const OpType& sq_cliff, const unsigned& a) override;
+
+  /**
+   * @brief Update the support vector with a SWAP gate
+   *
+   * @param tqe
+   */
+  void swap(const unsigned& a, const unsigned& b) override;
+
+  /**
+   * @brief Return all possible TQE gates that will reduce the tqe cost
+   *
+   * @return std::vector<TQE>
+   */
+  std::vector<TQE> reduction_tqes() const override;
+
+  /**
+   * @brief Return the index and value of the first anti-commute entry
+   */
+  std::tuple<unsigned, Pauli, Pauli> first_support() const;
+
+ protected:
+  std::vector<Pauli> z_propagation_;
+  std::vector<Pauli> x_propagation_;
+  bool z_sign_;
+  bool x_sign_;
+  // extra cached data used by greedy synthesis
+  std::vector<CommuteType> commute_type_vec_;
+  unsigned n_commute_entries_;
+  unsigned n_anti_commute_entries_;
+};
+
 /**
  * @brief A Pauli exponential defined by a padded Pauli string
  * and a rotation angle
  */
-class PauliRotation {
+class PauliRotation : public SingleNode {
  public:
   /**
    * @brief Construct a new PauliRotation object.
@@ -73,49 +234,12 @@ class PauliRotation {
    */
   PauliRotation(std::vector<Pauli> string, Expr theta);
 
-  /**
-   * @brief Number of TQEs required to reduce the weight to 1
-   *
-   * @return unsigned
-   */
-  unsigned tqe_cost() const { return weight_; }
-
-  /**
-   * @brief Number of TQEs would required to reduce the weight to 1
-   * after the given TQE is applied
-   *
-   * @return unsigned
-   */
-  int tqe_cost_increase(const TQE& tqe) const;
-
-  /**
-   * @brief Update the support vector with a TQE gate
-   *
-   * @param tqe
-   */
-  void update(const TQE& tqe);
+  PauliNodeType get_type() const { return PauliNodeType::Rotation; };
 
   Expr theta() const { return theta_; };
 
-  /**
-   * @brief Return all possible TQE gates that will reduce the tqe cost by 1
-   *
-   * @return std::vector<std::tuple<TQEType, unsigned, unsigned>>
-   */
-  std::vector<TQE> reduction_tqes() const;
-
-  /**
-   * @brief Return the index and value of the first non-identity
-   *
-   * @return std::pair<unsigned, Pauli>
-   */
-  std::pair<unsigned, Pauli> first_support() const;
-
  private:
-  std::vector<Pauli> string_;
   Expr theta_;
-  // extra cached data used by greedy synthesis
-  unsigned weight_;
 };
 
 /**
@@ -125,80 +249,28 @@ class PauliRotation {
  * with one on each qubit. A PauliPropagation also corresponds to a row in
  * a Clifford tableau
  */
-class PauliPropagation {
+class PauliPropagation : public ACPairNode {
  public:
-
   /**
    * @brief Construct a new PauliPropagation object
-   * 
-   * @param z_propagation 
-   * @param x_propagation 
-   * @param z_sign 
-   * @param x_sign 
-   * @param qubit_index 
-   */
-  PauliPropagation(std::vector<Pauli> z_propagation,std::vector<Pauli> x_propagation, bool z_sign, bool x_sign, unsigned qubit_index);
-
-  /**
-   * @brief Number of TQEs required to reduce the weight to 1
    *
-   * @return unsigned
+   * @param z_propagation
+   * @param x_propagation
+   * @param z_sign
+   * @param x_sign
+   * @param qubit_index
    */
-  unsigned tqe_cost() const { return tqe_cost_; };
+  PauliPropagation(
+      std::vector<Pauli> z_propagation, std::vector<Pauli> x_propagation,
+      bool z_sign, bool x_sign, unsigned qubit_index);
 
-  /**
-   * @brief Number of TQEs would required to reduce the weight to 1
-   * after the given TQE is applied
-   *
-   * @return unsigned
-   */
-  int tqe_cost_increase(const TQE& tqe) const;
+  PauliNodeType get_type() const { return PauliNodeType::Propagation; };
 
-  /**
-   * @brief Update the support vector with a TQE gate
-   * 
-   * @param tqe 
-   */
-  void update(const TQE& tqe);
-
-  /**
-   * @brief Update the support vector with a single-qubit Clifford gate
-   * 
-   * @param tqe 
-   */
-  void update(const OpType& sq_cliff, const unsigned& a);
-
-  /**
-   * @brief Update the support vector with a SWAP gate
-   * 
-   * @param tqe 
-   */
-  void swap(const unsigned& a, const unsigned& a);
-
-  /**
-   * @brief Return all possible TQE gates that will reduce the tqe cost
-   * 
-   * @return std::vector<TQE> 
-   */
-  std::vector<TQE> reduction_tqes() const;
-
-  /**
-   * @brief Return the index and value of the first anti-commute entry
-   */
-  std::tuple<unsigned, Pauli, Pauli> first_support() const;
+  unsigned qubit_index() const { return qubit_index_; };
 
  private:
-  std::vector<Pauli> z_propagation_;
-  std::vector<Pauli> x_propagation_;
-  bool z_sign_;
-  bool x_sign_;
   unsigned qubit_index_;
-  // extra cached data used by greedy synthesis
-  std::vector<COMMUTE_TYPE> commute_type_vec_;
-  unsigned n_commute_entries_;
-  unsigned n_anti_commute_entries_;
 };
-
 
 /**
  * @brief Given a circuit consists of PauliExpBoxes followed by clifford gates,
