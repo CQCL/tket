@@ -16,7 +16,7 @@
 
 #include <vector>
 
-#include "tket/Utils/Json.hpp"
+#include <nlohmann/json.hpp>
 
 namespace tket {
 
