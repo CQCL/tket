@@ -421,76 +421,15 @@ static void pauli_exps_synthesis(
   }
 }
 
-// convert a Pauli exponential to a PauliNode_ptr
-static PauliNode_ptr get_node_from_exp(
-    const std::vector<Pauli>& paulis, const Expr& theta,
-    const qubit_vector_t& args, unsigned n) {
-  // pad the Paulis
-  std::vector<Pauli> string(n, Pauli::I);
-  for (unsigned i = 0; i < args.size(); i++) {
-    string[args[i].index()[0]] = paulis[i];
-  }
-  return std::make_shared<PauliRotation>(string, theta);
-}
-
-// convert a Clifford tableau to a vector of PauliNode_ptr
-static std::vector<PauliNode_ptr> get_nodes_from_tableau(
-    const UnitaryRevTableau& tab, unsigned n_qubits) {
-  std::vector<PauliNode_ptr> rows;
-  for (unsigned i = 0; i < n_qubits; i++) {
-    Qubit q(i);
-    SpPauliStabiliser z_stab = tab.get_zrow(q);
-    SpPauliStabiliser x_stab = tab.get_xrow(q);
-    bool z_sign = cast_coeff<quarter_turns_t, Complex>(z_stab.coeff) == 1.;
-    bool x_sign = cast_coeff<quarter_turns_t, Complex>(x_stab.coeff) == 1.;
-    TKET_ASSERT(z_stab.string.size() == n_qubits);
-    std::vector<Pauli> z_string;
-    std::vector<Pauli> x_string;
-    for (unsigned j = 0; j < n_qubits; j++) {
-      z_string.push_back(z_stab.string.at(Qubit(j)));
-      x_string.push_back(x_stab.string.at(Qubit(j)));
-    }
-    rows.push_back(std::make_shared<PauliPropagation>(
-        z_string, x_string, z_sign, x_sign, i));
-  }
-  return rows;
-}
-
-// detect trivial pauli exps, if true then return the global phase
-static std::pair<bool, Expr> is_trivial_pauliexp(
-    const std::vector<Pauli>& paulis, const Expr& theta) {
-  if (static_cast<std::size_t>(std::count(
-          paulis.begin(), paulis.end(), Pauli::I)) == paulis.size()) {
-    // If all identity term
-    return {true, -theta / 2};
-  }
-  if (equiv_0(theta, 2)) {
-    if (equiv_0(theta, 4)) {
-      return {true, 0};
-    } else {
-      return {true, -1};
-    }
-  }
-  return {false, 0};
-}
-
 Circuit greedy_pauli_set_synthesis(
     const std::vector<SymPauliTensor>& unordered_set, double depth_weight) {
   if (unordered_set.size() == 0) {
     return Circuit();
   }
   unsigned n_qubits = unordered_set[0].string.size();
-
   Circuit c(n_qubits);
-  std::vector<std::vector<PauliNode_ptr>> rotation_sets{{}};
-
-  for (auto& pauli : unordered_set) {
-    TKET_ASSERT(pauli.string.size() == n_qubits);
-    rotation_sets[0].push_back(
-        std::make_shared<PauliRotation>(pauli.string, pauli.coeff));
-  }
-  UnitaryRevTableau tab(n_qubits);
-  std::vector<PauliNode_ptr> rows = get_nodes_from_tableau(tab, n_qubits);
+  auto [rotation_set, rows] = gpg_from_unordered_set(unordered_set);
+  std::vector<std::vector<PauliNode_ptr>> rotation_sets{rotation_set};
   DepthTracker depth_tracker(n_qubits);
   // synthesise Pauli exps
   pauli_exps_synthesis(rotation_sets, rows, c, 0, depth_weight, depth_tracker);
@@ -503,121 +442,14 @@ Circuit greedy_pauli_set_synthesis(
 Circuit greedy_pauli_graph_synthesis(
     const Circuit& circ, double discount_rate, double depth_weight) {
   // c is the circuit we are trying to build
-  Circuit c(circ.all_qubits(), circ.all_bits());
-  std::optional<std::string> name = circ.get_name();
-  if (name != std::nullopt) {
-    c.set_name(name.value());
-  }
-  c.add_phase(circ.get_phase());
-  unit_map_t unit_map = c.flatten_registers();
-  Circuit measure_circ(c.n_qubits(), c.n_bits());
-  Circuit cliff(c.n_qubits());
-  // circuit used to iterate the original commands with flattened registers
-  Circuit circ_flat(circ);
-  circ_flat.flatten_registers();
-  std::vector<Command> commands = circ_flat.get_commands();
-  // extract the final clifford and the measurement circuits
-  for (const Command& cmd : commands) {
-    OpType optype = cmd.get_op_ptr()->get_type();
-    switch (optype) {
-      case OpType::Measure: {
-        measure_circ.add_op<UnitID>(OpType::Measure, cmd.get_args());
-        break;
-      }
-      default: {
-        if (optype == OpType::PauliExpBox ||
-            optype == OpType::PauliExpPairBox ||
-            optype == OpType::PauliExpCommutingSetBox)
-          break;
-        TKET_ASSERT(is_clifford_type(optype) && is_gate_type(optype));
-        cliff.add_op<UnitID>(optype, cmd.get_args());
-      }
-    }
-  }
-  std::vector<std::vector<PauliNode_ptr>> rotation_sets;
-  unsigned n_qubits = c.n_qubits();
-  UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(cliff);
-  // convert the tableau into a set of nodes
-  std::vector<PauliNode_ptr> rows = get_nodes_from_tableau(tab, n_qubits);
-  // extract the Pauli exps
-  for (const Command& cmd : commands) {
-    OpType optype = cmd.get_op_ptr()->get_type();
-    switch (optype) {
-      case OpType::PauliExpBox: {
-        const PauliExpBox& pbox =
-            static_cast<const PauliExpBox&>(*cmd.get_op_ptr());
-        const Expr phase = pbox.get_phase();
-        const std::vector<Pauli> paulis = pbox.get_paulis();
-        auto [trivial, global_phase] = is_trivial_pauliexp(paulis, phase);
-        if (trivial) {
-          c.add_phase(global_phase);
-        } else {
-          rotation_sets.push_back(
-              {get_node_from_exp(paulis, phase, cmd.get_qubits(), n_qubits)});
-        }
-        break;
-      }
-      case OpType::PauliExpPairBox: {
-        const PauliExpPairBox& pbox =
-            static_cast<const PauliExpPairBox&>(*cmd.get_op_ptr());
-        const auto [paulis1, paulis2] = pbox.get_paulis_pair();
-        const auto [phase1, phase2] = pbox.get_phase_pair();
-        auto [trivial1, global_phase1] = is_trivial_pauliexp(paulis1, phase1);
-        auto [trivial2, global_phase2] = is_trivial_pauliexp(paulis2, phase2);
-        std::vector<PauliNode_ptr> rotation_set;
-        if (trivial1) {
-          c.add_phase(global_phase1);
-        } else {
-          rotation_set.push_back(
-              get_node_from_exp(paulis1, phase1, cmd.get_qubits(), n_qubits));
-        }
-        if (trivial2) {
-          c.add_phase(global_phase2);
-        } else {
-          rotation_set.push_back(
-              get_node_from_exp(paulis2, phase2, cmd.get_qubits(), n_qubits));
-        }
-        if (!rotation_set.empty()) {
-          rotation_sets.push_back(rotation_set);
-        }
-        break;
-      }
-      case OpType::PauliExpCommutingSetBox: {
-        const PauliExpCommutingSetBox& pbox =
-            static_cast<const PauliExpCommutingSetBox&>(*cmd.get_op_ptr());
-        const std::vector<SymPauliTensor> gadgets = pbox.get_pauli_gadgets();
-        std::vector<PauliNode_ptr> rotation_set;
-        for (const SymPauliTensor& pt : gadgets) {
-          const std::vector<Pauli> paulis = pt.string;
-          const Expr phase = pt.coeff;
-          auto [trivial, global_phase] = is_trivial_pauliexp(paulis, phase);
-          if (trivial) {
-            c.add_phase(global_phase);
-          } else {
-            rotation_set.push_back(
-                get_node_from_exp(paulis, phase, cmd.get_qubits(), n_qubits));
-          }
-        }
-        if (rotation_set.size() > 0) {
-          rotation_sets.push_back(rotation_set);
-        }
-        break;
-      }
-      default:
-        break;
-    }
-  }
-
-  DepthTracker depth_tracker(n_qubits);
+  auto [c, rotation_sets, rows, measure_circ, rev_unit_map] =
+      gpg_from_circuit(circ);
+  DepthTracker depth_tracker(c.n_qubits());
   // synthesise Pauli exps
   pauli_exps_synthesis(
       rotation_sets, rows, c, discount_rate, depth_weight, depth_tracker);
   // synthesise the tableau
   tableau_row_nodes_synthesis(rows, c, depth_weight, depth_tracker);
-  unit_map_t rev_unit_map;
-  for (const auto& pair : unit_map) {
-    rev_unit_map.insert({pair.second, pair.first});
-  }
   c.append(measure_circ);
   c.rename_units(rev_unit_map);
   c.replace_SWAPs();

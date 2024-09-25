@@ -281,6 +281,37 @@ class PauliPropagation : public ACPairNode {
 };
 
 /**
+ * @brief Convert a unordered set of SymPauliTensor into a set of PauliRotations
+ * followed by a set of PauliPropagations
+ *
+ * @param unordered_set
+ * @return std::tuple<std::vector<PauliNode_ptr>, std::vector<PauliNode_ptr>>
+ */
+std::tuple<std::vector<PauliNode_ptr>, std::vector<PauliNode_ptr>>
+gpg_from_unordered_set(const std::vector<SymPauliTensor>& unordered_set);
+
+/**
+ * @brief Transforms a circuit of PauliExpBoxes followed by Clifford gates and
+ * end-of-circuit measurements into a sequence of PauliRotations,
+ * PauliPropagations, and an end-of-circuit measurement circuit.
+ *
+ * The first returned object is an empty circuit onto which the synthesized
+ * circuit will be built. The final element of the returned tuple is a map from
+ * integers to the original UnitIDs, allowing the final circuit to use the
+ * orignal UnitIDs.
+ *
+ * @param circ
+ * @return std::tuple<
+ * Circuit,
+ * std::vector<std::vector<PauliNode_ptr>>, std::vector<PauliNode_ptr>,
+ * Circuit, unit_map_t>
+ */
+std::tuple<
+    Circuit, std::vector<std::vector<PauliNode_ptr>>,
+    std::vector<PauliNode_ptr>, Circuit, unit_map_t>
+gpg_from_circuit(const Circuit& circ);
+
+/**
  * @brief Given a circuit consists of PauliExpBoxes followed by clifford gates,
  * and end-of-circuit measurements, implement the PauliExpBoxes and the final
  * clifford subcircuit by applying Clifford gates and single qubit rotations in
