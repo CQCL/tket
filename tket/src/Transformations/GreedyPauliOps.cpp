@@ -32,27 +32,23 @@ namespace GreedyPauliSimp {
 static CommuteType get_pauli_pair_commute_type(
     const Pauli& p0, const Pauli& p1) {
   if (p0 == Pauli::I && p1 == Pauli::I) {
-    return CommuteType.I;
+    return CommuteType::I;
   }
   if (p0 == p1 || p0 == Pauli::I || p1 == Pauli::I) {
-    return CommuteType.C;
+    return CommuteType::C;
   }
-  return CommuteType.A;
+  return CommuteType::A;
 }
 
 // PauliNode abstract class
 
-PauliNodeType PauliNode::get_type() const { return type_; }
-
 PauliNode::~PauliNode() {}
 
-PauliNode::PauliNode(PauliNodeType type) : type_(type) {}
-
-PauliNode::update(const OpType& /*sq_cliff*/, const unsigned& /*a*/) {
+void PauliNode::update(const OpType& /*sq_cliff*/, const unsigned& /*a*/) {
   throw GreedyPauliSimpError("Single qubit Clifford update not implemented");
 }
 
-PauliNode::swap(const unsigned& /*a*/, const unsigned& /*b*/) {
+void PauliNode::swap(const unsigned& /*a*/, const unsigned& /*b*/) {
   throw GreedyPauliSimpError("SWAP update not implemented");
 }
 
@@ -61,31 +57,32 @@ PauliNode::swap(const unsigned& /*a*/, const unsigned& /*b*/) {
 SingleNode::SingleNode(std::vector<Pauli> string, bool sign)
     : string_(string), sign_(sign) {
   weight_ =
-      string_.size() - std::count(string_.begin(), string_.end(), Pauli.I);
+      string_.size() - std::count(string_.begin(), string_.end(), Pauli::I);
 }
 
-unsigned PauliRotation::tqe_cost() const { return weight_ - 1; }
+unsigned SingleNode::tqe_cost() const { return weight_ - 1; }
 
 int SingleNode::tqe_cost_increase(const TQE& tqe) const {
   auto [g, a, b] = tqe;
   Pauli p0 = string_[a];
   Pauli p1 = string_[b];
   auto [new_p0, new_p1, sign] = TQE_PAULI_MAP.at({g, p0, p1});
-  return (p0 == Pauli::I) + (p1 == Pauli::I) - (new_p0 == Pauli.I) -
+  return (p0 == Pauli::I) + (p1 == Pauli::I) - (new_p0 == Pauli::I) -
          (new_p1 == Pauli::I);
 }
 
 void SingleNode::update(const TQE& tqe) {
   auto [g, a, b] = tqe;
-  unsigned p0 = string_[a];
-  unsigned p1 = string_[b];
+  Pauli p0 = string_[a];
+  Pauli p1 = string_[b];
   auto [new_p0, new_p1, sign] = TQE_PAULI_MAP.at({g, p0, p1});
   string_[a] = new_p0;
   string_[b] = new_p1;
-  weight_ += (p0 == Pauli::I) + (p1 == Pauli::I) - (new_p0 == Pauli.I) -
+  weight_ += (p0 == Pauli::I) + (p1 == Pauli::I) - (new_p0 == Pauli::I) -
              (new_p1 == Pauli::I);
-  if (!sign):
-    sign_ = ! sign_;
+  if (!sign) {
+    sign_ = !sign_;
+  }
 }
 
 std::vector<TQE> SingleNode::reduction_tqes() const {
@@ -93,7 +90,7 @@ std::vector<TQE> SingleNode::reduction_tqes() const {
   // qubits with support
   std::vector<unsigned> sqs;
   for (unsigned i = 0; i < string_.size(); i++) {
-    if (string_[i] != Pauli.I) sqs.push_back(i);
+    if (string_[i] != Pauli::I) sqs.push_back(i);
   }
   for (unsigned i = 0; i < sqs.size() - 1; i++) {
     for (unsigned j = i + 1; j < sqs.size(); j++) {
@@ -109,7 +106,7 @@ std::vector<TQE> SingleNode::reduction_tqes() const {
 
 std::pair<unsigned, Pauli> SingleNode::first_support() const {
   for (unsigned i = 0; i < string_.size(); i++) {
-    if (string_[i] != Pauli.I) {
+    if (string_[i] != Pauli::I) {
       return {i, string_[i]};
     }
   }
@@ -132,10 +129,10 @@ ACPairNode::ACPairNode(
     CommuteType commute_type =
         get_pauli_pair_commute_type(z_propagation_[i], x_propagation_[i]);
     commute_type_vec_.push_back(commute_type);
-    if (commute_type == CommuteType.C) {
+    if (commute_type == CommuteType::C) {
       n_commute_entries_ += 1;
     }
-    if (commute_type == CommuteType.A) {
+    if (commute_type == CommuteType::A) {
       n_anti_commute_entries_ += 1;
     }
   }
@@ -148,10 +145,10 @@ unsigned ACPairNode::tqe_cost() const {
 
 int ACPairNode::tqe_cost_increase(const TQE& tqe) const {
   auto [g, a, b] = tqe;
-  unsigned z_p0 = z_propagation_[a];
-  unsigned z_p1 = z_propagation_[b];
-  unsigned x_p0 = x_propagation_[a];
-  unsigned x_p1 = x_propagation_[b];
+  Pauli z_p0 = z_propagation_[a];
+  Pauli z_p1 = z_propagation_[b];
+  Pauli x_p0 = x_propagation_[a];
+  Pauli x_p1 = x_propagation_[b];
   auto [new_z_p0, new_z_p1, z_sign] = TQE_PAULI_MAP.at({g, z_p0, z_p1});
   auto [new_x_p0, new_x_p1, x_sign] = TQE_PAULI_MAP.at({g, x_p0, x_p1});
   CommuteType new_a_type = get_pauli_pair_commute_type(new_z_p0, new_x_p0);
@@ -171,10 +168,10 @@ int ACPairNode::tqe_cost_increase(const TQE& tqe) const {
 
 void ACPairNode::update(const TQE& tqe) {
   auto [g, a, b] = tqe;
-  unsigned z_p0 = z_propagation_[a];
-  unsigned z_p1 = z_propagation_[b];
-  unsigned x_p0 = x_propagation_[a];
-  unsigned x_p1 = x_propagation_[b];
+  Pauli z_p0 = z_propagation_[a];
+  Pauli z_p1 = z_propagation_[b];
+  Pauli x_p0 = x_propagation_[a];
+  Pauli x_p1 = x_propagation_[b];
   auto [new_z_p0, new_z_p1, z_sign] = TQE_PAULI_MAP.at({g, z_p0, z_p1});
   auto [new_x_p0, new_x_p1, x_sign] = TQE_PAULI_MAP.at({g, x_p0, x_p1});
   CommuteType new_a_type = get_pauli_pair_commute_type(new_z_p0, new_x_p0);
@@ -206,10 +203,11 @@ void ACPairNode::update(const TQE& tqe) {
 }
 
 void ACPairNode::update(const OpType& sq_cliff, const unsigned& a) {
-  auto [new_z_p, z_sign] =
-      SQ_CLIFF_MAP.at({sq_cliff, z_propagation_[a]}) auto [new_x_p, x_sign] =
-          SQ_CLIFF_MAP.at({sq_cliff, x_propagation_[a]}) z_propagation_[a] =
-              new_z_p x_propagation_[a] = new_x_p if (!z_sign) {
+  auto [new_z_p, z_sign] = SQ_CLIFF_MAP.at({sq_cliff, z_propagation_[a]});
+  auto [new_x_p, x_sign] = SQ_CLIFF_MAP.at({sq_cliff, x_propagation_[a]});
+  z_propagation_[a] = new_z_p;
+  x_propagation_[a] = new_x_p;
+  if (!z_sign) {
     z_sign_ = !z_sign_;
   }
   if (!x_sign) {
@@ -295,16 +293,7 @@ PauliPropagation::PauliPropagation(
     : ACPairNode(z_propagation, x_propagation, z_sign, x_sign),
       qubit_index_(qubit_index) {}
 
-// return the sum of the cost increases on remaining tableau nodes
-static double default_tableau_tqe_cost(
-    const std::vector<TableauRowNode>& rows,
-    const std::vector<unsigned>& remaining_indices, const TQE& tqe) {
-  double cost = 0;
-  for (const unsigned& index : remaining_indices) {
-    cost += rows[index].tqe_cost_increase(tqe);
-  }
-  return cost;
-}
+}  // namespace GreedyPauliSimp
 
 }  // namespace Transforms
 

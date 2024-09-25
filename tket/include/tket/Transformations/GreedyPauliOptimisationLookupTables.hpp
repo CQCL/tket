@@ -29,7 +29,7 @@ struct hash_pauli_pauli {
 };
 struct hash_optype_pauli {
   size_t operator()(const std::pair<OpType, Pauli>& pair) const {
-    return pair.first * 10 + pair.second;
+    return static_cast<unsigned>(pair.first) * 10 + pair.second;
   }
 };
 struct hash_triple {
@@ -49,21 +49,9 @@ struct hash_quadruple {
 /**
  * @brief Transform a pair of anti-commuting pauli letters at the
  * right-hand-side to Z/X For example, Sdg; H; X/Y = Z/X; Sdg; H
- *
- */
-const static std::unordered_map<OpType, OpType> AA_TO_ZX = {
-    {OpType::H, OpType::H},
-    {OpType::S, OpType::Sdg},
-    {OpType::Sdg, OpType::S},
-    {OpType::V, OpType::Vdg},
-    {OpType::Vdg, OpType::V}};
-
-/**
- * @brief Transform a pair of anti-commuting pauli letters at the
- * right-hand-side to Z/X For example, Sdg; H; X/Y = Z/X; Sdg; H
  */
 const static std::unordered_map<
-    const std::pair<Pauli, Pauli> & pair, std::vector<OpType>, hash_pauli_pauli>
+    const std::pair<Pauli, Pauli>, std::vector<OpType>, hash_pauli_pauli>
     AA_TO_ZX = {
         {{Pauli::X, Pauli::Y}, {OpType::Sdg, OpType::H}},
         {{Pauli::X, Pauli::Z}, {OpType::H}},
@@ -110,7 +98,8 @@ const static std::unordered_map<
  * TQE;P(0);Q(1) = k* P'(0);Q'(1);TQE
  */
 const static std::unordered_map<
-    std::tuple<TQEType, Pauli, Pauli>, std::pair<Pauli, Pauli>, hash_triple>
+    std::tuple<TQEType, Pauli, Pauli>, std::tuple<Pauli, Pauli, bool>,
+    hash_triple>
     TQE_PAULI_MAP = {
         {{TQEType::XX, Pauli::X, Pauli::X}, {Pauli::X, Pauli::X, true}},
         {{TQEType::XY, Pauli::X, Pauli::X}, {Pauli::I, Pauli::X, true}},

@@ -71,6 +71,17 @@ static void apply_tqe_to_circ(const TQE& tqe, Circuit& circ) {
   }
 }
 
+// return the sum of the cost increases on remaining tableau nodes
+static double default_tableau_tqe_cost(
+    const std::vector<PauliNode_ptr>& rows,
+    const std::vector<unsigned>& remaining_indices, const TQE& tqe) {
+  double cost = 0;
+  for (const unsigned& index : remaining_indices) {
+    cost += rows[index]->tqe_cost_increase(tqe);
+  }
+  return cost;
+}
+
 // return the weighted sum of the cost increases on remaining nodes
 // we discount the weight after each set
 static double default_pauliexp_tqe_cost(
@@ -217,7 +228,7 @@ static void tableau_cleanup(std::vector<PauliNode_ptr>& rows, Circuit& circ) {
     PauliPropagation& node = dynamic_cast<PauliPropagation&>(*node_ptr);
     auto [q_index, supp_z, supp_x] = node.first_support();
     // transform supp_z,supp_x to Z,X
-    std::vector<OpType> optype_list = AA_TO_ZX.at(supp_z, supp_x);
+    std::vector<OpType> optype_list = AA_TO_ZX.at({supp_z, supp_x});
     for (auto it = optype_list.rbegin(); it != optype_list.rend(); ++it) {
       circ.add_op<unsigned>(*it, {q_index});
       node.update(*it, q_index);
@@ -257,8 +268,8 @@ static void tableau_cleanup(std::vector<PauliNode_ptr>& rows, Circuit& circ) {
       next_node.swap(current, next);
       done.insert(current);
       current = next;
-      current_node = next_node;
-      next = current_node.qubit_index();
+      curr_node = next_node;
+      next = curr_node.qubit_index();
       next_node = dynamic_cast<PauliPropagation&>(*perm[next]);
     }
   }
@@ -465,16 +476,15 @@ static PauliNode_ptr get_node_from_exp(
 
 // convert a Clifford tableau to a vector of PauliNode_ptr
 static std::vector<PauliNode_ptr> get_nodes_from_tableau(
-    const UnitaryRevTableau& tab, unsigned n) {
+    const UnitaryRevTableau& tab, unsigned n_qubits) {
   std::vector<PauliNode_ptr> rows;
   for (unsigned i = 0; i < n_qubits; i++) {
     Qubit q(i);
     SpPauliStabiliser z_stab = tab.get_zrow(q);
     SpPauliStabiliser x_stab = tab.get_xrow(q);
-    bool z_sign =
-        cast_coeff<quarter_turns_t, Complex>(z_stab.coeff) == 1. bool x_sign =
-            cast_coeff<quarter_turns_t, Complex>(x_stab.coeff) ==
-            1. TKET_ASSERT(z_stab.string.size() == n);
+    bool z_sign = cast_coeff<quarter_turns_t, Complex>(z_stab.coeff) == 1.;
+    bool x_sign = cast_coeff<quarter_turns_t, Complex>(x_stab.coeff) == 1.;
+    TKET_ASSERT(z_stab.string.size() == n_qubits);
     std::vector<Pauli> z_string;
     std::vector<Pauli> x_string;
     for (unsigned j = 0; j < n_qubits; j++) {
@@ -567,10 +577,10 @@ Circuit greedy_pauli_graph_synthesis(
     }
   }
   std::vector<std::vector<PauliNode_ptr>> rotation_sets;
+  unsigned n_qubits = c.n_qubits();
   UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(cliff);
   // convert the tableau into a set of nodes
   std::vector<PauliNode_ptr> rows = get_nodes_from_tableau(tab, n_qubits);
-  unsigned n_qubits = c.n_qubits();
   // extract the Pauli exps
   for (const Command& cmd : commands) {
     OpType optype = cmd.get_op_ptr()->get_type();

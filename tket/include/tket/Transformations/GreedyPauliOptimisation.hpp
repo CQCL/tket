@@ -51,7 +51,7 @@ enum class PauliNodeType {
   // Defines how a Pauli X and a Pauli Z on the same qubit
   // get propagated from right to left through a Clifford operator.
   Propagation,
-}
+};
 
 /**
  * @brief The type of a pair of Pauli letters defined by
@@ -75,7 +75,7 @@ using TQE = std::tuple<TQEType, unsigned, unsigned>;
 
 class PauliNode {
  public:
-  PauliNodeType get_type() const const = 0;
+  virtual PauliNodeType get_type() const = 0;
   virtual unsigned tqe_cost() const = 0;
   virtual int tqe_cost_increase(const TQE& tqe) const = 0;
   virtual void update(const TQE& tqe) = 0;
@@ -83,10 +83,9 @@ class PauliNode {
   virtual void swap(const unsigned& a, const unsigned& b);
   virtual std::vector<TQE> reduction_tqes() const = 0;
   virtual ~PauliNode();
-}
+};
 
-typedef std::shared_ptr<PauliNode>
-    PauliNode_ptr;
+typedef std::shared_ptr<PauliNode> PauliNode_ptr;
 
 /**
  * @brief A node defined by a single Pauli string
@@ -136,7 +135,7 @@ class SingleNode : public PauliNode {
    */
   std::pair<unsigned, Pauli> first_support() const;
 
-  bool sign() const { return sign_ };
+  bool sign() const { return sign_; };
 
  protected:
   std::vector<Pauli> string_;
@@ -210,9 +209,9 @@ class ACPairNode : public PauliNode {
    */
   std::tuple<unsigned, Pauli, Pauli> first_support() const;
 
-  bool z_sign() const { return z_sign_ };
+  bool z_sign() const { return z_sign_; };
 
-  bool x_sign() const { return x_sign_ };
+  bool x_sign() const { return x_sign_; };
 
  protected:
   std::vector<Pauli> z_propagation_;
