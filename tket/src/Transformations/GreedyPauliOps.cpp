@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "tket/Transformations/GreedyPauliOptimisation.hpp"
-
 #include <algorithm>
 
 #include "tket/Circuit/PauliExpBoxes.hpp"
@@ -21,6 +19,7 @@
 #include "tket/OpType/OpType.hpp"
 #include "tket/PauliGraph/PauliGraph.hpp"
 #include "tket/Transformations/CliffordOptimisation.hpp"
+#include "tket/Transformations/GreedyPauliOptimisation.hpp"
 #include "tket/Transformations/GreedyPauliOptimisationLookupTables.hpp"
 #include "tket/Transformations/Transform.hpp"
 

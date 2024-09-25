@@ -75,20 +75,20 @@ static void apply_tqe_to_circ(const TQE& tqe, Circuit& circ) {
 // we discount the weight after each set
 static double default_pauliexp_tqe_cost(
     const double discount_rate,
-    const std::vector<std::vector<PauliExpNode>>& rotation_sets,
-    const std::vector<TableauRowNode>& rows, const TQE& tqe) {
+    const std::vector<std::vector<PauliNode_ptr>>& rotation_sets,
+    const std::vector<PauliNode_ptr>& rows, const TQE& tqe) {
   double discount = 1 / (1 + discount_rate);
   double weight = 1;
   double exp_cost = 0;
   double tab_cost = 0;
-  for (const std::vector<PauliExpNode>& rotation_set : rotation_sets) {
-    for (const PauliExpNode& node : rotation_set) {
-      exp_cost += weight * node.tqe_cost_increase(tqe);
+  for (const std::vector<PauliNode_ptr>& rotation_set : rotation_sets) {
+    for (const PauliNode_ptr& node : rotation_set) {
+      exp_cost += weight * node->tqe_cost_increase(tqe);
     }
     weight *= discount;
   }
-  for (const TableauRowNode& node : rows) {
-    tab_cost += weight * node.tqe_cost_increase(tqe);
+  for (const PauliNode_ptr& node : rows) {
+    tab_cost += weight * node->tqe_cost_increase(tqe);
   }
   return exp_cost + tab_cost;
 }
@@ -209,57 +209,32 @@ struct DepthTracker {
  * permutation, and signs, transform it to exact identity and adding gates to
  * a circuit
  */
-static void tableau_cleanup(
-    std::vector<TableauRowNode>& rows, UnitaryRevTableau& tab, Circuit& circ) {
+static void tableau_cleanup(std::vector<PauliNode_ptr>& rows, Circuit& circ) {
   // apply local Cliffords
-  for (const TableauRowNode& node : rows) {
-    unsigned q_index, supp;
-    std::tie(q_index, supp) = node.first_support();
-    Qubit q(q_index);
-    std::vector<LocalCliffordType> local_cliffords =
-        FACTOR_STRONG_TO_LOCALS.at(supp);
-    for (const LocalCliffordType& lc : local_cliffords) {
-      switch (lc) {
-        case LocalCliffordType::H:
-          tab.apply_gate_at_end(OpType::H, {q});
-          circ.add_op<UnitID>(OpType::H, {q});
-          break;
-        case LocalCliffordType::S:
-          tab.apply_gate_at_end(OpType::S, {q});
-          circ.add_op<UnitID>(OpType::S, {q});
-          break;
-        case LocalCliffordType::V:
-          tab.apply_gate_at_end(OpType::V, {q});
-          circ.add_op<UnitID>(OpType::V, {q});
-          break;
-      }
+  unsigned n_qubits = circ.n_qubits();
+  std::map<unsigned, PauliNode_ptr> perm;
+  for (PauliNode_ptr& node_ptr : rows) {
+    PauliPropagation& node = dynamic_cast<PauliPropagation&>(*node_ptr);
+    auto [q_index, supp_z, supp_x] = node.first_support();
+    // transform supp_z,supp_x to Z,X
+    std::vector<OpType> optype_list = AA_TO_ZX.at(supp_z, supp_x);
+    for (auto it = optype_list.rbegin(); it != optype_list.rend(); ++it) {
+      circ.add_op<unsigned>(*it, {q_index});
+      node.update(*it, q_index);
     }
-  }
-  // remove signs
-  for (const Qubit& q : circ.all_qubits()) {
-    if (cast_coeff<quarter_turns_t, Complex>(tab.get_xrow(q).coeff) != 1.) {
-      tab.apply_gate_at_end(OpType::Z, {q});
-      circ.add_op<UnitID>(OpType::Z, {q});
+    // remove signs
+    if (!node.z_sign()) {
+      circ.add_op<unsigned>(OpType::X, {q_index});
+      node.update(OpType::X, q_index);
     }
-    if (cast_coeff<quarter_turns_t, Complex>(tab.get_zrow(q).coeff) != 1.) {
-      tab.apply_gate_at_end(OpType::X, {q});
-      circ.add_op<UnitID>(OpType::X, {q});
+    if (!node.x_sign()) {
+      circ.add_op<unsigned>(OpType::Z, {q_index});
+      node.update(OpType::Z, q_index);
     }
+    perm[q_index] = node_ptr;
   }
   // remove permutations
-  // 1. find perm
-  unsigned n_qubits = circ.n_qubits();
-  std::vector<unsigned> perm(n_qubits);
-  for (unsigned i = 0; i < n_qubits; i++) {
-    QubitPauliMap z_row_string = tab.get_zrow(Qubit(i)).string;
-    for (auto it = z_row_string.begin(); it != z_row_string.end(); it++) {
-      if (it->second == Pauli::Z) {
-        perm[it->first.index()[0]] = i;
-        break;
-      }
-    }
-  }
-  // 2. traverse transpositions
+  // traverse transpositions
   std::unordered_set<unsigned> done;
   for (unsigned k = 0; k < n_qubits; k++) {
     if (done.find(k) != done.end()) {
@@ -267,41 +242,47 @@ static void tableau_cleanup(
     }
     unsigned head = k;
     unsigned current = k;
-    unsigned next = perm[k];
+    PauliPropagation& curr_node =
+        dynamic_cast<PauliPropagation&>(*perm[current]);
+    unsigned next = curr_node.qubit_index();
+    PauliPropagation& next_node = dynamic_cast<PauliPropagation&>(*perm[next]);
     while (true) {
       if (next == head) {
         done.insert(current);
         break;
       }
       // the SWAP gates will be later converted to wire swaps
-      tab.apply_gate_at_end(OpType::SWAP, {Qubit(current), Qubit(next)});
       circ.add_op<unsigned>(OpType::SWAP, {current, next});
+      curr_node.swap(current, next);
+      next_node.swap(current, next);
       done.insert(current);
       current = next;
-      next = perm[current];
+      current_node = next_node;
+      next = current_node.qubit_index();
+      next_node = dynamic_cast<PauliPropagation&>(*perm[next]);
     }
   }
 }
 
 /**
- * @brief Synthesise a vector of TableauRowNode
+ * @brief Synthesise a vector of PauliPropagation
  */
 static void tableau_row_nodes_synthesis(
-    std::vector<TableauRowNode>& rows, UnitaryRevTableau& tab, Circuit& circ,
-    double depth_weight, DepthTracker& depth_tracker) {
+    std::vector<PauliNode_ptr>& rows, Circuit& circ, double depth_weight,
+    DepthTracker& depth_tracker) {
   // only consider nodes with a non-zero cost
   std::vector<unsigned> remaining_indices;
   for (unsigned i = 0; i < rows.size(); i++) {
-    if (rows[i].tqe_cost() > 0) {
+    if (rows[i]->tqe_cost() > 0) {
       remaining_indices.push_back(i);
     }
   }
   while (remaining_indices.size() != 0) {
     // get nodes with min cost
     std::vector<unsigned> min_nodes_indices = {remaining_indices[0]};
-    unsigned min_cost = rows[remaining_indices[0]].tqe_cost();
+    unsigned min_cost = rows[remaining_indices[0]]->tqe_cost();
     for (unsigned i = 1; i < remaining_indices.size(); i++) {
-      unsigned node_cost = rows[remaining_indices[i]].tqe_cost();
+      unsigned node_cost = rows[remaining_indices[i]]->tqe_cost();
       if (node_cost == min_cost) {
         min_nodes_indices.push_back(remaining_indices[i]);
       } else if (node_cost < min_cost) {
@@ -314,7 +295,7 @@ static void tableau_row_nodes_synthesis(
     std::set<TQE> tqe_candidates;
     TKET_ASSERT(min_nodes_indices.size() > 0);
     for (const unsigned& index : min_nodes_indices) {
-      std::vector<TQE> node_reducing_tqes = rows[index].reduction_tqes();
+      std::vector<TQE> node_reducing_tqes = rows[index]->reduction_tqes();
       tqe_candidates.insert(
           node_reducing_tqes.begin(), node_reducing_tqes.end());
     }
@@ -334,88 +315,70 @@ static void tableau_row_nodes_synthesis(
     TQE selected_tqe = select_tableau_tqe(tqe_candidates_cost, depth_weight);
     // apply TQE
     apply_tqe_to_circ(selected_tqe, circ);
-    apply_tqe_to_tableau(selected_tqe, tab);
     // update depth tracker
     depth_tracker.add_2q_gate(
         std::get<1>(selected_tqe), std::get<2>(selected_tqe));
     // remove finished nodes
     for (unsigned i = remaining_indices.size(); i-- > 0;) {
       unsigned node_index = remaining_indices[i];
-      rows[node_index].update(selected_tqe);
-      if (rows[node_index].tqe_cost() == 0) {
+      rows[node_index]->update(selected_tqe);
+      if (rows[node_index]->tqe_cost() == 0) {
         remaining_indices.erase(remaining_indices.begin() + i);
       }
     }
   }
-  tableau_cleanup(rows, tab, circ);
+  tableau_cleanup(rows, circ);
 }
 
 /**
- * @brief Given a vector of sets of PauliExpNode, implement any node in the
+ * @brief Given a vector of sets of PauliRotation, implement any node in the
  * first set where the tqe_cost is zero. Remove implemented nodes and the first
  * set if empty.
  *
  * @param rotation_sets
- * @param tab
  * @param circ
  * @return true if the first set is now empty and removed
  * @return false
  */
 static bool consume_available_rotations(
-    std::vector<std::vector<PauliExpNode>>& rotation_sets,
-    UnitaryRevTableau& tab, Circuit& circ, DepthTracker& depth_tracker) {
+    std::vector<std::vector<PauliNode_ptr>>& rotation_sets, Circuit& circ,
+    DepthTracker& depth_tracker) {
   std::vector<unsigned> bin;
   if (rotation_sets.size() == 0) {
     return false;
   }
-  std::vector<PauliExpNode>& first_set = rotation_sets[0];
+  std::vector<PauliNode_ptr>& first_set = rotation_sets[0];
   for (unsigned i = 0; i < first_set.size(); i++) {
-    PauliExpNode& node = first_set[i];
+    TKET_ASSERT(first_set[i]->get_type() == PauliNodeType::Rotation);
+    PauliRotation& node = dynamic_cast<PauliRotation&>(*first_set[i]);
     if (node.tqe_cost() > 0) continue;
-    unsigned q_index, supp;
-    std::tie(q_index, supp) = node.first_support();
+    auto [q_index, supp] = node.first_support();
     Qubit q(q_index);
     depth_tracker.add_1q_gate(q_index);
+    OpType rot_type;
     switch (supp) {
-      case 3: {
-        // we apply S gate only to the frame, then check the sign, then Sdg
-        // if + apply f.Sdg; circ.Ry(-a)
-        // if - apply f.Sdg; circ.Ry(a)
-        tab.apply_gate_at_end(OpType::S, {q});
-        Complex x_coeff =
-            cast_coeff<quarter_turns_t, Complex>(tab.get_xrow(q).coeff);
-        tab.apply_gate_at_end(OpType::Sdg, {q});
-        if (x_coeff == 1.) {
-          circ.add_op<UnitID>(OpType::Ry, -node.theta(), {q});
-        } else {
-          circ.add_op<UnitID>(OpType::Ry, node.theta(), {q});
-        }
+      case Pauli::Y: {
+        rot_type = OpType::Ry;
         break;
       }
-      case 1: {
-        Complex z_coeff =
-            cast_coeff<quarter_turns_t, Complex>(tab.get_zrow(q).coeff);
-        if (z_coeff == 1.) {
-          circ.add_op<UnitID>(OpType::Rz, node.theta(), {q});
-        } else {
-          circ.add_op<UnitID>(OpType::Rz, -node.theta(), {q});
-        }
+      case Pauli::Z: {
+        rot_type = OpType::Rz;
         break;
       }
-      case 2: {
-        Complex x_coeff =
-            cast_coeff<quarter_turns_t, Complex>(tab.get_xrow(q).coeff);
-        if (x_coeff == 1.) {
-          circ.add_op<UnitID>(OpType::Rx, node.theta(), {q});
-        } else {
-          circ.add_op<UnitID>(OpType::Rx, -node.theta(), {q});
-        }
+      case Pauli::X: {
+        rot_type = OpType::Rx;
         break;
       }
       default:
         // support can't be Pauli::I
         TKET_ASSERT(false);
     }
+    if (node.sign()) {
+      circ.add_op<UnitID>(rot_type, node.theta(), {q});
+    } else {
+      circ.add_op<UnitID>(rot_type, -node.theta(), {q});
+    }
+
     bin.push_back(i);
   }
   if (bin.size() == 0) return false;
@@ -435,19 +398,19 @@ static bool consume_available_rotations(
  * @brief Synthesise a vector of unordered rotation sets
  */
 static void pauli_exps_synthesis(
-    std::vector<std::vector<PauliExpNode>>& rotation_sets,
-    std::vector<TableauRowNode>& rows, UnitaryRevTableau& tab, Circuit& circ,
-    double discount_rate, double depth_weight, DepthTracker& depth_tracker) {
+    std::vector<std::vector<PauliNode_ptr>>& rotation_sets,
+    std::vector<PauliNode_ptr>& rows, Circuit& circ, double discount_rate,
+    double depth_weight, DepthTracker& depth_tracker) {
   while (true) {
     while (consume_available_rotations(
-        rotation_sets, tab, circ, depth_tracker));  // do nothing
+        rotation_sets, circ, depth_tracker));  // do nothing
     if (rotation_sets.size() == 0) break;
-    std::vector<PauliExpNode>& first_set = rotation_sets[0];
+    std::vector<PauliNode_ptr>& first_set = rotation_sets[0];
     // get nodes with min cost
     std::vector<unsigned> min_nodes_indices = {0};
-    unsigned min_cost = first_set[0].tqe_cost();
+    unsigned min_cost = first_set[0]->tqe_cost();
     for (unsigned i = 1; i < first_set.size(); i++) {
-      unsigned node_cost = first_set[i].tqe_cost();
+      unsigned node_cost = first_set[i]->tqe_cost();
       if (node_cost == min_cost) {
         min_nodes_indices.push_back(i);
       } else if (node_cost < min_cost) {
@@ -457,7 +420,7 @@ static void pauli_exps_synthesis(
     }
     std::set<TQE> tqe_candidates;
     for (const unsigned& index : min_nodes_indices) {
-      std::vector<TQE> node_reducing_tqes = first_set[index].reduction_tqes();
+      std::vector<TQE> node_reducing_tqes = first_set[index]->reduction_tqes();
       tqe_candidates.insert(
           node_reducing_tqes.begin(), node_reducing_tqes.end());
     }
@@ -474,52 +437,54 @@ static void pauli_exps_synthesis(
     TQE selected_tqe = select_pauliexp_tqe(tqe_candidates_cost, depth_weight);
     // apply TQE
     apply_tqe_to_circ(selected_tqe, circ);
-    apply_tqe_to_tableau(selected_tqe, tab);
     depth_tracker.add_2q_gate(
         std::get<1>(selected_tqe), std::get<2>(selected_tqe));
-    for (std::vector<PauliExpNode>& rotation_set : rotation_sets) {
-      for (PauliExpNode& node : rotation_set) {
-        node.update(selected_tqe);
+    for (std::vector<PauliNode_ptr>& rotation_set : rotation_sets) {
+      for (PauliNode_ptr& node : rotation_set) {
+        node->update(selected_tqe);
       }
     }
-    for (TableauRowNode& row : rows) {
-      row.update(selected_tqe);
+    for (PauliNode_ptr& row : rows) {
+      row->update(selected_tqe);
     }
   }
 }
 
-// convert a Pauli exponential to a PauliExpNode
-static PauliExpNode get_node_from_exp(
+// convert a Pauli exponential to a PauliNode_ptr
+static PauliNode_ptr get_node_from_exp(
     const std::vector<Pauli>& paulis, const Expr& theta,
-    const qubit_vector_t& args, unsigned n, const UnitaryTableau& forward_tab,
-    const UnitaryRevTableau& tab) {
-  std::map<Qubit, Pauli> pauli_map;
-  for (unsigned i = 0; i < args.size(); i++) {
-    pauli_map.insert({args[i], paulis[i]});
+    const qubit_vector_t& args, unsigned n) {
+  // pad the Paulis
+  std::vector<Pauli> string(n, Pauli::I);
+  for (const Qubit& q : args) {
+    unsigned a = q.index()[0];
+    string[a] = paulis[a];
   }
-  // this has the effect of bringing the final clifford
-  // forward past the Pauli exponential
-  SpPauliStabiliser pstab =
-      forward_tab.get_row_product(SpPauliStabiliser(pauli_map));
-  Complex sign = cast_coeff<quarter_turns_t, Complex>(pstab.coeff);
+  return std::make_shared<PauliRotation>(string, theta);
+}
 
-  std::vector<unsigned> support_vec;
-  for (unsigned i = 0; i < n; i++) {
-    SpPauliStabiliser zrow = tab.get_zrow(Qubit(i));
-    SpPauliStabiliser xrow = tab.get_xrow(Qubit(i));
-    bool z_supp = !zrow.commutes_with(pstab);
-    bool x_supp = !xrow.commutes_with(pstab);
-    if (!z_supp && !x_supp) {
-      support_vec.push_back(0);
-    } else if (!z_supp && x_supp) {
-      support_vec.push_back(1);
-    } else if (z_supp && !x_supp) {
-      support_vec.push_back(2);
-    } else if (z_supp && x_supp) {
-      support_vec.push_back(3);
+// convert a Clifford tableau to a vector of PauliNode_ptr
+static std::vector<PauliNode_ptr> get_nodes_from_tableau(
+    const UnitaryRevTableau& tab, unsigned n) {
+  std::vector<PauliNode_ptr> rows;
+  for (unsigned i = 0; i < n_qubits; i++) {
+    Qubit q(i);
+    SpPauliStabiliser z_stab = tab.get_zrow(q);
+    SpPauliStabiliser x_stab = tab.get_xrow(q);
+    bool z_sign =
+        cast_coeff<quarter_turns_t, Complex>(z_stab.coeff) == 1. bool x_sign =
+            cast_coeff<quarter_turns_t, Complex>(x_stab.coeff) ==
+            1. TKET_ASSERT(z_stab.string.size() == n);
+    std::vector<Pauli> z_string;
+    std::vector<Pauli> x_string;
+    for (unsigned j = 0; j < n_qubits; j++) {
+      z_string.push_back(z_stab.string.at(Qubit(i)));
+      x_string.push_back(x_stab.string.at(Qubit(i)));
     }
+    rows.push_back(std::make_shared<PauliPropagation>(
+        z_string, x_string, z_sign, x_sign, i));
   }
-  return PauliExpNode(support_vec, sign.real() * theta);
+  return rows;
 }
 
 // detect trivial pauli exps, if true then return the global phase
@@ -539,6 +504,7 @@ static std::pair<bool, Expr> is_trivial_pauliexp(
   }
   return {false, 0};
 }
+
 Circuit greedy_pauli_set_synthesis(
     const std::vector<SymPauliTensor>& unordered_set, double depth_weight) {
   if (unordered_set.size() == 0) {
@@ -547,59 +513,20 @@ Circuit greedy_pauli_set_synthesis(
   unsigned n_qubits = unordered_set[0].string.size();
 
   Circuit c(n_qubits);
-  std::vector<std::vector<PauliExpNode>> rotation_sets{{}};
-  std::vector<TableauRowNode> rows;
+  std::vector<std::vector<PauliNode_ptr>> rotation_sets{{}};
+
   for (auto& pauli : unordered_set) {
-    std::vector<unsigned> support_vec;
     TKET_ASSERT(pauli.string.size() == n_qubits);
-    for (unsigned i = 0; i < n_qubits; i++) {
-      if (pauli.string[i] == Pauli::I) {
-        support_vec.push_back(0);
-      } else if (pauli.string[i] == Pauli::Z) {
-        support_vec.push_back(1);
-      } else if (pauli.string[i] == Pauli::X) {
-        support_vec.push_back(2);
-      } else {
-        support_vec.push_back(3);
-      }
-    }
-    rotation_sets[0].push_back(PauliExpNode(support_vec, pauli.coeff));
+    rotation_sets[0].push_back(
+        std::make_shared<PauliRotation>(pauli.string, pauli.coeff));
   }
   UnitaryRevTableau tab(n_qubits);
-  // add identity TableauRowNodes
-  for (unsigned i = 0; i < n_qubits; i++) {
-    std::vector<unsigned> support_vec;
-    // identity rows
-    std::map<Qubit, Pauli> p;
-    std::map<Qubit, Pauli> q;
-    for (unsigned j = 0; j < n_qubits; j++) {
-      if (j == i) {
-        p.insert({Qubit(j), Pauli::Z});
-        q.insert({Qubit(j), Pauli::X});
-      } else {
-        p.insert({Qubit(j), Pauli::I});
-        q.insert({Qubit(j), Pauli::I});
-      }
-    }
-    SpPauliStabiliser stab_p(p);
-    SpPauliStabiliser stab_q(q);
-    for (unsigned row_index = 0; row_index < n_qubits; row_index++) {
-      SpPauliStabiliser zrow = tab.get_zrow(Qubit(row_index));
-      SpPauliStabiliser xrow = tab.get_xrow(Qubit(row_index));
-      bool lpx = !xrow.commutes_with(stab_p);
-      bool lpz = !zrow.commutes_with(stab_p);
-      bool lqx = !xrow.commutes_with(stab_q);
-      bool lqz = !zrow.commutes_with(stab_q);
-      support_vec.push_back(8 * lpx + 4 * lpz + 2 * lqx + lqz);
-    }
-    rows.push_back(TableauRowNode(support_vec));
-  }
+  std::vector<PauliNode_ptr> rows = get_nodes_from_tableau(tab, n_qubits);
   DepthTracker depth_tracker(n_qubits);
   // synthesise Pauli exps
-  pauli_exps_synthesis(
-      rotation_sets, rows, tab, c, 0, depth_weight, depth_tracker);
+  pauli_exps_synthesis(rotation_sets, rows, c, 0, depth_weight, depth_tracker);
   // synthesise the tableau
-  tableau_row_nodes_synthesis(rows, tab, c, depth_weight, depth_tracker);
+  tableau_row_nodes_synthesis(rows, c, depth_weight, depth_tracker);
   c.replace_SWAPs();
   return c;
 }
@@ -639,14 +566,10 @@ Circuit greedy_pauli_graph_synthesis(
       }
     }
   }
-  std::vector<std::vector<PauliExpNode>> rotation_sets;
-  std::vector<TableauRowNode> rows;
-  // use forward Tableau to update the paulis by commuting the tableau to the
-  // front
-  UnitaryTableau forward_tab = circuit_to_unitary_tableau(cliff);
-  // Tableau used for tracking Cliffords throughout the synthesis
-  // TODO: this can be potentially made redundant
-  UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(cliff).dagger();
+  std::vector<std::vector<PauliNode_ptr>> rotation_sets;
+  UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(cliff);
+  // convert the tableau into a set of nodes
+  std::vector<PauliNode_ptr> rows = get_nodes_from_tableau(tab, n_qubits);
   unsigned n_qubits = c.n_qubits();
   // extract the Pauli exps
   for (const Command& cmd : commands) {
@@ -661,8 +584,8 @@ Circuit greedy_pauli_graph_synthesis(
         if (trivial) {
           c.add_phase(global_phase);
         } else {
-          rotation_sets.push_back({get_node_from_exp(
-              paulis, phase, cmd.get_qubits(), n_qubits, forward_tab, tab)});
+          rotation_sets.push_back(
+              {get_node_from_exp(paulis, phase, cmd.get_qubits(), n_qubits)});
         }
         break;
       }
@@ -673,18 +596,18 @@ Circuit greedy_pauli_graph_synthesis(
         const auto [phase1, phase2] = pbox.get_phase_pair();
         auto [trivial1, global_phase1] = is_trivial_pauliexp(paulis1, phase1);
         auto [trivial2, global_phase2] = is_trivial_pauliexp(paulis2, phase2);
-        std::vector<PauliExpNode> rotation_set;
+        std::vector<PauliNode_ptr> rotation_set;
         if (trivial1) {
           c.add_phase(global_phase1);
         } else {
-          rotation_set.push_back(get_node_from_exp(
-              paulis1, phase1, cmd.get_qubits(), n_qubits, forward_tab, tab));
+          rotation_set.push_back(
+              get_node_from_exp(paulis1, phase1, cmd.get_qubits(), n_qubits));
         }
         if (trivial2) {
           c.add_phase(global_phase2);
         } else {
-          rotation_set.push_back(get_node_from_exp(
-              paulis2, phase2, cmd.get_qubits(), n_qubits, forward_tab, tab));
+          rotation_set.push_back(
+              get_node_from_exp(paulis2, phase2, cmd.get_qubits(), n_qubits));
         }
         if (!rotation_set.empty()) {
           rotation_sets.push_back(rotation_set);
@@ -695,7 +618,7 @@ Circuit greedy_pauli_graph_synthesis(
         const PauliExpCommutingSetBox& pbox =
             static_cast<const PauliExpCommutingSetBox&>(*cmd.get_op_ptr());
         const std::vector<SymPauliTensor> gadgets = pbox.get_pauli_gadgets();
-        std::vector<PauliExpNode> rotation_set;
+        std::vector<PauliNode_ptr> rotation_set;
         for (const SymPauliTensor& pt : gadgets) {
           const std::vector<Pauli> paulis = pt.string;
           const Expr phase = pt.coeff;
@@ -703,8 +626,8 @@ Circuit greedy_pauli_graph_synthesis(
           if (trivial) {
             c.add_phase(global_phase);
           } else {
-            rotation_set.push_back(get_node_from_exp(
-                paulis, phase, cmd.get_qubits(), n_qubits, forward_tab, tab));
+            rotation_set.push_back(
+                get_node_from_exp(paulis, phase, cmd.get_qubits(), n_qubits));
           }
         }
         if (rotation_set.size() > 0) {
@@ -716,40 +639,13 @@ Circuit greedy_pauli_graph_synthesis(
         break;
     }
   }
-  // add identity TableauRowNodes
-  for (unsigned i = 0; i < n_qubits; i++) {
-    std::vector<unsigned> support_vec;
-    // identity rows
-    std::map<Qubit, Pauli> p;
-    std::map<Qubit, Pauli> q;
-    for (unsigned j = 0; j < n_qubits; j++) {
-      if (j == i) {
-        p.insert({Qubit(j), Pauli::Z});
-        q.insert({Qubit(j), Pauli::X});
-      } else {
-        p.insert({Qubit(j), Pauli::I});
-        q.insert({Qubit(j), Pauli::I});
-      }
-    }
-    SpPauliStabiliser stab_p(p);
-    SpPauliStabiliser stab_q(q);
-    for (unsigned row_index = 0; row_index < n_qubits; row_index++) {
-      SpPauliStabiliser zrow = tab.get_zrow(Qubit(row_index));
-      SpPauliStabiliser xrow = tab.get_xrow(Qubit(row_index));
-      bool lpx = !xrow.commutes_with(stab_p);
-      bool lpz = !zrow.commutes_with(stab_p);
-      bool lqx = !xrow.commutes_with(stab_q);
-      bool lqz = !zrow.commutes_with(stab_q);
-      support_vec.push_back(8 * lpx + 4 * lpz + 2 * lqx + lqz);
-    }
-    rows.push_back(TableauRowNode(support_vec));
-  }
+
   DepthTracker depth_tracker(n_qubits);
   // synthesise Pauli exps
   pauli_exps_synthesis(
-      rotation_sets, rows, tab, c, discount_rate, depth_weight, depth_tracker);
+      rotation_sets, rows, c, discount_rate, depth_weight, depth_tracker);
   // synthesise the tableau
-  tableau_row_nodes_synthesis(rows, tab, c, depth_weight, depth_tracker);
+  tableau_row_nodes_synthesis(rows, c, depth_weight, depth_tracker);
   unit_map_t rev_unit_map;
   for (const auto& pair : unit_map) {
     rev_unit_map.insert({pair.second, pair.first});

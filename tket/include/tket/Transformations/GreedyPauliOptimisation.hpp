@@ -73,10 +73,6 @@ enum class CommuteType : unsigned {
  */
 using TQE = std::tuple<TQEType, unsigned, unsigned>;
 
-// Forwards declarations
-class PauliNode;
-typedef std::shared_ptr<PauliNode> PauliNode_ptr;
-
 class PauliNode {
  public:
   PauliNodeType get_type() const const = 0;
@@ -88,6 +84,9 @@ class PauliNode {
   virtual std::vector<TQE> reduction_tqes() const = 0;
   virtual ~PauliNode();
 }
+
+typedef std::shared_ptr<PauliNode>
+    PauliNode_ptr;
 
 /**
  * @brief A node defined by a single Pauli string
@@ -136,6 +135,8 @@ class SingleNode : public PauliNode {
    * @return std::pair<unsigned, Pauli>
    */
   std::pair<unsigned, Pauli> first_support() const;
+
+  bool sign() const { return sign_ };
 
  protected:
   std::vector<Pauli> string_;
@@ -208,6 +209,10 @@ class ACPairNode : public PauliNode {
    * @brief Return the index and value of the first anti-commute entry
    */
   std::tuple<unsigned, Pauli, Pauli> first_support() const;
+
+  bool z_sign() const { return z_sign_ };
+
+  bool x_sign() const { return x_sign_ };
 
  protected:
   std::vector<Pauli> z_propagation_;
