@@ -216,66 +216,6 @@ struct DepthTracker {
 };
 
 /**
- * @brief Given a tableau that is identity up to local Cliffords, qubit
- * permutation, and signs, transform it to exact identity and adding gates to
- * a circuit
- */
-static void tableau_cleanup(std::vector<PauliNode_ptr>& rows, Circuit& circ) {
-  // apply local Cliffords
-  unsigned n_qubits = circ.n_qubits();
-  std::map<unsigned, PauliNode_ptr> perm;
-  for (PauliNode_ptr& node_ptr : rows) {
-    PauliPropagation& node = dynamic_cast<PauliPropagation&>(*node_ptr);
-    auto [q_index, supp_z, supp_x] = node.first_support();
-    // transform supp_z,supp_x to Z,X
-    std::vector<OpType> optype_list = AA_TO_ZX.at({supp_z, supp_x});
-    for (auto it = optype_list.rbegin(); it != optype_list.rend(); ++it) {
-      circ.add_op<unsigned>(*it, {q_index});
-      node.update(*it, q_index);
-    }
-    // remove signs
-    if (!node.z_sign()) {
-      circ.add_op<unsigned>(OpType::X, {q_index});
-      node.update(OpType::X, q_index);
-    }
-    if (!node.x_sign()) {
-      circ.add_op<unsigned>(OpType::Z, {q_index});
-      node.update(OpType::Z, q_index);
-    }
-    perm[q_index] = node_ptr;
-  }
-  // remove permutations
-  // traverse transpositions
-  std::unordered_set<unsigned> done;
-  for (unsigned k = 0; k < n_qubits; k++) {
-    if (done.find(k) != done.end()) {
-      continue;
-    }
-    unsigned head = k;
-    unsigned current = k;
-    PauliPropagation& curr_node =
-        dynamic_cast<PauliPropagation&>(*perm[current]);
-    unsigned next = curr_node.qubit_index();
-    PauliPropagation& next_node = dynamic_cast<PauliPropagation&>(*perm[next]);
-    while (true) {
-      if (next == head) {
-        done.insert(current);
-        break;
-      }
-      // the SWAP gates will be later converted to wire swaps
-      circ.add_op<unsigned>(OpType::SWAP, {current, next});
-      curr_node.swap(current, next);
-      next_node.swap(current, next);
-      done.insert(current);
-      current = next;
-      curr_node = next_node;
-      next = curr_node.qubit_index();
-      next_node = dynamic_cast<PauliPropagation&>(*perm[next]);
-    }
-  }
-}
-
-/**
  * @brief Synthesise a vector of PauliPropagation
  */
 static void tableau_row_nodes_synthesis(
@@ -338,7 +278,32 @@ static void tableau_row_nodes_synthesis(
       }
     }
   }
-  tableau_cleanup(rows, circ);
+  // apply local Cliffords
+  for (PauliNode_ptr& node_ptr : rows) {
+    PauliPropagation& node = dynamic_cast<PauliPropagation&>(*node_ptr);
+    auto [q_index, supp_z, supp_x] = node.first_support();
+    // transform supp_z,supp_x to Z,X
+    std::vector<OpType> optype_list = AA_TO_ZX.at({supp_z, supp_x});
+    for (auto it = optype_list.rbegin(); it != optype_list.rend(); ++it) {
+      circ.add_op<unsigned>(SQ_CLIFF_DAGGER.at(*it), {q_index});
+      node.update(*it, q_index);
+    }
+    // remove signs
+    if (!node.z_sign()) {
+      circ.add_op<unsigned>(OpType::X, {q_index});
+      node.update(OpType::X, q_index);
+    }
+    if (!node.x_sign()) {
+      circ.add_op<unsigned>(OpType::Z, {q_index});
+      node.update(OpType::Z, q_index);
+    }
+    if (q_index != node.qubit_index()) {
+      circ.add_op<unsigned>(OpType::SWAP, {q_index, node.qubit_index()});
+      for (PauliNode_ptr& node_ptr2 : rows) {
+        node_ptr2->swap(q_index, node.qubit_index());
+      }
+    }
+  }
 }
 
 /**
@@ -351,58 +316,54 @@ static void tableau_row_nodes_synthesis(
  * @return true if the first set is now empty and removed
  * @return false
  */
-static bool consume_available_rotations(
+static void consume_available_rotations(
     std::vector<std::vector<PauliNode_ptr>>& rotation_sets, Circuit& circ,
     DepthTracker& depth_tracker) {
-  std::vector<unsigned> bin;
-  if (rotation_sets.size() == 0) {
-    return false;
+  if (rotation_sets.empty()) {
+    return;
   }
-  std::vector<PauliNode_ptr>& first_set = rotation_sets[0];
-  for (unsigned i = 0; i < first_set.size(); i++) {
-    TKET_ASSERT(first_set[i]->get_type() == PauliNodeType::Rotation);
-    PauliRotation& node = dynamic_cast<PauliRotation&>(*first_set[i]);
-    if (node.tqe_cost() > 0) continue;
-    auto [q_index, supp] = node.first_support();
-    Qubit q(q_index);
-    depth_tracker.add_1q_gate(q_index);
-    OpType rot_type;
-    switch (supp) {
-      case Pauli::Y: {
-        rot_type = OpType::Ry;
-        break;
+  while (true) {
+    std::vector<PauliNode_ptr>& first_set = rotation_sets[0];
+    for (unsigned i = first_set.size(); i-- > 0;) {
+      TKET_ASSERT(first_set[i]->get_type() == PauliNodeType::Rotation);
+      PauliRotation& node = dynamic_cast<PauliRotation&>(*first_set[i]);
+      if (node.tqe_cost() > 0) continue;
+      auto [q_index, supp] = node.first_support();
+      depth_tracker.add_1q_gate(q_index);
+      OpType rot_type;
+      switch (supp) {
+        case Pauli::Y: {
+          rot_type = OpType::Ry;
+          break;
+        }
+        case Pauli::Z: {
+          rot_type = OpType::Rz;
+          break;
+        }
+        case Pauli::X: {
+          rot_type = OpType::Rx;
+          break;
+        }
+        default:
+          // support can't be Pauli::I
+          TKET_ASSERT(false);
       }
-      case Pauli::Z: {
-        rot_type = OpType::Rz;
-        break;
+      if (node.sign()) {
+        circ.add_op<unsigned>(rot_type, node.theta(), {q_index});
+      } else {
+        circ.add_op<unsigned>(rot_type, -node.theta(), {q_index});
       }
-      case Pauli::X: {
-        rot_type = OpType::Rx;
-        break;
-      }
-      default:
-        // support can't be Pauli::I
-        TKET_ASSERT(false);
+      first_set.erase(first_set.begin() + i);
     }
-    if (node.sign()) {
-      circ.add_op<UnitID>(rot_type, node.theta(), {q});
+    if (first_set.empty()) {
+      rotation_sets.erase(rotation_sets.begin());
+      if (rotation_sets.empty()) {
+        return;
+      }
     } else {
-      circ.add_op<UnitID>(rot_type, -node.theta(), {q});
+      return;
     }
-
-    bin.push_back(i);
   }
-  if (bin.size() == 0) return false;
-  // sort the bin so we remove elements from back to front
-  std::sort(bin.begin(), bin.end(), std::greater<unsigned>());
-  for (const unsigned& index : bin) {
-    first_set.erase(first_set.begin() + index);
-  }
-  if (first_set.size() == 0) {
-    rotation_sets.erase(rotation_sets.begin());
-    return true;
-  }
-  return false;
 }
 
 /**
@@ -413,9 +374,8 @@ static void pauli_exps_synthesis(
     std::vector<PauliNode_ptr>& rows, Circuit& circ, double discount_rate,
     double depth_weight, DepthTracker& depth_tracker) {
   while (true) {
-    while (consume_available_rotations(
-        rotation_sets, circ, depth_tracker));  // do nothing
-    if (rotation_sets.size() == 0) break;
+    consume_available_rotations(rotation_sets, circ, depth_tracker);
+    if (rotation_sets.empty()) break;
     std::vector<PauliNode_ptr>& first_set = rotation_sets[0];
     // get nodes with min cost
     std::vector<unsigned> min_nodes_indices = {0};
@@ -467,9 +427,8 @@ static PauliNode_ptr get_node_from_exp(
     const qubit_vector_t& args, unsigned n) {
   // pad the Paulis
   std::vector<Pauli> string(n, Pauli::I);
-  for (const Qubit& q : args) {
-    unsigned a = q.index()[0];
-    string[a] = paulis[a];
+  for (unsigned i = 0; i < args.size(); i++) {
+    string[args[i].index()[0]] = paulis[i];
   }
   return std::make_shared<PauliRotation>(string, theta);
 }
@@ -488,8 +447,8 @@ static std::vector<PauliNode_ptr> get_nodes_from_tableau(
     std::vector<Pauli> z_string;
     std::vector<Pauli> x_string;
     for (unsigned j = 0; j < n_qubits; j++) {
-      z_string.push_back(z_stab.string.at(Qubit(i)));
-      x_string.push_back(x_stab.string.at(Qubit(i)));
+      z_string.push_back(z_stab.string.at(Qubit(j)));
+      x_string.push_back(x_stab.string.at(Qubit(j)));
     }
     rows.push_back(std::make_shared<PauliPropagation>(
         z_string, x_string, z_sign, x_sign, i));
@@ -553,7 +512,6 @@ Circuit greedy_pauli_graph_synthesis(
   unit_map_t unit_map = c.flatten_registers();
   Circuit measure_circ(c.n_qubits(), c.n_bits());
   Circuit cliff(c.n_qubits());
-
   // circuit used to iterate the original commands with flattened registers
   Circuit circ_flat(circ);
   circ_flat.flatten_registers();

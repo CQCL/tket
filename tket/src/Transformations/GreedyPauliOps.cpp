@@ -45,19 +45,26 @@ static CommuteType get_pauli_pair_commute_type(
 PauliNode::~PauliNode() {}
 
 void PauliNode::update(const OpType& /*sq_cliff*/, const unsigned& /*a*/) {
-  throw GreedyPauliSimpError("Single qubit Clifford update not implemented");
+  throw GreedyPauliSimpError("Single qubit Clifford update not implemented.");
 }
 
 void PauliNode::swap(const unsigned& /*a*/, const unsigned& /*b*/) {
-  throw GreedyPauliSimpError("SWAP update not implemented");
+  throw GreedyPauliSimpError("SWAP update not implemented.");
 }
 
 // SingleNode
 
 SingleNode::SingleNode(std::vector<Pauli> string, bool sign)
     : string_(string), sign_(sign) {
+  if (string.empty()) {
+    throw GreedyPauliSimpError("SingleNode cannot have empty strings.");
+  }
   weight_ =
       string_.size() - std::count(string_.begin(), string_.end(), Pauli::I);
+  if (weight_ == 0) {
+    throw GreedyPauliSimpError(
+        "SingleNode cannot be constructed with identity strings.");
+  }
 }
 
 unsigned SingleNode::tqe_cost() const { return weight_ - 1; }
@@ -92,6 +99,7 @@ std::vector<TQE> SingleNode::reduction_tqes() const {
   for (unsigned i = 0; i < string_.size(); i++) {
     if (string_[i] != Pauli::I) sqs.push_back(i);
   }
+  TKET_ASSERT(!sqs.empty());
   for (unsigned i = 0; i < sqs.size() - 1; i++) {
     for (unsigned j = i + 1; j < sqs.size(); j++) {
       std::vector<TQEType> tqe_types =
@@ -123,6 +131,9 @@ ACPairNode::ACPairNode(
       x_propagation_(x_propagation),
       z_sign_(z_sign),
       x_sign_(x_sign) {
+  if (z_propagation.empty() || x_propagation.empty()) {
+    throw GreedyPauliSimpError("ACPairNode cannot have empty strings.");
+  }
   n_commute_entries_ = 0;
   n_anti_commute_entries_ = 0;
   for (unsigned i = 0; i < z_propagation_.size(); i++) {
@@ -228,6 +239,7 @@ std::vector<TQE> ACPairNode::reduction_tqes() const {
   for (unsigned i = 0; i < commute_type_vec_.size(); i++) {
     if (commute_type_vec_[i] != CommuteType::I) sqs.push_back(i);
   }
+  TKET_ASSERT(!sqs.empty());
   for (unsigned i = 0; i < sqs.size() - 1; i++) {
     for (unsigned j = i + 1; j < sqs.size(); j++) {
       std::vector<TQEType> tqe_types;

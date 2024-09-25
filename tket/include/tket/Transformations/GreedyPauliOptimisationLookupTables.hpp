@@ -60,6 +60,13 @@ const static std::unordered_map<
         {{Pauli::Z, Pauli::X}, {}},
         {{Pauli::Z, Pauli::Y}, {OpType::S}}};
 
+const static std::unordered_map<const OpType, const OpType> SQ_CLIFF_DAGGER = {
+    {OpType::H, OpType::H},
+    {OpType::S, OpType::Sdg},
+    {OpType::Sdg, OpType::S},
+    {OpType::V, OpType::Vdg},
+    {OpType::Vdg, OpType::V}};
+
 /**
  * @brief Given a SQ Clifford gate g and a Pauli operator P, return Pauli
  * P', and sign k such that g;P; = k* P';g

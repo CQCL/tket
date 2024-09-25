@@ -213,6 +213,10 @@ class ACPairNode : public PauliNode {
 
   bool x_sign() const { return x_sign_; };
 
+  std::vector<Pauli> z_propagation() const { return z_propagation_; };
+
+  std::vector<Pauli> x_propagation() const { return x_propagation_; };
+
  protected:
   std::vector<Pauli> z_propagation_;
   std::vector<Pauli> x_propagation_;
