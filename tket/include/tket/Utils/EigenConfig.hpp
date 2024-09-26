@@ -23,13 +23,10 @@
 
 #if !defined(_MSC_VER)
 #pragma GCC diagnostic push
-
 #if defined(__clang__)
 #if __has_warning("-Wdeprecated-copy")
 #pragma GCC diagnostic ignored "-Wdeprecated-copy"
 #endif
-#elif __GNUC__ >= 11
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #endif
 #endif
 
