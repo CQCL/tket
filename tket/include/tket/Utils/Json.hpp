@@ -15,9 +15,8 @@
 #pragma once
 
 #include <complex>
-#include <optional>
-
 #include <nlohmann/json.hpp>
+#include <optional>
 
 // macro for type T serialization and deserialization declarations
 #define JSON_DECL(T)                              \

@@ -14,9 +14,8 @@
 
 #pragma once
 
-#include <vector>
-
 #include <nlohmann/json.hpp>
+#include <vector>
 
 namespace tket {
 
