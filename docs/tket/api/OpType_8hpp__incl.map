@@ -1,13 +1,11 @@
 <map id="include/tket/OpType/OpType.hpp" name="include/tket/OpType/OpType.hpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="128,5,279,45"/>
-<area shape="rect" id="Node000002" href="$Json_8hpp.html" title=" " alt="" coords="133,93,273,119"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="206,46,206,79,201,79,201,46"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="107,5,257,45"/>
+<area shape="rect" id="Node000002" href="$Json_8hpp.html" title=" " alt="" coords="112,93,252,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="185,46,185,79,179,79,179,46"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="5,167,84,192"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="179,121,84,163,82,159,177,116"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="108,167,195,192"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="197,121,170,157,166,154,193,117"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="219,167,294,192"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="214,117,242,154,238,157,210,121"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="318,167,465,192"/>
-<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="234,116,349,159,347,164,233,121"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="161,121,80,163,78,158,159,116"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="109,167,255,192"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="185,119,185,153,179,153,179,119"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="279,167,354,192"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="205,116,284,158,281,162,202,121"/>
 </map>

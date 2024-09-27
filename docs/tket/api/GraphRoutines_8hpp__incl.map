@@ -1,11 +1,9 @@
 <map id="include/tket/Graphs/GraphRoutines.hpp" name="include/tket/Graphs/GraphRoutines.hpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="85,5,236,45"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="47,5,197,45"/>
 <area shape="rect" id="Node000002" title=" " alt="" coords="5,93,76,119"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="133,48,71,88,68,84,130,43"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="101,93,151,119"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="155,47,139,82,134,79,150,44"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="175,93,218,119"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="172,44,188,79,183,82,167,47"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="243,93,305,119"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="190,43,247,83,244,87,187,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="104,47,65,85,61,82,100,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="101,93,143,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="125,46,125,79,119,79,119,46"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="168,93,231,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="143,44,180,82,176,85,139,47"/>
 </map>

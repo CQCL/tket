@@ -7,13 +7,12 @@ var searchData=
   ['basicoptimisation_2ehpp_4',['BasicOptimisation.hpp',['../BasicOptimisation_8hpp.html',1,'']]],
   ['besttsawitharch_2ecpp_5',['BestTsaWithArch.cpp',['../BestTsaWithArch_8cpp.html',1,'']]],
   ['besttsawitharch_2ehpp_6',['BestTsaWithArch.hpp',['../BestTsaWithArch_8hpp.html',1,'']]],
-  ['bimapheaders_2ehpp_7',['BiMapHeaders.hpp',['../BiMapHeaders_8hpp.html',1,'']]],
-  ['bitoperations_2ecpp_8',['BitOperations.cpp',['../BitOperations_8cpp.html',1,'']]],
-  ['bitoperations_2ehpp_9',['BitOperations.hpp',['../BitOperations_8hpp.html',1,'']]],
-  ['boxdecomposition_2ecpp_10',['BoxDecomposition.cpp',['../BoxDecomposition_8cpp.html',1,'']]],
-  ['boxdecomposition_2ehpp_11',['BoxDecomposition.hpp',['../BoxDecomposition_8hpp.html',1,'']]],
-  ['boxes_2ecpp_12',['Boxes.cpp',['../Boxes_8cpp.html',1,'']]],
-  ['boxes_2ehpp_13',['Boxes.hpp',['../Boxes_8hpp.html',1,'']]],
-  ['bruteforcecolouring_2ecpp_14',['BruteForceColouring.cpp',['../BruteForceColouring_8cpp.html',1,'']]],
-  ['bruteforcecolouring_2ehpp_15',['BruteForceColouring.hpp',['../BruteForceColouring_8hpp.html',1,'']]]
+  ['bitoperations_2ecpp_7',['BitOperations.cpp',['../BitOperations_8cpp.html',1,'']]],
+  ['bitoperations_2ehpp_8',['BitOperations.hpp',['../BitOperations_8hpp.html',1,'']]],
+  ['boxdecomposition_2ecpp_9',['BoxDecomposition.cpp',['../BoxDecomposition_8cpp.html',1,'']]],
+  ['boxdecomposition_2ehpp_10',['BoxDecomposition.hpp',['../BoxDecomposition_8hpp.html',1,'']]],
+  ['boxes_2ecpp_11',['Boxes.cpp',['../Boxes_8cpp.html',1,'']]],
+  ['boxes_2ehpp_12',['Boxes.hpp',['../Boxes_8hpp.html',1,'']]],
+  ['bruteforcecolouring_2ecpp_13',['BruteForceColouring.cpp',['../BruteForceColouring_8cpp.html',1,'']]],
+  ['bruteforcecolouring_2ehpp_14',['BruteForceColouring.hpp',['../BruteForceColouring_8hpp.html',1,'']]]
 ];

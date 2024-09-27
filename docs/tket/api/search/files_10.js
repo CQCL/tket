@@ -16,9 +16,8 @@ var searchData=
   ['subcircuitfinder_2ecpp_13',['SubcircuitFinder.cpp',['../SubcircuitFinder_8cpp.html',1,'']]],
   ['subgraphmonomorphisms_2ecpp_14',['SubgraphMonomorphisms.cpp',['../SubgraphMonomorphisms_8cpp.html',1,'']]],
   ['subgraphmonomorphisms_2ehpp_15',['SubgraphMonomorphisms.hpp',['../SubgraphMonomorphisms_8hpp.html',1,'']]],
-  ['symbols_2ehpp_16',['Symbols.hpp',['../Symbols_8hpp.html',1,'']]],
-  ['symplectictableau_2ecpp_17',['SymplecticTableau.cpp',['../SymplecticTableau_8cpp.html',1,'']]],
-  ['symplectictableau_2ehpp_18',['SymplecticTableau.hpp',['../SymplecticTableau_8hpp.html',1,'']]],
-  ['symtable_2ecpp_19',['SymTable.cpp',['../SymTable_8cpp.html',1,'']]],
-  ['symtable_2ehpp_20',['SymTable.hpp',['../SymTable_8hpp.html',1,'']]]
+  ['symplectictableau_2ecpp_16',['SymplecticTableau.cpp',['../SymplecticTableau_8cpp.html',1,'']]],
+  ['symplectictableau_2ehpp_17',['SymplecticTableau.hpp',['../SymplecticTableau_8hpp.html',1,'']]],
+  ['symtable_2ecpp_18',['SymTable.cpp',['../SymTable_8cpp.html',1,'']]],
+  ['symtable_2ehpp_19',['SymTable.hpp',['../SymTable_8hpp.html',1,'']]]
 ];

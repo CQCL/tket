@@ -1,15 +1,7 @@
 <map id="include/tket/OpType/EdgeType.hpp" name="include/tket/OpType/EdgeType.hpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="65,5,216,45"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="47,93,109,119"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="128,47,98,84,94,81,123,44"/>
-<area shape="rect" id="Node000003" href="$Json_8hpp.html" title=" " alt="" coords="133,93,273,119"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="158,44,187,81,183,84,154,47"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="5,167,84,192"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="179,121,84,163,82,159,177,116"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="108,167,195,192"/>
-<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="197,121,170,157,166,154,193,117"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="219,167,294,192"/>
-<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="214,117,242,154,238,157,210,121"/>
-<area shape="rect" id="Node000007" title=" " alt="" coords="318,167,465,192"/>
-<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="234,116,349,159,347,164,233,121"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="67,5,218,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,93,152,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="129,47,99,84,95,81,125,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="177,93,239,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="161,44,192,81,188,84,156,47"/>
 </map>

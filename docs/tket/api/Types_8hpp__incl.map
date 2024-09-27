@@ -1,11 +1,7 @@
 <map id="include/tket/ZX/Types.hpp" name="include/tket/ZX/Types.hpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="113,5,302,31"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,92,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="183,33,88,75,86,71,181,28"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="116,79,203,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="202,33,177,69,172,66,197,30"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="227,79,286,104"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="218,29,243,66,239,69,213,33"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="311,79,373,104"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="230,28,309,70,307,74,228,33"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,195,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="9,79,95,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="94,33,70,69,65,66,90,30"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="120,79,179,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="110,29,136,66,131,69,106,33"/>
 </map>
