@@ -15,8 +15,8 @@
 #pragma once
 
 #include "tket/OpType/OpType.hpp"
+#include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/Expression.hpp"
-#include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 

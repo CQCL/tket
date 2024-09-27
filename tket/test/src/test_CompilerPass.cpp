@@ -26,6 +26,7 @@
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Gate/SymTable.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
+#include "tket/Mapping/LexiRouteRoutingMethod.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeFunctions.hpp"
 #include "tket/Ops/ClassicalOps.hpp"

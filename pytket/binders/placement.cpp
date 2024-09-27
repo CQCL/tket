@@ -18,7 +18,6 @@
 
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
-#include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

@@ -21,10 +21,9 @@
 #include <optional>
 
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
 #include "tket/OpType/OpTypeInfo.hpp"
 #include "tket/Ops/Op.hpp"
-#include "tket/Utils/BiMapHeaders.hpp"
-#include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/Json.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
 #include "tket/Utils/UnitID.hpp"
