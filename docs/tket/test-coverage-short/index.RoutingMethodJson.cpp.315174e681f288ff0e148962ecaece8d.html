@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2024-09-27 15:38:14</td>
+      <td>2024-09-30 16:08:43</td>
     </tr>
     <tr>
       <th scrope="row">Warnings:</th>
@@ -113,7 +113,7 @@
         <a href="#l32">32</a>
       </td>
       <td>
-        <a href="#l32"> called 51 times</a>
+        <a href="#l32"> called 53 times</a>
       </td>
     </tr>
     <tr>
@@ -124,7 +124,7 @@
         <a href="#l26">26</a>
       </td>
       <td>
-        <a href="#l26"> called 98 times</a>
+        <a href="#l26"> called 100 times</a>
       </td>
     </tr>
   </table>
@@ -373,14 +373,14 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 98 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 100 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
         </div>
         </details>
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">98</td>
+      <td class="linecount coveredLine">100</td>
       <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">RoutingMethod</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rm</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rm</span><span class="p">.</span><span class="n">serialize</span><span class="p">();</span><span class="w"> </span><span class="p">}</span></td>
     </tr>
     <tr class="source-line">
@@ -434,7 +434,7 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">51</td>
+      <td class="linecount coveredLine">53</td>
       <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">RoutingMethodPtr</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">rmp_v</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
     <tr class="source-line">
@@ -443,8 +443,8 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 4 taken 95 times.</div>
-          <div class="takenBranch">&check; Branch 5 taken 51 times.</div>
+          <div class="takenBranch">&check; Branch 4 taken 97 times.</div>
+          <div class="takenBranch">&check; Branch 5 taken 53 times.</div>
         </div>
         </details>
       </td>
@@ -452,12 +452,12 @@
         <details class="linedecisionDetails">
           <summary class="linedecisionSummary">2/2</summary>
           <div class="linedecisionContents">
-            <div class="takenDecision">&check; Decision 'true' taken 95 times.</div>
-            <div class="takenDecision">&check; Decision 'false' taken 51 times.</div>
+            <div class="takenDecision">&check; Decision 'true' taken 97 times.</div>
+            <div class="takenDecision">&check; Decision 'false' taken 53 times.</div>
           </div>
         </details>
       </td>
-      <td class="linecount coveredLine">146</td>
+      <td class="linecount coveredLine">150</td>
       <td class="src coveredLine"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">rmp_v</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
     <tr class="source-line">
@@ -466,16 +466,16 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/4</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 2 taken 95 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 97 times.</div>
           <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
-          <div class="takenBranch">&check; Branch 5 taken 95 times.</div>
+          <div class="takenBranch">&check; Branch 5 taken 97 times.</div>
           <div class="notTakenBranch">&cross; Branch 6 not taken.</div>
         </div>
         </details>
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">95</td>
+      <td class="linecount coveredLine">97</td>
       <td class="src coveredLine"><span class="w">    </span><span class="n">j</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="o">*</span><span class="n">r</span><span class="p">);</span></td>
     </tr>
     <tr class="source-line">
@@ -493,7 +493,7 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">51</td>
+      <td class="linecount coveredLine">53</td>
       <td class="src coveredLine"><span class="p">}</span></td>
     </tr>
     <tr class="source-line">
