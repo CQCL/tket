@@ -780,6 +780,7 @@ PassPtr gen_decompose_routing_gates_to_cxs_pass(
     OpTypeSet in_optypes = out_optypes;
     in_optypes.insert(OpType::SWAP);
     in_optypes.insert(OpType::BRIDGE);
+    in_optypes.insert(OpType::Barrier);
     PredicatePtr twoqbpred = std::make_shared<MaxTwoQubitGatesPredicate>();
     PredicatePtr connected = std::make_shared<ConnectivityPredicate>(arc);
     PredicatePtr wireswaps = std::make_shared<NoWireSwapsPredicate>();
