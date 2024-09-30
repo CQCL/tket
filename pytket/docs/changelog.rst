@@ -17,6 +17,7 @@ Fixes:
 
 * Fix QASM conversion of non-register-aligned `MultiBitOp`.
 * Fix `DecomposeClassicalExp()` when target occurs in expression.
+* Allow barriers and wire swaps in `DecomposeSwapsToCXs()`.
 
 1.32.0 (September 2024)
 -----------------------
