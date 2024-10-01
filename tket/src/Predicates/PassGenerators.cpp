@@ -775,23 +775,12 @@ PassPtr gen_decompose_routing_gates_to_cxs_pass(
                 Transforms::decompose_BRIDGE_to_CX() >>
                 Transforms::remove_redundancies();
   if (directed) {
-    OpTypeSet out_optypes{all_single_qubit_types()};
-    out_optypes.insert(OpType::CX);
-    OpTypeSet in_optypes = out_optypes;
-    in_optypes.insert(OpType::SWAP);
-    in_optypes.insert(OpType::BRIDGE);
-    in_optypes.insert(OpType::Barrier);
     PredicatePtr twoqbpred = std::make_shared<MaxTwoQubitGatesPredicate>();
     PredicatePtr connected = std::make_shared<ConnectivityPredicate>(arc);
     PredicatePtr directedpred = std::make_shared<DirectednessPredicate>(arc);
-    PredicatePtr ingates = std::make_shared<GateSetPredicate>(in_optypes);
-    PredicatePtr outgates = std::make_shared<GateSetPredicate>(out_optypes);
-    precons = {
-        CompilationUnit::make_type_pair(connected),
-        CompilationUnit::make_type_pair(ingates)};
+    precons = {CompilationUnit::make_type_pair(connected)};
     s_postcons = {
         CompilationUnit::make_type_pair(directedpred),
-        CompilationUnit::make_type_pair(outgates),
         CompilationUnit::make_type_pair(twoqbpred)};
     t = t >> Transforms::decompose_CX_directed(arc) >>
         Transforms::remove_redundancies();
