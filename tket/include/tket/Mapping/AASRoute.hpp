@@ -14,8 +14,7 @@
 
 #pragma once
 
-#include "tket/ArchAwareSynth/SteinerForest.hpp"
-#include "tket/Mapping/LexicographicalComparison.hpp"
+#include "tket/ArchAwareSynth/SteinerTree.hpp"
 #include "tket/Mapping/MappingFrontier.hpp"
 #include "tket/Mapping/RoutingMethod.hpp"
 

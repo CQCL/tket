@@ -20,7 +20,6 @@
 
 #include "../testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
-#include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Circuit/StatePreparation.hpp"

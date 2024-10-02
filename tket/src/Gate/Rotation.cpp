@@ -21,7 +21,6 @@
 #include "tket/OpType/OpDesc.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/Utils/Expression.hpp"
-#include "tket/Utils/Symbols.hpp"
 
 namespace tket {
 

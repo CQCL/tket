@@ -16,7 +16,6 @@
 
 #include <stdexcept>
 
-#include "tkassert/Assert.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
 #include "tket/OpType/OpTypeInfo.hpp"
 #include "tket/Ops/Op.hpp"

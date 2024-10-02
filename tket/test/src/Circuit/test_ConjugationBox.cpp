@@ -16,15 +16,12 @@
 #include <boost/dynamic_bitset.hpp>
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
-#include <random>
 
 #include "../testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
-#include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
-#include "tket/Gate/Rotation.hpp"
 
 namespace tket {
 namespace test_ConjugationBox {

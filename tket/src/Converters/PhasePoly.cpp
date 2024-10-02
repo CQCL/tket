@@ -26,8 +26,6 @@
 #include "tket/OpType/OpType.hpp"
 #include "tket/Ops/OpJsonFactory.hpp"
 #include "tket/Ops/OpPtr.hpp"
-#include "tket/Utils/GraphHeaders.hpp"
-#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

@@ -14,8 +14,6 @@
 
 #include "tket/Circuit/PauliExpBoxes.hpp"
 
-#include <iostream>
-
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Converters/PhasePoly.hpp"

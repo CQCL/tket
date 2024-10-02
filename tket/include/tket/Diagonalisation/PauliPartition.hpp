@@ -14,7 +14,10 @@
 
 #pragma once
 
-#include "DiagUtils.hpp"
+#include <stdexcept>
+
+#include "tket/Utils/GraphHeaders.hpp"
+#include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {
 

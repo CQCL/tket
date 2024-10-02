@@ -18,21 +18,21 @@ add_definitions(-DPYBIND11_DETAILED_ERROR_MESSAGES)
 
 find_package(Boost CONFIG REQUIRED)
 find_package(Eigen3 CONFIG REQUIRED)
-find_package(tket CONFIG REQUIRED)
-find_package(tklog CONFIG REQUIRED)
-find_package(tkassert CONFIG REQUIRED)
-find_package(tkrng CONFIG REQUIRED)
-find_package(tktokenswap CONFIG REQUIRED)
-find_package(tkwsm CONFIG REQUIRED)
-find_package(tkassert CONFIG REQUIRED)
 find_package(gmp CONFIG)
 if (NOT gmp_FOUND)
     find_package(PkgConfig REQUIRED)
     pkg_search_module(gmp REQUIRED IMPORTED_TARGET gmp)
 endif()
-find_package(SymEngine CONFIG REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
 find_package(pybind11_json CONFIG REQUIRED)
+find_package(SymEngine CONFIG REQUIRED)
+find_package(tkassert CONFIG REQUIRED)
+find_package(tkassert CONFIG REQUIRED)
+find_package(tket CONFIG REQUIRED)
+find_package(tklog CONFIG REQUIRED)
+find_package(tkrng CONFIG REQUIRED)
+find_package(tktokenswap CONFIG REQUIRED)
+find_package(tkwsm CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -79,14 +79,15 @@ if (NOT TARGET symengine::symengine)
 endif()
 
 list(APPEND lib_deps
-    tket::tket
-    tklog::tklog
-    tkassert::tkassert
-    pybind11::headers
-    pybind11_json::pybind11_json
     Eigen3::Eigen
     gmp::gmp
-    symengine::symengine)
+    pybind11::headers
+    pybind11_json::pybind11_json
+    symengine::symengine
+    tkassert::tkassert
+    tket::tket
+    tklog::tklog
+    )
 if (WIN32)
     list(APPEND lib_deps bcrypt) # For boost::uuid
 endif()
@@ -107,12 +108,12 @@ set(HEADER_FILES
    )
 
 pybind11_add_module(circuit
-    binders/circuit/main.cpp
     binders/circuit/boxes.cpp
-    binders/circuit/classical.cpp
-    binders/circuit/Circuit/main.cpp
-    binders/circuit/Circuit/add_op.cpp
     binders/circuit/Circuit/add_classical_op.cpp
+    binders/circuit/Circuit/add_op.cpp
+    binders/circuit/Circuit/main.cpp
+    binders/circuit/classical.cpp
+    binders/circuit/main.cpp
     ${HEADER_FILES})
 target_include_directories(circuit PRIVATE binders/include)
 target_link_libraries(circuit PRIVATE ${lib_deps})
@@ -181,20 +182,20 @@ target_include_directories(zx PRIVATE binders/include)
 target_link_libraries(zx PRIVATE ${lib_deps})
 
 install(TARGETS
-    logging
-    utils_serialization
+    architecture
     circuit
     circuit_library
-    unit_id
-    passes
-    predicates
-    partition
-    pauli
+    logging
     mapping
-    transform
-    tailoring
-    tableau
-    zx
+    partition
+    passes
+    pauli
     placement
-    architecture
+    predicates
+    tableau
+    tailoring
+    transform
+    unit_id
+    utils_serialization
+    zx
     LIBRARY DESTINATION lib)

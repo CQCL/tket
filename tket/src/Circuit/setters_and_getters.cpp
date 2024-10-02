@@ -26,7 +26,6 @@
 #include "tket/OpType/OpDesc.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/Ops/OpPtr.hpp"
-#include "tket/Utils/GraphHeaders.hpp"
 
 namespace tket {
 

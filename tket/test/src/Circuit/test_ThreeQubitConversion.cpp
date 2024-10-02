@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <array>
 #include <catch2/catch_test_macros.hpp>
 #include <cmath>
 
@@ -26,8 +25,6 @@
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/ThreeQubitSquash.hpp"
 #include "tket/Transformations/Transform.hpp"
-#include "tket/Utils/Constants.hpp"
-#include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/UnitID.hpp"
 
 namespace tket {

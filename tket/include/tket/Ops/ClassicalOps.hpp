@@ -23,7 +23,6 @@
 
 #include "Op.hpp"
 #include "OpPtr.hpp"
-#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

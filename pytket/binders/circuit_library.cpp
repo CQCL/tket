@@ -17,8 +17,6 @@
 #include "tket/Circuit/CircPool.hpp"
 #include "typecast.hpp"
 
-namespace py = pybind11;
-
 namespace tket {
 
 PYBIND11_MODULE(circuit_library, library_m) {

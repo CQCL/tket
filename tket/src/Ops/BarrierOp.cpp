@@ -14,11 +14,8 @@
 
 #include "tket/Ops/BarrierOp.hpp"
 
-#include <typeinfo>
-
 #include "tket/OpType/EdgeType.hpp"
 #include "tket/OpType/OpType.hpp"
-#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

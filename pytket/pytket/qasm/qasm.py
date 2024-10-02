@@ -1290,7 +1290,7 @@ def make_params_str(params: Optional[List[Union[float, Expr]]]) -> str:
     return s
 
 
-def make_args_str(args: List[UnitID]) -> str:
+def make_args_str(args: Sequence[UnitID]) -> str:
     s = ""
     for i in range(len(args)):
         s += f"{args[i]}"
@@ -1397,6 +1397,8 @@ class QasmWriter:
             self.cregs = {}
             self.qregs = {}
 
+        self.cregs_as_bitseqs = set(tuple(creg) for creg in self.cregs.values())
+
         # for holding condition values when writing Conditional blocks
         # the size changes when adding and removing scratch bits
         self.scratch_reg = BitRegister(
@@ -1423,7 +1425,7 @@ class QasmWriter:
         params_str = make_params_str(params)
         self.strings.add_string(params_str)
 
-    def write_args(self, args: List[UnitID]) -> None:
+    def write_args(self, args: Sequence[UnitID]) -> None:
         args_str = make_args_str(args)
         self.strings.add_string(args_str)
 
@@ -1577,7 +1579,7 @@ class QasmWriter:
         self.strings.del_string(pred_label)
         return True
 
-    def add_conditional(self, op: Conditional, args: List[UnitID]) -> None:
+    def add_conditional(self, op: Conditional, args: Sequence[UnitID]) -> None:
         control_bits = args[: op.width]
         if op.width == 1 and hqs_header(self.header):
             variable = str(control_bits[0])
@@ -1666,12 +1668,24 @@ class QasmWriter:
                 self.mark_as_written(label, f"{bit_l}")
 
     def add_multi_bit(self, op: MultiBitOp, args: List[Bit]) -> None:
-        assert len(args) >= 2
-        registers_involved = [arg.reg_name for arg in args[:2]]
-        if len(args) > 2 and args[2].reg_name not in registers_involved:
-            # there is a distinct output register
-            registers_involved.append(args[2].reg_name)
-        self.add_op(op.basic_op, [self.cregs[name] for name in registers_involved])  # type: ignore
+        basic_op = op.basic_op
+        basic_n = basic_op.n_inputs + basic_op.n_outputs + basic_op.n_input_outputs
+        n_args = len(args)
+        assert n_args % basic_n == 0
+        arity = n_args // basic_n
+
+        # If the operation is register-aligned we can write it more succinctly.
+        poss_regs = [
+            tuple(args[basic_n * i + j] for i in range(arity)) for j in range(basic_n)
+        ]
+        if all(poss_reg in self.cregs_as_bitseqs for poss_reg in poss_regs):
+            # The operation is register-aligned.
+            self.add_op(basic_op, [poss_regs[j][0].reg_name for j in range(basic_n)])  # type: ignore
+        else:
+            # The operation is not register-aligned.
+            for i in range(arity):
+                basic_args = args[basic_n * i : basic_n * (i + 1)]
+                self.add_op(basic_op, basic_args)
 
     def add_explicit_op(self, op: Op, args: List[Bit]) -> None:
         # &, ^ and | gates
@@ -1721,11 +1735,11 @@ class QasmWriter:
         for variable in outputs:
             self.mark_as_written(label, variable)
 
-    def add_measure(self, args: List[UnitID]) -> None:
+    def add_measure(self, args: Sequence[UnitID]) -> None:
         label = self.strings.add_string(f"measure {args[0]} -> {args[1]};\n")
         self.mark_as_written(label, f"{args[1]}")
 
-    def add_zzphase(self, param: Union[float, Expr], args: List[UnitID]) -> None:
+    def add_zzphase(self, param: Union[float, Expr], args: Sequence[UnitID]) -> None:
         # as op.params returns reduced parameters, we can assume
         # that 0 <= param < 4
         if param > 1:
@@ -1739,7 +1753,7 @@ class QasmWriter:
         self.write_params([param])
         self.write_args(args)
 
-    def add_data(self, op: BarrierOp, args: List[UnitID]) -> None:
+    def add_data(self, op: BarrierOp, args: Sequence[UnitID]) -> None:
         if op.data == "":
             opstr = _tk_to_qasm_noparams[OpType.Barrier]
         else:
@@ -1748,18 +1762,18 @@ class QasmWriter:
         self.strings.add_string(" ")
         self.write_args(args)
 
-    def add_gate_noparams(self, op: Op, args: List[UnitID]) -> None:
+    def add_gate_noparams(self, op: Op, args: Sequence[UnitID]) -> None:
         self.strings.add_string(_tk_to_qasm_noparams[op.type])
         self.strings.add_string(" ")
         self.write_args(args)
 
-    def add_gate_params(self, op: Op, args: List[UnitID]) -> None:
+    def add_gate_params(self, op: Op, args: Sequence[UnitID]) -> None:
         optype, params = _get_optype_and_params(op)
         self.strings.add_string(_tk_to_qasm_params[optype])
         self.write_params(params)
         self.write_args(args)
 
-    def add_extra_noparams(self, op: Op, args: List[UnitID]) -> Tuple[str, str]:
+    def add_extra_noparams(self, op: Op, args: Sequence[UnitID]) -> Tuple[str, str]:
         optype = op.type
         opstr = _tk_to_qasm_extra_noparams[optype]
         gatedefstr = ""
@@ -1769,7 +1783,7 @@ class QasmWriter:
         mainstr = opstr + " " + make_args_str(args)
         return gatedefstr, mainstr
 
-    def add_extra_params(self, op: Op, args: List[UnitID]) -> Tuple[str, str]:
+    def add_extra_params(self, op: Op, args: Sequence[UnitID]) -> Tuple[str, str]:
         optype, params = _get_optype_and_params(op)
         assert params is not None
         opstr = _tk_to_qasm_extra_params[optype]
@@ -1782,7 +1796,7 @@ class QasmWriter:
         mainstr = opstr + make_params_str(params) + make_args_str(args)
         return gatedefstr, mainstr
 
-    def add_op(self, op: Op, args: List[UnitID]) -> None:
+    def add_op(self, op: Op, args: Sequence[UnitID]) -> None:
         optype, _params = _get_optype_and_params(op)
         if optype == OpType.RangePredicate:
             assert isinstance(op, RangePredicateOp)

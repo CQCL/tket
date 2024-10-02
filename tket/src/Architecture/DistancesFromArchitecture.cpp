@@ -14,9 +14,6 @@
 
 #include "tket/Architecture/DistancesFromArchitecture.hpp"
 
-#include <sstream>
-#include <stdexcept>
-
 namespace tket {
 
 DistancesFromArchitecture::DistancesFromArchitecture(

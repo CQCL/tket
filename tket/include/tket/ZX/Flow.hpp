@@ -14,7 +14,8 @@
 
 #pragma once
 
-#include "tket/Utils/BiMapHeaders.hpp"
+#include <boost/bimap.hpp>
+
 #include "tket/ZX/ZXDiagram.hpp"
 
 namespace tket {

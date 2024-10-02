@@ -21,9 +21,7 @@
 #include "UnitRegister.hpp"
 #include "binder_json.hpp"
 #include "py_operators.hpp"
-#include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
-#include "unit_downcast.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;

@@ -13,6 +13,8 @@
 // limitations under the License.
 #include "tket/Mapping/LexiLabelling.hpp"
 
+#include "tket/Mapping/LexiRoute.hpp"
+
 namespace tket {
 
 std::pair<bool, unit_map_t> LexiLabellingMethod::routing_method(

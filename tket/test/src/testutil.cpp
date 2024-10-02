@@ -19,8 +19,6 @@
 #include "Simulation/ComparisonFunctions.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
-#include "tket/Utils/EigenConfig.hpp"
-#include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 

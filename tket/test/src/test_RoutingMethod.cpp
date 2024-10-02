@@ -1,7 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
 #include <cstdlib>
-#include <fstream>
-#include <iostream>
 
 #include "tket/Mapping/MappingFrontier.hpp"
 #include "tket/Mapping/RoutingMethodCircuit.hpp"

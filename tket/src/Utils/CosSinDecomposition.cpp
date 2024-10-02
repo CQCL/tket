@@ -18,7 +18,6 @@
 #include <tklog/TketLog.hpp>
 
 #include "tket/Utils/Constants.hpp"
-#include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {
