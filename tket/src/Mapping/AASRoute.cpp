@@ -14,6 +14,9 @@
 
 #include "tket/Mapping/AASRoute.hpp"
 
+#include "tket/ArchAwareSynth/SteinerForest.hpp"
+#include "tket/Converters/PhasePoly.hpp"
+
 namespace tket {
 
 AASRouteRoutingMethod::AASRouteRoutingMethod(

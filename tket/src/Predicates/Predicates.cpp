@@ -14,7 +14,6 @@
 
 #include "tket/Predicates/Predicates.hpp"
 
-#include "tket/Gate/Gate.hpp"
 #include "tket/Mapping/Verification.hpp"
 #include "tket/OpType/OpTypeFunctions.hpp"
 #include "tket/Placement/Placement.hpp"

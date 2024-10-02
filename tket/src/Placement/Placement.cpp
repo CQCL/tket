@@ -14,8 +14,6 @@
 
 #include "tket/Placement/Placement.hpp"
 
-#include "tket/Utils/HelperFunctions.hpp"
-
 namespace tket {
 
 const std::string& Placement::unplaced_reg() {

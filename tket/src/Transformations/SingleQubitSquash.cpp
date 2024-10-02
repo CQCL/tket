@@ -21,7 +21,6 @@
 #include "Gate/GatePtr.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DAGDefs.hpp"
-#include "tket/Gate/Gate.hpp"
 
 namespace tket {
 

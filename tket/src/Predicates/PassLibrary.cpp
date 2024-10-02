@@ -16,19 +16,17 @@
 
 #include <memory>
 
-#include "tket/Circuit/CircPool.hpp"
 #include "tket/Converters/Converters.hpp"
 #include "tket/Predicates/CompilationUnit.hpp"
 #include "tket/Predicates/CompilerPass.hpp"
-#include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Predicates/Predicates.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/ContextualReduction.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/MeasurePass.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/Rebase.hpp"
 #include "tket/Transformations/Transform.hpp"
-#include "tket/Utils/Json.hpp"
 #include "tket/ZX/Rewrite.hpp"
 
 namespace tket {

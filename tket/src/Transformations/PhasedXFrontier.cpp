@@ -17,7 +17,6 @@
 #include <string>
 
 #include "tket/Circuit/CircPool.hpp"
-#include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeInfo.hpp"

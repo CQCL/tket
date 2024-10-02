@@ -16,6 +16,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <nlohmann/json_fwd.hpp>
 #include <sstream>
 #include <string>
 
@@ -24,8 +25,9 @@
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
-#include "tket/Mapping/LexiRoute.hpp"
+#include "tket/Mapping/LexiRouteRoutingMethod.hpp"
 #include "tket/Mapping/MappingManager.hpp"
+#include "tket/Mapping/RoutingMethodJson.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/Placement/Placement.hpp"
 #include "tket/Predicates/CompilationUnit.hpp"
@@ -43,7 +45,6 @@
 #include "tket/Transformations/Rebase.hpp"
 #include "tket/Transformations/ThreeQubitSquash.hpp"
 #include "tket/Transformations/Transform.hpp"
-#include "tket/Utils/Json.hpp"
 
 namespace tket {
 
@@ -349,7 +350,7 @@ PassPtr gen_clifford_push_through_pass() {
 
   PostConditions pc{{}, {}, Guarantee::Preserve};
   nlohmann::json j;
-  j["name"] = "CliffordPushThroughMeausres";
+  j["name"] = "CliffordPushThroughMeasures";
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
@@ -482,14 +483,54 @@ PassPtr gen_cx_mapping_pass(
     bool delay_measures) {
   OpTypeSet gate_set = all_single_qubit_types();
   gate_set.insert(OpType::CX);
-  PassPtr rebase_pass =
-      gen_rebase_pass(gate_set, CircPool::CX(), CircPool::tk1_to_tk1);
+  PassPtr rebase_pass = gen_auto_rebase_pass(gate_set);
   PassPtr return_pass =
       rebase_pass >> gen_full_mapping_pass(arc, placement_ptr, config);
   if (delay_measures) return_pass = return_pass >> DelayMeasures();
   return_pass = return_pass >> rebase_pass >>
                 gen_decompose_routing_gates_to_cxs_pass(arc, directed_cx);
-  return return_pass;
+  Transform t{[=](Circuit& circ, std::shared_ptr<unit_bimaps_t> maps) {
+    // Relabel all two-qubit gates
+    CompilationUnit cu(circ);
+    bool changed = rebase_pass->apply(cu);
+    circ = cu.get_circ_ref();
+    // Now try placement, falling back on "LinePlacement" if "GraphPlacement"
+    // fails
+    try {
+      changed |= placement_ptr->place(circ, maps);
+    } catch (const std::runtime_error& e) {
+      std::stringstream ss;
+      ss << "PlacementPass failed with message: " << e.what()
+         << " Fall back to LinePlacement.";
+      tket_log()->warn(ss.str());
+      Placement::Ptr line_placement_ptr = std::make_shared<LinePlacement>(
+          placement_ptr->get_architecture_ref());
+      changed |= line_placement_ptr->place(circ, maps);
+    }
+    // Now route
+    MappingManager mm(std::make_shared<Architecture>(arc));
+    changed |= mm.route_circuit_with_maps(circ, config, maps);
+
+    // Now decompose routing gates to cx gates (this won't change maps)
+    CompilationUnit cu1(circ);
+    if (delay_measures) {
+      changed |= DelayMeasures()->apply(cu1);
+    }
+    changed |=
+        gen_decompose_routing_gates_to_cxs_pass(arc, directed_cx)->apply(cu1);
+    circ = cu1.get_circ_ref();
+    return changed;
+  }};
+  PassConditions conditions = return_pass->get_conditions();
+  nlohmann::json j;
+  j["name"] = "CXMappingPass";
+  j["architecture"] = arc;
+  j["placement"] = placement_ptr;
+  j["routing_config"] = config;
+  j["directed"] = directed_cx;
+  j["delay_measures"] = delay_measures;
+  return std::make_shared<StandardPass>(
+      conditions.first, t, conditions.second, j);
 }
 
 PassPtr gen_routing_pass(
@@ -734,24 +775,12 @@ PassPtr gen_decompose_routing_gates_to_cxs_pass(
                 Transforms::decompose_BRIDGE_to_CX() >>
                 Transforms::remove_redundancies();
   if (directed) {
-    OpTypeSet out_optypes{all_single_qubit_types()};
-    out_optypes.insert(OpType::CX);
-    OpTypeSet in_optypes = out_optypes;
-    in_optypes.insert(OpType::SWAP);
-    in_optypes.insert(OpType::BRIDGE);
     PredicatePtr twoqbpred = std::make_shared<MaxTwoQubitGatesPredicate>();
     PredicatePtr connected = std::make_shared<ConnectivityPredicate>(arc);
-    PredicatePtr wireswaps = std::make_shared<NoWireSwapsPredicate>();
     PredicatePtr directedpred = std::make_shared<DirectednessPredicate>(arc);
-    PredicatePtr ingates = std::make_shared<GateSetPredicate>(in_optypes);
-    PredicatePtr outgates = std::make_shared<GateSetPredicate>(out_optypes);
-    precons = {
-        CompilationUnit::make_type_pair(connected),
-        CompilationUnit::make_type_pair(wireswaps),
-        CompilationUnit::make_type_pair(ingates)};
+    precons = {CompilationUnit::make_type_pair(connected)};
     s_postcons = {
         CompilationUnit::make_type_pair(directedpred),
-        CompilationUnit::make_type_pair(outgates),
         CompilationUnit::make_type_pair(twoqbpred)};
     t = t >> Transforms::decompose_CX_directed(arc) >>
         Transforms::remove_redundancies();

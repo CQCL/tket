@@ -16,6 +16,7 @@
 
 #include "tket/Gate/Gate.hpp"
 #include "tket/Gate/SymTable.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
 #include "tket/Ops/BarrierOp.hpp"
 #include "tket/Ops/MetaOp.hpp"
 

@@ -14,6 +14,8 @@
 
 #include "tket/Mapping/LexiRouteRoutingMethod.hpp"
 
+#include "tket/Mapping/LexiRoute.hpp"
+
 namespace tket {
 
 LexiRouteRoutingMethod::LexiRouteRoutingMethod(unsigned _max_depth)

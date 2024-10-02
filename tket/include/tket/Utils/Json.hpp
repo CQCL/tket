@@ -15,13 +15,8 @@
 #pragma once
 
 #include <complex>
-#include <exception>
-#include <optional>
-
-// Workaround for Windows madness.
-// See: https://github.com/nlohmann/json/issues/1408
-#undef snprintf
 #include <nlohmann/json.hpp>
+#include <optional>
 
 // macro for type T serialization and deserialization declarations
 #define JSON_DECL(T)                              \

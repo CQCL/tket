@@ -234,7 +234,7 @@ jobs:
       # Python 3.10 is the default python on Ubuntu 22.04, so this combination
       # is not available from deadsnakes: use the default python in this case.
       if: matrix.python3-version != '10'
-      uses: deadsnakes/action@v3.1.0
+      uses: deadsnakes/action@v3.2.0
       with:
         python-version: "3.${{ matrix.python3-version }}"
     - name: Download wheel

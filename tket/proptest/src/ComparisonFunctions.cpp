@@ -17,6 +17,8 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "tket/Utils/MatrixAnalysis.hpp"
+
 // NOTE: this is an identical copy of a file in tket-tests, in the Simulation
 // folder. This is deliberate! Please keep both in sync!
 // See the tket-tests file for a mathematical discussion.

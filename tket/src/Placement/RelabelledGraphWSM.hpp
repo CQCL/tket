@@ -13,12 +13,11 @@
 // limitations under the License.
 
 #pragma once
+#include <boost/graph/adjacency_list.hpp>
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
 #include <tkwsm/Common/GeneralUtils.hpp>
 #include <tkwsm/GraphTheoretic/GeneralStructs.hpp>
-
-#include "tket/Placement/Placement.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

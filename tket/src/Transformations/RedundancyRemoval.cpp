@@ -15,7 +15,6 @@
 #include <optional>
 
 #include "tket/Circuit/DAGDefs.hpp"
-#include "tket/Gate/Gate.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Transformations/Transform.hpp"
 

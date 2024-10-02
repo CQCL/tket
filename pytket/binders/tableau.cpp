@@ -18,6 +18,7 @@
 
 #include <sstream>
 
+#include "tket/Converters/Converters.hpp"
 #include "tket/Converters/UnitaryTableauBox.hpp"
 #include "typecast.hpp"
 

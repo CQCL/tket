@@ -18,6 +18,7 @@
 #include "testutil.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
 #include "tket/Mapping/LexiRoute.hpp"
+#include "tket/Mapping/LexiRouteRoutingMethod.hpp"
 #include "tket/Mapping/MappingManager.hpp"
 #include "tket/Mapping/Verification.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
@@ -25,9 +26,7 @@
 #include "tket/Predicates/CompilationUnit.hpp"
 #include "tket/Predicates/CompilerPass.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
-#include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Transformations/Decomposition.hpp"
-#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

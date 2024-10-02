@@ -16,7 +16,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include <sstream>
 #include <tket/Circuit/Circuit.hpp>
 
 #include "binder_json.hpp"
@@ -24,14 +23,12 @@
 #include "deleted_hash.hpp"
 #include "py_operators.hpp"
 #include "tket/Circuit/Command.hpp"
-#include "tket/Gate/Gate.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
 #include "tket/Gate/SymTable.hpp"
 #include "tket/Ops/BarrierOp.hpp"
 #include "tket/Ops/MetaOp.hpp"
 #include "tket/Ops/Op.hpp"
 #include "tket/Utils/Constants.hpp"
-#include "tket/Utils/Symbols.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

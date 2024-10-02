@@ -18,7 +18,6 @@
 // require deserialization of a Box.
 
 #include "tket/Ops/Op.hpp"
-#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

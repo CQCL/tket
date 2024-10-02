@@ -14,7 +14,12 @@
 
 #include "tket/Mapping/RoutingMethodJson.hpp"
 
+#include "tket/Mapping/AASLabelling.hpp"
+#include "tket/Mapping/AASRoute.hpp"
+#include "tket/Mapping/BoxDecomposition.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
+#include "tket/Mapping/LexiRouteRoutingMethod.hpp"
+#include "tket/Mapping/MultiGateReorder.hpp"
 
 namespace tket {
 

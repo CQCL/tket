@@ -16,8 +16,6 @@
 
 #include <sstream>
 
-#include "tket/Utils/Json.hpp"
-
 namespace tket {
 
 std::string UnitID::repr() const {

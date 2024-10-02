@@ -14,7 +14,6 @@
 
 #include <boost/range/join.hpp>
 #include <catch2/catch_test_macros.hpp>
-#include <iostream>
 
 #include "CircuitsForTesting.hpp"
 #include "testutil.hpp"
@@ -33,9 +32,12 @@
 #include "tket/Circuit/ToffoliBox.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Gate/SymTable.hpp"
+#include "tket/Mapping/BoxDecomposition.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
-#include "tket/Mapping/LexiRoute.hpp"
+#include "tket/Mapping/LexiRouteRoutingMethod.hpp"
+#include "tket/Mapping/MultiGateReorder.hpp"
 #include "tket/Mapping/RoutingMethod.hpp"
+#include "tket/Mapping/RoutingMethodJson.hpp"
 #include "tket/MeasurementSetup/MeasurementSetup.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/Ops/ClassicalOps.hpp"

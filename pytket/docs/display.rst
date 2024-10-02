@@ -33,8 +33,8 @@ Example usage:
 
     circuit_renderer.render_circuit_jupyter(circ) # Render interactive display
 
-If you are happy with the default render options, you can import the render
-functions directly:
+You can save the render options to the pytket config via ``circuit_renderer.save_render_options()``.
+You can then import the render functions directly with your config already applied:
 
 .. jupyter-execute::
 
@@ -44,7 +44,7 @@ functions directly:
         circ = Circuit(2,2) # Define Circuit
         circ.H(0).H(1).CX(0, 1).Rz(0.4, 1).CX(0, 1).H(0).H(1).measure_all()
 
-        render_circuit_jupyter(circ) # Render with default options
+        render_circuit_jupyter(circ) # Render with default/saved options
 
 This same diagram can be rendered with the offline renderer as follows
  

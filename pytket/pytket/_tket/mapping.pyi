@@ -1,3 +1,4 @@
+from typing import Any
 from __future__ import annotations
 import pytket._tket.architecture
 import pytket._tket.circuit
@@ -8,6 +9,9 @@ class AASLabellingMethod(RoutingMethod):
     """
     Defines a Labeling Method for aas for labelling all unplaced qubits in a circuit
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         """
         AASLabellingMethod constructor.
@@ -16,6 +20,9 @@ class AASRouteRoutingMethod(RoutingMethod):
     """
     Defines a RoutingMethod object for mapping circuits that uses the architecture aware synthesis method implemented in tket.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, aaslookahead: int) -> None:
         """
         AASRouteRoutingMethod constructor.
@@ -26,6 +33,9 @@ class BoxDecompositionRoutingMethod(RoutingMethod):
     """
     Defines a RoutingMethod object for decomposing boxes.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         """
         BoxDecompositionRoutingMethod constructor.
@@ -34,6 +44,9 @@ class LexiLabellingMethod(RoutingMethod):
     """
     Defines a RoutingMethod for labelling Qubits that uses the Lexicographical Comparison approach outlined in arXiv:1902.08091.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         """
         LexiLabellingMethod constructor.
@@ -42,6 +55,9 @@ class LexiRouteRoutingMethod(RoutingMethod):
     """
     Defines a RoutingMethod object for mapping circuits that uses the Lexicographical Comparison approach outlined in arXiv:1902.08091.Only supports 1-qubit, 2-qubit and barrier gates.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, lookahead: int = 10) -> None:
         """
         LexiRoute constructor.
@@ -52,6 +68,9 @@ class MappingManager:
     """
     Defined by a pytket Architecture object, maps Circuit logical qubits to physically permitted Architecture qubits. Mapping is completed by sequential routing (full or partial) of subcircuits. A custom method for routing (full or partial) of subcircuits can be defined in Python.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, architecture: pytket._tket.architecture.Architecture) -> None:
         """
         MappingManager constructor.
@@ -69,6 +88,9 @@ class MultiGateReorderRoutingMethod(RoutingMethod):
     """
     Defines a RoutingMethod object for commuting physically permitted multi-qubit gates to the front of the subcircuit.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, max_depth: int = 10, max_size: int = 10) -> None:
         """
         MultiGateReorderRoutingMethod constructor.
@@ -80,12 +102,18 @@ class RoutingMethod:
     """
     Parent class for RoutingMethod, for inheritance purposes only, not for usage.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         ...
 class RoutingMethodCircuit(RoutingMethod):
     """
     The RoutingMethod class captures a method for partially mapping logical subcircuits to physical operations as permitted by some architecture. Ranked RoutingMethod objects are used by the MappingManager to route whole circuits.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, route_subcircuit: typing.Callable[[pytket._tket.circuit.Circuit, pytket._tket.architecture.Architecture], tuple[bool, pytket._tket.circuit.Circuit, dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID], dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]]], max_size: int, max_depth: int) -> None:
         """
         Constructor for a routing method defined by partially routing subcircuits.

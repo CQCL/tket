@@ -14,7 +14,6 @@
 
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
-#include <optional>
 
 #include "testutil.hpp"
 #include "tket/Circuit/Circuit.hpp"
@@ -23,7 +22,6 @@
 #include "tket/Gate/SymTable.hpp"
 #include "tket/PauliGraph/PauliGraph.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
-#include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/GreedyPauliOptimisation.hpp"
 #include "tket/Utils/Expression.hpp"
 

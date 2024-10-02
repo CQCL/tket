@@ -29,10 +29,8 @@
 #include "tket/OpType/OpTypeInfo.hpp"
 #include "tket/Ops/OpJsonFactory.hpp"
 #include "tket/Ops/OpPtr.hpp"
-#include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/HelperFunctions.hpp"
-#include "tket/Utils/Json.hpp"
 #include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {

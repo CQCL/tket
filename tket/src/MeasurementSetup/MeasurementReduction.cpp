@@ -14,6 +14,8 @@
 
 #include "tket/MeasurementSetup/MeasurementReduction.hpp"
 
+#include "tket/Diagonalisation/Diagonalisation.hpp"
+
 namespace tket {
 
 MeasurementSetup measurement_reduction(

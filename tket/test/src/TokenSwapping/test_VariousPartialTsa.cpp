@@ -19,7 +19,6 @@
 #include <tktokenswap/TrivialTSA.hpp>
 
 #include "TestUtils/ArchitectureEdgesReimplementation.hpp"
-#include "TestUtils/DebugFunctions.hpp"
 #include "TestUtils/PartialTsaTesting.hpp"
 #include "TestUtils/ProblemGeneration.hpp"
 
