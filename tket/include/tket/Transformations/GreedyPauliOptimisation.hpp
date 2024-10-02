@@ -295,6 +295,10 @@ typedef boost::graph_traits<GPDAG>::edge_descriptor GPEdge;
 typedef sequence_set_t<GPVert> GPVertSet;
 typedef sequence_set_t<GPEdge> GPEdgeSet;
 
+typedef boost::adj_list_vertex_property_map<
+    GPDAG, int, int&, boost::vertex_index_t>
+    GPVIndex;
+
 /**
  * Pauli graph structure for GreedyPauliSimp.
  * The dependency graph consists of Pauli rotations, mid-circuit measurements,
@@ -313,13 +317,29 @@ typedef sequence_set_t<GPEdge> GPEdgeSet;
  *
  */
 class GPGraph {
-  /** Construct an empty dependency graph */
-  GPGraph(const unsigned& n_qubits, const unsigned& n_bits);
+ public:
+  /** Construct an GPGraph from a circuit */
+  GPGraph(const Circuit& circ);
 
   GPVertSet get_successors(const GPVert& vert) const;
 
   GPVertSet get_predecessors(const GPVert& vert) const;
 
+  /**
+   * All vertices of the DAG, topologically sorted.
+   *
+   * This method is "morally" const, but it sets the vertex indices in the DAG.
+   *
+   * @return vector of vertices in a topological (causal) order
+   */
+  std::vector<GPVert> vertices_in_order() const;
+
+  std::tuple<
+      std::vector<std::vector<PauliNode_ptr>>, std::vector<PauliNode_ptr>,
+      boost::bimap<unsigned, unsigned>, Expr>
+  get_sequence();
+
+ private:
   /**
    * Applies the given gate to the end of the circuit.
    * Clifford gates transform the tableau.
@@ -329,7 +349,10 @@ class GPGraph {
    */
   void apply_gate_at_end(const Command& cmd);
 
- private:
+  void apply_pauli_at_end(
+      const std::vector<Pauli>& paulis, const Expr& angle,
+      const qubit_vector_t& qbs);
+
   void apply_node_at_end(PauliNode_ptr& node);
 
   /**
@@ -339,14 +362,15 @@ class GPGraph {
    * without changing the structure.
    */
   mutable GPDAG graph_;
-
-  [[maybe_unused]] const unsigned n_qubits_;
-  [[maybe_unused]] const unsigned n_bits_;
+  const unsigned n_qubits_;
+  const unsigned n_bits_;
 
   /** The tableau of the Clifford effect of the circuit */
   UnitaryRevTableau cliff_;
   /** The record of measurements at the very end of the circuit */
   boost::bimap<unsigned, unsigned> measures_;
+
+  Expr global_phase_;
 
   GPVertSet start_line_;
   GPVertSet end_line_;
@@ -361,27 +385,6 @@ class GPGraph {
  */
 std::tuple<std::vector<PauliNode_ptr>, std::vector<PauliNode_ptr>>
 gpg_from_unordered_set(const std::vector<SymPauliTensor>& unordered_set);
-
-/**
- * @brief Transforms a circuit of PauliExpBoxes followed by Clifford gates and
- * end-of-circuit measurements into a sequence of PauliRotations,
- * PauliPropagations, and an end-of-circuit measurement circuit.
- *
- * The first returned object is an empty circuit onto which the synthesized
- * circuit will be built. The final element of the returned tuple is a map from
- * integers to the original UnitIDs, allowing the final circuit to use the
- * orignal UnitIDs.
- *
- * @param circ
- * @return std::tuple<
- * Circuit,
- * std::vector<std::vector<PauliNode_ptr>>, std::vector<PauliNode_ptr>,
- * Circuit, unit_map_t>
- */
-std::tuple<
-    Circuit, std::vector<std::vector<PauliNode_ptr>>,
-    std::vector<PauliNode_ptr>, Circuit, unit_map_t>
-gpg_from_circuit(const Circuit& circ);
 
 /**
  * @brief Given a circuit consists of PauliExpBoxes followed by clifford gates,

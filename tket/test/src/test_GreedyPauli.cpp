@@ -47,15 +47,14 @@ SCENARIO("Unsupported circuits") {
     circ.add_op<unsigned>(OpType::Reset, {0});
     REQUIRE_THROWS_MATCHES(
         Transforms::greedy_pauli_optimisation().apply(circ), BadOpType,
-        MessageContains("Cannot add gate to PauliGraph"));
+        MessageContains("Cannot add gate to GPGraph"));
   }
   GIVEN("Circuit with conditional gates") {
     Circuit circ(2, 2);
     circ.add_conditional_gate<unsigned>(OpType::Rz, {0.5}, {0}, {0}, 0);
     REQUIRE_THROWS_MATCHES(
         Transforms::greedy_pauli_optimisation().apply(circ), BadOpType,
-        MessageContains(
-            "Can only make a PauliGraph from a circuit of basic gates"));
+        MessageContains("Cannot add gate to GPGraph"));
   }
 }
 SCENARIO("Clifford synthesis") {

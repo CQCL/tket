@@ -441,27 +441,42 @@ Circuit greedy_pauli_set_synthesis(
 
 Circuit greedy_pauli_graph_synthesis(
     const Circuit& circ, double discount_rate, double depth_weight) {
-  // c is the circuit we are trying to build
-  auto [c, rotation_sets, rows, measure_circ, rev_unit_map] =
-      gpg_from_circuit(circ);
-  DepthTracker depth_tracker(c.n_qubits());
+  Circuit circ_flat(circ);
+  unsigned n_qubits = circ_flat.n_qubits();
+  unsigned n_bits = circ_flat.n_bits();
+  // empty circuit
+  Circuit new_circ(n_qubits, n_bits);
+  std::optional<std::string> name = circ_flat.get_name();
+  if (name != std::nullopt) {
+    new_circ.set_name(name.value());
+  }
+  unit_map_t unit_map = circ_flat.flatten_registers();
+  unit_map_t rev_unit_map;
+  for (const auto& pair : unit_map) {
+    rev_unit_map.insert({pair.second, pair.first});
+  }
+  GPGraph gpg(circ_flat);
+  auto [rotation_sets, rows, measures, global_phase] = gpg.get_sequence();
+  new_circ.add_phase(global_phase);
+  DepthTracker depth_tracker(n_qubits);
   // synthesise Pauli exps
   pauli_exps_synthesis(
-      rotation_sets, rows, c, discount_rate, depth_weight, depth_tracker);
+      rotation_sets, rows, new_circ, discount_rate, depth_weight,
+      depth_tracker);
   // synthesise the tableau
-  tableau_row_nodes_synthesis(rows, c, depth_weight, depth_tracker);
-  c.append(measure_circ);
-  c.rename_units(rev_unit_map);
-  c.replace_SWAPs();
-  return c;
+  tableau_row_nodes_synthesis(rows, new_circ, depth_weight, depth_tracker);
+  for (auto it = measures.begin(); it != measures.end(); ++it) {
+    new_circ.add_measure(it->left, it->right);
+  }
+  new_circ.rename_units(rev_unit_map);
+  new_circ.replace_SWAPs();
+  return new_circ;
 }
 
 }  // namespace GreedyPauliSimp
 
 Transform greedy_pauli_optimisation(double discount_rate, double depth_weight) {
   return Transform([discount_rate, depth_weight](Circuit& circ) {
-    synthesise_pauli_graph(PauliSynthStrat::Sets, CXConfigType::Snake)
-        .apply(circ);
     circ = GreedyPauliSimp::greedy_pauli_graph_synthesis(
         circ, discount_rate, depth_weight);
     singleq_clifford_sweep().apply(circ);
