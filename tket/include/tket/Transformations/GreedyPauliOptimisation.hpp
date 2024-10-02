@@ -16,6 +16,7 @@
 
 #include "Transform.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Clifford/UnitaryTableau.hpp"
 
 namespace tket {
 
@@ -136,6 +137,8 @@ class SingleNode : public PauliNode {
   std::pair<unsigned, Pauli> first_support() const;
 
   bool sign() const { return sign_; };
+
+  std::vector<Pauli> string() const { return string_; };
 
  protected:
   std::vector<Pauli> string_;
@@ -278,6 +281,75 @@ class PauliPropagation : public ACPairNode {
 
  private:
   unsigned qubit_index_;
+};
+
+typedef boost::adjacency_list<
+    boost::listS, boost::listS, boost::bidirectionalS,
+    // indexing needed for algorithms such as topological sort
+    boost::property<boost::vertex_index_t, int, PauliNode_ptr>>
+    GPDAG;
+
+typedef boost::graph_traits<GPDAG>::vertex_descriptor GPVert;
+typedef boost::graph_traits<GPDAG>::edge_descriptor GPEdge;
+
+typedef sequence_set_t<GPVert> GPVertSet;
+typedef sequence_set_t<GPEdge> GPEdgeSet;
+
+/**
+ * Pauli graph structure for GreedyPauliSimp.
+ * The dependency graph consists of Pauli rotations, mid-circuit measurements,
+ * resets, conditional Pauli rotations, and classical operations as internal
+ * nodes. Edges represent gate dependencies, where one node depends on another
+ * if their underlying Pauli strings do not commute or if they share a classical
+ * bit.
+ *
+ * End-of-circuit measurements are stored as an integer-to-integer map. These
+ * measurements are kept separately (i.e. after the final Clifford) so the
+ * optimisation around them can be later handed to CliffordPushThroughMeausres.
+ *
+ * The final Clifford operator is stored using a UnitaryRevTableau. Note that
+ * UnitaryRevTableau is chose over PauliPropagations because of the abundance of
+ * already existed updating methods.
+ *
+ */
+class GPGraph {
+  /** Construct an empty dependency graph */
+  GPGraph(const unsigned& n_qubits, const unsigned& n_bits);
+
+  GPVertSet get_successors(const GPVert& vert) const;
+
+  GPVertSet get_predecessors(const GPVert& vert) const;
+
+  /**
+   * Applies the given gate to the end of the circuit.
+   * Clifford gates transform the tableau.
+   * Non-Clifford gates and conditional Clifford gates are transformed
+   * into PauliNodes by the tableau and added
+   * to the graph.
+   */
+  void apply_gate_at_end(const Command& cmd);
+
+ private:
+  void apply_node_at_end(PauliNode_ptr& node);
+
+  /**
+   * The dependency graph of Pauli nodes
+   *
+   * This is mutated by \ref vertices_in_order which indexes the vertices
+   * without changing the structure.
+   */
+  mutable GPDAG graph_;
+
+  [[maybe_unused]] const unsigned n_qubits_;
+  [[maybe_unused]] const unsigned n_bits_;
+
+  /** The tableau of the Clifford effect of the circuit */
+  UnitaryRevTableau cliff_;
+  /** The record of measurements at the very end of the circuit */
+  boost::bimap<unsigned, unsigned> measures_;
+
+  GPVertSet start_line_;
+  GPVertSet end_line_;
 };
 
 /**
