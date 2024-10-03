@@ -336,7 +336,7 @@ class GPGraph {
 
   std::tuple<
       std::vector<std::vector<PauliNode_ptr>>, std::vector<PauliNode_ptr>,
-      boost::bimap<unsigned, unsigned>, Expr>
+      boost::bimap<unsigned, unsigned>>
   get_sequence();
 
  private:
@@ -369,8 +369,6 @@ class GPGraph {
   UnitaryRevTableau cliff_;
   /** The record of measurements at the very end of the circuit */
   boost::bimap<unsigned, unsigned> measures_;
-
-  Expr global_phase_;
 
   GPVertSet start_line_;
   GPVertSet end_line_;

@@ -456,8 +456,7 @@ Circuit greedy_pauli_graph_synthesis(
     rev_unit_map.insert({pair.second, pair.first});
   }
   GPGraph gpg(circ_flat);
-  auto [rotation_sets, rows, measures, global_phase] = gpg.get_sequence();
-  new_circ.add_phase(global_phase);
+  auto [rotation_sets, rows, measures] = gpg.get_sequence();
   DepthTracker depth_tracker(n_qubits);
   // synthesise Pauli exps
   pauli_exps_synthesis(

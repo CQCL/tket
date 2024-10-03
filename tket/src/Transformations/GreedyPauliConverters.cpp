@@ -52,24 +52,6 @@ static std::vector<PauliNode_ptr> get_nodes_from_tableau(
   return rows;
 }
 
-// detect trivial pauli exps, if true then return the global phase
-static std::pair<bool, Expr> is_trivial_pauliexp(
-    const std::vector<Pauli>& paulis, const Expr& theta) {
-  if (static_cast<std::size_t>(std::count(
-          paulis.begin(), paulis.end(), Pauli::I)) == paulis.size()) {
-    // If all identity term
-    return {true, -theta / 2};
-  }
-  if (equiv_0(theta, 2)) {
-    if (equiv_0(theta, 4)) {
-      return {true, 0};
-    } else {
-      return {true, -1};
-    }
-  }
-  return {false, 0};
-}
-
 std::tuple<std::vector<PauliNode_ptr>, std::vector<PauliNode_ptr>>
 gpg_from_unordered_set(const std::vector<SymPauliTensor>& unordered_set) {
   std::vector<PauliNode_ptr> rotation_set;
@@ -136,9 +118,7 @@ std::optional<PauliNode_ptr> merge_nodes(
 }
 
 GPGraph::GPGraph(const Circuit& circ)
-    : n_qubits_(circ.n_qubits()),
-      n_bits_(circ.n_bits()),
-      global_phase_(circ.get_phase()) {
+    : n_qubits_(circ.n_qubits()), n_bits_(circ.n_bits()) {
   TKET_ASSERT(circ.is_simple());
   qubit_vector_t qubits = circ.all_qubits();
   bit_vector_t bits = circ.all_bits();
@@ -240,24 +220,24 @@ void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
 void GPGraph::apply_pauli_at_end(
     const std::vector<Pauli>& paulis, const Expr& angle,
     const qubit_vector_t& qbs) {
-  auto [trivial, global_phase] = is_trivial_pauliexp(paulis, angle);
-  if (trivial) {
-    global_phase_ += global_phase;
-  } else {
-    QubitPauliMap qpm;
-    for (unsigned i = 0; i != qbs.size(); ++i)
-      qpm.insert({Qubit(qbs[i]), paulis[i]});
-    std::optional<unsigned> cliff_angle = equiv_Clifford(angle);
-    if (cliff_angle) {
-      if (cliff_angle.value() != 0) {
-        cliff_.apply_pauli_at_end(SpPauliStabiliser(qpm), *cliff_angle);
-      }
-    } else {
-      SpPauliStabiliser qpt = cliff_.get_row_product(SpPauliStabiliser(qpm));
-      auto [pauli_dense, theta] = dense_pauli(qpt, n_qubits_, angle);
-      PauliNode_ptr node = std::make_shared<PauliRotation>(pauli_dense, theta);
-      apply_node_at_end(node);
+  // Note that global phase is ignored
+  if (static_cast<std::size_t>(std::count(
+          paulis.begin(), paulis.end(), Pauli::I)) == paulis.size()) {
+    return;
+  }
+  QubitPauliMap qpm;
+  for (unsigned i = 0; i != qbs.size(); ++i)
+    qpm.insert({Qubit(qbs[i]), paulis[i]});
+  std::optional<unsigned> cliff_angle = equiv_Clifford(angle);
+  if (cliff_angle) {
+    if (cliff_angle.value() != 0) {
+      cliff_.apply_pauli_at_end(SpPauliStabiliser(qpm), *cliff_angle);
     }
+  } else {
+    SpPauliStabiliser qpt = cliff_.get_row_product(SpPauliStabiliser(qpm));
+    auto [pauli_dense, theta] = dense_pauli(qpt, n_qubits_, angle);
+    PauliNode_ptr node = std::make_shared<PauliRotation>(pauli_dense, theta);
+    apply_node_at_end(node);
   }
 }
 
@@ -483,7 +463,7 @@ std::vector<GPVert> GPGraph::vertices_in_order() const {
 
 std::tuple<
     std::vector<std::vector<PauliNode_ptr>>, std::vector<PauliNode_ptr>,
-    boost::bimap<unsigned, unsigned>, Expr>
+    boost::bimap<unsigned, unsigned>>
 GPGraph::get_sequence() {
   std::vector<GPVert> vertices = vertices_in_order();
   auto it = vertices.begin();
@@ -511,7 +491,7 @@ GPGraph::get_sequence() {
   // add clifford
   std::vector<PauliNode_ptr> cliff_nodes =
       get_nodes_from_tableau(cliff_, n_qubits_);
-  return {interior_nodes, cliff_nodes, measures_, global_phase_};
+  return {interior_nodes, cliff_nodes, measures_};
 }
 
 }  // namespace GreedyPauliSimp
