@@ -91,15 +91,30 @@ static bool strings_commute(
   return (n_conflicts % 2) == 0;
 }
 
-static bool nodes_commute(const PauliNode_ptr& n1, const PauliNode_ptr& n2) {
-  if (n1->get_type() == PauliNodeType::Rotation &&
-      n2->get_type() == PauliNodeType::Rotation) {
-    const PauliRotation& rot1 = dynamic_cast<const PauliRotation&>(*n1);
-    const PauliRotation& rot2 = dynamic_cast<const PauliRotation&>(*n2);
-    return strings_commute(rot1.string(), rot2.string());
-  } else {
-    TKET_ASSERT(false);
+static std::vector<Pauli> get_single_node_string(const PauliNode_ptr& n) {
+  if (n->get_type() == PauliNodeType::Rotation) {
+    return dynamic_cast<const PauliRotation&>(*n).string();
+  } else if (n->get_type() == PauliNodeType::ConditionalRotation) {
+    return dynamic_cast<const ConditionalPauliRotation&>(*n).string();
   }
+  TKET_ASSERT(false);
+}
+
+static bool nodes_commute(const PauliNode_ptr& n1, const PauliNode_ptr& n2) {
+  if (n1->get_type() == PauliNodeType::Rotation) {
+    if (n2->get_type() == PauliNodeType::Rotation ||
+        n2->get_type() == PauliNodeType::ConditionalRotation) {
+      return strings_commute(
+          get_single_node_string(n1), get_single_node_string(n2));
+    }
+  } else if (n1->get_type() == PauliNodeType::ConditionalRotation) {
+    if (n2->get_type() == PauliNodeType::Rotation ||
+        n2->get_type() == PauliNodeType::ConditionalRotation) {
+      return strings_commute(
+          get_single_node_string(n1), get_single_node_string(n2));
+    }
+  }
+  TKET_ASSERT(false);
 }
 
 std::optional<PauliNode_ptr> merge_nodes(
@@ -109,9 +124,8 @@ std::optional<PauliNode_ptr> merge_nodes(
     const PauliRotation& rot1 = dynamic_cast<const PauliRotation&>(*n1);
     const PauliRotation& rot2 = dynamic_cast<const PauliRotation&>(*n2);
     if (rot1.string() == rot2.string()) {
-      Expr angle1 = rot1.sign() ? rot1.theta() : -rot1.theta();
-      Expr angle2 = rot2.sign() ? rot2.theta() : -rot2.theta();
-      return std::make_shared<PauliRotation>(rot1.string(), angle1 + angle2);
+      return std::make_shared<PauliRotation>(
+          rot1.string(), rot1.angle() + rot2.angle());
     }
   }
   return std::nullopt;
@@ -173,6 +187,7 @@ void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
     // Check if we can commute past it
     PauliNode_ptr compare_node = graph_[to_compare];
     if (nodes_commute(node, compare_node)) {
+      // Check if two pauli rotations can be merged
       if (node->get_type() == PauliNodeType::Rotation &&
           compare_node->get_type() == PauliNodeType::Rotation) {
         const PauliRotation& rot1 = dynamic_cast<const PauliRotation&>(*node);
@@ -181,8 +196,7 @@ void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
         if (rot1.string() == rot2.string()) {
           boost::clear_vertex(new_vert, graph_);
           boost::remove_vertex(new_vert, graph_);
-          Expr merged_angle = (rot1.sign() ? rot1.theta() : -rot1.theta()) +
-                              (rot2.sign() ? rot2.theta() : -rot2.theta());
+          Expr merged_angle = rot1.angle() + rot2.angle();
           std::optional<unsigned> cl_ang = equiv_Clifford(merged_angle);
           if (cl_ang) {
             cliff_.apply_pauli_at_front(
@@ -219,29 +233,39 @@ void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
 
 void GPGraph::apply_pauli_at_end(
     const std::vector<Pauli>& paulis, const Expr& angle,
-    const qubit_vector_t& qbs) {
+    const qubit_vector_t& qbs, bool conditional,
+    std::vector<unsigned> cond_bits, unsigned cond_value) {
   // Note that global phase is ignored
   if (static_cast<std::size_t>(std::count(
           paulis.begin(), paulis.end(), Pauli::I)) == paulis.size()) {
     return;
   }
+  std::optional<unsigned> cliff_angle = equiv_Clifford(angle);
+  if (cliff_angle && cliff_angle.value() == 0) {
+    return;
+  }
   QubitPauliMap qpm;
   for (unsigned i = 0; i != qbs.size(); ++i)
     qpm.insert({Qubit(qbs[i]), paulis[i]});
-  std::optional<unsigned> cliff_angle = equiv_Clifford(angle);
-  if (cliff_angle) {
-    if (cliff_angle.value() != 0) {
-      cliff_.apply_pauli_at_end(SpPauliStabiliser(qpm), *cliff_angle);
-    }
-  } else {
-    SpPauliStabiliser qpt = cliff_.get_row_product(SpPauliStabiliser(qpm));
-    auto [pauli_dense, theta] = dense_pauli(qpt, n_qubits_, angle);
-    PauliNode_ptr node = std::make_shared<PauliRotation>(pauli_dense, theta);
-    apply_node_at_end(node);
+  if (cliff_angle && !conditional) {
+    cliff_.apply_pauli_at_end(SpPauliStabiliser(qpm), *cliff_angle);
+    return;
   }
+  SpPauliStabiliser qpt = cliff_.get_row_product(SpPauliStabiliser(qpm));
+  auto [pauli_dense, theta] = dense_pauli(qpt, n_qubits_, angle);
+  PauliNode_ptr node;
+  if (conditional) {
+    node = std::make_shared<ConditionalPauliRotation>(
+        pauli_dense, theta, cond_bits, cond_value);
+  } else {
+    node = std::make_shared<PauliRotation>(pauli_dense, theta);
+  }
+  apply_node_at_end(node);
 }
 
-void GPGraph::apply_gate_at_end(const Command& cmd) {
+void GPGraph::apply_gate_at_end(
+    const Command& cmd, bool conditional, std::vector<unsigned> cond_bits,
+    unsigned cond_value) {
   const Op_ptr op = cmd.get_op_ptr();
   unit_vector_t args = cmd.get_args();
   qubit_vector_t qbs = cmd.get_qubits();
@@ -264,190 +288,156 @@ void GPGraph::apply_gate_at_end(const Command& cmd) {
     }
   }
 
+  std::vector<std::pair<std::vector<Pauli>, Expr>> pauli_rots;
   switch (type) {
+    case OpType::Conditional: {
+      const Conditional& cond = static_cast<const Conditional&>(*op);
+      std::vector<unsigned> cond_bits;
+      unit_vector_t inner_args;
+      for (unsigned i = 0; i < cond.get_width(); ++i)
+        cond_bits.push_back(Bit(args.at(i)).index().at(0));
+      for (unsigned i = cond.get_width(); i < args.size(); ++i)
+        inner_args.push_back(args.at(i));
+      apply_gate_at_end(
+          Command(cond.get_op(), inner_args), true, cond_bits,
+          cond.get_value());
+      return;
+    }
     case OpType::Measure: {
       measures_.insert({args.at(0).index().at(0), args.at(1).index().at(0)});
+      return;
+    }
+    case OpType::Z: {
+      pauli_rots.push_back({{Pauli::Z}, 1});
       break;
     }
-    case OpType::Z:
-    case OpType::X:
-    case OpType::Y:
-    case OpType::S:
-    case OpType::Sdg:
-    case OpType::V:
-    case OpType::Vdg:
-    case OpType::H:
+    case OpType::X: {
+      pauli_rots.push_back({{Pauli::X}, 1});
+      break;
+    }
+    case OpType::Y: {
+      pauli_rots.push_back({{Pauli::Y}, 1});
+      break;
+    }
+    case OpType::S: {
+      pauli_rots.push_back({{Pauli::Z}, 0.5});
+      break;
+    }
+    case OpType::V: {
+      pauli_rots.push_back({{Pauli::X}, 0.5});
+      break;
+    }
+    case OpType::Sdg: {
+      pauli_rots.push_back({{Pauli::Z}, 1.5});
+      break;
+    }
+    case OpType::Vdg: {
+      pauli_rots.push_back({{Pauli::X}, 1.5});
+      break;
+    }
+    case OpType::H: {
+      pauli_rots.push_back({{Pauli::Y}, 0.5});
+      pauli_rots.push_back({{Pauli::X}, 1});
+      break;
+    }
     case OpType::CX:
     case OpType::CY:
-    case OpType::CZ:
-    case OpType::SWAP:
+    case OpType::CZ: {
+      Pauli t = (type == OpType::CZ)   ? Pauli::Z
+                : (type == OpType::CX) ? Pauli::X
+                                       : Pauli::Y;
+      pauli_rots.push_back({{Pauli::Z, Pauli::I}, 1.5});
+      pauli_rots.push_back({{Pauli::I, t}, 1.5});
+      pauli_rots.push_back({{Pauli::Z, t}, 0.5});
+      break;
+    }
+    case OpType::SWAP: {
+      pauli_rots.push_back({{Pauli::Z, Pauli::Z}, 0.5});
+      pauli_rots.push_back({{Pauli::X, Pauli::X}, 0.5});
+      pauli_rots.push_back({{Pauli::Y, Pauli::Y}, 0.5});
+      break;
+    }
     case OpType::noop:
     case OpType::Phase: {
-      cliff_.apply_gate_at_end(type, qbs);
       break;
     }
     case OpType::Rz: {
-      SpPauliStabiliser pauli = cliff_.get_zrow(qbs.at(0));
-      Expr angle = op->get_params().at(0);
-      std::optional<unsigned> cliff_angle = equiv_Clifford(angle);
-      if (cliff_angle) {
-        for (unsigned i = 0; i < cliff_angle.value(); i++) {
-          cliff_.apply_gate_at_end(OpType::S, qbs);
-        }
-      } else {
-        auto [pauli_dense, theta] = dense_pauli(pauli, n_qubits_, angle);
-        PauliNode_ptr node =
-            std::make_shared<PauliRotation>(pauli_dense, theta);
-        apply_node_at_end(node);
-      }
+      pauli_rots.push_back({{Pauli::Z}, op->get_params().at(0)});
       break;
     }
     case OpType::Rx: {
-      SpPauliStabiliser pauli = cliff_.get_xrow(qbs.at(0));
-      Expr angle = op->get_params().at(0);
-      std::optional<unsigned> cliff_angle = equiv_Clifford(angle);
-      if (cliff_angle) {
-        for (unsigned i = 0; i < cliff_angle.value(); i++) {
-          cliff_.apply_gate_at_end(OpType::V, qbs);
-        }
-      } else {
-        auto [pauli_dense, theta] = dense_pauli(pauli, n_qubits_, angle);
-        PauliNode_ptr node =
-            std::make_shared<PauliRotation>(pauli_dense, theta);
-        apply_node_at_end(node);
-      }
+      pauli_rots.push_back({{Pauli::X}, op->get_params().at(0)});
       break;
     }
     case OpType::Ry: {
-      Expr angle = op->get_params().at(0);
-      std::optional<unsigned> cliff_angle = equiv_Clifford(angle);
-      if (cliff_angle) {
-        if (cliff_angle.value() != 0) {
-          cliff_.apply_gate_at_end(OpType::V, qbs);
-          for (unsigned i = 0; i < cliff_angle.value(); i++) {
-            cliff_.apply_gate_at_end(OpType::S, qbs);
-          }
-          cliff_.apply_gate_at_end(OpType::Vdg, qbs);
-        }
-      } else {
-        SpPauliStabiliser ypauli =
-            cliff_.get_row_product(SpPauliStabiliser(qbs.at(0), Pauli::Y));
-        auto [pauli_dense, theta] = dense_pauli(ypauli, n_qubits_, angle);
-        PauliNode_ptr node =
-            std::make_shared<PauliRotation>(pauli_dense, theta);
-        apply_node_at_end(node);
-      }
+      pauli_rots.push_back({{Pauli::Y}, op->get_params().at(0)});
       break;
     }
     case OpType::PhasedX: {
       Expr alpha = op->get_params().at(0);
       Expr beta = op->get_params().at(1);
-      std::optional<unsigned> cliff_alpha = equiv_Clifford(alpha);
-      std::optional<unsigned> cliff_beta = equiv_Clifford(beta);
-      // Rz(-b)
-      if (cliff_beta) {
-        for (unsigned i = 0; i < cliff_beta.value(); i++) {
-          cliff_.apply_gate_at_end(OpType::Sdg, qbs);
-        }
-      } else {
-        SpPauliStabiliser zpauli = cliff_.get_zrow(qbs.at(0));
-        auto [pauli_dense, theta] = dense_pauli(zpauli, n_qubits_, -beta);
-        PauliNode_ptr node =
-            std::make_shared<PauliRotation>(pauli_dense, theta);
-        apply_node_at_end(node);
-      }
-      // Rx(a)
-      if (cliff_alpha) {
-        for (unsigned i = 0; i < cliff_alpha.value(); i++) {
-          cliff_.apply_gate_at_end(OpType::V, qbs);
-        }
-      } else {
-        SpPauliStabiliser xpauli = cliff_.get_xrow(qbs.at(0));
-        auto [pauli_dense, theta] = dense_pauli(xpauli, n_qubits_, alpha);
-        PauliNode_ptr node =
-            std::make_shared<PauliRotation>(pauli_dense, theta);
-        apply_node_at_end(node);
-      }
-      // Rz(b)
-      if (cliff_beta) {
-        for (unsigned i = 0; i < cliff_beta.value(); i++) {
-          cliff_.apply_gate_at_end(OpType::S, qbs);
-        }
-      } else {
-        SpPauliStabiliser zpauli = cliff_.get_zrow(qbs.at(0));
-        auto [pauli_dense, theta] = dense_pauli(zpauli, n_qubits_, beta);
-        PauliNode_ptr node =
-            std::make_shared<PauliRotation>(pauli_dense, theta);
-        apply_node_at_end(node);
-      }
+      pauli_rots.push_back({{Pauli::Z}, -beta});
+      pauli_rots.push_back({{Pauli::X}, alpha});
+      pauli_rots.push_back({{Pauli::Z}, beta});
       break;
     }
     case OpType::T: {
-      SpPauliStabiliser pauli = cliff_.get_zrow(qbs.at(0));
-      auto [pauli_dense, theta] = dense_pauli(pauli, n_qubits_, 0.25);
-      PauliNode_ptr node = std::make_shared<PauliRotation>(pauli_dense, theta);
-      apply_node_at_end(node);
+      pauli_rots.push_back({{Pauli::Z}, 0.25});
       break;
     }
     case OpType::Tdg: {
-      SpPauliStabiliser pauli = cliff_.get_zrow(qbs.at(0));
-      auto [pauli_dense, theta] = dense_pauli(pauli, n_qubits_, -0.25);
-      PauliNode_ptr node = std::make_shared<PauliRotation>(pauli_dense, theta);
-      apply_node_at_end(node);
+      pauli_rots.push_back({{Pauli::Z}, -0.25});
       break;
     }
     case OpType::ZZMax: {
-      cliff_.apply_gate_at_end(OpType::S, {qbs.at(0)});
-      cliff_.apply_gate_at_end(OpType::Z, {qbs.at(1)});
-      cliff_.apply_gate_at_end(OpType::S, {qbs.at(1)});
-      cliff_.apply_gate_at_end(OpType::V, {qbs.at(1)});
-      cliff_.apply_gate_at_end(OpType::S, {qbs.at(1)});
-      cliff_.apply_gate_at_end(OpType::CX, qbs);
-      cliff_.apply_gate_at_end(OpType::S, {qbs.at(1)});
-      cliff_.apply_gate_at_end(OpType::V, {qbs.at(1)});
+      pauli_rots.push_back({{Pauli::Z, Pauli::Z}, 0.5});
       break;
     }
     case OpType::PhaseGadget:
     case OpType::ZZPhase: {
       Expr angle = op->get_params().at(0);
       std::vector<Pauli> paulis(qbs.size(), Pauli::Z);
-      apply_pauli_at_end(paulis, angle, qbs);
+      pauli_rots.push_back({paulis, angle});
       break;
     }
     case OpType::XXPhase: {
       Expr angle = op->get_params().at(0);
-      apply_pauli_at_end({Pauli::X, Pauli::X}, angle, qbs);
+      pauli_rots.push_back({{Pauli::X, Pauli::X}, angle});
       break;
     }
     case OpType::YYPhase: {
       Expr angle = op->get_params().at(0);
-      apply_pauli_at_end({Pauli::Y, Pauli::Y}, angle, qbs);
+      pauli_rots.push_back({{Pauli::Y, Pauli::Y}, angle});
       break;
     }
     case OpType::PauliExpBox: {
       const PauliExpBox& peb = static_cast<const PauliExpBox&>(*op);
-      apply_pauli_at_end(peb.get_paulis(), peb.get_phase(), qbs);
+      pauli_rots.push_back({peb.get_paulis(), peb.get_phase()});
       break;
     }
     case OpType::PauliExpPairBox: {
       const PauliExpPairBox& peb = static_cast<const PauliExpPairBox&>(*op);
       auto [paulis1, paulis2] = peb.get_paulis_pair();
       auto [phase1, phase2] = peb.get_phase_pair();
-      apply_pauli_at_end(paulis1, phase1, qbs);
-      apply_pauli_at_end(paulis2, phase2, qbs);
+      pauli_rots.push_back({paulis1, phase1});
+      pauli_rots.push_back({paulis2, phase2});
       break;
     }
     case OpType::PauliExpCommutingSetBox: {
       const PauliExpCommutingSetBox& peb =
           static_cast<const PauliExpCommutingSetBox&>(*op);
       for (const SymPauliTensor& pt : peb.get_pauli_gadgets()) {
-        apply_pauli_at_end(pt.string, pt.coeff, qbs);
+        pauli_rots.push_back({pt.string, pt.coeff});
       }
       break;
     }
     default: {
       throw BadOpType("Cannot add gate to GPGraph", type);
     }
+  }
+  for (auto it = pauli_rots.begin(); it != pauli_rots.end(); ++it) {
+    apply_pauli_at_end(
+        it->first, it->second, qbs, conditional, cond_bits, cond_value);
   }
 }
 

@@ -52,6 +52,8 @@ enum class PauliNodeType {
   // Defines how a Pauli X and a Pauli Z on the same qubit
   // get propagated from right to left through a Clifford operator.
   Propagation,
+  // Pauli rotation with classical control
+  ConditionalRotation,
 };
 
 /**
@@ -247,10 +249,36 @@ class PauliRotation : public SingleNode {
 
   PauliNodeType get_type() const { return PauliNodeType::Rotation; };
 
-  Expr theta() const { return theta_; };
+  Expr angle() const { return sign_ ? theta_ : -theta_; };
 
- private:
+ protected:
   Expr theta_;
+};
+
+/**
+ * @brief A Pauli exponential defined by a padded Pauli string
+ * and a rotation angle
+ */
+class ConditionalPauliRotation : public PauliRotation {
+ public:
+  /**
+   * @brief Construct a new PauliRotation object.
+   *
+   * @param string the Pauli string
+   * @param theta the rotation angle in half-turns
+   */
+  ConditionalPauliRotation(
+      std::vector<Pauli> string, Expr theta, std::vector<unsigned> cond_bits,
+      unsigned cond_value);
+
+  PauliNodeType get_type() const { return PauliNodeType::ConditionalRotation; };
+
+  std::vector<unsigned> cond_bits() const { return cond_bits_; };
+  unsigned cond_value() const { return cond_value_; };
+
+ protected:
+  std::vector<unsigned> cond_bits_;
+  unsigned cond_value_;
 };
 
 /**
@@ -347,11 +375,14 @@ class GPGraph {
    * into PauliNodes by the tableau and added
    * to the graph.
    */
-  void apply_gate_at_end(const Command& cmd);
+  void apply_gate_at_end(
+      const Command& cmd, bool conditional = false,
+      std::vector<unsigned> cond_bits = {}, unsigned cond_value = 0);
 
   void apply_pauli_at_end(
       const std::vector<Pauli>& paulis, const Expr& angle,
-      const qubit_vector_t& qbs);
+      const qubit_vector_t& qbs, bool conditional = false,
+      std::vector<unsigned> cond_bits = {}, unsigned cond_value = 0);
 
   void apply_node_at_end(PauliNode_ptr& node);
 

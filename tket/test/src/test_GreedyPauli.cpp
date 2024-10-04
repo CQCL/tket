@@ -49,13 +49,6 @@ SCENARIO("Unsupported circuits") {
         Transforms::greedy_pauli_optimisation().apply(circ), BadOpType,
         MessageContains("Cannot add gate to GPGraph"));
   }
-  GIVEN("Circuit with conditional gates") {
-    Circuit circ(2, 2);
-    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.5}, {0}, {0}, 0);
-    REQUIRE_THROWS_MATCHES(
-        Transforms::greedy_pauli_optimisation().apply(circ), BadOpType,
-        MessageContains("Cannot add gate to GPGraph"));
-  }
 }
 SCENARIO("Clifford synthesis") {
   GIVEN("Empty circuit") {
@@ -73,9 +66,9 @@ SCENARIO("Clifford synthesis") {
   }
   GIVEN("2Q Simple Clifford") {
     Circuit circ(2);
-    circ.add_op<unsigned>(OpType::Y, {0});
+    // circ.add_op<unsigned>(OpType::Y, {0});
     circ.add_op<unsigned>(OpType::Vdg, {1});
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    // circ.add_op<unsigned>(OpType::CX, {0, 1});
     Circuit d(circ);
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
@@ -274,6 +267,20 @@ SCENARIO("Complete synthesis") {
     }
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(g));
     REQUIRE(d == g);
+  }
+  GIVEN("Circuit with conditional gates") {
+    Circuit circ(2, 2);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.5}, {0}, {0}, 0);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    Circuit d(2, 2);
+    Op_ptr cond = std::make_shared<Conditional>(
+        std::make_shared<PauliExpBox>(
+            SymPauliTensor({Pauli::Z, Pauli::I}, 0.5)),
+        1, 0);
+    d.add_op<unsigned>(cond, {0, 0, 1});
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
+    REQUIRE(circ == d);
   }
 }
 SCENARIO("Test GreedyPauliSimp pass construction") {

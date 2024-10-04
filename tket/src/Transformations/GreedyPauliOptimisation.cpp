@@ -325,35 +325,50 @@ static void consume_available_rotations(
   while (true) {
     std::vector<PauliNode_ptr>& first_set = rotation_sets[0];
     for (unsigned i = first_set.size(); i-- > 0;) {
-      TKET_ASSERT(first_set[i]->get_type() == PauliNodeType::Rotation);
-      PauliRotation& node = dynamic_cast<PauliRotation&>(*first_set[i]);
-      if (node.tqe_cost() > 0) continue;
-      auto [q_index, supp] = node.first_support();
-      depth_tracker.add_1q_gate(q_index);
-      OpType rot_type;
-      switch (supp) {
-        case Pauli::Y: {
-          rot_type = OpType::Ry;
-          break;
+      PauliNode_ptr& node_ptr = first_set[i];
+      TKET_ASSERT(
+          node_ptr->get_type() == PauliNodeType::Rotation ||
+          node_ptr->get_type() == PauliNodeType::ConditionalRotation);
+      if (node_ptr->get_type() == PauliNodeType::ConditionalRotation) {
+        // TODO: always consume conditionals
+        ConditionalPauliRotation& node =
+            dynamic_cast<ConditionalPauliRotation&>(*node_ptr);
+        Op_ptr cond = std::make_shared<Conditional>(
+            std::make_shared<PauliExpBox>(
+                SymPauliTensor(node.string(), node.angle())),
+            (unsigned)node.cond_bits().size(), node.cond_value());
+        std::vector<unsigned> args = node.cond_bits();
+        for (unsigned i = 0; i < node.string().size(); i++) {
+          args.push_back(i);
         }
-        case Pauli::Z: {
-          rot_type = OpType::Rz;
-          break;
-        }
-        case Pauli::X: {
-          rot_type = OpType::Rx;
-          break;
-        }
-        default:
-          // support can't be Pauli::I
-          TKET_ASSERT(false);
-      }
-      if (node.sign()) {
-        circ.add_op<unsigned>(rot_type, node.theta(), {q_index});
+        circ.add_op<unsigned>(cond, args);
+        first_set.erase(first_set.begin() + i);
       } else {
-        circ.add_op<unsigned>(rot_type, -node.theta(), {q_index});
+        PauliRotation& node = dynamic_cast<PauliRotation&>(*node_ptr);
+        if (node.tqe_cost() > 0) continue;
+        auto [q_index, supp] = node.first_support();
+        depth_tracker.add_1q_gate(q_index);
+        OpType rot_type;
+        switch (supp) {
+          case Pauli::Y: {
+            rot_type = OpType::Ry;
+            break;
+          }
+          case Pauli::Z: {
+            rot_type = OpType::Rz;
+            break;
+          }
+          case Pauli::X: {
+            rot_type = OpType::Rx;
+            break;
+          }
+          default:
+            // support can't be Pauli::I
+            TKET_ASSERT(false);
+        }
+        circ.add_op<unsigned>(rot_type, node.angle(), {q_index});
+        first_set.erase(first_set.begin() + i);
       }
-      first_set.erase(first_set.begin() + i);
     }
     if (first_set.empty()) {
       rotation_sets.erase(rotation_sets.begin());

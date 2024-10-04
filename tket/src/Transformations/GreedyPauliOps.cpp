@@ -298,6 +298,14 @@ std::tuple<unsigned, Pauli, Pauli> ACPairNode::first_support() const {
 PauliRotation::PauliRotation(std::vector<Pauli> string, Expr theta)
     : SingleNode(string, true), theta_(theta) {}
 
+// ConditionalPauliRotation
+ConditionalPauliRotation::ConditionalPauliRotation(
+    std::vector<Pauli> string, Expr theta, std::vector<unsigned> cond_bits,
+    unsigned cond_value)
+    : PauliRotation(string, theta),
+      cond_bits_(cond_bits),
+      cond_value_(cond_value) {}
+
 // PauliPropagation
 PauliPropagation::PauliPropagation(
     std::vector<Pauli> z_propagation, std::vector<Pauli> x_propagation,
