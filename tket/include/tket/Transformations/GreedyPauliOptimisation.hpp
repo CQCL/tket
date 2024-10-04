@@ -54,6 +54,8 @@ enum class PauliNodeType {
   Propagation,
   // Pauli rotation with classical control
   ConditionalRotation,
+  // Classical operations,
+  Classical,
 };
 
 /**
@@ -70,11 +72,22 @@ enum class CommuteType : unsigned {
   C,
 };
 
+enum class BitType : unsigned {
+  READ,
+  WRITE,
+};
+
 /**
  * @brief Type for 2-qubit entangled Clifford gates
  *
  */
 using TQE = std::tuple<TQEType, unsigned, unsigned>;
+
+struct CommuteInfo {
+  std::vector<std::vector<Pauli>> paulis;
+  // We use UnitID to differentiate between Bit and WasmState
+  std::vector<std::pair<UnitID, BitType>> bits_info;
+};
 
 class PauliNode {
  public:
@@ -84,6 +97,7 @@ class PauliNode {
   virtual void update(const TQE& tqe) = 0;
   virtual void update(const OpType& sq_cliff, const unsigned& a);
   virtual void swap(const unsigned& a, const unsigned& b);
+  virtual CommuteInfo get_commute_info() const = 0;
   virtual std::vector<TQE> reduction_tqes() const = 0;
   virtual ~PauliNode();
 };
@@ -234,6 +248,29 @@ class ACPairNode : public PauliNode {
 };
 
 /**
+ * @brief Contains a Op on classical wires
+ */
+class ClassicalNode : public PauliNode {
+ public:
+  ClassicalNode(std::vector<UnitID> args, Op_ptr op);
+
+  PauliNodeType get_type() const override { return PauliNodeType::Classical; };
+
+  unsigned tqe_cost() const override { return 0; };
+  int tqe_cost_increase(const TQE& /*tqe*/) const override { return 0; };
+  void update(const TQE& /*tqe*/) override { return; };
+  std::vector<TQE> reduction_tqes() const override { return {}; };
+  std::vector<UnitID> args() const { return args_; };
+  Op_ptr op() const { return op_; };
+
+  CommuteInfo get_commute_info() const override;
+
+ protected:
+  std::vector<UnitID> args_;
+  Op_ptr op_;
+};
+
+/**
  * @brief A Pauli exponential defined by a padded Pauli string
  * and a rotation angle
  */
@@ -247,9 +284,11 @@ class PauliRotation : public SingleNode {
    */
   PauliRotation(std::vector<Pauli> string, Expr theta);
 
-  PauliNodeType get_type() const { return PauliNodeType::Rotation; };
+  PauliNodeType get_type() const override { return PauliNodeType::Rotation; };
 
   Expr angle() const { return sign_ ? theta_ : -theta_; };
+
+  CommuteInfo get_commute_info() const override;
 
  protected:
   Expr theta_;
@@ -271,7 +310,11 @@ class ConditionalPauliRotation : public PauliRotation {
       std::vector<Pauli> string, Expr theta, std::vector<unsigned> cond_bits,
       unsigned cond_value);
 
-  PauliNodeType get_type() const { return PauliNodeType::ConditionalRotation; };
+  PauliNodeType get_type() const override {
+    return PauliNodeType::ConditionalRotation;
+  };
+
+  CommuteInfo get_commute_info() const override;
 
   std::vector<unsigned> cond_bits() const { return cond_bits_; };
   unsigned cond_value() const { return cond_value_; };
@@ -303,7 +346,11 @@ class PauliPropagation : public ACPairNode {
       std::vector<Pauli> z_propagation, std::vector<Pauli> x_propagation,
       bool z_sign, bool x_sign, unsigned qubit_index);
 
-  PauliNodeType get_type() const { return PauliNodeType::Propagation; };
+  PauliNodeType get_type() const override {
+    return PauliNodeType::Propagation;
+  };
+
+  CommuteInfo get_commute_info() const override;
 
   unsigned qubit_index() const { return qubit_index_; };
 

@@ -298,6 +298,14 @@ std::tuple<unsigned, Pauli, Pauli> ACPairNode::first_support() const {
 PauliRotation::PauliRotation(std::vector<Pauli> string, Expr theta)
     : SingleNode(string, true), theta_(theta) {}
 
+CommuteInfo PauliRotation::get_commute_info() const {
+  std::vector<std::vector<Pauli>> paulis;
+  for (Pauli p : string_) {
+    paulis.push_back({p});
+  }
+  return {paulis, {}};
+}
+
 // ConditionalPauliRotation
 ConditionalPauliRotation::ConditionalPauliRotation(
     std::vector<Pauli> string, Expr theta, std::vector<unsigned> cond_bits,
@@ -306,12 +314,40 @@ ConditionalPauliRotation::ConditionalPauliRotation(
       cond_bits_(cond_bits),
       cond_value_(cond_value) {}
 
+CommuteInfo ConditionalPauliRotation::get_commute_info() const {
+  std::vector<std::vector<Pauli>> paulis;
+  std::vector<std::pair<UnitID, BitType>> bits_info;
+  for (Pauli p : string_) {
+    paulis.push_back({p});
+  }
+  for (unsigned b : cond_bits_) {
+    bits_info.push_back({Bit(b), BitType::READ});
+  }
+  return {paulis, bits_info};
+}
+
 // PauliPropagation
 PauliPropagation::PauliPropagation(
     std::vector<Pauli> z_propagation, std::vector<Pauli> x_propagation,
     bool z_sign, bool x_sign, unsigned qubit_index)
     : ACPairNode(z_propagation, x_propagation, z_sign, x_sign),
       qubit_index_(qubit_index) {}
+
+CommuteInfo PauliPropagation::get_commute_info() const {
+  return {{z_propagation_, x_propagation_}, {}};
+}
+
+// ClassicalNode
+ClassicalNode::ClassicalNode(std::vector<UnitID> args, Op_ptr op)
+    : args_(args), op_(op) {}
+
+CommuteInfo ClassicalNode::get_commute_info() const {
+  std::vector<std::pair<UnitID, BitType>> bits_info;
+  for (const UnitID& b : args_) {
+    bits_info.push_back({b, BitType::WRITE});
+  }
+  return {{}, bits_info};
+}
 
 }  // namespace GreedyPauliSimp
 

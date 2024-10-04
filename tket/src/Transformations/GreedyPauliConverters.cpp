@@ -91,44 +91,28 @@ static bool strings_commute(
   return (n_conflicts % 2) == 0;
 }
 
-static std::vector<Pauli> get_single_node_string(const PauliNode_ptr& n) {
-  if (n->get_type() == PauliNodeType::Rotation) {
-    return dynamic_cast<const PauliRotation&>(*n).string();
-  } else if (n->get_type() == PauliNodeType::ConditionalRotation) {
-    return dynamic_cast<const ConditionalPauliRotation&>(*n).string();
-  }
-  TKET_ASSERT(false);
-}
-
 static bool nodes_commute(const PauliNode_ptr& n1, const PauliNode_ptr& n2) {
-  if (n1->get_type() == PauliNodeType::Rotation) {
-    if (n2->get_type() == PauliNodeType::Rotation ||
-        n2->get_type() == PauliNodeType::ConditionalRotation) {
-      return strings_commute(
-          get_single_node_string(n1), get_single_node_string(n2));
-    }
-  } else if (n1->get_type() == PauliNodeType::ConditionalRotation) {
-    if (n2->get_type() == PauliNodeType::Rotation ||
-        n2->get_type() == PauliNodeType::ConditionalRotation) {
-      return strings_commute(
-          get_single_node_string(n1), get_single_node_string(n2));
+  CommuteInfo c1 = n1->get_commute_info();
+  CommuteInfo c2 = n2->get_commute_info();
+  // check if every string in n1 commutes with all strings in n2
+  for (const std::vector<Pauli>& p1 : c1.paulis) {
+    for (const std::vector<Pauli>& p2 : c2.paulis) {
+      if (!strings_commute(p1, p2)) return false;
     }
   }
-  TKET_ASSERT(false);
-}
-
-std::optional<PauliNode_ptr> merge_nodes(
-    const PauliNode_ptr& n1, const PauliNode_ptr& n2) {
-  if (n1->get_type() == PauliNodeType::Rotation &&
-      n2->get_type() == PauliNodeType::Rotation) {
-    const PauliRotation& rot1 = dynamic_cast<const PauliRotation&>(*n1);
-    const PauliRotation& rot2 = dynamic_cast<const PauliRotation&>(*n2);
-    if (rot1.string() == rot2.string()) {
-      return std::make_shared<PauliRotation>(
-          rot1.string(), rot1.angle() + rot2.angle());
+  // check if the bits commute
+  for (const std::pair<UnitID, BitType>& b1 : c1.bits_info) {
+    for (const std::pair<UnitID, BitType>& b2 : c2.bits_info) {
+      if (b1.first == b2.first) {
+        // if two nodes read the same bit it's OK
+        if (b1.second == BitType::READ && b2.second == BitType::READ) {
+          break;
+        }
+        return false;
+      }
     }
   }
-  return std::nullopt;
+  return true;
 }
 
 GPGraph::GPGraph(const Circuit& circ)
@@ -359,7 +343,8 @@ void GPGraph::apply_gate_at_end(
     }
     case OpType::noop:
     case OpType::Phase: {
-      break;
+      // ignore global phase
+      return;
     }
     case OpType::Rz: {
       pauli_rots.push_back({{Pauli::Z}, op->get_params().at(0)});
@@ -432,6 +417,12 @@ void GPGraph::apply_gate_at_end(
       break;
     }
     default: {
+      if (qbs.empty()) {
+        // ops with no quantum dependencies
+        PauliNode_ptr node = std::make_shared<ClassicalNode>(args, op);
+        apply_node_at_end(node);
+        return;
+      }
       throw BadOpType("Cannot add gate to GPGraph", type);
     }
   }

@@ -20,6 +20,7 @@
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Gate/SymTable.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
 #include "tket/PauliGraph/PauliGraph.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Transformations/GreedyPauliOptimisation.hpp"
@@ -279,6 +280,33 @@ SCENARIO("Complete synthesis") {
             SymPauliTensor({Pauli::Z, Pauli::I}, 0.5)),
         1, 0);
     d.add_op<unsigned>(cond, {0, 0, 1});
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
+    REQUIRE(circ == d);
+  }
+  GIVEN("Circuit with classical gates") {
+    Circuit circ(1, 4);
+    circ.add_op<unsigned>(OpType::S, {0});
+    circ.add_op<unsigned>(OpType::V, {0});
+    circ.add_op<unsigned>(OpType::S, {0});
+    circ.add_op<unsigned>(ClassicalX(), {1});
+    circ.add_op<unsigned>(ClassicalCX(), {0, 1});
+    circ.add_op<unsigned>(AndWithOp(), {2, 3});
+    Circuit d(circ);
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
+    REQUIRE(circ == d);
+  }
+  GIVEN("Circuit with WASMs") {
+    std::string wasm_file = "string/with/path/to/wasm/file";
+    std::string wasm_func = "stringNameOfWASMFunc";
+    std::vector<unsigned> uv = {2, 1};
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(6, 1, uv, uv, wasm_func, wasm_file);
+    Circuit circ(1, 7);
+    circ.add_op<unsigned>(OpType::X, {0});
+    circ.add_op<UnitID>(
+        wop_ptr,
+        {Bit(0), Bit(1), Bit(2), Bit(3), Bit(4), Bit(5), WasmState(0)});
+    Circuit d(circ);
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
     REQUIRE(circ == d);
   }

@@ -326,48 +326,58 @@ static void consume_available_rotations(
     std::vector<PauliNode_ptr>& first_set = rotation_sets[0];
     for (unsigned i = first_set.size(); i-- > 0;) {
       PauliNode_ptr& node_ptr = first_set[i];
-      TKET_ASSERT(
-          node_ptr->get_type() == PauliNodeType::Rotation ||
-          node_ptr->get_type() == PauliNodeType::ConditionalRotation);
-      if (node_ptr->get_type() == PauliNodeType::ConditionalRotation) {
-        // TODO: always consume conditionals
-        ConditionalPauliRotation& node =
-            dynamic_cast<ConditionalPauliRotation&>(*node_ptr);
-        Op_ptr cond = std::make_shared<Conditional>(
-            std::make_shared<PauliExpBox>(
-                SymPauliTensor(node.string(), node.angle())),
-            (unsigned)node.cond_bits().size(), node.cond_value());
-        std::vector<unsigned> args = node.cond_bits();
-        for (unsigned i = 0; i < node.string().size(); i++) {
-          args.push_back(i);
+      switch (node_ptr->get_type()) {
+        case PauliNodeType::Classical: {
+          ClassicalNode& node = dynamic_cast<ClassicalNode&>(*node_ptr);
+          circ.add_op<UnitID>(node.op(), node.args());
+          first_set.erase(first_set.begin() + i);
+          break;
         }
-        circ.add_op<unsigned>(cond, args);
-        first_set.erase(first_set.begin() + i);
-      } else {
-        PauliRotation& node = dynamic_cast<PauliRotation&>(*node_ptr);
-        if (node.tqe_cost() > 0) continue;
-        auto [q_index, supp] = node.first_support();
-        depth_tracker.add_1q_gate(q_index);
-        OpType rot_type;
-        switch (supp) {
-          case Pauli::Y: {
-            rot_type = OpType::Ry;
-            break;
+        // conditionals are added as conditional PauliExpBoxes
+        case PauliNodeType::ConditionalRotation: {
+          ConditionalPauliRotation& node =
+              dynamic_cast<ConditionalPauliRotation&>(*node_ptr);
+          Op_ptr cond = std::make_shared<Conditional>(
+              std::make_shared<PauliExpBox>(
+                  SymPauliTensor(node.string(), node.angle())),
+              (unsigned)node.cond_bits().size(), node.cond_value());
+          std::vector<unsigned> args = node.cond_bits();
+          for (unsigned i = 0; i < node.string().size(); i++) {
+            args.push_back(i);
           }
-          case Pauli::Z: {
-            rot_type = OpType::Rz;
-            break;
-          }
-          case Pauli::X: {
-            rot_type = OpType::Rx;
-            break;
-          }
-          default:
-            // support can't be Pauli::I
-            TKET_ASSERT(false);
+          circ.add_op<unsigned>(cond, args);
+          first_set.erase(first_set.begin() + i);
+          break;
         }
-        circ.add_op<unsigned>(rot_type, node.angle(), {q_index});
-        first_set.erase(first_set.begin() + i);
+        case PauliNodeType::Rotation: {
+          PauliRotation& node = dynamic_cast<PauliRotation&>(*node_ptr);
+          if (node.tqe_cost() > 0) continue;
+          auto [q_index, supp] = node.first_support();
+          depth_tracker.add_1q_gate(q_index);
+          OpType rot_type;
+          switch (supp) {
+            case Pauli::Y: {
+              rot_type = OpType::Ry;
+              break;
+            }
+            case Pauli::Z: {
+              rot_type = OpType::Rz;
+              break;
+            }
+            case Pauli::X: {
+              rot_type = OpType::Rx;
+              break;
+            }
+            default:
+              // support can't be Pauli::I
+              TKET_ASSERT(false);
+          }
+          circ.add_op<unsigned>(rot_type, node.angle(), {q_index});
+          first_set.erase(first_set.begin() + i);
+          break;
+        }
+        default:
+          TKET_ASSERT(false);
       }
     }
     if (first_set.empty()) {
