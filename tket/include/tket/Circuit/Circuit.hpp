@@ -1768,19 +1768,19 @@ bool Circuit::rename_units(const std::map<UnitA, UnitB> &qm) {
     TKET_ASSERT(modified);
   }
 
-  // For every ClassicalExpBox, update its logic expressions
-  if (!bm.empty()) {
-    BGL_FORALL_VERTICES(v, dag, DAG) {
-      Op_ptr op = get_Op_ptr_from_Vertex(v);
-      if (op->get_type() == OpType::ClassicalExpBox) {
-        const ClassicalExpBoxBase &cbox =
-            static_cast<const ClassicalExpBoxBase &>(*op);
-        // rename_units is marked as const to get around the Op_ptr
-        // cast, but it can still mutate a python object
-        modified |= cbox.rename_units(bm);
-      }
-    }
-  }
+  // // For every ClassicalExpBox, update its logic expressions
+  // if (!bm.empty()) {
+  //   BGL_FORALL_VERTICES(v, dag, DAG) {
+  //     Op_ptr op = get_Op_ptr_from_Vertex(v);
+  //     if (op->get_type() == OpType::ClassicalExpBox) {
+  //       const ClassicalExpBoxBase &cbox =
+  //           static_cast<const ClassicalExpBoxBase &>(*op);
+  //       // rename_units is marked as const to get around the Op_ptr
+  //       // cast, but it can still mutate a python object
+  //       modified |= cbox.rename_units(bm);
+  //     }
+  //   }
+  // }
 
   return modified;
 }
