@@ -115,8 +115,7 @@ static bool nodes_commute(const PauliNode_ptr& n1, const PauliNode_ptr& n2) {
   return true;
 }
 
-GPGraph::GPGraph(const Circuit& circ)
-    : n_qubits_(circ.n_qubits()), n_bits_(circ.n_bits()) {
+GPGraph::GPGraph(const Circuit& circ) : n_qubits_(circ.n_qubits()) {
   TKET_ASSERT(circ.is_simple());
   qubit_vector_t qubits = circ.all_qubits();
   bit_vector_t bits = circ.all_bits();
@@ -217,8 +216,8 @@ void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
 
 void GPGraph::apply_pauli_at_end(
     const std::vector<Pauli>& paulis, const Expr& angle,
-    const qubit_vector_t& qbs, bool conditional,
-    std::vector<unsigned> cond_bits, unsigned cond_value) {
+    const qubit_vector_t& qbs, bool conditional, const bit_vector_t& cond_bits,
+    unsigned cond_value) {
   // Note that global phase is ignored
   if (static_cast<std::size_t>(std::count(
           paulis.begin(), paulis.end(), Pauli::I)) == paulis.size()) {
@@ -248,7 +247,7 @@ void GPGraph::apply_pauli_at_end(
 }
 
 void GPGraph::apply_gate_at_end(
-    const Command& cmd, bool conditional, std::vector<unsigned> cond_bits,
+    const Command& cmd, bool conditional, const bit_vector_t& cond_bits,
     unsigned cond_value) {
   const Op_ptr op = cmd.get_op_ptr();
   unit_vector_t args = cmd.get_args();
@@ -263,8 +262,7 @@ void GPGraph::apply_gate_at_end(
             "- cannot add gate after measure on qubit " +
             arg.repr());
       }
-    } else if (
-        measures_.right.find(arg.index().at(0)) != measures_.right.end()) {
+    } else if (measures_.right.find(arg) != measures_.right.end()) {
       throw MidCircuitMeasurementNotAllowed(
           "PauliGraph does not support mid-circuit measurements - "
           "cannot add gate after measure to bit " +
@@ -276,10 +274,10 @@ void GPGraph::apply_gate_at_end(
   switch (type) {
     case OpType::Conditional: {
       const Conditional& cond = static_cast<const Conditional&>(*op);
-      std::vector<unsigned> cond_bits;
+      bit_vector_t cond_bits;
       unit_vector_t inner_args;
       for (unsigned i = 0; i < cond.get_width(); ++i)
-        cond_bits.push_back(Bit(args.at(i)).index().at(0));
+        cond_bits.push_back(Bit(args.at(i)));
       for (unsigned i = cond.get_width(); i < args.size(); ++i)
         inner_args.push_back(args.at(i));
       apply_gate_at_end(
@@ -288,7 +286,7 @@ void GPGraph::apply_gate_at_end(
       return;
     }
     case OpType::Measure: {
-      measures_.insert({args.at(0).index().at(0), args.at(1).index().at(0)});
+      measures_.insert({args.at(0).index().at(0), args.at(1)});
       return;
     }
     case OpType::Z: {
@@ -444,7 +442,7 @@ std::vector<GPVert> GPGraph::vertices_in_order() const {
 
 std::tuple<
     std::vector<std::vector<PauliNode_ptr>>, std::vector<PauliNode_ptr>,
-    boost::bimap<unsigned, unsigned>>
+    boost::bimap<unsigned, Bit>>
 GPGraph::get_sequence() {
   std::vector<GPVert> vertices = vertices_in_order();
   auto it = vertices.begin();

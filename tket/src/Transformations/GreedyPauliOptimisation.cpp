@@ -341,11 +341,11 @@ static void consume_available_rotations(
               std::make_shared<PauliExpBox>(
                   SymPauliTensor(node.string(), node.angle())),
               (unsigned)node.cond_bits().size(), node.cond_value());
-          std::vector<unsigned> args = node.cond_bits();
+          std::vector<UnitID> args = node.cond_bits();
           for (unsigned i = 0; i < node.string().size(); i++) {
-            args.push_back(i);
+            args.push_back(Qubit(i));
           }
-          circ.add_op<unsigned>(cond, args);
+          circ.add_op<UnitID>(cond, args);
           first_set.erase(first_set.begin() + i);
           break;
         }
@@ -490,7 +490,7 @@ Circuit greedy_pauli_graph_synthesis(
   // synthesise the tableau
   tableau_row_nodes_synthesis(rows, new_circ, depth_weight, depth_tracker);
   for (auto it = measures.begin(); it != measures.end(); ++it) {
-    new_circ.add_measure(it->left, it->right);
+    new_circ.add_measure(Qubit(it->left), it->right);
   }
   new_circ.rename_units(rev_unit_map);
   new_circ.replace_SWAPs();
