@@ -258,18 +258,27 @@ void GPGraph::apply_gate_at_end(
 
   for (const UnitID& arg : args) {
     if (arg.type() == UnitType::Qubit) {
-      if (measures_.left.find(arg.index().at(0)) != measures_.left.end()) {
-        throw MidCircuitMeasurementNotAllowed(
-            "PauliGraph does not support mid-circuit measurements "
-            "- cannot add gate after measure on qubit " +
-            arg.repr());
+      auto it = end_measures_.left.find(arg.index().at(0));
+      if (it != end_measures_.left.end()) {
+        // the measurement is no longer end-circuit, we remove it from
+        // end_measures_ and add it as a MidMeasure node instead.
+        std::vector<Pauli> paulis(n_qubits_, Pauli::I);
+        paulis[it->first] = Pauli::Z;
+        PauliNode_ptr node = std::make_shared<MidMeasure>(paulis, it->second);
+        apply_node_at_end(node);
+        end_measures_.left.erase(it);
       }
-    } else if (
-        measures_.right.find(arg.index().at(0)) != measures_.right.end()) {
-      throw MidCircuitMeasurementNotAllowed(
-          "PauliGraph does not support mid-circuit measurements - "
-          "cannot add gate after measure to bit " +
-          arg.repr());
+    } else if (arg.type() == UnitType::Bit) {
+      auto it = end_measures_.right.find(arg.index().at(0));
+      if (it != end_measures_.right.end()) {
+        // the measurement is no longer end-circuit, we remove it from
+        // end_measures_ and add it as a MidMeasure node instead.
+        std::vector<Pauli> paulis(n_qubits_, Pauli::I);
+        paulis[it->second] = Pauli::Z;
+        PauliNode_ptr node = std::make_shared<MidMeasure>(paulis, it->first);
+        apply_node_at_end(node);
+        end_measures_.right.erase(it);
+      }
     }
   }
 
@@ -289,7 +298,8 @@ void GPGraph::apply_gate_at_end(
       return;
     }
     case OpType::Measure: {
-      measures_.insert({args.at(0).index().at(0), args.at(1).index().at(0)});
+      end_measures_.insert(
+          {args.at(0).index().at(0), args.at(1).index().at(0)});
       return;
     }
     case OpType::Z: {
@@ -473,7 +483,7 @@ GPGraph::get_sequence() {
   // add clifford
   std::vector<PauliNode_ptr> cliff_nodes =
       get_nodes_from_tableau(cliff_, n_qubits_);
-  return {interior_nodes, cliff_nodes, measures_};
+  return {interior_nodes, cliff_nodes, end_measures_};
 }
 
 }  // namespace GreedyPauliSimp

@@ -327,6 +327,54 @@ static void consume_available_rotations(
     for (unsigned i = first_set.size(); i-- > 0;) {
       PauliNode_ptr& node_ptr = first_set[i];
       switch (node_ptr->get_type()) {
+        case PauliNodeType::MidMeasure: {
+          if (node_ptr->tqe_cost() > 0) continue;
+          MidMeasure& node = dynamic_cast<MidMeasure&>(*node_ptr);
+          auto [q_index, supp] = node.first_support();
+          switch (supp) {
+            case Pauli::Z: {
+              if (!node.sign()) {
+                circ.add_op<unsigned>(OpType::X, {q_index});
+              }
+              circ.add_measure(q_index, node.bit());
+              if (!node.sign()) {
+                circ.add_op<unsigned>(OpType::X, {q_index});
+              }
+              break;
+            }
+            case Pauli::X: {
+              circ.add_op<unsigned>(OpType::H, {q_index});
+              if (!node.sign()) {
+                circ.add_op<unsigned>(OpType::X, {q_index});
+              }
+              circ.add_measure(q_index, node.bit());
+              if (!node.sign()) {
+                circ.add_op<unsigned>(OpType::X, {q_index});
+              }
+              circ.add_op<unsigned>(OpType::H, {q_index});
+              break;
+            }
+            case Pauli::Y: {
+              if (node.sign()) {
+                circ.add_op<unsigned>(OpType::Vdg, {q_index});
+              } else {
+                circ.add_op<unsigned>(OpType::V, {q_index});
+              }
+              circ.add_measure(q_index, node.bit());
+              if (node.sign()) {
+                circ.add_op<unsigned>(OpType::V, {q_index});
+              } else {
+                circ.add_op<unsigned>(OpType::Vdg, {q_index});
+              }
+              break;
+            }
+            default: {
+              TKET_ASSERT(false);
+            }
+          }
+          first_set.erase(first_set.begin() + i);
+          break;
+        }
         case PauliNodeType::ClassicalNode: {
           ClassicalNode& node = dynamic_cast<ClassicalNode&>(*node_ptr);
           circ.add_op<UnitID>(node.op(), node.args());
@@ -350,8 +398,8 @@ static void consume_available_rotations(
           break;
         }
         case PauliNodeType::PauliRotation: {
+          if (node_ptr->tqe_cost() > 0) continue;
           PauliRotation& node = dynamic_cast<PauliRotation&>(*node_ptr);
-          if (node.tqe_cost() > 0) continue;
           auto [q_index, supp] = node.first_support();
           depth_tracker.add_1q_gate(q_index);
           OpType rot_type;

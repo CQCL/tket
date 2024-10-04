@@ -339,6 +339,14 @@ CommuteInfo ClassicalNode::get_commute_info() const {
   return {{}, bits_info};
 }
 
+// MidMeasure
+MidMeasure::MidMeasure(std::vector<Pauli> string, unsigned bit)
+    : SingleNode(string, true), bit_(bit) {}
+
+CommuteInfo MidMeasure::get_commute_info() const {
+  return {{string_}, {{Bit(bit_), BitType::WRITE}}};
+}
+
 }  // namespace GreedyPauliSimp
 
 }  // namespace Transforms

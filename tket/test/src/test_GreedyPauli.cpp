@@ -30,18 +30,6 @@ namespace tket {
 namespace test_GreedyPauliSimp {
 
 SCENARIO("Unsupported circuits") {
-  GIVEN("Circuit with mid-circ measurements") {
-    Circuit circ(2, 2);
-    circ.add_op<unsigned>(OpType::H, {0});
-    circ.add_op<unsigned>(OpType::Rx, 0.5, {1});
-    circ.add_op<unsigned>(OpType::Measure, {0, 0});
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE_THROWS_MATCHES(
-        Transforms::greedy_pauli_optimisation().apply(circ),
-        MidCircuitMeasurementNotAllowed,
-        MessageContains(
-            "PauliGraph does not support mid-circuit measurements"));
-  }
   GIVEN("Circuit with resets") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::H, {0});
@@ -307,6 +295,18 @@ SCENARIO("Complete synthesis") {
         wop_ptr,
         {Bit(0), Bit(1), Bit(2), Bit(3), Bit(4), Bit(5), WasmState(0)});
     Circuit d(circ);
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
+    REQUIRE(circ == d);
+  }
+  GIVEN("Circuit with mid-circuit measurements") {
+    Circuit circ(2, 2);
+    circ.add_op<unsigned>(OpType::T, {0});
+    circ.add_op<unsigned>(OpType::Measure, {0, 0});
+    circ.add_op<unsigned>(OpType::Tdg, {0});
+    circ.add_op<unsigned>(OpType::Measure, {1, 1});
+    Circuit d(2, 2);
+    d.add_op<unsigned>(OpType::Measure, {0, 0});
+    d.add_op<unsigned>(OpType::Measure, {1, 1});
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
     REQUIRE(circ == d);
   }

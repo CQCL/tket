@@ -56,6 +56,8 @@ enum class PauliNodeType {
   ConditionalPauliRotation,
   // Classical operations,
   ClassicalNode,
+  // Mid-circuit measurement
+  MidMeasure,
 };
 
 /**
@@ -299,6 +301,26 @@ class PauliRotation : public SingleNode {
 };
 
 /**
+ * @brief Measurement that has quantum or classical successors
+ */
+class MidMeasure : public SingleNode {
+ public:
+  /**
+   * @brief Construct a new MidMeasure object.
+   *
+   * @param string the Pauli string
+   */
+  MidMeasure(std::vector<Pauli> string, unsigned bit);
+
+  PauliNodeType get_type() const override { return PauliNodeType::MidMeasure; };
+  CommuteInfo get_commute_info() const override;
+  unsigned bit() const { return bit_; };
+
+ protected:
+  const unsigned bit_;
+};
+
+/**
  * @brief A Pauli exponential defined by a padded Pauli string
  * and a rotation angle
  */
@@ -450,7 +472,7 @@ class GPGraph {
   /** The tableau of the Clifford effect of the circuit */
   UnitaryRevTableau cliff_;
   /** The record of measurements at the very end of the circuit */
-  boost::bimap<unsigned, unsigned> measures_;
+  boost::bimap<unsigned, unsigned> end_measures_;
 
   GPVertSet start_line_;
   GPVertSet end_line_;
