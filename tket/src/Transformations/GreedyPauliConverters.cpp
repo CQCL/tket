@@ -173,8 +173,8 @@ void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
     PauliNode_ptr compare_node = graph_[to_compare];
     if (nodes_commute(node, compare_node)) {
       // Check if two pauli rotations can be merged
-      if (node->get_type() == PauliNodeType::Rotation &&
-          compare_node->get_type() == PauliNodeType::Rotation) {
+      if (node->get_type() == PauliNodeType::PauliRotation &&
+          compare_node->get_type() == PauliNodeType::PauliRotation) {
         const PauliRotation& rot1 = dynamic_cast<const PauliRotation&>(*node);
         const PauliRotation& rot2 =
             dynamic_cast<const PauliRotation&>(*compare_node);

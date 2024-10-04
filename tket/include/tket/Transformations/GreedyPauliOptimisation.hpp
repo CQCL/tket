@@ -48,14 +48,14 @@ enum class TQEType : unsigned {
 
 enum class PauliNodeType {
   // Pauli rotation
-  Rotation,
+  PauliRotation,
   // Defines how a Pauli X and a Pauli Z on the same qubit
   // get propagated from right to left through a Clifford operator.
-  Propagation,
+  PauliPropagation,
   // Pauli rotation with classical control
-  ConditionalRotation,
+  ConditionalPauliRotation,
   // Classical operations,
-  Classical,
+  ClassicalNode,
 };
 
 /**
@@ -254,7 +254,9 @@ class ClassicalNode : public PauliNode {
  public:
   ClassicalNode(std::vector<UnitID> args, Op_ptr op);
 
-  PauliNodeType get_type() const override { return PauliNodeType::Classical; };
+  PauliNodeType get_type() const override {
+    return PauliNodeType::ClassicalNode;
+  };
 
   unsigned tqe_cost() const override { return 0; };
   int tqe_cost_increase(const TQE& /*tqe*/) const override { return 0; };
@@ -284,7 +286,9 @@ class PauliRotation : public SingleNode {
    */
   PauliRotation(std::vector<Pauli> string, Expr theta);
 
-  PauliNodeType get_type() const override { return PauliNodeType::Rotation; };
+  PauliNodeType get_type() const override {
+    return PauliNodeType::PauliRotation;
+  };
 
   Expr angle() const { return sign_ ? theta_ : -theta_; };
 
@@ -311,7 +315,7 @@ class ConditionalPauliRotation : public PauliRotation {
       unsigned cond_value);
 
   PauliNodeType get_type() const override {
-    return PauliNodeType::ConditionalRotation;
+    return PauliNodeType::ConditionalPauliRotation;
   };
 
   CommuteInfo get_commute_info() const override;
@@ -347,7 +351,7 @@ class PauliPropagation : public ACPairNode {
       bool z_sign, bool x_sign, unsigned qubit_index);
 
   PauliNodeType get_type() const override {
-    return PauliNodeType::Propagation;
+    return PauliNodeType::PauliPropagation;
   };
 
   CommuteInfo get_commute_info() const override;

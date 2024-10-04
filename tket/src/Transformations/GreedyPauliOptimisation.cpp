@@ -327,14 +327,14 @@ static void consume_available_rotations(
     for (unsigned i = first_set.size(); i-- > 0;) {
       PauliNode_ptr& node_ptr = first_set[i];
       switch (node_ptr->get_type()) {
-        case PauliNodeType::Classical: {
+        case PauliNodeType::ClassicalNode: {
           ClassicalNode& node = dynamic_cast<ClassicalNode&>(*node_ptr);
           circ.add_op<UnitID>(node.op(), node.args());
           first_set.erase(first_set.begin() + i);
           break;
         }
         // conditionals are added as conditional PauliExpBoxes
-        case PauliNodeType::ConditionalRotation: {
+        case PauliNodeType::ConditionalPauliRotation: {
           ConditionalPauliRotation& node =
               dynamic_cast<ConditionalPauliRotation&>(*node_ptr);
           Op_ptr cond = std::make_shared<Conditional>(
@@ -349,7 +349,7 @@ static void consume_available_rotations(
           first_set.erase(first_set.begin() + i);
           break;
         }
-        case PauliNodeType::Rotation: {
+        case PauliNodeType::PauliRotation: {
           PauliRotation& node = dynamic_cast<PauliRotation&>(*node_ptr);
           if (node.tqe_cost() > 0) continue;
           auto [q_index, supp] = node.first_support();

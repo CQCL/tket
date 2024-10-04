@@ -298,13 +298,7 @@ std::tuple<unsigned, Pauli, Pauli> ACPairNode::first_support() const {
 PauliRotation::PauliRotation(std::vector<Pauli> string, Expr theta)
     : SingleNode(string, true), theta_(theta) {}
 
-CommuteInfo PauliRotation::get_commute_info() const {
-  std::vector<std::vector<Pauli>> paulis;
-  for (Pauli p : string_) {
-    paulis.push_back({p});
-  }
-  return {paulis, {}};
-}
+CommuteInfo PauliRotation::get_commute_info() const { return {{string_}, {}}; }
 
 // ConditionalPauliRotation
 ConditionalPauliRotation::ConditionalPauliRotation(
@@ -315,15 +309,11 @@ ConditionalPauliRotation::ConditionalPauliRotation(
       cond_value_(cond_value) {}
 
 CommuteInfo ConditionalPauliRotation::get_commute_info() const {
-  std::vector<std::vector<Pauli>> paulis;
   std::vector<std::pair<UnitID, BitType>> bits_info;
-  for (Pauli p : string_) {
-    paulis.push_back({p});
-  }
   for (unsigned b : cond_bits_) {
     bits_info.push_back({Bit(b), BitType::READ});
   }
-  return {paulis, bits_info};
+  return {{string_}, bits_info};
 }
 
 // PauliPropagation
