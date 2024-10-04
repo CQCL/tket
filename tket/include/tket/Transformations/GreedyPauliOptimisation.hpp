@@ -307,7 +307,7 @@ class ConditionalPauliRotation : public PauliRotation {
    * @param theta the rotation angle in half-turns
    */
   ConditionalPauliRotation(
-      std::vector<Pauli> string, Expr theta, bit_vector_t cond_bits,
+      std::vector<Pauli> string, Expr theta, std::vector<unsigned> cond_bits,
       unsigned cond_value);
 
   PauliNodeType get_type() const override {
@@ -316,11 +316,11 @@ class ConditionalPauliRotation : public PauliRotation {
 
   CommuteInfo get_commute_info() const override;
 
-  bit_vector_t cond_bits() const { return cond_bits_; };
+  std::vector<unsigned> cond_bits() const { return cond_bits_; };
   unsigned cond_value() const { return cond_value_; };
 
  protected:
-  bit_vector_t cond_bits_;
+  std::vector<unsigned> cond_bits_;
   unsigned cond_value_;
 };
 
@@ -411,7 +411,7 @@ class GPGraph {
 
   std::tuple<
       std::vector<std::vector<PauliNode_ptr>>, std::vector<PauliNode_ptr>,
-      boost::bimap<unsigned, Bit>>
+      boost::bimap<unsigned, unsigned>>
   get_sequence();
 
  private:
@@ -424,12 +424,12 @@ class GPGraph {
    */
   void apply_gate_at_end(
       const Command& cmd, bool conditional = false,
-      const bit_vector_t& cond_bits = {}, unsigned cond_value = 0);
+      std::vector<unsigned> cond_bits = {}, unsigned cond_value = 0);
 
   void apply_pauli_at_end(
       const std::vector<Pauli>& paulis, const Expr& angle,
       const qubit_vector_t& qbs, bool conditional = false,
-      const bit_vector_t& cond_bits = {}, unsigned cond_value = 0);
+      std::vector<unsigned> cond_bits = {}, unsigned cond_value = 0);
 
   void apply_node_at_end(PauliNode_ptr& node);
 
@@ -441,11 +441,12 @@ class GPGraph {
    */
   mutable GPDAG graph_;
   const unsigned n_qubits_;
+  const unsigned n_bits_;
 
   /** The tableau of the Clifford effect of the circuit */
   UnitaryRevTableau cliff_;
   /** The record of measurements at the very end of the circuit */
-  boost::bimap<unsigned, Bit> measures_;
+  boost::bimap<unsigned, unsigned> measures_;
 
   GPVertSet start_line_;
   GPVertSet end_line_;
