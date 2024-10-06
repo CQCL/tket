@@ -173,14 +173,14 @@ class ACPairNode : public PauliNode {
   /**
    * @brief Construct a new ACPairNode object
    *
-   * @param z_propagation
-   * @param x_propagation
+   * @param z_string
+   * @param x_string
    * @param z_sign
    * @param x_sign
    */
   ACPairNode(
-      std::vector<Pauli> z_propagation, std::vector<Pauli> x_propagation,
-      bool z_sign, bool x_sign);
+      std::vector<Pauli> z_string, std::vector<Pauli> x_string, bool z_sign,
+      bool x_sign);
 
   /**
    * @brief Number of TQEs required to reduce the weight to 1
@@ -234,13 +234,13 @@ class ACPairNode : public PauliNode {
 
   bool x_sign() const { return x_sign_; };
 
-  std::vector<Pauli> z_propagation() const { return z_propagation_; };
+  std::vector<Pauli> z_string() const { return z_string_; };
 
-  std::vector<Pauli> x_propagation() const { return x_propagation_; };
+  std::vector<Pauli> x_string() const { return x_string_; };
 
  protected:
-  std::vector<Pauli> z_propagation_;
-  std::vector<Pauli> x_propagation_;
+  std::vector<Pauli> z_string_;
+  std::vector<Pauli> x_string_;
   bool z_sign_;
   bool x_sign_;
   // extra cached data used by greedy synthesis
@@ -309,6 +309,7 @@ class MidMeasure : public SingleNode {
    * @brief Construct a new MidMeasure object.
    *
    * @param string the Pauli string
+   * @param bit bit to store the readout
    */
   MidMeasure(std::vector<Pauli> string, unsigned bit);
 
@@ -362,15 +363,15 @@ class PauliPropagation : public ACPairNode {
   /**
    * @brief Construct a new PauliPropagation object
    *
-   * @param z_propagation
-   * @param x_propagation
+   * @param z_string
+   * @param x_string
    * @param z_sign
    * @param x_sign
    * @param qubit_index
    */
   PauliPropagation(
-      std::vector<Pauli> z_propagation, std::vector<Pauli> x_propagation,
-      bool z_sign, bool x_sign, unsigned qubit_index);
+      std::vector<Pauli> z_string, std::vector<Pauli> x_string, bool z_sign,
+      bool x_sign, unsigned qubit_index);
 
   PauliNodeType get_type() const override {
     return PauliNodeType::PauliPropagation;
@@ -383,6 +384,26 @@ class PauliPropagation : public ACPairNode {
  private:
   unsigned qubit_index_;
 };
+
+// /**
+//  * @brief Measurement that has quantum or classical successors
+//  */
+// class Reset : public ACPairNode {
+//  public:
+//   /**
+//    * @brief Construct a new MidMeasure object.
+//    *
+//    * @param string the Pauli string
+//    */
+//   Reset(std::vector<Pauli> z_string, unsigned bit);
+
+//   PauliNodeType get_type() const override { return PauliNodeType::MidMeasure;
+//   }; CommuteInfo get_commute_info() const override; unsigned bit() const {
+//   return bit_; };
+
+//  protected:
+//   const unsigned bit_;
+// };
 
 typedef boost::adjacency_list<
     boost::listS, boost::listS, boost::bidirectionalS,
