@@ -37,3 +37,4 @@ pytket/tests/qasm_test_files/testout6.qasm
 result
 .envrc
 .direnv/
+*.jupyter_cache
