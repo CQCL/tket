@@ -58,6 +58,8 @@ enum class PauliNodeType {
   ClassicalNode,
   // Mid-circuit measurement
   MidMeasure,
+  // Reset
+  Reset,
 };
 
 /**
@@ -311,7 +313,7 @@ class MidMeasure : public SingleNode {
    * @param string the Pauli string
    * @param bit bit to store the readout
    */
-  MidMeasure(std::vector<Pauli> string, unsigned bit);
+  MidMeasure(std::vector<Pauli> string, bool sign, unsigned bit);
 
   PauliNodeType get_type() const override { return PauliNodeType::MidMeasure; };
   CommuteInfo get_commute_info() const override;
@@ -385,25 +387,18 @@ class PauliPropagation : public ACPairNode {
   unsigned qubit_index_;
 };
 
-// /**
-//  * @brief Measurement that has quantum or classical successors
-//  */
-// class Reset : public ACPairNode {
-//  public:
-//   /**
-//    * @brief Construct a new MidMeasure object.
-//    *
-//    * @param string the Pauli string
-//    */
-//   Reset(std::vector<Pauli> z_string, unsigned bit);
+/**
+ * @brief Reset
+ */
+class Reset : public ACPairNode {
+ public:
+  Reset(
+      std::vector<Pauli> z_string, std::vector<Pauli> x_string, bool z_sign,
+      bool x_sign);
 
-//   PauliNodeType get_type() const override { return PauliNodeType::MidMeasure;
-//   }; CommuteInfo get_commute_info() const override; unsigned bit() const {
-//   return bit_; };
-
-//  protected:
-//   const unsigned bit_;
-// };
+  PauliNodeType get_type() const override { return PauliNodeType::Reset; };
+  CommuteInfo get_commute_info() const override;
+};
 
 typedef boost::adjacency_list<
     boost::listS, boost::listS, boost::bidirectionalS,

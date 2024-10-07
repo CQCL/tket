@@ -336,11 +336,21 @@ CommuteInfo ClassicalNode::get_commute_info() const {
 }
 
 // MidMeasure
-MidMeasure::MidMeasure(std::vector<Pauli> string, unsigned bit)
-    : SingleNode(string, true), bit_(bit) {}
+MidMeasure::MidMeasure(std::vector<Pauli> string, bool sign, unsigned bit)
+    : SingleNode(string, sign), bit_(bit) {}
 
 CommuteInfo MidMeasure::get_commute_info() const {
   return {{string_}, {{Bit(bit_), BitType::WRITE}}};
+}
+
+// Reset
+Reset::Reset(
+    std::vector<Pauli> z_string, std::vector<Pauli> x_string, bool z_sign,
+    bool x_sign)
+    : ACPairNode(z_string, x_string, z_sign, x_sign) {}
+
+CommuteInfo Reset::get_commute_info() const {
+  return {{z_string_, x_string_}, {}};
 }
 
 }  // namespace GreedyPauliSimp

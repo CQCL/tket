@@ -29,16 +29,6 @@
 namespace tket {
 namespace test_GreedyPauliSimp {
 
-SCENARIO("Unsupported circuits") {
-  GIVEN("Circuit with resets") {
-    Circuit circ(1);
-    circ.add_op<unsigned>(OpType::H, {0});
-    circ.add_op<unsigned>(OpType::Reset, {0});
-    REQUIRE_THROWS_MATCHES(
-        Transforms::greedy_pauli_optimisation().apply(circ), BadOpType,
-        MessageContains("Cannot add gate to GPGraph"));
-  }
-}
 SCENARIO("Clifford synthesis") {
   GIVEN("Empty circuit") {
     Circuit circ(3);
@@ -307,6 +297,14 @@ SCENARIO("Complete synthesis") {
     Circuit d(2, 2);
     d.add_op<unsigned>(OpType::Measure, {0, 0});
     d.add_op<unsigned>(OpType::Measure, {1, 1});
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
+    REQUIRE(circ == d);
+  }
+  GIVEN("Circuit with resets") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Reset, {0});
+    Circuit d(circ);
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
     REQUIRE(circ == d);
   }

@@ -262,20 +262,20 @@ void GPGraph::apply_gate_at_end(
       if (it != end_measures_.left.end()) {
         // the measurement is no longer end-circuit, we remove it from
         // end_measures_ and add it as a MidMeasure node instead.
-        std::vector<Pauli> paulis(n_qubits_, Pauli::I);
-        paulis[it->first] = Pauli::Z;
-        PauliNode_ptr node = std::make_shared<MidMeasure>(paulis, it->second);
+        SpPauliStabiliser paulis = cliff_.get_zrow(Qubit(it->first));
+        auto [pauli_dense, angle] = dense_pauli(paulis, n_qubits_, 1.);
+        PauliNode_ptr node = std::make_shared<MidMeasure>(
+            pauli_dense, (angle == 1.), it->second);
         apply_node_at_end(node);
         end_measures_.left.erase(it);
       }
     } else if (arg.type() == UnitType::Bit) {
       auto it = end_measures_.right.find(arg.index().at(0));
       if (it != end_measures_.right.end()) {
-        // the measurement is no longer end-circuit, we remove it from
-        // end_measures_ and add it as a MidMeasure node instead.
-        std::vector<Pauli> paulis(n_qubits_, Pauli::I);
-        paulis[it->second] = Pauli::Z;
-        PauliNode_ptr node = std::make_shared<MidMeasure>(paulis, it->first);
+        SpPauliStabiliser paulis = cliff_.get_zrow(Qubit(it->second));
+        auto [pauli_dense, angle] = dense_pauli(paulis, n_qubits_, 1.);
+        PauliNode_ptr node =
+            std::make_shared<MidMeasure>(pauli_dense, (angle == 1.), it->first);
         apply_node_at_end(node);
         end_measures_.right.erase(it);
       }
@@ -300,6 +300,16 @@ void GPGraph::apply_gate_at_end(
     case OpType::Measure: {
       end_measures_.insert(
           {args.at(0).index().at(0), args.at(1).index().at(0)});
+      return;
+    }
+    case OpType::Reset: {
+      SpPauliStabiliser z_paulis = cliff_.get_zrow(qbs[0]);
+      auto [z_pauli_dense, z_angle] = dense_pauli(z_paulis, n_qubits_, 1.);
+      SpPauliStabiliser x_paulis = cliff_.get_xrow(qbs[0]);
+      auto [x_pauli_dense, x_angle] = dense_pauli(x_paulis, n_qubits_, 1.);
+      PauliNode_ptr node = std::make_shared<Reset>(
+          z_pauli_dense, x_pauli_dense, (z_angle == 1.), (x_angle == 1.));
+      apply_node_at_end(node);
       return;
     }
     case OpType::Z: {

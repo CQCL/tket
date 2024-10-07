@@ -327,6 +327,33 @@ static void consume_available_rotations(
     for (unsigned i = first_set.size(); i-- > 0;) {
       PauliNode_ptr& node_ptr = first_set[i];
       switch (node_ptr->get_type()) {
+        case PauliNodeType::Reset: {
+          if (node_ptr->tqe_cost() > 0) continue;
+          Reset& node = dynamic_cast<Reset&>(*node_ptr);
+          auto [q_index, supp_z, supp_x] = node.first_support();
+          std::vector<OpType> optype_list = AA_TO_ZX.at({supp_z, supp_x});
+          for (auto it = optype_list.begin(); it != optype_list.end(); ++it) {
+            circ.add_op<unsigned>(*it, {q_index});
+          }
+          if (!node.z_sign()) {
+            circ.add_op<unsigned>(OpType::X, {q_index});
+          }
+          if (!node.x_sign()) {
+            circ.add_op<unsigned>(OpType::Z, {q_index});
+          }
+          circ.add_op<unsigned>(OpType::Reset, {q_index});
+          if (!node.z_sign()) {
+            circ.add_op<unsigned>(OpType::X, {q_index});
+          }
+          if (!node.x_sign()) {
+            circ.add_op<unsigned>(OpType::Z, {q_index});
+          }
+          for (auto it = optype_list.rbegin(); it != optype_list.rend(); ++it) {
+            circ.add_op<unsigned>(SQ_CLIFF_DAGGER.at(*it), {q_index});
+          }
+          first_set.erase(first_set.begin() + i);
+          break;
+        }
         case PauliNodeType::MidMeasure: {
           if (node_ptr->tqe_cost() > 0) continue;
           MidMeasure& node = dynamic_cast<MidMeasure&>(*node_ptr);
