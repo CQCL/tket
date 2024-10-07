@@ -985,22 +985,40 @@ PassPtr gen_synthesise_pauli_graph(
 PassPtr gen_greedy_pauli_simp(double discount_rate, double depth_weight) {
   Transform t =
       Transforms::greedy_pauli_optimisation(discount_rate, depth_weight);
-  PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
-  PredicatePtr mid_pred = std::make_shared<NoMidMeasurePredicate>();
-  OpTypeSet ins = {OpType::Z,       OpType::X,           OpType::Y,
-                   OpType::S,       OpType::Sdg,         OpType::V,
-                   OpType::Vdg,     OpType::H,           OpType::CX,
-                   OpType::CY,      OpType::CZ,          OpType::SWAP,
-                   OpType::Rz,      OpType::Rx,          OpType::Ry,
-                   OpType::T,       OpType::Tdg,         OpType::ZZMax,
-                   OpType::ZZPhase, OpType::PhaseGadget, OpType::XXPhase,
-                   OpType::YYPhase, OpType::PauliExpBox, OpType::Measure,
-                   OpType::PhasedX};
+  OpTypeSet ins = {
+      OpType::Z,
+      OpType::X,
+      OpType::Y,
+      OpType::S,
+      OpType::Sdg,
+      OpType::V,
+      OpType::Vdg,
+      OpType::H,
+      OpType::CX,
+      OpType::CY,
+      OpType::CZ,
+      OpType::SWAP,
+      OpType::Rz,
+      OpType::Rx,
+      OpType::Ry,
+      OpType::T,
+      OpType::Tdg,
+      OpType::ZZMax,
+      OpType::ZZPhase,
+      OpType::PhaseGadget,
+      OpType::XXPhase,
+      OpType::YYPhase,
+      OpType::Measure,
+      OpType::PhasedX,
+      OpType::Reset,
+      OpType::Conditional,
+      OpType::PauliExpBox,
+      OpType::PauliExpPairBox,
+      OpType::PauliExpCommutingSetBox};
+
+  ins.insert(all_classical_types().begin(), all_classical_types().end());
   PredicatePtr in_gates = std::make_shared<GateSetPredicate>(ins);
-  PredicatePtrMap precons{
-      CompilationUnit::make_type_pair(ccontrol_pred),
-      CompilationUnit::make_type_pair(mid_pred),
-      CompilationUnit::make_type_pair(in_gates)};
+  PredicatePtrMap precons{CompilationUnit::make_type_pair(in_gates)};
   PredicateClassGuarantees g_postcons = {
       {typeid(ConnectivityPredicate), Guarantee::Clear},
       {typeid(NoWireSwapsPredicate), Guarantee::Clear}};
