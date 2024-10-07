@@ -28,6 +28,7 @@
 #include "tket/PauliGraph/PauliGraph.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Rebase.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 namespace test_PauliGraph {
@@ -692,6 +693,14 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     test1.symbol_substitution(symbol_map);
     test2.symbol_substitution(symbol_map);
     REQUIRE(test_statevector_comparison(test1, test2));
+  }
+  GIVEN("A circuit with a classical bit") {
+    // https://github.com/CQCL/tket/issues/1578
+    Circuit c0(0, 1);
+    CircBox cbox(c0);
+    Circuit c(0, 1);
+    c.add_box<CircBox, Bit>(cbox, {Bit("c", 0)});
+    REQUIRE_NOTHROW(Transforms::special_UCC_synthesis().apply(c));
   }
   GIVEN(
       "Clifford merges requires removing from start line without segfault "
