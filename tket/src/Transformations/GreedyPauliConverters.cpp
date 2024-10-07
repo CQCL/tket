@@ -446,7 +446,7 @@ void GPGraph::apply_gate_at_end(
         apply_node_at_end(node);
         return;
       }
-      throw BadOpType("Cannot add gate to GPGraph", type);
+      throw BadOpType("GreedyPauliSimp doesn't support", type);
     }
   }
   for (auto it = pauli_rots.begin(); it != pauli_rots.end(); ++it) {
