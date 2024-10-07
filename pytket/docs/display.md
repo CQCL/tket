@@ -14,7 +14,6 @@ Rendering circuits with `pytket.circuit.display` requires an internet connection
 ```
 pip install pytket-offline-display
 ```
-:::
 
 ```{eval-rst}
 .. automodule:: pytket.circuit.display
