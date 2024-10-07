@@ -8,9 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 sphinx = "^7.3.7"
-sphinx-autodoc-annotation = "^1.0.post1"
 sphinx-copybutton = "^0.5.2"
-jupyter-sphinx = "^0.5.3"
 ipykernel = "^6.29.4"
 enum-tools = {extras = ["sphinx"], version = "^0.12.0"}
 furo = "^2024.5.6"
