@@ -151,6 +151,8 @@ GPVertSet GPGraph::get_predecessors(const GPVert& vert) const {
   return preds;
 }
 
+// Adapted from `PauliGraph`, when adding a node to the graph, we check if it
+// can be merged with an existing node.
 void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
   GPVertSet to_search = end_line_;
   GPVertSet commuted;

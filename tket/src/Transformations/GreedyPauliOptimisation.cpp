@@ -307,7 +307,7 @@ static void tableau_row_nodes_synthesis(
 }
 
 /**
- * @brief Given a vector of sets of PauliRotation, implement any node in the
+ * @brief Given a vector of sets of PauliNodes, implement any node in the
  * first set where the tqe_cost is zero. Remove implemented nodes and the first
  * set if empty.
  *
@@ -316,7 +316,7 @@ static void tableau_row_nodes_synthesis(
  * @return true if the first set is now empty and removed
  * @return false
  */
-static void consume_available_rotations(
+static void consume_nodes(
     std::vector<std::vector<PauliNode_ptr>>& rotation_sets, Circuit& circ,
     DepthTracker& depth_tracker) {
   if (rotation_sets.empty()) {
@@ -331,6 +331,7 @@ static void consume_available_rotations(
           if (node_ptr->tqe_cost() > 0) continue;
           Reset& node = dynamic_cast<Reset&>(*node_ptr);
           auto [q_index, supp_z, supp_x] = node.first_support();
+          // conjugate the pair to +Z/X
           std::vector<OpType> optype_list = AA_TO_ZX.at({supp_z, supp_x});
           for (auto it = optype_list.begin(); it != optype_list.end(); ++it) {
             circ.add_op<unsigned>(*it, {q_index});
@@ -358,6 +359,7 @@ static void consume_available_rotations(
           if (node_ptr->tqe_cost() > 0) continue;
           MidMeasure& node = dynamic_cast<MidMeasure&>(*node_ptr);
           auto [q_index, supp] = node.first_support();
+          // Conjugate the Pauli to +Z
           switch (supp) {
             case Pauli::Z: {
               if (!node.sign()) {
@@ -403,13 +405,14 @@ static void consume_available_rotations(
           break;
         }
         case PauliNodeType::ClassicalNode: {
+          // always implement Classical nodes
           ClassicalNode& node = dynamic_cast<ClassicalNode&>(*node_ptr);
           circ.add_op<UnitID>(node.op(), node.args());
           first_set.erase(first_set.begin() + i);
           break;
         }
-        // conditionals are added as conditional PauliExpBoxes
         case PauliNodeType::ConditionalPauliRotation: {
+          // conditionals are added as conditional PauliExpBoxes
           ConditionalPauliRotation& node =
               dynamic_cast<ConditionalPauliRotation&>(*node_ptr);
           Op_ptr cond = std::make_shared<Conditional>(
@@ -474,7 +477,7 @@ static void pauli_exps_synthesis(
     std::vector<PauliNode_ptr>& rows, Circuit& circ, double discount_rate,
     double depth_weight, DepthTracker& depth_tracker) {
   while (true) {
-    consume_available_rotations(rotation_sets, circ, depth_tracker);
+    consume_nodes(rotation_sets, circ, depth_tracker);
     if (rotation_sets.empty()) break;
     std::vector<PauliNode_ptr>& first_set = rotation_sets[0];
     // get nodes with min cost

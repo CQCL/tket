@@ -54,7 +54,7 @@ enum class PauliNodeType {
   PauliPropagation,
   // Pauli rotation with classical control
   ConditionalPauliRotation,
-  // Classical operations,
+  // Classical operation
   ClassicalNode,
   // Mid-circuit measurement
   MidMeasure,
@@ -87,12 +87,20 @@ enum class BitType : unsigned {
  */
 using TQE = std::tuple<TQEType, unsigned, unsigned>;
 
+/**
+ * @brief Commutation information of a node specified by a list of
+ * Pauli strings along with classical READs and WRITEs.
+ */
 struct CommuteInfo {
   std::vector<std::vector<Pauli>> paulis;
   // We use UnitID to differentiate between Bit and WasmState
   std::vector<std::pair<UnitID, BitType>> bits_info;
 };
 
+/**
+ * @brief Base class for nodes in the Greedy Pauli graph
+ *
+ */
 class PauliNode {
  public:
   virtual PauliNodeType get_type() const = 0;
@@ -109,7 +117,7 @@ class PauliNode {
 typedef std::shared_ptr<PauliNode> PauliNode_ptr;
 
 /**
- * @brief A node defined by a single Pauli string
+ * @brief Base class for nodes defined by a single Pauli string
  */
 class SingleNode : public PauliNode {
  public:
@@ -168,7 +176,7 @@ class SingleNode : public PauliNode {
 };
 
 /**
- * @brief Node consists of a pair of anti-commuting Pauli strings
+ * @brief Base class for nodes defined by a pair of anti-commuting Pauli strings
  */
 class ACPairNode : public PauliNode {
  public:
@@ -252,7 +260,7 @@ class ACPairNode : public PauliNode {
 };
 
 /**
- * @brief Contains a Op on classical wires
+ * @brief Black box node for classical Ops
  */
 class ClassicalNode : public PauliNode {
  public:
@@ -272,12 +280,12 @@ class ClassicalNode : public PauliNode {
   CommuteInfo get_commute_info() const override;
 
  protected:
-  std::vector<UnitID> args_;
-  Op_ptr op_;
+  const std::vector<UnitID> args_;
+  const Op_ptr op_;
 };
 
 /**
- * @brief A Pauli exponential defined by a padded Pauli string
+ * @brief A Pauli exponential defined by a dense Pauli string
  * and a rotation angle
  */
 class PauliRotation : public SingleNode {
@@ -299,7 +307,7 @@ class PauliRotation : public SingleNode {
   CommuteInfo get_commute_info() const override;
 
  protected:
-  Expr theta_;
+  const Expr theta_;
 };
 
 /**
@@ -308,10 +316,11 @@ class PauliRotation : public SingleNode {
 class MidMeasure : public SingleNode {
  public:
   /**
-   * @brief Construct a new MidMeasure object.
+   * @brief Construct a new Mid Measure object
    *
-   * @param string the Pauli string
-   * @param bit bit to store the readout
+   * @param string dense Pauli string
+   * @param sign the sign of the Pauli string
+   * @param bit readout bit
    */
   MidMeasure(std::vector<Pauli> string, bool sign, unsigned bit);
 
@@ -324,16 +333,17 @@ class MidMeasure : public SingleNode {
 };
 
 /**
- * @brief A Pauli exponential defined by a padded Pauli string
- * and a rotation angle
+ * @brief Conditional Pauli rotation
  */
 class ConditionalPauliRotation : public PauliRotation {
  public:
   /**
-   * @brief Construct a new PauliRotation object.
+   * @brief Construct a new Conditional Pauli Rotation object
    *
    * @param string the Pauli string
    * @param theta the rotation angle in half-turns
+   * @param cond_bits conditional bits
+   * @param cond_value conditional value
    */
   ConditionalPauliRotation(
       std::vector<Pauli> string, Expr theta, std::vector<unsigned> cond_bits,
@@ -349,8 +359,8 @@ class ConditionalPauliRotation : public PauliRotation {
   unsigned cond_value() const { return cond_value_; };
 
  protected:
-  std::vector<unsigned> cond_bits_;
-  unsigned cond_value_;
+  const std::vector<unsigned> cond_bits_;
+  const unsigned cond_value_;
 };
 
 /**
@@ -365,11 +375,11 @@ class PauliPropagation : public ACPairNode {
   /**
    * @brief Construct a new PauliPropagation object
    *
-   * @param z_string
-   * @param x_string
-   * @param z_sign
-   * @param x_sign
-   * @param qubit_index
+   * @param z_string propagated Pauli Z
+   * @param x_string propagated Pauli X
+   * @param z_sign the sign of z_string
+   * @param x_sign the sign of x_string
+   * @param qubit_index i.e. row index
    */
   PauliPropagation(
       std::vector<Pauli> z_string, std::vector<Pauli> x_string, bool z_sign,
@@ -384,14 +394,26 @@ class PauliPropagation : public ACPairNode {
   unsigned qubit_index() const { return qubit_index_; };
 
  private:
-  unsigned qubit_index_;
+  const unsigned qubit_index_;
 };
 
 /**
- * @brief Reset
+ * @brief Reset operation defined by a pair of anti-commuting strings
+ * For example, a tket Reset OpType can be defined as a Z/X pair. The Pauli Z
+ * can be seen as a Z-basis measurement, and the Pauli X can be seen as the post
+ * measurement conditional X gate.
+ *
  */
 class Reset : public ACPairNode {
  public:
+  /**
+   * @brief Construct a new Reset object
+   *
+   * @param z_string
+   * @param x_string
+   * @param z_sign
+   * @param x_sign
+   */
   Reset(
       std::vector<Pauli> z_string, std::vector<Pauli> x_string, bool z_sign,
       bool x_sign);
@@ -417,21 +439,27 @@ typedef boost::adj_list_vertex_property_map<
     GPVIndex;
 
 /**
- * Pauli graph structure for GreedyPauliSimp.
- * The dependency graph consists of Pauli rotations, mid-circuit measurements,
- * resets, conditional Pauli rotations, and classical operations as internal
- * nodes. Edges represent gate dependencies, where one node depends on another
- * if their underlying Pauli strings do not commute or if they share a classical
- * bit.
+ * @brief Pauli graph structure for GreedyPauliSimp.
  *
- * End-of-circuit measurements are stored as an integer-to-integer map. These
- * measurements are kept separately (i.e. after the final Clifford) so the
- * optimisation around them can be later handed to CliffordPushThroughMeausres.
+ * A DAG is used to store all operations except for the end-of-circuit Clifford
+ * and end-of-circuit measurements. The vertices consist of Pauli rotations,
+ * mid-circuit measurements, resets, conditional Pauli rotations, and classical
+ * operations. Edges represent gate dependencies, where two nodes commute if
+ * they commute on both quantum and classical wires.
  *
- * The final Clifford operator is stored using a UnitaryRevTableau. Note that
- * UnitaryRevTableau is chose over PauliPropagations because of the abundance of
- * already existed updating methods.
+ * - Quantum commutation: Nodes commute if all Pauli strings in one node
+ *   commute with all strings in the other.
+ * - Classical commutation: Nodes commute if they do not share classical
+ *   bits, or if they only read from shared bits.
  *
+ * End-of-circuit measurements are stored as a map from integers to integers.
+ * These measurements are kept separate (i.e., after the final Clifford) so
+ * optimisation around them can later be handled by
+ * `CliffordPushThroughMeasures`.
+ *
+ * The final Clifford operator is stored using a `UnitaryRevTableau`. Note that
+ * `UnitaryRevTableau` is chosen over `PauliPropagations` due to the
+ * availability of existing update methods.
  */
 class GPGraph {
  public:
@@ -458,7 +486,7 @@ class GPGraph {
 
  private:
   /**
-   * Applies the given gate to the end of the circuit.
+   * Applies the given gate to the end of the graph.
    * Clifford gates transform the tableau.
    * Non-Clifford gates and conditional Clifford gates are transformed
    * into PauliNodes by the tableau and added
@@ -468,11 +496,19 @@ class GPGraph {
       const Command& cmd, bool conditional = false,
       std::vector<unsigned> cond_bits = {}, unsigned cond_value = 0);
 
+  /**
+   * Add a Pauli rotation to the graph
+   * If the angle is non-Clifford or if conditional is true then add to the DAG
+   * as a PauliRotation node, otherwise update the tableau.
+   */
   void apply_pauli_at_end(
       const std::vector<Pauli>& paulis, const Expr& angle,
       const qubit_vector_t& qbs, bool conditional = false,
       std::vector<unsigned> cond_bits = {}, unsigned cond_value = 0);
 
+  /**
+   * Add a node to the DAG and check if it can be merged with another node.
+   */
   void apply_node_at_end(PauliNode_ptr& node);
 
   /**
@@ -505,10 +541,10 @@ std::tuple<std::vector<PauliNode_ptr>, std::vector<PauliNode_ptr>>
 gpg_from_unordered_set(const std::vector<SymPauliTensor>& unordered_set);
 
 /**
- * @brief Given a circuit consists of PauliExpBoxes followed by clifford gates,
- * and end-of-circuit measurements, implement the PauliExpBoxes and the final
- * clifford subcircuit by applying Clifford gates and single qubit rotations in
- * a greedy fashion.
+ * @brief Converts the given circuit into a GPGraph and conjugates each node
+ * by greedily applying 2-qubit Clifford gates until the node can be realised
+ * as a single-qubit gate, a measurement, or a reset. The final Clifford
+ * operator is synthesized in a similar fashion.
  *
  * @param circ
  * @param discount_rate
