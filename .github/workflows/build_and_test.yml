@@ -315,9 +315,7 @@ jobs:
         pip install poetry==1.6.1
         cd pytket/docs
         poetry install
-        cd ../../
-        poetry run -C pytket/docs ./.github/workflows/build-docs
-        
+        poetry run bash ./build-docs.sh
     - name: Upload artifact
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/upload-artifact@v4
