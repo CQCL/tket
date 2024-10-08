@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.33.1 (October 2024)
+---------------------
 
 Fixes:
 
