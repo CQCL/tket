@@ -9,6 +9,10 @@ Features:
 * `GreedyPauliSimp`` now supports mid-circuit measurements, resets, conditionals,
   and classical gates.
 
+Fixes:
+
+* Fix `GuidedPauliSimp` for circuits containing `CircBox` with classical wires.
+
 1.33.0 (October 2024)
 ---------------------
 
