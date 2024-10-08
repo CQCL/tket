@@ -15,12 +15,8 @@
 #include <algorithm>
 
 #include "tket/Circuit/PauliExpBoxes.hpp"
-#include "tket/Converters/Converters.hpp"
 #include "tket/OpType/OpType.hpp"
-#include "tket/PauliGraph/PauliGraph.hpp"
-#include "tket/Transformations/CliffordOptimisation.hpp"
 #include "tket/Transformations/GreedyPauliOptimisation.hpp"
-#include "tket/Transformations/GreedyPauliOptimisationLookupTables.hpp"
 #include "tket/Transformations/Transform.hpp"
 
 namespace tket {
@@ -164,7 +160,7 @@ void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
     to_search.erase(to_search.begin());
     // Check that we have already commuted past all of its children
     bool ready = true;
-    for (const PauliVert& child : get_successors(to_compare)) {
+    for (const GPVert& child : get_successors(to_compare)) {
       if (commuted.get<TagKey>().find(child) == commuted.get<TagKey>().end()) {
         ready = false;
         break;
@@ -205,7 +201,7 @@ void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
         }
       }
       // Commute and continue searching
-      PauliVertSet preds = get_predecessors(to_compare);
+      GPVertSet preds = get_predecessors(to_compare);
       to_search.insert(preds.begin(), preds.end());
       commuted.insert(to_compare);
     } else {

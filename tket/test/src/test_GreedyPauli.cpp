@@ -21,7 +21,6 @@
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Gate/SymTable.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
-#include "tket/PauliGraph/PauliGraph.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Transformations/GreedyPauliOptimisation.hpp"
 #include "tket/Utils/Expression.hpp"

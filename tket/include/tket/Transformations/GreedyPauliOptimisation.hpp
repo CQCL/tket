@@ -125,6 +125,7 @@ class SingleNode : public PauliNode {
    * @brief Construct a new SinglePauliNode object.
    *
    * @param string the Pauli string
+   * @param sign sign of the Pauli string
    */
   SingleNode(std::vector<Pauli> string, bool sign);
 
@@ -202,9 +203,9 @@ class ACPairNode : public PauliNode {
   /**
    * @brief Number of additional TQEs would required to reduce the weight to 1
    * after the given TQE is applied
-   * 
-   * @param tqe 
-   * @return int 
+   *
+   * @param tqe
+   * @return int
    */
   int tqe_cost_increase(const TQE& tqe) const override;
 
@@ -217,17 +218,17 @@ class ACPairNode : public PauliNode {
 
   /**
    * @brief Update the support vector with a single-qubit Clifford gate
-   * 
-   * @param sq_cliff 
-   * @param a 
+   *
+   * @param sq_cliff
+   * @param a
    */
   void update(const OpType& sq_cliff, const unsigned& a) override;
 
   /**
    * @brief Update the support vector with a SWAP gate
-   * 
-   * @param a 
-   * @param b 
+   *
+   * @param a
+   * @param b
    */
   void swap(const unsigned& a, const unsigned& b) override;
 

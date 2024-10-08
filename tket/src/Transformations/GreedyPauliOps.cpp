@@ -15,13 +15,10 @@
 #include <algorithm>
 
 #include "tket/Circuit/PauliExpBoxes.hpp"
-#include "tket/Converters/Converters.hpp"
 #include "tket/OpType/OpType.hpp"
-#include "tket/PauliGraph/PauliGraph.hpp"
 #include "tket/Transformations/CliffordOptimisation.hpp"
 #include "tket/Transformations/GreedyPauliOptimisation.hpp"
 #include "tket/Transformations/GreedyPauliOptimisationLookupTables.hpp"
-#include "tket/Transformations/Transform.hpp"
 
 namespace tket {
 
