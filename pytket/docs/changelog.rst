@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Features:
+
+* `GreedyPauliSimp`` now supports mid-circuit measurements, resets, conditionals,
+  and classical gates.
+
 1.33.0 (October 2024)
 ---------------------
 
