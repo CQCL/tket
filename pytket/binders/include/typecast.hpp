@@ -23,7 +23,6 @@
 #include <pybind11/stl.h>
 
 #include "tket/Utils/Expression.hpp"
-#include "tket/Utils/Symbols.hpp"
 #include "unit_downcast.hpp"
 
 PYBIND11_NAMESPACE_BEGIN(PYBIND11_NAMESPACE)

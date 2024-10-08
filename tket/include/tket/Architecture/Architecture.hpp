@@ -14,8 +14,6 @@
 
 #pragma once
 
-#include <iostream>
-#include <numeric>
 #include <set>
 #include <string>
 #include <tklog/TketLog.hpp>
@@ -24,8 +22,6 @@
 
 #include "tket/Graphs/CompleteGraph.hpp"
 #include "tket/Graphs/DirectedGraph.hpp"
-#include "tket/Utils/BiMapHeaders.hpp"
-#include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/Json.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
 #include "tket/Utils/UnitID.hpp"

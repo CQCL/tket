@@ -19,6 +19,7 @@
  * @brief Named registers of arrays of (quantum or classical) nodes
  */
 
+#include <boost/bimap.hpp>
 #include <boost/functional/hash.hpp>
 #include <map>
 #include <memory>
@@ -29,7 +30,6 @@
 #include <string>
 #include <tklog/TketLog.hpp>
 
-#include "BiMapHeaders.hpp"
 #include "Json.hpp"
 
 namespace tket {

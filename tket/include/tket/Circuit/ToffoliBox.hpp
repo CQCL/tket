@@ -17,8 +17,6 @@
 #include <memory>
 
 #include "Boxes.hpp"
-#include "Circuit.hpp"
-#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

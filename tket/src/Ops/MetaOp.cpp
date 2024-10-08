@@ -18,6 +18,7 @@
 
 #include "tket/OpType/EdgeType.hpp"
 #include "tket/OpType/OpType.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
 
 namespace tket {
 

@@ -18,11 +18,11 @@ project(tket CXX)
 list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
 
 find_package(Boost CONFIG REQUIRED)
-find_package(SymEngine CONFIG REQUIRED)
 find_package(Eigen3 CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
-find_package(tklog CONFIG REQUIRED)
+find_package(SymEngine CONFIG REQUIRED)
 find_package(tkassert CONFIG REQUIRED)
+find_package(tklog CONFIG REQUIRED)
 find_package(tkrng CONFIG REQUIRED)
 find_package(tktokenswap CONFIG REQUIRED)
 find_package(tkwsm CONFIG REQUIRED)
@@ -109,11 +109,11 @@ target_include_directories(tket PUBLIC
     $<INSTALL_INTERFACE:include/tket>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tket>)
 target_link_libraries(tket PRIVATE Boost::headers)
-target_link_libraries(tket PRIVATE symengine::symengine)
 target_link_libraries(tket PRIVATE Eigen3::Eigen)
 target_link_libraries(tket PRIVATE nlohmann_json::nlohmann_json)
-target_link_libraries(tket PRIVATE tklog::tklog)
+target_link_libraries(tket PRIVATE symengine::symengine)
 target_link_libraries(tket PRIVATE tkassert::tkassert)
+target_link_libraries(tket PRIVATE tklog::tklog)
 target_link_libraries(tket PRIVATE tkrng::tkrng)
 target_link_libraries(tket PRIVATE tktokenswap::tktokenswap)
 target_link_libraries(tket PRIVATE tkwsm::tkwsm)
@@ -123,37 +123,66 @@ ENDIF()
 
 target_sources(tket
     PRIVATE
-        src/Utils/UnitID.cpp
-        src/Utils/HelperFunctions.cpp
-        src/Utils/MatrixAnalysis.cpp
-        src/Utils/PauliTensor.cpp
-        src/Utils/CosSinDecomposition.cpp
-        src/Utils/Expression.cpp
-        src/OpType/OpDesc.cpp
-        src/OpType/OpTypeInfo.cpp
-        src/OpType/OpTypeFunctions.cpp
-        src/OpType/OpTypeJson.cpp
+        src/ArchAwareSynth/Path.cpp
+        src/ArchAwareSynth/SteinerForest.cpp
+        src/ArchAwareSynth/SteinerTree.cpp
+        src/Architecture/Architecture.cpp
+        src/Architecture/ArchitectureGraphClasses.cpp
+        src/Architecture/ArchitectureMapping.cpp
+        src/Architecture/BestTsaWithArch.cpp
+        src/Architecture/DistancesFromArchitecture.cpp
+        src/Architecture/NeighboursFromArchitecture.cpp
+        src/Architecture/SubgraphMonomorphisms.cpp
+        src/Characterisation/Cycles.cpp
+        src/Characterisation/DeviceCharacterisation.cpp
+        src/Characterisation/FrameRandomisation.cpp
+        src/Circuit/AssertionSynthesis.cpp
+        src/Circuit/basic_circ_manip.cpp
+        src/Circuit/Boxes.cpp
+        src/Circuit/CircPool.cpp
+        src/Circuit/Circuit.cpp
+        src/Circuit/CircuitJson.cpp
+        src/Circuit/CircUtils.cpp
+        src/Circuit/CommandJson.cpp
+        src/Circuit/Conditional.cpp
+        src/Circuit/ConjugationBox.cpp
+        src/Circuit/ControlledGates.cpp
+        src/Circuit/DAGProperties.cpp
+        src/Circuit/DiagonalBox.cpp
+        src/Circuit/DummyBox.cpp
+        src/Circuit/latex_drawing.cpp
+        src/Circuit/macro_circ_info.cpp
+        src/Circuit/macro_manipulation.cpp
+        src/Circuit/Multiplexor.cpp
+        src/Circuit/OpJson.cpp
+        src/Circuit/PauliExpBoxes.cpp
+        src/Circuit/ResourceData.cpp
+        src/Circuit/setters_and_getters.cpp
+        src/Circuit/Simulation/BitOperations.cpp
+        src/Circuit/Simulation/CircuitSimulator.cpp
+        src/Circuit/Simulation/DecomposeCircuit.cpp
+        src/Circuit/Simulation/GateNode.cpp
+        src/Circuit/Simulation/GateNodesBuffer.cpp
+        src/Circuit/Simulation/PauliExpBoxUnitaryCalculator.cpp
+        src/Circuit/StatePreparation.cpp
+        src/Circuit/SubcircuitFinder.cpp
+        src/Circuit/ThreeQubitConversion.cpp
+        src/Circuit/ToffoliBox.cpp
         src/Clifford/ChoiMixTableau.cpp
         src/Clifford/SymplecticTableau.cpp
         src/Clifford/UnitaryTableau.cpp
-        src/Ops/BarrierOp.cpp
-        src/Ops/FlowOp.cpp
-        src/Ops/MetaOp.cpp
-        src/Ops/Op.cpp
-        src/Ops/ClassicalOps.cpp
-        src/Ops/OpJsonFactory.cpp
-        src/Graphs/AdjacencyData.cpp
-        src/Graphs/BruteForceColouring.cpp
-        src/Graphs/ColouringPriority.cpp
-        src/Graphs/GraphColouring.cpp
-        src/Graphs/GraphRoutines.cpp
-        src/Graphs/LargeCliquesResult.cpp
-        src/Graphs/ArticulationPoints.cpp
+        src/Converters/ChoiMixTableauConverters.cpp
+        src/Converters/Gauss.cpp
+        src/Converters/PauliGraphConverters.cpp
+        src/Converters/PhasePoly.cpp
+        src/Converters/UnitaryTableauBox.cpp
+        src/Converters/UnitaryTableauConverters.cpp
+        src/Converters/ZXConverters.cpp
+        src/Diagonalisation/Diagonalisation.cpp
+        src/Diagonalisation/DiagUtils.cpp
+        src/Diagonalisation/PauliPartition.cpp
         src/Gate/Gate.cpp
         src/Gate/GatePtr.cpp
-        src/Gate/OpPtrFunctions.cpp
-        src/Gate/Rotation.cpp
-        src/Gate/SymTable.cpp
         src/Gate/GateUnitaryMatrix.cpp
         src/Gate/GateUnitaryMatrixComposites.cpp
         src/Gate/GateUnitaryMatrixError.cpp
@@ -162,53 +191,87 @@ target_sources(tket
         src/Gate/GateUnitaryMatrixUtils.cpp
         src/Gate/GateUnitaryMatrixVariableQubits.cpp
         src/Gate/GateUnitarySparseMatrix.cpp
+        src/Gate/OpPtrFunctions.cpp
+        src/Gate/Rotation.cpp
+        src/Gate/SymTable.cpp
+        src/Graphs/AdjacencyData.cpp
+        src/Graphs/ArticulationPoints.cpp
+        src/Graphs/BruteForceColouring.cpp
+        src/Graphs/ColouringPriority.cpp
+        src/Graphs/GraphColouring.cpp
+        src/Graphs/GraphRoutines.cpp
+        src/Graphs/LargeCliquesResult.cpp
+        src/Mapping/AASLabelling.cpp
+        src/Mapping/AASRoute.cpp
+        src/Mapping/BoxDecomposition.cpp
+        src/Mapping/LexicographicalComparison.cpp
+        src/Mapping/LexiLabelling.cpp
+        src/Mapping/LexiRoute.cpp
+        src/Mapping/LexiRouteRoutingMethod.cpp
+        src/Mapping/MappingFrontier.cpp
+        src/Mapping/MappingManager.cpp
+        src/Mapping/MultiGateReorder.cpp
+        src/Mapping/RoutingMethodCircuit.cpp
+        src/Mapping/RoutingMethodJson.cpp
+        src/Mapping/Verification.cpp
+        src/MeasurementSetup/MeasurementReduction.cpp
+        src/MeasurementSetup/MeasurementSetup.cpp
+        src/Ops/BarrierOp.cpp
+        src/Ops/ClassicalOps.cpp
+        src/Ops/FlowOp.cpp
+        src/Ops/MetaOp.cpp
+        src/Ops/Op.cpp
+        src/Ops/OpJsonFactory.cpp
+        src/OpType/OpDesc.cpp
+        src/OpType/OpTypeFunctions.cpp
+        src/OpType/OpTypeInfo.cpp
+        src/OpType/OpTypeJson.cpp
         src/PauliGraph/ConjugatePauliFunctions.cpp
         src/PauliGraph/PauliGraph.cpp
-        src/Circuit/Boxes.cpp
-        src/Circuit/Circuit.cpp
-        src/Circuit/CircuitJson.cpp
-        src/Circuit/CommandJson.cpp
-        src/Circuit/ResourceData.cpp
-        src/Circuit/DummyBox.cpp
-        src/Circuit/macro_manipulation.cpp
-        src/Circuit/basic_circ_manip.cpp
-        src/Circuit/latex_drawing.cpp
-        src/Circuit/macro_circ_info.cpp
-        src/Circuit/SubcircuitFinder.cpp
-        src/Circuit/setters_and_getters.cpp
-        src/Circuit/CircUtils.cpp
-        src/Circuit/ThreeQubitConversion.cpp
-        src/Circuit/AssertionSynthesis.cpp
-        src/Circuit/CircPool.cpp
-        src/Circuit/DAGProperties.cpp
-        src/Circuit/OpJson.cpp
-        src/Circuit/Conditional.cpp
-        src/Circuit/ControlledGates.cpp
-        src/Circuit/Multiplexor.cpp
-        src/Circuit/StatePreparation.cpp
-        src/Circuit/DiagonalBox.cpp
-        src/Circuit/ToffoliBox.cpp
-        src/Circuit/PauliExpBoxes.cpp
-        src/Circuit/ConjugationBox.cpp
-        src/Circuit/Simulation/BitOperations.cpp
-        src/Circuit/Simulation/CircuitSimulator.cpp
-        src/Circuit/Simulation/DecomposeCircuit.cpp
-        src/Circuit/Simulation/GateNode.cpp
-        src/Circuit/Simulation/GateNodesBuffer.cpp
-        src/Circuit/Simulation/PauliExpBoxUnitaryCalculator.cpp
-        src/Architecture/Architecture.cpp
-        src/Architecture/ArchitectureGraphClasses.cpp
-        src/Architecture/ArchitectureMapping.cpp
-        src/Architecture/BestTsaWithArch.cpp
-        src/Architecture/DistancesFromArchitecture.cpp
-        src/Architecture/NeighboursFromArchitecture.cpp
-        src/Architecture/SubgraphMonomorphisms.cpp
-        src/Diagonalisation/DiagUtils.cpp
-        src/Diagonalisation/Diagonalisation.cpp
-        src/Diagonalisation/PauliPartition.cpp
-        src/Characterisation/Cycles.cpp
-        src/Characterisation/FrameRandomisation.cpp
-        src/Characterisation/DeviceCharacterisation.cpp
+        src/Placement/Frontier.cpp
+        src/Placement/GraphPlacement.cpp
+        src/Placement/LinePlacement.cpp
+        src/Placement/MonomorphismCalculation.cpp
+        src/Placement/NeighbourPlacements.cpp
+        src/Placement/NoiseAwarePlacement.cpp
+        src/Placement/Placement.cpp
+        src/Placement/PlacementGraphClasses.cpp
+        src/Predicates/CompilationUnit.cpp
+        src/Predicates/CompilerPass.cpp
+        src/Predicates/PassGenerators.cpp
+        src/Predicates/PassLibrary.cpp
+        src/Predicates/Predicates.cpp
+        src/Transformations/BasicOptimisation.cpp
+        src/Transformations/CliffordOptimisation.cpp
+        src/Transformations/CliffordReductionPass.cpp
+        src/Transformations/CliffordResynthesis.cpp
+        src/Transformations/Combinator.cpp
+        src/Transformations/ContextualReduction.cpp
+        src/Transformations/Decomposition.cpp
+        src/Transformations/GreedyPauliOptimisation.cpp
+        src/Transformations/GreedyPauliConverters.cpp
+        src/Transformations/GreedyPauliOps.cpp
+        src/Transformations/MeasurePass.cpp
+        src/Transformations/OptimisationPass.cpp
+        src/Transformations/PauliOptimisation.cpp
+        src/Transformations/PhasedXFrontier.cpp
+        src/Transformations/PhaseOptimisation.cpp
+        src/Transformations/PQPSquash.cpp
+        src/Transformations/Rebase.cpp
+        src/Transformations/RedundancyRemoval.cpp
+        src/Transformations/Replacement.cpp
+        src/Transformations/RzPhasedXSquash.cpp
+        src/Transformations/SingleQubitSquash.cpp
+        src/Transformations/StandardSquash.cpp
+        src/Transformations/ThreeQubitSquash.cpp
+        src/Utils/CosSinDecomposition.cpp
+        src/Utils/Expression.cpp
+        src/Utils/HelperFunctions.cpp
+        src/Utils/MatrixAnalysis.cpp
+        src/Utils/PauliTensor.cpp
+        src/Utils/UnitID.cpp
+        src/ZX/Flow.cpp
+        src/ZX/MBQCRewrites.cpp
         src/ZX/ZXDConstructors.cpp
         src/ZX/ZXDExpansions.cpp
         src/ZX/ZXDFormats.cpp
@@ -216,106 +279,67 @@ target_sources(tket
         src/ZX/ZXDManipulation.cpp
         src/ZX/ZXDSubdiagram.cpp
         src/ZX/ZXGenerator.cpp
-        src/ZX/ZXRWCombinators.cpp
         src/ZX/ZXRWAxioms.cpp
+        src/ZX/ZXRWCombinators.cpp
         src/ZX/ZXRWDecompositions.cpp
         src/ZX/ZXRWGraphLikeForm.cpp
         src/ZX/ZXRWGraphLikeSimplification.cpp
-        src/ZX/Flow.cpp
-        src/ZX/MBQCRewrites.cpp
         src/ZX/ZXRWSequences.cpp
-        src/Converters/ChoiMixTableauConverters.cpp
-        src/Converters/PauliGraphConverters.cpp
-        src/Converters/Gauss.cpp
-        src/Converters/PhasePoly.cpp
-        src/Converters/UnitaryTableauBox.cpp
-        src/Converters/UnitaryTableauConverters.cpp
-        src/Converters/ZXConverters.cpp
-        src/Placement/Frontier.cpp
-        src/Placement/Placement.cpp
-        src/Placement/GraphPlacement.cpp
-        src/Placement/LinePlacement.cpp
-        src/Placement/NoiseAwarePlacement.cpp
-        src/Placement/PlacementGraphClasses.cpp
-        src/Placement/NeighbourPlacements.cpp
-        src/Placement/MonomorphismCalculation.cpp
-        src/ArchAwareSynth/Path.cpp
-        src/ArchAwareSynth/SteinerTree.cpp
-        src/ArchAwareSynth/SteinerForest.cpp
-        src/Mapping/AASRoute.cpp
-        src/Mapping/AASLabelling.cpp
-        src/Mapping/LexicographicalComparison.cpp
-        src/Mapping/LexiRoute.cpp
-        src/Mapping/LexiRouteRoutingMethod.cpp
-        src/Mapping/LexiLabelling.cpp
-        src/Mapping/MappingFrontier.cpp
-        src/Mapping/MappingManager.cpp
-        src/Mapping/MultiGateReorder.cpp
-        src/Mapping/BoxDecomposition.cpp
-        src/Mapping/RoutingMethodCircuit.cpp
-        src/Mapping/RoutingMethodJson.cpp
-        src/Mapping/Verification.cpp
-        src/MeasurementSetup/MeasurementSetup.cpp
-        src/MeasurementSetup/MeasurementReduction.cpp
-        src/Transformations/Combinator.cpp
-        src/Transformations/Rebase.cpp
-        src/Transformations/BasicOptimisation.cpp
-        src/Transformations/RedundancyRemoval.cpp
-        src/Transformations/PauliOptimisation.cpp
-        src/Transformations/CliffordOptimisation.cpp
-        src/Transformations/CliffordReductionPass.cpp
-        src/Transformations/CliffordResynthesis.cpp
-        src/Transformations/OptimisationPass.cpp
-        src/Transformations/PhaseOptimisation.cpp
-        src/Transformations/Decomposition.cpp
-        src/Transformations/GreedyPauliOptimisation.cpp
-        src/Transformations/GreedyPauliOps.cpp
-        src/Transformations/GreedyPauliConverters.cpp
-        src/Transformations/Replacement.cpp
-        src/Transformations/MeasurePass.cpp
-        src/Transformations/ContextualReduction.cpp
-        src/Transformations/ThreeQubitSquash.cpp
-        src/Transformations/SingleQubitSquash.cpp
-        src/Transformations/PhasedXFrontier.cpp
-        src/Transformations/PQPSquash.cpp
-        src/Transformations/RzPhasedXSquash.cpp
-        src/Transformations/StandardSquash.cpp
-        src/Predicates/Predicates.cpp
-        src/Predicates/CompilationUnit.cpp
-        src/Predicates/CompilerPass.cpp
-        src/Predicates/PassGenerators.cpp
-        src/Predicates/PassLibrary.cpp
     PUBLIC FILE_SET HEADERS
     BASE_DIRS ${PROJECT_SOURCE_DIR}/include
     FILES
-        include/tket/Utils/BiMapHeaders.hpp
-        include/tket/Utils/Constants.hpp
-        include/tket/Utils/CosSinDecomposition.hpp
-        include/tket/Utils/EigenConfig.hpp
-        include/tket/Utils/Expression.hpp
-        include/tket/Utils/GraphHeaders.hpp
-        include/tket/Utils/HelperFunctions.hpp
-        include/tket/Utils/Json.hpp
-        include/tket/Utils/MatrixAnalysis.hpp
-        include/tket/Utils/PauliTensor.hpp
-        include/tket/Utils/SequencedContainers.hpp
-        include/tket/Utils/Symbols.hpp
-        include/tket/Utils/UnitID.hpp
-        include/tket/OpType/EdgeType.hpp
-        include/tket/OpType/OpDesc.hpp
-        include/tket/OpType/OpTypeFunctions.hpp
-        include/tket/OpType/OpType.hpp
-        include/tket/OpType/OpTypeInfo.hpp
+        include/tket/ArchAwareSynth/Path.hpp
+        include/tket/ArchAwareSynth/SteinerForest.hpp
+        include/tket/ArchAwareSynth/SteinerTree.hpp
+        include/tket/Architecture/Architecture.hpp
+        include/tket/Architecture/ArchitectureMapping.hpp
+        include/tket/Architecture/BestTsaWithArch.hpp
+        include/tket/Architecture/DistancesFromArchitecture.hpp
+        include/tket/Architecture/NeighboursFromArchitecture.hpp
+        include/tket/Architecture/SubgraphMonomorphisms.hpp
+        include/tket/Characterisation/Cycles.hpp
+        include/tket/Characterisation/DeviceCharacterisation.hpp
+        include/tket/Characterisation/ErrorTypes.hpp
+        include/tket/Characterisation/FrameRandomisation.hpp
+        include/tket/Circuit/AssertionSynthesis.hpp
+        include/tket/Circuit/Boxes.hpp
+        include/tket/Circuit/CircPool.hpp
+        include/tket/Circuit/Circuit.hpp
+        include/tket/Circuit/CircUtils.hpp
+        include/tket/Circuit/ClassicalExpBox.hpp
+        include/tket/Circuit/Command.hpp
+        include/tket/Circuit/Conditional.hpp
+        include/tket/Circuit/ConjugationBox.hpp
+        include/tket/Circuit/DAGDefs.hpp
+        include/tket/Circuit/DiagonalBox.hpp
+        include/tket/Circuit/DummyBox.hpp
+        include/tket/Circuit/Multiplexor.hpp
+        include/tket/Circuit/PauliExpBoxes.hpp
+        include/tket/Circuit/ResourceData.hpp
+        include/tket/Circuit/Simulation/CircuitSimulator.hpp
+        include/tket/Circuit/Simulation/PauliExpBoxUnitaryCalculator.hpp
+        include/tket/Circuit/StatePreparation.hpp
+        include/tket/Circuit/ThreeQubitConversion.hpp
+        include/tket/Circuit/ToffoliBox.hpp
         include/tket/Clifford/ChoiMixTableau.hpp
         include/tket/Clifford/SymplecticTableau.hpp
         include/tket/Clifford/UnitaryTableau.hpp
-        include/tket/Ops/ClassicalOps.hpp
-        include/tket/Ops/BarrierOp.hpp
-        include/tket/Ops/FlowOp.hpp
-        include/tket/Ops/MetaOp.hpp
-        include/tket/Ops/Op.hpp
-        include/tket/Ops/OpJsonFactory.hpp
-        include/tket/Ops/OpPtr.hpp
+        include/tket/Converters/Converters.hpp
+        include/tket/Converters/Gauss.hpp
+        include/tket/Converters/PhasePoly.hpp
+        include/tket/Converters/UnitaryTableauBox.hpp
+        include/tket/Diagonalisation/Diagonalisation.hpp
+        include/tket/Diagonalisation/DiagUtils.hpp
+        include/tket/Diagonalisation/PauliPartition.hpp
+        include/tket/Gate/Gate.hpp
+        include/tket/Gate/GatePtr.hpp
+        include/tket/Gate/GateUnitaryMatrix.hpp
+        include/tket/Gate/GateUnitaryMatrixError.hpp
+        include/tket/Gate/GateUnitaryMatrixImplementations.hpp
+        include/tket/Gate/GateUnitaryMatrixUtils.hpp
+        include/tket/Gate/OpPtrFunctions.hpp
+        include/tket/Gate/Rotation.hpp
+        include/tket/Gate/SymTable.hpp
         include/tket/Graphs/AbstractGraph.hpp
         include/tket/Graphs/AdjacencyData.hpp
         include/tket/Graphs/ArticulationPoints.hpp
@@ -329,66 +353,6 @@ target_sources(tket
         include/tket/Graphs/TreeSearch_impl.hpp
         include/tket/Graphs/Utils.hpp
         include/tket/Graphs/Utils_impl.hpp
-        include/tket/Gate/Gate.hpp
-        include/tket/Gate/GatePtr.hpp
-        include/tket/Gate/GateUnitaryMatrixError.hpp
-        include/tket/Gate/GateUnitaryMatrix.hpp
-        include/tket/Gate/GateUnitaryMatrixImplementations.hpp
-        include/tket/Gate/GateUnitaryMatrixUtils.hpp
-        include/tket/Gate/OpPtrFunctions.hpp
-        include/tket/Gate/Rotation.hpp
-        include/tket/Gate/SymTable.hpp
-        include/tket/PauliGraph/ConjugatePauliFunctions.hpp
-        include/tket/PauliGraph/PauliGraph.hpp
-        include/tket/Circuit/AssertionSynthesis.hpp
-        include/tket/Circuit/Boxes.hpp
-        include/tket/Circuit/CircPool.hpp
-        include/tket/Circuit/Circuit.hpp
-        include/tket/Circuit/CircUtils.hpp
-        include/tket/Circuit/ClassicalExpBox.hpp
-        include/tket/Circuit/Command.hpp
-        include/tket/Circuit/Conditional.hpp
-        include/tket/Circuit/DAGDefs.hpp
-        include/tket/Circuit/DiagonalBox.hpp
-        include/tket/Circuit/DummyBox.hpp
-        include/tket/Circuit/Multiplexor.hpp
-        include/tket/Circuit/StatePreparation.hpp
-        include/tket/Circuit/ThreeQubitConversion.hpp
-        include/tket/Circuit/ToffoliBox.hpp
-        include/tket/Circuit/PauliExpBoxes.hpp
-        include/tket/Circuit/ConjugationBox.hpp
-        include/tket/Circuit/ResourceData.hpp
-        include/tket/Circuit/Simulation/CircuitSimulator.hpp
-        include/tket/Circuit/Simulation/PauliExpBoxUnitaryCalculator.hpp
-        include/tket/Architecture/Architecture.hpp
-        include/tket/Architecture/ArchitectureMapping.hpp
-        include/tket/Architecture/BestTsaWithArch.hpp
-        include/tket/Architecture/DistancesFromArchitecture.hpp
-        include/tket/Architecture/NeighboursFromArchitecture.hpp
-        include/tket/Architecture/SubgraphMonomorphisms.hpp
-        include/tket/Diagonalisation/Diagonalisation.hpp
-        include/tket/Diagonalisation/DiagUtils.hpp
-        include/tket/Diagonalisation/PauliPartition.hpp
-        include/tket/Characterisation/Cycles.hpp
-        include/tket/Characterisation/DeviceCharacterisation.hpp
-        include/tket/Characterisation/ErrorTypes.hpp
-        include/tket/Characterisation/FrameRandomisation.hpp
-        include/tket/ZX/Flow.hpp
-        include/tket/ZX/Rewrite.hpp
-        include/tket/ZX/Types.hpp
-        include/tket/ZX/ZXDiagram.hpp
-        include/tket/ZX/ZXDiagramImpl.hpp
-        include/tket/ZX/ZXGenerator.hpp
-        include/tket/Converters/Converters.hpp
-        include/tket/Converters/Gauss.hpp
-        include/tket/Converters/PhasePoly.hpp
-        include/tket/Converters/UnitaryTableauBox.hpp
-        include/tket/Placement/NeighbourPlacements.hpp
-        include/tket/Placement/Placement.hpp
-        include/tket/Placement/QubitGraph.hpp
-        include/tket/ArchAwareSynth/Path.hpp
-        include/tket/ArchAwareSynth/SteinerForest.hpp
-        include/tket/ArchAwareSynth/SteinerTree.hpp
         include/tket/Mapping/AASLabelling.hpp
         include/tket/Mapping/AASRoute.hpp
         include/tket/Mapping/BoxDecomposition.hpp
@@ -399,12 +363,34 @@ target_sources(tket
         include/tket/Mapping/MappingFrontier.hpp
         include/tket/Mapping/MappingManager.hpp
         include/tket/Mapping/MultiGateReorder.hpp
-        include/tket/Mapping/RoutingMethodCircuit.hpp
         include/tket/Mapping/RoutingMethod.hpp
+        include/tket/Mapping/RoutingMethodCircuit.hpp
         include/tket/Mapping/RoutingMethodJson.hpp
         include/tket/Mapping/Verification.hpp
         include/tket/MeasurementSetup/MeasurementReduction.hpp
         include/tket/MeasurementSetup/MeasurementSetup.hpp
+        include/tket/Ops/BarrierOp.hpp
+        include/tket/Ops/ClassicalOps.hpp
+        include/tket/Ops/FlowOp.hpp
+        include/tket/Ops/MetaOp.hpp
+        include/tket/Ops/Op.hpp
+        include/tket/Ops/OpJsonFactory.hpp
+        include/tket/Ops/OpPtr.hpp
+        include/tket/OpType/EdgeType.hpp
+        include/tket/OpType/OpDesc.hpp
+        include/tket/OpType/OpType.hpp
+        include/tket/OpType/OpTypeFunctions.hpp
+        include/tket/OpType/OpTypeInfo.hpp
+        include/tket/PauliGraph/ConjugatePauliFunctions.hpp
+        include/tket/PauliGraph/PauliGraph.hpp
+        include/tket/Placement/NeighbourPlacements.hpp
+        include/tket/Placement/Placement.hpp
+        include/tket/Placement/QubitGraph.hpp
+        include/tket/Predicates/CompilationUnit.hpp
+        include/tket/Predicates/CompilerPass.hpp
+        include/tket/Predicates/PassGenerators.hpp
+        include/tket/Predicates/PassLibrary.hpp
+        include/tket/Predicates/Predicates.hpp
         include/tket/Transformations/BasicOptimisation.hpp
         include/tket/Transformations/CliffordOptimisation.hpp
         include/tket/Transformations/CliffordReductionPass.hpp
@@ -427,11 +413,23 @@ target_sources(tket
         include/tket/Transformations/StandardSquash.hpp
         include/tket/Transformations/ThreeQubitSquash.hpp
         include/tket/Transformations/Transform.hpp
-        include/tket/Predicates/CompilationUnit.hpp
-        include/tket/Predicates/CompilerPass.hpp
-        include/tket/Predicates/PassGenerators.hpp
-        include/tket/Predicates/PassLibrary.hpp
-        include/tket/Predicates/Predicates.hpp
+        include/tket/Utils/Constants.hpp
+        include/tket/Utils/CosSinDecomposition.hpp
+        include/tket/Utils/EigenConfig.hpp
+        include/tket/Utils/Expression.hpp
+        include/tket/Utils/GraphHeaders.hpp
+        include/tket/Utils/HelperFunctions.hpp
+        include/tket/Utils/Json.hpp
+        include/tket/Utils/MatrixAnalysis.hpp
+        include/tket/Utils/PauliTensor.hpp
+        include/tket/Utils/SequencedContainers.hpp
+        include/tket/Utils/UnitID.hpp
+        include/tket/ZX/Flow.hpp
+        include/tket/ZX/Rewrite.hpp
+        include/tket/ZX/Types.hpp
+        include/tket/ZX/ZXDiagram.hpp
+        include/tket/ZX/ZXDiagramImpl.hpp
+        include/tket/ZX/ZXGenerator.hpp
     )
 
 if (BUILD_TKET_TEST)

@@ -164,7 +164,7 @@ def get_bit_width(x: int) -> int:
 
 
 def _gen_walk(var_type: VarType, newcirc: Circuit, heap: VarHeap) -> Callable[
-    [Union[RegLogicExp, BitLogicExp], Optional[Dict]],
+    [Union[RegLogicExp, BitLogicExp], Optional[Variable], Optional[Dict]],
     Variable,
 ]:
     """Generate a recursive walk method for decomposing an expression tree."""
@@ -210,14 +210,16 @@ def _gen_walk(var_type: VarType, newcirc: Circuit, heap: VarHeap) -> Callable[
     # convert an expression to gates on the circuit
     # and return the variable holding the result
     def recursive_walk(
-        exp: Union[RegLogicExp, BitLogicExp], kwargs: Optional[Dict] = None
+        exp: Union[RegLogicExp, BitLogicExp],
+        targ_bit: Optional[Variable] = None,
+        kwargs: Optional[Dict] = None,
     ) -> Variable:
         assert isinstance(exp.op, op_type)
         kwargs = kwargs or {}
         # decompose children
         for i, sub_e in filter_by_type(exp.args, exp_type):
             assert isinstance(sub_e, (BitLogicExp, RegLogicExp))
-            exp.args[i] = recursive_walk(sub_e, kwargs)
+            exp.args[i] = recursive_walk(sub_e, None, kwargs)
         # all args should now be Constant or Variable
         # write Constant to temporary Variable
         for idx, constant in filter_by_type(exp.args, Constant):
@@ -234,7 +236,8 @@ def _gen_walk(var_type: VarType, newcirc: Circuit, heap: VarHeap) -> Callable[
             if heap.is_heap_var(arg):
                 heap.push(arg)
 
-        targ_bit = heap.fresh_var()
+        if targ_bit is None:
+            targ_bit = heap.fresh_var()
         add_method(targ_bit)
         # exp should now be a binary operation on args: List[Bit]
 
@@ -245,7 +248,7 @@ def _gen_walk(var_type: VarType, newcirc: Circuit, heap: VarHeap) -> Callable[
                 f"{exp.op} cannot be decomposed to TKET primitives."
                 " If targetting extended QASM you may not need to decompose."
             ) from e
-        return targ_bit  # type: ignore
+        return targ_bit
 
     return recursive_walk
 
@@ -330,8 +333,7 @@ def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
                 target = args[-1]
                 assert isinstance(target, Bit)
 
-                bit_heap.push(target)
-                comp_bit = bit_recursive_walk(pred_exp, kwargs)
+                comp_bit = bit_recursive_walk(pred_exp, target, kwargs)
 
                 replace_targets[target] = comp_bit
 
@@ -347,8 +349,7 @@ def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
                     )
                 out_reg = BitRegister(output_args[0].reg_name, len(output_args))
 
-                reg_heap.push(out_reg)
-                comp_reg = reg_recursive_walk(pred_exp, kwargs)
+                comp_reg = reg_recursive_walk(pred_exp, out_reg, kwargs)
                 if comp_reg.name != out_reg.name:  # type: ignore
                     replace_targets[out_reg] = comp_reg
             modified = True

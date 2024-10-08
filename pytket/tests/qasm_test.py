@@ -440,10 +440,10 @@ def test_decomposable_extended() -> None:
     fname = str(curr_file_path / "qasm_test_files/test18.qasm")
     out_fname = str(curr_file_path / "qasm_test_files/test18_output.qasm")
 
-    c = circuit_from_qasm_wasm(fname, "testfile.wasm")
+    c = circuit_from_qasm_wasm(fname, "testfile.wasm", maxwidth=64)
     DecomposeClassicalExp().apply(c)
 
-    out_qasm = circuit_to_qasm_str(c, "hqslib1")
+    out_qasm = circuit_to_qasm_str(c, "hqslib1", maxwidth=64)
     with open(out_fname) as f:
         assert out_qasm == f.read()
 
@@ -1095,6 +1095,31 @@ if(d<=5) e[0] = 1;
 if(d>5) e[0] = 0;
 if(e[0]==1) e[0] = 0;
 if(e[0]==1) measure q[0] -> f[0];
+"""
+    )
+
+
+def test_multibitop() -> None:
+    # https://github.com/CQCL/tket/issues/1327
+    c = Circuit()
+    areg = c.add_c_register("a", 2)
+    breg = c.add_c_register("b", 2)
+    creg = c.add_c_register("c", 2)
+    c.add_c_and_to_registers(areg, breg, creg)
+    mbop = c.get_commands()[0].op
+    c.add_gate(mbop, [areg[0], areg[1], breg[0], breg[1], creg[0], creg[1]])
+    qasm = circuit_to_qasm_str(c, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+creg a[2];
+creg b[2];
+creg c[2];
+c = a & b;
+b[0] = a[0] & a[1];
+c[1] = b[1] & c[0];
 """
     )
 

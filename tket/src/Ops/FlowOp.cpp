@@ -16,6 +16,7 @@
 
 #include <memory>
 
+#include "tket/OpType/OpTypeFunctions.hpp"
 #include "tket/OpType/OpTypeInfo.hpp"
 
 namespace tket {

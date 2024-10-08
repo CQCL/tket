@@ -16,8 +16,6 @@
 
 #include "tket/Mapping/LexicographicalComparison.hpp"
 #include "tket/Mapping/MappingFrontier.hpp"
-#include "tket/Mapping/RoutingMethod.hpp"
-#include "tket/Mapping/RoutingMethodJson.hpp"
 
 namespace tket {
 

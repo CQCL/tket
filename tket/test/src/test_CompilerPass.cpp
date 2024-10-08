@@ -26,6 +26,7 @@
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Gate/SymTable.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
+#include "tket/Mapping/LexiRouteRoutingMethod.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeFunctions.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
@@ -1610,6 +1611,28 @@ SCENARIO("CX mapping pass") {
       PassPtr pass = gen_cx_mapping_pass(arc, plptr, config, false, true);
       REQUIRE_THROWS_AS(pass->apply(cu), UnsatisfiedPredicate);
     }
+  }
+  GIVEN("CXMappingPass preconditions") {
+    // https://github.com/CQCL/tket/issues/1597
+    // Construct a circuit with a barrier and an implicit wire swap; check that
+    // we can apply CXMappingPass.
+    Circuit c(2, 2);
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::CX, {1, 0});
+    c.add_barrier({0, 1});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_measure(0, 0);
+    c.add_measure(1, 1);
+    Transforms::clifford_simp().apply(c);
+    CHECK(c.has_implicit_wireswaps());
+    std::vector<std::pair<unsigned, unsigned>> edges = {{0, 1}};
+    Architecture arc(edges);
+    Placement::Ptr plptr = std::make_shared<Placement>(arc);
+    std::vector<RoutingMethodPtr> config = {
+        std::make_shared<LexiRouteRoutingMethod>()};
+    PassPtr p = gen_cx_mapping_pass(arc, plptr, config, true, false);
+    CompilationUnit cu(c);
+    REQUIRE_NOTHROW(p->apply(cu));
   }
 }
 
