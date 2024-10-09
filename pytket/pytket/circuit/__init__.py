@@ -63,7 +63,7 @@ from .logic_exp import (
 def overload_add_wasm(
     self: Circuit,
     funcname: str,
-    filehandler: wasm.WasmFileHandler,
+    filehandler: wasm.WasmModuleHandler,
     list_i: Sequence[int],
     list_o: Sequence[int],
     args: Union[Sequence[int], Sequence[Bit]],
@@ -72,7 +72,7 @@ def overload_add_wasm(
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
     \n\n:param funcname: name of the function that is called
-    \n:param filehandler: wasm file handler to identify the wasm file
+    \n:param filehandler: wasm file or module handler to identify the wasm module
     \n:param list_i: list of the number of bits in the input variables
     \n:param list_o: list of the number of bits in the output variables
     \n:param args: vector of circuit bits the wasm op should be added to
@@ -113,7 +113,7 @@ setattr(Circuit, "add_wasm", overload_add_wasm)
 def overload_add_wasm_to_reg(
     self: Circuit,
     funcname: str,
-    filehandler: wasm.WasmFileHandler,
+    filehandler: wasm.WasmModuleHandler,
     list_i: Sequence[BitRegister],
     list_o: Sequence[BitRegister],
     args_wasm: Optional[Sequence[int]] = None,
@@ -121,7 +121,7 @@ def overload_add_wasm_to_reg(
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
     \n\n:param funcname: name of the function that is called
-    \n:param filehandler: wasm file handler to identify the wasm file
+    \n:param filehandler: wasm file or module handler to identify the wasm module
     \n:param list_i: list of the classical registers assigned to
      the input variables of the function call
     \n:param list_o: list of the classical registers assigned to
