@@ -43,6 +43,7 @@ typedef py::tket_custom::SequenceVec<UnitID> py_unit_vector_t;
 void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &);
 void init_classical(py::module &m);
 void init_boxes(py::module &m);
+void init_clexpr(py::module &m);
 
 PYBIND11_MODULE(circuit, m) {
   py::module::import("pytket._tket.unit_id");
@@ -690,6 +691,7 @@ PYBIND11_MODULE(circuit, m) {
       "result in bit 0");
   init_boxes(m);
   init_classical(m);
+  init_clexpr(m);
   def_circuit(pyCircuit);
 
   m.def(

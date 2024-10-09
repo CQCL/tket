@@ -172,7 +172,7 @@ SCENARIO("Serialization and stringification") {
     REQUIRE(
         ss.str() ==
         "div(add(r0, r1), mul(r2, r3)) [r0:(0,3,4), r1:(1,11,5), r2:(10,2,7), "
-        "r3:(8,9,6)]");
+        "r3:(8,9,6) --> (8,9,6)]");
     nlohmann::json j = wexpr;
     WiredClExpr wexpr1 = j.get<WiredClExpr>();
     REQUIRE(wexpr1 == wexpr);

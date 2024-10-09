@@ -163,16 +163,16 @@ class ClExpr {
    * @param fn Function
    * @param args Arguments
    */
-  ClExpr(ClOp fn, std::vector<ClExprArg> args);
+  ClExpr(ClOp op, std::vector<ClExprArg> args);
 
   bool operator==(const ClExpr& other) const;
 
   friend std::ostream& operator<<(std::ostream& os, const ClExpr& expr);
 
   /**
-   * Function
+   * Main operation
    */
-  ClOp get_fn() const;
+  ClOp get_op() const;
 
   /**
    * Arguments
@@ -190,7 +190,7 @@ class ClExpr {
   std::set<unsigned> all_reg_variables() const;
 
  private:
-  ClOp fn;
+  ClOp op;
   std::vector<ClExprArg> args;
   std::set<unsigned> all_bit_vars;
   std::set<unsigned> all_reg_vars;

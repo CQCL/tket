@@ -198,8 +198,8 @@ void from_json(const nlohmann::json& j, ClExprArg& arg) {
 
 ClExpr::ClExpr() : ClExpr(ClOp::INVALID, {}) {}
 
-ClExpr::ClExpr(ClOp fn, std::vector<ClExprArg> args)
-    : fn(fn), args(args), all_bit_vars(), all_reg_vars() {
+ClExpr::ClExpr(ClOp op, std::vector<ClExprArg> args)
+    : op(op), args(args), all_bit_vars(), all_reg_vars() {
   for (const ClExprArg& input : args) {
     if (std::holds_alternative<ClExprTerm>(input)) {
       ClExprTerm basic_input = std::get<ClExprTerm>(input);
@@ -224,11 +224,11 @@ ClExpr::ClExpr(ClOp fn, std::vector<ClExprArg> args)
 }
 
 bool ClExpr::operator==(const ClExpr& other) const {
-  return fn == other.fn && args == other.args;
+  return op == other.op && args == other.args;
 }
 
 std::ostream& operator<<(std::ostream& os, const ClExpr& expr) {
-  os << expr.get_fn() << "(";
+  os << expr.get_op() << "(";
   const std::vector<ClExprArg>& args = expr.get_args();
   unsigned n_args = args.size();
   for (unsigned i = 0; i < n_args; i++) {
@@ -241,7 +241,7 @@ std::ostream& operator<<(std::ostream& os, const ClExpr& expr) {
   return os;
 }
 
-ClOp ClExpr::get_fn() const { return fn; }
+ClOp ClExpr::get_op() const { return op; }
 
 std::vector<ClExprArg> ClExpr::get_args() const { return args; }
 
@@ -250,16 +250,16 @@ std::set<unsigned> ClExpr::all_bit_variables() const { return all_bit_vars; }
 std::set<unsigned> ClExpr::all_reg_variables() const { return all_reg_vars; }
 
 void to_json(nlohmann::json& j, const ClExpr& expr) {
-  nlohmann::json j_fn = expr.get_fn();
+  nlohmann::json j_op = expr.get_op();
   nlohmann::json j_args = expr.get_args();
-  j["fn"] = j_fn;
+  j["op"] = j_op;
   j["args"] = j_args;
 }
 
 void from_json(const nlohmann::json& j, ClExpr& expr) {
-  ClOp fn = j.at("fn").get<ClOp>();
+  ClOp op = j.at("op").get<ClOp>();
   std::vector<ClExprArg> args = j.at("args").get<std::vector<ClExprArg>>();
-  expr = ClExpr(fn, args);
+  expr = ClExpr(op, args);
 }
 
 WiredClExpr::WiredClExpr() : WiredClExpr({}, {}, {}, {}) {}
@@ -366,7 +366,15 @@ std::ostream& operator<<(std::ostream& os, const WiredClExpr& expr) {
       os << ", ";
     }
   }
-  os << "]";
+  os << " --> (";
+  unsigned n_outs = expr.output_posn.size();
+  for (unsigned i = 0; i < n_outs; i++) {
+    os << expr.output_posn[i];
+    if (i + 1 < n_outs) {
+      os << ",";
+    }
+  }
+  os << ")]";
   return os;
 }
 
