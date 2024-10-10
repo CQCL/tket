@@ -21,12 +21,12 @@ Example usage:
     from pytket.circuit.display import get_circuit_renderer
 
     circuit_renderer = get_circuit_renderer() # Instantiate a circuit renderer
-    circuit_renderer.set_render_options(zx_style=True) # Configure render options
-    circuit_renderer.condense_c_bits = False # You can also set the properties on the instance directly
+    circuit_renderer.set_render_options(zx_style=True, min_height="400px") # Configure render options
+    circuit_renderer.config.render_options.condense_c_bits = False # You can also set the properties on the instance directly
+    circuit_renderer.config.min_height = "300px" # Change the display height directly
+
     print("Render options:")
     print(circuit_renderer.get_render_options()) # View currently set render options
-
-    circuit_renderer.min_height = "300px" # Change the display height
 
     circ = Circuit(2,2) # Define Circuit
     circ.H(0).H(1).CX(0, 1).Rz(0.4, 1).CX(0, 1).H(0).H(1).measure_all()
