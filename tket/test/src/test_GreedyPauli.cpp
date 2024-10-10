@@ -252,8 +252,11 @@ SCENARIO("Complete synthesis") {
     circ.add_conditional_gate<unsigned>(OpType::Rz, {0.5}, {0}, {0}, 0);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     Circuit d(2, 2);
-    d.add_conditional_gate<unsigned>(OpType::Sdg, {}, {0}, {0}, 0);
-    d.add_conditional_gate<unsigned>(OpType::Z, {}, {0}, {0}, 0);
+    Op_ptr cond = std::make_shared<Conditional>(
+        std::make_shared<PauliExpBox>(
+            SymPauliTensor({Pauli::Z, Pauli::I}, 0.5)),
+        1, 0);
+    d.add_op<unsigned>(cond, {0, 0, 1});
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
     REQUIRE(circ == d);
   }
@@ -270,13 +273,18 @@ SCENARIO("Complete synthesis") {
     Circuit d(2, 1);
     d.add_op<unsigned>(OpType::CY, {1, 0});
     d.add_op<unsigned>(OpType::Rx, 0.12, {0});
-    d.add_conditional_gate<unsigned>(OpType::Sdg, {}, {0}, {0}, 0);
-    d.add_conditional_gate<unsigned>(OpType::Z, {}, {0}, {0}, 0);
+    Op_ptr cond2 = std::make_shared<Conditional>(
+        std::make_shared<PauliExpBox>(
+            SymPauliTensor({Pauli::Z, Pauli::I}, 0.5)),
+        1, 0);
+    d.add_op<unsigned>(cond2, {0, 0, 1});
     d.add_op<unsigned>(OpType::CY, {1, 0});
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
     REQUIRE(circ == d);
   }
   GIVEN("Circuit with conditional gates and measures") {
+    PauliExpBox pb1(SymPauliTensor({Pauli::Z, Pauli::X}, 0.12));
+    PauliExpBox pb2(SymPauliTensor({Pauli::X, Pauli::Z}, 0.3));
     Circuit circ(2, 2);
     Op_ptr cond1 = std::make_shared<Conditional>(
         std::make_shared<PauliExpBox>(
@@ -293,28 +301,10 @@ SCENARIO("Complete synthesis") {
     // can commute to the front
     circ.add_op<unsigned>(cond1, {1, 0, 1});
     Circuit d(2, 2);
-    // ZZ 0.5
-    d.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
-    d.add_conditional_gate<unsigned>(OpType::Sdg, {}, {0}, {0}, 0);
-    d.add_conditional_gate<unsigned>(OpType::V, {}, {1}, {0}, 0);
-    d.add_conditional_gate<unsigned>(OpType::Z, {}, {0}, {0}, 0);
-    // ZZ 0.5 conditioned on bit(1)
-    d.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {1}, 0);
-    d.add_conditional_gate<unsigned>(OpType::Sdg, {}, {0}, {1}, 0);
-    d.add_conditional_gate<unsigned>(OpType::V, {}, {1}, {1}, 0);
-    d.add_conditional_gate<unsigned>(OpType::Z, {}, {0}, {1}, 0);
+    d.add_op<unsigned>(cond1, {0, 0, 1});
+    d.add_op<unsigned>(cond1, {1, 0, 1});
     d.add_op<unsigned>(OpType::Measure, {0, 0});
-    // XZ 0.25
-    // compute
-    d.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {1}, 0);
-    d.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {1}, 0);
-    d.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {1}, 0);
-    // action
-    d.add_conditional_gate<unsigned>(OpType::Rz, {0.25}, {1}, {1}, 0);
-    // uncompute
-    d.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {1}, 0);
-    d.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {1}, 0);
-    d.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {1}, 0);
+    d.add_op<unsigned>(cond2, {1, 0, 1});
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
     REQUIRE(circ == d);
   }
