@@ -44,9 +44,9 @@ SCENARIO("Clifford synthesis") {
   }
   GIVEN("2Q Simple Clifford") {
     Circuit circ(2);
-    // circ.add_op<unsigned>(OpType::Y, {0});
+    circ.add_op<unsigned>(OpType::Y, {0});
     circ.add_op<unsigned>(OpType::Vdg, {1});
-    // circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
     Circuit d(circ);
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
