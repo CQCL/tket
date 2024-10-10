@@ -60,7 +60,7 @@ const static std::unordered_map<
         {{Pauli::Z, Pauli::X}, {}},
         {{Pauli::Z, Pauli::Y}, {OpType::S}}};
 
-const static std::unordered_map<const OpType, const OpType> SQ_CLIFF_DAGGER = {
+const static std::unordered_map<OpType, OpType> SQ_CLIFF_DAGGER = {
     {OpType::H, OpType::H},
     {OpType::S, OpType::Sdg},
     {OpType::Sdg, OpType::S},
