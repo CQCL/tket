@@ -20,7 +20,7 @@
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Gate/SymTable.hpp"
-#include "tket/PauliGraph/PauliGraph.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Transformations/GreedyPauliOptimisation.hpp"
 #include "tket/Utils/Expression.hpp"
@@ -28,36 +28,6 @@
 namespace tket {
 namespace test_GreedyPauliSimp {
 
-SCENARIO("Unsupported circuits") {
-  GIVEN("Circuit with mid-circ measurements") {
-    Circuit circ(2, 2);
-    circ.add_op<unsigned>(OpType::H, {0});
-    circ.add_op<unsigned>(OpType::Rx, 0.5, {1});
-    circ.add_op<unsigned>(OpType::Measure, {0, 0});
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE_THROWS_MATCHES(
-        Transforms::greedy_pauli_optimisation().apply(circ),
-        MidCircuitMeasurementNotAllowed,
-        MessageContains(
-            "PauliGraph does not support mid-circuit measurements"));
-  }
-  GIVEN("Circuit with resets") {
-    Circuit circ(1);
-    circ.add_op<unsigned>(OpType::H, {0});
-    circ.add_op<unsigned>(OpType::Reset, {0});
-    REQUIRE_THROWS_MATCHES(
-        Transforms::greedy_pauli_optimisation().apply(circ), BadOpType,
-        MessageContains("Cannot add gate to PauliGraph"));
-  }
-  GIVEN("Circuit with conditional gates") {
-    Circuit circ(2, 2);
-    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.5}, {0}, {0}, 0);
-    REQUIRE_THROWS_MATCHES(
-        Transforms::greedy_pauli_optimisation().apply(circ), BadOpType,
-        MessageContains(
-            "Can only make a PauliGraph from a circuit of basic gates"));
-  }
-}
 SCENARIO("Clifford synthesis") {
   GIVEN("Empty circuit") {
     Circuit circ(3);
@@ -275,6 +245,199 @@ SCENARIO("Complete synthesis") {
     }
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(g));
     REQUIRE(d == g);
+  }
+  GIVEN("Circuit with conditional gates") {
+    Circuit circ(2, 2);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.5}, {0}, {0}, 0);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    Circuit d(2, 2);
+    Op_ptr cond = std::make_shared<Conditional>(
+        std::make_shared<PauliExpBox>(
+            SymPauliTensor({Pauli::Z, Pauli::I}, 0.5)),
+        1, 0);
+    d.add_op<unsigned>(cond, {0, 0, 1});
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
+    REQUIRE(circ == d);
+  }
+  GIVEN("Circuit with conditional gates 2") {
+    Circuit circ(2, 1);
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::X, Pauli::Z}, 0.12)), {0, 1});
+    Op_ptr cond = std::make_shared<Conditional>(
+        std::make_shared<PauliExpBox>(
+            SymPauliTensor({Pauli::Z, Pauli::Z}, 0.5)),
+        1, 0);
+    circ.add_op<unsigned>(cond, {0, 0, 1});
+    // two boxes anti-commute hence simultaneous diagonalisation
+    Circuit d(2, 1);
+    d.add_op<unsigned>(OpType::CY, {1, 0});
+    d.add_op<unsigned>(OpType::Rx, 0.12, {0});
+    Op_ptr cond2 = std::make_shared<Conditional>(
+        std::make_shared<PauliExpBox>(
+            SymPauliTensor({Pauli::Z, Pauli::I}, 0.5)),
+        1, 0);
+    d.add_op<unsigned>(cond2, {0, 0, 1});
+    d.add_op<unsigned>(OpType::CY, {1, 0});
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
+    REQUIRE(circ == d);
+  }
+  GIVEN("Circuit with conditional gates and measures") {
+    PauliExpBox pb1(SymPauliTensor({Pauli::Z, Pauli::X}, 0.12));
+    PauliExpBox pb2(SymPauliTensor({Pauli::X, Pauli::Z}, 0.3));
+    Circuit circ(2, 2);
+    Op_ptr cond1 = std::make_shared<Conditional>(
+        std::make_shared<PauliExpBox>(
+            SymPauliTensor({Pauli::Z, Pauli::X}, 0.5)),
+        1, 0);
+    Op_ptr cond2 = std::make_shared<Conditional>(
+        std::make_shared<PauliExpBox>(
+            SymPauliTensor({Pauli::X, Pauli::Z}, 0.25)),
+        1, 0);
+    circ.add_op<unsigned>(cond1, {0, 0, 1});
+    circ.add_op<unsigned>(OpType::Measure, {0, 0});
+    // doesn't commute with measure
+    circ.add_op<unsigned>(cond2, {1, 0, 1});
+    // can commute to the front
+    circ.add_op<unsigned>(cond1, {1, 0, 1});
+    Circuit d(2, 2);
+    d.add_op<unsigned>(cond1, {0, 0, 1});
+    d.add_op<unsigned>(cond1, {1, 0, 1});
+    d.add_op<unsigned>(OpType::Measure, {0, 0});
+    d.add_op<unsigned>(cond2, {1, 0, 1});
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
+    REQUIRE(circ == d);
+  }
+  GIVEN("Circuit with classical gates") {
+    Circuit circ(1, 4);
+    circ.add_op<unsigned>(OpType::S, {0});
+    circ.add_op<unsigned>(OpType::V, {0});
+    circ.add_op<unsigned>(OpType::S, {0});
+    circ.add_op<unsigned>(ClassicalX(), {1});
+    circ.add_op<unsigned>(ClassicalCX(), {0, 1});
+    circ.add_op<unsigned>(AndWithOp(), {2, 3});
+    Circuit d(circ);
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
+    REQUIRE(circ == d);
+  }
+  GIVEN("Circuit with WASMs") {
+    std::string wasm_file = "string/with/path/to/wasm/file";
+    std::string wasm_func = "stringNameOfWASMFunc";
+    std::vector<unsigned> uv = {2, 1};
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(6, 1, uv, uv, wasm_func, wasm_file);
+    Circuit circ(1, 7);
+    circ.add_op<unsigned>(OpType::X, {0});
+    circ.add_op<UnitID>(
+        wop_ptr,
+        {Bit(0), Bit(1), Bit(2), Bit(3), Bit(4), Bit(5), WasmState(0)});
+    Circuit d(circ);
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
+    REQUIRE(circ == d);
+  }
+  GIVEN("Circuit with mid-circuit measurements") {
+    Circuit circ(2, 2);
+    circ.add_op<unsigned>(OpType::T, {0});
+    circ.add_op<unsigned>(OpType::Measure, {0, 0});
+    circ.add_op<unsigned>(OpType::Tdg, {0});
+    circ.add_op<unsigned>(OpType::Measure, {1, 1});
+    Circuit d(2, 2);
+    d.add_op<unsigned>(OpType::Measure, {0, 0});
+    d.add_op<unsigned>(OpType::Measure, {1, 1});
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
+    REQUIRE(circ == d);
+  }
+  GIVEN("Circuit with resets") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Reset, {0});
+    Circuit d(circ);
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
+    REQUIRE(circ == d);
+  }
+  GIVEN("Circuit with measures, classicals, and resets") {
+    Circuit circ(3, 1);
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::X, Pauli::Z, Pauli::Z}, 0.3)),
+        {0, 1, 2});
+    circ.add_op<unsigned>(OpType::Measure, {0, 0});
+    circ.add_op<unsigned>(ClassicalX(), {0});
+    circ.add_op<unsigned>(OpType::Reset, {1});
+    Circuit d(3, 1);
+    d.add_op<unsigned>(OpType::CZ, {0, 2});
+    d.add_op<unsigned>(OpType::CZ, {0, 1});
+    d.add_op<unsigned>(OpType::Rx, 0.3, {0});
+    d.add_op<unsigned>(OpType::Measure, {0, 0});
+    d.add_op<unsigned>(ClassicalX(), {0});
+    d.add_op<unsigned>(OpType::CZ, {1, 0});
+    d.add_op<unsigned>(OpType::CZ, {0, 2});
+    d.add_op<unsigned>(OpType::Reset, {1});
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
+    REQUIRE(circ == d);
+  }
+}
+SCENARIO("Test GreedyPauliSimp for individual gates") {
+  Circuit circ(1);
+  circ.add_op<unsigned>(OpType::Z, {0});
+  std::vector<Op_ptr> ops_0q = {
+      get_op_ptr(OpType::Phase, 0.25),
+  };
+  std::vector<Op_ptr> ops_1q = {
+      get_op_ptr(OpType::noop),
+      get_op_ptr(OpType::Z),
+      get_op_ptr(OpType::X),
+      get_op_ptr(OpType::Y),
+      get_op_ptr(OpType::S),
+      get_op_ptr(OpType::V),
+      get_op_ptr(OpType::Sdg),
+      get_op_ptr(OpType::Vdg),
+      get_op_ptr(OpType::H),
+      get_op_ptr(OpType::Rz, 0.25),
+      get_op_ptr(OpType::Rz, 0.5),
+      get_op_ptr(OpType::Rx, 1),
+      get_op_ptr(OpType::Rx, 0.15),
+      get_op_ptr(OpType::Ry, 0.25),
+      get_op_ptr(OpType::Ry, -0.5),
+      get_op_ptr(OpType::PhasedX, {0.15, 0.2}),
+      get_op_ptr(OpType::PhasedX, {0.5, -0.5}),
+      get_op_ptr(OpType::PhasedX, {0.2, 1}),
+      get_op_ptr(OpType::T),
+      get_op_ptr(OpType::Tdg),
+  };
+  std::vector<Op_ptr> ops_2q = {
+      get_op_ptr(OpType::SWAP),
+      get_op_ptr(OpType::CX),
+      get_op_ptr(OpType::CY),
+      get_op_ptr(OpType::CZ),
+      get_op_ptr(OpType::ZZMax),
+      get_op_ptr(OpType::ZZPhase, 0.25),
+      get_op_ptr(OpType::ZZPhase, 0.5),
+      get_op_ptr(OpType::PhaseGadget, 0.5, 2),
+      get_op_ptr(OpType::XXPhase, 0.25),
+      get_op_ptr(OpType::XXPhase, 0.5),
+      get_op_ptr(OpType::YYPhase, 0.25),
+      get_op_ptr(OpType::YYPhase, 1),
+  };
+  for (Op_ptr op : ops_0q) {
+    Circuit circ(1);
+    circ.add_op<unsigned>(op, {});
+    Circuit d(circ);
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
+    REQUIRE(test_unitary_comparison(circ, d, true));
+  }
+  for (Op_ptr op : ops_1q) {
+    Circuit circ(1);
+    circ.add_op<unsigned>(op, {0});
+    Circuit d(circ);
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
+    REQUIRE(test_unitary_comparison(circ, d, true));
+  }
+  for (Op_ptr op : ops_2q) {
+    Circuit circ(2);
+    circ.add_op<unsigned>(op, {0, 1});
+    Circuit d(circ);
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
+    REQUIRE(test_unitary_comparison(circ, d, true));
   }
 }
 SCENARIO("Test GreedyPauliSimp pass construction") {
