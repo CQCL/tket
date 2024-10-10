@@ -309,19 +309,26 @@ static void tableau_row_nodes_synthesis(
  * first set where the tqe_cost is zero. Remove implemented nodes and the first
  * set if empty.
  *
- * @param rotation_sets
+ * @param node_sets
  * @param circ
+ * @param depth_tracker
+ * @param discount_rate
+ * @param depth_weight
+ *
  * @return true if the first set is now empty and removed
  * @return false
  */
 static void consume_nodes(
-    std::vector<std::vector<PauliNode_ptr>>& rotation_sets, Circuit& circ,
-    DepthTracker& depth_tracker) {
-  if (rotation_sets.empty()) {
+    std::vector<std::vector<PauliNode_ptr>>& node_sets, Circuit& circ,
+    DepthTracker& depth_tracker, double discount_rate, double depth_weight) {
+  if (node_sets.empty()) {
     return;
   }
   while (true) {
-    std::vector<PauliNode_ptr>& first_set = rotation_sets[0];
+    std::vector<PauliNode_ptr>& first_set = node_sets[0];
+    // try to merge conditionals, and each conditioned circuits will be
+    // optimised recursively via greedy_pauli_graph_synthesis
+    std::map<std::pair<std::vector<unsigned>, unsigned>, Circuit> conditionals;
     for (unsigned i = first_set.size(); i-- > 0;) {
       PauliNode_ptr& node_ptr = first_set[i];
       switch (node_ptr->get_type()) {
@@ -413,15 +420,24 @@ static void consume_nodes(
           // conditionals are added as conditional PauliExpBoxes
           ConditionalPauliRotation& node =
               dynamic_cast<ConditionalPauliRotation&>(*node_ptr);
-          Op_ptr cond = std::make_shared<Conditional>(
-              std::make_shared<PauliExpBox>(
-                  SymPauliTensor(node.string(), node.angle())),
-              (unsigned)node.cond_bits().size(), node.cond_value());
-          std::vector<unsigned> args = node.cond_bits();
+          const std::vector<unsigned> cond_bits = node.cond_bits();
+          const unsigned cond_value = node.cond_value();
+          std::vector<unsigned> qubits;
           for (unsigned i = 0; i < node.string().size(); i++) {
-            args.push_back(i);
+            qubits.push_back(i);
           }
-          circ.add_op<unsigned>(cond, args);
+          Op_ptr peb_op = std::make_shared<PauliExpBox>(
+              SymPauliTensor(node.string(), node.angle()));
+
+          if (conditionals.find({cond_bits, cond_value}) ==
+              conditionals.end()) {
+            Circuit cond_circ(circ.n_qubits());
+            cond_circ.add_op<unsigned>(peb_op, qubits);
+            conditionals[{cond_bits, cond_value}] = cond_circ;
+          } else {
+            conditionals[{cond_bits, cond_value}].add_op<unsigned>(
+                peb_op, qubits);
+          }
           first_set.erase(first_set.begin() + i);
           break;
         }
@@ -456,9 +472,21 @@ static void consume_nodes(
           TKET_ASSERT(false);
       }
     }
+    for (auto it = conditionals.begin(); it != conditionals.end(); it++) {
+      Circuit cond_circ =
+          greedy_pauli_graph_synthesis(it->second, discount_rate, depth_weight);
+      Op_ptr cond = std::make_shared<Conditional>(
+          std::make_shared<CircBox>(cond_circ), it->first.first.size(),
+          it->first.second);
+      std::vector<unsigned> args = it->first.first;
+      for (unsigned i = 0; i < cond_circ.n_qubits(); i++) {
+        args.push_back(i);
+      }
+      circ.add_op<unsigned>(cond, args);
+    }
     if (first_set.empty()) {
-      rotation_sets.erase(rotation_sets.begin());
-      if (rotation_sets.empty()) {
+      node_sets.erase(node_sets.begin());
+      if (node_sets.empty()) {
         return;
       }
     } else {
@@ -471,13 +499,13 @@ static void consume_nodes(
  * @brief Synthesise a vector of unordered rotation sets
  */
 static void pauli_exps_synthesis(
-    std::vector<std::vector<PauliNode_ptr>>& rotation_sets,
+    std::vector<std::vector<PauliNode_ptr>>& node_sets,
     std::vector<PauliNode_ptr>& rows, Circuit& circ, double discount_rate,
     double depth_weight, DepthTracker& depth_tracker) {
   while (true) {
-    consume_nodes(rotation_sets, circ, depth_tracker);
-    if (rotation_sets.empty()) break;
-    std::vector<PauliNode_ptr>& first_set = rotation_sets[0];
+    consume_nodes(node_sets, circ, depth_tracker, discount_rate, depth_weight);
+    if (node_sets.empty()) break;
+    std::vector<PauliNode_ptr>& first_set = node_sets[0];
     // get nodes with min cost
     std::vector<unsigned> min_nodes_indices = {0};
     unsigned min_cost = first_set[0]->tqe_cost();
@@ -501,7 +529,7 @@ static void pauli_exps_synthesis(
     for (const TQE& tqe : tqe_candidates) {
       tqe_candidates_cost.insert(
           {tqe,
-           {default_pauliexp_tqe_cost(discount_rate, rotation_sets, rows, tqe),
+           {default_pauliexp_tqe_cost(discount_rate, node_sets, rows, tqe),
             static_cast<double>(depth_tracker.gate_depth(
                 std::get<1>(tqe), std::get<2>(tqe)))}});
     }
@@ -511,7 +539,7 @@ static void pauli_exps_synthesis(
     apply_tqe_to_circ(selected_tqe, circ);
     depth_tracker.add_2q_gate(
         std::get<1>(selected_tqe), std::get<2>(selected_tqe));
-    for (std::vector<PauliNode_ptr>& rotation_set : rotation_sets) {
+    for (std::vector<PauliNode_ptr>& rotation_set : node_sets) {
       for (PauliNode_ptr& node : rotation_set) {
         node->update(selected_tqe);
       }
@@ -557,12 +585,11 @@ Circuit greedy_pauli_graph_synthesis(
     rev_unit_map.insert({pair.second, pair.first});
   }
   GPGraph gpg(circ_flat);
-  auto [rotation_sets, rows, measures] = gpg.get_sequence();
+  auto [node_sets, rows, measures] = gpg.get_sequence();
   DepthTracker depth_tracker(n_qubits);
   // synthesise Pauli exps
   pauli_exps_synthesis(
-      rotation_sets, rows, new_circ, discount_rate, depth_weight,
-      depth_tracker);
+      node_sets, rows, new_circ, discount_rate, depth_weight, depth_tracker);
   // synthesise the tableau
   tableau_row_nodes_synthesis(rows, new_circ, depth_weight, depth_tracker);
   for (auto it = measures.begin(); it != measures.end(); ++it) {
@@ -579,6 +606,8 @@ Transform greedy_pauli_optimisation(double discount_rate, double depth_weight) {
   return Transform([discount_rate, depth_weight](Circuit& circ) {
     circ = GreedyPauliSimp::greedy_pauli_graph_synthesis(
         circ, discount_rate, depth_weight);
+    // decompose conditional circ boxes
+    circ.decompose_boxes_recursively();
     singleq_clifford_sweep().apply(circ);
     return true;
   });
