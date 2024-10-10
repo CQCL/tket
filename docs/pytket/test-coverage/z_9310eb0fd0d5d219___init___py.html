@@ -66,8 +66,8 @@
             <a id="indexLink" class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a id="nextFileLink" class="nav" href="z_9310eb0fd0d5d219_add_condition_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.6.1">coverage.py v7.6.1</a>,
-            created at 2024-10-08 09:44 +0000
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.6.2">coverage.py v7.6.2</a>,
+            created at 2024-10-10 14:49 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -147,7 +147,7 @@
     <p class="run"><span class="n"><a id="t63" href="#t63">63</a></span><span class="t"><span class="key">def</span> <span class="nam">overload_add_wasm</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t64" href="#t64">64</a></span><span class="t">    <span class="nam">self</span><span class="op">:</span> <span class="nam">Circuit</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t65" href="#t65">65</a></span><span class="t">    <span class="nam">funcname</span><span class="op">:</span> <span class="nam">str</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t66" href="#t66">66</a></span><span class="t">    <span class="nam">filehandler</span><span class="op">:</span> <span class="nam">wasm</span><span class="op">.</span><span class="nam">WasmFileHandler</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t66" href="#t66">66</a></span><span class="t">    <span class="nam">filehandler</span><span class="op">:</span> <span class="nam">wasm</span><span class="op">.</span><span class="nam">WasmModuleHandler</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t67" href="#t67">67</a></span><span class="t">    <span class="nam">list_i</span><span class="op">:</span> <span class="nam">Sequence</span><span class="op">[</span><span class="nam">int</span><span class="op">]</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t68" href="#t68">68</a></span><span class="t">    <span class="nam">list_o</span><span class="op">:</span> <span class="nam">Sequence</span><span class="op">[</span><span class="nam">int</span><span class="op">]</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t69" href="#t69">69</a></span><span class="t">    <span class="nam">args</span><span class="op">:</span> <span class="nam">Union</span><span class="op">[</span><span class="nam">Sequence</span><span class="op">[</span><span class="nam">int</span><span class="op">]</span><span class="op">,</span> <span class="nam">Sequence</span><span class="op">[</span><span class="nam">Bit</span><span class="op">]</span><span class="op">]</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
@@ -156,7 +156,7 @@
     <p class="pln"><span class="n"><a id="t72" href="#t72">72</a></span><span class="t"><span class="op">)</span> <span class="op">-></span> <span class="nam">Circuit</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t73" href="#t73">73</a></span><span class="t">    <span class="str">"""Add a classical function call from a wasm file to the circuit.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t74" href="#t74">74</a></span><span class="t"><span class="str">    \n\n:param funcname: name of the function that is called</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t75" href="#t75">75</a></span><span class="t"><span class="str">    \n:param filehandler: wasm file handler to identify the wasm file</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t75" href="#t75">75</a></span><span class="t"><span class="str">    \n:param filehandler: wasm file or module handler to identify the wasm module</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t76" href="#t76">76</a></span><span class="t"><span class="str">    \n:param list_i: list of the number of bits in the input variables</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t77" href="#t77">77</a></span><span class="t"><span class="str">    \n:param list_o: list of the number of bits in the output variables</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t78" href="#t78">78</a></span><span class="t"><span class="str">    \n:param args: vector of circuit bits the wasm op should be added to</span>&nbsp;</span><span class="r"></span></p>
@@ -197,7 +197,7 @@
     <p class="run"><span class="n"><a id="t113" href="#t113">113</a></span><span class="t"><span class="key">def</span> <span class="nam">overload_add_wasm_to_reg</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t114" href="#t114">114</a></span><span class="t">    <span class="nam">self</span><span class="op">:</span> <span class="nam">Circuit</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t115" href="#t115">115</a></span><span class="t">    <span class="nam">funcname</span><span class="op">:</span> <span class="nam">str</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t116" href="#t116">116</a></span><span class="t">    <span class="nam">filehandler</span><span class="op">:</span> <span class="nam">wasm</span><span class="op">.</span><span class="nam">WasmFileHandler</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t116" href="#t116">116</a></span><span class="t">    <span class="nam">filehandler</span><span class="op">:</span> <span class="nam">wasm</span><span class="op">.</span><span class="nam">WasmModuleHandler</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t117" href="#t117">117</a></span><span class="t">    <span class="nam">list_i</span><span class="op">:</span> <span class="nam">Sequence</span><span class="op">[</span><span class="nam">BitRegister</span><span class="op">]</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t118" href="#t118">118</a></span><span class="t">    <span class="nam">list_o</span><span class="op">:</span> <span class="nam">Sequence</span><span class="op">[</span><span class="nam">BitRegister</span><span class="op">]</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t119" href="#t119">119</a></span><span class="t">    <span class="nam">args_wasm</span><span class="op">:</span> <span class="nam">Optional</span><span class="op">[</span><span class="nam">Sequence</span><span class="op">[</span><span class="nam">int</span><span class="op">]</span><span class="op">]</span> <span class="op">=</span> <span class="key">None</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
@@ -205,7 +205,7 @@
     <p class="pln"><span class="n"><a id="t121" href="#t121">121</a></span><span class="t"><span class="op">)</span> <span class="op">-></span> <span class="nam">Circuit</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t122" href="#t122">122</a></span><span class="t">    <span class="str">"""Add a classical function call from a wasm file to the circuit.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t123" href="#t123">123</a></span><span class="t"><span class="str">    \n\n:param funcname: name of the function that is called</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t124" href="#t124">124</a></span><span class="t"><span class="str">    \n:param filehandler: wasm file handler to identify the wasm file</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t124" href="#t124">124</a></span><span class="t"><span class="str">    \n:param filehandler: wasm file or module handler to identify the wasm module</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t125" href="#t125">125</a></span><span class="t"><span class="str">    \n:param list_i: list of the classical registers assigned to</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t126" href="#t126">126</a></span><span class="t"><span class="str">     the input variables of the function call</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t127" href="#t127">127</a></span><span class="t"><span class="str">    \n:param list_o: list of the classical registers assigned to</span>&nbsp;</span><span class="r"></span></p>
@@ -303,8 +303,8 @@
             <a class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a class="nav" href="z_9310eb0fd0d5d219_add_condition_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.6.1">coverage.py v7.6.1</a>,
-            created at 2024-10-08 09:44 +0000
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.6.2">coverage.py v7.6.2</a>,
+            created at 2024-10-10 14:49 +0000
         </p>
     </div>
 </footer>
