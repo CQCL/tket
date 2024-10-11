@@ -18,7 +18,6 @@
 
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/OpType/OpType.hpp"
-#include "tket/Transformations/CliffordReductionPass.hpp"
 #include "tket/Transformations/GreedyPauliOptimisationLookupTables.hpp"
 #include "tket/Transformations/Transform.hpp"
 
@@ -316,7 +315,7 @@ static void tableau_row_nodes_synthesis(
  */
 static void consume_nodes(
     std::vector<std::vector<PauliNode_ptr>>& rotation_sets, Circuit& circ,
-    DepthTracker& depth_tracker) {
+    DepthTracker& depth_tracker, double discount_rate, double depth_weight) {
   if (rotation_sets.empty()) {
     return;
   }
@@ -429,7 +428,8 @@ static void consume_nodes(
                 std::make_shared<PauliExpBox>(SymPauliTensor(string, angle));
             cond_circ.add_op<unsigned>(peb_op, qubits);
           }
-          greedy_pauli_optimisation().apply(cond_circ);
+          greedy_pauli_optimisation(discount_rate, depth_weight)
+              .apply(cond_circ);
           Op_ptr cond = std::make_shared<Conditional>(
               std::make_shared<CircBox>(cond_circ), cond_bits.size(),
               cond_value);
@@ -491,7 +491,8 @@ static void pauli_exps_synthesis(
     std::vector<PauliNode_ptr>& rows, Circuit& circ, double discount_rate,
     double depth_weight, DepthTracker& depth_tracker) {
   while (true) {
-    consume_nodes(rotation_sets, circ, depth_tracker);
+    consume_nodes(
+        rotation_sets, circ, depth_tracker, discount_rate, depth_weight);
     if (rotation_sets.empty()) break;
     std::vector<PauliNode_ptr>& first_set = rotation_sets[0];
     // get nodes with min cost
@@ -595,8 +596,6 @@ Transform greedy_pauli_optimisation(double discount_rate, double depth_weight) {
   return Transform([discount_rate, depth_weight](Circuit& circ) {
     circ = GreedyPauliSimp::greedy_pauli_graph_synthesis(
         circ, discount_rate, depth_weight);
-    // use clifford_reduction to merge single qubit Clifford gates
-    clifford_reduction().apply(circ);
     // decompose the conditional CircBoxes
     circ.decompose_boxes_recursively();
     return true;
