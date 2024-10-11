@@ -15,6 +15,7 @@
 #include "tket/Transformations/GreedyPauliOptimisation.hpp"
 
 #include <algorithm>
+#include <random>
 
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/OpType/OpType.hpp"
@@ -26,6 +27,17 @@ namespace tket {
 namespace Transforms {
 
 namespace GreedyPauliSimp {
+
+template <typename Container>
+static typename Container::const_iterator sample_random_element(
+    const Container& container, const unsigned seed) {
+  std::mt19937 rng(seed);
+  std::uniform_int_distribution<size_t> dist(0, container.size() - 1);
+  size_t random_index = dist(rng);
+  auto it = container.begin();
+  std::advance(it, random_index);
+  return it;
+}
 
 static void apply_tqe_to_circ(const TQE& tqe, Circuit& circ) {
   auto [gate_type, a, b] = tqe;
@@ -105,7 +117,7 @@ static double default_pauliexp_tqe_cost(
 // weighted sum of minmax-normalised costs
 static TQE minmax_selection(
     const std::map<TQE, std::vector<double>>& tqe_candidates_cost,
-    const std::vector<double>& weights) {
+    const std::vector<double>& weights, unsigned seed) {
   TKET_ASSERT(tqe_candidates_cost.size() > 0);
   size_t n_costs = tqe_candidates_cost.begin()->second.size();
   TKET_ASSERT(n_costs == weights.size());
@@ -132,26 +144,29 @@ static TQE minmax_selection(
   }
   // if all have the same cost, return the first one
   if (valid_indices.size() == 0) {
-    TQE min_tqe = tqe_candidates_cost.begin()->first;
-    return min_tqe;
+    auto it = sample_random_element(tqe_candidates_cost, seed);
+    return it->first;
   }
   // if only one cost variable, no need to normalise
   if (valid_indices.size() == 1) {
     auto it = tqe_candidates_cost.begin();
     double min_cost = it->second[valid_indices[0]];
-    TQE min_tqe = it->first;
+    std::vector<TQE> min_tqes = {it->first};
     for (; it != tqe_candidates_cost.end(); it++) {
       if (it->second[valid_indices[0]] < min_cost) {
-        min_tqe = it->first;
+        min_tqes = {it->first};
         min_cost = it->second[valid_indices[0]];
+      } else if (it->second[valid_indices[0]] == min_cost) {
+        min_tqes.push_back(it->first);
       }
     }
-    return min_tqe;
+    auto sampled_it = sample_random_element(min_tqes, seed);
+    return *sampled_it;
   }
   // find the tqe with the minimum normalised cost
   auto it = tqe_candidates_cost.begin();
   double min_cost = 0;
-  TQE min_tqe = it->first;
+  std::vector<TQE> min_tqes = {it->first};
   // initialise min_cost
   for (const auto& cost_index : valid_indices) {
     min_cost += weights[cost_index] *
@@ -169,22 +184,25 @@ static TQE minmax_selection(
     }
     if (cost < min_cost) {
       min_cost = cost;
-      min_tqe = it->first;
+      min_tqes = {it->first};
+    } else if (cost == min_cost) {
+      min_tqes.push_back(it->first);
     }
   }
-  return min_tqe;
+  auto sampled_it = sample_random_element(min_tqes, seed);
+  return *sampled_it;
 }
 
 static TQE select_pauliexp_tqe(
     const std::map<TQE, std::vector<double>>& tqe_candidates_cost,
-    double depth_weight) {
-  return minmax_selection(tqe_candidates_cost, {1, depth_weight});
+    double depth_weight, unsigned seed) {
+  return minmax_selection(tqe_candidates_cost, {1, depth_weight}, seed);
 }
 
 static TQE select_tableau_tqe(
     const std::map<TQE, std::vector<double>>& tqe_candidates_cost,
-    double depth_weight) {
-  return minmax_selection(tqe_candidates_cost, {1, depth_weight});
+    double depth_weight, unsigned seed) {
+  return minmax_selection(tqe_candidates_cost, {1, depth_weight}, seed);
 }
 
 // simple struct that tracks the depth on each qubit
@@ -217,7 +235,7 @@ struct DepthTracker {
  */
 static void tableau_row_nodes_synthesis(
     std::vector<PauliNode_ptr>& rows, Circuit& circ, double depth_weight,
-    DepthTracker& depth_tracker) {
+    DepthTracker& depth_tracker, unsigned seed) {
   // only consider nodes with a non-zero cost
   std::vector<unsigned> remaining_indices;
   for (unsigned i = 0; i < rows.size(); i++) {
@@ -260,7 +278,8 @@ static void tableau_row_nodes_synthesis(
     }
     TKET_ASSERT(tqe_candidates_cost.size() > 0);
     // select the best one
-    TQE selected_tqe = select_tableau_tqe(tqe_candidates_cost, depth_weight);
+    TQE selected_tqe =
+        select_tableau_tqe(tqe_candidates_cost, depth_weight, seed);
     // apply TQE
     apply_tqe_to_circ(selected_tqe, circ);
     // update depth tracker
@@ -489,7 +508,7 @@ static void consume_nodes(
 static void pauli_exps_synthesis(
     std::vector<std::vector<PauliNode_ptr>>& rotation_sets,
     std::vector<PauliNode_ptr>& rows, Circuit& circ, double discount_rate,
-    double depth_weight, DepthTracker& depth_tracker) {
+    double depth_weight, DepthTracker& depth_tracker, unsigned seed) {
   while (true) {
     consume_nodes(
         rotation_sets, circ, depth_tracker, discount_rate, depth_weight);
@@ -523,7 +542,8 @@ static void pauli_exps_synthesis(
                 std::get<1>(tqe), std::get<2>(tqe)))}});
     }
     // select the best one
-    TQE selected_tqe = select_pauliexp_tqe(tqe_candidates_cost, depth_weight);
+    TQE selected_tqe =
+        select_pauliexp_tqe(tqe_candidates_cost, depth_weight, seed);
     // apply TQE
     apply_tqe_to_circ(selected_tqe, circ);
     depth_tracker.add_2q_gate(
@@ -540,7 +560,8 @@ static void pauli_exps_synthesis(
 }
 
 Circuit greedy_pauli_set_synthesis(
-    const std::vector<SymPauliTensor>& unordered_set, double depth_weight) {
+    const std::vector<SymPauliTensor>& unordered_set, double depth_weight,
+    unsigned seed) {
   if (unordered_set.size() == 0) {
     return Circuit();
   }
@@ -550,15 +571,17 @@ Circuit greedy_pauli_set_synthesis(
   std::vector<std::vector<PauliNode_ptr>> rotation_sets{rotation_set};
   DepthTracker depth_tracker(n_qubits);
   // synthesise Pauli exps
-  pauli_exps_synthesis(rotation_sets, rows, c, 0, depth_weight, depth_tracker);
+  pauli_exps_synthesis(
+      rotation_sets, rows, c, 0, depth_weight, depth_tracker, seed);
   // synthesise the tableau
-  tableau_row_nodes_synthesis(rows, c, depth_weight, depth_tracker);
+  tableau_row_nodes_synthesis(rows, c, depth_weight, depth_tracker, seed);
   c.replace_SWAPs();
   return c;
 }
 
 Circuit greedy_pauli_graph_synthesis(
-    const Circuit& circ, double discount_rate, double depth_weight) {
+    const Circuit& circ, double discount_rate, double depth_weight,
+    unsigned seed) {
   Circuit circ_flat(circ);
   unsigned n_qubits = circ_flat.n_qubits();
   unsigned n_bits = circ_flat.n_bits();
@@ -578,10 +601,11 @@ Circuit greedy_pauli_graph_synthesis(
   DepthTracker depth_tracker(n_qubits);
   // synthesise Pauli exps
   pauli_exps_synthesis(
-      rotation_sets, rows, new_circ, discount_rate, depth_weight,
-      depth_tracker);
+      rotation_sets, rows, new_circ, discount_rate, depth_weight, depth_tracker,
+      seed);
   // synthesise the tableau
-  tableau_row_nodes_synthesis(rows, new_circ, depth_weight, depth_tracker);
+  tableau_row_nodes_synthesis(
+      rows, new_circ, depth_weight, depth_tracker, seed);
   for (auto it = measures.begin(); it != measures.end(); ++it) {
     new_circ.add_measure(it->left, it->right);
   }
@@ -592,10 +616,11 @@ Circuit greedy_pauli_graph_synthesis(
 
 }  // namespace GreedyPauliSimp
 
-Transform greedy_pauli_optimisation(double discount_rate, double depth_weight) {
-  return Transform([discount_rate, depth_weight](Circuit& circ) {
+Transform greedy_pauli_optimisation(
+    double discount_rate, double depth_weight, unsigned seed) {
+  return Transform([discount_rate, depth_weight, seed](Circuit& circ) {
     circ = GreedyPauliSimp::greedy_pauli_graph_synthesis(
-        circ, discount_rate, depth_weight);
+        circ, discount_rate, depth_weight, seed);
     // decompose the conditional CircBoxes
     circ.decompose_boxes_recursively();
     return true;
