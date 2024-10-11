@@ -38,4 +38,4 @@ result
 .envrc
 .direnv/
 *.jupyter_cache
-.ipynb
+jupyter_execute/
