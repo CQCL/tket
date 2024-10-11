@@ -293,22 +293,6 @@ PauliRotation::PauliRotation(std::vector<Pauli> string, bool sign, Expr theta)
 
 CommuteInfo PauliRotation::get_commute_info() const { return {{string_}, {}}; }
 
-// ConditionalPauliRotation
-ConditionalPauliRotation::ConditionalPauliRotation(
-    std::vector<Pauli> string, Expr theta, std::vector<unsigned> cond_bits,
-    unsigned cond_value)
-    : PauliRotation(string, true, theta),
-      cond_bits_(cond_bits),
-      cond_value_(cond_value) {}
-
-CommuteInfo ConditionalPauliRotation::get_commute_info() const {
-  std::vector<std::pair<UnitID, BitType>> bits_info;
-  for (unsigned b : cond_bits_) {
-    bits_info.push_back({Bit(b), BitType::READ});
-  }
-  return {{string_}, bits_info};
-}
-
 ConditionalBlock::ConditionalBlock(
     std::vector<std::tuple<std::vector<Pauli>, bool, Expr>> rotations,
     std::vector<unsigned> cond_bits, unsigned cond_value)

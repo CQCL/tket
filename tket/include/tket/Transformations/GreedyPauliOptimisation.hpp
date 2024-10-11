@@ -52,8 +52,6 @@ enum class PauliNodeType {
   // Defines how a Pauli X and a Pauli Z on the same qubit
   // get propagated from right to left through a Clifford operator.
   PauliPropagation,
-  // Pauli rotation with classical control
-  ConditionalPauliRotation,
   // Conditional Pauli rotations
   ConditionalBlock,
   // Classical operation
@@ -336,37 +334,6 @@ class MidMeasure : public SingleNode {
 
  protected:
   const unsigned bit_;
-};
-
-/**
- * @brief Conditional Pauli rotation
- */
-class ConditionalPauliRotation : public PauliRotation {
- public:
-  /**
-   * @brief Construct a new Conditional Pauli Rotation object
-   *
-   * @param string the Pauli string
-   * @param theta the rotation angle in half-turns
-   * @param cond_bits conditional bits
-   * @param cond_value conditional value
-   */
-  ConditionalPauliRotation(
-      std::vector<Pauli> string, Expr theta, std::vector<unsigned> cond_bits,
-      unsigned cond_value);
-
-  PauliNodeType get_type() const override {
-    return PauliNodeType::ConditionalPauliRotation;
-  };
-
-  CommuteInfo get_commute_info() const override;
-
-  std::vector<unsigned> cond_bits() const { return cond_bits_; };
-  unsigned cond_value() const { return cond_value_; };
-
- protected:
-  const std::vector<unsigned> cond_bits_;
-  const unsigned cond_value_;
 };
 
 /**
