@@ -288,8 +288,8 @@ std::tuple<unsigned, Pauli, Pauli> ACPairNode::first_support() const {
 }
 
 // PauliRotation
-PauliRotation::PauliRotation(std::vector<Pauli> string, Expr theta)
-    : SingleNode(string, true), theta_(theta) {}
+PauliRotation::PauliRotation(std::vector<Pauli> string, bool sign, Expr theta)
+    : SingleNode(string, sign), theta_(theta) {}
 
 CommuteInfo PauliRotation::get_commute_info() const { return {{string_}, {}}; }
 
@@ -297,7 +297,7 @@ CommuteInfo PauliRotation::get_commute_info() const { return {{string_}, {}}; }
 ConditionalPauliRotation::ConditionalPauliRotation(
     std::vector<Pauli> string, Expr theta, std::vector<unsigned> cond_bits,
     unsigned cond_value)
-    : PauliRotation(string, theta),
+    : PauliRotation(string, true, theta),
       cond_bits_(cond_bits),
       cond_value_(cond_value) {}
 
@@ -307,6 +307,70 @@ CommuteInfo ConditionalPauliRotation::get_commute_info() const {
     bits_info.push_back({Bit(b), BitType::READ});
   }
   return {{string_}, bits_info};
+}
+
+ConditionalBlock::ConditionalBlock(
+    std::vector<std::tuple<std::vector<Pauli>, bool, Expr>> rotations,
+    std::vector<unsigned> cond_bits, unsigned cond_value)
+    : rotations_(rotations), cond_bits_(cond_bits), cond_value_(cond_value) {
+  total_weight_ = 0;
+  for (const std::tuple<std::vector<Pauli>, bool, Expr>& rot : rotations_) {
+    total_weight_ +=
+        std::get<0>(rot).size() -
+        std::count(std::get<0>(rot).begin(), std::get<0>(rot).end(), Pauli::I);
+  }
+}
+
+unsigned ConditionalBlock::tqe_cost() const { return total_weight_ - 1; }
+
+int ConditionalBlock::tqe_cost_increase(const TQE& tqe) const {
+  int total_increase = 0;
+  for (const std::tuple<std::vector<Pauli>, bool, Expr>& rot : rotations_) {
+    auto [g, a, b] = tqe;
+    Pauli p0 = std::get<0>(rot)[a];
+    Pauli p1 = std::get<0>(rot)[b];
+    auto [new_p0, new_p1, sign] = TQE_PAULI_MAP.at({g, p0, p1});
+    total_increase += (p0 == Pauli::I) + (p1 == Pauli::I) -
+                      (new_p0 == Pauli::I) - (new_p1 == Pauli::I);
+  }
+  return total_increase;
+}
+
+void ConditionalBlock::update(const TQE& tqe) {
+  for (std::tuple<std::vector<Pauli>, bool, Expr>& rot : rotations_) {
+    auto [g, a, b] = tqe;
+    Pauli p0 = std::get<0>(rot)[a];
+    Pauli p1 = std::get<0>(rot)[b];
+    auto [new_p0, new_p1, sign] = TQE_PAULI_MAP.at({g, p0, p1});
+    std::get<0>(rot)[a] = new_p0;
+    std::get<0>(rot)[b] = new_p1;
+    total_weight_ += (p0 == Pauli::I) + (p1 == Pauli::I) -
+                     (new_p0 == Pauli::I) - (new_p1 == Pauli::I);
+    if (!sign) {
+      std::get<1>(rot) = !std::get<1>(rot);
+    }
+  }
+}
+
+CommuteInfo ConditionalBlock::get_commute_info() const {
+  std::vector<std::pair<UnitID, BitType>> bits_info;
+  for (unsigned b : cond_bits_) {
+    bits_info.push_back({Bit(b), BitType::READ});
+  }
+  std::vector<std::vector<Pauli>> strings;
+  for (const std::tuple<std::vector<Pauli>, bool, Expr>& rot : rotations_) {
+    strings.push_back(std::get<0>(rot));
+  }
+  return {strings, bits_info};
+}
+
+void ConditionalBlock::append(const ConditionalBlock& other) {
+  for (const auto& rot : other.rotations()) {
+    rotations_.push_back(rot);
+    total_weight_ +=
+        std::get<0>(rot).size() -
+        std::count(std::get<0>(rot).begin(), std::get<0>(rot).end(), Pauli::I);
+  }
 }
 
 // PauliPropagation

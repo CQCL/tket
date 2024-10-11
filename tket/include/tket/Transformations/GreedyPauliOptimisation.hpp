@@ -54,6 +54,8 @@ enum class PauliNodeType {
   PauliPropagation,
   // Pauli rotation with classical control
   ConditionalPauliRotation,
+  // Conditional Pauli rotations
+  ConditionalBlock,
   // Classical operation
   ClassicalNode,
   // Mid-circuit measurement
@@ -300,7 +302,7 @@ class PauliRotation : public SingleNode {
    * @param string the Pauli string
    * @param theta the rotation angle in half-turns
    */
-  PauliRotation(std::vector<Pauli> string, Expr theta);
+  PauliRotation(std::vector<Pauli> string, bool sign, Expr theta);
 
   PauliNodeType get_type() const override {
     return PauliNodeType::PauliRotation;
@@ -365,6 +367,70 @@ class ConditionalPauliRotation : public PauliRotation {
  protected:
   const std::vector<unsigned> cond_bits_;
   const unsigned cond_value_;
+};
+
+/**
+ * @brief Conditional block for rotations
+ */
+class ConditionalBlock : public PauliNode {
+ public:
+  /**
+   * @brief Construct a new Conditional Block object
+   *
+   * @param rotations Pauli rotations
+   * @param cond_bits conditional bits
+   * @param cond_value conditional value
+   */
+  ConditionalBlock(
+      std::vector<std::tuple<std::vector<Pauli>, bool, Expr>> rotations,
+      std::vector<unsigned> cond_bits, unsigned cond_value);
+
+  /**
+   * @brief Sum of tqe_cost for each Pauli rotation
+   *
+   * @return unsigned
+   */
+  unsigned tqe_cost() const override;
+
+  /**
+   * @brief Sum of tqe_cost for each Pauli rotation after the given TQE is
+   * applied
+   *
+   * @return unsigned
+   */
+  int tqe_cost_increase(const TQE& tqe) const override;
+
+  /**
+   * @brief Update the all Pauli rotations with the given TQE
+   *
+   * @param tqe
+   */
+  void update(const TQE& tqe) override;
+
+  std::vector<TQE> reduction_tqes() const override { return {}; };
+
+  std::vector<unsigned> cond_bits() const { return cond_bits_; };
+  unsigned cond_value() const { return cond_value_; };
+
+  PauliNodeType get_type() const override {
+    return PauliNodeType::ConditionalBlock;
+  };
+
+  CommuteInfo get_commute_info() const override;
+
+  void append(const ConditionalBlock& other);
+
+  const std::vector<std::tuple<std::vector<Pauli>, bool, Expr>>& rotations()
+      const {
+    return rotations_;
+  };
+
+ protected:
+  std::vector<std::tuple<std::vector<Pauli>, bool, Expr>> rotations_;
+  const std::vector<unsigned> cond_bits_;
+  const unsigned cond_value_;
+  // extra cached data used by greedy synthesis
+  unsigned total_weight_;
 };
 
 /**
@@ -505,8 +571,8 @@ class GPGraph {
    * If the angle is non-Clifford or if conditional is true then add to the DAG
    * as a PauliRotation node, otherwise update the tableau.
    */
-  void apply_pauli_at_end(
-      const std::vector<Pauli>& paulis, const Expr& angle,
+  void apply_paulis_at_end(
+      const std::vector<std::pair<std::vector<Pauli>, Expr>>& rotations,
       const qubit_vector_t& qbs, bool conditional = false,
       std::vector<unsigned> cond_bits = {}, unsigned cond_value = 0);
 

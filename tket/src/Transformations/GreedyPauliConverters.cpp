@@ -55,7 +55,7 @@ gpg_from_unordered_set(const std::vector<SymPauliTensor>& unordered_set) {
   for (auto& pauli : unordered_set) {
     TKET_ASSERT(pauli.string.size() == n_qubits);
     rotation_set.push_back(
-        std::make_shared<PauliRotation>(pauli.string, pauli.coeff));
+        std::make_shared<PauliRotation>(pauli.string, true, pauli.coeff));
   }
   UnitaryRevTableau tab(n_qubits);
   std::vector<PauliNode_ptr> rows = get_nodes_from_tableau(tab, n_qubits);
@@ -169,6 +169,22 @@ void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
     if (!ready) continue;
     // Check if we can commute past it
     PauliNode_ptr compare_node = graph_[to_compare];
+    // merge two ConditionalBlocks if they share the same condition
+    // this sacrifices the ability to commute the node but can group operations
+    // for better optimisation
+    if (node->get_type() == PauliNodeType::ConditionalBlock &&
+        compare_node->get_type() == PauliNodeType::ConditionalBlock) {
+      const ConditionalBlock& block1 =
+          dynamic_cast<const ConditionalBlock&>(*node);
+      ConditionalBlock& block2 = dynamic_cast<ConditionalBlock&>(*compare_node);
+      if (block1.cond_bits() == block2.cond_bits() &&
+          block1.cond_value() == block2.cond_value()) {
+        block2.append(block1);
+        boost::clear_vertex(new_vert, graph_);
+        boost::remove_vertex(new_vert, graph_);
+        return;
+      }
+    }
     if (nodes_commute(node, compare_node)) {
       // Check if two pauli rotations can be merged
       if (node->get_type() == PauliNodeType::PauliRotation &&
@@ -194,8 +210,8 @@ void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
             boost::clear_vertex(to_compare, graph_);
             boost::remove_vertex(to_compare, graph_);
           } else {
-            graph_[to_compare] =
-                std::make_shared<PauliRotation>(rot1.string(), merged_angle);
+            graph_[to_compare] = std::make_shared<PauliRotation>(
+                rot1.string(), true, merged_angle);
           }
           return;
         }
@@ -214,36 +230,46 @@ void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
   if (get_predecessors(new_vert).empty()) start_line_.insert(new_vert);
 }
 
-void GPGraph::apply_pauli_at_end(
-    const std::vector<Pauli>& paulis, const Expr& angle,
+void GPGraph::apply_paulis_at_end(
+    const std::vector<std::pair<std::vector<Pauli>, Expr>>& rotations,
     const qubit_vector_t& qbs, bool conditional,
     std::vector<unsigned> cond_bits, unsigned cond_value) {
-  // Note that global phase is ignored
-  if (static_cast<std::size_t>(std::count(
-          paulis.begin(), paulis.end(), Pauli::I)) == paulis.size()) {
-    return;
+  std::vector<std::tuple<std::vector<Pauli>, bool, Expr>> conj_rotations;
+  for (const auto& pair : rotations) {
+    const std::vector<Pauli>& paulis = pair.first;
+    const Expr& angle = pair.second;
+    // Note that global phase is ignored
+    if (static_cast<std::size_t>(std::count(
+            paulis.begin(), paulis.end(), Pauli::I)) == paulis.size())
+      continue;
+    std::optional<unsigned> cliff_angle = equiv_Clifford(angle);
+    if (cliff_angle && cliff_angle.value() == 0) continue;
+    QubitPauliMap qpm;
+    for (unsigned i = 0; i != qbs.size(); ++i)
+      qpm.insert({Qubit(qbs[i]), paulis[i]});
+    if (cliff_angle && !conditional) {
+      cliff_.apply_pauli_at_end(SpPauliStabiliser(qpm), *cliff_angle);
+      continue;
+    }
+    // if not clifford we conjugate the string with the end-circuit tableau
+    SpPauliStabiliser qpt = cliff_.get_row_product(SpPauliStabiliser(qpm));
+    auto [pauli_dense, theta] = dense_pauli(qpt, n_qubits_, angle);
+    conj_rotations.push_back({pauli_dense, true, theta});
   }
-  std::optional<unsigned> cliff_angle = equiv_Clifford(angle);
-  if (cliff_angle && cliff_angle.value() == 0) {
-    return;
-  }
-  QubitPauliMap qpm;
-  for (unsigned i = 0; i != qbs.size(); ++i)
-    qpm.insert({Qubit(qbs[i]), paulis[i]});
-  if (cliff_angle && !conditional) {
-    cliff_.apply_pauli_at_end(SpPauliStabiliser(qpm), *cliff_angle);
-    return;
-  }
-  SpPauliStabiliser qpt = cliff_.get_row_product(SpPauliStabiliser(qpm));
-  auto [pauli_dense, theta] = dense_pauli(qpt, n_qubits_, angle);
-  PauliNode_ptr node;
+
+  // if conditional we add a ConditionalBlock otherwise we add individual
+  // rotations.
   if (conditional) {
-    node = std::make_shared<ConditionalPauliRotation>(
-        pauli_dense, theta, cond_bits, cond_value);
+    PauliNode_ptr node = std::make_shared<ConditionalBlock>(
+        conj_rotations, cond_bits, cond_value);
+    apply_node_at_end(node);
   } else {
-    node = std::make_shared<PauliRotation>(pauli_dense, theta);
+    for (const auto& t : conj_rotations) {
+      PauliNode_ptr node = std::make_shared<PauliRotation>(
+          std::get<0>(t), std::get<1>(t), std::get<2>(t));
+      apply_node_at_end(node);
+    }
   }
-  apply_node_at_end(node);
 }
 
 void GPGraph::apply_gate_at_end(
@@ -445,10 +471,7 @@ void GPGraph::apply_gate_at_end(
       throw BadOpType("GreedyPauliSimp doesn't support", type);
     }
   }
-  for (auto it = pauli_rots.begin(); it != pauli_rots.end(); ++it) {
-    apply_pauli_at_end(
-        it->first, it->second, qbs, conditional, cond_bits, cond_value);
-  }
+  apply_paulis_at_end(pauli_rots, qbs, conditional, cond_bits, cond_value);
 }
 
 std::vector<GPVert> GPGraph::vertices_in_order() const {

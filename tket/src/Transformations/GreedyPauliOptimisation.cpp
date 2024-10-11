@@ -18,7 +18,7 @@
 
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/OpType/OpType.hpp"
-#include "tket/Transformations/CliffordOptimisation.hpp"
+#include "tket/Transformations/CliffordReductionPass.hpp"
 #include "tket/Transformations/GreedyPauliOptimisationLookupTables.hpp"
 #include "tket/Transformations/Transform.hpp"
 
@@ -409,16 +409,32 @@ static void consume_nodes(
           first_set.erase(first_set.begin() + i);
           break;
         }
-        case PauliNodeType::ConditionalPauliRotation: {
-          // conditionals are added as conditional PauliExpBoxes
-          ConditionalPauliRotation& node =
-              dynamic_cast<ConditionalPauliRotation&>(*node_ptr);
+        case PauliNodeType::ConditionalBlock: {
+          // conditionals are implemented as a conditioned sequence of
+          // PauliExpBoxes and subsequently optimised by recursively calling
+          // greedy_pauli_optimisation
+          ConditionalBlock& node = dynamic_cast<ConditionalBlock&>(*node_ptr);
+          const std::vector<unsigned> cond_bits = node.cond_bits();
+          const unsigned cond_value = node.cond_value();
+          std::vector<unsigned> qubits;
+          for (unsigned i = 0; i < circ.n_qubits(); i++) {
+            qubits.push_back(i);
+          }
+          Circuit cond_circ(circ.n_qubits());
+          for (const auto& t : node.rotations()) {
+            const std::vector<Pauli>& string = std::get<0>(t);
+            bool sign = std::get<1>(t);
+            Expr angle = sign ? std::get<2>(t) : -std::get<2>(t);
+            Op_ptr peb_op =
+                std::make_shared<PauliExpBox>(SymPauliTensor(string, angle));
+            cond_circ.add_op<unsigned>(peb_op, qubits);
+          }
+          greedy_pauli_optimisation().apply(cond_circ);
           Op_ptr cond = std::make_shared<Conditional>(
-              std::make_shared<PauliExpBox>(
-                  SymPauliTensor(node.string(), node.angle())),
-              (unsigned)node.cond_bits().size(), node.cond_value());
-          std::vector<unsigned> args = node.cond_bits();
-          for (unsigned i = 0; i < node.string().size(); i++) {
+              std::make_shared<CircBox>(cond_circ), cond_bits.size(),
+              cond_value);
+          std::vector<unsigned> args = cond_bits;
+          for (unsigned i = 0; i < cond_circ.n_qubits(); i++) {
             args.push_back(i);
           }
           circ.add_op<unsigned>(cond, args);
@@ -579,7 +595,10 @@ Transform greedy_pauli_optimisation(double discount_rate, double depth_weight) {
   return Transform([discount_rate, depth_weight](Circuit& circ) {
     circ = GreedyPauliSimp::greedy_pauli_graph_synthesis(
         circ, discount_rate, depth_weight);
-    singleq_clifford_sweep().apply(circ);
+    // use clifford_reduction to merge single qubit Clifford gates
+    clifford_reduction().apply(circ);
+    // decompose the conditional CircBoxes
+    circ.decompose_boxes_recursively();
     return true;
   });
 }
