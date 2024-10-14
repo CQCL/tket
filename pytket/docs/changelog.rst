@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.33.1 (October 2024)
+---------------------
+
+Fixes:
+
+* Fix `GuidedPauliSimp` for circuits containing `CircBox` with classical wires.
+
 1.33.0 (October 2024)
 ---------------------
 

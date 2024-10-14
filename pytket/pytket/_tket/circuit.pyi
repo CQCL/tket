@@ -1965,14 +1965,14 @@ class Circuit:
         :param qubit_2: index of target qubit 2
         :return: the new :py:class:`Circuit`
         """
-    def add_wasm(self, funcname: str, filehandler: pytket.wasm.wasm.WasmFileHandler, list_i: typing.Sequence[int], list_o: typing.Sequence[int], args: typing.Union[typing.Sequence[int], typing.Sequence[pytket._tket.unit_id.Bit]], args_wasm: typing.Optional[typing.Sequence[int]] = None, **kwargs: typing.Any) -> Circuit:
+    def add_wasm(self, funcname: str, filehandler: pytket.wasm.wasm.WasmModuleHandler, list_i: typing.Sequence[int], list_o: typing.Sequence[int], args: typing.Union[typing.Sequence[int], typing.Sequence[pytket._tket.unit_id.Bit]], args_wasm: typing.Optional[typing.Sequence[int]] = None, **kwargs: typing.Any) -> Circuit:
         """
         Add a classical function call from a wasm file to the circuit.
             
         
         :param funcname: name of the function that is called
             
-        :param filehandler: wasm file handler to identify the wasm file
+        :param filehandler: wasm file or module handler to identify the wasm module
             
         :param list_i: list of the number of bits in the input variables
             
@@ -1988,14 +1988,14 @@ class Circuit:
             
         :return: the new :py:class:`Circuit`
         """
-    def add_wasm_to_reg(self, funcname: str, filehandler: pytket.wasm.wasm.WasmFileHandler, list_i: typing.Sequence[pytket._tket.unit_id.BitRegister], list_o: typing.Sequence[pytket._tket.unit_id.BitRegister], args_wasm: typing.Optional[typing.Sequence[int]] = None, **kwargs: typing.Any) -> Circuit:
+    def add_wasm_to_reg(self, funcname: str, filehandler: pytket.wasm.wasm.WasmModuleHandler, list_i: typing.Sequence[pytket._tket.unit_id.BitRegister], list_o: typing.Sequence[pytket._tket.unit_id.BitRegister], args_wasm: typing.Optional[typing.Sequence[int]] = None, **kwargs: typing.Any) -> Circuit:
         """
         Add a classical function call from a wasm file to the circuit.
             
         
         :param funcname: name of the function that is called
             
-        :param filehandler: wasm file handler to identify the wasm file
+        :param filehandler: wasm file or module handler to identify the wasm module
             
         :param list_i: list of the classical registers assigned to
              the input variables of the function call
