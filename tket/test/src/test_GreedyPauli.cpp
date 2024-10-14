@@ -100,6 +100,26 @@ SCENARIO("Clifford synthesis") {
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
   }
+  GIVEN("Test search limits") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::X, {0});
+    circ.add_op<unsigned>(OpType::SWAP, {1, 2});
+    circ.add_op<unsigned>(OpType::CX, {0, 2});
+    circ.add_op<unsigned>(OpType::H, {3});
+    circ.add_op<unsigned>(OpType::CZ, {1, 3});
+    circ.add_op<unsigned>(OpType::H, {2});
+    circ.add_op<unsigned>(OpType::CX, {3, 2});
+    circ.add_op<unsigned>(OpType::Z, {2});
+    circ.add_op<unsigned>(OpType::SWAP, {3, 1});
+    circ.add_op<unsigned>(OpType::CY, {0, 2});
+    Circuit d1(circ);
+    Circuit d2(circ);
+    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 2, 1).apply(d1));
+    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 20, 20).apply(d2));
+    REQUIRE(test_unitary_comparison(circ, d1, true));
+    REQUIRE(test_unitary_comparison(circ, d2, true));
+    REQUIRE(d1 != d2);
+  }
 }
 SCENARIO("Complete synthesis") {
   GIVEN("1Q Simple Circuit") {
@@ -182,6 +202,55 @@ SCENARIO("Complete synthesis") {
     Circuit d(circ);
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
+  }
+  GIVEN("5Q PauliExp Circuit with search limits") {
+    Circuit circ(5);
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::X, Pauli::X, Pauli::X}, 0.3)),
+        {0, 1, 4});
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::X, Pauli::Z, Pauli::Y}, -0.1)),
+        {2, 3, 0});
+    circ.add_box(
+        PauliExpPairBox(
+            SymPauliTensor({Pauli::X, Pauli::Z, Pauli::Y}, 1.0),
+            SymPauliTensor({Pauli::Z, Pauli::X, Pauli::Y}, 0.4)),
+        {0, 2, 4});
+    circ.add_box(
+        PauliExpCommutingSetBox({
+            {{
+                 Pauli::I,
+                 Pauli::Y,
+                 Pauli::I,
+             },
+             -0.1},
+            {{Pauli::X, Pauli::Y, Pauli::Z}, -1.2},
+            {{Pauli::X, Pauli::Y, Pauli::Z}, 0.5},
+        }),
+        {1, 2, 3});
+    circ.add_box(
+        PauliExpCommutingSetBox({
+            {{
+                 Pauli::I,
+                 Pauli::X,
+                 Pauli::I,
+             },
+             -0.15},
+            {{Pauli::X, Pauli::X, Pauli::Z}, -1.25},
+            {{Pauli::X, Pauli::X, Pauli::Z}, 0.2},
+        }),
+        {0, 3, 4});
+    circ.add_op<unsigned>(OpType::CX, {0, 2});
+    circ.add_op<unsigned>(OpType::SWAP, {2, 3});
+    circ.add_op<unsigned>(OpType::H, {3});
+    circ.add_op<unsigned>(OpType::CZ, {1, 3});
+    Circuit d1(circ);
+    Circuit d2(circ);
+    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 3, 3).apply(d1));
+    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 30, 30).apply(d2));
+    REQUIRE(test_unitary_comparison(circ, d1, true));
+    REQUIRE(test_unitary_comparison(circ, d2, true));
+    REQUIRE(d1 != d2);
   }
   GIVEN("Circuit with trivial Pauli exps") {
     Circuit circ(4);

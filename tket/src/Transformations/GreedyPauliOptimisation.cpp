@@ -30,13 +30,31 @@ namespace GreedyPauliSimp {
 
 template <typename Container>
 static typename Container::const_iterator sample_random_element(
-    const Container& container, const unsigned seed) {
+    const Container& container, unsigned seed) {
   std::mt19937 rng(seed);
   std::uniform_int_distribution<size_t> dist(0, container.size() - 1);
   size_t random_index = dist(rng);
   auto it = container.begin();
   std::advance(it, random_index);
   return it;
+}
+
+static std::vector<TQE> sample_tqes(
+    const std::set<TQE>& tqes, size_t k, unsigned seed) {
+  // https://stackoverflow.com/a/59090754
+  size_t unsampled_sz = tqes.size();
+  auto first = std::begin(tqes);
+  std::vector<TQE> vec;
+  std::mt19937 rng(seed);
+  vec.reserve(std::min(k, unsampled_sz));
+  for (k = std::min(k, unsampled_sz); k != 0; ++first) {
+    auto r = std::uniform_int_distribution<std::size_t>(0, --unsampled_sz)(rng);
+    if (r < k) {
+      vec.push_back(*first);
+      --k;
+    }
+  }
+  return vec;
 }
 
 static void apply_tqe_to_circ(const TQE& tqe, Circuit& circ) {
@@ -83,10 +101,13 @@ static void apply_tqe_to_circ(const TQE& tqe, Circuit& circ) {
 // return the sum of the cost increases on remaining tableau nodes
 static double default_tableau_tqe_cost(
     const std::vector<PauliNode_ptr>& rows,
-    const std::vector<unsigned>& remaining_indices, const TQE& tqe) {
+    const std::vector<unsigned>& remaining_indices, const TQE& tqe,
+    unsigned max_lookahead) {
   double cost = 0;
+  unsigned count = 0;
   for (const unsigned& index : remaining_indices) {
     cost += rows[index]->tqe_cost_increase(tqe);
+    if (++count >= max_lookahead) break;
   }
   return cost;
 }
@@ -96,19 +117,24 @@ static double default_tableau_tqe_cost(
 static double default_pauliexp_tqe_cost(
     const double discount_rate,
     const std::vector<std::vector<PauliNode_ptr>>& rotation_sets,
-    const std::vector<PauliNode_ptr>& rows, const TQE& tqe) {
+    const std::vector<PauliNode_ptr>& rows, const TQE& tqe,
+    const unsigned& max_lookahead) {
   double discount = 1 / (1 + discount_rate);
   double weight = 1;
   double exp_cost = 0;
   double tab_cost = 0;
+  unsigned count = 0;
   for (const std::vector<PauliNode_ptr>& rotation_set : rotation_sets) {
     for (const PauliNode_ptr& node : rotation_set) {
       exp_cost += weight * node->tqe_cost_increase(tqe);
+      if (++count >= max_lookahead) break;
     }
+    if (count >= max_lookahead) break;
     weight *= discount;
   }
   for (const PauliNode_ptr& node : rows) {
     tab_cost += weight * node->tqe_cost_increase(tqe);
+    if (++count >= max_lookahead) break;
   }
   return exp_cost + tab_cost;
 }
@@ -234,8 +260,9 @@ struct DepthTracker {
  * @brief Synthesise a vector of PauliPropagation
  */
 static void tableau_row_nodes_synthesis(
-    std::vector<PauliNode_ptr>& rows, Circuit& circ, double depth_weight,
-    DepthTracker& depth_tracker, unsigned seed) {
+    std::vector<PauliNode_ptr>& rows, Circuit& circ,
+    DepthTracker& depth_tracker, double depth_weight, unsigned max_lookahead,
+    unsigned max_tqe_candidates, unsigned seed) {
   // only consider nodes with a non-zero cost
   std::vector<unsigned> remaining_indices;
   for (unsigned i = 0; i < rows.size(); i++) {
@@ -265,14 +292,18 @@ static void tableau_row_nodes_synthesis(
       tqe_candidates.insert(
           node_reducing_tqes.begin(), node_reducing_tqes.end());
     }
+    // sample
+    std::vector<TQE> sampled_tqes =
+        sample_tqes(tqe_candidates, max_tqe_candidates, seed);
     // for each tqe we compute a vector of cost factors which will
     // be combined to make the final decision.
     // we currently only consider tqe_cost and gate_depth.
     std::map<TQE, std::vector<double>> tqe_candidates_cost;
-    for (const TQE& tqe : tqe_candidates) {
+    for (const TQE& tqe : sampled_tqes) {
       tqe_candidates_cost.insert(
           {tqe,
-           {default_tableau_tqe_cost(rows, remaining_indices, tqe),
+           {default_tableau_tqe_cost(
+                rows, remaining_indices, tqe, max_lookahead),
             static_cast<double>(depth_tracker.gate_depth(
                 std::get<1>(tqe), std::get<2>(tqe)))}});
     }
@@ -507,8 +538,9 @@ static void consume_nodes(
  */
 static void pauli_exps_synthesis(
     std::vector<std::vector<PauliNode_ptr>>& rotation_sets,
-    std::vector<PauliNode_ptr>& rows, Circuit& circ, double discount_rate,
-    double depth_weight, DepthTracker& depth_tracker, unsigned seed) {
+    std::vector<PauliNode_ptr>& rows, Circuit& circ,
+    DepthTracker& depth_tracker, double discount_rate, double depth_weight,
+    unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed) {
   while (true) {
     consume_nodes(
         rotation_sets, circ, depth_tracker, discount_rate, depth_weight);
@@ -532,12 +564,16 @@ static void pauli_exps_synthesis(
       tqe_candidates.insert(
           node_reducing_tqes.begin(), node_reducing_tqes.end());
     }
+    // sample
+    std::vector<TQE> sampled_tqes =
+        sample_tqes(tqe_candidates, max_tqe_candidates, seed);
     // for each tqe we compute costs which might subject to normalisation
     std::map<TQE, std::vector<double>> tqe_candidates_cost;
-    for (const TQE& tqe : tqe_candidates) {
+    for (const TQE& tqe : sampled_tqes) {
       tqe_candidates_cost.insert(
           {tqe,
-           {default_pauliexp_tqe_cost(discount_rate, rotation_sets, rows, tqe),
+           {default_pauliexp_tqe_cost(
+                discount_rate, rotation_sets, rows, tqe, max_lookahead),
             static_cast<double>(depth_tracker.gate_depth(
                 std::get<1>(tqe), std::get<2>(tqe)))}});
     }
@@ -561,7 +597,14 @@ static void pauli_exps_synthesis(
 
 Circuit greedy_pauli_set_synthesis(
     const std::vector<SymPauliTensor>& unordered_set, double depth_weight,
-    unsigned seed) {
+    unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed) {
+  if (max_lookahead == 0) {
+    throw GreedyPauliSimpError("max_lookahead must be greater than 0.");
+  }
+  if (max_tqe_candidates == 0) {
+    throw GreedyPauliSimpError("max_tqe_candidates must be greater than 0.");
+  }
+
   if (unordered_set.size() == 0) {
     return Circuit();
   }
@@ -572,16 +615,26 @@ Circuit greedy_pauli_set_synthesis(
   DepthTracker depth_tracker(n_qubits);
   // synthesise Pauli exps
   pauli_exps_synthesis(
-      rotation_sets, rows, c, 0, depth_weight, depth_tracker, seed);
+      rotation_sets, rows, c, depth_tracker, 0, depth_weight, max_lookahead,
+      max_tqe_candidates, seed);
   // synthesise the tableau
-  tableau_row_nodes_synthesis(rows, c, depth_weight, depth_tracker, seed);
+  tableau_row_nodes_synthesis(
+      rows, c, depth_tracker, depth_weight, max_lookahead, max_tqe_candidates,
+      seed);
   c.replace_SWAPs();
   return c;
 }
 
 Circuit greedy_pauli_graph_synthesis(
     const Circuit& circ, double discount_rate, double depth_weight,
-    unsigned seed) {
+    unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed) {
+  if (max_lookahead == 0) {
+    throw GreedyPauliSimpError("max_lookahead must be greater than 0.");
+  }
+  if (max_tqe_candidates == 0) {
+    throw GreedyPauliSimpError("max_tqe_candidates must be greater than 0.");
+  }
+
   Circuit circ_flat(circ);
   unsigned n_qubits = circ_flat.n_qubits();
   unsigned n_bits = circ_flat.n_bits();
@@ -601,11 +654,12 @@ Circuit greedy_pauli_graph_synthesis(
   DepthTracker depth_tracker(n_qubits);
   // synthesise Pauli exps
   pauli_exps_synthesis(
-      rotation_sets, rows, new_circ, discount_rate, depth_weight, depth_tracker,
-      seed);
+      rotation_sets, rows, new_circ, depth_tracker, discount_rate, depth_weight,
+      max_lookahead, max_tqe_candidates, seed);
   // synthesise the tableau
   tableau_row_nodes_synthesis(
-      rows, new_circ, depth_weight, depth_tracker, seed);
+      rows, new_circ, depth_tracker, depth_weight, max_lookahead,
+      max_tqe_candidates, seed);
   for (auto it = measures.begin(); it != measures.end(); ++it) {
     new_circ.add_measure(it->left, it->right);
   }
@@ -617,10 +671,13 @@ Circuit greedy_pauli_graph_synthesis(
 }  // namespace GreedyPauliSimp
 
 Transform greedy_pauli_optimisation(
-    double discount_rate, double depth_weight, unsigned seed) {
-  return Transform([discount_rate, depth_weight, seed](Circuit& circ) {
+    double discount_rate, double depth_weight, unsigned max_lookahead,
+    unsigned max_tqe_candidates, unsigned seed) {
+  return Transform([discount_rate, depth_weight, max_lookahead,
+                    max_tqe_candidates, seed](Circuit& circ) {
     circ = GreedyPauliSimp::greedy_pauli_graph_synthesis(
-        circ, discount_rate, depth_weight, seed);
+        circ, discount_rate, depth_weight, max_lookahead, max_tqe_candidates,
+        seed);
     // decompose the conditional CircBoxes
     circ.decompose_boxes_recursively();
     return true;

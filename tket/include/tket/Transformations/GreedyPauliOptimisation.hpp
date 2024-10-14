@@ -586,11 +586,14 @@ gpg_from_unordered_set(const std::vector<SymPauliTensor>& unordered_set);
  * @param circ
  * @param discount_rate
  * @param depth_weight
+ * @param max_lookahead
+ * @param max_tqe_candidates
  * @param seed
  * @return Circuit
  */
 Circuit greedy_pauli_graph_synthesis(
     const Circuit& circ, double discount_rate = 0.7, double depth_weight = 0.3,
+    unsigned max_lookahead = 500, unsigned max_tqe_candidates = 500,
     unsigned seed = 0);
 
 /**
@@ -600,17 +603,22 @@ Circuit greedy_pauli_graph_synthesis(
  *
  * @param unordered_set
  * @param depth_weight
+ * @param max_lookahead
+ * @param max_tqe_candidates
  * @param seed
  * @return Circuit
  */
 Circuit greedy_pauli_set_synthesis(
     const std::vector<SymPauliTensor>& unordered_set, double depth_weight = 0.3,
+    unsigned max_lookahead = 500, unsigned max_tqe_candidates = 500,
     unsigned seed = 0);
 
 }  // namespace GreedyPauliSimp
 
 Transform greedy_pauli_optimisation(
-    double discount_rate = 0.7, double depth_weight = 0.3, unsigned seed = 0);
+    double discount_rate = 0.7, double depth_weight = 0.3,
+    unsigned max_lookahead = 500, unsigned max_tqe_candidates = 500,
+    unsigned seed = 0);
 
 }  // namespace Transforms
 
