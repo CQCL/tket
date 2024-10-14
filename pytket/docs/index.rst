@@ -94,8 +94,8 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     faqs.rst
 
 .. toctree::
-    :hidden:
-    
+    :caption: pytket extensions:
+
     extensions.md
 
 .. toctree::
