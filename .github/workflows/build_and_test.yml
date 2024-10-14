@@ -313,11 +313,9 @@ jobs:
       timeout-minutes: 20
       run: |
         pip install poetry==1.8.1
+        poetry config virtualenvs.create false
         cd pytket/docs
         poetry install
-        poetry shell
-        cd ..
-        pip install -e .[ZX] -v
         cd docs
         bash ./build-docs.sh
     - name: Upload artifact
