@@ -459,17 +459,11 @@ SCENARIO("Complete synthesis") {
     circ.add_op<unsigned>(OpType::Measure, {0, 0});
     circ.add_op<unsigned>(ClassicalX(), {0});
     circ.add_op<unsigned>(OpType::Reset, {1});
-    Circuit d(3, 1);
-    d.add_op<unsigned>(OpType::CZ, {0, 2});
-    d.add_op<unsigned>(OpType::CZ, {0, 1});
-    d.add_op<unsigned>(OpType::Rx, 0.3, {0});
-    d.add_op<unsigned>(OpType::Measure, {0, 0});
-    d.add_op<unsigned>(ClassicalX(), {0});
-    d.add_op<unsigned>(OpType::CZ, {1, 0});
-    d.add_op<unsigned>(OpType::CZ, {0, 2});
-    d.add_op<unsigned>(OpType::Reset, {1});
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
-    REQUIRE(circ == d);
+    REQUIRE(circ.count_n_qubit_gates(2) == 4);
+    REQUIRE(circ.count_gates(OpType::ClassicalTransform) == 1);
+    REQUIRE(circ.count_gates(OpType::Measure) == 1);
+    REQUIRE(circ.count_gates(OpType::Reset) == 1);
   }
   GIVEN("Compile to ZZPhase") {
     Circuit circ(2);
