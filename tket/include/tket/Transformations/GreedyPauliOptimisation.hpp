@@ -384,7 +384,7 @@ class ConditionalBlock : public PauliNode {
   /**
    * @brief Sum of tqe_cost for each Pauli rotation after the given TQE is
    * applied
-   * 
+   *
    * @param tqe
    * @return unsigned
    */

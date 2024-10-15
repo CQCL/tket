@@ -543,7 +543,7 @@ static void consume_nodes(
           greedy_pauli_optimisation(discount_rate, depth_weight)
               .apply(cond_circ);
           Op_ptr cond = std::make_shared<Conditional>(
-              std::make_shared<CircBox>(cond_circ), cond_bits.size(),
+              std::make_shared<CircBox>(cond_circ), (unsigned)cond_bits.size(),
               cond_value);
           std::vector<unsigned> args = cond_bits;
           for (unsigned i = 0; i < cond_circ.n_qubits(); i++) {
