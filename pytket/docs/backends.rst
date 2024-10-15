@@ -3,7 +3,7 @@ pytket.backends
 
 Contains :py:class:`Backend` abstract class and associated methods. In pytket a :py:class:`~pytket.backends.Backend` represents an interface between pytket and a quantum device or simulator. Different backends are defined in the various pytket extension modules and inherit from the core pytket :py:class:`~pytket.backends.Backend` class.
 
-There are several example notebooks on pytket :py:class:`~pytket.backends.Backend`\s. If you are interested in developing your own :py:class:`Backend` or pytket extension then see the `creating backends <https://docs.quantinuum.com/tket/user-guide/examples/backends/creating_backends.html>`_ tutorial.
+If you are interested in developing your own :py:class:`Backend` or pytket extension then see the `creating backends <https://docs.quantinuum.com/tket/user-guide/examples/backends/creating_backends.html>`_ tutorial.
 
 Documentation relating to H-Series device access can be found at https://docs.quantinuum.com/h-series/.
 
