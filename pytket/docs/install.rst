@@ -28,7 +28,7 @@ Building TKET from source
 
 TKET can be built from source by compiling the C++. This is now possible on MacOS, Windows and Linux (including ARM Linux).
 
-For instructions on how to do this see the `tket repository README <https://github.com/CQCL/tket#how-to-build-tket-and-pytket>`_. 
+For instructions on how to do this see the `tket repository README <https://github.com/CQCL/tket?tab=readme-ov-file#how-to-build-tket-and-pytket>`_. 
 
 Installation FAQs
 -----------------
