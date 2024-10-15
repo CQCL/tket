@@ -7,7 +7,7 @@ pytket.circuit
    circuit_class.rst
    optype.rst
    classical.rst
-   display.rst
+   display.md
 
 .. currentmodule:: pytket._tket.circuit
 
