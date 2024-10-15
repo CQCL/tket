@@ -15,6 +15,7 @@
 #pragma once
 
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Clifford/APState.hpp"
 #include "tket/Clifford/ChoiMixTableau.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/PauliGraph/PauliGraph.hpp"
@@ -44,6 +45,8 @@ Circuit unitary_rev_tableau_to_circuit(const UnitaryRevTableau &tab);
  * Will throw an exception if it contains non-Clifford gates.
  */
 ChoiMixTableau circuit_to_cm_tableau(const Circuit &circ);
+
+APState circuit_to_apstate(const Circuit &circ);
 
 /**
  * Constructs a circuit producing the same effect as a ChoiMixTableau.

@@ -103,6 +103,7 @@ add_executable(test-tket
     src/Simulation/test_CircuitSimulator.cpp
     src/Simulation/test_PauliExpBoxUnitaryCalculator.cpp
     src/test_AASRoute.cpp
+    src/test_APState.cpp
     src/test_ArchitectureAwareSynthesis.cpp
     src/test_Architectures.cpp
     src/test_Assertion.cpp
