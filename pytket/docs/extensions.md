@@ -15,13 +15,13 @@ The types of `Backend` available in pytket are the following
 
 ## Types of Backend
 
-- **QPUs** - These are real quantum computers that return shots based results. E.g the [QuantinuumBackend](inv:#*.QuantinuumBackend) .
-- **Cloud Access** - Cloud backends allow pytket to interface with cloud platforms to access additional QPUs and simulators. E.g [BraketBackend](inv:#*.BraketBackend) .
+- **QPUs** - These are real quantum computers that return shots based results. E.g the [QuantinuumBackend](inv:#*.QuantinuumBackend).
+- **Cloud Access** - Cloud backends allow pytket to interface with cloud platforms to access additional QPUs and simulators. E.g [BraketBackend](inv:#*.BraketBackend).
 - **Emulators** - These classically simulate a circuit and produce shots based results. Sometimes emulators use a noise model and have connectivity constraints to emulate real QPUs. E.g. [IBMQEmulatorBackend](inv:#*.IBMQEmulatorBackend)
 - **Statevector Simulators** - Calculates the pure quantum state prepared by a circuit returning a vector/ndarray. Examples of statevector simulators are the [ForestStateBackend](inv:#*.ForestStateBackend) and the [AerStateBackend](inv:#*.AerStateBackend).
 - **Unitary Simulators** - Unitary simulators calculate the unitary operator that is applied by a circuit. A unitary matrix/ndarray is returned [AerUnitaryBackend](inv:#*.AerUnitaryBackend) is an example of such a simulator.
 - **Density Matrix Simulators** - These simulators compute the density matrix prepared by a circuit. The result can be a statistical mixture of states in contrast to statevector simulation. E.g. [CirqDensityMatrixSampleBackend](inv:#*.CirqDensityMatrixSampleBackend)
-- **Other specialised simulators** - There are extensions for simulating specific types of circuit. For instance the [SimplexBackend](https://docs.quantinuum.com/tket/extensions/pytket-pysimplex/api.html#pytket.extensions.pysimplex.SimplexBackend) is designed to simulate Clifford circuits.
+- **Other specialised simulators** - There are extensions for simulating specific types of circuit. For instance the [SimplexBackend](inv:#*.SimplexBackend) is designed to simulate Clifford circuits.
 
 A full list of available pytket backends is shown below.
 
@@ -39,12 +39,12 @@ A full list of available pytket backends is shown below.
 [AQTBackend](https://cqcl.github.io/pytket-aqt/api/api.html#pytket.extensions.aqt.AQTBackend)
 \- Interface to an AQT device or simulator.
 
-[IQMBackend](https://docs.quantinuum.com/tket/extensions/pytket-iqm/api.html#pytket.extensions.iqm.IQMBackend)
+[IQMBackend](inv:#*.IQMBackend)
 \- Interface to an IQM device or simulator.
 
 ## Cloud Access
 
-[BraketBackend](https://docs.quantinuum.com/tket/extensions/pytket-braket/api.html#pytket.extensions.braket.BraketBackend)
+[BraketBackend](inv:#*.BraketBackend)
 \- Interface to Amazon Braket service.
 
 ## Emulators
@@ -66,7 +66,7 @@ A full list of available pytket backends is shown below.
 
 [ForestStateBackend](inv:#*.ForestStateBackend) - State-based interface to a Rigetti device.
 
-[ProjectQBackend](https://docs.quantinuum.com/tket/extensions/pytket-projectq/api.html#pytket.extensions.projectq.ProjectQBackend)
+[ProjectQBackend](inv:#*.ProjectQBackend)
 \- Backend for running statevector simulations on the ProjectQ simulator.
 
 ## Unitary Simulators
@@ -81,7 +81,7 @@ A full list of available pytket backends is shown below.
 [CirqDensityMatrixSimBackend](inv:#*.CirqDensityMatrixSimBackend)
 \- Backend for Cirq density matrix simulator density_matrix return.
 
-[QulacsBackend](https://docs.quantinuum.com/tket/extensions/pytket-qulacs/api.html#pytket.extensions.qulacs.QulacsBackend) - This has a configurable density matrix simulation option.
+[QulacsBackend](inv:#*.QulacsBackend) - This has a configurable density matrix simulation option.
 
 Use `QulacsBackend(result_type="density_matrix")`.
 
@@ -93,9 +93,9 @@ Use `QulacsBackend(result_type="density_matrix")`.
 [CirqCliffordSimBackend](inv:#*.CirqCliffordSimBackend)
 \- Backend for Cirq Clifford simulator state return.
 
-[SimplexBackend](https://docs.quantinuum.com/tket/extensions/pytket-pysimplex/api.html#pytket.extensions.pysimplex.SimplexBackend)- Backend for simulating Clifford circuits using pysimplex.
+[SimplexBackend](inv:#*.SimplexBackend)- Backend for simulating Clifford circuits using pysimplex.
 
-[StimBackend](https://docs.quantinuum.com/tket/extensions/pytket-stim/api.html#pytket.extensions.stim.StimBackend)
+[StimBackend](inv:#*.StimBackend)
 \- Backend for simulating Clifford circuits using Stim.
 
 ## Other
@@ -103,7 +103,7 @@ Use `QulacsBackend(result_type="density_matrix")`.
 [AerBackend](inv:#*.AerBackend)
 \- Backend for running simulations on the Qiskit Aer QASM simulator. This simulator is noiseless by default but can take a user defined `NoiseModel`.
 
-[QulacsBackend](https://docs.quantinuum.com/tket/extensions/pytket-qulacs/api.html#pytket.extensions.qulacs.QulacsBackend)
+[QulacsBackend](inv:#*.QulacsBackend)
 \- Backend for running simulations of variational quantum circuits on the Qulacs simulator.
 
 ```{toctree}
@@ -129,12 +129,3 @@ pytket-qujax <https://docs.quantinuum.com/tket/extensions/pytket-qujax>
 pytket-stim <https://docs.quantinuum.com/tket/extensions/pytket-stim>
 ```
 
-[aerstatebackend]: https://docs.quantinuum.com/tket/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.AerStateBackend
-[aerunitarybackend]: https://docs.quantinuum.com/tket/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.AerUnitaryBackend
-[cirqdensitymatrixsamplebackend]: https://docs.quantinuum.com/tket/extensions/pytket-cirq/api.html#pytket.extensions.cirq.CirqDensityMatrixSampleBackend
-[foreststatebackend]: https://docs.quantinuum.com/tket/extensions/pytket-pyquil/api.html#pytket.extensions.pyquil.ForestStateBackend
-[ibmqemulatorbackend]: https://docs.quantinuum.com/tket/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.IBMQEmulatorBackend
-[pytket]: https://docs.quantinuum.com/tket/api-docs
-[quantinuum]: https://quantinuum.com
-[qulacsbackend]: https://docs.quantinuum.com/tket/extensions/pytket-qulacs/api.html#pytket.extensions.qulacs.QulacsBackend
-[simplexbackend]: https://docs.quantinuum.com/tket/extensions/pytket-pysimplex/api.html#pytket.extensions.pysimplex.SimplexBackend
