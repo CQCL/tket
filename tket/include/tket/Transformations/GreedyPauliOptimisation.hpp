@@ -319,6 +319,7 @@ class PauliRotation : public SingleNode {
    * @brief Construct a new PauliRotation object.
    *
    * @param string the Pauli string
+   * @param sign the sign of the Pauli string
    * @param theta the rotation angle in half-turns
    */
   PauliRotation(std::vector<Pauli> string, bool sign, Expr theta);
@@ -383,7 +384,8 @@ class ConditionalBlock : public PauliNode {
   /**
    * @brief Sum of tqe_cost for each Pauli rotation after the given TQE is
    * applied
-   *
+   * 
+   * @param tqe
    * @return unsigned
    */
   int tqe_cost_increase(const TQE& tqe) const override;
