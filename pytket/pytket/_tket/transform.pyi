@@ -24,6 +24,9 @@ class PauliSynthStrat:
     Pairwise: typing.ClassVar[PauliSynthStrat]  # value = <PauliSynthStrat.Pairwise: 1>
     Sets: typing.ClassVar[PauliSynthStrat]  # value = <PauliSynthStrat.Sets: 2>
     __members__: typing.ClassVar[dict[str, PauliSynthStrat]]  # value = {'Individual': <PauliSynthStrat.Individual: 0>, 'Pairwise': <PauliSynthStrat.Pairwise: 1>, 'Sets': <PauliSynthStrat.Sets: 2>, 'Greedy': <PauliSynthStrat.Greedy: 3>}
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -140,7 +143,7 @@ class Transform:
         
         All TK2 gate parameters must be normalised, i.e. they must satisfy `NormalisedTK2Predicate`.
         
-        Gate fidelities are passed as keyword arguments to perform noise-aware decompositions. We currently support `CX_fidelity`, `ZZMax_fidelity` and `ZZPhase_fidelity`. If provided, the `CX` and `ZZMax` fidelities must be given by a single floating point fidelity. The `ZZPhase` fidelity is given as a lambda float -> float, mapping a ZZPhase angle parameter to its fidelity. These parameters will be used to return the optimal decomposition of each TK2 gate, taking noise into consideration.
+        Gate fidelities are passed as keyword arguments to perform noise-aware decompositions. We currently support `CX_fidelity`, `ZZMax_fidelity` and `ZZPhase_fidelity`. If provided, the `CX` and `ZZMax` fidelities must be given by a single floating point fidelity. The `ZZPhase` fidelity is given as a lambda float -> float, mapping a ZZPhase angle parameter to its fidelity, or by a single float. These parameters will be used to return the optimal decomposition of each TK2 gate, taking noise into consideration.
         
         Using the `allow_swaps=True` (default) option, qubits will be swapped when convenient to reduce the two-qubit gate count of the decomposed TK2.
         
@@ -309,6 +312,9 @@ class Transform:
         """
         Fixes all ZZPhase gate angles to [-1, 1) half turns.
         """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     @staticmethod
     def repeat(transform: Transform) -> Transform:
         """

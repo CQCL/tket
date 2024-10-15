@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "Converters.hpp"
 #include "tket/Circuit/Boxes.hpp"
+#include "tket/Clifford/UnitaryTableau.hpp"
 
 namespace tket {
 

@@ -25,7 +25,6 @@
 // is ignored, and the amortized constant time used for scaling instead
 
 #include <algorithm>
-#include <exception>
 #include <functional>
 #include <list>
 #include <map>
@@ -48,8 +47,6 @@
 #include "DAGDefs.hpp"
 #include "ResourceData.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
-#include "tket/Utils/Constants.hpp"
-#include "tket/Utils/GraphHeaders.hpp"
 #include "tket/Utils/Json.hpp"
 #include "tket/Utils/SequencedContainers.hpp"
 #include "tket/Utils/UnitID.hpp"

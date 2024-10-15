@@ -14,6 +14,7 @@
 
 #include "tket/Converters/UnitaryTableauBox.hpp"
 
+#include "tket/Circuit/Circuit.hpp"
 #include "tket/Ops/OpJsonFactory.hpp"
 
 namespace tket {

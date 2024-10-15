@@ -12,15 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <algorithm>
 #include <boost/graph/adjacency_list.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <cmath>
-#include <iostream>
 #include <vector>
 
 #include "tket/Architecture/Architecture.hpp"
-#include "tket/Graphs/ArticulationPoints.hpp"
 
 namespace tket {
 namespace graphs {

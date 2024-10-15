@@ -19,6 +19,12 @@
  * @brief Functions related to (possibly symbolic) phase values
  */
 
+#include <symengine/eval.h>
+#include <symengine/expression.h>
+#include <symengine/functions.h>
+#include <symengine/integer.h>
+#include <symengine/visitor.h>
+
 #include <map>
 #include <optional>
 #include <set>
@@ -26,7 +32,15 @@
 
 #include "Constants.hpp"
 #include "Json.hpp"
-#include "Symbols.hpp"
+
+/** Helper struct for use with std::visit */
+template <class... Ts>
+struct overloaded : Ts... {
+  using Ts::operator()...;
+};
+// explicit deduction guide (not needed as of C++20)
+template <class... Ts>
+overloaded(Ts...) -> overloaded<Ts...>;
 
 namespace tket {
 

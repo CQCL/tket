@@ -16,6 +16,7 @@
 
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/PauliGraph/PauliGraph.hpp"
 
 namespace tket {
 

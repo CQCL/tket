@@ -18,7 +18,6 @@
 
 #include "tket/Gate/Gate.hpp"
 #include "tket/OpType/OpType.hpp"
-#include "tket/Utils/GraphHeaders.hpp"
 #include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {

@@ -15,6 +15,7 @@
 #include "tket/Predicates/CompilerPass.hpp"
 
 #include <memory>
+#include <optional>
 #include <tklog/TketLog.hpp>
 
 #include "tket/Mapping/RoutingMethodJson.hpp"
@@ -393,7 +394,9 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
           content.at("fidelities").at("CX").get<std::optional<double>>();
       fid.ZZMax_fidelity =
           content.at("fidelities").at("ZZMax").get<std::optional<double>>();
-      fid.ZZPhase_fidelity = std::nullopt;
+      fid.ZZPhase_fidelity =
+          content.at("fidelities")
+              .value<std::optional<double>>("ZZPhase", std::nullopt);
       bool allow_swaps = content.at("allow_swaps").get<bool>();
       pp = DecomposeTK2(fid, allow_swaps);
     } else if (passname == "PeepholeOptimise2Q") {
@@ -536,7 +539,6 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       bool delay_measures = content.at("delay_measures").get<bool>();
       pp = gen_default_mapping_pass(arc, delay_measures);
     } else if (passname == "CXMappingPass") {
-      // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
       Placement::Ptr place = content.at("placement").get<Placement::Ptr>();
       std::vector<RoutingMethodPtr> config = content.at("routing_config");

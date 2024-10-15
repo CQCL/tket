@@ -17,14 +17,11 @@
 #include "CircuitsForTesting.hpp"
 #include "testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
-#include "tket/Circuit/CircUtils.hpp"
 #include "tket/Converters/PhasePoly.hpp"
-#include "tket/Predicates/CompilerPass.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/Rebase.hpp"
 #include "tket/Transformations/Transform.hpp"
-#include "tket/Utils/HelperFunctions.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {

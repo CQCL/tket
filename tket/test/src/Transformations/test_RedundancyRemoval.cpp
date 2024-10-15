@@ -14,11 +14,9 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
-#include <iostream>
 
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
-#include "tket/Transformations/PQPSquash.hpp"
 
 namespace tket {
 namespace test_RedundancyRemoval {

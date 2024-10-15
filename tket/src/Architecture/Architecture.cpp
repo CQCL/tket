@@ -16,11 +16,9 @@
 
 #include <boost/graph/biconnected_components.hpp>
 #include <tkassert/Assert.hpp>
-#include <unordered_set>
 #include <vector>
 
 #include "tket/Graphs/ArticulationPoints.hpp"
-#include "tket/Utils/Json.hpp"
 #include "tket/Utils/UnitID.hpp"
 
 namespace tket {

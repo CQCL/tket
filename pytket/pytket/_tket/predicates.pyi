@@ -1,3 +1,4 @@
+from typing import Any
 from __future__ import annotations
 import pytket._tket.architecture
 import pytket._tket.circuit
@@ -8,6 +9,9 @@ class CliffordCircuitPredicate(Predicate):
     """
     Predicate asserting that a circuit has only Clifford gates.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         """
         Constructor.
@@ -16,6 +20,9 @@ class CommutableMeasuresPredicate(Predicate):
     """
     Predicate asserting that all measurements can be delayed to the end of the circuit.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         """
         Constructor.
@@ -24,6 +31,9 @@ class CompilationUnit:
     """
     This class comprises a circuit and the predicates that the circuit is required to satisfy, for example to run on a backend.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     @typing.overload
     def __init__(self, circuit: pytket._tket.circuit.Circuit) -> None:
         """
@@ -61,6 +71,9 @@ class ConnectivityPredicate(Predicate):
     """
     Predicate asserting that a circuit satisfies a given connectivity graph. The graph is always considered to be undirected.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, architecture: pytket._tket.architecture.Architecture) -> None:
         """
         Construct from an :py:class:`Architecture`.
@@ -69,6 +82,9 @@ class DefaultRegisterPredicate(Predicate):
     """
     Predicate asserting that a circuit only uses the default quantum and classical registers.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         """
         Constructor.
@@ -77,6 +93,9 @@ class DirectednessPredicate(Predicate):
     """
     Predicate asserting that a circuit satisfies a given connectivity graph. The graph is always considered to be directed.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, architecture: pytket._tket.architecture.Architecture) -> None:
         """
         Construct from an :py:class:`Architecture`.
@@ -92,6 +111,9 @@ class GateSetPredicate(Predicate):
     
     Classically conditioned operations are permitted provided that the conditioned operation is of a permitted type.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, allowed_types: set[pytket._tket.circuit.OpType]) -> None:
         """
         Construct from a set of gate types.
@@ -103,6 +125,9 @@ class MaxNClRegPredicate(Predicate):
     """
     Predicate asserting that a circuit has at most n classical registers.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, arg0: int) -> None:
         """
         Constructor.
@@ -111,6 +136,9 @@ class MaxNQubitsPredicate(Predicate):
     """
     Predicate asserting that a circuit has at most n qubits.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, arg0: int) -> None:
         """
         Constructor.
@@ -119,6 +147,9 @@ class MaxTwoQubitGatesPredicate(Predicate):
     """
     Predicate asserting that a circuit has no gates with more than two input wires.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         """
         Constructor.
@@ -127,6 +158,9 @@ class NoBarriersPredicate(Predicate):
     """
     Predicate asserting that a circuit contains no Barrier operations.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         """
         Constructor.
@@ -135,6 +169,9 @@ class NoClassicalBitsPredicate(Predicate):
     """
     Predicate asserting that a circuit has no classical wires.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         """
         Constructor.
@@ -143,6 +180,9 @@ class NoClassicalControlPredicate(Predicate):
     """
     Predicate asserting that a circuit has no classical controls.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         """
         Constructor.
@@ -151,6 +191,9 @@ class NoFastFeedforwardPredicate(Predicate):
     """
     Predicate asserting that a circuit has no fast feedforward.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         """
         Constructor.
@@ -159,6 +202,9 @@ class NoMidMeasurePredicate(Predicate):
     """
     Predicate asserting that all measurements occur at the end of the circuit.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         """
         Constructor.
@@ -167,6 +213,9 @@ class NoSymbolsPredicate(Predicate):
     """
     Predicate asserting that no gates in the circuit have symbolic parameters.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         """
         Constructor.
@@ -175,6 +224,9 @@ class NoWireSwapsPredicate(Predicate):
     """
     Predicate asserting that a circuit has no wire swaps.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         """
         Constructor.
@@ -188,6 +240,9 @@ class NormalisedTK2Predicate(Predicate):
      - If all expressions are non symbolic, then it must hold `0.5 ≥ a ≥ b ≥ |c|`.
      - In the ordering (a, b, c), any symbolic expression must appear before non-symbolic ones. The remaining non-symbolic expressions must still be ordered in non-increasing order and must be in the interval [0, 1/2], with the exception of the last one that may be in [-1/2, 1/2].
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         """
         Constructor.
@@ -196,6 +251,9 @@ class PlacementPredicate(Predicate):
     """
     Predicate asserting that a circuit has been acted on by some Placement object.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     @typing.overload
     def __init__(self, architecture: pytket._tket.architecture.Architecture) -> None:
         """
@@ -210,6 +268,9 @@ class Predicate:
     """
     A predicate that may be satisfied by a circuit.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     @staticmethod
     def from_dict(arg0: dict) -> Predicate:
         """
@@ -237,6 +298,9 @@ class UserDefinedPredicate(Predicate):
     """
     User-defined predicate.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, check_function: typing.Callable[[pytket._tket.circuit.Circuit], bool]) -> None:
         """
         Construct from a user-defined function from :py:class:`Circuit` to `bool`.

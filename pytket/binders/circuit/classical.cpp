@@ -23,7 +23,6 @@
 #include "tket/Circuit/Conditional.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
 #include "tket/Ops/OpJsonFactory.hpp"
-#include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
@@ -123,12 +122,12 @@ void init_classical(py::module& m) {
       "A predicate defined by a range of values in binary encoding.")
       .def(
           py::init<unsigned, _tket_uint_t, _tket_uint_t>(),
-          "Construct from a bit width, an upper bound and a lower bound.",
-          py::arg("width"), py::arg("upper"), py::arg("lower"))
+          "Construct from a bit width, a lower bound and an upper bound.",
+          py::arg("width"), py::arg("lower"), py::arg("upper"))
       .def_property_readonly(
-          "upper", &RangePredicateOp::upper, "Inclusive upper bound.")
+          "lower", &RangePredicateOp::lower, "Inclusive lower bound.")
       .def_property_readonly(
-          "lower", &RangePredicateOp::lower, "Inclusive lower bound.");
+          "upper", &RangePredicateOp::upper, "Inclusive upper bound.");
   py::class_<
       ClassicalExpBox<py::tket_custom::LogicExpression>,
       std::shared_ptr<ClassicalExpBox<py::tket_custom::LogicExpression>>, Op>(

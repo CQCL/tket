@@ -14,7 +14,6 @@
 
 #include "tket/Utils/MatrixAnalysis.hpp"
 
-#include <fstream>
 #include <iostream>
 #include <limits>
 #include <map>
@@ -23,8 +22,6 @@
 #include <tkassert/Assert.hpp>
 #include <utility>
 #include <vector>
-
-#include "tket/Utils/EigenConfig.hpp"
 
 namespace tket {
 

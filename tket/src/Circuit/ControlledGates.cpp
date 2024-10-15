@@ -23,7 +23,6 @@
 #include "tket/Gate/GatePtr.hpp"
 #include "tket/Gate/Rotation.hpp"
 #include "tket/OpType/OpType.hpp"
-#include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/HelperFunctions.hpp"
 
 namespace tket {

@@ -17,7 +17,6 @@
 #include <sstream>
 
 #include "tket/Ops/OpPtr.hpp"
-#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

@@ -1,3 +1,4 @@
+from typing import Any
 """
 The tailoring module provides access to noise tailoring tools.
 """
@@ -9,6 +10,9 @@ class FrameRandomisation:
     """
     The base FrameRandomisation class. FrameRandomisation finds subcircuits (cycles) of a given circuit comprised of gates with OpType only from a specified set of OpType, and wires gates into the boundary (frame) of these cycles. Input frame gates are sampled from another set of OpType, and output frame gates deduced such that the circuit unitary doesn't change, achieved by computing the action of cycle gates on frame gates.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self, arg0: set[pytket._tket.circuit.OpType], arg1: set[pytket._tket.circuit.OpType], arg2: dict[pytket._tket.circuit.OpType, dict[tuple, tuple]]) -> None:
         """
         Constructor for FrameRandomisation.
@@ -38,6 +42,9 @@ class PauliFrameRandomisation:
     """
     The PauliFrameRandomisation class. PauliFrameRandomisation finds subcircuits (cycles) of a given circuit comprised of gates with OpType::H, OpType::CX and OpType::S, and wires gates into the boundary (frame) of these cycles. Input frame gates are sampled from another set of OpType comprised of the Pauli gates, and output frame gates deduced such that the circuit unitary doesn't change, achieved by computing the action of cycle gates on frame gates.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         """
         Constructor for PauliFrameRandomisation.
@@ -63,6 +70,9 @@ class UniversalFrameRandomisation:
     """
     The UniversalFrameRandomisation class. UniversalFrameRandomisation finds subcircuits (cycles) of a given circuit comprised of gates with OpType::H, OpType::CX, and OpType::Rz, and wires gates into the boundary (frame) of these cycles. Input frame gates are sampled from another set of OpType comprised of the Pauli gates, and output frame gates deduced such that the circuit unitary doesn't change, achieved by computing the action of cycle gates on frame gates. Some gates with OpType::Rz may be substituted for their dagger to achieve this.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     def __init__(self) -> None:
         """
         Constructor for UniversalFrameRandomisation.

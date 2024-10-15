@@ -30,7 +30,7 @@ jobs:
       run: |
         conan profile detect
         DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/macos-14
+        PROFILE_PATH=./conan-profiles/macos-15
         diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
         cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
@@ -57,7 +57,7 @@ jobs:
 
   compile-and-compare:
     name: Compile and compare
-    runs-on: macos-14
+    runs-on: macos-15
     needs: build_wheels
 
     steps:
@@ -100,7 +100,7 @@ jobs:
 
       - name: Post to a Slack channel
         id: slack
-        uses: slackapi/slack-github-action@v1.26.0
+        uses: slackapi/slack-github-action@v1.27.0
         with:
           channel-id: 'G01CP0YFFA7'
           slack-message: '${{ env.RETURN_TEST }} Release tag: ${{ github.event.release.tag_name }}.'

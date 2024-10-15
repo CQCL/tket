@@ -18,11 +18,9 @@
 
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
-#include "tket/Gate/Rotation.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Utils/Expression.hpp"
-#include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 

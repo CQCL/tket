@@ -17,7 +17,6 @@
 #include <algorithm>
 #include <cstddef>
 #include <fstream>
-#include <numeric>
 #include <optional>
 #include <set>
 #include <string>
@@ -32,7 +31,6 @@
 #include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeFunctions.hpp"
 #include "tket/Utils/Expression.hpp"
-#include "tket/Utils/GraphHeaders.hpp"
 #include "tket/Utils/HelperFunctions.hpp"
 
 namespace tket {

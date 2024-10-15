@@ -14,8 +14,9 @@
 
 #pragma once
 
-#include <boost/graph/adjacency_list.hpp>
+#include <stdexcept>
 
+#include "tket/Utils/GraphHeaders.hpp"
 #include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {

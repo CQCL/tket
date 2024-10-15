@@ -932,6 +932,17 @@ def test_circuit_display(circuit: Circuit) -> None:
 
 @given(st.circuits())
 @settings(deadline=None)
+def test_circuit_display_multiple(circuit: Circuit) -> None:
+    html_str_circ = render_circuit_as_html([circuit, circuit], jupyter=False)
+    html_str_dict = render_circuit_as_html(
+        [circuit.to_dict(), circuit.to_dict()], jupyter=False
+    )
+    assert isinstance(html_str_circ, str)
+    assert isinstance(html_str_dict, str)
+
+
+@given(st.circuits())
+@settings(deadline=None)
 def test_circuit_display_with_options(circuit: Circuit) -> None:
     circuit_renderer = get_circuit_renderer()
     circuit_renderer.set_render_options(zx_style=False)

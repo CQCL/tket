@@ -1,4 +1,5 @@
 from numpy.typing import NDArray
+from typing import Any
 from __future__ import annotations
 import numpy
 import pytket._tket.circuit
@@ -10,6 +11,9 @@ class UnitaryRevTableau:
     """
     Equivalent to the UnitaryTableau, except that the rows indicate the action at the input corresponding to either an X or a Z on a single output.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     @typing.overload
     def __init__(self, nqb: int) -> None:
         """
@@ -81,6 +85,9 @@ class UnitaryTableau:
     """
     Stabilizer tableau for a unitary in the style of Aaronson&Gottesman "Improved Simulation of Stabilizer Circuits": rows indicate the action at the output corresponding to either an X or a Z on a single input.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     @typing.overload
     def __init__(self, nqb: int) -> None:
         """
@@ -152,6 +159,9 @@ class UnitaryTableauBox(pytket._tket.circuit.Op):
     """
     A Clifford unitary specified by its actions on Paulis.
     """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
     @typing.overload
     def __init__(self, tab: UnitaryTableau) -> None:
         """

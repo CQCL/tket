@@ -82,13 +82,13 @@ jobs:
     name: Check C++ code formatting
     needs: check_changes
     if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
-    runs-on: 'macos-12'
+    runs-on: 'macos-15'
     steps:
       - uses: actions/checkout@v4
       - name: Check C++ code formatting
         run: |
           brew update
-          brew install clang-format@18
+          brew install clang-format@19
           git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file -i
           git diff --exit-code
 
@@ -98,7 +98,7 @@ jobs:
     if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
     strategy:
       matrix:
-        os: ['ubuntu-24.04', 'macos-12', 'macos-14']
+        os: ['ubuntu-24.04', 'macos-13', 'macos-15']
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
@@ -261,6 +261,10 @@ jobs:
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+    - name: Install pytket requirements
+      run: |
+        conan create recipes/pybind11
+        conan create recipes/pybind11_json/all --version 0.2.14
     - name: check that version is consistent
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
@@ -338,7 +342,7 @@ jobs:
     if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.pytket_or_workflow_changed == 'true'
     strategy:
       matrix:
-        os: ['macos-12', 'macos-14']
+        os: ['macos-13', 'macos-15']
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
@@ -359,7 +363,7 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: tket-dynamic-macos-12
+        key: tket-dynamic-macos
     - name: further ccache config
       run: |
         ccache --set-config base_dir=${HOME}
@@ -371,6 +375,10 @@ jobs:
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+    - name: Install pytket requirements
+      run: |
+        conan create recipes/pybind11
+        conan create recipes/pybind11_json/all --version 0.2.14
     - name: check that version is consistent
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
@@ -408,7 +416,7 @@ jobs:
         python -m pip install -r requirements.txt
         python -m pytest --ignore=simulator/
     - name: Check type stubs are up-to-date and run mypy
-      if: matrix.os == 'macos-14' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
+      if: matrix.os == 'macos-15' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
       run: |
         python -m pip install -U mypy pybind11-stubgen
         cd pytket
@@ -495,6 +503,10 @@ jobs:
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+    - name: Install pytket requirements
+      run: |
+        conan create recipes/pybind11
+        conan create recipes/pybind11_json/all --version 0.2.14
     - name: check that version is consistent
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}

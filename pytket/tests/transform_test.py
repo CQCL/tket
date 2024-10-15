@@ -209,6 +209,16 @@ def test_DecomposeTK2() -> None:
     assert c.n_gates_of_type(OpType.CX) == 0
     assert c.n_gates_of_type(OpType.ZZMax) == 3
 
+    c = Circuit(2).add_gate(OpType.TK2, [0.5, 0.5, 0.5], [0, 1])
+    Transform.DecomposeTK2(False, ZZPhase_fidelity=0.8).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 0
+    assert c.n_gates_of_type(OpType.ZZPhase) == 3
+
+    c = Circuit(2).add_gate(OpType.TK2, [0.5, 0.5, 0.5], [0, 1])
+    Transform.DecomposeTK2(False, ZZPhase_fidelity=lambda _: 0.8).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 0
+    assert c.n_gates_of_type(OpType.ZZPhase) == 3
+
 
 def test_fidelity_KAK() -> None:
     c = get_KAK_test_circuit()

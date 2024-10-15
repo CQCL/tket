@@ -38,9 +38,9 @@ copyright = "2024 Quantinuum"
 author = "Quantinuum"
 
 # The short X.Y version
-version = "1.31"
+version = "1.33"
 # The full version, including alpha/beta/rc tags
-release = "1.31.0"
+release = "1.33.1"
 
 
 # -- General configuration ---------------------------------------------------
@@ -95,6 +95,9 @@ html_static_path = ["./quantinuum-sphinx/_static/", "_static/"]
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
+
+
+exclude_patterns = ["build/jupyter_execute/*", ".venv/*"]
 
 html_theme_options = {}
 

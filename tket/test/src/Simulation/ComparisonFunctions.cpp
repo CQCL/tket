@@ -17,6 +17,8 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "tket/Utils/MatrixAnalysis.hpp"
+
 // NOTE: this is used by both tket-proptests and tket-tests.
 // Since it's test-only code, it is NOT placed in tket.
 // However, we don't want to make proptests depend on tket-tests,
