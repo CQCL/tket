@@ -151,6 +151,11 @@ ACPairNode::ACPairNode(
 }
 
 unsigned ACPairNode::tqe_cost() const {
+  // for a node with n A pairs and m C pairs
+  // it takes (n-1)/2 TQE gates to convert n-1 A
+  // pairs to C pairs. It then takes n-1+m TQE gates
+  // to convert all the C pairs to I pairs.
+  // total TQEs required is 1.5n - 1.5 + m
   return static_cast<unsigned>(
       1.5 * (n_anti_commute_entries_ - 1) + n_commute_entries_);
 }
