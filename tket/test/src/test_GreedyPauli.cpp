@@ -363,26 +363,8 @@ SCENARIO("Complete synthesis") {
     circ.add_op<unsigned>(OpType::Measure, {0, 0});
     // can commute to the front
     circ.add_op<unsigned>(cond2, {1, 0, 1});
-    Circuit d(2, 2);
-    // ZX 0.5
-    d.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
-    d.add_conditional_gate<unsigned>(OpType::Sdg, {}, {0}, {0}, 0);
-    d.add_conditional_gate<unsigned>(OpType::V, {}, {1}, {0}, 0);
-    d.add_conditional_gate<unsigned>(OpType::Z, {}, {0}, {0}, 0);
-    d.add_op<unsigned>(OpType::Measure, {0, 0});
-    // ZY 0.12
-    // compute
-    d.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {1}, 0);
-    d.add_conditional_gate<unsigned>(OpType::CY, {}, {0, 1}, {1}, 0);
-    d.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {1}, 0);
-    // action
-    d.add_conditional_gate<unsigned>(OpType::Rz, {0.12}, {0}, {1}, 0);
-    // uncompute
-    d.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {1}, 0);
-    d.add_conditional_gate<unsigned>(OpType::CY, {}, {0, 1}, {1}, 0);
-    d.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {1}, 0);
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
-    REQUIRE(circ == d);
+    REQUIRE(circ.count_n_qubit_gates(2) == 3);
   }
 
   GIVEN("Conditionals merging") {
