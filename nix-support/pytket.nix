@@ -1,13 +1,6 @@
+{ package_version }:
 self: super:
 let
-  config_contents = builtins.readFile ../pytket/docs/conf.py;
-  versions =
-    builtins.match ''.*release *= *["']([^"']+)["'].*'' config_contents;
-  version = if builtins.length versions > 0 then
-    builtins.elemAt versions 0
-  else
-    builtins.trace "Warning: Unable to find version. Defaulting to 0.0.0" "0.0.0";
-
   jsonschema-4180 = super.python3Packages.jsonschema.overrideAttrs (_: rec {
     version = "4.18.0";
     src = super.fetchPypi {
@@ -36,7 +29,7 @@ in {
   };
   pytket = super.python3.pkgs.buildPythonPackage {
     pname = "pytket";
-    inherit version;
+    version = package_version;
     propagatedBuildInputs = with super.python3.pkgs; [
       self.binders
       super.lark
@@ -59,13 +52,13 @@ in {
       # The usual build depends on setuptools-scm to extract the version.
       # We have already extracted the version within nix, so we can simply
       # inject it into setup.py.
-      cat ${../pytket/setup.py} | sed 's/setup(/setup(version="${version}",/' > setup.py;
+      cat ${../pytket/setup.py} | sed 's/setup(/setup(version="${package_version}",/' > setup.py;
 
       mkdir test_root;
       cp -r ${../pytket/tests} test_root/tests;
       # hardcode the version extracted from docs/conf.py.
       chmod 755 pytket
-      echo '__version__ = "${version}"' > pytket/_version.py;
+      echo '__version__ = "${package_version}"' > pytket/_version.py;
     '';
     preBuild = ''
       export USE_NIX=1;
