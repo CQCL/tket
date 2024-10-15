@@ -1,6 +1,6 @@
 TKET FAQs
 ~~~~~~~~~
-These are frequently asked questions that relate to the use of pytket. For installation FAQs see the `installation troubleshooting <https://tket.quantinuum.com/api-docs/install.html>`_ page. 
+These are frequently asked questions that relate to the use of pytket. For installation FAQs see the `installation troubleshooting <https://docs.quantinuum.com/tket/api-docs/install.html>`_ page. 
 
 Rebases
 -------
@@ -14,7 +14,7 @@ There are two types of rebase
 2) :py:class:`RebaseCustom` - This can be used instead of `auto_rebase_pass` in cases where there is no hardcoded conversion available. 
 In this case the user will have to specify how to implement TKET's {TK1, CX} or {TK1, TK2} operations in terms of the target :py:class:`OpType` s. 
 
-See the manual section on `rebases <https://tket.quantinuum.com/user-guide/manual/manual_compiler.html#rebases>`_ for examples.
+See the manual section on `rebases <https://docs.quantinuum.com/tket/user-guide/manual/manual_compiler.html#rebases>`_ for examples.
 
 Unitary Synthesis
 -----------------
@@ -22,7 +22,7 @@ Q: Can TKET generate a circuit to implement a unitary operator of my choice?
 
 A: Yes but only up to three qubits at present. This can be done with :py:class:`Unitary3qBox`.
 
-See the manual section on `unitary synthesis <https://tket.quantinuum.com/user-guide/manual/manual_circuit.html#boxes-for-unitary-synthesis>`_ .
+See the manual section on `unitary synthesis <https://docs.quantinuum.com/tket/user-guide/manual/manual_circuit.html#boxes-for-unitary-synthesis>`_ .
 
 
 Qiskit to TKET Conversion
@@ -30,7 +30,7 @@ Qiskit to TKET Conversion
 
 Q: How can I convert my qiskit :py:class:`QuantumCircuit` to a pytket :py:class:`Circuit`?
 
-A: This can be achieved using the :py:meth:`qiskit_to_tk` function from the `pytket-qiskit extension <https://tket.quantinuum.com/extensions/pytket-qiskit/>`_
+A: This can be achieved using the :py:meth:`qiskit_to_tk` function from the `pytket-qiskit extension <https://docs.quantinuum.com/tket/extensions/pytket-qiskit/>`_
 
 ::
 
