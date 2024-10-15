@@ -628,7 +628,7 @@ Circuit greedy_pauli_graph_synthesis(
  * @param max_lookahead
  * @param max_tqe_candidates
  * @param seed
- *  @param allow_zzphase
+ * @param allow_zzphase
  * @return Circuit
  */
 Circuit greedy_pauli_set_synthesis(

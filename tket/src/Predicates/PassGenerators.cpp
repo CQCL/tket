@@ -1013,9 +1013,12 @@ PassPtr gen_synthesise_pauli_graph(
   return std::make_shared<SequencePass>(seq);
 }
 
-PassPtr gen_greedy_pauli_simp(double discount_rate, double depth_weight) {
-  Transform t =
-      Transforms::greedy_pauli_optimisation(discount_rate, depth_weight);
+PassPtr gen_greedy_pauli_simp(
+    double discount_rate, double depth_weight, unsigned max_lookahead,
+    unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase) {
+  Transform t = Transforms::greedy_pauli_optimisation(
+      discount_rate, depth_weight, max_lookahead, max_tqe_candidates, seed,
+      allow_zzphase);
   OpTypeSet ins = {
       OpType::Z,
       OpType::X,
@@ -1060,6 +1063,10 @@ PassPtr gen_greedy_pauli_simp(double discount_rate, double depth_weight) {
   j["name"] = "GreedyPauliSimp";
   j["discount_rate"] = discount_rate;
   j["depth_weight"] = depth_weight;
+  j["max_lookahead"] = max_lookahead;
+  j["max_tqe_candidates"] = max_tqe_candidates;
+  j["seed"] = seed;
+  j["allow_zzphase"] = allow_zzphase;
 
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
