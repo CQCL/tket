@@ -300,7 +300,7 @@ class QuipperTransformer(Transformer):
         )
 
     def comment(self, t: List) -> Comment:
-        wire_comments = t[2] if len(t) > 2 else None
+        wire_comments = t[2] if len(t) > 2 else []
         return Comment(
             comment=t[0], inverted=len(t[1].children) > 0, wire_comments=wire_comments
         )

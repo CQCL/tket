@@ -82,7 +82,7 @@ jobs:
     name: Check C++ code formatting
     needs: check_changes
     if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
-    runs-on: 'macos-14'
+    runs-on: 'macos-15'
     steps:
       - uses: actions/checkout@v4
       - name: Check C++ code formatting
@@ -98,7 +98,7 @@ jobs:
     if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
     strategy:
       matrix:
-        os: ['ubuntu-24.04', 'macos-12', 'macos-14']
+        os: ['ubuntu-24.04', 'macos-13', 'macos-15']
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
@@ -286,7 +286,7 @@ jobs:
       if: github.event_name == 'schedule'
       uses: actions/setup-python@v5
       with:
-        python-version: '3.12'
+        python-version: '3.13'
     - name: Build pytket
       run: |
         cd pytket
@@ -312,18 +312,17 @@ jobs:
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       timeout-minutes: 20
       run: |
-        pip install poetry==1.6.1
+        pip install poetry>=1.8.1
+        poetry config virtualenvs.create false
         cd pytket/docs
         poetry install
-        cd ../../
-        poetry run -C pytket/docs ./.github/workflows/build-docs
-        
+        bash ./build-docs.sh
     - name: Upload artifact
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/upload-artifact@v4
       with:
         name: pytket_docs
-        path: pytket/docs/build/html/
+        path: pytket/docs/build/
     - name: Upload pytket coverage artefact
       if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
       uses: actions/upload-artifact@v4
@@ -342,7 +341,7 @@ jobs:
     if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.pytket_or_workflow_changed == 'true'
     strategy:
       matrix:
-        os: ['macos-12', 'macos-14']
+        os: ['macos-13', 'macos-15']
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
@@ -363,7 +362,7 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: tket-dynamic-macos-12
+        key: tket-dynamic-macos
     - name: further ccache config
       run: |
         ccache --set-config base_dir=${HOME}
@@ -400,7 +399,7 @@ jobs:
       if: github.event_name == 'schedule'
       uses: actions/setup-python@v5
       with:
-        python-version: '3.12'
+        python-version: '3.13'
     - name: Build pytket
       run: |
         cd pytket
@@ -416,7 +415,7 @@ jobs:
         python -m pip install -r requirements.txt
         python -m pytest --ignore=simulator/
     - name: Check type stubs are up-to-date and run mypy
-      if: matrix.os == 'macos-14' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
+      if: matrix.os == 'macos-15' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
       run: |
         python -m pip install -U mypy pybind11-stubgen
         cd pytket
@@ -528,7 +527,7 @@ jobs:
       if: github.event_name == 'schedule'
       uses: actions/setup-python@v5
       with:
-        python-version: '3.12'
+        python-version: '3.13'
     - name: Build pytket
       run: |
         cd pytket
