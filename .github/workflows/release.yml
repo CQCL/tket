@@ -230,8 +230,8 @@ jobs:
         path: tket
     - name: Set up Python 3.${{ matrix.python3-version }}
       uses: actions/setup-python@v5
-        with:
-          python-version: "3.${{ matrix.python3-version }}"
+      with:
+        python-version: "3.${{ matrix.python3-version }}"
     - name: Download wheel
       uses: actions/download-artifact@v4
       with:
