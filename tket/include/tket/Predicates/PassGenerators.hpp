@@ -350,9 +350,16 @@ PassPtr gen_special_UCC_synthesis(
  *
  * @param discount_rate
  * @param depth_weight
+ * @param max_lookahead
+ * @param max_tqe_candidates
+ * @param seed
+ * @param allow_zzphase
  * @return PassPtr
  */
-PassPtr gen_greedy_pauli_simp(double discount_rate, double depth_weight);
+PassPtr gen_greedy_pauli_simp(
+    double discount_rate = 0.7, double depth_weight = 0.3,
+    unsigned max_lookahead = 500, unsigned max_tqe_candidates = 500,
+    unsigned seed = 0, bool allow_zzphase = false);
 
 /**
  * Generate a pass to simplify the circuit where it acts on known basis states.

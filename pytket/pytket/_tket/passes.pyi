@@ -440,12 +440,16 @@ def GlobalisePhasedX(squash: bool = True) -> BasePass:
     
     It is not recommended to use this pass with symbolic expressions, as in certain cases a blow-up in symbolic expression sizes may occur.
     """
-def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3) -> BasePass:
+def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3, max_lookahead: int = 500, max_tqe_candidates: int = 500, seed: int = 0, allow_zzphase: bool = False) -> BasePass:
     """
     Construct a pass that converts a circuit into a graph of Pauli gadgets to account for commutation and phase folding, and resynthesises them using a greedy algorithm adapted from arxiv.org/abs/2103.08602. The method for synthesising the final Clifford operator is adapted from arxiv.org/abs/2305.10966.
     
     :param discount_rate: Rate used to discount the cost impact from gadgets that are further away. Default to 0.7.
     :param depth_weight:  Degree of depth optimisation. Default to 0.3.
+    :param max_tqe_candidates:  Maximum number of 2-qubit Clifford gate candidates to evaluate at each step. Default to 500.
+    :param max_lookahead:  Maximum lookahead when evaluating each Clifford gate candidate. Default to 500.
+    :param seed:  Unsigned integer seed used for sampling candidates and tie breaking. Default to 0.
+    :param allow_zzphase: If set to True, allows the algorithm to implement 2-qubit rotations using ZZPhase gates when deemed optimal. Defaults to False.
     :return: a pass to perform the simplification
     """
 def GuidedPauliSimp(strat: pytket._tket.transform.PauliSynthStrat = pytket._tket.transform.PauliSynthStrat.Sets, cx_config: pytket._tket.circuit.CXConfigType = pytket._tket.circuit.CXConfigType.Snake) -> BasePass:

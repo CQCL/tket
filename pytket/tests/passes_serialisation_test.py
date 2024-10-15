@@ -290,7 +290,15 @@ TWO_WAY_PARAM_PASSES = {
         {"name": "RoundAngles", "n": 6, "only_zeros": False}
     ),
     "GreedyPauliSimp": standard_pass_dict(
-        {"name": "GreedyPauliSimp", "discount_rate": 0.4, "depth_weight": 0.5}
+        {
+            "name": "GreedyPauliSimp",
+            "discount_rate": 0.4,
+            "depth_weight": 0.5,
+            "max_lookahead": 100,
+            "max_tqe_candidates": 100,
+            "seed": 2,
+            "allow_zzphase": True,
+        }
     ),
     # lists must be sorted by OpType value
     "AutoSquash": standard_pass_dict(
