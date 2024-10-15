@@ -5,8 +5,8 @@ pytket
 `numerous providers <https://tket.quantinuum.com/api-docs/extensions>`_, allowing the
 tket tools to be used in conjunction with projects on their platforms.
 
-``pytket`` is available for Python 3.10, 3.11 and 3.12, on Linux, MacOS and
-Windows. To install, run
+``pytket`` is available for Python 3.10, 3.11, 3.12 and 3.13, on Linux, MacOS
+and Windows. To install, run
 
 ::
 
