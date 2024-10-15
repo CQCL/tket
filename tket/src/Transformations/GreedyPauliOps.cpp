@@ -67,7 +67,9 @@ SingleNode::SingleNode(std::vector<Pauli> string, bool sign)
 unsigned SingleNode::tqe_cost() const { return weight_ - 1; }
 
 int SingleNode::tqe_cost_increase(const TQE& tqe) const {
-  auto [g, a, b] = tqe;
+  const TQEType& g = tqe.type;
+  const unsigned& a = tqe.a;
+  const unsigned& b = tqe.b;
   Pauli p0 = string_[a];
   Pauli p1 = string_[b];
   auto [new_p0, new_p1, sign] = TQE_PAULI_MAP.at({g, p0, p1});
@@ -76,7 +78,9 @@ int SingleNode::tqe_cost_increase(const TQE& tqe) const {
 }
 
 void SingleNode::update(const TQE& tqe) {
-  auto [g, a, b] = tqe;
+  const TQEType& g = tqe.type;
+  const unsigned& a = tqe.a;
+  const unsigned& b = tqe.b;
   Pauli p0 = string_[a];
   Pauli p1 = string_[b];
   auto [new_p0, new_p1, sign] = TQE_PAULI_MAP.at({g, p0, p1});
@@ -152,7 +156,9 @@ unsigned ACPairNode::tqe_cost() const {
 }
 
 int ACPairNode::tqe_cost_increase(const TQE& tqe) const {
-  auto [g, a, b] = tqe;
+  const TQEType& g = tqe.type;
+  const unsigned& a = tqe.a;
+  const unsigned& b = tqe.b;
   Pauli z_p0 = z_string_[a];
   Pauli z_p1 = z_string_[b];
   Pauli x_p0 = x_string_[a];
@@ -175,7 +181,9 @@ int ACPairNode::tqe_cost_increase(const TQE& tqe) const {
 }
 
 void ACPairNode::update(const TQE& tqe) {
-  auto [g, a, b] = tqe;
+  const TQEType& g = tqe.type;
+  const unsigned& a = tqe.a;
+  const unsigned& b = tqe.b;
   Pauli z_p0 = z_string_[a];
   Pauli z_p1 = z_string_[b];
   Pauli x_p0 = x_string_[a];
@@ -310,7 +318,9 @@ unsigned ConditionalBlock::tqe_cost() const { return total_weight_ - 1; }
 int ConditionalBlock::tqe_cost_increase(const TQE& tqe) const {
   int total_increase = 0;
   for (const std::tuple<std::vector<Pauli>, bool, Expr>& rot : rotations_) {
-    auto [g, a, b] = tqe;
+    const TQEType& g = tqe.type;
+    const unsigned& a = tqe.a;
+    const unsigned& b = tqe.b;
     Pauli p0 = std::get<0>(rot)[a];
     Pauli p1 = std::get<0>(rot)[b];
     auto [new_p0, new_p1, sign] = TQE_PAULI_MAP.at({g, p0, p1});
@@ -322,7 +332,9 @@ int ConditionalBlock::tqe_cost_increase(const TQE& tqe) const {
 
 void ConditionalBlock::update(const TQE& tqe) {
   for (std::tuple<std::vector<Pauli>, bool, Expr>& rot : rotations_) {
-    auto [g, a, b] = tqe;
+    const TQEType& g = tqe.type;
+    const unsigned& a = tqe.a;
+    const unsigned& b = tqe.b;
     Pauli p0 = std::get<0>(rot)[a];
     Pauli p1 = std::get<0>(rot)[b];
     auto [new_p0, new_p1, sign] = TQE_PAULI_MAP.at({g, p0, p1});

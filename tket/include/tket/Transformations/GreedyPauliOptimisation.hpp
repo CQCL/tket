@@ -82,10 +82,31 @@ enum class BitType : unsigned {
 };
 
 /**
- * @brief Type for 2-qubit entangled Clifford gates
+ * @brief Struct for 2-qubit entangled Clifford gates
  *
  */
-using TQE = std::tuple<TQEType, unsigned, unsigned>;
+struct TQE {
+  TQEType type;
+  unsigned a;
+  unsigned b;
+  bool operator<(const TQE& other) const {
+    return std::tie(type, a, b) < std::tie(other.type, other.a, other.b);
+  }
+};
+
+/**
+ * @brief Struct for 2-qubit rotation gates
+ *
+ */
+struct Rotation2Q {
+  Pauli p_a;
+  Pauli p_b;
+  unsigned a;
+  unsigned b;
+  Expr angle;
+  unsigned index;
+  bool operator<(const Rotation2Q& other) const { return index < other.index; }
+};
 
 /**
  * @brief Commutation information of a node specified by a list of
@@ -167,7 +188,7 @@ class SingleNode : public PauliNode {
 
   bool sign() const { return sign_; };
 
-  std::vector<Pauli> string() const { return string_; };
+  const std::vector<Pauli>& string() const { return string_; };
 
  protected:
   std::vector<Pauli> string_;
@@ -248,9 +269,9 @@ class ACPairNode : public PauliNode {
 
   bool x_sign() const { return x_sign_; };
 
-  std::vector<Pauli> z_string() const { return z_string_; };
+  const std::vector<Pauli>& z_string() const { return z_string_; };
 
-  std::vector<Pauli> x_string() const { return x_string_; };
+  const std::vector<Pauli>& x_string() const { return x_string_; };
 
  protected:
   std::vector<Pauli> z_string_;
@@ -589,12 +610,13 @@ gpg_from_unordered_set(const std::vector<SymPauliTensor>& unordered_set);
  * @param max_lookahead
  * @param max_tqe_candidates
  * @param seed
+ * @param allow_zzphase
  * @return Circuit
  */
 Circuit greedy_pauli_graph_synthesis(
     const Circuit& circ, double discount_rate = 0.7, double depth_weight = 0.3,
     unsigned max_lookahead = 500, unsigned max_tqe_candidates = 500,
-    unsigned seed = 0);
+    unsigned seed = 0, bool allow_zzphase = false);
 
 /**
  * @brief Synthesise a set of unordered Pauli exponentials by applying Clifford
@@ -606,19 +628,20 @@ Circuit greedy_pauli_graph_synthesis(
  * @param max_lookahead
  * @param max_tqe_candidates
  * @param seed
+ *  @param allow_zzphase
  * @return Circuit
  */
 Circuit greedy_pauli_set_synthesis(
     const std::vector<SymPauliTensor>& unordered_set, double depth_weight = 0.3,
     unsigned max_lookahead = 500, unsigned max_tqe_candidates = 500,
-    unsigned seed = 0);
+    unsigned seed = 0, bool allow_zzphase = false);
 
 }  // namespace GreedyPauliSimp
 
 Transform greedy_pauli_optimisation(
     double discount_rate = 0.7, double depth_weight = 0.3,
     unsigned max_lookahead = 500, unsigned max_tqe_candidates = 500,
-    unsigned seed = 0);
+    unsigned seed = 0, bool allow_zzphase = false);
 
 }  // namespace Transforms
 

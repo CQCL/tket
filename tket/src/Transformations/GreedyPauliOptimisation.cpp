@@ -28,15 +28,13 @@ namespace Transforms {
 
 namespace GreedyPauliSimp {
 
-template <typename Container>
-static typename Container::const_iterator sample_random_element(
-    const Container& container, unsigned seed) {
+static TQE sample_random_tqe(const std::vector<TQE>& vec, unsigned seed) {
   std::mt19937 rng(seed);
-  std::uniform_int_distribution<size_t> dist(0, container.size() - 1);
+  std::uniform_int_distribution<size_t> dist(0, vec.size() - 1);
   size_t random_index = dist(rng);
-  auto it = container.begin();
+  auto it = vec.begin();
   std::advance(it, random_index);
-  return it;
+  return *it;
 }
 
 static std::vector<TQE> sample_tqes(
@@ -57,8 +55,34 @@ static std::vector<TQE> sample_tqes(
   return vec;
 }
 
+static void apply_rot2q_to_circ(const Rotation2Q& rot, Circuit& circ) {
+  if (rot.p_a == Pauli::X) {
+    circ.add_op<unsigned>(OpType::H, {rot.a});
+  } else if (rot.p_a == Pauli::Y) {
+    circ.add_op<unsigned>(OpType::V, {rot.a});
+  }
+  if (rot.p_b == Pauli::X) {
+    circ.add_op<unsigned>(OpType::H, {rot.b});
+  } else if (rot.p_b == Pauli::Y) {
+    circ.add_op<unsigned>(OpType::V, {rot.b});
+  }
+  circ.add_op<unsigned>(OpType::ZZPhase, rot.angle, {rot.a, rot.b});
+  if (rot.p_a == Pauli::X) {
+    circ.add_op<unsigned>(OpType::H, {rot.a});
+  } else if (rot.p_a == Pauli::Y) {
+    circ.add_op<unsigned>(OpType::Vdg, {rot.a});
+  }
+  if (rot.p_b == Pauli::X) {
+    circ.add_op<unsigned>(OpType::H, {rot.b});
+  } else if (rot.p_b == Pauli::Y) {
+    circ.add_op<unsigned>(OpType::Vdg, {rot.b});
+  }
+}
+
 static void apply_tqe_to_circ(const TQE& tqe, Circuit& circ) {
-  auto [gate_type, a, b] = tqe;
+  const TQEType& gate_type = tqe.type;
+  const unsigned& a = tqe.a;
+  const unsigned& b = tqe.b;
   switch (gate_type) {
     case TQEType::XX:
       circ.add_op<unsigned>(OpType::H, {a});
@@ -102,7 +126,7 @@ static void apply_tqe_to_circ(const TQE& tqe, Circuit& circ) {
 static double default_tableau_tqe_cost(
     const std::vector<PauliNode_ptr>& rows,
     const std::vector<unsigned>& remaining_indices, const TQE& tqe,
-    unsigned max_lookahead) {
+    const unsigned& max_lookahead) {
   double cost = 0;
   unsigned count = 0;
   for (const unsigned& index : remaining_indices) {
@@ -139,17 +163,31 @@ static double default_pauliexp_tqe_cost(
   return exp_cost + tab_cost;
 }
 
-// given a map from TQE to a vector of costs, select the one with the minimum
-// weighted sum of minmax-normalised costs
-static TQE minmax_selection(
+// given a map from TQE to a vector of costs, and an optional map
+// specifying the costs for implementing some 2q rotations directly
+// as ZZPhase gates. Select the TQEs and 2q rotations with the minimum
+// weighted sum of minmax-normalised costs.
+static std::pair<std::vector<TQE>, std::vector<Rotation2Q>> minmax_selection(
     const std::map<TQE, std::vector<double>>& tqe_candidates_cost,
-    const std::vector<double>& weights, unsigned seed) {
+    const std::map<Rotation2Q, std::vector<double>>& rot2q_gates_cost,
+    const std::vector<double>& weights) {
   TKET_ASSERT(tqe_candidates_cost.size() > 0);
   size_t n_costs = tqe_candidates_cost.begin()->second.size();
   TKET_ASSERT(n_costs == weights.size());
   // for each cost type, store its min and max
   std::vector<double> mins = tqe_candidates_cost.begin()->second;
   std::vector<double> maxs = tqe_candidates_cost.begin()->second;
+  for (const auto& pair : tqe_candidates_cost) {
+    TKET_ASSERT(pair.second.size() == n_costs);
+    for (unsigned cost_index = 0; cost_index < n_costs; cost_index++) {
+      if (pair.second[cost_index] < mins[cost_index]) {
+        mins[cost_index] = pair.second[cost_index];
+      }
+      if (pair.second[cost_index] > maxs[cost_index]) {
+        maxs[cost_index] = pair.second[cost_index];
+      }
+    }
+  }
   for (const auto& pair : tqe_candidates_cost) {
     TKET_ASSERT(pair.second.size() == n_costs);
     for (unsigned cost_index = 0; cost_index < n_costs; cost_index++) {
@@ -170,8 +208,19 @@ static TQE minmax_selection(
   }
   // if all have the same cost, return the first one
   if (valid_indices.size() == 0) {
-    auto it = sample_random_element(tqe_candidates_cost, seed);
-    return it->first;
+    std::vector<Rotation2Q> rot2qs;
+    rot2qs.reserve(rot2q_gates_cost.size());
+    std::transform(
+        rot2q_gates_cost.begin(), rot2q_gates_cost.end(),
+        std::back_inserter(rot2qs),
+        [](const auto& pair) { return pair.first; });
+    std::vector<TQE> selected_tqes;
+    selected_tqes.reserve(tqe_candidates_cost.size());
+    std::transform(
+        tqe_candidates_cost.begin(), tqe_candidates_cost.end(),
+        std::back_inserter(selected_tqes),
+        [](const auto& pair) { return pair.first; });
+    return {selected_tqes, rot2qs};
   }
   // if only one cost variable, no need to normalise
   if (valid_indices.size() == 1) {
@@ -186,8 +235,18 @@ static TQE minmax_selection(
         min_tqes.push_back(it->first);
       }
     }
-    auto sampled_it = sample_random_element(min_tqes, seed);
-    return *sampled_it;
+    std::vector<Rotation2Q> min_rot2qs;
+    for (auto it2 = rot2q_gates_cost.begin(); it2 != rot2q_gates_cost.end();
+         it2++) {
+      if (it2->second[valid_indices[0]] < min_cost) {
+        min_tqes.clear();
+        min_cost = it2->second[valid_indices[0]];
+        min_rot2qs = {it2->first};
+      } else if (it2->second[valid_indices[0]] == min_cost) {
+        min_rot2qs.push_back(it2->first);
+      }
+    }
+    return {min_tqes, min_rot2qs};
   }
   // find the tqe with the minimum normalised cost
   auto it = tqe_candidates_cost.begin();
@@ -215,20 +274,24 @@ static TQE minmax_selection(
       min_tqes.push_back(it->first);
     }
   }
-  auto sampled_it = sample_random_element(min_tqes, seed);
-  return *sampled_it;
-}
-
-static TQE select_pauliexp_tqe(
-    const std::map<TQE, std::vector<double>>& tqe_candidates_cost,
-    double depth_weight, unsigned seed) {
-  return minmax_selection(tqe_candidates_cost, {1, depth_weight}, seed);
-}
-
-static TQE select_tableau_tqe(
-    const std::map<TQE, std::vector<double>>& tqe_candidates_cost,
-    double depth_weight, unsigned seed) {
-  return minmax_selection(tqe_candidates_cost, {1, depth_weight}, seed);
+  std::vector<Rotation2Q> min_rot2qs;
+  for (auto it2 = rot2q_gates_cost.begin(); it2 != rot2q_gates_cost.end();
+       it2++) {
+    double cost = 0;
+    for (const auto& cost_index : valid_indices) {
+      cost += weights[cost_index] *
+              (it2->second[cost_index] - mins[cost_index]) /
+              (maxs[cost_index] - mins[cost_index]);
+    }
+    if (cost < min_cost) {
+      min_cost = cost;
+      min_tqes.clear();
+      min_rot2qs = {it2->first};
+    } else if (cost == min_cost) {
+      min_rot2qs.push_back(it2->first);
+    }
+  }
+  return {min_tqes, min_rot2qs};
 }
 
 // simple struct that tracks the depth on each qubit
@@ -304,18 +367,17 @@ static void tableau_row_nodes_synthesis(
           {tqe,
            {default_tableau_tqe_cost(
                 rows, remaining_indices, tqe, max_lookahead),
-            static_cast<double>(depth_tracker.gate_depth(
-                std::get<1>(tqe), std::get<2>(tqe)))}});
+            static_cast<double>(depth_tracker.gate_depth(tqe.a, tqe.b))}});
     }
     TKET_ASSERT(tqe_candidates_cost.size() > 0);
     // select the best one
-    TQE selected_tqe =
-        select_tableau_tqe(tqe_candidates_cost, depth_weight, seed);
+    auto [min_tqes, _] =
+        minmax_selection(tqe_candidates_cost, {}, {1, depth_weight});
+    TQE selected_tqe = sample_random_tqe(min_tqes, seed);
     // apply TQE
     apply_tqe_to_circ(selected_tqe, circ);
     // update depth tracker
-    depth_tracker.add_2q_gate(
-        std::get<1>(selected_tqe), std::get<2>(selected_tqe));
+    depth_tracker.add_2q_gate(selected_tqe.a, selected_tqe.b);
     // remove finished nodes
     for (unsigned i = remaining_indices.size(); i-- > 0;) {
       unsigned node_index = remaining_indices[i];
@@ -540,7 +602,8 @@ static void pauli_exps_synthesis(
     std::vector<std::vector<PauliNode_ptr>>& rotation_sets,
     std::vector<PauliNode_ptr>& rows, Circuit& circ,
     DepthTracker& depth_tracker, double discount_rate, double depth_weight,
-    unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed) {
+    unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed,
+    bool allow_zzphase) {
   while (true) {
     consume_nodes(
         rotation_sets, circ, depth_tracker, discount_rate, depth_weight);
@@ -574,30 +637,70 @@ static void pauli_exps_synthesis(
           {tqe,
            {default_pauliexp_tqe_cost(
                 discount_rate, rotation_sets, rows, tqe, max_lookahead),
-            static_cast<double>(depth_tracker.gate_depth(
-                std::get<1>(tqe), std::get<2>(tqe)))}});
+            static_cast<double>(depth_tracker.gate_depth(tqe.a, tqe.b))}});
     }
-    // select the best one
-    TQE selected_tqe =
-        select_pauliexp_tqe(tqe_candidates_cost, depth_weight, seed);
-    // apply TQE
-    apply_tqe_to_circ(selected_tqe, circ);
-    depth_tracker.add_2q_gate(
-        std::get<1>(selected_tqe), std::get<2>(selected_tqe));
-    for (std::vector<PauliNode_ptr>& rotation_set : rotation_sets) {
-      for (PauliNode_ptr& node : rotation_set) {
-        node->update(selected_tqe);
+    std::map<Rotation2Q, std::vector<double>> rot2q_gates_cost;
+    if (allow_zzphase) {
+      // implementing a 2q rotation directly will result in a
+      // -1 tqe cost change in the first rotation set and 0 elsewhere.
+      // If multiple 2q rotations are worth implementing directly, we
+      // implement all of them to avoid doing the same cost calculation
+      // in the next rounds.
+      for (unsigned i = 0; i < first_set.size(); i++) {
+        if (first_set[i]->get_type() == PauliNodeType::PauliRotation &&
+            first_set[i]->tqe_cost() == 1) {
+          const PauliRotation& node =
+              dynamic_cast<const PauliRotation&>(*first_set[i]);
+          std::vector<unsigned> supps;
+          std::vector<Pauli> paulis;
+          for (unsigned j = 0; j < node.string().size(); j++) {
+            if (node.string()[j] != Pauli::I) {
+              supps.push_back(j);
+              paulis.push_back(node.string()[j]);
+            }
+          }
+          rot2q_gates_cost.insert(
+              {{paulis[0], paulis[1], supps[0], supps[1], node.angle(), i},
+               {-1, static_cast<double>(
+                        depth_tracker.gate_depth(supps[0], supps[1]))}});
+        }
       }
     }
-    for (PauliNode_ptr& row : rows) {
-      row->update(selected_tqe);
+    // select the best one
+    auto [min_tqes, min_rot2qs] = minmax_selection(
+        tqe_candidates_cost, rot2q_gates_cost, {1, depth_weight});
+    if (min_rot2qs.empty()) {
+      TQE selected_tqe = sample_random_tqe(min_tqes, seed);
+      // apply TQE
+      apply_tqe_to_circ(selected_tqe, circ);
+      depth_tracker.add_2q_gate(selected_tqe.a, selected_tqe.b);
+      for (std::vector<PauliNode_ptr>& rotation_set : rotation_sets) {
+        for (PauliNode_ptr& node : rotation_set) {
+          node->update(selected_tqe);
+        }
+      }
+      for (PauliNode_ptr& row : rows) {
+        row->update(selected_tqe);
+      }
+    } else {
+      // apply 2q rotations directly
+      std::sort(
+          min_rot2qs.begin(), min_rot2qs.end(),
+          [](const Rotation2Q& r1, const Rotation2Q& r2) {
+            return r1.index > r2.index;
+          });
+      for (const Rotation2Q& rot : min_rot2qs) {
+        apply_rot2q_to_circ(rot, circ);
+        first_set.erase(first_set.begin() + rot.index);
+      }
     }
   }
 }
 
 Circuit greedy_pauli_set_synthesis(
     const std::vector<SymPauliTensor>& unordered_set, double depth_weight,
-    unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed) {
+    unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed,
+    bool allow_zzphase) {
   if (max_lookahead == 0) {
     throw GreedyPauliSimpError("max_lookahead must be greater than 0.");
   }
@@ -616,7 +719,7 @@ Circuit greedy_pauli_set_synthesis(
   // synthesise Pauli exps
   pauli_exps_synthesis(
       rotation_sets, rows, c, depth_tracker, 0, depth_weight, max_lookahead,
-      max_tqe_candidates, seed);
+      max_tqe_candidates, seed, allow_zzphase);
   // synthesise the tableau
   tableau_row_nodes_synthesis(
       rows, c, depth_tracker, depth_weight, max_lookahead, max_tqe_candidates,
@@ -627,7 +730,8 @@ Circuit greedy_pauli_set_synthesis(
 
 Circuit greedy_pauli_graph_synthesis(
     const Circuit& circ, double discount_rate, double depth_weight,
-    unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed) {
+    unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed,
+    bool allow_zzphase) {
   if (max_lookahead == 0) {
     throw GreedyPauliSimpError("max_lookahead must be greater than 0.");
   }
@@ -655,7 +759,7 @@ Circuit greedy_pauli_graph_synthesis(
   // synthesise Pauli exps
   pauli_exps_synthesis(
       rotation_sets, rows, new_circ, depth_tracker, discount_rate, depth_weight,
-      max_lookahead, max_tqe_candidates, seed);
+      max_lookahead, max_tqe_candidates, seed, allow_zzphase);
   // synthesise the tableau
   tableau_row_nodes_synthesis(
       rows, new_circ, depth_tracker, depth_weight, max_lookahead,
@@ -672,12 +776,12 @@ Circuit greedy_pauli_graph_synthesis(
 
 Transform greedy_pauli_optimisation(
     double discount_rate, double depth_weight, unsigned max_lookahead,
-    unsigned max_tqe_candidates, unsigned seed) {
+    unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase) {
   return Transform([discount_rate, depth_weight, max_lookahead,
-                    max_tqe_candidates, seed](Circuit& circ) {
+                    max_tqe_candidates, seed, allow_zzphase](Circuit& circ) {
     circ = GreedyPauliSimp::greedy_pauli_graph_synthesis(
         circ, discount_rate, depth_weight, max_lookahead, max_tqe_candidates,
-        seed);
+        seed, allow_zzphase);
     // decompose the conditional CircBoxes
     circ.decompose_boxes_recursively();
     return true;
