@@ -148,16 +148,21 @@ static double default_pauliexp_tqe_cost(
   double exp_cost = 0;
   double tab_cost = 0;
   unsigned count = 0;
+  std::cout << "cost tqe " << tqe.repr() << ":\n";
   for (const std::vector<PauliNode_ptr>& rotation_set : rotation_sets) {
     for (const PauliNode_ptr& node : rotation_set) {
-      exp_cost += weight * node->tqe_cost_increase(tqe);
+      int cost = node->tqe_cost_increase(tqe);
+      exp_cost += weight * cost;
+      std::cout << node->repr() << " " << weight << " " << cost << "\n";
       if (++count >= max_lookahead) break;
     }
     if (count >= max_lookahead) break;
     weight *= discount;
   }
   for (const PauliNode_ptr& node : rows) {
-    tab_cost += weight * node->tqe_cost_increase(tqe);
+    int cost = node->tqe_cost_increase(tqe);
+    tab_cost += weight * cost;
+    std::cout << node->repr() << " " << weight << " " << cost << "\n";
     if (++count >= max_lookahead) break;
   }
   return exp_cost + tab_cost;
@@ -604,6 +609,14 @@ static void pauli_exps_synthesis(
     DepthTracker& depth_tracker, double discount_rate, double depth_weight,
     unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed,
     bool allow_zzphase) {
+  std::cout << "Initial nodes:\n";
+  for (const std::vector<PauliNode_ptr>& set : rotation_sets) {
+    std::cout << "{";
+    for (const PauliNode_ptr& node : set) {
+      std::cout << node->repr() << ",";
+    }
+    std::cout << "}\n";
+  }
   while (true) {
     consume_nodes(
         rotation_sets, circ, depth_tracker, discount_rate, depth_weight);
@@ -667,10 +680,32 @@ static void pauli_exps_synthesis(
       }
     }
     // select the best one
+    std::cout << "first set nodes :\n";
+    for (const PauliNode_ptr& node : first_set) {
+      std::cout << node->repr() << "\n";
+    }
+    std::cout << "tableau rows :\n";
+    for (const PauliNode_ptr& node : rows) {
+      std::cout << node->repr() << "\n";
+    }
+    std::cout << "tqe candidates :\n";
+    for (auto it = tqe_candidates_cost.begin(); it != tqe_candidates_cost.end();
+         it++) {
+      std::cout << it->first.repr() << " " << it->second[0] << " "
+                << it->second[1] << "\n";
+    }
+    std::cout << "rot2q candidates :\n";
+    for (auto it = rot2q_gates_cost.begin(); it != rot2q_gates_cost.end();
+         it++) {
+      std::cout << it->first.repr() << " " << it->second[0] << " "
+                << it->second[1] << "\n";
+    }
+
     auto [min_tqes, min_rot2qs] = minmax_selection(
         tqe_candidates_cost, rot2q_gates_cost, {1, depth_weight});
     if (min_rot2qs.empty()) {
       TQE selected_tqe = sample_random_tqe(min_tqes, seed);
+      std::cout << "Apply " << selected_tqe.repr() << "\n";
       // apply TQE
       apply_tqe_to_circ(selected_tqe, circ);
       depth_tracker.add_2q_gate(selected_tqe.a, selected_tqe.b);
@@ -690,6 +725,7 @@ static void pauli_exps_synthesis(
             return r1.index > r2.index;
           });
       for (const Rotation2Q& rot : min_rot2qs) {
+        std::cout << "Apply " << rot.repr() << "\n";
         apply_rot2q_to_circ(rot, circ);
         first_set.erase(first_set.begin() + rot.index);
       }
