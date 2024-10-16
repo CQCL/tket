@@ -92,7 +92,6 @@ struct TQE {
   bool operator<(const TQE& other) const {
     return std::tie(type, a, b) < std::tie(other.type, other.a, other.b);
   }
-  std::string repr() const;
 };
 
 /**
@@ -107,7 +106,6 @@ struct Rotation2Q {
   Expr angle;
   unsigned index;
   bool operator<(const Rotation2Q& other) const { return index < other.index; }
-  std::string repr() const;
 };
 
 /**
@@ -134,7 +132,6 @@ class PauliNode {
   virtual void swap(const unsigned& a, const unsigned& b);
   virtual CommuteInfo get_commute_info() const = 0;
   virtual std::vector<TQE> reduction_tqes() const = 0;
-  virtual std::string repr() const = 0;
   virtual ~PauliNode();
 };
 
@@ -307,8 +304,6 @@ class ClassicalNode : public PauliNode {
 
   CommuteInfo get_commute_info() const override;
 
-  std::string repr() const override;
-
  protected:
   const std::vector<UnitID> args_;
   const Op_ptr op_;
@@ -337,8 +332,6 @@ class PauliRotation : public SingleNode {
 
   CommuteInfo get_commute_info() const override;
 
-  std::string repr() const override;
-
  protected:
   const Expr theta_;
 };
@@ -360,8 +353,6 @@ class MidMeasure : public SingleNode {
   PauliNodeType get_type() const override { return PauliNodeType::MidMeasure; };
   CommuteInfo get_commute_info() const override;
   unsigned bit() const { return bit_; };
-
-  std::string repr() const override;
 
  protected:
   const unsigned bit_;
@@ -424,8 +415,6 @@ class ConditionalBlock : public PauliNode {
     return rotations_;
   };
 
-  std::string repr() const override;
-
  protected:
   std::vector<std::tuple<std::vector<Pauli>, bool, Expr>> rotations_;
   const std::vector<unsigned> cond_bits_;
@@ -464,8 +453,6 @@ class PauliPropagation : public ACPairNode {
 
   unsigned qubit_index() const { return qubit_index_; };
 
-  std::string repr() const override;
-
  private:
   const unsigned qubit_index_;
 };
@@ -493,7 +480,6 @@ class Reset : public ACPairNode {
 
   PauliNodeType get_type() const override { return PauliNodeType::Reset; };
   CommuteInfo get_commute_info() const override;
-  std::string repr() const override;
 };
 
 typedef boost::adjacency_list<

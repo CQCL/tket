@@ -26,82 +26,6 @@ namespace Transforms {
 
 namespace GreedyPauliSimp {
 
-static std::string pauli_str(const Pauli& p) {
-  switch (p) {
-    case Pauli::I:
-      return "I";
-    case Pauli::Z:
-      return "Z";
-    case Pauli::X:
-      return "X";
-    case Pauli::Y:
-      return "Y";
-  }
-}
-
-static std::string pauli_vec_str(const std::vector<Pauli>& pvec) {
-  std::string s;
-  for (unsigned i = 0; i < pvec.size(); i++) {
-    s += pauli_str(pvec[i]);
-    if (i != pvec.size() - 1) s += "-";
-  }
-  return s;
-}
-
-static std::string pauli_pair_str(
-    const std::vector<Pauli>& zvec, const std::vector<Pauli>& xvec) {
-  std::string s;
-  for (unsigned i = 0; i < zvec.size(); i++) {
-    s += pauli_str(zvec[i]);
-    s += "|";
-    s += pauli_str(xvec[i]);
-    if (i != zvec.size() - 1) s += "-";
-  }
-  return s;
-}
-
-std::string TQE::repr() const {
-  std::stringstream ss;
-  ss << "TQE [";
-  switch (type) {
-    case TQEType::XX:
-      ss << "XX";
-      break;
-    case TQEType::XY:
-      ss << "XY";
-      break;
-    case TQEType::XZ:
-      ss << "XZ";
-      break;
-    case TQEType::YX:
-      ss << "YX";
-      break;
-    case TQEType::YY:
-      ss << "YY";
-      break;
-    case TQEType::YZ:
-      ss << "YZ";
-      break;
-    case TQEType::ZX:
-      ss << "ZX";
-      break;
-    case TQEType::ZY:
-      ss << "ZY";
-      break;
-    case TQEType::ZZ:
-      ss << "ZZ";
-  }
-  ss << " " << a << " " << b << "]";
-  return ss.str();
-}
-
-std::string Rotation2Q::repr() const {
-  std::stringstream ss;
-  ss << "Rotation2Q [" << pauli_str(p_a) << pauli_str(p_b) << angle << " " << a
-     << " " << b << "]";
-  return ss.str();
-}
-
 static CommuteType get_pauli_pair_commute_type(
     const Pauli& p0, const Pauli& p1) {
   if (p0 == Pauli::I && p1 == Pauli::I) {
@@ -382,13 +306,6 @@ PauliRotation::PauliRotation(std::vector<Pauli> string, bool sign, Expr theta)
 
 CommuteInfo PauliRotation::get_commute_info() const { return {{string_}, {}}; }
 
-std::string PauliRotation::repr() const {
-  std::stringstream ss;
-  ss << "PauliRotation [" << pauli_vec_str(string_) << "," << this->angle()
-     << "]";
-  return ss.str();
-}
-
 ConditionalBlock::ConditionalBlock(
     std::vector<std::tuple<std::vector<Pauli>, bool, Expr>> rotations,
     std::vector<unsigned> cond_bits, unsigned cond_value)
@@ -457,8 +374,6 @@ void ConditionalBlock::append(const ConditionalBlock& other) {
   }
 }
 
-std::string ConditionalBlock::repr() const { return "ConditionalBlock []"; }
-
 // PauliPropagation
 PauliPropagation::PauliPropagation(
     std::vector<Pauli> z_string, std::vector<Pauli> x_string, bool z_sign,
@@ -468,10 +383,6 @@ PauliPropagation::PauliPropagation(
 
 CommuteInfo PauliPropagation::get_commute_info() const {
   return {{z_string_, x_string_}, {}};
-}
-
-std::string PauliPropagation::repr() const {
-  return "PauliPropagation [" + pauli_pair_str(z_string_, x_string_) + "]";
 }
 
 // ClassicalNode
@@ -486,18 +397,12 @@ CommuteInfo ClassicalNode::get_commute_info() const {
   return {{}, bits_info};
 }
 
-std::string ClassicalNode::repr() const { return "Classical []"; }
-
 // MidMeasure
 MidMeasure::MidMeasure(std::vector<Pauli> string, bool sign, unsigned bit)
     : SingleNode(string, sign), bit_(bit) {}
 
 CommuteInfo MidMeasure::get_commute_info() const {
   return {{string_}, {{Bit(bit_), BitType::WRITE}}};
-}
-
-std::string MidMeasure::repr() const {
-  return "MidMeasure [" + pauli_vec_str(string_) + "]";
 }
 
 // Reset
@@ -508,10 +413,6 @@ Reset::Reset(
 
 CommuteInfo Reset::get_commute_info() const {
   return {{z_string_, x_string_}, {}};
-}
-
-std::string Reset::repr() const {
-  return "Reset [" + pauli_pair_str(z_string_, x_string_) + "]";
 }
 
 }  // namespace GreedyPauliSimp
