@@ -3,12 +3,10 @@ Pytket Docs
 # Clone repository
 
 ```
-git@github.com:CQCL/tket.git
+git clone git@github.com:CQCL/tket.git --recurse-submodules
 ```
 
-```
-git submodule update --recursive --init
-```
+# Move to docs directory
 
 ```
 cd pytket/docs
@@ -19,13 +17,23 @@ cd pytket/docs
 ```
 poetry install
 ```
+
+# Install pytket
+
+The pytket package is not installed as a poetry dependency so needs to be installed seperately
+
+```
+poetry run pip install -U pytket
+```
+You can install a pypi version as above or an editable wheel.
+
 # Build html
 
 ```
-poetry run make html
+poetry run bash ./build-docs.sh
 ```
-# Serve build
+# Serve built html locally
 
 ```
-npx serve ./build/html
+npx serve build
 ```
