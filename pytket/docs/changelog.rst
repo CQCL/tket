@@ -5,6 +5,7 @@ Changelog
 -------------------
 
 * Support Python 3.13.
+* Fix small default display screen for circuit renderer.
 
 1.33.1 (October 2024)
 ---------------------
