@@ -18,6 +18,7 @@
 #include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeFunctions.hpp"
 #include "tket/Ops/BarrierOp.hpp"
+#include "tket/Ops/ClExpr.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
 #include "tket/Ops/OpPtr.hpp"
 #include "tket/Utils/Json.hpp"
@@ -34,6 +35,8 @@ void from_json(const nlohmann::json& j, Op_ptr& op) {
     op = Conditional::deserialize(j);
   } else if (optype == OpType::WASM) {
     op = WASMOp::deserialize(j);
+  } else if (optype == OpType::ClExpr) {
+    op = ClExprOp::deserialize(j);
   } else if (is_classical_type(optype)) {
     op = ClassicalOp::deserialize(j);
   } else if (is_gate_type(optype)) {

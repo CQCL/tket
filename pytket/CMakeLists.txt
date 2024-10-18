@@ -113,6 +113,7 @@ pybind11_add_module(circuit
     binders/circuit/Circuit/add_op.cpp
     binders/circuit/Circuit/main.cpp
     binders/circuit/classical.cpp
+    binders/circuit/clexpr.cpp
     binders/circuit/main.cpp
     ${HEADER_FILES})
 target_include_directories(circuit PRIVATE binders/include)

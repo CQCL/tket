@@ -13,8 +13,10 @@
 // limitations under the License.
 
 #include <pybind11/pybind11.h>
+#include <pybind11/pytypes.h>
 #include <pybind11/stl.h>
 
+#include <memory>
 #include <optional>
 #include <vector>
 
@@ -33,6 +35,7 @@
 #include "tket/Circuit/ToffoliBox.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
+#include "tket/Ops/ClExpr.hpp"
 #include "tket/Utils/UnitID.hpp"
 #include "typecast.hpp"
 namespace py = pybind11;
@@ -483,6 +486,19 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("expression"), py::arg("target"))
+      .def(
+          "add_clexpr",
+          [](Circuit *circ, const WiredClExpr &expr,
+             const py::tket_custom::SequenceVec<Bit> &args,
+             const py::kwargs &kwargs) {
+            Op_ptr op = std::make_shared<ClExprOp>(expr);
+            return add_gate_method<Bit>(circ, op, args, kwargs);
+          },
+          "Append a :py:class:`WiredClExpr` to the circuit.\n\n"
+          ":param expr: The expression to append\n"
+          ":param args: The bits to apply the expression to\n"
+          ":return: the new :py:class:`Circuit`",
+          py::arg("expr"), py::arg("args"))
       .def(
           "add_custom_gate",
           [](Circuit *circ, const composite_def_ptr_t &definition,
