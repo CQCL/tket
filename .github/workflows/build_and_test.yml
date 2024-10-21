@@ -290,7 +290,11 @@ jobs:
     - name: Build pytket
       run: |
         cd pytket
-        pip install -e .[ZX] -v
+        if python --version | grep -q '3.13' ; then
+          pip install -e . -v
+        else
+          pip install -e .[ZX] -v
+        fi
     - name: Run doctests
       run: |
         cd pytket
@@ -403,7 +407,11 @@ jobs:
     - name: Build pytket
       run: |
         cd pytket
-        python -m pip install -e .[ZX] -v
+        if python --version | grep -q '3.13' ; then
+          pip install -e . -v
+        else
+          pip install -e .[ZX] -v
+        fi
     - name: Run doctests
       run: |
         cd pytket
@@ -529,9 +537,14 @@ jobs:
       with:
         python-version: '3.13'
     - name: Build pytket
+      shell: bash
       run: |
         cd pytket
-        pip install -e .[ZX] -v
+        if python --version | grep -q '3.13' ; then
+          pip install -e . -v
+        else
+          pip install -e .[ZX] -v
+        fi
     - name: Run doctests
       run: |
         cd pytket
