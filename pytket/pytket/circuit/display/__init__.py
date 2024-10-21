@@ -127,9 +127,11 @@ class CircuitDisplayConfig(PytketExtConfig):
 
     @classmethod
     def from_extension_dict(cls, ext_dict: dict[str, Any]) -> "CircuitDisplayConfig":
+        min_h = ext_dict.get("min_height")
+        min_w = ext_dict.get("min_width")
         return CircuitDisplayConfig(
-            min_height=str(ext_dict.get("min_height")),
-            min_width=str(ext_dict.get("min_width")),
+            min_height=str(min_h) if min_h is not None else "400px",
+            min_width=str(min_w) if min_w is not None else "500px",
             orient=ext_dict.get("orient"),
             render_options=RenderOptions(
                 **(ext_dict["render_options"] if "render_options" in ext_dict else {})
