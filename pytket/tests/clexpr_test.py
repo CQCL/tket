@@ -187,7 +187,7 @@ def make_circ():
     return c
 
 
-def test_copy_and_flatten():
+def test_copy_and_flatten() -> None:
     # See https://github.com/CQCL/tket/issues/1544
     c0 = make_circ()
     c1 = make_circ()
@@ -208,7 +208,7 @@ c[2] = (c[0] ^ c[1]);
     )
 
 
-def test_circbox():
+def test_circbox() -> None:
     # See https://github.com/CQCL/tket/issues/1544
     c0 = make_circ()
     cbox = CircBox(c0)
