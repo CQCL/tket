@@ -542,6 +542,8 @@ static void consume_nodes(
           }
           greedy_pauli_optimisation(discount_rate, depth_weight)
               .apply(cond_circ);
+          // replace implicit wire swaps
+          cond_circ.replace_all_implicit_wire_swaps();
           Op_ptr cond = std::make_shared<Conditional>(
               std::make_shared<CircBox>(cond_circ), (unsigned)cond_bits.size(),
               cond_value);
