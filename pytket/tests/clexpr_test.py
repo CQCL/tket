@@ -171,7 +171,7 @@ d = (((a + b) / 2) - c);
     assert c == c1
 
 
-def make_circ():
+def make_circ() -> Circuit:
     c = Circuit()
     c.add_bit(Bit("x", 0))
     c.add_bit(Bit("x", 1))
