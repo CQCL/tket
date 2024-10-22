@@ -196,6 +196,16 @@ def test_copy_and_flatten():
     c2.flatten_registers()
     assert c0 == c1
     assert c2.get_commands()[0].op == c0.get_commands()[0].op
+    qasm = circuit_to_qasm_str(c2, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+creg c[3];
+c[2] = (c[0] ^ c[1]);
+"""
+    )
 
 
 def test_circbox():
