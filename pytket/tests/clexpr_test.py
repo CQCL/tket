@@ -13,6 +13,8 @@
 # limitations under the License.
 
 from pytket.circuit import (
+    Bit,
+    CircBox,
     Circuit,
     ClBitVar,
     ClExpr,
@@ -167,3 +169,41 @@ d = (((a + b) / 2) - c);
     )
     c1 = circuit_from_qasm_str(qasm, use_clexpr=True)
     assert c == c1
+
+
+def make_circ():
+    c = Circuit()
+    c.add_bit(Bit("x", 0))
+    c.add_bit(Bit("x", 1))
+    c.add_bit(Bit("y", 0))
+    c.add_clexpr(
+        WiredClExpr(
+            expr=ClExpr(op=ClOp.BitXor, args=[ClBitVar(0), ClBitVar(1)]),
+            bit_posn={0: 0, 1: 1},
+            output_posn=[2],
+        ),
+        [Bit("x", 0), Bit("x", 1), Bit("y", 0)],
+    )
+    return c
+
+
+def test_copy_and_flatten():
+    # See https://github.com/CQCL/tket/issues/1544
+    c0 = make_circ()
+    c1 = make_circ()
+    assert c0 == c1
+    c2 = c1.copy()
+    c2.flatten_registers()
+    assert c0 == c1
+    assert c2.get_commands()[0].op == c0.get_commands()[0].op
+
+
+def test_circbox():
+    # See https://github.com/CQCL/tket/issues/1544
+    c0 = make_circ()
+    cbox = CircBox(c0)
+    c1 = Circuit(0, 3)
+    c1.add_circbox(cbox, [0, 1, 2])
+    c2 = c1.copy()
+    c2.flatten_registers()
+    assert c1 == c2
