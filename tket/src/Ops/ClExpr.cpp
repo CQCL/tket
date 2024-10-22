@@ -91,11 +91,11 @@ std::ostream& operator<<(std::ostream& os, ClOp fn) {
 }
 
 std::ostream& operator<<(std::ostream& os, const ClBitVar& var) {
-  return os << "b" << var.i;
+  return os << "b" << var.index;
 }
 
 std::ostream& operator<<(std::ostream& os, const ClRegVar& var) {
-  return os << "r" << var.i;
+  return os << "r" << var.index;
 }
 
 std::ostream& operator<<(std::ostream& os, const ClExprVar& var) {
@@ -207,10 +207,10 @@ ClExpr::ClExpr(ClOp op, std::vector<ClExprArg> args)
         ClExprVar var = std::get<ClExprVar>(basic_input);
         if (std::holds_alternative<ClBitVar>(var)) {
           ClBitVar bit_var = std::get<ClBitVar>(var);
-          all_bit_vars.insert(bit_var.i);
+          all_bit_vars.insert(bit_var.index);
         } else {
           ClRegVar reg_var = std::get<ClRegVar>(var);
-          all_reg_vars.insert(reg_var.i);
+          all_reg_vars.insert(reg_var.index);
         }
       }
     } else {

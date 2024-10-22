@@ -92,23 +92,23 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
  * A bit variable within an expression
  */
 typedef struct ClBitVar {
-  unsigned i;  /// Identifier for the variable within the expression
-  bool operator==(const ClBitVar& other) const { return i == other.i; }
+  unsigned index;  /// Identifier for the variable within the expression
+  bool operator==(const ClBitVar& other) const { return index == other.index; }
   friend std::ostream& operator<<(std::ostream& os, const ClBitVar& var);
 } ClBitVar;
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ClBitVar, i)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ClBitVar, index)
 
 /**
  * A register variable within an expression
  */
 typedef struct ClRegVar {
-  unsigned i;  /// Identifier for the variable within the expression
-  bool operator==(const ClRegVar& other) const { return i == other.i; }
+  unsigned index;  /// Identifier for the variable within the expression
+  bool operator==(const ClRegVar& other) const { return index == other.index; }
   friend std::ostream& operator<<(std::ostream& os, const ClRegVar& var);
 } ClRegVar;
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ClRegVar, i)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ClRegVar, index)
 
 /**
  * A (bit or register) variable within an expression

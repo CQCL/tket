@@ -79,7 +79,10 @@ def test_wexpr() -> None:
         "expr": {
             "args": [
                 {
-                    "input": {"term": {"type": "reg", "var": {"i": 0}}, "type": "var"},
+                    "input": {
+                        "term": {"type": "reg", "var": {"index": 0}},
+                        "type": "var",
+                    },
                     "type": "term",
                 },
                 {
@@ -88,7 +91,7 @@ def test_wexpr() -> None:
                             {"input": {"term": 2, "type": "int"}, "type": "term"},
                             {
                                 "input": {
-                                    "term": {"type": "bit", "var": {"i": 0}},
+                                    "term": {"type": "bit", "var": {"index": 0}},
                                     "type": "var",
                                 },
                                 "type": "term",

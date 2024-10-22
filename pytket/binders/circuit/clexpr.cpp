@@ -46,7 +46,7 @@ static std::string qasm_bit_repr(
   } else {
     ClExprVar var = std::get<ClExprVar>(term);
     if (const ClBitVar *bvar = std::get_if<ClBitVar>(&var)) {
-      const Bit b = input_bits.at(bvar->i);
+      const Bit b = input_bits.at(bvar->index);
       return b.repr();
     } else {
       throw std::logic_error("Expected bit variable, found register variable");
@@ -63,7 +63,7 @@ static std::string qasm_reg_repr(
   } else {
     ClExprVar var = std::get<ClExprVar>(term);
     if (const ClRegVar *rvar = std::get_if<ClRegVar>(&var)) {
-      const BitRegister r = input_regs.at(rvar->i);
+      const BitRegister r = input_regs.at(rvar->index);
       return r.name();
     } else {
       throw std::logic_error("Expected register variable, found bit variable");
@@ -437,12 +437,12 @@ void init_clexpr(py::module &m) {
           "__repr__",
           [](const ClBitVar &var) {
             std::stringstream ss;
-            ss << "ClBitVar(" << var.i << ")";
+            ss << "ClBitVar(" << var.index << ")";
             return ss.str();
           })
-      .def("__hash__", [](const ClBitVar &var) { return var.i; })
+      .def("__hash__", [](const ClBitVar &var) { return var.index; })
       .def_property_readonly(
-          "i", [](const ClBitVar &var) { return var.i; },
+          "i", [](const ClBitVar &var) { return var.index; },
           ":return: integer identifier for the variable");
 
   py::class_<ClRegVar, std::shared_ptr<ClRegVar>>(
@@ -462,12 +462,12 @@ void init_clexpr(py::module &m) {
           "__repr__",
           [](const ClRegVar &var) {
             std::stringstream ss;
-            ss << "ClRegVar(" << var.i << ")";
+            ss << "ClRegVar(" << var.index << ")";
             return ss.str();
           })
-      .def("__hash__", [](const ClRegVar &var) { return var.i; })
+      .def("__hash__", [](const ClRegVar &var) { return var.index; })
       .def_property_readonly(
-          "i", [](const ClRegVar &var) { return var.i; },
+          "i", [](const ClRegVar &var) { return var.index; },
           ":return: integer identifier for the variable");
 
   py::class_<ClExpr, std::shared_ptr<ClExpr>>(
