@@ -6,6 +6,7 @@ Changelog
 
 * Support Python 3.13.
 * Fix small default display screen for circuit renderer.
+* Fix `symbol_substitution` not preserving opgroups.
 
 1.33.1 (October 2024)
 ---------------------
