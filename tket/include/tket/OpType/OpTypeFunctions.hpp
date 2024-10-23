@@ -111,7 +111,7 @@ bool is_clifford_type(OpType optype);
 /** Test for measurement and reset gates */
 bool is_projective_type(OpType optype);
 
-/** Test for purely classical gates derived from ClassicalOp */
+/** Test for purely classical gates */
 bool is_classical_type(OpType optype);
 
 /** Test for controlled gates */
