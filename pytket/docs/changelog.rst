@@ -17,6 +17,7 @@ Fixes:
 General:
 
 * Support Python 3.13.
+* Drop support for MacOS 12.
 
 1.33.1 (October 2024)
 ---------------------
