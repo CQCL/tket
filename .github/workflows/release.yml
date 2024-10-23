@@ -65,6 +65,8 @@ jobs:
   build_macos_x86_wheels:
     name: Build macos x86 wheels
     runs-on: macos-13
+    env:
+        MACOSX_DEPLOYMENT_TARGET: '12.0'
     strategy:
       matrix:
         python-version: ['3.10', '3.11', '3.12', '3.13']
