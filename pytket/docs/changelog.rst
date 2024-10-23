@@ -6,6 +6,15 @@ Changelog
 
 Features:
 
+* Add new `ClExprOp` operation type as an alternative to `ClassicalExpBox`; add
+  option to use this when converting from QASM.
+
+Fixes:
+
+* Fix small default display screen for circuit renderer.
+
+General:
+
 * Support Python 3.13.
 * Several updates to `GreedyPauliSimp`:
   
