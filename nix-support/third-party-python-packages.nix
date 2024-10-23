@@ -1,4 +1,5 @@
 self: super: {
+  mypy' = super.python3Packages.callPackage ./mypy.nix {};
   pybind11_json = super.stdenv.mkDerivation {
     name = "pybind11_json";
     src = super.fetchFromGitHub {
