@@ -422,7 +422,7 @@ def test_h1_rzz() -> None:
 def test_extended_qasm() -> None:
     fname = str(curr_file_path / "qasm_test_files/test17.qasm")
     out_fname = str(curr_file_path / "qasm_test_files/test17_output.qasm")
-    c = circuit_from_qasm_wasm(fname, "testfile.wasm")
+    c = circuit_from_qasm_wasm(fname, "testfile.wasm", use_clexpr=True)
 
     out_qasm = circuit_to_qasm_str(c, "hqslib1")
     with open(out_fname) as f:
@@ -432,15 +432,14 @@ def test_extended_qasm() -> None:
 
     assert circuit_to_qasm_str(c2, "hqslib1")
 
-    with pytest.raises(DecomposeClassicalError) as e:
-        DecomposeClassicalExp().apply(c)
+    assert not DecomposeClassicalExp().apply(c)
 
 
 def test_decomposable_extended() -> None:
     fname = str(curr_file_path / "qasm_test_files/test18.qasm")
     out_fname = str(curr_file_path / "qasm_test_files/test18_output.qasm")
 
-    c = circuit_from_qasm_wasm(fname, "testfile.wasm", maxwidth=64)
+    c = circuit_from_qasm_wasm(fname, "testfile.wasm", maxwidth=64, use_clexpr=True)
     DecomposeClassicalExp().apply(c)
 
     out_qasm = circuit_to_qasm_str(c, "hqslib1", maxwidth=64)
@@ -654,10 +653,11 @@ def test_qasm_phase() -> None:
         assert c1 == c0
 
 
-def test_CopyBits() -> None:
+@pytest.mark.parametrize("use_clexpr", [True, False])
+def test_CopyBits(use_clexpr: bool) -> None:
     input_qasm = """OPENQASM 2.0;\ninclude "hqslib1.inc";\n\ncreg c0[1];
 creg c1[3];\nc0[0] = c1[1];\n"""
-    c = circuit_from_qasm_str(input_qasm)
+    c = circuit_from_qasm_str(input_qasm, use_clexpr=use_clexpr)
     result_circ_qasm = circuit_to_qasm_str(c, "hqslib1")
     assert input_qasm == result_circ_qasm
 
@@ -831,7 +831,8 @@ measure q[0] -> c[32];"""
     assert len(circ_out.bits) == 33
 
 
-def test_classical_expbox_arg_order() -> None:
+@pytest.mark.parametrize("use_clexpr", [True, False])
+def test_classical_expbox_arg_order(use_clexpr: bool) -> None:
     qasm = """
     OPENQASM 2.0;
     include "hqslib1.inc";
@@ -846,7 +847,7 @@ def test_classical_expbox_arg_order() -> None:
     c = a ^ b | d;
     """
 
-    circ = circuit_from_qasm_str(qasm)
+    circ = circuit_from_qasm_str(qasm, use_clexpr=use_clexpr)
     args = circ.get_commands()[0].args
     expected_symbol_order = ["a", "b", "d", "c"]
     expected_index_order = [0, 1, 2, 3]
@@ -1158,5 +1159,6 @@ if __name__ == "__main__":
     test_header_stops_gate_definition()
     test_tk2_definition()
     test_rxxyyzz_conversion()
-    test_classical_expbox_arg_order()
+    test_classical_expbox_arg_order(True)
+    test_classical_expbox_arg_order(False)
     test_register_name_check()
