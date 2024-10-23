@@ -8,7 +8,7 @@ API for interacting with tket and transpiling to and from other popular quantum
 circuit specifications.
 
 Pytket is compatible with 64-bit Python 3.10, 3.11, 3.12 and 3.13, on Linux,
-MacOS (12.0 or later) and Windows. Install pytket from PyPI using:
+MacOS (13.0 or later) and Windows. Install pytket from PyPI using:
 
 ::
 
