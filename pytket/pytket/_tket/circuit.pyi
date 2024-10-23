@@ -2568,7 +2568,7 @@ class ClBitVar:
     def __str__(self) -> str:
         ...
     @property
-    def i(self) -> int:
+    def index(self) -> int:
         """
         :return: integer identifier for the variable
         """
@@ -2777,7 +2777,7 @@ class ClRegVar:
     def __str__(self) -> str:
         ...
     @property
-    def i(self) -> int:
+    def index(self) -> int:
         """
         :return: integer identifier for the variable
         """

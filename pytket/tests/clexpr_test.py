@@ -36,11 +36,11 @@ def test_op() -> None:
 
 def test_vars() -> None:
     bvar3 = ClBitVar(3)
-    assert bvar3.i == 3
+    assert bvar3.index == 3
     assert str(bvar3) == "b3"
     bvar4 = ClBitVar(4)
     rvar3 = ClRegVar(3)
-    assert rvar3.i == 3
+    assert rvar3.index == 3
     assert str(rvar3) == "r3"
     rvar3a = ClRegVar(3)
     assert bvar3 != bvar4

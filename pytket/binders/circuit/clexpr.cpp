@@ -442,7 +442,7 @@ void init_clexpr(py::module &m) {
           })
       .def("__hash__", [](const ClBitVar &var) { return var.index; })
       .def_property_readonly(
-          "i", [](const ClBitVar &var) { return var.index; },
+          "index", [](const ClBitVar &var) { return var.index; },
           ":return: integer identifier for the variable");
 
   py::class_<ClRegVar, std::shared_ptr<ClRegVar>>(
@@ -467,7 +467,7 @@ void init_clexpr(py::module &m) {
           })
       .def("__hash__", [](const ClRegVar &var) { return var.index; })
       .def_property_readonly(
-          "i", [](const ClRegVar &var) { return var.index; },
+          "index", [](const ClRegVar &var) { return var.index; },
           ":return: integer identifier for the variable");
 
   py::class_<ClExpr, std::shared_ptr<ClExpr>>(
