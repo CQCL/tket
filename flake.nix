@@ -24,7 +24,6 @@
         packages = {
           tket = pkgs.tket;
           pytket = pkgs.pytket;
-          mypy = pkgs.mypy';
         };
         devShells = {
           default = pkgs.mkShell { buildInputs = [ pkgs.tket pkgs.pytket ]; };
