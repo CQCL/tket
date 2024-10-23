@@ -4,8 +4,19 @@ Changelog
 1.33.2 (Unreleased)
 -------------------
 
-* Support Python 3.13.
+Features:
+
+* Add new `ClExprOp` operation type as an alternative to `ClassicalExpBox`; add
+  option to use this when converting from QASM.
+
+Fixes:
+
 * Fix small default display screen for circuit renderer.
+
+General:
+
+* Support Python 3.13.
+* Drop support for MacOS 12.
 
 1.33.1 (October 2024)
 ---------------------
