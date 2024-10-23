@@ -7,6 +7,7 @@ var searchData=
   ['individual_4',['Individual',['../namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028a2dd4472245a696bc0b4b944db2a8b519',1,'tket::Transforms']]],
   ['input_5',['input',['../classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257aba324118a6721dd6b8a9b9f4e327df2bf5',1,'tket::ChoiMixTableau::Input'],['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a324118a6721dd6b8a9b9f4e327df2bf5',1,'tket::Input'],['../namespacetket_1_1zx.html#ab1dacff6605c3bc8caa5f7fa6e3f5646a324118a6721dd6b8a9b9f4e327df2bf5',1,'tket::zx::Input']]],
   ['input_5ferror_6',['INPUT_ERROR',['../structtket_1_1GateUnitaryMatrixError.html#af611ef0f8913f3c63ce098c0050f12a1ad307c747dc4b0d01887e1708287a1248',1,'tket::GateUnitaryMatrixError']]],
-  ['iswap_7',['ISWAP',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aa4bc541b95fc1ece06e92143710c337a',1,'tket']]],
-  ['iswapmax_8',['ISWAPMax',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a8ae9a60f268fb2c9d6111af9392df6bf',1,'tket']]]
+  ['invalid_7',['INVALID',['../namespacetket.html#acffc43c78feac1b0fb37d8d034369b1daccc0377a8afbf50e7094f5c23a8af223',1,'tket']]],
+  ['iswap_8',['ISWAP',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aa4bc541b95fc1ece06e92143710c337a',1,'tket']]],
+  ['iswapmax_9',['ISWAPMax',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a8ae9a60f268fb2c9d6111af9392df6bf',1,'tket']]]
 ];
