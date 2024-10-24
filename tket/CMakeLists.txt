@@ -250,6 +250,8 @@ target_sources(tket
         src/Transformations/ContextualReduction.cpp
         src/Transformations/Decomposition.cpp
         src/Transformations/GreedyPauliOptimisation.cpp
+        src/Transformations/GreedyPauliConverters.cpp
+        src/Transformations/GreedyPauliOps.cpp
         src/Transformations/MeasurePass.cpp
         src/Transformations/OptimisationPass.cpp
         src/Transformations/PauliOptimisation.cpp
