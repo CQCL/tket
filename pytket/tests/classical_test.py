@@ -192,6 +192,18 @@ def test_wasm_3() -> None:
     assert c.depth() == 1
 
 
+def test_wasm_3_bytes() -> None:
+    with open("testfile.wasm", "rb") as f:
+        bytecode = f.read()
+    c = Circuit(0, 6)
+
+    w = wasm.WasmModuleHandler(bytecode)
+
+    c.add_wasm("add_one", w, [1], [1], [Bit(0), Bit(1)])
+
+    assert c.depth() == 1
+
+
 def test_wasm_4() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
 
@@ -404,6 +416,19 @@ def test_wasm_function_check_5() -> None:
 
 def test_wasm_function_check_6() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
+    c = Circuit(20, 20)
+    c0 = c.add_c_register("c0", 32)
+    c1 = c.add_c_register("c1", 4)
+
+    c.add_wasm_to_reg("add_one", w, [c0], [c1])
+    assert c.depth() == 1
+
+
+def test_wasm_function_check_6_bytes() -> None:
+    with open("testfile.wasm", "rb") as f:
+        bytecode = f.read()
+
+    w = wasm.WasmModuleHandler(bytecode)
     c = Circuit(20, 20)
     c0 = c.add_c_register("c0", 32)
     c1 = c.add_c_register("c1", 4)

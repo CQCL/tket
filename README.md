@@ -72,9 +72,9 @@ depend on the features they support. The compiler version can be controlled by
 setting `CC` and `CXX` in your environment (e.g. `CC=gcc-11` and `CXX=g++-11`),
 or on Debian-based Linux systems using `update-alternatives`.
 
-You should also have Python (3.10, 3.11 or 3.12) and `pip` installed. We use
-`cmake` and the package manager `conan` to build tket and pytket. The latter can
-be installed with `pip`:
+You should also have Python (3.10, 3.11, 3.12 or 3.13) and `pip` installed. We
+use `cmake` and the package manager `conan` to build tket and pytket. The latter
+can be installed with `pip`:
 
 ```shell
 pip install conan

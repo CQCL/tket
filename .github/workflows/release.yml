@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        python3-version: ['10', '11', '12']
+        python3-version: ['10', '11', '12', '13']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -41,7 +41,7 @@ jobs:
     runs-on: 'buildjet-8vcpu-ubuntu-2204-arm'
     strategy:
       matrix:
-        python3-version: ['10', '11', '12']
+        python3-version: ['10', '11', '12', '13']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -64,10 +64,10 @@ jobs:
 
   build_macos_x86_wheels:
     name: Build macos x86 wheels
-    runs-on: macos-12
+    runs-on: macos-13
     strategy:
       matrix:
-        python-version: ['3.10', '3.11', '3.12']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -83,7 +83,7 @@ jobs:
       run: |
         conan profile detect
         DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/macos-12
+        PROFILE_PATH=./conan-profiles/macos-13
         diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
         cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
@@ -94,8 +94,8 @@ jobs:
         conan create recipes/pybind11
         conan create recipes/pybind11_json/all --version 0.2.14
         cd pytket
-        # Ensure wheels are compatible with MacOS 12.0 and later:
-        export WHEEL_PLAT_NAME=macosx_12_0_x86_64
+        # Ensure wheels are compatible with MacOS 13.0 and later:
+        export WHEEL_PLAT_NAME=macosx_13_0_x86_64
         pip install -U pip build delocate
         python -m build
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
@@ -106,12 +106,12 @@ jobs:
 
   build_macos_arm64_wheels:
     name: Build macos arm64 wheels
-    runs-on: macos-14
+    runs-on: macos-15
     env:
-        MACOSX_DEPLOYMENT_TARGET: '12.0'
+        MACOSX_DEPLOYMENT_TARGET: '13.0'
     strategy:
       matrix:
-        python-version: ['3.10', '3.11', '3.12']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -127,7 +127,7 @@ jobs:
       run: |
         conan profile detect
         DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/macos-14
+        PROFILE_PATH=./conan-profiles/macos-15
         diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
         cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
@@ -138,8 +138,8 @@ jobs:
         conan create recipes/pybind11
         conan create recipes/pybind11_json/all --version 0.2.14
         cd pytket
-        # Ensure wheels are compatible with MacOS 12.0 and later:
-        export WHEEL_PLAT_NAME=macosx_12_0_arm64
+        # Ensure wheels are compatible with MacOS 13.0 and later:
+        export WHEEL_PLAT_NAME=macosx_13_0_arm64
         python${{ matrix.python-version }} -m pip install -U pip build delocate
         python${{ matrix.python-version }} -m build
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
@@ -153,7 +153,7 @@ jobs:
     runs-on: windows-2022
     strategy:
       matrix:
-        python-version: ['3.10', '3.11', '3.12']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -194,7 +194,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        python3-version: ['10', '11', '12']
+        python3-version: ['10', '11', '12', '13']
     steps:
       - name: Set up Python 3.${{ matrix.python3-version }}
         uses: actions/setup-python@v5
@@ -223,18 +223,13 @@ jobs:
     runs-on: 'buildjet-4vcpu-ubuntu-2204-arm'
     strategy:
       matrix:
-        python3-version: ['10', '11', '12']
+        python3-version: ['10', '11', '12', '13']
     steps:
     - uses: actions/checkout@v4
       with:
         path: tket
     - name: Set up Python 3.${{ matrix.python3-version }}
-      # Use deadsnakes/action because Python for Linux/ARM is not available with
-      # actions/setup-python.
-      # Python 3.10 is the default python on Ubuntu 22.04, so this combination
-      # is not available from deadsnakes: use the default python in this case.
-      if: matrix.python3-version != '10'
-      uses: deadsnakes/action@v3.2.0
+      uses: actions/setup-python@v5
       with:
         python-version: "3.${{ matrix.python3-version }}"
     - name: Download wheel
@@ -259,8 +254,8 @@ jobs:
     needs: build_macos_x86_wheels
     strategy:
       matrix:
-        os: ['macos-12', 'macos-13']
-        python-version: ['3.10', '3.11', '3.12']
+        os: ['macos-13']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
     runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Python ${{ matrix.python-version }}
@@ -289,8 +284,8 @@ jobs:
     needs: build_macos_arm64_wheels
     strategy:
       matrix:
-        os: ['macos-13-xlarge', 'macos-14']
-        python-version: ['3.10', '3.11', '3.12']
+        os: ['macos-14', 'macos-15']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
     runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Python ${{ matrix.python-version }}
@@ -320,7 +315,7 @@ jobs:
     runs-on: windows-2022
     strategy:
       matrix:
-        python-version: ['3.10', '3.11', '3.12']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
     steps:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5

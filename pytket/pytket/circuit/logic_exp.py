@@ -245,9 +245,7 @@ class LogicExp:
         """Load from JSON serializable nested dictionary."""
         opset_name, op_name = dic["op"].split(".", 2)
         opset = BitWiseOp if opset_name == "BitWiseOp" else RegWiseOp
-        op = cast(
-            Union[BitWiseOp, RegWiseOp], next(o for o in opset if o.name == op_name)
-        )
+        op = next(o for o in opset if o.name == op_name)
         args: List[ArgType] = []
         for arg_ser in dic["args"]:
             if isinstance(arg_ser, Constant):

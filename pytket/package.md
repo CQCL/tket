@@ -4,7 +4,7 @@ The source code for the TKET compiler can be found in [this github repository](h
 
 ## Installation
 
-Installation is supported for Linux, MacOS and Windows. Installation requires python 3.10, 3.11 or 3.12.
+Installation is supported for Linux, MacOS and Windows. Installation requires python 3.10, 3.11, 3.12 or 3.13.
 
 To install run the pip command: 
 

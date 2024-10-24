@@ -11,7 +11,7 @@ import pytket.circuit.logic_exp
 import pytket.wasm.wasm
 import sympy
 import typing
-__all__ = ['BarrierOp', 'BasisOrder', 'CXConfigType', 'CircBox', 'Circuit', 'ClassicalEvalOp', 'ClassicalExpBox', 'ClassicalOp', 'Command', 'Conditional', 'ConjugationBox', 'CopyBitsOp', 'CustomGate', 'CustomGateDef', 'DiagonalBox', 'DummyBox', 'EdgeType', 'ExpBox', 'MetaOp', 'MultiBitOp', 'MultiplexedRotationBox', 'MultiplexedTensoredU2Box', 'MultiplexedU2Box', 'MultiplexorBox', 'Op', 'OpType', 'PauliExpBox', 'PauliExpCommutingSetBox', 'PauliExpPairBox', 'PhasePolyBox', 'ProjectorAssertionBox', 'QControlBox', 'RangePredicateOp', 'ResourceBounds', 'ResourceData', 'SetBitsOp', 'StabiliserAssertionBox', 'StatePreparationBox', 'TermSequenceBox', 'ToffoliBox', 'ToffoliBoxSynthStrat', 'Unitary1qBox', 'Unitary2qBox', 'Unitary3qBox', 'WASMOp', 'fresh_symbol']
+__all__ = ['BarrierOp', 'BasisOrder', 'CXConfigType', 'CircBox', 'Circuit', 'ClBitVar', 'ClExpr', 'ClExprOp', 'ClOp', 'ClRegVar', 'ClassicalEvalOp', 'ClassicalExpBox', 'ClassicalOp', 'Command', 'Conditional', 'ConjugationBox', 'CopyBitsOp', 'CustomGate', 'CustomGateDef', 'DiagonalBox', 'DummyBox', 'EdgeType', 'ExpBox', 'MetaOp', 'MultiBitOp', 'MultiplexedRotationBox', 'MultiplexedTensoredU2Box', 'MultiplexedU2Box', 'MultiplexorBox', 'Op', 'OpType', 'PauliExpBox', 'PauliExpCommutingSetBox', 'PauliExpPairBox', 'PhasePolyBox', 'ProjectorAssertionBox', 'QControlBox', 'RangePredicateOp', 'ResourceBounds', 'ResourceData', 'SetBitsOp', 'StabiliserAssertionBox', 'StatePreparationBox', 'TermSequenceBox', 'ToffoliBox', 'ToffoliBoxSynthStrat', 'Unitary1qBox', 'Unitary2qBox', 'Unitary3qBox', 'WASMOp', 'WiredClExpr', 'fresh_symbol']
 class BarrierOp(Op):
     """
     Barrier operations.
@@ -1451,6 +1451,14 @@ class Circuit:
         :param args: Indices of the qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
+    def add_clexpr(self, expr: WiredClExpr, args: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
+        """
+        Append a :py:class:`WiredClExpr` to the circuit.
+        
+        :param expr: The expression to append
+        :param args: The bits to apply the expression to
+        :return: the new :py:class:`Circuit`
+        """
     @typing.overload
     def add_conditional_barrier(self, barrier_qubits: typing.Sequence[int], barrier_bits: typing.Sequence[int], condition_bits: typing.Sequence[int], value: int, data: str = '') -> Circuit:
         """
@@ -1965,14 +1973,14 @@ class Circuit:
         :param qubit_2: index of target qubit 2
         :return: the new :py:class:`Circuit`
         """
-    def add_wasm(self, funcname: str, filehandler: pytket.wasm.wasm.WasmFileHandler, list_i: typing.Sequence[int], list_o: typing.Sequence[int], args: typing.Union[typing.Sequence[int], typing.Sequence[pytket._tket.unit_id.Bit]], args_wasm: typing.Optional[typing.Sequence[int]] = None, **kwargs: typing.Any) -> Circuit:
+    def add_wasm(self, funcname: str, filehandler: pytket.wasm.wasm.WasmModuleHandler, list_i: typing.Sequence[int], list_o: typing.Sequence[int], args: typing.Union[typing.Sequence[int], typing.Sequence[pytket._tket.unit_id.Bit]], args_wasm: typing.Optional[typing.Sequence[int]] = None, **kwargs: typing.Any) -> Circuit:
         """
         Add a classical function call from a wasm file to the circuit.
             
         
         :param funcname: name of the function that is called
             
-        :param filehandler: wasm file handler to identify the wasm file
+        :param filehandler: wasm file or module handler to identify the wasm module
             
         :param list_i: list of the number of bits in the input variables
             
@@ -1988,14 +1996,14 @@ class Circuit:
             
         :return: the new :py:class:`Circuit`
         """
-    def add_wasm_to_reg(self, funcname: str, filehandler: pytket.wasm.wasm.WasmFileHandler, list_i: typing.Sequence[pytket._tket.unit_id.BitRegister], list_o: typing.Sequence[pytket._tket.unit_id.BitRegister], args_wasm: typing.Optional[typing.Sequence[int]] = None, **kwargs: typing.Any) -> Circuit:
+    def add_wasm_to_reg(self, funcname: str, filehandler: pytket.wasm.wasm.WasmModuleHandler, list_i: typing.Sequence[pytket._tket.unit_id.BitRegister], list_o: typing.Sequence[pytket._tket.unit_id.BitRegister], args_wasm: typing.Optional[typing.Sequence[int]] = None, **kwargs: typing.Any) -> Circuit:
         """
         Add a classical function call from a wasm file to the circuit.
             
         
         :param funcname: name of the function that is called
             
-        :param filehandler: wasm file handler to identify the wasm file
+        :param filehandler: wasm file or module handler to identify the wasm module
             
         :param list_i: list of the classical registers assigned to
              the input variables of the function call
@@ -2539,6 +2547,239 @@ class Circuit:
     def qubits(self) -> list[pytket._tket.unit_id.Qubit]:
         """
         A list of all qubit ids in the circuit
+        """
+class ClBitVar:
+    """
+    A bit variable within an expression
+    """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
+    def __eq__(self, arg0: typing.Any) -> bool:
+        ...
+    def __hash__(self) -> int:
+        ...
+    def __init__(self, i: int) -> None:
+        """
+        Construct from an integer identifier
+        """
+    def __repr__(self) -> str:
+        ...
+    def __str__(self) -> str:
+        ...
+    @property
+    def index(self) -> int:
+        """
+        :return: integer identifier for the variable
+        """
+class ClExpr:
+    """
+    A classical expression
+    """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
+    def __eq__(self, arg0: typing.Any) -> bool:
+        ...
+    def __hash__(self) -> int:
+        """
+        Hashing is not implemented for this class, attempting to hash an object will raise a type error
+        """
+    def __init__(self, op: ClOp, args: list[int | ClBitVar | ClRegVar | ClExpr]) -> None:
+        """
+        Construct from an operation and a list of arguments
+        """
+    def __str__(self) -> str:
+        ...
+    def as_qasm(self, input_bits: dict[int, pytket._tket.unit_id.Bit], input_regs: dict[int, pytket._tket.unit_id.BitRegister]) -> str:
+        """
+        QASM-style string representation given corresponding bits and registers
+        """
+    @property
+    def args(self) -> list[int | ClBitVar | ClRegVar | ClExpr]:
+        """
+        :return: arguments
+        """
+    @property
+    def op(self) -> ClOp:
+        """
+        :return: main operation
+        """
+class ClExprOp(Op):
+    """
+    An operation defined by a classical expression
+    """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
+    def __init__(self, arg0: WiredClExpr) -> None:
+        """
+        Construct from a wired classical expression
+        """
+    @property
+    def expr(self) -> WiredClExpr:
+        """
+        :return: wired expression
+        """
+    @property
+    def type(self) -> OpType:
+        """
+        :return: operation type
+        """
+class ClOp:
+    """
+    A classical operation
+    
+    Members:
+    
+      INVALID : Invalid
+    
+      BitAnd : Bitwise AND
+    
+      BitOr : Bitwise OR
+    
+      BitXor : Bitwise XOR
+    
+      BitEq : Bitwise equality
+    
+      BitNeq : Bitwise inequality
+    
+      BitNot : Bitwise NOT
+    
+      BitZero : Constant zero bit
+    
+      BitOne : Constant one bit
+    
+      RegAnd : Registerwise AND
+    
+      RegOr : Registerwise OR
+    
+      RegXor : Registerwise XOR
+    
+      RegEq : Registerwise equality
+    
+      RegNeq : Registerwise inequality
+    
+      RegNot : Registerwise NOT
+    
+      RegZero : Constant all-zeros register
+    
+      RegOne : Constant all-ones register
+    
+      RegLt : Integer less-than comparison
+    
+      RegGt : Integer greater-than comparison
+    
+      RegLeq : Integer less-than-or-equal comparison
+    
+      RegGeq : Integer greater-than-or-equal comparison
+    
+      RegAdd : Integer addition
+    
+      RegSub : Integer subtraction
+    
+      RegMul : Integer multiplication
+    
+      RegDiv : Integer division
+    
+      RegPow : Integer exponentiation
+    
+      RegLsh : Left shift
+    
+      RegRsh : Right shift
+    
+      RegNeg : Integer negation
+    """
+    BitAnd: typing.ClassVar[ClOp]  # value = <ClOp.BitAnd: 1>
+    BitEq: typing.ClassVar[ClOp]  # value = <ClOp.BitEq: 4>
+    BitNeq: typing.ClassVar[ClOp]  # value = <ClOp.BitNeq: 5>
+    BitNot: typing.ClassVar[ClOp]  # value = <ClOp.BitNot: 6>
+    BitOne: typing.ClassVar[ClOp]  # value = <ClOp.BitOne: 8>
+    BitOr: typing.ClassVar[ClOp]  # value = <ClOp.BitOr: 2>
+    BitXor: typing.ClassVar[ClOp]  # value = <ClOp.BitXor: 3>
+    BitZero: typing.ClassVar[ClOp]  # value = <ClOp.BitZero: 7>
+    INVALID: typing.ClassVar[ClOp]  # value = <ClOp.INVALID: 0>
+    RegAdd: typing.ClassVar[ClOp]  # value = <ClOp.RegAdd: 21>
+    RegAnd: typing.ClassVar[ClOp]  # value = <ClOp.RegAnd: 9>
+    RegDiv: typing.ClassVar[ClOp]  # value = <ClOp.RegDiv: 24>
+    RegEq: typing.ClassVar[ClOp]  # value = <ClOp.RegEq: 12>
+    RegGeq: typing.ClassVar[ClOp]  # value = <ClOp.RegGeq: 20>
+    RegGt: typing.ClassVar[ClOp]  # value = <ClOp.RegGt: 18>
+    RegLeq: typing.ClassVar[ClOp]  # value = <ClOp.RegLeq: 19>
+    RegLsh: typing.ClassVar[ClOp]  # value = <ClOp.RegLsh: 26>
+    RegLt: typing.ClassVar[ClOp]  # value = <ClOp.RegLt: 17>
+    RegMul: typing.ClassVar[ClOp]  # value = <ClOp.RegMul: 23>
+    RegNeg: typing.ClassVar[ClOp]  # value = <ClOp.RegNeg: 28>
+    RegNeq: typing.ClassVar[ClOp]  # value = <ClOp.RegNeq: 13>
+    RegNot: typing.ClassVar[ClOp]  # value = <ClOp.RegNot: 14>
+    RegOne: typing.ClassVar[ClOp]  # value = <ClOp.RegOne: 16>
+    RegOr: typing.ClassVar[ClOp]  # value = <ClOp.RegOr: 10>
+    RegPow: typing.ClassVar[ClOp]  # value = <ClOp.RegPow: 25>
+    RegRsh: typing.ClassVar[ClOp]  # value = <ClOp.RegRsh: 27>
+    RegSub: typing.ClassVar[ClOp]  # value = <ClOp.RegSub: 22>
+    RegXor: typing.ClassVar[ClOp]  # value = <ClOp.RegXor: 11>
+    RegZero: typing.ClassVar[ClOp]  # value = <ClOp.RegZero: 15>
+    __members__: typing.ClassVar[dict[str, ClOp]]  # value = {'INVALID': <ClOp.INVALID: 0>, 'BitAnd': <ClOp.BitAnd: 1>, 'BitOr': <ClOp.BitOr: 2>, 'BitXor': <ClOp.BitXor: 3>, 'BitEq': <ClOp.BitEq: 4>, 'BitNeq': <ClOp.BitNeq: 5>, 'BitNot': <ClOp.BitNot: 6>, 'BitZero': <ClOp.BitZero: 7>, 'BitOne': <ClOp.BitOne: 8>, 'RegAnd': <ClOp.RegAnd: 9>, 'RegOr': <ClOp.RegOr: 10>, 'RegXor': <ClOp.RegXor: 11>, 'RegEq': <ClOp.RegEq: 12>, 'RegNeq': <ClOp.RegNeq: 13>, 'RegNot': <ClOp.RegNot: 14>, 'RegZero': <ClOp.RegZero: 15>, 'RegOne': <ClOp.RegOne: 16>, 'RegLt': <ClOp.RegLt: 17>, 'RegGt': <ClOp.RegGt: 18>, 'RegLeq': <ClOp.RegLeq: 19>, 'RegGeq': <ClOp.RegGeq: 20>, 'RegAdd': <ClOp.RegAdd: 21>, 'RegSub': <ClOp.RegSub: 22>, 'RegMul': <ClOp.RegMul: 23>, 'RegDiv': <ClOp.RegDiv: 24>, 'RegPow': <ClOp.RegPow: 25>, 'RegLsh': <ClOp.RegLsh: 26>, 'RegRsh': <ClOp.RegRsh: 27>, 'RegNeg': <ClOp.RegNeg: 28>}
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
+    def __eq__(self, other: typing.Any) -> bool:
+        ...
+    def __ge__(self, other: typing.Any) -> bool:
+        ...
+    def __getstate__(self) -> int:
+        ...
+    def __gt__(self, other: typing.Any) -> bool:
+        ...
+    def __hash__(self) -> int:
+        ...
+    def __index__(self) -> int:
+        ...
+    def __init__(self, value: int) -> None:
+        ...
+    def __int__(self) -> int:
+        ...
+    def __le__(self, other: typing.Any) -> bool:
+        ...
+    def __lt__(self, other: typing.Any) -> bool:
+        ...
+    def __ne__(self, other: typing.Any) -> bool:
+        ...
+    def __repr__(self) -> str:
+        ...
+    def __setstate__(self, state: int) -> None:
+        ...
+    def __str__(self) -> str:
+        ...
+    @property
+    def name(self) -> str:
+        ...
+    @property
+    def value(self) -> int:
+        ...
+class ClRegVar:
+    """
+    A register variable within an expression
+    """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
+    def __eq__(self, arg0: typing.Any) -> bool:
+        ...
+    def __hash__(self) -> int:
+        ...
+    def __init__(self, i: int) -> None:
+        """
+        Construct from an integer identifier
+        """
+    def __repr__(self) -> str:
+        ...
+    def __str__(self) -> str:
+        ...
+    @property
+    def index(self) -> int:
+        """
+        :return: integer identifier for the variable
         """
 class ClassicalEvalOp(ClassicalOp):
     """
@@ -3378,6 +3619,8 @@ class OpType:
       StatePreparationBox : A box for preparing quantum states using multiplexed-Ry and multiplexed-Rz gates
     
       DiagonalBox : A box for synthesising a diagonal unitary matrix into a sequence of multiplexed-Rz gates
+    
+      ClExpr : A classical expression
     """
     AAMS: typing.ClassVar[OpType]  # value = <OpType.AAMS: 42>
     BRIDGE: typing.ClassVar[OpType]  # value = <OpType.BRIDGE: 64>
@@ -3401,6 +3644,7 @@ class OpType:
     CY: typing.ClassVar[OpType]  # value = <OpType.CY: 46>
     CZ: typing.ClassVar[OpType]  # value = <OpType.CZ: 47>
     CircBox: typing.ClassVar[OpType]  # value = <OpType.CircBox: 89>
+    ClExpr: typing.ClassVar[OpType]  # value = <OpType.ClExpr: 116>
     ClassicalExpBox: typing.ClassVar[OpType]  # value = <OpType.ClassicalExpBox: 109>
     ClassicalTransform: typing.ClassVar[OpType]  # value = <OpType.ClassicalTransform: 13>
     CnRx: typing.ClassVar[OpType]  # value = <OpType.CnRx: 84>
@@ -3480,7 +3724,7 @@ class OpType:
     Z: typing.ClassVar[OpType]  # value = <OpType.Z: 22>
     ZZMax: typing.ClassVar[OpType]  # value = <OpType.ZZMax: 73>
     ZZPhase: typing.ClassVar[OpType]  # value = <OpType.ZZPhase: 76>
-    __members__: typing.ClassVar[dict[str, OpType]]  # value = {'Phase': <OpType.Phase: 21>, 'Z': <OpType.Z: 22>, 'X': <OpType.X: 23>, 'Y': <OpType.Y: 24>, 'S': <OpType.S: 25>, 'Sdg': <OpType.Sdg: 26>, 'T': <OpType.T: 27>, 'Tdg': <OpType.Tdg: 28>, 'V': <OpType.V: 29>, 'Vdg': <OpType.Vdg: 30>, 'SX': <OpType.SX: 31>, 'SXdg': <OpType.SXdg: 32>, 'H': <OpType.H: 33>, 'Rx': <OpType.Rx: 34>, 'Ry': <OpType.Ry: 35>, 'Rz': <OpType.Rz: 36>, 'U1': <OpType.U1: 39>, 'U2': <OpType.U2: 38>, 'U3': <OpType.U3: 37>, 'GPI': <OpType.GPI: 40>, 'GPI2': <OpType.GPI2: 41>, 'AAMS': <OpType.AAMS: 42>, 'TK1': <OpType.TK1: 43>, 'TK2': <OpType.TK2: 44>, 'CX': <OpType.CX: 45>, 'CY': <OpType.CY: 46>, 'CZ': <OpType.CZ: 47>, 'CH': <OpType.CH: 48>, 'CV': <OpType.CV: 49>, 'CVdg': <OpType.CVdg: 50>, 'CSX': <OpType.CSX: 51>, 'CSXdg': <OpType.CSXdg: 52>, 'CS': <OpType.CS: 53>, 'CSdg': <OpType.CSdg: 54>, 'CRz': <OpType.CRz: 55>, 'CRx': <OpType.CRx: 56>, 'CRy': <OpType.CRy: 57>, 'CU1': <OpType.CU1: 58>, 'CU3': <OpType.CU3: 59>, 'CCX': <OpType.CCX: 61>, 'ECR': <OpType.ECR: 69>, 'SWAP': <OpType.SWAP: 62>, 'CSWAP': <OpType.CSWAP: 63>, 'noop': <OpType.noop: 65>, 'Barrier': <OpType.Barrier: 8>, 'Label': <OpType.Label: 9>, 'Branch': <OpType.Branch: 10>, 'Goto': <OpType.Goto: 11>, 'Stop': <OpType.Stop: 12>, 'BRIDGE': <OpType.BRIDGE: 64>, 'Measure': <OpType.Measure: 66>, 'Reset': <OpType.Reset: 68>, 'CircBox': <OpType.CircBox: 89>, 'PhasePolyBox': <OpType.PhasePolyBox: 100>, 'Unitary1qBox': <OpType.Unitary1qBox: 90>, 'Unitary2qBox': <OpType.Unitary2qBox: 91>, 'Unitary3qBox': <OpType.Unitary3qBox: 92>, 'ExpBox': <OpType.ExpBox: 93>, 'PauliExpBox': <OpType.PauliExpBox: 94>, 'PauliExpPairBox': <OpType.PauliExpPairBox: 95>, 'PauliExpCommutingSetBox': <OpType.PauliExpCommutingSetBox: 96>, 'TermSequenceBox': <OpType.TermSequenceBox: 97>, 'QControlBox': <OpType.QControlBox: 101>, 'ToffoliBox': <OpType.ToffoliBox: 113>, 'ConjugationBox': <OpType.ConjugationBox: 108>, 'DummyBox': <OpType.DummyBox: 115>, 'CustomGate': <OpType.CustomGate: 99>, 'Conditional': <OpType.Conditional: 110>, 'ISWAP': <OpType.ISWAP: 70>, 'PhasedISWAP': <OpType.PhasedISWAP: 82>, 'XXPhase': <OpType.XXPhase: 74>, 'YYPhase': <OpType.YYPhase: 75>, 'ZZPhase': <OpType.ZZPhase: 76>, 'XXPhase3': <OpType.XXPhase3: 77>, 'PhasedX': <OpType.PhasedX: 71>, 'NPhasedX': <OpType.NPhasedX: 72>, 'CnRx': <OpType.CnRx: 84>, 'CnRy': <OpType.CnRy: 83>, 'CnRz': <OpType.CnRz: 85>, 'CnX': <OpType.CnX: 86>, 'CnY': <OpType.CnY: 88>, 'CnZ': <OpType.CnZ: 87>, 'ZZMax': <OpType.ZZMax: 73>, 'ESWAP': <OpType.ESWAP: 78>, 'FSim': <OpType.FSim: 79>, 'Sycamore': <OpType.Sycamore: 80>, 'ISWAPMax': <OpType.ISWAPMax: 81>, 'ClassicalTransform': <OpType.ClassicalTransform: 13>, 'WASM': <OpType.WASM: 14>, 'SetBits': <OpType.SetBits: 15>, 'CopyBits': <OpType.CopyBits: 16>, 'RangePredicate': <OpType.RangePredicate: 17>, 'ExplicitPredicate': <OpType.ExplicitPredicate: 18>, 'ExplicitModifier': <OpType.ExplicitModifier: 19>, 'MultiBit': <OpType.MultiBit: 20>, 'ClassicalExpBox': <OpType.ClassicalExpBox: 109>, 'MultiplexorBox': <OpType.MultiplexorBox: 102>, 'MultiplexedRotationBox': <OpType.MultiplexedRotationBox: 103>, 'MultiplexedU2Box': <OpType.MultiplexedU2Box: 104>, 'MultiplexedTensoredU2Box': <OpType.MultiplexedTensoredU2Box: 105>, 'StatePreparationBox': <OpType.StatePreparationBox: 106>, 'DiagonalBox': <OpType.DiagonalBox: 107>}
+    __members__: typing.ClassVar[dict[str, OpType]]  # value = {'Phase': <OpType.Phase: 21>, 'Z': <OpType.Z: 22>, 'X': <OpType.X: 23>, 'Y': <OpType.Y: 24>, 'S': <OpType.S: 25>, 'Sdg': <OpType.Sdg: 26>, 'T': <OpType.T: 27>, 'Tdg': <OpType.Tdg: 28>, 'V': <OpType.V: 29>, 'Vdg': <OpType.Vdg: 30>, 'SX': <OpType.SX: 31>, 'SXdg': <OpType.SXdg: 32>, 'H': <OpType.H: 33>, 'Rx': <OpType.Rx: 34>, 'Ry': <OpType.Ry: 35>, 'Rz': <OpType.Rz: 36>, 'U1': <OpType.U1: 39>, 'U2': <OpType.U2: 38>, 'U3': <OpType.U3: 37>, 'GPI': <OpType.GPI: 40>, 'GPI2': <OpType.GPI2: 41>, 'AAMS': <OpType.AAMS: 42>, 'TK1': <OpType.TK1: 43>, 'TK2': <OpType.TK2: 44>, 'CX': <OpType.CX: 45>, 'CY': <OpType.CY: 46>, 'CZ': <OpType.CZ: 47>, 'CH': <OpType.CH: 48>, 'CV': <OpType.CV: 49>, 'CVdg': <OpType.CVdg: 50>, 'CSX': <OpType.CSX: 51>, 'CSXdg': <OpType.CSXdg: 52>, 'CS': <OpType.CS: 53>, 'CSdg': <OpType.CSdg: 54>, 'CRz': <OpType.CRz: 55>, 'CRx': <OpType.CRx: 56>, 'CRy': <OpType.CRy: 57>, 'CU1': <OpType.CU1: 58>, 'CU3': <OpType.CU3: 59>, 'CCX': <OpType.CCX: 61>, 'ECR': <OpType.ECR: 69>, 'SWAP': <OpType.SWAP: 62>, 'CSWAP': <OpType.CSWAP: 63>, 'noop': <OpType.noop: 65>, 'Barrier': <OpType.Barrier: 8>, 'Label': <OpType.Label: 9>, 'Branch': <OpType.Branch: 10>, 'Goto': <OpType.Goto: 11>, 'Stop': <OpType.Stop: 12>, 'BRIDGE': <OpType.BRIDGE: 64>, 'Measure': <OpType.Measure: 66>, 'Reset': <OpType.Reset: 68>, 'CircBox': <OpType.CircBox: 89>, 'PhasePolyBox': <OpType.PhasePolyBox: 100>, 'Unitary1qBox': <OpType.Unitary1qBox: 90>, 'Unitary2qBox': <OpType.Unitary2qBox: 91>, 'Unitary3qBox': <OpType.Unitary3qBox: 92>, 'ExpBox': <OpType.ExpBox: 93>, 'PauliExpBox': <OpType.PauliExpBox: 94>, 'PauliExpPairBox': <OpType.PauliExpPairBox: 95>, 'PauliExpCommutingSetBox': <OpType.PauliExpCommutingSetBox: 96>, 'TermSequenceBox': <OpType.TermSequenceBox: 97>, 'QControlBox': <OpType.QControlBox: 101>, 'ToffoliBox': <OpType.ToffoliBox: 113>, 'ConjugationBox': <OpType.ConjugationBox: 108>, 'DummyBox': <OpType.DummyBox: 115>, 'CustomGate': <OpType.CustomGate: 99>, 'Conditional': <OpType.Conditional: 110>, 'ISWAP': <OpType.ISWAP: 70>, 'PhasedISWAP': <OpType.PhasedISWAP: 82>, 'XXPhase': <OpType.XXPhase: 74>, 'YYPhase': <OpType.YYPhase: 75>, 'ZZPhase': <OpType.ZZPhase: 76>, 'XXPhase3': <OpType.XXPhase3: 77>, 'PhasedX': <OpType.PhasedX: 71>, 'NPhasedX': <OpType.NPhasedX: 72>, 'CnRx': <OpType.CnRx: 84>, 'CnRy': <OpType.CnRy: 83>, 'CnRz': <OpType.CnRz: 85>, 'CnX': <OpType.CnX: 86>, 'CnY': <OpType.CnY: 88>, 'CnZ': <OpType.CnZ: 87>, 'ZZMax': <OpType.ZZMax: 73>, 'ESWAP': <OpType.ESWAP: 78>, 'FSim': <OpType.FSim: 79>, 'Sycamore': <OpType.Sycamore: 80>, 'ISWAPMax': <OpType.ISWAPMax: 81>, 'ClassicalTransform': <OpType.ClassicalTransform: 13>, 'WASM': <OpType.WASM: 14>, 'SetBits': <OpType.SetBits: 15>, 'CopyBits': <OpType.CopyBits: 16>, 'RangePredicate': <OpType.RangePredicate: 17>, 'ExplicitPredicate': <OpType.ExplicitPredicate: 18>, 'ExplicitModifier': <OpType.ExplicitModifier: 19>, 'MultiBit': <OpType.MultiBit: 20>, 'ClassicalExpBox': <OpType.ClassicalExpBox: 109>, 'MultiplexorBox': <OpType.MultiplexorBox: 102>, 'MultiplexedRotationBox': <OpType.MultiplexedRotationBox: 103>, 'MultiplexedU2Box': <OpType.MultiplexedU2Box: 104>, 'MultiplexedTensoredU2Box': <OpType.MultiplexedTensoredU2Box: 105>, 'StatePreparationBox': <OpType.StatePreparationBox: 106>, 'DiagonalBox': <OpType.DiagonalBox: 107>, 'ClExpr': <OpType.ClExpr: 116>}
     noop: typing.ClassVar[OpType]  # value = <OpType.noop: 65>
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
@@ -4142,6 +4386,54 @@ class WASMOp(ClassicalOp):
     def wasm_uid(self) -> str:
         """
         Wasm module id.
+        """
+class WiredClExpr:
+    """
+    A classical expression defined over a sequence of bits
+    """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
+    @staticmethod
+    def from_dict(arg0: dict) -> WiredClExpr:
+        """
+        Construct from JSON-serializable dict representation
+        """
+    def __eq__(self, arg0: typing.Any) -> bool:
+        ...
+    def __hash__(self) -> int:
+        """
+        Hashing is not implemented for this class, attempting to hash an object will raise a type error
+        """
+    def __init__(self, expr: ClExpr, bit_posn: dict[int, int] = {}, reg_posn: dict[int, list[int]] = {}, output_posn: list[int] = []) -> None:
+        """
+        Construct from an expression with bit and register positions
+        """
+    def __str__(self) -> str:
+        ...
+    def to_dict(self) -> dict:
+        """
+        :return: JSON-serializable dict representation
+        """
+    @property
+    def bit_posn(self) -> dict[int, int]:
+        """
+        :return: bit positions
+        """
+    @property
+    def expr(self) -> ClExpr:
+        """
+        :return: expression
+        """
+    @property
+    def output_posn(self) -> list[int]:
+        """
+        :return: output positions
+        """
+    @property
+    def reg_posn(self) -> dict[int, list[int]]:
+        """
+        :return: register positions
         """
 def fresh_symbol(preferred: str = 'a') -> sympy.Symbol:
     """

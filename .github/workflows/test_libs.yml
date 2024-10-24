@@ -63,7 +63,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-24.04', 'macos-12', 'windows-2022', 'macos-14']
+        os: ['ubuntu-24.04', 'macos-13', 'macos-15', 'windows-2022']
         lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
     runs-on: ${{ matrix.os }}
     steps:

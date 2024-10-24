@@ -64,7 +64,7 @@ class EmpiricalDistribution(Generic[T0]):
     @property
     def total(self) -> int:
         """Return the total number of observations."""
-        return sum(self._C.values())  # Counter.total() new in 3.10
+        return self._C.total()
 
     @property
     def support(self) -> Set[T0]:
