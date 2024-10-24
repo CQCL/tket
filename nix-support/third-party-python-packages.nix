@@ -1,4 +1,14 @@
 self: super: {
+  mypy' = super.python3Packages.mypy.overrideAttrs (oldAttrs: rec {
+    version = "1.13.0";
+    name = "python${super.python3.pythonVersion}-mypy-${version}";
+    src = super.fetchFromGitHub {
+      owner = "python";
+      repo = "mypy";
+      rev = "refs/tags/v${version}";
+      hash = sha256:P2Ozmj7/7QBmjlveHLsNdYgUAerg0qOoa8pO0iQc5os=;
+    };
+  });
   pybind11_json = super.stdenv.mkDerivation {
     name = "pybind11_json";
     src = super.fetchFromGitHub {
