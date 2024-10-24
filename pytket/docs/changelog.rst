@@ -20,6 +20,7 @@ Features:
 Fixes:
 
 * Fix small default display screen for circuit renderer.
+* Fix `symbol_substitution` not preserving opgroups.
 
 General:
 
