@@ -493,13 +493,13 @@ static void consume_nodes(
               break;
             }
             case Pauli::Y: {
-              if (node.sign()) {
+              if (!node.sign()) {
                 circ.add_op<unsigned>(OpType::Vdg, {q_index});
               } else {
                 circ.add_op<unsigned>(OpType::V, {q_index});
               }
               circ.add_measure(q_index, node.bit());
-              if (node.sign()) {
+              if (!node.sign()) {
                 circ.add_op<unsigned>(OpType::V, {q_index});
               } else {
                 circ.add_op<unsigned>(OpType::Vdg, {q_index});
