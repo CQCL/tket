@@ -27,6 +27,9 @@ from pytket.circuit import (
     UnitID,
     Conditional,
     Bit,
+    RangePredicateOp,
+    SetBitsOp,
+    MultiBitOp,
 )
 from pytket.circuit.named_types import ParamType, RenameUnitsMap
 from pytket.pauli import Pauli
@@ -1020,18 +1023,61 @@ def test_clifford_push_through_measures() -> None:
     assert coms[7].op.type == OpType.CopyBits
 
 
-def greedy_pauli_synth() -> None:
-    circ = Circuit(4, name="test")
+def test_greedy_pauli_synth() -> None:
+    circ = Circuit(name="test")
     rega = circ.add_q_register("a", 2)
     regb = circ.add_q_register("b", 2)
-    d = circ.copy()
     circ.Rz(0, rega[0]).H(regb[1]).CX(rega[0], rega[1]).Ry(0.3, rega[0]).S(regb[1]).CZ(
         rega[0], regb[0]
     ).SWAP(regb[1], rega[0])
+    d = circ.copy()
     pss = GreedyPauliSimp(0.5, 0.5)
     assert pss.apply(d)
     assert np.allclose(circ.get_unitary(), d.get_unitary())
     assert d.name == "test"
+    # test gateset
+    range_predicate = RangePredicateOp(3, 0, 6)
+    set_bits = SetBitsOp([True, True])
+    multi_bit = MultiBitOp(set_bits, 2)
+    exp = Bit(2) & Bit(3)
+    eq_pred_values = [True, False, False, True]
+    and_values = [bool(i) for i in [0, 0, 0, 1]]
+    pg1 = PauliExpBox([Pauli.X, Pauli.Z], 0.3)
+    circ = Circuit(4, 4, name="test")
+    circ.add_pauliexpbox(pg1, [0, 1])
+    circ.add_gate(multi_bit, [0, 1, 2, 3])
+    circ.add_gate(range_predicate, [0, 1, 2, 3])
+    circ.add_classicalexpbox_bit(exp, [Bit(0)])
+    circ.add_c_predicate(eq_pred_values, [0, 1], 2, "EQ")
+    circ.add_c_modifier(and_values, [1], 2)
+    circ._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0])
+    circ.measure_all()
+    circ.Reset(0)
+    circ.add_pauliexpbox(pg1, [2, 3])
+    assert GreedyPauliSimp(0.5, 0.5, 100, 100, 0, True).apply(circ)
+    # PauliExpBoxes implemented using ZZPhase
+    d = Circuit(4, 4, name="test")
+    d.H(0)
+    d.ZZPhase(0.3, 0, 1)
+    d.H(0)
+    d.add_gate(multi_bit, [0, 1, 2, 3])
+    d.add_gate(range_predicate, [0, 1, 2, 3])
+    d.add_classicalexpbox_bit(exp, [Bit(0)])
+    d.add_c_predicate(eq_pred_values, [0, 1], 2, "EQ")
+    d.add_c_modifier(and_values, [1], 2)
+    d._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0])
+    d.measure_all()
+    d.Reset(0)
+    d.H(2)
+    d.ZZPhase(0.3, 2, 3)
+    d.H(2)
+    assert circ == d
+    # test barrier
+    circ = Circuit(1).add_barrier([0])
+    with pytest.raises(RuntimeError) as e:
+        GreedyPauliSimp().apply(circ)
+    err_msg = "Predicate requirements are not satisfied"
+    assert err_msg in str(e.value)
 
 
 def test_auto_rebase_deprecation(recwarn: Any) -> None:

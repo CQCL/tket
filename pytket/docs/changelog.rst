@@ -1,13 +1,21 @@
 Changelog
 =========
 
-1.33.2 (Unreleased)
--------------------
+1.34.0 (October 2024)
+---------------------
 
 Features:
 
 * Add new `ClExprOp` operation type as an alternative to `ClassicalExpBox`; add
   option to use this when converting from QASM.
+* Several updates to `GreedyPauliSimp`:
+
+  * Support for mid-circuit measurements, resets, conditionals, and classical gates.
+  * New parameters `max_lookahead` and `max_tqe_candidates` are added
+    to limit the search space.
+  * New parameter `seed` is added to support random sampling and tie breaking.
+  * New parameter `allow_zzphase` allows the algorithm to implement 2-qubit rotations
+    using ZZPhase gates when deemed optimal.
 
 Fixes:
 
