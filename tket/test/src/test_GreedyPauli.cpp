@@ -28,6 +28,20 @@
 namespace tket {
 namespace test_GreedyPauliSimp {
 
+SCENARIO("Exception handling") {
+  GIVEN("Invalid arguments") {
+    Circuit circ(1);
+    REQUIRE_THROWS_MATCHES(
+        Transforms::greedy_pauli_optimisation(0.3, 0.3, 0, 10).apply(circ),
+        Transforms::GreedyPauliSimp::GreedyPauliSimpError,
+        MessageContains("max_lookahead must be greater than 0."));
+    REQUIRE_THROWS_MATCHES(
+        Transforms::greedy_pauli_optimisation(0.3, 0.3, 10, 0).apply(circ),
+        Transforms::GreedyPauliSimp::GreedyPauliSimpError,
+        MessageContains("max_tqe_candidates must be greater than 0."));
+  }
+}
+
 SCENARIO("Clifford synthesis") {
   GIVEN("Empty circuit") {
     Circuit circ(3);
@@ -425,6 +439,68 @@ SCENARIO("Complete synthesis") {
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
     REQUIRE(circ == d);
   }
+  GIVEN("Circuit with mid-circuit measurements 2") {
+    // -X
+    Circuit c1(1, 1);
+    c1.add_op<unsigned>(OpType::Z, {0});
+    c1.add_op<unsigned>(OpType::H, {0});
+    c1.add_op<unsigned>(OpType::Measure, {0, 0});
+    c1.add_op<unsigned>(OpType::T, {0});
+    Circuit d1(1, 1);
+    d1.add_op<unsigned>(OpType::H, {0});
+    d1.add_op<unsigned>(OpType::X, {0});
+    d1.add_op<unsigned>(OpType::Measure, {0, 0});
+    d1.add_op<unsigned>(OpType::X, {0});
+    d1.add_op<unsigned>(OpType::H, {0});
+    d1.add_op<unsigned>(OpType::Rx, 3.75, {0});
+    d1.add_op<unsigned>(OpType::H, {0});
+    d1.add_op<unsigned>(OpType::X, {0});
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(c1));
+    REQUIRE(c1 == d1);
+    // Y
+    Circuit c2(1, 1);
+    c2.add_op<unsigned>(OpType::V, {0});
+    c2.add_op<unsigned>(OpType::Measure, {0, 0});
+    c2.add_op<unsigned>(OpType::T, {0});
+    Circuit d2(1, 1);
+    d2.add_op<unsigned>(OpType::V, {0});
+    d2.add_op<unsigned>(OpType::Measure, {0, 0});
+    d2.add_op<unsigned>(OpType::Vdg, {0});
+    d2.add_op<unsigned>(OpType::Ry, 0.25, {0});
+    d2.add_op<unsigned>(OpType::V, {0});
+    // Vdg;Ry(0.25);V = T
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(c2));
+    REQUIRE(c2 == d2);
+    // -Y
+    Circuit c3(1, 1);
+    c3.add_op<unsigned>(OpType::Vdg, {0});
+    c3.add_op<unsigned>(OpType::Measure, {0, 0});
+    c3.add_op<unsigned>(OpType::T, {0});
+    Circuit d3(1, 1);
+    d3.add_op<unsigned>(OpType::Vdg, {0});
+    d3.add_op<unsigned>(OpType::Measure, {0, 0});
+    d3.add_op<unsigned>(OpType::V, {0});
+    d3.add_op<unsigned>(OpType::Ry, 3.75, {0});
+    d3.add_op<unsigned>(OpType::V, {0});
+    d3.add_op<unsigned>(OpType::X, {0});
+    // V;Ry(3.75);V;X = T
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(c3));
+    REQUIRE(c3 == d3);
+    // -Z
+    Circuit c4(1, 1);
+    c4.add_op<unsigned>(OpType::X, {0});
+    c4.add_op<unsigned>(OpType::Measure, {0, 0});
+    c4.add_op<unsigned>(OpType::T, {0});
+    Circuit d4(1, 1);
+    d4.add_op<unsigned>(OpType::X, {0});
+    d4.add_op<unsigned>(OpType::Measure, {0, 0});
+    d4.add_op<unsigned>(OpType::X, {0});
+    d4.add_op<unsigned>(OpType::Rz, 3.75, {0});
+    d4.add_op<unsigned>(OpType::X, {0});
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(c4));
+    REQUIRE(c4 == d4);
+  }
+
   GIVEN("Circuit with resets") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
@@ -433,6 +509,41 @@ SCENARIO("Complete synthesis") {
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
     REQUIRE(circ == d);
   }
+
+  GIVEN("Circuit with resets 2") {
+    // -X/Z
+    Circuit c1(1);
+    c1.add_op<unsigned>(OpType::Z, {0});
+    c1.add_op<unsigned>(OpType::H, {0});
+    c1.add_op<unsigned>(OpType::Reset, {0});
+    Circuit d1(1);
+    d1.add_op<unsigned>(OpType::H, {0});
+    d1.add_op<unsigned>(OpType::X, {0});
+    d1.add_op<unsigned>(OpType::Reset, {0});
+    d1.add_op<unsigned>(OpType::X, {0});
+    d1.add_op<unsigned>(OpType::H, {0});
+    d1.add_op<unsigned>(OpType::H, {0});
+    d1.add_op<unsigned>(OpType::X, {0});
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(c1));
+    REQUIRE(c1 == d1);
+
+    // X/-Z
+    Circuit c2(1);
+    c2.add_op<unsigned>(OpType::X, {0});
+    c2.add_op<unsigned>(OpType::H, {0});
+    c2.add_op<unsigned>(OpType::Reset, {0});
+    Circuit d2(1);
+    d2.add_op<unsigned>(OpType::H, {0});
+    d2.add_op<unsigned>(OpType::Z, {0});
+    d2.add_op<unsigned>(OpType::Reset, {0});
+    d2.add_op<unsigned>(OpType::Z, {0});
+    d2.add_op<unsigned>(OpType::H, {0});
+    d2.add_op<unsigned>(OpType::H, {0});
+    d2.add_op<unsigned>(OpType::Z, {0});
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(c2));
+    REQUIRE(c2 == d2);
+  }
+
   GIVEN("Circuit with measures, classicals, and resets") {
     Circuit circ(3, 1);
     circ.add_box(
@@ -533,6 +644,7 @@ SCENARIO("Complete synthesis") {
     REQUIRE(d.count_n_qubit_gates(2) == 4);
   }
 }
+
 SCENARIO("Test GreedyPauliSimp for individual gates") {
   Circuit circ(1);
   circ.add_op<unsigned>(OpType::Z, {0});
