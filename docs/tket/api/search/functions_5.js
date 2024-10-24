@@ -6,7 +6,7 @@ var searchData=
   ['find_5fpath_3',['find_path',['../classtket_1_1aas_1_1PathHandler.html#a34d81847c64da618e367b4ab644016fb',1,'tket::aas::PathHandler']]],
   ['find_5fworst_5fnode_4',['find_worst_node',['../classtket_1_1Architecture.html#a5811b7123331042d6675240a3cb364fa',1,'tket::Architecture']]],
   ['finished_5',['finished',['../classtket_1_1Circuit_1_1SliceIterator.html#ae77eb37d19aeee24be84b45d0dca99ab',1,'tket::Circuit::SliceIterator']]],
-  ['first_5fsupport_6',['first_support',['../classtket_1_1Transforms_1_1GreedyPauliSimp_1_1PauliExpNode.html#a2f666208d0cb85f2737cd961730e8b09',1,'tket::Transforms::GreedyPauliSimp::PauliExpNode::first_support()'],['../classtket_1_1Transforms_1_1GreedyPauliSimp_1_1TableauRowNode.html#a9ec30dccf90854a940338dcc7e4d2669',1,'tket::Transforms::GreedyPauliSimp::TableauRowNode::first_support()']]],
+  ['first_5fsupport_6',['first_support',['../classtket_1_1Transforms_1_1GreedyPauliSimp_1_1SingleNode.html#ab24c6b888c4af14a8914e887499402ea',1,'tket::Transforms::GreedyPauliSimp::SingleNode::first_support()'],['../classtket_1_1Transforms_1_1GreedyPauliSimp_1_1ACPairNode.html#adeedbc534e565780b98462a6e0092225',1,'tket::Transforms::GreedyPauliSimp::ACPairNode::first_support()']]],
   ['flatten_5fregisters_7',['flatten_registers',['../classtket_1_1Circuit.html#a7c0f42bfdcbbadff9e57f5b8a820db8e',1,'tket::Circuit']]],
   ['flattenregisters_8',['FlattenRegisters',['../namespacetket.html#afdf2f51de87dfbec78c20e072a697576',1,'tket']]],
   ['flow_9',['Flow',['../classtket_1_1zx_1_1Flow.html#a1d359bed476f857ba1df2450a6d6f593',1,'tket::zx::Flow']]],

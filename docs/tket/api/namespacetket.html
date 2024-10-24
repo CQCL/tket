@@ -1806,9 +1806,9 @@ Functions</h2></td></tr>
 <tr class="separator:aa0b104fe4cae850abf2f636b2fa33528"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a7c3b323c58d5e984e2bed65fdea2ed" id="r_a0a7c3b323c58d5e984e2bed65fdea2ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a0a7c3b323c58d5e984e2bed65fdea2ed">gen_synthesise_pauli_graph</a> (<a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028">Transforms::PauliSynthStrat</a> strat, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
 <tr class="separator:a0a7c3b323c58d5e984e2bed65fdea2ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f3b1790dddf805c903ce8d0a56ebba0" id="r_a2f3b1790dddf805c903ce8d0a56ebba0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a2f3b1790dddf805c903ce8d0a56ebba0">gen_greedy_pauli_simp</a> (double discount_rate, double depth_weight)</td></tr>
-<tr class="memdesc:a2f3b1790dddf805c903ce8d0a56ebba0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Greedy synthesis for Pauli graphs.  <br /></td></tr>
-<tr class="separator:a2f3b1790dddf805c903ce8d0a56ebba0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f60986ed594bd522e1d52a192b6b098" id="r_a0f60986ed594bd522e1d52a192b6b098"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a0f60986ed594bd522e1d52a192b6b098">gen_greedy_pauli_simp</a> (double discount_rate=0.7, double depth_weight=0.3, unsigned max_lookahead=500, unsigned max_tqe_candidates=500, unsigned seed=0, bool allow_zzphase=false)</td></tr>
+<tr class="memdesc:a0f60986ed594bd522e1d52a192b6b098"><td class="mdescLeft">&#160;</td><td class="mdescRight">Greedy synthesis for Pauli graphs.  <br /></td></tr>
+<tr class="separator:a0f60986ed594bd522e1d52a192b6b098"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e4c81947f0d1e2cce8244ca10483545" id="r_a7e4c81947f0d1e2cce8244ca10483545"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a7e4c81947f0d1e2cce8244ca10483545">gen_special_UCC_synthesis</a> (<a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028">Transforms::PauliSynthStrat</a> strat, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
 <tr class="separator:a7e4c81947f0d1e2cce8244ca10483545"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a561aa1506457519e30179b6d9e516a8a" id="r_a561aa1506457519e30179b6d9e516a8a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a561aa1506457519e30179b6d9e516a8a">gen_simplify_initial</a> (<a class="el" href="namespacetket_1_1Transforms.html#ac99440e10912adc1db7cde10c39b4690">Transforms::AllowClassical</a> allow_classical=<a class="el" href="namespacetket_1_1Transforms.html#ac99440e10912adc1db7cde10c39b4690a93cba07454f06a4a960172bbd6e2a435">Transforms::AllowClassical::Yes</a>, <a class="el" href="namespacetket_1_1Transforms.html#a7f618e54969ee0fdc1a3fa4a82b3d604">Transforms::CreateAllQubits</a> create_all_qubits=<a class="el" href="namespacetket_1_1Transforms.html#a7f618e54969ee0fdc1a3fa4a82b3d604abafd7322c6e97d25b6299b5d6fe8920b">Transforms::CreateAllQubits::No</a>, std::shared_ptr&lt; const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &gt; xcirc=0)</td></tr>
@@ -9448,7 +9448,7 @@ template&lt;&gt; </div>
 <p>It is the caller's responsibility to provide a valid transform: there are no checks on this.</p>
 <dl class="section return"><dt>Returns</dt><dd>compilation pass that applies the supplied transform </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l01135">1135</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l01160">1160</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -11970,7 +11970,7 @@ template&lt;arithmetic T&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l01092">1092</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l01117">1117</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -12310,8 +12310,8 @@ template&lt;arithmetic T&gt; </div>
 
 </div>
 </div>
-<a id="a2f3b1790dddf805c903ce8d0a56ebba0" name="a2f3b1790dddf805c903ce8d0a56ebba0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2f3b1790dddf805c903ce8d0a56ebba0">&#9670;&#160;</a></span>gen_greedy_pauli_simp()</h2>
+<a id="a0f60986ed594bd522e1d52a192b6b098" name="a0f60986ed594bd522e1d52a192b6b098"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f60986ed594bd522e1d52a192b6b098">&#9670;&#160;</a></span>gen_greedy_pauli_simp()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -12320,13 +12320,37 @@ template&lt;arithmetic T&gt; </div>
           <td class="memname"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> tket::gen_greedy_pauli_simp </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>discount_rate</em>, </td>
+          <td class="paramname"><em>discount_rate</em> = <code>0.7</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>depth_weight</em>&#160;</td>
+          <td class="paramname"><em>depth_weight</em> = <code>0.3</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>max_lookahead</em> = <code>500</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>max_tqe_candidates</em> = <code>500</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>seed</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>allow_zzphase</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -12341,6 +12365,10 @@ template&lt;arithmetic T&gt; </div>
   <table class="params">
     <tr><td class="paramname">discount_rate</td><td></td></tr>
     <tr><td class="paramname">depth_weight</td><td></td></tr>
+    <tr><td class="paramname">max_lookahead</td><td></td></tr>
+    <tr><td class="paramname">max_tqe_candidates</td><td></td></tr>
+    <tr><td class="paramname">seed</td><td></td></tr>
+    <tr><td class="paramname">allow_zzphase</td><td></td></tr>
   </table>
   </dd>
 </dl>
@@ -12699,7 +12727,7 @@ template&lt;arithmetic T&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l01068">1068</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l01093">1093</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -12729,7 +12757,7 @@ template&lt;arithmetic T&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l01049">1049</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l01074">1074</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -13586,7 +13614,7 @@ circuit has no symbolic parameters</dd></dl>
 <p>If squash=true (default), the <code><a class="el" href="namespacetket.html#aeefc21d2bb61add1f89468ef9e61ee3a" title="Turns all PhasedX and NPhasedX gates into global gates.">GlobalisePhasedX()</a>.apply</code> method will always return true. For squash=false, <code>apply()</code> will return true if the circuit was changed and false otherwise.</p>
 <p>It is not recommended to use this pass with symbolic expressions, as in certain cases a blow-up in symbolic expression sizes may occur. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l01109">1109</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l01134">1134</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -17286,7 +17314,7 @@ template&lt;&gt; </div>
 
 <p>Builds a sequence of PauliSimp (gen_synthesise_pauli_graph) and FullPeepholeOptimise. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l01103">1103</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l01128">1128</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -18467,7 +18495,7 @@ template&lt;&gt; </div>
 <p>@ pre n &lt; 32</p>
 <dl class="section return"><dt>Returns</dt><dd>compilation pass that performs rounding </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l01124">1124</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l01149">1149</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>

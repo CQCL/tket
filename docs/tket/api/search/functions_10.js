@@ -11,7 +11,7 @@ var searchData=
   ['qubit_5fcreate_5fall_8',['qubit_create_all',['../classtket_1_1Circuit.html#a0b3750f7bc4c7b0e37cc2c5a4a90d3d0',1,'tket::Circuit']]],
   ['qubit_5fdiscard_9',['qubit_discard',['../classtket_1_1Circuit.html#aa9a68fb9f0a4deca79699ab9aac40274',1,'tket::Circuit']]],
   ['qubit_5fdiscard_5fall_10',['qubit_discard_all',['../classtket_1_1Circuit.html#a32bad492a9936e4ec02c62e1afe65a61',1,'tket::Circuit']]],
-  ['qubit_5findex_11',['qubit_index',['../classtket_1_1Circuit.html#ae8154cf85cfa25d94bebaa0e1d8a5a8e',1,'tket::Circuit']]],
+  ['qubit_5findex_11',['qubit_index',['../classtket_1_1Circuit.html#ae8154cf85cfa25d94bebaa0e1d8a5a8e',1,'tket::Circuit::qubit_index()'],['../classtket_1_1Transforms_1_1GreedyPauliSimp_1_1PauliPropagation.html#a8f0e801b61032059058bbd3b9cb99d00',1,'tket::Transforms::GreedyPauliSimp::PauliPropagation::qubit_index()']]],
   ['qubit_5fpath_5fvertices_12',['qubit_path_vertices',['../classtket_1_1Circuit.html#a033a777a8ba781b40a9bda9aeb4db418',1,'tket::Circuit']]],
   ['qubit_5freadout_13',['qubit_readout',['../classtket_1_1Circuit.html#a285d65e0b4b5d6aa2e9513ad95c70b8e',1,'tket::Circuit']]],
   ['qubit_5fto_5fbit_5fmap_14',['qubit_to_bit_map',['../classtket_1_1Circuit.html#a56060e34bb66448943e5de78237bf674',1,'tket::Circuit']]],

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['i_0',['I',['../namespacetket.html#a342a289d54f4f5f5a405373c07aca66aaa2fe267746e0e15b799ccea11e855878',1,'tket']]],
+  ['i_0',['i',['../namespacetket.html#a342a289d54f4f5f5a405373c07aca66aaa2fe267746e0e15b799ccea11e855878',1,'tket::I'],['../namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a5475cf1499006a0913f48a322b4ebd87add7536794b63bf90eccfd37f9b147d7f',1,'tket::Transforms::GreedyPauliSimp::I']]],
   ['ilo_1',['ilo',['../namespacetket.html#a72f88f920d51eb69a8614990da593fa6aeb211843251cc3ba399a91150d48c5e8',1,'tket']]],
   ['implicitpermutation_2',['ImplicitPermutation',['../classtket_1_1Circuit.html#a80fa413c88ea82abce86d16c8f220559a3a35dc7dda479fbb390efd74f97d77f1',1,'tket::Circuit']]],
   ['in_3',['In',['../namespacetket.html#ada996db81e915837fb2a8b96ab83d3fdaefeb369cccbd560588a756610865664c',1,'tket']]],

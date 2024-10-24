@@ -30,7 +30,9 @@ var searchData=
   ['graphplacement_2ecpp_27',['GraphPlacement.cpp',['../GraphPlacement_8cpp.html',1,'']]],
   ['graphroutines_2ecpp_28',['GraphRoutines.cpp',['../GraphRoutines_8cpp.html',1,'']]],
   ['graphroutines_2ehpp_29',['GraphRoutines.hpp',['../GraphRoutines_8hpp.html',1,'']]],
-  ['greedypaulioptimisation_2ecpp_30',['GreedyPauliOptimisation.cpp',['../GreedyPauliOptimisation_8cpp.html',1,'']]],
-  ['greedypaulioptimisation_2ehpp_31',['GreedyPauliOptimisation.hpp',['../GreedyPauliOptimisation_8hpp.html',1,'']]],
-  ['greedypaulioptimisationlookuptables_2ehpp_32',['GreedyPauliOptimisationLookupTables.hpp',['../GreedyPauliOptimisationLookupTables_8hpp.html',1,'']]]
+  ['greedypauliconverters_2ecpp_30',['GreedyPauliConverters.cpp',['../GreedyPauliConverters_8cpp.html',1,'']]],
+  ['greedypauliops_2ecpp_31',['GreedyPauliOps.cpp',['../GreedyPauliOps_8cpp.html',1,'']]],
+  ['greedypaulioptimisation_2ecpp_32',['GreedyPauliOptimisation.cpp',['../GreedyPauliOptimisation_8cpp.html',1,'']]],
+  ['greedypaulioptimisation_2ehpp_33',['GreedyPauliOptimisation.hpp',['../GreedyPauliOptimisation_8hpp.html',1,'']]],
+  ['greedypaulioptimisationlookuptables_2ehpp_34',['GreedyPauliOptimisationLookupTables.hpp',['../GreedyPauliOptimisationLookupTables_8hpp.html',1,'']]]
 ];
