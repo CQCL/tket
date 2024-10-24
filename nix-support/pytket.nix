@@ -73,7 +73,7 @@ in {
       } $out/lib/python${super.python3.pythonVersion}/site-packages/pytket/circuit/display/static;
     '';
     checkInputs = with super.python3.pkgs; [
-      mypy
+      self.mypy'
       pytest
       pytest-cov
       pytest-benchmark
