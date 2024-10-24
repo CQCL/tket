@@ -429,7 +429,7 @@ unit_map_t Circuit::flatten_registers() {
   for (const BoundaryElement& el : boundary.get<TagID>()) {
     if (el.type() == UnitType::Qubit) {
       rename_map.insert({el.id_, Qubit(q_index++)});
-    } else {
+    } else if (el.type() == UnitType::Bit) {
       rename_map.insert({el.id_, Bit(c_index++)});
     }
   }
