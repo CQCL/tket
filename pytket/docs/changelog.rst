@@ -9,8 +9,8 @@ Features:
 * Add new `ClExprOp` operation type as an alternative to `ClassicalExpBox`; add
   option to use this when converting from QASM.
 * Several updates to `GreedyPauliSimp`:
-  * Support for mid-circuit measurements, resets, conditionals,
-    and classical gates.
+
+  * Support for mid-circuit measurements, resets, conditionals, and classical gates.
   * New parameters `max_lookahead` and `max_tqe_candidates` are added
     to limit the search space.
   * New parameter `seed` is added to support random sampling and tie breaking.
