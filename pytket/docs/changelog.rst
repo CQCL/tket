@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Fixes:
+
+* Fix `symbol_substitution` not preserving opgroups.
+
 1.34.0 (October 2024)
 ---------------------
 
