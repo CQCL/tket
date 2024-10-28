@@ -177,7 +177,7 @@ void Circuit::symbol_substitution(const SymEngine::map_basic_basic sub_map) {
   BGL_FORALL_VERTICES(v, dag, DAG) {
     Op_ptr new_op = get_Op_ptr_from_Vertex(v)->symbol_substitution(sub_map);
     if (new_op) {
-      dag[v] = {new_op};
+      dag[v] = {new_op, dag[v].opgroup};
     }
   }
   phase = phase.subs(sub_map);
