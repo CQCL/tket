@@ -166,7 +166,8 @@
             "CnXPairwiseDecomposition",
             "RemoveImplicitQubitPermutation",
             "RoundAngles",
-            "GreedyPauliSimp"
+            "GreedyPauliSimp",
+            "LightSABREPass"
           ],
           "description": "The name of the compiler pass. Matches the name of the pytket method used to generate it. List all the passes as enum."
         },
@@ -373,6 +374,11 @@
         "allow_zzphase": {
           "type": "boolean",
           "definition": "parameter controlling the use of ZZPhase gates in \"GreedyPauliSimp\""
+        },
+        
+        "optimisation_level": {
+          "type": "number",
+          "definition": "parameter equal to 0,1 or 2 that effects the amount of random trials in \"LightSABREPass\""
         }
       },
       "required": [
@@ -908,6 +914,27 @@
             "maxProperties": 7
           }
         },
+
+
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "LightSABREPass"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "architecture",
+              "seed",
+              "optimisation_level"
+            ],
+            "maxProperties": 4
+          }
+        },
+
+
         {
           "if": {
             "properties": {
