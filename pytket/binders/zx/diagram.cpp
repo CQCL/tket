@@ -278,7 +278,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           py::arg("v"), py::arg("gen"))
       .def(
           "get_wire_qtype",
-          (QuantumType(ZXDiagram::*)(const Wire&) const)&ZXDiagram::get_qtype,
+          (QuantumType(ZXDiagram::*)(const Wire&) const) & ZXDiagram::get_qtype,
           "Returns the :py:class:`QuantumType` of the given wire.",
           py::arg("w"))
       .def(

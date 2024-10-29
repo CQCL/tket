@@ -100,8 +100,8 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("other"))
       .def(
           "to_sparse_matrix",
-          (CmplxSpMat(SpPauliString::*)(void)
-               const)&SpPauliString::to_sparse_matrix,
+          (CmplxSpMat(SpPauliString::*)(void) const) &
+              SpPauliString::to_sparse_matrix,
           "Represents the sparse string as a dense string (without "
           "padding for extra qubits) and generates the matrix for the "
           "tensor. Uses the ILO-BE convention, so ``Qubit(\"a\", 0)`` "
@@ -110,8 +110,8 @@ PYBIND11_MODULE(pauli, m) {
           "\n\n:return: a sparse matrix corresponding to the operator")
       .def(
           "to_sparse_matrix",
-          (CmplxSpMat(SpPauliString::*)(const unsigned)
-               const)&SpPauliString::to_sparse_matrix,
+          (CmplxSpMat(SpPauliString::*)(const unsigned) const) &
+              SpPauliString::to_sparse_matrix,
           "Represents the sparse string as a dense string over "
           "`n_qubits` qubits (sequentially indexed from 0 in the "
           "default register) and generates the matrix for the tensor. "
@@ -137,8 +137,8 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("qubits"))
       .def(
           "dot_state",
-          (Eigen::VectorXcd(SpPauliString::*)(const Eigen::VectorXcd &)
-               const)&SpPauliString::dot_state,
+          (Eigen::VectorXcd(SpPauliString::*)(const Eigen::VectorXcd &) const) &
+              SpPauliString::dot_state,
           "Performs the dot product of the state with the pauli string. "
           "Maps the qubits of the statevector with sequentially-indexed "
           "qubits in the default register, with ``Qubit(0)`` being the "
