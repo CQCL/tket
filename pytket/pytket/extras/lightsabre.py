@@ -21,10 +21,10 @@ from typing import (
     Tuple,
 )
 
-from qiskit import (
+from qiskit import ( # type: ignore
     QuantumCircuit,
 )
-from qiskit import qasm2
+from qiskit import qasm2 # type: ignore
 
 from qiskit.transpiler import PassManager, CouplingMap  # type: ignore
 from qiskit.transpiler.preset_passmanagers.builtin_plugins import SabreLayoutPassManager  # type: ignore
