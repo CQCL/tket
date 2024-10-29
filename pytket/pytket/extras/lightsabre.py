@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-"""Methods to allow conversion between Qiskit and pytket circuit classes"""
+"""Methods to route TKET circuits using Qiskit routing"""
 
 from typing import (
     Callable,
@@ -24,6 +24,7 @@ from typing import (
 from qiskit import (
     QuantumCircuit,
 )
+from qiskit import qasm2
 
 from qiskit.transpiler import PassManager, CouplingMap  # type: ignore
 from qiskit.transpiler.preset_passmanagers.builtin_plugins import SabreLayoutPassManager  # type: ignore
@@ -34,7 +35,9 @@ from pytket.circuit import (
     Node,
 )
 
+from pytket.qasm import circuit_to_qasm_str, circuit_from_qasm_str
 from pytket.architecture import Architecture
+
 
 def _architecture_to_couplingmap(architecture: Architecture) -> CouplingMap:
     """
@@ -64,11 +67,11 @@ def _gen_lightsabre_transformation(
     seed=0,
 ) -> Callable[Circuit, Circuit]:
     """
-    Generates a function that can be passed to CustomPass for running
-    LightSABRE routing.
+    Generates a function that can be used in a Transform to make a PassPtr that
+    uses LightSABRE routing.
 
-    :param coupling_map: Architecture LightSABRE routes circuits to match
-    :param optimisation_level: Corresponds to qiskit optmization levels
+    :param architecture: Architecture LightSABRE routes circuits to match
+    :param optimisation_level: Corresponds to qiskit optmisation levels
     :param seed: LightSABRE routing is stochastic, with this parameter setting the seed
     """
     config: PassManagerConfig = PassManagerConfig(
@@ -81,7 +84,13 @@ def _gen_lightsabre_transformation(
         sabre_pass: PassManager = SabreLayoutPassManager().pass_manager(
             config, optimisation_level=optimisation_level
         )
-        c: Circuit = qiskit_to_tk(sabre_pass.run(tk_to_qiskit(circuit)))
+        c: Circuit = circuit_from_qasm_str(
+            qasm2.dumps(
+                sabre_pass.run(
+                    QuantumCircuit.from_qasm_str(circuit_to_qasm_str(circuit))
+                )
+            )
+        )
         c.remove_blank_wires()
         c.rename_units({q: Node(q.index[0]) for q in c.qubits})
         return c

@@ -26,36 +26,38 @@
 #include "typecast.hpp"
 
 namespace tket {
-    
+
 namespace py = pybind11;
 using json = nlohmann::json;
 
-Transform lightsabre_transform(const Architecture& arc, unsigned seed, unsigned, optimisation_level) {
-  return Transform([=](Circuit &circ) {
+Transform lightsabre_transform(
+    const Architecture& arc, unsigned seed, unsigned optimisation_level) {
+  return Transform([=](Circuit& circ) {
     py::module lightsabre_module =
         py::module::import("pytket.extras.lightsabre");
     py::object lightsabre_transform =
         lightsabre_module.attr("_gen_lightsabre_transformation");
-    circ = lightsabre_transform(circ, optimisation_level, seed).cast<Circuit>();
+    circ = cast<Circuit>(
+        lightsabre_transform(arc, optimisation_level, seed)(circ));
     return true;
   });
 }
 
-PassPtr lightsabre_routing(const Architecture& arc, unsigned seed, unsigned, optimisation_level){
-    // construct pass
-    Transform t = lightsabre_transform(arc, seed, optimisation_level) >> Transforms::decompose_CX_directed(arc);
-    PassPtr lightsabre = std::make_shared<StandardPass>(precons, t, postcons, j);
-    PassPtr rebase_pass = gen_auto_rebase_pass({OpType::CX, OpType::SX, OpType::Rz, OpType::X, OpType::TK1}, false);
+PassPtr lightsabre_routing(
+    const Architecture& arc, unsigned seed, unsigned optimisation_level) {
+  // construct pass
+  Transform t = lightsabre_transform(arc, seed, optimisation_level) >>
+                Transforms::decompose_CX_directed(arc);
 
-    // construct pre-conditions
-    PredicatePtr twoqbpred = std::make_shared<MaxTwoQubitGatesPredicate>();
-    PredicatePtr n_qubit_pred =
-        std::make_shared<MaxNQubitsPredicate>(arc.n_nodes());
-    PredicatePtrMap precons{
-        CompilationUnit::make_type_pair(twoqbpred),
-        CompilationUnit::make_type_pair(n_qubit_pred)};
+  // construct pre-conditions
+  PredicatePtr twoqbpred = std::make_shared<MaxTwoQubitGatesPredicate>();
+  PredicatePtr n_qubit_pred =
+      std::make_shared<MaxNQubitsPredicate>(arc.n_nodes());
+  PredicatePtrMap precons{
+      CompilationUnit::make_type_pair(twoqbpred),
+      CompilationUnit::make_type_pair(n_qubit_pred)};
 
-// construct post-conditions
+  // construct post-conditions
   PredicatePtr postcon1 = std::make_shared<ConnectivityPredicate>(arc);
   std::pair<const std::type_index, PredicatePtr> pair1 =
       CompilationUnit::make_type_pair(postcon1);
@@ -69,23 +71,27 @@ PassPtr lightsabre_routing(const Architecture& arc, unsigned seed, unsigned, opt
       {typeid(MaxTwoQubitGatesPredicate), Guarantee::Clear}};
   PostConditions pc{s_postcons, g_postcons, Guarantee::Preserve};
 
-// config for json
-nlohmann::json j;
-j["name"] = "LightSABREPass";
-j["architecture"] = arc;
-j["seed"] = seed;
-j["optimisation_level"] = "optimisation_level"
-    return std::make_shared<StandardPass>(precons, rebase_pass >> lightsabre, pc, j);
+  // config for json
+  nlohmann::json j;
+  j["name"] = "LightSABREPass";
+  j["architecture"] = arc;
+  j["seed"] = seed;
+  j["optimisation_level"] = "optimisation_level";
+
+  PassPtr lightsabre_pass = std::make_shared<StandardPass>(precons, t, pc, j);
+  PassPtr rebase_pass = gen_auto_rebase_pass(
+      {OpType::CX, OpType::SX, OpType::Rz, OpType::X, OpType::TK1}, false);
+  return rebase_pass >> lightsabre_pass;
 }
 
-PYBIND11_MODULE(extras, m){
-    py::module_::import("pytket._tket.passes");
-    m.def(
-        "LightSABRE", &lightsabre_routing,
-        "Routes circuits to a given architecture using the LightSABRE method "
-        "available in Qiskit.",
-        py::arg("architecture"), py::arg("seed")=0, py::arg("optimisation_level")=2;
-    )
+PYBIND11_MODULE(extras, m) {
+  py::module_::import("pytket._tket.passes");
+  m.def(
+      "LightSABRE", &lightsabre_routing,
+      "Routes circuits to a given architecture using the LightSABRE method "
+      "available in Qiskit.",
+      py::arg("architecture"), py::arg("seed") = 0,
+      py::arg("optimisation_level") = 2);
 }
 
-} // namespace tket
+}  // namespace tket

@@ -47,6 +47,7 @@ binders = [
     "zx",
     "placement",
     "architecture",
+    "extras",
 ]
 
 
@@ -199,6 +200,7 @@ setup(
         "jinja2 >= 3.1.4",
         "typing-extensions >= 4.12.2",
         "qwasm >= 1.0.1",
+        "qiskit >= 1.2.4",
     ],
     extras_require={
         "ZX": [
