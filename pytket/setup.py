@@ -47,7 +47,6 @@ binders = [
     "zx",
     "placement",
     "architecture",
-    "extras",
 ]
 
 

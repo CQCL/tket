@@ -82,7 +82,7 @@ def _gen_lightsabre_transformation(
 
     def lightsabre(circuit: Circuit) -> Circuit:
         sabre_pass: PassManager = SabreLayoutPassManager().pass_manager(
-            config, optimisation_level=optimisation_level
+            config, optimization_level=optimisation_level
         )
         c: Circuit = circuit_from_qasm_str(
             qasm2.dumps(

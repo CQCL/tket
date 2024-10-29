@@ -176,9 +176,6 @@ target_include_directories(tableau PRIVATE binders/include)
 target_link_libraries(tableau PRIVATE ${lib_deps})
 
 
-pybind11_add_module(extras binders/extras.cpp ${HEADER_FILES})
-target_include_directories(extras PRIVATE binders/include)
-target_link_libraries(extras PRIVATE ${lib_deps})
 
 pybind11_add_module(zx
     binders/zx/diagram.cpp
@@ -203,6 +200,5 @@ install(TARGETS
     transform
     unit_id
     utils_serialization
-    extras
     zx
     LIBRARY DESTINATION lib)
