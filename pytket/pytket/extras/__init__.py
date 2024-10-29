@@ -15,4 +15,4 @@
 """Module exposing extra TKET functionality"""
 
 from pytket._tket.extras import *
-from .lightsabre import 
+from .lightsabre import _gen_lightsabre_transformation
