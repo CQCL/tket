@@ -1527,16 +1527,15 @@ class QasmWriter:
         bits = args[:-1]
         variable = args[0].reg_name
         dest_bit = str(args[-1])
-        if not hqs_header(self.header):
-            assert isinstance(variable, str)
-            if op.n_inputs != self.cregs[variable].size:
-                raise QASMUnsupportedError(
-                    "OpenQASM conditions must be an entire classical register"
-                )
-            if bits != self.cregs[variable].to_list():
-                raise QASMUnsupportedError(
-                    "OpenQASM conditions must be a single classical register"
-                )
+        assert isinstance(variable, str)
+        if op.n_inputs != self.cregs[variable].size:
+            raise QASMUnsupportedError(
+                "RangePredicate conditions must be an entire classical register"
+            )
+        if bits != self.cregs[variable].to_list():
+            raise QASMUnsupportedError(
+                "RangePredicate conditions must be a single classical register"
+            )
         label = self.strings.add_string(
             "".join(
                 [
