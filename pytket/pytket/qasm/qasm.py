@@ -1792,9 +1792,9 @@ class QasmWriter:
                     input_regs[i] = creg
                     break
             else:
-                raise QASMUnsupportedError(
-                    f"ClExprOp ({wexpr}) contains a register variable (r{i}) "
-                    "that is not wired to any BitRegister in the circuit."
+                assert (
+                    not f"ClExprOp ({wexpr}) contains a register variable (r{i}) that "
+                    "is not wired to any BitRegister in the circuit."
                 )
         # 2. Write the left-hand side of the assignment.
         output_repr: Optional[str] = None
@@ -1812,6 +1812,8 @@ class QasmWriter:
             for creg in all_cregs:
                 if creg.to_list() == output_args:
                     output_repr = creg.name
+                    break
+            assert output_repr is not None
         self.strings.add_string(f"{output_repr} = ")
         # 3. Write the right-hand side of the assignment.
         self.strings.add_string(
