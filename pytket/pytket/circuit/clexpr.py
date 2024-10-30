@@ -175,7 +175,9 @@ def check_register_alignments(circ: Circuit) -> bool:
     :param circ: circuit to check
     :return: True iff all `ClExprOp` operations are register-aligned
     """
-    cregs: set(tuple[Bit]) = set(tuple(creg.to_list()) for creg in circ.c_registers)
+    cregs: set[tuple[Bit, ...]] = set(
+        tuple(creg.to_list()) for creg in circ.c_registers
+    )
     for cmd in circ:
         op = cmd.op
         if op.type == OpType.ClExpr:

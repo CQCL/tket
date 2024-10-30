@@ -69,7 +69,11 @@ from pytket.circuit import (
     QubitRegister,
     UnitID,
 )
-from pytket.circuit.clexpr import has_reg_output, wired_clexpr_from_logic_exp
+from pytket.circuit.clexpr import (
+    check_register_alignments,
+    has_reg_output,
+    wired_clexpr_from_logic_exp,
+)
 from pytket.circuit.decompose_classical import int_to_bools
 from pytket.circuit.logic_exp import (
     BitLogicExp,
@@ -1136,6 +1140,11 @@ def check_can_convert_circuit(circ: Circuit, header: str, maxwidth: int) -> None
             raise QASMUnsupportedError(
                 f"Empty CustomGates and opaque gates are not supported."
             )
+    if not check_register_alignments(circ):
+        raise QASMUnsupportedError(
+            "Circuit contains classical expressions on registers whose arguments or "
+            "outputs are not register-aligned."
+        )
 
 
 def circuit_to_qasm_str(
