@@ -74,6 +74,7 @@ from pytket.circuit.decompose_classical import int_to_bools
 from pytket.circuit.logic_exp import (
     BitLogicExp,
     BitWiseOp,
+    BitNot,
     PredicateExp,
     LogicExp,
     RegEq,
@@ -1655,9 +1656,41 @@ class QasmWriter:
             # Conditional phase is ignored.
             return
         if op.op.type == OpType.RangePredicate:
-            raise QASMUnsupportedError(
-                "Conditional RangePredicate is currently unsupported."
+            # Special handling for nested ifs
+            # if condition
+            #   if pred dest = 1
+            #   if not pred dest = 0
+            # can be written as
+            # if condition s0 = 1
+            # if pred s1 = 1
+            # s2 = s0 & s1
+            # s3 = s0 & ~s1
+            # if s2 dest = 1
+            # if s3 dest = 0
+            # where s0, s1, s2, and s3 are scratch bits
+            s0 = self.fresh_scratch_bit()
+            l = self.strings.add_string(f"{s0} = 1;\n")
+            # we store the condition in self.strings.conditions
+            # as it can be later replaced by `replace_condition`
+            # if possible
+            self.strings.conditions[l] = ConditionString(variable, "==", op.value)
+            # output the RangePredicate to s1
+            s1 = self.fresh_scratch_bit()
+            self.check_range_predicate(op.op, args[op.width :])
+            pred_comparator, pred_value = _parse_range(
+                op.op.lower, op.op.upper, self.maxwidth
             )
+            pred_variable = args[op.width :][0].reg_name
+            self.strings.add_string(
+                f"if({pred_variable}{pred_comparator}{pred_value}) {s1} = 1;\n"
+            )
+            s2 = self.fresh_scratch_bit()
+            self.strings.add_string(f"{s2} = {s0} & {s1};\n")
+            s3 = self.fresh_scratch_bit()
+            self.strings.add_string(f"{s3} = {s0} & (~ {s1});\n")
+            self.strings.add_string(f"if({s2}==1) {args[-1]} = 1;\n")
+            self.strings.add_string(f"if({s3}==1) {args[-1]} = 0;\n")
+            return
         # we assign the condition to a scratch bit, which we will later remove
         # if the condition variable is unchanged.
         scratch_bit = self.fresh_scratch_bit()
