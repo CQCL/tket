@@ -74,7 +74,6 @@ from pytket.circuit.decompose_classical import int_to_bools
 from pytket.circuit.logic_exp import (
     BitLogicExp,
     BitWiseOp,
-    BitNot,
     PredicateExp,
     LogicExp,
     RegEq,
