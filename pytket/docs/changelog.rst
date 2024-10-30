@@ -7,6 +7,7 @@ Unreleased
 Fixes:
 
 * Fix `symbol_substitution` not preserving opgroups.
+* Remove hardware inefficient circuit construction in `_tk1_to_rzsx`
 
 1.34.0 (October 2024)
 ---------------------
