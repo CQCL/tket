@@ -1518,24 +1518,27 @@ class QasmWriter:
         else:
             self.variable_writes[label] = [written_variable]
 
-    def add_range_predicate(self, op: RangePredicateOp, args: List[Bit]) -> None:
-        comparator, value = _parse_range(op.lower, op.upper, self.maxwidth)
-        if (not hqs_header(self.header)) and comparator != "==":
+    def check_range_predicate(self, op: RangePredicateOp, args: List[Bit]) -> None:
+        if (not hqs_header(self.header)) and op.lower != op.upper:
             raise QASMUnsupportedError(
                 "OpenQASM conditions must be on a register's fixed value."
             )
-        bits = args[:-1]
         variable = args[0].reg_name
-        dest_bit = str(args[-1])
         assert isinstance(variable, str)
         if op.n_inputs != self.cregs[variable].size:
             raise QASMUnsupportedError(
                 "RangePredicate conditions must be an entire classical register"
             )
-        if bits != self.cregs[variable].to_list():
+        if args[:-1] != self.cregs[variable].to_list():
             raise QASMUnsupportedError(
                 "RangePredicate conditions must be a single classical register"
             )
+
+    def add_range_predicate(self, op: RangePredicateOp, args: List[Bit]) -> None:
+        self.check_range_predicate(op, args)
+        comparator, value = _parse_range(op.lower, op.upper, self.maxwidth)
+        variable = args[0].reg_name
+        dest_bit = str(args[-1])
         label = self.strings.add_string(
             "".join(
                 [
