@@ -16,10 +16,13 @@ from dataclasses import dataclass
 from pytket.circuit import (
     Bit,
     BitRegister,
+    Circuit,
     ClBitVar,
     ClExpr,
+    ClExprOp,
     ClOp,
     ClRegVar,
+    OpType,
     WiredClExpr,
 )
 from pytket.circuit.logic_exp import Ops, BitWiseOp, RegWiseOp, LogicExp
@@ -161,3 +164,30 @@ def wired_clexpr_from_logic_exp(
         ),
         args,
     )
+
+
+def check_register_alignments(circ: Circuit) -> bool:
+    """Check whether all `ClExprOp` operations in the circuit are register-aligned.
+
+    This means that all register variables and outputs occurring in `ClExprOp` comprise
+    whole registers with the bits in the correct order.
+
+    :param circ: circuit to check
+    :return: True iff all `ClExprOp` operations are register-aligned
+    """
+    cregs: set(tuple[Bit]) = set(tuple(creg.to_list()) for creg in circ.c_registers)
+    for cmd in circ:
+        op = cmd.op
+        if op.type == OpType.ClExpr:
+            assert isinstance(op, ClExprOp)
+            wexpr: WiredClExpr = op.expr
+            args = cmd.args
+            if any(
+                tuple(args[i] for i in poslist) not in cregs
+                for poslist in wexpr.reg_posn.values()
+            ) or (
+                has_reg_output(wexpr.expr.op)
+                and tuple(args[i] for i in wexpr.output_posn) not in cregs
+            ):
+                return False
+    return True
