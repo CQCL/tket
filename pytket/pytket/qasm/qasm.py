@@ -1158,12 +1158,12 @@ def circuit_to_qasm_str(
     :return: qasm string
     """
 
-    check_can_convert_circuit(circ, header, maxwidth)
     qasm_writer = QasmWriter(
         circ.qubits, circ.bits, header, include_gate_defs, maxwidth
     )
     circ1 = circ.copy()
     DecomposeBoxes().apply(circ1)
+    check_can_convert_circuit(circ1, header, maxwidth)
     for command in circ1:
         assert isinstance(command, Command)
         qasm_writer.add_op(command.op, command.args)
