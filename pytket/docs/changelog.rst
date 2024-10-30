@@ -7,6 +7,7 @@ Unreleased
 Fixes:
 
 * Fix `symbol_substitution` not preserving opgroups.
+* Support converting conditional `RangePredicate`s to QASM.
 
 1.34.0 (October 2024)
 ---------------------
