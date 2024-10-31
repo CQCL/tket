@@ -1675,7 +1675,8 @@ class QasmWriter:
             self.strings.conditions[l] = ConditionString(variable, "==", op.value)
             # output the RangePredicate to s1
             s1 = self.fresh_scratch_bit()
-            self.check_range_predicate(op.op, args[op.width :])
+            assert isinstance(op.op, RangePredicateOp)
+            self.check_range_predicate(op.op, cast(List[Bit], args[op.width :]))
             pred_comparator, pred_value = _parse_range(
                 op.op.lower, op.op.upper, self.maxwidth
             )
