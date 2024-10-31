@@ -2,11 +2,11 @@ pytket
 ======
 
 ``pytket`` is a python module for interfacing with tket, a quantum computing toolkit and optimising compiler developed by `Quantinuum`_. We currently support circuits and device architectures from
-`numerous providers <https://tket.quantinuum.com/api-docs/extensions>`_, allowing the
+`numerous providers <https://docs.quantinuum.com/tket/api-docs/extensions>`_, allowing the
 tket tools to be used in conjunction with projects on their platforms.
 
-``pytket`` is available for Python 3.10, 3.11 and 3.12, on Linux, MacOS and
-Windows. To install, run
+``pytket`` is available for Python 3.10, 3.11, 3.12 and 3.13, on Linux, MacOS
+and Windows. To install, run
 
 ::
 
@@ -24,12 +24,12 @@ Windows. To install, run
     `pip install types-pkg-resources==0.1.3 pytket==<set version>` 
 
 
-If you have issues installing ``pytket`` please visit the `installation troubleshooting <https://tket.quantinuum.com/api-docs/install.html>`_ page.
+If you have issues installing ``pytket`` please visit the `installation troubleshooting <https://docs.quantinuum.com/tket/api-docs/install.html>`_ page.
 
 To use ``pytket``, you can simply import the appropriate modules into your python code or in an interactive Python notebook. We can build circuits directly using the ``pytket`` interface by creating a blank circuit and adding gates in the order we want to apply them.
 
-See the `Getting Started`_ page for a basic tutorial on using
-``pytket``. To get more in depth on features, see the `examples`_. See the `pytket user guide <https://tket.quantinuum.com/user-guide/>`_ for an extensive introduction to ``pytket`` functionality and how to use it.
+See the `Getting Started <getting_started.html>`_ page for a basic tutorial on using
+``pytket``. To get more in depth on features, see the `pytket user guide <https://docs.quantinuum.com/tket/user-guide/>`_ for an extensive introduction to ``pytket`` functionality and how to use it.
 
 Extensions
 ~~~~~~~~~~
@@ -48,7 +48,7 @@ To install the ``pytket-quantinuum`` package use the following command.
     pip install pytket-quantinuum
 
 The extensions supported by tket are described
-`here <https://tket.quantinuum.com/api-docs/extensions>`_.
+`here <extensions.html>`_.
 
 How to cite
 ~~~~~~~~~~~
@@ -80,8 +80,6 @@ LICENCE
 
 Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0>`_.
 
-.. _Getting Started: getting_started.html
-.. _examples: https://tket.quantinuum.com/examples
 .. _Quantinuum: https://www.quantinuum.com/
 
 .. toctree::
@@ -95,8 +93,8 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
 
 .. toctree::
     :caption: pytket extensions:
-    
-    extensions.rst
+
+    extensions.md
 
 .. toctree::
     :caption: API Reference:

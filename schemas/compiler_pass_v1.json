@@ -357,6 +357,22 @@
         "depth_weight": {
           "type": "number",
           "definition": "parameter controlling the degree of depth optimisation in \"GreedyPauliSimp\""
+        },
+        "max_lookahead": {
+          "type": "number",
+          "definition": "parameter controlling the lookahead when evaluating candidates in \"GreedyPauliSimp\""
+        },
+        "max_tqe_candidates": {
+          "type": "number",
+          "definition": "parameter controlling the number of candidates to evaluate in \"GreedyPauliSimp\""
+        },
+        "seed": {
+          "type": "number",
+          "definition": "parameter controlling the random sampling and tie breaking in \"GreedyPauliSimp\""
+        },
+        "allow_zzphase": {
+          "type": "boolean",
+          "definition": "parameter controlling the use of ZZPhase gates in \"GreedyPauliSimp\""
         }
       },
       "required": [
@@ -883,9 +899,13 @@
           "then": {
             "required": [
               "discount_rate",
-              "depth_weight"
+              "depth_weight",
+              "max_lookahead",
+              "max_tqe_candidates",
+              "seed",
+              "allow_zzphase"
             ],
-            "maxProperties": 3
+            "maxProperties": 7
           }
         },
         {

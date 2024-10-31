@@ -17,7 +17,7 @@
             (import ./nix-support/symengine.nix)
             (import ./nix-support/tket.nix)
             (import ./nix-support/third-party-python-packages.nix)
-            (import ./nix-support/pytket.nix)
+            (import ./nix-support/pytket.nix { package_version = "1.34.0"; })
           ];
         };
       in {

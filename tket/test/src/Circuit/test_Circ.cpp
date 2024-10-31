@@ -22,6 +22,7 @@
 #include "../testutil.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DAGDefs.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Gate/GatePtr.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
@@ -1291,6 +1292,36 @@ SCENARIO("Functions with symbolic ops") {
     REQUIRE(op2->get_type() == OpType::Rx);
     REQUIRE(test_equiv_val(op2->get_params()[0], 0.2));
     REQUIRE(op3->get_type() == OpType::Barrier);
+  }
+  GIVEN("A circuit with symbolic gates and boxes that belong to opgroups.") {
+    Sym asym = SymEngine::symbol("a");
+    Expr alpha(asym);
+    Sym bsym = SymEngine::symbol("b");
+    Expr beta(bsym);
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::Rx, alpha, {0}, "Rx");
+    Circuit inner_circ(2);
+    inner_circ.add_op<unsigned>(OpType::Rx, {alpha}, {0});
+    inner_circ.add_op<unsigned>(OpType::Ry, {beta}, {0});
+    auto cbox = CircBox(inner_circ);
+    circ.add_box(cbox, {0, 1}, "cbox");
+    DensePauliMap paulis0{Pauli::X, Pauli::X};
+    DensePauliMap paulis1{Pauli::Z, Pauli::X};
+    auto ppbox = PauliExpPairBox(
+        SymPauliTensor(paulis0, alpha), SymPauliTensor(paulis1, beta));
+    circ.add_box(ppbox, {0, 1}, "ppbox");
+    symbol_map_t symbol_map;
+    symbol_map[asym] = Expr(0.2);
+    symbol_map[bsym] = Expr(0.3);
+    circ.symbol_substitution(symbol_map);
+    REQUIRE(!circ.is_symbolic());
+    std::unordered_set<std::string> opgroups({"Rx", "cbox", "ppbox"});
+    REQUIRE(circ.get_opgroups() == opgroups);
+    std::vector<Command> cmds = circ.get_commands();
+    REQUIRE(cmds.size() == 3);
+    REQUIRE(cmds[0].get_opgroup().value() == "Rx");
+    REQUIRE(cmds[1].get_opgroup().value() == "cbox");
+    REQUIRE(cmds[2].get_opgroup().value() == "ppbox");
   }
 }
 

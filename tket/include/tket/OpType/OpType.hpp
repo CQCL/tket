@@ -775,7 +775,12 @@ enum class OpType {
   /**
    * See \ref DummyBox
    */
-  DummyBox
+  DummyBox,
+
+  /**
+   * Function defined over bits and sequences of bits treated as integers
+   */
+  ClExpr,
 };
 
 JSON_DECL(OpType)

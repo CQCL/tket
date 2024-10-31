@@ -1306,18 +1306,6 @@ static Circuit _tk1_to_rzsx(
     c.add_op<unsigned>(OpType::SX, {0});
     c.add_op<unsigned>(OpType::Rz, alpha, {0});
     correction_phase = int_half(beta - 0.5) - 0.25;
-  } else if (equiv_0(beta + 0.5) && equiv_0(alpha) && equiv_0(gamma)) {
-    // a = 2k, b = 2m-0.5, c = 2n
-    // Rz(2k)Rx(2m - 0.5)Rz(2n) = (-1)^{k+m+n}e^{i \pi /4} X.SX
-    if (allow_x) {
-      c.add_op<unsigned>(OpType::X, {0});
-    } else {
-      c.add_op<unsigned>(OpType::SX, {0});
-      c.add_op<unsigned>(OpType::SX, {0});
-    }
-    c.add_op<unsigned>(OpType::SX, {0});
-    correction_phase =
-        int_half(beta + 0.5) + int_half(alpha) + int_half(gamma) + 0.25;
   } else if (equiv_0(beta + 0.5)) {
     // SX.Rz(2m+0.5).SX = (-1)^{m}e^{i \pi /4} Rz(0.5).SX.Rz(0.5)
     c.add_op<unsigned>(OpType::Rz, gamma + 1, {0});

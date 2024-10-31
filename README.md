@@ -28,9 +28,9 @@ patchy) is available
 [here](https://cqcl.github.io/tket/tket/api/index.html).
 
 The `pytket` (Python) API documentation is available
-[here](https://tket.quantinuum.com/api-docs).
+[here](https://docs.quantinuum.com/tket/api-docs).
 
-For getting started using pytket, check out the [user manual and notebook examples](https://tket.quantinuum.com/user-guide/).
+For getting started using pytket, check out the [user manual and notebook examples](https://docs.quantinuum.com/tket/user-guide/).
 
 
 The source content for the manual and notebook examples can be found in the [pytket-docs repository](https://github.com/CQCL/pytket-docs).
@@ -39,7 +39,7 @@ The source content for the manual and notebook examples can be found in the [pyt
 
 In addition to the core pytket package there are pytket extension modules which allow pytket to interface with quantum devices and simulators. Some extensions also provide interoperability with other software libraries such as qiskit, cirq and pennylane.
 
-For a list of available pytket extensions see the [extensions index page](https://tket.quantinuum.com/api-docs/extensions).
+For a list of available pytket extensions see the [extensions index page](https://docs.quantinuum.com/tket/api-docs/extensions).
 
 These extensions are installed as separate python packages and the source code for each extension lives in its own github repository.
 
@@ -72,9 +72,9 @@ depend on the features they support. The compiler version can be controlled by
 setting `CC` and `CXX` in your environment (e.g. `CC=gcc-11` and `CXX=g++-11`),
 or on Debian-based Linux systems using `update-alternatives`.
 
-You should also have Python (3.10, 3.11 or 3.12) and `pip` installed. We use
-`cmake` and the package manager `conan` to build tket and pytket. The latter can
-be installed with `pip`:
+You should also have Python (3.10, 3.11, 3.12 or 3.13) and `pip` installed. We
+use `cmake` and the package manager `conan` to build tket and pytket. The latter
+can be installed with `pip`:
 
 ```shell
 pip install conan

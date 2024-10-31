@@ -286,11 +286,15 @@ jobs:
       if: github.event_name == 'schedule'
       uses: actions/setup-python@v5
       with:
-        python-version: '3.12'
+        python-version: '3.13'
     - name: Build pytket
       run: |
         cd pytket
-        pip install -e .[ZX] -v
+        if python --version | grep -q '3.13' ; then
+          pip install -e . -v
+        else
+          pip install -e .[ZX] -v
+        fi
     - name: Run doctests
       run: |
         cd pytket
@@ -312,18 +316,17 @@ jobs:
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       timeout-minutes: 20
       run: |
-        pip install poetry==1.6.1
+        pip install poetry>=1.8.1
+        poetry config virtualenvs.create false
         cd pytket/docs
         poetry install
-        cd ../../
-        poetry run -C pytket/docs ./.github/workflows/build-docs
-        
+        bash ./build-docs.sh
     - name: Upload artifact
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/upload-artifact@v4
       with:
         name: pytket_docs
-        path: pytket/docs/build/html/
+        path: pytket/docs/build/
     - name: Upload pytket coverage artefact
       if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
       uses: actions/upload-artifact@v4
@@ -400,11 +403,15 @@ jobs:
       if: github.event_name == 'schedule'
       uses: actions/setup-python@v5
       with:
-        python-version: '3.12'
+        python-version: '3.13'
     - name: Build pytket
       run: |
         cd pytket
-        python -m pip install -e .[ZX] -v
+        if python --version | grep -q '3.13' ; then
+          pip install -e . -v
+        else
+          pip install -e .[ZX] -v
+        fi
     - name: Run doctests
       run: |
         cd pytket
@@ -528,11 +535,16 @@ jobs:
       if: github.event_name == 'schedule'
       uses: actions/setup-python@v5
       with:
-        python-version: '3.12'
+        python-version: '3.13'
     - name: Build pytket
+      shell: bash
       run: |
         cd pytket
-        pip install -e .[ZX] -v
+        if python --version | grep -q '3.13' ; then
+          pip install -e . -v
+        else
+          pip install -e .[ZX] -v
+        fi
     - name: Run doctests
       run: |
         cd pytket

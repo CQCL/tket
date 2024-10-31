@@ -38,3 +38,5 @@ test-coverage
 result
 .envrc
 .direnv/
+*.jupyter_cache
+jupyter_execute/

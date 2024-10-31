@@ -220,6 +220,7 @@ target_sources(tket
         src/MeasurementSetup/MeasurementSetup.cpp
         src/Ops/BarrierOp.cpp
         src/Ops/ClassicalOps.cpp
+        src/Ops/ClExpr.cpp
         src/Ops/FlowOp.cpp
         src/Ops/MetaOp.cpp
         src/Ops/Op.cpp
@@ -256,6 +257,8 @@ target_sources(tket
         src/Transformations/ContextualReduction.cpp
         src/Transformations/Decomposition.cpp
         src/Transformations/GreedyPauliOptimisation.cpp
+        src/Transformations/GreedyPauliConverters.cpp
+        src/Transformations/GreedyPauliOps.cpp
         src/Transformations/MeasurePass.cpp
         src/Transformations/OptimisationPass.cpp
         src/Transformations/PauliOptimisation.cpp
@@ -377,6 +380,7 @@ target_sources(tket
         include/tket/MeasurementSetup/MeasurementSetup.hpp
         include/tket/Ops/BarrierOp.hpp
         include/tket/Ops/ClassicalOps.hpp
+        include/tket/Ops/ClExpr.hpp
         include/tket/Ops/FlowOp.hpp
         include/tket/Ops/MetaOp.hpp
         include/tket/Ops/Op.hpp

@@ -455,8 +455,19 @@ PYBIND11_MODULE(transform, m) {
           "gadgets that are further away. Default to 0.7."
           "\n:param depth_weight:  Degree of depth optimisation. Default to "
           "0.3."
+          "\n:param max_tqe_candidates:  Maximum number of 2-qubit Clifford "
+          "gate candidates to evaluate at each step. Default to 500."
+          "\n:param max_lookahead:  Maximum lookahead when evaluating each "
+          "Clifford gate candidate. Default to 500."
+          "\n:param seed:  Unsigned integer seed used for sampling candidates "
+          "and tie breaking. Default to 0."
+          "\n:param allow_zzphase: If set to True, allows the algorithm to "
+          "implement 2-qubit rotations using ZZPhase gates when deemed "
+          "optimal. Defaults to False."
           "\n:return: a pass to perform the simplification",
-          py::arg("discount_rate") = 0.7, py::arg("depth_weight") = 0.3)
+          py::arg("discount_rate") = 0.7, py::arg("depth_weight") = 0.3,
+          py::arg("max_tqe_candidates") = 500, py::arg("max_lookahead") = 500,
+          py::arg("seed") = 0, py::arg("allow_zzphase") = false)
       .def_static(
           "ZZPhaseToRz", &Transforms::ZZPhase_to_Rz,
           "Fixes all ZZPhase gate angles to [-1, 1) half turns.")

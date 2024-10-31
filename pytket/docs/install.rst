@@ -36,7 +36,7 @@ Installation FAQs
 Is there a build of ``pytket`` for my system?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The core pytket package, as well as the separate extension modules are available on PyPI. Wheels are built to work on Linux, MacOS and Windows with Python versions 3.10, 3.11, or 3.12, and ``pip`` version 20.0.0+.
+The core pytket package, as well as the separate extension modules are available on PyPI. Wheels are built to work on Linux, MacOS and Windows with Python versions 3.10, 3.11, 3.12 or 3.13, and ``pip`` version 20.0.0+.
 
 .. note::
     On M1-based Macs running in native (arm64) mode, this command may fail
@@ -70,7 +70,9 @@ At a couple of points in the development of the software, we had to increase the
 
 One possibility is that you are using an old version of ``pip`` that cannot accept the more recent Linux builds. Try running ``pip install --upgrade pip`` to upgrade it to the most recent version and upgrade ``pytket``.
 
-As of pytket release 1.24.0 installing the latest version of pytket requires python version 3.10, 3.11 or 3.12. If you have an older version of python then you will need to upgrade it to use the latest version of pytket and the extensions.
+As of pytket release 1.24.0 installing the latest version of pytket requires python version 3.10 or above. If you have an older version of python then you will need to upgrade it to use the latest version of pytket and the extensions.
+
+As of pytket release 1.34.0 MacOS 12 is no longer supported: please upgrade to MacOS 13 or above to use the latest version of pytket.
 
 There is a `known issue <https://github.com/CQCL/tket/issues/926>`_ with
 installing pytket in a conda environment on MacOS: you may not be able to
