@@ -846,6 +846,14 @@ def test_conditional_phase() -> None:
     assert any(any_check_list)
 
 
+def test_rz_sx_decomp() -> None:
+    c = Circuit(1).TK1(0, 1.5, 0, 0)
+    AutoRebase({OpType.CX, OpType.SX, OpType.Rz}).apply(c)
+    comp = Circuit(1).Rz(1, 0).SX(0).Rz(1, 0)
+    comp.add_phase(1.75)
+    assert c == comp
+
+
 def test_flatten_relabel_pass() -> None:
     c = Circuit(3)
     c.H(1).H(2)
@@ -1112,3 +1120,4 @@ if __name__ == "__main__":
     test_rebase_custom_tk2()
     test_selectively_decompose_boxes()
     test_clifford_push_through_measures()
+    test_rz_sx_decomp()
