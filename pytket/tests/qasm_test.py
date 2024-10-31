@@ -451,9 +451,9 @@ def test_opaque() -> None:
     c = circuit_from_qasm_str(
         'OPENQASM 2.0;\ninclude "qelib1.inc";\nqreg q[4];\nopaque myopaq() q1, q2;\n myopaq() q[0], q[1];'
     )
-    with pytest.raises(QASMUnsupportedError) as e:
-        circuit_to_qasm_str(c)
-    assert "Empty CustomGates and opaque gates are not supported" in str(e.value)
+    assert (
+        circuit_to_qasm_str(c) == 'OPENQASM 2.0;\ninclude "qelib1.inc";\n\nqreg q[4];\n'
+    )
 
 
 def test_alternate_encoding() -> None:

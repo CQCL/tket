@@ -69,7 +69,11 @@ from pytket.circuit import (
     QubitRegister,
     UnitID,
 )
-from pytket.circuit.clexpr import has_reg_output, wired_clexpr_from_logic_exp
+from pytket.circuit.clexpr import (
+    check_register_alignments,
+    has_reg_output,
+    wired_clexpr_from_logic_exp,
+)
 from pytket.circuit.decompose_classical import int_to_bools
 from pytket.circuit.logic_exp import (
     BitLogicExp,
@@ -1129,13 +1133,16 @@ def check_can_convert_circuit(circ: Circuit, header: str, maxwidth: int) -> None
             f"Circuit contains a classical register larger than {maxwidth}: try "
             "setting the `maxwidth` parameter to a higher value."
         )
+    # Empty CustomGates should have been removed by DecomposeBoxes().
     for cmd in circ:
-        if is_empty_customgate(cmd.op) or (
-            isinstance(cmd.op, Conditional) and is_empty_customgate(cmd.op.op)
-        ):
-            raise QASMUnsupportedError(
-                f"Empty CustomGates and opaque gates are not supported."
-            )
+        assert not is_empty_customgate(cmd.op)
+        if isinstance(cmd.op, Conditional):
+            assert not is_empty_customgate(cmd.op.op)
+    if not check_register_alignments(circ):
+        raise QASMUnsupportedError(
+            "Circuit contains classical expressions on registers whose arguments or "
+            "outputs are not register-aligned."
+        )
 
 
 def circuit_to_qasm_str(
@@ -1158,12 +1165,12 @@ def circuit_to_qasm_str(
     :return: qasm string
     """
 
-    check_can_convert_circuit(circ, header, maxwidth)
     qasm_writer = QasmWriter(
         circ.qubits, circ.bits, header, include_gate_defs, maxwidth
     )
     circ1 = circ.copy()
     DecomposeBoxes().apply(circ1)
+    check_can_convert_circuit(circ1, header, maxwidth)
     for command in circ1:
         assert isinstance(command, Command)
         qasm_writer.add_op(command.op, command.args)
@@ -1783,9 +1790,9 @@ class QasmWriter:
                     input_regs[i] = creg
                     break
             else:
-                raise QASMUnsupportedError(
-                    f"ClExprOp ({wexpr}) contains a register variable (r{i}) "
-                    "that is not wired to any BitRegister in the circuit."
+                assert (
+                    not f"ClExprOp ({wexpr}) contains a register variable (r{i}) that "
+                    "is not wired to any BitRegister in the circuit."
                 )
         # 2. Write the left-hand side of the assignment.
         output_repr: Optional[str] = None
@@ -1803,6 +1810,8 @@ class QasmWriter:
             for creg in all_cregs:
                 if creg.to_list() == output_args:
                     output_repr = creg.name
+                    break
+            assert output_repr is not None
         self.strings.add_string(f"{output_repr} = ")
         # 3. Write the right-hand side of the assignment.
         self.strings.add_string(
