@@ -4,6 +4,11 @@ Changelog
 Unreleased
 ----------
 
+Features:
+
+* Add `clexpr.check_register_alignments()` method to check register alignments
+  in `ClExprOp`.
+
 Fixes:
 
 * Fix `symbol_substitution` not preserving opgroups.
