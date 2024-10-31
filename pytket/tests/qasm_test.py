@@ -1026,16 +1026,62 @@ if(tk_SCRATCH_BITREG_0[0]==1) c[1] = 1;
 
 
 def test_conditional_range_predicate() -> None:
-    range_predicate = RangePredicateOp(6, 0, 27)
-    c = Circuit(0, 8)
-    c.add_gate(range_predicate, [0, 1, 2, 3, 4, 5, 6], condition=Bit(7))
-    # remove once https://github.com/CQCL/tket/issues/1508
-    # is resolved
+    range_predicate = RangePredicateOp(2, 0, 2)
+    c = Circuit(0, 5)
+    c.add_gate(range_predicate, [1, 2, 4])
+    # https://github.com/CQCL/tket/issues/1642
     with pytest.raises(Exception) as errorinfo:
-        circuit_to_qasm_str(c, header="hqslib1")
-        assert "Conditional RangePredicate is currently unsupported." in str(
+        qasm = circuit_to_qasm_str(c, header="hqslib1")
+        assert "RangePredicate conditions must be an entire classical register" in str(
             errorinfo.value
         )
+    # https://github.com/CQCL/tket/issues/1508
+    range_predicate = RangePredicateOp(6, 0, 27)
+    c = Circuit(0, 6)
+    c.add_gate(range_predicate, [0, 1, 2, 3, 4, 5, 5], condition=Bit(5))
+    qasm = circuit_to_qasm_str(c, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+creg c[6];
+creg tk_SCRATCH_BITREG_0[4];
+if(c[5]==1) tk_SCRATCH_BITREG_0[0] = 1;
+if(c<=27) tk_SCRATCH_BITREG_0[1] = 1;
+tk_SCRATCH_BITREG_0[2] = tk_SCRATCH_BITREG_0[0] & tk_SCRATCH_BITREG_0[1];
+tk_SCRATCH_BITREG_0[3] = tk_SCRATCH_BITREG_0[0] & (~ tk_SCRATCH_BITREG_0[1]);
+if(tk_SCRATCH_BITREG_0[2]==1) c[5] = 1;
+if(tk_SCRATCH_BITREG_0[3]==1) c[5] = 0;
+"""
+    )
+    # more test
+    range_predicate = RangePredicateOp(2, 0, 2)
+    c = Circuit()
+    reg_a = c.add_c_register("a", 2)
+    reg_b = c.add_c_register("b", 2)
+    reg_d = c.add_c_register("d", 1)
+    c.add_gate(
+        range_predicate, reg_a.to_list() + reg_d.to_list(), condition=reg_gt(reg_b, 1)
+    )
+    qasm = circuit_to_qasm_str(c, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+creg a[2];
+creg b[2];
+creg d[1];
+creg tk_SCRATCH_BITREG_0[4];
+if(b>=2) tk_SCRATCH_BITREG_0[0] = 1;
+if(a<=2) tk_SCRATCH_BITREG_0[1] = 1;
+tk_SCRATCH_BITREG_0[2] = tk_SCRATCH_BITREG_0[0] & tk_SCRATCH_BITREG_0[1];
+tk_SCRATCH_BITREG_0[3] = tk_SCRATCH_BITREG_0[0] & (~ tk_SCRATCH_BITREG_0[1]);
+if(tk_SCRATCH_BITREG_0[2]==1) d[0] = 1;
+if(tk_SCRATCH_BITREG_0[3]==1) d[0] = 0;
+"""
+    )
 
 
 def test_range_with_maxwidth() -> None:
