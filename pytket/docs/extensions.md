@@ -127,7 +127,7 @@ pytket-pyzx <https://docs.quantinuum.com/tket/extensions/pytket-pyzx>
 pytket-qir <https://docs.quantinuum.com/tket/extensions/pytket-qir>
 pytket-qiskit <https://docs.quantinuum.com/tket/extensions/pytket-qiskit>
 pytket-quantinuum <https://docs.quantinuum.com/tket/extensions/pytket-quantinuum>
-pytket-quest <https://docs.quantinuum.com/tket/extensions/pytket-quest>_
+pytket-quest <https://docs.quantinuum.com/tket/extensions/pytket-quest>
 pytket-cutensornet <https://docs.quantinuum.com/tket/extensions/pytket-cutensornet>
 pytket-qulacs <https://docs.quantinuum.com/tket/extensions/pytket-qulacs>
 pytket-qujax <https://docs.quantinuum.com/tket/extensions/pytket-qujax>
