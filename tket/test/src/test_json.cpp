@@ -895,19 +895,18 @@ SCENARIO("Test compiler pass serializations") {
   std::map<Qubit, Qubit> qmap = {{Qubit(0), Node(1)}, {Qubit(3), Node(2)}};
   Placement::Ptr na_place = std::make_shared<NoiseAwarePlacement>(arc);
   Placement::Ptr la_place = std::make_shared<LinePlacement>(arc);
-#define COMPPASSJSONTEST(passname, pass)               \
-  GIVEN(#passname) {                                   \
-    Circuit circ = CircuitsForTesting::get().uccsd;    \
-    CompilationUnit cu{circ};                          \
-    CompilationUnit copy = cu;                         \
-    PassPtr pp = pass;                                 \
-    nlohmann::json j_pp = pp;                          \
-    PassPtr loaded = deserialise(j_pp);                \
-    pp->apply(cu);                                     \
-    loaded->apply(copy);                               \
-    REQUIRE(cu.get_circ_ref() == copy.get_circ_ref()); \
-    nlohmann::json j_loaded = loaded;                  \
-    REQUIRE(j_pp == j_loaded);                         \
+#define COMPPASSJSONTEST(passname, pass)                                    \
+  GIVEN(#passname) {                                                        \
+    Circuit circ = CircuitsForTesting::get().uccsd;                         \
+    CompilationUnit cu{circ};                                               \
+    CompilationUnit copy = cu;                                              \
+    PassPtr pp = pass;                                                      \
+    nlohmann::json j_pp = serialise(pp) PassPtr loaded = deserialise(j_pp); \
+    pp->apply(cu);                                                          \
+    loaded->apply(copy);                                                    \
+    REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());                      \
+    nlohmann::json j_loaded = serialise(loaded);                            \
+    REQUIRE(j_pp == j_loaded);                                              \
   }
   COMPPASSJSONTEST(CommuteThroughMultis, CommuteThroughMultis())
   COMPPASSJSONTEST(
@@ -986,14 +985,14 @@ SCENARIO("Test compiler pass serializations") {
     CompilationUnit copy = cu;
     PassPtr pp = gen_pauli_exponentials(
         Transforms::PauliSynthStrat::Sets, CXConfigType::Tree);
-    nlohmann::json j_pp = pp;
+    nlohmann::json j_pp = serialise(pp);
     PassPtr loaded = deserialise(j_pp);
     pp->apply(cu);
     loaded->apply(copy);
     DecomposeBoxes()->apply(cu);
     DecomposeBoxes()->apply(copy);
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
-    nlohmann::json j_loaded = loaded;
+    nlohmann::json j_loaded = serialise(loaded);
     REQUIRE(j_pp == j_loaded);
   }
   GIVEN("RoutingPass") {
@@ -1004,12 +1003,12 @@ SCENARIO("Test compiler pass serializations") {
     placement->apply(cu);
     CompilationUnit copy = cu;
     PassPtr pp = gen_routing_pass(arc, rcon);
-    nlohmann::json j_pp = pp;
+    nlohmann::json j_pp = serialise(pp);
     PassPtr loaded = deserialise(j_pp);
     pp->apply(cu);
     loaded->apply(copy);
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
-    nlohmann::json j_loaded = loaded;
+    nlohmann::json j_loaded = serialise(loaded);
     REQUIRE(j_pp == j_loaded);
   }
   GIVEN("Routing with multiple routing methods") {
@@ -1023,12 +1022,12 @@ SCENARIO("Test compiler pass serializations") {
     placement->apply(cu);
     CompilationUnit copy = cu;
     PassPtr pp = gen_routing_pass(arc, mrcon);
-    nlohmann::json j_pp = pp;
+    nlohmann::json j_pp = serialise(pp);
     PassPtr loaded = deserialise(j_pp);
     pp->apply(cu);
     loaded->apply(copy);
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
-    nlohmann::json j_loaded = loaded;
+    nlohmann::json j_loaded = serialise(loaded);
     REQUIRE(j_pp == j_loaded);
   }
   GIVEN("FullMappingPass") {
@@ -1158,12 +1157,12 @@ SCENARIO("Test compiler pass combinator serializations") {
     std::vector<PassPtr> seq_vec = {
         gen_pauli_exponentials(), DecomposeBoxes(), gen_clifford_simp_pass()};
     PassPtr seq = std::make_shared<SequencePass>(seq_vec);
-    nlohmann::json j_seq = seq;
+    nlohmann::json j_seq = serialise(seq);
     PassPtr loaded_seq = deserialise(j_seq);
     seq->apply(cu);
     loaded_seq->apply(copy);
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
-    nlohmann::json j_loaded_seq = loaded_seq;
+    nlohmann::json j_loaded_seq = serialise(loaded_seq);
     REQUIRE(j_seq == j_loaded_seq);
   }
   GIVEN("A complex pass with multiple combinators") {
@@ -1186,12 +1185,12 @@ SCENARIO("Test compiler pass combinator serializations") {
     PassPtr rep = std::make_shared<RepeatUntilSatisfiedPass>(seq, gate_set);
     PassPtr comb =
         std::make_shared<SequencePass>(std::vector<PassPtr>{rep, RebaseTket()});
-    nlohmann::json j_comb = comb;
+    nlohmann::json j_comb = serialise(comb);
     PassPtr loaded_comb = deserialise(j_comb);
     comb->apply(cu);
     loaded_comb->apply(copy);
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
-    nlohmann::json j_loaded_comb = loaded_comb;
+    nlohmann::json j_loaded_comb = serialise(loaded_comb);
     REQUIRE(j_comb == j_loaded_comb);
   }
 }
