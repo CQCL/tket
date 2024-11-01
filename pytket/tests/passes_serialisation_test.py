@@ -456,7 +456,7 @@ def check_pass_serialisation(
     # Check the JSON is valid
     pass_validator.validate(serialised_pass)
     # Check the JSON can be deserialised
-    tk_pass = BasePass.from_dict(serialised_pass, {})
+    tk_pass = BasePass.from_dict(serialised_pass)
     # Check the newly construct pass produces valid JSON
     new_serialised_pass = tk_pass.to_dict()
     pass_validator.validate(new_serialised_pass)
