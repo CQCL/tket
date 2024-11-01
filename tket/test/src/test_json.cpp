@@ -902,7 +902,7 @@ SCENARIO("Test compiler pass serializations") {
     CompilationUnit copy = cu;                         \
     PassPtr pp = pass;                                 \
     nlohmann::json j_pp = pp;                          \
-    PassPtr loaded = j_pp.get<PassPtr>();              \
+    PassPtr loaded = deserialise(j_pp);                \
     pp->apply(cu);                                     \
     loaded->apply(copy);                               \
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref()); \
@@ -987,7 +987,7 @@ SCENARIO("Test compiler pass serializations") {
     PassPtr pp = gen_pauli_exponentials(
         Transforms::PauliSynthStrat::Sets, CXConfigType::Tree);
     nlohmann::json j_pp = pp;
-    PassPtr loaded = j_pp.get<PassPtr>();
+    PassPtr loaded = deserialise(j_pp);
     pp->apply(cu);
     loaded->apply(copy);
     DecomposeBoxes()->apply(cu);
@@ -1005,7 +1005,7 @@ SCENARIO("Test compiler pass serializations") {
     CompilationUnit copy = cu;
     PassPtr pp = gen_routing_pass(arc, rcon);
     nlohmann::json j_pp = pp;
-    PassPtr loaded = j_pp.get<PassPtr>();
+    PassPtr loaded = deserialise(j_pp);
     pp->apply(cu);
     loaded->apply(copy);
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
@@ -1024,7 +1024,7 @@ SCENARIO("Test compiler pass serializations") {
     CompilationUnit copy = cu;
     PassPtr pp = gen_routing_pass(arc, mrcon);
     nlohmann::json j_pp = pp;
-    PassPtr loaded = j_pp.get<PassPtr>();
+    PassPtr loaded = deserialise(j_pp);
     pp->apply(cu);
     loaded->apply(copy);
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
@@ -1049,7 +1049,7 @@ SCENARIO("Test compiler pass serializations") {
     }
 
     j_pp["StandardPass"]["routing_config"] = config_array;
-    PassPtr loaded = j_pp.get<PassPtr>();
+    PassPtr loaded = deserialise(j_pp);
     pp->apply(cu);
     loaded->apply(copy);
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
@@ -1065,7 +1065,7 @@ SCENARIO("Test compiler pass serializations") {
     j_pp["StandardPass"]["name"] = "DefaultMappingPass";
     j_pp["StandardPass"]["architecture"] = arc;
     j_pp["StandardPass"]["delay_measures"] = true;
-    PassPtr loaded = j_pp.get<PassPtr>();
+    PassPtr loaded = deserialise(j_pp);
     pp->apply(cu);
     loaded->apply(copy);
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
@@ -1088,7 +1088,7 @@ SCENARIO("Test compiler pass serializations") {
     j_pp["StandardPass"]["routing_config"] = config_array;
     j_pp["StandardPass"]["directed"] = true;
     j_pp["StandardPass"]["delay_measures"] = false;
-    PassPtr loaded = j_pp.get<PassPtr>();
+    PassPtr loaded = deserialise(j_pp);
     pp->apply(cu);
     loaded->apply(copy);
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
@@ -1106,7 +1106,7 @@ SCENARIO("Test compiler pass serializations") {
     j_pp["StandardPass"]["pauli_synth_strat"] =
         Transforms::PauliSynthStrat::Sets;
     j_pp["StandardPass"]["cx_config"] = CXConfigType::Star;
-    PassPtr loaded = j_pp.get<PassPtr>();
+    PassPtr loaded = deserialise(j_pp);
     pp->apply(cu);
     loaded->apply(copy);
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
@@ -1124,7 +1124,7 @@ SCENARIO("Test compiler pass serializations") {
     j_pp["StandardPass"]["pauli_synth_strat"] =
         Transforms::PauliSynthStrat::Sets;
     j_pp["StandardPass"]["cx_config"] = CXConfigType::Star;
-    PassPtr loaded = j_pp.get<PassPtr>();
+    PassPtr loaded = deserialise(j_pp);
     pp->apply(cu);
     loaded->apply(copy);
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
@@ -1143,7 +1143,7 @@ SCENARIO("Test compiler pass serializations") {
     j_pp["StandardPass"]["name"] = "ContextSimp";
     j_pp["StandardPass"]["allow_classical"] = true;
     j_pp["StandardPass"]["x_circuit"] = CircPool::X();
-    PassPtr loaded = j_pp.get<PassPtr>();
+    PassPtr loaded = deserialise(j_pp);
     pp->apply(cu);
     loaded->apply(copy);
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
@@ -1159,7 +1159,7 @@ SCENARIO("Test compiler pass combinator serializations") {
         gen_pauli_exponentials(), DecomposeBoxes(), gen_clifford_simp_pass()};
     PassPtr seq = std::make_shared<SequencePass>(seq_vec);
     nlohmann::json j_seq = seq;
-    PassPtr loaded_seq = j_seq.get<PassPtr>();
+    PassPtr loaded_seq = deserialise(j_seq);
     seq->apply(cu);
     loaded_seq->apply(copy);
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
@@ -1187,7 +1187,7 @@ SCENARIO("Test compiler pass combinator serializations") {
     PassPtr comb =
         std::make_shared<SequencePass>(std::vector<PassPtr>{rep, RebaseTket()});
     nlohmann::json j_comb = comb;
-    PassPtr loaded_comb = j_comb.get<PassPtr>();
+    PassPtr loaded_comb = deserialise(j_comb);
     comb->apply(cu);
     loaded_comb->apply(copy);
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());

@@ -301,6 +301,10 @@ class RepeatUntilSatisfiedPass : public BasePass {
   PredicatePtr pred_;
 };
 
+PassPtr deserialise(
+    const nlohmann::json& j,
+    const std::map<std::string, std::function<Circuit(const Circuit&)>>&
+        custom_deserialise = {});
 // TODO: Repeat with a metric, repeat until a Predicate is satisfied...
 
 }  // namespace tket

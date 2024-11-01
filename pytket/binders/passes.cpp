@@ -270,8 +270,11 @@ PYBIND11_MODULE(passes, m) {
           ":return: A JSON serializable dictionary representation of the Pass.")
       .def_static(
           "from_dict",
-          [](const py::dict &base_pass_dict) {
-            return json(base_pass_dict).get<PassPtr>();
+          [](const py::dict &base_pass_dict,
+             const std::map<
+                 std::string, std::function<Circuit(const Circuit &)>>
+                 &custom_deserialisation) {
+            return deserialise(base_pass_dict, custom_deserialisation);
           },
           "Construct a new Pass instance from a JSON serializable dictionary "
           "representation.")
