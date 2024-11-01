@@ -1818,7 +1818,7 @@ class QasmWriter:
             self.mark_as_written(label, f"{out_args[0].reg_name}")
         else:
             raise QASMUnsupportedError(
-                f"ClassicalExpBox only supported"
+                "ClassicalExpBox only supported"
                 " for writing to a single bit or whole registers."
             )
 

@@ -22,8 +22,6 @@ from pytket.tailoring import (
 )
 from pytket.pauli import Pauli, QubitPauliString, QubitPauliTensor
 
-import pytest
-
 
 def test_single_cycle_single_frame_randomisation() -> None:
     test_fr = FrameRandomisation(

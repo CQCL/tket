@@ -69,8 +69,8 @@ def test_phase_polybox_II() -> None:
     c = Circuit(1, 1)
     n_qb = 1
     qubit_indices = {Qubit(0): 0}
-    phase_polynomial: PhasePolynomialDict = {(True,): 0.1, (True,): 0.3}
-    phase_polynomial_alt: PhasePolynomialSequence = [([True], 0.1), ([True], 0.3)]
+    phase_polynomial: PhasePolynomialDict = {(True,): 0.3}
+    phase_polynomial_alt: PhasePolynomialSequence = [([True], 0.3)]
     linear_transformation = np.array([[1]])
     p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
     p_box_alt = PhasePolyBox(

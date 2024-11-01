@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import copy
 from hypothesis import given, settings
 import json
 import pickle
@@ -22,7 +21,7 @@ import numpy as np
 from sympy import Symbol, re, im
 
 from pytket.utils import QubitPauliOperator
-from pytket.pauli import Pauli, QubitPauliString, pauli_string_mult
+from pytket.pauli import Pauli, QubitPauliString
 from pytket.circuit import Qubit
 
 import strategies as st  # type: ignore
@@ -150,7 +149,7 @@ def test_QubitPauliOperator_compression() -> None:
     op = QubitPauliOperator({qpsXY: 2, qpsZI: 1e-11j * x, qpsYY: 1e-11 * x + 1j})
     op.compress()
     with pytest.raises(KeyError) as errorinfo:
-        term = op[qpsZI]
+        _ = op[qpsZI]
     assert "(Zq[0], Iq[1])" in str(errorinfo.value)
     assert op[qpsXY] == 2
     assert re(op[qpsYY]) == 0

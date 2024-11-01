@@ -104,11 +104,11 @@ def check_that_premultiplication_fails(
     to see what happens in normal Python code where we pass in objects
     which are implicitly converted to NumPy objects (or not)."""
     with pytest.raises(ValueError) as e1:
-        product = unitary @ matr
+        _ = unitary @ matr
     check_matmul_failure_exception_string(str(e1.value))
 
     with pytest.raises(RuntimeError) as e2:
-        product = circ.get_unitary_times_other(matr)
+        _ = circ.get_unitary_times_other(matr)
     message = str(e2)
     assert "M has wrong number of" in message
 

@@ -125,7 +125,7 @@ class WasmModuleHandler:
                             ] * entry.return_count
                         else:
                             raise ValueError(
-                                f"Only parameter and return values of "
+                                "Only parameter and return values of "
                                 + f"i{self._int_size} types are"
                                 + f" allowed, found type: {entry.return_type}"
                             )

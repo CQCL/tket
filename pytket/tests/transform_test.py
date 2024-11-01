@@ -16,7 +16,6 @@ import itertools
 from typing import List
 from pathlib import Path
 
-import sympy
 
 from pytket.circuit import (
     Circuit,
@@ -32,8 +31,6 @@ from pytket.pauli import Pauli
 from pytket.passes import (
     RemoveRedundancies,
     KAKDecomposition,
-    SquashCustom,
-    SquashRzPhasedX,
     CommuteThroughMultis,
     PauliSquash,
     FullPeepholeOptimise,
@@ -406,18 +403,14 @@ def test_while_repeat() -> None:
     c.CX(0, 1)
     c.Rz(0.34, 0)
     c.Rx(0.63, 1)
-    assert (
+    assert not (
         Transform.while_repeat(
             Transform.RebaseToCliffordSingles(), Transform.RemoveRedundancies()
         ).apply(c)
-        == False
     )
-    assert (
-        Transform.while_repeat(
-            Transform.CommuteThroughMultis(), Transform.RemoveRedundancies()
-        ).apply(c)
-        == True
-    )
+    assert Transform.while_repeat(
+        Transform.CommuteThroughMultis(), Transform.RemoveRedundancies()
+    ).apply(c)
     assert c.n_gates_of_type(OpType.CX) == 1
     assert c.n_gates_of_type(OpType.Rz) == 0
     assert c.n_gates_of_type(OpType.Rx) == 0
@@ -943,8 +936,8 @@ def test_CXMappingPass() -> None:
     out_circ_1 = cu_1.circuit
 
     measure_pred = NoMidMeasurePredicate()
-    assert measure_pred.verify(cu_0.circuit) == True
-    assert measure_pred.verify(cu_1.circuit) == False
+    assert measure_pred.verify(cu_0.circuit)
+    assert not measure_pred.verify(cu_1.circuit)
     assert out_circ_0.valid_connectivity(arc, True)
     assert out_circ_1.valid_connectivity(arc, False)
 
@@ -965,8 +958,8 @@ def test_DefaultMappingPass() -> None:
     out_circ_0 = cu_0.circuit
     out_circ_1 = cu_1.circuit
     measure_pred = NoMidMeasurePredicate()
-    assert measure_pred.verify(out_circ_0) == True
-    assert measure_pred.verify(out_circ_1) == False
+    assert measure_pred.verify(out_circ_0)
+    assert not measure_pred.verify(out_circ_1)
     assert out_circ_0.valid_connectivity(arc, False, True)
     assert out_circ_1.valid_connectivity(arc, False, True)
 

@@ -13,7 +13,6 @@
 # limitations under the License.
 
 from pytket import Circuit, OpType
-import pytest
 
 
 def gen_bell_state(reset_start: bool = False) -> Circuit:

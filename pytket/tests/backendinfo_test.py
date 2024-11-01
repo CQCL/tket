@@ -64,12 +64,12 @@ def test_gate_errors_options() -> None:
     bi = BackendInfo(
         "name", "device_name", "version", SquareGrid(3, 4), {OpType.CX, OpType.Rx}
     )
-    assert bi.all_node_gate_errors == None
-    assert bi.all_edge_gate_errors == None
-    assert bi.all_readout_errors == None
-    assert bi.averaged_node_gate_errors == None
-    assert bi.averaged_edge_gate_errors == None
-    assert bi.averaged_readout_errors == None
+    assert bi.all_node_gate_errors is None
+    assert bi.all_edge_gate_errors is None
+    assert bi.all_readout_errors is None
+    assert bi.averaged_node_gate_errors is None
+    assert bi.averaged_edge_gate_errors is None
+    assert bi.averaged_readout_errors is None
 
     example_node_error = {Node(0): {OpType.H: 0.3, OpType.X: 0.4}}
     example_averaged_readout_errors = {Node(1): 0.4, Node(0): 0.3}
@@ -177,7 +177,7 @@ def test_fullyconnected() -> None:
         "name", "device_name", "version", 10, {OpType.CX, OpType.Rx}
     )
     assert bi.n_nodes == 10
-    assert type(bi.architecture) == FullyConnected
+    assert isinstance(bi.architecture, FullyConnected)
 
     # https://github.com/CQCL/tket/issues/390
     d = bi.to_dict()

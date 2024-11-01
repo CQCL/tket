@@ -16,10 +16,7 @@
  tket :py:class:`Circuit` data structure.
   This module is provided in binary form during the PyPI installation."""
 from typing import (
-    TYPE_CHECKING,
     Any,
-    Tuple,
-    Type,
     Union,
     Callable,
     Optional,

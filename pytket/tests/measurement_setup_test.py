@@ -22,8 +22,6 @@ from pytket.partition import (
     measurement_reduction,
 )
 
-import pytest
-import platform
 from typing import Any
 
 

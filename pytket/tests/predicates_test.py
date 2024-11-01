@@ -11,9 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import sympy
 import pytest
-from pytket import logging
 from pytket.circuit import (
     Circuit,
     OpType,
@@ -24,7 +22,6 @@ from pytket.circuit import (
     Unitary2qBox,
     Node,
     Qubit,
-    UnitID,
     Conditional,
     Bit,
     RangePredicateOp,
@@ -68,7 +65,6 @@ from pytket.passes import (
     RemoveBarriers,
     PauliSquash,
     AutoRebase,
-    AutoSquash,
     auto_rebase_pass,
     auto_squash_pass,
     ZZPhaseToRz,
@@ -307,7 +303,7 @@ def test_routing_and_placement_pass() -> None:
 
 def test_default_mapping_pass() -> None:
     circ = Circuit()
-    q = circ.add_q_register("q", 6)
+    circ.add_q_register("q", 6)
     circ.CX(0, 1)
     circ.H(0)
     circ.Z(1)
@@ -343,7 +339,7 @@ def test_default_mapping_pass() -> None:
 
 def test_default_mapping_pass_phase_poly_aas() -> None:
     circ = Circuit()
-    q = circ.add_q_register("q", 5)
+    circ.add_q_register("q", 5)
     circ.CX(0, 1)
     circ.H(0)
     circ.Z(1)
@@ -365,7 +361,7 @@ def test_default_mapping_pass_phase_poly_aas() -> None:
 
 def test_rename_qubits_pass() -> None:
     circ = Circuit()
-    qbs = circ.add_q_register("a", 2)
+    circ.add_q_register("a", 2)
     circ.CX(Qubit("a", 0), Qubit("a", 1))
     qm = {Qubit("a", 0): Qubit("b", 1), Qubit("a", 1): Qubit("b", 0)}
     p = RenameQubitsPass(qm)
@@ -902,7 +898,7 @@ def test_PeepholeOptimise2Q() -> None:
     perm = c.implicit_qubit_permutation()
     assert any(k != v for k, v in perm.items())
     c = Circuit(2).CX(0, 1).CX(1, 0)
-    assert PeepholeOptimise2Q(allow_swaps=False).apply(c) == False
+    assert not PeepholeOptimise2Q(allow_swaps=False).apply(c)
     perm = c.implicit_qubit_permutation()
     assert all(k == v for k, v in perm.items())
 
@@ -1089,12 +1085,12 @@ def test_greedy_pauli_synth() -> None:
 
 
 def test_auto_rebase_deprecation(recwarn: Any) -> None:
-    p = auto_rebase_pass({OpType.TK1, OpType.CX})
+    _ = auto_rebase_pass({OpType.TK1, OpType.CX})
     assert len(recwarn) == 1
     w = recwarn.pop(DeprecationWarning)
     assert issubclass(w.category, DeprecationWarning)
     assert "deprecated" in str(w.message)
-    p = auto_squash_pass({OpType.TK1})
+    _ = auto_squash_pass({OpType.TK1})
     assert len(recwarn) == 1
     w = recwarn.pop(DeprecationWarning)
     assert issubclass(w.category, DeprecationWarning)
