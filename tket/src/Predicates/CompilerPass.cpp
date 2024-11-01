@@ -251,7 +251,7 @@ std::string SequencePass::to_string() const {
 nlohmann::json SequencePass::get_config() const {
   nlohmann::json j;
   j["pass_class"] = "SequencePass";
-  j["SequencePass"]["sequence"] = seq_;
+  j["SequencePass"]["sequence"] = serialise(seq_);
   return j;
 }
 
@@ -270,7 +270,7 @@ std::string RepeatPass::to_string() const {
 nlohmann::json RepeatPass::get_config() const {
   nlohmann::json j;
   j["pass_class"] = "RepeatPass";
-  j["RepeatPass"]["body"] = pass_;
+  j["RepeatPass"]["body"] = serialise(pass_);
   return j;
 }
 
@@ -313,7 +313,7 @@ std::string RepeatWithMetricPass::to_string() const {
 nlohmann::json RepeatWithMetricPass::get_config() const {
   nlohmann::json j;
   j["pass_class"] = "RepeatWithMetricPass";
-  j["RepeatWithMetricPass"]["body"] = pass_;
+  j["RepeatWithMetricPass"]["body"] = serialise(pass_);
   j["RepeatWithMetricPass"]["metric"] =
       "SERIALIZATION OF METRICS NOT YET IMPLEMENTED";
   return j;
@@ -347,12 +347,20 @@ std::string RepeatUntilSatisfiedPass::to_string() const {
 nlohmann::json RepeatUntilSatisfiedPass::get_config() const {
   nlohmann::json j;
   j["pass_class"] = "RepeatUntilSatisfiedPass";
-  j["RepeatUntilSatisfiedPass"]["body"] = pass_;
+  j["RepeatUntilSatisfiedPass"]["body"] = serialise(pass_);
   j["RepeatUntilSatisfiedPass"]["predicate"] = pred_;
   return j;
 }
 
-void to_json(nlohmann::json& j, const PassPtr& pp) { j = pp->get_config(); }
+nlohmann::json serialise(const PassPtr& pp) { return pp->get_config(); }
+
+nlohmann::json serialise(const std::vector<PassPtr>& pp) {
+  nlohmann::json j = nlohmann::json::array();
+  for (const auto& p : pp) {
+    j.push_back(serialise(p));
+  }
+  return j;
+}
 
 PassPtr deserialise(
     const nlohmann::json& j,

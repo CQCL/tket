@@ -264,9 +264,7 @@ PYBIND11_MODULE(passes, m) {
       .def("__repr__", &BasePass::to_string)
       .def(
           "to_dict",
-          [](const BasePass &base_pass) {
-            return py::object(base_pass.get_config()).cast<py::dict>();
-          },
+          [](const BasePass &base_pass) { return serialise(base_pass); },
           ":return: A JSON serializable dictionary representation of the Pass.")
       .def_static(
           "from_dict",
@@ -300,8 +298,13 @@ PYBIND11_MODULE(passes, m) {
           py::arg("pass_list"), py::arg("strict") = true)
       .def("__str__", [](const BasePass &) { return "<tket::SequencePass>"; })
       .def(
+          "to_dict",
+          [](const SequencePass &seq_pass) { return serialise(seq_pass); },
+          ":return: A JSON serializable dictionary representation of the SequencePass.")
+      .def(
           "get_sequence", &SequencePass::get_sequence,
           ":return: The underlying sequence of passes.");
+
   py::class_<RepeatPass, std::shared_ptr<RepeatPass>, BasePass>(
       m, "RepeatPass",
       "Repeat a pass until its `apply()` method returns False, or if "
