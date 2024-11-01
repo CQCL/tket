@@ -37,7 +37,6 @@ from pytket.circuit import (
     CustomGate,
     RangePredicateOp,
 )
-from pytket.circuit.decompose_classical import DecomposeClassicalError
 from pytket.circuit.logic_exp import BitWiseOp, create_bit_logic_exp
 from pytket.qasm import (
     circuit_from_qasm,
@@ -495,7 +494,7 @@ def test_alternate_encoding() -> None:
         "utf-32": str(curr_file_path / "qasm_test_files/utf32.qasm"),
     }
     for enc, fil in encoded_files.items():
-        with pytest.raises(Exception) as e:
+        with pytest.raises(Exception):
             circuit_from_qasm(fil)
         c = circuit_from_qasm(fil, encoding=enc)
         assert c.n_gates == 6
@@ -903,7 +902,7 @@ def test_register_name_check() -> None:
     qreg Q[1];
     """
     with pytest.raises(QASMParseError) as e:
-        circ = circuit_from_qasm_str(qasm)
+        _ = circuit_from_qasm_str(qasm)
     err_msg = "Invalid register definition 'Q[1]'"
     assert err_msg in str(e.value)
 

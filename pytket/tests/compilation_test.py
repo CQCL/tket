@@ -182,9 +182,6 @@ def test_PassSelector() -> None:
 
 
 def test_PassSelector_wrong_pass() -> None:
-    fp = FullPeepholeOptimise()
-    fp2 = FullPeepholeOptimise(allow_swaps=False)
-
     arc = Architecture([(1, 2)])
 
     pl = Placement(arc)
@@ -200,7 +197,7 @@ def test_PassSelector_wrong_pass() -> None:
     circ = Circuit(3).H(1).H(0).H(1).H(0).X(1).CX(1, 0).CX(0, 1).CX(1, 2)
 
     with pytest.raises(Exception):
-        result = sp.apply(circ)
+        _ = sp.apply(circ)
 
 
 def test_PassSelector_empty_pass() -> None:
@@ -208,7 +205,7 @@ def test_PassSelector_empty_pass() -> None:
         return circ.depth()
 
     with pytest.raises(Exception):
-        sp = PassSelector([], circ_depth)
+        _ = PassSelector([], circ_depth)
 
 
 def test_PassSelector_ii() -> None:

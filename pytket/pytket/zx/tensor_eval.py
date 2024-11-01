@@ -34,7 +34,7 @@ from pytket.zx import (
 
 try:
     import quimb.tensor as qtn  # type: ignore
-except ModuleNotFoundError as err:
+except ModuleNotFoundError:
     warnings.warn(
         'Missing package for tensor evaluation of ZX diagrams. Run "pip '
         "install 'pytket[ZX]'\" to install the optional dependencies."
@@ -200,7 +200,7 @@ def _tensor_from_basic_diagram(diag: ZXDiagram) -> np.ndarray:
     net.full_simplify_(seq="ADCR")
     res_ten = net.contract(output_inds=res_indices, optimize="greedy")
     result: np.ndarray
-    if type(res_ten) == qtn.Tensor:
+    if isinstance(res_ten, qtn.Tensor):
         result = res_ten.data
     else:
         # Scalar

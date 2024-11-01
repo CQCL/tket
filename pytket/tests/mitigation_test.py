@@ -29,7 +29,6 @@ import pytest
 
 
 def test_spam_integration() -> None:
-    SEED = 120
     # test data, to avoid using backend
     calib_results: List[Dict[Tuple[int, ...], int]] = [
         {

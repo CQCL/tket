@@ -770,7 +770,7 @@ def test_constructors() -> None:
     phased_gen = PhasedGen(ZXType.ZSpider, 0.5, QuantumType.Quantum)
     assert phased_gen.param == 0.5
     clifford_gen = CliffordGen(ZXType.PX, True, QuantumType.Quantum)
-    assert clifford_gen.param == True
+    assert clifford_gen.param
     directed_gen = DirectedGen(ZXType.Triangle, QuantumType.Quantum)
     assert directed_gen.signature == [QuantumType.Quantum] * 2
     diag = ZXDiagram(4, 4, 0, 0)

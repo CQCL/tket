@@ -29,7 +29,6 @@ from pytket.circuit import (
     BitRegister,
     QubitRegister,
     Bit,
-    UnitID,
     Circuit,
     OpType,
     Qubit,
@@ -358,10 +357,10 @@ def test_wasm_12() -> None:
 
 
 def test_wasm_handler() -> None:
-    w = wasm.WasmFileHandler("testfile.wasm")
+    _ = wasm.WasmFileHandler("testfile.wasm")
 
     with pytest.raises(ValueError):
-        w2 = wasm.WasmFileHandler("notexistingfile.wasm")
+        _ = wasm.WasmFileHandler("notexistingfile.wasm")
 
 
 def test_wasm_function_check() -> None:
@@ -452,7 +451,7 @@ def test_wasm_function_check_8() -> None:
     c = Circuit(20, 20)
     c0 = c.add_c_register("c0", 32)
     c1 = c.add_c_register("c1", 4)
-    c2 = c.add_c_register("c2", 5)
+    c.add_c_register("c2", 5)
 
     c.add_wasm_to_reg("add_something", w, [c0], [c1])
     assert c.depth() == 1
@@ -463,7 +462,7 @@ def test_wasm_function_check_9() -> None:
     c = Circuit(20, 20)
     c0 = c.add_c_register("c0", 53)
     c1 = c.add_c_register("c1", 4)
-    c2 = c.add_c_register("c2", 5)
+    c.add_c_register("c2", 5)
 
     with pytest.raises(ValueError):
         c.add_wasm_to_reg("add_something", w, [c0], [c1])
@@ -487,7 +486,7 @@ def test_add_wasm_to_reg() -> None:
 
 def test_wasmfilehandler_without_init() -> None:
     with pytest.raises(ValueError):
-        w = wasm.WasmFileHandler("testfile-without-init.wasm")
+        _ = wasm.WasmFileHandler("testfile-without-init.wasm")
 
 
 def test_wasmfilehandler_without_init_no_check() -> None:
@@ -507,34 +506,34 @@ def test_wasmfilehandler_without_init_no_check() -> None:
 
 def test_wasmfilehandler_invalid_file_1_c_32() -> None:
     with pytest.raises(ValueError):
-        w = wasm.WasmFileHandler(
+        _ = wasm.WasmFileHandler(
             "wasm-generation/wasmfromcpp/invalid-with-print-1-emcc.wasm", int_size=32
         )
 
 
 def test_wasmfilehandler_invalid_file_1_c_64() -> None:
     with pytest.raises(ValueError):
-        w = wasm.WasmFileHandler(
+        _ = wasm.WasmFileHandler(
             "wasm-generation/wasmfromcpp/invalid-with-print-1-emcc.wasm", int_size=64
         )
 
 
 def test_wasmfilehandler_invalid_file_1_e_32() -> None:
     with pytest.raises(ValueError):
-        w = wasm.WasmFileHandler(
+        _ = wasm.WasmFileHandler(
             "wasm-generation/wasmfromcpp/invalid-with-print-2-emcc.wasm", int_size=32
         )
 
 
 def test_wasmfilehandler_invalid_file_1_e_64() -> None:
     with pytest.raises(ValueError):
-        w = wasm.WasmFileHandler(
+        _ = wasm.WasmFileHandler(
             "wasm-generation/wasmfromcpp/invalid-with-print-2-emcc.wasm", int_size=64
         )
 
 
 def test_wasmfilehandler_invalid_file_1_c_32_no_check() -> None:
-    w = wasm.WasmFileHandler(
+    _ = wasm.WasmFileHandler(
         "wasm-generation/wasmfromcpp/invalid-with-print-1-emcc.wasm",
         int_size=32,
         check_file=False,
@@ -542,7 +541,7 @@ def test_wasmfilehandler_invalid_file_1_c_32_no_check() -> None:
 
 
 def test_wasmfilehandler_invalid_file_1_c_64_no_check() -> None:
-    w = wasm.WasmFileHandler(
+    _ = wasm.WasmFileHandler(
         "wasm-generation/wasmfromcpp/invalid-with-print-1-emcc.wasm",
         int_size=64,
         check_file=False,
@@ -550,7 +549,7 @@ def test_wasmfilehandler_invalid_file_1_c_64_no_check() -> None:
 
 
 def test_wasmfilehandler_invalid_file_1_e_32_no_check() -> None:
-    w = wasm.WasmFileHandler(
+    _ = wasm.WasmFileHandler(
         "wasm-generation/wasmfromcpp/invalid-with-print-2-emcc.wasm",
         int_size=32,
         check_file=False,
@@ -558,7 +557,7 @@ def test_wasmfilehandler_invalid_file_1_e_32_no_check() -> None:
 
 
 def test_wasmfilehandler_invalid_file_1_e_64_no_check() -> None:
-    w = wasm.WasmFileHandler(
+    _ = wasm.WasmFileHandler(
         "wasm-generation/wasmfromcpp/invalid-with-print-2-emcc.wasm",
         int_size=64,
         check_file=False,

@@ -76,8 +76,7 @@ from pytket.transform import Transform, PauliSynthStrat
 
 import numpy as np
 from scipy.linalg import block_diag
-import sympy
-from sympy import Symbol, pi, sympify, functions, Expr, exp
+from sympy import Symbol, pi, sympify, Expr, exp
 import math
 from math import sqrt
 
@@ -1002,7 +1001,7 @@ def test_commands_of_type() -> None:
 def test_empty_circuit() -> None:
     circ = Circuit(0)
     circt_dict = circ.to_dict()
-    assert type(circt_dict) == type({})
+    assert isinstance(circt_dict, dict)
     assert len(circt_dict) > 0
     assert Circuit(0) == Circuit(0)
 
@@ -1133,13 +1132,13 @@ def test_clifford_checking() -> None:
     cx = c.get_commands()[1].op
     assert cx.is_clifford_type()
     t = c.get_commands()[2].op
-    assert t.is_clifford_type() == False
+    assert not t.is_clifford_type()
     rz1 = c.get_commands()[3].op
-    assert rz1.is_clifford_type() == False
+    assert not rz1.is_clifford_type()
     rz2 = c.get_commands()[4].op
-    assert rz2.is_clifford_type() == False
+    assert not rz2.is_clifford_type()
     m = c.get_commands()[5].op
-    assert m.is_clifford_type() == False
+    assert not m.is_clifford_type()
 
 
 def test_clifford_evaluation() -> None:
@@ -1150,7 +1149,7 @@ def test_clifford_evaluation() -> None:
     iswap = c.get_commands()[1].op
     assert iswap.is_clifford()
     rz = c.get_commands()[2].op
-    assert rz.is_clifford() == False
+    assert not rz.is_clifford()
 
 
 def test_getting_registers() -> None:
@@ -1423,8 +1422,8 @@ def test_add_circbox_with_registers() -> None:
     c0.CCX(breg[0], breg[1], breg[2])
     cbox = CircBox(c0)
     c = Circuit()
-    xreg = c.add_q_register("x", 3)
-    yreg = c.add_q_register("y", 2)
+    c.add_q_register("x", 3)
+    c.add_q_register("y", 2)
     zreg = c.add_q_register("z", 3)
     wreg = c.add_q_register("w", 2)
     for qb in c.qubits:
@@ -1442,16 +1441,16 @@ def test_add_circbox_with_registers() -> None:
 
 def test_add_circbox_with_mixed_registers() -> None:
     c0 = Circuit()
-    c0_qreg1 = c0.add_q_register("q1", 2)
-    c0_qreg2 = c0.add_q_register("q2", 3)
-    c0_creg1 = c0.add_c_register("c1", 4)
-    c0_creg2 = c0.add_c_register("c2", 5)
+    c0.add_q_register("q1", 2)
+    c0.add_q_register("q2", 3)
+    c0.add_c_register("c1", 4)
+    c0.add_c_register("c2", 5)
     cbox = CircBox(c0)
     c = Circuit()
-    c_qreg1 = c.add_q_register("q1", 2)
-    c_qreg2 = c.add_q_register("q2", 3)
-    c_creg1 = c.add_c_register("c1", 4)
-    c_creg2 = c.add_c_register("c2", 5)
+    c.add_q_register("q1", 2)
+    c.add_q_register("q2", 3)
+    c.add_c_register("c1", 4)
+    c.add_c_register("c2", 5)
 
     c.add_circbox_with_regmap(
         cbox, qregmap={"q1": "q1", "q2": "q2"}, cregmap={"c1": "c1", "c2": "c2"}
@@ -1537,7 +1536,7 @@ def test_bad_circbox() -> None:
     b = circ.add_c_register("b", 5)
     c = circ.add_c_register("c", 5)
     circ.add_classicalexpbox_register(a | b, c.to_list())
-    with pytest.raises(RuntimeError) as e:
+    with pytest.raises(RuntimeError):
         _ = CircBox(circ)
 
 

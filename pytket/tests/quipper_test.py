@@ -40,7 +40,6 @@ def unitary_from_simulate_output(simout: Any, n: int) -> np.ndarray:
     fmt = "{0:0%db}" % n
     reps = ["|" + fmt.format(i) + ">" for i in range(N)]
     lines = simout.split("\n")
-    n_lines = len(lines)
     pos = 0
     a = np.zeros((N, N), dtype=complex)
     for i in range(N):
@@ -109,6 +108,6 @@ def test_quipper_4() -> None:
 def test_quipper_5() -> None:
     # Invalid operation (CCH gate).
     with pytest.raises(NotImplementedError):
-        circ = circuit_from_quipper(
+        _ = circuit_from_quipper(
             str(curr_file_path / "quipper_test_files" / "test5.quip")
         )

@@ -19,7 +19,7 @@
 
 from .tket_sim_wrapper import TketSimWrapper
 
-from typing import TYPE_CHECKING, List, Optional, Sequence, Union, cast
+from typing import List, Optional, Sequence, Union, cast
 from uuid import uuid4
 
 import numpy as np

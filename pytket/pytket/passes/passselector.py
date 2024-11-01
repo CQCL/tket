@@ -57,7 +57,8 @@ class PassSelector:
             try:
                 p.apply(c)
                 self._scores.append(self._score_func(c))
-            except:  # in case of any error the pass should be ignored
+            except:  # noqa: E722
+                # in case of any error the pass should be ignored
                 self._scores.append(None)
 
         try:

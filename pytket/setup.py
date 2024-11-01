@@ -138,7 +138,6 @@ class NixBuild(build_ext):
             shutil.rmtree(extdir)
         os.makedirs(extdir)
 
-        nix_ldflags = os.environ["NIX_LDFLAGS"].split()
         build_inputs = os.environ["propagatedBuildInputs"].split()
 
         binders = [f"{l}/lib" for l in build_inputs if "-binders" in l]

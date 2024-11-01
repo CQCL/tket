@@ -231,7 +231,7 @@ class QubitPauliOperator:
             try:
                 coeff = complex_to_list(complex(v))
             except TypeError:
-                assert type(Expr(v)) == Expr
+                assert isinstance(Expr(v), Expr)
                 coeff = str(v)
             ret.append(
                 {
