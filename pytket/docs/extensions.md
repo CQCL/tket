@@ -75,6 +75,8 @@ A full list of available pytket backends is shown below.
 
 ## Density Matrix Simulators
 
+[AerDensityMatrixBackend](inv:#*qiskit.AerDensityMatrixBackend) - Backend for density matrix simulation using qiskit Aer. Can take a `NoiseModel` as an optional argument.
+
 [CirqDensityMatrixSampleBackend](inv:#*.CirqDensityMatrixSampleBackend)
 \- Backend for Cirq density matrix simulator sampling.
 
