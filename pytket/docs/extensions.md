@@ -69,11 +69,15 @@ A full list of available pytket backends is shown below.
 [ProjectQBackend](inv:#*.ProjectQBackend)
 \- Backend for running statevector simulations on the ProjectQ simulator.
 
+[QuESTBackend](https://docs.quantinuum.com/tket/extensions/pytket-quest/api.html#pytket.extensions.quest.QuESTBackend) Interface to the [QUEST simulator](https://quest.qtechtheory.org/docs/).
+
 ## Unitary Simulators
 
 [AerUnitaryBackend](inv:#*.AerUnitaryBackend) - Backend for running simulations on the Qiskit Aer unitary simulator.
 
 ## Density Matrix Simulators
+
+[AerDensityMatrixBackend](inv:#*qiskit.AerDensityMatrixBackend) - Backend for density matrix simulation using qiskit Aer. Can take a `NoiseModel` as an optional argument.
 
 [CirqDensityMatrixSampleBackend](inv:#*.CirqDensityMatrixSampleBackend)
 \- Backend for Cirq density matrix simulator sampling.
@@ -123,6 +127,7 @@ pytket-pyzx <https://docs.quantinuum.com/tket/extensions/pytket-pyzx>
 pytket-qir <https://docs.quantinuum.com/tket/extensions/pytket-qir>
 pytket-qiskit <https://docs.quantinuum.com/tket/extensions/pytket-qiskit>
 pytket-quantinuum <https://docs.quantinuum.com/tket/extensions/pytket-quantinuum>
+pytket-quest <https://docs.quantinuum.com/tket/extensions/pytket-quest>
 pytket-cutensornet <https://docs.quantinuum.com/tket/extensions/pytket-cutensornet>
 pytket-qulacs <https://docs.quantinuum.com/tket/extensions/pytket-qulacs>
 pytket-qujax <https://docs.quantinuum.com/tket/extensions/pytket-qujax>
