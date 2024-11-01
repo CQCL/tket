@@ -18,7 +18,7 @@ class BasePass:
     def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
         ...
     @staticmethod
-    def from_dict(arg0: dict) -> BasePass:
+    def from_dict(base_pass_dict: dict, custom_deserialisation: dict[str, typing.Callable[[pytket._tket.circuit.Circuit], pytket._tket.circuit.Circuit]]) -> BasePass:
         """
         Construct a new Pass instance from a JSON serializable dictionary representation.
         """
@@ -54,7 +54,7 @@ class BasePass:
         :param after_apply: Invoked after a pass is applied. The CompilationUnit and a summary of the pass configuration are passed into the callback.
         :return: True if pass modified the circuit, else False
         """
-    def to_dict(self) -> dict:
+    def to_dict(self) -> json:
         """
         :return: A JSON serializable dictionary representation of the Pass.
         """
@@ -226,6 +226,10 @@ class SequencePass(BasePass):
     def get_sequence(self) -> list[BasePass]:
         """
         :return: The underlying sequence of passes.
+        """
+    def to_dict(self) -> json:
+        """
+        :return: A JSON serializable dictionary representation of the SequencePass.
         """
 def AASRouting(arc: pytket._tket.architecture.Architecture, **kwargs: Any) -> BasePass:
     """
