@@ -275,7 +275,8 @@ PYBIND11_MODULE(passes, m) {
             return deserialise(base_pass_dict, custom_deserialisation);
           },
           "Construct a new Pass instance from a JSON serializable dictionary "
-          "representation.")
+          "representation.",
+          py::arg("base_pass_dict"), py::arg("custom_deserialisation"))
       .def(py::pickle(
           [](py::object self) {  // __getstate__
             return py::make_tuple(self.attr("to_dict")());
