@@ -131,10 +131,9 @@ def architecture(
     draw: Callable[[SearchStrategy[Any]], Any],
 ) -> Architecture:
     n_nodes = draw(st.integers(min_value=4, max_value=15))
-    n_edges = draw(st.integers(min_value=1, max_value=n_nodes))
     vertex = st.integers(min_value=0, max_value=n_nodes - 1)
     edge = st.lists(vertex, min_size=2, max_size=2, unique=True)
-    edges = st.lists(edge)
+    edges = st.lists(edge, min_size=1, max_size=n_nodes)
     return Architecture(draw(edges))
 
 
