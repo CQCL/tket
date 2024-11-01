@@ -895,18 +895,19 @@ SCENARIO("Test compiler pass serializations") {
   std::map<Qubit, Qubit> qmap = {{Qubit(0), Node(1)}, {Qubit(3), Node(2)}};
   Placement::Ptr na_place = std::make_shared<NoiseAwarePlacement>(arc);
   Placement::Ptr la_place = std::make_shared<LinePlacement>(arc);
-#define COMPPASSJSONTEST(passname, pass)                                    \
-  GIVEN(#passname) {                                                        \
-    Circuit circ = CircuitsForTesting::get().uccsd;                         \
-    CompilationUnit cu{circ};                                               \
-    CompilationUnit copy = cu;                                              \
-    PassPtr pp = pass;                                                      \
-    nlohmann::json j_pp = serialise(pp) PassPtr loaded = deserialise(j_pp); \
-    pp->apply(cu);                                                          \
-    loaded->apply(copy);                                                    \
-    REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());                      \
-    nlohmann::json j_loaded = serialise(loaded);                            \
-    REQUIRE(j_pp == j_loaded);                                              \
+#define COMPPASSJSONTEST(passname, pass)               \
+  GIVEN(#passname) {                                   \
+    Circuit circ = CircuitsForTesting::get().uccsd;    \
+    CompilationUnit cu{circ};                          \
+    CompilationUnit copy = cu;                         \
+    PassPtr pp = pass;                                 \
+    nlohmann::json j_pp = serialise(pp);               \
+    PassPtr loaded = deserialise(j_pp);                \
+    pp->apply(cu);                                     \
+    loaded->apply(copy);                               \
+    REQUIRE(cu.get_circ_ref() == copy.get_circ_ref()); \
+    nlohmann::json j_loaded = serialise(loaded);       \
+    REQUIRE(j_pp == j_loaded);                         \
   }
   COMPPASSJSONTEST(CommuteThroughMultis, CommuteThroughMultis())
   COMPPASSJSONTEST(
