@@ -352,8 +352,8 @@ nlohmann::json RepeatUntilSatisfiedPass::get_config() const {
   return j;
 }
 
+nlohmann::json serialise(const BasePass& bp) { return bp.get_config(); }
 nlohmann::json serialise(const PassPtr& pp) { return pp->get_config(); }
-
 nlohmann::json serialise(const std::vector<PassPtr>& pp) {
   nlohmann::json j = nlohmann::json::array();
   for (const auto& p : pp) {

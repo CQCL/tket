@@ -282,7 +282,7 @@ PYBIND11_MODULE(passes, m) {
           },
           [](const py::tuple &t) {  // __setstate__
             const json j = t[0].cast<json>();
-            return j.get<PassPtr>();
+            return deserialise(j);
           }));
   py::class_<SequencePass, std::shared_ptr<SequencePass>, BasePass>(
       m, "SequencePass", "A sequence of compilation passes.")
@@ -299,8 +299,11 @@ PYBIND11_MODULE(passes, m) {
       .def("__str__", [](const BasePass &) { return "<tket::SequencePass>"; })
       .def(
           "to_dict",
-          [](const SequencePass &seq_pass) { return serialise(seq_pass); },
-          ":return: A JSON serializable dictionary representation of the SequencePass.")
+          [](const SequencePass &seq_pass) {
+            return serialise(std::make_shared<SequencePass>(seq_pass));
+          },
+          ":return: A JSON serializable dictionary representation of the "
+          "SequencePass.")
       .def(
           "get_sequence", &SequencePass::get_sequence,
           ":return: The underlying sequence of passes.");

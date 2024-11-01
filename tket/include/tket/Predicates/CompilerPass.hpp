@@ -299,6 +299,7 @@ class RepeatUntilSatisfiedPass : public BasePass {
   PredicatePtr pred_;
 };
 
+nlohmann::json serialise(const BasePass& bp);
 nlohmann::json serialise(const PassPtr& pp);
 nlohmann::json serialise(const std::vector<PassPtr>& pp);
 
