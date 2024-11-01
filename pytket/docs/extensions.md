@@ -69,6 +69,8 @@ A full list of available pytket backends is shown below.
 [ProjectQBackend](inv:#*.ProjectQBackend)
 \- Backend for running statevector simulations on the ProjectQ simulator.
 
+[QuESTBackend](https://docs.quantinuum.com/tket/extensions/pytket-quest/api.html#pytket.extensions.quest.QuESTBackend) Interface to the [QUEST simulator](https://quest.qtechtheory.org/docs/).
+
 ## Unitary Simulators
 
 [AerUnitaryBackend](inv:#*.AerUnitaryBackend) - Backend for running simulations on the Qiskit Aer unitary simulator.
