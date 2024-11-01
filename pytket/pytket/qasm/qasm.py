@@ -69,7 +69,11 @@ from pytket.circuit import (
     QubitRegister,
     UnitID,
 )
-from pytket.circuit.clexpr import has_reg_output, wired_clexpr_from_logic_exp
+from pytket.circuit.clexpr import (
+    check_register_alignments,
+    has_reg_output,
+    wired_clexpr_from_logic_exp,
+)
 from pytket.circuit.decompose_classical import int_to_bools
 from pytket.circuit.logic_exp import (
     BitLogicExp,
@@ -1129,13 +1133,16 @@ def check_can_convert_circuit(circ: Circuit, header: str, maxwidth: int) -> None
             f"Circuit contains a classical register larger than {maxwidth}: try "
             "setting the `maxwidth` parameter to a higher value."
         )
+    # Empty CustomGates should have been removed by DecomposeBoxes().
     for cmd in circ:
-        if is_empty_customgate(cmd.op) or (
-            isinstance(cmd.op, Conditional) and is_empty_customgate(cmd.op.op)
-        ):
-            raise QASMUnsupportedError(
-                f"Empty CustomGates and opaque gates are not supported."
-            )
+        assert not is_empty_customgate(cmd.op)
+        if isinstance(cmd.op, Conditional):
+            assert not is_empty_customgate(cmd.op.op)
+    if not check_register_alignments(circ):
+        raise QASMUnsupportedError(
+            "Circuit contains classical expressions on registers whose arguments or "
+            "outputs are not register-aligned."
+        )
 
 
 def circuit_to_qasm_str(
@@ -1158,12 +1165,12 @@ def circuit_to_qasm_str(
     :return: qasm string
     """
 
-    check_can_convert_circuit(circ, header, maxwidth)
     qasm_writer = QasmWriter(
         circ.qubits, circ.bits, header, include_gate_defs, maxwidth
     )
     circ1 = circ.copy()
     DecomposeBoxes().apply(circ1)
+    check_can_convert_circuit(circ1, header, maxwidth)
     for command in circ1:
         assert isinstance(command, Command)
         qasm_writer.add_op(command.op, command.args)
@@ -1518,25 +1525,27 @@ class QasmWriter:
         else:
             self.variable_writes[label] = [written_variable]
 
-    def add_range_predicate(self, op: RangePredicateOp, args: List[Bit]) -> None:
-        comparator, value = _parse_range(op.lower, op.upper, self.maxwidth)
-        if (not hqs_header(self.header)) and comparator != "==":
+    def check_range_predicate(self, op: RangePredicateOp, args: List[Bit]) -> None:
+        if (not hqs_header(self.header)) and op.lower != op.upper:
             raise QASMUnsupportedError(
                 "OpenQASM conditions must be on a register's fixed value."
             )
-        bits = args[:-1]
+        variable = args[0].reg_name
+        assert isinstance(variable, str)
+        if op.n_inputs != self.cregs[variable].size:
+            raise QASMUnsupportedError(
+                "RangePredicate conditions must be an entire classical register"
+            )
+        if args[:-1] != self.cregs[variable].to_list():
+            raise QASMUnsupportedError(
+                "RangePredicate conditions must be a single classical register"
+            )
+
+    def add_range_predicate(self, op: RangePredicateOp, args: List[Bit]) -> None:
+        self.check_range_predicate(op, args)
+        comparator, value = _parse_range(op.lower, op.upper, self.maxwidth)
         variable = args[0].reg_name
         dest_bit = str(args[-1])
-        if not hqs_header(self.header):
-            assert isinstance(variable, str)
-            if op.n_inputs != self.cregs[variable].size:
-                raise QASMUnsupportedError(
-                    "OpenQASM conditions must be an entire classical register"
-                )
-            if bits != self.cregs[variable].to_list():
-                raise QASMUnsupportedError(
-                    "OpenQASM conditions must be a single classical register"
-                )
         label = self.strings.add_string(
             "".join(
                 [
@@ -1653,9 +1662,42 @@ class QasmWriter:
             # Conditional phase is ignored.
             return
         if op.op.type == OpType.RangePredicate:
-            raise QASMUnsupportedError(
-                "Conditional RangePredicate is currently unsupported."
+            # Special handling for nested ifs
+            # if condition
+            #   if pred dest = 1
+            #   if not pred dest = 0
+            # can be written as
+            # if condition s0 = 1
+            # if pred s1 = 1
+            # s2 = s0 & s1
+            # s3 = s0 & ~s1
+            # if s2 dest = 1
+            # if s3 dest = 0
+            # where s0, s1, s2, and s3 are scratch bits
+            s0 = self.fresh_scratch_bit()
+            l = self.strings.add_string(f"{s0} = 1;\n")
+            # we store the condition in self.strings.conditions
+            # as it can be later replaced by `replace_condition`
+            # if possible
+            self.strings.conditions[l] = ConditionString(variable, "==", op.value)
+            # output the RangePredicate to s1
+            s1 = self.fresh_scratch_bit()
+            assert isinstance(op.op, RangePredicateOp)
+            self.check_range_predicate(op.op, cast(List[Bit], args[op.width :]))
+            pred_comparator, pred_value = _parse_range(
+                op.op.lower, op.op.upper, self.maxwidth
             )
+            pred_variable = args[op.width :][0].reg_name
+            self.strings.add_string(
+                f"if({pred_variable}{pred_comparator}{pred_value}) {s1} = 1;\n"
+            )
+            s2 = self.fresh_scratch_bit()
+            self.strings.add_string(f"{s2} = {s0} & {s1};\n")
+            s3 = self.fresh_scratch_bit()
+            self.strings.add_string(f"{s3} = {s0} & (~ {s1});\n")
+            self.strings.add_string(f"if({s2}==1) {args[-1]} = 1;\n")
+            self.strings.add_string(f"if({s3}==1) {args[-1]} = 0;\n")
+            return
         # we assign the condition to a scratch bit, which we will later remove
         # if the condition variable is unchanged.
         scratch_bit = self.fresh_scratch_bit()
@@ -1783,9 +1825,9 @@ class QasmWriter:
                     input_regs[i] = creg
                     break
             else:
-                raise QASMUnsupportedError(
-                    f"ClExprOp ({wexpr}) contains a register variable (r{i}) "
-                    "that is not wired to any BitRegister in the circuit."
+                assert (
+                    not f"ClExprOp ({wexpr}) contains a register variable (r{i}) that "
+                    "is not wired to any BitRegister in the circuit."
                 )
         # 2. Write the left-hand side of the assignment.
         output_repr: Optional[str] = None
@@ -1803,6 +1845,8 @@ class QasmWriter:
             for creg in all_cregs:
                 if creg.to_list() == output_args:
                     output_repr = creg.name
+                    break
+            assert output_repr is not None
         self.strings.add_string(f"{output_repr} = ")
         # 3. Write the right-hand side of the assignment.
         self.strings.add_string(

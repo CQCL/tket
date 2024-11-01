@@ -4,10 +4,16 @@ Changelog
 Unreleased
 ----------
 
+Features:
+
+* Add `clexpr.check_register_alignments()` method to check register alignments
+  in `ClExprOp`.
+
 Fixes:
 
 * Fix `symbol_substitution` not preserving opgroups.
 * Remove hardware inefficient circuit construction in `_tk1_to_rzsx`
+* Support converting conditional `RangePredicate`s to QASM.
 
 1.34.0 (October 2024)
 ---------------------
