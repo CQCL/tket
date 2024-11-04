@@ -102,7 +102,6 @@ def test_long_registers() -> None:
     assert len(c.c_registers) == 5
     for creg in c.c_registers:
         assert creg.size <= 64
-        print(creg.size)
 
 
 def test_long_registers_2() -> None:
@@ -113,7 +112,6 @@ def test_long_registers_2() -> None:
     assert len(c.c_registers) == 4
     for creg in c.c_registers:
         assert creg.size <= 100
-        print(creg.size)
 
 
 def test_qasm_qubit() -> None:
