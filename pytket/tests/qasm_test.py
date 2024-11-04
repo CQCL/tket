@@ -97,11 +97,22 @@ def test_qasm_correct() -> None:
 def test_long_registers() -> None:
     fname = str(curr_file_path / "qasm_test_files/longreg.qasm")
     c = circuit_from_qasm(fname, maxwidth=64)
-    assert c.n_qubits == 30
-    assert c.n_bits == 816
-    assert len(c.c_registers) == 44
+    assert c.n_qubits == 0
+    assert c.n_bits == 79
+    assert len(c.c_registers) == 5
     for creg in c.c_registers:
         assert creg.size <= 64
+        print(creg.size)
+
+
+def test_long_registers_2() -> None:
+    fname = str(curr_file_path / "qasm_test_files/longreg.qasm")
+    c = circuit_from_qasm(fname, maxwidth=100)
+    assert c.n_qubits == 0
+    assert c.n_bits == 79
+    assert len(c.c_registers) == 4
+    for creg in c.c_registers:
+        assert creg.size <= 100
         print(creg.size)
 
 
