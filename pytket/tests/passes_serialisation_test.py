@@ -777,6 +777,7 @@ def test_pass_deserialisation_only() -> None:
 def test_custom_deserialisation() -> None:
     def t(c: Circuit) -> Circuit:
         return Circuit(2).CX(0, 1)
+
     custom_pass_post = BasePass.from_dict(
         CustomPass(t, label="test").to_dict(), {"test": t}
     )
