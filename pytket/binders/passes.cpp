@@ -269,20 +269,16 @@ PYBIND11_MODULE(passes, m) {
       .def_static(
           "from_dict",
           [](const py::dict &base_pass_dict,
-             const std::optional<
-                 std::map<std::string, std::function<Circuit(const Circuit &)>>>
+
+             std::map<std::string, std::function<Circuit(const Circuit &)>>
                  &custom_deserialisation) {
-            if (custom_deserialisation->empty()) {
-              return deserialise(base_pass_dict, {});
-            } else {
-              return deserialise(
-                  base_pass_dict, custom_deserialisation.value());
-            }
+            return deserialise(base_pass_dict, custom_deserialisation);
           },
           "Construct a new Pass instance from a JSON serializable dictionary "
           "representation.",
           py::arg("base_pass_dict"),
-          py::arg("custom_deserialisation") = std::nullopt)
+          py::arg("custom_deserialisation") =
+              std::map<std::string, std::function<Circuit(const Circuit &)>>{})
       .def(py::pickle(
           [](py::object self) {  // __getstate__
             return py::make_tuple(self.attr("to_dict")());
