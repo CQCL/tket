@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
+#include <cstdint>
 #include <memory>
 #include <nlohmann/json_fwd.hpp>
 #include <sstream>
@@ -127,7 +128,7 @@ SCENARIO("Serialization and stringification") {
     REQUIRE(var_reg1 == var_reg);
   }
   GIVEN("ClExprTerm") {
-    ClExprTerm term_int = 7;
+    ClExprTerm term_int = uint64_t{7};
     ClExprTerm term_var = ClRegVar{5};
     std::stringstream ss;
     ss << term_int << ", " << term_var;
@@ -140,14 +141,14 @@ SCENARIO("Serialization and stringification") {
     REQUIRE(term_var1 == term_var);
   }
   GIVEN("Vector of ClExprArg (1)") {
-    std::vector<ClExprArg> args{ClRegVar{2}, int{3}};
+    std::vector<ClExprArg> args{ClRegVar{2}, uint64_t{3}};
     nlohmann::json j = args;
     std::vector<ClExprArg> args1 = j.get<std::vector<ClExprArg>>();
     REQUIRE(args == args1);
   }
   GIVEN("ClExpr (1)") {
     // r0 + 7
-    ClExpr expr(ClOp::RegAdd, {ClRegVar{0}, int{7}});
+    ClExpr expr(ClOp::RegAdd, {ClRegVar{0}, uint64_t{7}});
     std::stringstream ss;
     ss << expr;
     REQUIRE(ss.str() == "add(r0, 7)");
@@ -156,7 +157,7 @@ SCENARIO("Serialization and stringification") {
     REQUIRE(expr1 == expr);
   }
   GIVEN("Vector of ClExprArg (2)") {
-    ClExpr expr(ClOp::RegAdd, {ClRegVar{0}, int{8}});
+    ClExpr expr(ClOp::RegAdd, {ClRegVar{0}, uint64_t{8}});
     std::vector<ClExprArg> args{expr};
     nlohmann::json j = args;
     std::vector<ClExprArg> args1 = j.get<std::vector<ClExprArg>>();
@@ -165,7 +166,7 @@ SCENARIO("Serialization and stringification") {
   GIVEN("ClExpr (2)") {
     // (r0 + r1) / (r2 * 3)
     ClExpr numer(ClOp::RegAdd, {ClRegVar{0}, ClRegVar{1}});
-    ClExpr denom(ClOp::RegMul, {ClRegVar{2}, int{3}});
+    ClExpr denom(ClOp::RegMul, {ClRegVar{2}, uint64_t{3}});
     ClExpr expr(ClOp::RegDiv, {numer, denom});
     std::stringstream ss;
     ss << expr;
