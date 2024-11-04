@@ -359,7 +359,11 @@ def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
             newcirc.add_barrier(args)
         else:
             for arg in args:
-                if isinstance(arg, Bit) and arg not in newcirc.bits:
+                if (
+                    isinstance(arg, Bit)
+                    and arg.reg_name != "_w"  # workaround: this shouldn't be type Bit
+                    and arg not in newcirc.bits
+                ):
                     newcirc.add_bit(arg)
             newcirc.add_gate(op, args, **kwargs)
     return newcirc, modified
