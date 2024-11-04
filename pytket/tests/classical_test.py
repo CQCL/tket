@@ -1037,7 +1037,7 @@ def test_regpredicate(condition: PredicateExp) -> None:
             circ.add_bit(inp, reject_dups=False)
 
     circ.X(qb, condition=condition)
-    assert circ.n_gates_of_type(OpType.ClassicalExpBox) == 1
+    assert circ.n_gates_of_type(OpType.ClassicalExpBox) == 0
     newcirc = circ.copy()
     DecomposeClassicalExp().apply(newcirc)
 
