@@ -16,11 +16,7 @@
 from typing import Tuple, Union
 
 from pytket.circuit import Bit, Circuit, BitRegister
-from pytket._tket.unit_id import (
-    _TEMP_REG_SIZE,
-    _TEMP_BIT_NAME,
-    _TEMP_BIT_REG_BASE,
-)
+from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
 from pytket.circuit.clexpr import wired_clexpr_from_logic_exp
 from pytket.circuit.logic_exp import (
     BitLogicExp,
@@ -101,9 +97,9 @@ def _add_condition(
             int(r_name.split("_")[-1]) for r_name in existing_reg_names
         )
         next_index = max(existing_reg_indices, default=-1) + 1
-        temp_reg = BitRegister(f"{_TEMP_BIT_REG_BASE}_{next_index}", _TEMP_REG_SIZE)
+        temp_reg = BitRegister(f"{_TEMP_BIT_REG_BASE}_{next_index}", min_reg_size)
         circ.add_c_register(temp_reg)
-        target_bits = temp_reg.to_list()[:min_reg_size]
+        target_bits = temp_reg.to_list()
         wexpr, args = wired_clexpr_from_logic_exp(pred_exp, target_bits)
         circ.add_clexpr(wexpr, args)
     elif isinstance(pred_exp, BitRegister):
