@@ -590,7 +590,7 @@ PassPtr deserialise(
       pp = RoundAngles(n, only_zeros);
     } else if (passname == "CustomPass") {
       std::string label = content.at("label").get<std::string>();
-      auto it = custom_deserialise.find("label");
+      auto it = custom_deserialise.find(label);
       if (it != custom_deserialise.end()) {
         pp = CustomPass(it->second, label);
       } else {
