@@ -94,6 +94,17 @@ def test_qasm_correct() -> None:
     assert str(coms3) == correct_str3
 
 
+def test_long_registers() -> None:
+    fname = str(curr_file_path / "qasm_test_files/longreg.qasm")
+    c = circuit_from_qasm(fname, maxwidth=64)
+    assert c.n_qubits == 30
+    assert c.n_bits == 816
+    assert len(c.c_registers) == 44
+    for creg in c.c_registers:
+        assert creg.size <= 64
+        print(creg.size)
+
+
 def test_qasm_qubit() -> None:
     with pytest.raises(RuntimeError) as errorinfo:
         fname = str(curr_file_path / "qasm_test_files/test2.qasm")
@@ -602,7 +613,8 @@ def test_scratch_bits_filtering() -> None:
     creg {_TEMP_BIT_NAME}_1[32];
     {_TEMP_BIT_NAME}[0] = (a[0] ^ b[0]);
     if({_TEMP_BIT_NAME}[0]==1) x q[0];
-    """
+    """,
+        maxwidth=64,
     )
     assert c.get_c_register(_TEMP_BIT_NAME)
     assert c.get_c_register(f"{_TEMP_BIT_NAME}_1")

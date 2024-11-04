@@ -14,6 +14,7 @@ Fixes:
 * Fix `symbol_substitution` not preserving opgroups.
 * Remove hardware inefficient circuit construction in `_tk1_to_rzsx`
 * Support converting conditional `RangePredicate`s to QASM.
+* Fix `maxwidth` parameter of `circuit_from_qasm_str`
 
 1.34.0 (October 2024)
 ---------------------

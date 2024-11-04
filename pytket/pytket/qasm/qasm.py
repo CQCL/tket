@@ -88,7 +88,12 @@ from pytket.circuit.logic_exp import (
     create_logic_exp,
 )
 from pytket.qasm.grammar import grammar
-from pytket.passes import AutoRebase, DecomposeBoxes, RemoveRedundancies
+from pytket.passes import (
+    AutoRebase,
+    DecomposeBoxes,
+    RemoveRedundancies,
+    scratch_reg_resize_pass,
+)
 from pytket.wasm import WasmFileHandler
 
 
@@ -1028,7 +1033,11 @@ def circuit_from_qasm_str(
     cast(CircuitTransformer, g_parser.options.transformer)._reset_context(
         reset_wasm=False
     )
-    return Circuit.from_dict(g_parser.parse(qasm_str))  # type: ignore[arg-type]
+
+    circ = Circuit.from_dict(g_parser.parse(qasm_str))  # type: ignore[arg-type]
+    cpass = scratch_reg_resize_pass(maxwidth)
+    cpass.apply(circ)
+    return circ
 
 
 def circuit_from_qasm_io(
