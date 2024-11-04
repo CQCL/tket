@@ -474,8 +474,10 @@ void init_clexpr(py::module &m) {
       m, "ClExpr", "A classical expression")
       .def(
           py::init<ClOp, std::vector<ClExprArg>>(),
-          "Construct from an operation and a list of arguments", py::arg("op"),
-          py::arg("args"))
+          "Construct from an operation and a list of arguments. The arguments "
+          "may be integers (unsigned, up to 64 bits), :py:class:`ClBitVar`, "
+          ":py:class:`ClRegVar`, or other classical expressions.",
+          py::arg("op"), py::arg("args"))
       .def("__eq__", &py_equals<ClExpr>)
       .def(
           "__str__",
