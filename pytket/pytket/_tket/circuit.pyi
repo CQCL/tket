@@ -2587,7 +2587,7 @@ class ClExpr:
         """
     def __init__(self, op: ClOp, args: list[int | ClBitVar | ClRegVar | ClExpr]) -> None:
         """
-        Construct from an operation and a list of arguments
+        Construct from an operation and a list of arguments. The arguments may be integers (unsigned, up to 64 bits), :py:class:`ClBitVar`, :py:class:`ClRegVar`, or other classical expressions.
         """
     def __str__(self) -> str:
         ...
