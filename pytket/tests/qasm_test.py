@@ -121,7 +121,7 @@ def test_incompete_registers() -> None:
     c.Measure(Qubit(0), Bit("d", 1))
     with pytest.raises(QASMUnsupportedError) as errorinfo:
         circuit_to_qasm_str(c, header="hqslib1")
-    assert "Circuit contains a invalid classical register d." in str(errorinfo.value)
+    assert "Circuit contains an invalid classical register d." in str(errorinfo.value)
 
 
 def test_qasm_qubit() -> None:
