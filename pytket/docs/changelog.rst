@@ -8,6 +8,8 @@ Features:
 
 * Add `clexpr.check_register_alignments()` method to check register alignments
   in `ClExprOp`.
+* Use `ClExprOp` instead of `ClassicalExpBox` when deconstructing complex
+  conditions.
 
 Fixes:
 
