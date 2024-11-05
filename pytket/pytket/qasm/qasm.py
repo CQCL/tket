@@ -1142,6 +1142,12 @@ def check_can_convert_circuit(circ: Circuit, header: str, maxwidth: int) -> None
             f"Circuit contains a classical register larger than {maxwidth}: try "
             "setting the `maxwidth` parameter to a higher value."
         )
+    set_circ_register = set([creg.name for creg in circ.c_registers])
+    for b in circ.bits:
+        if b.reg_name not in set_circ_register:
+            raise QASMUnsupportedError(
+                f"Circuit contains an invalid classical register {b.reg_name}."
+            )
     # Empty CustomGates should have been removed by DecomposeBoxes().
     for cmd in circ:
         assert not is_empty_customgate(cmd.op)
