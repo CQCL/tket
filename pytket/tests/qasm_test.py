@@ -114,6 +114,16 @@ def test_long_registers_2() -> None:
         assert creg.size <= 100
 
 
+def test_incompete_registers() -> None:
+    c = Circuit(1)
+    c.add_bit(Bit("d", 1))
+    c.add_bit(Bit("d", 2))
+    c.Measure(Qubit(0), Bit("d", 1))
+    with pytest.raises(QASMUnsupportedError) as errorinfo:
+        circuit_to_qasm_str(c, header="hqslib1")
+    assert "Circuit contains a invalid classical register d." in str(errorinfo.value)
+
+
 def test_qasm_qubit() -> None:
     with pytest.raises(RuntimeError) as errorinfo:
         fname = str(curr_file_path / "qasm_test_files/test2.qasm")
@@ -240,6 +250,9 @@ def test_conditional_gates() -> None:
 
 def test_named_conditional_barrier() -> None:
     circ = Circuit(2, 2)
+    circ.add_bit(Bit("test", 0))
+    circ.add_bit(Bit("test", 1))
+    circ.add_bit(Bit("test", 2))
     circ.add_bit(Bit("test", 3))
     circ.Z(0, condition_bits=[0, 1], condition_value=2)
     circ.add_conditional_barrier(
