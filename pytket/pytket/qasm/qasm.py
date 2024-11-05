@@ -1146,7 +1146,7 @@ def check_can_convert_circuit(circ: Circuit, header: str, maxwidth: int) -> None
     for b in set([b.reg_name for b in circ.bits]):
         if b not in set_circ_register:
             raise QASMUnsupportedError(
-                f"Circuit contains a invalid classical register {b}."
+                f"Circuit contains an invalid classical register {b}."
             )
     # Empty CustomGates should have been removed by DecomposeBoxes().
     for cmd in circ:
