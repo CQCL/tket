@@ -16,11 +16,8 @@
 from typing import Tuple, Union
 
 from pytket.circuit import Bit, Circuit, BitRegister
-from pytket._tket.unit_id import (
-    _TEMP_REG_SIZE,
-    _TEMP_BIT_NAME,
-    _TEMP_BIT_REG_BASE,
-)
+from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
+from pytket.circuit.clexpr import wired_clexpr_from_logic_exp
 from pytket.circuit.logic_exp import (
     BitLogicExp,
     Constant,
@@ -79,7 +76,8 @@ def _add_condition(
     circ.add_bit(condition_bit)
 
     if isinstance(pred_exp, BitLogicExp):
-        circ.add_classicalexpbox_bit(pred_exp, [condition_bit])
+        wexpr, args = wired_clexpr_from_logic_exp(pred_exp, [condition_bit])
+        circ.add_clexpr(wexpr, args)
         return condition_bit, bool(pred_val)
 
     assert isinstance(pred_exp, (RegLogicExp, BitRegister))
@@ -99,10 +97,11 @@ def _add_condition(
             int(r_name.split("_")[-1]) for r_name in existing_reg_names
         )
         next_index = max(existing_reg_indices, default=-1) + 1
-        temp_reg = BitRegister(f"{_TEMP_BIT_REG_BASE}_{next_index}", _TEMP_REG_SIZE)
+        temp_reg = BitRegister(f"{_TEMP_BIT_REG_BASE}_{next_index}", min_reg_size)
         circ.add_c_register(temp_reg)
-        target_bits = temp_reg.to_list()[:min_reg_size]
-        circ.add_classicalexpbox_register(pred_exp, target_bits)
+        target_bits = temp_reg.to_list()
+        wexpr, args = wired_clexpr_from_logic_exp(pred_exp, target_bits)
+        circ.add_clexpr(wexpr, args)
     elif isinstance(pred_exp, BitRegister):
         target_bits = pred_exp.to_list()
 
