@@ -8,12 +8,17 @@ Features:
 
 * Add `clexpr.check_register_alignments()` method to check register alignments
   in `ClExprOp`.
+* Use `ClExprOp` instead of `ClassicalExpBox` when deconstructing complex
+  conditions.
 
 Fixes:
 
 * Fix `symbol_substitution` not preserving opgroups.
 * Remove hardware inefficient circuit construction in `_tk1_to_rzsx`
 * Support converting conditional `RangePredicate`s to QASM.
+* Fix `maxwidth` parameter of `circuit_from_qasm_str`
+* Add `scratch_reg_resize_pass` to `circuit_from_qasm_str`
+* Reject incompete classical registers in pytket to qasm conversion
 
 1.34.0 (October 2024)
 ---------------------

@@ -65,6 +65,23 @@ pytket.circuit
     :members:
 .. autoclass:: pytket.circuit.ClassicalExpBox
     :members:
+.. autoclass:: pytket.circuit.ClExprOp
+    :special-members:
+    :members:
+.. autoclass:: pytket.circuit.WiredClExpr
+    :special-members: __init__
+    :members:
+.. autoclass:: pytket.circuit.ClExpr
+    :special-members: __init__
+    :members:
+.. autoclass:: pytket.circuit.ClOp
+    :members:
+.. autoclass:: pytket.circuit.ClBitVar
+    :special-members: __init__
+    :members:
+.. autoclass:: pytket.circuit.ClRegVar
+    :special-members: __init__
+    :members:
 .. autoclass:: pytket.circuit.PhasePolyBox
     :special-members:
     :members:

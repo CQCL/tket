@@ -2561,7 +2561,9 @@ class ClBitVar:
         ...
     def __init__(self, i: int) -> None:
         """
-        Construct from an integer identifier
+        Construct from an integer identifier.
+        
+        :param i: integer identifier for the variable
         """
     def __repr__(self) -> str:
         ...
@@ -2570,7 +2572,7 @@ class ClBitVar:
     @property
     def index(self) -> int:
         """
-        :return: integer identifier for the variable
+        integer identifier for the variable
         """
 class ClExpr:
     """
@@ -2587,7 +2589,10 @@ class ClExpr:
         """
     def __init__(self, op: ClOp, args: list[int | ClBitVar | ClRegVar | ClExpr]) -> None:
         """
-        Construct from an operation and a list of arguments
+        Construct from an operation type and a list of arguments.
+        
+        :param op: the operation type
+        :param args: list of arguments to the expression (which may be integers, :py:class:`ClBitVar` variables, :py:class:`ClRegVar` variables, or other :py:class:`ClExpr`)
         """
     def __str__(self) -> str:
         ...
@@ -2598,12 +2603,12 @@ class ClExpr:
     @property
     def args(self) -> list[int | ClBitVar | ClRegVar | ClExpr]:
         """
-        :return: arguments
+        arguments
         """
     @property
     def op(self) -> ClOp:
         """
-        :return: main operation
+        main operation
         """
 class ClExprOp(Op):
     """
@@ -2619,12 +2624,12 @@ class ClExprOp(Op):
     @property
     def expr(self) -> WiredClExpr:
         """
-        :return: wired expression
+        wired expression
         """
     @property
     def type(self) -> OpType:
         """
-        :return: operation type
+        operation type
         """
 class ClOp:
     """
@@ -2770,7 +2775,9 @@ class ClRegVar:
         ...
     def __init__(self, i: int) -> None:
         """
-        Construct from an integer identifier
+        Construct from an integer identifier.
+        
+        :param i: integer identifier for the variable
         """
     def __repr__(self) -> str:
         ...
@@ -2779,7 +2786,7 @@ class ClRegVar:
     @property
     def index(self) -> int:
         """
-        :return: integer identifier for the variable
+        integer identifier for the variable
         """
 class ClassicalEvalOp(ClassicalOp):
     """
@@ -4389,7 +4396,7 @@ class WASMOp(ClassicalOp):
         """
 class WiredClExpr:
     """
-    A classical expression defined over a sequence of bits
+    An operation defined by a classical expression over a sequence of bits
     """
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
@@ -4407,7 +4414,12 @@ class WiredClExpr:
         """
     def __init__(self, expr: ClExpr, bit_posn: dict[int, int] = {}, reg_posn: dict[int, list[int]] = {}, output_posn: list[int] = []) -> None:
         """
-        Construct from an expression with bit and register positions
+        Construct from an expression with bit and register positions.
+        
+        :param expr: an abstract classical expression
+        :param bit_posn: a map whose keys are the indices of the :py:class:`ClBitVar` occurring in the expression, and whose values are the positions of the corresponding bits in the arguments of the operation
+        :param reg_posn: a map whose keys are the indices of the :py:class:`ClRegVar` occurring in the expression, and whose values are the sequences of positions of the corresponding bits in the arguments of the operation
+        :param output_posn: a list giving the positions of the output bits in the arguments of the operation
         """
     def __str__(self) -> str:
         ...
@@ -4418,22 +4430,22 @@ class WiredClExpr:
     @property
     def bit_posn(self) -> dict[int, int]:
         """
-        :return: bit positions
+        bit positions
         """
     @property
     def expr(self) -> ClExpr:
         """
-        :return: expression
+        expression
         """
     @property
     def output_posn(self) -> list[int]:
         """
-        :return: output positions
+        output positions
         """
     @property
     def reg_posn(self) -> dict[int, list[int]]:
         """
-        :return: register positions
+        register positions
         """
 def fresh_symbol(preferred: str = 'a') -> sympy.Symbol:
     """

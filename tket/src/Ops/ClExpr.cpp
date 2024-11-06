@@ -15,6 +15,7 @@
 #include "tket/Ops/ClExpr.hpp"
 
 #include <algorithm>
+#include <cstdint>
 #include <set>
 #include <stdexcept>
 #include <string>
@@ -131,7 +132,7 @@ void from_json(const nlohmann::json& j, ClExprVar& var) {
 }
 
 std::ostream& operator<<(std::ostream& os, const ClExprTerm& term) {
-  if (const int* n = std::get_if<int>(&term)) {
+  if (const uint64_t* n = std::get_if<uint64_t>(&term)) {
     return os << *n;
   } else {
     ClExprVar var = std::get<ClExprVar>(term);
@@ -141,7 +142,7 @@ std::ostream& operator<<(std::ostream& os, const ClExprTerm& term) {
 
 void to_json(nlohmann::json& j, const ClExprTerm& term) {
   nlohmann::json inner_j;
-  if (const int* n = std::get_if<int>(&term)) {
+  if (const uint64_t* n = std::get_if<uint64_t>(&term)) {
     j["type"] = "int";
     inner_j = *n;
   } else {
@@ -155,7 +156,7 @@ void to_json(nlohmann::json& j, const ClExprTerm& term) {
 void from_json(const nlohmann::json& j, ClExprTerm& term) {
   const std::string termtype = j.at("type").get<std::string>();
   if (termtype == "int") {
-    term = j.at("term").get<int>();
+    term = j.at("term").get<uint64_t>();
   } else {
     TKET_ASSERT(termtype == "var");
     term = j.at("term").get<ClExprVar>();

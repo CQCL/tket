@@ -19,6 +19,7 @@
  * @brief Classical expressions involving bits and registers
  */
 
+#include <cstdint>
 #include <map>
 #include <nlohmann/detail/macro_scope.hpp>
 #include <ostream>
@@ -124,7 +125,7 @@ void from_json(const nlohmann::json& j, ClExprVar& var);
 /**
  * A term in a classical expression (either a constant or a variable)
  */
-typedef std::variant<int, ClExprVar> ClExprTerm;
+typedef std::variant<uint64_t, ClExprVar> ClExprTerm;
 
 std::ostream& operator<<(std::ostream& os, const ClExprTerm& term);
 

@@ -88,7 +88,12 @@ from pytket.circuit.logic_exp import (
     create_logic_exp,
 )
 from pytket.qasm.grammar import grammar
-from pytket.passes import AutoRebase, DecomposeBoxes, RemoveRedundancies
+from pytket.passes import (
+    AutoRebase,
+    DecomposeBoxes,
+    RemoveRedundancies,
+    scratch_reg_resize_pass,
+)
 from pytket.wasm import WasmFileHandler
 
 
@@ -1028,7 +1033,11 @@ def circuit_from_qasm_str(
     cast(CircuitTransformer, g_parser.options.transformer)._reset_context(
         reset_wasm=False
     )
-    return Circuit.from_dict(g_parser.parse(qasm_str))  # type: ignore[arg-type]
+
+    circ = Circuit.from_dict(g_parser.parse(qasm_str))  # type: ignore[arg-type]
+    cpass = scratch_reg_resize_pass(maxwidth)
+    cpass.apply(circ)
+    return circ
 
 
 def circuit_from_qasm_io(
@@ -1133,6 +1142,12 @@ def check_can_convert_circuit(circ: Circuit, header: str, maxwidth: int) -> None
             f"Circuit contains a classical register larger than {maxwidth}: try "
             "setting the `maxwidth` parameter to a higher value."
         )
+    set_circ_register = set([creg.name for creg in circ.c_registers])
+    for b in circ.bits:
+        if b.reg_name not in set_circ_register:
+            raise QASMUnsupportedError(
+                f"Circuit contains an invalid classical register {b.reg_name}."
+            )
     # Empty CustomGates should have been removed by DecomposeBoxes().
     for cmd in circ:
         assert not is_empty_customgate(cmd.op)

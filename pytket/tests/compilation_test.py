@@ -309,7 +309,7 @@ def test_resize_scratch_registers() -> None:
     reg_a = circ.add_c_register("a", 1)
     reg_b = circ.add_c_register("b", 1)
     circ.X(0, condition=reg_eq(reg_a ^ reg_b, 1))
-    assert circ.get_c_register(f"{_TEMP_BIT_REG_BASE}_0").size == 64
+    assert circ.get_c_register(f"{_TEMP_BIT_REG_BASE}_0").size == 1
     c_compiled = circ.copy()
     scratch_reg_resize_pass(10).apply(c_compiled)
     assert circ == c_compiled
