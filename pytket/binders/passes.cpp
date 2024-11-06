@@ -264,7 +264,9 @@ PYBIND11_MODULE(passes, m) {
       .def("__repr__", &BasePass::to_string)
       .def(
           "to_dict",
-          [](const BasePass &base_pass) { return serialise(base_pass); },
+          [](const BasePass &base_pass) {
+            return py::cast(serialise(base_pass));
+          },
           ":return: A JSON serializable dictionary representation of the Pass.")
       .def_static(
           "from_dict",
@@ -303,7 +305,8 @@ PYBIND11_MODULE(passes, m) {
       .def(
           "to_dict",
           [](const SequencePass &seq_pass) {
-            return serialise(std::make_shared<SequencePass>(seq_pass));
+            return py::cast(
+                serialise(std::make_shared<SequencePass>(seq_pass)));
           },
           ":return: A JSON serializable dictionary representation of the "
           "SequencePass.")
