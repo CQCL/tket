@@ -783,10 +783,10 @@ Typedefs</h2></td></tr>
 <tr class="memitem:ad3884943faf354329352667ff6d26ff8" id="r_ad3884943faf354329352667ff6d26ff8"><td class="memItemLeft" align="right" valign="top">typedef std::variant&lt; <a class="el" href="namespacetket.html#aa0fc07ef767ef2e11f63a1697fdcd4d4">ClBitVar</a>, <a class="el" href="structtket_1_1ClRegVar.html">ClRegVar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ad3884943faf354329352667ff6d26ff8">ClExprVar</a></td></tr>
 <tr class="memdesc:ad3884943faf354329352667ff6d26ff8"><td class="mdescLeft">&#160;</td><td class="mdescRight">A (bit or register) variable within an expression.  <br /></td></tr>
 <tr class="separator:ad3884943faf354329352667ff6d26ff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8fbe3ac17d5a3cbefe00b865bf6b569a" id="r_a8fbe3ac17d5a3cbefe00b865bf6b569a"><td class="memItemLeft" align="right" valign="top">typedef std::variant&lt; int, <a class="el" href="namespacetket.html#ad3884943faf354329352667ff6d26ff8">ClExprVar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a8fbe3ac17d5a3cbefe00b865bf6b569a">ClExprTerm</a></td></tr>
-<tr class="memdesc:a8fbe3ac17d5a3cbefe00b865bf6b569a"><td class="mdescLeft">&#160;</td><td class="mdescRight">A term in a classical expression (either a constant or a variable)  <br /></td></tr>
-<tr class="separator:a8fbe3ac17d5a3cbefe00b865bf6b569a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd9359cbce8f67e66adeecaa5dc595b2" id="r_afd9359cbce8f67e66adeecaa5dc595b2"><td class="memItemLeft" align="right" valign="top">typedef std::variant&lt; <a class="el" href="namespacetket.html#a8fbe3ac17d5a3cbefe00b865bf6b569a">ClExprTerm</a>, <a class="el" href="classtket_1_1ClExpr.html">ClExpr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#afd9359cbce8f67e66adeecaa5dc595b2">ClExprArg</a></td></tr>
+<tr class="memitem:ac3f067a991c8687a624758689e99c73f" id="r_ac3f067a991c8687a624758689e99c73f"><td class="memItemLeft" align="right" valign="top">typedef std::variant&lt; uint64_t, <a class="el" href="namespacetket.html#ad3884943faf354329352667ff6d26ff8">ClExprVar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ac3f067a991c8687a624758689e99c73f">ClExprTerm</a></td></tr>
+<tr class="memdesc:ac3f067a991c8687a624758689e99c73f"><td class="mdescLeft">&#160;</td><td class="mdescRight">A term in a classical expression (either a constant or a variable)  <br /></td></tr>
+<tr class="separator:ac3f067a991c8687a624758689e99c73f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd9359cbce8f67e66adeecaa5dc595b2" id="r_afd9359cbce8f67e66adeecaa5dc595b2"><td class="memItemLeft" align="right" valign="top">typedef std::variant&lt; <a class="el" href="namespacetket.html#ac3f067a991c8687a624758689e99c73f">ClExprTerm</a>, <a class="el" href="classtket_1_1ClExpr.html">ClExpr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#afd9359cbce8f67e66adeecaa5dc595b2">ClExprArg</a></td></tr>
 <tr class="memdesc:afd9359cbce8f67e66adeecaa5dc595b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">An argument to a classical operation in an expression.  <br /></td></tr>
 <tr class="separator:afd9359cbce8f67e66adeecaa5dc595b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75405147f5ffd3ff1ff1118fba63bcd0" id="r_a75405147f5ffd3ff1ff1118fba63bcd0"><td class="memItemLeft" align="right" valign="top">typedef std::shared_ptr&lt; const <a class="el" href="classtket_1_1Op.html">Op</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a></td></tr>
@@ -1568,11 +1568,11 @@ Functions</h2></td></tr>
 <tr class="separator:afc68b2d5f84f4421ece89537b3d46448"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34ea4d853e0e1108046cf9bb22783123" id="r_a34ea4d853e0e1108046cf9bb22783123"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a34ea4d853e0e1108046cf9bb22783123">from_json</a> (const nlohmann::json &amp;j, <a class="el" href="namespacetket.html#ad3884943faf354329352667ff6d26ff8">ClExprVar</a> &amp;var)</td></tr>
 <tr class="separator:a34ea4d853e0e1108046cf9bb22783123"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1258227cbb0821a8f7a393f9f56f9140" id="r_a1258227cbb0821a8f7a393f9f56f9140"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a1258227cbb0821a8f7a393f9f56f9140">operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="namespacetket.html#a8fbe3ac17d5a3cbefe00b865bf6b569a">ClExprTerm</a> &amp;term)</td></tr>
+<tr class="memitem:a1258227cbb0821a8f7a393f9f56f9140" id="r_a1258227cbb0821a8f7a393f9f56f9140"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a1258227cbb0821a8f7a393f9f56f9140">operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="namespacetket.html#ac3f067a991c8687a624758689e99c73f">ClExprTerm</a> &amp;term)</td></tr>
 <tr class="separator:a1258227cbb0821a8f7a393f9f56f9140"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d718e9ca12709a4cbb72b1923c8dd7f" id="r_a1d718e9ca12709a4cbb72b1923c8dd7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a1d718e9ca12709a4cbb72b1923c8dd7f">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="namespacetket.html#a8fbe3ac17d5a3cbefe00b865bf6b569a">ClExprTerm</a> &amp;term)</td></tr>
+<tr class="memitem:a1d718e9ca12709a4cbb72b1923c8dd7f" id="r_a1d718e9ca12709a4cbb72b1923c8dd7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a1d718e9ca12709a4cbb72b1923c8dd7f">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="namespacetket.html#ac3f067a991c8687a624758689e99c73f">ClExprTerm</a> &amp;term)</td></tr>
 <tr class="separator:a1d718e9ca12709a4cbb72b1923c8dd7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab7774adcd97f36b78d6b3811ce9d0f68" id="r_ab7774adcd97f36b78d6b3811ce9d0f68"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ab7774adcd97f36b78d6b3811ce9d0f68">from_json</a> (const nlohmann::json &amp;j, <a class="el" href="namespacetket.html#a8fbe3ac17d5a3cbefe00b865bf6b569a">ClExprTerm</a> &amp;term)</td></tr>
+<tr class="memitem:ab7774adcd97f36b78d6b3811ce9d0f68" id="r_ab7774adcd97f36b78d6b3811ce9d0f68"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ab7774adcd97f36b78d6b3811ce9d0f68">from_json</a> (const nlohmann::json &amp;j, <a class="el" href="namespacetket.html#ac3f067a991c8687a624758689e99c73f">ClExprTerm</a> &amp;term)</td></tr>
 <tr class="separator:ab7774adcd97f36b78d6b3811ce9d0f68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19b6509b104a4409d4bd3afc864b575e" id="r_a19b6509b104a4409d4bd3afc864b575e"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a19b6509b104a4409d4bd3afc864b575e">operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="namespacetket.html#afd9359cbce8f67e66adeecaa5dc595b2">ClExprArg</a> &amp;arg)</td></tr>
 <tr class="separator:a19b6509b104a4409d4bd3afc864b575e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2784,32 +2784,32 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef std::variant&lt;<a class="el" href="namespacetket.html#a8fbe3ac17d5a3cbefe00b865bf6b569a">ClExprTerm</a>, <a class="el" href="classtket_1_1ClExpr.html">ClExpr</a>&gt; <a class="el" href="namespacetket.html#afd9359cbce8f67e66adeecaa5dc595b2">tket::ClExprArg</a></td>
+          <td class="memname">typedef std::variant&lt;<a class="el" href="namespacetket.html#ac3f067a991c8687a624758689e99c73f">ClExprTerm</a>, <a class="el" href="classtket_1_1ClExpr.html">ClExpr</a>&gt; <a class="el" href="namespacetket.html#afd9359cbce8f67e66adeecaa5dc595b2">tket::ClExprArg</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>An argument to a classical operation in an expression. </p>
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8hpp_source.html#l00140">140</a> of file <a class="el" href="ClExpr_8hpp_source.html">ClExpr.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8hpp_source.html#l00141">141</a> of file <a class="el" href="ClExpr_8hpp_source.html">ClExpr.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a8fbe3ac17d5a3cbefe00b865bf6b569a" name="a8fbe3ac17d5a3cbefe00b865bf6b569a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8fbe3ac17d5a3cbefe00b865bf6b569a">&#9670;&#160;</a></span>ClExprTerm</h2>
+<a id="ac3f067a991c8687a624758689e99c73f" name="ac3f067a991c8687a624758689e99c73f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3f067a991c8687a624758689e99c73f">&#9670;&#160;</a></span>ClExprTerm</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef std::variant&lt;int, <a class="el" href="namespacetket.html#ad3884943faf354329352667ff6d26ff8">ClExprVar</a>&gt; <a class="el" href="namespacetket.html#a8fbe3ac17d5a3cbefe00b865bf6b569a">tket::ClExprTerm</a></td>
+          <td class="memname">typedef std::variant&lt;uint64_t, <a class="el" href="namespacetket.html#ad3884943faf354329352667ff6d26ff8">ClExprVar</a>&gt; <a class="el" href="namespacetket.html#ac3f067a991c8687a624758689e99c73f">tket::ClExprTerm</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>A term in a classical expression (either a constant or a variable) </p>
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8hpp_source.html#l00127">127</a> of file <a class="el" href="ClExpr_8hpp_source.html">ClExpr.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8hpp_source.html#l00128">128</a> of file <a class="el" href="ClExpr_8hpp_source.html">ClExpr.hpp</a>.</p>
 
 </div>
 </div>
@@ -2827,7 +2827,7 @@ Variables</h2></td></tr>
 
 <p>A (bit or register) variable within an expression. </p>
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8hpp_source.html#l00116">116</a> of file <a class="el" href="ClExpr_8hpp_source.html">ClExpr.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8hpp_source.html#l00117">117</a> of file <a class="el" href="ClExpr_8hpp_source.html">ClExpr.hpp</a>.</p>
 
 </div>
 </div>
@@ -4985,7 +4985,7 @@ template&lt;typename A , typename B &gt; </div>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8hpp_source.html#l00038">38</a> of file <a class="el" href="ClExpr_8hpp_source.html">ClExpr.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8hpp_source.html#l00039">39</a> of file <a class="el" href="ClExpr_8hpp_source.html">ClExpr.hpp</a>.</p>
 
 </div>
 </div>
@@ -10865,7 +10865,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00259">259</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00260">260</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -10895,7 +10895,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00187">187</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00188">188</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -10914,7 +10914,7 @@ template&lt;&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacetket.html#a8fbe3ac17d5a3cbefe00b865bf6b569a">ClExprTerm</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#ac3f067a991c8687a624758689e99c73f">ClExprTerm</a> &amp;&#160;</td>
           <td class="paramname"><em>term</em>&#160;</td>
         </tr>
         <tr>
@@ -10925,7 +10925,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00155">155</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00156">156</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -10955,7 +10955,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00123">123</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00124">124</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -11649,7 +11649,7 @@ template&lt;arithmetic T&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00408">408</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00409">409</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -16038,7 +16038,7 @@ template&lt;&gt; </div>
 <p>A bit variable within an expression. </p>
 <p>Identifier for the variable within the expression</p>
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8hpp_source.html#l00072">72</a> of file <a class="el" href="ClExpr_8hpp_source.html">ClExpr.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8hpp_source.html#l00073">73</a> of file <a class="el" href="ClExpr_8hpp_source.html">ClExpr.hpp</a>.</p>
 
 </div>
 </div>
@@ -16389,7 +16389,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00029">29</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00030">30</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -16449,7 +16449,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00093">93</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00094">94</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -16479,7 +16479,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00230">230</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00231">231</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -16509,7 +16509,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00165">165</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00166">166</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -16528,7 +16528,7 @@ template&lt;&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespacetket.html#a8fbe3ac17d5a3cbefe00b865bf6b569a">ClExprTerm</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="namespacetket.html#ac3f067a991c8687a624758689e99c73f">ClExprTerm</a> &amp;&#160;</td>
           <td class="paramname"><em>term</em>&#160;</td>
         </tr>
         <tr>
@@ -16539,7 +16539,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00133">133</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00134">134</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -16569,7 +16569,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00101">101</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00102">102</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -16599,7 +16599,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00097">97</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00098">98</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -16749,7 +16749,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00343">343</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00344">344</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -19145,7 +19145,7 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00252">252</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00253">253</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -19175,7 +19175,7 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00174">174</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00175">175</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -19194,7 +19194,7 @@ template&lt;typename BoxT &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespacetket.html#a8fbe3ac17d5a3cbefe00b865bf6b569a">ClExprTerm</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="namespacetket.html#ac3f067a991c8687a624758689e99c73f">ClExprTerm</a> &amp;&#160;</td>
           <td class="paramname"><em>term</em>&#160;</td>
         </tr>
         <tr>
@@ -19205,7 +19205,7 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00142">142</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00143">143</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -19235,7 +19235,7 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00110">110</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00111">111</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -19959,7 +19959,7 @@ template&lt;arithmetic T&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00397">397</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8cpp_source.html#l00398">398</a> of file <a class="el" href="ClExpr_8cpp_source.html">ClExpr.cpp</a>.</p>
 
 </div>
 </div>
@@ -21088,7 +21088,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ClExpr_8hpp_source.html#l00098">98</a> of file <a class="el" href="ClExpr_8hpp_source.html">ClExpr.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClExpr_8hpp_source.html#l00099">99</a> of file <a class="el" href="ClExpr_8hpp_source.html">ClExpr.hpp</a>.</p>
 
 </div>
 </div>
