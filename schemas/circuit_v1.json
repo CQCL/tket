@@ -302,6 +302,9 @@
         },
         "classical": {
           "$ref": "#/definitions/classical"
+        },
+        "expr": {
+          "$ref": "#/definitions/wiredclexpr"
         }
       },
       "required": [
@@ -355,6 +358,20 @@
           "then": {
             "required": [
               "classical"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ClExpr"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "expr"
             ]
           }
         }
@@ -1178,6 +1195,147 @@
         "qubits"
       ],
       "additionalProperties": false
+    },
+    "wiredclexpr": {
+      "type": "object",
+      "description": "A classical operation defined over a sequence of bits.",
+      "properties": {
+        "expr": {
+          "$ref": "#/definitions/clexpr"
+        },
+        "bit_posn": {
+          "type": "array",
+          "description": "List of pairs representing map from bit-variable indices to wire positions.",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "reg_posn": {
+          "type": "array",
+          "description": "List of pairs representing map from register-variable indices to lists of wire positions.",
+          "items": {
+            "type": "array",
+            "items": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            ]
+          }
+        },
+        "output_posn": {
+          "type": "array",
+          "description": "List of wire positions of output bits.",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "expr",
+        "bit_posn",
+        "reg_posn",
+        "output_posn"
+      ],
+      "additionalProperties": false
+    },
+    "clexpr": {
+      "type": "object",
+      "description": "An abstract classical expression.",
+      "properties": {
+        "op": {
+          "description": "The operation type.",
+          "type": "string"
+        },
+        "args": {
+          "type": "array",
+          "description": "List of arguments to the operation.",
+          "items": {
+            "$ref": "#/definitions/clexprarg"
+          }
+        }
+      }
+    },
+    "clexprarg":{
+      "type": "object",
+      "description": "Argument to a classical expression.",
+      "properties": {
+        "type": {
+          "description": "The type of argument.",
+          "type": "string",
+          "enum": [
+            "term",
+            "expr"
+          ]
+        },
+        "input": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/clexprterm"
+            },
+            {
+              "$ref": "#/definitions/clexpr"
+            }
+          ]
+        }
+      }
+    },
+    "clexprterm": {
+      "type": "object",
+      "description": "A term in a classical expression.",
+      "properties": {
+        "type": {
+          "description": "The type of term.",
+          "type": "string",
+          "enum": [
+            "int",
+            "var"
+          ]
+        },
+        "term": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "$ref": "#/definitions/clvar"
+            }
+          ]
+        }
+      }
+    },
+    "clvar": {
+      "type": "object",
+      "description": "A free variable in a classical expression.",
+      "properties": {
+        "type": {
+          "description": "The type of variable.",
+          "type": "string",
+          "enum": [
+            "bit",
+            "ref"
+          ]
+        },
+        "var": {
+          "$ref": "#/definitions/clindex"
+        }
+      }
+    },
+    "clindex": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "integer"
+        }
+      }
     }
   }
 }
