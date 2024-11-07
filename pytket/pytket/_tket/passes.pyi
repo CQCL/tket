@@ -20,7 +20,7 @@ class BasePass:
     @staticmethod
     def from_dict(base_pass_dict: dict, custom_deserialisation: dict[str, typing.Callable[[pytket._tket.circuit.Circuit], pytket._tket.circuit.Circuit]] = {}) -> BasePass:
         """
-        Construct a new Pass instance from a JSON serializable dictionary representation.
+        Construct a new Pass instance from a JSON serializable dictionary representation. `custom_deserialisation` is a map between `CustomPass` label attributes and a Circuit to Circuit function matching the `CustomPass` `transform` argument. This allows the construction of some `CustomPass` from JSON. `CustomPass` without a matching entry in `custom_deserialisation` will be rejected.
         """
     def __getstate__(self) -> tuple:
         ...

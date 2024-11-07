@@ -1158,8 +1158,7 @@ PassPtr RoundAngles(unsigned n, bool only_zeros) {
 }
 
 PassPtr CustomPass(
-    std::function<Circuit(const Circuit&)> transform,
-    const std::string& label) {
+    std::function<Circuit(const Circuit&)> transform, const std::string& label) {
   Transform t{[transform](Circuit& circ) {
     Circuit circ_out = transform(circ);
     bool success = circ_out != circ;
