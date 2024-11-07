@@ -14,10 +14,9 @@
 
 """Status classes for circuits submitted to backends.
 """
-from collections.abc import Callable
 from datetime import datetime
+from typing import Any, Callable, Dict, NamedTuple, Optional
 from enum import Enum
-from typing import Any, Dict, NamedTuple, Optional
 
 
 class StatusEnum(Enum):
@@ -44,21 +43,21 @@ class CircuitStatus(NamedTuple):
 
     status: StatusEnum
     message: str = ""
-    error_detail: str | None = None
+    error_detail: Optional[str] = None
 
     # Timestamp for when a status was last entered.
-    completed_time: datetime | None = None
-    queued_time: datetime | None = None
-    submitted_time: datetime | None = None
-    running_time: datetime | None = None
-    cancelled_time: datetime | None = None
-    error_time: datetime | None = None
+    completed_time: Optional[datetime] = None
+    queued_time: Optional[datetime] = None
+    submitted_time: Optional[datetime] = None
+    running_time: Optional[datetime] = None
+    cancelled_time: Optional[datetime] = None
+    error_time: Optional[datetime] = None
 
-    queue_position: int | None = None
+    queue_position: Optional[int] = None
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> Dict[str, Any]:
         """Return JSON serializable dictionary representation."""
-        circuit_status_dict: dict[str, Any] = {
+        circuit_status_dict: Dict[str, Any] = {
             "status": self.status.name,
             "message": self.message,
         }
@@ -84,7 +83,7 @@ class CircuitStatus(NamedTuple):
         return circuit_status_dict
 
     @classmethod
-    def from_dict(cls, dic: dict[str, Any]) -> "CircuitStatus":
+    def from_dict(cls, dic: Dict[str, Any]) -> "CircuitStatus":
         """Construct from JSON serializable dictionary."""
         invalid = ValueError(f"Dictionary invalid format for CircuitStatus: {dic}")
         if "message" not in dic or "status" not in dic:
@@ -95,9 +94,9 @@ class CircuitStatus(NamedTuple):
         except StopIteration as e:
             raise invalid from e
 
-        error_detail = dic.get("error_detail")
+        error_detail = dic.get("error_detail", None)
 
-        read_optional_datetime: Callable[[str], datetime | None] = lambda key: (
+        read_optional_datetime: Callable[[str], Optional[datetime]] = lambda key: (
             datetime.fromisoformat(x) if (x := dic.get(key)) is not None else None
         )
         completed_time = read_optional_datetime("completed_time")
@@ -107,7 +106,7 @@ class CircuitStatus(NamedTuple):
         cancelled_time = read_optional_datetime("cancelled_time")
         error_time = read_optional_datetime("error_time")
 
-        queue_position = dic.get("queue_position")
+        queue_position = dic.get("queue_position", None)
 
         return cls(
             status,
