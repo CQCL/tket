@@ -17,7 +17,7 @@
 
 from ast import literal_eval
 from collections.abc import Iterator, Sequence
-from typing import Tuple, Type, Union, overload
+from typing import Union, overload
 
 # mypy doesn't think you can pass the tuple to Union
 BasicHashType = Union[int, float, complex, str, bool, bytes]

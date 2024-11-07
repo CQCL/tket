@@ -15,7 +15,7 @@
 """ BackendInfo class: additional information on Backends """
 
 from dataclasses import asdict, dataclass, field
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import Any
 
 from pytket.architecture import Architecture, FullyConnected
 from pytket.circuit import Node, OpType

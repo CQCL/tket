@@ -17,7 +17,7 @@ for symbolic circuits. This uses the sympy.physics.quantum module and produces
 sympy objects. The implementations are slow and scale poorly, so this is
 only suitable for very small (up to 5 qubit) circuits."""
 from collections.abc import Callable
-from typing import Dict, List, Optional, Type, Union, cast
+from typing import cast
 
 import numpy as np
 import sympy

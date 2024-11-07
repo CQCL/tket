@@ -14,7 +14,7 @@
 
 from enum import Enum, unique
 from math import pi
-from typing import List, NamedTuple, Tuple
+from typing import NamedTuple
 
 from lark import Lark, Transformer, Tree
 

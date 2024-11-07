@@ -17,17 +17,7 @@
 import copy
 from collections.abc import Callable
 from heapq import heappop, heappush
-from typing import (
-    Dict,
-    Generic,
-    List,
-    Optional,
-    Set,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-)
+from typing import Generic, TypeVar
 
 from pytket._tket.circuit import Circuit, ClassicalExpBox, Conditional, OpType
 from pytket._tket.unit_id import (

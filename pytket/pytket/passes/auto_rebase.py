@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import warnings
-from typing import Set
 
 from pytket.circuit import OpType
 from pytket.passes import AutoRebase, AutoSquash, BasePass

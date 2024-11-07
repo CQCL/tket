@@ -15,17 +15,7 @@
 import warnings
 from collections import Counter, defaultdict
 from collections.abc import Callable
-from typing import (
-    Any,
-    DefaultDict,
-    Dict,
-    Generic,
-    List,
-    Set,
-    Tuple,
-    TypeVar,
-    Union,
-)
+from typing import Any, Generic, TypeVar, Union
 
 import numpy as np
 from scipy.stats import rv_discrete

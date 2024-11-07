@@ -17,7 +17,7 @@ import os
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, ClassVar, Dict, Optional, Type, TypeVar
+from typing import Any, ClassVar, TypeVar
 
 
 def get_config_file_path() -> Path:

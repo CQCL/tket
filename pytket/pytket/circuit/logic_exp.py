@@ -17,18 +17,7 @@
 from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import dataclass
 from enum import Enum
-from typing import (
-    Any,
-    ClassVar,
-    Dict,
-    List,
-    Set,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-    cast,
-)
+from typing import Any, ClassVar, TypeVar, Union, cast
 
 from pytket.circuit import Bit, BitRegister
 

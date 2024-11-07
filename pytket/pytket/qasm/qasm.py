@@ -22,20 +22,7 @@ from dataclasses import dataclass
 from decimal import Decimal
 from importlib import import_module
 from itertools import chain, groupby
-from typing import (
-    Any,
-    Dict,
-    List,
-    NewType,
-    Optional,
-    Set,
-    TextIO,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-    cast,
-)
+from typing import Any, NewType, TextIO, TypeVar, Union, cast
 
 from lark import Discard, Lark, Token, Transformer, Tree
 from sympy import Expr, Symbol, pi
