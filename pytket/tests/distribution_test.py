@@ -13,13 +13,15 @@
 # limitations under the License.
 
 from collections import Counter
+
+import pytest
 from numpy import isclose
+
 from pytket.utils import (
-    ProbabilityDistribution,
     EmpiricalDistribution,
+    ProbabilityDistribution,
     convex_combination,
 )
-import pytest
 
 
 def test_probability_distribution() -> None:

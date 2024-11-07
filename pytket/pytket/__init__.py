@@ -14,20 +14,20 @@
 
 """Python Interface to tket
 """
+import pytket.architecture
+import pytket.mapping
+import pytket.placement
+import pytket.transform
+from pytket._version import __version__
 from pytket.circuit import (
     Circuit,
     OpType,
 )
-from pytket.unit_id import (
-    Qubit,
-    Bit,
-)
-import pytket.mapping
-import pytket.architecture
-import pytket.placement
-import pytket.transform
 from pytket.config import PytketConfig, get_config_file_path
-from pytket._version import __version__
+from pytket.unit_id import (
+    Bit,
+    Qubit,
+)
 
 # Create pytket config file if it does not exist:
 pytket_config_file = get_config_file_path()

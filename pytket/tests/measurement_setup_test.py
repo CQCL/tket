@@ -12,17 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Any
+
 from pytket import logging
 from pytket.circuit import Circuit, Qubit
-from pytket.pauli import Pauli, QubitPauliString
 from pytket.partition import (
-    PauliPartitionStrat,
     MeasurementBitMap,
     MeasurementSetup,
+    PauliPartitionStrat,
     measurement_reduction,
 )
-
-from typing import Any
+from pytket.pauli import Pauli, QubitPauliString
 
 
 def test_empty_setup() -> None:

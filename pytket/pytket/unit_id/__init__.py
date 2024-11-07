@@ -13,9 +13,14 @@
 # limitations under the License.
 
 from pytket._tket.unit_id import *
-from pytket._tket.unit_id import Bit, BitRegister, Qubit, QubitRegister
-from pytket._tket.unit_id import _TEMP_BIT_NAME
-from pytket._tket.unit_id import _TEMP_BIT_REG_BASE
+from pytket._tket.unit_id import (
+    _TEMP_BIT_NAME,
+    _TEMP_BIT_REG_BASE,
+    Bit,
+    BitRegister,
+    Qubit,
+    QubitRegister,
+)
 
 
 def _bitregister_next(self: BitRegister) -> Bit:
@@ -23,8 +28,7 @@ def _bitregister_next(self: BitRegister) -> Bit:
         result = self[self._current]
         self._current += 1
         return result
-    else:
-        raise StopIteration
+    raise StopIteration
 
 
 def _qubitregister_next(self: QubitRegister) -> Qubit:
@@ -32,8 +36,7 @@ def _qubitregister_next(self: QubitRegister) -> Qubit:
         result = self[self._current]
         self._current += 1
         return result
-    else:
-        raise StopIteration
+    raise StopIteration
 
 
 setattr(BitRegister, "__next__", _bitregister_next)

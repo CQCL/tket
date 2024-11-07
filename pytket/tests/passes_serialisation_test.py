@@ -13,68 +13,67 @@
 # limitations under the License.
 
 import json
-import pytest
-from referencing import Registry
-from referencing.jsonschema import DRAFT7
-from jsonschema import Draft7Validator, ValidationError  # type: ignore
 from pathlib import Path
 from typing import Any, Dict, List
 
+import pytest
+from jsonschema import Draft7Validator, ValidationError  # type: ignore
+from referencing import Registry
+from referencing.jsonschema import DRAFT7
 
-from pytket.circuit import Node, Circuit, Qubit, OpType
-from pytket.predicates import Predicate
-from pytket.architecture import Architecture
-from pytket.placement import Placement, GraphPlacement
 import pytket.circuit_library as _library
-
-from pytket.passes import (
-    BasePass,
-    SequencePass,
-    RemoveRedundancies,
-    RepeatUntilSatisfiedPass,
-    CommuteThroughMultis,
-    RepeatWithMetricPass,
-    RebaseCustom,
-    FullMappingPass,
-    DefaultMappingPass,
-    AASRouting,
-    SquashCustom,
-)
+from pytket.architecture import Architecture
+from pytket.circuit import Circuit, Node, OpType, Qubit
+from pytket.circuit.named_types import ParamType
 from pytket.mapping import (
+    BoxDecompositionRoutingMethod,
     LexiLabellingMethod,
     LexiRouteRoutingMethod,
     MultiGateReorderRoutingMethod,
-    BoxDecompositionRoutingMethod,
 )
-from pytket.circuit.named_types import ParamType
+from pytket.passes import (
+    AASRouting,
+    BasePass,
+    CommuteThroughMultis,
+    DefaultMappingPass,
+    FullMappingPass,
+    RebaseCustom,
+    RemoveRedundancies,
+    RepeatUntilSatisfiedPass,
+    RepeatWithMetricPass,
+    SequencePass,
+    SquashCustom,
+)
+from pytket.placement import GraphPlacement, Placement
+from pytket.predicates import Predicate
 
 
-def standard_pass_dict(content: Dict[str, Any]) -> Dict[str, Any]:
+def standard_pass_dict(content: dict[str, Any]) -> dict[str, Any]:
     return {"StandardPass": content, "pass_class": "StandardPass"}
 
 
-def sequence_pass_dict(content: List[Dict[str, Any]]) -> Dict[str, Any]:
+def sequence_pass_dict(content: list[dict[str, Any]]) -> dict[str, Any]:
     return {"SequencePass": {"sequence": content}, "pass_class": "SequencePass"}
 
 
-def repeat_pass_dict(content: Dict[str, Any]) -> Dict[str, Any]:
+def repeat_pass_dict(content: dict[str, Any]) -> dict[str, Any]:
     return {"RepeatPass": {"body": content}, "pass_class": "RepeatPass"}
 
 
 def repeat_until_satisfied_pass_dict(
-    content: Dict[str, Any], pred: Dict[str, Any]
-) -> Dict[str, Any]:
+    content: dict[str, Any], pred: dict[str, Any]
+) -> dict[str, Any]:
     return {
         "RepeatUntilSatisfiedPass": {"body": content, "predicate": pred},
         "pass_class": "RepeatUntilSatisfiedPass",
     }
 
 
-def nonparam_pass_dict(name: str) -> Dict[str, Any]:
+def nonparam_pass_dict(name: str) -> dict[str, Any]:
     return standard_pass_dict({"name": name})
 
 
-def nonparam_predicate_dict(name: str) -> Dict[str, Any]:
+def nonparam_predicate_dict(name: str) -> dict[str, Any]:
     return {"type": name}
 
 
@@ -425,15 +424,15 @@ ONE_WAY_PASSES = {
 # https://stackoverflow.com/a/61632081
 curr_file_path = Path(__file__).resolve().parent
 schema_dir = curr_file_path.parent.parent / "schemas"
-with open(schema_dir / "compiler_pass_v1.json", "r") as f:
+with open(schema_dir / "compiler_pass_v1.json") as f:
     pass_schema = json.load(f)
-with open(schema_dir / "circuit_v1.json", "r") as f:
+with open(schema_dir / "circuit_v1.json") as f:
     circ_schema = json.load(f)
-with open(schema_dir / "architecture_v1.json", "r") as f:
+with open(schema_dir / "architecture_v1.json") as f:
     arch_schema = json.load(f)
-with open(schema_dir / "placement_v1.json", "r") as f:
+with open(schema_dir / "placement_v1.json") as f:
     plact_schema = json.load(f)
-with open(schema_dir / "predicate_v1.json", "r") as f:
+with open(schema_dir / "predicate_v1.json") as f:
     pred_schema = json.load(f)
 
 schema_store = [
@@ -449,7 +448,7 @@ predicate_validator = Draft7Validator(pred_schema, registry=registry)
 
 
 def check_pass_serialisation(
-    serialised_pass: Dict[str, Any], check_roundtrip: bool = True
+    serialised_pass: dict[str, Any], check_roundtrip: bool = True
 ) -> None:
     # Check the JSON is valid
     pass_validator.validate(serialised_pass)
@@ -463,7 +462,7 @@ def check_pass_serialisation(
         assert new_serialised_pass == serialised_pass
 
 
-def check_predicate_serialisation(serialised_predicate: Dict[str, Any]) -> None:
+def check_predicate_serialisation(serialised_predicate: dict[str, Any]) -> None:
     # Check the JSON is valid
     predicate_validator.validate(serialised_predicate)
     # Check the JSON can be deserialised
@@ -480,7 +479,6 @@ def test_passes_roundtrip_serialisation() -> None:
         try:
             check_pass_serialisation(p)
         except ValidationError as e:
-            print(p)
             raise ValueError(f"Pass {k} failed serialisation test.") from e
 
 
@@ -587,9 +585,8 @@ def check_arc_dict(arc: Architecture, d: dict) -> bool:
 
     if d["links"] != links:
         return False
-    else:
-        nodes = [Node(n[0], n[1]) for n in d["nodes"]]
-        return set(nodes) == set(arc.nodes)
+    nodes = [Node(n[0], n[1]) for n in d["nodes"]]
+    return set(nodes) == set(arc.nodes)
 
 
 def test_pass_deserialisation_only() -> None:

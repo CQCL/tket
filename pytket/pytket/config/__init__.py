@@ -16,9 +16,9 @@
 The configuration is saved to and loaded from file."""
 
 from .pytket_config import (
-    get_config_file_path,
     PytketConfig,
     PytketExtConfig,
+    get_config_file_path,
     load_config_file,
     write_config_file,
 )

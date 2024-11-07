@@ -12,20 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import TYPE_CHECKING, Dict, Optional, Tuple, List
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 
 import numpy as np
+
 from pytket.circuit import Circuit, Qubit
-from pytket.pauli import QubitPauliString
 from pytket.partition import (
-    measurement_reduction,
-    PauliPartitionStrat,
     GraphColourMethod,
+    PauliPartitionStrat,
+    measurement_reduction,
 )
+from pytket.pauli import QubitPauliString
 
 from .measurements import _all_pauli_measurements, append_pauli_measurement
-from .results import KwargTypes
 from .operators import QubitPauliOperator
+from .results import KwargTypes
 
 if TYPE_CHECKING:
     from pytket.backends.backend import Backend
@@ -47,7 +48,7 @@ def expectation_from_shots(shot_table: np.ndarray) -> float:
     return -2 * aritysum / len(shot_table) + 1
 
 
-def expectation_from_counts(counts: Dict[Tuple[int, ...], int]) -> float:
+def expectation_from_counts(counts: dict[tuple[int, ...], int]) -> float:
     """Estimates the expectation value of a circuit from shot counts.
     Computes the parity of '1's across all bits to determine a +1 or -1 contribution
     from each readout, and returns the weighted average.
@@ -75,7 +76,7 @@ def get_pauli_expectation_value(
     state_circuit: Circuit,
     pauli: QubitPauliString,
     backend: "Backend",
-    n_shots: Optional[int] = None,
+    n_shots: int | None = None,
 ) -> complex:
     """Estimates the expectation value of the given circuit with respect to the Pauli
     term by preparing measurements in the appropriate basis, running on the backend and
@@ -108,19 +109,18 @@ def get_pauli_expectation_value(
     if backend.supports_counts:
         counts = backend.run_circuit(measured_circ, n_shots=n_shots).get_counts()
         return expectation_from_counts(counts)
-    elif backend.supports_shots:
+    if backend.supports_shots:
         shot_table = backend.run_circuit(measured_circ, n_shots=n_shots).get_shots()
         return expectation_from_shots(shot_table)
-    else:
-        raise ValueError("Backend does not support counts or shots")
+    raise ValueError("Backend does not support counts or shots")
 
 
 def get_operator_expectation_value(
     state_circuit: Circuit,
     operator: QubitPauliOperator,
     backend: "Backend",
-    n_shots: Optional[int] = None,
-    partition_strat: Optional[PauliPartitionStrat] = None,
+    n_shots: int | None = None,
+    partition_strat: PauliPartitionStrat | None = None,
     colour_method: GraphColourMethod = GraphColourMethod.LargestFirst,
     **kwargs: KwargTypes,
 ) -> complex:
@@ -150,7 +150,7 @@ def get_operator_expectation_value(
         if not backend.valid_circuit(state_circuit):
             state_circuit = backend.get_compiled_circuit(state_circuit)
         try:
-            coeffs: List[complex] = [complex(v) for v in operator._dict.values()]
+            coeffs: list[complex] = [complex(v) for v in operator._dict.values()]
         except TypeError:
             raise ValueError("QubitPauliOperator contains unevaluated symbols.")
         if backend.supports_expectation and (
@@ -189,64 +189,62 @@ def get_operator_expectation_value(
             for handle in handles:
                 backend.pop_result(handle)
             return energy
-        elif backend.supports_shots:
+        if backend.supports_shots:
             for result, coeff in zip(results, coeffs):
                 shots = result.get_shots()
                 energy += coeff * expectation_from_shots(shots)
             for handle in handles:
                 backend.pop_result(handle)
             return energy
-        else:
-            raise ValueError("Backend does not support counts or shots")
-    else:
-        qubit_pauli_string_list = [p for p in operator._dict.keys() if (p != id_string)]
-        measurement_expectation = measurement_reduction(
-            qubit_pauli_string_list, partition_strat, colour_method
-        )
-        # note: this implementation requires storing all the results
-        # in memory simultaneously to filter through them.
-        measure_circs = []
-        for pauli_circ in measurement_expectation.measurement_circs:
-            circ = state_circuit.copy()
-            circ.append(pauli_circ)
-            measure_circs.append(circ)
-        handles = backend.process_circuits(
-            backend.get_compiled_circuits(measure_circs),
-            n_shots=n_shots,
-            valid_check=True,
-            **kwargs,
-        )
-        results = backend.get_results(handles)
-        for pauli_string in measurement_expectation.results:
-            bitmaps = measurement_expectation.results[pauli_string]
-            string_coeff = operator[pauli_string]
-            for bm in bitmaps:
-                index = bm.circ_index
-                aritysum = 0.0
-                if backend.supports_counts:
-                    counts = results[index].get_counts()
-                    total_shots = 0
-                    for row, count in counts.items():
-                        aritysum += count * (sum(row[i] for i in bm.bits) % 2)
-                        total_shots += count
-                    e = (
-                        ((-1) ** bm.invert)
-                        * string_coeff
-                        * (-2 * aritysum / total_shots + 1)
-                    )
-                    energy += complex(e)
-                elif backend.supports_shots:
-                    shots = results[index].get_shots()
-                    for row in shots:
-                        aritysum += sum(row[i] for i in bm.bits) % 2
-                    e = (
-                        ((-1) ** bm.invert)
-                        * string_coeff
-                        * (-2 * aritysum / len(shots) + 1)
-                    )
-                    energy += complex(e)
-                else:
-                    raise ValueError("Backend does not support counts or shots")
-        for handle in handles:
-            backend.pop_result(handle)
-        return energy
+        raise ValueError("Backend does not support counts or shots")
+    qubit_pauli_string_list = [p for p in operator._dict.keys() if (p != id_string)]
+    measurement_expectation = measurement_reduction(
+        qubit_pauli_string_list, partition_strat, colour_method
+    )
+    # note: this implementation requires storing all the results
+    # in memory simultaneously to filter through them.
+    measure_circs = []
+    for pauli_circ in measurement_expectation.measurement_circs:
+        circ = state_circuit.copy()
+        circ.append(pauli_circ)
+        measure_circs.append(circ)
+    handles = backend.process_circuits(
+        backend.get_compiled_circuits(measure_circs),
+        n_shots=n_shots,
+        valid_check=True,
+        **kwargs,
+    )
+    results = backend.get_results(handles)
+    for pauli_string in measurement_expectation.results:
+        bitmaps = measurement_expectation.results[pauli_string]
+        string_coeff = operator[pauli_string]
+        for bm in bitmaps:
+            index = bm.circ_index
+            aritysum = 0.0
+            if backend.supports_counts:
+                counts = results[index].get_counts()
+                total_shots = 0
+                for row, count in counts.items():
+                    aritysum += count * (sum(row[i] for i in bm.bits) % 2)
+                    total_shots += count
+                e = (
+                    ((-1) ** bm.invert)
+                    * string_coeff
+                    * (-2 * aritysum / total_shots + 1)
+                )
+                energy += complex(e)
+            elif backend.supports_shots:
+                shots = results[index].get_shots()
+                for row in shots:
+                    aritysum += sum(row[i] for i in bm.bits) % 2
+                e = (
+                    ((-1) ** bm.invert)
+                    * string_coeff
+                    * (-2 * aritysum / len(shots) + 1)
+                )
+                energy += complex(e)
+            else:
+                raise ValueError("Backend does not support counts or shots")
+    for handle in handles:
+        backend.pop_result(handle)
+    return energy

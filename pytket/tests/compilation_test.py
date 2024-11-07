@@ -12,17 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import pytest
+
+from pytket.architecture import Architecture
 from pytket.circuit import Circuit, OpType, reg_eq
 from pytket.passes import (
+    CXMappingPass,
     FullPeepholeOptimise,
     PassSelector,
-    CXMappingPass,
     scratch_reg_resize_pass,
 )
-from pytket.architecture import Architecture
 from pytket.placement import Placement
 from pytket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
-import pytest
 
 
 def test_compilation() -> None:
