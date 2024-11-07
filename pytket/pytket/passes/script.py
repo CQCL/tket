@@ -13,10 +13,12 @@
 # limitations under the License.
 
 from typing import List, cast
+
 from lark import Lark, Transformer
-from pytket.circuit import OpType
-from pytket.passes import BasePass, RepeatPass, SequencePass
+
+from pytket.circuit import CXConfigType, OpType
 from pytket.passes import (
+    BasePass,
     CliffordSimp,
     CommuteThroughMultis,
     ContextSimp,
@@ -32,21 +34,22 @@ from pytket.passes import (
     GuidedPauliSimp,
     KAKDecomposition,
     OptimisePhaseGadgets,
-    PauliSimp,
     PauliExponentials,
+    PauliSimp,
     PauliSquash,
     PeepholeOptimise2Q,
     RebaseTket,
     RemoveBarriers,
     RemoveDiscarded,
     RemoveRedundancies,
+    RepeatPass,
+    SequencePass,
     SimplifyInitial,
     SimplifyMeasured,
     SynthesiseTket,
     SynthesiseUMD,
     ThreeQubitSquash,
 )
-from pytket.circuit import CXConfigType
 from pytket.transform import PauliSynthStrat
 
 pass_grammar = """
@@ -181,166 +184,166 @@ class PassTransformer(Transformer):
     def repeat_pass(self, t: list[BasePass]) -> BasePass:
         return RepeatPass(t[0])
 
-    def clifford_simp(self, t: List) -> BasePass:
+    def clifford_simp(self, t: list) -> BasePass:
         return CliffordSimp()
 
-    def clifford_simp_no_swaps(self, t: List) -> BasePass:
+    def clifford_simp_no_swaps(self, t: list) -> BasePass:
         return CliffordSimp(allow_swaps=False)
 
-    def commute_through_multis(self, t: List) -> BasePass:
+    def commute_through_multis(self, t: list) -> BasePass:
         return CommuteThroughMultis()
 
-    def context_simp(self, t: List) -> BasePass:
+    def context_simp(self, t: list) -> BasePass:
         return ContextSimp()
 
-    def context_simp_no_classical(self, t: List) -> BasePass:
+    def context_simp_no_classical(self, t: list) -> BasePass:
         return ContextSimp(allow_classical=False)
 
-    def decompose_arbitrarily_controlled_gates(self, t: List) -> BasePass:
+    def decompose_arbitrarily_controlled_gates(self, t: list) -> BasePass:
         return DecomposeArbitrarilyControlledGates()
 
-    def decompose_boxes(self, t: List) -> BasePass:
+    def decompose_boxes(self, t: list) -> BasePass:
         return DecomposeBoxes()
 
-    def decompose_classical_exp(self, t: List) -> BasePass:
+    def decompose_classical_exp(self, t: list) -> BasePass:
         return DecomposeClassicalExp()
 
-    def decompose_multi_qubits_cx(self, t: List) -> BasePass:
+    def decompose_multi_qubits_cx(self, t: list) -> BasePass:
         return DecomposeMultiQubitsCX()
 
-    def decompose_single_qubits_tk1(self, t: List) -> BasePass:
+    def decompose_single_qubits_tk1(self, t: list) -> BasePass:
         return DecomposeSingleQubitsTK1()
 
-    def delay_measures(self, t: List) -> BasePass:
+    def delay_measures(self, t: list) -> BasePass:
         return DelayMeasures(False)
 
-    def delay_measures_try(self, t: List) -> BasePass:
+    def delay_measures_try(self, t: list) -> BasePass:
         return DelayMeasures(True)
 
     def euler_angle_reduction(self, t: list[OpType]) -> BasePass:
         return EulerAngleReduction(t[0], t[1])
 
-    def flatten_registers(self, t: List) -> BasePass:
+    def flatten_registers(self, t: list) -> BasePass:
         return FlattenRegisters()
 
-    def full_peephole_optimise(self, t: List) -> BasePass:
+    def full_peephole_optimise(self, t: list) -> BasePass:
         return FullPeepholeOptimise()
 
-    def full_peephole_optimise_no_swaps(self, t: List) -> BasePass:
+    def full_peephole_optimise_no_swaps(self, t: list) -> BasePass:
         return FullPeepholeOptimise(allow_swaps=False)
 
-    def guided_pauli_simp(self, t: List) -> BasePass:
+    def guided_pauli_simp(self, t: list) -> BasePass:
         assert isinstance(t[0], PauliSynthStrat)
         assert isinstance(t[1], CXConfigType)
         return GuidedPauliSimp(strat=t[0], cx_config=t[1])
 
-    def guided_pauli_simp_default(self, t: List) -> BasePass:
+    def guided_pauli_simp_default(self, t: list) -> BasePass:
         return GuidedPauliSimp()
 
-    def kak_decomposition(self, t: List) -> BasePass:
+    def kak_decomposition(self, t: list) -> BasePass:
         return KAKDecomposition()
 
-    def optimise_phase_gadgets(self, t: List) -> BasePass:
+    def optimise_phase_gadgets(self, t: list) -> BasePass:
         assert isinstance(t[0], CXConfigType)
         return OptimisePhaseGadgets(cx_config=t[0])
 
-    def optimise_phase_gadgets_default(self, t: List) -> BasePass:
+    def optimise_phase_gadgets_default(self, t: list) -> BasePass:
         return OptimisePhaseGadgets()
 
-    def pauli_exponentials(self, t: List) -> BasePass:
+    def pauli_exponentials(self, t: list) -> BasePass:
         assert isinstance(t[0], PauliSynthStrat)
         assert isinstance(t[1], CXConfigType)
         return PauliExponentials(strat=t[0], cx_config=t[1])
 
-    def pauli_exponentials_default(self, t: List) -> BasePass:
+    def pauli_exponentials_default(self, t: list) -> BasePass:
         return PauliExponentials()
 
-    def pauli_simp(self, t: List) -> BasePass:
+    def pauli_simp(self, t: list) -> BasePass:
         assert isinstance(t[0], PauliSynthStrat)
         assert isinstance(t[1], CXConfigType)
         return PauliSimp(strat=t[0], cx_config=t[1])
 
-    def pauli_simp_default(self, t: List) -> BasePass:
+    def pauli_simp_default(self, t: list) -> BasePass:
         return PauliSimp()
 
-    def pauli_squash(self, t: List) -> BasePass:
+    def pauli_squash(self, t: list) -> BasePass:
         assert isinstance(t[0], PauliSynthStrat)
         assert isinstance(t[1], CXConfigType)
         return PauliSquash(strat=t[0], cx_config=t[1])
 
-    def pauli_squash_default(self, t: List) -> BasePass:
+    def pauli_squash_default(self, t: list) -> BasePass:
         return PauliSquash()
 
-    def peephole_optimise_2q(self, t: List) -> BasePass:
+    def peephole_optimise_2q(self, t: list) -> BasePass:
         return PeepholeOptimise2Q()
 
-    def rebase_tket(self, t: List) -> BasePass:
+    def rebase_tket(self, t: list) -> BasePass:
         return RebaseTket()
 
-    def remove_barriers(self, t: List) -> BasePass:
+    def remove_barriers(self, t: list) -> BasePass:
         return RemoveBarriers()
 
-    def remove_discarded(self, t: List) -> BasePass:
+    def remove_discarded(self, t: list) -> BasePass:
         return RemoveDiscarded()
 
-    def remove_redundancies(self, t: List) -> BasePass:
+    def remove_redundancies(self, t: list) -> BasePass:
         return RemoveRedundancies()
 
-    def simplify_initial(self, t: List) -> BasePass:
+    def simplify_initial(self, t: list) -> BasePass:
         return SimplifyInitial()
 
-    def simplify_initial_no_classical(self, t: List) -> BasePass:
+    def simplify_initial_no_classical(self, t: list) -> BasePass:
         return SimplifyInitial(allow_classical=False)
 
-    def simplify_measured(self, t: List) -> BasePass:
+    def simplify_measured(self, t: list) -> BasePass:
         return SimplifyMeasured()
 
-    def synthesise_tket(self, t: List) -> BasePass:
+    def synthesise_tket(self, t: list) -> BasePass:
         return SynthesiseTket()
 
-    def synthesise_umd(self, t: List) -> BasePass:
+    def synthesise_umd(self, t: list) -> BasePass:
         return SynthesiseUMD()
 
-    def three_qubit_squash(self, t: List) -> BasePass:
+    def three_qubit_squash(self, t: list) -> BasePass:
         return ThreeQubitSquash()
 
-    def cx_config_type(self, t: List[CXConfigType]) -> CXConfigType:
+    def cx_config_type(self, t: list[CXConfigType]) -> CXConfigType:
         return t[0]
 
-    def cx_config_type_snake(self, t: List) -> CXConfigType:
+    def cx_config_type_snake(self, t: list) -> CXConfigType:
         return CXConfigType.Snake
 
-    def cx_config_type_star(self, t: List) -> CXConfigType:
+    def cx_config_type_star(self, t: list) -> CXConfigType:
         return CXConfigType.Star
 
-    def cx_config_type_tree(self, t: List) -> CXConfigType:
+    def cx_config_type_tree(self, t: list) -> CXConfigType:
         return CXConfigType.Tree
 
-    def cx_config_type_multi_q_gate(self, t: List) -> CXConfigType:
+    def cx_config_type_multi_q_gate(self, t: list) -> CXConfigType:
         return CXConfigType.MultiQGate
 
-    def op_type(self, t: List[OpType]) -> OpType:
+    def op_type(self, t: list[OpType]) -> OpType:
         return t[0]
 
-    def op_type_rx(self, t: List) -> OpType:
+    def op_type_rx(self, t: list) -> OpType:
         return OpType.Rx
 
-    def op_type_ry(self, t: List) -> OpType:
+    def op_type_ry(self, t: list) -> OpType:
         return OpType.Ry
 
-    def op_type_rz(self, t: List) -> OpType:
+    def op_type_rz(self, t: list) -> OpType:
         return OpType.Rz
 
-    def pauli_synth_strat(self, t: List[PauliSynthStrat]) -> PauliSynthStrat:
+    def pauli_synth_strat(self, t: list[PauliSynthStrat]) -> PauliSynthStrat:
         return t[0]
 
-    def pauli_synth_strat_individual(self, t: List) -> PauliSynthStrat:
+    def pauli_synth_strat_individual(self, t: list) -> PauliSynthStrat:
         return PauliSynthStrat.Individual
 
-    def pauli_synth_strat_pairwise(self, t: List) -> PauliSynthStrat:
+    def pauli_synth_strat_pairwise(self, t: list) -> PauliSynthStrat:
         return PauliSynthStrat.Pairwise
 
-    def pauli_synth_strat_sets(self, t: List) -> PauliSynthStrat:
+    def pauli_synth_strat_sets(self, t: list) -> PauliSynthStrat:
         return PauliSynthStrat.Sets
 
 

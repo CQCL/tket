@@ -69,7 +69,7 @@ b_not: "~" _b_not_exp
 _pow_exp: ipow | _atom_exp
 ipow: _pow_exp "**" _atom_exp
 
-_atom_exp: "(" _exp ")" 
+_atom_exp: "(" _exp ")"
     | cce_call
     | _atom
 

@@ -14,6 +14,7 @@
 
 import warnings
 from typing import Set
+
 from pytket.circuit import OpType
 from pytket.passes import AutoRebase, AutoSquash, BasePass
 
@@ -34,7 +35,7 @@ class NoAutoRebase(Exception):
         super().__init__(*args, **kwargs)
 
 
-def auto_rebase_pass(gateset: Set[OpType], allow_swaps: bool = False) -> BasePass:
+def auto_rebase_pass(gateset: set[OpType], allow_swaps: bool = False) -> BasePass:
     """Attempt to generate a rebase pass automatically for the given target
     gateset.
 
@@ -70,7 +71,7 @@ def auto_rebase_pass(gateset: Set[OpType], allow_swaps: bool = False) -> BasePas
         )
 
 
-def auto_squash_pass(gateset: Set[OpType]) -> BasePass:
+def auto_squash_pass(gateset: set[OpType]) -> BasePass:
     """Attempt to generate a squash pass automatically for the given target
     single qubit gateset.
 

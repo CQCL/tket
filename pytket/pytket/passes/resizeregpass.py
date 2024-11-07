@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from pytket.circuit import Bit, Circuit
 from pytket.unit_id import _TEMP_BIT_NAME
-from pytket.circuit import Circuit, Bit
+
 from .._tket.passes import BasePass, CustomPass
 
 MAX_C_REG_WIDTH = 32

@@ -12,9 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Optional, Callable
+from collections.abc import Callable
+from typing import Optional
 
 from pytket.circuit import Circuit
+
 from .._tket.passes import BasePass
 
 
@@ -51,7 +53,7 @@ class PassSelector:
         """
         circ_list = [circ.copy() for _ in self._passlist]
 
-        self._scores: list[Optional[int]] = []
+        self._scores: list[int | None] = []
 
         for p, c in zip(self._passlist, circ_list):
             try:
@@ -68,7 +70,7 @@ class PassSelector:
         except ValueError:
             raise RuntimeError("No passes have successfully run on this circuit")
 
-    def get_scores(self) -> list[Optional[int]]:
+    def get_scores(self) -> list[int | None]:
         """
         :return: scores of the circuit after compiling
           for each of the compilations passes
