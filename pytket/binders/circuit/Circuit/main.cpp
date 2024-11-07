@@ -472,8 +472,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "\n\n:return: the circuit depth")
       .def(
           "n_gates_of_type",
-          [](const Circuit &circ, const OpType &_type,
-             const bool conditional) {
+          [](const Circuit &circ, const OpType &_type, const bool conditional) {
             if (conditional) {
               return circ.count_gates(_type) +
                      circ.count_gates_conditional(_type);
