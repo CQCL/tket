@@ -94,6 +94,36 @@ def test_qasm_correct() -> None:
     assert str(coms3) == correct_str3
 
 
+def test_long_registers() -> None:
+    fname = str(curr_file_path / "qasm_test_files/longreg.qasm")
+    c = circuit_from_qasm(fname, maxwidth=64)
+    assert c.n_qubits == 0
+    assert c.n_bits == 79
+    assert len(c.c_registers) == 5
+    for creg in c.c_registers:
+        assert creg.size <= 64
+
+
+def test_long_registers_2() -> None:
+    fname = str(curr_file_path / "qasm_test_files/longreg.qasm")
+    c = circuit_from_qasm(fname, maxwidth=100)
+    assert c.n_qubits == 0
+    assert c.n_bits == 79
+    assert len(c.c_registers) == 4
+    for creg in c.c_registers:
+        assert creg.size <= 100
+
+
+def test_incompete_registers() -> None:
+    c = Circuit(1)
+    c.add_bit(Bit("d", 1))
+    c.add_bit(Bit("d", 2))
+    c.Measure(Qubit(0), Bit("d", 1))
+    with pytest.raises(QASMUnsupportedError) as errorinfo:
+        circuit_to_qasm_str(c, header="hqslib1")
+    assert "Circuit contains an invalid classical register d." in str(errorinfo.value)
+
+
 def test_qasm_qubit() -> None:
     with pytest.raises(RuntimeError) as errorinfo:
         fname = str(curr_file_path / "qasm_test_files/test2.qasm")
@@ -220,6 +250,9 @@ def test_conditional_gates() -> None:
 
 def test_named_conditional_barrier() -> None:
     circ = Circuit(2, 2)
+    circ.add_bit(Bit("test", 0))
+    circ.add_bit(Bit("test", 1))
+    circ.add_bit(Bit("test", 2))
     circ.add_bit(Bit("test", 3))
     circ.Z(0, condition_bits=[0, 1], condition_value=2)
     circ.add_conditional_barrier(
@@ -602,7 +635,8 @@ def test_scratch_bits_filtering() -> None:
     creg {_TEMP_BIT_NAME}_1[32];
     {_TEMP_BIT_NAME}[0] = (a[0] ^ b[0]);
     if({_TEMP_BIT_NAME}[0]==1) x q[0];
-    """
+    """,
+        maxwidth=64,
     )
     assert c.get_c_register(_TEMP_BIT_NAME)
     assert c.get_c_register(f"{_TEMP_BIT_NAME}_1")

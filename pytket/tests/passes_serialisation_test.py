@@ -41,6 +41,7 @@ from pytket.passes import (
     DefaultMappingPass,
     AASRouting,
     SquashCustom,
+    CustomPass,
 )
 from pytket.mapping import (
     LexiLabellingMethod,
@@ -771,3 +772,15 @@ def test_pass_deserialisation_only() -> None:
         rps.to_dict()["RepeatUntilSatisfiedPass"]["predicate"]["type"]
         == "UserDefinedPredicate"
     )
+
+
+def test_custom_deserialisation() -> None:
+    def t(c: Circuit) -> Circuit:
+        return Circuit(2).CX(0, 1)
+
+    custom_pass_post = BasePass.from_dict(
+        CustomPass(t, label="test").to_dict(), {"test": t}
+    )
+    c: Circuit = Circuit(3).H(0).H(1).H(2)
+    custom_pass_post.apply(c)
+    assert c == Circuit(2).CX(0, 1)
