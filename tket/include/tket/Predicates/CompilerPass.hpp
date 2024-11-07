@@ -33,8 +33,6 @@ typedef std::pair<PredicatePtrMap, PostConditions> PassConditions;
 typedef std::function<void(const CompilationUnit&, const nlohmann::json&)>
     PassCallback;
 
-JSON_DECL(PassPtr)
-
 class IncompatibleCompilerPasses : public std::logic_error {
  public:
   explicit IncompatibleCompilerPasses(const std::type_index& typeid1)
@@ -301,6 +299,14 @@ class RepeatUntilSatisfiedPass : public BasePass {
   PredicatePtr pred_;
 };
 
+nlohmann::json serialise(const BasePass& bp);
+nlohmann::json serialise(const PassPtr& pp);
+nlohmann::json serialise(const std::vector<PassPtr>& pp);
+
+PassPtr deserialise(
+    const nlohmann::json& j,
+    const std::map<std::string, std::function<Circuit(const Circuit&)>>&
+        custom_deserialise = {});
 // TODO: Repeat with a metric, repeat until a Predicate is satisfied...
 
 }  // namespace tket
