@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from lark import Lark
 import pytest
+from lark import Lark
+
 from pytket.circuit import OpType
-from pytket.passes import compilation_pass_from_script, compilation_pass_grammar
 from pytket.passes import (
+    BasePass,
     CliffordSimp,
     ContextSimp,
     DecomposeBoxes,
@@ -26,9 +27,12 @@ from pytket.passes import (
     OptimisePhaseGadgets,
     PauliSimp,
     PauliSquash,
+    RepeatPass,
+    SequencePass,
     SimplifyInitial,
+    compilation_pass_from_script,
+    compilation_pass_grammar,
 )
-from pytket.passes import BasePass, RepeatPass, SequencePass
 from pytket.transform import CXConfigType, PauliSynthStrat
 
 

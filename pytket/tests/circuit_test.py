@@ -13,81 +13,77 @@
 # limitations under the License.
 
 import json
-
-from jsonschema import validate  # type: ignore
-from pathlib import Path
+import math
 import pickle
+from math import sqrt
+from pathlib import Path
+
+import numpy as np
+import pytest
+import strategies as st  # type: ignore
+from hypothesis import given, settings
+from jsonschema import validate  # type: ignore
+from scipy.linalg import block_diag
+from sympy import Expr, Symbol, exp, pi, sympify
 
 from pytket.circuit import (
+    Bit,
+    BitRegister,
+    CircBox,
     Circuit,
+    ClassicalExpBox,
+    Command,
+    ConjugationBox,
+    CustomGate,
+    CustomGateDef,
+    CXConfigType,
+    DiagonalBox,
+    DummyBox,
+    ExpBox,
+    MultiplexedRotationBox,
+    MultiplexedTensoredU2Box,
+    MultiplexedU2Box,
+    MultiplexorBox,
     Op,
     OpType,
-    Command,
-    fresh_symbol,
-    CircBox,
-    Unitary1qBox,
-    Unitary2qBox,
-    Unitary3qBox,
-    MultiplexorBox,
-    MultiplexedRotationBox,
-    MultiplexedU2Box,
-    MultiplexedTensoredU2Box,
-    StatePreparationBox,
-    DiagonalBox,
-    ConjugationBox,
-    ExpBox,
     PauliExpBox,
-    PauliExpPairBox,
     PauliExpCommutingSetBox,
+    PauliExpPairBox,
     QControlBox,
+    Qubit,
+    QubitRegister,
+    ResourceBounds,
+    ResourceData,
+    StatePreparationBox,
     TermSequenceBox,
     ToffoliBox,
     ToffoliBoxSynthStrat,
-    CustomGateDef,
-    CustomGate,
-    Qubit,
-    Bit,
-    BitRegister,
-    QubitRegister,
-    CXConfigType,
-    ResourceBounds,
-    ResourceData,
-    DummyBox,
-    ClassicalExpBox,
+    Unitary1qBox,
+    Unitary2qBox,
+    Unitary3qBox,
+    fresh_symbol,
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
 from pytket.circuit.named_types import (
     BitstringToOpList,
-    BitstringToTensoredOpMap,
-    BitstringToTensoredOpList,
     BitstringToOpMap,
+    BitstringToTensoredOpList,
+    BitstringToTensoredOpMap,
     ParamType,
     PermutationMap,
 )
-
-from pytket.pauli import Pauli
 from pytket.passes import (
     CliffordSimp,
-    SynthesiseTket,
     DecomposeBoxes,
     RemoveRedundancies,
+    SynthesiseTket,
 )
-from pytket.transform import Transform, PauliSynthStrat
-
-import numpy as np
-from scipy.linalg import block_diag
-from sympy import Symbol, pi, sympify, Expr, exp
-import math
-from math import sqrt
-
-import pytest
-
-from hypothesis import given, settings
-import strategies as st  # type: ignore
+from pytket.pauli import Pauli
+from pytket.transform import PauliSynthStrat, Transform
 
 curr_file_path = Path(__file__).resolve().parent
 
-with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
+with open(curr_file_path.parent.parent / "schemas/circuit_v1.json") as f:
     schema = json.load(f)
 
 _0 = False

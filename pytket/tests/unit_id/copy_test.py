@@ -13,7 +13,7 @@
 # limitations under the License.
 from copy import copy, deepcopy
 
-from pytket.unit_id import Bit, Qubit, Node
+from pytket.unit_id import Bit, Node, Qubit
 
 
 def test_copying_qubits() -> None:

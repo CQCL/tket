@@ -2,27 +2,26 @@ from typing import Union
 
 import numpy as np
 
-from pytket.circuit import Circuit, Qubit, PhasePolyBox
+from pytket.circuit import Circuit, PhasePolyBox, Qubit
+from pytket.circuit.named_types import PhasePolynomialDict, PhasePolynomialSequence
 from pytket.passes import ComposePhasePolyBoxes, DecomposeBoxes
 from pytket.utils import compare_unitaries
-from pytket.circuit.named_types import PhasePolynomialDict, PhasePolynomialSequence
 
 
 def phase_polynomials_are_equal(
-    phase_poly_0: Union[PhasePolynomialDict, PhasePolynomialSequence],
-    phase_poly_1: Union[PhasePolynomialDict, PhasePolynomialSequence],
+    phase_poly_0: PhasePolynomialDict | PhasePolynomialSequence,
+    phase_poly_1: PhasePolynomialDict | PhasePolynomialSequence,
 ) -> bool:
     if isinstance(phase_poly_0, dict) and isinstance(phase_poly_1, dict):
         return phase_poly_0 == phase_poly_1
     # If lists are given the dicts created from them should compare equal.
     # Lists of pairs can contain duplicate "keys", this ensures the last defined value
     # for a key is what is compared, replicating a dict definition with duplicate keys.
-    elif isinstance(phase_poly_0, list) and isinstance(phase_poly_1, list):
+    if isinstance(phase_poly_0, list) and isinstance(phase_poly_1, list):
         to_compare_0 = {tuple(pair[0]): pair[1] for pair in phase_poly_0}
         to_compare_1 = {tuple(pair[0]): pair[1] for pair in phase_poly_1}
         return to_compare_0 == to_compare_1
-    else:
-        raise NotImplementedError("comparison not implemented")
+    raise NotImplementedError("comparison not implemented")
 
 
 def test_phase_polybox() -> None:
@@ -90,9 +89,6 @@ def test_phase_polybox_II() -> None:
     assert p_box_ii.n_qubits == n_qb
     assert p_box.qubit_indices == qubit_indices
     assert p_box_ii.qubit_indices == qubit_indices
-    print(phase_polynomial)
-    print(p_box.phase_polynomial_as_list)
-    print(p_box.phase_polynomial)
     assert phase_polynomials_are_equal(p_box.phase_polynomial, phase_polynomial)
     assert phase_polynomials_are_equal(
         p_box.phase_polynomial_as_list, phase_polynomial_alt

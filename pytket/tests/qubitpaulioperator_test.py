@@ -12,19 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from hypothesis import given, settings
 import json
 import pickle
-import pytest
 
 import numpy as np
-from sympy import Symbol, re, im
-
-from pytket.utils import QubitPauliOperator
-from pytket.pauli import Pauli, QubitPauliString
-from pytket.circuit import Qubit
-
+import pytest
 import strategies as st  # type: ignore
+from hypothesis import given, settings
+from sympy import Symbol, im, re
+
+from pytket.circuit import Qubit
+from pytket.pauli import Pauli, QubitPauliString
+from pytket.utils import QubitPauliOperator
 
 
 def test_QubitPauliOperator_addition() -> None:

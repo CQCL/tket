@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pytket.circuit import Circuit, OpType
 from pytket.architecture import Architecture
+from pytket.circuit import Circuit, OpType
 from pytket.passes import AASRouting, CNotSynthType, ComposePhasePolyBoxes
 from pytket.predicates import CompilationUnit
 

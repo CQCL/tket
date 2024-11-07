@@ -12,41 +12,44 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from math import pow, isclose
+from math import isclose, pow
+from typing import Tuple
+
 import numpy as np
 import pytest
-from pytket import Qubit, Circuit, OpType
+from sympy import sympify
+
+from pytket import Circuit, OpType, Qubit
 from pytket.passes import AutoRebase
 from pytket.pauli import Pauli, QubitPauliString
 from pytket.utils.results import compare_unitaries
 from pytket.zx import (
-    ZXDiagram,
-    ZXType,
-    QuantumType,
-    ZXWireType,
-    ZXGen,
-    Rewrite,
-    circuit_to_zx,
-    PhasedGen,
     CliffordGen,
     DirectedGen,
+    PhasedGen,
+    QuantumType,
+    Rewrite,
     ZXBox,
+    ZXDiagram,
+    ZXGen,
+    ZXType,
+    ZXWireType,
+    circuit_to_zx,
 )
-from sympy import sympify
-from typing import Tuple
 
 have_quimb: bool = True
 try:
     import quimb.tensor  # type: ignore
+
     from pytket.zx.tensor_eval import (
-        unitary_from_quantum_diagram,
+        density_matrix_from_cptp_diagram,
         fix_boundaries_to_binary_states,
         fix_inputs_to_binary_state,
         fix_outputs_to_binary_state,
-        tensor_from_quantum_diagram,
         tensor_from_mixed_diagram,
+        tensor_from_quantum_diagram,
         unitary_from_classical_diagram,
-        density_matrix_from_cptp_diagram,
+        unitary_from_quantum_diagram,
     )
 except ModuleNotFoundError:
     have_quimb = False
@@ -780,9 +783,9 @@ def test_constructors() -> None:
 
 def joint_normalise_tensor(
     a: np.ndarray, b: np.ndarray
-) -> Tuple[np.ndarray, np.ndarray]:
-    a_linear = a.reshape((a.size))
-    b_linear = b.reshape((b.size))
+) -> tuple[np.ndarray, np.ndarray]:
+    a_linear = a.reshape(a.size)
+    b_linear = b.reshape(b.size)
     max_i = 0
     max_val = 0
     for i in range(a.size):

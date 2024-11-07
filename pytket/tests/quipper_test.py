@@ -13,14 +13,15 @@
 # limitations under the License.
 
 from pathlib import Path
+from typing import Any
 
+import numpy as np
 import pytest
+
 from pytket import Circuit
 from pytket.quipper import circuit_from_quipper
 from pytket.transform import Transform
 from pytket.utils.results import compare_unitaries
-import numpy as np
-from typing import Any
 
 curr_file_path = Path(__file__).resolve().parent
 

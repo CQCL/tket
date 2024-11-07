@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from pytket.circuit import Circuit, OpType, Qubit
+from pytket.pauli import Pauli, QubitPauliString, QubitPauliTensor
 from pytket.tailoring import (
     FrameRandomisation,
     PauliFrameRandomisation,
@@ -20,7 +21,6 @@ from pytket.tailoring import (
     apply_clifford_basis_change,
     apply_clifford_basis_change_tensor,
 )
-from pytket.pauli import Pauli, QubitPauliString, QubitPauliTensor
 
 
 def test_single_cycle_single_frame_randomisation() -> None:

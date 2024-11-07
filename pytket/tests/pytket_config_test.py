@@ -12,18 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from dataclasses import dataclass
-from typing import Any, ClassVar, Dict, Optional, Type, Iterator
 import json
+from collections.abc import Iterator
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, ClassVar, Dict, Optional, Type
 
-from jsonschema import validate  # type: ignore
 import pytest
+from jsonschema import validate  # type: ignore
 
 from pytket.config import (
-    get_config_file_path,
     PytketConfig,
     PytketExtConfig,
+    get_config_file_path,
     load_config_file,
     write_config_file,
 )
@@ -33,25 +34,25 @@ from pytket.config import (
 class SampleExtConfig(PytketExtConfig):
     ext_dict_key: ClassVar[str] = "tests_sample"
 
-    field1: Optional[str]
-    field2: Optional[int]
+    field1: str | None
+    field2: int | None
 
     @classmethod
     def from_extension_dict(
-        cls: Type["SampleExtConfig"], ext_dict: Dict[str, Any]
+        cls: type["SampleExtConfig"], ext_dict: dict[str, Any]
     ) -> "SampleExtConfig":
-        return cls(ext_dict.get("field1", None), ext_dict.get("field2", None))
+        return cls(ext_dict.get("field1"), ext_dict.get("field2"))
 
 
 def test_pytket_config() -> None:
     config_file = get_config_file_path()
     assert config_file.exists()
-    with open(config_file, "r") as f:
+    with open(config_file) as f:
         config_dict = json.load(f)
 
     curr_file_path = Path(__file__).resolve().parent
 
-    with open(curr_file_path.parent.parent / "schemas/pytket_config_v1.json", "r") as f:
+    with open(curr_file_path.parent.parent / "schemas/pytket_config_v1.json") as f:
         schema = json.load(f)
 
     validate(instance=config_dict, schema=schema)

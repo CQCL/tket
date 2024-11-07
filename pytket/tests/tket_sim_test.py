@@ -12,12 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
-from pytket.circuit import Circuit, CircBox, QControlBox, Op, OpType
-from enum import Enum
-import numpy as np
 import math
+from enum import Enum
 from typing import Any, Tuple
+
+import numpy as np
+import pytest
+
+from pytket.circuit import CircBox, Circuit, Op, OpType, QControlBox
 
 # Note: of course, one could write many more (circuit -> unitary) tests.
 # But the functions are just wrappers around Simulation functions in tket,
@@ -61,7 +63,7 @@ def append_gates_sequence_1(circ: Circuit) -> None:
     circ.Rz(0.15, 0)
 
 
-def get_circuit_triple() -> Tuple[Circuit, Circuit, Circuit]:
+def get_circuit_triple() -> tuple[Circuit, Circuit, Circuit]:
     """Returns 3 circuits, where the final circuit is the first
     followed by the second."""
     c0 = Circuit(2)

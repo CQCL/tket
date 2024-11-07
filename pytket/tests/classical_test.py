@@ -12,39 +12,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import operator
-from typing import Callable, Dict, List, Tuple, Union, TypeVar
 import json
+import operator
+from collections.abc import Callable
 from pathlib import Path
-
-from jsonschema import validate  # type: ignore
-from hypothesis import given, settings, strategies
-from hypothesis.strategies import SearchStrategy
-
-from pytket import wasm
+from typing import Dict, List, Tuple, TypeVar, Union
 
 import pytest
+from hypothesis import given, settings, strategies
+from hypothesis.strategies import SearchStrategy
+from jsonschema import validate  # type: ignore
+from strategies import binary_digits, reg_name_regex, uint32, uint64  # type: ignore
+from sympy import Symbol
+
+from pytket import wasm
 from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
 from pytket.circuit import (
-    BitRegister,
-    QubitRegister,
     Bit,
+    BitRegister,
     Circuit,
+    ClassicalExpBox,
+    Conditional,
+    MultiBitOp,
+    Op,
     OpType,
     Qubit,
-    Conditional,
-    Op,
-    SetBitsOp,
-    MultiBitOp,
+    QubitRegister,
     RangePredicateOp,
-    ClassicalExpBox,
+    SetBitsOp,
 )
 from pytket.circuit.logic_exp import (
     BinaryOp,
     BitLogicExp,
     BitWiseOp,
-    PredicateExp,
     LogicExp,
+    NullaryOp,
+    PredicateExp,
     RegEq,
     RegGeq,
     RegGt,
@@ -55,29 +58,23 @@ from pytket.circuit.logic_exp import (
     RegPow,
     RegWiseOp,
     UnaryOp,
-    NullaryOp,
+    create_bit_logic_exp,
+    create_reg_logic_exp,
+    if_bit,
+    if_not_bit,
     reg_eq,
     reg_geq,
     reg_gt,
     reg_leq,
     reg_lt,
     reg_neq,
-    if_bit,
-    if_not_bit,
-    create_bit_logic_exp,
-    create_reg_logic_exp,
 )
 from pytket.circuit.named_types import RenameUnitsMap
-
 from pytket.passes import DecomposeClassicalExp, FlattenRegisters
-
-from sympy import Symbol
-
-from strategies import reg_name_regex, binary_digits, uint32, uint64  # type: ignore
 
 curr_file_path = Path(__file__).resolve().parent
 
-with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
+with open(curr_file_path.parent.parent / "schemas/circuit_v1.json") as f:
     schema = json.load(f)
 
 
@@ -591,7 +588,7 @@ function 'no_return' with 1 i32 parameter(s) and 0 i32 return value(s)
 function 'no_parameters' with 0 i32 parameter(s) and 1 i32 return value(s)
 function 'new_function' with 0 i32 parameter(s) and 1 i32 return value(s)
 unsupported function with invalid parameter or result type: 'add_something' 
-"""
+"""  # noqa: W291
     )
 
 
@@ -609,7 +606,7 @@ unsupported function with invalid parameter or result type: 'add_eleven'
 unsupported function with invalid parameter or result type: 'no_return' 
 unsupported function with invalid parameter or result type: 'no_parameters' 
 unsupported function with invalid parameter or result type: 'new_function' 
-"""
+"""  # noqa: W291
     )
 
 
@@ -632,7 +629,7 @@ function 'mixed_up_2' with 2 i32 parameter(s) and 1 i32 return value(s)
 function 'mixed_up_3' with 3 i32 parameter(s) and 1 i32 return value(s)
 function 'unse_internal' with 1 i32 parameter(s) and 1 i32 return value(s)
 unsupported function with invalid parameter or result type: 'add_something' 
-"""
+"""  # noqa: W291
     )
 
 
@@ -655,7 +652,7 @@ unsupported function with invalid parameter or result type: 'mixed_up'
 unsupported function with invalid parameter or result type: 'mixed_up_2' 
 unsupported function with invalid parameter or result type: 'mixed_up_3' 
 unsupported function with invalid parameter or result type: 'unse_internal' 
-"""
+"""  # noqa: W291
     )
 
 
@@ -683,7 +680,7 @@ def test_wasmfilehandler_multivalue_clang() -> None:
 function '__wasm_call_ctors' with 0 i32 parameter(s) and 0 i32 return value(s)
 function 'init' with 0 i32 parameter(s) and 0 i32 return value(s)
 unsupported function with invalid parameter or result type: 'divmod' 
-"""
+"""  # noqa: W291
     )
 
 
@@ -766,7 +763,7 @@ def qubit_register(
     reg=strategies.one_of(bit_register(), qubit_register()),
     index=strategies.integers(min_value=0, max_value=32),
 )
-def test_registers(reg: Union[BitRegister, QubitRegister], index: int) -> None:
+def test_registers(reg: BitRegister | QubitRegister, index: int) -> None:
     unit_type = Qubit if type(reg) is QubitRegister else Bit
     if index < reg.size:
         assert reg[index] == unit_type(reg.name, index)
@@ -818,11 +815,11 @@ def overflow_wrapper(f: Callable[..., int], maxval: int) -> Callable[..., int]:
     bit_exp=primitive_bit_logic_exps(),
     constants=strategies.tuples(binary_digits, binary_digits),
 )
-def test_bit_exp(bit_exp: BitLogicExp, constants: Tuple[int, int]) -> None:
+def test_bit_exp(bit_exp: BitLogicExp, constants: tuple[int, int]) -> None:
     iter_c = iter(constants)
     for inp in bit_exp.all_inputs():
         bit_exp.set_value(inp, next(iter_c))
-    op_map: Dict[BitWiseOp, Callable] = {
+    op_map: dict[BitWiseOp, Callable] = {
         BitWiseOp.AND: operator.and_,
         BitWiseOp.OR: operator.or_,
         BitWiseOp.XOR: operator.xor,
@@ -855,7 +852,7 @@ def primitive_reg_logic_exps(
     op = draw(ops)
 
     exp_type = LogicExp.factory(op)
-    args: List[BitRegister] = [draw(bit_regs)]
+    args: list[BitRegister] = [draw(bit_regs)]
     if issubclass(exp_type, BinaryOp):
         if issubclass(
             exp_type,
@@ -886,7 +883,7 @@ def primitive_reg_logic_exps(
         uint64,
     ),
 )
-def test_reg_exp(reg_exp: RegLogicExp, constants: Tuple[int, int]) -> None:
+def test_reg_exp(reg_exp: RegLogicExp, constants: tuple[int, int]) -> None:
     if isinstance(reg_exp, RegPow):
         # to stop massive numbers
         constants = (min(1000, constants[0]), min(constants[1], 3))
@@ -894,7 +891,7 @@ def test_reg_exp(reg_exp: RegLogicExp, constants: Tuple[int, int]) -> None:
     for inp in reg_exp.all_inputs():
         reg_exp.set_value(inp, next(iter_c))
 
-    op_map: Dict[RegWiseOp, Callable] = {
+    op_map: dict[RegWiseOp, Callable] = {
         RegWiseOp.AND: operator.and_,
         RegWiseOp.OR: operator.or_,
         RegWiseOp.XOR: operator.xor,
@@ -992,7 +989,7 @@ def bit_const_predicates(
     draw: DrawType,
     exp: SearchStrategy[BitLogicExp] = composite_bit_logic_exps(),
     operators: SearchStrategy[
-        Callable[[Union[Bit, BitLogicExp]], PredicateExp]
+        Callable[[Bit | BitLogicExp], PredicateExp]
     ] = strategies.sampled_from([if_bit, if_not_bit]),
 ) -> PredicateExp:
     func = draw(operators)
@@ -1005,7 +1002,7 @@ def reg_const_predicates(
     draw: DrawType,
     exp: SearchStrategy[RegLogicExp] = composite_reg_logic_exps(),
     operators: SearchStrategy[
-        Callable[[Union[RegLogicExp, BitRegister], int], PredicateExp]
+        Callable[[RegLogicExp | BitRegister, int], PredicateExp]
     ] = strategies.sampled_from([reg_eq, reg_neq, reg_lt, reg_gt, reg_leq, reg_geq]),
     constants: SearchStrategy[int] = uint64,
 ) -> PredicateExp:
@@ -1275,7 +1272,7 @@ def test_renaming() -> None:
     c = circ.add_c_register("c", 3)
     circ.add_classicalexpbox_bit(a[0] & b[0] | c[0], [a[0]])
     circ.add_classicalexpbox_bit(a[0] & c[2], [c[0]])
-    d = [Bit("d", index) for index in range(0, 3)]
+    d = [Bit("d", index) for index in range(3)]
     bmap: RenameUnitsMap = {a[0]: d[0], b[0]: d[1], c[0]: d[2]}
     original_commands = circ.get_commands()
     assert circ.rename_units(bmap)
