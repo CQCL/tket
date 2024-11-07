@@ -354,10 +354,10 @@ def test_wasm_12() -> None:
 
 
 def test_wasm_handler() -> None:
-    _ = wasm.WasmFileHandler("testfile.wasm")
+    wasm.WasmFileHandler("testfile.wasm")
 
     with pytest.raises(ValueError):
-        _ = wasm.WasmFileHandler("notexistingfile.wasm")
+        wasm.WasmFileHandler("notexistingfile.wasm")
 
 
 def test_wasm_function_check() -> None:
