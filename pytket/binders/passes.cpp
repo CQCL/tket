@@ -277,7 +277,13 @@ PYBIND11_MODULE(passes, m) {
             return deserialise(base_pass_dict, custom_deserialisation);
           },
           "Construct a new Pass instance from a JSON serializable dictionary "
-          "representation.",
+          "representation. `custom_deserialisation` is a map between "
+          "`CustomPass` "
+          "label attributes and a Circuit to Circuit function matching the "
+          "`CustomPass` `transform` argument. This allows the construction of "
+          "some `CustomPass` from JSON. `CustomPass` without a matching entry "
+          "in "
+          "`custom_deserialisation` will be rejected.",
           py::arg("base_pass_dict"),
           py::arg("custom_deserialisation") =
               std::map<std::string, std::function<Circuit(const Circuit &)>>{})
