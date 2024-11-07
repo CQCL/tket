@@ -1,0 +1,10 @@
+exclude = ["pytket/_tket"]
+
+target-version = "py313"
+
+lint.ignore = [
+    "E731", # OK to assign to lambdas
+    "E741", # Allow variable names like "l"
+    "F401", # Allow importing unused names in init files
+    "F403", # Allow wildcard imports in init files
+]
