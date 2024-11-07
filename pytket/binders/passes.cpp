@@ -265,23 +265,35 @@ PYBIND11_MODULE(passes, m) {
       .def(
           "to_dict",
           [](const BasePass &base_pass) {
-            return py::object(base_pass.get_config()).cast<py::dict>();
+            return py::cast(serialise(base_pass));
           },
           ":return: A JSON serializable dictionary representation of the Pass.")
       .def_static(
           "from_dict",
-          [](const py::dict &base_pass_dict) {
-            return json(base_pass_dict).get<PassPtr>();
+          [](const py::dict &base_pass_dict,
+
+             std::map<std::string, std::function<Circuit(const Circuit &)>>
+                 &custom_deserialisation) {
+            return deserialise(base_pass_dict, custom_deserialisation);
           },
           "Construct a new Pass instance from a JSON serializable dictionary "
-          "representation.")
+          "representation. `custom_deserialisation` is a map between "
+          "`CustomPass` "
+          "label attributes and a Circuit to Circuit function matching the "
+          "`CustomPass` `transform` argument. This allows the construction of "
+          "some `CustomPass` from JSON. `CustomPass` without a matching entry "
+          "in "
+          "`custom_deserialisation` will be rejected.",
+          py::arg("base_pass_dict"),
+          py::arg("custom_deserialisation") =
+              std::map<std::string, std::function<Circuit(const Circuit &)>>{})
       .def(py::pickle(
           [](py::object self) {  // __getstate__
             return py::make_tuple(self.attr("to_dict")());
           },
           [](const py::tuple &t) {  // __setstate__
             const json j = t[0].cast<json>();
-            return j.get<PassPtr>();
+            return deserialise(j);
           }));
   py::class_<SequencePass, std::shared_ptr<SequencePass>, BasePass>(
       m, "SequencePass", "A sequence of compilation passes.")
@@ -297,8 +309,17 @@ PYBIND11_MODULE(passes, m) {
           py::arg("pass_list"), py::arg("strict") = true)
       .def("__str__", [](const BasePass &) { return "<tket::SequencePass>"; })
       .def(
+          "to_dict",
+          [](const SequencePass &seq_pass) {
+            return py::cast(
+                serialise(std::make_shared<SequencePass>(seq_pass)));
+          },
+          ":return: A JSON serializable dictionary representation of the "
+          "SequencePass.")
+      .def(
           "get_sequence", &SequencePass::get_sequence,
           ":return: The underlying sequence of passes.");
+
   py::class_<RepeatPass, std::shared_ptr<RepeatPass>, BasePass>(
       m, "RepeatPass",
       "Repeat a pass until its `apply()` method returns False, or if "

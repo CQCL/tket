@@ -10,6 +10,8 @@ Features:
   in `ClExprOp`.
 * Use `ClExprOp` instead of `ClassicalExpBox` when deconstructing complex
   conditions.
+* Add `custom_deserialisation` argument to `BasePass` and `SequencePass` 
+  `from_dict` method to support construction of `CustomPass` from json.
 
 Fixes:
 
