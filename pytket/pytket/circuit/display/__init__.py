@@ -21,12 +21,12 @@ import time
 import uuid
 import webbrowser
 from dataclasses import dataclass, field
-from typing import Literal, cast, Any
+from typing import Any, Literal, cast
 
-from jinja2 import Environment, PrefixLoader, FileSystemLoader, nodes
+from jinja2 import Environment, FileSystemLoader, PrefixLoader, nodes
 from jinja2.ext import Extension
-from jinja2.utils import markupsafe
 from jinja2.parser import Parser
+from jinja2.utils import markupsafe
 
 from pytket.circuit import Circuit
 from pytket.config import PytketExtConfig
@@ -47,8 +47,7 @@ class IncludeRawExtension(Extension):
             return markupsafe.Markup(
                 self.environment.loader.get_source(self.environment, filename)[0]
             )
-        else:
-            return markupsafe.Markup("")
+        return markupsafe.Markup("")
 
 
 # Set up jinja to access our templates

@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from abc import ABC, abstractmethod
-from pathlib import Path
-from typing import Any, ClassVar, Dict, Optional, TypeVar, Type
-from dataclasses import asdict, dataclass
 import json
 import os
+from abc import ABC, abstractmethod
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any, ClassVar, Dict, Optional, Type, TypeVar
 
 
 def get_config_file_path() -> Path:
@@ -29,20 +29,19 @@ def get_config_file_path() -> Path:
     else:
         config_dir = Path(xdg_conifg_dir)
 
-    pytket_config_file = config_dir / "pytket" / "config.json"
+    return config_dir / "pytket" / "config.json"
 
-    return pytket_config_file
 
 
 class PytketConfig:
     """PytketConfig represents a loaded config file for
     pytket and extension packages."""
 
-    extensions: Dict[str, Any]
+    extensions: dict[str, Any]
 
     def __init__(
         self,
-        extensions: Optional[Dict[str, Any]] = None,
+        extensions: dict[str, Any] | None = None,
     ) -> None:
         """Construct a PytketConfig object with inital config parameter values.
 
@@ -98,23 +97,23 @@ class PytketExtConfig(ABC):
 
     @classmethod
     @abstractmethod
-    def from_extension_dict(cls: Type[T], ext_dict: Dict[str, Any]) -> T:
+    def from_extension_dict(cls: type[T], ext_dict: dict[str, Any]) -> T:
         """Abstract method to build PytketExtConfig from dictionary serialized form."""
         ...
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to dictionary."""
         return asdict(self)
 
     @classmethod
-    def from_pytketconfig(cls: Type[T], p_config: PytketConfig) -> T:
+    def from_pytketconfig(cls: type[T], p_config: PytketConfig) -> T:
         """Build from PytketConfig instance."""
         if cls.ext_dict_key in p_config.extensions:
             return cls.from_extension_dict(p_config.extensions[cls.ext_dict_key])
         return cls.from_extension_dict({})
 
     @classmethod
-    def from_default_config_file(cls: Type[T]) -> T:
+    def from_default_config_file(cls: type[T]) -> T:
         """Load from default config file."""
         return cls.from_pytketconfig(load_config_file())
 
