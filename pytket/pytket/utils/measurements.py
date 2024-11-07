@@ -12,9 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Iterable
-from pytket.circuit import Circuit, Bit
+from collections.abc import Iterable
+
+from pytket.circuit import Bit, Circuit
 from pytket.pauli import Pauli, QubitPauliString
+
 from .operators import QubitPauliOperator
 
 

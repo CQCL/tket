@@ -17,8 +17,8 @@ from itertools import combinations
 from tempfile import NamedTemporaryFile
 from typing import Optional
 
-import networkx as nx  # type: ignore
 import graphviz as gv  # type: ignore
+import networkx as nx  # type: ignore
 
 from pytket.circuit import Circuit
 
@@ -57,9 +57,9 @@ class Graph:
         self.input_names = input_names
         self.output_names = output_names
         self.node_data = node_data
-        self.Gnx: Optional[nx.MultiDiGraph] = None
-        self.G: Optional[gv.Digraph] = None
-        self.Gqc: Optional[gv.Graph] = None
+        self.Gnx: nx.MultiDiGraph | None = None
+        self.G: gv.Digraph | None = None
+        self.Gqc: gv.Graph | None = None
         self.edge_data: dict[tuple[int, int], list[tuple[int, int, str]]] = defaultdict(
             list
         )

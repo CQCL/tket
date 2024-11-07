@@ -14,8 +14,10 @@
 
 """`OutcomeArray` class and associated methods."""
 import operator
+from collections import Counter
+from collections.abc import Sequence
 from functools import reduce
-from typing import Counter, List, Sequence, Dict, Tuple, Any, Optional, cast
+from typing import Any, Dict, List, Optional, Tuple, cast
 
 import numpy as np
 import numpy.typing as npt
@@ -59,7 +61,7 @@ class OutcomeArray(np.ndarray):
         # see InfoArray.__array_finalize__ for comments
         if obj is None:
             return
-        self._width: Optional[int] = getattr(obj, "_width", None)
+        self._width: int | None = getattr(obj, "_width", None)
 
     @property
     def width(self) -> int:
@@ -103,7 +105,7 @@ class OutcomeArray(np.ndarray):
             raise ValueError(f"Not a singleton: {self.n_outcomes} readouts")
         return cast(np.ndarray, self.to_readouts()[0])
 
-    def to_intlist(self, big_endian: bool = True) -> List[int]:
+    def to_intlist(self, big_endian: bool = True) -> list[int]:
         """Express each outcome as an integer corresponding to the bit values.
 
         :param big_endian: whether to use big endian encoding (or little endian
@@ -162,7 +164,7 @@ class OutcomeArray(np.ndarray):
         oalist = [OutcomeArray(x[None, :], width) for x in ars]
         return Counter(dict(zip(oalist, count_vals)))
 
-    def choose_indices(self, indices: List[int]) -> "OutcomeArray":
+    def choose_indices(self, indices: list[int]) -> "OutcomeArray":
         """Permute ordering of bits in outcomes or choose subset of bits.
         e.g. [1, 0, 2] acting on a bitstring of length 4 swaps bit locations 0 & 1,
         leaves 2 in the same place and deletes location 3.
@@ -174,7 +176,7 @@ class OutcomeArray(np.ndarray):
         """
         return OutcomeArray.from_readouts(self.to_readouts()[..., indices])
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Return a JSON serializable dictionary representation of the OutcomeArray.
 
         :return: JSON serializable dictionary
@@ -183,7 +185,7 @@ class OutcomeArray(np.ndarray):
         return {"width": self.width, "array": self.tolist()}
 
     @classmethod
-    def from_dict(cls, ar_dict: Dict[str, Any]) -> "OutcomeArray":
+    def from_dict(cls, ar_dict: dict[str, Any]) -> "OutcomeArray":
         """Create an OutcomeArray from JSON serializable dictionary (as created by
         `to_dict`).
 
@@ -199,6 +201,6 @@ class OutcomeArray(np.ndarray):
 
 def readout_counts(
     ctr: Counter[OutcomeArray],
-) -> Counter[Tuple[int, ...]]:
+) -> Counter[tuple[int, ...]]:
     """Convert counts from :py:class:`OutcomeArray` types to tuples of ints."""
     return Counter({tuple(oa.to_readout()): n for oa, n in ctr.items()})

@@ -15,10 +15,11 @@
 from typing import Any, Dict, List, Tuple, Union
 
 import numpy as np
+
 from pytket.circuit import BasisOrder
 
-StateTuple = Tuple[int, ...]
-CountsDict = Dict[StateTuple, Union[int, float]]
+StateTuple = tuple[int, ...]
+CountsDict = dict[StateTuple, int | float]
 KwargTypes = Any
 
 
@@ -29,7 +30,7 @@ class BitPermuter:
 
     """
 
-    def __init__(self, permutation: Tuple[int, ...]):
+    def __init__(self, permutation: tuple[int, ...]):
         """Constructor
 
         :param permutation: Map from current bit index (big-endian) to its new position,
@@ -42,7 +43,7 @@ class BitPermuter:
             raise ValueError("Permutation is not a valid complete permutation.")
         self.perm = tuple(permutation)
         self.n_bits = len(self.perm)
-        self.int_maps: Tuple[Dict[int, int], Dict[int, int]] = ({}, {})
+        self.int_maps: tuple[dict[int, int], dict[int, int]] = ({}, {})
 
     def permute(self, val: int, inverse: bool = False) -> int:
         """Return input with bit values permuted.
@@ -71,7 +72,7 @@ class BitPermuter:
         other_map[res] = val
         return res
 
-    def permute_all(self) -> List[int]:
+    def permute_all(self) -> list[int]:
         """Permute all integers within bit-width specified by permutation.
 
         :return: List of permuted outputs.
@@ -80,7 +81,7 @@ class BitPermuter:
         return list(map(self.permute, range(1 << self.n_bits)))
 
 
-def counts_from_shot_table(shot_table: np.ndarray) -> Dict[Tuple[int, ...], int]:
+def counts_from_shot_table(shot_table: np.ndarray) -> dict[tuple[int, ...], int]:
     """Summarises a shot table into a dictionary of counts for each observed outcome.
 
     :param shot_table: Table of shots from a pytket backend.
@@ -93,8 +94,8 @@ def counts_from_shot_table(shot_table: np.ndarray) -> Dict[Tuple[int, ...], int]
 
 
 def probs_from_counts(
-    counts: Dict[Tuple[int, ...], int]
-) -> Dict[Tuple[int, ...], float]:
+    counts: dict[tuple[int, ...], int]
+) -> dict[tuple[int, ...], float]:
     """Converts raw counts of observed outcomes into the observed probability
     distribution.
 
@@ -109,7 +110,7 @@ def probs_from_counts(
 
 def _index_to_readout(
     index: int, width: int, basis: BasisOrder = BasisOrder.ilo
-) -> Tuple[int, ...]:
+) -> tuple[int, ...]:
     return tuple(
         (index >> i) & 1 for i in range(width)[:: (-1) ** (basis == BasisOrder.ilo)]
     )
@@ -155,7 +156,7 @@ def _compute_probs_from_state(state: np.ndarray, min_p: float = 1e-10) -> np.nda
 
 def probs_from_state(
     state: np.ndarray, min_p: float = 1e-10
-) -> Dict[Tuple[int, ...], float]:
+) -> dict[tuple[int, ...], float]:
     """
     Converts statevector to the probability distribution over readouts in the
     computational basis. Ignores probabilities lower than `min_p`.
@@ -172,7 +173,7 @@ def probs_from_state(
     return {_index_to_readout(i, width): p for i, p in enumerate(probs) if p != 0}
 
 
-def int_dist_from_state(state: np.ndarray, min_p: float = 1e-10) -> Dict[int, float]:
+def int_dist_from_state(state: np.ndarray, min_p: float = 1e-10) -> dict[int, float]:
     """
     Converts statevector to the probability distribution over
     its indices. Ignores probabilities lower than `min_p`.
@@ -204,7 +205,7 @@ def get_n_qb_from_statevector(state: np.ndarray) -> int:
 
 
 def _assert_compatible_state_permutation(
-    state: np.ndarray, permutation: Tuple[int, ...]
+    state: np.ndarray, permutation: tuple[int, ...]
 ) -> None:
     """Asserts that a statevector and a permutation list both refer to the same number
     of qubits
@@ -221,7 +222,7 @@ def _assert_compatible_state_permutation(
 
 
 def permute_qubits_in_statevector(
-    state: np.ndarray, permutation: Tuple[int, ...]
+    state: np.ndarray, permutation: tuple[int, ...]
 ) -> np.ndarray:
     """Rearranges a statevector according to a permutation of the qubit indices.
 
@@ -247,7 +248,7 @@ def permute_qubits_in_statevector(
 
 
 def permute_basis_indexing(
-    matrix: np.ndarray, permutation: Tuple[int, ...]
+    matrix: np.ndarray, permutation: tuple[int, ...]
 ) -> np.ndarray:
     """Rearranges the first dimensions of an array (statevector or unitary)
      according to a permutation of the bit indices in the binary representation
@@ -269,7 +270,7 @@ def permute_basis_indexing(
 
 
 def permute_rows_cols_in_unitary(
-    matrix: np.ndarray, permutation: Tuple[int, ...]
+    matrix: np.ndarray, permutation: tuple[int, ...]
 ) -> np.ndarray:
     """Rearranges the rows of a unitary matrix according to a permutation of the qubit
     indices.
@@ -286,8 +287,7 @@ def permute_rows_cols_in_unitary(
     permuter = BitPermuter(permutation)
     all_perms = permuter.permute_all()
     permat: np.ndarray = matrix[:, all_perms]
-    permat = permat[all_perms, :]
-    return permat
+    return permat[all_perms, :]
 
 
 def compare_statevectors(first: np.ndarray, second: np.ndarray) -> bool:

@@ -12,23 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from os.path import exists
 import base64
 import hashlib
 from functools import cached_property
-from typing_extensions import deprecated
+from os.path import exists
 
 from qwasm import (  # type: ignore
-    decode_module,
-    SEC_TYPE,
-    SEC_FUNCTION,
-    SEC_EXPORT,
-    LANG_TYPE_I32,
-    LANG_TYPE_I64,
+    LANG_TYPE_EMPTY,
     LANG_TYPE_F32,
     LANG_TYPE_F64,
-    LANG_TYPE_EMPTY,
+    LANG_TYPE_I32,
+    LANG_TYPE_I64,
+    SEC_EXPORT,
+    SEC_FUNCTION,
+    SEC_TYPE,
+    decode_module,
 )
+from typing_extensions import deprecated
 
 
 class WasmModuleHandler:
@@ -126,8 +126,8 @@ class WasmModuleHandler:
                         else:
                             raise ValueError(
                                 "Only parameter and return values of "
-                                + f"i{self._int_size} types are"
-                                + f" allowed, found type: {entry.return_type}"
+                                f"i{self._int_size} types are"
+                                f" allowed, found type: {entry.return_type}"
                             )
                     elif entry.return_count == 1:
                         function_signatures[idx]["return_types"] = [

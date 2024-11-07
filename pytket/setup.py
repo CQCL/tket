@@ -12,15 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import multiprocessing
 import os
-import subprocess
-import json
 import shutil
-import setuptools  # type: ignore
-from setuptools import setup, Extension
-from setuptools.command.build_ext import build_ext  # type: ignore
+import subprocess
 from sysconfig import get_config_var
+
+import setuptools  # type: ignore
+from setuptools import Extension, setup
+from setuptools.command.build_ext import build_ext  # type: ignore
 from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
 
 
@@ -148,7 +149,7 @@ class NixBuild(build_ext):
                     shutil.copy(libpath, extdir)
 
         for interface_file in os.listdir("pytket/_tket"):
-            if interface_file.endswith(".pyi") or interface_file.endswith(".py"):
+            if interface_file.endswith((".pyi", ".py")):
                 shutil.copy(os.path.join("pytket/_tket", interface_file), extdir)
 
 
@@ -158,10 +159,9 @@ plat_name = os.getenv("WHEEL_PLAT_NAME")
 def get_build_ext():
     if os.getenv("USE_NIX"):
         return NixBuild
-    elif os.getenv("NO_CONAN"):
+    if os.getenv("NO_CONAN"):
         return CMakeBuild
-    else:
-        return ConanBuild
+    return ConanBuild
 
 
 class bdist_wheel(_bdist_wheel):
@@ -184,7 +184,7 @@ setup(
         "Tracker": "https://github.com/CQCL/tket/issues",
     },
     description="Quantum computing toolkit and interface to the TKET compiler",
-    long_description=open("package.md", "r").read(),
+    long_description=open("package.md").read(),
     long_description_content_type="text/markdown",
     license="Apache 2",
     packages=setuptools.find_packages() + ["pytket.qasm.includes"],
@@ -206,9 +206,7 @@ setup(
             "autoray >= 0.6.12",
         ],
     },
-    ext_modules=[
-        CMakeExtension("pytket._tket.{}".format(binder)) for binder in binders
-    ],
+    ext_modules=[CMakeExtension(f"pytket._tket.{binder}") for binder in binders],
     cmdclass={
         "build_ext": get_build_ext(),
         "bdist_wheel": bdist_wheel,
