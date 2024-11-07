@@ -1,8 +1,78 @@
-exclude = ["pytket/_tket"]
+exclude = [
+    "docs/pytket-docs-theming",
+    "pytket/_tket",
+    "pytket/qasm/includes"
+]
 
-target-version = "py313"
+target-version = "py310"
+
+lint.select = [
+    "A",
+    "AIR",
+    # "ANN",
+    # "ARG", # TODO
+    "ASYNC",
+    # "B",
+    "BLE",
+    # "C",
+    # "C4", # TODO
+    # "C90",
+    # "COM",
+    # "CPY",
+    # "D",
+    "DJ",
+    # "DOC",
+    "DTZ",
+    "E",
+    # "EM",
+    # "ERA", # TODO
+    "EXE",
+    "F",
+    "FA",
+    # "FAST",
+    # "FBT",
+    # "FIX",
+    "FLY",
+    "FURB",
+    "G",
+    "I",
+    # "ICN",
+    # "INP",
+    "INT",
+    "ISC",
+    "LOG",
+    # "N",
+    # "NPY", # TODO
+    # "PD",
+    # "PERF", # TODO
+    # "PGH",
+    "PIE",
+    # "PL",
+    # "PT",
+    # "PTH", # TODO
+    # "PYI", # TODO
+    "Q",
+    "R",
+    "RET",
+    "RSE",
+    # "RUF",
+    # "S",
+    # "SIM", # TODO
+    # "SLF",
+    "SLOT",
+    "T10",
+    # "T20",
+    # "TCH", # TODO
+    # "TD",
+    # "TID",
+    # "TRY",
+    # "UP", # TODO
+    "W",
+    "YTT",
+]
 
 lint.ignore = [
+    "E501", # Allow long lines in strings
     "E731", # OK to assign to lambdas
     "E741", # Allow variable names like "l"
     "F401", # Allow importing unused names in init files
