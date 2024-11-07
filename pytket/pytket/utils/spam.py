@@ -316,9 +316,7 @@ class SpamCorrecter:
     dictionary.
     """
 
-    def __init__(
-        self, qubit_subsets: list[list[Node]], backend: Backend | None = None
-    ):
+    def __init__(self, qubit_subsets: list[list[Node]], backend: Backend | None = None):
         """Construct a new `SpamCorrecter`.
 
         :param qubit_subsets: A list of lists of correlated Nodes of an `Architecture`.
@@ -526,8 +524,7 @@ class SpamCorrecter:
                 # no q duplicates as mapping is dict from qubit to bit
                 if q not in unused_qbs:
                     raise ValueError(
-                        f"Measured qubit {q} is not characterised by "
-                        "SpamCorrecter"
+                        f"Measured qubit {q} is not characterised by " "SpamCorrecter"
                     )
                 unused_qbs.remove(q)  # type:ignore[arg-type]
                 char_bits_order.append(mapping[q])

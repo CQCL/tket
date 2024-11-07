@@ -46,9 +46,7 @@ def _deserialize_all_node_gate_errors(
     }
 
 
-def _serialize_all_edge_gate_errors(
-    d: dict[_Edge, _OpTypeErrs] | None
-) -> list | None:
+def _serialize_all_edge_gate_errors(d: dict[_Edge, _OpTypeErrs] | None) -> list | None:
     if d is None:
         return None
     return [

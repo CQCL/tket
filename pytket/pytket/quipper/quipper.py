@@ -25,12 +25,17 @@ from pytket.circuit import CircBox, Circuit, OpType
 # (https://github.com/eddieschoute/quippy). The main enhancements are support
 # for multi-qubit gates and correct handling of negative controls on qubit 0.
 
+
 # Types
 class Wire(NamedTuple):
     i: int
+
+
 class ControlWire(NamedTuple):
     wire: Wire
     negative: bool
+
+
 class Control(NamedTuple):
     controlled: list[ControlWire]
     no_control: bool
@@ -177,6 +182,8 @@ class Subroutine(NamedTuple):
     shape: str
     controllable: Subroutine_Control
     circuit: Program
+
+
 class Start(NamedTuple):
     circuit: Program
     subroutines: list[Subroutine]

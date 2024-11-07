@@ -121,10 +121,8 @@ class BackendResult:
                 setattr(self, attr, dict((unit, i) for i, unit in enumerate(var)))
                 if lent != len(var):
                     raise ValueError(
-
-                            f"Length of {attr} ({len(var)}) does not"
-                            f" match input data dimensions ({lent})."
-
+                        f"Length of {attr} ({len(var)}) does not"
+                        f" match input data dimensions ({lent})."
                     )
             else:
                 setattr(self, attr, dict((uid(i), i) for i in range(lent)))  # type: ignore

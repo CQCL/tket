@@ -533,7 +533,11 @@ class CircuitTransformer(Transformer):
         openum: type[BitWiseOp] | type[RegWiseOp]
         if opstr in _BITOPS and opstr not in _REGOPS:
             openum = BitWiseOp
-        elif opstr in _REGOPS and opstr not in _BITOPS or all(isinstance(arg, int) for arg in args):
+        elif (
+            opstr in _REGOPS
+            and opstr not in _BITOPS
+            or all(isinstance(arg, int) for arg in args)
+        ):
             openum = RegWiseOp
         elif all(isinstance(arg, (Bit, BitLogicExp, int)) for arg in args):
             if all(arg in (0, 1) for arg in args if isinstance(arg, int)):
