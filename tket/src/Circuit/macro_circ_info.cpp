@@ -61,6 +61,19 @@ unsigned Circuit::count_gates(const OpType& op_type) const {
   return counter;
 }
 
+unsigned Circuit::count_gates_conditional(const OpType& op_type) const {
+  unsigned counter = 0;
+  BGL_FORALL_VERTICES(v, dag, DAG) {
+    if (get_OpType_from_Vertex(v) == OpType::Conditional &&
+        static_cast<const Conditional&>(*get_Op_ptr_from_Vertex(v))
+                .get_op()
+                ->get_type() == op_type) {
+      ++counter;
+    }
+  }
+  return counter;
+}
+
 VertexSet Circuit::get_gates_of_type(const OpType& op_type) const {
   VertexSet vset;
   BGL_FORALL_VERTICES(v, dag, DAG) {

@@ -1265,6 +1265,22 @@ def test_counting_n_qubit_gates() -> None:
     assert c.n_nqb_gates(5) == 1
 
 
+def test_counting_conditional_gates() -> None:
+    c = Circuit(5, 2).X(0).H(1).Y(2).Z(3).S(4).CX(0, 1).CX(1, 2).CX(2, 3).CX(3, 4)
+    c.add_gate(OpType.H, [Qubit(0)], condition=Bit(0))
+    c.add_gate(OpType.H, [Qubit(1)], condition=(Bit(0) & Bit(1)))
+    c.add_gate(OpType.CX, [Qubit(0), Qubit(1)], condition=Bit(1))
+    assert c.n_gates_of_type(OpType.H, conditional=True) == 3
+    assert c.n_gates_of_type(OpType.H, conditional=False) == 1
+    assert c.n_gates_of_type(OpType.H) == 1
+    assert c.n_gates_of_type(OpType.X, conditional=True) == 1
+    assert c.n_gates_of_type(OpType.X, conditional=False) == 1
+    assert c.n_gates_of_type(OpType.X) == 1
+    assert c.n_gates_of_type(OpType.CX, conditional=True) == 5
+    assert c.n_gates_of_type(OpType.CX, conditional=False) == 4
+    assert c.n_gates_of_type(OpType.CX) == 4
+
+
 def test_qcontrol_box_constructors() -> None:
     # only one argument
     qcbox1 = QControlBox(Op.create(OpType.S))
