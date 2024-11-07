@@ -666,10 +666,9 @@ def create_bit_logic_exp(op: BitWiseOp, args: Sequence[BitArgType]) -> BitLogicE
     if op == BitWiseOp.ZERO:
         assert len(args) == 0
         return BitZero()
-    if op == BitWiseOp.ONE:
+    if op == BitWiseOp.ONE:  # noqa: RET503
         assert len(args) == 0
         return BitOne()
-    return None
 
 
 def create_reg_logic_exp(op: RegWiseOp, args: Sequence[RegArgType]) -> RegLogicExp:
