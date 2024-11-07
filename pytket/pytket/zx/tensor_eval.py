@@ -16,7 +16,7 @@
 numpy tensor features, in particular the einsum evaluation and optimisations."""
 import warnings
 from math import cos, floor, pi, sin, sqrt
-from typing import Any, Dict, List
+from typing import Any
 
 import numpy as np
 import sympy

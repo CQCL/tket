@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Optional, Tuple
-
 from pytket.circuit import Circuit
 from pytket.passes import ContextSimp
 from pytket.transform import separate_classical

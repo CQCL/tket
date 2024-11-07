@@ -13,7 +13,6 @@
 # limitations under the License.
 
 """Enable adding of gates with conditions on Bit or BitRegister expressions."""
-from typing import Tuple, Union
 
 from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
 from pytket.circuit import Bit, BitRegister, Circuit

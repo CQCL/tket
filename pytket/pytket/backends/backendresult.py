@@ -18,17 +18,7 @@ import warnings
 from collections import Counter
 from collections.abc import Collection, Iterable, Sequence
 from functools import reduce
-from typing import (
-    Any,
-    Dict,
-    List,
-    NamedTuple,
-    Optional,
-    Tuple,
-    Type,
-    TypeVar,
-    cast,
-)
+from typing import Any, NamedTuple, TypeVar, cast
 
 import numpy as np
 
@@ -157,9 +147,9 @@ class BackendResult:
 
     def __repr__(self) -> str:
         return (
-            f"BackendResult(q_bits={self.q_bits},c_bits={self.c_bits},counts={self._counts},"
-            f"shots={self._shots},state={self._state},unitary={self._unitary},"
-            f"density_matrix={self._density_matrix})"
+            f"BackendResult(q_bits={self.q_bits},c_bits={self.c_bits},"
+            f"counts={self._counts},shots={self._shots},state={self._state},"
+            f"unitary={self._unitary},density_matrix={self._density_matrix})"
         )
 
     @property

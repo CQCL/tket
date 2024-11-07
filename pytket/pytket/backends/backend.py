@@ -18,16 +18,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Iterable, Sequence
 from importlib import import_module
 from types import ModuleType
-from typing import (
-    Any,
-    Dict,
-    List,
-    Literal,
-    Optional,
-    Union,
-    cast,
-    overload,
-)
+from typing import Any, Literal, cast, overload
 
 from pytket.circuit import Bit, Circuit, OpType
 from pytket.passes import BasePass
@@ -235,7 +226,8 @@ class Backend(ABC):
             isinstance(idval, ty) for idval, ty in zip(reshandle, self._result_id_type)
         ):
             raise ResultHandleTypeError(
-                f"{reshandle!r} does not match expected identifier types {self._result_id_type}"
+                f"{reshandle!r} does not match expected "
+                f"identifier types {self._result_id_type}"
             )
 
     def process_circuit(

@@ -15,7 +15,6 @@
 from collections import defaultdict
 from itertools import combinations
 from tempfile import NamedTemporaryFile
-from typing import Optional
 
 import graphviz as gv  # type: ignore
 import networkx as nx  # type: ignore
