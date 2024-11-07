@@ -15,38 +15,35 @@
 """The circuit module provides an API to interact with the
  tket :py:class:`Circuit` data structure.
   This module is provided in binary form during the PyPI installation."""
-from collections.abc import Callable, Sequence
 from typing import (
     Any,
-    Optional,
     Union,
+    Callable,
+    Optional,
+    Sequence,
 )
 
-from pytket import wasm
 from pytket._tket.circuit import *
 from pytket._tket.circuit import Circuit
-from pytket._tket.pauli import Pauli
+
 from pytket._tket.unit_id import *
+from pytket._tket.unit_id import Bit, BitRegister
 
 # prefixes for assertion bits
-from pytket._tket.unit_id import (
-    _DEBUG_ONE_REG_PREFIX,
-    _DEBUG_ZERO_REG_PREFIX,
-    Bit,
-    BitRegister,
-)
+from pytket._tket.unit_id import _DEBUG_ZERO_REG_PREFIX, _DEBUG_ONE_REG_PREFIX
+from pytket._tket.pauli import Pauli
+
+from pytket import wasm
 
 from .logic_exp import (
-    BinaryOp,
     BitLogicExp,
     BitWiseOp,
-    Constant,
-    LogicExp,
-    Ops,
     RegLogicExp,
     RegWiseOp,
-    create_bit_logic_exp,
-    create_reg_logic_exp,
+    Constant,
+    LogicExp,
+    BinaryOp,
+    Ops,
     if_bit,
     if_not_bit,
     reg_eq,
@@ -55,6 +52,8 @@ from .logic_exp import (
     reg_leq,
     reg_lt,
     reg_neq,
+    create_reg_logic_exp,
+    create_bit_logic_exp,
 )
 
 
@@ -64,8 +63,8 @@ def overload_add_wasm(
     filehandler: wasm.WasmModuleHandler,
     list_i: Sequence[int],
     list_o: Sequence[int],
-    args: Sequence[int] | Sequence[Bit],
-    args_wasm: Sequence[int] | None = None,
+    args: Union[Sequence[int], Sequence[Bit]],
+    args_wasm: Optional[Sequence[int]] = None,
     **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
@@ -102,7 +101,7 @@ def overload_add_wasm(
             funcname, str(filehandler), list_i, list_o, args, args_wasm, **kwargs
         )
 
-    raise ValueError(f"{funcname} not found, check {filehandler!r}")
+    raise ValueError(f"{funcname} not found, check {repr(filehandler)}")
 
 
 setattr(Circuit, "add_wasm", overload_add_wasm)
@@ -114,7 +113,7 @@ def overload_add_wasm_to_reg(
     filehandler: wasm.WasmModuleHandler,
     list_i: Sequence[BitRegister],
     list_o: Sequence[BitRegister],
-    args_wasm: Sequence[int] | None = None,
+    args_wasm: Optional[Sequence[int]] = None,
     **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
@@ -159,7 +158,7 @@ please use only registers of at most 32 bits"""
             funcname, str(filehandler), list_i, list_o, args_wasm, **kwargs
         )
 
-    raise ValueError(f"{funcname} not found, check {filehandler!r}")
+    raise ValueError(f"{funcname} not found, check {repr(filehandler)}")
 
 
 setattr(Circuit, "add_wasm_to_reg", overload_add_wasm_to_reg)
