@@ -595,8 +595,8 @@ PassPtr deserialise(
         pp = CustomPass(it->second, label);
       } else {
         throw JsonError(
-            "Cannot load CustomPass without passing constructor in "
-            "custom_deserialisation map.");
+            "Cannot deserialise CustomPass without passing a custom_deserialisation map "
+            "with a key corresponding to the pass's label.");
       }
     } else {
       throw JsonError("Cannot load StandardPass of unknown type");
