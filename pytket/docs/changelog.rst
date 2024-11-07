@@ -8,6 +8,10 @@ Features:
 
 * Add `clexpr.check_register_alignments()` method to check register alignments
   in `ClExprOp`.
+* Use `ClExprOp` instead of `ClassicalExpBox` when deconstructing complex
+  conditions.
+* Add `custom_deserialisation` argument to `BasePass` and `SequencePass` 
+  `from_dict` method to support construction of `CustomPass` from json.
 
 Fixes:
 
