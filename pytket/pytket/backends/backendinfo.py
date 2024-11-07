@@ -14,19 +14,19 @@
 
 """ BackendInfo class: additional information on Backends """
 
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 from pytket.architecture import Architecture, FullyConnected
 from pytket.circuit import Node, OpType
 
-_OpTypeErrs = Dict[OpType, float]
-_Edge = Tuple[Node, Node]
+_OpTypeErrs = dict[OpType, float]
+_Edge = tuple[Node, Node]
 
 
 def _serialize_all_node_gate_errors(
-    d: Optional[Dict[Node, _OpTypeErrs]]
-) -> Optional[List[List]]:
+    d: dict[Node, _OpTypeErrs] | None
+) -> list[list] | None:
     if d is None:
         return None
     return [
@@ -36,8 +36,8 @@ def _serialize_all_node_gate_errors(
 
 
 def _deserialize_all_node_gate_errors(
-    l: Optional[List[List]],
-) -> Optional[Dict[Node, _OpTypeErrs]]:
+    l: list[list] | None,
+) -> dict[Node, _OpTypeErrs] | None:
     if l is None:
         return None
     return {
@@ -47,8 +47,8 @@ def _deserialize_all_node_gate_errors(
 
 
 def _serialize_all_edge_gate_errors(
-    d: Optional[Dict[_Edge, _OpTypeErrs]]
-) -> Optional[List]:
+    d: dict[_Edge, _OpTypeErrs] | None
+) -> list | None:
     if d is None:
         return None
     return [
@@ -58,8 +58,8 @@ def _serialize_all_edge_gate_errors(
 
 
 def _deserialize_all_edge_gate_errors(
-    l: Optional[List],
-) -> Optional[Dict[_Edge, _OpTypeErrs]]:
+    l: list | None,
+) -> dict[_Edge, _OpTypeErrs] | None:
     if l is None:
         return None
     return {
@@ -71,64 +71,64 @@ def _deserialize_all_edge_gate_errors(
 
 
 def _serialize_all_readout_errors(
-    d: Optional[Dict[Node, List[List[float]]]]
-) -> Optional[List[List]]:
+    d: dict[Node, list[list[float]]] | None
+) -> list[list] | None:
     if d is None:
         return None
     return [[n.to_list(), errs] for n, errs in d.items()]
 
 
 def _deserialize_all_readout_errors(
-    l: Optional[List[List]],
-) -> Optional[Dict[Node, List[List[float]]]]:
+    l: list[list] | None,
+) -> dict[Node, list[list[float]]] | None:
     if l is None:
         return None
     return {Node.from_list(n): errs for n, errs in l}
 
 
 def _serialize_averaged_node_gate_errors(
-    d: Optional[Dict[Node, float]]
-) -> Optional[List[List]]:
+    d: dict[Node, float] | None
+) -> list[list] | None:
     if d is None:
         return None
     return [[n.to_list(), err] for n, err in d.items()]
 
 
 def _deserialize_averaged_node_gate_errors(
-    l: Optional[List[List]],
-) -> Optional[Dict[Node, float]]:
+    l: list[list] | None,
+) -> dict[Node, float] | None:
     if l is None:
         return None
     return {Node.from_list(n): err for n, err in l}
 
 
 def _serialize_averaged_edge_gate_errors(
-    d: Optional[Dict[_Edge, float]]
-) -> Optional[List[List]]:
+    d: dict[_Edge, float] | None
+) -> list[list] | None:
     if d is None:
         return None
     return [[[n0.to_list(), n1.to_list()], err] for (n0, n1), err in d.items()]
 
 
 def _deserialize_averaged_edge_gate_errors(
-    l: Optional[List[List]],
-) -> Optional[Dict[Tuple, float]]:
+    l: list[list] | None,
+) -> dict[tuple, float] | None:
     if l is None:
         return None
     return {(Node.from_list(n0), Node.from_list(n1)): err for (n0, n1), err in l}
 
 
 def _serialize_averaged_readout_errors(
-    d: Optional[Dict[Node, float]]
-) -> Optional[List[List]]:
+    d: dict[Node, float] | None
+) -> list[list] | None:
     if d is None:
         return None
     return [[n.to_list(), err] for n, err in d.items()]
 
 
 def _deserialize_averaged_readout_errors(
-    l: Optional[List[List]],
-) -> Optional[Dict[Node, float]]:
+    l: list[list] | None,
+) -> dict[Node, float] | None:
     if l is None:
         return None
     return {Node.from_list(n): err for n, err in l}
@@ -169,30 +169,30 @@ class BackendInfo:
 
     # identifying information
     name: str
-    device_name: Optional[str]
+    device_name: str | None
     version: str
     # hardware constraints
-    architecture: Optional[Union[Architecture, FullyConnected]]
-    gate_set: Set[OpType]
-    n_cl_reg: Optional[int] = None
+    architecture: Architecture | FullyConnected | None
+    gate_set: set[OpType]
+    n_cl_reg: int | None = None
     # additional feature support
     supports_fast_feedforward: bool = False
     supports_reset: bool = False
     supports_midcircuit_measurement: bool = False
     # additional basic device characterisation information
-    all_node_gate_errors: Optional[Dict[Node, Dict[OpType, float]]] = None
-    all_edge_gate_errors: Optional[Dict[Tuple[Node, Node], Dict[OpType, float]]] = None
-    all_readout_errors: Optional[Dict[Node, List[List[float]]]] = None
-    averaged_node_gate_errors: Optional[Dict[Node, float]] = None
-    averaged_edge_gate_errors: Optional[Dict[Tuple[Node, Node], float]] = None
-    averaged_readout_errors: Optional[Dict[Node, float]] = None
+    all_node_gate_errors: dict[Node, dict[OpType, float]] | None = None
+    all_edge_gate_errors: dict[tuple[Node, Node], dict[OpType, float]] | None = None
+    all_readout_errors: dict[Node, list[list[float]]] | None = None
+    averaged_node_gate_errors: dict[Node, float] | None = None
+    averaged_edge_gate_errors: dict[tuple[Node, Node], float] | None = None
+    averaged_readout_errors: dict[Node, float] | None = None
 
     # miscellaneous, eg additional noise characterisation and provider-supplied
     # information
-    misc: Dict[str, Any] = field(default_factory=dict)
+    misc: dict[str, Any] = field(default_factory=dict)
 
     @property
-    def nodes(self) -> List[Node]:
+    def nodes(self) -> list[Node]:
         """
         List of device nodes of the backend. Returns empty list
         if the `architecture` field is not provided.
@@ -240,7 +240,7 @@ class BackendInfo:
         """
         return self.misc[key]
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
         Generate a dictionary serialized representation of BackendInfo,
         suitable for writing to JSON.
@@ -274,7 +274,7 @@ class BackendInfo:
         return self_dict
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> "BackendInfo":
+    def from_dict(cls, d: dict[str, Any]) -> "BackendInfo":
         """
         Construct BackendInfo object from JSON serializable dictionary
         representation, as generated by BackendInfo.to_dict.
@@ -313,10 +313,10 @@ class BackendInfo:
 
 def fully_connected_backendinfo(  # type: ignore
     name: str,
-    device_name: Optional[str],
+    device_name: str | None,
     version: str,
     n_nodes: int,
-    gate_set: Set[OpType],
+    gate_set: set[OpType],
     **kwargs
 ) -> BackendInfo:
     """

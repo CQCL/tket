@@ -15,40 +15,38 @@
 """ Abstract base class for all Backend encapsulations."""
 import warnings
 from abc import ABC, abstractmethod
+from collections.abc import Iterable, Sequence
+from importlib import import_module
+from types import ModuleType
 from typing import (
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    Sequence,
-    Union,
     Any,
+    Dict,
+    List,
+    Literal,
+    Optional,
+    Union,
     cast,
     overload,
 )
-from importlib import import_module
-from types import ModuleType
-
-from typing_extensions import Literal
 
 from pytket.circuit import Bit, Circuit, OpType
 from pytket.passes import BasePass
 from pytket.pauli import QubitPauliString
 from pytket.predicates import Predicate
+from pytket.utils import QubitPauliOperator
 from pytket.utils.outcomearray import OutcomeArray
 from pytket.utils.results import KwargTypes
-from pytket.utils import QubitPauliOperator
 
 from .backend_exceptions import (
-    CircuitNotValidError,
     CircuitNotRunError,
+    CircuitNotValidError,
 )
 from .backendinfo import BackendInfo
 from .backendresult import BackendResult
 from .resulthandle import ResultHandle, _ResultIdTuple
 from .status import CircuitStatus
 
-ResultCache = Dict[str, Any]
+ResultCache = dict[str, Any]
 
 
 class ResultHandleTypeError(Exception):
@@ -73,7 +71,7 @@ class Backend(ABC):
     _persistent_handles = False
 
     def __init__(self) -> None:
-        self._cache: Dict[ResultHandle, ResultCache] = {}
+        self._cache: dict[ResultHandle, ResultCache] = {}
 
     @staticmethod
     def empty_result(circuit: Circuit, n_shots: int) -> BackendResult:
@@ -85,7 +83,7 @@ class Backend(ABC):
 
     @property
     @abstractmethod
-    def required_predicates(self) -> List[Predicate]:
+    def required_predicates(self) -> list[Predicate]:
         """
         The minimum set of predicates that a circuit must satisfy before it can
         be successfully run on this backend.
@@ -107,7 +105,7 @@ class Backend(ABC):
         return all(pred.verify(circuit) for pred in self.required_predicates)
 
     def _check_all_circuits(
-        self, circuits: Iterable[Circuit], nomeasure_warn: Optional[bool] = None
+        self, circuits: Iterable[Circuit], nomeasure_warn: bool | None = None
     ) -> bool:
         if nomeasure_warn is None:
             nomeasure_warn = not (
@@ -185,7 +183,7 @@ class Backend(ABC):
 
     def get_compiled_circuits(
         self, circuits: Sequence[Circuit], optimisation_level: int = 2
-    ) -> List[Circuit]:
+    ) -> list[Circuit]:
         """Compile a sequence of circuits with :py:meth:`default_compilation_pass`
         and return the list of compiled circuits (does not act in place).
 
@@ -237,15 +235,13 @@ class Backend(ABC):
             isinstance(idval, ty) for idval, ty in zip(reshandle, self._result_id_type)
         ):
             raise ResultHandleTypeError(
-                "{0!r} does not match expected identifier types {1}".format(
-                    reshandle, self._result_id_type
-                )
+                f"{reshandle!r} does not match expected identifier types {self._result_id_type}"
             )
 
     def process_circuit(
         self,
         circuit: Circuit,
-        n_shots: Optional[int] = None,
+        n_shots: int | None = None,
         valid_check: bool = True,
         **kwargs: KwargTypes,
     ) -> ResultHandle:
@@ -262,10 +258,10 @@ class Backend(ABC):
     def process_circuits(
         self,
         circuits: Sequence[Circuit],
-        n_shots: Optional[Union[int, Sequence[int]]] = None,
+        n_shots: int | Sequence[int] | None = None,
         valid_check: bool = True,
         **kwargs: KwargTypes,
-    ) -> List[ResultHandle]:
+    ) -> list[ResultHandle]:
         """
         Submit circuits to the backend for running. The results will be stored
         in the backend's result cache to be retrieved by the corresponding
@@ -316,7 +312,7 @@ class Backend(ABC):
         """Manually empty the result cache on the backend."""
         self._cache = {}
 
-    def pop_result(self, handle: ResultHandle) -> Optional[ResultCache]:
+    def pop_result(self, handle: ResultHandle) -> ResultCache | None:
         """Remove cache entry corresponding to handle from the cache and return.
 
         :param handle: ResultHandle object
@@ -348,7 +344,7 @@ class Backend(ABC):
 
     def get_results(
         self, handles: Iterable[ResultHandle], **kwargs: KwargTypes
-    ) -> List[BackendResult]:
+    ) -> list[BackendResult]:
         """Return results corresponding to handles.
 
         :param handles: Iterable of handles
@@ -372,7 +368,7 @@ class Backend(ABC):
     def run_circuit(
         self,
         circuit: Circuit,
-        n_shots: Optional[int] = None,
+        n_shots: int | None = None,
         valid_check: bool = True,
         **kwargs: KwargTypes,
     ) -> BackendResult:
@@ -396,10 +392,10 @@ class Backend(ABC):
     def run_circuits(
         self,
         circuits: Sequence[Circuit],
-        n_shots: Optional[Union[int, Sequence[int]]] = None,
+        n_shots: int | Sequence[int] | None = None,
         valid_check: bool = True,
         **kwargs: KwargTypes,
-    ) -> List[BackendResult]:
+    ) -> list[BackendResult]:
         """
         Submits circuits to the backend and returns results
 
@@ -430,7 +426,7 @@ class Backend(ABC):
         raise NotImplementedError("Backend does not support job cancellation.")
 
     @property
-    def backend_info(self) -> Optional[BackendInfo]:
+    def backend_info(self) -> BackendInfo | None:
         """Retrieve all Backend properties in a BackendInfo object, including
         device architecture, supported gate set, gate errors and other hardware-specific
         information.
@@ -441,7 +437,7 @@ class Backend(ABC):
         raise NotImplementedError("Backend does not provide any device properties.")
 
     @classmethod
-    def available_devices(cls, **kwargs: Any) -> List[BackendInfo]:
+    def available_devices(cls, **kwargs: Any) -> list[BackendInfo]:
         """Retrieve all available devices as a list of BackendInfo objects, including
         device name, architecture, supported gate set, gate errors,
         and other hardware-specific information.
@@ -516,7 +512,7 @@ class Backend(ABC):
         See :py:meth:`process_circuits`."""
         return self._supports_contextual_optimisation
 
-    def _get_extension_module(self) -> Optional[ModuleType]:
+    def _get_extension_module(self) -> ModuleType | None:
         """Return the extension module of the backend if it belongs to a
         pytket-extension package.
 
@@ -530,7 +526,7 @@ class Backend(ABC):
         return import_module(".".join(mod_parts))
 
     @property
-    def __extension_name__(self) -> Optional[str]:
+    def __extension_name__(self) -> str | None:
         """Retrieve the extension name of the backend if it belongs to a
         pytket-extension package.
 
@@ -544,7 +540,7 @@ class Backend(ABC):
             return None
 
     @property
-    def __extension_version__(self) -> Optional[str]:
+    def __extension_version__(self) -> str | None:
         """Retrieve the extension version of the backend if it belongs to a
         pytket-extension package.
 
@@ -560,36 +556,36 @@ class Backend(ABC):
     @overload
     @staticmethod
     def _get_n_shots_as_list(
-        n_shots: Union[None, int, Sequence[Optional[int]]],
+        n_shots: None | int | Sequence[int | None],
         n_circuits: int,
         optional: Literal[False],
-    ) -> List[int]: ...
+    ) -> list[int]: ...
 
     @overload
     @staticmethod
     def _get_n_shots_as_list(
-        n_shots: Union[None, int, Sequence[Optional[int]]],
+        n_shots: None | int | Sequence[int | None],
         n_circuits: int,
         optional: Literal[True],
         set_zero: Literal[True],
-    ) -> List[int]: ...
+    ) -> list[int]: ...
 
     @overload
     @staticmethod
     def _get_n_shots_as_list(
-        n_shots: Union[None, int, Sequence[Optional[int]]],
+        n_shots: None | int | Sequence[int | None],
         n_circuits: int,
         optional: bool = True,
         set_zero: bool = False,
-    ) -> Union[List[Optional[int]], List[int]]: ...
+    ) -> list[int | None] | list[int]: ...
 
     @staticmethod
     def _get_n_shots_as_list(
-        n_shots: Union[None, int, Sequence[Optional[int]]],
+        n_shots: None | int | Sequence[int | None],
         n_circuits: int,
         optional: bool = True,
         set_zero: bool = False,
-    ) -> Union[List[Optional[int]], List[int]]:
+    ) -> list[int | None] | list[int]:
         """
         Convert any admissible n_shots value into List[Optional[int]] format.
 
@@ -609,9 +605,9 @@ class Backend(ABC):
         :return: a list of length `n_circuits`, the converted argument
         """
 
-        n_shots_list: List[Optional[int]] = []
+        n_shots_list: list[int | None] = []
 
-        def validate_n_shots(n: Optional[int]) -> bool:
+        def validate_n_shots(n: int | None) -> bool:
             return optional or (n is not None and n > 0)
 
         if set_zero and not optional:
