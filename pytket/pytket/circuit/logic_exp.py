@@ -14,30 +14,28 @@
 
 """Classes and functions for constructing logical
  expressions over Bit and BitRegister."""
+from collections.abc import Iterable, Iterator, Sequence
+from dataclasses import dataclass
+from enum import Enum
 from typing import (
     Any,
-    Iterable,
+    ClassVar,
+    Dict,
+    List,
     Set,
     Tuple,
     Type,
-    List,
-    Union,
-    Dict,
-    ClassVar,
-    Iterator,
     TypeVar,
+    Union,
     cast,
-    Sequence,
 )
-from enum import Enum
-from dataclasses import dataclass
 
 from pytket.circuit import Bit, BitRegister
 
 T = TypeVar("T")
 
 
-def filter_by_type(seq: Iterable, var_type: Type[T]) -> Iterator[Tuple[int, T]]:
+def filter_by_type(seq: Iterable, var_type: type[T]) -> Iterator[tuple[int, T]]:
     """Return enumeration of seq, with only elements of type var_type."""
     return filter(lambda x: isinstance(x[1], var_type), enumerate(seq))
 
@@ -75,7 +73,7 @@ class RegWiseOp(Enum):
     LSH = "<<"
     RSH = ">>"
     NOT = "~"
-    NEG = "-"
+    NEG = "-"  # noqa: PIE796
 
 
 Ops = Union[BitWiseOp, RegWiseOp]  # all op enum types
@@ -92,12 +90,12 @@ class LogicExp:
     Encoded as a tree of expressions"""
 
     op: Ops  # enum for operation encoded by this node
-    args: List[ArgType]  # arguments of operation
+    args: list[ArgType]  # arguments of operation
     # class level dictionary mapping enum to class
-    op_cls_dict: ClassVar[Dict[Ops, Type["LogicExp"]]] = dict()
+    op_cls_dict: ClassVar[dict[Ops, type["LogicExp"]]] = dict()
 
     @classmethod
-    def factory(cls, op: Ops) -> Type["LogicExp"]:
+    def factory(cls, op: Ops) -> type["LogicExp"]:
         """Return matching operation class for enum."""
         # RegNeg cannot be initialised this way as "-" clashes with SUB
         if op == BitWiseOp.AND:
@@ -162,7 +160,7 @@ class LogicExp:
                 arg.set_value(var, val)
 
     @staticmethod
-    def _const_eval(args: List[Constant]) -> Constant:
+    def _const_eval(args: list[Constant]) -> Constant:
         """Evaluate expression given constant values for all args."""
         raise NotImplementedError
 
@@ -173,17 +171,17 @@ class LogicExp:
             self.args[i] = arg.eval_vals()
         if all(isinstance(a, Constant) for a in self.args):
             try:
-                rval = self._const_eval(cast(List[Constant], self.args))
+                rval = self._const_eval(cast(list[Constant], self.args))
             except NotImplementedError:
                 pass
         return rval
 
-    def all_inputs(self) -> Set[Variable]:
+    def all_inputs(self) -> set[Variable]:
         """
         :return: All variables involved in expression.
         :rtype: Set[Variable]
         """
-        outset: Set[Variable] = set()
+        outset: set[Variable] = set()
 
         for arg in self.args:
             if isinstance(arg, LogicExp):
@@ -192,9 +190,8 @@ class LogicExp:
             if isinstance(self, BitLogicExp):
                 if isinstance(arg, Bit):
                     outset.add(arg)
-            else:
-                if isinstance(arg, BitRegister):
-                    outset.add(arg)
+            elif isinstance(arg, BitRegister):
+                outset.add(arg)
         return outset
 
     def all_inputs_ordered(self) -> list[Variable]:
@@ -212,9 +209,8 @@ class LogicExp:
             if isinstance(self, BitLogicExp):
                 if isinstance(arg, Bit):
                     outset[arg] = None
-            else:
-                if isinstance(arg, BitRegister):
-                    outset[arg] = None
+            elif isinstance(arg, BitRegister):
+                outset[arg] = None
         return list(outset)
 
     def __eq__(self, other: object) -> bool:
@@ -222,10 +218,10 @@ class LogicExp:
             return False
         return (self.op == other.op) and (self.args == other.args)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Output JSON serializable nested dictionary."""
-        out: Dict[str, Any] = {"op": str(self.op)}
-        args_ser: List[Union[Dict, Constant, List[Union[str, int]]]] = []
+        out: dict[str, Any] = {"op": str(self.op)}
+        args_ser: list[dict | Constant | list[str | int]] = []
 
         for arg in self.args:
             if isinstance(arg, LogicExp):
@@ -241,18 +237,18 @@ class LogicExp:
         return out
 
     @classmethod
-    def from_dict(cls, dic: Dict[str, Any]) -> "LogicExp":
+    def from_dict(cls, dic: dict[str, Any]) -> "LogicExp":
         """Load from JSON serializable nested dictionary."""
         opset_name, op_name = dic["op"].split(".", 2)
         opset = BitWiseOp if opset_name == "BitWiseOp" else RegWiseOp
         op = next(o for o in opset if o.name == op_name)
-        args: List[ArgType] = []
+        args: list[ArgType] = []
         for arg_ser in dic["args"]:
             if isinstance(arg_ser, Constant):
                 args.append(arg_ser)
-            elif isinstance(arg_ser, List):
+            elif isinstance(arg_ser, list):
                 args.append(Bit(arg_ser[0], arg_ser[1]))
-            elif isinstance(arg_ser, Dict):
+            elif isinstance(arg_ser, dict):
                 if "op" in arg_ser:
                     args.append(LogicExp.from_dict(arg_ser))
                 else:
@@ -260,7 +256,7 @@ class LogicExp:
         return create_logic_exp(op, args)
 
     def _rename_args_recursive(
-        self, cmap: Dict[Bit, Bit], renamed_regs: Set[str]
+        self, cmap: dict[Bit, Bit], renamed_regs: set[str]
     ) -> bool:
         success = False
         for i, arg in enumerate(self.args):
@@ -279,13 +275,13 @@ class LogicExp:
                 success |= arg._rename_args_recursive(cmap, renamed_regs)
         return success
 
-    def rename_args(self, cmap: Dict[Bit, Bit]) -> bool:
+    def rename_args(self, cmap: dict[Bit, Bit]) -> bool:
         """Rename the Bits according to a Bit map. Raise ValueError if
         a bit is being used in a register-wise expression.
         """
         if all(old_bit == new_bit for old_bit, new_bit in cmap.items()):
             return False
-        renamed_regs = set([key.reg_name for key in cmap.keys()])
+        renamed_regs = set([key.reg_name for key in cmap])
         return self._rename_args_recursive(cmap, renamed_regs)
 
 
@@ -381,7 +377,7 @@ class NullaryOp(LogicExp):
 
 class And(BinaryOp):
     @staticmethod
-    def _const_eval(args: List[Constant]) -> Constant:
+    def _const_eval(args: list[Constant]) -> Constant:
         return args[0] & args[1]
 
     def eval_vals(self) -> ArgType:
@@ -393,13 +389,13 @@ class And(BinaryOp):
 
 class Or(BinaryOp):
     @staticmethod
-    def _const_eval(args: List[Constant]) -> Constant:
+    def _const_eval(args: list[Constant]) -> Constant:
         return args[0] | args[1]
 
 
 class Xor(BinaryOp):
     @staticmethod
-    def _const_eval(args: List[Constant]) -> Constant:
+    def _const_eval(args: list[Constant]) -> Constant:
         return args[0] ^ args[1]
 
 
@@ -433,7 +429,7 @@ class BitNot(UnaryOp, BitLogicExp):
         self.args = [arg1]
 
     @staticmethod
-    def _const_eval(args: List[Constant]) -> Constant:
+    def _const_eval(args: list[Constant]) -> Constant:
         return 1 - args[0]
 
 
@@ -443,7 +439,7 @@ class BitZero(NullaryOp, BitLogicExp):
         self.args = []
 
     @staticmethod
-    def _const_eval(args: List[Constant]) -> Constant:
+    def _const_eval(args: list[Constant]) -> Constant:
         return 0
 
 
@@ -453,7 +449,7 @@ class BitOne(NullaryOp, BitLogicExp):
         self.args = []
 
     @staticmethod
-    def _const_eval(args: List[Constant]) -> Constant:
+    def _const_eval(args: list[Constant]) -> Constant:
         return 1
 
 
@@ -538,13 +534,13 @@ class PredicateExp(BinaryOp):
 
 class Eq(PredicateExp):
     @staticmethod
-    def _const_eval(args: List[Constant]) -> Constant:
+    def _const_eval(args: list[Constant]) -> Constant:
         return args[0] == args[1]
 
 
 class Neq(PredicateExp):
     @staticmethod
-    def _const_eval(args: List[Constant]) -> Constant:
+    def _const_eval(args: list[Constant]) -> Constant:
         return 1 - Eq._const_eval(args)
 
 
@@ -578,7 +574,7 @@ class RegLt(PredicateExp, RegLogicExp):
         self.args = [arg1, arg2]
 
     @staticmethod
-    def _const_eval(args: List[Constant]) -> Constant:
+    def _const_eval(args: list[Constant]) -> Constant:
         return args[0] < args[1]
 
 
@@ -588,7 +584,7 @@ class RegGt(PredicateExp, RegLogicExp):
         self.args = [arg1, arg2]
 
     @staticmethod
-    def _const_eval(args: List[Constant]) -> Constant:
+    def _const_eval(args: list[Constant]) -> Constant:
         return args[0] > args[1]
 
 
@@ -598,7 +594,7 @@ class RegLeq(PredicateExp, RegLogicExp):
         self.args = [arg1, arg2]
 
     @staticmethod
-    def _const_eval(args: List[Constant]) -> Constant:
+    def _const_eval(args: list[Constant]) -> Constant:
         return args[0] <= args[1]
 
 
@@ -608,53 +604,53 @@ class RegGeq(PredicateExp, RegLogicExp):
         self.args = [arg1, arg2]
 
     @staticmethod
-    def _const_eval(args: List[Constant]) -> Constant:
+    def _const_eval(args: list[Constant]) -> Constant:
         return args[0] >= args[1]
 
 
-def reg_eq(register: Union[RegLogicExp, BitRegister], value: Constant) -> RegLogicExp:
+def reg_eq(register: RegLogicExp | BitRegister, value: Constant) -> RegLogicExp:
     """Function to express a BitRegister equality predicate, i.e.
     for a register ``r``, ``(r == 5)`` is expressed as ``reg_eq(r, 5)``"""
     return RegEq(register, value)
 
 
-def reg_neq(register: Union[RegLogicExp, BitRegister], value: Constant) -> RegLogicExp:
+def reg_neq(register: RegLogicExp | BitRegister, value: Constant) -> RegLogicExp:
     """Function to express a BitRegister inequality predicate, i.e.
     for a register ``r``, ``(r != 5)`` is expressed as ``reg_neq(r, 5)``"""
     return RegNeq(register, value)
 
 
-def reg_lt(register: Union[RegLogicExp, BitRegister], value: Constant) -> RegLogicExp:
+def reg_lt(register: RegLogicExp | BitRegister, value: Constant) -> RegLogicExp:
     """Function to express a BitRegister less than predicate, i.e.
     for a register ``r``, ``(r < 5)`` is expressed as ``reg_lt(r, 5)``"""
     return RegLt(register, value)
 
 
-def reg_gt(register: Union[RegLogicExp, BitRegister], value: Constant) -> RegLogicExp:
+def reg_gt(register: RegLogicExp | BitRegister, value: Constant) -> RegLogicExp:
     """Function to express a BitRegister greater than predicate, i.e.
     for a register ``r``, ``(r > 5)`` is expressed as ``reg_gt(r, 5)``"""
     return RegGt(register, value)
 
 
-def reg_leq(register: Union[RegLogicExp, BitRegister], value: Constant) -> RegLogicExp:
+def reg_leq(register: RegLogicExp | BitRegister, value: Constant) -> RegLogicExp:
     """Function to express a BitRegister less than or equal to predicate,
     i.e. for a register ``r``, ``(r <= 5)`` is expressed as ``reg_leq(r, 5)``"""
     return RegLeq(register, value)
 
 
-def reg_geq(register: Union[RegLogicExp, BitRegister], value: Constant) -> RegLogicExp:
+def reg_geq(register: RegLogicExp | BitRegister, value: Constant) -> RegLogicExp:
     """Function to express a BitRegister greater than or equal to
     predicate, i.e. for a register ``r``, ``(r >= 5)`` is expressed as
     ``reg_geq(r, 5)``"""
     return RegGeq(register, value)
 
 
-def if_bit(bit: Union[Bit, BitLogicExp]) -> PredicateExp:
+def if_bit(bit: Bit | BitLogicExp) -> PredicateExp:
     """Equivalent of ``if bit:``."""
     return BitEq(bit, 1)
 
 
-def if_not_bit(bit: Union[Bit, BitLogicExp]) -> PredicateExp:
+def if_not_bit(bit: Bit | BitLogicExp) -> PredicateExp:
     """Equivalent of ``if not bit:``."""
     return BitEq(bit, 0)
 
@@ -684,6 +680,7 @@ def create_bit_logic_exp(op: BitWiseOp, args: Sequence[BitArgType]) -> BitLogicE
     if op == BitWiseOp.ONE:
         assert len(args) == 0
         return BitOne()
+    return None
 
 
 def create_reg_logic_exp(op: RegWiseOp, args: Sequence[RegArgType]) -> RegLogicExp:
@@ -753,13 +750,12 @@ def create_logic_exp(op: Ops, args: Sequence[ArgType]) -> LogicExp:
             assert isinstance(arg, (BitLogicExp, Bit, Constant))
             bit_args.append(arg)
         return create_bit_logic_exp(op, bit_args)
-    else:
-        assert isinstance(op, RegWiseOp)
-        reg_args = []
-        for arg in args:
-            assert isinstance(arg, (RegLogicExp, BitRegister, Constant))
-            reg_args.append(arg)
-        return create_reg_logic_exp(op, reg_args)
+    assert isinstance(op, RegWiseOp)
+    reg_args = []
+    for arg in args:
+        assert isinstance(arg, (RegLogicExp, BitRegister, Constant))
+        reg_args.append(arg)
+    return create_reg_logic_exp(op, reg_args)
 
 
 def create_predicate_exp(op: Ops, args: Sequence[ArgType]) -> PredicateExp:
