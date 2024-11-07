@@ -15,11 +15,10 @@
 """Functions for decomposing Circuits containing classical expressions
  in to primitive logical operations."""
 import copy
-from collections.abc import Callable
 from heapq import heappop, heappush
 from typing import (
+    Callable,
     Dict,
-    Generic,
     List,
     Optional,
     Set,
@@ -27,16 +26,17 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    Generic,
 )
 
-from pytket._tket.circuit import Circuit, ClassicalExpBox, Conditional, OpType
 from pytket._tket.unit_id import (
     _TEMP_BIT_NAME,
     _TEMP_BIT_REG_BASE,
     _TEMP_REG_SIZE,
-    Bit,
     BitRegister,
+    Bit,
 )
+from pytket._tket.circuit import Circuit, ClassicalExpBox, Conditional, OpType
 from pytket.circuit.logic_exp import (
     BitLogicExp,
     BitWiseOp,
@@ -58,8 +58,8 @@ class VarHeap(Generic[T]):
     """A generic heap implementation."""
 
     def __init__(self) -> None:
-        self._heap: list[T] = []
-        self._heap_vars: set[T] = set()
+        self._heap: List[T] = []
+        self._heap_vars: Set[T] = set()
 
     def pop(self) -> T:
         """Pop from top of heap."""
@@ -137,18 +137,19 @@ class RegHeap(VarHeap[BitRegister]):
         return new_reg
 
 
-def temp_reg_in_args(args: list[Bit]) -> BitRegister | None:
+def temp_reg_in_args(args: List[Bit]) -> Optional[BitRegister]:
     """If there are bits from a temporary register in the args, return it."""
     temp_reg_bits = [b for b in args if b.reg_name.startswith(_TEMP_BIT_REG_BASE)]
     if temp_reg_bits:
-        return BitRegister(temp_reg_bits[0].reg_name, _TEMP_REG_SIZE)
+        temp_reg = BitRegister(temp_reg_bits[0].reg_name, _TEMP_REG_SIZE)
+        return temp_reg
     return None
 
 
-VarType = TypeVar("VarType", type[Bit], type[BitRegister])
+VarType = TypeVar("VarType", Type[Bit], Type[BitRegister])
 
 
-def int_to_bools(val: Constant, width: int) -> list[bool]:
+def int_to_bools(val: Constant, width: int) -> List[bool]:
     # map int to bools via litle endian encoding
     return list(map(bool, map(int, reversed(f"{val:0{width}b}"[-width:]))))
 
@@ -163,7 +164,7 @@ def get_bit_width(x: int) -> int:
 
 
 def _gen_walk(var_type: VarType, newcirc: Circuit, heap: VarHeap) -> Callable[
-    [RegLogicExp | BitLogicExp, Variable | None, dict | None],
+    [Union[RegLogicExp, BitLogicExp], Optional[Variable], Optional[Dict]],
     Variable,
 ]:
     """Generate a recursive walk method for decomposing an expression tree."""
@@ -177,8 +178,8 @@ def _gen_walk(var_type: VarType, newcirc: Circuit, heap: VarHeap) -> Callable[
         RegWiseOp.XOR: newcirc.add_c_xor_to_registers,
     }
     if var_type is Bit:
-        op_type: type[BitWiseOp] | type[RegWiseOp] = BitWiseOp
-        exp_type: type[BitLogicExp] | type[RegLogicExp] = BitLogicExp
+        op_type: Union[Type[BitWiseOp], Type[RegWiseOp]] = BitWiseOp
+        exp_type: Union[Type[BitLogicExp], Type[RegLogicExp]] = BitLogicExp
     else:
         assert var_type is BitRegister
         op_type = RegWiseOp
@@ -193,7 +194,7 @@ def _gen_walk(var_type: VarType, newcirc: Circuit, heap: VarHeap) -> Callable[
                 newcirc.add_bit(var.__getitem__(i), reject_dups=False)
 
     # method for setting bits during walk
-    def set_bits(var: Variable, val: Constant, kwargs: dict) -> None:
+    def set_bits(var: Variable, val: Constant, kwargs: Dict) -> None:
         if isinstance(var, Bit):
             newcirc.add_c_setbits([bool(val)], [var], **kwargs)
         else:
@@ -209,9 +210,9 @@ def _gen_walk(var_type: VarType, newcirc: Circuit, heap: VarHeap) -> Callable[
     # convert an expression to gates on the circuit
     # and return the variable holding the result
     def recursive_walk(
-        exp: RegLogicExp | BitLogicExp,
-        targ_bit: Variable | None = None,
-        kwargs: dict | None = None,
+        exp: Union[RegLogicExp, BitLogicExp],
+        targ_bit: Optional[Variable] = None,
+        kwargs: Optional[Dict] = None,
     ) -> Variable:
         assert isinstance(exp.op, op_type)
         kwargs = kwargs or {}
@@ -252,7 +253,7 @@ def _gen_walk(var_type: VarType, newcirc: Circuit, heap: VarHeap) -> Callable[
     return recursive_walk
 
 
-def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:
+def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
     """Rewrite a circuit command-wise, decomposing ClassicalExpBox."""
     bit_heap = BitHeap()
     reg_heap = RegHeap()
@@ -280,7 +281,7 @@ def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:
     reg_recursive_walk = _gen_walk(BitRegister, newcirc, reg_heap)
 
     # targets of predicates that need to be relabelled
-    replace_targets: dict[Variable, Variable] = dict()
+    replace_targets: Dict[Variable, Variable] = dict()
     modified = False
     for command in circ:
         op = command.op
