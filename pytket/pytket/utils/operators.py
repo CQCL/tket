@@ -169,9 +169,7 @@ class QubitPauliOperator:
             return self
 
         # Invalid multiplier type
-        raise TypeError(
-            f"Cannot multiply QubitPauliOperator with {type(multiplier)}"
-        )
+        raise TypeError(f"Cannot multiply QubitPauliOperator with {type(multiplier)}")
 
     def __mul__(
         self, multiplier: Union[float, Expr, "QubitPauliOperator"]

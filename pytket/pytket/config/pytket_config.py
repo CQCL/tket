@@ -32,7 +32,6 @@ def get_config_file_path() -> Path:
     return config_dir / "pytket" / "config.json"
 
 
-
 class PytketConfig:
     """PytketConfig represents a loaded config file for
     pytket and extension packages."""
