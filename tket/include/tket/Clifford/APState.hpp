@@ -107,12 +107,25 @@ class APState {
    */
   Eigen::VectorXcd to_statevector();
 
+  /**
+   * Applies a CZ gate to the state. O(n^2) wrt number of qubits in the state.
+   */
   void apply_CZ(unsigned ctrl, unsigned trgt);
 
+  /**
+   * Applies an S gate to the state. O(n^2) wrt number of qubits in the state.
+   */
   void apply_S(unsigned q);
 
+  /**
+   * Applies a V gate to the state. O(n^2) wrt number of qubits in the state.
+   */
   void apply_V(unsigned q);
 
+  /**
+   * Applies an unparameterised Clifford gate to the state on the chosen qubits.
+   * O(n^2) wrt number of qubits in the state.
+   */
   void apply_gate(OpType type, const std::vector<unsigned>& qbs);
 };
 

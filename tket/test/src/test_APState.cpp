@@ -247,7 +247,7 @@ SCENARIO("Loading from a statevector") {
       sv, sv2, tket_sim::MatrixEquivalence::EQUAL));
 }
 
-SCENARIO("Converting from a circuit") {
+SCENARIO("Converting from/to a circuit") {
   GIVEN("A circuit in the standard AP form") {
     Circuit circ(4);
     circ.qubit_create_all();
@@ -256,11 +256,15 @@ SCENARIO("Converting from a circuit") {
     circ.add_op<unsigned>(OpType::CX, {2, 0});
     circ.add_op<unsigned>(OpType::CX, {2, 1});
     circ.add_op<unsigned>(OpType::CX, {3, 1});
+    circ.add_op<unsigned>(OpType::S, {2});
+    circ.add_op<unsigned>(OpType::Z, {3});
     APState ap = circuit_to_apstate(circ);
     auto sv_circ = tket_sim::get_statevector(circ);
     auto sv_ap = ap.to_statevector();
     CHECK(tket_sim::compare_statevectors_or_unitaries(
         sv_circ, sv_ap, tket_sim::MatrixEquivalence::EQUAL));
+    Circuit reconstructed = apstate_to_circuit(ap);
+    CHECK(circ == reconstructed);
   }
   GIVEN("A generic circuit") {
     Circuit circ(4);
@@ -275,6 +279,53 @@ SCENARIO("Converting from a circuit") {
     auto sv_ap = ap.to_statevector();
     CHECK(tket_sim::compare_statevectors_or_unitaries(
         sv_circ, sv_ap, tket_sim::MatrixEquivalence::EQUAL));
+    Circuit reconstructed = apstate_to_circuit(ap);
+    auto sv_rec = tket_sim::get_statevector(reconstructed);
+    CHECK(tket_sim::compare_statevectors_or_unitaries(
+        sv_circ, sv_rec, tket_sim::MatrixEquivalence::EQUAL));
+  }
+}
+
+SCENARIO("Converting from/to a tableau") {
+  GIVEN("Check up to global phase using circuit") {
+    Circuit circ(8);
+    circ.qubit_create_all();
+    circ.add_op<unsigned>(OpType::X, {1});
+    circ.add_op<unsigned>(OpType::X, {5});
+    circ.add_op<unsigned>(OpType::H, {2});
+    circ.add_op<unsigned>(OpType::H, {4});
+    circ.add_op<unsigned>(OpType::H, {6});
+    circ.add_op<unsigned>(OpType::H, {7});
+    circ.add_op<unsigned>(OpType::CX, {2, 1});
+    circ.add_op<unsigned>(OpType::CX, {4, 0});
+    circ.add_op<unsigned>(OpType::CX, {4, 3});
+    circ.add_op<unsigned>(OpType::CX, {6, 0});
+    circ.add_op<unsigned>(OpType::CX, {6, 1});
+    circ.add_op<unsigned>(OpType::CX, {7, 5});
+    circ.add_op<unsigned>(OpType::CZ, {2, 6});
+    circ.add_op<unsigned>(OpType::CZ, {4, 6});
+    circ.add_op<unsigned>(OpType::CZ, {4, 7});
+    circ.add_op<unsigned>(OpType::CZ, {6, 7});
+    circ.add_op<unsigned>(OpType::S, {2});
+    circ.add_op<unsigned>(OpType::Sdg, {4});
+    circ.add_op<unsigned>(OpType::Z, {7});
+    ChoiMixTableau cmt = circuit_to_cm_tableau(circ);
+    APState ap = tableau_to_apstate(cmt.tab_);
+    auto sv_circ = tket_sim::get_statevector(circ);
+    auto sv_ap = ap.to_statevector();
+    CHECK(tket_sim::compare_statevectors_or_unitaries(
+        sv_circ, sv_ap, tket_sim::MatrixEquivalence::EQUAL));
+    SymplecticTableau tab2 = apstate_to_tableau(ap);
+    ChoiMixTableau cmt2(tab2.xmat, tab2.zmat, tab2.phase);
+    auto [circ2, perm] = cm_tableau_to_exact_circuit(cmt2);
+    qubit_map_t inv;
+    for (const std::pair<const Qubit, Qubit>& qp : perm)
+      inv.insert({qp.second, qp.first});
+    circ2.permute_boundary_output(inv);
+    auto sv_circ2 = tket_sim::get_statevector(circ2);
+    CHECK(tket_sim::compare_statevectors_or_unitaries(
+        sv_circ, sv_circ2,
+        tket_sim::MatrixEquivalence::EQUAL_UP_TO_GLOBAL_PHASE));
   }
 }
 

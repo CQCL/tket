@@ -46,7 +46,19 @@ Circuit unitary_rev_tableau_to_circuit(const UnitaryRevTableau &tab);
  */
 ChoiMixTableau circuit_to_cm_tableau(const Circuit &circ);
 
+/**
+ * Construct an APState for a given circuit.
+ * Assumes all input qubits are initialised in the |0> state.
+ * Will throw an exception if it contains non-Clifford gates.
+ */
 APState circuit_to_apstate(const Circuit &circ);
+
+/**
+ * Construct a circuit producing the state described by the APState.
+ * Uses the standard circuit form implied by the ZX description of reduced
+ * AP-form (layered as X-H-CX-CZ-S).
+ */
+Circuit apstate_to_circuit(const APState &ap);
 
 /**
  * Constructs a circuit producing the same effect as a ChoiMixTableau.
@@ -150,6 +162,22 @@ ChoiMixTableau unitary_rev_tableau_to_cm_tableau(const UnitaryRevTableau &tab);
  */
 UnitaryTableau cm_tableau_to_unitary_tableau(const ChoiMixTableau &tab);
 UnitaryRevTableau cm_tableau_to_unitary_rev_tableau(const ChoiMixTableau &tab);
+
+/**
+ * Convert a SymplecticTableau describing a stabiliser state to reduced AP-form
+ * (i.e. an APState object). Since tableau methods do not track global phase, we
+ * set it to 0. Throws an exception if the tableau does not describe a pure
+ * state (i.e. it must have n commuting rows for n qubits).
+ */
+APState tableau_to_apstate(SymplecticTableau tab);
+
+/**
+ * Convert an APState describing a stabiliser state into a tableau form,
+ * discarding the global phase information. This allows us to reuse tableau
+ * synthesis methods to synthesise APState objects (the result would need
+ * re-simulating as an APState to compare and deduce the required global phase).
+ */
+SymplecticTableau apstate_to_tableau(const APState &ap);
 
 PauliGraph circuit_to_pauli_graph(const Circuit &circ);
 
