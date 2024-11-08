@@ -472,22 +472,18 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "\n\n:return: the circuit depth")
       .def(
           "n_gates_of_type",
-          [](const Circuit &circ, const OpType &_type, const bool conditional) {
-            if (conditional) {
-              return circ.count_gates(_type) +
-                     circ.count_gates_conditional(_type);
-            } else {
-              return circ.count_gates(_type);
-            }
+          [](const Circuit &circ, const OpType &_type,
+             const bool include_conditional) {
+            return circ.count_gates(_type, include_conditional);
           },
           "Returns the number of vertices in the dag of a given "
           "operation type.\n\n>>> c.CX(0,1)\n>>> c.H(0)\n>>> "
           "c.CX(0,1)\n>>> c.n_gates_of_type(OpType.CX)\n2\n\n:param "
-          "type: The operation type to search for\n:param "
-          "conditional: if set to true, conditional gates will "
+          "type: The operation type to search for\n\n:param "
+          "include_conditional: if set to true, conditional gates will "
           "be counted, too\n:return: the number of operations "
           "matching `type`",
-          py::arg("type"), py::arg("conditional") = false)
+          py::arg("type"), py::arg("include_conditional") = false)
       .def(
           "n_1qb_gates",
           [](const Circuit &circ) { return circ.count_n_qubit_gates(1); },

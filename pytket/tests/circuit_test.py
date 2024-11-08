@@ -1270,14 +1270,14 @@ def test_counting_conditional_gates() -> None:
     c.add_gate(OpType.H, [Qubit(0)], condition=Bit(0))
     c.add_gate(OpType.H, [Qubit(1)], condition=(Bit(0) & Bit(1)))
     c.add_gate(OpType.CX, [Qubit(0), Qubit(1)], condition=Bit(1))
-    assert c.n_gates_of_type(OpType.H, conditional=True) == 3
-    assert c.n_gates_of_type(OpType.H, conditional=False) == 1
+    assert c.n_gates_of_type(OpType.H, include_conditional=True) == 3
+    assert c.n_gates_of_type(OpType.H, include_conditional=False) == 1
     assert c.n_gates_of_type(OpType.H) == 1
-    assert c.n_gates_of_type(OpType.X, conditional=True) == 1
-    assert c.n_gates_of_type(OpType.X, conditional=False) == 1
+    assert c.n_gates_of_type(OpType.X, include_conditional=True) == 1
+    assert c.n_gates_of_type(OpType.X, include_conditional=False) == 1
     assert c.n_gates_of_type(OpType.X) == 1
-    assert c.n_gates_of_type(OpType.CX, conditional=True) == 5
-    assert c.n_gates_of_type(OpType.CX, conditional=False) == 4
+    assert c.n_gates_of_type(OpType.CX, include_conditional=True) == 5
+    assert c.n_gates_of_type(OpType.CX, include_conditional=False) == 4
     assert c.n_gates_of_type(OpType.CX) == 4
 
 

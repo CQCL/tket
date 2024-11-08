@@ -188,10 +188,10 @@ SCENARIO("test conditional count") {
     circ.add_op<Qubit>(OpType::H, {Qubit(qreg[0])});
     REQUIRE(circ.n_qubits() == 2);
     REQUIRE(circ.n_bits() == 2);
-    REQUIRE(circ.count_gates(OpType::CX) == 0);
-    REQUIRE(circ.count_gates(OpType::H) == 2);
-    REQUIRE(circ.count_gates_conditional(OpType::H) == 3);
-    REQUIRE(circ.count_gates_conditional(OpType::CX) == 0);
+    REQUIRE(circ.count_gates(OpType::CX, false) == 0);
+    REQUIRE(circ.count_gates(OpType::H, false) == 2);
+    REQUIRE(circ.count_gates(OpType::CX, true) == 0);
+    REQUIRE(circ.count_gates(OpType::H, true) == 5);
   }
 }
 

@@ -51,23 +51,18 @@ std::map<OpType, unsigned> Circuit::op_counts() const {
   return counts;
 }
 
-unsigned Circuit::count_gates(const OpType& op_type) const {
+unsigned Circuit::count_gates(
+    const OpType& op_type, const bool include_conditional) const {
   unsigned counter = 0;
   BGL_FORALL_VERTICES(v, dag, DAG) {
     if (get_OpType_from_Vertex(v) == op_type) {
       ++counter;
-    }
-  }
-  return counter;
-}
-
-unsigned Circuit::count_gates_conditional(const OpType& op_type) const {
-  unsigned counter = 0;
-  BGL_FORALL_VERTICES(v, dag, DAG) {
-    if (get_OpType_from_Vertex(v) == OpType::Conditional &&
-        static_cast<const Conditional&>(*get_Op_ptr_from_Vertex(v))
-                .get_op()
-                ->get_type() == op_type) {
+    } else if (
+        include_conditional &&
+        (get_OpType_from_Vertex(v) == OpType::Conditional) &&
+        (static_cast<const Conditional&>(*get_Op_ptr_from_Vertex(v))
+             .get_op()
+             ->get_type() == op_type)) {
       ++counter;
     }
   }
