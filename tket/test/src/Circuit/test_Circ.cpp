@@ -176,6 +176,25 @@ SCENARIO(
   }
 }
 
+SCENARIO("test conditional count") {
+  GIVEN("conditional circ") {
+    Circuit circ;
+    register_t qreg = circ.add_q_register("qb", 2);
+    register_t creg = circ.add_c_register("b", 2);
+    circ.add_conditional_gate<UnitID>(OpType::H, {}, {qreg[1]}, {creg[0]}, 1);
+    circ.add_conditional_gate<UnitID>(OpType::H, {}, {qreg[1]}, {creg[0]}, 1);
+    circ.add_conditional_gate<UnitID>(OpType::H, {}, {qreg[1]}, {creg[0]}, 1);
+    circ.add_op<Qubit>(OpType::H, {Qubit(qreg[0])});
+    circ.add_op<Qubit>(OpType::H, {Qubit(qreg[0])});
+    REQUIRE(circ.n_qubits() == 2);
+    REQUIRE(circ.n_bits() == 2);
+    REQUIRE(circ.count_gates(OpType::CX, false) == 0);
+    REQUIRE(circ.count_gates(OpType::H, false) == 2);
+    REQUIRE(circ.count_gates(OpType::CX, true) == 0);
+    REQUIRE(circ.count_gates(OpType::H, true) == 5);
+  }
+}
+
 SCENARIO("Creating gates via Qubits and Registers") {
   GIVEN("A purely quantum circuit") {
     Circuit circ;
