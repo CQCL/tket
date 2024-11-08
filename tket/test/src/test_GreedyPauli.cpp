@@ -709,6 +709,46 @@ SCENARIO("Test GreedyPauliSimp for individual gates") {
     REQUIRE(test_unitary_comparison(circ, d, true));
   }
 }
+
+SCENARIO("Test greedy_pauli_optimisation timeout") {
+  GIVEN("Large circuit with ZZPhase, 0 second timeout.") {
+    Circuit circ(6);
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::X, Pauli::X}, 0.3)), {0, 1});
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Y, Pauli::X}, 0.2)),
+        {0, 1, 2});
+    circ.add_box(
+        PauliExpCommutingSetBox({
+            {{Pauli::I, Pauli::Y, Pauli::I, Pauli::Z}, 1.2},
+            {{Pauli::X, Pauli::Y, Pauli::Z, Pauli::I}, 0.8},
+            {{Pauli::I, Pauli::I, Pauli::I, Pauli::Z}, 1.25},
+        }),
+        {1, 2, 3, 4});
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::Y, Pauli::X}, 0.1)), {2, 3});
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Y, Pauli::X}, 0.11)),
+        {1, 3, 4});
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::Y, Pauli::Y}, 0.2)), {4, 5});
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Z, Pauli::X}, 0.15)),
+        {2, 4, 5});
+    circ.add_box(
+        PauliExpBox(
+            SymPauliTensor({Pauli::X, Pauli::X, Pauli::X, Pauli::X}, 0.25)),
+        {2, 4, 5, 0});
+    circ.add_box(
+        PauliExpBox(
+            SymPauliTensor({Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X}, 0.125)),
+        {1, 3, 5, 0});
+    Circuit d(circ);
+    REQUIRE(
+        !Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true, 0)
+             .apply(d));
+  }
+}
 SCENARIO("Test GreedyPauliSimp pass construction") {
   // test pass construction
   GIVEN("A circuit") {
