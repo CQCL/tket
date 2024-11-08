@@ -2248,6 +2248,7 @@ class Circuit:
         :param type: The operation type to search for
         
         :param include_conditional: if set to true, conditional gates will be counted, too
+        
         :return: the number of operations matching `type`
         """
     def n_nqb_gates(self, size: int) -> int:
