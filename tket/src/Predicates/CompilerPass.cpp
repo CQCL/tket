@@ -521,9 +521,10 @@ PassPtr deserialise(
       unsigned max_lookahead = content.at("max_lookahead").get<unsigned>();
       unsigned seed = content.at("seed").get<unsigned>();
       bool allow_zzphase = content.at("allow_zzphase").get<bool>();
+      unsigned timeout = content.at("timeout").get<unsigned>();
       pp = gen_greedy_pauli_simp(
           discount_rate, depth_weight, max_lookahead, max_tqe_candidates, seed,
-          allow_zzphase);
+          allow_zzphase, timeout);
 
     } else if (passname == "PauliSimp") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY

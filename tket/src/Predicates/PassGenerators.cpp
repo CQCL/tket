@@ -1068,6 +1068,7 @@ PassPtr gen_greedy_pauli_simp(
   j["max_tqe_candidates"] = max_tqe_candidates;
   j["seed"] = seed;
   j["allow_zzphase"] = allow_zzphase;
+  j["timeout"] = timeout;
 
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
