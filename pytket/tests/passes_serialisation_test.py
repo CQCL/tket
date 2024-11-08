@@ -20,8 +20,6 @@ from jsonschema import Draft7Validator, ValidationError  # type: ignore
 from pathlib import Path
 from typing import Any, Dict, List
 
-from sympy import Expr
-
 from pytket.circuit import Node, Circuit, Qubit, OpType
 from pytket.predicates import Predicate
 from pytket.architecture import Architecture
@@ -36,7 +34,6 @@ from pytket.passes import (
     CommuteThroughMultis,
     RepeatWithMetricPass,
     RebaseCustom,
-    CXMappingPass,
     FullMappingPass,
     DefaultMappingPass,
     AASRouting,
@@ -299,6 +296,7 @@ TWO_WAY_PARAM_PASSES = {
             "max_tqe_candidates": 100,
             "seed": 2,
             "allow_zzphase": True,
+            "timeout": 5000,
         }
     ),
     # lists must be sorted by OpType value
@@ -699,7 +697,7 @@ def test_pass_deserialisation_only() -> None:
     np_pass = dm_pass_0.get_sequence()[2]
     d_pass = dm_pass.get_sequence()[1]
     assert d_pass.to_dict()["StandardPass"]["name"] == "DelayMeasures"
-    assert d_pass.to_dict()["StandardPass"]["allow_partial"] == False
+    assert not d_pass.to_dict()["StandardPass"]["allow_partial"]
     assert p_pass.to_dict()["StandardPass"]["name"] == "PlacementPass"
     assert np_pass.to_dict()["StandardPass"]["name"] == "NaivePlacementPass"
     assert r_pass.to_dict()["StandardPass"]["name"] == "RoutingPass"
