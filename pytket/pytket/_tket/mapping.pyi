@@ -1,6 +1,7 @@
 from typing import Any
 from __future__ import annotations
 import pytket._tket.architecture
+import pytket._tket.circuit
 import pytket._tket.unit_id
 import typing
 __all__ = ['AASLabellingMethod', 'AASRouteRoutingMethod', 'BoxDecompositionRoutingMethod', 'LexiLabellingMethod', 'LexiRouteRoutingMethod', 'MappingManager', 'MultiGateReorderRoutingMethod', 'RoutingMethod', 'RoutingMethodCircuit']
@@ -76,7 +77,7 @@ class MappingManager:
         
         :param architecture: pytket Architecture object.
         """
-    def route_circuit(self, circuit: ..., routing_methods: typing.Sequence[RoutingMethod]) -> bool:
+    def route_circuit(self, circuit: pytket._tket.circuit.Circuit, routing_methods: typing.Sequence[RoutingMethod]) -> bool:
         """
         Maps from given logical circuit to physical circuit. Modification defined by route_subcircuit, but typically this proceeds by insertion of SWAP gates that permute logical qubits on physical qubits.
         
@@ -113,7 +114,7 @@ class RoutingMethodCircuit(RoutingMethod):
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
         ...
-    def __init__(self, route_subcircuit: typing.Callable[[..., pytket._tket.architecture.Architecture], tuple[bool, ..., dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID], dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]]], max_size: int, max_depth: int) -> None:
+    def __init__(self, route_subcircuit: typing.Callable[[pytket._tket.circuit.Circuit, pytket._tket.architecture.Architecture], tuple[bool, pytket._tket.circuit.Circuit, dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID], dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]]], max_size: int, max_depth: int) -> None:
         """
         Constructor for a routing method defined by partially routing subcircuits.
         

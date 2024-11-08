@@ -1973,7 +1973,7 @@ class Circuit:
         :param qubit_2: index of target qubit 2
         :return: the new :py:class:`Circuit`
         """
-    def add_wasm(self, funcname: str, filehandler: pytket.wasm.wasm.WasmModuleHandler, list_i: collections.abc.Sequence[int], list_o: collections.abc.Sequence[int], args: collections.abc.Sequence[int] | collections.abc.Sequence[pytket._tket.unit_id.Bit], args_wasm: collections.abc.Sequence[int] | None = None, **kwargs: typing.Any) -> Circuit:
+    def add_wasm(self, funcname: str, filehandler: pytket.wasm.wasm.WasmModuleHandler, list_i: typing.Sequence[int], list_o: typing.Sequence[int], args: typing.Union[typing.Sequence[int], typing.Sequence[pytket._tket.unit_id.Bit]], args_wasm: typing.Optional[typing.Sequence[int]] = None, **kwargs: typing.Any) -> Circuit:
         """
         Add a classical function call from a wasm file to the circuit.
             
@@ -1996,7 +1996,7 @@ class Circuit:
             
         :return: the new :py:class:`Circuit`
         """
-    def add_wasm_to_reg(self, funcname: str, filehandler: pytket.wasm.wasm.WasmModuleHandler, list_i: collections.abc.Sequence[pytket._tket.unit_id.BitRegister], list_o: collections.abc.Sequence[pytket._tket.unit_id.BitRegister], args_wasm: collections.abc.Sequence[int] | None = None, **kwargs: typing.Any) -> Circuit:
+    def add_wasm_to_reg(self, funcname: str, filehandler: pytket.wasm.wasm.WasmModuleHandler, list_i: typing.Sequence[pytket._tket.unit_id.BitRegister], list_o: typing.Sequence[pytket._tket.unit_id.BitRegister], args_wasm: typing.Optional[typing.Sequence[int]] = None, **kwargs: typing.Any) -> Circuit:
         """
         Add a classical function call from a wasm file to the circuit.
             

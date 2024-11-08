@@ -14,15 +14,15 @@
 
 """Python Interface to tket
 """
-import pytket.architecture
-import pytket.mapping
-import pytket.placement
-import pytket.transform
-from pytket._version import __version__
+import pytket.architecture  # noqa: I001
 from pytket.circuit import (
     Circuit,
     OpType,
 )
+import pytket.mapping
+import pytket.placement
+import pytket.transform
+from pytket._version import __version__
 from pytket.config import PytketConfig, get_config_file_path
 from pytket.unit_id import (
     Bit,
