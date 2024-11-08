@@ -481,7 +481,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "c.CX(0,1)\n>>> c.n_gates_of_type(OpType.CX)\n2\n\n:param "
           "type: The operation type to search for\n\n:param "
           "include_conditional: if set to true, conditional gates will "
-          "be counted, too\n:return: the number of operations "
+          "be counted, too\n\n:return: the number of operations "
           "matching `type`",
           py::arg("type"), py::arg("include_conditional") = false)
       .def(
