@@ -13,20 +13,22 @@
 # limitations under the License.
 
 import json
+from pathlib import Path
+
+from jsonschema import Draft7Validator  # type: ignore
 from referencing import Registry
 from referencing.jsonschema import DRAFT7
-from jsonschema import Draft7Validator  # type: ignore
-from pathlib import Path
+
+from pytket.architecture import Architecture, FullyConnected, RingArch, SquareGrid
 from pytket.circuit import Node
-from pytket.architecture import Architecture, SquareGrid, FullyConnected, RingArch
 
 curr_file_path = Path(__file__).resolve().parent
 schema_dir = curr_file_path.parent.parent / "schemas"
-with open(schema_dir / "circuit_v1.json", "r") as f:
+with open(schema_dir / "circuit_v1.json") as f:
     circ_schema = json.load(f)
-with open(schema_dir / "architecture_v1.json", "r") as f:
+with open(schema_dir / "architecture_v1.json") as f:
     arch_schema = json.load(f)
-with open(schema_dir / "fullyconnected_v1.json", "r") as f:
+with open(schema_dir / "fullyconnected_v1.json") as f:
     fc_schema = json.load(f)
 
 schema_store = [
@@ -92,9 +94,9 @@ def test_architecture_eq() -> None:
     assert arc != Architecture([(Node("s", i), Node("s", j)) for (i, j) in coupling])
 
     # only Node IDs and coupling matters
-    g00, g01, g10, g11 = [
+    g00, g01, g10, g11 = (
         Node("gridNode", [i, j, 0]) for i in range(2) for j in range(2)
-    ]
+    )
     sq_arc = Architecture([(g00, g01), (g01, g11), (g00, g10), (g10, g11)])
     assert sq_arc == SquareGrid(2, 2)
     assert sq_arc != Architecture([(g00, g01), (g01, g11), (g00, g10)])

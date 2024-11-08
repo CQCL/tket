@@ -1,18 +1,18 @@
 from pytket._tket.unit_id import BitRegister
 from pytket.circuit.logic_exp import (
-    RegOr,
-    RegAnd,
-    BitOr,
     BitAnd,
+    BitOr,
     BitXor,
-    RegXor,
     RegAdd,
-    RegSub,
-    RegMul,
+    RegAnd,
     RegDiv,
-    RegPow,
     RegLsh,
+    RegMul,
+    RegOr,
+    RegPow,
     RegRsh,
+    RegSub,
+    RegXor,
 )
 
 

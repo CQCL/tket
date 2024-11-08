@@ -13,25 +13,26 @@
 # limitations under the License.
 
 import itertools
+from collections import Counter, OrderedDict
+from collections.abc import Callable, Iterable
 from functools import lru_cache
-
 from math import ceil, log2
-from collections import OrderedDict
-from typing import Dict, Iterable, List, Tuple, Counter, cast, Optional, Callable, Union
+from typing import cast
+
 import numpy as np
-from pytket.circuit import Circuit, Qubit, Bit, Node, CircBox, OpType
+
 from pytket.backends import Backend
-from pytket.passes import DecomposeBoxes, FlattenRegisters
 from pytket.backends.backendresult import BackendResult
+from pytket.circuit import Bit, CircBox, Circuit, Node, OpType, Qubit
+from pytket.passes import DecomposeBoxes, FlattenRegisters
 from pytket.utils.outcomearray import OutcomeArray
 from pytket.utils.results import CountsDict, StateTuple
 
-
-ParallelMeasures = List[Dict[Qubit, Bit]]
+ParallelMeasures = list[dict[Qubit, Bit]]
 
 
 def compress_counts(
-    counts: Dict[StateTuple, float], tol: float = 1e-6, round_to_int: bool = False
+    counts: dict[StateTuple, float], tol: float = 1e-6, round_to_int: bool = False
 ) -> CountsDict:
     """Filter counts to remove states that have a count value (which can be a
     floating-point number) below a tolerance, and optionally round to an
@@ -47,7 +48,7 @@ def compress_counts(
     :return: Filtered counts
     :rtype: CountsDict
     """
-    valprocess: Callable[[float], Union[int, float]] = lambda x: (
+    valprocess: Callable[[float], int | float] = lambda x: (
         int(round(x)) if round_to_int else x
     )
     processed_pairs = (
@@ -57,7 +58,7 @@ def compress_counts(
 
 
 @lru_cache(maxsize=128)
-def binary_to_int(bintuple: Tuple[int]) -> int:
+def binary_to_int(bintuple: tuple[int]) -> int:
     """Convert a binary tuple to corresponding integer, with most significant bit as
     the first element of tuple.
 
@@ -75,7 +76,7 @@ def binary_to_int(bintuple: Tuple[int]) -> int:
 
 
 @lru_cache(maxsize=128)
-def int_to_binary(val: int, dim: int) -> Tuple[int, ...]:
+def int_to_binary(val: int, dim: int) -> tuple[int, ...]:
     """Convert an integer to corresponding binary tuple, with most significant bit as
      the first element of tuple.
 
@@ -87,7 +88,7 @@ def int_to_binary(val: int, dim: int) -> Tuple[int, ...]:
     :return: Binary tuple of width dim
     :rtype: Tuple[int, ...]
     """
-    return tuple(map(int, format(val, "0{}b".format(dim))))
+    return tuple(map(int, format(val, f"0{dim}b")))
 
 
 #########################################
@@ -98,7 +99,7 @@ def int_to_binary(val: int, dim: int) -> Tuple[int, ...]:
 ### and especially
 ### https://gist.github.com/ahwillia/f65bc70cb30206d4eadec857b98c4065
 ### on which this code is based.
-def _unfold(tens: np.ndarray, mode: int, dims: List[int]) -> np.ndarray:
+def _unfold(tens: np.ndarray, mode: int, dims: list[int]) -> np.ndarray:
     """Unfolds tensor into matrix.
 
     :param tens: Tensor with shape equivalent to dimensions
@@ -113,11 +114,10 @@ def _unfold(tens: np.ndarray, mode: int, dims: List[int]) -> np.ndarray:
     """
     if mode == 0:
         return tens.reshape(dims[0], -1)
-    else:
-        return np.moveaxis(tens, mode, 0).reshape(dims[mode], -1)
+    return np.moveaxis(tens, mode, 0).reshape(dims[mode], -1)
 
 
-def _refold(vec: np.ndarray, mode: int, dims: List[int]) -> np.ndarray:
+def _refold(vec: np.ndarray, mode: int, dims: list[int]) -> np.ndarray:
     """Refolds vector into tensor.
 
     :param vec: Tensor with length equivalent to the product of dimensions given in
@@ -133,11 +133,10 @@ def _refold(vec: np.ndarray, mode: int, dims: List[int]) -> np.ndarray:
     """
     if mode == 0:
         return vec.reshape(dims)
-    else:
-        # Reshape and then move dims[mode] back to its
-        # appropriate spot (undoing the `unfold` operation).
-        tens = vec.reshape([dims[mode]] + [d for m, d in enumerate(dims) if m != mode])
-        return np.moveaxis(tens, 0, mode)
+    # Reshape and then move dims[mode] back to its
+    # appropriate spot (undoing the `unfold` operation).
+    tens = vec.reshape([dims[mode]] + [d for m, d in enumerate(dims) if m != mode])
+    return np.moveaxis(tens, 0, mode)
 
 
 def _compute_dot(submatrices: Iterable[np.ndarray], vector: np.ndarray) -> np.ndarray:
@@ -204,7 +203,7 @@ def _bayesian_iterative_correct(
     submatrices: Iterable[np.ndarray],
     measurements: np.ndarray,
     tol: float = 1e-5,
-    max_it: Optional[int] = None,
+    max_it: int | None = None,
 ) -> np.ndarray:
     """Finds new states to represent application of inversion of submatrices on
     measurements. Converges when update states within tol range of previously
@@ -246,7 +245,7 @@ def _bayesian_iterative_correct(
     return true_states
 
 
-def reduce_matrix(indices_to_remove: List[int], matrix: np.ndarray) -> np.ndarray:
+def reduce_matrix(indices_to_remove: list[int], matrix: np.ndarray) -> np.ndarray:
     """Removes indices from indices_to_remove from binary associated to indexing of
     matrix, producing a new transition matrix. To do so, it assigns all transition
     probabilities as the given state in the remaining indices binary, with the removed
@@ -286,8 +285,8 @@ def reduce_matrix(indices_to_remove: List[int], matrix: np.ndarray) -> np.ndarra
 
 
 def reduce_matrices(
-    entries_to_remove: List[Tuple[int, int]], matrices: List[np.ndarray]
-) -> List[np.ndarray]:
+    entries_to_remove: list[tuple[int, int]], matrices: list[np.ndarray]
+) -> list[np.ndarray]:
     """Removes some dimensions from some matrices.
 
     :param entries_to_remove: Via indexing, details dimensions to be removed.
@@ -298,16 +297,15 @@ def reduce_matrices(
     :return: Matrices with some dimensions removed.
     :rtype: List[np.ndarray]
     """
-    organise: Dict[int, List] = dict({k: [] for k in range(len(matrices))})
+    organise: dict[int, list] = dict({k: [] for k in range(len(matrices))})
     for unused in entries_to_remove:
         # unused[0] is index in matrices
         # unused[1] is qubit index in matrix
         organise[unused[0]].append(unused[1])
     output_matrices = [reduce_matrix(organise[m], matrices[m]) for m in organise]
-    normalised_mats = [
+    return [
         mat / np.sum(mat, axis=0) for mat in [x for x in output_matrices if len(x) != 0]
     ]
-    return normalised_mats
 
 
 class SpamCorrecter:
@@ -318,9 +316,7 @@ class SpamCorrecter:
     dictionary.
     """
 
-    def __init__(
-        self, qubit_subsets: List[List[Node]], backend: Optional[Backend] = None
-    ):
+    def __init__(self, qubit_subsets: list[list[Node]], backend: Backend | None = None):
         """Construct a new `SpamCorrecter`.
 
         :param qubit_subsets: A list of lists of correlated Nodes of an `Architecture`.
@@ -365,7 +361,7 @@ class SpamCorrecter:
 
         self.xbox = CircBox(xcirc)
 
-    def calibration_circuits(self) -> List[Circuit]:
+    def calibration_circuits(self) -> list[Circuit]:
         """Generate calibration circuits according to the specified correlations.
 
         :return: A list of calibration circuits to be run on the machine. The circuits
@@ -415,7 +411,7 @@ class SpamCorrecter:
             self.state_infos.append((new_state_dicts, state_circuit.qubit_to_bit_map))
         return self.prepared_circuits
 
-    def calculate_matrices(self, results_list: List[BackendResult]) -> None:
+    def calculate_matrices(self, results_list: list[BackendResult]) -> None:
         """Calculate the calibration matrices from the results of running calibration
         circuits.
 
@@ -431,7 +427,7 @@ class SpamCorrecter:
             )
 
         counter = 0
-        self.node_index_dict: Dict[Node, Tuple[int, int]] = dict()
+        self.node_index_dict: dict[Node, tuple[int, int]] = dict()
 
         for qbs, dim in zip(self.subsets_matrix_map, self.subset_dimensions):
             # for a subset with n qubits, create a 2^n by 2^n matrix
@@ -492,7 +488,7 @@ class SpamCorrecter:
         result: BackendResult,
         parallel_measures: ParallelMeasures,
         method: str = "bayesian",
-        options: Optional[Dict] = None,
+        options: dict | None = None,
     ) -> BackendResult:
         """Modifies count distribution for result, such that the inversion of the pure
         noise map represented by characterisation matrices is applied to it.
@@ -528,8 +524,7 @@ class SpamCorrecter:
                 # no q duplicates as mapping is dict from qubit to bit
                 if q not in unused_qbs:
                     raise ValueError(
-                        "Measured qubit {} is not characterised by "
-                        "SpamCorrecter".format(q)
+                        f"Measured qubit {q} is not characterised by SpamCorrecter"
                     )
                 unused_qbs.remove(q)  # type:ignore[arg-type]
                 char_bits_order.append(mapping[q])
@@ -601,7 +596,7 @@ class SpamCorrecter:
         # produce and return BackendResult object
         return BackendResult(counts=counter, c_bits=char_bits_order)
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         """Get calibration information as a dictionary.
 
         :return: Dictionary output
@@ -616,15 +611,14 @@ class SpamCorrecter:
             for uid in self.node_index_dict
         ]
         char_matrices = [m.tolist() for m in self.characterisation_matrices]
-        self_dict = {
+        return {
             "correlations": correlations,
             "node_index_dict": node_index_hashable,
             "characterisation_matrices": char_matrices,
         }
-        return self_dict
 
     @classmethod
-    def from_dict(class_obj, d: Dict) -> "SpamCorrecter":
+    def from_dict(class_obj, d: dict) -> "SpamCorrecter":
         """Build a `SpamCorrecter` instance from a dictionary in the format returned
         by `to_dict`.
 

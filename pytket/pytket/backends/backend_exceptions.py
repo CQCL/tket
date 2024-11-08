@@ -12,14 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Union, Optional
 from .resulthandle import ResultHandle
 
 
 class CircuitNotValidError(Exception):
     """Raised when a submitted circuit does not satisfy all predicates"""
 
-    def __init__(self, message: Union[str, int], failed_pred: Optional[str] = None):
+    def __init__(self, message: str | int, failed_pred: str | None = None):
         if isinstance(message, int):
             message = (
                 "Circuit with index {0} in submitted does not satisfy "
@@ -34,8 +33,8 @@ class CircuitNotRunError(Exception):
 
     def __init__(self, handle: ResultHandle):
         super().__init__(
-            "Circuit corresponding to {0!r} ".format(handle)
-            + "has not been run by this backend instance."
+            f"Circuit corresponding to {handle!r} "
+            "has not been run by this backend instance."
         )
 
 
@@ -43,6 +42,4 @@ class InvalidResultType(Exception):
     """Raised when a BackendResult instance cannot produce the required result type."""
 
     def __init__(self, result_type: str):
-        super().__init__(
-            "BackendResult cannot produce result of type {}.".format(result_type)
-        )
+        super().__init__(f"BackendResult cannot produce result of type {result_type}.")

@@ -13,12 +13,13 @@
 # limitations under the License.
 
 """Named types for convenience"""
-from typing import Union, Sequence
+from collections.abc import Sequence
+from typing import Union
 
 from sympy import Expr
 
 from pytket._tket.circuit import Op
-from pytket._tket.unit_id import UnitID, Qubit, Bit
+from pytket._tket.unit_id import Bit, Qubit, UnitID
 
 ParamType = Union[float, Expr]
 """Type used for circuit parameters that can either
