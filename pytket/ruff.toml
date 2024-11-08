@@ -1,6 +1,7 @@
 exclude = [
     "docs/pytket-docs-theming",
     "pytket/_tket",
+    "pytket/_version.py",
     "pytket/qasm/includes"
 ]
 
