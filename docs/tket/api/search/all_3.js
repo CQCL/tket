@@ -278,7 +278,7 @@ var searchData=
   ['cost_5fof_5foperation_275',['cost_of_operation',['../classtket_1_1aas_1_1SteinerTree.html#ac1686bc8cff9825a428a6eeaf4a84ad9',1,'tket::aas::SteinerTree']]],
   ['costedoperations_276',['CostedOperations',['../namespacetket_1_1aas.html#aaa570d7ab3ac352ff3562b1827f56c38',1,'tket::aas']]],
   ['costedtrees_277',['CostedTrees',['../namespacetket_1_1aas.html#ac196c4be7722c9b84da25f0d31de5f14',1,'tket::aas']]],
-  ['count_5fgates_278',['count_gates',['../classtket_1_1Circuit.html#aecb2d0e8a990afe7842d985c1ac3c65e',1,'tket::Circuit']]],
+  ['count_5fgates_278',['count_gates',['../classtket_1_1Circuit.html#a204e8689b01c802fcdc574b695355962',1,'tket::Circuit']]],
   ['count_5fn_5fqubit_5fgates_279',['count_n_qubit_gates',['../classtket_1_1Circuit.html#a5fe33f50f6add7c73d7a0f58b4f6b6fa',1,'tket::Circuit']]],
   ['count_5fvertices_280',['count_vertices',['../classtket_1_1zx_1_1ZXDiagram.html#a7abf04e925167615d0512d057204026b',1,'tket::zx::ZXDiagram::count_vertices(ZXType type) const'],['../classtket_1_1zx_1_1ZXDiagram.html#a92f59aeaff7c50683607f3c0694b5f8e',1,'tket::zx::ZXDiagram::count_vertices(ZXType zxtype, QuantumType qtype) const']]],
   ['count_5fwires_281',['count_wires',['../classtket_1_1zx_1_1ZXDiagram.html#a50b43a7e3df010bfd7af079f61ae7121',1,'tket::zx::ZXDiagram']]],
