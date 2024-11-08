@@ -114,7 +114,7 @@ class TketConan(ConanFile):
         self.requires("boost/1.86.0", transitive_headers=True)
         self.requires("eigen/3.4.0", transitive_headers=True)
         self.requires("nlohmann_json/3.11.3", transitive_headers=True)
-        self.requires("symengine/0.12.0", transitive_headers=True)
+        self.requires("symengine/0.13.0", transitive_headers=True)
         self.requires("tkassert/0.3.4@tket/stable", transitive_headers=True)
         self.requires("tklog/0.3.3@tket/stable")
         self.requires("tkrng/0.3.3@tket/stable")
