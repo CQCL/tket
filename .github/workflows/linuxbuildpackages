@@ -33,7 +33,8 @@ cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
 ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
 
 # Edit this list as required:
-PACKAGES="symengine/0.13.0@"
+PACKAGES="fast_float/6.1.5@ \
+          symengine/0.13.0@"
 
 for PACKAGE in ${PACKAGES}
 do

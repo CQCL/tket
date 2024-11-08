@@ -3,6 +3,7 @@ set -evx
 
 # Edit this list as required:
 PACKAGES="\
+          fast_float/6.1.5@ \
           symengine/0.13.0@ \
          "
 
