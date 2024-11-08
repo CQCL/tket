@@ -957,10 +957,12 @@ PYBIND11_MODULE(passes, m) {
       "\n:param allow_zzphase: If set to True, allows the algorithm to "
       "implement 2-qubit rotations using ZZPhase gates when deemed "
       "optimal. Defaults to False."
+      "\n:param timeout: Sets maximum out of time spent finding solution."
       "\n:return: a pass to perform the simplification",
       py::arg("discount_rate") = 0.7, py::arg("depth_weight") = 0.3,
       py::arg("max_lookahead") = 500, py::arg("max_tqe_candidates") = 500,
-      py::arg("seed") = 0, py::arg("allow_zzphase") = false);
+      py::arg("seed") = 0, py::arg("allow_zzphase") = false,
+      py::arg("timeout") = 100);
   m.def(
       "PauliSquash", &PauliSquash,
       "Applies :py:meth:`PauliSimp` followed by "

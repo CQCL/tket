@@ -15,6 +15,8 @@
 #include "tket/Transformations/GreedyPauliOptimisation.hpp"
 
 #include <algorithm>
+#include <chrono>
+#include <future>
 #include <random>
 
 #include "tket/Circuit/PauliExpBoxes.hpp"
@@ -778,15 +780,22 @@ Circuit greedy_pauli_graph_synthesis(
 
 Transform greedy_pauli_optimisation(
     double discount_rate, double depth_weight, unsigned max_lookahead,
-    unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase) {
+    unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase,
+    unsigned timeout) {
   return Transform([discount_rate, depth_weight, max_lookahead,
-                    max_tqe_candidates, seed, allow_zzphase](Circuit& circ) {
-    circ = GreedyPauliSimp::greedy_pauli_graph_synthesis(
-        circ, discount_rate, depth_weight, max_lookahead, max_tqe_candidates,
-        seed, allow_zzphase);
-    // decompose the conditional CircBoxes
-    circ.decompose_boxes_recursively();
-    return true;
+                    max_tqe_candidates, seed, allow_zzphase,
+                    timeout](Circuit& circ) {
+    std::future<Circuit> future = std::async(
+        std::launch::async, GreedyPauliSimp::greedy_pauli_graph_synthesis, circ,
+        discount_rate, depth_weight, max_lookahead, max_tqe_candidates, seed,
+        allow_zzphase);
+    if (future.wait_for(std::chrono::seconds(timeout)) ==
+        std::future_status::ready) {
+      circ = future.get();
+      circ.decompose_boxes_recursively();
+      return true;
+    }
+    return false;
   });
 }
 
