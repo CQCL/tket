@@ -15,14 +15,14 @@
 """ResultHandle class
 """
 
-from typing import Tuple, Type, Union, Iterator, overload
 from ast import literal_eval
-from collections.abc import Sequence
+from collections.abc import Iterator, Sequence
+from typing import Union, overload
 
 # mypy doesn't think you can pass the tuple to Union
 BasicHashType = Union[int, float, complex, str, bool, bytes]
-_ResultIdTuple = Tuple[
-    Union[Type[int], Type[float], Type[complex], Type[str], Type[bool], Type[bytes]],
+_ResultIdTuple = tuple[
+    type[int] | type[float] | type[complex] | type[str] | type[bool] | type[bytes],
     ...,
 ]
 
@@ -86,11 +86,11 @@ class ResultHandle(Sequence):
     def __getitem__(self, key: int) -> BasicHashType: ...
 
     @overload
-    def __getitem__(self, key: slice) -> Tuple[BasicHashType, ...]: ...
+    def __getitem__(self, key: slice) -> tuple[BasicHashType, ...]: ...
 
     def __getitem__(
-        self, key: Union[int, slice]
-    ) -> Union[BasicHashType, Tuple[BasicHashType, ...]]:
+        self, key: int | slice
+    ) -> BasicHashType | tuple[BasicHashType, ...]:
         # weird logic required to make mypy happy, can't just
         # return self._identifiers[key]
         if isinstance(key, slice):

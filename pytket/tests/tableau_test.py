@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
+import numpy as np
+
 from pytket.circuit import Circuit, OpType, Qubit
 from pytket.pauli import Pauli, QubitPauliTensor
-from pytket.tableau import UnitaryTableau, UnitaryRevTableau, UnitaryTableauBox
+from pytket.tableau import UnitaryRevTableau, UnitaryTableau, UnitaryTableauBox
 from pytket.utils.results import compare_unitaries
-import numpy as np
 
 
 def test_tableau_box_from_gates() -> None:

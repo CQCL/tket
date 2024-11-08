@@ -12,30 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from collections import Counter
-
-from hypothesis import given, settings, strategies
 import json
-import pytest
+from collections import Counter
 from typing import Any, List
 
 import numpy as np
+import pytest
+from hypothesis import given, settings, strategies
+from simulator import TketSimBackend, TketSimShotBackend  # type: ignore
+from strategies import backendresults, outcomearrays  # type: ignore
 
-from pytket.circuit import Circuit, OpType, BasisOrder, Qubit, Bit, Node
-from pytket.predicates import CompilationUnit
-from pytket.passes import PauliSimp, CliffordSimp
-from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod
 from pytket.architecture import Architecture
+from pytket.backends.backend import Backend, ResultHandleTypeError
+from pytket.backends.backend_exceptions import CircuitNotRunError, InvalidResultType
+from pytket.backends.backendresult import BackendResult
+from pytket.backends.resulthandle import ResultHandle
+from pytket.backends.status import CircuitStatus, StatusEnum
+from pytket.circuit import BasisOrder, Bit, Circuit, Node, OpType, Qubit
+from pytket.mapping import LexiLabellingMethod, LexiRouteRoutingMethod, MappingManager
+from pytket.passes import CliffordSimp, PauliSimp
+from pytket.predicates import CompilationUnit
 from pytket.utils.outcomearray import OutcomeArray, readout_counts
 from pytket.utils.prepare import prepare_circuit
-from pytket.backends.backend import Backend, ResultHandleTypeError
-from pytket.backends.resulthandle import ResultHandle
-from pytket.backends.backendresult import BackendResult
-from pytket.backends.backend_exceptions import InvalidResultType, CircuitNotRunError
-from pytket.backends.status import CircuitStatus, StatusEnum
-
-from strategies import outcomearrays, backendresults  # type: ignore
-from simulator import TketSimShotBackend, TketSimBackend  # type: ignore
 
 
 def test_resulthandle() -> None:
@@ -135,7 +133,7 @@ def test_swaps() -> None:
 
 
 def assert_single_entry_approx_value(
-    numbers: List[Any],
+    numbers: list[Any],
     index: int,
     value: float = 1.0,
     value_abs_eps: float = 1e-14,

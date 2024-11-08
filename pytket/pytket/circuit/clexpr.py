@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from dataclasses import dataclass
+
 from pytket.circuit import (
     Bit,
     BitRegister,
@@ -25,7 +26,7 @@ from pytket.circuit import (
     OpType,
     WiredClExpr,
 )
-from pytket.circuit.logic_exp import Ops, BitWiseOp, RegWiseOp, LogicExp
+from pytket.circuit.logic_exp import BitWiseOp, LogicExp, Ops, RegWiseOp
 
 _reg_output_clops = set(
     [

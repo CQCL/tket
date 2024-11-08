@@ -11,31 +11,32 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from types import MappingProxyType
 
+from typing import Dict, Tuple
+
+import numpy as np
+
+from pytket import Circuit, OpType
+from pytket.architecture import Architecture
+from pytket.circuit import CircBox, Node, PhasePolyBox, Qubit, UnitID
 from pytket.circuit.named_types import UnitIdMap
 from pytket.mapping import (
-    MappingManager,
-    RoutingMethodCircuit,
-    LexiRouteRoutingMethod,
-    AASRouteRoutingMethod,
-    LexiLabellingMethod,
     AASLabellingMethod,
-    MultiGateReorderRoutingMethod,
+    AASRouteRoutingMethod,
     BoxDecompositionRoutingMethod,
+    LexiLabellingMethod,
+    LexiRouteRoutingMethod,
+    MappingManager,
+    MultiGateReorderRoutingMethod,
+    RoutingMethodCircuit,
 )
-from pytket.architecture import Architecture
-from pytket import Circuit, OpType
-from pytket.circuit import UnitID, Node, PhasePolyBox, Qubit, CircBox
 from pytket.placement import Placement
-from typing import Tuple, Dict
-import numpy as np
 
 
 # simple deterministic heuristic used for testing purposes
 def route_subcircuit_func(
     circuit: Circuit, architecture: Architecture
-) -> Tuple[bool, Circuit, UnitIdMap, UnitIdMap]:
+) -> tuple[bool, Circuit, UnitIdMap, UnitIdMap]:
     #     make a replacement circuit with identical unitds
     replacement_circuit = Circuit()
     for qb in circuit.qubits:
@@ -112,7 +113,7 @@ def route_subcircuit_func(
 
 def route_subcircuit_func_false(
     circuit: Circuit, architecture: Architecture
-) -> Tuple[bool, Circuit, Dict[UnitID, UnitID], Dict[UnitID, UnitID]]:
+) -> tuple[bool, Circuit, dict[UnitID, UnitID], dict[UnitID, UnitID]]:
     return (False, Circuit(), {}, {})
 
 

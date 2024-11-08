@@ -13,10 +13,6 @@
 # limitations under the License.
 
 import json
-import pytest
-from referencing import Registry
-from referencing.jsonschema import DRAFT7
-from jsonschema import Draft7Validator, ValidationError  # type: ignore
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -40,13 +36,43 @@ from pytket.passes import (
     SquashCustom,
     CustomPass,
 )
+import pytest
+from jsonschema import Draft7Validator, ValidationError  # type: ignore
+from referencing import Registry
+from referencing.jsonschema import DRAFT7
+
+import pytket.circuit_library as _library
+from pytket.circuit.named_types import ParamType
+
+
+
+
+
+
+
+
 from pytket.mapping import (
+    BoxDecompositionRoutingMethod,
     LexiLabellingMethod,
     LexiRouteRoutingMethod,
     MultiGateReorderRoutingMethod,
-    BoxDecompositionRoutingMethod,
 )
-from pytket.circuit.named_types import ParamType
+from pytket.passes import (
+    AASRouting,
+    BasePass,
+    CommuteThroughMultis,
+    CustomPass,
+    DefaultMappingPass,
+    FullMappingPass,
+    RebaseCustom,
+    RemoveRedundancies,
+    RepeatUntilSatisfiedPass,
+    RepeatWithMetricPass,
+    SequencePass,
+    SquashCustom,
+)
+from pytket.placement import GraphPlacement, Placement
+from pytket.predicates import Predicate
 
 
 def standard_pass_dict(content: Dict[str, Any]) -> Dict[str, Any]:
@@ -588,9 +614,8 @@ def check_arc_dict(arc: Architecture, d: dict) -> bool:
 
     if d["links"] != links:
         return False
-    else:
-        nodes = [Node(n[0], n[1]) for n in d["nodes"]]
-        return set(nodes) == set(arc.nodes)
+    nodes = [Node(n[0], n[1]) for n in d["nodes"]]
+    return set(nodes) == set(arc.nodes)
 
 
 def test_pass_deserialisation_only() -> None:
@@ -697,7 +722,7 @@ def test_pass_deserialisation_only() -> None:
     np_pass = dm_pass_0.get_sequence()[2]
     d_pass = dm_pass.get_sequence()[1]
     assert d_pass.to_dict()["StandardPass"]["name"] == "DelayMeasures"
-    assert not d_pass.to_dict()["StandardPass"]["allow_partial"]
+    assert d_pass.to_dict()["StandardPass"]["allow_partial"] == False  # noqa: E712
     assert p_pass.to_dict()["StandardPass"]["name"] == "PlacementPass"
     assert np_pass.to_dict()["StandardPass"]["name"] == "NaivePlacementPass"
     assert r_pass.to_dict()["StandardPass"]["name"] == "RoutingPass"
