@@ -742,7 +742,6 @@ Circuit greedy_pauli_graph_synthesis(
   if (max_tqe_candidates == 0) {
     throw GreedyPauliSimpError("max_tqe_candidates must be greater than 0.");
   }
-
   Circuit circ_flat(circ);
   unsigned n_qubits = circ_flat.n_qubits();
   unsigned n_bits = circ_flat.n_bits();
@@ -752,7 +751,7 @@ Circuit greedy_pauli_graph_synthesis(
   if (name != std::nullopt) {
     new_circ.set_name(name.value());
   }
-  unit_map_t unit_map = circ_flat.flatten_registers();
+  unit_map_t unit_map = circ_flat.flatten_registers(false);
   unit_map_t rev_unit_map;
   for (const auto& pair : unit_map) {
     rev_unit_map.insert({pair.second, pair.first});

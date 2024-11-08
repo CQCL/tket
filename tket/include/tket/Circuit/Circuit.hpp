@@ -749,9 +749,12 @@ class Circuit {
   /**
    * Convert all quantum and classical bits to use default registers.
    *
+   * @param relabel_classical_expression Whether expressions in ClassicalExpBox
+   *  have their expr updated to match the input wires
+   *
    * @return mapping from old to new unit IDs
    */
-  unit_map_t flatten_registers();
+  unit_map_t flatten_registers(bool relabel_classical_expression = true);
 
   //_________________________________________________
 
@@ -1044,7 +1047,8 @@ class Circuit {
    * @return true iff circuit was modified
    */
   template <typename UnitA, typename UnitB>
-  bool rename_units(const std::map<UnitA, UnitB> &qm);
+  bool rename_units(
+      const std::map<UnitA, UnitB> &qm, bool relabel_classicalexpbox = true);
 
   /** Automatically rewire holes when removing vertices from the circuit? */
   enum class GraphRewiring { Yes, No };
@@ -1718,7 +1722,8 @@ JSON_DECL(Circuit)
 /** Templated method definitions */
 
 template <typename UnitA, typename UnitB>
-bool Circuit::rename_units(const std::map<UnitA, UnitB> &qm) {
+bool Circuit::rename_units(
+    const std::map<UnitA, UnitB> &qm, bool relabel_classicalexpbox) {
   // Can only work for Unit classes
   static_assert(std::is_base_of<UnitID, UnitA>::value);
   static_assert(std::is_base_of<UnitID, UnitB>::value);
@@ -1767,21 +1772,18 @@ bool Circuit::rename_units(const std::map<UnitA, UnitB> &qm) {
           "Unit already exists in circuit: " + pair.first.repr());
     TKET_ASSERT(modified);
   }
-
   // For every ClassicalExpBox, update its logic expressions
-  if (!bm.empty()) {
+  if (!bm.empty() && relabel_classicalexpbox) {
     BGL_FORALL_VERTICES(v, dag, DAG) {
       Op_ptr op = get_Op_ptr_from_Vertex(v);
       if (op->get_type() == OpType::ClassicalExpBox) {
         const ClassicalExpBoxBase &cbox =
             static_cast<const ClassicalExpBoxBase &>(*op);
         // rename_units is marked as const to get around the Op_ptr
-        // cast, but it can still mutate a python object
         modified |= cbox.rename_units(bm);
       }
     }
   }
-
   return modified;
 }
 
