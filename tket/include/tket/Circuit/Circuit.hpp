@@ -1118,7 +1118,8 @@ class Circuit {
    */
   std::map<OpType, unsigned> op_counts() const;
 
-  unsigned count_gates(const OpType &op_type) const;
+  unsigned count_gates(
+      const OpType &op_type, const bool include_conditional = false) const;
   VertexSet get_gates_of_type(const OpType &op_type) const;
 
   /**

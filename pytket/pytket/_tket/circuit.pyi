@@ -2235,7 +2235,7 @@ class Circuit:
         """
         Returns the number of vertices in the dag with two quantum edges.Ignores Input, Create, Output, Discard, Reset, Measure and Barrier vertices.
         """
-    def n_gates_of_type(self, type: OpType) -> int:
+    def n_gates_of_type(self, type: OpType, include_conditional: bool = False) -> int:
         """
         Returns the number of vertices in the dag of a given operation type.
         
@@ -2246,6 +2246,9 @@ class Circuit:
         2
         
         :param type: The operation type to search for
+        
+        :param include_conditional: if set to true, conditional gates will be counted, too
+        
         :return: the number of operations matching `type`
         """
     def n_nqb_gates(self, size: int) -> int:
