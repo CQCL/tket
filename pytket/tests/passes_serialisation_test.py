@@ -16,41 +16,15 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List
 
-from pytket.circuit import Node, Circuit, Qubit, OpType
-from pytket.predicates import Predicate
-from pytket.architecture import Architecture
-from pytket.placement import Placement, GraphPlacement
-import pytket.circuit_library as _library
-
-from pytket.passes import (
-    BasePass,
-    SequencePass,
-    RemoveRedundancies,
-    RepeatUntilSatisfiedPass,
-    CommuteThroughMultis,
-    RepeatWithMetricPass,
-    RebaseCustom,
-    FullMappingPass,
-    DefaultMappingPass,
-    AASRouting,
-    SquashCustom,
-    CustomPass,
-)
 import pytest
 from jsonschema import Draft7Validator, ValidationError  # type: ignore
 from referencing import Registry
 from referencing.jsonschema import DRAFT7
 
 import pytket.circuit_library as _library
+from pytket.architecture import Architecture
+from pytket.circuit import Circuit, Node, OpType, Qubit
 from pytket.circuit.named_types import ParamType
-
-
-
-
-
-
-
-
 from pytket.mapping import (
     BoxDecompositionRoutingMethod,
     LexiLabellingMethod,
