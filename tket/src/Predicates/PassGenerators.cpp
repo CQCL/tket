@@ -354,7 +354,8 @@ PassPtr gen_clifford_push_through_pass() {
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
-PassPtr gen_flatten_relabel_registers_pass(const std::string& label, bool relabel_classical_expressions) {
+PassPtr gen_flatten_relabel_registers_pass(
+    const std::string& label, bool relabel_classical_expressions) {
   Transform t =
       Transform([=](Circuit& circuit, std::shared_ptr<unit_bimaps_t> maps) {
         unsigned n_qubits = circuit.n_qubits();

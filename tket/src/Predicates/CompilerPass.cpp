@@ -469,7 +469,8 @@ PassPtr deserialise(
       pp = gen_euler_pass(q, p, s);
     } else if (passname == "FlattenRelabelRegistersPass") {
       pp = gen_flatten_relabel_registers_pass(
-          content.at("label").get<std::string>(), content.at("relabel_classical_expressions").get<bool>());
+          content.at("label").get<std::string>(),
+          content.at("relabel_classical_expressions").get<bool>());
     } else if (passname == "RoutingPass") {
       Architecture arc = content.at("architecture").get<Architecture>();
       std::vector<RoutingMethodPtr> con = content.at("routing_config");
