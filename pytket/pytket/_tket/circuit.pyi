@@ -2104,9 +2104,11 @@ class Circuit:
         :param types: the set of operation types of interest
         :return: the circuit depth with respect to operations matching an element of `types`
         """
-    def flatten_registers(self) -> dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]:
+    def flatten_registers(self, relabel_classical_expression: bool = True) -> dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]:
         """
         Combines all qubits into a single register namespace with the default name, and likewise for bits
+        
+        :param relabel_classical_expression: Determines whether python classical expressions held in `ClassicalExpBox` have their expression relabelled to match relabelled Bit.
         """
     def free_symbols(self) -> set[sympy.Symbol]:
         """

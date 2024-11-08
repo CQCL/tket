@@ -752,9 +752,12 @@ PYBIND11_MODULE(passes, m) {
       "FlattenRelabelRegistersPass", &gen_flatten_relabel_registers_pass,
       "Removes empty Quantum wires from the Circuit and relabels all Qubit to "
       "a register from passed name. \n\n:param label: Name to relabel "
-      "remaining Qubit to, default 'q'.\n:return: A pass that removes empty "
+      "remaining Qubit to, default 'q'.\n:param relabel_classical_expressions: "
+      "Whether to relabel arguments of expressions held in `ClassicalExpBox`. "
+      "\n:return: A pass that removes empty "
       "wires and relabels.",
-      py::arg("label") = q_default_reg());
+      py::arg("label") = q_default_reg(),
+      py::arg("relabel_classical_expressions") = true);
 
   m.def(
       "RenameQubitsPass", &gen_rename_qubits_pass,

@@ -13,6 +13,8 @@ Features:
 * Add `custom_deserialisation` argument to `BasePass` and `SequencePass` 
   `from_dict` method to support construction of `CustomPass` from json.
 * Add `timeout` argument to `GreedyPauliSimp`.
+* Add option to not relabel `ClassicalExpBox` when calling `rename_units`
+  and `flatten_registers`
 
 Fixes:
 

@@ -648,9 +648,10 @@
           },
           "then": {
             "required": [
-              "label"
+              "label",
+              "relabel_classical_registers"
             ],
-            "maxProperties": 2
+            "maxProperties": 3
           }
         },
         {

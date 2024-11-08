@@ -110,7 +110,7 @@ PassPtr gen_clifford_push_through_pass();
  * Qubits removed from the Circuit are preserved in the bimap, but not updated
  * to a new labelling.
  */
-PassPtr gen_flatten_relabel_registers_pass(const std::string& label);
+PassPtr gen_flatten_relabel_registers_pass(const std::string& label, bool relabel_classical_expressions = true);
 /**
  * Pass to rename some or all qubits according to the given map.
  *
