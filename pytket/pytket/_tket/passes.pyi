@@ -290,7 +290,7 @@ def CliffordSimp(allow_swaps: bool = True) -> BasePass:
     """
 def CnXPairwiseDecomposition() -> BasePass:
     """
-    Decompose CnX gates to 2-qubit gates and single qubit gates. For every two CnX gates, reorder their control qubits to improve the chance of gate cancellation
+    Decompose CnX gates to 2-qubit gates `fand single qubit gates. For every two CnX gates, reorder their control qubits to improve the chance of gate cancellation
     """
 def CommuteThroughMultis() -> BasePass:
     """
@@ -445,7 +445,7 @@ def GlobalisePhasedX(squash: bool = True) -> BasePass:
     
     It is not recommended to use this pass with symbolic expressions, as in certain cases a blow-up in symbolic expression sizes may occur.
     """
-def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3, max_lookahead: int = 500, max_tqe_candidates: int = 500, seed: int = 0, allow_zzphase: bool = False, timeout: int = 100) -> BasePass:
+def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3, max_lookahead: int = 500, max_tqe_candidates: int = 500, seed: int = 0, allow_zzphase: bool = False, timeout: int = 100, only_reduce: bool = False) -> BasePass:
     """
     Construct a pass that converts a circuit into a graph of Pauli gadgets to account for commutation and phase folding, and resynthesises them using a greedy algorithm adapted from arxiv.org/abs/2103.08602. The method for synthesising the final Clifford operator is adapted from arxiv.org/abs/2305.10966.
     
@@ -456,6 +456,7 @@ def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3, max_l
     :param seed:  Unsigned integer seed used for sampling candidates and tie breaking. Default to 0.
     :param allow_zzphase: If set to True, allows the algorithm to implement 2-qubit rotations using ZZPhase gates when deemed optimal. Defaults to False.
     :param timeout: Sets maximum out of time spent finding solution.
+    :param only_reduce: Only returns modified circuit if it has fewer two-qubit gates.
     :return: a pass to perform the simplification
     """
 def GuidedPauliSimp(strat: pytket._tket.transform.PauliSynthStrat = pytket._tket.transform.PauliSynthStrat.Sets, cx_config: pytket._tket.circuit.CXConfigType = pytket._tket.circuit.CXConfigType.Snake) -> BasePass:
