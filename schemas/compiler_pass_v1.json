@@ -373,6 +373,10 @@
         "allow_zzphase": {
           "type": "boolean",
           "definition": "parameter controlling the use of ZZPhase gates in \"GreedyPauliSimp\""
+        },
+        "timeout": {
+          "type": "number",
+          "definition": "parameter controlling the maximum runtime of \"GreedyPauliSimp\""
         }
       },
       "required": [
@@ -644,9 +648,10 @@
           },
           "then": {
             "required": [
-              "label"
+              "label",
+              "relabel_classical_registers"
             ],
-            "maxProperties": 2
+            "maxProperties": 3
           }
         },
         {
@@ -903,9 +908,10 @@
               "max_lookahead",
               "max_tqe_candidates",
               "seed",
-              "allow_zzphase"
+              "allow_zzphase",
+              "timeout"
             ],
-            "maxProperties": 7
+            "maxProperties": 8
           }
         },
         {
