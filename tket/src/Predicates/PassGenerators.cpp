@@ -1019,20 +1019,23 @@ PassPtr gen_greedy_pauli_simp(
     double discount_rate, double depth_weight, unsigned max_lookahead,
     unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase,
     unsigned timeout, bool only_reduce) {
-  Transform t = Transform([discount_rate, depth_weight, max_lookahead,
-                           max_tqe_candidates, seed, allow_zzphase, timeout,
-                           only_reduce](Circuit& circ) {
-    Transform gpo = Transforms::greedy_pauli_optimisation(
-        discount_rate, depth_weight, max_lookahead, max_tqe_candidates, seed,
-        allow_zzphase, timeout);
-    if (only_reduce) {
-      Circuit gpo_circ = circ;
-      return gpo.apply(gpo_circ) &&
-             gpo_circ.count_n_qubit_gates(2) < circ.count_n_qubit_gates(2) &&
-             (circ = gpo_circ, true);
-    }
-    return gpo.apply(circ);
-  });
+  Transform t =
+      Transform([discount_rate, depth_weight, max_lookahead, max_tqe_candidates,
+                 seed, allow_zzphase, timeout, only_reduce](Circuit& circ) {
+        Transform gpo = Transforms::greedy_pauli_optimisation(
+            discount_rate, depth_weight, max_lookahead, max_tqe_candidates,
+            seed, allow_zzphase, timeout);
+        if (only_reduce) {
+          Circuit gpo_circ = circ;
+          if (gpo.apply(gpo_circ) &&
+              gpo_circ.count_n_qubit_gates(2) < circ.count_n_qubit_gates(2)) {
+            circ = gpo_circ;
+            return true;
+          }
+          return false;
+        }
+        return gpo.apply(circ);
+      });
   OpTypeSet ins = {
       OpType::Z,
       OpType::X,
