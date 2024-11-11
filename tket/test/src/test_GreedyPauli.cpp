@@ -619,9 +619,38 @@ SCENARIO("Complete synthesis") {
         PauliExpBox(
             SymPauliTensor({Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X}, 0.125)),
         {1, 3, 5, 0});
+
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::X},
+            0.125)),
+        {1, 3, 5, 0, 2, 4});
+
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X},
+            0.125)),
+        {0, 1, 2, 3, 4, 5});
+
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X},
+            0.125)),
+        {5, 2, 4, 1, 3, 0});
+
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::X},
+            0.125)),
+        {0, 5, 1, 4, 3, 2});
+
     Circuit d(circ);
-    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
-                .apply(d));
+    REQUIRE(
+        !Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true, 0)
+             .apply(d));
+    REQUIRE(
+        Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true, 10)
+            .apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
   }
   GIVEN("Select TQE over ZZPhase") {
@@ -709,6 +738,7 @@ SCENARIO("Test GreedyPauliSimp for individual gates") {
     REQUIRE(test_unitary_comparison(circ, d, true));
   }
 }
+
 SCENARIO("Test GreedyPauliSimp pass construction") {
   // test pass construction
   GIVEN("A circuit") {

@@ -322,7 +322,12 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
       .def(
           "flatten_registers", &Circuit::flatten_registers,
           "Combines all qubits into a single register namespace with "
-          "the default name, and likewise for bits")
+          "the default name, and likewise for bits"
+          "\n\n:param relabel_classical_expression: Determines whether python "
+          "classical expressions held in `ClassicalExpBox` have their "
+          "expression "
+          "relabelled to match relabelled Bit.",
+          py::arg("relabel_classical_expression") = true)
 
       // Circuit composition:
       .def(

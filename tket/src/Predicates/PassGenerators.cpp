@@ -354,7 +354,8 @@ PassPtr gen_clifford_push_through_pass() {
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
-PassPtr gen_flatten_relabel_registers_pass(const std::string& label) {
+PassPtr gen_flatten_relabel_registers_pass(
+    const std::string& label, bool relabel_classical_expressions) {
   Transform t =
       Transform([=](Circuit& circuit, std::shared_ptr<unit_bimaps_t> maps) {
         unsigned n_qubits = circuit.n_qubits();
@@ -366,7 +367,7 @@ PassPtr gen_flatten_relabel_registers_pass(const std::string& label) {
           relabelling_map.insert({all_qubits[i], Qubit(label, i)});
         }
 
-        circuit.rename_units(relabelling_map);
+        circuit.rename_units(relabelling_map, relabel_classical_expressions);
         changed |= update_maps(maps, relabelling_map, relabelling_map);
         return changed;
       });
@@ -376,6 +377,7 @@ PassPtr gen_flatten_relabel_registers_pass(const std::string& label) {
   nlohmann::json j;
   j["name"] = "FlattenRelabelRegistersPass";
   j["label"] = label;
+  j["relabel_classical_expressions"] = relabel_classical_expressions;
   return std::make_shared<StandardPass>(precons, t, postcons, j);
 }
 
@@ -1015,10 +1017,11 @@ PassPtr gen_synthesise_pauli_graph(
 
 PassPtr gen_greedy_pauli_simp(
     double discount_rate, double depth_weight, unsigned max_lookahead,
-    unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase) {
+    unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase,
+    unsigned timeout) {
   Transform t = Transforms::greedy_pauli_optimisation(
       discount_rate, depth_weight, max_lookahead, max_tqe_candidates, seed,
-      allow_zzphase);
+      allow_zzphase, timeout);
   OpTypeSet ins = {
       OpType::Z,
       OpType::X,
@@ -1067,6 +1070,7 @@ PassPtr gen_greedy_pauli_simp(
   j["max_tqe_candidates"] = max_tqe_candidates;
   j["seed"] = seed;
   j["allow_zzphase"] = allow_zzphase;
+  j["timeout"] = timeout;
 
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }

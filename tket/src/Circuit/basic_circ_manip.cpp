@@ -422,7 +422,7 @@ void Circuit::remove_edge(const Edge& edge) {
   boost::remove_edge(edge, this->dag);
 }
 
-unit_map_t Circuit::flatten_registers() {
+unit_map_t Circuit::flatten_registers(bool relabel_classical_expression) {
   unit_map_t rename_map;
   unsigned q_index = 0;
   unsigned c_index = 0;
@@ -434,7 +434,7 @@ unit_map_t Circuit::flatten_registers() {
     }
   }
   try {
-    rename_units(rename_map);
+    rename_units(rename_map, relabel_classical_expression);
   } catch (const std::exception& e) {
     std::stringstream ss;
     ss << "Unable to flatten registers: " << e.what();
