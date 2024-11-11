@@ -1019,7 +1019,9 @@ PassPtr gen_greedy_pauli_simp(
     double discount_rate, double depth_weight, unsigned max_lookahead,
     unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase,
     unsigned timeout, bool only_reduce) {
-  Transform t = Transform([&](Circuit& circ) {
+  Transform t = Transform([&discount_rate, &depth_weight, &max_lookahead,
+                           &max_tqe_candidates, &seed, &allow_zzphase, &timeout,
+                           &only_reduce](Circuit& circ) {
     Transform gpo = Transforms::greedy_pauli_optimisation(
         discount_rate, depth_weight, max_lookahead, max_tqe_candidates, seed,
         allow_zzphase, timeout);
