@@ -847,22 +847,18 @@ Transform multi_thread_greedy_pauli_optimisation(
     auto min_circuit = std::min_element(
         circuits.begin(), circuits.end(),
         [](const Circuit& a, const Circuit& b) {
-          unsigned a_2q_gates = a.count_n_qubit_gates(2);
-          unsigned b_2q_gates = b.count_n_qubit_gates(2);
-          unsigned a_gates = a.n_gates();
-          unsigned b_gates = b.n_gates();
-          unsigned a_depth = a.depth();
-          unsigned b_depth = b.depth();
-          return std::tie(a_2q_gates, a_gates, a_depth) <
-                 std::tie(b_2q_gates, b_gates, b_depth);
+          return std::make_tuple(
+                     a.count_n_qubit_gates(2), a.n_gates(), a.depth()) <
+                 std::make_tuple(
+                     b.count_n_qubit_gates(2), b.n_gates(), b.depth());
         });
 
     // We then only update `circ` only if a smaller circuit is found
-    unsigned n_min_2qb_gates = min_circuit->count_n_qubit_gates(2);
-    unsigned min_gates = min_circuit->n_gates();
-    unsigned min_depth = min_circuit->depth();
-    if (std::tie(n_min_2qb_gates, min_gates, min_depth) <
-        std::tie(n_original_2qb_gates, n_original_gates, original_depth)) {
+    if (std::make_tuple(
+            min_circuit->count_n_qubit_gates(2), min_circuit->n_gates(),
+            min_circuit->depth()) <
+        std::make_tuple(
+            n_original_2qb_gates, n_original_gates, original_depth)) {
       circ = *min_circuit;
       return true;
     }
