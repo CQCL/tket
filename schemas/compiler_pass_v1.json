@@ -166,7 +166,8 @@
             "CnXPairwiseDecomposition",
             "RemoveImplicitQubitPermutation",
             "RoundAngles",
-            "GreedyPauliSimp"
+            "GreedyPauliSimp",
+            "MultiThreadGreedyPauliSimp"
           ],
           "description": "The name of the compiler pass. Matches the name of the pytket method used to generate it. List all the passes as enum."
         },
