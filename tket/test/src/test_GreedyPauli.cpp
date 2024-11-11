@@ -756,12 +756,13 @@ SCENARIO("Test GreedyPauliSimp pass construction") {
     // c.add_op<unsigned>(OpType::CnX, {2, 3, 4, 5});
     // c.add_op<unsigned>(OpType::CnX, {6, 7, 8, 9});
     Circuit c(4);
-    c.add_op<unsigned>(OpType::CX, {0,1});
-    c.add_op<unsigned>(OpType::CX, {1,2});
-    c.add_op<unsigned>(OpType::CX, {2,3});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::CX, {1, 2});
+    c.add_op<unsigned>(OpType::CX, {2, 3});
     CompilationUnit cu(c);
     // REQUIRE(DecomposeArbitrarilyControlledGates()->apply(cu));
-    REQUIRE(!gen_greedy_pauli_simp(0.3, 0.5, 500, 500, 0, false, 100, true).apply->(cu));
+    REQUIRE(!gen_greedy_pauli_simp(0.3, 0.5, 500, 500, 0, false, 100, true)
+                 .apply->(cu));
   }
 }
 }  // namespace test_GreedyPauliSimp
