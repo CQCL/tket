@@ -649,9 +649,9 @@ SCENARIO("Complete synthesis") {
         {0, 5, 1, 4, 3, 2});
 
     Circuit d(circ);
-    REQUIRE(!Transforms::greedy_pauli_optimisation(
-                 0.7, 0.3, 500, 500, 0, true, timeout = 0)
-                 .apply(d));
+    REQUIRE(
+        !Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true, 0)
+             .apply(d));
     REQUIRE(
         Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true, 10)
             .apply(d));
