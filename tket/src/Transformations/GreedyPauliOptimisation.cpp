@@ -813,11 +813,10 @@ Transform multi_thread_greedy_pauli_optimisation(
         std::min(threads, std::thread::hardware_concurrency());
     // We set up max_threads number of parallel jobs
     for (unsigned i = 0; i < max_threads; i++) {
-      unsigned seed_i = seed_gen();
       std::future<Circuit> future = std::async(
           std::launch::async, GreedyPauliSimp::greedy_pauli_graph_synthesis,
           circ, discount_rate, depth_weight, max_lookahead, max_tqe_candidates,
-          seed_i, allow_zzphase);
+          seed_gen(), allow_zzphase);
       TKET_ASSERT(all_threads.size() < max_threads);
       all_threads.push(std::move(future));
     }
