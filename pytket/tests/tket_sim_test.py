@@ -12,12 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
-from pytket.circuit import Circuit, CircBox, QControlBox, Op, OpType
-from enum import Enum
-import numpy as np
 import math
+from enum import Enum
 from typing import Any, Tuple
+
+import numpy as np
+import pytest
+
+from pytket.circuit import CircBox, Circuit, Op, OpType, QControlBox
 
 # Note: of course, one could write many more (circuit -> unitary) tests.
 # But the functions are just wrappers around Simulation functions in tket,
@@ -61,7 +63,7 @@ def append_gates_sequence_1(circ: Circuit) -> None:
     circ.Rz(0.15, 0)
 
 
-def get_circuit_triple() -> Tuple[Circuit, Circuit, Circuit]:
+def get_circuit_triple() -> tuple[Circuit, Circuit, Circuit]:
     """Returns 3 circuits, where the final circuit is the first
     followed by the second."""
     c0 = Circuit(2)
@@ -104,11 +106,11 @@ def check_that_premultiplication_fails(
     to see what happens in normal Python code where we pass in objects
     which are implicitly converted to NumPy objects (or not)."""
     with pytest.raises(ValueError) as e1:
-        product = unitary @ matr
+        _ = unitary @ matr
     check_matmul_failure_exception_string(str(e1.value))
 
     with pytest.raises(RuntimeError) as e2:
-        product = circ.get_unitary_times_other(matr)
+        _ = circ.get_unitary_times_other(matr)
     message = str(e2)
     assert "M has wrong number of" in message
 

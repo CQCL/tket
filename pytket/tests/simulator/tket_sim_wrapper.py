@@ -13,7 +13,8 @@
 # limitations under the License.
 
 import numpy as np
-from pytket.circuit import Circuit, BasisOrder
+
+from pytket.circuit import BasisOrder, Circuit
 from pytket.utils.results import (
     permute_basis_indexing,
     permute_qubits_in_statevector,
@@ -45,5 +46,4 @@ class TketSimWrapper:
             # tketsim always uses BasisOrder.ilo, so we must convert.
             rev_perm = tuple(range(self._n_qubits - 1, -1, -1))
             statevector = permute_basis_indexing(statevector, rev_perm)
-        statevector = permute_qubits_in_statevector(statevector, self._qmap_perm)
-        return statevector
+        return permute_qubits_in_statevector(statevector, self._qmap_perm)

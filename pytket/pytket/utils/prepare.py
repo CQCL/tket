@@ -12,15 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Optional, Tuple
 from pytket.circuit import Circuit
 from pytket.passes import ContextSimp
 from pytket.transform import separate_classical
 
 
 def prepare_circuit(
-    circ: Circuit, allow_classical: bool = True, xcirc: Optional[Circuit] = None
-) -> Tuple[Circuit, Circuit]:
+    circ: Circuit, allow_classical: bool = True, xcirc: Circuit | None = None
+) -> tuple[Circuit, Circuit]:
     """
     Prepare a circuit for processing by a backend device.
 
