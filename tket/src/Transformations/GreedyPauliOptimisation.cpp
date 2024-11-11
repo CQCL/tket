@@ -802,24 +802,24 @@ Transform multi_thread_greedy_pauli_optimisation(
     unsigned threads, double discount_rate, double depth_weight,
     unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed,
     bool allow_zzphase, unsigned timeout) {
-  return Transform([discount_rate, depth_weight, max_lookahead,
+  return Transform([threads, discount_rate, depth_weight, max_lookahead,
                     max_tqe_candidates, seed, allow_zzphase,
                     timeout](Circuit& circ) {
     // We generate more seeds from the input seed
     std::mt19937 seed_gen(seed);
 
-    std::queue<std::future<bool>> all_threads;
+    std::queue<std::future<Circuit>> all_threads;
     unsigned max_threads =
         std::min(threads, std::thread::hardware_concurrency());
     // We set up max_threads number of parallel jobs
     for (unsigned i = 0; i < max_threads; i++) {
-      unsigned seed_i = seed_gen(i);
+      unsigned seed_i = seed_gen();
       std::future<Circuit> future = std::async(
           std::launch::async, GreedyPauliSimp::greedy_pauli_graph_synthesis,
           circ, discount_rate, depth_weight, max_lookahead, max_tqe_candidates,
           seed_i, allow_zzphase);
-      TKET_ASSERT(task_queue.size() < max_threads);
-      task_queue.push(std::move(future));
+      TKET_ASSERT(all_threads.size() < max_threads);
+      all_threads.push(std::move(future));
     }
     // We retrieve each job, after a maximum of "timeout" seconds
     std::vector<Circuit> circuits;
@@ -827,7 +827,7 @@ Transform multi_thread_greedy_pauli_optimisation(
       auto& thread = all_threads.front();
       if (thread.wait_for(std::chrono::seconds(timeout)) ==
           std::future_status::ready) {
-        Circuit c = future.get();
+        Circuit c = thread.get();
         c.decompose_boxes_recursively();
         circuits.push_back(c);
       }
@@ -840,22 +840,29 @@ Transform multi_thread_greedy_pauli_optimisation(
     // We first find the circuit with smallest number of 2-qubit gates, gates or
     // depth
     unsigned n_original_2qb_gates = circ.count_n_qubit_gates(2);
-    unsigned n_original_gates = circ.n_gates;
-    unsigned original_depth = circ.depth;
-    // Find the circuit with the minimum number of 2-qubit gates in `circuits`
+    unsigned n_original_gates = circ.n_gates();
+    unsigned original_depth = circ.depth();
+    // Find the circuit with the minimum number of 2-qubit gates/gates/depth in
+    // circuits
     auto min_circuit = std::min_element(
         circuits.begin(), circuits.end(),
         [](const Circuit& a, const Circuit& b) {
-          return std::tie(a.count_n_qubit_gates(2), a.n_gates, a.depth) <
-                 std::tie(b.count_n_qubit_gates(2), b.n_gates, b.depth);
+          unsigned a_2q_gates = a.count_n_qubit_gates(2);
+          unsigned b_2q_gates = b.count_n_qubit_gates(2);
+          unsigned a_gates = a.n_gates();
+          unsigned b_gates = b.n_gates();
+          unsigned a_depth = a.depth();
+          unsigned b_depth = b.depth();
+          return std::tie(a_2q_gates, a_gates, a_depth) <
+                 std::tie(b_2q_gates, b_gates, b_depth);
         });
 
-    // We then only update `circ` only if a smaller circuit is found, returning
-    // true
-    if (std::tie(
-            min_circuit.count_n_qubit_gates(2), min_circuit.n_gates,
-            min_circuit.depth) <
-        std::tie(n_original_2qb_gates n_original_gates, original_depth)) {
+    // We then only update `circ` only if a smaller circuit is found
+    unsigned n_min_2qb_gates = min_circuit->count_n_qubit_gates(2);
+    unsigned min_gates = min_circuit->n_gates();
+    unsigned min_depth = min_circuit->depth();
+    if (std::tie(n_min_2qb_gates, min_gates, min_depth) <
+        std::tie(n_original_2qb_gates, n_original_gates, original_depth)) {
       circ = *min_circuit;
       return true;
     }

@@ -1146,7 +1146,6 @@ PassPtr gen_multi_thread_greedy_pauli_simp(
   j["seed"] = seed;
   j["allow_zzphase"] = allow_zzphase;
   j["timeout"] = timeout;
-  j["only_reduce"] = only_reduce;
   j["threads"] = threads;
 
   return std::make_shared<StandardPass>(precons, t, postcon, j);
