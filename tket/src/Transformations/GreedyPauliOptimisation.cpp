@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <chrono>
 #include <future>
+#include <queue>
 #include <random>
 
 #include "tket/Circuit/PauliExpBoxes.hpp"
@@ -813,6 +814,8 @@ Transform multi_thread_greedy_pauli_optimisation(
         std::min(threads, std::thread::hardware_concurrency());
     // We set up max_threads number of parallel jobs
     for (unsigned i = 0; i < max_threads; i++) {
+      unsigned s = seed_gen();
+      std::cout << "Seed " << i << " is " << s << std::endl;
       std::future<Circuit> future = std::async(
           std::launch::async, GreedyPauliSimp::greedy_pauli_graph_synthesis,
           circ, discount_rate, depth_weight, max_lookahead, max_tqe_candidates,
@@ -821,6 +824,8 @@ Transform multi_thread_greedy_pauli_optimisation(
       all_threads.push(std::move(future));
     }
     // We retrieve each job, after a maximum of "timeout" seconds
+    // Note that if the job doesn't complete in time, then it isn't added
+    // to "circuits"
     std::vector<Circuit> circuits;
     while (!all_threads.empty()) {
       auto& thread = all_threads.front();
@@ -833,6 +838,10 @@ Transform multi_thread_greedy_pauli_optimisation(
       all_threads.pop();
     }
 
+    std::cout << "Oh shit dawg we found " << circuits.size()
+              << " possible circuits, having asked for " << threads
+              << " number of threads and actually running " << max_threads
+              << " number of jobs." << std::endl;
     // We now return the smallest circuit
     // We first return false if no circuits were found within the given timeout
     if (circuits.empty()) return false;
@@ -846,6 +855,9 @@ Transform multi_thread_greedy_pauli_optimisation(
     auto min_circuit = std::min_element(
         circuits.begin(), circuits.end(),
         [](const Circuit& a, const Circuit& b) {
+          std::cout << a.count_n_qubit_gates(2) << " " << a.n_gates() << " "
+                    << a.depth() << " | " << b.count_n_qubit_gates(2) << " "
+                    << b.n_gates() << " " << b.depth() << std::endl;
           return std::make_tuple(
                      a.count_n_qubit_gates(2), a.n_gates(), a.depth()) <
                  std::make_tuple(
