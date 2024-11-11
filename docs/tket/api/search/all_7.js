@@ -62,7 +62,7 @@ var searchData=
   ['gen_5ffull_5fmapping_5fpass_59',['gen_full_mapping_pass',['../namespacetket.html#a2cb12edb9b7780d943ba4e07421348ea',1,'tket']]],
   ['gen_5ffull_5fmapping_5fpass_5fphase_5fpoly_60',['gen_full_mapping_pass_phase_poly',['../namespacetket.html#a16df3bfe4c652b1a36b75d4748bd582b',1,'tket']]],
   ['gen_5fgraycode_61',['gen_graycode',['../namespacetket.html#aaf5bed29c38ac3decc55325da71ec018',1,'tket']]],
-  ['gen_5fgreedy_5fpauli_5fsimp_62',['gen_greedy_pauli_simp',['../namespacetket.html#a42cbd6047c9e40a87e136f314f8726fa',1,'tket']]],
+  ['gen_5fgreedy_5fpauli_5fsimp_62',['gen_greedy_pauli_simp',['../namespacetket.html#a88f673844d97ad345f280b34aa0c7f75',1,'tket']]],
   ['gen_5fnaive_5fplacement_5fpass_63',['gen_naive_placement_pass',['../namespacetket.html#a97564c88c1bc2bd8f93a720805c8cab2',1,'tket']]],
   ['gen_5foptimise_5fphase_5fgadgets_64',['gen_optimise_phase_gadgets',['../namespacetket.html#a95690781262d22df0071113af874dcb8',1,'tket']]],
   ['gen_5fpairwise_5fpauli_5fgadgets_65',['gen_pairwise_pauli_gadgets',['../namespacetket.html#a7b2b50dc805ddddaa8670c06b73db427',1,'tket']]],
