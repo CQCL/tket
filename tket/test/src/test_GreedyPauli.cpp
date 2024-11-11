@@ -622,29 +622,25 @@ SCENARIO("Complete synthesis") {
 
     circ.add_box(
         PauliExpBox(SymPauliTensor(
-            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::Z,
-             Pauli::X},
+            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::X},
             0.125)),
         {1, 3, 5, 0, 2, 4});
 
     circ.add_box(
         PauliExpBox(SymPauliTensor(
-            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::Z,
-             Pauli::X},
+            {Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X},
             0.125)),
         {0, 1, 2, 3, 4, 5});
 
     circ.add_box(
         PauliExpBox(SymPauliTensor(
-            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::Z,
-             Pauli::X},
+            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X},
             0.125)),
         {5, 2, 4, 1, 3, 0});
 
     circ.add_box(
         PauliExpBox(SymPauliTensor(
-            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::Z,
-             Pauli::X},
+            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::X},
             0.125)),
         {0, 5, 1, 4, 3, 2});
 
