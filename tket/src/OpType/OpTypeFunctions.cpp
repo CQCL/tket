@@ -254,10 +254,9 @@ bool is_oneway_type(OpType optype) {
   // or we do not yet have the dagger gate as an OpType.
   // If the gate can have an dagger, define it in the dagger() method.
   static const OpTypeSet no_defined_inverse = {
-      OpType::Input,        OpType::Output,   OpType::Measure,
-      OpType::ClInput,      OpType::ClOutput, OpType::Barrier,
-      OpType::Reset,        OpType::Collapse, OpType::CustomGate,
-      OpType::PhasePolyBox, OpType::Create,   OpType::Discard};
+      OpType::Input,        OpType::Output,  OpType::Measure, OpType::ClInput,
+      OpType::ClOutput,     OpType::Barrier, OpType::Reset,   OpType::Collapse,
+      OpType::PhasePolyBox, OpType::Create,  OpType::Discard};
   return find_in_set(optype, no_defined_inverse);
 }
 
