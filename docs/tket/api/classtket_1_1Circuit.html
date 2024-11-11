@@ -392,9 +392,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5fcb3a1be94920c17a9e864ee81ea7b0" id="r_a5fcb3a1be94920c17a9e864ee81ea7b0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#a5fcb3a1be94920c17a9e864ee81ea7b0">commutes_with_basis</a> (const <a class="el" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> &amp;vert, const std::optional&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;colour, <a class="el" href="namespacetket.html#a8e33f26891628ded8365c5855a6e832d">PortType</a> port_type, <a class="el" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> port) const</td></tr>
 <tr class="memdesc:a5fcb3a1be94920c17a9e864ee81ea7b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the operation at a vertex commutes with a Pauli at the given port.  <br /></td></tr>
 <tr class="separator:a5fcb3a1be94920c17a9e864ee81ea7b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c0f42bfdcbbadff9e57f5b8a820db8e" id="r_a7c0f42bfdcbbadff9e57f5b8a820db8e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#aa08fc2d553413efa43b68fa1269fba77">unit_map_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#a7c0f42bfdcbbadff9e57f5b8a820db8e">flatten_registers</a> ()</td></tr>
-<tr class="memdesc:a7c0f42bfdcbbadff9e57f5b8a820db8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert all quantum and classical bits to use default registers.  <br /></td></tr>
-<tr class="separator:a7c0f42bfdcbbadff9e57f5b8a820db8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ca8b26fb2fb793a55bf253f25106dc6" id="r_a9ca8b26fb2fb793a55bf253f25106dc6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#aa08fc2d553413efa43b68fa1269fba77">unit_map_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#a9ca8b26fb2fb793a55bf253f25106dc6">flatten_registers</a> (bool relabel_classical_expression=true)</td></tr>
+<tr class="memdesc:a9ca8b26fb2fb793a55bf253f25106dc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert all quantum and classical bits to use default registers.  <br /></td></tr>
+<tr class="separator:a9ca8b26fb2fb793a55bf253f25106dc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4531d1260c8556d68f4e6a5475bd5609" id="r_a4531d1260c8556d68f4e6a5475bd5609"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#a4531d1260c8556d68f4e6a5475bd5609">remove_blank_wires</a> (bool keep_blank_classical_wires=false)</td></tr>
 <tr class="memdesc:a4531d1260c8556d68f4e6a5475bd5609"><td class="mdescLeft">&#160;</td><td class="mdescRight">O(V), <code>V</code> the number of vertices removes all blank wires.  <br /></td></tr>
 <tr class="separator:a4531d1260c8556d68f4e6a5475bd5609"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -478,10 +478,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a32bad492a9936e4ec02c62e1afe65a61" id="r_a32bad492a9936e4ec02c62e1afe65a61"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#a32bad492a9936e4ec02c62e1afe65a61">qubit_discard_all</a> ()</td></tr>
 <tr class="memdesc:a32bad492a9936e4ec02c62e1afe65a61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classtket_1_1Circuit.html#aa9a68fb9f0a4deca79699ab9aac40274">qubit_discard</a> on all qubits.  <br /></td></tr>
 <tr class="separator:a32bad492a9936e4ec02c62e1afe65a61"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a045acc253d2d125da63c0af649bf3cd2" id="r_a045acc253d2d125da63c0af649bf3cd2"><td class="memTemplParams" colspan="2">template&lt;typename UnitA , typename UnitB &gt; </td></tr>
-<tr class="memitem:a045acc253d2d125da63c0af649bf3cd2"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#a045acc253d2d125da63c0af649bf3cd2">rename_units</a> (const std::map&lt; UnitA, UnitB &gt; &amp;qm)</td></tr>
-<tr class="memdesc:a045acc253d2d125da63c0af649bf3cd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rename all the units according to the given mapping.  <br /></td></tr>
-<tr class="separator:a045acc253d2d125da63c0af649bf3cd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58272040b2ad0fe1bf8e7469996d54a2" id="r_a58272040b2ad0fe1bf8e7469996d54a2"><td class="memTemplParams" colspan="2">template&lt;typename UnitA , typename UnitB &gt; </td></tr>
+<tr class="memitem:a58272040b2ad0fe1bf8e7469996d54a2"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#a58272040b2ad0fe1bf8e7469996d54a2">rename_units</a> (const std::map&lt; UnitA, UnitB &gt; &amp;qm, bool relabel_classicalexpbox=true)</td></tr>
+<tr class="memdesc:a58272040b2ad0fe1bf8e7469996d54a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rename all the units according to the given mapping.  <br /></td></tr>
+<tr class="separator:a58272040b2ad0fe1bf8e7469996d54a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87763c01e9430173ebff697ccbe2e762" id="r_a87763c01e9430173ebff697ccbe2e762"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#a87763c01e9430173ebff697ccbe2e762">remove_vertices</a> (const <a class="el" href="namespacetket.html#a2993d101c682c3d8e566a19ac49b5285">VertexSet</a> &amp;surplus, <a class="el" href="classtket_1_1Circuit.html#a9ebf9fffcbb5cf57899e25d9358a41cb">GraphRewiring</a> graph_rewiring, <a class="el" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6">VertexDeletion</a> vertex_deletion)</td></tr>
 <tr class="separator:a87763c01e9430173ebff697ccbe2e762"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c719815c1e9db20bba121d4c3aa7742" id="r_a8c719815c1e9db20bba121d4c3aa7742"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#a8c719815c1e9db20bba121d4c3aa7742">remove_vertices</a> (const <a class="el" href="namespacetket.html#a17e909abfcb8ba201b8c8d6ba7a79bb4">VertexList</a> &amp;surplus, <a class="el" href="classtket_1_1Circuit.html#a9ebf9fffcbb5cf57899e25d9358a41cb">GraphRewiring</a> graph_rewiring, <a class="el" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6">VertexDeletion</a> vertex_deletion)</td></tr>
@@ -763,7 +763,7 @@ Friends</h2></td></tr>
 <tr><td class="fieldname"><a id="afa505b94722dbd9406a8ec5c2eb1a326abafd7322c6e97d25b6299b5d6fe8920b" name="afa505b94722dbd9406a8ec5c2eb1a326abafd7322c6e97d25b6299b5d6fe8920b"></a>No&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01064">1064</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01068">1068</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -796,7 +796,7 @@ Friends</h2></td></tr>
 <tr><td class="fieldname"><a id="a80fa413c88ea82abce86d16c8f220559a49ee3087348e8d44e1feda1917443987" name="a80fa413c88ea82abce86d16c8f220559a49ee3087348e8d44e1feda1917443987"></a>Name&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01274">1274</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01278">1278</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -826,7 +826,7 @@ Friends</h2></td></tr>
 <tr><td class="fieldname"><a id="a9ebf9fffcbb5cf57899e25d9358a41cbabafd7322c6e97d25b6299b5d6fe8920b" name="a9ebf9fffcbb5cf57899e25d9358a41cbabafd7322c6e97d25b6299b5d6fe8920b"></a>No&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01050">1050</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01054">1054</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -862,7 +862,7 @@ Friends</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01056">1056</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01060">1060</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -892,7 +892,7 @@ Friends</h2></td></tr>
 <tr><td class="fieldname"><a id="ad46024dc8be3d44e15fbcdb474552cc6abafd7322c6e97d25b6299b5d6fe8920b" name="ad46024dc8be3d44e15fbcdb474552cc6abafd7322c6e97d25b6299b5d6fe8920b"></a>No&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01053">1053</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01057">1057</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -1358,7 +1358,7 @@ template&lt;class BoxT , class ID  = unsigned&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the newly-added vertex in the circuit's DAG </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00884">884</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00887">887</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -1568,7 +1568,7 @@ template&lt;class ID &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the newly-added vertex in the circuit's DAG </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00903">903</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00906">906</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -1652,7 +1652,7 @@ template&lt;class ID &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>vertex representing the measure operation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00858">858</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00861">861</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -1700,7 +1700,7 @@ template&lt;class ID &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>vertex representing the measure operation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00870">870</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00873">873</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -1788,7 +1788,7 @@ template&lt;class ID &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the newly-added vertex in the circuit's DAG </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01795">1795</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01797">1797</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -1888,7 +1888,7 @@ template&lt;class ID &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the newly-added vertex in the circuit's DAG </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00822">822</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00825">825</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -1952,7 +1952,7 @@ template&lt;class ID &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the newly-added vertex in the circuit's DAG </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00839">839</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00842">842</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -2009,7 +2009,7 @@ template&lt;class ID &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the newly-added vertex in the circuit's DAG </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00805">805</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00808">808</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -3386,8 +3386,8 @@ template&lt;class ID &gt; </div>
 
 </div>
 </div>
-<a id="a7c0f42bfdcbbadff9e57f5b8a820db8e" name="a7c0f42bfdcbbadff9e57f5b8a820db8e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7c0f42bfdcbbadff9e57f5b8a820db8e">&#9670;&#160;</a></span>flatten_registers()</h2>
+<a id="a9ca8b26fb2fb793a55bf253f25106dc6" name="a9ca8b26fb2fb793a55bf253f25106dc6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ca8b26fb2fb793a55bf253f25106dc6">&#9670;&#160;</a></span>flatten_registers()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3395,13 +3395,20 @@ template&lt;class ID &gt; </div>
         <tr>
           <td class="memname"><a class="el" href="namespacetket.html#aa08fc2d553413efa43b68fa1269fba77">unit_map_t</a> tket::Circuit::flatten_registers </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>relabel_classical_expression</em> = <code>true</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Convert all quantum and classical bits to use default registers. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">relabel_classical_expression</td><td>Whether expressions in <a class="el" href="classtket_1_1ClassicalExpBox.html" title="Holding box for abstract expressions on Bits Templated by type T which holds expression.">ClassicalExpBox</a> have their expr updated to match the input wires</td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section return"><dt>Returns</dt><dd>mapping from old to new unit IDs </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="basic__circ__manip_8cpp_source.html#l00425">425</a> of file <a class="el" href="basic__circ__manip_8cpp_source.html">basic_circ_manip.cpp</a>.</p>
@@ -3844,7 +3851,7 @@ template&lt;class ID &gt; </div>
 <p>Get the name of the circuit. </p>
 <dl class="section return"><dt>Returns</dt><dd>name </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01669">1669</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01673">1673</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -5314,7 +5321,7 @@ template&lt;class ID &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01280">1280</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01284">1284</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -5786,8 +5793,8 @@ template&lt;class ID &gt; </div>
 
 </div>
 </div>
-<a id="a045acc253d2d125da63c0af649bf3cd2" name="a045acc253d2d125da63c0af649bf3cd2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a045acc253d2d125da63c0af649bf3cd2">&#9670;&#160;</a></span>rename_units()</h2>
+<a id="a58272040b2ad0fe1bf8e7469996d54a2" name="a58272040b2ad0fe1bf8e7469996d54a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a58272040b2ad0fe1bf8e7469996d54a2">&#9670;&#160;</a></span>rename_units()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -5798,8 +5805,18 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
           <td class="memname">bool tket::Circuit::rename_units </td>
           <td>(</td>
           <td class="paramtype">const std::map&lt; UnitA, UnitB &gt; &amp;&#160;</td>
-          <td class="paramname"><em>qm</em></td><td>)</td>
+          <td class="paramname"><em>qm</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>relabel_classicalexpbox</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -5808,7 +5825,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 <p>Templated method definitions.</p>
 <dl class="section return"><dt>Returns</dt><dd>true iff circuit was modified </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01722">1722</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01726">1726</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -5975,7 +5992,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01676">1676</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01680">1680</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -6444,7 +6461,7 @@ template&lt;class BoxT &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>whether any replacements were made </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01482">1482</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01486">1486</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -7002,7 +7019,7 @@ template&lt;class BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01696">1696</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01700">1700</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -7020,7 +7037,7 @@ template&lt;class BoxT &gt; </div>
 
 <p>Representation as directed graph. </p>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01694">1694</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01698">1698</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -7036,7 +7053,7 @@ template&lt;class BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01693">1693</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01697">1697</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -7100,7 +7117,7 @@ template&lt;class BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01695">1695</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01699">1699</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>

@@ -7,7 +7,7 @@ var searchData=
   ['find_5fworst_5fnode_4',['find_worst_node',['../classtket_1_1Architecture.html#a5811b7123331042d6675240a3cb364fa',1,'tket::Architecture']]],
   ['finished_5',['finished',['../classtket_1_1Circuit_1_1SliceIterator.html#ae77eb37d19aeee24be84b45d0dca99ab',1,'tket::Circuit::SliceIterator']]],
   ['first_5fsupport_6',['first_support',['../classtket_1_1Transforms_1_1GreedyPauliSimp_1_1SingleNode.html#ab24c6b888c4af14a8914e887499402ea',1,'tket::Transforms::GreedyPauliSimp::SingleNode::first_support()'],['../classtket_1_1Transforms_1_1GreedyPauliSimp_1_1ACPairNode.html#adeedbc534e565780b98462a6e0092225',1,'tket::Transforms::GreedyPauliSimp::ACPairNode::first_support()']]],
-  ['flatten_5fregisters_7',['flatten_registers',['../classtket_1_1Circuit.html#a7c0f42bfdcbbadff9e57f5b8a820db8e',1,'tket::Circuit']]],
+  ['flatten_5fregisters_7',['flatten_registers',['../classtket_1_1Circuit.html#a9ca8b26fb2fb793a55bf253f25106dc6',1,'tket::Circuit']]],
   ['flattenregisters_8',['FlattenRegisters',['../namespacetket.html#afdf2f51de87dfbec78c20e072a697576',1,'tket']]],
   ['flow_9',['Flow',['../classtket_1_1zx_1_1Flow.html#a1d359bed476f857ba1df2450a6d6f593',1,'tket::zx::Flow']]],
   ['flowop_10',['flowop',['../classtket_1_1FlowOp.html#a7ea3798c7b8e3c38ad37bbab5d253883',1,'tket::FlowOp::FlowOp(OpType type, std::optional&lt; std::string &gt; label=std::nullopt)'],['../classtket_1_1FlowOp.html#a5da75ba6448cdc0aa91ef23ee90a0ad3',1,'tket::FlowOp::FlowOp()']]],

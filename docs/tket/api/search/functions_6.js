@@ -22,11 +22,11 @@ var searchData=
   ['gen_5fdefault_5fmapping_5fpass_19',['gen_default_mapping_pass',['../namespacetket.html#a1d8be4eae73da55c03c1084e63477719',1,'tket']]],
   ['gen_5fdirected_5fcx_5frouting_5fpass_20',['gen_directed_cx_routing_pass',['../namespacetket.html#a2d0fb9b8534457ecf132ec3042a212b5',1,'tket']]],
   ['gen_5feuler_5fpass_21',['gen_euler_pass',['../namespacetket.html#a864a56176ac3f123b6b3a7f8f1ae14b6',1,'tket']]],
-  ['gen_5fflatten_5frelabel_5fregisters_5fpass_22',['gen_flatten_relabel_registers_pass',['../namespacetket.html#af35a5f42c010b14ec9aa642d9767b3bc',1,'tket']]],
+  ['gen_5fflatten_5frelabel_5fregisters_5fpass_22',['gen_flatten_relabel_registers_pass',['../namespacetket.html#adf5974ae76b5a3b0cd086cb821a7c31a',1,'tket']]],
   ['gen_5ffull_5fmapping_5fpass_23',['gen_full_mapping_pass',['../namespacetket.html#a2cb12edb9b7780d943ba4e07421348ea',1,'tket']]],
   ['gen_5ffull_5fmapping_5fpass_5fphase_5fpoly_24',['gen_full_mapping_pass_phase_poly',['../namespacetket.html#a16df3bfe4c652b1a36b75d4748bd582b',1,'tket']]],
   ['gen_5fgraycode_25',['gen_graycode',['../namespacetket.html#aaf5bed29c38ac3decc55325da71ec018',1,'tket']]],
-  ['gen_5fgreedy_5fpauli_5fsimp_26',['gen_greedy_pauli_simp',['../namespacetket.html#a0f60986ed594bd522e1d52a192b6b098',1,'tket']]],
+  ['gen_5fgreedy_5fpauli_5fsimp_26',['gen_greedy_pauli_simp',['../namespacetket.html#a42cbd6047c9e40a87e136f314f8726fa',1,'tket']]],
   ['gen_5fnaive_5fplacement_5fpass_27',['gen_naive_placement_pass',['../namespacetket.html#a97564c88c1bc2bd8f93a720805c8cab2',1,'tket']]],
   ['gen_5foptimise_5fphase_5fgadgets_28',['gen_optimise_phase_gadgets',['../namespacetket.html#a95690781262d22df0071113af874dcb8',1,'tket']]],
   ['gen_5fpairwise_5fpauli_5fgadgets_29',['gen_pairwise_pauli_gadgets',['../namespacetket.html#a7b2b50dc805ddddaa8670c06b73db427',1,'tket']]],
@@ -338,7 +338,7 @@ var searchData=
   ['gray_5fsynth_335',['gray_synth',['../namespacetket.html#a932186c537c4578b1de77ccb4cc36a45',1,'tket']]],
   ['greedy_5fdiagonalise_336',['greedy_diagonalise',['../namespacetket.html#a7981f566c2d2d487e00ecb93f215b724',1,'tket']]],
   ['greedy_5fpauli_5fgraph_5fsynthesis_337',['greedy_pauli_graph_synthesis',['../namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a042d7d1967beadd4ec4b06f15cb3c136',1,'tket::Transforms::GreedyPauliSimp']]],
-  ['greedy_5fpauli_5foptimisation_338',['greedy_pauli_optimisation',['../namespacetket_1_1Transforms.html#a2d1c451cea977faf49829ca42ba74938',1,'tket::Transforms']]],
+  ['greedy_5fpauli_5foptimisation_338',['greedy_pauli_optimisation',['../namespacetket_1_1Transforms.html#afe914800fae8de36a7aed7a54e654c7d',1,'tket::Transforms']]],
   ['greedy_5fpauli_5fset_5fsynthesis_339',['greedy_pauli_set_synthesis',['../namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a02eb95f095c5e7b204d81efac472f7ce',1,'tket::Transforms::GreedyPauliSimp']]],
   ['greedypaulisimperror_340',['GreedyPauliSimpError',['../classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GreedyPauliSimpError.html#a48e33278a9dd20943902012fb02160c8',1,'tket::Transforms::GreedyPauliSimp::GreedyPauliSimpError']]]
 ];
