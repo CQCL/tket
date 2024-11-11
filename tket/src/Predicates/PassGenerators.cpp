@@ -1086,6 +1086,7 @@ PassPtr gen_greedy_pauli_simp(
   j["seed"] = seed;
   j["allow_zzphase"] = allow_zzphase;
   j["timeout"] = timeout;
+  j["only_reduce"] = only_reduce;
 
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }

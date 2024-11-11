@@ -751,8 +751,10 @@ SCENARIO("Test GreedyPauliSimp pass construction") {
     REQUIRE(test_unitary_comparison(c, cu.get_circ_ref(), true));
   }
   GIVEN("Preserving a circuit with only_reduce set to true.") {
-    Circuit c(5);
-    c.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4});
+    Circuit c(10);
+    c.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+    c.add_op<unsigned>(OpType::CnX, {2, 3, 4, 5});
+    c.add_op<unsigned>(OpType::CnX, {6, 7, 8, 9});
     CompilationUnit cu(c);
     REQUIRE(DecomposeArbitrarilyControlledGates()->apply(cu));
     REQUIRE(!gen_greedy_pauli_simp(0.3, 0.5, 500, 500, 0, false, 100, true));

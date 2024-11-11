@@ -356,6 +356,7 @@ PassPtr gen_special_UCC_synthesis(
  * @param seed
  * @param allow_zzphase
  * @param timeout
+ * @param only_reduce
  * @return PassPtr
  */
 PassPtr gen_greedy_pauli_simp(

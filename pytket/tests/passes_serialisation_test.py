@@ -297,6 +297,7 @@ TWO_WAY_PARAM_PASSES = {
             "seed": 2,
             "allow_zzphase": True,
             "timeout": 5000,
+            "only_reduce": False,
         }
     ),
     # lists must be sorted by OpType value

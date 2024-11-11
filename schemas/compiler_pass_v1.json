@@ -377,6 +377,10 @@
         "timeout": {
           "type": "number",
           "definition": "parameter controlling the maximum runtime of \"GreedyPauliSimp\""
+        },
+        "only_reduce": {
+          "type": "boolean",
+          "definition": "parameter controlling whether \"GreedyPauliSimp\" can return circuits with more two qubit gates"
         }
       },
       "required": [
@@ -909,9 +913,10 @@
               "max_tqe_candidates",
               "seed",
               "allow_zzphase",
-              "timeout"
+              "timeout",
+              "only_reduce"
             ],
-            "maxProperties": 8
+            "maxProperties": 9
           }
         },
         {
