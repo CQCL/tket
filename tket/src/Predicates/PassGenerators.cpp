@@ -1034,8 +1034,7 @@ PassPtr gen_greedy_pauli_simp(
           }
           return false;
         }
-        gpo.apply(circ);
-        return true;
+        return gpo.apply(circ);
       });
   OpTypeSet ins = {
       OpType::Z,
