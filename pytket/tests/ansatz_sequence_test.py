@@ -12,15 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Dict, Tuple, List
+from typing import Dict, List, Tuple
+
 import numpy as np
-import pytest
+
 from pytket import Circuit
+from pytket.circuit import OpType, Qubit, fresh_symbol
+from pytket.partition import GraphColourMethod, PauliPartitionStrat
 from pytket.pauli import Pauli, QubitPauliString
-from pytket.circuit import fresh_symbol, OpType, Qubit
-from pytket.utils import gen_term_sequence_circuit, QubitPauliOperator
 from pytket.transform import Transform
-from pytket.partition import PauliPartitionStrat, GraphColourMethod
+from pytket.utils import QubitPauliOperator, gen_term_sequence_circuit
 
 
 def test_basic_sequence() -> None:
@@ -95,15 +96,15 @@ def test_nontrivial_sequence() -> None:
     }
 
     # We'll build the results up, and check at the end that they match exactly
-    calculated_results: Dict[
-        PauliPartitionStrat, Dict[GraphColourMethod, Tuple[int, ...]]
+    calculated_results: dict[
+        PauliPartitionStrat, dict[GraphColourMethod, tuple[int, ...]]
     ] = {}
 
     for strategy, colour_method_dict in expected_results.items():
         calculated_results[strategy] = {}
         for colour_method in colour_method_dict:
             circ = gen_term_sequence_circuit(op, c, strategy, colour_method)
-            counts_list: List[int] = [circ.n_gates_of_type(OpType.CircBox)]
+            counts_list: list[int] = [circ.n_gates_of_type(OpType.CircBox)]
 
             circ_other = circ.copy()
             Transform.DecomposeBoxes().apply(circ_other)

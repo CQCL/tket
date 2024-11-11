@@ -13,22 +13,21 @@
 # limitations under the License.
 
 """Enable adding of gates with conditions on Bit or BitRegister expressions."""
-from typing import Tuple, Union
 
-from pytket.circuit import Bit, Circuit, BitRegister
 from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
+from pytket.circuit import Bit, BitRegister, Circuit
 from pytket.circuit.clexpr import wired_clexpr_from_logic_exp
 from pytket.circuit.logic_exp import (
     BitLogicExp,
     Constant,
     PredicateExp,
     RegEq,
-    RegNeq,
     RegGeq,
     RegGt,
     RegLeq,
     RegLogicExp,
     RegLt,
+    RegNeq,
 )
 
 
@@ -37,14 +36,14 @@ class NonConstError(Exception):
 
 
 def _add_condition(
-    circ: Circuit, condition: Union[PredicateExp, Bit, BitLogicExp]
-) -> Tuple[Bit, bool]:
+    circ: Circuit, condition: PredicateExp | Bit | BitLogicExp
+) -> tuple[Bit, bool]:
     """Add a condition expression to a circuit using classical expression boxes,
     rangepredicates and conditionals. Return predicate bit and value of said bit.
     """
     if isinstance(condition, Bit):
         return condition, True
-    elif isinstance(condition, PredicateExp):
+    if isinstance(condition, PredicateExp):
         pred_exp, pred_val = condition.args
         # PredicateExp constructor should ensure arg order
         if not isinstance(pred_val, Constant):
@@ -57,7 +56,7 @@ def _add_condition(
         pred_exp = condition
     else:
         raise ValueError(
-            f"Condition {condition} must be of type Bit, " "BitLogicExp or PredicateExp"
+            f"Condition {condition} must be of type Bit, BitLogicExp or PredicateExp"
         )
 
     next_index = (

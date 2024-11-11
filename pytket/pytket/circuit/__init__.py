@@ -16,37 +16,38 @@
  tket :py:class:`Circuit` data structure.
   This module is provided in binary form during the PyPI installation."""
 from typing import (
-    TYPE_CHECKING,
     Any,
-    Tuple,
-    Type,
-    Union,
     Callable,
     Optional,
     Sequence,
+    Union,
 )
 
+from pytket import wasm
 from pytket._tket.circuit import *
 from pytket._tket.circuit import Circuit
-
+from pytket._tket.pauli import Pauli
 from pytket._tket.unit_id import *
-from pytket._tket.unit_id import Bit, BitRegister
 
 # prefixes for assertion bits
-from pytket._tket.unit_id import _DEBUG_ZERO_REG_PREFIX, _DEBUG_ONE_REG_PREFIX
-from pytket._tket.pauli import Pauli
-
-from pytket import wasm
+from pytket._tket.unit_id import (
+    _DEBUG_ONE_REG_PREFIX,
+    _DEBUG_ZERO_REG_PREFIX,
+    Bit,
+    BitRegister,
+)
 
 from .logic_exp import (
+    BinaryOp,
     BitLogicExp,
     BitWiseOp,
-    RegLogicExp,
-    RegWiseOp,
     Constant,
     LogicExp,
-    BinaryOp,
     Ops,
+    RegLogicExp,
+    RegWiseOp,
+    create_bit_logic_exp,
+    create_reg_logic_exp,
     if_bit,
     if_not_bit,
     reg_eq,
@@ -55,8 +56,6 @@ from .logic_exp import (
     reg_leq,
     reg_lt,
     reg_neq,
-    create_reg_logic_exp,
-    create_bit_logic_exp,
 )
 
 

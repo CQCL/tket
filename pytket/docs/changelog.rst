@@ -21,6 +21,8 @@ Fixes:
 * Fix `maxwidth` parameter of `circuit_from_qasm_str`
 * Add `scratch_reg_resize_pass` to `circuit_from_qasm_str`
 * Reject incompete classical registers in pytket to qasm conversion
+* Add parameter `include_conditional` to `n_gates_of_type` to include
+  conditional gates in the count
 
 1.34.0 (October 2024)
 ---------------------
