@@ -302,7 +302,7 @@ TWO_WAY_PARAM_PASSES = {
     ),
     "MultiThreadGreedyPauliSimp": standard_pass_dict(
         {
-            "name": "GreedyPauliSimp",
+            "name": "MultiThreadGreedyPauliSimp",
             "discount_rate": 0.4,
             "depth_weight": 0.5,
             "max_lookahead": 100,
