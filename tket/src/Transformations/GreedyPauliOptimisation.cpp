@@ -798,6 +798,71 @@ Transform greedy_pauli_optimisation(
   });
 }
 
+Transform multi_thread_greedy_pauli_optimisation(
+    unsigned threads, double discount_rate, double depth_weight,
+    unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed,
+    bool allow_zzphase, unsigned timeout) {
+  return Transform([discount_rate, depth_weight, max_lookahead,
+                    max_tqe_candidates, seed, allow_zzphase,
+                    timeout](Circuit& circ) {
+    // We generate more seeds from the input seed
+    std::mt19937 seed_gen(seed);
+
+    std::queue<std::future<bool>> all_threads;
+    unsigned max_threads =
+        std::min(threads, std::thread::hardware_concurrency());
+    // We set up max_threads number of parallel jobs
+    for (unsigned i = 0; i < max_threads; i++) {
+      unsigned seed_i = seed_gen(i);
+      std::future<Circuit> future = std::async(
+          std::launch::async, GreedyPauliSimp::greedy_pauli_graph_synthesis,
+          circ, discount_rate, depth_weight, max_lookahead, max_tqe_candidates,
+          seed_i, allow_zzphase);
+      TKET_ASSERT(task_queue.size() < max_threads);
+      task_queue.push(std::move(future));
+    }
+    // We retrieve each job, after a maximum of "timeout" seconds
+    std::vector<Circuit> circuits;
+    while (!all_threads.empty()) {
+      auto& thread = all_threads.front();
+      if (thread.wait_for(std::chrono::seconds(timeout)) ==
+          std::future_status::ready) {
+        Circuit c = future.get();
+        c.decompose_boxes_recursively();
+        circuits.push_back(c);
+      }
+      all_threads.pop();
+    }
+
+    // We now return the smallest circuit
+    // We first return false if no circuits were found within the given timeout
+    if (circuits.empty()) return false;
+    // We first find the circuit with smallest number of 2-qubit gates, gates or
+    // depth
+    unsigned n_original_2qb_gates = circ.count_n_qubit_gates(2);
+    unsigned n_original_gates = circ.n_gates;
+    unsigned original_depth = circ.depth;
+    // Find the circuit with the minimum number of 2-qubit gates in `circuits`
+    auto min_circuit = std::min_element(
+        circuits.begin(), circuits.end(),
+        [](const Circuit& a, const Circuit& b) {
+          return std::tie(a.count_n_qubit_gates(2), a.n_gates, a.depth) <
+                 std::tie(b.count_n_qubit_gates(2), b.n_gates, b.depth);
+        });
+
+    // We then only update `circ` only if a smaller circuit is found, returning true
+    if (std::tie(
+            min_circuit.count_n_qubit_gates(2), min_circuit.n_gates,
+            min_circuit.depth) <
+        std::tie(n_original_2qb_gates n_original_gates, original_depth)) {
+      circ = *min_circuit;
+      return true;
+    }
+    
+    return false;
+  });
+}
+
 }  // namespace Transforms
 
 }  // namespace tket
