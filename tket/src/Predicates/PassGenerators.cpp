@@ -1090,6 +1090,68 @@ PassPtr gen_greedy_pauli_simp(
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
+PassPtr gen_multi_thread_greedy_pauli_simp(
+    unsigned threads, double discount_rate, double depth_weight,
+    unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed,
+    bool allow_zzphase, unsigned timeout) {
+  Transform t = Transforms::multi_thread_greedy_pauli_optimisation(
+      threads, discount_rate, depth_weight, max_lookahead, max_tqe_candidates,
+      seed, allow_zzphase, timeout);
+  OpTypeSet ins = {
+      OpType::Z,
+      OpType::X,
+      OpType::Y,
+      OpType::S,
+      OpType::Sdg,
+      OpType::V,
+      OpType::Vdg,
+      OpType::H,
+      OpType::CX,
+      OpType::CY,
+      OpType::CZ,
+      OpType::SWAP,
+      OpType::Rz,
+      OpType::Rx,
+      OpType::Ry,
+      OpType::T,
+      OpType::Tdg,
+      OpType::ZZMax,
+      OpType::ZZPhase,
+      OpType::PhaseGadget,
+      OpType::XXPhase,
+      OpType::YYPhase,
+      OpType::Measure,
+      OpType::PhasedX,
+      OpType::Reset,
+      OpType::Conditional,
+      OpType::PauliExpBox,
+      OpType::PauliExpPairBox,
+      OpType::PauliExpCommutingSetBox};
+
+  ins.insert(all_classical_types().begin(), all_classical_types().end());
+  PredicatePtr in_gates = std::make_shared<GateSetPredicate>(ins);
+  PredicatePtrMap precons{CompilationUnit::make_type_pair(in_gates)};
+  PredicateClassGuarantees g_postcons = {
+      {typeid(ConnectivityPredicate), Guarantee::Clear},
+      {typeid(NoWireSwapsPredicate), Guarantee::Clear}};
+  PostConditions postcon{{}, g_postcons, Guarantee::Preserve};
+
+  // record pass config
+  nlohmann::json j;
+  j["name"] = "MultiThreadGreedyPauliSimp";
+  j["discount_rate"] = discount_rate;
+  j["depth_weight"] = depth_weight;
+  j["max_lookahead"] = max_lookahead;
+  j["max_tqe_candidates"] = max_tqe_candidates;
+  j["seed"] = seed;
+  j["allow_zzphase"] = allow_zzphase;
+  j["timeout"] = timeout;
+  j["only_reduce"] = only_reduce;
+  j["threads"] = threads;
+
+  return std::make_shared<StandardPass>(precons, t, postcon, j);
+}
+
 PassPtr gen_special_UCC_synthesis(
     Transforms::PauliSynthStrat strat, CXConfigType cx_config) {
   Transform t = Transforms::special_UCC_synthesis(strat, cx_config);

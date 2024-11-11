@@ -381,6 +381,10 @@
         "only_reduce": {
           "type": "boolean",
           "definition": "parameter controlling whether \"GreedyPauliSimp\" can return circuits with more two qubit gates"
+        },
+        "threads": {
+          "type": "number",
+          "definition": "number of threads to run in parallel when finding solutions to \"MultiThreadGreedyPauliSimp\"."
         }
       },
       "required": [
@@ -915,6 +919,28 @@
               "allow_zzphase",
               "timeout",
               "only_reduce"
+            ],
+            "maxProperties": 9
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "MultiThreadGreedyPauliSimp"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "discount_rate",
+              "depth_weight",
+              "max_lookahead",
+              "max_tqe_candidates",
+              "seed",
+              "allow_zzphase",
+              "timeout",
+              "threads"
             ],
             "maxProperties": 9
           }

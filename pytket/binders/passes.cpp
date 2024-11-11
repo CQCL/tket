@@ -969,6 +969,33 @@ PYBIND11_MODULE(passes, m) {
       py::arg("seed") = 0, py::arg("allow_zzphase") = false,
       py::arg("timeout") = 100, py::arg("only_reduce") = false);
   m.def(
+      "MultiThreadGreedyPauliSimp", &gen_multi_thread_greedy_pauli_simp,
+      "Construct a pass that runs seeded `GreedyPauliSimp` in multiple threads "
+      "and returns the smallest circuit. Will return the original circuit if "
+      "no reduction is found."
+      "\n\n:param threads: Number of parallel threads to use when finding "
+      "solutions. Will default to the hardware limit if too large."
+      "\n:param discount_rate: Rate used to discount the cost impact from "
+      "gadgets that are further away. Default to 0.7."
+      "\n:param depth_weight:  Degree of depth optimisation. Default to 0.3."
+      "\n:param max_tqe_candidates:  Maximum number of 2-qubit Clifford "
+      "gate candidates to evaluate at each step. Default to 500."
+      "\n:param max_lookahead:  Maximum lookahead when evaluating each "
+      "Clifford gate candidate. Default to 500."
+      "\n:param seed:  Unsigned integer seed used for sampling candidates "
+      "and tie breaking. Default to 0."
+      "\n:param allow_zzphase: If set to True, allows the algorithm to "
+      "implement 2-qubit rotations using ZZPhase gates when deemed "
+      "optimal. Defaults to False."
+      "\n:param timeout: Sets maximum out of time spent finding solution."
+      "\n:param only_reduce: Only returns modified circuit if it has "
+      "fewer two-qubit gates."
+      "\n:return: a pass to perform the simplification",
+      py::arg("threads"), py::arg("discount_rate") = 0.7,
+      py::arg("depth_weight") = 0.3, py::arg("max_lookahead") = 500,
+      py::arg("max_tqe_candidates") = 500, py::arg("seed") = 0,
+      py::arg("allow_zzphase") = false, py::arg("timeout") = 100);
+  m.def(
       "PauliSquash", &PauliSquash,
       "Applies :py:meth:`PauliSimp` followed by "
       ":py:meth:`FullPeepholeOptimise`."

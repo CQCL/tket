@@ -528,6 +528,25 @@ PassPtr deserialise(
           discount_rate, depth_weight, max_lookahead, max_tqe_candidates, seed,
           allow_zzphase, timeout, only_reduce);
 
+    } else if (passname == "MultiThreadGreedyPauliSimp") {
+      double discount_rate = content.at("discount_rate").get<double>();
+      double depth_weight = content.at("depth_weight").get<double>();
+      // for backward compatibility
+      if (!content.contains("max_tqe_candidates")) {
+        pp = gen_greedy_pauli_simp(discount_rate, depth_weight);
+      }
+      unsigned max_tqe_candidates =
+          content.at("max_tqe_candidates").get<unsigned>();
+      unsigned max_lookahead = content.at("max_lookahead").get<unsigned>();
+      unsigned seed = content.at("seed").get<unsigned>();
+      bool allow_zzphase = content.at("allow_zzphase").get<bool>();
+      unsigned timeout = content.at("timeout").get<unsigned>();
+      bool only_reduce = content.at("only_reduce").get<bool>();
+      unsigned timeout = content.at("threads").get<unsigned>();
+      pp = gen_greedy_pauli_simp(
+          threads, discount_rate, depth_weight, max_lookahead,
+          max_tqe_candidates, seed, allow_zzphase, timeout);
+
     } else if (passname == "PauliSimp") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Transforms::PauliSynthStrat pss =

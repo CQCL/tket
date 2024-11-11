@@ -850,7 +850,8 @@ Transform multi_thread_greedy_pauli_optimisation(
                  std::tie(b.count_n_qubit_gates(2), b.n_gates, b.depth);
         });
 
-    // We then only update `circ` only if a smaller circuit is found, returning true
+    // We then only update `circ` only if a smaller circuit is found, returning
+    // true
     if (std::tie(
             min_circuit.count_n_qubit_gates(2), min_circuit.n_gates,
             min_circuit.depth) <
@@ -858,7 +859,7 @@ Transform multi_thread_greedy_pauli_optimisation(
       circ = *min_circuit;
       return true;
     }
-    
+
     return false;
   });
 }

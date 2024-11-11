@@ -300,6 +300,19 @@ TWO_WAY_PARAM_PASSES = {
             "only_reduce": False,
         }
     ),
+    "MultiThreadGreedyPauliSimp": standard_pass_dict(
+        {
+            "name": "GreedyPauliSimp",
+            "discount_rate": 0.4,
+            "depth_weight": 0.5,
+            "max_lookahead": 100,
+            "max_tqe_candidates": 100,
+            "seed": 2,
+            "allow_zzphase": True,
+            "timeout": 5000,
+            "threads": 2,
+        }
+    ),
     # lists must be sorted by OpType value
     "AutoSquash": standard_pass_dict(
         {"name": "AutoSquash", "basis_singleqs": ["Rz", "TK1"]}

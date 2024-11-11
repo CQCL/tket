@@ -645,6 +645,10 @@ Transform greedy_pauli_optimisation(
     unsigned max_lookahead = 500, unsigned max_tqe_candidates = 500,
     unsigned seed = 0, bool allow_zzphase = false, unsigned timeout = 100);
 
+Transform multi_thread_greedy_pauli_optimisation(
+    unsigned threads, double discount_rate = 0.7, double depth_weight = 0.3,
+    unsigned max_lookahead = 500, unsigned max_tqe_candidates = 500,
+    unsigned seed = 0, bool allow_zzphase = false, unsigned timeout = 100);
 }  // namespace Transforms
 
 }  // namespace tket
