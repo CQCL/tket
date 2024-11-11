@@ -58,6 +58,7 @@ from pytket.passes import (
     FlattenRelabelRegistersPass,
     FullMappingPass,
     GreedyPauliSimp,
+    MultiThreadGreedyPauliSimp,
     NaivePlacementPass,
     PauliSimp,
     PauliSquash,
@@ -1084,6 +1085,20 @@ def test_greedy_pauli_synth() -> None:
         GreedyPauliSimp().apply(circ)
     err_msg = "Predicate requirements are not satisfied"
     assert err_msg in str(e.value)
+
+
+def test_mt_greedy_pauli_synth() -> None:
+    circ = Circuit(name="test")
+    rega = circ.add_q_register("a", 2)
+    regb = circ.add_q_register("b", 2)
+    circ.Rz(0, rega[0]).H(regb[1]).CX(rega[0], rega[1]).Ry(0.3, rega[0]).S(regb[1]).CZ(
+        rega[0], regb[0]
+    ).SWAP(regb[1], rega[0])
+    d = circ.copy()
+    pss = MultiThreadGreedyPauliSimp(5, 0.5, 0.5)
+    assert pss.apply(d)
+    assert np.allclose(circ.get_unitary(), d.get_unitary())
+    assert d.name == "test"
 
 
 def test_auto_rebase_deprecation(recwarn: Any) -> None:
