@@ -761,6 +761,8 @@ SCENARIO("Test GreedyPauliSimp pass construction") {
     // c.add_op<unsigned>(OpType::CX, {2, 3});
     CompilationUnit cu(c);
     REQUIRE(DecomposeArbitrarilyControlledGates()->apply(cu));
+    REQUIRE(
+        gen_auto_rebase_pass({OpType::H, OpType::CX, OpType::Rz})->apply(cu));
     REQUIRE(!gen_greedy_pauli_simp(0.3, 0.5, 500, 500, 0, false, 100, true)
                  ->apply(cu));
   }
