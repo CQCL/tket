@@ -1018,16 +1018,15 @@ PassPtr gen_synthesise_pauli_graph(
 PassPtr gen_greedy_pauli_simp(
     double discount_rate, double depth_weight, unsigned max_lookahead,
     unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase,
-    unsigned timeout, bool return_if_smaller) {
-  Transform t = Transform([](Circuit& circ) {
+    unsigned timeout, bool only_reduce) {
+  Transform t = Transform([&](Circuit& circ) {
     Transform gpo = Transforms::greedy_pauli_optimisation(
         discount_rate, depth_weight, max_lookahead, max_tqe_candidates, seed,
         allow_zzphase, timeout);
-
-    if (return_if_smaller) {
-      Circuit copy = circ.copy();
+    if (only_reduce) {
+      Circuit copy = Circuit(circ);
       gpo.apply(copy);
-      if (copy.n_2qb_gates() <= circ.n_2qb_gates()) {
+      if (copy.count_n_qubit_gates(2) < circ.count_n_qubit_gates(2)) {
         circ = copy;
         return true;
       }

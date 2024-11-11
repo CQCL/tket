@@ -961,13 +961,13 @@ PYBIND11_MODULE(passes, m) {
       "implement 2-qubit rotations using ZZPhase gates when deemed "
       "optimal. Defaults to False."
       "\n:param timeout: Sets maximum out of time spent finding solution."
-      "\n:param return_if_smaller: Only returns modified circuit if it has "
+      "\n:param only_reduce: Only returns modified circuit if it has "
       "fewer two-qubit gates."
       "\n:return: a pass to perform the simplification",
       py::arg("discount_rate") = 0.7, py::arg("depth_weight") = 0.3,
       py::arg("max_lookahead") = 500, py::arg("max_tqe_candidates") = 500,
       py::arg("seed") = 0, py::arg("allow_zzphase") = false,
-      py::arg("timeout") = 100, py::arg("return_if_smaller") = false);
+      py::arg("timeout") = 100, py::arg("only_reduce") = false);
   m.def(
       "PauliSquash", &PauliSquash,
       "Applies :py:meth:`PauliSimp` followed by "
@@ -1040,7 +1040,7 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "CnXPairwiseDecomposition", &CnXPairwiseDecomposition,
-      "Decompose CnX gates to 2-qubit gates and single qubit gates. "
+      "Decompose CnX gates to 2-qubit gates `fand single qubit gates. "
       "For every two CnX gates, reorder their control qubits to improve "
       "the chance of gate cancellation");
 
