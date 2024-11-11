@@ -296,6 +296,7 @@ TWO_WAY_PARAM_PASSES = {
             "max_tqe_candidates": 100,
             "seed": 2,
             "allow_zzphase": True,
+            "timeout": 5000,
         }
     ),
     # lists must be sorted by OpType value

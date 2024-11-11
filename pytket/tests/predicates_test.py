@@ -1036,6 +1036,7 @@ def test_greedy_pauli_synth() -> None:
     ).SWAP(regb[1], rega[0])
     d = circ.copy()
     pss = GreedyPauliSimp(0.5, 0.5)
+    assert not GreedyPauliSimp(0.5, 0.5, timeout=0).apply(d)
     assert pss.apply(d)
     assert np.allclose(circ.get_unitary(), d.get_unitary())
     assert d.name == "test"
@@ -1058,7 +1059,8 @@ def test_greedy_pauli_synth() -> None:
     circ.measure_all()
     circ.Reset(0)
     circ.add_pauliexpbox(pg1, [2, 3])
-    assert GreedyPauliSimp(0.5, 0.5, 100, 100, 0, True).apply(circ)
+    assert not GreedyPauliSimp(0.5, 0.5, 100, 100, 0, True, 0).apply(circ)
+    assert GreedyPauliSimp(0.5, 0.5, 100, 100, 0, True, 100).apply(circ)
     # PauliExpBoxes implemented using ZZPhase
     d = Circuit(4, 4, name="test")
     d.H(0)
