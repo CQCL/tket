@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <chrono>
 #include <future>
+#include <queue>
 #include <random>
 
 #include "tket/Circuit/PauliExpBoxes.hpp"
