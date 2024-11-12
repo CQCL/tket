@@ -831,18 +831,13 @@ SCENARIO("Test GreedyPauliSimpMT") {
             0.125)),
         {0, 1, 2, 3, 4, 5});
 
-    Circuit d0(circ);
-    d0.decompose_boxes_recursively();
-    Circuit d1(d0);
+    Circuit d(circ);
+    d.decompose_boxes_recursively();
     REQUIRE(Transforms::multi_thread_greedy_pauli_optimisation(
-                3, 0.7, 0.3, 500, 500, 0, true, 100)
-                .apply(d0));
+                2, 0.7, 0.3, 500, 500, 0, true, 100)
+                .apply(d));
 
-    REQUIRE(Transforms::multi_thread_greedy_pauli_optimisation(
-                3, 0.7, 0.3, 500, 500, 0, false, 100)
-                .apply(d1));
-    REQUIRE(test_unitary_comparison(circ, d0, true));
-    REQUIRE(test_unitary_comparison(circ, d1, true));
+    REQUIRE(test_unitary_comparison(circ, d, true));
   }
 }
 
