@@ -760,5 +760,124 @@ SCENARIO("Test GreedyPauliSimp pass construction") {
                  ->apply(cu));
   }
 }
+
+SCENARIO("Test MultiThreadGreedyPauliSimp") {
+  GIVEN("Circuit with measures, classicals, and resets") {
+    Circuit circ(3, 1);
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::X, Pauli::Z, Pauli::Z}, 0.3)),
+        {0, 1, 2});
+    circ.add_op<unsigned>(OpType::Measure, {0, 0});
+    circ.add_op<unsigned>(ClassicalX(), {0});
+    circ.add_op<unsigned>(OpType::Reset, {1});
+    REQUIRE(Transforms::multi_thread_greedy_pauli_optimisation(3).apply(circ));
+    REQUIRE(circ.count_n_qubit_gates(2) == 4);
+    REQUIRE(circ.count_gates(OpType::ClassicalTransform) == 1);
+    REQUIRE(circ.count_gates(OpType::Measure) == 1);
+    REQUIRE(circ.count_gates(OpType::Reset) == 1);
+  }
+  GIVEN("Compile to ZZPhase") {
+    Circuit circ(2);
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::X, Pauli::X}, 0.3)), {0, 1});
+    Circuit d1(circ);
+    Circuit d2(circ);
+    REQUIRE(Transforms::multi_thread_greedy_pauli_optimisation(
+                3, 0.7, 0.3, 500, 500, 0, true)
+                .apply(d1));
+    REQUIRE(Transforms::multi_thread_greedy_pauli_optimisation(
+                3, 0.7, 0.3, 500, 500, 0, false)
+                .apply(d2));
+    REQUIRE(test_unitary_comparison(circ, d1, true));
+    REQUIRE(test_unitary_comparison(circ, d2, true));
+    REQUIRE(d1.count_n_qubit_gates(2) == 1);
+    REQUIRE(d2.count_n_qubit_gates(2) == 2);
+  }
+  GIVEN("Large circuit with ZZPhase") {
+    Circuit circ(6);
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::X, Pauli::X}, 0.3)), {0, 1});
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Y, Pauli::X}, 0.2)),
+        {0, 1, 2});
+    circ.add_box(
+        PauliExpCommutingSetBox({
+            {{Pauli::I, Pauli::Y, Pauli::I, Pauli::Z}, 1.2},
+            {{Pauli::X, Pauli::Y, Pauli::Z, Pauli::I}, 0.8},
+            {{Pauli::I, Pauli::I, Pauli::I, Pauli::Z}, 1.25},
+        }),
+        {1, 2, 3, 4});
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::Y, Pauli::X}, 0.1)), {2, 3});
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Y, Pauli::X}, 0.11)),
+        {1, 3, 4});
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::Y, Pauli::Y}, 0.2)), {4, 5});
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Z, Pauli::X}, 0.15)),
+        {2, 4, 5});
+    circ.add_box(
+        PauliExpBox(
+            SymPauliTensor({Pauli::X, Pauli::X, Pauli::X, Pauli::X}, 0.25)),
+        {2, 4, 5, 0});
+    circ.add_box(
+        PauliExpBox(
+            SymPauliTensor({Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X}, 0.125)),
+        {1, 3, 5, 0});
+
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::X},
+            0.125)),
+        {1, 3, 5, 0, 2, 4});
+
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X},
+            0.125)),
+        {0, 1, 2, 3, 4, 5});
+
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X},
+            0.125)),
+        {5, 2, 4, 1, 3, 0});
+
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::X},
+            0.125)),
+        {0, 5, 1, 4, 3, 2});
+
+    Circuit d(circ);
+    REQUIRE(Transforms::multi_thread_greedy_pauli_optimisation(
+                3, 0.7, 0.3, 500, 500, 0, true, 10)
+                .apply(d));
+    REQUIRE(test_unitary_comparison(circ, d, true));
+
+    GIVEN("Select TQE over ZZPhase") {
+      Circuit circ(3);
+      circ.add_box(
+          PauliExpBox(SymPauliTensor({Pauli::X, Pauli::Y}, 0.3)), {0, 1});
+      circ.add_box(
+          PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Y, Pauli::Z}, 0.22)),
+          {0, 1, 2});
+      circ.add_box(
+          PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Y, Pauli::X}, 0.15)),
+          {0, 1, 2});
+      Circuit d(circ);
+      REQUIRE(Transforms::multi_thread_greedy_pauli_optimisation(
+                  3, 0.7, 0.3, 500, 500, 0, true)
+                  .apply(d));
+      REQUIRE(test_unitary_comparison(circ, d, true));
+      // if the first XY was implemented using a ZZPhase
+      // then 2 TQEs is needed to conjugate the remaining two strings to weight
+      // 2 hence 5 2-qubit gates in total.
+      REQUIRE(d.count_n_qubit_gates(2) == 4);
+    }
+  }
+}
+
 }  // namespace test_GreedyPauliSimp
 }  // namespace tket
