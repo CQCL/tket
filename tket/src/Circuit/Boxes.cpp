@@ -372,6 +372,22 @@ bool CustomGate::is_clifford() const {
   return true;
 }
 
+Op_ptr CustomGate::dagger() const {
+  Circuit inner_c_dag = gate_->get_def()->dagger();
+  composite_def_ptr_t dag_def_ptr = std::make_shared<CompositeGateDef>(
+      gate_->get_name() + "_dagger", gate_->get_def()->dagger(),
+      gate_->get_args());
+  return std::make_shared<CustomGate>(dag_def_ptr, params_);
+}
+
+Op_ptr CustomGate::transpose() const {
+  Circuit inner_c_dag = gate_->get_def()->transpose();
+  composite_def_ptr_t dag_def_ptr = std::make_shared<CompositeGateDef>(
+      gate_->get_name() + "_transpose", gate_->get_def()->transpose(),
+      gate_->get_args());
+  return std::make_shared<CustomGate>(dag_def_ptr, params_);
+}
+
 QControlBox::QControlBox(
     const Op_ptr &op, unsigned n_controls,
     const std::vector<bool> &control_state)

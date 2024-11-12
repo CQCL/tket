@@ -16,6 +16,7 @@ Features:
 * Add `only_reduce` argument to `GreedyPauliSimp`.
 * Add option to not relabel `ClassicalExpBox` when calling `rename_units`
   and `flatten_registers`
+* Implement `dagger()` and `transpose()` for `CustomGate`.
 
 Fixes:
 
