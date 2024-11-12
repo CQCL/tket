@@ -17,6 +17,11 @@ Features:
 * Add option to not relabel `ClassicalExpBox` when calling `rename_units`
   and `flatten_registers`
 * Implement `dagger()` and `transpose()` for `CustomGate`.
+* Use `ClExprOp` by default when converting from QASM.
+
+Deprecations:
+
+* Deprecate `ClassicalExpBox` and related methods, in favour of `ClExprOp`.
 
 Fixes:
 
