@@ -776,6 +776,7 @@ Circuit greedy_pauli_graph_synthesis(
 }
 
 }  // namespace GreedyPauliSimp
+
 Transform greedy_pauli_optimisation(
     double discount_rate, double depth_weight, unsigned max_lookahead,
     unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase,
@@ -790,6 +791,8 @@ Transform greedy_pauli_optimisation(
         std::min(threads, std::thread::hardware_concurrency());
     unsigned threads_started = 0;
 
+    std::cout << "Doing GPO! Start off, number of threads and trials: "
+              << max_threads << " " << threads << " " << trials << std::endl;
     while (threads_started < trials || !all_threads.empty()) {
       // Start new jobs if we haven't reached the max threads or trials
       if (threads_started < trials && all_threads.size() < max_threads) {
@@ -811,8 +814,21 @@ Transform greedy_pauli_optimisation(
         Circuit c = thread.get();
         c.decompose_boxes_recursively();
         circuits.push_back(c);
+        all_threads.pop();
+      } else {
+        // If the thread is not ready, move it to the back of the queue
+        all_threads.push(std::move(all_threads.front()));
+        all_threads.pop();
       }
-      all_threads.pop();
+    }
+
+    std::cout << "Found " << circuits.size() << " circuits! " << std::endl;
+
+    for (unsigned i = 0; i < circuits.size(); i++) {
+      Circuit c = circuits[i];
+      std::cout << "Circuit " << i << " has " << c.count_n_qubit_gates(2)
+                << " two-qubit gates, " << c.n_gates() << " gates and depth "
+                << c.depth() << std::endl;
     }
 
     // Return the smallest circuit if any were found within the single
