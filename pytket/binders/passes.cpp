@@ -969,7 +969,7 @@ PYBIND11_MODULE(passes, m) {
       py::arg("seed") = 0, py::arg("allow_zzphase") = false,
       py::arg("timeout") = 100, py::arg("only_reduce") = false);
   m.def(
-      "MultiThreadGreedyPauliSimp", &gen_multi_thread_greedy_pauli_simp,
+      "GreedyPauliSimpMT", &gen_multi_thread_greedy_pauli_simp,
       "Construct a pass that runs seeded `GreedyPauliSimp` in multiple threads "
       "and returns the smallest circuit. Will return the original circuit if "
       "no reduction is found."

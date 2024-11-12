@@ -58,7 +58,7 @@ from pytket.passes import (
     FlattenRelabelRegistersPass,
     FullMappingPass,
     GreedyPauliSimp,
-    MultiThreadGreedyPauliSimp,
+    GreedyPauliSimpMT,
     NaivePlacementPass,
     PauliSimp,
     PauliSquash,
@@ -1095,7 +1095,7 @@ def test_mt_greedy_pauli_synth() -> None:
         rega[0], regb[0]
     ).SWAP(regb[1], rega[0])
     d = circ.copy()
-    pss = MultiThreadGreedyPauliSimp(5, 0.5, 0.5)
+    pss = GreedyPauliSimpMT(5, 0.5, 0.5)
     assert pss.apply(d)
     assert np.allclose(circ.get_unitary(), d.get_unitary())
     assert d.name == "test"

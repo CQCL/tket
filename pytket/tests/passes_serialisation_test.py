@@ -300,9 +300,9 @@ TWO_WAY_PARAM_PASSES = {
             "only_reduce": False,
         }
     ),
-    "MultiThreadGreedyPauliSimp": standard_pass_dict(
+    "GreedyPauliSimpMT": standard_pass_dict(
         {
-            "name": "MultiThreadGreedyPauliSimp",
+            "name": "GreedyPauliSimpMT",
             "discount_rate": 0.4,
             "depth_weight": 0.5,
             "max_lookahead": 100,

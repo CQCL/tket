@@ -528,7 +528,7 @@ PassPtr deserialise(
           discount_rate, depth_weight, max_lookahead, max_tqe_candidates, seed,
           allow_zzphase, timeout, only_reduce);
 
-    } else if (passname == "MultiThreadGreedyPauliSimp") {
+    } else if (passname == "GreedyPauliSimpMT") {
       double discount_rate = content.at("discount_rate").get<double>();
       double depth_weight = content.at("depth_weight").get<double>();
       unsigned max_tqe_candidates =

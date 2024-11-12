@@ -167,7 +167,7 @@
             "RemoveImplicitQubitPermutation",
             "RoundAngles",
             "GreedyPauliSimp",
-            "MultiThreadGreedyPauliSimp"
+            "GreedyPauliSimpMT"
           ],
           "description": "The name of the compiler pass. Matches the name of the pytket method used to generate it. List all the passes as enum."
         },
@@ -385,7 +385,7 @@
         },
         "threads": {
           "type": "number",
-          "definition": "number of threads to run in parallel when finding solutions to \"MultiThreadGreedyPauliSimp\"."
+          "definition": "number of threads to run in parallel when finding solutions to \"GreedyPauliSimpMT\"."
         }
       },
       "required": [
@@ -928,7 +928,7 @@
           "if": {
             "properties": {
               "name": {
-                "const": "MultiThreadGreedyPauliSimp"
+                "const": "GreedyPauliSimpMT"
               }
             }
           },

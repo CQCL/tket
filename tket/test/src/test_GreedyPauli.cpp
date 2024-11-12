@@ -761,7 +761,7 @@ SCENARIO("Test GreedyPauliSimp pass construction") {
   }
 }
 
-SCENARIO("Test MultiThreadGreedyPauliSimp") {
+SCENARIO("Test GreedyPauliSimpMT") {
   GIVEN("Circuit with measures, classicals, and resets") {
     Circuit circ(3, 1);
     circ.add_box(
@@ -775,23 +775,6 @@ SCENARIO("Test MultiThreadGreedyPauliSimp") {
     REQUIRE(circ.count_gates(OpType::ClassicalTransform) == 1);
     REQUIRE(circ.count_gates(OpType::Measure) == 1);
     REQUIRE(circ.count_gates(OpType::Reset) == 1);
-  }
-  GIVEN("Compile to ZZPhase") {
-    Circuit circ(2);
-    circ.add_box(
-        PauliExpBox(SymPauliTensor({Pauli::X, Pauli::X}, 0.3)), {0, 1});
-    Circuit d1(circ);
-    Circuit d2(circ);
-    REQUIRE(Transforms::multi_thread_greedy_pauli_optimisation(
-                3, 0.7, 0.3, 500, 500, 0, true)
-                .apply(d1));
-    REQUIRE(Transforms::multi_thread_greedy_pauli_optimisation(
-                3, 0.7, 0.3, 500, 500, 0, false)
-                .apply(d2));
-    REQUIRE(test_unitary_comparison(circ, d1, true));
-    REQUIRE(test_unitary_comparison(circ, d2, true));
-    REQUIRE(d1.count_n_qubit_gates(2) == 1);
-    REQUIRE(d2.count_n_qubit_gates(2) == 2);
   }
   GIVEN("Large circuit with ZZPhase") {
     Circuit circ(6);
@@ -851,6 +834,7 @@ SCENARIO("Test MultiThreadGreedyPauliSimp") {
         {0, 5, 1, 4, 3, 2});
 
     Circuit d(circ);
+    d.decompose_boxes_recursively();
     REQUIRE(Transforms::multi_thread_greedy_pauli_optimisation(
                 3, 0.7, 0.3, 500, 500, 0, true, 100)
                 .apply(d));

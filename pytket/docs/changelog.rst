@@ -16,7 +16,7 @@ Features:
 * Add `only_reduce` argument to `GreedyPauliSimp`.
 * Add option to not relabel `ClassicalExpBox` when calling `rename_units`
   and `flatten_registers`
-* Add new pass `MultiThreadGreedyPauliSimp`.
+* Add new pass `GreedyPauliSimpMT`.
 * Implement `dagger()` and `transpose()` for `CustomGate`.
 * Use `ClExprOp` by default when converting from QASM.
 

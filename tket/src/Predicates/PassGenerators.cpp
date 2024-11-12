@@ -1138,7 +1138,7 @@ PassPtr gen_multi_thread_greedy_pauli_simp(
 
   // record pass config
   nlohmann::json j;
-  j["name"] = "MultiThreadGreedyPauliSimp";
+  j["name"] = "GreedyPauliSimpMT";
   j["discount_rate"] = discount_rate;
   j["depth_weight"] = depth_weight;
   j["max_lookahead"] = max_lookahead;
