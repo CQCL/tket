@@ -762,7 +762,7 @@ SCENARIO("Test GreedyPauliSimp pass construction") {
 }
 
 SCENARIO("Test GreedyPauliSimpMT") {
-  GIVEN("Large circuit with and without targeting ZZPhase") {
+  GIVEN("Large circuit with and without ZZPhase") {
     Circuit circ(6);
     circ.add_box(
         PauliExpBox(SymPauliTensor({Pauli::X, Pauli::X}, 0.3)), {0, 1});
@@ -819,6 +819,18 @@ SCENARIO("Test GreedyPauliSimpMT") {
             0.125)),
         {0, 5, 1, 4, 3, 2});
 
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X},
+            0.125)),
+        {5, 4, 2, 1, 3, 0});
+
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::X},
+            0.125)),
+        {0, 1, 2, 3, 4, 5});
+
     Circuit d(circ);
     d.decompose_boxes_recursively();
     REQUIRE(Transforms::multi_thread_greedy_pauli_optimisation(
@@ -829,7 +841,6 @@ SCENARIO("Test GreedyPauliSimpMT") {
                 .apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
   }
-}
 }
 
 }  // namespace test_GreedyPauliSimp
