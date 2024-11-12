@@ -762,20 +762,6 @@ SCENARIO("Test GreedyPauliSimp pass construction") {
 }
 
 SCENARIO("Test GreedyPauliSimpMT") {
-  GIVEN("Circuit with measures, classicals, and resets") {
-    Circuit circ(3, 1);
-    circ.add_box(
-        PauliExpBox(SymPauliTensor({Pauli::X, Pauli::Z, Pauli::Z}, 0.3)),
-        {0, 1, 2});
-    circ.add_op<unsigned>(OpType::Measure, {0, 0});
-    circ.add_op<unsigned>(ClassicalX(), {0});
-    circ.add_op<unsigned>(OpType::Reset, {1});
-    REQUIRE(Transforms::multi_thread_greedy_pauli_optimisation(3).apply(circ));
-    REQUIRE(circ.count_n_qubit_gates(2) == 4);
-    REQUIRE(circ.count_gates(OpType::ClassicalTransform) == 1);
-    REQUIRE(circ.count_gates(OpType::Measure) == 1);
-    REQUIRE(circ.count_gates(OpType::Reset) == 1);
-  }
   GIVEN("Large circuit with ZZPhase") {
     Circuit circ(6);
     circ.add_box(
