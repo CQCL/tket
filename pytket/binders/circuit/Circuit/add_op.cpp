@@ -414,6 +414,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           [](Circuit *circ, const py::tket_custom::BitLogicExpression &exp,
              const py::tket_custom::SequenceVec<Bit> &outputs,
              const py::kwargs &kwargs) {
+            PyErr_WarnEx(
+                PyExc_DeprecationWarning,
+                "The add_classicalexpbox_bit method is deprecated. Please use "
+                "Circuit::add_clexpr() instead.",
+                1);
             auto inputs = exp.attr("all_inputs")().cast<std::set<Bit>>();
             py::tket_custom::SequenceVec<Bit> o_vec, io_vec;
 
@@ -439,7 +444,9 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
                     n_i, n_io, n_o, exp),
                 o_vec, kwargs);
           },
-          "Append a :py:class:`ClassicalExpBox` over Bit to the circuit.\n\n"
+          "Append a :py:class:`ClassicalExpBox` over Bit to the circuit.\n"
+          "DEPRECATED: Please use :py:meth:`add_clexpr` instead. This method "
+          "will be removed after pytket 1.40.\n\n"
           ":param classicalexpbox: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
@@ -450,6 +457,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
              const py::tket_custom::BitRegisterLogicExpression &exp,
              const py::tket_custom::SequenceVec<Bit> &outputs,
              const py::kwargs &kwargs) {
+            PyErr_WarnEx(
+                PyExc_DeprecationWarning,
+                "The add_classicalexpbox_register method is deprecated. Please "
+                "use Circuit::add_clexpr() instead.",
+                1);
             auto inputs =
                 exp.attr("all_inputs")().cast<std::set<BitRegister>>();
             std::set<Bit> all_bits;
@@ -481,7 +493,9 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
                 o_vec, kwargs);
           },
           "Append a :py:class:`ClassicalExpBox` over BitRegister to the "
-          "circuit.\n\n"
+          "circuit.\n"
+          "DEPRECATED: Please use :py:meth:`add_clexpr` instead. This method "
+          "will be removed after pytket 1.40.\n\n"
           ":param classicalexpbox: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",

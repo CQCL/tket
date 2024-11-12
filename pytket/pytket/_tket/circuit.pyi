@@ -1438,6 +1438,7 @@ class Circuit:
     def add_classicalexpbox_bit(self, expression: pytket.circuit.logic_exp.BitLogicExp, target: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`ClassicalExpBox` over Bit to the circuit.
+        DEPRECATED: Please use :py:meth:`add_clexpr` instead. This method will be removed after pytket 1.40.
         
         :param classicalexpbox: The box to append
         :param args: Indices of the qubits to append the box to
@@ -1446,6 +1447,7 @@ class Circuit:
     def add_classicalexpbox_register(self, expression: pytket.circuit.logic_exp.RegLogicExp, target: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`ClassicalExpBox` over BitRegister to the circuit.
+        DEPRECATED: Please use :py:meth:`add_clexpr` instead. This method will be removed after pytket 1.40.
         
         :param classicalexpbox: The box to append
         :param args: Indices of the qubits to append the box to
@@ -3619,6 +3621,7 @@ class OpType:
       MultiBit : A classical operation applied to multiple bits simultaneously
     
       ClassicalExpBox : A box for holding compound classical operations on Bits.
+    DEPRECATED: Please use :py:class:`WiredClExpr` instead. This class will be removed after pytket 1.40.
     
       MultiplexorBox : A multiplexor (i.e. uniformly controlled operations)
     
