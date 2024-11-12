@@ -296,7 +296,7 @@ class CircuitTransformer(Transformer):
         self,
         return_gate_dict: bool = False,
         maxwidth: int = 32,
-        use_clexpr: bool = False,
+        use_clexpr: bool = True,
     ) -> None:
         super().__init__()
         self.q_registers: dict[str, int] = {}
@@ -978,7 +978,7 @@ def circuit_from_qasm(
     input_file: Union[str, "os.PathLike[Any]"],
     encoding: str = "utf-8",
     maxwidth: int = 32,
-    use_clexpr: bool = False,
+    use_clexpr: bool = True,
 ) -> Circuit:
     """A method to generate a tket Circuit from a qasm file.
 
@@ -1000,7 +1000,7 @@ def circuit_from_qasm(
 
 
 def circuit_from_qasm_str(
-    qasm_str: str, maxwidth: int = 32, use_clexpr: bool = False
+    qasm_str: str, maxwidth: int = 32, use_clexpr: bool = True
 ) -> Circuit:
     """A method to generate a tket Circuit from a qasm string.
 
@@ -1023,7 +1023,7 @@ def circuit_from_qasm_str(
 
 
 def circuit_from_qasm_io(
-    stream_in: TextIO, maxwidth: int = 32, use_clexpr: bool = False
+    stream_in: TextIO, maxwidth: int = 32, use_clexpr: bool = True
 ) -> Circuit:
     """A method to generate a tket Circuit from a qasm text stream"""
     return circuit_from_qasm_str(
@@ -1036,7 +1036,7 @@ def circuit_from_qasm_wasm(
     wasm_file: Union[str, "os.PathLike[Any]"],
     encoding: str = "utf-8",
     maxwidth: int = 32,
-    use_clexpr: bool = False,
+    use_clexpr: bool = True,
 ) -> Circuit:
     """A method to generate a tket Circuit from a qasm string and external WASM module.
 

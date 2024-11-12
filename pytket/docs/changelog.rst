@@ -18,6 +18,11 @@ Features:
   and `flatten_registers`
 * Add new pass `MultiThreadGreedyPauliSimp`.
 * Implement `dagger()` and `transpose()` for `CustomGate`.
+* Use `ClExprOp` by default when converting from QASM.
+
+Deprecations:
+
+* Deprecate `ClassicalExpBox` and related methods, in favour of `ClExprOp`.
 
 Fixes:
 
