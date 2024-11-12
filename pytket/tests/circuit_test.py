@@ -783,11 +783,23 @@ def test_custom_gates() -> None:
     op0 = cmd0.op
     assert gate.type == op0.type
     assert gate.params == op0.params
+    c_d = c.dagger()
+    c_t = c.transpose()
     Transform.DecomposeBoxes().apply(c)
     coms = c.get_commands()
     assert str(coms[0]) == "CX q[0], q[3];"
     assert str(coms[1]) == "Rz(0.7) q[1];"
     assert str(coms[2]) == "CRz(1.3) q[0], q[1];"
+    Transform.DecomposeBoxes().apply(c_d)
+    coms_d = c_d.get_commands()
+    assert str(coms_d[0]) == "CRz(2.7) q[0], q[1];"
+    assert str(coms_d[1]) == "CX q[0], q[3];"
+    assert str(coms_d[2]) == "Rz(3.3) q[1];"
+    Transform.DecomposeBoxes().apply(c_t)
+    coms_t = c_t.get_commands()
+    assert str(coms_t[0]) == "CRz(1.3) q[0], q[1];"
+    assert str(coms_t[1]) == "CX q[0], q[3];"
+    assert str(coms_t[2]) == "Rz(0.7) q[1];"
 
 
 def test_errors() -> None:
