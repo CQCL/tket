@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <atomic>
+
 #include "Transform.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
@@ -599,6 +601,29 @@ class GPGraph {
  */
 std::tuple<std::vector<PauliNode_ptr>, std::vector<PauliNode_ptr>>
 gpg_from_unordered_set(const std::vector<SymPauliTensor>& unordered_set);
+
+/**
+ * @brief Converts the given circuit into a GPGraph and conjugates each node
+ * by greedily applying 2-qubit Clifford gates until the node can be realised
+ * as a single-qubit gate, a measurement, or a reset. The final Clifford
+ * operator is synthesized in a similar fashion. Allows early termination
+ * from a thread via a stop_flag.
+ *
+ * @param circ
+ * @param stop_flag
+ * @param discount_rate
+ * @param depth_weight
+ * @param max_lookahead
+ * @param max_tqe_candidates
+ * @param seed
+ * @param allow_zzphase
+ * @return Circuit
+ */
+Circuit greedy_pauli_graph_synthesis_flag(
+    const Circuit& circ, std::atomic<bool>& stop_flag,
+    double discount_rate = 0.7, double depth_weight = 0.3,
+    unsigned max_lookahead = 500, unsigned max_tqe_candidates = 500,
+    unsigned seed = 0, bool allow_zzphase = false);
 
 /**
  * @brief Converts the given circuit into a GPGraph and conjugates each node
