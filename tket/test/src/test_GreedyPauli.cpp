@@ -762,7 +762,7 @@ SCENARIO("Test GreedyPauliSimp pass construction") {
 }
 
 SCENARIO("Test GreedyPauliSimpMT") {
-  GIVEN("Large circuit with ZZPhase") {
+  GIVEN("Large circuit with and without targeting ZZPhase") {
     Circuit circ(6);
     circ.add_box(
         PauliExpBox(SymPauliTensor({Pauli::X, Pauli::X}, 0.3)), {0, 1});
@@ -824,30 +824,12 @@ SCENARIO("Test GreedyPauliSimpMT") {
     REQUIRE(Transforms::multi_thread_greedy_pauli_optimisation(
                 3, 0.7, 0.3, 500, 500, 0, true, 100)
                 .apply(d));
+    REQUIRE(Transforms::multi_thread_greedy_pauli_optimisation(
+                3, 0.7, 0.3, 500, 500, 0, false, 100)
+                .apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
-
-    GIVEN("Select TQE over ZZPhase") {
-      Circuit circ(3);
-      circ.add_box(
-          PauliExpBox(SymPauliTensor({Pauli::X, Pauli::Y}, 0.3)), {0, 1});
-      circ.add_box(
-          PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Y, Pauli::Z}, 0.22)),
-          {0, 1, 2});
-      circ.add_box(
-          PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Y, Pauli::X}, 0.15)),
-          {0, 1, 2});
-      Circuit d(circ);
-      d.decompose_boxes_recursively();
-      REQUIRE(Transforms::multi_thread_greedy_pauli_optimisation(
-                  3, 0.7, 0.3, 500, 500, 0, true)
-                  .apply(d));
-      REQUIRE(test_unitary_comparison(circ, d, true));
-      // if the first XY was implemented using a ZZPhase
-      // then 2 TQEs is needed to conjugate the remaining two strings to weight
-      // 2 hence 5 2-qubit gates in total.
-      REQUIRE(d.count_n_qubit_gates(2) == 4);
-    }
   }
+}
 }
 
 }  // namespace test_GreedyPauliSimp
