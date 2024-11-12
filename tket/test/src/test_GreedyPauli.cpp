@@ -852,7 +852,7 @@ SCENARIO("Test MultiThreadGreedyPauliSimp") {
 
     Circuit d(circ);
     REQUIRE(Transforms::multi_thread_greedy_pauli_optimisation(
-                3, 0.7, 0.3, 500, 500, 0, true, 10)
+                3, 0.7, 0.3, 500, 500, 0, true, 100)
                 .apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
 
@@ -867,6 +867,7 @@ SCENARIO("Test MultiThreadGreedyPauliSimp") {
           PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Y, Pauli::X}, 0.15)),
           {0, 1, 2});
       Circuit d(circ);
+      d.decompose_boxes_recursively();
       REQUIRE(Transforms::multi_thread_greedy_pauli_optimisation(
                   3, 0.7, 0.3, 500, 500, 0, true)
                   .apply(d));
