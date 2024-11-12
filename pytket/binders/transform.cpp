@@ -440,12 +440,17 @@ PYBIND11_MODULE(transform, m) {
           "\n:param allow_zzphase: If set to True, allows the algorithm to "
           "implement 2-qubit rotations using ZZPhase gates when deemed "
           "optimal. Defaults to False."
-          "\n:param timeout: Sets maximum out of time spent finding solution."
+          "\n:param thread_timeout: Sets maximum out of time spent finding a "
+          "single solution in one thread."
+          "\n:param trials: Sets maximum number of found solutions."
+          "\n:param threads: Sets maximum number of threads used when finding "
+          "solutions in parallel."
           "\n:return: a pass to perform the simplification",
           py::arg("discount_rate") = 0.7, py::arg("depth_weight") = 0.3,
           py::arg("max_tqe_candidates") = 500, py::arg("max_lookahead") = 500,
           py::arg("seed") = 0, py::arg("allow_zzphase") = false,
-          py::arg("timeout") = 100)
+          py::arg("thread_timeout") = 100, py::arg("trials") = 1,
+          py::arg("threads") = 1)
       .def_static(
           "ZZPhaseToRz", &Transforms::ZZPhase_to_Rz,
           "Fixes all ZZPhase gate angles to [-1, 1) half turns.")

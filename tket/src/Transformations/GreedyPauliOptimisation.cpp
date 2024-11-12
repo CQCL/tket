@@ -776,25 +776,57 @@ Circuit greedy_pauli_graph_synthesis(
 }
 
 }  // namespace GreedyPauliSimp
-
 Transform greedy_pauli_optimisation(
     double discount_rate, double depth_weight, unsigned max_lookahead,
     unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase,
-    unsigned timeout) {
+    unsigned thread_timeout, unsigned trials, unsigned threads) {
   return Transform([discount_rate, depth_weight, max_lookahead,
-                    max_tqe_candidates, seed, allow_zzphase,
-                    timeout](Circuit& circ) {
-    std::future<Circuit> future = std::async(
-        std::launch::async, GreedyPauliSimp::greedy_pauli_graph_synthesis, circ,
-        discount_rate, depth_weight, max_lookahead, max_tqe_candidates, seed,
-        allow_zzphase);
-    if (future.wait_for(std::chrono::seconds(timeout)) ==
-        std::future_status::ready) {
-      circ = future.get();
-      circ.decompose_boxes_recursively();
-      return true;
+                    max_tqe_candidates, seed, allow_zzphase, thread_timeout,
+                    trials, threads](Circuit& circ) {
+    std::mt19937 seed_gen(seed);
+    std::queue<std::future<Circuit>> all_threads;
+    std::vector<Circuit> circuits;
+    unsigned max_threads =
+        std::min(threads, std::thread::hardware_concurrency());
+    unsigned threads_started = 0;
+
+    while (threads_started < trials || !all_threads.empty()) {
+      // Start new jobs if we haven't reached the max threads or trials
+      if (threads_started < trials && all_threads.size() < max_threads) {
+        std::future<Circuit> future = std::async(
+            std::launch::async, GreedyPauliSimp::greedy_pauli_graph_synthesis,
+            circ, discount_rate, depth_weight, max_lookahead,
+            max_tqe_candidates, seed_gen(), allow_zzphase);
+        all_threads.push(std::move(future));
+        threads_started++;
+        // continue to come straight back to this if statement, meaning we
+        // maximise threads
+        continue;
+      }
+
+      // Check the oldest thread for completion
+      auto& thread = all_threads.front();
+      if (thread.wait_for(std::chrono::seconds(thread_timeout)) ==
+          std::future_status::ready) {
+        Circuit c = thread.get();
+        c.decompose_boxes_recursively();
+        circuits.push_back(c);
+      }
+      all_threads.pop();
     }
-    return false;
+
+    // Return the smallest circuit if any were found within the single
+    // thread_timeout
+    if (circuits.empty()) return false;
+    circ = *std::min_element(
+        circuits.begin(), circuits.end(),
+        [](const Circuit& a, const Circuit& b) {
+          return std::make_tuple(
+                     a.count_n_qubit_gates(2), a.n_gates(), a.depth()) <
+                 std::make_tuple(
+                     b.count_n_qubit_gates(2), b.n_gates(), b.depth());
+        });
+    return true;
   });
 }
 
