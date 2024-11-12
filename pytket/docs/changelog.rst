@@ -17,6 +17,7 @@ Features:
 * Add option to not relabel `ClassicalExpBox` when calling `rename_units`
   and `flatten_registers`
 * Add new pass `MultiThreadGreedyPauliSimp`.
+* Implement `dagger()` and `transpose()` for `CustomGate`.
 
 Fixes:
 

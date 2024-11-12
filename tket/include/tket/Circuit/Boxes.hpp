@@ -494,6 +494,10 @@ class CustomGate : public Box {
 
   bool is_clifford() const override;
 
+  Op_ptr dagger() const override;
+
+  Op_ptr transpose() const override;
+
  protected:
   void generate_circuit() const override;
   CustomGate() : Box(OpType::CustomGate), gate_(), params_() {}
