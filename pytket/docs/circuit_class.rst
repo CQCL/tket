@@ -182,6 +182,8 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_classicalexpbox_register
 
+   .. automethod:: add_clexpr
+
    .. automethod:: qubit_create
 
    .. automethod:: qubit_create_all
