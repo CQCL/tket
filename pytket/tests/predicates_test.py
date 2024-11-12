@@ -1038,7 +1038,7 @@ def test_greedy_pauli_synth() -> None:
     pss = GreedyPauliSimp(0.5, 0.5)
     assert not GreedyPauliSimp(0.5, 0.5, thread_timeout=0, only_reduce=False).apply(d)
     assert pss.apply(d)
-    assert GreedyPauliSimp(0.5, 0.5, thread_timeout = 10, trials = 5, threads = 5).apply(d)
+    assert GreedyPauliSimp(0.5, 0.5, thread_timeout=10, trials=5, threads=5).apply(d)
     assert np.allclose(circ.get_unitary(), d.get_unitary())
     assert d.name == "test"
     # test gateset
