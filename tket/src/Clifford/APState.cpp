@@ -75,7 +75,7 @@ APState::APState(const Eigen::VectorXcd& sv) {
   for (unsigned x = 1; x < sv.size(); ++x) {
     if (sv(z0 ^ x) != 0.) {
       ++n_non_zero;
-      if (n_non_zero == (1 << offsets.size())) offsets.push_back(x);
+      if (n_non_zero == (1u << offsets.size())) offsets.push_back(x);
     }
   }
 
@@ -216,7 +216,7 @@ Eigen::VectorXcd APState::to_statevector() {
   Eigen::VectorXcd sv = Eigen::VectorXcd::Zero(1 << n_qubits);
   unsigned n_terms = 0;
   Complex g_phase = std::exp(i_ * PI * eval_expr(phase).value());
-  for (unsigned x = 0; x < 1 << n_qubits; ++x) {
+  for (unsigned x = 0; x < (1u << n_qubits); ++x) {
     VectorXb x_binary = VectorXb::Zero(n_qubits);
     for (unsigned i = 0; i < n_qubits; ++i) {
       unsigned mask = 1 << (n_qubits - 1 - i);
