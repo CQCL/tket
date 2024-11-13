@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from io import StringIO
 import re
+from io import StringIO
 from pathlib import Path
 from typing import List
 
@@ -21,42 +21,41 @@ import pytest
 
 from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
 from pytket.circuit import (
-    Circuit,
-    OpType,
-    fresh_symbol,
-    Qubit,
     Bit,
+    BitRegister,
+    Circuit,
+    CustomGate,
+    OpType,
+    Qubit,
+    RangePredicateOp,
+    fresh_symbol,
+    if_not_bit,
     reg_eq,
-    reg_neq,
-    reg_lt,
+    reg_geq,
     reg_gt,
     reg_leq,
-    reg_geq,
-    if_not_bit,
-    BitRegister,
-    CustomGate,
-    RangePredicateOp,
+    reg_lt,
+    reg_neq,
 )
-from pytket.circuit.decompose_classical import DecomposeClassicalError
 from pytket.circuit.logic_exp import BitWiseOp, create_bit_logic_exp
+from pytket.passes import DecomposeBoxes, DecomposeClassicalExp
 from pytket.qasm import (
     circuit_from_qasm,
-    circuit_to_qasm,
     circuit_from_qasm_str,
-    circuit_to_qasm_str,
     circuit_from_qasm_wasm,
+    circuit_to_qasm,
+    circuit_to_qasm_str,
 )
-from pytket.qasm.qasm import QASMParseError, QASMUnsupportedError
 from pytket.qasm.includes.load_includes import (
     _get_declpath,
-    _get_files,
     _get_defpath,
-    _write_defs,
-    _write_decls,
+    _get_files,
     _load_gdict,
+    _write_decls,
+    _write_defs,
 )
+from pytket.qasm.qasm import QASMParseError, QASMUnsupportedError
 from pytket.transform import Transform
-from pytket.passes import DecomposeClassicalExp, DecomposeBoxes
 
 curr_file_path = Path(__file__).resolve().parent
 
@@ -177,7 +176,7 @@ def test_qasm_roundtrip() -> None:
 
 
 def test_qasm_str_roundtrip() -> None:
-    with open(curr_file_path / "qasm_test_files/test1.qasm", "r") as f:
+    with open(curr_file_path / "qasm_test_files/test1.qasm") as f:
         c = circuit_from_qasm_str(f.read())
         qasm_str = circuit_to_qasm_str(c)
         c2 = circuit_from_qasm_str(qasm_str)
@@ -447,7 +446,7 @@ def test_h1_rzz() -> None:
     hqs_qasm_str = circuit_to_qasm_str(c, header="hqslib1")
     assert "RZZ" in hqs_qasm_str
 
-    with open(str(curr_file_path / "qasm_test_files/zzphase.qasm"), "r") as f:
+    with open(str(curr_file_path / "qasm_test_files/zzphase.qasm")) as f:
         fread_str = str(f.read())
         assert str(hqs_qasm_str) == fread_str
 
@@ -495,7 +494,7 @@ def test_alternate_encoding() -> None:
         "utf-32": str(curr_file_path / "qasm_test_files/utf32.qasm"),
     }
     for enc, fil in encoded_files.items():
-        with pytest.raises(Exception) as e:
+        with pytest.raises(Exception):
             circuit_from_qasm(fil)
         c = circuit_from_qasm(fil, encoding=enc)
         assert c.n_gates == 6
@@ -607,7 +606,7 @@ def test_scratch_bits_filtering() -> None:
     assert _TEMP_BIT_NAME not in qstr
     qasm_out = str(curr_file_path / "qasm_test_files/testout6.qasm")
     circuit_to_qasm(c, qasm_out, "hqslib1")
-    with open(qasm_out, "r") as f:
+    with open(qasm_out) as f:
         assert _TEMP_BIT_NAME not in f.read()
 
     # test keeping used
@@ -619,7 +618,7 @@ def test_scratch_bits_filtering() -> None:
     qstr = circuit_to_qasm_str(c, "hqslib1")
     assert _TEMP_BIT_NAME in qstr
     circuit_to_qasm(c, qasm_out, "hqslib1")
-    with open(qasm_out, "r") as f:
+    with open(qasm_out) as f:
         assert _TEMP_BIT_NAME in f.read()
 
     # test multiple scratch registers
@@ -644,7 +643,7 @@ def test_scratch_bits_filtering() -> None:
     assert _TEMP_BIT_NAME in qstr
     assert f"{_TEMP_BIT_NAME}_1" not in qstr
     circuit_to_qasm(c, qasm_out, "hqslib1")
-    with open(qasm_out, "r") as f:
+    with open(qasm_out) as f:
         fstr = f.read()
         assert _TEMP_BIT_NAME in fstr
         assert f"{_TEMP_BIT_NAME}_1" not in fstr
@@ -664,7 +663,7 @@ def test_scratch_bits_filtering() -> None:
     qstr = circuit_to_qasm_str(c, "hqslib1")
     assert f"creg {_TEMP_BIT_REG_BASE}_0[32]" in qstr
     circuit_to_qasm(c, qasm_out, "hqslib1")
-    with open(qasm_out, "r") as f:
+    with open(qasm_out) as f:
         fstr = f.read()
         assert f"creg {_TEMP_BIT_REG_BASE}_0[32]" in fstr
 
@@ -728,7 +727,7 @@ def test_RZZ_read_from() -> None:
 
 
 def test_conditional_expressions() -> None:
-    def cond_circ(bits: List[int]) -> Circuit:
+    def cond_circ(bits: list[int]) -> Circuit:
         c = Circuit(4, 4)
         c.X(0)
         c.X(1)
@@ -870,14 +869,14 @@ def test_classical_expbox_arg_order(use_clexpr: bool) -> None:
     qasm = """
     OPENQASM 2.0;
     include "hqslib1.inc";
-    
+
     qreg q[1];
-    
+
     creg a[4];
     creg b[4];
     creg c[4];
     creg d[4];
-    
+
     c = a ^ b | d;
     """
 
@@ -899,11 +898,11 @@ def test_register_name_check() -> None:
     qasm = """
     OPENQASM 2.0;
     include "hqslib1.inc";
-    
+
     qreg Q[1];
     """
     with pytest.raises(QASMParseError) as e:
-        circ = circuit_from_qasm_str(qasm)
+        _ = circuit_from_qasm_str(qasm)
     err_msg = "Invalid register definition 'Q[1]'"
     assert err_msg in str(e.value)
 

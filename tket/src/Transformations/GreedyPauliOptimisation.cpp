@@ -15,6 +15,8 @@
 #include "tket/Transformations/GreedyPauliOptimisation.hpp"
 
 #include <algorithm>
+#include <chrono>
+#include <future>
 #include <random>
 
 #include "tket/Circuit/PauliExpBoxes.hpp"
@@ -740,7 +742,6 @@ Circuit greedy_pauli_graph_synthesis(
   if (max_tqe_candidates == 0) {
     throw GreedyPauliSimpError("max_tqe_candidates must be greater than 0.");
   }
-
   Circuit circ_flat(circ);
   unsigned n_qubits = circ_flat.n_qubits();
   unsigned n_bits = circ_flat.n_bits();
@@ -750,7 +751,7 @@ Circuit greedy_pauli_graph_synthesis(
   if (name != std::nullopt) {
     new_circ.set_name(name.value());
   }
-  unit_map_t unit_map = circ_flat.flatten_registers();
+  unit_map_t unit_map = circ_flat.flatten_registers(false);
   unit_map_t rev_unit_map;
   for (const auto& pair : unit_map) {
     rev_unit_map.insert({pair.second, pair.first});
@@ -769,7 +770,7 @@ Circuit greedy_pauli_graph_synthesis(
   for (auto it = measures.begin(); it != measures.end(); ++it) {
     new_circ.add_measure(it->left, it->right);
   }
-  new_circ.rename_units(rev_unit_map);
+  new_circ.rename_units(rev_unit_map, false);
   new_circ.replace_SWAPs();
   return new_circ;
 }
@@ -778,15 +779,22 @@ Circuit greedy_pauli_graph_synthesis(
 
 Transform greedy_pauli_optimisation(
     double discount_rate, double depth_weight, unsigned max_lookahead,
-    unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase) {
+    unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase,
+    unsigned timeout) {
   return Transform([discount_rate, depth_weight, max_lookahead,
-                    max_tqe_candidates, seed, allow_zzphase](Circuit& circ) {
-    circ = GreedyPauliSimp::greedy_pauli_graph_synthesis(
-        circ, discount_rate, depth_weight, max_lookahead, max_tqe_candidates,
-        seed, allow_zzphase);
-    // decompose the conditional CircBoxes
-    circ.decompose_boxes_recursively();
-    return true;
+                    max_tqe_candidates, seed, allow_zzphase,
+                    timeout](Circuit& circ) {
+    std::future<Circuit> future = std::async(
+        std::launch::async, GreedyPauliSimp::greedy_pauli_graph_synthesis, circ,
+        discount_rate, depth_weight, max_lookahead, max_tqe_candidates, seed,
+        allow_zzphase);
+    if (future.wait_for(std::chrono::seconds(timeout)) ==
+        std::future_status::ready) {
+      circ = future.get();
+      circ.decompose_boxes_recursively();
+      return true;
+    }
+    return false;
   });
 }
 

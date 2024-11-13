@@ -12,24 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from enum import unique, Enum
-from typing import List, NamedTuple, Tuple
+from enum import Enum, unique
 from math import pi
+from typing import NamedTuple
 
 from lark import Lark, Transformer, Tree
-from pytket.circuit import Circuit, OpType, CircBox
+
+from pytket.circuit import CircBox, Circuit, OpType
 
 # The Lark grammar, transformer and type definitions below are adapted from the
 # code in Eddie Schoute's `quippy` project
 # (https://github.com/eddieschoute/quippy). The main enhancements are support
 # for multi-qubit gates and correct handling of negative controls on qubit 0.
 
+
 # Types
-Wire = NamedTuple("Wire", [("i", int)])
-ControlWire = NamedTuple("ControlWire", [("wire", Wire), ("negative", bool)])
-Control = NamedTuple(
-    "Control", [("controlled", List[ControlWire]), ("no_control", bool)]
-)
+class Wire(NamedTuple):
+    i: int
+
+
+class ControlWire(NamedTuple):
+    wire: Wire
+    negative: bool
+
+
+class Control(NamedTuple):
+    controlled: list[ControlWire]
+    no_control: bool
 
 
 @unique
@@ -38,9 +47,9 @@ class TypeAssignment_Type(Enum):
     Cbit = 2
 
 
-TypeAssignment = NamedTuple(
-    "TypeAssignment", [("wire", Wire), ("type", TypeAssignment_Type)]
-)
+class TypeAssignment(NamedTuple):
+    wire: Wire
+    type: TypeAssignment_Type
 
 
 class Gate:
@@ -71,7 +80,7 @@ class QGate(
         [
             ("op", QGate_Op),
             ("inverted", bool),
-            ("wires", List[Wire]),
+            ("wires", list[Wire]),
             ("control", Control),
         ],
     ),
@@ -132,8 +141,8 @@ class SubroutineCall(
             ("name", str),
             ("shape", str),
             ("inverted", bool),
-            ("inputs", List[Wire]),
-            ("outputs", List[Wire]),
+            ("inputs", list[Wire]),
+            ("outputs", list[Wire]),
             ("control", Control),
         ],
     ),
@@ -148,21 +157,17 @@ class Comment(
         [
             ("comment", str),
             ("inverted", bool),
-            ("wire_comments", List[Tuple[Wire, str]]),
+            ("wire_comments", list[tuple[Wire, str]]),
         ],
     ),
 ):
     pass
 
 
-Program = NamedTuple(
-    "Program",
-    [
-        ("inputs", List[TypeAssignment]),
-        ("gates", List[Gate]),
-        ("outputs", List[TypeAssignment]),
-    ],
-)
+class Program(NamedTuple):
+    inputs: list[TypeAssignment]
+    gates: list[Gate]
+    outputs: list[TypeAssignment]
 
 
 @unique
@@ -172,55 +177,55 @@ class Subroutine_Control(Enum):
     classically = 3
 
 
-Subroutine = NamedTuple(
-    "Subroutine",
-    [
-        ("name", str),
-        ("shape", str),
-        ("controllable", Subroutine_Control),
-        ("circuit", Program),
-    ],
-)
-Start = NamedTuple("Start", [("circuit", Program), ("subroutines", List[Subroutine])])
+class Subroutine(NamedTuple):
+    name: str
+    shape: str
+    controllable: Subroutine_Control
+    circuit: Program
+
+
+class Start(NamedTuple):
+    circuit: Program
+    subroutines: list[Subroutine]
 
 
 # Transformer
 class QuipperTransformer(Transformer):
-    def int(self, t: List) -> int:
+    def int(self, t: list) -> int:
         return int(t[0])
 
-    def float(self, t: List) -> float:
+    def float(self, t: list) -> float:
         return float(t[0])
 
-    def string(self, t: List) -> str:
+    def string(self, t: list) -> str:
         return str(t[0][1:-1])
 
-    def wire(self, t: List) -> Wire:
+    def wire(self, t: list) -> Wire:
         return Wire(t[0])
 
     wire_list = list
 
-    def wire_string_list(self, t: List) -> List[Tuple[Wire, str]]:
+    def wire_string_list(self, t: list) -> list[tuple[Wire, str]]:
         wires = (el for i, el in enumerate(t) if i % 2 == 0)
         labels = (el for i, el in enumerate(t) if i % 2 == 1)
         return list(zip(wires, labels))
 
-    def pos_control_wire(self, t: List) -> ControlWire:
+    def pos_control_wire(self, t: list) -> ControlWire:
         return ControlWire(t[0], False)
 
     control_wire_list = list
 
-    def neg_control_wire(self, t: List) -> ControlWire:
+    def neg_control_wire(self, t: list) -> ControlWire:
         return ControlWire(t[0], True)
 
-    def type_assignment(self, t: List) -> TypeAssignment:
+    def type_assignment(self, t: list) -> TypeAssignment:
         ty = TypeAssignment_Type.Qbit if t[1] == "Qbit" else TypeAssignment_Type.Cbit
         return TypeAssignment(t[0], ty)
 
-    def arity(self, t: List) -> List[Tree]:
+    def arity(self, t: list) -> list[Tree]:
         return list(t)
 
-    def qgate(self, t: List) -> QGate:
+    def qgate(self, t: list) -> QGate:
         ops = QGate_Op
         n = t[0]
         if n == "not" or n == "x" or n == "X":
@@ -250,41 +255,41 @@ class QuipperTransformer(Transformer):
         elif n == "W":
             op = ops.W
         else:
-            raise RuntimeError("Unknown QGate operation: {}".format(n))
+            raise RuntimeError(f"Unknown QGate operation: {n}")
         return QGate(op=op, inverted=len(t[1].children) > 0, wires=t[2], control=t[3])
 
-    def qrot1(self, t: List) -> QRot:
+    def qrot1(self, t: list) -> QRot:
         return QRot(
             op=QRot_Op.ExpZt, timestep=t[0], inverted=len(t[1].children) > 0, wire=t[2]
         )
 
-    def qrot2(self, t: List) -> QRot:
+    def qrot2(self, t: list) -> QRot:
         return QRot(
             op=QRot_Op.R, timestep=t[0], inverted=len(t[1].children) > 0, wire=t[2]
         )
 
-    def qinit(self, t: List) -> QInit:
+    def qinit(self, t: list) -> QInit:
         return QInit(value=(t[0] == "QInit1"), wire=t[1])
 
-    def cinit(self, t: List) -> CInit:
+    def cinit(self, t: list) -> CInit:
         return CInit(value=(t[0] == "CInit1"), wire=t[1])
 
-    def qterm(self, t: List) -> QTerm:
+    def qterm(self, t: list) -> QTerm:
         return QTerm(value=(t[0] == "QTerm1"), wire=t[1])
 
-    def cterm(self, t: List) -> CTerm:
+    def cterm(self, t: list) -> CTerm:
         return CTerm(value=(t[0] == "CTerm1"), wire=t[1])
 
-    def qmeas(self, t: List) -> QMeas:
+    def qmeas(self, t: list) -> QMeas:
         return QMeas(wire=t[0])
 
-    def qdiscard(self, t: List) -> QDiscard:
+    def qdiscard(self, t: list) -> QDiscard:
         return QDiscard(wire=t[0])
 
-    def cdiscard(self, t: List) -> CDiscard:
+    def cdiscard(self, t: list) -> CDiscard:
         return CDiscard(wire=t[0])
 
-    def subroutine_call(self, t: List) -> SubroutineCall:
+    def subroutine_call(self, t: list) -> SubroutineCall:
         repetitions = 1
         if t[0] is not None:
             assert isinstance(t[0], int)
@@ -299,13 +304,13 @@ class QuipperTransformer(Transformer):
             control=t[6],
         )
 
-    def comment(self, t: List) -> Comment:
+    def comment(self, t: list) -> Comment:
         wire_comments = t[2] if len(t) > 2 else []
         return Comment(
             comment=t[0], inverted=len(t[1].children) > 0, wire_comments=wire_comments
         )
 
-    def control_app(self, t: List) -> Control:
+    def control_app(self, t: list) -> Control:
         if not t:
             return Control(controlled=list(), no_control=False)
         if len(t) == 2:
@@ -314,10 +319,10 @@ class QuipperTransformer(Transformer):
             return Control(controlled=list(), no_control=True)
         return Control(controlled=t[0], no_control=False)
 
-    def circuit(self, t: List) -> Program:
+    def circuit(self, t: list) -> Program:
         return Program(inputs=t[0], gates=t[1:-1], outputs=t[-1])
 
-    def subroutine(self, t: List) -> Subroutine:
+    def subroutine(self, t: list) -> Subroutine:
         if t[2] == "yes":
             controllable = Subroutine_Control.yes
         elif t[2] == "no":
@@ -328,7 +333,7 @@ class QuipperTransformer(Transformer):
             name=t[0], shape=t[1], controllable=controllable, circuit=t[3]
         )
 
-    def start(self, t: List) -> Start:
+    def start(self, t: list) -> Start:
         circuit = t.pop(0)
         return Start(circuit, list(t))
 
@@ -337,16 +342,15 @@ class QuipperTransformer(Transformer):
 def allowed(op: str, arity: int) -> bool:
     if op in ["Not", "IX", "H", "Y", "Z", "S", "T", "E", "Omega", "V"]:
         return arity == 1
-    elif op in ["Swap", "W"]:
+    if op in ["Swap", "W"]:
         return arity == 2
-    else:
-        # MultiNot
-        return True
+    # MultiNot
+    return True
 
 
 # Class for constructing a pytket Circuit from a parsed Quipper program
 class CircuitMaker:
-    def __init__(self, subr: List[Subroutine]) -> None:
+    def __init__(self, subr: list[Subroutine]) -> None:
         self.subrd = dict((s.name, s) for s in subr)
         if len(self.subrd) != len(subr):
             raise TypeError("Repeated subroutine names")
@@ -624,7 +628,7 @@ def circuit_from_quipper(input_file: str) -> Circuit:
     """
 
     # Read Quipper program from file.
-    with open(input_file, "r") as f:
+    with open(input_file) as f:
         quip = f.read()
 
     # Parse the circuit using the QuipperTransformer.

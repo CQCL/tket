@@ -12,6 +12,16 @@ Features:
   conditions.
 * Add `custom_deserialisation` argument to `BasePass` and `SequencePass` 
   `from_dict` method to support construction of `CustomPass` from json.
+* Add `timeout` argument to `GreedyPauliSimp`.
+* Add `only_reduce` argument to `GreedyPauliSimp`.
+* Add option to not relabel `ClassicalExpBox` when calling `rename_units`
+  and `flatten_registers`
+* Implement `dagger()` and `transpose()` for `CustomGate`.
+* Use `ClExprOp` by default when converting from QASM.
+
+Deprecations:
+
+* Deprecate `ClassicalExpBox` and related methods, in favour of `ClExprOp`.
 
 Fixes:
 
@@ -21,6 +31,8 @@ Fixes:
 * Fix `maxwidth` parameter of `circuit_from_qasm_str`
 * Add `scratch_reg_resize_pass` to `circuit_from_qasm_str`
 * Reject incompete classical registers in pytket to qasm conversion
+* Add parameter `include_conditional` to `n_gates_of_type` to include
+  conditional gates in the count
 
 1.34.0 (October 2024)
 ---------------------

@@ -14,20 +14,18 @@
 
 import numpy as np
 import pytest
+from simulator import TketSimShotBackend  # type: ignore
 
 from pytket.circuit import (
-    ProjectorAssertionBox,
-    StabiliserAssertionBox,
     Circuit,
+    ProjectorAssertionBox,
     Qubit,
+    StabiliserAssertionBox,
 )
-
 from pytket.passes import (
     DecomposeBoxes,
 )
-
-from pytket.pauli import PauliStabiliser, Pauli
-from simulator import TketSimShotBackend  # type: ignore
+from pytket.pauli import Pauli, PauliStabiliser
 
 
 def test_assertion_init() -> None:
