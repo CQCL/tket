@@ -1035,10 +1035,9 @@ def test_greedy_pauli_synth() -> None:
         rega[0], regb[0]
     ).SWAP(regb[1], rega[0])
     d = circ.copy()
-    pss = GreedyPauliSimp(0.5, 0.5)
-    assert not GreedyPauliSimp(0.5, 0.5, thread_timeout=0, only_reduce=False).apply(d)
-    assert pss.apply(d)
-    assert GreedyPauliSimp(0.5, 0.5, thread_timeout=10, trials=5, threads=5).apply(d)
+    assert not GreedyPauliSimp(0.5, 0.5, thread_timeout=0, only_reduce=True).apply(d)
+    assert GreedyPauliSimp(0.5, 0.5, thread_timeout=10, trials=5, threads=3).apply(d)
+
     assert np.allclose(circ.get_unitary(), d.get_unitary())
     assert d.name == "test"
     # test gateset

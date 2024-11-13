@@ -749,7 +749,7 @@ Circuit greedy_pauli_set_synthesis(
 }
 
 Circuit greedy_pauli_graph_synthesis_flag(
-    const Circuit& circ, std::shared_ptr<std::atomic<bool>> stop_flag,
+    Circuit circ, std::shared_ptr<std::atomic<bool>> stop_flag,
     double discount_rate, double depth_weight, unsigned max_lookahead,
     unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase) {
   if (max_lookahead == 0) {
@@ -845,6 +845,7 @@ Transform greedy_pauli_optimisation(
       if (threads_started < trials && all_threads.size() < max_threads) {
         std::shared_ptr<std::atomic<bool>> stop_flag =
             std::make_shared<std::atomic<bool>>(false);
+        // Circuit copy(circ);
         std::future<Circuit> future = std::async(
             std::launch::async,
             [&, stop_flag]() {  // Capture `stop_flag` explicitly in the lambda
@@ -855,7 +856,7 @@ Transform greedy_pauli_optimisation(
         all_threads.emplace(std::move(future), stop_flag);
         threads_started++;
         // continue to come straight back to this if statement, meaning we
-        // maximise threads
+        // maximise parallel threads
         continue;
       }
 
@@ -876,6 +877,7 @@ Transform greedy_pauli_optimisation(
 
     // Return the smallest circuit if any were found within the single
     // thread_timeout
+    // If none are found then return false
     if (circuits.empty()) return false;
     auto min = std::min_element(
         circuits.begin(), circuits.end(),
