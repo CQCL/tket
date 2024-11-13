@@ -328,7 +328,8 @@ struct DepthTracker {
 static void tableau_row_nodes_synthesis(
     std::vector<PauliNode_ptr>& rows, Circuit& circ,
     DepthTracker& depth_tracker, double depth_weight, unsigned max_lookahead,
-    unsigned max_tqe_candidates, unsigned seed, std::atomic<bool>& stop_flag) {
+    unsigned max_tqe_candidates, unsigned seed,
+    std::shared_ptr<std::atomic<bool>> stop_flag) {
   // only consider nodes with a non-zero cost
   std::vector<unsigned> remaining_indices;
   for (unsigned i = 0; i < rows.size(); i++) {
@@ -338,7 +339,7 @@ static void tableau_row_nodes_synthesis(
   }
   while (remaining_indices.size() != 0) {
     // check early termination
-    if (stop_flag) {
+    if (stop_flag.get()->load()) {
       return;
     };
     // get nodes with min cost
@@ -612,10 +613,10 @@ static void pauli_exps_synthesis(
     std::vector<PauliNode_ptr>& rows, Circuit& circ,
     DepthTracker& depth_tracker, double discount_rate, double depth_weight,
     unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed,
-    bool allow_zzphase, std::atomic<bool>& stop_flag) {
+    bool allow_zzphase, std::shared_ptr<std::atomic<bool>> stop_flag) {
   while (true) {
     // check timeout
-    if (stop_flag) {
+    if (stop_flag.get()->load()) {
       return;
     };
 
@@ -623,6 +624,7 @@ static void pauli_exps_synthesis(
         rotation_sets, circ, depth_tracker, discount_rate, depth_weight);
 
     if (rotation_sets.empty()) break;
+
     std::vector<PauliNode_ptr>& first_set = rotation_sets[0];
     // get nodes with min cost
     std::vector<unsigned> min_nodes_indices = {0};
@@ -733,7 +735,8 @@ Circuit greedy_pauli_set_synthesis(
   std::vector<std::vector<PauliNode_ptr>> rotation_sets{rotation_set};
   DepthTracker depth_tracker(n_qubits);
   // synthesise Pauli exps
-  std::atomic<bool> dummy_stop_flag(false);
+  std::shared_ptr<std::atomic<bool>> dummy_stop_flag =
+      std::make_shared<std::atomic<bool>>(false);
   pauli_exps_synthesis(
       rotation_sets, rows, c, depth_tracker, 0, depth_weight, max_lookahead,
       max_tqe_candidates, seed, allow_zzphase, dummy_stop_flag);
@@ -746,9 +749,9 @@ Circuit greedy_pauli_set_synthesis(
 }
 
 Circuit greedy_pauli_graph_synthesis_flag(
-    const Circuit& circ, std::atomic<bool>& stop_flag, double discount_rate,
-    double depth_weight, unsigned max_lookahead, unsigned max_tqe_candidates,
-    unsigned seed, bool allow_zzphase) {
+    const Circuit& circ, std::shared_ptr<std::atomic<bool>> stop_flag,
+    double discount_rate, double depth_weight, unsigned max_lookahead,
+    unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase) {
   if (max_lookahead == 0) {
     throw GreedyPauliSimpError("max_lookahead must be greater than 0.");
   }
@@ -772,13 +775,13 @@ Circuit greedy_pauli_graph_synthesis_flag(
   GPGraph gpg(circ_flat);
 
   // We regularly check whether the timeout has ocurred
-  if (stop_flag) {
+  if (stop_flag.get()->load()) {
     return Circuit();
   }
 
   auto [rotation_sets, rows, measures] = gpg.get_sequence();
 
-  if (stop_flag) {
+  if (stop_flag.get()->load()) {
     return Circuit();
   }
 
@@ -788,7 +791,7 @@ Circuit greedy_pauli_graph_synthesis_flag(
       rotation_sets, rows, new_circ, depth_tracker, discount_rate, depth_weight,
       max_lookahead, max_tqe_candidates, seed, allow_zzphase, stop_flag);
 
-  if (stop_flag) {
+  if (stop_flag.get()->load()) {
     return Circuit();
   }
   // synthesise the tableau
@@ -796,7 +799,7 @@ Circuit greedy_pauli_graph_synthesis_flag(
       rows, new_circ, depth_tracker, depth_weight, max_lookahead,
       max_tqe_candidates, seed, stop_flag);
 
-  if (stop_flag) {
+  if (stop_flag.get()->load()) {
     return Circuit();
   }
 
@@ -812,7 +815,8 @@ Circuit greedy_pauli_graph_synthesis(
     const Circuit& circ, double discount_rate, double depth_weight,
     unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed,
     bool allow_zzphase) {
-  std::atomic<bool> dummy_stop_flag(false);
+  std::shared_ptr<std::atomic<bool>> dummy_stop_flag =
+      std::make_shared<std::atomic<bool>>(false);
   return greedy_pauli_graph_synthesis_flag(
       circ, dummy_stop_flag, discount_rate, depth_weight, max_lookahead,
       max_tqe_candidates, seed, allow_zzphase);
@@ -836,17 +840,18 @@ Transform greedy_pauli_optimisation(
         std::min(threads, std::thread::hardware_concurrency());
     unsigned threads_started = 0;
 
-    std::cout << "Doing GPO! Start off, number of threads and trials: "
-              << max_threads << " " << threads << " " << trials << std::endl;
     while (threads_started < trials || !all_threads.empty()) {
       // Start new jobs if we haven't reached the max threads or trials
       if (threads_started < trials && all_threads.size() < max_threads) {
-        auto stop_flag = std::make_shared<std::atomic<bool>>(false);
+        std::shared_ptr<std::atomic<bool>> stop_flag =
+            std::make_shared<std::atomic<bool>>(false);
         std::future<Circuit> future = std::async(
             std::launch::async,
-            GreedyPauliSimp::greedy_pauli_graph_synthesis_flag, circ,
-            std::ref(*stop_flag), discount_rate, depth_weight, max_lookahead,
-            max_tqe_candidates, seed_gen(), allow_zzphase);
+            [&, stop_flag]() {  // Capture `stop_flag` explicitly in the lambda
+              return GreedyPauliSimp::greedy_pauli_graph_synthesis_flag(
+                  circ, stop_flag, discount_rate, depth_weight, max_lookahead,
+                  max_tqe_candidates, seed_gen(), allow_zzphase);
+            });
         all_threads.emplace(std::move(future), stop_flag);
         threads_started++;
         // continue to come straight back to this if statement, meaning we
@@ -867,15 +872,6 @@ Transform greedy_pauli_optimisation(
         *stop_flag = true;
         all_threads.pop();
       }
-    }
-
-    std::cout << "Found " << circuits.size() << " circuits! " << std::endl;
-
-    for (unsigned i = 0; i < circuits.size(); i++) {
-      Circuit c = circuits[i];
-      std::cout << "Circuit " << i << " has " << c.count_n_qubit_gates(2)
-                << " two-qubit gates, " << c.n_gates() << " gates and depth "
-                << c.depth() << std::endl;
     }
 
     // Return the smallest circuit if any were found within the single
