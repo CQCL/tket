@@ -337,30 +337,34 @@ class ClExprDecomposer:
         self.add_var(out_var)
         match op:
             case ClOp.BitAnd:
-                self.circ.add_c_and(*terms, out_var, **self.kwargs)
+                self.circ.add_c_and(*terms, out_var, **self.kwargs)  # type: ignore
             case ClOp.BitNot:
-                self.circ.add_c_not(*terms, out_var, **self.kwargs)
+                self.circ.add_c_not(*terms, out_var, **self.kwargs)  # type: ignore
             case ClOp.BitOne:
+                assert isinstance(out_var, Bit)
                 self.circ.add_c_setbits([True], [out_var], **self.kwargs)
             case ClOp.BitOr:
-                self.circ.add_c_or(*terms, out_var, **self.kwargs)
+                self.circ.add_c_or(*terms, out_var, **self.kwargs)  # type: ignore
             case ClOp.BitXor:
-                self.circ.add_c_xor(*terms, out_var, **self.kwargs)
+                self.circ.add_c_xor(*terms, out_var, **self.kwargs)  # type: ignore
             case ClOp.BitZero:
+                assert isinstance(out_var, Bit)
                 self.circ.add_c_setbits([False], [out_var], **self.kwargs)
             case ClOp.RegAnd:
-                self.circ.add_c_and_to_registers(*terms, out_var, **self.kwargs)
+                self.circ.add_c_and_to_registers(*terms, out_var, **self.kwargs)  # type: ignore
             case ClOp.RegNot:
-                self.circ.add_c_not_to_registers(*terms, out_var, **self.kwargs)
+                self.circ.add_c_not_to_registers(*terms, out_var, **self.kwargs)  # type: ignore
             case ClOp.RegOne:
+                assert isinstance(out_var, BitRegister)
                 self.circ.add_c_setbits(
                     [True] * out_var.size, out_var.to_list(), **self.kwargs
                 )
             case ClOp.RegOr:
-                self.circ.add_c_or_to_registers(*terms, out_var, **self.kwargs)
+                self.circ.add_c_or_to_registers(*terms, out_var, **self.kwargs)  # type: ignore
             case ClOp.RegXor:
-                self.circ.add_c_xor_to_registers(*terms, out_var, **self.kwargs)
+                self.circ.add_c_xor_to_registers(*terms, out_var, **self.kwargs)  # type: ignore
             case ClOp.RegZero:
+                assert isinstance(out_var, BitRegister)
                 self.circ.add_c_setbits(
                     [False] * out_var.size, out_var.to_list(), **self.kwargs
                 )
@@ -483,14 +487,15 @@ def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:
             reg_posn = wexpr.reg_posn
             output_posn = wexpr.output_posn
             assert len(output_posn) > 0
-            output0: Bit = args[output_posn[0]]
+            output0 = args[output_posn[0]]
+            assert isinstance(output0, Bit)
             out_var: Variable = (
                 BitRegister(output0.reg_name, len(output_posn))
                 if has_reg_output(expr.op)
                 else output0
             )
             decomposer = ClExprDecomposer(
-                newcirc, bit_posn, reg_posn, args, bit_heap, reg_heap, kwargs
+                newcirc, bit_posn, reg_posn, args, bit_heap, reg_heap, kwargs  # type: ignore
             )
             comp_var = decomposer.decompose_expr(expr, out_var)
             if comp_var != out_var:
