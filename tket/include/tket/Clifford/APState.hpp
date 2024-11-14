@@ -101,7 +101,7 @@ class APState {
       const Eigen::VectorXi& P_, const Expr& phase_);
 
   /**
-   * Constructs the state |0>^{\otimes n_qubits} in AP form.
+   * Constructs the state |0>^{x n_qubits} in AP form.
    */
   APState(unsigned n_qubits);
 
