@@ -342,7 +342,7 @@ def DecomposeBoxes(excluded_types: set[pytket._tket.circuit.OpType] = set(), exc
     """
 def DecomposeClassicalExp() -> BasePass:
     """
-    Replaces each :py:class:`ClassicalExpBox` by a sequence of classical gates.
+    Replaces each :py:class:`ClassicalExpBox` and `ClExprOp` by a sequence of classical gates.
     """
 def DecomposeMultiQubitsCX() -> BasePass:
     """
