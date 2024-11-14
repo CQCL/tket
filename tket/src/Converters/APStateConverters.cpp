@@ -20,7 +20,7 @@ APState circuit_to_apstate(const Circuit& circ) {
   APState aps(circ.n_qubits());
   std::map<UnitID, unsigned> qb_ordering;
   for (const Qubit& q : circ.all_qubits())
-    qb_ordering.insert({q, qb_ordering.size()});
+    qb_ordering.insert({q, (unsigned)qb_ordering.size()});
   for (const Command& com : circ) {
     auto args = com.get_args();
     std::vector<unsigned> qbs;

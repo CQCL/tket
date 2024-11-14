@@ -36,7 +36,7 @@ namespace tket {
  * CZ gates and a (n-k) vector P of integers mod 4 describing S gates.
  *
  * This gives a canonical statevector:
- * \sum_{x, Ax=B} i^{\Phi(x)} \ket{x}
+ * \sum_{x, Ax=B} i^{\Phi(x)} |{x}>
  *
  * This canonical statevector fixes a reference phase from which we can track
  * global phase with an additional parameter.
