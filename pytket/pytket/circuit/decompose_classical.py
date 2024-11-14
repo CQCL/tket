@@ -338,16 +338,32 @@ class ClExprDecomposer:
         match op:
             case ClOp.BitAnd:
                 self.circ.add_c_and(*terms, out_var, **self.kwargs)
+            case ClOp.BitNot:
+                self.circ.add_c_not(*terms, out_var, **self.kwargs)
+            case ClOp.BitOne:
+                self.circ.add_c_setbits([True], [out_var], **self.kwargs)
             case ClOp.BitOr:
                 self.circ.add_c_or(*terms, out_var, **self.kwargs)
             case ClOp.BitXor:
                 self.circ.add_c_xor(*terms, out_var, **self.kwargs)
+            case ClOp.BitZero:
+                self.circ.add_c_setbits([False], [out_var], **self.kwargs)
             case ClOp.RegAnd:
                 self.circ.add_c_and_to_registers(*terms, out_var, **self.kwargs)
+            case ClOp.RegNot:
+                self.circ.add_c_not_to_registers(*terms, out_var, **self.kwargs)
+            case ClOp.RegOne:
+                self.circ.add_c_setbits(
+                    [True] * out_var.size, out_var.to_list(), **self.kwargs
+                )
             case ClOp.RegOr:
                 self.circ.add_c_or_to_registers(*terms, out_var, **self.kwargs)
             case ClOp.RegXor:
                 self.circ.add_c_xor_to_registers(*terms, out_var, **self.kwargs)
+            case ClOp.RegZero:
+                self.circ.add_c_setbits(
+                    [False] * out_var.size, out_var.to_list(), **self.kwargs
+                )
             case _:
                 raise DecomposeClassicalError(
                     f"{op} cannot be decomposed to TKET primitives."
