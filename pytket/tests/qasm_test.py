@@ -37,6 +37,7 @@ from pytket.circuit import (
     reg_lt,
     reg_neq,
 )
+from pytket.circuit.decompose_classical import DecomposeClassicalError
 from pytket.circuit.logic_exp import BitWiseOp, create_bit_logic_exp
 from pytket.passes import DecomposeBoxes, DecomposeClassicalExp
 from pytket.qasm import (
@@ -464,7 +465,8 @@ def test_extended_qasm() -> None:
 
     assert circuit_to_qasm_str(c2, "hqslib1")
 
-    assert not DecomposeClassicalExp().apply(c)
+    with pytest.raises(DecomposeClassicalError):
+        DecomposeClassicalExp().apply(c)
 
 
 def test_decomposable_extended() -> None:
