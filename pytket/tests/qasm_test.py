@@ -469,11 +469,14 @@ def test_extended_qasm() -> None:
         DecomposeClassicalExp().apply(c)
 
 
-def test_decomposable_extended() -> None:
+@pytest.mark.parametrize("use_clexpr", [True, False])
+def test_decomposable_extended(use_clexpr: bool) -> None:
     fname = str(curr_file_path / "qasm_test_files/test18.qasm")
     out_fname = str(curr_file_path / "qasm_test_files/test18_output.qasm")
 
-    c = circuit_from_qasm_wasm(fname, "testfile.wasm", maxwidth=64, use_clexpr=True)
+    c = circuit_from_qasm_wasm(
+        fname, "testfile.wasm", maxwidth=64, use_clexpr=use_clexpr
+    )
     DecomposeClassicalExp().apply(c)
 
     out_qasm = circuit_to_qasm_str(c, "hqslib1", maxwidth=64)
