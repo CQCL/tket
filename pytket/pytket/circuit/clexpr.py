@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from dataclasses import dataclass
+from typing import Any
 
 from pytket.circuit import (
     Bit,
@@ -194,3 +195,10 @@ def check_register_alignments(circ: Circuit) -> bool:
             ):
                 return False
     return True
+
+
+def _add_clexpr_to_circuit_from_logicexp(
+    circ: Circuit, exp: LogicExp, output_bits: list[Bit], **kwargs: Any
+) -> None:
+    wexpr, args = wired_clexpr_from_logic_exp(exp, output_bits)
+    circ.add_clexpr(wexpr, args, **kwargs)

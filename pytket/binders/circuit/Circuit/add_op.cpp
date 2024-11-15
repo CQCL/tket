@@ -514,6 +514,35 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":return: the new :py:class:`Circuit`",
           py::arg("expr"), py::arg("args"))
       .def(
+          "add_clexpr_from_logicexp",
+          [](Circuit *circ, const py::tket_custom::LogicExpression &exp,
+             const py::tket_custom::SequenceVec<Bit> &output_bits,
+             const py::kwargs &kwargs) {
+            py::list outputs;
+            for (const auto &bit : output_bits) {
+              outputs.append(bit);
+            }
+            py::module clexpr = py::module::import("pytket.circuit.clexpr");
+            py::object add_op =
+                clexpr.attr("_add_clexpr_to_circuit_from_logicexp");
+            add_op(circ, exp, outputs, **kwargs);
+            return circ;
+          },
+          "Append a :py:class:`ClExprOp` defined in terms of a logical "
+          "expression.\n\n"
+          "Example:\n"
+          ">>> c = Circuit()\n"
+          ">>> x_reg = c.add_c_register('x', 3)\n"
+          ">>> y_reg = c.add_c_register('y', 3)\n"
+          ">>> z_reg = c.add_c_register('z', 3)\n"
+          ">>> c.add_clexpr_from_logicexp(x_reg | y_reg, z_reg.to_list())\n"
+          ">>> [ClExpr x[0], x[1], x[2], y[0], y[1], y[2], z[0], z[1], z[2]; "
+          "]\n\n"
+          ":param exp: logical expression\n"
+          ":param output_bits: list of bits in output\n"
+          ":return: the updated circuit",
+          py::arg("exp"), py::arg("output_bits"))
+      .def(
           "add_custom_gate",
           [](Circuit *circ, const composite_def_ptr_t &definition,
              const py::tket_custom::SequenceVec<Expr> &params,
