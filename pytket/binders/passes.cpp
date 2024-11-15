@@ -111,7 +111,7 @@ static PassPtr gen_default_aas_routing_pass(
 
 const PassPtr &DecomposeClassicalExp() {
   // a special box decomposer for Circuits containing
-  // ClassicalExpBox<py::object>
+  // ClassicalExpBox<py::object> and ClExprOp
   static const PassPtr pp([]() {
     Transform t = Transform([](Circuit &circ) {
       py::module decomposer =
@@ -483,8 +483,8 @@ PYBIND11_MODULE(passes, m) {
       py::arg("excluded_opgroups") = std::unordered_set<std::string>());
   m.def(
       "DecomposeClassicalExp", &DecomposeClassicalExp,
-      "Replaces each :py:class:`ClassicalExpBox` by a sequence of "
-      "classical gates.");
+      "Replaces each :py:class:`ClassicalExpBox` and `ClExprOp` by a sequence "
+      "of classical gates.");
   m.def(
       "DecomposeMultiQubitsCX", &DecomposeMultiQubitsCX,
       "Converts all multi-qubit gates into CX and single-qubit gates.");

@@ -37,6 +37,7 @@ from pytket.circuit import (
     reg_lt,
     reg_neq,
 )
+from pytket.circuit.decompose_classical import DecomposeClassicalError
 from pytket.circuit.logic_exp import BitWiseOp, create_bit_logic_exp
 from pytket.passes import DecomposeBoxes, DecomposeClassicalExp
 from pytket.qasm import (
@@ -464,14 +465,18 @@ def test_extended_qasm() -> None:
 
     assert circuit_to_qasm_str(c2, "hqslib1")
 
-    assert not DecomposeClassicalExp().apply(c)
+    with pytest.raises(DecomposeClassicalError):
+        DecomposeClassicalExp().apply(c)
 
 
-def test_decomposable_extended() -> None:
+@pytest.mark.parametrize("use_clexpr", [True, False])
+def test_decomposable_extended(use_clexpr: bool) -> None:
     fname = str(curr_file_path / "qasm_test_files/test18.qasm")
     out_fname = str(curr_file_path / "qasm_test_files/test18_output.qasm")
 
-    c = circuit_from_qasm_wasm(fname, "testfile.wasm", maxwidth=64, use_clexpr=True)
+    c = circuit_from_qasm_wasm(
+        fname, "testfile.wasm", maxwidth=64, use_clexpr=use_clexpr
+    )
     DecomposeClassicalExp().apply(c)
 
     out_qasm = circuit_to_qasm_str(c, "hqslib1", maxwidth=64)
@@ -1233,7 +1238,8 @@ if __name__ == "__main__":
     test_hqs_conditional_params()
     test_barrier()
     test_barrier_2()
-    test_decomposable_extended()
+    test_decomposable_extended(True)
+    test_decomposable_extended(False)
     test_alternate_encoding()
     test_header_stops_gate_definition()
     test_tk2_definition()
