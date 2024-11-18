@@ -821,8 +821,8 @@ SCENARIO("Test GreedyPauliSimp with multiple trials and threads") {
 
     Circuit d(circ);
     REQUIRE(!Transforms::greedy_pauli_optimisation(
-                0.7, 0.3, 500, 500, 0, true, 0, 10)
-                .apply(d));
+                 0.7, 0.3, 500, 500, 0, true, 0, 10)
+                 .apply(d));
     REQUIRE(Transforms::greedy_pauli_optimisation(
                 0.7, 0.3, 500, 500, 0, true, 10, 10)
                 .apply(d));
