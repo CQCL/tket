@@ -357,7 +357,6 @@ PassPtr gen_special_UCC_synthesis(
  * @param allow_zzphase
  * @param thread_timeout
  * @param only_reduce
- * @param threads
  * @param trials
  * @return PassPtr
  */
