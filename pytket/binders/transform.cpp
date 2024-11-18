@@ -386,7 +386,15 @@ PYBIND11_MODULE(transform, m) {
           "DecomposeNPhasedX", &Transforms::decompose_NPhasedX,
           "Decompose NPhasedX gates into single-qubit PhasedX gates.")
       .def_static(
-          "GlobalisePhasedX", &Transforms::globalise_PhasedX,
+          "GlobalisePhasedX",
+          [](bool squash) {
+            PyErr_WarnEx(
+                PyExc_DeprecationWarning,
+                "The GlobalisePhasedX transform is unreliable and deprecated. "
+                "It will be removed after pytket version 1.38.",
+                1);
+            return Transforms::globalise_PhasedX(squash);
+          },
           "Turns all PhasedX and NPhasedX gates into global gates\n\n"
           "Replaces any PhasedX gates with global NPhasedX gates. "
           "By default, this transform will squash all single-qubit gates "
@@ -396,6 +404,8 @@ PYBIND11_MODULE(transform, m) {
           "performance. If squashing is disabled, each non-global PhasedX gate "
           "will be replaced with two global NPhasedX, but any other gates will "
           "be left untouched."
+          "\n\nDEPRECATED: This transform will be removed after pytket version "
+          "1.39."
           "\n\n:param squash: Whether to squash the circuit in pre-processing "
           "(default: true)."
           "\n\nIf squash=true (default), the `GlobalisePhasedX` transform's "
