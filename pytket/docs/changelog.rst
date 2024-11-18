@@ -20,6 +20,7 @@ Features:
 * Use `ClExprOp` by default when converting from QASM.
 * Extend `DecomposeClassicalExp` to handle `ClExprOp` as well as
   `ClassicalExpBox`.
+* Add convenience method `Circuit.add_clecpr_from_logicexp()`.
 
 Deprecations:
 
