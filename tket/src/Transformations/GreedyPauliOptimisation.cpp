@@ -827,51 +827,39 @@ Circuit greedy_pauli_graph_synthesis(
 Transform greedy_pauli_optimisation(
     double discount_rate, double depth_weight, unsigned max_lookahead,
     unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase,
-    unsigned thread_timeout, unsigned trials, unsigned threads) {
+    unsigned thread_timeout, unsigned trials) {
   return Transform([discount_rate, depth_weight, max_lookahead,
                     max_tqe_candidates, seed, allow_zzphase, thread_timeout,
-                    trials, threads](Circuit& circ) {
+                    trials](Circuit& circ) {
     std::mt19937 seed_gen(seed);
     std::queue<
         std::pair<std::future<Circuit>, std::shared_ptr<std::atomic<bool>>>>
         all_threads;
     std::vector<Circuit> circuits;
-    unsigned max_threads =
-        std::min(threads, std::thread::hardware_concurrency());
     unsigned threads_started = 0;
 
-    while (threads_started < trials || !all_threads.empty()) {
-      // Start new jobs if we haven't reached the max threads or trials
-      if (threads_started < trials && all_threads.size() < max_threads) {
-        std::shared_ptr<std::atomic<bool>> stop_flag =
-            std::make_shared<std::atomic<bool>>(false);
-        // Circuit copy(circ);
-        std::future<Circuit> future = std::async(
-            std::launch::async,
-            [&, stop_flag]() {  // Capture `stop_flag` explicitly in the lambda
-              return GreedyPauliSimp::greedy_pauli_graph_synthesis_flag(
-                  circ, stop_flag, discount_rate, depth_weight, max_lookahead,
-                  max_tqe_candidates, seed_gen(), allow_zzphase);
-            });
-        all_threads.emplace(std::move(future), stop_flag);
-        threads_started++;
-        // continue to come straight back to this if statement, meaning we
-        // maximise parallel threads
-        continue;
-      }
+    while (threads_started < trials) {
+      std::shared_ptr<std::atomic<bool>> stop_flag =
+          std::make_shared<std::atomic<bool>>(false);
+      // Circuit copy(circ);
+      std::future<Circuit> future = std::async(
+          std::launch::async,
+          [&, stop_flag]() {  // Capture `stop_flag` explicitly in the lambda
+            return GreedyPauliSimp::greedy_pauli_graph_synthesis_flag(
+                circ, stop_flag, discount_rate, depth_weight, max_lookahead,
+                max_tqe_candidates, seed_gen(), allow_zzphase);
+          });
+      threads_started++;
 
-      // Check the oldest thread for completion
-      auto& [thread, stop_flag] = all_threads.front();
-      if (thread.wait_for(std::chrono::seconds(thread_timeout)) ==
+      if (future.wait_for(std::chrono::seconds(thread_timeout)) ==
           std::future_status::ready) {
-        Circuit c = thread.get();
+        Circuit c = future.get();
         c.decompose_boxes_recursively();
         circuits.push_back(c);
-        all_threads.pop();
       } else {
         // If the thread is not ready, move it to the back of the queue
         *stop_flag = true;
-        all_threads.pop();
+        break;
       }
     }
 

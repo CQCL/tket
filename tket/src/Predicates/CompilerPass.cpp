@@ -524,11 +524,10 @@ PassPtr deserialise(
       bool allow_zzphase = content.at("allow_zzphase").get<bool>();
       unsigned timeout = content.at("thread_timeout").get<unsigned>();
       bool only_reduce = content.at("only_reduce").get<bool>();
-      unsigned threads = content.at("threads").get<unsigned>();
       unsigned trials = content.at("trials").get<unsigned>();
       pp = gen_greedy_pauli_simp(
           discount_rate, depth_weight, max_lookahead, max_tqe_candidates, seed,
-          allow_zzphase, timeout, only_reduce, threads, trials);
+          allow_zzphase, timeout, only_reduce, trials);
 
     } else if (passname == "PauliSimp") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY

@@ -385,10 +385,6 @@
         "trials": {
           "type": "number",
           "definition": "parameter controlling the number of random solutions found when calling \"GreedyPauliSimp\""
-        },
-        "threads": {
-          "type": "number",
-          "definition": "parameter controlling the maximum number of threads used in parallel when calling \"GreedyPauliSimp\""
         }
       },
       "required": [
@@ -923,10 +919,9 @@
               "allow_zzphase",
               "thread_timeout",
               "only_reduce",
-              "trials",
-              "threads"
+              "trials"
             ],
-            "maxProperties": 11
+            "maxProperties": 10
           }
         },
         {

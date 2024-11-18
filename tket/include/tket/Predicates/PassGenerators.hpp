@@ -366,7 +366,7 @@ PassPtr gen_greedy_pauli_simp(
     unsigned max_lookahead = 500, unsigned max_tqe_candidates = 500,
     unsigned seed = 0, bool allow_zzphase = false,
     unsigned thread_timeout = 100, bool only_reduce = false,
-    unsigned threads = 1, unsigned trials = 1);
+    unsigned trials = 1);
 
 /**
  * Generate a pass to simplify the circuit where it acts on known basis states.

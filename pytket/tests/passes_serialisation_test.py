@@ -299,7 +299,6 @@ TWO_WAY_PARAM_PASSES = {
             "thread_timeout": 5000,
             "only_reduce": False,
             "trials": 1,
-            "threads": 1,
         }
     ),
     # lists must be sorted by OpType value
