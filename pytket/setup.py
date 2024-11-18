@@ -63,7 +63,9 @@ class CMakeBuild(build_ext):
         os.mkdir(build_dir)
         install_dir = os.getenv("INSTALL_DIR")
         subprocess.run(
-            ["cmake", f"-DCMAKE_INSTALL_PREFIX={install_dir}", os.pardir], cwd=build_dir
+            ["cmake", f"-DCMAKE_INSTALL_PREFIX={install_dir}", os.pardir],
+            cwd=build_dir,
+            check=True,
         )
         subprocess.run(
             [
@@ -73,8 +75,9 @@ class CMakeBuild(build_ext):
                 f"-j{os.getenv('PYTKET_CMAKE_N_THREADS', multiprocessing.cpu_count())}",
             ],
             cwd=build_dir,
+            check=True,
         )
-        subprocess.run(["cmake", "--install", os.curdir], cwd=build_dir)
+        subprocess.run(["cmake", "--install", os.curdir], cwd=build_dir, check=True)
         lib_folder = os.path.join(install_dir, "lib")
         lib_names = ["libtklog.so", "libtket.so"]
         ext_suffix = get_config_var("EXT_SUFFIX")

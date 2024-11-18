@@ -18,6 +18,8 @@ Features:
   and `flatten_registers`
 * Implement `dagger()` and `transpose()` for `CustomGate`.
 * Use `ClExprOp` by default when converting from QASM.
+* Extend `DecomposeClassicalExp` to handle `ClExprOp` as well as
+  `ClassicalExpBox`.
 
 Deprecations:
 
