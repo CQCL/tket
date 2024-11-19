@@ -105,6 +105,7 @@ jobs:
         id: slack
         uses: slackapi/slack-github-action@v2.0.0
         with:
+          method: chat.postMessage
           token: ${{ secrets.PYTKET_BENCHMARKING_SLACK_BOT_TOKEN }}
           payload: |
             channel: 'G01CP0YFFA7'
