@@ -841,7 +841,6 @@ Transform greedy_pauli_optimisation(
     while (threads_started < trials) {
       std::shared_ptr<std::atomic<bool>> stop_flag =
           std::make_shared<std::atomic<bool>>(false);
-      // Circuit copy(circ);
       std::future<Circuit> future = std::async(
           std::launch::async,
           [&, stop_flag]() {  // Capture `stop_flag` explicitly in the lambda

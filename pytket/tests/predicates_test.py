@@ -1059,7 +1059,6 @@ def test_greedy_pauli_synth() -> None:
     circ.measure_all()
     circ.Reset(0)
     circ.add_pauliexpbox(pg1, [2, 3])
-    assert not GreedyPauliSimp(0.5, 0.5, 100, 100, 0, True, 0).apply(circ)
     assert GreedyPauliSimp(0.5, 0.5, 100, 100, 0, True, 100).apply(circ)
     # PauliExpBoxes implemented using ZZPhase
     d = Circuit(4, 4, name="test")
@@ -1084,6 +1083,16 @@ def test_greedy_pauli_synth() -> None:
         GreedyPauliSimp().apply(circ)
     err_msg = "Predicate requirements are not satisfied"
     assert err_msg in str(e.value)
+    # large circuit that doesn't complete within thread_timeout argument
+    c = Circuit(13)
+    for _ in range(20):
+        for i in range(13):
+            for j in range(i + 1, 13):
+                c.CX(i, j)
+                c.Rz(0.23, j)
+            c.H(i)
+    assert not GreedyPauliSimp(thread_timeout=1).apply(c)
+    assert GreedyPauliSimp().apply(c)
 
 
 def test_auto_rebase_deprecation(recwarn: Any) -> None:
