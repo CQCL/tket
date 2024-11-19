@@ -832,9 +832,6 @@ Transform greedy_pauli_optimisation(
                     max_tqe_candidates, seed, allow_zzphase, thread_timeout,
                     trials](Circuit& circ) {
     std::mt19937 seed_gen(seed);
-    std::queue<
-        std::pair<std::future<Circuit>, std::shared_ptr<std::atomic<bool>>>>
-        all_threads;
     std::vector<Circuit> circuits;
     unsigned threads_started = 0;
 
@@ -856,7 +853,8 @@ Transform greedy_pauli_optimisation(
         c.decompose_boxes_recursively();
         circuits.push_back(c);
       } else {
-        // If the thread is not ready, move it to the back of the queue
+        // If the thread isn't complete within time, prompt cancelling the
+        // optimisation and break from while loop
         *stop_flag = true;
         break;
       }
