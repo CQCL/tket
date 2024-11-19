@@ -454,10 +454,8 @@ PYBIND11_MODULE(transform, m) {
           "\n:param thread_timeout: Sets maximum out of time spent finding a "
           "single solution in one thread."
           "\n:param trials: Sets maximum number of found solutions. The "
-          "circuit "
-          "smallest circuit is returned, priorising the number of 2qb-gates, "
-          "then "
-          "gates, then depth."
+          "smallest circuit is returned, prioritising the number of 2qb-gates, "
+          "then the number of gates, then the depth."
           "\n:return: a pass to perform the simplification",
           py::arg("discount_rate") = 0.7, py::arg("depth_weight") = 0.3,
           py::arg("max_tqe_candidates") = 500, py::arg("max_lookahead") = 500,

@@ -975,7 +975,9 @@ PYBIND11_MODULE(passes, m) {
       "single solution in one thread."
       "\n:param only_reduce: Only returns modified circuit if it has "
       "fewer two-qubit gates."
-      "\n:param trials: Sets maximum number of found solutions."
+      "\n:param trials: Sets maximum number of found solutions. The "
+      "smallest circuit is returned, prioritising the number of 2qb-gates, "
+      "then the number of gates, then the depth."
       "\n:return: a pass to perform the simplification",
       py::arg("discount_rate") = 0.7, py::arg("depth_weight") = 0.3,
       py::arg("max_lookahead") = 500, py::arg("max_tqe_candidates") = 500,
