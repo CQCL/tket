@@ -178,7 +178,7 @@ class Transform:
         :param seed:  Unsigned integer seed used for sampling candidates and tie breaking. Default to 0.
         :param allow_zzphase: If set to True, allows the algorithm to implement 2-qubit rotations using ZZPhase gates when deemed optimal. Defaults to False.
         :param thread_timeout: Sets maximum out of time spent finding a single solution in one thread.
-        :param trials: Sets maximum number of found solutions.
+        :param trials: Sets maximum number of found solutions. The smallest circuit is returned, prioritising the number of 2qb-gates, then the number of gates, then the depth.
         :return: a pass to perform the simplification
         """
     @staticmethod

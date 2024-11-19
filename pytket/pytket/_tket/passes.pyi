@@ -459,7 +459,7 @@ def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3, max_l
     :param allow_zzphase: If set to True, allows the algorithm to implement 2-qubit rotations using ZZPhase gates when deemed optimal. Defaults to False.
     :param thread_timeout: Sets maximum out of time spent finding a single solution in one thread.
     :param only_reduce: Only returns modified circuit if it has fewer two-qubit gates.
-    :param trials: Sets maximum number of found solutions.
+    :param trials: Sets maximum number of found solutions. The smallest circuit is returned, prioritising the number of 2qb-gates, then the number of gates, then the depth.
     :return: a pass to perform the simplification
     """
 def GuidedPauliSimp(strat: pytket._tket.transform.PauliSynthStrat = pytket._tket.transform.PauliSynthStrat.Sets, cx_config: pytket._tket.circuit.CXConfigType = pytket._tket.circuit.CXConfigType.Snake) -> BasePass:
