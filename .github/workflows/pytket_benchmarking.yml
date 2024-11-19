@@ -4,9 +4,6 @@ on:
   workflow_dispatch:
   release:
     types: [published]
-  pull_request:
-    branches:
-      - main
 
 jobs:
 
