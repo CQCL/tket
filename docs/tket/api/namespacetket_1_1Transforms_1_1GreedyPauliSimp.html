@@ -206,9 +206,14 @@ Functions</h2></td></tr>
 <tr class="memitem:a02eb95f095c5e7b204d81efac472f7ce" id="r_a02eb95f095c5e7b204d81efac472f7ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a02eb95f095c5e7b204d81efac472f7ce">greedy_pauli_set_synthesis</a> (const std::vector&lt; <a class="el" href="namespacetket.html#ad5f7b9aaddfa158da0f7b68516b32cc7">SymPauliTensor</a> &gt; &amp;unordered_set, double depth_weight=0.3, unsigned max_lookahead=500, unsigned max_tqe_candidates=500, unsigned seed=0, bool allow_zzphase=false)</td></tr>
 <tr class="memdesc:a02eb95f095c5e7b204d81efac472f7ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesise a set of unordered Pauli exponentials by applying Clifford gates and single qubit rotations in a greedy fashion.  <br /></td></tr>
 <tr class="separator:a02eb95f095c5e7b204d81efac472f7ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7af1b20da752bfc2a24e4b9fff0c2547" id="r_a7af1b20da752bfc2a24e4b9fff0c2547"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a7af1b20da752bfc2a24e4b9fff0c2547">greedy_pauli_graph_synthesis_flag</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> circ, std::shared_ptr&lt; std::atomic&lt; bool &gt; &gt; stop_flag, double discount_rate, double depth_weight, unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase)</td></tr>
+<tr class="separator:a7af1b20da752bfc2a24e4b9fff0c2547"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a042d7d1967beadd4ec4b06f15cb3c136" id="r_a042d7d1967beadd4ec4b06f15cb3c136"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a042d7d1967beadd4ec4b06f15cb3c136">greedy_pauli_graph_synthesis</a> (const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, double discount_rate=0.7, double depth_weight=0.3, unsigned max_lookahead=500, unsigned max_tqe_candidates=500, unsigned seed=0, bool allow_zzphase=false)</td></tr>
 <tr class="memdesc:a042d7d1967beadd4ec4b06f15cb3c136"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the given circuit into a <a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html" title="Pauli graph structure for GreedyPauliSimp.">GPGraph</a> and conjugates each node by greedily applying 2-qubit Clifford gates until the node can be realised as a single-qubit gate, a measurement, or a reset.  <br /></td></tr>
 <tr class="separator:a042d7d1967beadd4ec4b06f15cb3c136"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abbc1006ff0dc747268083b22a1b5b660" id="r_abbc1006ff0dc747268083b22a1b5b660"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#abbc1006ff0dc747268083b22a1b5b660">greedy_pauli_graph_synthesis_flag</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> circ, std::atomic&lt; bool &gt; &amp;stop_flag, double discount_rate=0.7, double depth_weight=0.3, unsigned max_lookahead=500, unsigned max_tqe_candidates=500, unsigned seed=0, bool allow_zzphase=false)</td></tr>
+<tr class="memdesc:abbc1006ff0dc747268083b22a1b5b660"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the given circuit into a <a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html" title="Pauli graph structure for GreedyPauliSimp.">GPGraph</a> and conjugates each node by greedily applying 2-qubit Clifford gates until the node can be realised as a single-qubit gate, a measurement, or a reset.  <br /></td></tr>
+<tr class="separator:abbc1006ff0dc747268083b22a1b5b660"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a id="ab6dc7e5dfec857e84702dc1bb247349b" name="ab6dc7e5dfec857e84702dc1bb247349b"></a>
@@ -223,7 +228,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00489">489</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00491">491</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
 
 </div>
 </div>
@@ -239,7 +244,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00492">492</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00494">494</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
 
 </div>
 </div>
@@ -255,7 +260,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00495">495</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00497">497</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
 
 </div>
 </div>
@@ -271,7 +276,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00491">491</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00493">493</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
 
 </div>
 </div>
@@ -287,7 +292,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00494">494</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00496">496</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
 
 </div>
 </div>
@@ -303,7 +308,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00499">499</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00501">501</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
 
 </div>
 </div>
@@ -319,7 +324,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00138">138</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00140">140</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
 
 </div>
 </div>
@@ -348,7 +353,7 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="a8722d018a61a46ffd3ba1a574d76018aad4b9e47f65b6e79b010582f15785867e" name="a8722d018a61a46ffd3ba1a574d76018aad4b9e47f65b6e79b010582f15785867e"></a>WRITE&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00079">79</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00081">81</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
 
 </div>
 </div>
@@ -379,7 +384,7 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="a5475cf1499006a0913f48a322b4ebd87a0d61f8370cad1d412f80b84d143e1257" name="a5475cf1499006a0913f48a322b4ebd87a0d61f8370cad1d412f80b84d143e1257"></a>C&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00070">70</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00072">72</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
 
 </div>
 </div>
@@ -411,7 +416,7 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="a17eec2f5b6466bdc2248a76fe8c9a2c4a526d688f37a86d3c3f27d0c5016eb71d" name="a17eec2f5b6466bdc2248a76fe8c9a2c4a526d688f37a86d3c3f27d0c5016eb71d"></a>Reset&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00049">49</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00051">51</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
 
 </div>
 </div>
@@ -448,7 +453,7 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="a2a9fe2c5337b6f5d3cea567b75512fa3adc18d83abfd9f87d396e8fd6b6ac0fe1" name="a2a9fe2c5337b6f5d3cea567b75512fa3adc18d83abfd9f87d396e8fd6b6ac0fe1"></a>ZZ&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00037">37</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00039">39</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
 
 </div>
 </div>
@@ -554,7 +559,154 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8cpp_source.html#l00735">735</a> of file <a class="el" href="GreedyPauliOptimisation_8cpp_source.html">GreedyPauliOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8cpp_source.html#l00814">814</a> of file <a class="el" href="GreedyPauliOptimisation_8cpp_source.html">GreedyPauliOptimisation.cpp</a>.</p>
+
+</div>
+</div>
+<a id="abbc1006ff0dc747268083b22a1b5b660" name="abbc1006ff0dc747268083b22a1b5b660"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abbc1006ff0dc747268083b22a1b5b660">&#9670;&#160;</a></span>greedy_pauli_graph_synthesis_flag() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::Transforms::GreedyPauliSimp::greedy_pauli_graph_synthesis_flag </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td>
+          <td class="paramname"><em>circ</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::atomic&lt; bool &gt; &amp;&#160;</td>
+          <td class="paramname"><em>stop_flag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>discount_rate</em> = <code>0.7</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>depth_weight</em> = <code>0.3</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>max_lookahead</em> = <code>500</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>max_tqe_candidates</em> = <code>500</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>seed</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>allow_zzphase</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Converts the given circuit into a <a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html" title="Pauli graph structure for GreedyPauliSimp.">GPGraph</a> and conjugates each node by greedily applying 2-qubit Clifford gates until the node can be realised as a single-qubit gate, a measurement, or a reset. </p>
+<p>The final Clifford operator is synthesized in a similar fashion. Allows early termination from a thread via a stop_flag.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">circ</td><td></td></tr>
+    <tr><td class="paramname">stop_flag</td><td></td></tr>
+    <tr><td class="paramname">discount_rate</td><td></td></tr>
+    <tr><td class="paramname">depth_weight</td><td></td></tr>
+    <tr><td class="paramname">max_lookahead</td><td></td></tr>
+    <tr><td class="paramname">max_tqe_candidates</td><td></td></tr>
+    <tr><td class="paramname">seed</td><td></td></tr>
+    <tr><td class="paramname">allow_zzphase</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> </dd></dl>
+
+</div>
+</div>
+<a id="a7af1b20da752bfc2a24e4b9fff0c2547" name="a7af1b20da752bfc2a24e4b9fff0c2547"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7af1b20da752bfc2a24e4b9fff0c2547">&#9670;&#160;</a></span>greedy_pauli_graph_synthesis_flag() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::Transforms::GreedyPauliSimp::greedy_pauli_graph_synthesis_flag </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td>
+          <td class="paramname"><em>circ</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::shared_ptr&lt; std::atomic&lt; bool &gt; &gt;&#160;</td>
+          <td class="paramname"><em>stop_flag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>discount_rate</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>depth_weight</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>max_lookahead</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>max_tqe_candidates</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>seed</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>allow_zzphase</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8cpp_source.html#l00751">751</a> of file <a class="el" href="GreedyPauliOptimisation_8cpp_source.html">GreedyPauliOptimisation.cpp</a>.</p>
 
 </div>
 </div>
@@ -623,7 +775,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8cpp_source.html#l00704">704</a> of file <a class="el" href="GreedyPauliOptimisation_8cpp_source.html">GreedyPauliOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8cpp_source.html#l00718">718</a> of file <a class="el" href="GreedyPauliOptimisation_8cpp_source.html">GreedyPauliOptimisation.cpp</a>.</p>
 
 </div>
 </div>
