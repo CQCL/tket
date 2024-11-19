@@ -244,7 +244,6 @@ PassPtr gen_auto_rebase_pass(const OpTypeSet& allowed_gates, bool allow_swaps) {
   PredicatePtrMap precons;
   OpTypeSet all_types(allowed_gates);
   all_types.insert(OpType::Measure);
-  all_types.insert(OpType::Collapse);
   all_types.insert(OpType::Reset);
   PredicatePtr postcon1 = std::make_shared<GateSetPredicate>(all_types);
   PredicatePtr postcon2 = std::make_shared<MaxTwoQubitGatesPredicate>();
