@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <chrono>
 #include <future>
+#include <queue>
 #include <random>
 
 #include "tket/Circuit/PauliExpBoxes.hpp"
@@ -327,7 +328,8 @@ struct DepthTracker {
 static void tableau_row_nodes_synthesis(
     std::vector<PauliNode_ptr>& rows, Circuit& circ,
     DepthTracker& depth_tracker, double depth_weight, unsigned max_lookahead,
-    unsigned max_tqe_candidates, unsigned seed) {
+    unsigned max_tqe_candidates, unsigned seed,
+    std::shared_ptr<std::atomic<bool>> stop_flag) {
   // only consider nodes with a non-zero cost
   std::vector<unsigned> remaining_indices;
   for (unsigned i = 0; i < rows.size(); i++) {
@@ -336,6 +338,10 @@ static void tableau_row_nodes_synthesis(
     }
   }
   while (remaining_indices.size() != 0) {
+    // check early termination
+    if (stop_flag.get()->load()) {
+      return;
+    };
     // get nodes with min cost
     std::vector<unsigned> min_nodes_indices = {remaining_indices[0]};
     unsigned min_cost = rows[remaining_indices[0]]->tqe_cost();
@@ -607,11 +613,18 @@ static void pauli_exps_synthesis(
     std::vector<PauliNode_ptr>& rows, Circuit& circ,
     DepthTracker& depth_tracker, double discount_rate, double depth_weight,
     unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed,
-    bool allow_zzphase) {
+    bool allow_zzphase, std::shared_ptr<std::atomic<bool>> stop_flag) {
   while (true) {
+    // check timeout
+    if (stop_flag.get()->load()) {
+      return;
+    };
+
     consume_nodes(
         rotation_sets, circ, depth_tracker, discount_rate, depth_weight);
+
     if (rotation_sets.empty()) break;
+
     std::vector<PauliNode_ptr>& first_set = rotation_sets[0];
     // get nodes with min cost
     std::vector<unsigned> min_nodes_indices = {0};
@@ -634,6 +647,7 @@ static void pauli_exps_synthesis(
     // sample
     std::vector<TQE> sampled_tqes =
         sample_tqes(tqe_candidates, max_tqe_candidates, seed);
+
     // for each tqe we compute costs which might subject to normalisation
     std::map<TQE, std::vector<double>> tqe_candidates_cost;
     for (const TQE& tqe : sampled_tqes) {
@@ -721,21 +735,23 @@ Circuit greedy_pauli_set_synthesis(
   std::vector<std::vector<PauliNode_ptr>> rotation_sets{rotation_set};
   DepthTracker depth_tracker(n_qubits);
   // synthesise Pauli exps
+  std::shared_ptr<std::atomic<bool>> dummy_stop_flag =
+      std::make_shared<std::atomic<bool>>(false);
   pauli_exps_synthesis(
       rotation_sets, rows, c, depth_tracker, 0, depth_weight, max_lookahead,
-      max_tqe_candidates, seed, allow_zzphase);
+      max_tqe_candidates, seed, allow_zzphase, dummy_stop_flag);
   // synthesise the tableau
   tableau_row_nodes_synthesis(
       rows, c, depth_tracker, depth_weight, max_lookahead, max_tqe_candidates,
-      seed);
+      seed, dummy_stop_flag);
   c.replace_SWAPs();
   return c;
 }
 
-Circuit greedy_pauli_graph_synthesis(
-    const Circuit& circ, double discount_rate, double depth_weight,
-    unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed,
-    bool allow_zzphase) {
+Circuit greedy_pauli_graph_synthesis_flag(
+    Circuit circ, std::shared_ptr<std::atomic<bool>> stop_flag,
+    double discount_rate, double depth_weight, unsigned max_lookahead,
+    unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase) {
   if (max_lookahead == 0) {
     throw GreedyPauliSimpError("max_lookahead must be greater than 0.");
   }
@@ -757,16 +773,36 @@ Circuit greedy_pauli_graph_synthesis(
     rev_unit_map.insert({pair.second, pair.first});
   }
   GPGraph gpg(circ_flat);
+
+  // We regularly check whether the timeout has ocurred
+  if (stop_flag.get()->load()) {
+    return Circuit();
+  }
+
   auto [rotation_sets, rows, measures] = gpg.get_sequence();
+
+  if (stop_flag.get()->load()) {
+    return Circuit();
+  }
+
   DepthTracker depth_tracker(n_qubits);
   // synthesise Pauli exps
   pauli_exps_synthesis(
       rotation_sets, rows, new_circ, depth_tracker, discount_rate, depth_weight,
-      max_lookahead, max_tqe_candidates, seed, allow_zzphase);
+      max_lookahead, max_tqe_candidates, seed, allow_zzphase, stop_flag);
+
+  if (stop_flag.get()->load()) {
+    return Circuit();
+  }
   // synthesise the tableau
   tableau_row_nodes_synthesis(
       rows, new_circ, depth_tracker, depth_weight, max_lookahead,
-      max_tqe_candidates, seed);
+      max_tqe_candidates, seed, stop_flag);
+
+  if (stop_flag.get()->load()) {
+    return Circuit();
+  }
+
   for (auto it = measures.begin(); it != measures.end(); ++it) {
     new_circ.add_measure(it->left, it->right);
   }
@@ -775,26 +811,69 @@ Circuit greedy_pauli_graph_synthesis(
   return new_circ;
 }
 
+Circuit greedy_pauli_graph_synthesis(
+    const Circuit& circ, double discount_rate, double depth_weight,
+    unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed,
+    bool allow_zzphase) {
+  std::shared_ptr<std::atomic<bool>> dummy_stop_flag =
+      std::make_shared<std::atomic<bool>>(false);
+  return greedy_pauli_graph_synthesis_flag(
+      circ, dummy_stop_flag, discount_rate, depth_weight, max_lookahead,
+      max_tqe_candidates, seed, allow_zzphase);
+}
+
 }  // namespace GreedyPauliSimp
 
 Transform greedy_pauli_optimisation(
     double discount_rate, double depth_weight, unsigned max_lookahead,
     unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase,
-    unsigned timeout) {
+    unsigned thread_timeout, unsigned trials) {
   return Transform([discount_rate, depth_weight, max_lookahead,
-                    max_tqe_candidates, seed, allow_zzphase,
-                    timeout](Circuit& circ) {
-    std::future<Circuit> future = std::async(
-        std::launch::async, GreedyPauliSimp::greedy_pauli_graph_synthesis, circ,
-        discount_rate, depth_weight, max_lookahead, max_tqe_candidates, seed,
-        allow_zzphase);
-    if (future.wait_for(std::chrono::seconds(timeout)) ==
-        std::future_status::ready) {
-      circ = future.get();
-      circ.decompose_boxes_recursively();
-      return true;
+                    max_tqe_candidates, seed, allow_zzphase, thread_timeout,
+                    trials](Circuit& circ) {
+    std::mt19937 seed_gen(seed);
+    std::vector<Circuit> circuits;
+    unsigned threads_started = 0;
+
+    while (threads_started < trials) {
+      std::shared_ptr<std::atomic<bool>> stop_flag =
+          std::make_shared<std::atomic<bool>>(false);
+      std::future<Circuit> future = std::async(
+          std::launch::async,
+          [&, stop_flag]() {  // Capture `stop_flag` explicitly in the lambda
+            return GreedyPauliSimp::greedy_pauli_graph_synthesis_flag(
+                circ, stop_flag, discount_rate, depth_weight, max_lookahead,
+                max_tqe_candidates, seed_gen(), allow_zzphase);
+          });
+      threads_started++;
+
+      if (future.wait_for(std::chrono::seconds(thread_timeout)) ==
+          std::future_status::ready) {
+        Circuit c = future.get();
+        c.decompose_boxes_recursively();
+        circuits.push_back(c);
+      } else {
+        // If the thread isn't complete within time, prompt cancelling the
+        // optimisation and break from while loop
+        *stop_flag = true;
+        break;
+      }
     }
-    return false;
+
+    // Return the smallest circuit if any were found within the single
+    // thread_timeout
+    // If none are found then return false
+    if (circuits.empty()) return false;
+    auto min = std::min_element(
+        circuits.begin(), circuits.end(),
+        [](const Circuit& a, const Circuit& b) {
+          return std::make_tuple(
+                     a.count_n_qubit_gates(2), a.n_gates(), a.depth()) <
+                 std::make_tuple(
+                     b.count_n_qubit_gates(2), b.n_gates(), b.depth());
+        });
+    circ = *min;
+    return true;
   });
 }
 

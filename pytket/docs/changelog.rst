@@ -12,8 +12,8 @@ Features:
   conditions.
 * Add `custom_deserialisation` argument to `BasePass` and `SequencePass` 
   `from_dict` method to support construction of `CustomPass` from json.
-* Add `timeout` argument to `GreedyPauliSimp`.
-* Add `only_reduce` argument to `GreedyPauliSimp`.
+* Add `thread_timeout`, `only_reduce`, and `trials` arguments 
+  to `GreedyPauliSimp`.
 * Add option to not relabel `ClassicalExpBox` when calling `rename_units`
   and `flatten_registers`
 * Implement `dagger()` and `transpose()` for `CustomGate`.
