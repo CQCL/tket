@@ -158,6 +158,8 @@ class Transform:
         
         Replaces any PhasedX gates with global NPhasedX gates. By default, this transform will squash all single-qubit gates to PhasedX and Rz gates before proceeding further. Existing non-global NPhasedX will not be preserved. This is the recommended setting for best performance. If squashing is disabled, each non-global PhasedX gate will be replaced with two global NPhasedX, but any other gates will be left untouched.
         
+        DEPRECATED: This transform will be removed no earlier than three months after the pytket 1.35 release.
+        
         :param squash: Whether to squash the circuit in pre-processing (default: true).
         
         If squash=true (default), the `GlobalisePhasedX` transform's `apply` method will always return true. For squash=false, `apply()` will return true if the circuit was changed and false otherwise.
