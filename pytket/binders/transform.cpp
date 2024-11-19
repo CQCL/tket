@@ -391,7 +391,8 @@ PYBIND11_MODULE(transform, m) {
             PyErr_WarnEx(
                 PyExc_DeprecationWarning,
                 "The GlobalisePhasedX transform is unreliable and deprecated. "
-                "It will be removed after pytket version 1.38.",
+                "It will be removed no earlier than three months after the "
+                "pytket 1.35 release.",
                 1);
             return Transforms::globalise_PhasedX(squash);
           },
@@ -404,8 +405,8 @@ PYBIND11_MODULE(transform, m) {
           "performance. If squashing is disabled, each non-global PhasedX gate "
           "will be replaced with two global NPhasedX, but any other gates will "
           "be left untouched."
-          "\n\nDEPRECATED: This transform will be removed after pytket version "
-          "1.39."
+          "\n\nDEPRECATED: This transform will be removed no earlier than "
+          "three months after the pytket 1.35 release."
           "\n\n:param squash: Whether to squash the circuit in pre-processing "
           "(default: true)."
           "\n\nIf squash=true (default), the `GlobalisePhasedX` transform's "
