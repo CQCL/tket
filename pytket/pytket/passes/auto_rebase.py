@@ -44,8 +44,8 @@ def auto_rebase_pass(gateset: set[OpType], allow_swaps: bool = False) -> BasePas
     Raises an error if no known decompositions can be found, in which case try
     using RebaseCustom with your own decompositions.
 
-    In addition to the gate types in ``gateset``, any ``Measure``, ``Reset`` and
-    ``Collapse`` operations in the original circuit are retained. Conditional
+    In addition to the gate types in ``gateset``, any ``Measure`` and ``Reset``
+    operations in the original circuit are retained. Conditional
     operations are also allowed. ``Phase`` gates may also be introduced.
 
     :param gateset: Set of supported OpTypes, target gate set.

@@ -540,7 +540,7 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "RebaseTket", &RebaseTket,
       "Converts all gates to CX, TK1 and Phase. "
-      "(Any Measure, Reset and Collapse operations are left untouched; "
+      "(Any Measure and Reset operations are left untouched; "
       "Conditional gates are also allowed.)");
   m.def(
       "RemoveRedundancies", &RemoveRedundancies,
@@ -650,7 +650,7 @@ PYBIND11_MODULE(passes, m) {
       ":math:`(a,b,c)` to generate replacement circuits."
       "\n\n"
       ":param gateset: the allowed operations in the rebased circuit "
-      "(in addition, Measure, Reset and Collapse operations are always allowed "
+      "(in addition, Measure and Reset operations are always allowed "
       "and are left alone; conditional operations may be present; and Phase "
       "gates may also be introduced by the rebase)"
       "\n:param cx_replacement: the equivalent circuit to replace a CX gate "
@@ -660,8 +660,7 @@ PYBIND11_MODULE(passes, m) {
       "Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the desired "
       "basis"
       "\n:return: a pass that rebases to the given gate set (possibly "
-      "including conditional and phase operations, and Measure, Reset and "
-      "Collapse)",
+      "including conditional and phase operations, and Measure and Reset",
       py::arg("gateset"), py::arg("cx_replacement"),
       py::arg("tk1_replacement"));
 
@@ -679,7 +678,7 @@ PYBIND11_MODULE(passes, m) {
       "to each TK1(a,b,c)."
       "\n\n"
       ":param gateset: the allowed operations in the rebased circuit "
-      "(in addition, Measure, Reset and Collapse operations are always allowed "
+      "(in addition, Measure and Reset always allowed "
       "and are left alone; conditional operations may be present; and Phase "
       "gates may also be introduced by the rebase)\n"
       ":param tk2_replacement: a function which, given the parameters (a,b,c) "
@@ -689,7 +688,7 @@ PYBIND11_MODULE(passes, m) {
       "of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
       "desired basis\n"
       ":return: a pass that rebases to the given gate set (possibly including "
-      "conditional and phase operations, and Measure, Reset and Collapse)",
+      "conditional and phase operations, and Measure and Reset)",
       py::arg("gateset"), py::arg("tk2_replacement"),
       py::arg("tk1_replacement"));
   m.def(
@@ -701,7 +700,7 @@ PYBIND11_MODULE(passes, m) {
       "Raises an error if no known decompositions can be found, in which case "
       "try using :py:class:`RebaseCustom` with your own decompositions.\n\n"
       ":param gateset: Set of supported OpTypes, target gate set. "
-      "(in addition, Measure, Reset and Collapse operations are always allowed "
+      "(in addition, Measure and Reset operations are always allowed "
       "and are left alone; conditional operations may be present; and Phase "
       "gates may also be introduced by the rebase)\n"
       ":param allow_swaps: Whether to allow implicit wire swaps. Default to "
