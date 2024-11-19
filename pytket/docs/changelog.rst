@@ -25,6 +25,7 @@ Features:
 Deprecations:
 
 * Deprecate `ClassicalExpBox` and related methods, in favour of `ClExprOp`.
+* Deprecate `GlobalisePhasedX` pass and transform.
 
 Fixes:
 
