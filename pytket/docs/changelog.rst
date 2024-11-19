@@ -21,6 +21,7 @@ Features:
 * Extend `DecomposeClassicalExp` to handle `ClExprOp` as well as
   `ClassicalExpBox`.
 * Add convenience method `Circuit.add_clecpr_from_logicexp()`.
+* Remove `OpType::Collapse` from the `GateSetPredicate` of `gen_auto_rebase_pass`.
 
 Deprecations:
 
