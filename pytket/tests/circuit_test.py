@@ -13,82 +13,77 @@
 # limitations under the License.
 
 import json
-
-from jsonschema import validate  # type: ignore
-from pathlib import Path
+import math
 import pickle
+from math import sqrt
+from pathlib import Path
+
+import numpy as np
+import pytest
+import strategies as st  # type: ignore
+from hypothesis import given, settings
+from jsonschema import validate  # type: ignore
+from scipy.linalg import block_diag
+from sympy import Expr, Symbol, exp, pi, sympify
 
 from pytket.circuit import (
+    Bit,
+    BitRegister,
+    CircBox,
     Circuit,
+    ClassicalExpBox,
+    Command,
+    ConjugationBox,
+    CustomGate,
+    CustomGateDef,
+    CXConfigType,
+    DiagonalBox,
+    DummyBox,
+    ExpBox,
+    MultiplexedRotationBox,
+    MultiplexedTensoredU2Box,
+    MultiplexedU2Box,
+    MultiplexorBox,
     Op,
     OpType,
-    Command,
-    fresh_symbol,
-    CircBox,
-    Unitary1qBox,
-    Unitary2qBox,
-    Unitary3qBox,
-    MultiplexorBox,
-    MultiplexedRotationBox,
-    MultiplexedU2Box,
-    MultiplexedTensoredU2Box,
-    StatePreparationBox,
-    DiagonalBox,
-    ConjugationBox,
-    ExpBox,
     PauliExpBox,
-    PauliExpPairBox,
     PauliExpCommutingSetBox,
+    PauliExpPairBox,
     QControlBox,
+    Qubit,
+    QubitRegister,
+    ResourceBounds,
+    ResourceData,
+    StatePreparationBox,
     TermSequenceBox,
     ToffoliBox,
     ToffoliBoxSynthStrat,
-    CustomGateDef,
-    CustomGate,
-    Qubit,
-    Bit,
-    BitRegister,
-    QubitRegister,
-    CXConfigType,
-    ResourceBounds,
-    ResourceData,
-    DummyBox,
-    ClassicalExpBox,
+    Unitary1qBox,
+    Unitary2qBox,
+    Unitary3qBox,
+    fresh_symbol,
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
 from pytket.circuit.named_types import (
     BitstringToOpList,
-    BitstringToTensoredOpMap,
-    BitstringToTensoredOpList,
     BitstringToOpMap,
+    BitstringToTensoredOpList,
+    BitstringToTensoredOpMap,
     ParamType,
     PermutationMap,
 )
-
-from pytket.pauli import Pauli
 from pytket.passes import (
     CliffordSimp,
-    SynthesiseTket,
     DecomposeBoxes,
     RemoveRedundancies,
+    SynthesiseTket,
 )
-from pytket.transform import Transform, PauliSynthStrat
-
-import numpy as np
-from scipy.linalg import block_diag
-import sympy
-from sympy import Symbol, pi, sympify, functions, Expr, exp
-import math
-from math import sqrt
-
-import pytest
-
-from hypothesis import given, settings
-import strategies as st  # type: ignore
+from pytket.pauli import Pauli
+from pytket.transform import PauliSynthStrat, Transform
 
 curr_file_path = Path(__file__).resolve().parent
 
-with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
+with open(curr_file_path.parent.parent / "schemas/circuit_v1.json") as f:
     schema = json.load(f)
 
 _0 = False
@@ -788,11 +783,23 @@ def test_custom_gates() -> None:
     op0 = cmd0.op
     assert gate.type == op0.type
     assert gate.params == op0.params
+    c_d = c.dagger()
+    c_t = c.transpose()
     Transform.DecomposeBoxes().apply(c)
     coms = c.get_commands()
     assert str(coms[0]) == "CX q[0], q[3];"
     assert str(coms[1]) == "Rz(0.7) q[1];"
     assert str(coms[2]) == "CRz(1.3) q[0], q[1];"
+    Transform.DecomposeBoxes().apply(c_d)
+    coms_d = c_d.get_commands()
+    assert str(coms_d[0]) == "CRz(2.7) q[0], q[1];"
+    assert str(coms_d[1]) == "CX q[0], q[3];"
+    assert str(coms_d[2]) == "Rz(3.3) q[1];"
+    Transform.DecomposeBoxes().apply(c_t)
+    coms_t = c_t.get_commands()
+    assert str(coms_t[0]) == "CRz(1.3) q[0], q[1];"
+    assert str(coms_t[1]) == "CX q[0], q[3];"
+    assert str(coms_t[2]) == "Rz(0.7) q[1];"
 
 
 def test_errors() -> None:
@@ -1002,7 +1009,7 @@ def test_commands_of_type() -> None:
 def test_empty_circuit() -> None:
     circ = Circuit(0)
     circt_dict = circ.to_dict()
-    assert type(circt_dict) == type({})
+    assert isinstance(circt_dict, dict)
     assert len(circt_dict) > 0
     assert Circuit(0) == Circuit(0)
 
@@ -1133,13 +1140,13 @@ def test_clifford_checking() -> None:
     cx = c.get_commands()[1].op
     assert cx.is_clifford_type()
     t = c.get_commands()[2].op
-    assert t.is_clifford_type() == False
+    assert not t.is_clifford_type()
     rz1 = c.get_commands()[3].op
-    assert rz1.is_clifford_type() == False
+    assert not rz1.is_clifford_type()
     rz2 = c.get_commands()[4].op
-    assert rz2.is_clifford_type() == False
+    assert not rz2.is_clifford_type()
     m = c.get_commands()[5].op
-    assert m.is_clifford_type() == False
+    assert not m.is_clifford_type()
 
 
 def test_clifford_evaluation() -> None:
@@ -1150,7 +1157,7 @@ def test_clifford_evaluation() -> None:
     iswap = c.get_commands()[1].op
     assert iswap.is_clifford()
     rz = c.get_commands()[2].op
-    assert rz.is_clifford() == False
+    assert not rz.is_clifford()
 
 
 def test_getting_registers() -> None:
@@ -1263,6 +1270,22 @@ def test_counting_n_qubit_gates() -> None:
     assert c.n_nqb_gates(3) == 1
     assert c.n_nqb_gates(4) == 1
     assert c.n_nqb_gates(5) == 1
+
+
+def test_counting_conditional_gates() -> None:
+    c = Circuit(5, 2).X(0).H(1).Y(2).Z(3).S(4).CX(0, 1).CX(1, 2).CX(2, 3).CX(3, 4)
+    c.add_gate(OpType.H, [Qubit(0)], condition=Bit(0))
+    c.add_gate(OpType.H, [Qubit(1)], condition=(Bit(0) & Bit(1)))
+    c.add_gate(OpType.CX, [Qubit(0), Qubit(1)], condition=Bit(1))
+    assert c.n_gates_of_type(OpType.H, include_conditional=True) == 3
+    assert c.n_gates_of_type(OpType.H, include_conditional=False) == 1
+    assert c.n_gates_of_type(OpType.H) == 1
+    assert c.n_gates_of_type(OpType.X, include_conditional=True) == 1
+    assert c.n_gates_of_type(OpType.X, include_conditional=False) == 1
+    assert c.n_gates_of_type(OpType.X) == 1
+    assert c.n_gates_of_type(OpType.CX, include_conditional=True) == 5
+    assert c.n_gates_of_type(OpType.CX, include_conditional=False) == 4
+    assert c.n_gates_of_type(OpType.CX) == 4
 
 
 def test_qcontrol_box_constructors() -> None:
@@ -1423,8 +1446,8 @@ def test_add_circbox_with_registers() -> None:
     c0.CCX(breg[0], breg[1], breg[2])
     cbox = CircBox(c0)
     c = Circuit()
-    xreg = c.add_q_register("x", 3)
-    yreg = c.add_q_register("y", 2)
+    c.add_q_register("x", 3)
+    c.add_q_register("y", 2)
     zreg = c.add_q_register("z", 3)
     wreg = c.add_q_register("w", 2)
     for qb in c.qubits:
@@ -1442,16 +1465,16 @@ def test_add_circbox_with_registers() -> None:
 
 def test_add_circbox_with_mixed_registers() -> None:
     c0 = Circuit()
-    c0_qreg1 = c0.add_q_register("q1", 2)
-    c0_qreg2 = c0.add_q_register("q2", 3)
-    c0_creg1 = c0.add_c_register("c1", 4)
-    c0_creg2 = c0.add_c_register("c2", 5)
+    c0.add_q_register("q1", 2)
+    c0.add_q_register("q2", 3)
+    c0.add_c_register("c1", 4)
+    c0.add_c_register("c2", 5)
     cbox = CircBox(c0)
     c = Circuit()
-    c_qreg1 = c.add_q_register("q1", 2)
-    c_qreg2 = c.add_q_register("q2", 3)
-    c_creg1 = c.add_c_register("c1", 4)
-    c_creg2 = c.add_c_register("c2", 5)
+    c.add_q_register("q1", 2)
+    c.add_q_register("q2", 3)
+    c.add_c_register("c1", 4)
+    c.add_c_register("c2", 5)
 
     c.add_circbox_with_regmap(
         cbox, qregmap={"q1": "q1", "q2": "q2"}, cregmap={"c1": "c1", "c2": "c2"}
@@ -1537,7 +1560,7 @@ def test_bad_circbox() -> None:
     b = circ.add_c_register("b", 5)
     c = circ.add_c_register("c", 5)
     circ.add_classicalexpbox_register(a | b, c.to_list())
-    with pytest.raises(RuntimeError) as e:
+    with pytest.raises(RuntimeError):
         _ = CircBox(circ)
 
 

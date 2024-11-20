@@ -12,21 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from collections import defaultdict
-from typing import (
-    Any,
-    Callable,
-    DefaultDict,
-    Dict,
-    List,
-    Set,
-    Tuple,
-    Union,
-    Generic,
-    TypeVar,
-    Counter,
-)
 import warnings
+from collections import Counter, defaultdict
+from collections.abc import Callable
+from typing import Any, Generic, TypeVar, Union
+
 import numpy as np
 from scipy.stats import rv_discrete
 
@@ -67,7 +57,7 @@ class EmpiricalDistribution(Generic[T0]):
         return self._C.total()
 
     @property
-    def support(self) -> Set[T0]:
+    def support(self) -> set[T0]:
         """Return the support of the distribution (set of all observations)."""
         return set(self._C.keys())
 
@@ -78,7 +68,7 @@ class EmpiricalDistribution(Generic[T0]):
         return self._C == other._C
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({repr(self._C)})"
+        return f"{self.__class__.__name__}({self._C!r})"
 
     def __getitem__(self, x: T0) -> int:
         """Get the count associated with an observation."""
@@ -150,7 +140,7 @@ class ProbabilityDistribution(Generic[T0]):
     derived from an :py:class:`EmpriricalDistribution`.
     """
 
-    def __init__(self, P: Dict[T0, float], min_p: float = 0.0):
+    def __init__(self, P: dict[T0, float], min_p: float = 0.0):
         """Initialize with a dictionary of probabilities.
 
         :param P: Dictionary of probabilities.
@@ -174,11 +164,11 @@ class ProbabilityDistribution(Generic[T0]):
         s = sum(newP.values())
         self._P = {x: p / s for x, p in newP.items()}
 
-    def as_dict(self) -> Dict[T0, float]:
+    def as_dict(self) -> dict[T0, float]:
         """Return the distribution as a :py:class:`dict` object."""
         return self._P
 
-    def as_rv_discrete(self) -> Tuple[rv_discrete, List[T0]]:
+    def as_rv_discrete(self) -> tuple[rv_discrete, list[T0]]:
         """Return the distribution as a :py:class:`scipy.stats.rv_discrete` object.
 
         This method returns an RV over integers {0, 1, ..., k-1} where k is the size of
@@ -189,7 +179,7 @@ class ProbabilityDistribution(Generic[T0]):
         return (rv_discrete(values=(range(len(X)), [self._P[x] for x in X])), X)
 
     @property
-    def support(self) -> Set[T0]:
+    def support(self) -> set[T0]:
         """Return the support of the distribution (set of all possible outcomes)."""
         return set(self._P.keys())
 
@@ -204,7 +194,7 @@ class ProbabilityDistribution(Generic[T0]):
         return all(np.isclose(self._P[x], other._P[x]) for x in keys0)
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({repr(self._P)})"
+        return f"{self.__class__.__name__}({self._P!r})"
 
     def __getitem__(self, x: T0) -> float:
         """Get the probability associated with a possible outcome."""
@@ -245,7 +235,7 @@ class ProbabilityDistribution(Generic[T0]):
         :param mapping: A function defined on all possible outcomes, mapping them to
             another domain.
         """
-        P: DefaultDict[Any, float] = defaultdict(float)
+        P: defaultdict[Any, float] = defaultdict(float)
         for x, p in self._P.items():
             P[mapping(x)] += p
         return ProbabilityDistribution(P)
@@ -271,7 +261,7 @@ class ProbabilityDistribution(Generic[T0]):
 
 
 def convex_combination(
-    dists: List[Tuple[ProbabilityDistribution[T0], float]]
+    dists: list[tuple[ProbabilityDistribution[T0], float]]
 ) -> ProbabilityDistribution[T0]:
     """Return a convex combination of probability distributions.
 
@@ -286,7 +276,7 @@ def convex_combination(
     >>> dist3.expectation(lambda x : x**2)
     0.75
     """
-    P: DefaultDict[T0, float] = defaultdict(float)
+    P: defaultdict[T0, float] = defaultdict(float)
     S = 0.0
     for pd, a in dists:
         if a < 0:

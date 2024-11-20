@@ -251,7 +251,7 @@ std::string SequencePass::to_string() const {
 nlohmann::json SequencePass::get_config() const {
   nlohmann::json j;
   j["pass_class"] = "SequencePass";
-  j["SequencePass"]["sequence"] = seq_;
+  j["SequencePass"]["sequence"] = serialise(seq_);
   return j;
 }
 
@@ -270,7 +270,7 @@ std::string RepeatPass::to_string() const {
 nlohmann::json RepeatPass::get_config() const {
   nlohmann::json j;
   j["pass_class"] = "RepeatPass";
-  j["RepeatPass"]["body"] = pass_;
+  j["RepeatPass"]["body"] = serialise(pass_);
   return j;
 }
 
@@ -313,7 +313,7 @@ std::string RepeatWithMetricPass::to_string() const {
 nlohmann::json RepeatWithMetricPass::get_config() const {
   nlohmann::json j;
   j["pass_class"] = "RepeatWithMetricPass";
-  j["RepeatWithMetricPass"]["body"] = pass_;
+  j["RepeatWithMetricPass"]["body"] = serialise(pass_);
   j["RepeatWithMetricPass"]["metric"] =
       "SERIALIZATION OF METRICS NOT YET IMPLEMENTED";
   return j;
@@ -347,15 +347,27 @@ std::string RepeatUntilSatisfiedPass::to_string() const {
 nlohmann::json RepeatUntilSatisfiedPass::get_config() const {
   nlohmann::json j;
   j["pass_class"] = "RepeatUntilSatisfiedPass";
-  j["RepeatUntilSatisfiedPass"]["body"] = pass_;
+  j["RepeatUntilSatisfiedPass"]["body"] = serialise(pass_);
   j["RepeatUntilSatisfiedPass"]["predicate"] = pred_;
   return j;
 }
 
-void to_json(nlohmann::json& j, const PassPtr& pp) { j = pp->get_config(); }
+nlohmann::json serialise(const BasePass& bp) { return bp.get_config(); }
+nlohmann::json serialise(const PassPtr& pp) { return pp->get_config(); }
+nlohmann::json serialise(const std::vector<PassPtr>& pp) {
+  nlohmann::json j = nlohmann::json::array();
+  for (const auto& p : pp) {
+    j.push_back(serialise(p));
+  }
+  return j;
+}
 
-void from_json(const nlohmann::json& j, PassPtr& pp) {
+PassPtr deserialise(
+    const nlohmann::json& j,
+    const std::map<std::string, std::function<Circuit(const Circuit&)>>&
+        custom_deserialise) {
   std::string classname = j.at("pass_class").get<std::string>();
+  PassPtr pp;
   if (classname == "StandardPass") {
     const nlohmann::json& content = j.at("StandardPass");
     std::string passname = content.at("name").get<std::string>();
@@ -457,7 +469,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = gen_euler_pass(q, p, s);
     } else if (passname == "FlattenRelabelRegistersPass") {
       pp = gen_flatten_relabel_registers_pass(
-          content.at("label").get<std::string>());
+          content.at("label").get<std::string>(),
+          content.at("relabel_classical_expressions").get<bool>());
     } else if (passname == "RoutingPass") {
       Architecture arc = content.at("architecture").get<Architecture>();
       std::vector<RoutingMethodPtr> con = content.at("routing_config");
@@ -509,9 +522,12 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       unsigned max_lookahead = content.at("max_lookahead").get<unsigned>();
       unsigned seed = content.at("seed").get<unsigned>();
       bool allow_zzphase = content.at("allow_zzphase").get<bool>();
+      unsigned timeout = content.at("thread_timeout").get<unsigned>();
+      bool only_reduce = content.at("only_reduce").get<bool>();
+      unsigned trials = content.at("trials").get<unsigned>();
       pp = gen_greedy_pauli_simp(
           discount_rate, depth_weight, max_lookahead, max_tqe_candidates, seed,
-          allow_zzphase);
+          allow_zzphase, timeout, only_reduce, trials);
 
     } else if (passname == "PauliSimp") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
@@ -576,6 +592,17 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       unsigned n = content.at("n").get<unsigned>();
       bool only_zeros = content.at("only_zeros").get<bool>();
       pp = RoundAngles(n, only_zeros);
+    } else if (passname == "CustomPass") {
+      std::string label = content.at("label").get<std::string>();
+      auto it = custom_deserialise.find(label);
+      if (it != custom_deserialise.end()) {
+        pp = CustomPass(it->second, label);
+      } else {
+        throw JsonError(
+            "Cannot deserialise CustomPass without passing a "
+            "custom_deserialisation map "
+            "with a key corresponding to the pass's label.");
+      }
     } else {
       throw JsonError("Cannot load StandardPass of unknown type");
     }
@@ -583,22 +610,24 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     const nlohmann::json& content = j.at("SequencePass");
     std::vector<PassPtr> seq;
     for (const auto& j_entry : content.at("sequence")) {
-      seq.push_back(j_entry.get<PassPtr>());
+      seq.push_back(deserialise(j_entry, custom_deserialise));
     }
     pp = std::make_shared<SequencePass>(seq);
   } else if (classname == "RepeatPass") {
     const nlohmann::json& content = j.at("RepeatPass");
-    pp = std::make_shared<RepeatPass>(content.at("body").get<PassPtr>());
+    pp = std::make_shared<RepeatPass>(
+        deserialise(content.at("body"), custom_deserialise));
   } else if (classname == "RepeatWithMetricPass") {
     throw PassNotSerializable(classname);
   } else if (classname == "RepeatUntilSatisfiedPass") {
     const nlohmann::json& content = j.at("RepeatUntilSatisfiedPass");
-    PassPtr body = content.at("body").get<PassPtr>();
+    PassPtr body = deserialise(content.at("body"), custom_deserialise);
     PredicatePtr pred = content.at("predicate").get<PredicatePtr>();
     pp = std::make_shared<RepeatUntilSatisfiedPass>(body, pred);
   } else {
     throw JsonError("Cannot load PassPtr of unknown type.");
   }
+  return pp;
 }
 
 }  // namespace tket

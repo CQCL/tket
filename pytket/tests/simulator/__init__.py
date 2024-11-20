@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .tket_sim_backend import TketSimShotBackend, TketSimBackend
+from .tket_sim_backend import TketSimBackend, TketSimShotBackend
 from .tket_sim_wrapper import TketSimWrapper

@@ -12,24 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from collections import Counter
-import hypothesis.strategies as st
-from hypothesis.strategies._internal import SearchStrategy
-from hypothesis.extra.numpy import arrays
-from typing import Any, Callable
-
-import numpy as np
 import re
+from collections import Counter
+from collections.abc import Callable
+from typing import Any
 
-from pytket import Circuit, Qubit, Bit
-from pytket.circuit import Node, OpType
+import hypothesis.strategies as st
+import numpy as np
+from hypothesis.extra.numpy import arrays
+from hypothesis.strategies._internal import SearchStrategy
+
+from pytket import Bit, Circuit, Qubit
 from pytket.architecture import Architecture
+from pytket.backends.backendinfo import BackendInfo
+from pytket.backends.backendresult import BackendResult
+from pytket.circuit import Node, OpType
 from pytket.pauli import Pauli, QubitPauliString
 from pytket.utils import QubitPauliOperator
 from pytket.utils.outcomearray import OutcomeArray
-from pytket.backends.backendresult import BackendResult
-from pytket.backends.backendinfo import BackendInfo
-
 
 binary_digits = st.sampled_from((0, 1))
 uint32 = st.integers(min_value=1, max_value=1 << 32 - 1)
@@ -131,10 +131,9 @@ def architecture(
     draw: Callable[[SearchStrategy[Any]], Any],
 ) -> Architecture:
     n_nodes = draw(st.integers(min_value=4, max_value=15))
-    n_edges = draw(st.integers(min_value=1, max_value=n_nodes))
     vertex = st.integers(min_value=0, max_value=n_nodes - 1)
     edge = st.lists(vertex, min_size=2, max_size=2, unique=True)
-    edges = st.lists(edge)
+    edges = st.lists(edge, min_size=1, max_size=n_nodes)
     return Architecture(draw(edges))
 
 

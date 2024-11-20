@@ -12,51 +12,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from dataclasses import dataclass
+import itertools
 import os
 import re
 import uuid
-
-import itertools
 from collections import OrderedDict
+from collections.abc import Callable, Generator, Iterable, Iterator, Sequence
+from dataclasses import dataclass
+from decimal import Decimal
 from importlib import import_module
 from itertools import chain, groupby
-from decimal import Decimal
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Generator,
-    Iterable,
-    Iterator,
-    List,
-    NewType,
-    Optional,
-    Sequence,
-    Set,
-    TextIO,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-    cast,
-)
-from sympy import Symbol, pi, Expr
+from typing import Any, NewType, TextIO, TypeVar, Union, cast
+
 from lark import Discard, Lark, Token, Transformer, Tree
+from sympy import Expr, Symbol, pi
 
 from pytket._tket.circuit import (
+    BarrierOp,
     ClassicalExpBox,
+    ClExpr,
+    ClExprOp,
     Command,
     Conditional,
-    RangePredicateOp,
-    SetBitsOp,
     CopyBitsOp,
     MultiBitOp,
+    RangePredicateOp,
+    SetBitsOp,
     WASMOp,
-    BarrierOp,
-    ClExprOp,
     WiredClExpr,
-    ClExpr,
 )
 from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
 from pytket.circuit import (
@@ -69,31 +52,38 @@ from pytket.circuit import (
     QubitRegister,
     UnitID,
 )
-from pytket.circuit.clexpr import has_reg_output, wired_clexpr_from_logic_exp
+from pytket.circuit.clexpr import (
+    check_register_alignments,
+    has_reg_output,
+    wired_clexpr_from_logic_exp,
+)
 from pytket.circuit.decompose_classical import int_to_bools
 from pytket.circuit.logic_exp import (
     BitLogicExp,
     BitWiseOp,
-    PredicateExp,
     LogicExp,
+    PredicateExp,
     RegEq,
     RegLogicExp,
     RegNeg,
     RegWiseOp,
-    create_predicate_exp,
     create_logic_exp,
+    create_predicate_exp,
+)
+from pytket.passes import (
+    AutoRebase,
+    DecomposeBoxes,
+    RemoveRedundancies,
+    scratch_reg_resize_pass,
 )
 from pytket.qasm.grammar import grammar
-from pytket.passes import AutoRebase, DecomposeBoxes, RemoveRedundancies
 from pytket.wasm import WasmFileHandler
 
 
 class QASMParseError(Exception):
     """Error while parsing QASM input."""
 
-    def __init__(
-        self, msg: str, line: Optional[int] = None, fname: Optional[str] = None
-    ):
+    def __init__(self, msg: str, line: int | None = None, fname: str | None = None):
         self.msg = msg
         self.line = line
         self.fname = fname
@@ -115,7 +105,7 @@ _BITOPS = set(op.value for op in BitWiseOp)
 _BITOPS.update(("+", "-"))  # both are parsed to XOR
 _REGOPS = set(op.value for op in RegWiseOp)
 
-Arg = Union[List, str]
+Arg = Union[list, str]
 
 
 NOPARAM_COMMANDS = {
@@ -193,16 +183,16 @@ PARAM_EXTRA_COMMANDS = {
     "fsim": OpType.FSim,
 }
 
-_tk_to_qasm_noparams = dict(((item[1], item[0]) for item in NOPARAM_COMMANDS.items()))
+_tk_to_qasm_noparams = dict((item[1], item[0]) for item in NOPARAM_COMMANDS.items())
 _tk_to_qasm_noparams[OpType.CX] = "cx"  # prefer "cx" to "CX"
-_tk_to_qasm_params = dict(((item[1], item[0]) for item in PARAM_COMMANDS.items()))
+_tk_to_qasm_params = dict((item[1], item[0]) for item in PARAM_COMMANDS.items())
 _tk_to_qasm_params[OpType.U3] = "u3"  # prefer "u3" to "U"
 _tk_to_qasm_params[OpType.Rz] = "rz"  # prefer "rz" to "Rz"
 _tk_to_qasm_extra_noparams = dict(
-    ((item[1], item[0]) for item in NOPARAM_EXTRA_COMMANDS.items())
+    (item[1], item[0]) for item in NOPARAM_EXTRA_COMMANDS.items()
 )
 _tk_to_qasm_extra_params = dict(
-    ((item[1], item[0]) for item in PARAM_EXTRA_COMMANDS.items())
+    (item[1], item[0]) for item in PARAM_EXTRA_COMMANDS.items()
 )
 
 _classical_gatestr_map = {"AND": "&", "OR": "|", "XOR": "^"}
@@ -228,7 +218,7 @@ unit_regex = re.compile(r"([a-z][a-zA-Z0-9_]*)\[([\d]+)\]")
 regname_regex = re.compile(r"^[a-z][a-zA-Z0-9_]*$")
 
 
-def _extract_reg(var: Token) -> Tuple[str, int]:
+def _extract_reg(var: Token) -> tuple[str, int]:
     match = unit_regex.match(var.value)
     if match is None:
         raise QASMParseError(
@@ -243,10 +233,10 @@ def _extract_reg(var: Token) -> Tuple[str, int]:
 
 def _load_include_module(
     header_name: str, flter: bool, decls_only: bool
-) -> Dict[str, Dict]:
+) -> dict[str, dict]:
     try:
         if decls_only:
-            include_def: Dict[str, Dict] = import_module(
+            include_def: dict[str, dict] = import_module(
                 f"pytket.qasm.includes._{header_name}_decls"
             )._INCLUDE_DECLS
         else:
@@ -264,33 +254,33 @@ def _load_include_module(
     }
 
 
-def _bin_par_exp(op: "str") -> Callable[["CircuitTransformer", List[str]], str]:
-    def f(self: "CircuitTransformer", vals: List[str]) -> str:
+def _bin_par_exp(op: "str") -> Callable[["CircuitTransformer", list[str]], str]:
+    def f(self: "CircuitTransformer", vals: list[str]) -> str:
         return f"({vals[0]} {op} {vals[1]})"
 
     return f
 
 
-def _un_par_exp(op: "str") -> Callable[["CircuitTransformer", List[str]], str]:
-    def f(self: "CircuitTransformer", vals: List[str]) -> str:
+def _un_par_exp(op: "str") -> Callable[["CircuitTransformer", list[str]], str]:
+    def f(self: "CircuitTransformer", vals: list[str]) -> str:
         return f"({op}{vals[0]})"
 
     return f
 
 
-def _un_call_exp(op: "str") -> Callable[["CircuitTransformer", List[str]], str]:
-    def f(self: "CircuitTransformer", vals: List[str]) -> str:
+def _un_call_exp(op: "str") -> Callable[["CircuitTransformer", list[str]], str]:
+    def f(self: "CircuitTransformer", vals: list[str]) -> str:
         return f"{op}({vals[0]})"
 
     return f
 
 
-def _hashable_uid(arg: List) -> Tuple[str, int]:
+def _hashable_uid(arg: list) -> tuple[str, int]:
     return arg[0], arg[1][0]
 
 
 Reg = NewType("Reg", str)
-CommandDict = Dict[str, Any]
+CommandDict = dict[str, Any]
 
 
 @dataclass
@@ -306,19 +296,19 @@ class CircuitTransformer(Transformer):
         self,
         return_gate_dict: bool = False,
         maxwidth: int = 32,
-        use_clexpr: bool = False,
+        use_clexpr: bool = True,
     ) -> None:
         super().__init__()
-        self.q_registers: Dict[str, int] = {}
-        self.c_registers: Dict[str, int] = {}
-        self.gate_dict: Dict[str, Dict] = {}
-        self.wasm: Optional[WasmFileHandler] = None
+        self.q_registers: dict[str, int] = {}
+        self.c_registers: dict[str, int] = {}
+        self.gate_dict: dict[str, dict] = {}
+        self.wasm: WasmFileHandler | None = None
         self.include = ""
         self.return_gate_dict = return_gate_dict
         self.maxwidth = maxwidth
         self.use_clexpr = use_clexpr
 
-    def _fresh_temp_bit(self) -> List:
+    def _fresh_temp_bit(self) -> list:
         if _TEMP_BIT_NAME in self.c_registers:
             idx = self.c_registers[_TEMP_BIT_NAME]
         else:
@@ -338,17 +328,16 @@ class CircuitTransformer(Transformer):
     def _get_reg(self, name: str) -> Reg:
         return Reg(name)
 
-    def _get_uid(self, iarg: Token) -> List:
+    def _get_uid(self, iarg: Token) -> list:
         name, idx = _extract_reg(iarg)
         return [name, [idx]]
 
     def _get_arg(self, arg: Token) -> Arg:
         if arg.type == "IARG":
             return self._get_uid(arg)
-        else:
-            return self._get_reg(arg.value)
+        return self._get_reg(arg.value)
 
-    def unroll_all_args(self, args: Iterable[Arg]) -> Iterator[List[Any]]:
+    def unroll_all_args(self, args: Iterable[Arg]) -> Iterator[list[Any]]:
         for arg in args:
             if isinstance(arg, str):
                 size = (
@@ -363,13 +352,13 @@ class CircuitTransformer(Transformer):
     def margs(self, tree: Iterable[Token]) -> Iterator[Arg]:
         return map(self._get_arg, tree)
 
-    def iargs(self, tree: Iterable[Token]) -> Iterator[List]:
+    def iargs(self, tree: Iterable[Token]) -> Iterator[list]:
         return map(self._get_uid, tree)
 
-    def args(self, tree: Iterable[Token]) -> Iterator[List]:
+    def args(self, tree: Iterable[Token]) -> Iterator[list]:
         return ([tok.value, [0]] for tok in tree)
 
-    def creg(self, tree: List[Token]) -> None:
+    def creg(self, tree: list[Token]) -> None:
         name, size = _extract_reg(tree[0])
         if size > self.maxwidth:
             raise QASMUnsupportedError(
@@ -379,17 +368,17 @@ class CircuitTransformer(Transformer):
             )
         self.c_registers[Reg(name)] = size
 
-    def qreg(self, tree: List[Token]) -> None:
+    def qreg(self, tree: list[Token]) -> None:
         name, size = _extract_reg(tree[0])
         self.q_registers[Reg(name)] = size
 
-    def meas(self, tree: List[Token]) -> Iterable[CommandDict]:
+    def meas(self, tree: list[Token]) -> Iterable[CommandDict]:
         for args in zip(*self.unroll_all_args(self.margs(tree))):
             yield {"args": list(args), "op": {"type": "Measure"}}
 
-    def barr(self, tree: List[Arg]) -> Iterable[CommandDict]:
+    def barr(self, tree: list[Arg]) -> Iterable[CommandDict]:
         args = [q for qs in self.unroll_all_args(tree[0]) for q in qs]
-        signature: List[str] = []
+        signature: list[str] = []
         for arg in args:
             if arg[0] in self.c_registers:
                 signature.append("C")
@@ -404,14 +393,14 @@ class CircuitTransformer(Transformer):
             "op": {"signature": signature, "type": "Barrier"},
         }
 
-    def reset(self, tree: List[Token]) -> Iterable[CommandDict]:
+    def reset(self, tree: list[Token]) -> Iterable[CommandDict]:
         for qb in next(self.unroll_all_args(self.margs(tree))):
             yield {"args": [qb], "op": {"type": "Reset"}}
 
     def pars(self, vals: Iterable[str]) -> ParsMap:
         return ParsMap(map(str, vals))
 
-    def mixedcall(self, tree: List) -> Iterator[CommandDict]:
+    def mixedcall(self, tree: list) -> Iterator[CommandDict]:
         child_iter = iter(tree)
 
         optoken = next(child_iter)
@@ -475,7 +464,7 @@ class CircuitTransformer(Transformer):
         else:
             params = [f"({par})/pi" for par in pars]
         if opstr in self.gate_dict:
-            op: Dict[str, Any] = {}
+            op: dict[str, Any] = {}
             if opstr in treat_as_barrier:
                 op["type"] = "Barrier"
                 param_sorted = ",".join(params)
@@ -499,7 +488,7 @@ class CircuitTransformer(Transformer):
                 optype = _all_string_maps[opstr]
             except KeyError as e:
                 raise QASMParseError(
-                    "Cannot parse gate of type: {}".format(opstr), optoken.line
+                    f"Cannot parse gate of type: {opstr}", optoken.line
                 ) from e
             op = {"type": optype}
             if params:
@@ -514,7 +503,7 @@ class CircuitTransformer(Transformer):
         for arg in zip(*self.unroll_all_args(args)):
             yield {"args": list(arg), "op": op}
 
-    def gatecall(self, tree: List) -> Iterable[CommandDict]:
+    def gatecall(self, tree: list) -> Iterable[CommandDict]:
         return self.mixedcall(tree)
 
     def exp_args(self, tree: Iterable[Token]) -> Iterable[Reg]:
@@ -526,14 +515,16 @@ class CircuitTransformer(Transformer):
                     "Non register arguments not supported for extern call.", arg.line
                 )
 
-    def _logic_exp(self, tree: List, opstr: str) -> LogicExp:
+    def _logic_exp(self, tree: list, opstr: str) -> LogicExp:
         args, line = self._get_logic_args(tree)
-        openum: Union[Type[BitWiseOp], Type[RegWiseOp]]
+        openum: type[BitWiseOp] | type[RegWiseOp]
         if opstr in _BITOPS and opstr not in _REGOPS:
             openum = BitWiseOp
-        elif opstr in _REGOPS and opstr not in _BITOPS:
-            openum = RegWiseOp
-        elif all(isinstance(arg, int) for arg in args):
+        elif (
+            opstr in _REGOPS
+            and opstr not in _BITOPS
+            or all(isinstance(arg, int) for arg in args)
+        ):
             openum = RegWiseOp
         elif all(isinstance(arg, (Bit, BitLogicExp, int)) for arg in args):
             if all(arg in (0, 1) for arg in args if isinstance(arg, int)):
@@ -547,15 +538,15 @@ class CircuitTransformer(Transformer):
         else:
             openum = RegWiseOp
         if openum is BitWiseOp and opstr in ("+", "-"):
-            op: Union[BitWiseOp, RegWiseOp] = BitWiseOp.XOR
+            op: BitWiseOp | RegWiseOp = BitWiseOp.XOR
         else:
             op = openum(opstr)
         return create_logic_exp(op, args)
 
     def _get_logic_args(
-        self, tree: Sequence[Union[Token, LogicExp]]
-    ) -> Tuple[List[Union[LogicExp, Bit, BitRegister, int]], Optional[int]]:
-        args: List[Union[LogicExp, Bit, BitRegister, int]] = []
+        self, tree: Sequence[Token | LogicExp]
+    ) -> tuple[list[LogicExp | Bit | BitRegister | int], int | None]:
+        args: list[LogicExp | Bit | BitRegister | int] = []
         line = None
         for tok in tree:
             if isinstance(tok, LogicExp):
@@ -600,14 +591,14 @@ class CircuitTransformer(Transformer):
     div = lambda self, tree: self._logic_exp(tree, "/")
     ipow = lambda self, tree: self._logic_exp(tree, "**")
 
-    def neg(self, tree: List[Union[Token, LogicExp]]) -> RegNeg:
+    def neg(self, tree: list[Token | LogicExp]) -> RegNeg:
         arg = self._get_logic_args(tree)[0][0]
         assert isinstance(arg, (RegLogicExp, BitRegister, int))
         return RegNeg(arg)
 
-    def cond(self, tree: List[Token]) -> PredicateExp:
-        op: Union[BitWiseOp, RegWiseOp]
-        arg: Union[Bit, BitRegister]
+    def cond(self, tree: list[Token]) -> PredicateExp:
+        op: BitWiseOp | RegWiseOp
+        arg: Bit | BitRegister
         if tree[1].type == "IARG":
             arg = Bit(*_extract_reg(tree[1]))
             op = BitWiseOp(str(tree[2]))
@@ -679,9 +670,9 @@ class CircuitTransformer(Transformer):
         return tree[0]
 
     def _calc_exp_io(
-        self, exp: LogicExp, out_args: List
-    ) -> Tuple[List[List], Dict[str, Any]]:
-        all_inps: list[Tuple[str, int]] = []
+        self, exp: LogicExp, out_args: list
+    ) -> tuple[list[list], dict[str, Any]]:
+        all_inps: list[tuple[str, int]] = []
         for inp in exp.all_inputs_ordered():
             if isinstance(inp, Bit):
                 all_inps.append((inp.reg_name, inp.index[0]))
@@ -709,7 +700,7 @@ class CircuitTransformer(Transformer):
         }
         return exp_args, numbers_dict
 
-    def _cexpbox_dict(self, exp: LogicExp, args: List[List]) -> CommandDict:
+    def _cexpbox_dict(self, exp: LogicExp, args: list[list]) -> CommandDict:
         box = {
             "exp": exp.to_dict(),
             "id": str(uuid.uuid4()),
@@ -725,7 +716,7 @@ class CircuitTransformer(Transformer):
             },
         }
 
-    def _clexpr_dict(self, exp: LogicExp, out_args: List[List]) -> CommandDict:
+    def _clexpr_dict(self, exp: LogicExp, out_args: list[list]) -> CommandDict:
         # Convert the LogicExp to a serialization of a command containing the
         # corresponding ClExprOp.
         wexpr, args = wired_clexpr_from_logic_exp(
@@ -740,7 +731,7 @@ class CircuitTransformer(Transformer):
         }
 
     def _logic_exp_as_cmd_dict(
-        self, exp: LogicExp, out_args: List[List]
+        self, exp: LogicExp, out_args: list[list]
     ) -> CommandDict:
         return (
             self._clexpr_dict(exp, out_args)
@@ -748,14 +739,14 @@ class CircuitTransformer(Transformer):
             else self._cexpbox_dict(exp, out_args)
         )
 
-    def assign(self, tree: List) -> Iterable[CommandDict]:
+    def assign(self, tree: list) -> Iterable[CommandDict]:
         child_iter = iter(tree)
         out_args = list(next(child_iter))
         args_uids = list(self.unroll_all_args(out_args))
 
         exp_tree = next(child_iter)
 
-        exp: Union[str, List, LogicExp, int] = ""
+        exp: str | list | LogicExp | int = ""
         line = None
         if isinstance(exp_tree, Token):
             if exp_tree.type == "INT":
@@ -783,7 +774,7 @@ class CircuitTransformer(Transformer):
         assert len(out_args) == 1
         out_arg = out_args[0]
         args = args_uids[0]
-        if isinstance(out_arg, List):
+        if isinstance(out_arg, list):
             if isinstance(exp, LogicExp):
                 yield self._logic_exp_as_cmd_dict(exp, args)
             elif isinstance(exp, (int, bool)):
@@ -792,7 +783,7 @@ class CircuitTransformer(Transformer):
                     "args": args,
                     "op": {"classical": {"values": [bool(exp)]}, "type": "SetBits"},
                 }
-            elif isinstance(exp, List):
+            elif isinstance(exp, list):
                 yield {
                     "args": [exp] + args,
                     "op": {"classical": {"n_i": 1}, "type": "CopyBits"},
@@ -826,14 +817,14 @@ class CircuitTransformer(Transformer):
             else:
                 raise QASMParseError(f"Unexpected expression in assignment {exp}", line)
 
-    def extern(self, tree: List[Any]) -> Any:
+    def extern(self, tree: list[Any]) -> Any:
         # TODO parse extern defs
         return Discard
 
-    def ccall(self, tree: List) -> Iterable[CommandDict]:
+    def ccall(self, tree: list) -> Iterable[CommandDict]:
         return self.cce_call(tree)
 
-    def cce_call(self, tree: List) -> Iterable[CommandDict]:
+    def cce_call(self, tree: list) -> Iterable[CommandDict]:
         nam = tree[0].value
         params = list(tree[1])
         if self.wasm is None:
@@ -862,11 +853,11 @@ class CircuitTransformer(Transformer):
             },
         }
 
-    def transform(self, tree: Tree) -> Dict[str, Any]:
+    def transform(self, tree: Tree) -> dict[str, Any]:
         self._reset_context()
-        return cast(Dict[str, Any], super().transform(tree))
+        return cast(dict[str, Any], super().transform(tree))
 
-    def gdef(self, tree: List) -> None:
+    def gdef(self, tree: list) -> None:
         child_iter = iter(tree)
 
         gate = next(child_iter).value
@@ -920,7 +911,7 @@ class CircuitTransformer(Transformer):
             )
         if not existing_op:
             gate_circ.symbol_substitution(symbol_map)
-            gate_circ.rename_units(cast(Dict[UnitID, UnitID], rename_map))
+            gate_circ.rename_units(cast(dict[UnitID, UnitID], rename_map))
 
             self.gate_dict[gate] = {
                 "definition": gate_circ.to_dict(),
@@ -930,15 +921,15 @@ class CircuitTransformer(Transformer):
 
     opaq = gdef
 
-    def oqasm(self, tree: List) -> Any:
+    def oqasm(self, tree: list) -> Any:
         return Discard
 
-    def incl(self, tree: List[Token]) -> None:
+    def incl(self, tree: list[Token]) -> None:
         self.include = str(tree[0].value).split(".")[0]
         self.gate_dict.update(_load_include_module(self.include, True, False))
 
-    def prog(self, tree: Iterable) -> Dict[str, Any]:
-        outdict: Dict[str, Any] = {
+    def prog(self, tree: Iterable) -> dict[str, Any]:
+        outdict: dict[str, Any] = {
             "commands": list(
                 chain.from_iterable(
                     filter(lambda x: x is not None and x is not Discard, tree)
@@ -987,7 +978,7 @@ def circuit_from_qasm(
     input_file: Union[str, "os.PathLike[Any]"],
     encoding: str = "utf-8",
     maxwidth: int = 32,
-    use_clexpr: bool = False,
+    use_clexpr: bool = True,
 ) -> Circuit:
     """A method to generate a tket Circuit from a qasm file.
 
@@ -1000,7 +991,7 @@ def circuit_from_qasm(
     ext = os.path.splitext(input_file)[-1]
     if ext != ".qasm":
         raise TypeError("Can only convert .qasm files")
-    with open(input_file, "r", encoding=encoding) as f:
+    with open(input_file, encoding=encoding) as f:
         try:
             circ = circuit_from_qasm_io(f, maxwidth=maxwidth, use_clexpr=use_clexpr)
         except QASMParseError as e:
@@ -1009,7 +1000,7 @@ def circuit_from_qasm(
 
 
 def circuit_from_qasm_str(
-    qasm_str: str, maxwidth: int = 32, use_clexpr: bool = False
+    qasm_str: str, maxwidth: int = 32, use_clexpr: bool = True
 ) -> Circuit:
     """A method to generate a tket Circuit from a qasm string.
 
@@ -1024,11 +1015,15 @@ def circuit_from_qasm_str(
     cast(CircuitTransformer, g_parser.options.transformer)._reset_context(
         reset_wasm=False
     )
-    return Circuit.from_dict(g_parser.parse(qasm_str))  # type: ignore[arg-type]
+
+    circ = Circuit.from_dict(g_parser.parse(qasm_str))  # type: ignore[arg-type]
+    cpass = scratch_reg_resize_pass(maxwidth)
+    cpass.apply(circ)
+    return circ
 
 
 def circuit_from_qasm_io(
-    stream_in: TextIO, maxwidth: int = 32, use_clexpr: bool = False
+    stream_in: TextIO, maxwidth: int = 32, use_clexpr: bool = True
 ) -> Circuit:
     """A method to generate a tket Circuit from a qasm text stream"""
     return circuit_from_qasm_str(
@@ -1041,7 +1036,7 @@ def circuit_from_qasm_wasm(
     wasm_file: Union[str, "os.PathLike[Any]"],
     encoding: str = "utf-8",
     maxwidth: int = 32,
-    use_clexpr: bool = False,
+    use_clexpr: bool = True,
 ) -> Circuit:
     """A method to generate a tket Circuit from a qasm string and external WASM module.
 
@@ -1083,8 +1078,8 @@ def _filtered_qasm_str(qasm: str) -> str:
     # remove any c registers starting with _TEMP_BIT_NAME
     # that are not being used somewhere else
     lines = qasm.split("\n")
-    def_matcher = re.compile(r"creg ({}\_*\d*)\[\d+\]".format(_TEMP_BIT_NAME))
-    arg_matcher = re.compile(r"({}\_*\d*)\[\d+\]".format(_TEMP_BIT_NAME))
+    def_matcher = re.compile(rf"creg ({_TEMP_BIT_NAME}\_*\d*)\[\d+\]")
+    arg_matcher = re.compile(rf"({_TEMP_BIT_NAME}\_*\d*)\[\d+\]")
     unused_regs = dict()
     for i, line in enumerate(lines):
         if reg := def_matcher.match(line):
@@ -1129,19 +1124,28 @@ def check_can_convert_circuit(circ: Circuit, header: str, maxwidth: int) -> None
             f"Circuit contains a classical register larger than {maxwidth}: try "
             "setting the `maxwidth` parameter to a higher value."
         )
-    for cmd in circ:
-        if is_empty_customgate(cmd.op) or (
-            isinstance(cmd.op, Conditional) and is_empty_customgate(cmd.op.op)
-        ):
+    set_circ_register = set([creg.name for creg in circ.c_registers])
+    for b in circ.bits:
+        if b.reg_name not in set_circ_register:
             raise QASMUnsupportedError(
-                f"Empty CustomGates and opaque gates are not supported."
+                f"Circuit contains an invalid classical register {b.reg_name}."
             )
+    # Empty CustomGates should have been removed by DecomposeBoxes().
+    for cmd in circ:
+        assert not is_empty_customgate(cmd.op)
+        if isinstance(cmd.op, Conditional):
+            assert not is_empty_customgate(cmd.op.op)
+    if not check_register_alignments(circ):
+        raise QASMUnsupportedError(
+            "Circuit contains classical expressions on registers whose arguments or "
+            "outputs are not register-aligned."
+        )
 
 
 def circuit_to_qasm_str(
     circ: Circuit,
     header: str = "qelib1",
-    include_gate_defs: Optional[Set[str]] = None,
+    include_gate_defs: set[str] | None = None,
     maxwidth: int = 32,
 ) -> str:
     """Convert a Circuit to QASM and return the string.
@@ -1158,12 +1162,12 @@ def circuit_to_qasm_str(
     :return: qasm string
     """
 
-    check_can_convert_circuit(circ, header, maxwidth)
     qasm_writer = QasmWriter(
         circ.qubits, circ.bits, header, include_gate_defs, maxwidth
     )
     circ1 = circ.copy()
     DecomposeBoxes().apply(circ1)
+    check_can_convert_circuit(circ1, header, maxwidth)
     for command in circ1:
         assert isinstance(command, Command)
         qasm_writer.add_op(command.op, command.args)
@@ -1174,8 +1178,8 @@ TypeReg = TypeVar("TypeReg", BitRegister, QubitRegister)
 
 
 def _retrieve_registers(
-    units: List[UnitID], reg_type: Type[TypeReg]
-) -> Dict[str, TypeReg]:
+    units: list[UnitID], reg_type: type[TypeReg]
+) -> dict[str, TypeReg]:
     if any(len(unit.index) != 1 for unit in units):
         raise NotImplementedError("OPENQASM registers must use a single index")
     maxunits = map(lambda x: max(x[1]), groupby(units, key=lambda un: un.reg_name))
@@ -1185,7 +1189,7 @@ def _retrieve_registers(
     }
 
 
-def _parse_range(minval: int, maxval: int, maxwidth: int) -> Tuple[str, int]:
+def _parse_range(minval: int, maxval: int, maxwidth: int) -> tuple[str, int]:
     if maxwidth > 64:
         raise NotImplementedError("Register width exceeds maximum of 64.")
 
@@ -1193,38 +1197,35 @@ def _parse_range(minval: int, maxval: int, maxwidth: int) -> Tuple[str, int]:
 
     if minval > REGMAX:
         raise NotImplementedError("Range's lower bound exceeds register capacity.")
-    elif minval > maxval:
+    if minval > maxval:
         raise NotImplementedError("Range's lower bound exceeds upper bound.")
-    elif maxval > REGMAX:
-        maxval = REGMAX
+    maxval = min(maxval, REGMAX)
 
     if minval == maxval:
         return ("==", minval)
-    elif minval == 0:
+    if minval == 0:
         return ("<=", maxval)
-    elif maxval == REGMAX:
+    if maxval == REGMAX:
         return (">=", minval)
-    else:
-        raise NotImplementedError("Range can only be bounded on one side.")
+    raise NotImplementedError("Range can only be bounded on one side.")
 
 
 def _negate_comparator(comparator: str) -> str:
     if comparator == "==":
         return "!="
-    elif comparator == "!=":
+    if comparator == "!=":
         return "=="
-    elif comparator == "<=":
+    if comparator == "<=":
         return ">"
-    elif comparator == ">":
+    if comparator == ">":
         return "<="
-    elif comparator == ">=":
+    if comparator == ">=":
         return "<"
-    else:
-        assert comparator == "<"
-        return ">="
+    assert comparator == "<"
+    return ">="
 
 
-def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[Union[float, Expr]]]]:
+def _get_optype_and_params(op: Op) -> tuple[OpType, list[float | Expr] | None]:
     optype = op.type
     params = (
         op.params
@@ -1241,10 +1242,10 @@ def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[Union[float, E
 
 
 def _get_gate_circuit(
-    optype: OpType, qubits: List[Qubit], symbols: Optional[List[Symbol]] = None
+    optype: OpType, qubits: list[Qubit], symbols: list[Symbol] | None = None
 ) -> Circuit:
     # create Circuit for constructing qasm from
-    unitids = cast(List[UnitID], qubits)
+    unitids = cast(list[UnitID], qubits)
     gate_circ = Circuit()
     for q in qubits:
         gate_circ.add_qubit(q)
@@ -1282,7 +1283,7 @@ class LabelledStringList:
 
     def __init__(self) -> None:
         self.strings: OrderedDict[int, str] = OrderedDict()
-        self.conditions: Dict[int, ConditionString] = dict()
+        self.conditions: dict[int, ConditionString] = dict()
         self.label = 0
 
     def add_string(self, string: str) -> int:
@@ -1291,7 +1292,7 @@ class LabelledStringList:
         self.label += 1
         return label
 
-    def get_string(self, label: int) -> Optional[str]:
+    def get_string(self, label: int) -> str | None:
         return self.strings.get(label, None)
 
     def del_string(self, label: int) -> None:
@@ -1311,7 +1312,7 @@ class LabelledStringList:
         return "".join(strings)
 
 
-def make_params_str(params: Optional[List[Union[float, Expr]]]) -> str:
+def make_params_str(params: list[float | Expr] | None) -> str:
     s = ""
     if params is not None:
         n_params = len(params)
@@ -1319,20 +1320,19 @@ def make_params_str(params: Optional[List[Union[float, Expr]]]) -> str:
         for i in range(n_params):
             reduced = True
             try:
-                p: Union[float, Expr] = float(params[i])
+                p: float | Expr = float(params[i])
             except TypeError:
                 reduced = False
                 p = params[i]
             if i < n_params - 1:
                 if reduced:
-                    s += "{}*pi,".format(p)
+                    s += f"{p}*pi,"
                 else:
-                    s += "({})*pi,".format(p)
+                    s += f"({p})*pi,"
+            elif reduced:
+                s += f"{p}*pi)"
             else:
-                if reduced:
-                    s += "{}*pi)".format(p)
-                else:
-                    s += "({})*pi)".format(p)
+                s += f"({p})*pi)"
     s += " "
     return s
 
@@ -1374,14 +1374,13 @@ def _var_appears(v: str, s: str) -> bool:
         # check if v appears in s and is not surrounded by word characters
         # e.g. a = a & b or a = a[1] & b[1]
         return bool(re.search(r"(?<!\w)" + re.escape(v) + r"(?![\w])", s))
-    else:
-        if re.search(r"(?<!\w)" + re.escape(v), s):
-            # check if v appears in s and is not proceeded by word characters
-            # e.g. a[1] = a[1]
-            return True
-        # check the register of v appears in s
-        # e.g. a[1] = a & b
-        return bool(re.search(r"(?<!\w)" + re.escape(v_split[0]) + r"(?![\[\w])", s))
+    if re.search(r"(?<!\w)" + re.escape(v), s):
+        # check if v appears in s and is not proceeded by word characters
+        # e.g. a[1] = a[1]
+        return True
+    # check the register of v appears in s
+    # e.g. a[1] = a & b
+    return bool(re.search(r"(?<!\w)" + re.escape(v_split[0]) + r"(?![\[\w])", s))
 
 
 class QasmWriter:
@@ -1392,15 +1391,15 @@ class QasmWriter:
 
     def __init__(
         self,
-        qubits: List[Qubit],
-        bits: List[Bit],
+        qubits: list[Qubit],
+        bits: list[Bit],
         header: str = "qelib1",
-        include_gate_defs: Optional[Set[str]] = None,
+        include_gate_defs: set[str] | None = None,
         maxwidth: int = 32,
     ):
         self.header = header
         self.maxwidth = maxwidth
-        self.added_gate_definitions: Set[str] = set()
+        self.added_gate_definitions: set[str] = set()
         self.include_module_gates = {"measure", "reset", "barrier"}
         self.include_module_gates.update(
             _load_include_module(header, False, True).keys()
@@ -1413,13 +1412,13 @@ class QasmWriter:
         # depending on the value of the predicate. This map is consulted when we
         # encounter a `Conditional` operation to see if the condition bit is one of
         # these scratch bits, which we can then replace with the original.
-        self.range_preds: Dict[int, ScratchPredicate] = dict()
+        self.range_preds: dict[int, ScratchPredicate] = dict()
 
         if include_gate_defs is None:
             self.include_gate_defs = self.include_module_gates
             self.include_gate_defs.update(NOPARAM_EXTRA_COMMANDS.keys())
             self.include_gate_defs.update(PARAM_EXTRA_COMMANDS.keys())
-            self.prefix = 'OPENQASM 2.0;\ninclude "{}.inc";\n\n'.format(header)
+            self.prefix = f'OPENQASM 2.0;\ninclude "{header}.inc";\n\n'
             self.qregs = _retrieve_registers(cast(list[UnitID], qubits), QubitRegister)
             self.cregs = _retrieve_registers(cast(list[UnitID], bits), BitRegister)
             for reg in self.qregs.values():
@@ -1458,7 +1457,7 @@ class QasmWriter:
         )
         # if a string writes to some classical variables, the string label and
         # the affected variables will be recorded.
-        self.variable_writes: Dict[int, List[str]] = dict()
+        self.variable_writes: dict[int, list[str]] = dict()
 
     def fresh_scratch_bit(self) -> Bit:
         self.scratch_reg = BitRegister(self.scratch_reg.name, self.scratch_reg.size + 1)
@@ -1468,7 +1467,7 @@ class QasmWriter:
         assert self.scratch_reg.size > 0
         self.scratch_reg = BitRegister(self.scratch_reg.name, self.scratch_reg.size - 1)
 
-    def write_params(self, params: Optional[List[Union[float, Expr]]]) -> None:
+    def write_params(self, params: list[float | Expr] | None) -> None:
         params_str = make_params_str(params)
         self.strings.add_string(params_str)
 
@@ -1481,10 +1480,10 @@ class QasmWriter:
         n_qubits: int,
         opstr: str,
         optype: OpType,
-        n_params: Optional[int] = None,
+        n_params: int | None = None,
     ) -> str:
         s = "gate " + opstr + " "
-        symbols: Optional[List[Symbol]] = None
+        symbols: list[Symbol] | None = None
         if n_params is not None:
             # need to add parameters to gate definition
             s += "("
@@ -1518,31 +1517,33 @@ class QasmWriter:
         else:
             self.variable_writes[label] = [written_variable]
 
-    def add_range_predicate(self, op: RangePredicateOp, args: List[Bit]) -> None:
-        comparator, value = _parse_range(op.lower, op.upper, self.maxwidth)
-        if (not hqs_header(self.header)) and comparator != "==":
+    def check_range_predicate(self, op: RangePredicateOp, args: list[Bit]) -> None:
+        if (not hqs_header(self.header)) and op.lower != op.upper:
             raise QASMUnsupportedError(
                 "OpenQASM conditions must be on a register's fixed value."
             )
-        bits = args[:-1]
+        variable = args[0].reg_name
+        assert isinstance(variable, str)
+        if op.n_inputs != self.cregs[variable].size:
+            raise QASMUnsupportedError(
+                "RangePredicate conditions must be an entire classical register"
+            )
+        if args[:-1] != self.cregs[variable].to_list():
+            raise QASMUnsupportedError(
+                "RangePredicate conditions must be a single classical register"
+            )
+
+    def add_range_predicate(self, op: RangePredicateOp, args: list[Bit]) -> None:
+        self.check_range_predicate(op, args)
+        comparator, value = _parse_range(op.lower, op.upper, self.maxwidth)
         variable = args[0].reg_name
         dest_bit = str(args[-1])
-        if not hqs_header(self.header):
-            assert isinstance(variable, str)
-            if op.n_inputs != self.cregs[variable].size:
-                raise QASMUnsupportedError(
-                    "OpenQASM conditions must be an entire classical register"
-                )
-            if bits != self.cregs[variable].to_list():
-                raise QASMUnsupportedError(
-                    "OpenQASM conditions must be a single classical register"
-                )
         label = self.strings.add_string(
             "".join(
                 [
                     f"if({variable}{comparator}{value}) " + f"{dest_bit} = 1;\n",
                     f"if({variable}{_negate_comparator(comparator)}{value}) "
-                    + f"{dest_bit} = 0;\n",
+                    f"{dest_bit} = 0;\n",
                 ]
             )
         )
@@ -1576,9 +1577,9 @@ class QasmWriter:
             line_labels.append(label)
             if "\n" not in string:
                 continue
-            written_variables: List[str] = []
+            written_variables: list[str] = []
             # (label, condition)
-            conditions: List[Tuple[int, ConditionString]] = []
+            conditions: list[tuple[int, ConditionString]] = []
             for l in line_labels:
                 written_variables.extend(self.variable_writes.get(l, []))
                 cond = self.strings.conditions.get(l)
@@ -1653,9 +1654,42 @@ class QasmWriter:
             # Conditional phase is ignored.
             return
         if op.op.type == OpType.RangePredicate:
-            raise QASMUnsupportedError(
-                "Conditional RangePredicate is currently unsupported."
+            # Special handling for nested ifs
+            # if condition
+            #   if pred dest = 1
+            #   if not pred dest = 0
+            # can be written as
+            # if condition s0 = 1
+            # if pred s1 = 1
+            # s2 = s0 & s1
+            # s3 = s0 & ~s1
+            # if s2 dest = 1
+            # if s3 dest = 0
+            # where s0, s1, s2, and s3 are scratch bits
+            s0 = self.fresh_scratch_bit()
+            l = self.strings.add_string(f"{s0} = 1;\n")
+            # we store the condition in self.strings.conditions
+            # as it can be later replaced by `replace_condition`
+            # if possible
+            self.strings.conditions[l] = ConditionString(variable, "==", op.value)
+            # output the RangePredicate to s1
+            s1 = self.fresh_scratch_bit()
+            assert isinstance(op.op, RangePredicateOp)
+            self.check_range_predicate(op.op, cast(list[Bit], args[op.width :]))
+            pred_comparator, pred_value = _parse_range(
+                op.op.lower, op.op.upper, self.maxwidth
             )
+            pred_variable = args[op.width :][0].reg_name
+            self.strings.add_string(
+                f"if({pred_variable}{pred_comparator}{pred_value}) {s1} = 1;\n"
+            )
+            s2 = self.fresh_scratch_bit()
+            self.strings.add_string(f"{s2} = {s0} & {s1};\n")
+            s3 = self.fresh_scratch_bit()
+            self.strings.add_string(f"{s3} = {s0} & (~ {s1});\n")
+            self.strings.add_string(f"if({s2}==1) {args[-1]} = 1;\n")
+            self.strings.add_string(f"if({s3}==1) {args[-1]} = 0;\n")
+            return
         # we assign the condition to a scratch bit, which we will later remove
         # if the condition variable is unchanged.
         scratch_bit = self.fresh_scratch_bit()
@@ -1684,7 +1718,7 @@ class QasmWriter:
             # remove the unused scratch bit
             self.remove_last_scratch_bit()
 
-    def add_set_bits(self, op: SetBitsOp, args: List[Bit]) -> None:
+    def add_set_bits(self, op: SetBitsOp, args: list[Bit]) -> None:
         creg_name = args[0].reg_name
         bits, vals = zip(*sorted(zip(args, op.values)))
         # check if whole register can be set at once
@@ -1697,7 +1731,7 @@ class QasmWriter:
                 label = self.strings.add_string(f"{bit} = {int(value)};\n")
                 self.mark_as_written(label, f"{bit}")
 
-    def add_copy_bits(self, op: CopyBitsOp, args: List[Bit]) -> None:
+    def add_copy_bits(self, op: CopyBitsOp, args: list[Bit]) -> None:
         l_args = args[op.n_inputs :]
         r_args = args[: op.n_inputs]
         l_name = l_args[0].reg_name
@@ -1714,7 +1748,7 @@ class QasmWriter:
                 label = self.strings.add_string(f"{bit_l} = {bit_r};\n")
                 self.mark_as_written(label, f"{bit_l}")
 
-    def add_multi_bit(self, op: MultiBitOp, args: List[Bit]) -> None:
+    def add_multi_bit(self, op: MultiBitOp, args: list[Bit]) -> None:
         basic_op = op.basic_op
         basic_n = basic_op.n_inputs + basic_op.n_outputs + basic_op.n_input_outputs
         n_args = len(args)
@@ -1734,7 +1768,7 @@ class QasmWriter:
                 basic_args = args[basic_n * i : basic_n * (i + 1)]
                 self.add_op(basic_op, basic_args)
 
-    def add_explicit_op(self, op: Op, args: List[Bit]) -> None:
+    def add_explicit_op(self, op: Op, args: list[Bit]) -> None:
         # &, ^ and | gates
         opstr = str(op)
         if opstr not in _classical_gatestr_map:
@@ -1744,10 +1778,10 @@ class QasmWriter:
         )
         self.mark_as_written(label, f"{args[-1]}")
 
-    def add_classical_exp_box(self, op: ClassicalExpBox, args: List[Bit]) -> None:
+    def add_classical_exp_box(self, op: ClassicalExpBox, args: list[Bit]) -> None:
         out_args = args[op.get_n_i() :]
         if len(out_args) == 1:
-            label = self.strings.add_string(f"{out_args[0]} = {str(op.get_exp())};\n")
+            label = self.strings.add_string(f"{out_args[0]} = {op.get_exp()!s};\n")
             self.mark_as_written(label, f"{out_args[0]}")
         elif (
             out_args
@@ -1756,16 +1790,16 @@ class QasmWriter:
             ]
         ):
             label = self.strings.add_string(
-                f"{out_args[0].reg_name} = {str(op.get_exp())};\n"
+                f"{out_args[0].reg_name} = {op.get_exp()!s};\n"
             )
             self.mark_as_written(label, f"{out_args[0].reg_name}")
         else:
             raise QASMUnsupportedError(
-                f"ClassicalExpBox only supported"
+                "ClassicalExpBox only supported"
                 " for writing to a single bit or whole registers."
             )
 
-    def add_wired_clexpr(self, op: ClExprOp, args: List[Bit]) -> None:
+    def add_wired_clexpr(self, op: ClExprOp, args: list[Bit]) -> None:
         wexpr: WiredClExpr = op.expr
         # 1. Determine the mappings from bit variables to bits and from register
         # variables to registers.
@@ -1783,18 +1817,18 @@ class QasmWriter:
                     input_regs[i] = creg
                     break
             else:
-                raise QASMUnsupportedError(
-                    f"ClExprOp ({wexpr}) contains a register variable (r{i}) "
-                    "that is not wired to any BitRegister in the circuit."
+                assert (
+                    not f"ClExprOp ({wexpr}) contains a register variable (r{i}) that "
+                    "is not wired to any BitRegister in the circuit."
                 )
         # 2. Write the left-hand side of the assignment.
-        output_repr: Optional[str] = None
+        output_repr: str | None = None
         output_args: list[Bit] = [args[j] for j in output_posn]
         n_output_args = len(output_args)
         expect_reg_output = has_reg_output(expr.op)
         if n_output_args == 0:
             raise QASMUnsupportedError("Expression has no output.")
-        elif n_output_args == 1:
+        if n_output_args == 1:
             output_arg = output_args[0]
             output_repr = output_arg.reg_name if expect_reg_output else str(output_arg)
         else:
@@ -1803,6 +1837,8 @@ class QasmWriter:
             for creg in all_cregs:
                 if creg.to_list() == output_args:
                     output_repr = creg.name
+                    break
+            assert output_repr is not None
         self.strings.add_string(f"{output_repr} = ")
         # 3. Write the right-hand side of the assignment.
         self.strings.add_string(
@@ -1810,9 +1846,9 @@ class QasmWriter:
         )
         self.strings.add_string(";\n")
 
-    def add_wasm(self, op: WASMOp, args: List[Bit]) -> None:
-        inputs: List[str] = []
-        outputs: List[str] = []
+    def add_wasm(self, op: WASMOp, args: list[Bit]) -> None:
+        inputs: list[str] = []
+        outputs: list[str] = []
         for reglist, sizes in [(inputs, op.input_widths), (outputs, op.output_widths)]:
             for in_width in sizes:
                 bits = args[:in_width]
@@ -1831,7 +1867,7 @@ class QasmWriter:
         label = self.strings.add_string(f"measure {args[0]} -> {args[1]};\n")
         self.mark_as_written(label, f"{args[1]}")
 
-    def add_zzphase(self, param: Union[float, Expr], args: Sequence[UnitID]) -> None:
+    def add_zzphase(self, param: float | Expr, args: Sequence[UnitID]) -> None:
         # as op.params returns reduced parameters, we can assume
         # that 0 <= param < 4
         if param > 1:
@@ -1865,7 +1901,7 @@ class QasmWriter:
         self.write_params(params)
         self.write_args(args)
 
-    def add_extra_noparams(self, op: Op, args: Sequence[UnitID]) -> Tuple[str, str]:
+    def add_extra_noparams(self, op: Op, args: Sequence[UnitID]) -> tuple[str, str]:
         optype = op.type
         opstr = _tk_to_qasm_extra_noparams[optype]
         gatedefstr = ""
@@ -1875,7 +1911,7 @@ class QasmWriter:
         mainstr = opstr + " " + make_args_str(args)
         return gatedefstr, mainstr
 
-    def add_extra_params(self, op: Op, args: Sequence[UnitID]) -> Tuple[str, str]:
+    def add_extra_params(self, op: Op, args: Sequence[UnitID]) -> tuple[str, str]:
         optype, params = _get_optype_and_params(op)
         assert params is not None
         opstr = _tk_to_qasm_extra_params[optype]
@@ -1892,7 +1928,7 @@ class QasmWriter:
         optype, _params = _get_optype_and_params(op)
         if optype == OpType.RangePredicate:
             assert isinstance(op, RangePredicateOp)
-            self.add_range_predicate(op, cast(List[Bit], args))
+            self.add_range_predicate(op, cast(list[Bit], args))
         elif optype == OpType.Conditional:
             assert isinstance(op, Conditional)
             self.add_conditional(op, args)
@@ -1901,24 +1937,24 @@ class QasmWriter:
             pass
         elif optype == OpType.SetBits:
             assert isinstance(op, SetBitsOp)
-            self.add_set_bits(op, cast(List[Bit], args))
+            self.add_set_bits(op, cast(list[Bit], args))
         elif optype == OpType.CopyBits:
             assert isinstance(op, CopyBitsOp)
-            self.add_copy_bits(op, cast(List[Bit], args))
+            self.add_copy_bits(op, cast(list[Bit], args))
         elif optype == OpType.MultiBit:
             assert isinstance(op, MultiBitOp)
-            self.add_multi_bit(op, cast(List[Bit], args))
+            self.add_multi_bit(op, cast(list[Bit], args))
         elif optype in (OpType.ExplicitPredicate, OpType.ExplicitModifier):
-            self.add_explicit_op(op, cast(List[Bit], args))
+            self.add_explicit_op(op, cast(list[Bit], args))
         elif optype == OpType.ClassicalExpBox:
             assert isinstance(op, ClassicalExpBox)
-            self.add_classical_exp_box(op, cast(List[Bit], args))
+            self.add_classical_exp_box(op, cast(list[Bit], args))
         elif optype == OpType.ClExpr:
             assert isinstance(op, ClExprOp)
-            self.add_wired_clexpr(op, cast(List[Bit], args))
+            self.add_wired_clexpr(op, cast(list[Bit], args))
         elif optype == OpType.WASM:
             assert isinstance(op, WASMOp)
-            self.add_wasm(op, cast(List[Bit], args))
+            self.add_wasm(op, cast(list[Bit], args))
         elif optype == OpType.Measure:
             self.add_measure(args)
         elif hqs_header(self.header) and optype == OpType.ZZPhase:
@@ -1947,9 +1983,7 @@ class QasmWriter:
             self.gatedefs += gatedefstr
             self.strings.add_string(mainstr)
         else:
-            raise QASMUnsupportedError(
-                "Cannot print command of type: {}".format(op.get_name())
-            )
+            raise QASMUnsupportedError(f"Cannot print command of type: {op.get_name()}")
 
     def finalize(self) -> str:
         # try removing unused predicates
@@ -1981,7 +2015,7 @@ def circuit_to_qasm_io(
     circ: Circuit,
     stream_out: TextIO,
     header: str = "qelib1",
-    include_gate_defs: Optional[Set[str]] = None,
+    include_gate_defs: set[str] | None = None,
     maxwidth: int = 32,
 ) -> None:
     """Convert a Circuit to QASM and write to a text stream.
