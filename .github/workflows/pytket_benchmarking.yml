@@ -102,8 +102,10 @@ jobs:
         id: slack
         uses: slackapi/slack-github-action@v2.0.0
         with:
-          channel-id: 'G01CP0YFFA7'
-          slack-message: '${{ env.RETURN_TEST }} Release tag: ${{ github.event.release.tag_name }}.'
+          method: chat.postMessage
+          token: ${{ secrets.PYTKET_BENCHMARKING_SLACK_BOT_TOKEN }}
+          payload: |
+            channel: 'G01CP0YFFA7'
+            text: '${{ env.RETURN_TEST }} Release tag: ${{ github.event.release.tag_name }}.'
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.PYTKET_BENCHMARKING_SLACK_BOT_TOKEN }}
           RETURN_TEST: ${{ env.RETURN_TEST }}
