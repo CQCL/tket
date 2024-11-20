@@ -374,13 +374,17 @@
           "type": "boolean",
           "definition": "parameter controlling the use of ZZPhase gates in \"GreedyPauliSimp\""
         },
-        "timeout": {
+        "thread_timeout": {
           "type": "number",
-          "definition": "parameter controlling the maximum runtime of \"GreedyPauliSimp\""
+          "definition": "parameter controlling the maximum runtime of a single thread in \"GreedyPauliSimp\""
         },
         "only_reduce": {
           "type": "boolean",
           "definition": "parameter controlling whether \"GreedyPauliSimp\" can return circuits with more two qubit gates"
+        },
+        "trials": {
+          "type": "number",
+          "definition": "parameter controlling the number of random solutions found when calling \"GreedyPauliSimp\""
         }
       },
       "required": [
@@ -913,10 +917,11 @@
               "max_tqe_candidates",
               "seed",
               "allow_zzphase",
-              "timeout",
-              "only_reduce"
+              "thread_timeout",
+              "only_reduce",
+              "trials"
             ],
-            "maxProperties": 9
+            "maxProperties": 10
           }
         },
         {
