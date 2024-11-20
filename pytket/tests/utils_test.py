@@ -12,44 +12,46 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import types
 from collections import Counter
-import numpy as np
-from pytket.backends.backend import Backend
-from hypothesis import strategies, given, settings, HealthCheck
-from hypothesis.strategies._internal import SearchStrategy
+from collections.abc import Callable
+from typing import Any, Dict, List, Tuple
 
-from pytket.circuit import Qubit, Circuit, OpType
+import numpy as np
+import pytest
+from hypothesis import HealthCheck, given, settings, strategies
+from hypothesis.strategies._internal import SearchStrategy
+from simulator import TketSimBackend, TketSimShotBackend  # type: ignore
+from sympy import symbols
+
+from pytket.backends.backend import Backend
+from pytket.circuit import Circuit, OpType, Qubit
+from pytket.partition import GraphColourMethod, PauliPartitionStrat
 from pytket.pauli import Pauli, QubitPauliString
-from pytket.partition import PauliPartitionStrat, GraphColourMethod
 from pytket.transform import Transform
+from pytket.utils import Graph, QubitPauliOperator
 from pytket.utils.expectations import (
-    expectation_from_shots,
     expectation_from_counts,
+    expectation_from_shots,
     get_operator_expectation_value,
     get_pauli_expectation_value,
 )
-from pytket.utils.measurements import append_pauli_measurement, _all_pauli_measurements
+from pytket.utils.measurements import _all_pauli_measurements, append_pauli_measurement
+from pytket.utils.outcomearray import OutcomeArray
 from pytket.utils.results import (
+    compare_statevectors,
     counts_from_shot_table,
     get_n_qb_from_statevector,
-    probs_from_counts,
-    probs_from_state,
     int_dist_from_state,
     permute_basis_indexing,
-    compare_statevectors,
+    probs_from_counts,
+    probs_from_state,
 )
-from pytket.utils.outcomearray import OutcomeArray
-from pytket.utils import QubitPauliOperator, Graph
+from pytket.utils.stats import gate_counts
 from pytket.utils.symbolic import (
     circuit_apply_symbolic_statevector,
     circuit_to_symbolic_unitary,
 )
-from pytket.utils.stats import gate_counts
-import pytest
-import types
-from sympy import symbols
-from typing import Any, Callable, Tuple, Dict, List
-from simulator import TketSimShotBackend, TketSimBackend  # type: ignore
 
 
 def test_append_measurements() -> None:
@@ -97,7 +99,7 @@ def test_shots_to_counts() -> None:
 
 
 def test_counts_to_probs() -> None:
-    counts: Dict[Tuple[int, ...], int] = {(0, 0): 4, (0, 1): 1, (1, 1): 3}
+    counts: dict[tuple[int, ...], int] = {(0, 0): 4, (0, 1): 1, (1, 1): 3}
     probs = probs_from_counts(counts)
     assert len(probs) == 3
     assert probs[(0, 0)] == 0.5
@@ -186,7 +188,7 @@ def test_shot_expectation() -> None:
 
 
 def test_count_expectation() -> None:
-    counts: Dict[Tuple[int, ...], int] = {
+    counts: dict[tuple[int, ...], int] = {
         (0, 0, 1): 4,
         (0, 1, 0): 7,
         (1, 0, 0): 1,
@@ -248,7 +250,7 @@ def test_outcomearray() -> None:
     assert counts1D[outcomeA] == 1
 
     # 0 width outcomearrays
-    readouts: List[List[int]] = [[] for _ in range(10)]
+    readouts: list[list[int]] = [[] for _ in range(10)]
     empty_array = OutcomeArray.from_readouts(readouts)
     assert np.array_equal(empty_array.to_readouts(), readouts)
     assert empty_array.counts() == Counter(

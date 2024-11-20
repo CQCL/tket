@@ -12,24 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pathlib import Path
-from pytket import Circuit
-from pytket.circuit import Node, Qubit
-from pytket.architecture import Architecture, FullyConnected
-from pytket.placement import (
-    Placement,
-    LinePlacement,
-    GraphPlacement,
-    NoiseAwarePlacement,
-    place_with_map,
-    place_fully_connected,
-)
-from pytket.passes import PauliSimp, DefaultMappingPass
-from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod
-from pytket.qasm import circuit_from_qasm
-
 import json
+from pathlib import Path
+
 import pytest
+
+from pytket import Circuit
+from pytket.architecture import Architecture, FullyConnected
+from pytket.circuit import Node, Qubit
+from pytket.mapping import LexiLabellingMethod, LexiRouteRoutingMethod, MappingManager
+from pytket.passes import DefaultMappingPass, PauliSimp
+from pytket.placement import (
+    GraphPlacement,
+    LinePlacement,
+    NoiseAwarePlacement,
+    Placement,
+    place_fully_connected,
+    place_with_map,
+)
+from pytket.qasm import circuit_from_qasm
 
 
 def test_placements() -> None:
@@ -92,13 +93,13 @@ def test_placements() -> None:
 
 def test_placements_serialization() -> None:
     with open(
-        Path(__file__).resolve().parent / "json_test_files" / "placements.json", "r"
+        Path(__file__).resolve().parent / "json_test_files" / "placements.json"
     ) as f:
-        dict = json.load(f)
-        base_pl_serial = dict["base_placement"]
-        line_pl_serial = dict["line_placement"]
-        graph_pl_serial = dict["graph_placement"]
-        noise_pl_serial = dict["noise_placement"]
+        d = json.load(f)
+        base_pl_serial = d["base_placement"]
+        line_pl_serial = d["line_placement"]
+        graph_pl_serial = d["graph_placement"]
+        noise_pl_serial = d["noise_placement"]
 
     assert Placement.from_dict(base_pl_serial).to_dict() == base_pl_serial
     assert LinePlacement.from_dict(line_pl_serial).to_dict() == line_pl_serial

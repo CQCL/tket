@@ -34,7 +34,7 @@ namespace tket {
 
 static std::string qasm_bit_repr(
     const ClExprTerm &term, const std::map<int, Bit> &input_bits) {
-  if (const int *n = std::get_if<int>(&term)) {
+  if (const uint64_t *n = std::get_if<uint64_t>(&term)) {
     switch (*n) {
       case 0:
         return "0";
@@ -56,7 +56,7 @@ static std::string qasm_bit_repr(
 
 static std::string qasm_reg_repr(
     const ClExprTerm &term, const std::map<int, BitRegister> &input_regs) {
-  if (const int *n = std::get_if<int>(&term)) {
+  if (const uint64_t *n = std::get_if<uint64_t>(&term)) {
     std::stringstream ss;
     ss << *n;
     return ss.str();

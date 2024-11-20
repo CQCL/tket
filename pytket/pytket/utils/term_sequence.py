@@ -14,14 +14,15 @@
 from typing import cast
 
 from pytket import Circuit
-from pytket.circuit import PauliExpBox, CircBox
+from pytket.circuit import CircBox, PauliExpBox
 from pytket.partition import (
-    term_sequence,
-    PauliPartitionStrat,
     GraphColourMethod,
+    PauliPartitionStrat,
+    term_sequence,
 )
-from .operators import QubitPauliOperator
+
 from .._tket.unit_id import UnitID
+from .operators import QubitPauliOperator
 
 
 def gen_term_sequence_circuit(

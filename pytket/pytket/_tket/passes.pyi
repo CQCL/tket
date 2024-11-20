@@ -18,9 +18,9 @@ class BasePass:
     def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
         ...
     @staticmethod
-    def from_dict(arg0: dict) -> BasePass:
+    def from_dict(base_pass_dict: dict, custom_deserialisation: dict[str, typing.Callable[[pytket._tket.circuit.Circuit], pytket._tket.circuit.Circuit]] = {}) -> BasePass:
         """
-        Construct a new Pass instance from a JSON serializable dictionary representation.
+        Construct a new Pass instance from a JSON serializable dictionary representation. `custom_deserialisation` is a map between `CustomPass` label attributes and a Circuit to Circuit function matching the `CustomPass` `transform` argument. This allows the construction of some `CustomPass` from JSON. `CustomPass` without a matching entry in `custom_deserialisation` will be rejected.
         """
     def __getstate__(self) -> tuple:
         ...
@@ -54,7 +54,7 @@ class BasePass:
         :param after_apply: Invoked after a pass is applied. The CompilationUnit and a summary of the pass configuration are passed into the callback.
         :return: True if pass modified the circuit, else False
         """
-    def to_dict(self) -> dict:
+    def to_dict(self) -> typing.Any:
         """
         :return: A JSON serializable dictionary representation of the Pass.
         """
@@ -227,6 +227,10 @@ class SequencePass(BasePass):
         """
         :return: The underlying sequence of passes.
         """
+    def to_dict(self) -> typing.Any:
+        """
+        :return: A JSON serializable dictionary representation of the SequencePass.
+        """
 def AASRouting(arc: pytket._tket.architecture.Architecture, **kwargs: Any) -> BasePass:
     """
     Construct a pass to relabel :py:class:`Circuit` Qubits to :py:class:`Device` Nodes, and then use architecture-aware synthesis to route the circuit. In the steps of the pass the circuit will be converted to CX, Rz, H gateset. The limited connectivity of the :py:class:`Architecture` is used for the routing. The direction of the edges is ignored. The placement used is GraphPlacement. This pass can take a few parameters for the routing, described below:
@@ -245,7 +249,7 @@ def AutoRebase(gateset: set[pytket._tket.circuit.OpType], allow_swaps: bool = Fa
     Attempt to generate a rebase pass automatically for the given target gateset. Checks if there are known existing decompositions to target gateset and TK1 to target gateset and uses those to construct a custom rebase.
     Raises an error if no known decompositions can be found, in which case try using :py:class:`RebaseCustom` with your own decompositions.
     
-    :param gateset: Set of supported OpTypes, target gate set. (in addition, Measure, Reset and Collapse operations are always allowed and are left alone; conditional operations may be present; and Phase gates may also be introduced by the rebase)
+    :param gateset: Set of supported OpTypes, target gate set. (in addition, Measure and Reset operations are always allowed and are left alone; conditional operations may be present; and Phase gates may also be introduced by the rebase)
     :param allow_swaps: Whether to allow implicit wire swaps. Default to False.
     """
 def AutoSquash(singleqs: set[pytket._tket.circuit.OpType]) -> BasePass:
@@ -286,7 +290,7 @@ def CliffordSimp(allow_swaps: bool = True) -> BasePass:
     """
 def CnXPairwiseDecomposition() -> BasePass:
     """
-    Decompose CnX gates to 2-qubit gates and single qubit gates. For every two CnX gates, reorder their control qubits to improve the chance of gate cancellation
+    Decompose CnX gates to 2-qubit gates `fand single qubit gates. For every two CnX gates, reorder their control qubits to improve the chance of gate cancellation
     """
 def CommuteThroughMultis() -> BasePass:
     """
@@ -338,7 +342,7 @@ def DecomposeBoxes(excluded_types: set[pytket._tket.circuit.OpType] = set(), exc
     """
 def DecomposeClassicalExp() -> BasePass:
     """
-    Replaces each :py:class:`ClassicalExpBox` by a sequence of classical gates.
+    Replaces each :py:class:`ClassicalExpBox` and `ClExprOp` by a sequence of classical gates.
     """
 def DecomposeMultiQubitsCX() -> BasePass:
     """
@@ -406,11 +410,12 @@ def FlattenRegisters() -> BasePass:
     """
     Merges all quantum and classical registers into their respective default registers with contiguous indexing.
     """
-def FlattenRelabelRegistersPass(label: str = 'q') -> BasePass:
+def FlattenRelabelRegistersPass(label: str = 'q', relabel_classical_expressions: bool = True) -> BasePass:
     """
     Removes empty Quantum wires from the Circuit and relabels all Qubit to a register from passed name. 
     
     :param label: Name to relabel remaining Qubit to, default 'q'.
+    :param relabel_classical_expressions: Whether to relabel arguments of expressions held in `ClassicalExpBox`. 
     :return: A pass that removes empty wires and relabels.
     """
 def FullMappingPass(arc: pytket._tket.architecture.Architecture, placer: pytket._tket.placement.Placement, config: typing.Sequence[pytket._tket.mapping.RoutingMethod]) -> BasePass:
@@ -434,13 +439,15 @@ def GlobalisePhasedX(squash: bool = True) -> BasePass:
     
     Replaces any PhasedX gates with global NPhasedX gates. By default, this transform will squash all single-qubit gates to PhasedX and Rz gates before proceeding further. Existing non-global NPhasedX will not be preserved. This is the recommended setting for best performance. If squashing is disabled, each non-global PhasedX gate will be replaced with two global NPhasedX, but any other gates will be left untouched.
     
+    DEPRECATED: This pass will be removed no earlier than three months after the pytket 1.35 release.
+    
     :param squash: Whether to squash the circuit in pre-processing (default: true).
     
     If squash=true (default), the `GlobalisePhasedX` transform's `apply` method will always return true. For squash=false, `apply()` will return true if the circuit was changed and false otherwise.
     
     It is not recommended to use this pass with symbolic expressions, as in certain cases a blow-up in symbolic expression sizes may occur.
     """
-def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3, max_lookahead: int = 500, max_tqe_candidates: int = 500, seed: int = 0, allow_zzphase: bool = False) -> BasePass:
+def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3, max_lookahead: int = 500, max_tqe_candidates: int = 500, seed: int = 0, allow_zzphase: bool = False, thread_timeout: int = 100, only_reduce: bool = False, trials: int = 1) -> BasePass:
     """
     Construct a pass that converts a circuit into a graph of Pauli gadgets to account for commutation and phase folding, and resynthesises them using a greedy algorithm adapted from arxiv.org/abs/2103.08602. The method for synthesising the final Clifford operator is adapted from arxiv.org/abs/2305.10966.
     
@@ -450,6 +457,9 @@ def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3, max_l
     :param max_lookahead:  Maximum lookahead when evaluating each Clifford gate candidate. Default to 500.
     :param seed:  Unsigned integer seed used for sampling candidates and tie breaking. Default to 0.
     :param allow_zzphase: If set to True, allows the algorithm to implement 2-qubit rotations using ZZPhase gates when deemed optimal. Defaults to False.
+    :param thread_timeout: Sets maximum out of time spent finding a single solution in one thread.
+    :param only_reduce: Only returns modified circuit if it has fewer two-qubit gates.
+    :param trials: Sets maximum number of found solutions. The smallest circuit is returned, prioritising the number of 2qb-gates, then the number of gates, then the depth.
     :return: a pass to perform the simplification
     """
 def GuidedPauliSimp(strat: pytket._tket.transform.PauliSynthStrat = pytket._tket.transform.PauliSynthStrat.Sets, cx_config: pytket._tket.circuit.CXConfigType = pytket._tket.circuit.CXConfigType.Snake) -> BasePass:
@@ -555,10 +565,10 @@ def RebaseCustom(gateset: set[pytket._tket.circuit.OpType], cx_replacement: pytk
     3. converts any single-qubit gates not in the gate type set to the form :math:`\\mathrm{Rz}(a)\\mathrm{Rx}(b)\\mathrm{Rz}(c)` (in matrix-multiplication order, i.e. reverse order in the circuit);
     4. applies the `tk1_replacement` function to each of these triples :math:`(a,b,c)` to generate replacement circuits.
     
-    :param gateset: the allowed operations in the rebased circuit (in addition, Measure, Reset and Collapse operations are always allowed and are left alone; conditional operations may be present; and Phase gates may also be introduced by the rebase)
+    :param gateset: the allowed operations in the rebased circuit (in addition, Measure and Reset operations are always allowed and are left alone; conditional operations may be present; and Phase gates may also be introduced by the rebase)
     :param cx_replacement: the equivalent circuit to replace a CX gate using two qubit gates from the desired basis (can use any single qubit OpTypes)
     :param tk1_replacement: a function which, given the parameters of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the desired basis
-    :return: a pass that rebases to the given gate set (possibly including conditional and phase operations, and Measure, Reset and Collapse)
+    :return: a pass that rebases to the given gate set (possibly including conditional and phase operations, and Measure and Reset
     """
 @typing.overload
 def RebaseCustom(gateset: set[pytket._tket.circuit.OpType], tk2_replacement: typing.Callable[[sympy.Expr | float, sympy.Expr | float, sympy.Expr | float], pytket._tket.circuit.Circuit], tk1_replacement: typing.Callable[[sympy.Expr | float, sympy.Expr | float, sympy.Expr | float], pytket._tket.circuit.Circuit]) -> BasePass:
@@ -570,14 +580,14 @@ def RebaseCustom(gateset: set[pytket._tket.circuit.OpType], tk2_replacement: typ
     3. converts any single-qubit gates not in the gate type set to TK1;
     4. if TK2 is not in `gateset`. applies the `tk1_replacement` function to each TK1(a,b,c).
     
-    :param gateset: the allowed operations in the rebased circuit (in addition, Measure, Reset and Collapse operations are always allowed and are left alone; conditional operations may be present; and Phase gates may also be introduced by the rebase)
+    :param gateset: the allowed operations in the rebased circuit (in addition, Measure and Reset always allowed and are left alone; conditional operations may be present; and Phase gates may also be introduced by the rebase)
     :param tk2_replacement: a function which, given the parameters (a,b,c) of an XXPhase(a)YYPhase(b)ZZPhase(c) triple, returns an equivalent circuit in the desired basis
     :param tk1_replacement: a function which, given the parameters (a,b,c) of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the desired basis
-    :return: a pass that rebases to the given gate set (possibly including conditional and phase operations, and Measure, Reset and Collapse)
+    :return: a pass that rebases to the given gate set (possibly including conditional and phase operations, and Measure and Reset)
     """
 def RebaseTket() -> BasePass:
     """
-    Converts all gates to CX, TK1 and Phase. (Any Measure, Reset and Collapse operations are left untouched; Conditional gates are also allowed.)
+    Converts all gates to CX, TK1 and Phase. (Any Measure and Reset operations are left untouched; Conditional gates are also allowed.)
     """
 def RemoveBarriers() -> BasePass:
     """

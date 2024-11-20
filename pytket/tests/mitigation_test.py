@@ -12,26 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import tempfile
 import json
-
-from pytket.utils.spam import SpamCorrecter, compress_counts
-from pytket.circuit import Node, Circuit, Qubit
-from pytket.mapping import MappingManager, LexiLabellingMethod, LexiRouteRoutingMethod
-from pytket.architecture import Architecture
-from pytket.placement import place_with_map
-from pytket.passes import DelayMeasures
-from typing import List, Dict, Counter, Tuple, cast
-from pytket.utils.outcomearray import OutcomeArray
+import tempfile
+from collections import Counter
 from math import ceil
-from pytket.backends.backendresult import BackendResult
+from typing import Dict, List, Tuple, cast
+
 import pytest
+
+from pytket.architecture import Architecture
+from pytket.backends.backendresult import BackendResult
+from pytket.circuit import Circuit, Node, Qubit
+from pytket.mapping import LexiLabellingMethod, LexiRouteRoutingMethod, MappingManager
+from pytket.passes import DelayMeasures
+from pytket.placement import place_with_map
+from pytket.utils.outcomearray import OutcomeArray
+from pytket.utils.spam import SpamCorrecter, compress_counts
 
 
 def test_spam_integration() -> None:
-    SEED = 120
     # test data, to avoid using backend
-    calib_results: List[Dict[Tuple[int, ...], int]] = [
+    calib_results: list[dict[tuple[int, ...], int]] = [
         {
             (0, 0, 0): 742,
             (0, 0, 1): 84,
@@ -73,7 +74,7 @@ def test_spam_integration() -> None:
             (1, 1, 1): 424,
         },
     ]
-    bellres_counts: Dict[Tuple[int, ...], int] = {
+    bellres_counts: dict[tuple[int, ...], int] = {
         (0, 0, 0): 406,
         (0, 0, 1): 111,
         (0, 1, 0): 38,
@@ -116,7 +117,7 @@ def test_spam_integration() -> None:
     mm.route_circuit(rbell, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
 
     def check_correction(
-        counts0: Dict[Tuple[int, ...], int], counts1: Dict[Tuple[int, ...], int]
+        counts0: dict[tuple[int, ...], int], counts1: dict[tuple[int, ...], int]
     ) -> bool:
         if (
             counts0[(0, 0, 0)] > counts1[(0, 0, 0)]
@@ -233,7 +234,7 @@ def test_spam_routing() -> None:
         (1, 1, 1, 1): 167,
     }
 
-    calib_results: List[Dict[Tuple[int, ...], int]] = [
+    calib_results: list[dict[tuple[int, ...], int]] = [
         {
             (0, 0, 0, 0): 659,
             (0, 0, 0, 1): 65,

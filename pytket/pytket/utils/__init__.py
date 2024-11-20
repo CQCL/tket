@@ -14,32 +14,32 @@
 
 """Utility functions for performing high-level procedures in pytket"""
 
-from .expectations import (
-    expectation_from_shots,
-    expectation_from_counts,
-    get_pauli_expectation_value,
-    get_operator_expectation_value,
-)
-from .measurements import append_pauli_measurement
-from .prepare import prepare_circuit
-from .results import (
-    counts_from_shot_table,
-    probs_from_counts,
-    probs_from_state,
-    permute_qubits_in_statevector,
-    permute_basis_indexing,
-    permute_rows_cols_in_unitary,
-    compare_statevectors,
-    compare_unitaries,
-)
-from .term_sequence import gen_term_sequence_circuit
-from .operators import QubitPauliOperator
-from .outcomearray import OutcomeArray, readout_counts
-from .graph import Graph
-from .symbolic import circuit_to_symbolic_unitary, circuit_apply_symbolic_statevector
 from .distribution import (
-    ProbabilityDistribution,
     EmpiricalDistribution,
+    ProbabilityDistribution,
     convex_combination,
 )
+from .expectations import (
+    expectation_from_counts,
+    expectation_from_shots,
+    get_operator_expectation_value,
+    get_pauli_expectation_value,
+)
+from .graph import Graph
+from .measurements import append_pauli_measurement
+from .operators import QubitPauliOperator
+from .outcomearray import OutcomeArray, readout_counts
+from .prepare import prepare_circuit
+from .results import (
+    compare_statevectors,
+    compare_unitaries,
+    counts_from_shot_table,
+    permute_basis_indexing,
+    permute_qubits_in_statevector,
+    permute_rows_cols_in_unitary,
+    probs_from_counts,
+    probs_from_state,
+)
 from .stats import gate_counts
+from .symbolic import circuit_apply_symbolic_statevector, circuit_to_symbolic_unitary
+from .term_sequence import gen_term_sequence_circuit

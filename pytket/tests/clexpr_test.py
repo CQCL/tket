@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
+from pathlib import Path
+
+from jsonschema import validate  # type: ignore
+
 from pytket.circuit import (
     Bit,
     CircBox,
@@ -21,10 +26,14 @@ from pytket.circuit import (
     ClExprOp,
     ClOp,
     ClRegVar,
-    OpType,
     WiredClExpr,
 )
-from pytket.qasm import circuit_to_qasm_str, circuit_from_qasm_str
+from pytket.qasm import circuit_from_qasm_str, circuit_to_qasm_str
+
+with open(
+    Path(__file__).resolve().parent.parent.parent / "schemas/circuit_v1.json"
+) as f:
+    SCHEMA = json.load(f)
 
 
 def test_op() -> None:
@@ -114,16 +123,25 @@ def test_wexpr() -> None:
 
 
 def test_adding_to_circuit() -> None:
-    expr = ClExpr(op=ClOp.BitXor, args=[ClBitVar(0), ClBitVar(1)])
-    wexpr = WiredClExpr(expr=expr, bit_posn={0: 0, 1: 1}, output_posn=[2])
+    expr0 = ClExpr(op=ClOp.BitXor, args=[ClBitVar(0), ClBitVar(1)])
+    wexpr0 = WiredClExpr(expr=expr0, bit_posn={0: 0, 1: 1}, output_posn=[2])
+    expr1 = ClExpr(
+        op=ClOp.RegDiv,
+        args=[ClRegVar(0), ClExpr(op=ClOp.RegAdd, args=[2, ClBitVar(0)])],
+    )
+    wexpr1 = WiredClExpr(
+        expr=expr1, bit_posn={0: 1}, reg_posn={0: [2, 0]}, output_posn=[2, 0]
+    )
     c = Circuit(0, 3)
-    c.add_clexpr(wexpr, c.bits)
+    c.add_clexpr(wexpr0, c.bits)
+    c.add_clexpr(wexpr1, c.bits)
     cmds = c.get_commands()
-    assert len(cmds) == 1
+    assert len(cmds) == 2
     op = cmds[0].op
     assert isinstance(op, ClExprOp)
-    assert op.expr == wexpr
+    assert op.expr == wexpr0
     d = c.to_dict()
+    validate(instance=d, schema=SCHEMA)
     c1 = Circuit.from_dict(d)
     assert c == c1
     d1 = c1.to_dict()
@@ -217,3 +235,23 @@ def test_circbox() -> None:
     c2 = c1.copy()
     c2.flatten_registers()
     assert c1 == c2
+
+
+def test_add_logicexp_as_clexpr() -> None:
+    c = Circuit()
+    a_reg = c.add_c_register("a", 3)
+    b_reg = c.add_c_register("b", 3)
+    c_reg = c.add_c_register("c", 3)
+    c.add_clexpr_from_logicexp(a_reg | b_reg, c_reg.to_list())
+    qasm = circuit_to_qasm_str(c, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+creg a[3];
+creg b[3];
+creg c[3];
+c = (a | b);
+"""
+    )

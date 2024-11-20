@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from io import StringIO
 import re
+from io import StringIO
 from pathlib import Path
 from typing import List
 
@@ -21,42 +21,42 @@ import pytest
 
 from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
 from pytket.circuit import (
-    Circuit,
-    OpType,
-    fresh_symbol,
-    Qubit,
     Bit,
+    BitRegister,
+    Circuit,
+    CustomGate,
+    OpType,
+    Qubit,
+    RangePredicateOp,
+    fresh_symbol,
+    if_not_bit,
     reg_eq,
-    reg_neq,
-    reg_lt,
+    reg_geq,
     reg_gt,
     reg_leq,
-    reg_geq,
-    if_not_bit,
-    BitRegister,
-    CustomGate,
-    RangePredicateOp,
+    reg_lt,
+    reg_neq,
 )
 from pytket.circuit.decompose_classical import DecomposeClassicalError
 from pytket.circuit.logic_exp import BitWiseOp, create_bit_logic_exp
+from pytket.passes import DecomposeBoxes, DecomposeClassicalExp
 from pytket.qasm import (
     circuit_from_qasm,
-    circuit_to_qasm,
     circuit_from_qasm_str,
-    circuit_to_qasm_str,
     circuit_from_qasm_wasm,
+    circuit_to_qasm,
+    circuit_to_qasm_str,
 )
-from pytket.qasm.qasm import QASMParseError, QASMUnsupportedError
 from pytket.qasm.includes.load_includes import (
     _get_declpath,
-    _get_files,
     _get_defpath,
-    _write_defs,
-    _write_decls,
+    _get_files,
     _load_gdict,
+    _write_decls,
+    _write_defs,
 )
+from pytket.qasm.qasm import QASMParseError, QASMUnsupportedError
 from pytket.transform import Transform
-from pytket.passes import DecomposeClassicalExp, DecomposeBoxes
 
 curr_file_path = Path(__file__).resolve().parent
 
@@ -92,6 +92,36 @@ def test_qasm_correct() -> None:
     assert len(coms3) == 4
     correct_str3 = "[SX q[0];, X q[1];, SXdg q[1];, CSX q[0], q[1];]"
     assert str(coms3) == correct_str3
+
+
+def test_long_registers() -> None:
+    fname = str(curr_file_path / "qasm_test_files/longreg.qasm")
+    c = circuit_from_qasm(fname, maxwidth=64)
+    assert c.n_qubits == 0
+    assert c.n_bits == 79
+    assert len(c.c_registers) == 5
+    for creg in c.c_registers:
+        assert creg.size <= 64
+
+
+def test_long_registers_2() -> None:
+    fname = str(curr_file_path / "qasm_test_files/longreg.qasm")
+    c = circuit_from_qasm(fname, maxwidth=100)
+    assert c.n_qubits == 0
+    assert c.n_bits == 79
+    assert len(c.c_registers) == 4
+    for creg in c.c_registers:
+        assert creg.size <= 100
+
+
+def test_incompete_registers() -> None:
+    c = Circuit(1)
+    c.add_bit(Bit("d", 1))
+    c.add_bit(Bit("d", 2))
+    c.Measure(Qubit(0), Bit("d", 1))
+    with pytest.raises(QASMUnsupportedError) as errorinfo:
+        circuit_to_qasm_str(c, header="hqslib1")
+    assert "Circuit contains an invalid classical register d." in str(errorinfo.value)
 
 
 def test_qasm_qubit() -> None:
@@ -147,7 +177,7 @@ def test_qasm_roundtrip() -> None:
 
 
 def test_qasm_str_roundtrip() -> None:
-    with open(curr_file_path / "qasm_test_files/test1.qasm", "r") as f:
+    with open(curr_file_path / "qasm_test_files/test1.qasm") as f:
         c = circuit_from_qasm_str(f.read())
         qasm_str = circuit_to_qasm_str(c)
         c2 = circuit_from_qasm_str(qasm_str)
@@ -220,6 +250,9 @@ def test_conditional_gates() -> None:
 
 def test_named_conditional_barrier() -> None:
     circ = Circuit(2, 2)
+    circ.add_bit(Bit("test", 0))
+    circ.add_bit(Bit("test", 1))
+    circ.add_bit(Bit("test", 2))
     circ.add_bit(Bit("test", 3))
     circ.Z(0, condition_bits=[0, 1], condition_value=2)
     circ.add_conditional_barrier(
@@ -414,7 +447,7 @@ def test_h1_rzz() -> None:
     hqs_qasm_str = circuit_to_qasm_str(c, header="hqslib1")
     assert "RZZ" in hqs_qasm_str
 
-    with open(str(curr_file_path / "qasm_test_files/zzphase.qasm"), "r") as f:
+    with open(str(curr_file_path / "qasm_test_files/zzphase.qasm")) as f:
         fread_str = str(f.read())
         assert str(hqs_qasm_str) == fread_str
 
@@ -432,14 +465,18 @@ def test_extended_qasm() -> None:
 
     assert circuit_to_qasm_str(c2, "hqslib1")
 
-    assert not DecomposeClassicalExp().apply(c)
+    with pytest.raises(DecomposeClassicalError):
+        DecomposeClassicalExp().apply(c)
 
 
-def test_decomposable_extended() -> None:
+@pytest.mark.parametrize("use_clexpr", [True, False])
+def test_decomposable_extended(use_clexpr: bool) -> None:
     fname = str(curr_file_path / "qasm_test_files/test18.qasm")
     out_fname = str(curr_file_path / "qasm_test_files/test18_output.qasm")
 
-    c = circuit_from_qasm_wasm(fname, "testfile.wasm", maxwidth=64, use_clexpr=True)
+    c = circuit_from_qasm_wasm(
+        fname, "testfile.wasm", maxwidth=64, use_clexpr=use_clexpr
+    )
     DecomposeClassicalExp().apply(c)
 
     out_qasm = circuit_to_qasm_str(c, "hqslib1", maxwidth=64)
@@ -451,9 +488,9 @@ def test_opaque() -> None:
     c = circuit_from_qasm_str(
         'OPENQASM 2.0;\ninclude "qelib1.inc";\nqreg q[4];\nopaque myopaq() q1, q2;\n myopaq() q[0], q[1];'
     )
-    with pytest.raises(QASMUnsupportedError) as e:
-        circuit_to_qasm_str(c)
-    assert "Empty CustomGates and opaque gates are not supported" in str(e.value)
+    assert (
+        circuit_to_qasm_str(c) == 'OPENQASM 2.0;\ninclude "qelib1.inc";\n\nqreg q[4];\n'
+    )
 
 
 def test_alternate_encoding() -> None:
@@ -462,7 +499,7 @@ def test_alternate_encoding() -> None:
         "utf-32": str(curr_file_path / "qasm_test_files/utf32.qasm"),
     }
     for enc, fil in encoded_files.items():
-        with pytest.raises(Exception) as e:
+        with pytest.raises(Exception):
             circuit_from_qasm(fil)
         c = circuit_from_qasm(fil, encoding=enc)
         assert c.n_gates == 6
@@ -574,7 +611,7 @@ def test_scratch_bits_filtering() -> None:
     assert _TEMP_BIT_NAME not in qstr
     qasm_out = str(curr_file_path / "qasm_test_files/testout6.qasm")
     circuit_to_qasm(c, qasm_out, "hqslib1")
-    with open(qasm_out, "r") as f:
+    with open(qasm_out) as f:
         assert _TEMP_BIT_NAME not in f.read()
 
     # test keeping used
@@ -586,7 +623,7 @@ def test_scratch_bits_filtering() -> None:
     qstr = circuit_to_qasm_str(c, "hqslib1")
     assert _TEMP_BIT_NAME in qstr
     circuit_to_qasm(c, qasm_out, "hqslib1")
-    with open(qasm_out, "r") as f:
+    with open(qasm_out) as f:
         assert _TEMP_BIT_NAME in f.read()
 
     # test multiple scratch registers
@@ -602,7 +639,8 @@ def test_scratch_bits_filtering() -> None:
     creg {_TEMP_BIT_NAME}_1[32];
     {_TEMP_BIT_NAME}[0] = (a[0] ^ b[0]);
     if({_TEMP_BIT_NAME}[0]==1) x q[0];
-    """
+    """,
+        maxwidth=64,
     )
     assert c.get_c_register(_TEMP_BIT_NAME)
     assert c.get_c_register(f"{_TEMP_BIT_NAME}_1")
@@ -610,7 +648,7 @@ def test_scratch_bits_filtering() -> None:
     assert _TEMP_BIT_NAME in qstr
     assert f"{_TEMP_BIT_NAME}_1" not in qstr
     circuit_to_qasm(c, qasm_out, "hqslib1")
-    with open(qasm_out, "r") as f:
+    with open(qasm_out) as f:
         fstr = f.read()
         assert _TEMP_BIT_NAME in fstr
         assert f"{_TEMP_BIT_NAME}_1" not in fstr
@@ -630,7 +668,7 @@ def test_scratch_bits_filtering() -> None:
     qstr = circuit_to_qasm_str(c, "hqslib1")
     assert f"creg {_TEMP_BIT_REG_BASE}_0[32]" in qstr
     circuit_to_qasm(c, qasm_out, "hqslib1")
-    with open(qasm_out, "r") as f:
+    with open(qasm_out) as f:
         fstr = f.read()
         assert f"creg {_TEMP_BIT_REG_BASE}_0[32]" in fstr
 
@@ -694,7 +732,7 @@ def test_RZZ_read_from() -> None:
 
 
 def test_conditional_expressions() -> None:
-    def cond_circ(bits: List[int]) -> Circuit:
+    def cond_circ(bits: list[int]) -> Circuit:
         c = Circuit(4, 4)
         c.X(0)
         c.X(1)
@@ -836,14 +874,14 @@ def test_classical_expbox_arg_order(use_clexpr: bool) -> None:
     qasm = """
     OPENQASM 2.0;
     include "hqslib1.inc";
-    
+
     qreg q[1];
-    
+
     creg a[4];
     creg b[4];
     creg c[4];
     creg d[4];
-    
+
     c = a ^ b | d;
     """
 
@@ -865,11 +903,11 @@ def test_register_name_check() -> None:
     qasm = """
     OPENQASM 2.0;
     include "hqslib1.inc";
-    
+
     qreg Q[1];
     """
     with pytest.raises(QASMParseError) as e:
-        circ = circuit_from_qasm_str(qasm)
+        _ = circuit_from_qasm_str(qasm)
     err_msg = "Invalid register definition 'Q[1]'"
     assert err_msg in str(e.value)
 
@@ -1026,16 +1064,62 @@ if(tk_SCRATCH_BITREG_0[0]==1) c[1] = 1;
 
 
 def test_conditional_range_predicate() -> None:
-    range_predicate = RangePredicateOp(6, 0, 27)
-    c = Circuit(0, 8)
-    c.add_gate(range_predicate, [0, 1, 2, 3, 4, 5, 6], condition=Bit(7))
-    # remove once https://github.com/CQCL/tket/issues/1508
-    # is resolved
+    range_predicate = RangePredicateOp(2, 0, 2)
+    c = Circuit(0, 5)
+    c.add_gate(range_predicate, [1, 2, 4])
+    # https://github.com/CQCL/tket/issues/1642
     with pytest.raises(Exception) as errorinfo:
-        circuit_to_qasm_str(c, header="hqslib1")
-        assert "Conditional RangePredicate is currently unsupported." in str(
+        qasm = circuit_to_qasm_str(c, header="hqslib1")
+        assert "RangePredicate conditions must be an entire classical register" in str(
             errorinfo.value
         )
+    # https://github.com/CQCL/tket/issues/1508
+    range_predicate = RangePredicateOp(6, 0, 27)
+    c = Circuit(0, 6)
+    c.add_gate(range_predicate, [0, 1, 2, 3, 4, 5, 5], condition=Bit(5))
+    qasm = circuit_to_qasm_str(c, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+creg c[6];
+creg tk_SCRATCH_BITREG_0[4];
+if(c[5]==1) tk_SCRATCH_BITREG_0[0] = 1;
+if(c<=27) tk_SCRATCH_BITREG_0[1] = 1;
+tk_SCRATCH_BITREG_0[2] = tk_SCRATCH_BITREG_0[0] & tk_SCRATCH_BITREG_0[1];
+tk_SCRATCH_BITREG_0[3] = tk_SCRATCH_BITREG_0[0] & (~ tk_SCRATCH_BITREG_0[1]);
+if(tk_SCRATCH_BITREG_0[2]==1) c[5] = 1;
+if(tk_SCRATCH_BITREG_0[3]==1) c[5] = 0;
+"""
+    )
+    # more test
+    range_predicate = RangePredicateOp(2, 0, 2)
+    c = Circuit()
+    reg_a = c.add_c_register("a", 2)
+    reg_b = c.add_c_register("b", 2)
+    reg_d = c.add_c_register("d", 1)
+    c.add_gate(
+        range_predicate, reg_a.to_list() + reg_d.to_list(), condition=reg_gt(reg_b, 1)
+    )
+    qasm = circuit_to_qasm_str(c, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+creg a[2];
+creg b[2];
+creg d[1];
+creg tk_SCRATCH_BITREG_0[4];
+if(b>=2) tk_SCRATCH_BITREG_0[0] = 1;
+if(a<=2) tk_SCRATCH_BITREG_0[1] = 1;
+tk_SCRATCH_BITREG_0[2] = tk_SCRATCH_BITREG_0[0] & tk_SCRATCH_BITREG_0[1];
+tk_SCRATCH_BITREG_0[3] = tk_SCRATCH_BITREG_0[0] & (~ tk_SCRATCH_BITREG_0[1]);
+if(tk_SCRATCH_BITREG_0[2]==1) d[0] = 1;
+if(tk_SCRATCH_BITREG_0[3]==1) d[0] = 0;
+"""
+    )
 
 
 def test_range_with_maxwidth() -> None:
@@ -1154,7 +1238,8 @@ if __name__ == "__main__":
     test_hqs_conditional_params()
     test_barrier()
     test_barrier_2()
-    test_decomposable_extended()
+    test_decomposable_extended(True)
+    test_decomposable_extended(False)
     test_alternate_encoding()
     test_header_stops_gate_definition()
     test_tk2_definition()

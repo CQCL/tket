@@ -110,7 +110,8 @@ PassPtr gen_clifford_push_through_pass();
  * Qubits removed from the Circuit are preserved in the bimap, but not updated
  * to a new labelling.
  */
-PassPtr gen_flatten_relabel_registers_pass(const std::string& label);
+PassPtr gen_flatten_relabel_registers_pass(
+    const std::string& label, bool relabel_classical_expressions = true);
 /**
  * Pass to rename some or all qubits according to the given map.
  *
@@ -354,12 +355,17 @@ PassPtr gen_special_UCC_synthesis(
  * @param max_tqe_candidates
  * @param seed
  * @param allow_zzphase
+ * @param thread_timeout
+ * @param only_reduce
+ * @param trials
  * @return PassPtr
  */
 PassPtr gen_greedy_pauli_simp(
     double discount_rate = 0.7, double depth_weight = 0.3,
     unsigned max_lookahead = 500, unsigned max_tqe_candidates = 500,
-    unsigned seed = 0, bool allow_zzphase = false);
+    unsigned seed = 0, bool allow_zzphase = false,
+    unsigned thread_timeout = 100, bool only_reduce = false,
+    unsigned trials = 1);
 
 /**
  * Generate a pass to simplify the circuit where it acts on known basis states.

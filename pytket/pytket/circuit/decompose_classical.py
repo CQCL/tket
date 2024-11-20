@@ -15,28 +15,30 @@
 """Functions for decomposing Circuits containing classical expressions
  in to primitive logical operations."""
 import copy
+from collections.abc import Callable
 from heapq import heappop, heappush
-from typing import (
-    Callable,
-    Dict,
-    List,
-    Optional,
-    Set,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-    Generic,
-)
+from typing import Any, Generic, TypeVar
 
+from pytket._tket.circuit import (
+    Circuit,
+    ClassicalExpBox,
+    ClBitVar,
+    ClExpr,
+    ClExprOp,
+    ClOp,
+    ClRegVar,
+    Conditional,
+    OpType,
+    WiredClExpr,
+)
 from pytket._tket.unit_id import (
     _TEMP_BIT_NAME,
     _TEMP_BIT_REG_BASE,
     _TEMP_REG_SIZE,
-    BitRegister,
     Bit,
+    BitRegister,
 )
-from pytket._tket.circuit import Circuit, ClassicalExpBox, Conditional, OpType
+from pytket.circuit.clexpr import check_register_alignments, has_reg_output
 from pytket.circuit.logic_exp import (
     BitLogicExp,
     BitWiseOp,
@@ -58,8 +60,8 @@ class VarHeap(Generic[T]):
     """A generic heap implementation."""
 
     def __init__(self) -> None:
-        self._heap: List[T] = []
-        self._heap_vars: Set[T] = set()
+        self._heap: list[T] = []
+        self._heap_vars: set[T] = set()
 
     def pop(self) -> T:
         """Pop from top of heap."""
@@ -137,19 +139,18 @@ class RegHeap(VarHeap[BitRegister]):
         return new_reg
 
 
-def temp_reg_in_args(args: List[Bit]) -> Optional[BitRegister]:
+def temp_reg_in_args(args: list[Bit]) -> BitRegister | None:
     """If there are bits from a temporary register in the args, return it."""
     temp_reg_bits = [b for b in args if b.reg_name.startswith(_TEMP_BIT_REG_BASE)]
     if temp_reg_bits:
-        temp_reg = BitRegister(temp_reg_bits[0].reg_name, _TEMP_REG_SIZE)
-        return temp_reg
+        return BitRegister(temp_reg_bits[0].reg_name, _TEMP_REG_SIZE)
     return None
 
 
-VarType = TypeVar("VarType", Type[Bit], Type[BitRegister])
+VarType = TypeVar("VarType", type[Bit], type[BitRegister])
 
 
-def int_to_bools(val: Constant, width: int) -> List[bool]:
+def int_to_bools(val: Constant, width: int) -> list[bool]:
     # map int to bools via litle endian encoding
     return list(map(bool, map(int, reversed(f"{val:0{width}b}"[-width:]))))
 
@@ -164,7 +165,7 @@ def get_bit_width(x: int) -> int:
 
 
 def _gen_walk(var_type: VarType, newcirc: Circuit, heap: VarHeap) -> Callable[
-    [Union[RegLogicExp, BitLogicExp], Optional[Variable], Optional[Dict]],
+    [RegLogicExp | BitLogicExp, Variable | None, dict | None],
     Variable,
 ]:
     """Generate a recursive walk method for decomposing an expression tree."""
@@ -178,8 +179,8 @@ def _gen_walk(var_type: VarType, newcirc: Circuit, heap: VarHeap) -> Callable[
         RegWiseOp.XOR: newcirc.add_c_xor_to_registers,
     }
     if var_type is Bit:
-        op_type: Union[Type[BitWiseOp], Type[RegWiseOp]] = BitWiseOp
-        exp_type: Union[Type[BitLogicExp], Type[RegLogicExp]] = BitLogicExp
+        op_type: type[BitWiseOp] | type[RegWiseOp] = BitWiseOp
+        exp_type: type[BitLogicExp] | type[RegLogicExp] = BitLogicExp
     else:
         assert var_type is BitRegister
         op_type = RegWiseOp
@@ -194,7 +195,7 @@ def _gen_walk(var_type: VarType, newcirc: Circuit, heap: VarHeap) -> Callable[
                 newcirc.add_bit(var.__getitem__(i), reject_dups=False)
 
     # method for setting bits during walk
-    def set_bits(var: Variable, val: Constant, kwargs: Dict) -> None:
+    def set_bits(var: Variable, val: Constant, kwargs: dict) -> None:
         if isinstance(var, Bit):
             newcirc.add_c_setbits([bool(val)], [var], **kwargs)
         else:
@@ -210,9 +211,9 @@ def _gen_walk(var_type: VarType, newcirc: Circuit, heap: VarHeap) -> Callable[
     # convert an expression to gates on the circuit
     # and return the variable holding the result
     def recursive_walk(
-        exp: Union[RegLogicExp, BitLogicExp],
-        targ_bit: Optional[Variable] = None,
-        kwargs: Optional[Dict] = None,
+        exp: RegLogicExp | BitLogicExp,
+        targ_bit: Variable | None = None,
+        kwargs: dict | None = None,
     ) -> Variable:
         assert isinstance(exp.op, op_type)
         kwargs = kwargs or {}
@@ -253,8 +254,131 @@ def _gen_walk(var_type: VarType, newcirc: Circuit, heap: VarHeap) -> Callable[
     return recursive_walk
 
 
-def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
-    """Rewrite a circuit command-wise, decomposing ClassicalExpBox."""
+class ClExprDecomposer:
+    def __init__(
+        self,
+        circ: Circuit,
+        bit_posn: dict[int, int],
+        reg_posn: dict[int, list[int]],
+        args: list[Bit],
+        bit_heap: BitHeap,
+        reg_heap: RegHeap,
+        kwargs: dict[str, Any],
+    ):
+        self.circ: Circuit = circ
+        self.bit_posn: dict[int, int] = bit_posn
+        self.reg_posn: dict[int, list[int]] = reg_posn
+        self.args: list[Bit] = args
+        self.bit_heap: BitHeap = bit_heap
+        self.reg_heap: RegHeap = reg_heap
+        self.kwargs: dict[str, Any] = kwargs
+        # Construct maps from int (i.e. ClBitVar) to Bit, and from int (i.e. ClRegVar)
+        # to BitRegister:
+        self.bit_vars = {i: args[p] for i, p in bit_posn.items()}
+        self.reg_vars = {
+            i: BitRegister(args[p[0]].reg_name, len(p)) for i, p in reg_posn.items()
+        }
+
+    def add_var(self, var: Variable) -> None:
+        """Add a Bit or BitRegister to the circuit if not already present."""
+        if isinstance(var, Bit):
+            self.circ.add_bit(var, reject_dups=False)
+        else:
+            assert isinstance(var, BitRegister)
+            for bit in var.to_list():
+                self.circ.add_bit(bit, reject_dups=False)
+
+    def set_bits(self, var: Variable, val: int) -> None:
+        """Set the value of a Bit or BitRegister."""
+        assert val >= 0
+        if isinstance(var, Bit):
+            assert val >> 1 == 0
+            self.circ.add_c_setbits([bool(val)], [var], **self.kwargs)
+        else:
+            assert isinstance(var, BitRegister)
+            assert val >> var.size == 0
+            self.circ.add_c_setreg(val, var, **self.kwargs)
+
+    def decompose_expr(self, expr: ClExpr, out_var: Variable | None) -> Variable:
+        """Add the decomposed expression to the circuit and return the Bit or
+        BitRegister that contains the result.
+
+        :param expr: the expression to decompose
+        :param out_var: where to put the output (if None, create a new scratch location)
+        """
+        op: ClOp = expr.op
+        heap: VarHeap = self.reg_heap if has_reg_output(op) else self.bit_heap
+
+        # Eliminate (recursively) subsidiary expressions from the arguments, and convert
+        # all terms to Bit or BitRegister:
+        terms: list[Variable] = []
+        for arg in expr.args:
+            if isinstance(arg, int):
+                # Assign to a fresh variable
+                fresh_var = heap.fresh_var()
+                self.add_var(fresh_var)
+                self.set_bits(fresh_var, arg)
+                terms.append(fresh_var)
+            elif isinstance(arg, ClBitVar):
+                terms.append(self.bit_vars[arg.index])
+            elif isinstance(arg, ClRegVar):
+                terms.append(self.reg_vars[arg.index])
+            else:
+                assert isinstance(arg, ClExpr)
+                terms.append(self.decompose_expr(arg, None))
+
+        # Enable reuse of temporary terms:
+        for term in terms:
+            if heap.is_heap_var(term):
+                heap.push(term)
+
+        if out_var is None:
+            out_var = heap.fresh_var()
+        self.add_var(out_var)
+        match op:
+            case ClOp.BitAnd:
+                self.circ.add_c_and(*terms, out_var, **self.kwargs)  # type: ignore
+            case ClOp.BitNot:
+                self.circ.add_c_not(*terms, out_var, **self.kwargs)  # type: ignore
+            case ClOp.BitOne:
+                assert isinstance(out_var, Bit)
+                self.circ.add_c_setbits([True], [out_var], **self.kwargs)
+            case ClOp.BitOr:
+                self.circ.add_c_or(*terms, out_var, **self.kwargs)  # type: ignore
+            case ClOp.BitXor:
+                self.circ.add_c_xor(*terms, out_var, **self.kwargs)  # type: ignore
+            case ClOp.BitZero:
+                assert isinstance(out_var, Bit)
+                self.circ.add_c_setbits([False], [out_var], **self.kwargs)
+            case ClOp.RegAnd:
+                self.circ.add_c_and_to_registers(*terms, out_var, **self.kwargs)  # type: ignore
+            case ClOp.RegNot:
+                self.circ.add_c_not_to_registers(*terms, out_var, **self.kwargs)  # type: ignore
+            case ClOp.RegOne:
+                assert isinstance(out_var, BitRegister)
+                self.circ.add_c_setbits(
+                    [True] * out_var.size, out_var.to_list(), **self.kwargs
+                )
+            case ClOp.RegOr:
+                self.circ.add_c_or_to_registers(*terms, out_var, **self.kwargs)  # type: ignore
+            case ClOp.RegXor:
+                self.circ.add_c_xor_to_registers(*terms, out_var, **self.kwargs)  # type: ignore
+            case ClOp.RegZero:
+                assert isinstance(out_var, BitRegister)
+                self.circ.add_c_setbits(
+                    [False] * out_var.size, out_var.to_list(), **self.kwargs
+                )
+            case _:
+                raise DecomposeClassicalError(
+                    f"{op} cannot be decomposed to TKET primitives."
+                )
+        return out_var
+
+
+def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:
+    """Rewrite a circuit command-wise, decomposing ClassicalExpBox and ClExprOp."""
+    if not check_register_alignments(circ):
+        raise DecomposeClassicalError("Circuit contains non-register-aligned ClExprOp.")
     bit_heap = BitHeap()
     reg_heap = RegHeap()
     # add already used heap variables to heaps
@@ -281,7 +405,7 @@ def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
     reg_recursive_walk = _gen_walk(BitRegister, newcirc, reg_heap)
 
     # targets of predicates that need to be relabelled
-    replace_targets: Dict[Variable, Variable] = dict()
+    replace_targets: dict[Variable, Variable] = dict()
     modified = False
     for command in circ:
         op = command.op
@@ -354,9 +478,41 @@ def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
                     replace_targets[out_reg] = comp_reg
             modified = True
             continue
+
+        elif optype == OpType.ClExpr:
+            assert isinstance(op, ClExprOp)
+            wexpr: WiredClExpr = op.expr
+            expr: ClExpr = wexpr.expr
+            bit_posn = wexpr.bit_posn
+            reg_posn = wexpr.reg_posn
+            output_posn = wexpr.output_posn
+            assert len(output_posn) > 0
+            output0 = args[output_posn[0]]
+            assert isinstance(output0, Bit)
+            out_var: Variable = (
+                BitRegister(output0.reg_name, len(output_posn))
+                if has_reg_output(expr.op)
+                else output0
+            )
+            decomposer = ClExprDecomposer(
+                newcirc, bit_posn, reg_posn, args, bit_heap, reg_heap, kwargs  # type: ignore
+            )
+            comp_var = decomposer.decompose_expr(expr, out_var)
+            if comp_var != out_var:
+                replace_targets[out_var] = comp_var
+            modified = True
+            continue
+
         if optype == OpType.Barrier:
             # add_gate doesn't work for metaops
             newcirc.add_barrier(args)
         else:
+            for arg in args:
+                if (
+                    isinstance(arg, Bit)
+                    and arg.reg_name != "_w"  # workaround: this shouldn't be type Bit
+                    and arg not in newcirc.bits
+                ):
+                    newcirc.add_bit(arg)
             newcirc.add_gate(op, args, **kwargs)
     return newcirc, modified

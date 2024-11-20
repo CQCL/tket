@@ -22,6 +22,7 @@
 #include "../testutil.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DAGDefs.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Gate/GatePtr.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
@@ -172,6 +173,25 @@ SCENARIO(
     test1.add_op<unsigned>(OpType::CX, {2, 1});
     REQUIRE(test1.count_gates(OpType::CX) == 3);
     REQUIRE(!test1.is_symbolic());
+  }
+}
+
+SCENARIO("test conditional count") {
+  GIVEN("conditional circ") {
+    Circuit circ;
+    register_t qreg = circ.add_q_register("qb", 2);
+    register_t creg = circ.add_c_register("b", 2);
+    circ.add_conditional_gate<UnitID>(OpType::H, {}, {qreg[1]}, {creg[0]}, 1);
+    circ.add_conditional_gate<UnitID>(OpType::H, {}, {qreg[1]}, {creg[0]}, 1);
+    circ.add_conditional_gate<UnitID>(OpType::H, {}, {qreg[1]}, {creg[0]}, 1);
+    circ.add_op<Qubit>(OpType::H, {Qubit(qreg[0])});
+    circ.add_op<Qubit>(OpType::H, {Qubit(qreg[0])});
+    REQUIRE(circ.n_qubits() == 2);
+    REQUIRE(circ.n_bits() == 2);
+    REQUIRE(circ.count_gates(OpType::CX, false) == 0);
+    REQUIRE(circ.count_gates(OpType::H, false) == 2);
+    REQUIRE(circ.count_gates(OpType::CX, true) == 0);
+    REQUIRE(circ.count_gates(OpType::H, true) == 5);
   }
 }
 
@@ -1291,6 +1311,36 @@ SCENARIO("Functions with symbolic ops") {
     REQUIRE(op2->get_type() == OpType::Rx);
     REQUIRE(test_equiv_val(op2->get_params()[0], 0.2));
     REQUIRE(op3->get_type() == OpType::Barrier);
+  }
+  GIVEN("A circuit with symbolic gates and boxes that belong to opgroups.") {
+    Sym asym = SymEngine::symbol("a");
+    Expr alpha(asym);
+    Sym bsym = SymEngine::symbol("b");
+    Expr beta(bsym);
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::Rx, alpha, {0}, "Rx");
+    Circuit inner_circ(2);
+    inner_circ.add_op<unsigned>(OpType::Rx, {alpha}, {0});
+    inner_circ.add_op<unsigned>(OpType::Ry, {beta}, {0});
+    auto cbox = CircBox(inner_circ);
+    circ.add_box(cbox, {0, 1}, "cbox");
+    DensePauliMap paulis0{Pauli::X, Pauli::X};
+    DensePauliMap paulis1{Pauli::Z, Pauli::X};
+    auto ppbox = PauliExpPairBox(
+        SymPauliTensor(paulis0, alpha), SymPauliTensor(paulis1, beta));
+    circ.add_box(ppbox, {0, 1}, "ppbox");
+    symbol_map_t symbol_map;
+    symbol_map[asym] = Expr(0.2);
+    symbol_map[bsym] = Expr(0.3);
+    circ.symbol_substitution(symbol_map);
+    REQUIRE(!circ.is_symbolic());
+    std::unordered_set<std::string> opgroups({"Rx", "cbox", "ppbox"});
+    REQUIRE(circ.get_opgroups() == opgroups);
+    std::vector<Command> cmds = circ.get_commands();
+    REQUIRE(cmds.size() == 3);
+    REQUIRE(cmds[0].get_opgroup().value() == "Rx");
+    REQUIRE(cmds[1].get_opgroup().value() == "cbox");
+    REQUIRE(cmds[2].get_opgroup().value() == "ppbox");
   }
 }
 
