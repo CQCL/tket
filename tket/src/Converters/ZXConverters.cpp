@@ -583,6 +583,21 @@ std::pair<ZXDiagram, BoundaryVertMap> circuit_to_zx(const Circuit& circ) {
   return {std::move(zxd), std::move(bmap)};
 }
 
+void test_flow(const ZXDiagram& diag, const std::string& location) {
+  std::cout << location << ":\t";
+  std::cout << Flow::identify_pauli_flow(diag).c_.size() << "\t";
+  std::cout << diag.n_vertices() << "\t";
+  std::cout << diag.get_boundary(ZXType::Input).size() << "\t";
+  std::cout << diag.get_boundary(ZXType::Output).size() << "\t";
+  if (Flow::identify_pauli_flow(diag).c_.size() ==
+      diag.n_vertices() - diag.get_boundary(ZXType::Input).size() -
+          diag.get_boundary(ZXType::Output).size()) {
+    std::cout << "OK" << std::endl;
+  } else {
+    std::cout << "FAIL" << std::endl;
+  }
+}
+
 void clean_frontier(
     ZXDiagram& diag, ZXVertVec& frontier, Circuit& circ,
     std::map<ZXVert, unsigned>& qubit_map) {
@@ -662,6 +677,7 @@ void clean_frontier(
       new_frontier.push_back(f);
   }
   frontier = new_frontier;
+  test_flow(diag, "Cleaned frontier");
 }
 
 ZXVertSeqSet neighbours_of_frontier(
@@ -825,6 +841,7 @@ Circuit zx_to_circuit(const ZXDiagram& d) {
   if (ins.size() != outs.size())
     throw ZXError("Can only extract a circuit from a unitary ZX diagram");
 
+  test_flow(diag, "Start of converter");
   BGL_FORALL_VERTICES(v, *diag.get_graph(), ZXGraph) {
     ZXGen_ptr vgen = diag.get_vertex_ZXGen_ptr(v);
     if (vgen->get_type() == ZXType::PY) {
@@ -857,6 +874,7 @@ Circuit zx_to_circuit(const ZXDiagram& d) {
     if (remove_all_gadgets(diag, frontier, input_qubits)) {
       clean_frontier(diag, frontier, circ, qubit_map);
     }
+    test_flow(diag, "Start of loop\t");
     ZXVertSeqSet neighbours = neighbours_of_frontier(diag, frontier);
     boost::bimap<ZXVert, unsigned> correctors, preserve, ys;
     ZXVertVec to_solve;

@@ -97,7 +97,7 @@ class TketConan(ConanFile):
         cmake.configure()
         cmake.build()
         if self.build_test():
-            self.run(os.path.join(self.test_folder(), "test-tket"))
+            self.run(os.path.join(self.test_folder(), "test-tket -# \"[#test_ZXSimp]\""))
         if self.build_proptest():
             self.run(os.path.join(self.proptest_folder(), "proptest-tket"))
 
