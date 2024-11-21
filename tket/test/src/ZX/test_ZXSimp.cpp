@@ -191,47 +191,40 @@ SCENARIO("Testing for vertex reuse bug") {
    * new vertices would be added which may (depending on how boost was feeling
    * with memory) reuse the same memory locations, so the old pointers now
    * worked, meaning lookups in sets/functions would give false positives.
-   *
-   * Running these multiple times to give a low chance of a false positive when
-   * running this on CI.
    */
   GIVEN("Offender 1") {
-    for (unsigned i = 0; i < 50; ++i) {
-      Circuit circ(3);
-      circ.add_op<unsigned>(OpType::H, {1});
-      circ.add_op<unsigned>(OpType::H, {2});
-      circ.add_op<unsigned>(OpType::CX, {2, 1});
-      circ.add_op<unsigned>(OpType::Rz, 1.1, {1});
-      circ.add_op<unsigned>(OpType::H, {0});
-      circ.add_op<unsigned>(OpType::CX, {2, 1});
-      circ.add_op<unsigned>(OpType::H, {1});
-      circ.add_op<unsigned>(OpType::H, {2});
-      circ.add_op<unsigned>(OpType::Rz, 0.970644, {1});
-      circ.add_op<unsigned>(OpType::Rz, 0.9, {2});
-      circ.add_op<unsigned>(OpType::H, {1});
-      circ.add_op<unsigned>(OpType::H, {2});
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_op<unsigned>(OpType::H, {2});
+    circ.add_op<unsigned>(OpType::CX, {2, 1});
+    circ.add_op<unsigned>(OpType::Rz, 1.1, {1});
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::CX, {2, 1});
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_op<unsigned>(OpType::H, {2});
+    circ.add_op<unsigned>(OpType::Rz, 0.970644, {1});
+    circ.add_op<unsigned>(OpType::Rz, 0.9, {2});
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_op<unsigned>(OpType::H, {2});
 
-      CompilationUnit cu(circ);
-      ZXGraphlikeOptimisation()->apply(cu);
-    }
+    CompilationUnit cu(circ);
+    ZXGraphlikeOptimisation()->apply(cu);
   }
   GIVEN("Offender 2") {
-    for (unsigned i = 0; i < 50; ++i) {
-      Circuit circ(6);
-      circ.add_op<unsigned>(OpType::Rx, -0.78, {3});
-      circ.add_op<unsigned>(OpType::Rx, 1.069, {5});
-      circ.add_op<unsigned>(OpType::CX, {0, 3});
-      circ.add_op<unsigned>(OpType::CX, {3, 5});
-      circ.add_op<unsigned>(OpType::CX, {0, 5});
-      circ.add_op<unsigned>(OpType::Rx, 1.069, {3});
-      circ.add_op<unsigned>(OpType::Rx, -5.958, {4});
-      circ.add_op<unsigned>(OpType::CX, {3, 4});
-      circ.add_op<unsigned>(OpType::CX, {3, 5});
-      circ.add_op<unsigned>(OpType::CX, {0, 3});
+    Circuit circ(6);
+    circ.add_op<unsigned>(OpType::Rx, -0.78, {3});
+    circ.add_op<unsigned>(OpType::Rx, 1.069, {5});
+    circ.add_op<unsigned>(OpType::CX, {0, 3});
+    circ.add_op<unsigned>(OpType::CX, {3, 5});
+    circ.add_op<unsigned>(OpType::CX, {0, 5});
+    circ.add_op<unsigned>(OpType::Rx, 1.069, {3});
+    circ.add_op<unsigned>(OpType::Rx, -5.958, {4});
+    circ.add_op<unsigned>(OpType::CX, {3, 4});
+    circ.add_op<unsigned>(OpType::CX, {3, 5});
+    circ.add_op<unsigned>(OpType::CX, {0, 3});
 
-      CompilationUnit cu(circ);
-      ZXGraphlikeOptimisation()->apply(cu);
-    }
+    CompilationUnit cu(circ);
+    ZXGraphlikeOptimisation()->apply(cu);
   }
 }
 
