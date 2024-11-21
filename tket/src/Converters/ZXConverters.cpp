@@ -585,7 +585,8 @@ std::pair<ZXDiagram, BoundaryVertMap> circuit_to_zx(const Circuit& circ) {
 
 void clean_frontier(
     ZXDiagram& diag, ZXVertVec& frontier, Circuit& circ,
-    std::map<ZXVert, unsigned>& qubit_map) {
+    std::map<ZXVert, unsigned>& qubit_map,
+    std::map<ZXVert, ZXVert>& input_qubits) {
   std::set<ZXVert> frontier_lookup;
   std::list<std::pair<ZXVert, ZXVert>> czs;
   for (const ZXVert& f : frontier) {
@@ -655,6 +656,8 @@ void clean_frontier(
           (nt0 == ZXType::Output && nt1 == ZXType::Input)) {
         diag.add_wire(ns.at(0), ns.at(1));
         diag.remove_vertex(f);
+        auto input_found = input_qubits.find(f);
+        if (input_found != input_qubits.end()) input_qubits.erase(f);
         removed = true;
       }
     }
@@ -852,10 +855,10 @@ Circuit zx_to_circuit(const ZXDiagram& d) {
   for (const ZXVert& i : ins)
     input_qubits.insert({diag.neighbours(i).at(0), i});
 
-  clean_frontier(diag, frontier, circ, qubit_map);
+  clean_frontier(diag, frontier, circ, qubit_map, input_qubits);
   while (!frontier.empty()) {
     if (remove_all_gadgets(diag, frontier, input_qubits)) {
-      clean_frontier(diag, frontier, circ, qubit_map);
+      clean_frontier(diag, frontier, circ, qubit_map, input_qubits);
     }
     ZXVertSeqSet neighbours = neighbours_of_frontier(diag, frontier);
     boost::bimap<ZXVert, unsigned> correctors, preserve, ys;
@@ -922,7 +925,7 @@ Circuit zx_to_circuit(const ZXDiagram& d) {
       }
     }
 
-    clean_frontier(diag, frontier, circ, qubit_map);
+    clean_frontier(diag, frontier, circ, qubit_map, input_qubits);
   }
 
   qubit_map_t qm;
