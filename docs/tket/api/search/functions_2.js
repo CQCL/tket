@@ -72,7 +72,7 @@ var searchData=
   ['classicalop_69',['ClassicalOp',['../classtket_1_1ClassicalOp.html#a890482f3c3b28d990d637c95af73d94e',1,'tket::ClassicalOp']]],
   ['classicaltransformop_70',['ClassicalTransformOp',['../classtket_1_1ClassicalTransformOp.html#abfd0d8a1ab86daee51a3c1b90f4291dc',1,'tket::ClassicalTransformOp']]],
   ['classicalx_71',['ClassicalX',['../namespacetket.html#aadfe3b9179ee24e74129d10223a7f939',1,'tket']]],
-  ['clean_5ffrontier_72',['clean_frontier',['../namespacetket.html#ab4ac02d51f6272cd662f43055318a462',1,'tket']]],
+  ['clean_5ffrontier_72',['clean_frontier',['../namespacetket.html#a2c76397729ca966c8808ed9e6358ea63',1,'tket']]],
   ['clear_73',['clear',['../classtket_1_1graphs_1_1AdjacencyData.html#a32c865c50c9533afcaecde92d1a4cae0',1,'tket::graphs::AdjacencyData::clear()'],['../classtket_1_1Transforms_1_1PQPSquasher.html#add1ee304d38d80b8c4882f144037f438',1,'tket::Transforms::PQPSquasher::clear()'],['../classtket_1_1AbstractSquasher.html#a1270575ecd06dee2ea79c551e23c60b7',1,'tket::AbstractSquasher::clear()'],['../classtket_1_1Transforms_1_1StandardSquasher.html#ac728cfd3bd2d9fa07d793f5f0b8ee731',1,'tket::Transforms::StandardSquasher::clear()']]],
   ['clear_5fsymbol_5ftable_74',['clear_symbol_table',['../namespacetket_1_1test__Ops.html#a733b4e8cfd5c5d2270b3f055ae572821',1,'tket::test_Ops']]],
   ['clexpr_75',['clexpr',['../classtket_1_1ClExpr.html#a213b61ff52f149f9fcde8d9a55a496b3',1,'tket::ClExpr::ClExpr()'],['../classtket_1_1ClExpr.html#a877363d78a6c6fa10b6c836b424369fc',1,'tket::ClExpr::ClExpr(ClOp op, std::vector&lt; ClExprArg &gt; args)']]],
