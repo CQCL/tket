@@ -293,7 +293,7 @@ PYBIND11_MODULE(passes, m) {
             return post_conditions;
           },
           "Returns the post condition Predicates for the given pass."
-          "\n:return: A list of Predicate")
+          "\n\n:return: A list of :py:class:`Predicate`")
       .def_static(
           "from_dict",
           [](const py::dict &base_pass_dict,
