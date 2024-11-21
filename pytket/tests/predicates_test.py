@@ -1109,7 +1109,7 @@ def test_auto_rebase_deprecation(recwarn: Any) -> None:
 
 def test_get_pre_conditions() -> None:
     pre_cons = GreedyPauliSimp().get_pre_conditions()
-    gate_set = pre_cons[0].gate_set
+    gate_set = pre_cons[0].gate_set  # type: ignore
     assert OpType.CX in gate_set
     assert OpType.Measure in gate_set
 
@@ -1117,7 +1117,7 @@ def test_get_pre_conditions() -> None:
 def test_get_post_conditions() -> None:
     gate_set = {OpType.CX, OpType.Rz, OpType.H, OpType.Reset, OpType.Measure}
     post_cons = AutoRebase(gate_set).get_post_conditions()
-    assert post_cons[0].gate_set == gate_set
+    assert post_cons[0].gate_set == gate_set  # type: ignore
 
 
 if __name__ == "__main__":
