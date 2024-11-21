@@ -208,7 +208,7 @@ SCENARIO("generating circ with wasm") {
     u.assert_valid();
     REQUIRE(u.depth() == 2);
     REQUIRE(u.get_wasm_file_uid() == wasm_file);
-    }
+  }
   GIVEN("circuit with wasm append") {
     Circuit u(1, 1);
     Circuit u2(1, 1);

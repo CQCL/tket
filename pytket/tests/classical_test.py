@@ -26,8 +26,8 @@ from strategies import binary_digits, reg_name_regex, uint32, uint64  # type: ig
 from sympy import Symbol
 
 from pytket import wasm
-from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
 from pytket._tket import unit_id
+from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
 from pytket.circuit import (
     Bit,
     BitRegister,
@@ -497,9 +497,9 @@ def test_wasm_argtypes() -> None:
 
     cmd = c.get_commands()[0]
 
-    assert type(cmd.args[0]) == unit_id.Bit
-    assert type(cmd.args[1]) == unit_id.Bit
-    assert type(cmd.args[2]) == unit_id.WasmState
+    assert isinstance(cmd.args[0], unit_id.Bit)
+    assert isinstance(cmd.args[1], unit_id.Bit)
+    assert isinstance(cmd.args[2], unit_id.WasmState)
 
 
 def test_wasm_uid_from_circuit() -> None:
