@@ -54,6 +54,16 @@ class BasePass:
         :param after_apply: Invoked after a pass is applied. The CompilationUnit and a summary of the pass configuration are passed into the callback.
         :return: True if pass modified the circuit, else False
         """
+    def get_post_conditions(self) -> list[pytket._tket.predicates.Predicate]:
+        """
+        Returns the post condition Predicates for the given pass.
+        :return: A list of Predicate
+        """
+    def get_pre_conditions(self) -> list[pytket._tket.predicates.Predicate]:
+        """
+        Returns the pre condition Predicates for the given pass.
+        :return: A list of Predicate
+        """
     def to_dict(self) -> typing.Any:
         """
         :return: A JSON serializable dictionary representation of the Pass.

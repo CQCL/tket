@@ -268,6 +268,32 @@ PYBIND11_MODULE(passes, m) {
             return py::cast(serialise(base_pass));
           },
           ":return: A JSON serializable dictionary representation of the Pass.")
+      .def(
+          "get_pre_conditions",
+          [](const BasePass &base_pass) {
+            std::vector<PredicatePtr> pre_conditions;
+            for (const std::pair<
+                     const std::type_index, std::shared_ptr<tket::Predicate>>
+                     &p : base_pass.get_conditions().first) {
+              pre_conditions.push_back(p.second);
+            }
+            return pre_conditions;
+          },
+          "Returns the pre condition Predicates for the given pass."
+          "\n:return: A list of Predicate")
+      .def(
+          "get_post_conditions",
+          [](const BasePass &base_pass) {
+            std::vector<PredicatePtr> post_conditions;
+            for (const std::pair<
+                     const std::type_index, std::shared_ptr<tket::Predicate>> &
+                     p : base_pass.get_conditions().second.specific_postcons_) {
+              post_conditions.push_back(p.second);
+            }
+            return post_conditions;
+          },
+          "Returns the post condition Predicates for the given pass."
+          "\n:return: A list of Predicate")
       .def_static(
           "from_dict",
           [](const py::dict &base_pass_dict,

@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Features:
+
+* Add `BasePass.get_pre_conditions()` and `BasePass.get_post_conditions()`.
+
 1.35.0 (November 2024)
 ----------------------
 
