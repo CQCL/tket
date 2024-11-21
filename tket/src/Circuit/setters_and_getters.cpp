@@ -25,6 +25,7 @@
 #include "tket/Circuit/DAGDefs.hpp"
 #include "tket/OpType/OpDesc.hpp"
 #include "tket/OpType/OpType.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
 #include "tket/Ops/OpPtr.hpp"
 
 namespace tket {
@@ -288,6 +289,25 @@ opt_reg_info_t Circuit::get_reg_info(std::string reg_name) const {
     return std::nullopt;
   else
     return found->reg_info();
+}
+
+std::string Circuit::get_wasm_file_uid() const {
+  BGL_FORALL_VERTICES(v, dag, DAG) {
+    if (get_OpType_from_Vertex(v) == OpType::WASM) {
+      return (static_cast<const WASMOp &>(*get_Op_ptr_from_Vertex(v)))
+          .get_wasm_file_uid();
+    } else if (
+        (get_OpType_from_Vertex(v) == OpType::Conditional) &&
+        (static_cast<const Conditional &>(*get_Op_ptr_from_Vertex(v))
+             .get_op()
+             ->get_type() == OpType::WASM)) {
+      return static_cast<const WASMOp &>(
+                 *(static_cast<const Conditional &>(*get_Op_ptr_from_Vertex(v)))
+                      .get_op())
+          .get_wasm_file_uid();
+    }
+  }
+  throw std::domain_error("Can't find WASM Op in circuit");
 }
 
 register_t Circuit::get_reg(std::string reg_name) const {
@@ -621,8 +641,8 @@ unsigned Circuit::n_ports(const Vertex &vert) const {
 }
 
 // there are no checks to ensure the vertex exists in the graph
-// returns a pointer to the op, try not to dereference and do anything with the
-// op
+// returns a pointer to the op, try not to dereference and do anything with
+// the op
 const Op_ptr Circuit::get_Op_ptr_from_Vertex(const Vertex &vert) const {
   return this->dag[vert].op;
 }

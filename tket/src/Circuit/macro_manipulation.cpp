@@ -139,6 +139,9 @@ void Circuit::append_with_map(const Circuit& c2, const unit_map_t& qm) {
   Circuit copy = c2;
   copy.rename_units(qm);
 
+  copy.add_wasm_register(_number_of_wasm_wires);
+  add_wasm_register(copy._number_of_wasm_wires);
+
   // Check what we need to do at the joins:
   //   Output  --- Input    ==>   -------------
   //   Output  --- Create   ==>   --- Reset ---

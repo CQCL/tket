@@ -27,6 +27,7 @@ from sympy import Symbol
 
 from pytket import wasm
 from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
+from pytket._tket import unit_id
 from pytket.circuit import (
     Bit,
     BitRegister,
@@ -481,6 +482,109 @@ def test_add_wasm_to_reg() -> None:
     assert c.depth() == 4
 
 
+def test_wasm_argtypes() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+
+    with open("testfile.wasm", "rb") as f:
+        bytecode = f.read()
+    assert w.bytecode() == bytecode
+
+    c = Circuit(0, 6)
+
+    c.add_wasm("add_one", w, [1], [1], [Bit(0), Bit(1)])
+
+    assert c.depth() == 1
+
+    cmd = c.get_commands()[0]
+
+    assert type(cmd.args[0]) == unit_id.Bit
+    assert type(cmd.args[1]) == unit_id.Bit
+    assert type(cmd.args[2]) == unit_id.WasmState
+
+
+def test_wasm_uid_from_circuit() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+
+    with open("testfile.wasm", "rb") as f:
+        bytecode = f.read()
+    assert w.bytecode() == bytecode
+
+    c = Circuit(0, 6)
+
+    c.add_wasm("add_one", w, [1], [1], [Bit(0), Bit(1)])
+
+    assert c.depth() == 1
+
+    assert (
+        c.wasm_uid == "6a0a29e235cd5c60353254bc2b459e631d381cdd0bded7ae6cb44afb784bd2de"
+    )
+
+
+def test_wasm_uid_from_circuit_2() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+
+    with open("testfile.wasm", "rb") as f:
+        bytecode = f.read()
+    assert w.bytecode() == bytecode
+
+    c = Circuit(0, 6)
+
+    c.add_wasm("add_one", w, [1], [1], [Bit(0), Bit(1)], condition=Bit(3))
+
+    assert c.depth() == 1
+
+    assert (
+        c.wasm_uid == "6a0a29e235cd5c60353254bc2b459e631d381cdd0bded7ae6cb44afb784bd2de"
+    )
+
+
+def test_wasm_uid_from_circuit_3() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+
+    with open("testfile.wasm", "rb") as f:
+        bytecode = f.read()
+    assert w.bytecode() == bytecode
+
+    c = Circuit(0, 6)
+
+    assert c.depth() == 0
+    with pytest.raises(ValueError):
+        c.wasm_uid
+
+
+def test_wasm_append() -> None:
+    wasmfile = wasm.WasmFileHandler("testfile.wasm")
+    c = Circuit(1)
+    a = c.add_c_register("a", 8)
+    c.add_wasm_to_reg("add_one", wasmfile, [a], [a])
+    assert c.depth() == 1
+
+    d = Circuit()
+    for bit in c.bits:
+        d.add_bit(bit)
+        d.add_c_setbits([False], [bit])
+
+    d.append(c)
+    assert d.depth() == 2
+
+
+def test_wasm_append_2() -> None:
+    wasmfile = wasm.WasmFileHandler("testfile.wasm")
+    c = Circuit(1)
+    a = c.add_c_register("a", 8)
+    c.add_wasm_to_reg("add_one", wasmfile, [a], [a])
+    assert c.depth() == 1
+
+    d = Circuit()
+    for bit in c.bits:
+        d.add_bit(bit)
+        d.add_c_setbits([False], [bit])
+    d.add_wasm_to_reg("no_return", wasmfile, [a], [])
+
+    d.append(c)
+    assert d.depth() == 3
+
+
 def test_wasmfilehandler_without_init() -> None:
     with pytest.raises(ValueError):
         _ = wasm.WasmFileHandler("testfile-without-init.wasm")
@@ -735,6 +839,13 @@ function 'get_c' with 0 i32 parameter(s) and 1 i32 return value(s)
 function 'get_b' with 0 i32 parameter(s) and 1 i32 return value(s)
 """
     )
+
+
+def test_wasm_circuit_bits() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+    c = Circuit(0, 6)
+    with pytest.raises(ValueError):
+        c.add_wasm("add_one", w, [1], [1], c.bits)
 
 
 T = TypeVar("T")

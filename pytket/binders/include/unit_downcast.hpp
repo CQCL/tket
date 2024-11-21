@@ -29,6 +29,8 @@ struct polymorphic_type_hook<tket::UnitID> {
         // Node has no additional info but is more specific
         // If Qubit is needed, then subtyping is sufficient
         type = &typeid(tket::Node);
+      } else if (src->type() == tket::UnitType::WasmState)  {
+        type = &typeid(tket::WasmState);
       } else {
         type = &typeid(tket::Bit);
       }
