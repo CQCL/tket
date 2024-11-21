@@ -269,7 +269,7 @@ PYBIND11_MODULE(passes, m) {
           },
           ":return: A JSON serializable dictionary representation of the Pass.")
       .def(
-          "get_pre_conditions",
+          "get_preconditions",
           [](const BasePass &base_pass) {
             std::vector<PredicatePtr> pre_conditions;
             for (const std::pair<
