@@ -1,6 +1,18 @@
 Changelog
 =========
 
+1.36.0 (unreleased)
+-------------------
+
+Features:
+
+* Add `Circuit.wasm_uid` property to get the wasm UID from the circuit
+
+Fixes:
+
+* Fix `Circuit.append` for circuits containing wasm
+* Fix issue with wrong parameters at `add_wasm`
+
 1.35.0 (November 2024)
 ----------------------
 
