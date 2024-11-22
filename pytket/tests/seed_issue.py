@@ -1,3 +1,4 @@
+
 import json
 from pathlib import Path
 from pytket import Circuit
@@ -11,9 +12,14 @@ c_dict = {"bits": [["c", [0]], ["c", [1]], ["c", [2]], ["c", [3]], ["c", [4]], [
 circ = Circuit.from_dict(c_dict)
 
 assert DecomposeBoxes().apply(circ)
-copy = circ.copy()
 
-assert GreedyPauliSimp(seed=2357136044).apply(circ)
-copy.replace_implicit_wire_swaps()
-circ.replace_implicit_wire_swaps()
-assert np.allclose(copy.get_unitary(), circ.get_unitary())
+seed_0 = circ.copy()
+seed_2357136044 = circ.copy()
+
+assert GreedyPauliSimp(seed=0).apply(seed_0)
+assert GreedyPauliSimp(seed=2357136044).apply(seed_2357136044)
+
+seed_2357136044.replace_implicit_wire_swaps()
+seed_0.replace_implicit_wire_swaps()
+assert np.allclose(circ.get_unitary(), seed_0.get_unitary())
+assert np.allclose(circ.get_unitary(), seed_2357136044.get_unitary())
