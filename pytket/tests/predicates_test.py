@@ -86,8 +86,6 @@ from pytket.passes import (
     ThreeQubitSquash,
     ZXGraphlikeOptimisation,
     ZZPhaseToRz,
-    auto_rebase_pass,
-    auto_squash_pass,
 )
 from pytket.pauli import Pauli
 from pytket.placement import GraphPlacement, Placement

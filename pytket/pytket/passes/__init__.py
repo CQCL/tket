@@ -16,7 +16,6 @@
 
 from pytket._tket.passes import *
 
-from .auto_rebase import auto_rebase_pass, auto_squash_pass
 from .passselector import PassSelector
 from .resizeregpass import scratch_reg_resize_pass
 from .script import compilation_pass_from_script, compilation_pass_grammar
