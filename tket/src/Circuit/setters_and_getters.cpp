@@ -291,45 +291,44 @@ opt_reg_info_t Circuit::get_reg_info(std::string reg_name) const {
     return found->reg_info();
 }
 
-std::string Circuit::get_wasm_file_uid() const {
+std::optional<std::string> Circuit::get_wasm_file_uid() const {
+  std::optional<std::string> result = std::nullopt;
   BGL_FORALL_VERTICES(v, dag, DAG) {
     if (get_OpType_from_Vertex(v) == OpType::WASM) {
-      return (static_cast<const WASMOp &>(*get_Op_ptr_from_Vertex(v)))
-          .get_wasm_file_uid();
+      result = (static_cast<const WASMOp &>(*get_Op_ptr_from_Vertex(v)))
+                   .get_wasm_file_uid();
+      return result;
     } else if (
         (get_OpType_from_Vertex(v) == OpType::Conditional) &&
         (static_cast<const Conditional &>(*get_Op_ptr_from_Vertex(v))
              .get_op()
              ->get_type() == OpType::WASM)) {
-      return static_cast<const WASMOp &>(
-                 *(static_cast<const Conditional &>(*get_Op_ptr_from_Vertex(v)))
-                      .get_op())
-          .get_wasm_file_uid();
+      result =
+          static_cast<const WASMOp &>(
+              *(static_cast<const Conditional &>(*get_Op_ptr_from_Vertex(v)))
+                   .get_op())
+              .get_wasm_file_uid();
+      return result;
     } else if (get_OpType_from_Vertex(v) == OpType::CircBox) {
-      try {
-        return (static_cast<const CircBox &>(*get_Op_ptr_from_Vertex(v)))
-            .to_circuit()
-            ->get_wasm_file_uid();
-      } catch (std::domain_error const &) {
-        continue;
-      }
+      result = (static_cast<const CircBox &>(*get_Op_ptr_from_Vertex(v)))
+                   .to_circuit()
+                   ->get_wasm_file_uid();
+      if (result != std::nullopt) return result;
     } else if (
         (get_OpType_from_Vertex(v) == OpType::Conditional) &&
         (static_cast<const Conditional &>(*get_Op_ptr_from_Vertex(v))
              .get_op()
              ->get_type() == OpType::CircBox)) {
-      try {
-        return (static_cast<const CircBox &>(*(static_cast<const Conditional &>(
-                                                   *get_Op_ptr_from_Vertex(v)))
-                                                  .get_op()))
-            .to_circuit()
-            ->get_wasm_file_uid();
-      } catch (std::domain_error const &) {
-        continue;
-      }
+      result =
+          (static_cast<const CircBox &>(
+               *(static_cast<const Conditional &>(*get_Op_ptr_from_Vertex(v)))
+                    .get_op()))
+              .to_circuit()
+              ->get_wasm_file_uid();
+      if (result != std::nullopt) return result;
     }
   }
-  throw std::domain_error("Can't find WASM Op in circuit");
+  return result;
 }
 
 register_t Circuit::get_reg(std::string reg_name) const {
