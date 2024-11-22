@@ -610,40 +610,20 @@ gpg_from_unordered_set(const std::vector<SymPauliTensor>& unordered_set);
  * from a thread via a stop_flag.
  *
  * @param circ
- * @param stop_flag
  * @param discount_rate
  * @param depth_weight
  * @param max_lookahead
  * @param max_tqe_candidates
  * @param seed
  * @param allow_zzphase
+ * @param timeout
  * @return Circuit
  */
-Circuit greedy_pauli_graph_synthesis_flag(
+Circuit greedy_pauli_graph_synthesis(
     Circuit circ, std::atomic<bool>& stop_flag, double discount_rate = 0.7,
     double depth_weight = 0.3, unsigned max_lookahead = 500,
     unsigned max_tqe_candidates = 500, unsigned seed = 0,
     bool allow_zzphase = false);
-
-/**
- * @brief Converts the given circuit into a GPGraph and conjugates each node
- * by greedily applying 2-qubit Clifford gates until the node can be realised
- * as a single-qubit gate, a measurement, or a reset. The final Clifford
- * operator is synthesized in a similar fashion.
- *
- * @param circ
- * @param discount_rate
- * @param depth_weight
- * @param max_lookahead
- * @param max_tqe_candidates
- * @param seed
- * @param allow_zzphase
- * @return Circuit
- */
-Circuit greedy_pauli_graph_synthesis(
-    const Circuit& circ, double discount_rate = 0.7, double depth_weight = 0.3,
-    unsigned max_lookahead = 500, unsigned max_tqe_candidates = 500,
-    unsigned seed = 0, bool allow_zzphase = false);
 
 /**
  * @brief Synthesise a set of unordered Pauli exponentials by applying Clifford
@@ -668,8 +648,8 @@ Circuit greedy_pauli_set_synthesis(
 Transform greedy_pauli_optimisation(
     double discount_rate = 0.7, double depth_weight = 0.3,
     unsigned max_lookahead = 500, unsigned max_tqe_candidates = 500,
-    unsigned seed = 0, bool allow_zzphase = false,
-    unsigned thread_timeout = 100, unsigned trials = 1);
+    unsigned seed = 0, bool allow_zzphase = false, unsigned timeout = 100,
+    unsigned trials = 1);
 
 }  // namespace Transforms
 

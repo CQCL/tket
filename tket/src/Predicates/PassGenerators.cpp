@@ -1017,13 +1017,13 @@ PassPtr gen_synthesise_pauli_graph(
 PassPtr gen_greedy_pauli_simp(
     double discount_rate, double depth_weight, unsigned max_lookahead,
     unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase,
-    unsigned thread_timeout, bool only_reduce, unsigned trials) {
+    unsigned timeout, bool only_reduce, unsigned trials) {
   Transform t = Transform([discount_rate, depth_weight, max_lookahead,
-                           max_tqe_candidates, seed, allow_zzphase,
-                           thread_timeout, only_reduce, trials](Circuit& circ) {
+                           max_tqe_candidates, seed, allow_zzphase, timeout,
+                           only_reduce, trials](Circuit& circ) {
     Transform gpo = Transforms::greedy_pauli_optimisation(
         discount_rate, depth_weight, max_lookahead, max_tqe_candidates, seed,
-        allow_zzphase, thread_timeout, trials);
+        allow_zzphase, timeout, trials);
     if (only_reduce) {
       Circuit gpo_circ = circ;
       // comparison will be inaccurate if circuit has PauliExpBox
@@ -1092,7 +1092,7 @@ PassPtr gen_greedy_pauli_simp(
   j["max_tqe_candidates"] = max_tqe_candidates;
   j["seed"] = seed;
   j["allow_zzphase"] = allow_zzphase;
-  j["thread_timeout"] = thread_timeout;
+  j["timeout"] = timeout;
   j["only_reduce"] = only_reduce;
   j["trials"] = trials;
 

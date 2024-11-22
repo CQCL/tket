@@ -25,6 +25,8 @@
 #include "tket/Transformations/GreedyPauliOptimisationLookupTables.hpp"
 #include "tket/Transformations/Transform.hpp"
 
+typedef std::chrono::steady_clock Clock;
+
 namespace tket {
 
 namespace Transforms {
@@ -328,9 +330,11 @@ struct DepthTracker {
 static void tableau_row_nodes_synthesis(
     std::vector<PauliNode_ptr>& rows, Circuit& circ,
     DepthTracker& depth_tracker, double depth_weight, unsigned max_lookahead,
-    unsigned max_tqe_candidates, unsigned seed,
-    std::shared_ptr<std::atomic<bool>> stop_flag) {
+    unsigned max_tqe_candidates, unsigned seed, unsigned timeout,
+    unsigned time_elapsed) {
   // only consider nodes with a non-zero cost
+
+  const auto init_start = Clock::now();
   std::vector<unsigned> remaining_indices;
   for (unsigned i = 0; i < rows.size(); i++) {
     if (rows[i]->tqe_cost() > 0) {
@@ -339,9 +343,13 @@ static void tableau_row_nodes_synthesis(
   }
   while (remaining_indices.size() != 0) {
     // check early termination
-    if (stop_flag.get()->load()) {
+    if (std::chrono::duration_cast<std::chrono::seconds>(
+            Clock::now() - init_start)
+                .count() +
+            time_elapsed >
+        timeout) {
       return;
-    };
+    }
     // get nodes with min cost
     std::vector<unsigned> min_nodes_indices = {remaining_indices[0]};
     unsigned min_cost = rows[remaining_indices[0]]->tqe_cost();
@@ -613,12 +621,17 @@ static void pauli_exps_synthesis(
     std::vector<PauliNode_ptr>& rows, Circuit& circ,
     DepthTracker& depth_tracker, double discount_rate, double depth_weight,
     unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed,
-    bool allow_zzphase, std::shared_ptr<std::atomic<bool>> stop_flag) {
+    bool allow_zzphase, unsigned timeout, unsigned time_elapsed) {
+  const auto init_start = Clock::now();
   while (true) {
     // check timeout
-    if (stop_flag.get()->load()) {
+    if (std::chrono::duration_cast<std::chrono::seconds>(
+            Clock::now() - init_start)
+                .count() +
+            time_elapsed >
+        timeout) {
       return;
-    };
+    }
 
     consume_nodes(
         rotation_sets, circ, depth_tracker, discount_rate, depth_weight);
@@ -735,23 +748,22 @@ Circuit greedy_pauli_set_synthesis(
   std::vector<std::vector<PauliNode_ptr>> rotation_sets{rotation_set};
   DepthTracker depth_tracker(n_qubits);
   // synthesise Pauli exps
-  std::shared_ptr<std::atomic<bool>> dummy_stop_flag =
-      std::make_shared<std::atomic<bool>>(false);
   pauli_exps_synthesis(
       rotation_sets, rows, c, depth_tracker, 0, depth_weight, max_lookahead,
-      max_tqe_candidates, seed, allow_zzphase, dummy_stop_flag);
+      max_tqe_candidates, seed, allow_zzphase, unsigned(1e10), 0);
   // synthesise the tableau
   tableau_row_nodes_synthesis(
       rows, c, depth_tracker, depth_weight, max_lookahead, max_tqe_candidates,
-      seed, dummy_stop_flag);
+      seed, unsigned(1e10), 0);
   c.replace_SWAPs();
   return c;
 }
 
-Circuit greedy_pauli_graph_synthesis_flag(
-    Circuit circ, std::shared_ptr<std::atomic<bool>> stop_flag,
-    double discount_rate, double depth_weight, unsigned max_lookahead,
-    unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase) {
+Circuit greedy_pauli_graph_synthesis(
+    Circuit circ, double discount_rate, double depth_weight,
+    unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed,
+    bool allow_zzphase, unsigned timeout) {
+  const auto init_start = Clock::now();
   if (max_lookahead == 0) {
     throw GreedyPauliSimpError("max_lookahead must be greater than 0.");
   }
@@ -775,13 +787,17 @@ Circuit greedy_pauli_graph_synthesis_flag(
   GPGraph gpg(circ_flat);
 
   // We regularly check whether the timeout has ocurred
-  if (stop_flag.get()->load()) {
+  if (std::chrono::duration_cast<std::chrono::seconds>(
+          Clock::now() - init_start)
+          .count() > timeout) {
     return Circuit();
   }
 
   auto [rotation_sets, rows, measures] = gpg.get_sequence();
 
-  if (stop_flag.get()->load()) {
+  if (std::chrono::duration_cast<std::chrono::seconds>(
+          Clock::now() - init_start)
+          .count() > timeout) {
     return Circuit();
   }
 
@@ -789,17 +805,27 @@ Circuit greedy_pauli_graph_synthesis_flag(
   // synthesise Pauli exps
   pauli_exps_synthesis(
       rotation_sets, rows, new_circ, depth_tracker, discount_rate, depth_weight,
-      max_lookahead, max_tqe_candidates, seed, allow_zzphase, stop_flag);
+      max_lookahead, max_tqe_candidates, seed, allow_zzphase, timeout,
+      std::chrono::duration_cast<std::chrono::seconds>(
+          Clock::now() - init_start)
+          .count());
 
-  if (stop_flag.get()->load()) {
+  if (std::chrono::duration_cast<std::chrono::seconds>(
+          Clock::now() - init_start)
+          .count() > timeout) {
     return Circuit();
   }
   // synthesise the tableau
   tableau_row_nodes_synthesis(
       rows, new_circ, depth_tracker, depth_weight, max_lookahead,
-      max_tqe_candidates, seed, stop_flag);
+      max_tqe_candidates, seed, timeout,
+      std::chrono::duration_cast<std::chrono::seconds>(
+          Clock::now() - init_start)
+          .count());
 
-  if (stop_flag.get()->load()) {
+  if (std::chrono::duration_cast<std::chrono::seconds>(
+          Clock::now() - init_start)
+          .count() > timeout) {
     return Circuit();
   }
 
@@ -811,57 +837,31 @@ Circuit greedy_pauli_graph_synthesis_flag(
   return new_circ;
 }
 
-Circuit greedy_pauli_graph_synthesis(
-    const Circuit& circ, double discount_rate, double depth_weight,
-    unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed,
-    bool allow_zzphase) {
-  std::shared_ptr<std::atomic<bool>> dummy_stop_flag =
-      std::make_shared<std::atomic<bool>>(false);
-  return greedy_pauli_graph_synthesis_flag(
-      circ, dummy_stop_flag, discount_rate, depth_weight, max_lookahead,
-      max_tqe_candidates, seed, allow_zzphase);
-}
-
 }  // namespace GreedyPauliSimp
 
 Transform greedy_pauli_optimisation(
     double discount_rate, double depth_weight, unsigned max_lookahead,
     unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase,
-    unsigned thread_timeout, unsigned trials) {
+    unsigned timeout, unsigned trials) {
   return Transform([discount_rate, depth_weight, max_lookahead,
-                    max_tqe_candidates, seed, allow_zzphase, thread_timeout,
+                    max_tqe_candidates, seed, allow_zzphase, timeout,
                     trials](Circuit& circ) {
     std::mt19937 seed_gen(seed);
     std::vector<Circuit> circuits;
-    unsigned threads_started = 0;
+    unsigned attempts = 0;
 
-    while (threads_started < trials) {
-      std::shared_ptr<std::atomic<bool>> stop_flag =
-          std::make_shared<std::atomic<bool>>(false);
-      std::future<Circuit> future = std::async(
-          std::launch::async,
-          [&, stop_flag]() {  // Capture `stop_flag` explicitly in the lambda
-            return GreedyPauliSimp::greedy_pauli_graph_synthesis_flag(
-                circ, stop_flag, discount_rate, depth_weight, max_lookahead,
-                max_tqe_candidates, seed_gen(), allow_zzphase);
-          });
-      threads_started++;
-
-      if (future.wait_for(std::chrono::seconds(thread_timeout)) ==
-          std::future_status::ready) {
-        Circuit c = future.get();
-        c.decompose_boxes_recursively();
-        circuits.push_back(c);
-      } else {
-        // If the thread isn't complete within time, prompt cancelling the
-        // optimisation and break from while loop
-        *stop_flag = true;
-        break;
-      }
+    // while (threads_started < trials) {
+    while (attempts < trials) {
+      Circuit optimised = GreedyPauliSimp::greedy_pauli_graph_synthesis(
+          circ, discount_rate, depth_weight, max_lookahead, max_tqe_candidates,
+          seed_gen(), allow_zzphase, timeout);
+      if (optimised == Circuit()) break;
+      optimised.decompose_boxes_recursively();
+      circuits.push_back(optimised);
     }
 
     // Return the smallest circuit if any were found within the single
-    // thread_timeout
+    // timeout
     // If none are found then return false
     if (circuits.empty()) return false;
     auto min = std::min_element(

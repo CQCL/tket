@@ -522,7 +522,7 @@ PassPtr deserialise(
       unsigned max_lookahead = content.at("max_lookahead").get<unsigned>();
       unsigned seed = content.at("seed").get<unsigned>();
       bool allow_zzphase = content.at("allow_zzphase").get<bool>();
-      unsigned timeout = content.at("thread_timeout").get<unsigned>();
+      unsigned timeout = content.at("timeout").get<unsigned>();
       bool only_reduce = content.at("only_reduce").get<bool>();
       unsigned trials = content.at("trials").get<unsigned>();
       pp = gen_greedy_pauli_simp(

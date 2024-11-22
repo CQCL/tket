@@ -296,7 +296,7 @@ TWO_WAY_PARAM_PASSES = {
             "max_tqe_candidates": 100,
             "seed": 2,
             "allow_zzphase": True,
-            "thread_timeout": 5000,
+            "timeout": 5000,
             "only_reduce": False,
             "trials": 1,
         }

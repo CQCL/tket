@@ -374,7 +374,7 @@
           "type": "boolean",
           "definition": "parameter controlling the use of ZZPhase gates in \"GreedyPauliSimp\""
         },
-        "thread_timeout": {
+        "timeout": {
           "type": "number",
           "definition": "parameter controlling the maximum runtime of a single thread in \"GreedyPauliSimp\""
         },
@@ -917,7 +917,7 @@
               "max_tqe_candidates",
               "seed",
               "allow_zzphase",
-              "thread_timeout",
+              "timeout",
               "only_reduce",
               "trials"
             ],

@@ -447,7 +447,7 @@ def GlobalisePhasedX(squash: bool = True) -> BasePass:
     
     It is not recommended to use this pass with symbolic expressions, as in certain cases a blow-up in symbolic expression sizes may occur.
     """
-def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3, max_lookahead: int = 500, max_tqe_candidates: int = 500, seed: int = 0, allow_zzphase: bool = False, thread_timeout: int = 100, only_reduce: bool = False, trials: int = 1) -> BasePass:
+def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3, max_lookahead: int = 500, max_tqe_candidates: int = 500, seed: int = 0, allow_zzphase: bool = False, timeout: int = 100, only_reduce: bool = False, trials: int = 1) -> BasePass:
     """
     Construct a pass that converts a circuit into a graph of Pauli gadgets to account for commutation and phase folding, and resynthesises them using a greedy algorithm adapted from arxiv.org/abs/2103.08602. The method for synthesising the final Clifford operator is adapted from arxiv.org/abs/2305.10966.
     
@@ -457,7 +457,7 @@ def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3, max_l
     :param max_lookahead:  Maximum lookahead when evaluating each Clifford gate candidate. Default to 500.
     :param seed:  Unsigned integer seed used for sampling candidates and tie breaking. Default to 0.
     :param allow_zzphase: If set to True, allows the algorithm to implement 2-qubit rotations using ZZPhase gates when deemed optimal. Defaults to False.
-    :param thread_timeout: Sets maximum out of time spent finding a single solution in one thread.
+    :param timeout: Sets maximum out of time spent finding a single solution in one thread.
     :param only_reduce: Only returns modified circuit if it has fewer two-qubit gates.
     :param trials: Sets maximum number of found solutions. The smallest circuit is returned, prioritising the number of 2qb-gates, then the number of gates, then the depth.
     :return: a pass to perform the simplification
