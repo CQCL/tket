@@ -585,8 +585,7 @@ def test_wasm_uid_from_circuit_5() -> None:
     c = Circuit(0, 6)
 
     assert c.depth() == 0
-    with pytest.raises(ValueError):
-        c.wasm_uid
+    assert c.wasm_uid is None
 
 
 def test_wasm_append() -> None:

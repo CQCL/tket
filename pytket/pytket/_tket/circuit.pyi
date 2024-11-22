@@ -2572,9 +2572,9 @@ class Circuit:
         A list of all qubit ids in the circuit
         """
     @property
-    def wasm_uid(self) -> str:
+    def wasm_uid(self) -> str | None:
         """
-        :return: the wasm uid of the first wasmop found in the circuit
+        :return: the unique wasm uid of the circuit
         """
 class ClBitVar:
     """
