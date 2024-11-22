@@ -18,22 +18,32 @@ import numpy as np
 from pytket.pauli import Pauli
 from pytket.circuit import PauliExpBox
 
-circ = Circuit(6)
-circ.add_pauliexpbox(PauliExpBox([Pauli.X, Pauli.Y, Pauli.Z, Pauli.X, Pauli.Y, Pauli.Z], 0.02), [0,1,2,3,4,5])
-circ.add_pauliexpbox(PauliExpBox([Pauli.X, Pauli.Y, Pauli.Z, Pauli.X, Pauli.Y, Pauli.Z], 0.02), [1,2,3,4,5,0])
-circ.add_pauliexpbox(PauliExpBox([Pauli.X, Pauli.Y, Pauli.Z, Pauli.X, Pauli.Y, Pauli.Z], 0.02), [2,3,4,5,0,1])
+
+
+circ = Circuit(3)
+
+circ.add_pauliexpbox(PauliExpBox([Pauli.X, Pauli.Y, Pauli.Y], 0.02), [0,1,2])
+circ.add_pauliexpbox(PauliExpBox([Pauli.X, Pauli.Y, Pauli.Y], 0.02), [1,2,0])
+circ.add_pauliexpbox(PauliExpBox([Pauli.X, Pauli.Y, Pauli.Y], 0.02), [2,0,1])
+
+
+
 
 
 assert DecomposeBoxes().apply(circ)
 
+
+# fails on 2 and 15
 u = circ.get_unitary()
-for seed in range(1):
+for seed in range(20):
     seed_c = circ.copy()
     GreedyPauliSimp(seed=seed).apply(seed_c)
     seed_c.replace_implicit_wire_swaps()
-    # print(seed, np.allclose(u, seed_c.get_unitary()))
     if not np.allclose(u, seed_c.get_unitary()):
         print(seed, "FAILED")
+
+
+# Original Example
 # seed_0 = circ.copy()
 # seed_2357136044 = circ.copy()
 
