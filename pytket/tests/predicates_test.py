@@ -1092,19 +1092,6 @@ def test_greedy_pauli_synth() -> None:
     assert GreedyPauliSimp().apply(c)
 
 
-def test_auto_rebase_deprecation(recwarn: Any) -> None:
-    _ = auto_rebase_pass({OpType.TK1, OpType.CX})
-    assert len(recwarn) == 1
-    w = recwarn.pop(DeprecationWarning)
-    assert issubclass(w.category, DeprecationWarning)
-    assert "deprecated" in str(w.message)
-    _ = auto_squash_pass({OpType.TK1})
-    assert len(recwarn) == 1
-    w = recwarn.pop(DeprecationWarning)
-    assert issubclass(w.category, DeprecationWarning)
-    assert "deprecated" in str(w.message)
-
-
 def test_get_pre_conditions() -> None:
     pre_cons = GreedyPauliSimp().get_preconditions()
     gate_set = pre_cons[0].gate_set  # type: ignore
