@@ -510,7 +510,6 @@ def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:
             for arg in args:
                 if (
                     isinstance(arg, Bit)
-                    and arg.reg_name != "_w"  # workaround: this shouldn't be type Bit
                     and arg not in newcirc.bits
                 ):
                     newcirc.add_bit(arg)
