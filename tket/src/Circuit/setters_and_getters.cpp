@@ -305,6 +305,28 @@ std::string Circuit::get_wasm_file_uid() const {
                  *(static_cast<const Conditional &>(*get_Op_ptr_from_Vertex(v)))
                       .get_op())
           .get_wasm_file_uid();
+    } else if (get_OpType_from_Vertex(v) == OpType::CircBox) {
+      try {
+        return (static_cast<const CircBox &>(*get_Op_ptr_from_Vertex(v)))
+            .to_circuit()
+            ->get_wasm_file_uid();
+      } catch (std::domain_error const &) {
+        continue;
+      }
+    } else if (
+        (get_OpType_from_Vertex(v) == OpType::Conditional) &&
+        (static_cast<const Conditional &>(*get_Op_ptr_from_Vertex(v))
+             .get_op()
+             ->get_type() == OpType::CircBox)) {
+      try {
+        return (static_cast<const CircBox &>(*(static_cast<const Conditional &>(
+                                                   *get_Op_ptr_from_Vertex(v)))
+                                                  .get_op()))
+            .to_circuit()
+            ->get_wasm_file_uid();
+      } catch (std::domain_error const &) {
+        continue;
+      }
     }
   }
   throw std::domain_error("Can't find WASM Op in circuit");

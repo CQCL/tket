@@ -31,6 +31,7 @@ from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
 from pytket.circuit import (
     Bit,
     BitRegister,
+    CircBox,
     Circuit,
     ClassicalExpBox,
     Conditional,
@@ -539,6 +540,42 @@ def test_wasm_uid_from_circuit_2() -> None:
 
 
 def test_wasm_uid_from_circuit_3() -> None:
+    wfh = wasm.WasmFileHandler("testfile.wasm")
+
+    c = Circuit(0)
+    a = c.add_c_register("c", 8)
+    c.add_wasm_to_reg("add_one", wfh, [a], [a])
+    assert c.depth() == 1
+
+    cbox = CircBox(c)
+    d = Circuit(0, 8)
+
+    d.add_circbox(cbox, [0, 1, 2, 3, 4, 5, 6, 7])
+
+    assert (
+        d.wasm_uid == "6a0a29e235cd5c60353254bc2b459e631d381cdd0bded7ae6cb44afb784bd2de"
+    )
+
+
+def test_wasm_uid_from_circuit_4() -> None:
+    wfh = wasm.WasmFileHandler("testfile.wasm")
+
+    c = Circuit(0)
+    a = c.add_c_register("c", 8)
+    c.add_wasm_to_reg("add_one", wfh, [a], [a])
+    assert c.depth() == 1
+
+    cbox = CircBox(c)
+    d = Circuit(0, 8)
+
+    d.add_circbox(cbox, [0, 1, 2, 3, 4, 5, 6, 7], condition=Bit(0))
+
+    assert (
+        d.wasm_uid == "6a0a29e235cd5c60353254bc2b459e631d381cdd0bded7ae6cb44afb784bd2de"
+    )
+
+
+def test_wasm_uid_from_circuit_5() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
 
     with open("testfile.wasm", "rb") as f:
@@ -600,7 +637,7 @@ def test_wasm_append_3() -> None:
         d.add_c_setbits([False], [bit])
     d.add_wasm_to_reg("no_return", wfh2, [a], [])
 
-    with pytest.raises(ValueError):
+    with pytest.raises(RuntimeError):
         d.append(c)
 
 
