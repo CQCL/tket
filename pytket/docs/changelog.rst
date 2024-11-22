@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+API changes:
+
+* Remove the deprecated methods `auto_rebase_pass()` and `auto_squash_pass()`.
+
 1.35.0 (November 2024)
 ----------------------
 
