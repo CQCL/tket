@@ -139,6 +139,14 @@ void Circuit::append_with_map(const Circuit& c2, const unit_map_t& qm) {
   Circuit copy = c2;
   copy.rename_units(qm);
 
+  if ((_number_of_wasm_wires > 0) && (copy._number_of_wasm_wires > 0)) {
+    if (copy.get_wasm_file_uid() != get_wasm_file_uid()) {
+      throw Unsupported(
+          "Cannot append circuits with different wasm uids: " +
+          get_wasm_file_uid() + " and " + copy.get_wasm_file_uid());
+    }
+  }
+
   copy.add_wasm_register(_number_of_wasm_wires);
   add_wasm_register(copy._number_of_wasm_wires);
 
