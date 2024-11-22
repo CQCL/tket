@@ -585,6 +585,25 @@ def test_wasm_append_2() -> None:
     assert d.depth() == 3
 
 
+def test_wasm_append_3() -> None:
+    wfh = wasm.WasmFileHandler("testfile.wasm")
+    wfh2 = wasm.WasmFileHandler("testfile-without-init.wasm", check_file=False)
+
+    c = Circuit(1)
+    a = c.add_c_register("a", 8)
+    c.add_wasm_to_reg("add_one", wfh, [a], [a])
+    assert c.depth() == 1
+
+    d = Circuit()
+    for bit in c.bits:
+        d.add_bit(bit)
+        d.add_c_setbits([False], [bit])
+    d.add_wasm_to_reg("no_return", wfh2, [a], [])
+
+    with pytest.raises(ValueError):
+        d.append(c)
+
+
 def test_wasmfilehandler_without_init() -> None:
     with pytest.raises(ValueError):
         _ = wasm.WasmFileHandler("testfile-without-init.wasm")
