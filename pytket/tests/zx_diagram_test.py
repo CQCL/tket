@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from math import isclose, pow  # noqa: A004
+from math import isclose
 from typing import Tuple
 
 import numpy as np

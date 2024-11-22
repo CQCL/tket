@@ -86,8 +86,6 @@ from pytket.passes import (
     ThreeQubitSquash,
     ZXGraphlikeOptimisation,
     ZZPhaseToRz,
-    auto_rebase_pass,
-    auto_squash_pass,
 )
 from pytket.pauli import Pauli
 from pytket.placement import GraphPlacement, Placement
@@ -1092,19 +1090,6 @@ def test_greedy_pauli_synth() -> None:
             c.H(i)
     assert not GreedyPauliSimp(thread_timeout=1).apply(c)
     assert GreedyPauliSimp().apply(c)
-
-
-def test_auto_rebase_deprecation(recwarn: Any) -> None:
-    _ = auto_rebase_pass({OpType.TK1, OpType.CX})
-    assert len(recwarn) == 1
-    w = recwarn.pop(DeprecationWarning)
-    assert issubclass(w.category, DeprecationWarning)
-    assert "deprecated" in str(w.message)
-    _ = auto_squash_pass({OpType.TK1})
-    assert len(recwarn) == 1
-    w = recwarn.pop(DeprecationWarning)
-    assert issubclass(w.category, DeprecationWarning)
-    assert "deprecated" in str(w.message)
 
 
 if __name__ == "__main__":

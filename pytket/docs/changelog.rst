@@ -4,6 +4,10 @@ Changelog
 1.36.0 (unreleased)
 -------------------
 
+API changes:
+
+* Remove the deprecated methods `auto_rebase_pass()` and `auto_squash_pass()`.
+
 Features:
 
 * Add `Circuit.wasm_uid` property to get the wasm UID from the circuit

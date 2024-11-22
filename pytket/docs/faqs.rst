@@ -9,9 +9,9 @@ Q: Can I convert a pytket :py:class:`Circuit` to a gateset of my choice?
 A: Yes, this can be done in many cases provided the target gateset is a set of one and two qubit pytket :py:class:`OpType` s.
 There are two types of rebase 
 
-1) :py:meth:`auto_rebase_pass` - this uses a set of hardcoded decompositions to convert between gatesets. This can be used quickly when the gateset is one widely used on quantum hardware e.g. IBM's {X, SX, Rz, CX} gateset.
+1) :py:meth:`AutoRebase` - this uses a set of hardcoded decompositions to convert between gatesets. This can be used quickly when the gateset is one widely used on quantum hardware e.g. IBM's {X, SX, Rz, CX} gateset.
 
-2) :py:class:`RebaseCustom` - This can be used instead of `auto_rebase_pass` in cases where there is no hardcoded conversion available. 
+2) :py:class:`RebaseCustom` - This can be used instead of `AutoRebase` in cases where there is no hardcoded conversion available.
 In this case the user will have to specify how to implement TKET's {TK1, CX} or {TK1, TK2} operations in terms of the target :py:class:`OpType` s. 
 
 See the manual section on `rebases <https://docs.quantinuum.com/tket/user-guide/manual/manual_compiler.html#rebases>`_ for examples.
