@@ -7,7 +7,7 @@ There are passes such as `FullPeepholeOptimise <https://docs.quantinuum.com/tket
 
 Also there are special purpose passes such as `OptimisePhaseGadgets <https://docs.quantinuum.com/tket/api-docs/passes.html#pytket.passes.OptimisePhaseGadgets>`_ and `PauliSimp <https://docs.quantinuum.com/tket/api-docs/passes.html#pytket.passes.PauliSimp>`_ which perform optimisation by targeting phase gadget and Pauli gadget structures within circuits. For more on these optimisation techniques see the `corresponding publication <https://arxiv.org/abs/1906.01734>`_.
 
-Rebase passes can be used to convert a circuit to a desired gateset. See `RebaseCustom <https://docs.quantinuum.com/tket/api-docs/passes.html#pytket.passes.RebaseCustom>`_ and `auto_rebase_pass <https://docs.quantinuum.com/tket/api-docs/passes.html#pytket.passes.auto_rebase.auto_rebase_pass>`_.
+Rebase passes can be used to convert a circuit to a desired gateset. See `RebaseCustom <https://docs.quantinuum.com/tket/api-docs/passes.html#pytket.passes.RebaseCustom>`_ and `AutoRebase <https://docs.quantinuum.com/tket/api-docs/passes.html#pytket._tket.passes.AutoRebase>`_.
 
 For more on pytket passes see the `compilation <https://docs.quantinuum.com/tket/user-guide/manual/manual_compiler.html>`_ section of the user manual or the `notebook tutorials <https://docs.quantinuum.com/tket/examples>`_
 
@@ -25,8 +25,3 @@ pytket.passes.script
 
 .. automodule:: pytket.passes.script
     :members: compilation_pass_from_script, compilation_pass_grammar
-
-pytket.passes.auto_rebase
-~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automodule:: pytket.passes.auto_rebase
-    :members: auto_rebase_pass, auto_squash_pass
