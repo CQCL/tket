@@ -849,8 +849,6 @@ Transform greedy_pauli_optimisation(
     std::mt19937 seed_gen(seed);
     std::vector<Circuit> circuits;
     unsigned attempts = 0;
-
-    // while (threads_started < trials) {
     while (attempts < trials) {
       Circuit optimised = GreedyPauliSimp::greedy_pauli_graph_synthesis(
           circ, discount_rate, depth_weight, max_lookahead, max_tqe_candidates,
@@ -858,6 +856,7 @@ Transform greedy_pauli_optimisation(
       if (optimised == Circuit()) break;
       optimised.decompose_boxes_recursively();
       circuits.push_back(optimised);
+      ++attempts;
     }
 
     // Return the smallest circuit if any were found within the single
