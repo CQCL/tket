@@ -146,27 +146,26 @@ const PassPtr &DecomposeClassicalExp() {
 }
 
 std::optional<OpTypeSet> get_gate_set(const BasePass &base_pass) {
-  OpTypeSet allowed_ops;
+  std::optional<OpTypeSet> allowed_ops;
   for (const std::pair<const std::type_index, std::shared_ptr<tket::Predicate>>
            &p : base_pass.get_conditions().first) {
-    if (p.second->to_string().substr(0, 17) == "GateSetPredicate:") {
-      std::shared_ptr<GateSetPredicate> gsp_ptr =
-          std::dynamic_pointer_cast<GateSetPredicate>(p.second);
-      if (allowed_ops.empty()) {
-        allowed_ops = gsp_ptr->get_allowed_types();
-        continue;
-      }
+    std::shared_ptr<GateSetPredicate> gsp_ptr =
+        std::dynamic_pointer_cast<GateSetPredicate>(p.second);
+    if (!gsp_ptr) {
+      continue;
+    }
+    OpTypeSet candidate_allowed_ops = gsp_ptr->get_allowed_types();
+    if (!allowed_ops) {
+      allowed_ops = candidate_allowed_ops;
+    } else {
       OpTypeSet intersection;
-      OpTypeSet candidate_allowed_ops = gsp_ptr->get_allowed_types();
       std::set_intersection(
           candidate_allowed_ops.begin(), candidate_allowed_ops.end(),
-          allowed_ops.begin(), allowed_ops.end(),
+          allowed_ops->begin(), allowed_ops->end(),
           std::inserter(intersection, intersection.begin()));
       allowed_ops = intersection;
     }
   }
-  if (allowed_ops.empty()) return {};
-
   return allowed_ops;
 }
 
@@ -321,7 +320,8 @@ PYBIND11_MODULE(passes, m) {
       .def(
           "get_gate_set", &get_gate_set,
           "Returns the intersection of all set of OpType for all "
-          "GateSetPredicate in the `BasePass` preconditions.",
+          "GateSetPredicate in the `BasePass` preconditions, or `None` "
+          "if there are no gate-set predicates.",
           "\n\n:return: A set of allowed OpType")
       .def_static(
           "from_dict",
