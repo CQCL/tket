@@ -1108,7 +1108,7 @@ def test_get_post_conditions() -> None:
 def test_get_gate_set() -> None:
     gate_set = GreedyPauliSimp().get_gate_set()
     assert gate_set is not None
-    assert OpType.CX in gate_set 
+    assert OpType.CX in gate_set
     assert OpType.Measure in gate_set
     assert CliffordPushThroughMeasures().get_gate_set() is None
 
