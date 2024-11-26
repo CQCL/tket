@@ -143,8 +143,8 @@ void Circuit::append_with_map(const Circuit& c2, const unit_map_t& qm) {
     if (copy.get_wasm_file_uid() != get_wasm_file_uid()) {
       throw Unsupported(
           "Cannot append circuits with different wasm uids: " +
-          get_wasm_file_uid().emplace(" - ") + " and " +
-          copy.get_wasm_file_uid().emplace(" - "));
+          get_wasm_file_uid().emplace("(none)") + " and " +
+          copy.get_wasm_file_uid().emplace("(none)"));
     }
   }
 
