@@ -414,9 +414,9 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "n_gates", &Circuit::n_gates,
           ":return: the number of gates in the Circuit")
       .def_property_readonly(
-          "wasm_uid",
-          &Circuit.get_wasm_file_uid,
-          ":return: the unique WASM UID of the circuit, or `None` if the circuit has none")
+          "wasm_uid", &Circuit.get_wasm_file_uid,
+          ":return: the unique WASM UID of the circuit, or `None` if the "
+          "circuit has none")
       .def_property_readonly(
           "n_qubits", &Circuit::n_qubits,
           ":return: the number of qubits in the circuit")
