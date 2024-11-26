@@ -416,7 +416,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
       .def_property_readonly(
           "wasm_uid",
           &Circuit.get_wasm_file_uid,
-          ":return: the unique wasm uid of the circuit")
+          ":return: the unique WASM UID of the circuit, or `None` if the circuit has none")
       .def_property_readonly(
           "n_qubits", &Circuit::n_qubits,
           ":return: the number of qubits in the circuit")
