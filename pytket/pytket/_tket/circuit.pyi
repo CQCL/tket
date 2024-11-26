@@ -2571,6 +2571,11 @@ class Circuit:
         """
         A list of all qubit ids in the circuit
         """
+    @property
+    def wasm_uid(self) -> str | None:
+        """
+        :return: the unique wasm uid of the circuit
+        """
 class ClBitVar:
     """
     A bit variable within an expression

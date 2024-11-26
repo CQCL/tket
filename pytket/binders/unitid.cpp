@@ -92,6 +92,7 @@ PYBIND11_MODULE(unit_id, m) {
       m, "UnitType",
       "Enum for data types of units in circuits (e.g. Qubits vs Bits).")
       .value("qubit", UnitType::Qubit, "A single Qubit")
+      .value("wasmstate", UnitType::WasmState, "A single WasmState")
       .value("bit", UnitType::Bit, "A single classical Bit");
 
   py::class_<UnitID>(
@@ -114,7 +115,7 @@ PYBIND11_MODULE(unit_id, m) {
       .def_property_readonly(
           "type", &UnitID::type,
           "Type of unit, either ``UnitType.qubit`` or "
-          "``UnitType.bit``");
+          "``UnitType.bit`` or ``UnitType.wasmstate``");
 
   py::class_<Qubit, UnitID>(m, "Qubit", "A handle to a qubit")
       .def("__copy__", [](const Qubit &id) { return Qubit(id); })
@@ -230,6 +231,45 @@ PYBIND11_MODULE(unit_id, m) {
           [](const py::list &py_list) { return json(py_list).get<Bit>(); },
           "Construct Bit instance from JSON serializable "
           "list representation of the Bit.");
+
+  py::class_<WasmState, UnitID>(m, "WasmState", "A handle to a wasmstate")
+      .def("__copy__", [](const WasmState &id) { return WasmState(id); })
+      .def(
+          "__deepcopy__",
+          [](const WasmState &id, const py::dict &) { return WasmState(id); })
+      .def(
+          py::init<unsigned>(),
+          "Constructs an id for some index in the default wasm "
+          "register\n\n:param index: The index in the register",
+          py::arg("index"))
+      .def("__eq__", &py_equals<WasmState>)
+      .def("__hash__", [](const WasmState &b) { return hash_value(b); })
+      .def(py::pickle(
+          [](const WasmState &b) {
+            return py::make_tuple(b.reg_name(), b.index());
+          },
+          [](const py::tuple &t) {
+            if (t.size() != 2)
+              throw std::runtime_error(
+                  "Invalid state: tuple size: " + std::to_string(t.size()));
+            return WasmState(
+                t[0].cast<std::string>(), t[1].cast<std::vector<unsigned>>());
+          }))
+      .def(
+          "to_list",
+          [](const WasmState &b) {
+            return py::object(json(b)).cast<py::list>();
+          },
+          "Return a JSON serializable list representation of "
+          "the WasmState."
+          "\n\n:return: list containing register name and index")
+      .def_static(
+          "from_list",
+          [](const py::list &py_list) {
+            return json(py_list).get<WasmState>();
+          },
+          "Construct WasmState instance from JSON serializable "
+          "list representation of the WasmState.");
 
   py::class_<Node, Qubit>(m, "Node", "A handle to a device node")
       .def("__copy__", [](const Node &id) { return Node(id); })
