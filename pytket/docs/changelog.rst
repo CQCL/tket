@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.36.0 (unreleased)
--------------------
+Unreleased
+----------
 
 Features:
 
