@@ -112,6 +112,9 @@ class CliffordReductionPass {
   /** The circuit under transformation */
   Circuit &circ;
 
+  /** Topological-order-respecting map from circuit vertices to integers */
+  IndexMap im;
+
   /** Table of potential transports of 2qb interactions through the circuit */
   interaction_table_t itable;
 

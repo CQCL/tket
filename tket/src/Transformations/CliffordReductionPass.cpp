@@ -234,7 +234,6 @@ std::optional<InteractionMatch> CliffordReductionPass::search_back_for_match(
   point[0] = rip0;
   point[1] = rip1;
   std::map<Edge, RevInteractionPoint> point_lookup;
-  IndexMap im = circ.index_map();
 
   // interactions met when commuting back; point lists are in causal order of
   // circuit:
@@ -350,6 +349,7 @@ void CliffordReductionPass::process_new_interaction(const Vertex &inter) {
           break;
         }
       }
+      im = circ.index_map();
       success = true;
     } else {
       std::vector<std::optional<Edge>> outs = circ.get_linear_out_edges(v);
@@ -645,6 +645,7 @@ CliffordReductionPass::valid_insertion_point(
 
 CliffordReductionPass::CliffordReductionPass(Circuit &c, bool swaps)
     : circ(c),
+      im(c.index_map()),
       itable(),
       v_to_depth(),
       success(false),
