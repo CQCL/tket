@@ -132,6 +132,9 @@ VertexVec Circuit::vertices_in_order() /*const*/ {
 
 IndexMap Circuit::index_map() const {
   IndexMap im;
+  // Reserve space for every edge to avoid rehashing.
+  im.reserve(boost::concepts::EdgeListGraph<DAG>::num_edges(dag));
+
   std::size_t i = 0;
   BGL_FORALL_VERTICES(v, dag, DAG) { im[v] = i++; }
   return im;
