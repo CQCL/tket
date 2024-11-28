@@ -172,7 +172,7 @@ target_sources(tket
         src/Clifford/ChoiMixTableau.cpp
         src/Clifford/SymplecticTableau.cpp
         src/Clifford/UnitaryTableau.cpp
-        src/Converters/APStateConverters2.cpp
+        src/Converters/APStateConverters.cpp
         src/Converters/ChoiMixTableauConverters.cpp
         src/Converters/Gauss.cpp
         src/Converters/PauliGraphConverters.cpp
