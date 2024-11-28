@@ -32,7 +32,7 @@ namespace tket {
  * - A n vector P of integers mod 4 describing S gates.
  *
  * This gives a canonical statevector (up to a normalisation scalar):
- * \sum_{x, Ax=B} i^{\Phi(x)} |x>
+ * \f[\sum_{x, Ax=B} i^{\Phi(x)} |x>\f]
  *
  * This canonical statevector fixes a reference phase from which we can track
  * global phase with an additional parameter.
@@ -40,8 +40,8 @@ namespace tket {
  * We can generalise this to mixed qubit states by adding a binary (n,n) matrix
  * C, with which we now have the canonical density matrix (up to a normalisation
  * scalar):
- * \sum_{x_1, x_2; Ax_1 = B = Ax_2, Cx_1 = Cx_2}
- *         i^{x_1^T E x_1 + P^T x_1} |x_1><x_2| (-i)^{x_2^T E x_2 + P^T x_2}
+ * \f[\sum_{x_1, x_2; Ax_1 = B = Ax_2, Cx_1 = Cx_2}
+ *         i^{x_1^T E x_1 + P^T x_1} |x_1><x_2| (-i)^{x_2^T E x_2 + P^T x_2}\f]
  * where the inner products are calculated in Z4.
  *
  * We can encode this via the ZX-calculus as:
