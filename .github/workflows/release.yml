@@ -11,7 +11,7 @@ on:
 jobs:
   build_Linux_wheels:
     name: Build manylinux
-    runs-on: ubuntu-24.04
+    runs-on: 'ubuntu-latest'
     strategy:
       matrix:
         python3-version: ['10', '11', '12', '13']
@@ -27,7 +27,7 @@ jobs:
     - name: Run build
       run: |
         docker start linux_build
-        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-x86_64-gcc12 linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
+        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-x86_64-gcc13 linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
         mkdir wheelhouse
         docker cp linux_build:/tket/pytket/audited/. wheelhouse/
     - uses: actions/upload-artifact@v4
@@ -54,7 +54,7 @@ jobs:
     - name: Run build
       run: |
         docker start linux_build
-        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-armv8-gcc12 linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
+        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-armv8-gcc13 linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
         mkdir wheelhouse
         docker cp linux_build:/tket/pytket/audited/. wheelhouse/
     - uses: actions/upload-artifact@v4
@@ -64,7 +64,7 @@ jobs:
 
   build_macos_x86_wheels:
     name: Build macos x86 wheels
-    runs-on: macos-13
+    runs-on: 'macos-13'
     strategy:
       matrix:
         python-version: ['3.10', '3.11', '3.12', '3.13']
@@ -106,7 +106,7 @@ jobs:
 
   build_macos_arm64_wheels:
     name: Build macos arm64 wheels
-    runs-on: macos-15
+    runs-on: 'macos-15'
     env:
         MACOSX_DEPLOYMENT_TARGET: '13.0'
     strategy:
@@ -150,7 +150,7 @@ jobs:
 
   build_Windows_wheels:
     name: Build Windows wheels
-    runs-on: windows-2022
+    runs-on: 'windows-2022'
     strategy:
       matrix:
         python-version: ['3.10', '3.11', '3.12', '3.13']
@@ -191,7 +191,7 @@ jobs:
   test_linux_wheels:
     name: Test linux wheels
     needs: build_Linux_wheels
-    runs-on: ubuntu-24.04
+    runs-on: 'ubuntu-24.04'
     strategy:
       matrix:
         python3-version: ['10', '11', '12', '13']
@@ -312,7 +312,7 @@ jobs:
   test_Windows_wheels:
     name: Test Windows wheels
     needs: build_Windows_wheels
-    runs-on: windows-2022
+    runs-on: 'windows-2022'
     strategy:
       matrix:
         python-version: ['3.10', '3.11', '3.12', '3.13']
@@ -343,7 +343,7 @@ jobs:
     name: Publish to pypi
     if: github.event_name == 'release'
     needs: [test_linux_wheels, test_linux_aarch64_wheels, test_macos_x86_wheels, test_macos_arm64_wheels, test_Windows_wheels]
-    runs-on: ubuntu-24.04
+    runs-on: 'ubuntu-24.04'
     steps:
     - name: Download all wheels
       uses: actions/download-artifact@v4
