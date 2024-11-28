@@ -57,7 +57,7 @@ jobs:
 
     - name: Set up container
       run: |
-        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux_2_28_x86_64:latest /bin/bash
+        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux_2_34_x86_64:latest /bin/bash
         docker cp . linux_build:/tket/
 
     - name: Install and upload packages
@@ -74,7 +74,7 @@ jobs:
 
     - name: Set up container
       run: |
-        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux_2_28_aarch64:latest /bin/bash
+        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux_2_34_aarch64:latest /bin/bash
         docker cp . linux_build:/tket/
 
     - name: Install and upload packages
