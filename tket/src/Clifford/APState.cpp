@@ -217,7 +217,7 @@ APState::APState(const Eigen::MatrixXcd& dm) {
   A.block(0, 0, first_zero - first_right, n_qbs) =
       full_mat.block(first_right, n_qbs, first_zero - first_right, n_qbs);
   B.head(first_zero - first_right) =
-      full_mat.block(first_right, 2 * n_qbs, first_zero - first_right, n_qbs);
+      full_mat.block(first_right, 2 * n_qbs, first_zero - first_right, 1);
 
   // Flip the column order and reduce the remaining rows to obtain CC above AI;
   // get the row combinations from the reordered matrix but apply them to the
