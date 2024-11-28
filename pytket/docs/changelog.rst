@@ -8,10 +8,6 @@ Features:
 
 * Add `BasePass.get_preconditions()` and `BasePass.get_postconditions()`.
 
-Features:
-
-* Add `BasePass.get_preconditions()` and `BasePass.getpost_conditions()`.
-
 API changes:
 
 * Remove the deprecated methods `auto_rebase_pass()` and `auto_squash_pass()`.
