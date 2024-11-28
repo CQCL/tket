@@ -15,7 +15,7 @@
 #pragma once
 
 #include "tket/Circuit/Circuit.hpp"
-#include "tket/Clifford/APState2.hpp"
+#include "tket/Clifford/APState.hpp"
 #include "tket/Clifford/ChoiMixTableau.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/PauliGraph/PauliGraph.hpp"

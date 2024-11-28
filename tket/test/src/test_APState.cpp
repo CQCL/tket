@@ -17,11 +17,11 @@
 #include "Simulation/ComparisonFunctions.hpp"
 #include "testutil.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
-#include "tket/Clifford/APState2.hpp"
+#include "tket/Clifford/APState.hpp"
 #include "tket/Converters/Converters.hpp"
 
 namespace tket {
-namespace test_APState2 {
+namespace test_APState {
 
 void test_apply_gate(
     const MatrixXb& A, const VectorXb& B, const MatrixXb& E,
@@ -510,5 +510,5 @@ SCENARIO("Converting from/to a tableau") {
   }
 }
 
-}  // namespace test_APState2
+}  // namespace test_APState
 }  // namespace tket

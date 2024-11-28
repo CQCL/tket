@@ -168,7 +168,7 @@ target_sources(tket
         src/Circuit/SubcircuitFinder.cpp
         src/Circuit/ThreeQubitConversion.cpp
         src/Circuit/ToffoliBox.cpp
-        src/Clifford/APState2.cpp
+        src/Clifford/APState.cpp
         src/Clifford/ChoiMixTableau.cpp
         src/Clifford/SymplecticTableau.cpp
         src/Clifford/UnitaryTableau.cpp
@@ -324,8 +324,7 @@ target_sources(tket
         include/tket/Circuit/StatePreparation.hpp
         include/tket/Circuit/ThreeQubitConversion.hpp
         include/tket/Circuit/ToffoliBox.hpp
-        # include/tket/Clifford/APState.hpp
-        include/tket/Clifford/APState2.hpp
+        include/tket/Clifford/APState.hpp
         include/tket/Clifford/ChoiMixTableau.hpp
         include/tket/Clifford/SymplecticTableau.hpp
         include/tket/Clifford/UnitaryTableau.hpp

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "tket/Clifford/APState2.hpp"
+#include "tket/Clifford/APState.hpp"
 
 #include <boost/foreach.hpp>
 #include <tkassert/Assert.hpp>
