@@ -237,7 +237,7 @@ APState tableau_to_apstate(SymplecticTableau tab) {
 
   // Start by identifying the free and mixed qubits
   std::map<unsigned, unsigned> free_to_row;
-  for (unsigned r = 0; r < n_qbs - n_leading; ++r) {
+  for (unsigned r = 0; r < n_rows - n_leading; ++r) {
     for (unsigned c = n_qbs - r; c > 0;) {
       --c;
       if (tab.xmat(r, c)) {
