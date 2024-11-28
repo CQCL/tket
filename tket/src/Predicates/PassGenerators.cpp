@@ -244,7 +244,6 @@ PassPtr gen_auto_rebase_pass(const OpTypeSet& allowed_gates, bool allow_swaps) {
   PredicatePtrMap precons;
   OpTypeSet all_types(allowed_gates);
   all_types.insert(OpType::Measure);
-  all_types.insert(OpType::Collapse);
   all_types.insert(OpType::Reset);
   PredicatePtr postcon1 = std::make_shared<GateSetPredicate>(all_types);
   PredicatePtr postcon2 = std::make_shared<MaxTwoQubitGatesPredicate>();
@@ -1018,24 +1017,33 @@ PassPtr gen_synthesise_pauli_graph(
 PassPtr gen_greedy_pauli_simp(
     double discount_rate, double depth_weight, unsigned max_lookahead,
     unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase,
-    unsigned timeout, bool only_reduce) {
-  Transform t =
-      Transform([discount_rate, depth_weight, max_lookahead, max_tqe_candidates,
-                 seed, allow_zzphase, timeout, only_reduce](Circuit& circ) {
-        Transform gpo = Transforms::greedy_pauli_optimisation(
-            discount_rate, depth_weight, max_lookahead, max_tqe_candidates,
-            seed, allow_zzphase, timeout);
-        if (only_reduce) {
-          Circuit gpo_circ = circ;
-          if (gpo.apply(gpo_circ) &&
-              gpo_circ.count_n_qubit_gates(2) < circ.count_n_qubit_gates(2)) {
-            circ = gpo_circ;
-            return true;
-          }
-          return false;
-        }
-        return gpo.apply(circ);
-      });
+    unsigned thread_timeout, bool only_reduce, unsigned trials) {
+  Transform t = Transform([discount_rate, depth_weight, max_lookahead,
+                           max_tqe_candidates, seed, allow_zzphase,
+                           thread_timeout, only_reduce, trials](Circuit& circ) {
+    Transform gpo = Transforms::greedy_pauli_optimisation(
+        discount_rate, depth_weight, max_lookahead, max_tqe_candidates, seed,
+        allow_zzphase, thread_timeout, trials);
+    if (only_reduce) {
+      Circuit gpo_circ = circ;
+      // comparison will be inaccurate if circuit has PauliExpBox
+      gpo_circ.decompose_boxes_recursively();
+      unsigned original_n_2qb_gates = gpo_circ.count_n_qubit_gates(2);
+      unsigned original_n_gates = gpo_circ.n_gates();
+      unsigned original_depth = gpo_circ.depth();
+      if (gpo.apply(gpo_circ) &&
+          std::make_tuple(
+              gpo_circ.count_n_qubit_gates(2), gpo_circ.n_gates(),
+              gpo_circ.depth()) <
+              std::make_tuple(
+                  original_n_2qb_gates, original_n_gates, original_depth)) {
+        circ = gpo_circ;
+        return true;
+      }
+      return false;
+    }
+    return gpo.apply(circ);
+  });
   OpTypeSet ins = {
       OpType::Z,
       OpType::X,
@@ -1084,8 +1092,9 @@ PassPtr gen_greedy_pauli_simp(
   j["max_tqe_candidates"] = max_tqe_candidates;
   j["seed"] = seed;
   j["allow_zzphase"] = allow_zzphase;
-  j["timeout"] = timeout;
+  j["thread_timeout"] = thread_timeout;
   j["only_reduce"] = only_reduce;
+  j["trials"] = trials;
 
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }

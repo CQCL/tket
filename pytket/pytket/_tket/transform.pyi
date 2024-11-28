@@ -158,6 +158,8 @@ class Transform:
         
         Replaces any PhasedX gates with global NPhasedX gates. By default, this transform will squash all single-qubit gates to PhasedX and Rz gates before proceeding further. Existing non-global NPhasedX will not be preserved. This is the recommended setting for best performance. If squashing is disabled, each non-global PhasedX gate will be replaced with two global NPhasedX, but any other gates will be left untouched.
         
+        DEPRECATED: This transform will be removed no earlier than three months after the pytket 1.35 release.
+        
         :param squash: Whether to squash the circuit in pre-processing (default: true).
         
         If squash=true (default), the `GlobalisePhasedX` transform's `apply` method will always return true. For squash=false, `apply()` will return true if the circuit was changed and false otherwise.
@@ -165,7 +167,7 @@ class Transform:
         It is not recommended to use this transformation with symbolic expressions, as in certain cases a blow-up in symbolic expression sizes may occur.
         """
     @staticmethod
-    def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3, max_tqe_candidates: int = 500, max_lookahead: int = 500, seed: int = 0, allow_zzphase: bool = False, timeout: int = 100) -> Transform:
+    def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3, max_tqe_candidates: int = 500, max_lookahead: int = 500, seed: int = 0, allow_zzphase: bool = False, thread_timeout: int = 100, trials: int = 1) -> Transform:
         """
         Convert a circuit into a graph of Pauli gadgets to account for commutation and phase folding, and resynthesises them using a greedy algorithm adapted from arxiv.org/abs/2103.08602. The method for synthesising the final Clifford operator is adapted from arxiv.org/abs/2305.10966.
         
@@ -175,7 +177,8 @@ class Transform:
         :param max_lookahead:  Maximum lookahead when evaluating each Clifford gate candidate. Default to 500.
         :param seed:  Unsigned integer seed used for sampling candidates and tie breaking. Default to 0.
         :param allow_zzphase: If set to True, allows the algorithm to implement 2-qubit rotations using ZZPhase gates when deemed optimal. Defaults to False.
-        :param timeout: Sets maximum out of time spent finding solution.
+        :param thread_timeout: Sets maximum out of time spent finding a single solution in one thread.
+        :param trials: Sets maximum number of found solutions. The smallest circuit is returned, prioritising the number of 2qb-gates, then the number of gates, then the depth.
         :return: a pass to perform the simplification
         """
     @staticmethod

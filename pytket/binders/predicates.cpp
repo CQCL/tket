@@ -83,7 +83,7 @@ PYBIND11_MODULE(predicates, m) {
           "implies", &Predicate::implies,
           ":return: True if predicate implies another one, else False",
           py::arg("other"))
-      .def("__str__", [](const Predicate &) { return "<tket::Predicate>"; })
+      .def("__str__", &Predicate::to_string)
       .def("__repr__", &Predicate::to_string)
       .def(
           "to_dict",
