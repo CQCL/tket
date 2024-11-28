@@ -1,12 +1,12 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.36.0 (November 2024)
+----------------------
 
 Features:
 
-* Add `BasePass.get_preconditions()` and `BasePass.getpost_conditions()`.
+* Add `BasePass.get_preconditions()` and `BasePass.get_postconditions()`.
 
 API changes:
 
@@ -15,6 +15,11 @@ API changes:
 Features:
 
 * Add `Circuit.wasm_uid` property to get the wasm UID from the circuit
+
+Performance:
+
+* Optimization in Clifford simplification, reducing compilation times for
+  `FullPeeopholeOptimise` by an order of magnitude on x86_64.
 
 Fixes:
 
