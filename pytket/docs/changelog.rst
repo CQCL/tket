@@ -4,13 +4,7 @@ Changelog
 1.36.0 (November 2024)
 ----------------------
 
-Features:
-
 * Add `BasePass.get_preconditions()` and `BasePass.get_postconditions()`.
-
-Features:
-
-* Add `BasePass.get_preconditions()` and `BasePass.getpost_conditions()`.
 
 API changes:
 
