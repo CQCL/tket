@@ -112,6 +112,9 @@ class CliffordReductionPass {
   /** The circuit under transformation */
   Circuit &circ;
 
+  /** Map from circuit vertices to their indices in the DAG */
+  IndexMap im;
+
   /** Table of potential transports of 2qb interactions through the circuit */
   interaction_table_t itable;
 
