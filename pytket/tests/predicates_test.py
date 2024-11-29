@@ -86,8 +86,6 @@ from pytket.passes import (
     ThreeQubitSquash,
     ZXGraphlikeOptimisation,
     ZZPhaseToRz,
-    auto_rebase_pass,
-    auto_squash_pass,
 )
 from pytket.pauli import Pauli
 from pytket.placement import GraphPlacement, Placement
@@ -1094,17 +1092,25 @@ def test_greedy_pauli_synth() -> None:
     assert GreedyPauliSimp().apply(c)
 
 
-def test_auto_rebase_deprecation(recwarn: Any) -> None:
-    _ = auto_rebase_pass({OpType.TK1, OpType.CX})
-    assert len(recwarn) == 1
-    w = recwarn.pop(DeprecationWarning)
-    assert issubclass(w.category, DeprecationWarning)
-    assert "deprecated" in str(w.message)
-    _ = auto_squash_pass({OpType.TK1})
-    assert len(recwarn) == 1
-    w = recwarn.pop(DeprecationWarning)
-    assert issubclass(w.category, DeprecationWarning)
-    assert "deprecated" in str(w.message)
+def test_get_pre_conditions() -> None:
+    pre_cons = GreedyPauliSimp().get_preconditions()
+    gate_set = pre_cons[0].gate_set  # type: ignore
+    assert OpType.CX in gate_set
+    assert OpType.Measure in gate_set
+
+
+def test_get_post_conditions() -> None:
+    gate_set = {OpType.CX, OpType.Rz, OpType.H, OpType.Reset, OpType.Measure}
+    post_cons = AutoRebase(gate_set).get_postconditions()
+    assert post_cons[0].gate_set == gate_set  # type: ignore
+
+
+def test_get_gate_set() -> None:
+    gate_set = GreedyPauliSimp().get_gate_set()
+    assert gate_set is not None
+    assert OpType.CX in gate_set
+    assert OpType.Measure in gate_set
+    assert CliffordPushThroughMeasures().get_gate_set() is None
 
 
 if __name__ == "__main__":

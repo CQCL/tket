@@ -464,6 +464,7 @@ class Circuit {
   UnitID get_id_from_out(const Vertex &out) const;
 
   opt_reg_info_t get_reg_info(std::string reg_name) const;
+  std::optional<std::string> get_wasm_file_uid() const;
   register_t get_reg(std::string reg_name) const;
 
   // returns the total number of vertices in dag

@@ -263,7 +263,9 @@ WASMOp::WASMOp(
       std::accumulate(width_i_parameter_.begin(), width_i_parameter_.end(), 0) +
       std::accumulate(width_o_parameter_.begin(), width_o_parameter_.end(), 0);
 
-  TKET_ASSERT(sum_of_i32 == n_);
+  if (sum_of_i32 != n_) {
+    throw std::domain_error("number of given args unexpected");
+  }
 
   // add wasm edge to signature of this op.
   for (unsigned i = 0; i < ww_n_; ++i) {

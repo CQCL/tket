@@ -25,6 +25,7 @@
 #include "tket/Circuit/DAGDefs.hpp"
 #include "tket/OpType/OpDesc.hpp"
 #include "tket/OpType/OpType.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
 #include "tket/Ops/OpPtr.hpp"
 
 namespace tket {
@@ -288,6 +289,46 @@ opt_reg_info_t Circuit::get_reg_info(std::string reg_name) const {
     return std::nullopt;
   else
     return found->reg_info();
+}
+
+std::optional<std::string> Circuit::get_wasm_file_uid() const {
+  std::optional<std::string> result = std::nullopt;
+  BGL_FORALL_VERTICES(v, dag, DAG) {
+    if (get_OpType_from_Vertex(v) == OpType::WASM) {
+      result = (static_cast<const WASMOp &>(*get_Op_ptr_from_Vertex(v)))
+                   .get_wasm_file_uid();
+      return result;
+    } else if (
+        (get_OpType_from_Vertex(v) == OpType::Conditional) &&
+        (static_cast<const Conditional &>(*get_Op_ptr_from_Vertex(v))
+             .get_op()
+             ->get_type() == OpType::WASM)) {
+      result =
+          static_cast<const WASMOp &>(
+              *(static_cast<const Conditional &>(*get_Op_ptr_from_Vertex(v)))
+                   .get_op())
+              .get_wasm_file_uid();
+      return result;
+    } else if (get_OpType_from_Vertex(v) == OpType::CircBox) {
+      result = (static_cast<const CircBox &>(*get_Op_ptr_from_Vertex(v)))
+                   .to_circuit()
+                   ->get_wasm_file_uid();
+      if (result != std::nullopt) return result;
+    } else if (
+        (get_OpType_from_Vertex(v) == OpType::Conditional) &&
+        (static_cast<const Conditional &>(*get_Op_ptr_from_Vertex(v))
+             .get_op()
+             ->get_type() == OpType::CircBox)) {
+      result =
+          (static_cast<const CircBox &>(
+               *(static_cast<const Conditional &>(*get_Op_ptr_from_Vertex(v)))
+                    .get_op()))
+              .to_circuit()
+              ->get_wasm_file_uid();
+      if (result != std::nullopt) return result;
+    }
+  }
+  return result;
 }
 
 register_t Circuit::get_reg(std::string reg_name) const {
@@ -621,8 +662,8 @@ unsigned Circuit::n_ports(const Vertex &vert) const {
 }
 
 // there are no checks to ensure the vertex exists in the graph
-// returns a pointer to the op, try not to dereference and do anything with the
-// op
+// returns a pointer to the op, try not to dereference and do anything with
+// the op
 const Op_ptr Circuit::get_Op_ptr_from_Vertex(const Vertex &vert) const {
   return this->dag[vert].op;
 }

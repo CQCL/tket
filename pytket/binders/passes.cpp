@@ -145,6 +145,30 @@ const PassPtr &DecomposeClassicalExp() {
   return pp;
 }
 
+std::optional<OpTypeSet> get_gate_set(const BasePass &base_pass) {
+  std::optional<OpTypeSet> allowed_ops;
+  for (const std::pair<const std::type_index, std::shared_ptr<tket::Predicate>>
+           &p : base_pass.get_conditions().first) {
+    std::shared_ptr<GateSetPredicate> gsp_ptr =
+        std::dynamic_pointer_cast<GateSetPredicate>(p.second);
+    if (!gsp_ptr) {
+      continue;
+    }
+    OpTypeSet candidate_allowed_ops = gsp_ptr->get_allowed_types();
+    if (!allowed_ops) {
+      allowed_ops = candidate_allowed_ops;
+    } else {
+      OpTypeSet intersection;
+      std::set_intersection(
+          candidate_allowed_ops.begin(), candidate_allowed_ops.end(),
+          allowed_ops->begin(), allowed_ops->end(),
+          std::inserter(intersection, intersection.begin()));
+      allowed_ops = intersection;
+    }
+  }
+  return allowed_ops;
+}
+
 PYBIND11_MODULE(passes, m) {
   py::module_::import("pytket._tket.predicates");
   m.def(
@@ -212,7 +236,6 @@ PYBIND11_MODULE(passes, m) {
       );
     }
   };
-
   py::class_<BasePass, PassPtr, PyBasePass>(
       m, "BasePass", "Base class for passes.")
       .def(
@@ -268,6 +291,38 @@ PYBIND11_MODULE(passes, m) {
             return py::cast(serialise(base_pass));
           },
           ":return: A JSON serializable dictionary representation of the Pass.")
+      .def(
+          "get_preconditions",
+          [](const BasePass &base_pass) {
+            std::vector<PredicatePtr> pre_conditions;
+            for (const std::pair<
+                     const std::type_index, std::shared_ptr<tket::Predicate>>
+                     &p : base_pass.get_conditions().first) {
+              pre_conditions.push_back(p.second);
+            }
+            return pre_conditions;
+          },
+          "Returns the precondition Predicates for the given pass."
+          "\n:return: A list of Predicate")
+      .def(
+          "get_postconditions",
+          [](const BasePass &base_pass) {
+            std::vector<PredicatePtr> post_conditions;
+            for (const std::pair<
+                     const std::type_index, std::shared_ptr<tket::Predicate>> &
+                     p : base_pass.get_conditions().second.specific_postcons_) {
+              post_conditions.push_back(p.second);
+            }
+            return post_conditions;
+          },
+          "Returns the postcondition Predicates for the given pass."
+          "\n\n:return: A list of :py:class:`Predicate`")
+      .def(
+          "get_gate_set", &get_gate_set,
+          "Returns the intersection of all set of OpType for all "
+          "GateSetPredicate in the `BasePass` preconditions, or `None` "
+          "if there are no gate-set predicates.",
+          "\n\n:return: A set of allowed OpType")
       .def_static(
           "from_dict",
           [](const py::dict &base_pass_dict,
