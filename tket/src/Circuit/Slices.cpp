@@ -197,21 +197,19 @@ CutFrontier Circuit::next_cut(
   for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
     const UnitID& unit = pair.first;
     const Edge& e = pair.second;
-    if (!skip_func) {
-      if (unit.type() == UnitType::Bit) {
-        Vertex targ = target(e);
-        b_frontier_t::const_iterator found =
-            b_frontier->get<TagKey>().find(Bit(unit));
-        if (found != b_frontier->get<TagKey>().end()) {
-          bool still_live = false;
-          for (const Edge& e : found->second) {
-            if (target(e) != targ) {
-              still_live = true;
-              break;
-            }
+    if (unit.type() == UnitType::Bit) {
+      Vertex targ = target(e);
+      b_frontier_t::const_iterator found =
+          b_frontier->get<TagKey>().find(Bit(unit));
+      if (found != b_frontier->get<TagKey>().end()) {
+        bool still_live = false;
+        for (const Edge& e : found->second) {
+          if (target(e) != targ) {
+            still_live = true;
+            break;
           }
-          if (still_live) continue;
         }
+        if (still_live) continue;
       }
     }
     all_edges.push_back(e);
