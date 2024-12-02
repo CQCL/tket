@@ -1103,12 +1103,8 @@ class Circuit {
   // O(q log^2(q!) alpha log(alpha!))
   CutFrontier next_cut(
       std::shared_ptr<const unit_frontier_t> u_frontier,
-      std::shared_ptr<const b_frontier_t> b_frontier) const;
-
-  CutFrontier next_cut(
-      std::shared_ptr<const unit_frontier_t> u_frontier,
       std::shared_ptr<const b_frontier_t> b_frontier,
-      const std::function<bool(Op_ptr)> &skip_func) const;
+      const std::function<bool(Op_ptr)> &skip_func = 0) const;
 
   // given current slice of quantum frontier, returns the next slice.
   // ignore classical and boolean edges
