@@ -20,6 +20,7 @@
 
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DAGDefs.hpp"
+#include "tket/Circuit/Slices.hpp"
 #include "tket/OpType/EdgeType.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/Ops/OpPtr.hpp"
@@ -84,7 +85,7 @@ std::list<Command> Circuit::get_commands_of_type(OpType op_type) const {
   std::function<bool(Op_ptr)> skip_func = [=](Op_ptr op) {
     return (op->get_type() != op_type);
   };
-  Circuit::SliceIterator slice_iter(*this, skip_func);
+  SliceIterator slice_iter(*this, skip_func);
   for (const Vertex& v : *slice_iter) {
     coms.push_back(command_from_vertex(
         v, slice_iter.get_u_frontier(), slice_iter.get_prev_b_frontier()));
@@ -685,7 +686,7 @@ unsigned Circuit::depth() const {
   std::function<bool(Op_ptr)> skip_func = [&](Op_ptr op) {
     return (op->get_type() == OpType::Barrier);
   };
-  Circuit::SliceIterator slice_iter(*this, skip_func);
+  SliceIterator slice_iter(*this, skip_func);
   if (!(*slice_iter).empty()) count++;
   while (!slice_iter.finished()) {
     slice_iter.cut_ = this->next_cut(
@@ -700,7 +701,7 @@ unsigned Circuit::depth_by_type(OpType _type) const {
   std::function<bool(Op_ptr)> skip_func = [&](Op_ptr op) {
     return (op->get_type() != _type);
   };
-  Circuit::SliceIterator slice_iter(*this, skip_func);
+  SliceIterator slice_iter(*this, skip_func);
   if (!(*slice_iter).empty()) count++;
   while (!slice_iter.finished()) {
     slice_iter.cut_ = this->next_cut(
@@ -715,7 +716,7 @@ unsigned Circuit::depth_by_types(const OpTypeSet& _types) const {
   std::function<bool(Op_ptr)> skip_func = [&](Op_ptr op) {
     return (_types.find(op->get_type()) == _types.end());
   };
-  Circuit::SliceIterator slice_iter(*this, skip_func);
+  SliceIterator slice_iter(*this, skip_func);
   if (!(*slice_iter).empty()) count++;
   while (!slice_iter.finished()) {
     slice_iter.cut_ = this->next_cut(
@@ -730,7 +731,7 @@ unsigned Circuit::depth_2q() const {
   std::function<bool(Op_ptr)> skip_func = [&](Op_ptr op) {
     return (op->n_qubits() != 2 || op->get_type() == OpType::Barrier);
   };
-  Circuit::SliceIterator slice_iter(*this, skip_func);
+  SliceIterator slice_iter(*this, skip_func);
   if (!(*slice_iter).empty()) count++;
   while (!slice_iter.finished()) {
     slice_iter.cut_ = this->next_cut(
@@ -791,110 +792,6 @@ std::map<Edge, UnitID> Circuit::edge_unit_map() const {
     }
   }
   return map;
-}
-
-/*SliceIterator related methods*/
-Circuit::SliceIterator::SliceIterator(const Circuit& circ)
-    : cut_(), circ_(&circ) {
-  cut_.init();
-  // add qubits to u_frontier
-  for (const Qubit& q : circ.all_qubits()) {
-    Vertex in = circ.get_in(q);
-    cut_.slice->push_back(in);
-    cut_.u_frontier->insert({q, circ.get_nth_out_edge(in, 0)});
-  }
-
-  // add bits to u_frontier and b_frontier
-  for (const Bit& b : circ.all_bits()) {
-    Vertex in = circ.get_in(b);
-    cut_.slice->push_back(in);
-    cut_.b_frontier->insert({b, circ.get_nth_b_out_bundle(in, 0)});
-    cut_.u_frontier->insert({b, circ.get_nth_out_edge(in, 0)});
-  }
-
-  // add WasmState to u_frontier
-  for (unsigned i = 0; i < circ._number_of_wasm_wires; ++i) {
-    Vertex in = circ.get_in(circ.wasmwire[i]);
-    cut_.slice->push_back(in);
-    cut_.u_frontier->insert({circ.wasmwire[i], circ.get_nth_out_edge(in, 0)});
-  }
-
-  prev_b_frontier_ = cut_.b_frontier;
-  cut_ = circ.next_cut(cut_.u_frontier, cut_.b_frontier);
-
-  // Add all vertices that have no Quantum or Classical edges (e.g. Phase) and
-  // no Boolean inputs:
-  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-    if (circ.n_in_edges(v) == 0 &&
-        circ.n_out_edges_of_type(v, EdgeType::Quantum) == 0 &&
-        circ.n_out_edges_of_type(v, EdgeType::Classical) == 0 &&
-        circ.n_out_edges_of_type(v, EdgeType::WASM) == 0) {
-      cut_.slice->push_back(v);
-    }
-  }
-}
-
-Circuit::SliceIterator::SliceIterator(
-    const Circuit& circ, const std::function<bool(Op_ptr)>& skip_func)
-    : cut_(), circ_(&circ) {
-  cut_.init();
-  // add qubits to u_frontier
-  for (const Qubit& q : circ.all_qubits()) {
-    Vertex in = circ.get_in(q);
-    cut_.u_frontier->insert({q, circ.get_nth_out_edge(in, 0)});
-  }
-
-  // add bits to u_frontier and b_frontier
-  for (const Bit& b : circ.all_bits()) {
-    Vertex in = circ.get_in(b);
-    cut_.b_frontier->insert({b, circ.get_nth_b_out_bundle(in, 0)});
-    cut_.u_frontier->insert({b, circ.get_nth_out_edge(in, 0)});
-  }
-
-  // add WasmState to u_frontier
-  for (unsigned i = 0; i < circ._number_of_wasm_wires; ++i) {
-    Vertex in = circ.get_in(circ.wasmwire[i]);
-    cut_.slice->push_back(in);
-    cut_.u_frontier->insert({circ.wasmwire[i], circ.get_nth_out_edge(in, 0)});
-  }
-
-  prev_b_frontier_ = cut_.b_frontier;
-  cut_ = circ.next_cut(cut_.u_frontier, cut_.b_frontier, skip_func);
-}
-
-Circuit::SliceIterator Circuit::slice_begin() const {
-  return Circuit::SliceIterator(*this);
-}
-
-Circuit::SliceIterator Circuit::slice_end() { return nullsit; }
-const Circuit::SliceIterator Circuit::nullsit = Circuit::SliceIterator();
-
-Circuit::SliceIterator::Sliceholder Circuit::SliceIterator::operator++(int) {
-  Sliceholder ret(*cut_.slice);
-  ++*this;
-  return ret;
-}
-
-Circuit::SliceIterator& Circuit::SliceIterator::operator++() {
-  if (this->finished()) {
-    *this = circ_->slice_end();
-    return *this;
-  }
-  prev_b_frontier_ = cut_.b_frontier;
-  cut_ = circ_->next_cut(cut_.u_frontier, cut_.b_frontier);
-  return *this;
-}
-
-bool Circuit::SliceIterator::finished() const {
-  for (const std::pair<UnitID, Edge>& pair :
-       this->cut_.u_frontier->get<TagKey>()) {
-    if (!circ_->detect_final_Op(circ_->target(pair.second))) return false;
-  }
-  for (const std::pair<Bit, EdgeVec>& pair :
-       this->cut_.b_frontier->get<TagKey>()) {
-    if (!pair.second.empty()) return false;
-  }
-  return true;
 }
 
 Circuit::CommandIterator::CommandIterator(const Circuit& circ)
