@@ -127,6 +127,19 @@ GPGraph::GPGraph(const Circuit& circ)
   for (const Command& cmd : circ.get_commands()) {
     apply_gate_at_end(cmd);
   }
+  valid_construction = true;
+}
+GPGraph::GPGraph(qubit_vector_t qubits, bit_vector_t bits)
+    : n_qubits_(qubits.size()), n_bits_(bits.size()) {
+  for (const Qubit& q : qubits) {
+    TKET_ASSERT(q.reg_name() == q_default_reg());
+    TKET_ASSERT(q.index().at(0) < qubits.size());
+  }
+  for (const Bit& b : bits) {
+    TKET_ASSERT(b.reg_name() == c_default_reg());
+    TKET_ASSERT(b.index().at(0) < bits.size());
+  }
+  cliff_ = UnitaryRevTableau(n_qubits_);
 }
 
 GPVertSet GPGraph::get_successors(const GPVert& vert) const {
@@ -487,11 +500,14 @@ std::vector<GPVert> GPGraph::vertices_in_order() const {
 std::tuple<
     std::vector<std::vector<PauliNode_ptr>>, std::vector<PauliNode_ptr>,
     boost::bimap<unsigned, unsigned>>
-GPGraph::get_sequence() {
+GPGraph::get_sequence(std::shared_ptr<std::atomic<bool>> stop_flag) {
   std::vector<GPVert> vertices = vertices_in_order();
   auto it = vertices.begin();
   std::vector<std::vector<PauliNode_ptr>> interior_nodes;
   while (it != vertices.end()) {
+    if (stop_flag.get()->load()) {
+      return {};
+    }
     const PauliNode_ptr& node = graph_[*it];
     std::vector<PauliNode_ptr> commuting_set;
     commuting_set.push_back(node);

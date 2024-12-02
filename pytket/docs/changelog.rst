@@ -1,6 +1,13 @@
 Changelog
 =========
 
+
+Unreleased
+----------
+
+Performance:
+* Update `GreedyPauliSimp` `thread_timeout` to hit timeout when constructing Pauli Graph.
+
 1.36.0 (November 2024)
 ----------------------
 

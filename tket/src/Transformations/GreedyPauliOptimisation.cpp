@@ -772,14 +772,21 @@ Circuit greedy_pauli_graph_synthesis_flag(
   for (const auto& pair : unit_map) {
     rev_unit_map.insert({pair.second, pair.first});
   }
-  GPGraph gpg(circ_flat);
+
+  GPGraph gpg(circ_flat.all_qubits(), circ_flat.all_bits());
+  for (const Command& cmd : circ_flat.get_commands()) {
+    if (stop_flag.get()->load()) {
+      return Circuit();
+    }
+    gpg.apply_gate_at_end(cmd);
+  }
 
   // We regularly check whether the timeout has ocurred
   if (stop_flag.get()->load()) {
     return Circuit();
   }
 
-  auto [rotation_sets, rows, measures] = gpg.get_sequence();
+  auto [rotation_sets, rows, measures] = gpg.get_sequence(stop_flag);
 
   if (stop_flag.get()->load()) {
     return Circuit();

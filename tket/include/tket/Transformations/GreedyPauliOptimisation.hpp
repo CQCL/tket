@@ -528,6 +528,12 @@ class GPGraph {
   /** Construct an GPGraph from a circuit */
   GPGraph(const Circuit& circ);
 
+  /** Construct an GPGraph from the circuit size */
+  GPGraph(qubit_vector_t qubits, bit_vector_t bits);
+
+  GPGraph get_graph(
+      const Circuit& circ, std::shared_ptr<std::atomic<bool>> stop_flag);
+
   GPVertSet get_successors(const GPVert& vert) const;
 
   GPVertSet get_predecessors(const GPVert& vert) const;
@@ -544,9 +550,8 @@ class GPGraph {
   std::tuple<
       std::vector<std::vector<PauliNode_ptr>>, std::vector<PauliNode_ptr>,
       boost::bimap<unsigned, unsigned>>
-  get_sequence();
+  get_sequence(std::shared_ptr<std::atomic<bool>> stop_flag);
 
- private:
   /**
    * Applies the given gate to the end of the graph.
    * Clifford gates transform the tableau.
@@ -558,6 +563,7 @@ class GPGraph {
       const Command& cmd, bool conditional = false,
       std::vector<unsigned> cond_bits = {}, unsigned cond_value = 0);
 
+ private:
   /**
    * Add a Pauli rotation to the graph
    * If the angle is non-Clifford or if conditional is true then add to the DAG
