@@ -127,8 +127,8 @@ GPGraph::GPGraph(const Circuit& circ)
   for (const Command& cmd : circ.get_commands()) {
     apply_gate_at_end(cmd);
   }
-  valid_construction = true;
 }
+
 GPGraph::GPGraph(qubit_vector_t qubits, bit_vector_t bits)
     : n_qubits_(qubits.size()), n_bits_(bits.size()) {
   for (const Qubit& q : qubits) {
