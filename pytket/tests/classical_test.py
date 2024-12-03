@@ -1538,5 +1538,19 @@ def test_decompose_clexpbox_overwrite() -> None:
     assert args1[1] == bits[0]
 
 
+def test_depth_classical_only() -> None:
+    # https://github.com/CQCL/tket/issues/1673
+    set_bits = SetBitsOp([True, True])
+    multi_bit = MultiBitOp(set_bits, 2)
+    eq_pred_values = [True, False, False, True]
+    and_values = [bool(i) for i in [0, 0, 0, 1]]
+    circ = Circuit(4, 4, name="test")
+    circ.add_gate(multi_bit, [0, 1, 2, 3])
+    circ.add_c_predicate(eq_pred_values, [0, 1], 2, "EQ")
+    circ.add_c_modifier(and_values, [1], 2)
+    circ.measure_all()
+    assert circ.depth() == 4
+
+
 if __name__ == "__main__":
     test_wasm()

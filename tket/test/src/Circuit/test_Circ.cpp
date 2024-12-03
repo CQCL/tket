@@ -24,6 +24,7 @@
 #include "tket/Circuit/DAGDefs.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
+#include "tket/Circuit/Slices.hpp"
 #include "tket/Gate/GatePtr.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
 #include "tket/OpType/EdgeType.hpp"
@@ -1596,7 +1597,7 @@ SCENARIO("Test circuit.dagger() method") {
     Circuit daggered = circ.dagger();
     REQUIRE(daggered == circ);
     SliceVec slices1, slices2;
-    for (Circuit::SliceIterator sliceit = daggered.slice_begin();
+    for (SliceIterator sliceit = daggered.slice_begin();
          sliceit != daggered.slice_end(); sliceit++) {
       slices1.push_back(*sliceit);
     }
