@@ -15,7 +15,7 @@ var searchData=
   ['nodes_5f_12',['nodes_',['../classtket_1_1graphs_1_1AbstractGraph.html#a0be1b923de1c7dfca3ec9b514c605834',1,'tket::graphs::AbstractGraph']]],
   ['noop_13',['noop',['../GateUnitaryMatrixFixedMatrices_8cpp.html#a34803f22660cb3e7bd5ae47cc6d7a249',1,'GateUnitaryMatrixFixedMatrices.cpp']]],
   ['nullcit_14',['nullcit',['../classtket_1_1Circuit.html#addbf35116f46567c912a0b907c72457d',1,'tket::Circuit']]],
-  ['nullsit_15',['nullsit',['../classtket_1_1Circuit.html#ab53bc96cac8b811d59b0981c34e60803',1,'tket::Circuit']]],
+  ['nullsit_15',['nullsit',['../classtket_1_1Circuit.html#a2f14859088b428707d710fa019a22173',1,'tket::Circuit']]],
   ['num_5fneighbours_16',['num_neighbours',['../classtket_1_1aas_1_1SteinerTree.html#a5943e6b16bf90e01b13571d25678d35a',1,'tket::aas::SteinerTree']]],
   ['number_5fof_5fcolours_17',['number_of_colours',['../structtket_1_1graphs_1_1GraphColouringResult.html#acbdde5e4f7f52241639cda057a2222fc',1,'tket::graphs::GraphColouringResult']]]
 ];

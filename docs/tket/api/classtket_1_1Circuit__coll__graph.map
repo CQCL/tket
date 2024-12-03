@@ -1,10 +1,10 @@
 <map id="tket::Circuit" name="tket::Circuit">
 <area shape="rect" id="Node000001" title="A circuit." alt="" coords="909,234,1007,259"/>
-<area shape="rect" id="Node000002" href="$classtket_1_1Circuit_1_1SliceIterator.html" title=" " alt="" coords="1115,171,1299,197"/>
-<area shape="poly" id="edge9_Node000002_Node000001" title=" " alt="" coords="1019,229,1155,194,1156,199,1020,234"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1178,207,1138,230,1091,248,1048,254,1007,254,1007,249,1048,249,1090,243,1136,225,1175,202"/>
+<area shape="rect" id="Node000002" href="$classtket_1_1SliceIterator.html" title=" " alt="" coords="1115,171,1249,197"/>
+<area shape="poly" id="edge9_Node000002_Node000001" title=" " alt="" coords="1017,228,1135,194,1136,199,1018,233"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1159,208,1128,230,1091,248,1049,255,1007,255,1007,250,1048,250,1090,243,1126,226,1156,204"/>
 <area shape="rect" id="Node000003" href="$structtket_1_1CutFrontier.html" title=" " alt="" coords="895,83,1021,109"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1009,111,1171,169,1169,174,1007,116"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1005,111,1092,146,1150,169,1148,174,1090,150,1003,116"/>
 <area shape="rect" id="Node000004" title=" " alt="" coords="477,7,657,33"/>
 <area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="671,27,769,40,871,61,928,81,926,86,870,67,768,46,671,32"/>
 <area shape="rect" id="Node000005" title=" " alt="" coords="215,7,344,33"/>
@@ -14,7 +14,7 @@
 <area shape="rect" id="Node000007" title=" " alt="" coords="488,57,647,97"/>
 <area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="660,79,894,90,894,96,660,84"/>
 <area shape="rect" id="Node000008" title=" " alt="" coords="496,121,639,161"/>
-<area shape="poly" id="edge8_Node000002_Node000008" title=" " alt="" coords="653,144,1115,175,1114,181,652,150"/>
+<area shape="poly" id="edge8_Node000002_Node000008" title=" " alt="" coords="652,145,1115,177,1114,182,652,150"/>
 <area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="652,133,870,109,894,106,895,111,871,115,653,138"/>
 <area shape="rect" id="Node000009" href="$classtket_1_1Circuit_1_1CommandIterator.html" title=" " alt="" coords="457,187,677,213"/>
 <area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="691,207,871,228,909,234,909,240,870,233,691,213"/>

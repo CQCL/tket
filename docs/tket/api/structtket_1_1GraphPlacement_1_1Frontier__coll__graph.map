@@ -13,13 +13,13 @@
 <area shape="poly" id="edge10_Node000009_Node000005" title=" " alt="" coords="540,345,629,333,654,329,655,334,630,338,541,351"/>
 <area shape="rect" id="Node000006" title=" " alt="" coords="376,237,519,277"/>
 <area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="533,256,838,261,1383,261,1430,265,1475,277,1551,308,1549,312,1473,282,1429,270,1383,266,838,266,533,262"/>
-<area shape="rect" id="Node000008" href="$classtket_1_1Circuit_1_1SliceIterator.html" title=" " alt="" coords="914,193,1098,219"/>
-<area shape="poly" id="edge12_Node000008_Node000006" title=" " alt="" coords="532,239,561,235,749,218,913,207,914,213,750,223,562,241,533,245"/>
+<area shape="rect" id="Node000008" href="$classtket_1_1SliceIterator.html" title=" " alt="" coords="939,193,1073,219"/>
+<area shape="poly" id="edge12_Node000008_Node000006" title=" " alt="" coords="532,239,561,235,767,216,938,206,939,212,768,222,562,241,533,245"/>
 <area shape="poly" id="edge11_Node000009_Node000006" title=" " alt="" coords="527,278,562,287,655,306,654,312,561,293,525,283"/>
 <area shape="rect" id="Node000007" href="$classtket_1_1Circuit.html" title="A circuit." alt="" coords="1333,139,1431,164"/>
 <area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="1410,171,1565,308,1562,312,1406,175"/>
 <area shape="poly" id="edge13_Node000008_Node000007" title=" " alt="" coords="1364,176,1340,198,1310,215,1245,231,1177,234,1114,230,1060,221,1061,216,1114,225,1177,229,1244,226,1308,210,1337,194,1360,172"/>
-<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="1111,193,1208,182,1309,166,1333,161,1334,166,1310,171,1208,187,1112,199"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="1087,196,1193,184,1309,166,1333,161,1334,166,1310,171,1193,189,1087,201"/>
 <area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="758,299,895,241,964,216,966,221,897,246,761,303"/>
 <area shape="rect" id="Node000010" href="$classtket_1_1Circuit_1_1CommandIterator.html" title=" " alt="" coords="896,5,1116,31"/>
 <area shape="poly" id="edge14_Node000007_Node000010" title=" " alt="" coords="1130,17,1222,32,1268,46,1311,66,1332,82,1350,101,1376,137,1371,140,1346,104,1329,86,1308,71,1266,51,1220,37,1130,22"/>

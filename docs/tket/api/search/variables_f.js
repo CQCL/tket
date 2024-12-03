@@ -16,5 +16,5 @@ var searchData=
   ['postcons_5f_13',['postcons_',['../classtket_1_1BasePass.html#a80c889ff7173ff26b93d3e71e5ed628a',1,'tket::BasePass']]],
   ['power_5fof_5fi_14',['power_of_i',['../PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19',1,'PauliExpBoxUnitaryCalculator.cpp']]],
   ['precons_5f_15',['precons_',['../classtket_1_1BasePass.html#ae0f08b68726cb052134fe14df03ffb7a',1,'tket::BasePass']]],
-  ['prev_5fb_5ffrontier_5f_16',['prev_b_frontier_',['../classtket_1_1Circuit_1_1SliceIterator.html#adb080058ba6007c8b57c374cdacfbb7a',1,'tket::Circuit::SliceIterator']]]
+  ['prev_5fb_5ffrontier_5f_16',['prev_b_frontier_',['../classtket_1_1SliceIterator.html#ad36b19d8029b80d98197d44b9a669008',1,'tket::SliceIterator']]]
 ];

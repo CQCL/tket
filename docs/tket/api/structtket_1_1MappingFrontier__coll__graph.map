@@ -4,14 +4,14 @@
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1513,21,1589,32,1627,44,1663,62,1699,92,1728,129,1749,166,1762,194,1757,196,1744,168,1723,132,1695,96,1660,66,1625,49,1588,37,1512,26"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="376,115,519,155"/>
 <area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="527,108,617,89,667,83,717,80,1418,80,1468,84,1518,93,1566,107,1612,125,1692,162,1746,193,1744,198,1689,167,1610,129,1565,112,1517,98,1467,89,1418,85,717,85,668,88,618,94,528,114"/>
-<area shape="rect" id="Node000005" href="$classtket_1_1Circuit_1_1SliceIterator.html" title=" " alt="" coords="914,131,1098,157"/>
-<area shape="poly" id="edge11_Node000005_Node000003" title=" " alt="" coords="533,133,914,140,914,145,532,139"/>
+<area shape="rect" id="Node000005" href="$classtket_1_1SliceIterator.html" title=" " alt="" coords="939,131,1073,157"/>
+<area shape="poly" id="edge11_Node000005_Node000003" title=" " alt="" coords="533,133,938,140,938,146,532,139"/>
 <area shape="rect" id="Node000006" href="$structtket_1_1CutFrontier.html" title=" " alt="" coords="655,193,781,218"/>
 <area shape="poly" id="edge10_Node000006_Node000003" title=" " alt="" coords="528,156,562,165,661,190,660,195,561,171,527,161"/>
 <area shape="rect" id="Node000004" href="$classtket_1_1Circuit.html" title="A circuit." alt="" coords="1368,195,1465,221"/>
 <area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="1479,205,1685,205,1685,211,1479,211"/>
-<area shape="poly" id="edge12_Node000005_Node000004" title=" " alt="" coords="1354,201,1088,159,1089,154,1354,196"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="1112,129,1209,129,1260,134,1310,144,1361,166,1401,193,1398,197,1359,171,1309,149,1259,139,1208,134,1112,135"/>
+<area shape="poly" id="edge12_Node000005_Node000004" title=" " alt="" coords="1354,201,1073,157,1074,152,1355,196"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="1087,131,1194,128,1253,133,1310,144,1361,166,1401,193,1398,197,1359,171,1309,149,1252,138,1194,133,1087,136"/>
 <area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="791,187,945,154,946,159,792,192"/>
 <area shape="rect" id="Node000007" title=" " alt="" coords="357,190,537,215"/>
 <area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="551,210,561,211,629,211,654,209,654,214,629,216,561,216,551,215"/>

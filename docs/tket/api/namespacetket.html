@@ -518,6 +518,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1SingleQubitSquash.html">SingleQubitSquash</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Squashes single qubit gates using given Squasher.  <a href="classtket_1_1SingleQubitSquash.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1SliceIterator.html">SliceIterator</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1SquareGrid.html">SquareGrid</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1StabiliserAssertionBox.html">StabiliserAssertionBox</a></td></tr>
@@ -680,8 +682,6 @@ Typedefs</h2></td></tr>
 <tr class="separator:af75542439fd2b810fa80c3fcea30c236"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abfc57e380c9724e60716b815a28befdf" id="r_abfc57e380c9724e60716b815a28befdf"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="namespacetket.html#a814cee1be1a70fcc4a804f93212b5013">EdgeVec</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#abfc57e380c9724e60716b815a28befdf">BundleVec</a></td></tr>
 <tr class="separator:abfc57e380c9724e60716b815a28befdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21f0f23e5214bb9a3a411cfa66359c5a" id="r_a21f0f23e5214bb9a3a411cfa66359c5a"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="namespacetket.html#aecaec372664e1c2f33ff81d9a5c58ce2">VertexVec</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a21f0f23e5214bb9a3a411cfa66359c5a">Slice</a></td></tr>
-<tr class="separator:a21f0f23e5214bb9a3a411cfa66359c5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f608d87f31e578f78cd0be0b622a9c0" id="r_a7f608d87f31e578f78cd0be0b622a9c0"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="namespacetket.html#a21f0f23e5214bb9a3a411cfa66359c5a">Slice</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a7f608d87f31e578f78cd0be0b622a9c0">SliceVec</a></td></tr>
 <tr class="separator:a7f608d87f31e578f78cd0be0b622a9c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28fceaabe93f27742231e9870efb3b0b" id="r_a28fceaabe93f27742231e9870efb3b0b"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a28fceaabe93f27742231e9870efb3b0b">QPathDetailed</a></td></tr>
@@ -692,10 +692,6 @@ Typedefs</h2></td></tr>
 <tr class="separator:a526342a687fb4be46f3fe470c52aebf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a776ae83dbb63eb09e6f5a234b45ef137" id="r_a776ae83dbb63eb09e6f5a234b45ef137"><td class="memItemLeft" align="right" valign="top">typedef boost::multi_index::multi_index_container&lt; <a class="el" href="structtket_1_1BoundaryElement.html">BoundaryElement</a>, boost::multi_index::indexed_by&lt; boost::multi_index::ordered_unique&lt; boost::multi_index::tag&lt; <a class="el" href="structtket_1_1TagID.html">TagID</a> &gt;, boost::multi_index::member&lt; <a class="el" href="structtket_1_1BoundaryElement.html">BoundaryElement</a>, <a class="el" href="classtket_1_1UnitID.html">UnitID</a>, &amp;<a class="el" href="structtket_1_1BoundaryElement.html#a03b719d2261555cf25756ca13b495c65">BoundaryElement::id_</a> &gt; &gt;, boost::multi_index::ordered_unique&lt; boost::multi_index::tag&lt; <a class="el" href="structtket_1_1TagIn.html">TagIn</a> &gt;, boost::multi_index::member&lt; <a class="el" href="structtket_1_1BoundaryElement.html">BoundaryElement</a>, <a class="el" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a>, &amp;<a class="el" href="structtket_1_1BoundaryElement.html#ac60c40e10bc5a2ae10cfd5aaf76561c9">BoundaryElement::in_</a> &gt; &gt;, boost::multi_index::ordered_unique&lt; boost::multi_index::tag&lt; <a class="el" href="structtket_1_1TagOut.html">TagOut</a> &gt;, boost::multi_index::member&lt; <a class="el" href="structtket_1_1BoundaryElement.html">BoundaryElement</a>, <a class="el" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a>, &amp;<a class="el" href="structtket_1_1BoundaryElement.html#acd700ea9a66bc6aabccca09157288945">BoundaryElement::out_</a> &gt; &gt;, boost::multi_index::ordered_non_unique&lt; boost::multi_index::tag&lt; <a class="el" href="structtket_1_1TagType.html">TagType</a> &gt;, boost::multi_index::const_mem_fun&lt; <a class="el" href="structtket_1_1BoundaryElement.html">BoundaryElement</a>, <a class="el" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9">UnitType</a>, &amp;<a class="el" href="structtket_1_1BoundaryElement.html#a29ff3cd3c9edc762fef8a3d05d177103">BoundaryElement::type</a> &gt; &gt;, boost::multi_index::ordered_non_unique&lt; boost::multi_index::tag&lt; <a class="el" href="structtket_1_1TagReg.html">TagReg</a> &gt;, boost::multi_index::const_mem_fun&lt; <a class="el" href="structtket_1_1BoundaryElement.html">BoundaryElement</a>, std::string, &amp;<a class="el" href="structtket_1_1BoundaryElement.html#a36057274de1765d8c34e155dda1c07c8">BoundaryElement::reg_name</a> &gt; &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a776ae83dbb63eb09e6f5a234b45ef137">boundary_t</a></td></tr>
 <tr class="separator:a776ae83dbb63eb09e6f5a234b45ef137"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3fb953e9a078d3a7ef07c8d0b9bbfd4" id="r_ac3fb953e9a078d3a7ef07c8d0b9bbfd4"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="namespacetket.html#a28f9577cad4f1a896981f6105029ac03">sequenced_map_t</a>&lt; <a class="el" href="classtket_1_1UnitID.html">UnitID</a>, <a class="el" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ac3fb953e9a078d3a7ef07c8d0b9bbfd4">unit_frontier_t</a></td></tr>
-<tr class="separator:ac3fb953e9a078d3a7ef07c8d0b9bbfd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6cb7640bbe52f39e335b22ed5c81f0d9" id="r_a6cb7640bbe52f39e335b22ed5c81f0d9"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="namespacetket.html#a28f9577cad4f1a896981f6105029ac03">sequenced_map_t</a>&lt; <a class="el" href="classtket_1_1Bit.html">Bit</a>, <a class="el" href="namespacetket.html#a814cee1be1a70fcc4a804f93212b5013">EdgeVec</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a6cb7640bbe52f39e335b22ed5c81f0d9">b_frontier_t</a></td></tr>
-<tr class="separator:a6cb7640bbe52f39e335b22ed5c81f0d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a720e4604980f5d33b43ec549c38ed872" id="r_a720e4604980f5d33b43ec549c38ed872"><td class="memItemLeft" align="right" valign="top">typedef std::unordered_map&lt; unsigned, unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a720e4604980f5d33b43ec549c38ed872">permutation_t</a></td></tr>
 <tr class="separator:a720e4604980f5d33b43ec549c38ed872"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85e7f8d119b3b35dd331a339729f4cfb" id="r_a85e7f8d119b3b35dd331a339729f4cfb"><td class="memItemLeft" align="right" valign="top">typedef unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a></td></tr>
@@ -745,6 +741,12 @@ Typedefs</h2></td></tr>
 <tr class="separator:a8db0fb2e676ff4edf476ea1f2895fb46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4be712a96dd59d03a8ada81a8c380d47" id="r_a4be712a96dd59d03a8ada81a8c380d47"><td class="memItemLeft" align="right" valign="top">typedef Eigen::VectorXcd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a4be712a96dd59d03a8ada81a8c380d47">StateVector</a></td></tr>
 <tr class="separator:a4be712a96dd59d03a8ada81a8c380d47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21f0f23e5214bb9a3a411cfa66359c5a" id="r_a21f0f23e5214bb9a3a411cfa66359c5a"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="namespacetket.html#aecaec372664e1c2f33ff81d9a5c58ce2">VertexVec</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a21f0f23e5214bb9a3a411cfa66359c5a">Slice</a></td></tr>
+<tr class="separator:a21f0f23e5214bb9a3a411cfa66359c5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3fb953e9a078d3a7ef07c8d0b9bbfd4" id="r_ac3fb953e9a078d3a7ef07c8d0b9bbfd4"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="namespacetket.html#a28f9577cad4f1a896981f6105029ac03">sequenced_map_t</a>&lt; <a class="el" href="classtket_1_1UnitID.html">UnitID</a>, <a class="el" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ac3fb953e9a078d3a7ef07c8d0b9bbfd4">unit_frontier_t</a></td></tr>
+<tr class="separator:ac3fb953e9a078d3a7ef07c8d0b9bbfd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6cb7640bbe52f39e335b22ed5c81f0d9" id="r_a6cb7640bbe52f39e335b22ed5c81f0d9"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="namespacetket.html#a28f9577cad4f1a896981f6105029ac03">sequenced_map_t</a>&lt; <a class="el" href="classtket_1_1Bit.html">Bit</a>, <a class="el" href="namespacetket.html#a814cee1be1a70fcc4a804f93212b5013">EdgeVec</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a6cb7640bbe52f39e335b22ed5c81f0d9">b_frontier_t</a></td></tr>
+<tr class="separator:a6cb7640bbe52f39e335b22ed5c81f0d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22d054aa057003b70a0b4a699cb37fe7" id="r_a22d054aa057003b70a0b4a699cb37fe7"><td class="memItemLeft" align="right" valign="top">typedef std::map&lt; std::vector&lt; bool &gt;, std::vector&lt; bool &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a22d054aa057003b70a0b4a699cb37fe7">state_perm_t</a></td></tr>
 <tr class="memdesc:a22d054aa057003b70a0b4a699cb37fe7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map bitstrings to bitstrings.  <br /></td></tr>
 <tr class="separator:a22d054aa057003b70a0b4a699cb37fe7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2681,7 +2683,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00113">113</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Slices_8hpp_source.html#l00028">28</a> of file <a class="el" href="Slices_8hpp_source.html">Slices.hpp</a>.</p>
 
 </div>
 </div>
@@ -2777,7 +2779,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00056">56</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00057">57</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -3904,7 +3906,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00116">116</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00111">111</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -4296,7 +4298,7 @@ template&lt;typename A , typename B &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00058">58</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Slices_8hpp_source.html#l00024">24</a> of file <a class="el" href="Slices_8hpp_source.html">Slices.hpp</a>.</p>
 
 </div>
 </div>
@@ -4610,7 +4612,7 @@ template&lt;typename A , typename B &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00111">111</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Slices_8hpp_source.html#l00026">26</a> of file <a class="el" href="Slices_8hpp_source.html">Slices.hpp</a>.</p>
 
 </div>
 </div>
@@ -5661,7 +5663,7 @@ e^{-i\pi\beta} \end{array} \right] \) </p>
 <tr><td class="fieldname"><a id="a0f814e0f8e98465926bde71420d68cf6aa0384d313f8d9e42660fa7de18b7ed9e" name="a0f814e0f8e98465926bde71420d68cf6aa0384d313f8d9e42660fa7de18b7ed9e"></a>transpose&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00235">235</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00219">219</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -6736,7 +6738,7 @@ e^{-i\pi\beta} \end{array} \right] \) </p>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00271">271</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00272">272</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
 
 </div>
 </div>
