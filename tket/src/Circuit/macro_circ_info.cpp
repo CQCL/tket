@@ -20,6 +20,7 @@
 
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DAGDefs.hpp"
+#include "tket/Circuit/Slices.hpp"
 #include "tket/OpType/EdgeType.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/Ops/OpPtr.hpp"
@@ -84,7 +85,7 @@ std::list<Command> Circuit::get_commands_of_type(OpType op_type) const {
   std::function<bool(Op_ptr)> skip_func = [=](Op_ptr op) {
     return (op->get_type() != op_type);
   };
-  Circuit::SliceIterator slice_iter(*this, skip_func);
+  SliceIterator slice_iter(*this, skip_func);
   for (const Vertex& v : *slice_iter) {
     coms.push_back(command_from_vertex(
         v, slice_iter.get_u_frontier(), slice_iter.get_prev_b_frontier()));
@@ -349,269 +350,6 @@ Edge Circuit::skip_irrelevant_edges(Edge current) const {
   return current;
 }
 
-static std::shared_ptr<unit_frontier_t> get_next_u_frontier(
-    const Circuit& circ, std::shared_ptr<const unit_frontier_t> u_frontier,
-    const VertexSet& next_slice_lookup) {
-  std::shared_ptr<unit_frontier_t> next_frontier =
-      std::make_shared<unit_frontier_t>();
-  for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
-    Vertex next_v = circ.target(pair.second);
-    if (next_slice_lookup.find(next_v) == next_slice_lookup.end()) {
-      next_frontier->insert(pair);
-    } else {
-      next_frontier->insert(
-          {pair.first, circ.get_next_edge(next_v, pair.second)});
-    }
-  }
-  return next_frontier;
-}
-
-static std::shared_ptr<b_frontier_t> get_next_b_frontier(
-    const Circuit& circ, std::shared_ptr<const b_frontier_t> b_frontier,
-    std::shared_ptr<const unit_frontier_t> u_frontier,
-    const VertexSet& next_slice_lookup) {
-  std::shared_ptr<b_frontier_t> next_b_frontier =
-      std::make_shared<b_frontier_t>();
-  // Copy any remaining edges
-  for (const std::pair<Bit, EdgeVec>& pair : b_frontier->get<TagKey>()) {
-    EdgeVec remaining;
-    for (const Edge& e : pair.second) {
-      Vertex targ = circ.target(e);
-      if (next_slice_lookup.find(targ) == next_slice_lookup.end()) {
-        remaining.push_back(e);
-      }
-    }
-    if (!remaining.empty()) {
-      next_b_frontier->insert({pair.first, remaining});
-    }
-  }
-  // Add any new bits introduced in this slice
-  for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
-    switch (circ.get_edgetype(pair.second)) {
-      case EdgeType::Quantum:
-      case EdgeType::WASM: {
-        break;
-      }
-      case EdgeType::Classical: {
-        Vertex next_v = circ.target(pair.second);
-        if (next_slice_lookup.find(next_v) == next_slice_lookup.end()) continue;
-        if (next_b_frontier->get<TagKey>().find(Bit(pair.first)) !=
-            next_b_frontier->end()) {
-          TKET_ASSERT(!"RAW hazard created in slicing");
-        }
-        port_t p = circ.get_target_port(pair.second);
-        EdgeVec reads = circ.get_nth_b_out_bundle(next_v, p);
-        if (!reads.empty()) next_b_frontier->insert({Bit(pair.first), reads});
-        break;
-      }
-      case EdgeType::Boolean: {
-        throw CircuitInvalidity("Boolen edge not allowed in b_frontier_t");
-      }
-      default: {
-        TKET_ASSERT(!"get_next_b_frontier found invalid edge type in sig");
-      }
-    }
-  }
-  return next_b_frontier;
-}
-
-CutFrontier Circuit::next_cut(
-    std::shared_ptr<const unit_frontier_t> u_frontier,
-    std::shared_ptr<const b_frontier_t> b_frontier) const {
-  auto next_slice = std::make_shared<Slice>();
-  VertexSet next_slice_lookup;
-  VertexSet bad_vertices;
-  std::list<Edge> all_edges;
-  EdgeSet edge_lookup;
-  for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
-    if (pair.first.type() == UnitType::Bit) {
-      Vertex targ = target(pair.second);
-      b_frontier_t::const_iterator found =
-          b_frontier->get<TagKey>().find(Bit(pair.first));
-      if (found != b_frontier->get<TagKey>().end()) {
-        bool still_live = false;
-        for (const Edge& e : found->second) {
-          if (target(e) != targ) {
-            still_live = true;
-            break;
-          }
-        }
-        if (still_live) continue;
-      }
-    }
-    all_edges.push_back(pair.second);
-    edge_lookup.insert(pair.second);
-  }
-
-  for (const std::pair<Bit, EdgeVec>& pair : b_frontier->get<TagKey>()) {
-    for (const Edge& e : pair.second) {
-      all_edges.push_back(e);
-      edge_lookup.insert(e);
-    }
-  }
-  // find the next slice first
-  for (const Edge& e : all_edges) {
-    Vertex try_v = target(e);
-    if (detect_final_Op(try_v)) continue;
-    if (next_slice_lookup.find(try_v) != next_slice_lookup.end())
-      continue;  // already going to be in next slice
-    bool good_vertex = bad_vertices.find(try_v) == bad_vertices.end();
-    if (!good_vertex) continue;
-    EdgeVec ins = get_in_edges(try_v);
-    for (const Edge& in : ins) {
-      if (edge_lookup.find(in) == edge_lookup.end()) {
-        good_vertex = false;
-        bad_vertices.insert(try_v);
-        break;
-      }
-    }
-    if (good_vertex) {
-      next_slice_lookup.insert(try_v);
-      next_slice->push_back(try_v);
-    }
-  }
-
-  return {
-      next_slice, get_next_u_frontier(*this, u_frontier, next_slice_lookup),
-      get_next_b_frontier(*this, b_frontier, u_frontier, next_slice_lookup)};
-}
-
-CutFrontier Circuit::next_cut(
-    std::shared_ptr<const unit_frontier_t> u_frontier,
-    std::shared_ptr<const b_frontier_t> b_frontier,
-    const std::function<bool(Op_ptr)>& skip_func) const {
-  VertexSet bad_vertices;
-  std::list<Edge> all_edges;
-  EdgeSet edge_lookup;
-  for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
-    Edge e = pair.second;
-    all_edges.push_back(e);
-    edge_lookup.insert(e);
-  }
-  for (const std::pair<Bit, EdgeVec>& pair : b_frontier->get<TagKey>()) {
-    for (const Edge& edge : pair.second) {
-      Edge e = edge;
-      all_edges.push_back(e);
-      edge_lookup.insert(e);
-    }
-  }
-  // advance through skippable
-  bool can_skip;
-  do {
-    can_skip = false;
-    VertexSet skip_slice_lookup;
-    for (const Edge& e : all_edges) {
-      Vertex try_v = target(e);
-      if (detect_final_Op(try_v) || (!skip_func(get_Op_ptr_from_Vertex(try_v))))
-        continue;
-      if (skip_slice_lookup.find(try_v) != skip_slice_lookup.end()) continue;
-      bool good_vertex = bad_vertices.find(try_v) == bad_vertices.end();
-      if (!good_vertex) continue;
-      const EdgeVec ins = get_in_edges(try_v);
-      for (const Edge& in : ins) {
-        if (edge_lookup.find(in) == edge_lookup.end()) {
-          good_vertex = false;
-          break;
-        }
-      }
-      if (!good_vertex) {
-        bad_vertices.insert(try_v);
-        continue;
-      }
-      skip_slice_lookup.insert(try_v);
-    }
-    if (!skip_slice_lookup.empty()) {
-      b_frontier =
-          get_next_b_frontier(*this, b_frontier, u_frontier, skip_slice_lookup);
-      u_frontier = get_next_u_frontier(*this, u_frontier, skip_slice_lookup);
-      bad_vertices = {};
-      all_edges = {};
-      edge_lookup = {};
-
-      for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
-        Edge e = pair.second;
-        all_edges.push_back(e);
-        edge_lookup.insert(e);
-      }
-      for (const std::pair<Bit, EdgeVec>& pair : b_frontier->get<TagKey>()) {
-        for (const Edge& edge : pair.second) {
-          Edge e = edge;
-          all_edges.push_back(e);
-          edge_lookup.insert(e);
-        }
-      }
-      can_skip = true;
-    }
-  } while (can_skip);
-
-  // find the next slice first
-  auto next_slice = std::make_shared<Slice>();
-  VertexSet next_slice_lookup;
-
-  for (const Edge& e : all_edges) {
-    Vertex try_v = target(e);
-    if (detect_final_Op(try_v)) continue;
-    if (next_slice_lookup.find(try_v) != next_slice_lookup.end())
-      continue;  // already going to be in next slice
-    bool good_vertex = bad_vertices.find(try_v) == bad_vertices.end();
-    if (!good_vertex) continue;
-    const EdgeVec ins = get_in_edges(try_v);
-    for (const Edge& in : ins) {
-      if (edge_lookup.find(in) == edge_lookup.end()) {
-        good_vertex = false;
-        bad_vertices.insert(try_v);
-        break;
-      }
-    }
-    if (good_vertex) {
-      next_slice_lookup.insert(try_v);
-      next_slice->push_back(try_v);
-    }
-  }
-
-  return {
-      next_slice, get_next_u_frontier(*this, u_frontier, next_slice_lookup),
-      get_next_b_frontier(*this, b_frontier, u_frontier, next_slice_lookup)};
-}
-
-CutFrontier Circuit::next_q_cut(
-    std::shared_ptr<const unit_frontier_t> u_frontier) const {
-  auto next_slice = std::make_shared<Slice>();
-  VertexSet next_slice_lookup;
-  VertexSet bad_vertices;
-  EdgeSet edge_lookup;
-  for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
-    edge_lookup.insert(pair.second);
-  }
-
-  // find the next slice first
-  for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
-    Vertex try_v = target(pair.second);
-    if (detect_final_Op(try_v)) continue;
-    if (next_slice_lookup.contains(try_v))
-      continue;  // already going to be in next slice
-    bool good_vertex = !bad_vertices.contains(try_v);
-    if (!good_vertex) continue;
-    EdgeVec ins = get_in_edges(try_v);
-    for (const Edge& in : ins) {
-      if (!edge_lookup.contains(in) && (get_edgetype(in) == EdgeType::Quantum ||
-                                        get_edgetype(in) == EdgeType::WASM)) {
-        good_vertex = false;
-        bad_vertices.insert(try_v);
-        break;
-      }
-    }
-    if (good_vertex) {
-      next_slice_lookup.insert(try_v);
-      next_slice->push_back(try_v);
-    }
-  }
-
-  return {
-      next_slice, get_next_u_frontier(*this, u_frontier, next_slice_lookup),
-      std::make_shared<b_frontier_t>()};
-}
-
 SliceVec Circuit::get_reverse_slices() const {
   vertex_map_t mapping;
   vertex_map_t rev_mapping;
@@ -685,7 +423,7 @@ unsigned Circuit::depth() const {
   std::function<bool(Op_ptr)> skip_func = [&](Op_ptr op) {
     return (op->get_type() == OpType::Barrier);
   };
-  Circuit::SliceIterator slice_iter(*this, skip_func);
+  SliceIterator slice_iter(*this, skip_func);
   if (!(*slice_iter).empty()) count++;
   while (!slice_iter.finished()) {
     slice_iter.cut_ = this->next_cut(
@@ -700,7 +438,7 @@ unsigned Circuit::depth_by_type(OpType _type) const {
   std::function<bool(Op_ptr)> skip_func = [&](Op_ptr op) {
     return (op->get_type() != _type);
   };
-  Circuit::SliceIterator slice_iter(*this, skip_func);
+  SliceIterator slice_iter(*this, skip_func);
   if (!(*slice_iter).empty()) count++;
   while (!slice_iter.finished()) {
     slice_iter.cut_ = this->next_cut(
@@ -715,7 +453,7 @@ unsigned Circuit::depth_by_types(const OpTypeSet& _types) const {
   std::function<bool(Op_ptr)> skip_func = [&](Op_ptr op) {
     return (_types.find(op->get_type()) == _types.end());
   };
-  Circuit::SliceIterator slice_iter(*this, skip_func);
+  SliceIterator slice_iter(*this, skip_func);
   if (!(*slice_iter).empty()) count++;
   while (!slice_iter.finished()) {
     slice_iter.cut_ = this->next_cut(
@@ -730,7 +468,7 @@ unsigned Circuit::depth_2q() const {
   std::function<bool(Op_ptr)> skip_func = [&](Op_ptr op) {
     return (op->n_qubits() != 2 || op->get_type() == OpType::Barrier);
   };
-  Circuit::SliceIterator slice_iter(*this, skip_func);
+  SliceIterator slice_iter(*this, skip_func);
   if (!(*slice_iter).empty()) count++;
   while (!slice_iter.finished()) {
     slice_iter.cut_ = this->next_cut(
@@ -791,110 +529,6 @@ std::map<Edge, UnitID> Circuit::edge_unit_map() const {
     }
   }
   return map;
-}
-
-/*SliceIterator related methods*/
-Circuit::SliceIterator::SliceIterator(const Circuit& circ)
-    : cut_(), circ_(&circ) {
-  cut_.init();
-  // add qubits to u_frontier
-  for (const Qubit& q : circ.all_qubits()) {
-    Vertex in = circ.get_in(q);
-    cut_.slice->push_back(in);
-    cut_.u_frontier->insert({q, circ.get_nth_out_edge(in, 0)});
-  }
-
-  // add bits to u_frontier and b_frontier
-  for (const Bit& b : circ.all_bits()) {
-    Vertex in = circ.get_in(b);
-    cut_.slice->push_back(in);
-    cut_.b_frontier->insert({b, circ.get_nth_b_out_bundle(in, 0)});
-    cut_.u_frontier->insert({b, circ.get_nth_out_edge(in, 0)});
-  }
-
-  // add WasmState to u_frontier
-  for (unsigned i = 0; i < circ._number_of_wasm_wires; ++i) {
-    Vertex in = circ.get_in(circ.wasmwire[i]);
-    cut_.slice->push_back(in);
-    cut_.u_frontier->insert({circ.wasmwire[i], circ.get_nth_out_edge(in, 0)});
-  }
-
-  prev_b_frontier_ = cut_.b_frontier;
-  cut_ = circ.next_cut(cut_.u_frontier, cut_.b_frontier);
-
-  // Add all vertices that have no Quantum or Classical edges (e.g. Phase) and
-  // no Boolean inputs:
-  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-    if (circ.n_in_edges(v) == 0 &&
-        circ.n_out_edges_of_type(v, EdgeType::Quantum) == 0 &&
-        circ.n_out_edges_of_type(v, EdgeType::Classical) == 0 &&
-        circ.n_out_edges_of_type(v, EdgeType::WASM) == 0) {
-      cut_.slice->push_back(v);
-    }
-  }
-}
-
-Circuit::SliceIterator::SliceIterator(
-    const Circuit& circ, const std::function<bool(Op_ptr)>& skip_func)
-    : cut_(), circ_(&circ) {
-  cut_.init();
-  // add qubits to u_frontier
-  for (const Qubit& q : circ.all_qubits()) {
-    Vertex in = circ.get_in(q);
-    cut_.u_frontier->insert({q, circ.get_nth_out_edge(in, 0)});
-  }
-
-  // add bits to u_frontier and b_frontier
-  for (const Bit& b : circ.all_bits()) {
-    Vertex in = circ.get_in(b);
-    cut_.b_frontier->insert({b, circ.get_nth_b_out_bundle(in, 0)});
-    cut_.u_frontier->insert({b, circ.get_nth_out_edge(in, 0)});
-  }
-
-  // add WasmState to u_frontier
-  for (unsigned i = 0; i < circ._number_of_wasm_wires; ++i) {
-    Vertex in = circ.get_in(circ.wasmwire[i]);
-    cut_.slice->push_back(in);
-    cut_.u_frontier->insert({circ.wasmwire[i], circ.get_nth_out_edge(in, 0)});
-  }
-
-  prev_b_frontier_ = cut_.b_frontier;
-  cut_ = circ.next_cut(cut_.u_frontier, cut_.b_frontier, skip_func);
-}
-
-Circuit::SliceIterator Circuit::slice_begin() const {
-  return Circuit::SliceIterator(*this);
-}
-
-Circuit::SliceIterator Circuit::slice_end() { return nullsit; }
-const Circuit::SliceIterator Circuit::nullsit = Circuit::SliceIterator();
-
-Circuit::SliceIterator::Sliceholder Circuit::SliceIterator::operator++(int) {
-  Sliceholder ret(*cut_.slice);
-  ++*this;
-  return ret;
-}
-
-Circuit::SliceIterator& Circuit::SliceIterator::operator++() {
-  if (this->finished()) {
-    *this = circ_->slice_end();
-    return *this;
-  }
-  prev_b_frontier_ = cut_.b_frontier;
-  cut_ = circ_->next_cut(cut_.u_frontier, cut_.b_frontier);
-  return *this;
-}
-
-bool Circuit::SliceIterator::finished() const {
-  for (const std::pair<UnitID, Edge>& pair :
-       this->cut_.u_frontier->get<TagKey>()) {
-    if (!circ_->detect_final_Op(circ_->target(pair.second))) return false;
-  }
-  for (const std::pair<Bit, EdgeVec>& pair :
-       this->cut_.b_frontier->get<TagKey>()) {
-    if (!pair.second.empty()) return false;
-  }
-  return true;
 }
 
 Circuit::CommandIterator::CommandIterator(const Circuit& circ)

@@ -164,6 +164,7 @@ target_sources(tket
         src/Circuit/Simulation/GateNode.cpp
         src/Circuit/Simulation/GateNodesBuffer.cpp
         src/Circuit/Simulation/PauliExpBoxUnitaryCalculator.cpp
+        src/Circuit/Slices.cpp
         src/Circuit/StatePreparation.cpp
         src/Circuit/SubcircuitFinder.cpp
         src/Circuit/ThreeQubitConversion.cpp
@@ -319,6 +320,7 @@ target_sources(tket
         include/tket/Circuit/ResourceData.hpp
         include/tket/Circuit/Simulation/CircuitSimulator.hpp
         include/tket/Circuit/Simulation/PauliExpBoxUnitaryCalculator.hpp
+        include/tket/Circuit/Slices.hpp
         include/tket/Circuit/StatePreparation.hpp
         include/tket/Circuit/ThreeQubitConversion.hpp
         include/tket/Circuit/ToffoliBox.hpp
