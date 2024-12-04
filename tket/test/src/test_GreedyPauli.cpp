@@ -825,7 +825,7 @@ SCENARIO("Test GreedyPauliSimp with multiple trials and threads") {
                  0.7, 0.3, 500, 500, 0, true, 1, 10)
                  .apply(d));
     REQUIRE(Transforms::greedy_pauli_optimisation(
-                0.7, 0.3, 500, 500, 0, true, 100, 10)
+                0.7, 0.3, 500, 500, 0, true, 10000, 10)
                 .apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
   }
