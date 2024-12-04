@@ -16,6 +16,8 @@
 
 #include <numeric>
 
+#include "tket/Circuit/Slices.hpp"
+
 namespace tket {
 
 class CycleError : public std::logic_error {
@@ -314,7 +316,7 @@ std::vector<Cycle> CycleFinder::get_cycles() {
     return (cycle_types_.find(op->get_type()) == cycle_types_.end());
   };
 
-  Circuit::SliceIterator slice_iter(circ, skip_func);
+  SliceIterator slice_iter(circ, skip_func);
   this->cycle_history.key = 0;
 
   // initialization

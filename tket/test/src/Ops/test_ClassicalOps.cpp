@@ -16,6 +16,7 @@
 
 #include "../testutil.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/Slices.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Transformations/CliffordOptimisation.hpp"
@@ -105,8 +106,7 @@ SCENARIO("Check that classical bundles work as expected") {
     circ.add_conditional_gate<unsigned>(OpType::Z, {}, uvec{2}, {0}, 1);
     circ.assert_valid();
     std::vector<std::vector<OpType>> types;
-    for (Circuit::SliceIterator si = circ.slice_begin(); si != circ.slice_end();
-         ++si) {
+    for (SliceIterator si = circ.slice_begin(); si != circ.slice_end(); ++si) {
       Slice sl = *si;
       std::vector<OpType> slice_types;
       for (const Vertex& v : sl) {
@@ -139,8 +139,7 @@ SCENARIO("Check that classical bundles work as expected") {
     circ.add_measure(3, 1);
     circ.assert_valid();
     std::vector<std::vector<OpType>> types;
-    for (Circuit::SliceIterator si = circ.slice_begin(); si != circ.slice_end();
-         ++si) {
+    for (SliceIterator si = circ.slice_begin(); si != circ.slice_end(); ++si) {
       Slice sl = *si;
       std::vector<OpType> slice_types;
       for (const Vertex& v : sl) {
