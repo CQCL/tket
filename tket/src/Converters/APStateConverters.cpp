@@ -158,6 +158,10 @@ std::pair<Circuit, qubit_map_t> choi_apstate_to_unitary_extension_circuit(
   std::pair<Circuit, qubit_map_t> res = cm_tableau_to_unitary_extension_circuit(
       tab, init_names, post_names, cx_config);
   ChoiAPState reconstructed = circuit_to_choi_apstate(res.first);
+  for (const Qubit& q : init_names)
+    reconstructed.post_select(q, ChoiAPState::TableauSegment::Input);
+  for (const Qubit& q : post_names)
+    reconstructed.post_select(q, ChoiAPState::TableauSegment::Output);
   reconstructed.rename_qubits(res.second, ChoiAPState::TableauSegment::Output);
   ap.canonical_column_order();
   ap.normal_form();

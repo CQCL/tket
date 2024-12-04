@@ -63,6 +63,124 @@ void test_apply_gate_dm(
   CHECK(dm_after.isApprox(gate_u * dm_before * gate_u.adjoint(), EPS));
 }
 
+void test_apply_gate_dm_input(
+    const MatrixXb& A, const VectorXb& B, const MatrixXb& C, const MatrixXb& E,
+    const Eigen::VectorXi& P, OpType ot, const qubit_vector_t& args) {
+  ChoiAPState ap(A, B, C, E, P, 0, A.cols());
+  ap.ap_.verify();
+  auto dm_before = ap.ap_.to_density_matrix();
+
+  Circuit circ(A.cols());
+  circ.add_op<Qubit>(ot, args);
+  auto gate_u = tket_sim::get_unitary(circ);
+
+  ap.apply_gate(ot, args, ChoiAPState::TableauSegment::Input);
+
+  ap.ap_.verify();
+  auto dm_after = ap.ap_.to_density_matrix();
+
+  CHECK(dm_after.isApprox(
+      gate_u.transpose() * dm_before * gate_u.conjugate(), EPS));
+}
+
+SCENARIO("Normal form") {
+  GIVEN("Make A reduced row-echelon form (pure state)") {
+    MatrixXb A = MatrixXb::Zero(4, 4);
+    VectorXb B = VectorXb::Zero(4);
+    MatrixXb C = MatrixXb::Zero(4, 4);
+    MatrixXb E = MatrixXb::Zero(4, 4);
+    Eigen::VectorXi P = Eigen::VectorXi::Zero(4);
+    A(0, 2) = A(0, 3) = true;
+    A(1, 0) = A(1, 1) = A(1, 2) = true;
+    A(2, 0) = A(2, 1) = A(2, 2) = true;
+    A(3, 0) = A(3, 1) = true;
+    APState ap(A, B, C, E, P, 0);
+    auto sv_before = ap.to_statevector();
+    ap.normal_form();
+    auto sv_after = ap.to_statevector();
+    CHECK(tket_sim::compare_statevectors_or_unitaries(
+        sv_before, sv_after, tket_sim::MatrixEquivalence::EQUAL));
+    MatrixXb corrA = MatrixXb::Zero(4, 4);
+    corrA(0, 0) = corrA(0, 1) = true;
+    corrA(1, 2) = true;
+    corrA(2, 3) = true;
+    CHECK(ap.A == corrA);
+  }
+  GIVEN("Make A and C reduced row-echelon form") {
+    MatrixXb A = MatrixXb::Zero(4, 4);
+    VectorXb B = VectorXb::Zero(4);
+    MatrixXb C = MatrixXb::Zero(4, 4);
+    MatrixXb E = MatrixXb::Zero(4, 4);
+    Eigen::VectorXi P = Eigen::VectorXi::Zero(4);
+    A(0, 2) = A(0, 3) = true;
+    A(1, 0) = A(1, 1) = A(1, 2) = true;
+    C(0, 0) = C(0, 1) = C(0, 2) = true;
+    C(1, 0) = true;
+    C(3, 2) = true;
+    APState ap(A, B, C, E, P, 0);
+    auto dm_before = ap.to_density_matrix();
+    ap.normal_form();
+    auto dm_after = ap.to_density_matrix();
+    CHECK(dm_after.isApprox(dm_before, EPS));
+    MatrixXb corrA = MatrixXb::Zero(4, 4);
+    MatrixXb corrC = MatrixXb::Zero(4, 4);
+    corrA(0, 0) = corrA(0, 1) = corrA(0, 3) = true;
+    corrA(1, 2) = corrA(1, 3) = true;
+    corrC(0, 1) = true;
+    corrC(1, 3) = true;
+    CHECK(ap.A == corrA);
+    CHECK(ap.C == corrC);
+  }
+  GIVEN("Removing leaders from E and P (pure state)") {
+    MatrixXb A = MatrixXb::Zero(5, 5);
+    VectorXb B = VectorXb::Zero(5);
+    MatrixXb C = MatrixXb::Zero(5, 5);
+    MatrixXb E = MatrixXb::Zero(5, 5);
+    Eigen::VectorXi P = Eigen::VectorXi::Zero(5);
+    A(0, 0) = A(0, 2) = A(0, 3) = true;
+    A(1, 1) = A(1, 2) = true;
+    E(0, 1) = E(1, 0) = true;
+    E(0, 3) = E(3, 0) = true;
+    E(0, 4) = E(4, 0) = true;
+    for (unsigned b = 0; b < 2; ++b) {
+      for (unsigned p = 0; p < 4; ++p) {
+        B(0) = (b == 1);
+        P(0) = p;
+        APState ap(A, B, C, E, P, 0);
+        auto sv_before = ap.to_statevector();
+        ap.normal_form();
+        auto sv_after = ap.to_statevector();
+        // Just check using statevector; too much changes in each case to nicely
+        // test the matrices
+        CHECK(tket_sim::compare_statevectors_or_unitaries(
+            sv_before, sv_after, tket_sim::MatrixEquivalence::EQUAL));
+      }
+    }
+  }
+  GIVEN("Removing mixed qubits from E and P") {
+    MatrixXb A = MatrixXb::Zero(5, 5);
+    VectorXb B = VectorXb::Zero(5);
+    MatrixXb C = MatrixXb::Zero(5, 5);
+    MatrixXb E = MatrixXb::Zero(5, 5);
+    Eigen::VectorXi P = Eigen::VectorXi::Zero(5);
+    C(0, 0) = C(0, 2) = C(0, 3) = true;
+    C(1, 1) = true;
+    E(0, 1) = E(1, 0) = true;
+    E(0, 2) = E(2, 0) = true;
+    E(0, 4) = E(4, 0) = true;
+    for (unsigned p = 0; p < 4; ++p) {
+      P(0) = p;
+      APState ap(A, B, C, E, P, 0);
+      auto dm_before = ap.to_density_matrix();
+      ap.normal_form();
+      auto dm_after = ap.to_density_matrix();
+      // Just check using statevector; too much changes in each case to nicely
+      // test the matrices
+      CHECK(dm_after.isApprox(dm_before, EPS));
+    }
+  }
+}
+
 SCENARIO("CZ cases") {
   GIVEN("CZ on free qubits") {
     MatrixXb A = MatrixXb::Zero(4, 4);
@@ -278,6 +396,165 @@ SCENARIO("V cases") {
       test_apply_gate_dm(A, B, C, E, P, OpType::V, {0});
     }
   }
+  GIVEN("V on a mixed state with zero A") {
+    for (unsigned p = 0; p < 4; ++p) {
+      MatrixXb A = MatrixXb::Zero(7, 7);
+      VectorXb B = VectorXb::Zero(7);
+      MatrixXb C = MatrixXb::Zero(7, 7);
+      MatrixXb E = MatrixXb::Zero(7, 7);
+      Eigen::VectorXi P = Eigen::VectorXi::Zero(7);
+      C(0, 0) = C(0, 2) = true;
+      C(1, 0) = C(1, 1) = C(1, 2) = C(1, 3) = C(1, 4) = true;
+      C(2, 0) = C(2, 2) = C(0, 3) = true;
+      C(3, 0) = C(3, 1) = C(3, 2) = C(3, 5) = C(3, 6) = true;
+      E(0, 3) = E(3, 0) = true;
+      E(0, 4) = E(4, 0) = true;
+      E(0, 5) = E(5, 0) = true;
+      E(0, 6) = E(6, 0) = true;
+      P(0) = p;
+      test_apply_gate_dm(A, B, C, E, P, OpType::V, {0});
+    }
+  }
+}
+
+SCENARIO("Qubit Reset") {
+  GIVEN("Reset a qubit with a local state") {
+    // Qubit 0 is in the |0> state
+    MatrixXb A = MatrixXb::Zero(3, 3);
+    VectorXb B = VectorXb::Zero(3);
+    MatrixXb C = MatrixXb::Zero(3, 3);
+    MatrixXb E = MatrixXb::Zero(3, 3);
+    Eigen::VectorXi P = Eigen::VectorXi::Zero(3);
+    A(0, 0) = true;
+    A(1, 1) = A(1, 2) = true;
+    B(1) = true;
+    P(2) = 1;
+    APState correct(A, B, C, E, P, 0);
+    // correct is already in normal form
+    for (unsigned s = 0; s < 6; ++s) {
+      // s = 0,1,2,3: XY basis states
+      // s = 4: |0>
+      // s = 5: |1>
+      A(0, 0) = (s < 4) ? false : true;
+      P(0) = (s < 4) ? s : 0;
+      B(0) = (s == 5);
+      APState ap(A, B, C, E, P, 0);
+      ap.apply_gate(OpType::Reset, {0});
+      // Check up to global phase
+      ap.normal_form();
+      ap.phase = correct.phase;
+      CHECK(ap == correct);
+    }
+  }
+  GIVEN("Reset one side of a Bell state") {
+    MatrixXb A = MatrixXb::Zero(3, 3);
+    VectorXb B = VectorXb::Zero(3);
+    MatrixXb C = MatrixXb::Zero(3, 3);
+    MatrixXb E = MatrixXb::Zero(3, 3);
+    Eigen::VectorXi P = Eigen::VectorXi::Zero(3);
+    A(0, 0) = A(0, 1) = true;
+    APState ap(A, B, C, E, P, 0);
+    ap.apply_gate(OpType::Reset, {0});
+    ap.normal_form();
+    // Qubit 0 ends in |0>
+    A(0, 1) = false;
+    // Qubit 1 ends in maximally-mixed state
+    C(0, 1) = true;
+    APState correct(A, B, C, E, P, 0);
+    CHECK(ap == correct);
+  }
+  GIVEN("Reset on a normal form state") {
+    MatrixXb A = MatrixXb::Zero(4, 4);
+    VectorXb B = VectorXb::Zero(4);
+    MatrixXb C = MatrixXb::Zero(4, 4);
+    MatrixXb E = MatrixXb::Zero(4, 4);
+    Eigen::VectorXi P = Eigen::VectorXi::Zero(4);
+    A(0, 0) = A(0, 1) = A(0, 3) = true;
+    B(0) = true;
+    C(0, 1) = C(0, 2) = true;
+    E(1, 3) = E(3, 1) = true;
+    E(2, 3) = E(3, 2) = true;
+    P(2) = 1;
+    P(3) = 2;
+    APState ap(A, B, C, E, P, 0);
+    WHEN("Apply to Qubit 0") {
+      ap.apply_gate(OpType::Reset, {0});
+      ap.normal_form();
+      // Qubit 0 in state |0>
+      A(0, 1) = A(0, 3) = false;
+      B(0) = false;
+      // A row becomes a C row (combine with other row for gaussian form)
+      C(1, 2) = C(1, 3) = true;
+      // More gaussian steps
+      C(0, 2) = false;
+      C(0, 3) = true;
+      // LC about C(1, -) to remove P(2)
+      E(2, 3) = E(3, 2) = false;
+      P(2) = 0;
+      P(3) = 1;
+      APState correct(A, B, C, E, P, {0});
+      // Check equality up to global phase
+      ap.phase = correct.phase;
+      CHECK(ap == correct);
+    }
+    WHEN("Apply to Qubit 1") {
+      ap.apply_gate(OpType::Reset, {1});
+      ap.normal_form();
+      // Correct form verified by hand
+      MatrixXb A = MatrixXb::Zero(4, 4);
+      VectorXb B = VectorXb::Zero(4);
+      MatrixXb C = MatrixXb::Zero(4, 4);
+      MatrixXb E = MatrixXb::Zero(4, 4);
+      Eigen::VectorXi P = Eigen::VectorXi::Zero(4);
+      A(0, 1) = true;
+      C(0, 0) = C(0, 3) = true;
+      C(1, 2) = true;
+      E(0, 3) = E(3, 0) = true;
+      E(2, 3) = E(3, 2) = true;
+      P(3) = 2;
+      APState correct(A, B, C, E, P, {0});
+      // Check equality up to global phase
+      ap.phase = correct.phase;
+      CHECK(ap == correct);
+    }
+    WHEN("Apply to Qubit 2") {
+      ap.apply_gate(OpType::Reset, {2});
+      ap.normal_form();
+      // Correct form verified by hand
+      MatrixXb A = MatrixXb::Zero(4, 4);
+      VectorXb B = VectorXb::Zero(4);
+      MatrixXb C = MatrixXb::Zero(4, 4);
+      MatrixXb E = MatrixXb::Zero(4, 4);
+      Eigen::VectorXi P = Eigen::VectorXi::Zero(4);
+      A(0, 0) = A(0, 1) = A(0, 3) = true;
+      A(1, 2) = true;
+      B(0) = true;
+      C(0, 1) = true;
+      C(1, 3) = true;
+      APState correct(A, B, C, E, P, {0});
+      // Check equality up to global phase
+      ap.phase = correct.phase;
+      CHECK(ap == correct);
+    }
+    WHEN("Apply to Qubit 3") {
+      ap.apply_gate(OpType::Reset, {3});
+      ap.normal_form();
+      // Correct form verified by hand
+      MatrixXb A = MatrixXb::Zero(4, 4);
+      VectorXb B = VectorXb::Zero(4);
+      MatrixXb C = MatrixXb::Zero(4, 4);
+      MatrixXb E = MatrixXb::Zero(4, 4);
+      Eigen::VectorXi P = Eigen::VectorXi::Zero(4);
+      A(0, 3) = true;
+      C(0, 0) = C(0, 2) = true;
+      C(1, 1) = C(1, 2) = true;
+      P(2) = 1;
+      APState correct(A, B, C, E, P, {0});
+      // Check equality up to global phase
+      ap.phase = correct.phase;
+      CHECK(ap == correct);
+    }
+  }
 }
 
 SCENARIO("Gate encodings") {
@@ -309,6 +586,30 @@ SCENARIO("Gate encodings") {
       MatrixXb E = MatrixXb::Zero(3, 3);
       Eigen::VectorXi P = Eigen::VectorXi::Zero(3);
       test_apply_gate(A, B, E, P, com.first, com.second);
+    }
+  }
+  GIVEN("Check Z actions on inputs of ChoiAPState") {
+    for (const auto& com : test_gates) {
+      MatrixXb A = MatrixXb::Identity(3, 3);
+      VectorXb B = VectorXb::Zero(3);
+      MatrixXb C = MatrixXb::Zero(3, 3);
+      MatrixXb E = MatrixXb::Zero(3, 3);
+      Eigen::VectorXi P = Eigen::VectorXi::Zero(3);
+      qubit_vector_t qbs;
+      for (unsigned q : com.second) qbs.push_back(Qubit(q));
+      test_apply_gate_dm_input(A, B, C, E, P, com.first, qbs);
+    }
+  }
+  GIVEN("Check X actions on inputs of ChoiAPState") {
+    for (const auto& com : test_gates) {
+      MatrixXb A = MatrixXb::Zero(3, 3);
+      VectorXb B = VectorXb::Zero(3);
+      MatrixXb C = MatrixXb::Zero(3, 3);
+      MatrixXb E = MatrixXb::Zero(3, 3);
+      Eigen::VectorXi P = Eigen::VectorXi::Zero(3);
+      qubit_vector_t qbs;
+      for (unsigned q : com.second) qbs.push_back(Qubit(q));
+      test_apply_gate_dm_input(A, B, C, E, P, com.first, qbs);
     }
   }
 }
@@ -442,6 +743,35 @@ SCENARIO("Converting from/to a circuit") {
     // Ignore phase by setting them to match
     APState correct(A, B, C, E, P, ap.ap_.phase);
     CHECK(ap.ap_ == correct);
+    std::pair<Circuit, qubit_map_t> res_uni =
+        choi_apstate_to_unitary_extension_circuit(ap, {Qubit(1)}, {Qubit(0)});
+    // Rebuild state by initialising, post-selecting, etc.
+    ChoiAPState res_ap = circuit_to_choi_apstate(res_uni.first);
+    qubit_map_t perm;
+    for (const std::pair<const Qubit, Qubit>& p : res_uni.second)
+      perm.insert({p.second, p.first});
+    res_ap.rename_qubits(perm, ChoiAPState::TableauSegment::Output);
+    // Post-select/initialise
+    res_ap.post_select(Qubit(1), ChoiAPState::TableauSegment::Input);
+    res_ap.post_select(Qubit(0), ChoiAPState::TableauSegment::Output);
+    // Collapsing q[4] in X basis as per circ
+    res_ap.apply_gate(
+        OpType::H, {Qubit(4)}, ChoiAPState::TableauSegment::Output);
+    res_ap.collapse_qubit(Qubit(4), ChoiAPState::TableauSegment::Output);
+    res_ap.apply_gate(
+        OpType::H, {Qubit(4)}, ChoiAPState::TableauSegment::Output);
+    // Discarding q[0] also removes Z row for q[0], so recreate this by
+    // XCollapse at input
+    res_ap.apply_gate(
+        OpType::H, {Qubit(0)}, ChoiAPState::TableauSegment::Input);
+    res_ap.collapse_qubit(Qubit(0), ChoiAPState::TableauSegment::Input);
+    res_ap.apply_gate(
+        OpType::H, {Qubit(0)}, ChoiAPState::TableauSegment::Input);
+    res_ap.canonical_column_order();
+    res_ap.normal_form();
+    // Mixed state, so only guaranteed up to phase
+    res_ap.ap_.phase = ap.ap_.phase;
+    CHECK(res_ap == ap);
     THEN("Serialize and deserialize") {
       nlohmann::json j_ap = ap;
       ChoiAPState ap2({});

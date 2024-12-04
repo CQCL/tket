@@ -667,7 +667,7 @@ void APState::apply_V(unsigned q) {
         // No local phase change
       }
       // Local phase on q
-      P(q) += 3;
+      P(q) = 3;
       // No global phase change
     } else {
       VectorXb new_row = VectorXb::Zero(n_qbs);
@@ -1346,9 +1346,12 @@ void ChoiAPState::post_select(const Qubit& qb, TableauSegment seg) {
   unsigned removed_u_qb = ap_.post_select(u_qb);
   col_index_.left.erase(lit);
   tableau_col_index_t::right_iterator rit = col_index_.right.find(removed_u_qb);
-  col_key_t removed_key = rit->second;
-  col_index_.right.erase(rit);
-  col_index_.insert({removed_key, u_qb});
+  if (rit != col_index_.right.end()) {
+    // Ignore if post-selected last column so none others need changing
+    col_key_t removed_key = rit->second;
+    col_index_.right.erase(rit);
+    col_index_.insert({removed_key, u_qb});
+  }
 }
 
 void ChoiAPState::discard_qubit(const Qubit& qb, TableauSegment seg) {
