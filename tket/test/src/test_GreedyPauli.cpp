@@ -836,7 +836,7 @@ SCENARIO(
     "construction") {
   GIVEN("Large circuit") {
     Circuit circ(6);
-    for (unsigned i = 0; i < 10; i++) {
+    for (unsigned i = 0; i < 100; i++) {
       circ.add_box(
           PauliExpBox(SymPauliTensor({Pauli::X, Pauli::X}, 0.3)), {0, 1});
       circ.add_box(
