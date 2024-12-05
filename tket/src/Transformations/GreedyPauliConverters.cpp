@@ -111,24 +111,6 @@ static bool nodes_commute(const PauliNode_ptr& n1, const PauliNode_ptr& n2) {
   return true;
 }
 
-GPGraph::GPGraph(const Circuit& circ)
-    : n_qubits_(circ.n_qubits()), n_bits_(circ.n_bits()) {
-  qubit_vector_t qubits = circ.all_qubits();
-  bit_vector_t bits = circ.all_bits();
-  for (const Qubit& q : qubits) {
-    TKET_ASSERT(q.reg_name() == q_default_reg());
-    TKET_ASSERT(q.index().at(0) < qubits.size());
-  }
-  for (const Bit& b : bits) {
-    TKET_ASSERT(b.reg_name() == c_default_reg());
-    TKET_ASSERT(b.index().at(0) < bits.size());
-  }
-  cliff_ = UnitaryRevTableau(n_qubits_);
-  for (const Command& cmd : circ.get_commands()) {
-    apply_gate_at_end(cmd);
-  }
-}
-
 GPGraph::GPGraph(qubit_vector_t qubits, bit_vector_t bits)
     : n_qubits_(qubits.size()), n_bits_(bits.size()) {
   for (const Qubit& q : qubits) {
