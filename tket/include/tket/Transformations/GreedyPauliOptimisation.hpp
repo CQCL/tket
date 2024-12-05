@@ -525,7 +525,7 @@ typedef boost::adj_list_vertex_property_map<
  */
 class GPGraph {
  public:
-  /** Construct an GPGraph from the circuit size */
+  /** Construct an GPGraph from the qubits and bits */
   GPGraph(qubit_vector_t qubits, bit_vector_t bits);
 
   GPVertSet get_successors(const GPVert& vert) const;
