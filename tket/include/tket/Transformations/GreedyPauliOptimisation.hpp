@@ -528,9 +528,6 @@ class GPGraph {
   /** Construct an GPGraph from the circuit size */
   GPGraph(qubit_vector_t qubits, bit_vector_t bits);
 
-  GPGraph get_graph(
-      const Circuit& circ, std::shared_ptr<std::atomic<bool>> stop_flag);
-
   GPVertSet get_successors(const GPVert& vert) const;
 
   GPVertSet get_predecessors(const GPVert& vert) const;
