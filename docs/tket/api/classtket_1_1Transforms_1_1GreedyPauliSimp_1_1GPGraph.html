@@ -94,9 +94,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a5b48f49963900645e77128f4f2555180" id="r_a5b48f49963900645e77128f4f2555180"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html#a5b48f49963900645e77128f4f2555180">GPGraph</a> (const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ)</td></tr>
-<tr class="memdesc:a5b48f49963900645e77128f4f2555180"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct an <a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html" title="Pauli graph structure for GreedyPauliSimp.">GPGraph</a> from a circuit.  <br /></td></tr>
-<tr class="separator:a5b48f49963900645e77128f4f2555180"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a36f76568c1f1ad9c9b3d028951ba08" id="r_a0a36f76568c1f1ad9c9b3d028951ba08"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html#a0a36f76568c1f1ad9c9b3d028951ba08">GPGraph</a> (<a class="el" href="namespacetket.html#ad949814c463d9f998540c0f812e76aa6">qubit_vector_t</a> qubits, <a class="el" href="namespacetket.html#a7ca6fb5376375fd07368df37fd799fb2">bit_vector_t</a> bits)</td></tr>
+<tr class="memdesc:a0a36f76568c1f1ad9c9b3d028951ba08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct an <a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html" title="Pauli graph structure for GreedyPauliSimp.">GPGraph</a> from the qubits and bits.  <br /></td></tr>
+<tr class="separator:a0a36f76568c1f1ad9c9b3d028951ba08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e0fb81e59a328c2d914796f77f7798d" id="r_a0e0fb81e59a328c2d914796f77f7798d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a69035bbb5706ef0d586e6f32bae7799b">GPVertSet</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html#a0e0fb81e59a328c2d914796f77f7798d">get_successors</a> (const <a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a12fff52e5c600d547d8673b50a2b68dd">GPVert</a> &amp;vert) const</td></tr>
 <tr class="separator:a0e0fb81e59a328c2d914796f77f7798d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b7ddcda35dca8b7461a5f884d104ba0" id="r_a7b7ddcda35dca8b7461a5f884d104ba0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a69035bbb5706ef0d586e6f32bae7799b">GPVertSet</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html#a7b7ddcda35dca8b7461a5f884d104ba0">get_predecessors</a> (const <a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a12fff52e5c600d547d8673b50a2b68dd">GPVert</a> &amp;vert) const</td></tr>
@@ -104,8 +104,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a04e1d97af26b9c58a5fcb3729db2d8e0" id="r_a04e1d97af26b9c58a5fcb3729db2d8e0"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a12fff52e5c600d547d8673b50a2b68dd">GPVert</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html#a04e1d97af26b9c58a5fcb3729db2d8e0">vertices_in_order</a> () const</td></tr>
 <tr class="memdesc:a04e1d97af26b9c58a5fcb3729db2d8e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">All vertices of the DAG, topologically sorted.  <br /></td></tr>
 <tr class="separator:a04e1d97af26b9c58a5fcb3729db2d8e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a963164f6a7d01388d319657e119736e7" id="r_a963164f6a7d01388d319657e119736e7"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; std::vector&lt; std::vector&lt; <a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#ac465f8164e5f1099215ed84c3b678e90">PauliNode_ptr</a> &gt; &gt;, std::vector&lt; <a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#ac465f8164e5f1099215ed84c3b678e90">PauliNode_ptr</a> &gt;, boost::bimap&lt; unsigned, unsigned &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html#a963164f6a7d01388d319657e119736e7">get_sequence</a> ()</td></tr>
-<tr class="separator:a963164f6a7d01388d319657e119736e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab55187cbbaba573862fb6cafeeec5644" id="r_ab55187cbbaba573862fb6cafeeec5644"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; std::vector&lt; std::vector&lt; <a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#ac465f8164e5f1099215ed84c3b678e90">PauliNode_ptr</a> &gt; &gt;, std::vector&lt; <a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#ac465f8164e5f1099215ed84c3b678e90">PauliNode_ptr</a> &gt;, boost::bimap&lt; unsigned, unsigned &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html#ab55187cbbaba573862fb6cafeeec5644">get_sequence</a> (std::shared_ptr&lt; std::atomic&lt; bool &gt; &gt; stop_flag)</td></tr>
+<tr class="separator:ab55187cbbaba573862fb6cafeeec5644"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cbec0a8107be6366f54b63b672db548" id="r_a1cbec0a8107be6366f54b63b672db548"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html#a1cbec0a8107be6366f54b63b672db548">apply_gate_at_end</a> (const <a class="el" href="classtket_1_1Command.html">Command</a> &amp;cmd, bool conditional=false, std::vector&lt; unsigned &gt; cond_bits={}, unsigned cond_value=0)</td></tr>
+<tr class="memdesc:a1cbec0a8107be6366f54b63b672db548"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies the given gate to the end of the graph.  <br /></td></tr>
+<tr class="separator:a1cbec0a8107be6366f54b63b672db548"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Pauli graph structure for <a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html">GreedyPauliSimp</a>. </p>
@@ -119,8 +122,8 @@ Public Member Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8hpp_source.html#l00526">526</a> of file <a class="el" href="GreedyPauliOptimisation_8hpp_source.html">GreedyPauliOptimisation.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a5b48f49963900645e77128f4f2555180" name="a5b48f49963900645e77128f4f2555180"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5b48f49963900645e77128f4f2555180">&#9670;&#160;</a></span>GPGraph()</h2>
+<a id="a0a36f76568c1f1ad9c9b3d028951ba08" name="a0a36f76568c1f1ad9c9b3d028951ba08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a36f76568c1f1ad9c9b3d028951ba08">&#9670;&#160;</a></span>GPGraph()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -128,20 +131,75 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">tket::Transforms::GreedyPauliSimp::GPGraph::GPGraph </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;&#160;</td>
-          <td class="paramname"><em>circ</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#ad949814c463d9f998540c0f812e76aa6">qubit_vector_t</a>&#160;</td>
+          <td class="paramname"><em>qubits</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a7ca6fb5376375fd07368df37fd799fb2">bit_vector_t</a>&#160;</td>
+          <td class="paramname"><em>bits</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Construct an <a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html" title="Pauli graph structure for GreedyPauliSimp.">GPGraph</a> from a circuit. </p>
+<p>Construct an <a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html" title="Pauli graph structure for GreedyPauliSimp.">GPGraph</a> from the qubits and bits. </p>
 
 <p class="definition">Definition at line <a class="el" href="GreedyPauliConverters_8cpp_source.html#l00114">114</a> of file <a class="el" href="GreedyPauliConverters_8cpp_source.html">GreedyPauliConverters.cpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a1cbec0a8107be6366f54b63b672db548" name="a1cbec0a8107be6366f54b63b672db548"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1cbec0a8107be6366f54b63b672db548">&#9670;&#160;</a></span>apply_gate_at_end()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tket::Transforms::GreedyPauliSimp::GPGraph::apply_gate_at_end </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1Command.html">Command</a> &amp;&#160;</td>
+          <td class="paramname"><em>cmd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>conditional</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; unsigned &gt;&#160;</td>
+          <td class="paramname"><em>cond_bits</em> = <code>{}</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>cond_value</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Applies the given gate to the end of the graph. </p>
+<p>Clifford gates transform the tableau. Non-Clifford gates and conditional Clifford gates are transformed into PauliNodes by the tableau and added to the graph. </p>
+
+<p class="definition">Definition at line <a class="el" href="GreedyPauliConverters_8cpp_source.html#l00270">270</a> of file <a class="el" href="GreedyPauliConverters_8cpp_source.html">GreedyPauliConverters.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a7b7ddcda35dca8b7461a5f884d104ba0" name="a7b7ddcda35dca8b7461a5f884d104ba0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7b7ddcda35dca8b7461a5f884d104ba0">&#9670;&#160;</a></span>get_predecessors()</h2>
 
@@ -158,12 +216,12 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliConverters_8cpp_source.html#l00141">141</a> of file <a class="el" href="GreedyPauliConverters_8cpp_source.html">GreedyPauliConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliConverters_8cpp_source.html#l00136">136</a> of file <a class="el" href="GreedyPauliConverters_8cpp_source.html">GreedyPauliConverters.cpp</a>.</p>
 
 </div>
 </div>
-<a id="a963164f6a7d01388d319657e119736e7" name="a963164f6a7d01388d319657e119736e7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a963164f6a7d01388d319657e119736e7">&#9670;&#160;</a></span>get_sequence()</h2>
+<a id="ab55187cbbaba573862fb6cafeeec5644" name="ab55187cbbaba573862fb6cafeeec5644"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab55187cbbaba573862fb6cafeeec5644">&#9670;&#160;</a></span>get_sequence()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -171,13 +229,14 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">std::tuple&lt; std::vector&lt; std::vector&lt; <a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#ac465f8164e5f1099215ed84c3b678e90">PauliNode_ptr</a> &gt; &gt;, std::vector&lt; <a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#ac465f8164e5f1099215ed84c3b678e90">PauliNode_ptr</a> &gt;, boost::bimap&lt; unsigned, unsigned &gt; &gt; tket::Transforms::GreedyPauliSimp::GPGraph::get_sequence </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">std::shared_ptr&lt; std::atomic&lt; bool &gt; &gt;&#160;</td>
+          <td class="paramname"><em>stop_flag</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliConverters_8cpp_source.html#l00490">490</a> of file <a class="el" href="GreedyPauliConverters_8cpp_source.html">GreedyPauliConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliConverters_8cpp_source.html#l00485">485</a> of file <a class="el" href="GreedyPauliConverters_8cpp_source.html">GreedyPauliConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -197,7 +256,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliConverters_8cpp_source.html#l00132">132</a> of file <a class="el" href="GreedyPauliConverters_8cpp_source.html">GreedyPauliConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliConverters_8cpp_source.html#l00127">127</a> of file <a class="el" href="GreedyPauliConverters_8cpp_source.html">GreedyPauliConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -220,7 +279,7 @@ Public Member Functions</h2></td></tr>
 <p>This method is "morally" const, but it sets the vertex indices in the DAG.</p>
 <dl class="section return"><dt>Returns</dt><dd>vector of vertices in a topological (causal) order </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliConverters_8cpp_source.html#l00477">477</a> of file <a class="el" href="GreedyPauliConverters_8cpp_source.html">GreedyPauliConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliConverters_8cpp_source.html#l00472">472</a> of file <a class="el" href="GreedyPauliConverters_8cpp_source.html">GreedyPauliConverters.cpp</a>.</p>
 
 </div>
 </div>
