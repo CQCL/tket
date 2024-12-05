@@ -14,8 +14,10 @@
 
 #include "tket/Transformations/SingleQubitSquash.hpp"
 
+#include <algorithm>
 #include <cstddef>
 #include <numeric>
+#include <utility>
 
 #include "Circuit/Command.hpp"
 #include "Gate/GatePtr.hpp"
@@ -107,8 +109,13 @@ bool SingleQubitSquash::squash_between(const Edge &in, const Edge &out) {
         sub = pair.first;
         Gate_ptr left_over_gate = pair.second;
         if (left_over_gate != nullptr) {
-          // => commute leftover through before squashing
-          insert_left_over_gate(left_over_gate, next_edge(v, e), condition);
+          if (commute_ok(e, condition)) {
+            // Commute leftover through before squashing.
+            insert_left_over_gate(left_over_gate, next_edge(v, e), condition);
+          } else {
+            // Don't commute, just add the left-over gate to the replacement.
+            sub.add_op<unsigned>(left_over_gate, {0});
+          }
           left_over_gate = nullptr;
         }
         if (reversed_) {
@@ -163,6 +170,50 @@ void SingleQubitSquash::substitute(
 
   // restore backup
   e = prev_edge(backup);
+}
+
+bool SingleQubitSquash::path_exists(
+    const Vertex &v, const VertexSet &vs) const {
+  VertexSet frontier{v};
+  while (!frontier.empty()) {
+    if (std::any_of(vs.begin(), vs.end(), [&frontier](const Vertex &v1) {
+          return frontier.contains(v1);
+        })) {
+      return true;
+    }
+    VertexSet new_frontier;
+    for (const Vertex &v1 : frontier) {
+      if (reversed_) {
+        const VertexVec &succs = circ_.get_successors(v1);
+        new_frontier.insert(succs.begin(), succs.end());
+      } else {
+        const VertexVec &preds = circ_.get_predecessors(v1);
+        new_frontier.insert(preds.begin(), preds.end());
+      }
+    }
+    frontier = std::move(new_frontier);
+  }
+  return false;
+}
+
+bool SingleQubitSquash::commute_ok(
+    const Edge &e, const Condition &condition) const {
+  if (!condition) return true;
+  std::list<VertPort> vps = condition->first;
+  VertexSet vs;
+  for (const VertPort &vp : vps) {
+    vs.insert(vp.first);
+  }
+  if (reversed_) {
+    // Return true iff there is no path in the DAG from source(e) to any vertex
+    // in vs. (Such a path would introduce a cycle after the commutation.)
+    return !path_exists(circ_.source(e), vs);
+  } else {
+    // Return true iff there is no path in the DAG from any vertex in vs to
+    // target(e). (Such a path would imply the condition is no longer live when
+    // queried.)
+    return !path_exists(circ_.target(e), vs);
+  }
 }
 
 void SingleQubitSquash::insert_left_over_gate(
