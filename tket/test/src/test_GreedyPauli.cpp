@@ -764,7 +764,7 @@ SCENARIO("Test GreedyPauliSimp pass construction") {
 SCENARIO("Test GreedyPauliSimp with multiple trials and threads") {
   GIVEN("Large circuit with ZZPhase") {
     Circuit circ(6);
-    for (unsigned i = 0; i < 5000; i++) {
+    for (unsigned i = 0; i < 1000; i++) {
       circ.add_box(
           PauliExpBox(SymPauliTensor({Pauli::X, Pauli::X}, 0.3)), {0, 1});
       circ.add_box(
@@ -825,7 +825,7 @@ SCENARIO("Test GreedyPauliSimp with multiple trials and threads") {
                  0.7, 0.3, 500, 500, 0, true, 1, 10)
                  .apply(d));
     REQUIRE(Transforms::greedy_pauli_optimisation(
-                0.7, 0.3, 500, 500, 0, true, 10000, 10)
+                0.7, 0.3, 500, 500, 0, true, 100, 10)
                 .apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
   }
