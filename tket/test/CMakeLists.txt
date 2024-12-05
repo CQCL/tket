@@ -66,6 +66,7 @@ add_executable(test-tket
     src/Circuit/test_DummyBox.cpp
     src/Circuit/test_Multiplexor.cpp
     src/Circuit/test_PauliExpBoxes.cpp
+    src/Circuit/test_Slices.cpp
     src/Circuit/test_StatePreparation.cpp
     src/Circuit/test_Symbolic.cpp
     src/Circuit/test_ThreeQubitConversion.cpp

@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.37.0 (Unreleased)
+-------------------
+
+Fixes:
+
+* Fix circuit iteration giving invalid slices in some cases.
+
 1.36.0 (November 2024)
 ----------------------
 
