@@ -8,6 +8,10 @@ Fixes:
 
 * Fix circuit iteration giving invalid slices in some cases.
 
+Performance:
+
+* Update `GreedyPauliSimp` `thread_timeout` to hit timeout when constructing Pauli Graph.
+
 1.36.0 (November 2024)
 ----------------------
 
