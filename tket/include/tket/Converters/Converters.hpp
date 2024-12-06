@@ -15,6 +15,7 @@
 #pragma once
 
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Clifford/APState.hpp"
 #include "tket/Clifford/ChoiMixTableau.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/PauliGraph/PauliGraph.hpp"
@@ -129,6 +130,73 @@ std::pair<Circuit, qubit_map_t> cm_tableau_to_unitary_extension_circuit(
     const ChoiMixTableau &tab, const std::vector<Qubit> &init_names = {},
     const std::vector<Qubit> &post_names = {},
     CXConfigType cx_config = CXConfigType::Snake);
+
+/**
+ * Construct an APState for a given circuit.
+ * Assumes all input qubits are initialised in the |0> state.
+ * Will throw an exception if it contains non-Clifford gates.
+ */
+APState circuit_to_apstate(const Circuit &circ);
+
+/**
+ * Construct a circuit producing the state described by the APState.
+ * Uses the standard circuit form implied by the ZX description of reduced
+ * AP-form (layered as X-H-CX-(Collapse-CX)*-CZ-S).
+ */
+Circuit apstate_to_circuit(const APState &ap);
+
+/**
+ * Construct a ChoiAPState for a given circuit.
+ * Will incorporate qubit initialisations and discarding into the circuit.
+ * Will throw an exception if it contains non-Clifford gates.
+ */
+ChoiAPState circuit_to_choi_apstate(const Circuit &circ);
+
+/**
+ * Constructs a circuit producing the same effect as a ChoiAPState.
+ * Uses the same synthesis method as cm_tableau_to_exact_circuit.
+ */
+std::pair<Circuit, qubit_map_t> choi_apstate_to_exact_circuit(
+    ChoiAPState ap, CXConfigType cx_config = CXConfigType::Snake);
+
+/**
+ * Constructs a unitary circuit whose stabilizer group contains all the
+ * stabilizers of the ChoiAPState and possibly more. See
+ * cm_tableau_to_unitary_extension_circuit for more details.
+ */
+std::pair<Circuit, qubit_map_t> choi_apstate_to_unitary_extension_circuit(
+    ChoiAPState ap, const std::vector<Qubit> &init_names = {},
+    const std::vector<Qubit> &post_names = {},
+    CXConfigType cx_config = CXConfigType::Snake);
+
+/**
+ * Convert a SymplecticTableau describing a stabiliser state to AP-form. Since
+ * tableau methods do not track global phase, we set it to 0.
+ */
+APState tableau_to_apstate(SymplecticTableau tab);
+
+/**
+ * Convert an APState describing a stabiliser state into a tableau form,
+ * discarding the global phase information. This allows us to reuse tableau
+ * synthesis methods to synthesise APState objects (the result would need
+ * re-simulating as an APState to compare and deduce the required global phase).
+ */
+SymplecticTableau apstate_to_tableau(APState ap);
+
+/**
+ * Convert a ChoiMixTableau describing a stabiliser state to AP-form. Since
+ * tableau methods do not track global phase, we set it to 0.
+ */
+ChoiAPState cm_tableau_to_choi_apstate(const ChoiMixTableau &tab);
+
+/**
+ * Convert a ChoiAPState describing a stabiliser state into a tableau form,
+ * discarding the global phase information. This allows us to reuse tableau
+ * synthesis methods to synthesise ChoiAPState objects (the result would need
+ * re-simulating as a ChoiAPState to compare and deduce the required global
+ * phase).
+ */
+ChoiMixTableau choi_apstate_to_cm_tableau(const ChoiAPState &ap);
 
 PauliGraph circuit_to_pauli_graph(const Circuit &circ);
 
