@@ -589,6 +589,19 @@ def test_empty_backenresult() -> None:
     assert r.get_counts() == Counter()
 
 
+def test_int_type() -> None:
+    # https://github.com/CQCL/tket/issues/1677
+    b = TketSimShotBackend(ignore_measures=True)
+    c = Circuit(2).H(0).H(1).measure_all()
+    c1 = b.get_compiled_circuit(c)
+    h = b.process_circuit(c1, n_shots=10)
+    r = b.get_result(h)
+    counts = r.get_counts()
+    for k, v in counts.items():
+        assert all(isinstance(i, int) for i in k)
+        assert isinstance(v, int)
+
+
 if __name__ == "__main__":
     # test_resulthandle()
     # test_bell()
