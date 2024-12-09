@@ -7,6 +7,7 @@ Changelog
 Fixes:
 
 * Fix circuit iteration giving invalid slices in some cases.
+* Use built-in int type for get_counts() instead of numpy int types.
 
 Performance:
 
