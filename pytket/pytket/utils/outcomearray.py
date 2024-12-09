@@ -203,4 +203,4 @@ def readout_counts(
     ctr: Counter[OutcomeArray],
 ) -> Counter[tuple[int, ...]]:
     """Convert counts from :py:class:`OutcomeArray` types to tuples of ints."""
-    return Counter({tuple(oa.to_readout()): n for oa, n in ctr.items()})
+    return Counter({tuple(map(int, oa.to_readout())): int(n) for oa, n in ctr.items()})
