@@ -8,6 +8,8 @@ Fixes:
 
 * Fix circuit iteration giving invalid slices in some cases.
 * Use built-in int type for get_counts() instead of numpy int types.
+* Add check for validity of resultant graph before pushing conditional gates
+  through other vertices in squashing passes.
 
 Performance:
 

@@ -145,6 +145,14 @@ class SingleQubitSquash {
       const Circuit &sub, const VertexVec &single_chain, Edge &e,
       const Condition &condition);
 
+  // whether there is a path in the DAG to v from any vertex in vs (if
+  // reversed_ is true then paths are considered in the reverse direction)
+  bool path_exists(const Vertex &v, const VertexSet &vs) const;
+
+  // whether we are allowed to commute a given conditional single-qubit gate
+  // through the target of e without invalidating the DAG structure
+  bool commute_ok(const Edge &e, const Condition &condition) const;
+
   // insert a gate at the given edge, respecting condition
   void insert_left_over_gate(
       Op_ptr left_over, const Edge &e, const Condition &condition);

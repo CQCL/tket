@@ -2288,6 +2288,46 @@ SCENARIO("Test squash Rz PhasedX") {
       CHECK(allowed.contains(optype));
     }
   }
+
+  GIVEN("A circuit with classical control (1)") {
+    // https://github.com/CQCL/tket/issues/1324
+    Circuit circ(3, 1);
+    circ.add_op<unsigned>(OpType::CY, {0, 1});
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {1.0}, {1}, {0}, 1);
+    circ.add_measure(Qubit(2), Bit(0));
+    circ.add_op<unsigned>(OpType::CX, {2, 0});
+    circ.add_op<unsigned>(OpType::CZ, {0, 1});
+    std::unique_ptr<AbstractSquasher> squasher =
+        std::make_unique<Transforms::RzPhasedXSquasher>();
+    SingleQubitSquash sqs(std::move(squasher), circ);
+    VertexVec inputs = circ.q_inputs();
+    VertexVec outputs = circ.q_outputs();
+    Edge in = circ.get_nth_out_edge(inputs[1], 0);
+    Edge out = circ.get_nth_in_edge(outputs[1], 0);
+    // The Rz should not be commuted through the CZ, since if it were the source
+    // of its conditional wire would not be "live" at the time of application.
+    REQUIRE_FALSE(sqs.squash_between(in, out));
+  }
+
+  GIVEN("A circuit with classical control (2)") {
+    // https://github.com/CQCL/tket/issues/1324
+    Circuit circ(3, 1);
+    circ.add_op<unsigned>(OpType::CZ, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {2, 0});
+    circ.add_measure(Qubit(2), Bit(0));
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {1.0}, {1}, {0}, 1);
+    circ.add_op<unsigned>(OpType::CY, {0, 1});
+    std::unique_ptr<AbstractSquasher> squasher =
+        std::make_unique<Transforms::RzPhasedXSquasher>();
+    SingleQubitSquash sqs(std::move(squasher), circ, true);
+    VertexVec inputs = circ.q_inputs();
+    VertexVec outputs = circ.q_outputs();
+    Edge in = circ.get_nth_out_edge(inputs[1], 0);
+    Edge out = circ.get_nth_in_edge(outputs[1], 0);
+    // The Rz should not be commuted through the CZ, since if it were a cycle
+    // (CZ->CX->Measure->Rz->CZ) would be introduced.
+    REQUIRE_FALSE(sqs.squash_between(out, in));
+  }
 }
 
 // https://github.com/CQCL/tket/issues/535
