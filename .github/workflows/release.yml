@@ -92,7 +92,7 @@ jobs:
     - name: Build wheel
       run: |
         conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.14
+        conan create recipes/pybind11_json/all --version 0.2.15
         cd pytket
         # Ensure wheels are compatible with MacOS 13.0 and later:
         export WHEEL_PLAT_NAME=macosx_13_0_x86_64
@@ -136,7 +136,7 @@ jobs:
     - name: Build wheel
       run: |
         conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.14
+        conan create recipes/pybind11_json/all --version 0.2.15
         cd pytket
         # Ensure wheels are compatible with MacOS 13.0 and later:
         export WHEEL_PLAT_NAME=macosx_13_0_arm64
@@ -179,7 +179,7 @@ jobs:
     - name: Build wheel
       run: |
         conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.14
+        conan create recipes/pybind11_json/all --version 0.2.15
         cd pytket
         python -m pip install -U pip build
         python -m build --outdir "${{ github.workspace }}/wheelhouse"
