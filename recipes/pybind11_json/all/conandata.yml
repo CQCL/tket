@@ -1,4 +1,7 @@
 sources:
+  "0.2.15":
+    url: "https://github.com/pybind/pybind11_json/archive/0.2.15.tar.gz"
+    sha256: "9a4a1494549a2db27bc4c5a16743a5c88ebc18e13c73019c56f399ae0310baf2"
   "0.2.14":
     url: "https://github.com/pybind/pybind11_json/archive/0.2.14.tar.gz"
     sha256: "bc4ad7e308add59886a961c21f3ba431e43fe7faa2ef5bd9925c66d042d28cde"
