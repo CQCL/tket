@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2024-12-05 14:36:14</td>
+      <td>2024-12-10 16:18:41</td>
     </tr>
   </table>
 </div>
@@ -87,7 +87,7 @@
         <a href="#l81">81</a>
       </td>
       <td>
-        <a href="#l81"> called 6996 times</a>
+        <a href="#l81"> called 6998 times</a>
       </td>
     </tr>
     <tr>
@@ -842,7 +842,7 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">13992</td>
+      <td class="linecount coveredLine">13996</td>
       <td class="src coveredLine"><span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">AbstractSquasher</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span></td>
     </tr>
     <tr class="source-line">
@@ -1446,7 +1446,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="c1">// insert a gate at the given edge, respecting condition</span></td>
+      <td class="src "><span class="w">  </span><span class="c1">// whether there is a path in the DAG to v from any vertex in vs (if</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l149" href="#l149">149</a></td>
@@ -1455,7 +1455,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">insert_left_over_gate</span><span class="p">(</span></td>
+      <td class="src "><span class="w">  </span><span class="c1">// reversed_ is true then paths are considered in the reverse direction)</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l150" href="#l150">150</a></td>
@@ -1464,7 +1464,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="n">Op_ptr</span><span class="w"> </span><span class="n">left_over</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Edge</span><span class="w"> </span><span class="o">&amp;</span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Condition</span><span class="w"> </span><span class="o">&amp;</span><span class="n">condition</span><span class="p">);</span></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">path_exists</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vertex</span><span class="w"> </span><span class="o">&amp;</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">VertexSet</span><span class="w"> </span><span class="o">&amp;</span><span class="n">vs</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l151" href="#l151">151</a></td>
@@ -1482,7 +1482,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="c1">// whether a vertex can be squashed with the previous vertices</span></td>
+      <td class="src "><span class="w">  </span><span class="c1">// whether we are allowed to commute a given conditional single-qubit gate</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l153" href="#l153">153</a></td>
@@ -1491,7 +1491,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">is_squashable</span><span class="p">(</span><span class="n">Vertex</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">OpType</span><span class="w"> </span><span class="n">v_type</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
+      <td class="src "><span class="w">  </span><span class="c1">// through the target of e without invalidating the DAG structure</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l154" href="#l154">154</a></td>
@@ -1500,7 +1500,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">commute_ok</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Edge</span><span class="w"> </span><span class="o">&amp;</span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Condition</span><span class="w"> </span><span class="o">&amp;</span><span class="n">condition</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l155" href="#l155">155</a></td>
@@ -1509,7 +1509,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="c1">// whether the sub circuit is shorter than chain</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l156" href="#l156">156</a></td>
@@ -1518,7 +1518,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">sub_is_better</span><span class="p">(</span></td>
+      <td class="src "><span class="w">  </span><span class="c1">// insert a gate at the given edge, respecting condition</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l157" href="#l157">157</a></td>
@@ -1527,7 +1527,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">Circuit</span><span class="w"> </span><span class="o">&amp;</span><span class="n">sub</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Gate_ptr</span><span class="o">&gt;</span><span class="w"> </span><span class="n">chain</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">insert_left_over_gate</span><span class="p">(</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l158" href="#l158">158</a></td>
@@ -1536,7 +1536,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">      </span><span class="n">Op_ptr</span><span class="w"> </span><span class="n">left_over</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Edge</span><span class="w"> </span><span class="o">&amp;</span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Condition</span><span class="w"> </span><span class="o">&amp;</span><span class="n">condition</span><span class="p">);</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l159" href="#l159">159</a></td>
@@ -1545,7 +1545,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="c1">// returns a description of the condition of current vertex</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l160" href="#l160">160</a></td>
@@ -1554,7 +1554,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">Condition</span><span class="w"> </span><span class="nf">get_condition</span><span class="p">(</span><span class="n">Vertex</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
+      <td class="src "><span class="w">  </span><span class="c1">// whether a vertex can be squashed with the previous vertices</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l161" href="#l161">161</a></td>
@@ -1563,7 +1563,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">is_squashable</span><span class="p">(</span><span class="n">Vertex</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">OpType</span><span class="w"> </span><span class="n">v_type</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l162" href="#l162">162</a></td>
@@ -1572,7 +1572,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="c1">// simple utils respecting reversed boolean</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l163" href="#l163">163</a></td>
@@ -1581,7 +1581,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">Vertex</span><span class="w"> </span><span class="nf">next_vertex</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Edge</span><span class="w"> </span><span class="o">&amp;</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
+      <td class="src "><span class="w">  </span><span class="c1">// whether the sub circuit is shorter than chain</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l164" href="#l164">164</a></td>
@@ -1590,7 +1590,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">sub_is_better</span><span class="p">(</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l165" href="#l165">165</a></td>
@@ -1599,7 +1599,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">port_t</span><span class="w"> </span><span class="nf">next_port</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Edge</span><span class="w"> </span><span class="o">&amp;</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
+      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">Circuit</span><span class="w"> </span><span class="o">&amp;</span><span class="n">sub</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Gate_ptr</span><span class="o">&gt;</span><span class="w"> </span><span class="n">chain</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l166" href="#l166">166</a></td>
@@ -1617,7 +1617,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">Edge</span><span class="w"> </span><span class="nf">prev_edge</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">VertPort</span><span class="w"> </span><span class="o">&amp;</span><span class="n">pair</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
+      <td class="src "><span class="w">  </span><span class="c1">// returns a description of the condition of current vertex</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l168" href="#l168">168</a></td>
@@ -1626,7 +1626,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="n">Condition</span><span class="w"> </span><span class="nf">get_condition</span><span class="p">(</span><span class="n">Vertex</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l169" href="#l169">169</a></td>
@@ -1635,7 +1635,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">Edge</span><span class="w"> </span><span class="nf">next_edge</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vertex</span><span class="w"> </span><span class="o">&amp;</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Edge</span><span class="w"> </span><span class="o">&amp;</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l170" href="#l170">170</a></td>
@@ -1644,7 +1644,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="c1">// simple utils respecting reversed boolean</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l171" href="#l171">171</a></td>
@@ -1653,7 +1653,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">is_last_optype</span><span class="p">(</span><span class="n">OpType</span><span class="w"> </span><span class="n">type</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
+      <td class="src "><span class="w">  </span><span class="n">Vertex</span><span class="w"> </span><span class="nf">next_vertex</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Edge</span><span class="w"> </span><span class="o">&amp;</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l172" href="#l172">172</a></td>
@@ -1671,7 +1671,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">is_equal</span><span class="p">(</span></td>
+      <td class="src "><span class="w">  </span><span class="n">port_t</span><span class="w"> </span><span class="nf">next_port</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Edge</span><span class="w"> </span><span class="o">&amp;</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l174" href="#l174">174</a></td>
@@ -1680,7 +1680,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">Circuit</span><span class="w"> </span><span class="o">&amp;</span><span class="n">circ</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Gate_ptr</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">gates</span><span class="p">,</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l175" href="#l175">175</a></td>
@@ -1689,7 +1689,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="kt">bool</span><span class="w"> </span><span class="n">reversed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span></td>
+      <td class="src "><span class="w">  </span><span class="n">Edge</span><span class="w"> </span><span class="nf">prev_edge</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">VertPort</span><span class="w"> </span><span class="o">&amp;</span><span class="n">pair</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l176" href="#l176">176</a></td>
@@ -1698,7 +1698,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">};</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l177" href="#l177">177</a></td>
@@ -1707,7 +1707,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="n">Edge</span><span class="w"> </span><span class="nf">next_edge</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vertex</span><span class="w"> </span><span class="o">&amp;</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Edge</span><span class="w"> </span><span class="o">&amp;</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l178" href="#l178">178</a></td>
@@ -1716,10 +1716,82 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace tket</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l179" href="#l179">179</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">is_last_optype</span><span class="p">(</span><span class="n">OpType</span><span class="w"> </span><span class="n">type</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l180" href="#l180">180</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l181" href="#l181">181</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">is_equal</span><span class="p">(</span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l182" href="#l182">182</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">Circuit</span><span class="w"> </span><span class="o">&amp;</span><span class="n">circ</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Gate_ptr</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">gates</span><span class="p">,</span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l183" href="#l183">183</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">      </span><span class="kt">bool</span><span class="w"> </span><span class="n">reversed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l184" href="#l184">184</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">};</span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l185" href="#l185">185</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l186" href="#l186">186</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace tket</span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l187" href="#l187">187</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
