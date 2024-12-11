@@ -266,9 +266,9 @@ Transform rebase_HQS() {
 // Multiqs: TK2
 // Singleqs: TK1
 Transform rebase_TK() {
-  return rebase_factory(
-      {OpType::TK2, OpType::TK1}, CircPool::CX_using_TK2(),
-      CircPool::tk1_to_tk1);
+  return rebase_factory_via_tk2(
+      {OpType::TK2, OpType::TK1}, CircPool::tk1_to_tk1,
+      CircPool::TK2_using_TK2);
 }
 
 // Multiqs: XXPhase
