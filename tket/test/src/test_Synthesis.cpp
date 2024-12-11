@@ -2081,21 +2081,35 @@ static void check_conditions(PassPtr pp, const Circuit &c) {
 }
 
 SCENARIO("Synthesis with conditional gates") {
-  // https://github.com/CQCL/tket/issues/394
-  Circuit c(3);
-  c.add_c_register("c", 3);
-  c.add_op<unsigned>(OpType::H, {0});
-  c.add_op<unsigned>(OpType::CX, {0, 1});
-  c.add_measure(0, 0);
-  c.add_measure(1, 1);
-  c.add_conditional_gate<unsigned>(OpType::U1, {0.25}, {1}, {0}, 1);
-  c.add_conditional_gate<unsigned>(OpType::CnRy, {0.25}, {0, 1, 2}, {0, 1}, 0);
-  c.add_conditional_gate<unsigned>(OpType::CnRx, {0.25}, {0, 1, 2}, {0, 1}, 0);
-  c.add_conditional_gate<unsigned>(OpType::CnRz, {0.25}, {0, 1, 2}, {0, 1}, 0);
-  c.add_measure(2, 2);
-  check_conditions(SynthesiseTK(), c);
-  check_conditions(SynthesiseTket(), c);
-  check_conditions(SynthesiseUMD(), c);
+  GIVEN("Circuit with conditional U1") {
+    // https://github.com/CQCL/tket/issues/394
+    Circuit c(3);
+    c.add_c_register("c", 3);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_measure(0, 0);
+    c.add_measure(1, 1);
+    c.add_conditional_gate<unsigned>(OpType::U1, {0.25}, {1}, {0}, 1);
+    c.add_conditional_gate<unsigned>(
+        OpType::CnRy, {0.25}, {0, 1, 2}, {0, 1}, 0);
+    c.add_conditional_gate<unsigned>(
+        OpType::CnRx, {0.25}, {0, 1, 2}, {0, 1}, 0);
+    c.add_conditional_gate<unsigned>(
+        OpType::CnRz, {0.25}, {0, 1, 2}, {0, 1}, 0);
+    c.add_measure(2, 2);
+    check_conditions(SynthesiseTK(), c);
+    check_conditions(SynthesiseTket(), c);
+    check_conditions(SynthesiseUMD(), c);
+  }
+
+  GIVEN("SynthesiseTK with conditional 2-qubit gates") {
+    // https://github.com/CQCL/tket/issues/1708
+    Circuit c(2, 1);
+    c.add_conditional_gate<unsigned>(OpType::ZZPhase, {0.5}, {0, 1}, {0}, 1);
+    CompilationUnit cu(c);
+    SynthesiseTK()->apply(cu);
+    CHECK(cu.get_circ_ref().count_n_qubit_gates(2) == 1);
+  }
 }
 
 SCENARIO("Restricting ZZPhase gate angles.") {
