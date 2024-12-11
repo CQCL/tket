@@ -525,7 +525,9 @@ PYBIND11_MODULE(circuit, m) {
           "A classical operation applied to multiple bits simultaneously")
       .value(
           "ClassicalExpBox", OpType::ClassicalExpBox,
-          "A box for holding compound classical operations on Bits.")
+          "A box for holding compound classical operations on Bits.\n"
+          "DEPRECATED: Please use :py:class:`WiredClExpr` instead. This class "
+          "will be removed after pytket 1.40.")
       .value(
           "MultiplexorBox", OpType::MultiplexorBox,
           "A multiplexor (i.e. uniformly controlled operations)")

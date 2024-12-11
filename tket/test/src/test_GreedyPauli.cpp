@@ -22,6 +22,7 @@
 #include "tket/Gate/SymTable.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Transformations/GreedyPauliOptimisation.hpp"
 #include "tket/Utils/Expression.hpp"
 
@@ -619,9 +620,38 @@ SCENARIO("Complete synthesis") {
         PauliExpBox(
             SymPauliTensor({Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X}, 0.125)),
         {1, 3, 5, 0});
+
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::X},
+            0.125)),
+        {1, 3, 5, 0, 2, 4});
+
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X},
+            0.125)),
+        {0, 1, 2, 3, 4, 5});
+
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X},
+            0.125)),
+        {5, 2, 4, 1, 3, 0});
+
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::X},
+            0.125)),
+        {0, 5, 1, 4, 3, 2});
+
     Circuit d(circ);
-    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
-                .apply(d));
+    REQUIRE(
+        !Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true, 0)
+             .apply(d));
+    REQUIRE(
+        Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true, 10)
+            .apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
   }
   GIVEN("Select TQE over ZZPhase") {
@@ -709,6 +739,7 @@ SCENARIO("Test GreedyPauliSimp for individual gates") {
     REQUIRE(test_unitary_comparison(circ, d, true));
   }
 }
+
 SCENARIO("Test GreedyPauliSimp pass construction") {
   // test pass construction
   GIVEN("A circuit") {
@@ -718,6 +749,84 @@ SCENARIO("Test GreedyPauliSimp pass construction") {
     CompilationUnit cu(c);
     CHECK(gen_greedy_pauli_simp(0.3, 0.5)->apply(cu));
     REQUIRE(test_unitary_comparison(c, cu.get_circ_ref(), true));
+  }
+  GIVEN("Preserving a circuit with only_reduce set to true.") {
+    Circuit c(4);
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::CX, {1, 2});
+    c.add_op<unsigned>(OpType::CX, {2, 3});
+    CompilationUnit cu(c);
+    REQUIRE(!gen_greedy_pauli_simp(0.3, 0.5, 500, 500, 0, false, 100, true)
+                 ->apply(cu));
+  }
+}
+
+SCENARIO("Test GreedyPauliSimp with multiple trials and threads") {
+  GIVEN("Large circuit with ZZPhase") {
+    Circuit circ(6);
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::X, Pauli::X}, 0.3)), {0, 1});
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Y, Pauli::X}, 0.2)),
+        {0, 1, 2});
+    circ.add_box(
+        PauliExpCommutingSetBox({
+            {{Pauli::I, Pauli::Y, Pauli::I, Pauli::Z}, 1.2},
+            {{Pauli::X, Pauli::Y, Pauli::Z, Pauli::I}, 0.8},
+            {{Pauli::I, Pauli::I, Pauli::I, Pauli::Z}, 1.25},
+        }),
+        {1, 2, 3, 4});
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::Y, Pauli::X}, 0.1)), {2, 3});
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Y, Pauli::X}, 0.11)),
+        {1, 3, 4});
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::Y, Pauli::Y}, 0.2)), {4, 5});
+    circ.add_box(
+        PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Z, Pauli::X}, 0.15)),
+        {2, 4, 5});
+    circ.add_box(
+        PauliExpBox(
+            SymPauliTensor({Pauli::X, Pauli::X, Pauli::X, Pauli::X}, 0.25)),
+        {2, 4, 5, 0});
+    circ.add_box(
+        PauliExpBox(
+            SymPauliTensor({Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X}, 0.125)),
+        {1, 3, 5, 0});
+
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::X},
+            0.125)),
+        {1, 3, 5, 0, 2, 4});
+
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X},
+            0.125)),
+        {0, 1, 2, 3, 4, 5});
+
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X},
+            0.125)),
+        {5, 2, 4, 1, 3, 0});
+
+    circ.add_box(
+        PauliExpBox(SymPauliTensor(
+            {Pauli::X, Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::X},
+            0.125)),
+        {0, 5, 1, 4, 3, 2});
+
+    Circuit d(circ);
+    REQUIRE(!Transforms::greedy_pauli_optimisation(
+                 0.7, 0.3, 500, 500, 0, true, 0, 10)
+                 .apply(d));
+    REQUIRE(Transforms::greedy_pauli_optimisation(
+                0.7, 0.3, 500, 500, 0, true, 10, 10)
+                .apply(d));
+    REQUIRE(test_unitary_comparison(circ, d, true));
   }
 }
 }  // namespace test_GreedyPauliSimp

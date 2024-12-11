@@ -13,43 +13,40 @@
 # limitations under the License.
 
 import json
-import pytest
-from referencing import Registry
-from referencing.jsonschema import DRAFT7
-from jsonschema import Draft7Validator, ValidationError  # type: ignore
 from pathlib import Path
 from typing import Any, Dict, List
 
-from sympy import Expr
+import pytest
+from jsonschema import Draft7Validator, ValidationError  # type: ignore
+from referencing import Registry
+from referencing.jsonschema import DRAFT7
 
-from pytket.circuit import Node, Circuit, Qubit, OpType
-from pytket.predicates import Predicate
-from pytket.architecture import Architecture
-from pytket.placement import Placement, GraphPlacement
 import pytket.circuit_library as _library
-
-from pytket.passes import (
-    BasePass,
-    SequencePass,
-    RemoveRedundancies,
-    RepeatUntilSatisfiedPass,
-    CommuteThroughMultis,
-    RepeatWithMetricPass,
-    RebaseCustom,
-    CXMappingPass,
-    FullMappingPass,
-    DefaultMappingPass,
-    AASRouting,
-    SquashCustom,
-    CustomPass,
-)
+from pytket.architecture import Architecture
+from pytket.circuit import Circuit, Node, OpType, Qubit
+from pytket.circuit.named_types import ParamType
 from pytket.mapping import (
+    BoxDecompositionRoutingMethod,
     LexiLabellingMethod,
     LexiRouteRoutingMethod,
     MultiGateReorderRoutingMethod,
-    BoxDecompositionRoutingMethod,
 )
-from pytket.circuit.named_types import ParamType
+from pytket.passes import (
+    AASRouting,
+    BasePass,
+    CommuteThroughMultis,
+    CustomPass,
+    DefaultMappingPass,
+    FullMappingPass,
+    RebaseCustom,
+    RemoveRedundancies,
+    RepeatUntilSatisfiedPass,
+    RepeatWithMetricPass,
+    SequencePass,
+    SquashCustom,
+)
+from pytket.placement import GraphPlacement, Placement
+from pytket.predicates import Predicate
 
 
 def standard_pass_dict(content: Dict[str, Any]) -> Dict[str, Any]:
@@ -299,6 +296,9 @@ TWO_WAY_PARAM_PASSES = {
             "max_tqe_candidates": 100,
             "seed": 2,
             "allow_zzphase": True,
+            "thread_timeout": 5000,
+            "only_reduce": False,
+            "trials": 1,
         }
     ),
     # lists must be sorted by OpType value
@@ -590,9 +590,8 @@ def check_arc_dict(arc: Architecture, d: dict) -> bool:
 
     if d["links"] != links:
         return False
-    else:
-        nodes = [Node(n[0], n[1]) for n in d["nodes"]]
-        return set(nodes) == set(arc.nodes)
+    nodes = [Node(n[0], n[1]) for n in d["nodes"]]
+    return set(nodes) == set(arc.nodes)
 
 
 def test_pass_deserialisation_only() -> None:
@@ -699,7 +698,7 @@ def test_pass_deserialisation_only() -> None:
     np_pass = dm_pass_0.get_sequence()[2]
     d_pass = dm_pass.get_sequence()[1]
     assert d_pass.to_dict()["StandardPass"]["name"] == "DelayMeasures"
-    assert d_pass.to_dict()["StandardPass"]["allow_partial"] == False
+    assert d_pass.to_dict()["StandardPass"]["allow_partial"] == False  # noqa: E712
     assert p_pass.to_dict()["StandardPass"]["name"] == "PlacementPass"
     assert np_pass.to_dict()["StandardPass"]["name"] == "NaivePlacementPass"
     assert r_pass.to_dict()["StandardPass"]["name"] == "RoutingPass"

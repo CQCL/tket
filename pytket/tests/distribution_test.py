@@ -13,13 +13,15 @@
 # limitations under the License.
 
 from collections import Counter
+
+import pytest
 from numpy import isclose
+
 from pytket.utils import (
-    ProbabilityDistribution,
     EmpiricalDistribution,
+    ProbabilityDistribution,
     convex_combination,
 )
-import pytest
 
 
 def test_probability_distribution() -> None:
@@ -34,7 +36,7 @@ def test_probability_distribution() -> None:
     assert pd1["c"] == 0.0
     assert pd == pd1
     with pytest.warns(UserWarning):
-        pd2 = ProbabilityDistribution({"a": 2 / 3, "b": 4 / 3})
+        _ = ProbabilityDistribution({"a": 2 / 3, "b": 4 / 3})
     pd3 = ProbabilityDistribution({"a": 2 / 9, "b": 4 / 9, "c": 1 / 3})
     pd4 = convex_combination([(pd, 1 / 3), (pd3, 2 / 3)])
     assert pd4 == ProbabilityDistribution({"a": 7 / 27, "b": 14 / 27, "c": 2 / 9})

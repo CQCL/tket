@@ -73,7 +73,7 @@ ChoiMixTableau::ChoiMixTableau(
     col_index_.insert({{Qubit(i), TableauSegment::Input}, i});
   }
   for (unsigned i = 0; i < n_bounds - n_ins; ++i) {
-    col_index_.insert({{Qubit(i), TableauSegment::Output}, i});
+    col_index_.insert({{Qubit(i), TableauSegment::Output}, n_ins + i});
   }
 }
 

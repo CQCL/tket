@@ -13,60 +13,55 @@
 # limitations under the License.
 
 import itertools
-from typing import List
+import json
 from pathlib import Path
+from typing import List
 
-import sympy
+import numpy as np
+import pytest
+from sympy import Symbol
 
-from pytket.circuit import (
-    Circuit,
-    OpType,
-    CircBox,
-    Unitary1qBox,
-    PauliExpBox,
-    Node,
-    Qubit,
-)
 import pytket.circuit_library as _library
-from pytket.pauli import Pauli
+from pytket.architecture import Architecture
+from pytket.circuit import (
+    CircBox,
+    Circuit,
+    Node,
+    OpType,
+    PauliExpBox,
+    Qubit,
+    Unitary1qBox,
+)
+from pytket.circuit.named_types import ParamType
+from pytket.mapping import LexiLabellingMethod, LexiRouteRoutingMethod, MappingManager
 from pytket.passes import (
-    RemoveRedundancies,
-    KAKDecomposition,
-    SquashCustom,
-    SquashRzPhasedX,
-    CommuteThroughMultis,
-    PauliSquash,
-    FullPeepholeOptimise,
-    DefaultMappingPass,
-    FullMappingPass,
-    RoutingPass,
-    CustomRoutingPass,
-    PlacementPass,
-    CXMappingPass,
-    CustomPass,
-    SequencePass,
-    SynthesiseTket,
     AutoRebase,
     AutoSquash,
+    CommuteThroughMultis,
+    CustomPass,
+    CustomRoutingPass,
+    CXMappingPass,
+    DefaultMappingPass,
+    FullMappingPass,
+    FullPeepholeOptimise,
+    KAKDecomposition,
+    PauliSquash,
+    PlacementPass,
+    RemoveRedundancies,
+    RoutingPass,
+    SequencePass,
+    SynthesiseTket,
 )
-from pytket.predicates import CompilationUnit, NoMidMeasurePredicate
-from pytket.transform import Transform, CXConfigType, PauliSynthStrat
-from pytket.qasm import circuit_from_qasm
-from pytket.architecture import Architecture
-from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod
+from pytket.pauli import Pauli
 from pytket.placement import (
-    Placement,
     GraphPlacement,
     LinePlacement,
     NoiseAwarePlacement,
+    Placement,
 )
-
-from sympy import Symbol
-import numpy as np
-import json
-import pytest
-
-from pytket.circuit.named_types import ParamType
+from pytket.predicates import CompilationUnit, NoMidMeasurePredicate
+from pytket.qasm import circuit_from_qasm
+from pytket.transform import CXConfigType, PauliSynthStrat, Transform
 
 
 def get_test_circuit() -> Circuit:
@@ -405,18 +400,14 @@ def test_while_repeat() -> None:
     c.CX(0, 1)
     c.Rz(0.34, 0)
     c.Rx(0.63, 1)
-    assert (
+    assert not (
         Transform.while_repeat(
             Transform.RebaseToCliffordSingles(), Transform.RemoveRedundancies()
         ).apply(c)
-        == False
     )
-    assert (
-        Transform.while_repeat(
-            Transform.CommuteThroughMultis(), Transform.RemoveRedundancies()
-        ).apply(c)
-        == True
-    )
+    assert Transform.while_repeat(
+        Transform.CommuteThroughMultis(), Transform.RemoveRedundancies()
+    ).apply(c)
     assert c.n_gates_of_type(OpType.CX) == 1
     assert c.n_gates_of_type(OpType.Rz) == 0
     assert c.n_gates_of_type(OpType.Rx) == 0
@@ -816,7 +807,7 @@ def test_determinism() -> None:
 
 def test_full_peephole_optimise() -> None:
     with open(
-        Path(__file__).resolve().parent / "json_test_files" / "circuit.json", "r"
+        Path(__file__).resolve().parent / "json_test_files" / "circuit.json"
     ) as f:
         circ = Circuit.from_dict(json.load(f))
 
@@ -942,8 +933,8 @@ def test_CXMappingPass() -> None:
     out_circ_1 = cu_1.circuit
 
     measure_pred = NoMidMeasurePredicate()
-    assert measure_pred.verify(cu_0.circuit) == True
-    assert measure_pred.verify(cu_1.circuit) == False
+    assert measure_pred.verify(cu_0.circuit)
+    assert not measure_pred.verify(cu_1.circuit)
     assert out_circ_0.valid_connectivity(arc, True)
     assert out_circ_1.valid_connectivity(arc, False)
 
@@ -964,8 +955,8 @@ def test_DefaultMappingPass() -> None:
     out_circ_0 = cu_0.circuit
     out_circ_1 = cu_1.circuit
     measure_pred = NoMidMeasurePredicate()
-    assert measure_pred.verify(out_circ_0) == True
-    assert measure_pred.verify(out_circ_1) == False
+    assert measure_pred.verify(out_circ_0)
+    assert not measure_pred.verify(out_circ_1)
     assert out_circ_0.valid_connectivity(arc, False, True)
     assert out_circ_1.valid_connectivity(arc, False, True)
 
@@ -1160,7 +1151,7 @@ def test_auto_squash() -> None:
         for gate in itertools.islice(itertools.cycle(gateset), 5):
             # make a sequence of 5 gates from gateset to make sure squash does
             # something
-            params: List[ParamType] = []
+            params: list[ParamType] = []
             while True:
                 try:
                     circ.add_gate(gate, params, [0])

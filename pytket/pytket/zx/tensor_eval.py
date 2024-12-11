@@ -14,27 +14,29 @@
 
 """Collection of methods to evaluate a ZXDiagram to a tensor. This uses the
 numpy tensor features, in particular the einsum evaluation and optimisations."""
-from typing import Dict, List, Any
-from math import floor, pi, sqrt, cos, sin
 import warnings
-import sympy
+from math import cos, floor, pi, sin, sqrt
+from typing import Any
+
 import numpy as np
+import sympy
+
 from pytket.zx import (
-    ZXDiagram,
-    ZXType,
-    ZXVert,
-    ZXGen,
-    PhasedGen,
     CliffordGen,
     DirectedGen,
-    ZXBox,
+    PhasedGen,
     QuantumType,
     Rewrite,
+    ZXBox,
+    ZXDiagram,
+    ZXGen,
+    ZXType,
+    ZXVert,
 )
 
 try:
     import quimb.tensor as qtn  # type: ignore
-except ModuleNotFoundError as err:
+except ModuleNotFoundError:
     warnings.warn(
         'Missing package for tensor evaluation of ZX diagrams. Run "pip '
         "install 'pytket[ZX]'\" to install the optional dependencies."
@@ -44,14 +46,13 @@ except ModuleNotFoundError as err:
 def _gen_to_tensor(gen: ZXGen, rank: int) -> np.ndarray:
     if isinstance(gen, PhasedGen):
         return _spider_to_tensor(gen, rank)
-    elif isinstance(gen, CliffordGen):
+    if isinstance(gen, CliffordGen):
         return _clifford_to_tensor(gen, rank)
-    elif isinstance(gen, DirectedGen):
+    if isinstance(gen, DirectedGen):
         return _dir_gen_to_tensor(gen)
-    elif isinstance(gen, ZXBox):
+    if isinstance(gen, ZXBox):
         return _tensor_from_basic_diagram(gen.diagram)
-    else:
-        raise ValueError(f"Cannot convert generator of type {gen.type} to a tensor")
+    raise ValueError(f"Cannot convert generator of type {gen.type} to a tensor")
 
 
 def _spider_to_tensor(gen: PhasedGen, rank: int) -> np.ndarray:
@@ -80,7 +81,7 @@ def _spider_to_tensor(gen: PhasedGen, rank: int) -> np.ndarray:
         t = np.full(size, 1.0, dtype=complex)
         constant = pow(sqrt(0.5), rank)
         for i in range(size):
-            parity = bin(i).count("1")
+            parity = (i).bit_count()
             t[i] += phase if parity % 2 == 0 else -phase
             t[i] *= constant
     elif gen.type == ZXType.Hbox:
@@ -109,8 +110,7 @@ def _spider_to_tensor(gen: PhasedGen, rank: int) -> np.ndarray:
         raise ValueError(
             f"Cannot convert phased generator of type {gen.type} to a tensor"
         )
-    t = t.reshape(tuple([2] * rank))
-    return t
+    return t.reshape(tuple([2] * rank))
 
 
 def _clifford_to_tensor(gen: CliffordGen, rank: int) -> np.ndarray:
@@ -131,8 +131,7 @@ def _clifford_to_tensor(gen: CliffordGen, rank: int) -> np.ndarray:
         raise ValueError(
             f"Cannot convert Clifford generator of type {gen.type} to a tensor"
         )
-    t = t.reshape(tuple([2] * rank))
-    return t
+    return t.reshape(tuple([2] * rank))
 
 
 def _dir_gen_to_tensor(gen: DirectedGen) -> np.ndarray:
@@ -140,10 +139,9 @@ def _dir_gen_to_tensor(gen: DirectedGen) -> np.ndarray:
         t = np.ones((2, 2), dtype=complex)
         t[1, 0] = 0.0
         return t
-    else:
-        raise ValueError(
-            f"Cannot convert directed generator of type {gen.type} to a tensor"
-        )
+    raise ValueError(
+        f"Cannot convert directed generator of type {gen.type} to a tensor"
+    )
 
 
 _id_tensor = np.asarray([[1, 0], [0, 1]], dtype=complex)
@@ -162,7 +160,7 @@ def _tensor_from_basic_diagram(diag: ZXDiagram) -> np.ndarray:
     all_wires = diag.wires
     indices = dict(zip(all_wires, range(len(all_wires))))
     next_index = len(all_wires)
-    tensor_list: List[Any]
+    tensor_list: list[Any]
     tensor_list = []
     id_wires = set()
     res_indices = []
@@ -200,7 +198,7 @@ def _tensor_from_basic_diagram(diag: ZXDiagram) -> np.ndarray:
     net.full_simplify_(seq="ADCR")
     res_ten = net.contract(output_inds=res_indices, optimize="greedy")
     result: np.ndarray
-    if type(res_ten) == qtn.Tensor:
+    if isinstance(res_ten, qtn.Tensor):
         result = res_ten.data
     else:
         # Scalar
@@ -284,7 +282,7 @@ def density_matrix_from_cptp_diagram(diag: ZXDiagram) -> np.ndarray:
 
 
 def fix_boundaries_to_binary_states(
-    diag: ZXDiagram, vals: Dict[ZXVert, int]
+    diag: ZXDiagram, vals: dict[ZXVert, int]
 ) -> ZXDiagram:
     new_diag = ZXDiagram(diag)
     b_lookup = dict(zip(diag.get_boundary(), new_diag.get_boundary()))
@@ -308,7 +306,7 @@ def fix_boundaries_to_binary_states(
     return new_diag
 
 
-def fix_inputs_to_binary_state(diag: ZXDiagram, vals: List[int]) -> ZXDiagram:
+def fix_inputs_to_binary_state(diag: ZXDiagram, vals: list[int]) -> ZXDiagram:
     inputs = diag.get_boundary(type=ZXType.Input)
     if len(inputs) != len(vals):
         raise ValueError(
@@ -318,7 +316,7 @@ def fix_inputs_to_binary_state(diag: ZXDiagram, vals: List[int]) -> ZXDiagram:
     return fix_boundaries_to_binary_states(diag, val_dict)
 
 
-def fix_outputs_to_binary_state(diag: ZXDiagram, vals: List[int]) -> ZXDiagram:
+def fix_outputs_to_binary_state(diag: ZXDiagram, vals: list[int]) -> ZXDiagram:
     outputs = diag.get_boundary(type=ZXType.Output)
     if len(outputs) != len(vals):
         raise ValueError(

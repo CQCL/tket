@@ -11,99 +11,93 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import sympy
+from typing import Any, Dict, List
+
+import numpy as np
 import pytest
-from pytket import logging
+from sympy import Symbol
+
+from pytket.architecture import Architecture
 from pytket.circuit import (
-    Circuit,
-    OpType,
-    Op,
-    CircBox,
-    PauliExpBox,
-    Unitary1qBox,
-    Unitary2qBox,
-    Node,
-    Qubit,
-    UnitID,
-    Conditional,
     Bit,
+    CircBox,
+    Circuit,
+    Conditional,
+    MultiBitOp,
+    Node,
+    Op,
+    OpType,
+    PauliExpBox,
+    Qubit,
     RangePredicateOp,
     SetBitsOp,
-    MultiBitOp,
+    Unitary1qBox,
+    Unitary2qBox,
 )
 from pytket.circuit.named_types import ParamType, RenameUnitsMap
-from pytket.pauli import Pauli
-from pytket.passes import (
-    SequencePass,
-    RemoveRedundancies,
-    SynthesiseTket,
-    SynthesiseTK,
-    SynthesiseUMD,
-    RepeatUntilSatisfiedPass,
-    CommuteThroughMultis,
-    RepeatPass,
-    DecomposeMultiQubitsCX,
-    DecomposeBoxes,
-    SquashTK1,
-    SquashRzPhasedX,
-    RepeatWithMetricPass,
-    RebaseCustom,
-    EulerAngleReduction,
-    RoutingPass,
-    CXMappingPass,
-    PlacementPass,
-    NaivePlacementPass,
-    RenameQubitsPass,
-    FullMappingPass,
-    DefaultMappingPass,
-    AASRouting,
-    DecomposeSwapsToCXs,
-    DecomposeSwapsToCircuit,
-    PauliSimp,
-    ThreeQubitSquash,
-    RebaseTket,
-    RemoveDiscarded,
-    SimplifyMeasured,
-    SimplifyInitial,
-    RemoveBarriers,
-    PauliSquash,
-    AutoRebase,
-    AutoSquash,
-    auto_rebase_pass,
-    auto_squash_pass,
-    ZZPhaseToRz,
-    CnXPairwiseDecomposition,
-    RemoveImplicitQubitPermutation,
-    FlattenRelabelRegistersPass,
-    RoundAngles,
-    PeepholeOptimise2Q,
-    CliffordResynthesis,
-    CliffordPushThroughMeasures,
-    CliffordSimp,
-    ZXGraphlikeOptimisation,
-    GreedyPauliSimp,
-)
-from pytket.predicates import (
-    GateSetPredicate,
-    NoClassicalControlPredicate,
-    DirectednessPredicate,
-    NoBarriersPredicate,
-    CompilationUnit,
-    MaxNClRegPredicate,
-)
+from pytket.circuit.named_types import ParamType as Param
 from pytket.mapping import (
     LexiLabellingMethod,
     LexiRouteRoutingMethod,
 )
-from pytket.architecture import Architecture
-from pytket.placement import Placement, GraphPlacement
-from pytket.transform import Transform, PauliSynthStrat, CXConfigType
-import numpy as np
-from sympy import Symbol
-from typing import Dict, Any, List
-
-from pytket.circuit.named_types import ParamType as Param
-
+from pytket.passes import (
+    AASRouting,
+    AutoRebase,
+    CliffordPushThroughMeasures,
+    CliffordResynthesis,
+    CliffordSimp,
+    CnXPairwiseDecomposition,
+    CommuteThroughMultis,
+    CXMappingPass,
+    DecomposeBoxes,
+    DecomposeMultiQubitsCX,
+    DecomposeSwapsToCircuit,
+    DecomposeSwapsToCXs,
+    DefaultMappingPass,
+    EulerAngleReduction,
+    FlattenRelabelRegistersPass,
+    FullMappingPass,
+    GreedyPauliSimp,
+    NaivePlacementPass,
+    PauliSimp,
+    PauliSquash,
+    PeepholeOptimise2Q,
+    PlacementPass,
+    RebaseCustom,
+    RebaseTket,
+    RemoveBarriers,
+    RemoveDiscarded,
+    RemoveImplicitQubitPermutation,
+    RemoveRedundancies,
+    RenameQubitsPass,
+    RepeatPass,
+    RepeatUntilSatisfiedPass,
+    RepeatWithMetricPass,
+    RoundAngles,
+    RoutingPass,
+    SequencePass,
+    SimplifyInitial,
+    SimplifyMeasured,
+    SquashRzPhasedX,
+    SquashTK1,
+    SynthesiseTK,
+    SynthesiseTket,
+    SynthesiseUMD,
+    ThreeQubitSquash,
+    ZXGraphlikeOptimisation,
+    ZZPhaseToRz,
+)
+from pytket.pauli import Pauli
+from pytket.placement import GraphPlacement, Placement
+from pytket.predicates import (
+    CompilationUnit,
+    DirectednessPredicate,
+    GateSetPredicate,
+    MaxNClRegPredicate,
+    NoBarriersPredicate,
+    NoClassicalControlPredicate,
+)
+from pytket.transform import CXConfigType, PauliSynthStrat, Transform
 
 circ2 = Circuit(1)
 circ2.Rx(0.25, 0)
@@ -307,7 +301,7 @@ def test_routing_and_placement_pass() -> None:
 
 def test_default_mapping_pass() -> None:
     circ = Circuit()
-    q = circ.add_q_register("q", 6)
+    circ.add_q_register("q", 6)
     circ.CX(0, 1)
     circ.H(0)
     circ.Z(1)
@@ -343,7 +337,7 @@ def test_default_mapping_pass() -> None:
 
 def test_default_mapping_pass_phase_poly_aas() -> None:
     circ = Circuit()
-    q = circ.add_q_register("q", 5)
+    circ.add_q_register("q", 5)
     circ.CX(0, 1)
     circ.H(0)
     circ.Z(1)
@@ -365,7 +359,7 @@ def test_default_mapping_pass_phase_poly_aas() -> None:
 
 def test_rename_qubits_pass() -> None:
     circ = Circuit()
-    qbs = circ.add_q_register("a", 2)
+    circ.add_q_register("a", 2)
     circ.CX(Qubit("a", 0), Qubit("a", 1))
     qm = {Qubit("a", 0): Qubit("b", 1), Qubit("a", 1): Qubit("b", 0)}
     p = RenameQubitsPass(qm)
@@ -612,18 +606,18 @@ def test_squash_chains() -> None:
 def test_apply_pass_with_callbacks() -> None:
     class CallbackHandler:
         def __init__(self) -> None:
-            self.pass_names: List[str] = []
+            self.pass_names: list[str] = []
 
-        def before_apply(self, cu: CompilationUnit, config: Dict[str, Any]) -> None:
+        def before_apply(self, cu: CompilationUnit, config: dict[str, Any]) -> None:
             if "StandardPass" in config:
                 self.pass_names.append(config["StandardPass"]["name"])
             else:
                 self.pass_names.append(config["pass_class"])
 
-        def after_apply(self, cu: CompilationUnit, config: Dict[str, Any]) -> None:
+        def after_apply(self, cu: CompilationUnit, config: dict[str, Any]) -> None:
             return
 
-    def compile(circ: Circuit, handler: CallbackHandler) -> bool:
+    def apply_pass(circ: Circuit, handler: CallbackHandler) -> bool:
         p = SequencePass([CommuteThroughMultis(), RemoveRedundancies()])
         return p.apply(circ, handler.before_apply, handler.after_apply)
 
@@ -633,7 +627,7 @@ def test_apply_pass_with_callbacks() -> None:
     circ.CX(0, 1)
 
     handler = CallbackHandler()
-    compile(circ, handler)
+    apply_pass(circ, handler)
 
     assert circ.n_gates_of_type(OpType.CX) == 1
     assert len(handler.pass_names) == 3
@@ -902,7 +896,7 @@ def test_PeepholeOptimise2Q() -> None:
     perm = c.implicit_qubit_permutation()
     assert any(k != v for k, v in perm.items())
     c = Circuit(2).CX(0, 1).CX(1, 0)
-    assert PeepholeOptimise2Q(allow_swaps=False).apply(c) == False
+    assert not PeepholeOptimise2Q(allow_swaps=False).apply(c)
     perm = c.implicit_qubit_permutation()
     assert all(k == v for k, v in perm.items())
 
@@ -1039,8 +1033,8 @@ def test_greedy_pauli_synth() -> None:
         rega[0], regb[0]
     ).SWAP(regb[1], rega[0])
     d = circ.copy()
-    pss = GreedyPauliSimp(0.5, 0.5)
-    assert pss.apply(d)
+    assert GreedyPauliSimp(0.5, 0.5, thread_timeout=10, trials=5).apply(d)
+
     assert np.allclose(circ.get_unitary(), d.get_unitary())
     assert d.name == "test"
     # test gateset
@@ -1062,7 +1056,7 @@ def test_greedy_pauli_synth() -> None:
     circ.measure_all()
     circ.Reset(0)
     circ.add_pauliexpbox(pg1, [2, 3])
-    assert GreedyPauliSimp(0.5, 0.5, 100, 100, 0, True).apply(circ)
+    assert GreedyPauliSimp(0.5, 0.5, 100, 100, 0, True, 100).apply(circ)
     # PauliExpBoxes implemented using ZZPhase
     d = Circuit(4, 4, name="test")
     d.H(0)
@@ -1086,19 +1080,37 @@ def test_greedy_pauli_synth() -> None:
         GreedyPauliSimp().apply(circ)
     err_msg = "Predicate requirements are not satisfied"
     assert err_msg in str(e.value)
+    # large circuit that doesn't complete within thread_timeout argument
+    c = Circuit(13)
+    for _ in range(20):
+        for i in range(13):
+            for j in range(i + 1, 13):
+                c.CX(i, j)
+                c.Rz(0.23, j)
+            c.H(i)
+    assert not GreedyPauliSimp(thread_timeout=1).apply(c)
+    assert GreedyPauliSimp().apply(c)
 
 
-def test_auto_rebase_deprecation(recwarn: Any) -> None:
-    p = auto_rebase_pass({OpType.TK1, OpType.CX})
-    assert len(recwarn) == 1
-    w = recwarn.pop(DeprecationWarning)
-    assert issubclass(w.category, DeprecationWarning)
-    assert "deprecated" in str(w.message)
-    p = auto_squash_pass({OpType.TK1})
-    assert len(recwarn) == 1
-    w = recwarn.pop(DeprecationWarning)
-    assert issubclass(w.category, DeprecationWarning)
-    assert "deprecated" in str(w.message)
+def test_get_pre_conditions() -> None:
+    pre_cons = GreedyPauliSimp().get_preconditions()
+    gate_set = pre_cons[0].gate_set  # type: ignore
+    assert OpType.CX in gate_set
+    assert OpType.Measure in gate_set
+
+
+def test_get_post_conditions() -> None:
+    gate_set = {OpType.CX, OpType.Rz, OpType.H, OpType.Reset, OpType.Measure}
+    post_cons = AutoRebase(gate_set).get_postconditions()
+    assert post_cons[0].gate_set == gate_set  # type: ignore
+
+
+def test_get_gate_set() -> None:
+    gate_set = GreedyPauliSimp().get_gate_set()
+    assert gate_set is not None
+    assert OpType.CX in gate_set
+    assert OpType.Measure in gate_set
+    assert CliffordPushThroughMeasures().get_gate_set() is None
 
 
 if __name__ == "__main__":

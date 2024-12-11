@@ -17,6 +17,6 @@
 __path__ = __import__("pkgutil").extend_path(__path__, __name__)
 
 from .backend import Backend
+from .backend_exceptions import CircuitNotRunError, CircuitNotValidError
 from .resulthandle import ResultHandle
 from .status import CircuitStatus, StatusEnum
-from .backend_exceptions import CircuitNotRunError, CircuitNotValidError

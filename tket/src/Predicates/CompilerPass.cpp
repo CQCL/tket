@@ -469,7 +469,8 @@ PassPtr deserialise(
       pp = gen_euler_pass(q, p, s);
     } else if (passname == "FlattenRelabelRegistersPass") {
       pp = gen_flatten_relabel_registers_pass(
-          content.at("label").get<std::string>());
+          content.at("label").get<std::string>(),
+          content.at("relabel_classical_expressions").get<bool>());
     } else if (passname == "RoutingPass") {
       Architecture arc = content.at("architecture").get<Architecture>();
       std::vector<RoutingMethodPtr> con = content.at("routing_config");
@@ -521,9 +522,12 @@ PassPtr deserialise(
       unsigned max_lookahead = content.at("max_lookahead").get<unsigned>();
       unsigned seed = content.at("seed").get<unsigned>();
       bool allow_zzphase = content.at("allow_zzphase").get<bool>();
+      unsigned timeout = content.at("thread_timeout").get<unsigned>();
+      bool only_reduce = content.at("only_reduce").get<bool>();
+      unsigned trials = content.at("trials").get<unsigned>();
       pp = gen_greedy_pauli_simp(
           discount_rate, depth_weight, max_lookahead, max_tqe_candidates, seed,
-          allow_zzphase);
+          allow_zzphase, timeout, only_reduce, trials);
 
     } else if (passname == "PauliSimp") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY

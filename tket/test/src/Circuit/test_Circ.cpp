@@ -24,6 +24,7 @@
 #include "tket/Circuit/DAGDefs.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
+#include "tket/Circuit/Slices.hpp"
 #include "tket/Gate/GatePtr.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
 #include "tket/OpType/EdgeType.hpp"
@@ -173,6 +174,25 @@ SCENARIO(
     test1.add_op<unsigned>(OpType::CX, {2, 1});
     REQUIRE(test1.count_gates(OpType::CX) == 3);
     REQUIRE(!test1.is_symbolic());
+  }
+}
+
+SCENARIO("test conditional count") {
+  GIVEN("conditional circ") {
+    Circuit circ;
+    register_t qreg = circ.add_q_register("qb", 2);
+    register_t creg = circ.add_c_register("b", 2);
+    circ.add_conditional_gate<UnitID>(OpType::H, {}, {qreg[1]}, {creg[0]}, 1);
+    circ.add_conditional_gate<UnitID>(OpType::H, {}, {qreg[1]}, {creg[0]}, 1);
+    circ.add_conditional_gate<UnitID>(OpType::H, {}, {qreg[1]}, {creg[0]}, 1);
+    circ.add_op<Qubit>(OpType::H, {Qubit(qreg[0])});
+    circ.add_op<Qubit>(OpType::H, {Qubit(qreg[0])});
+    REQUIRE(circ.n_qubits() == 2);
+    REQUIRE(circ.n_bits() == 2);
+    REQUIRE(circ.count_gates(OpType::CX, false) == 0);
+    REQUIRE(circ.count_gates(OpType::H, false) == 2);
+    REQUIRE(circ.count_gates(OpType::CX, true) == 0);
+    REQUIRE(circ.count_gates(OpType::H, true) == 5);
   }
 }
 
@@ -1577,7 +1597,7 @@ SCENARIO("Test circuit.dagger() method") {
     Circuit daggered = circ.dagger();
     REQUIRE(daggered == circ);
     SliceVec slices1, slices2;
-    for (Circuit::SliceIterator sliceit = daggered.slice_begin();
+    for (SliceIterator sliceit = daggered.slice_begin();
          sliceit != daggered.slice_end(); sliceit++) {
       slices1.push_back(*sliceit);
     }

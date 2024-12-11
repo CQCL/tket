@@ -1,8 +1,40 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.37.0 (Unreleased)
+-------------------
+
+Fixes:
+
+* Fix circuit iteration giving invalid slices in some cases.
+
+1.36.0 (November 2024)
+----------------------
+
+Features:
+
+* Add `BasePass.get_preconditions()` and `BasePass.get_postconditions()`.
+
+API changes:
+
+* Remove the deprecated methods `auto_rebase_pass()` and `auto_squash_pass()`.
+
+Features:
+
+* Add `Circuit.wasm_uid` property to get the wasm UID from the circuit
+
+Performance:
+
+* Optimization in Clifford simplification, reducing compilation times for
+  `FullPeeopholeOptimise` by an order of magnitude on x86_64.
+
+Fixes:
+
+* Fix `Circuit.append` for circuits containing wasm
+* Fix issue with wrong parameters at `add_wasm`
+
+1.35.0 (November 2024)
+----------------------
 
 Features:
 
@@ -12,6 +44,21 @@ Features:
   conditions.
 * Add `custom_deserialisation` argument to `BasePass` and `SequencePass` 
   `from_dict` method to support construction of `CustomPass` from json.
+* Add `thread_timeout`, `only_reduce`, and `trials` arguments 
+  to `GreedyPauliSimp`.
+* Add option to not relabel `ClassicalExpBox` when calling `rename_units`
+  and `flatten_registers`
+* Implement `dagger()` and `transpose()` for `CustomGate`.
+* Use `ClExprOp` by default when converting from QASM.
+* Extend `DecomposeClassicalExp` to handle `ClExprOp` as well as
+  `ClassicalExpBox`.
+* Add convenience method `Circuit.add_clecpr_from_logicexp()`.
+* Remove `OpType::Collapse` from the `GateSetPredicate` of `gen_auto_rebase_pass`.
+
+Deprecations:
+
+* Deprecate `ClassicalExpBox` and related methods, in favour of `ClExprOp`.
+* Deprecate `GlobalisePhasedX` pass and transform.
 
 Fixes:
 
@@ -21,6 +68,8 @@ Fixes:
 * Fix `maxwidth` parameter of `circuit_from_qasm_str`
 * Add `scratch_reg_resize_pass` to `circuit_from_qasm_str`
 * Reject incompete classical registers in pytket to qasm conversion
+* Add parameter `include_conditional` to `n_gates_of_type` to include
+  conditional gates in the count
 
 1.34.0 (October 2024)
 ---------------------

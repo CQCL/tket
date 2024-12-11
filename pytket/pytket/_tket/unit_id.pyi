@@ -2,7 +2,7 @@ from typing import Any
 from __future__ import annotations
 import pytket.circuit.logic_exp
 import typing
-__all__ = ['Bit', 'BitRegister', 'Node', 'Qubit', 'QubitRegister', 'UnitID', 'UnitType']
+__all__ = ['Bit', 'BitRegister', 'Node', 'Qubit', 'QubitRegister', 'UnitID', 'UnitType', 'WasmState']
 class Bit(UnitID):
     """
     A handle to a bit
@@ -397,7 +397,7 @@ class UnitID:
     @property
     def type(self) -> UnitType:
         """
-        Type of unit, either ``UnitType.qubit`` or ``UnitType.bit``
+        Type of unit, either ``UnitType.qubit`` or ``UnitType.bit`` or ``UnitType.wasmstate``
         """
 class UnitType:
     """
@@ -407,11 +407,14 @@ class UnitType:
     
       qubit : A single Qubit
     
+      wasmstate : A single WasmState
+    
       bit : A single classical Bit
     """
-    __members__: typing.ClassVar[dict[str, UnitType]]  # value = {'qubit': <UnitType.qubit: 0>, 'bit': <UnitType.bit: 1>}
+    __members__: typing.ClassVar[dict[str, UnitType]]  # value = {'qubit': <UnitType.qubit: 0>, 'wasmstate': <UnitType.wasmstate: 2>, 'bit': <UnitType.bit: 1>}
     bit: typing.ClassVar[UnitType]  # value = <UnitType.bit: 1>
     qubit: typing.ClassVar[UnitType]  # value = <UnitType.qubit: 0>
+    wasmstate: typing.ClassVar[UnitType]  # value = <UnitType.wasmstate: 2>
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
         ...
@@ -441,6 +444,42 @@ class UnitType:
     @property
     def value(self) -> int:
         ...
+class WasmState(UnitID):
+    """
+    A handle to a wasmstate
+    """
+    @staticmethod
+    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
+        ...
+    @staticmethod
+    def from_list(arg0: list) -> WasmState:
+        """
+        Construct WasmState instance from JSON serializable list representation of the WasmState.
+        """
+    def __copy__(self) -> WasmState:
+        ...
+    def __deepcopy__(self, arg0: dict) -> WasmState:
+        ...
+    def __eq__(self, arg0: typing.Any) -> bool:
+        ...
+    def __getstate__(self) -> tuple:
+        ...
+    def __hash__(self) -> int:
+        ...
+    def __init__(self, index: int) -> None:
+        """
+        Constructs an id for some index in the default wasm register
+        
+        :param index: The index in the register
+        """
+    def __setstate__(self, arg0: tuple) -> None:
+        ...
+    def to_list(self) -> list:
+        """
+        Return a JSON serializable list representation of the WasmState.
+        
+        :return: list containing register name and index
+        """
 _DEBUG_ONE_REG_PREFIX: str = 'tk_DEBUG_ONE_REG'
 _DEBUG_ZERO_REG_PREFIX: str = 'tk_DEBUG_ZERO_REG'
 _TEMP_BIT_NAME: str = 'tk_SCRATCH_BIT'

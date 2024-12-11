@@ -13,44 +13,32 @@
 # limitations under the License.
 
 """`BackendResult` class and associated methods."""
-from typing import (
-    Optional,
-    Any,
-    Sequence,
-    Iterable,
-    List,
-    Tuple,
-    Dict,
-    Counter,
-    NamedTuple,
-    Collection,
-    Type,
-    TypeVar,
-    cast,
-)
 import operator
-from functools import reduce
 import warnings
+from collections import Counter
+from collections.abc import Collection, Iterable, Sequence
+from functools import reduce
+from typing import Any, NamedTuple, TypeVar, cast
 
 import numpy as np
 
 from pytket.circuit import (
+    _DEBUG_ONE_REG_PREFIX,
+    _DEBUG_ZERO_REG_PREFIX,
     BasisOrder,
     Bit,
     Circuit,
     Qubit,
     UnitID,
-    _DEBUG_ZERO_REG_PREFIX,
-    _DEBUG_ONE_REG_PREFIX,
 )
 from pytket.utils.distribution import EmpiricalDistribution, ProbabilityDistribution
+from pytket.utils.outcomearray import OutcomeArray, readout_counts
 from pytket.utils.results import (
-    probs_from_state,
     get_n_qb_from_statevector,
     permute_basis_indexing,
     permute_rows_cols_in_unitary,
+    probs_from_state,
 )
-from pytket.utils.outcomearray import OutcomeArray, readout_counts
 
 from .backend_exceptions import InvalidResultType
 
@@ -58,11 +46,11 @@ from .backend_exceptions import InvalidResultType
 class StoredResult(NamedTuple):
     """NamedTuple with optional fields for all result types."""
 
-    counts: Optional[Counter[OutcomeArray]] = None
-    shots: Optional[OutcomeArray] = None
-    state: Optional[np.ndarray] = None
-    unitary: Optional[np.ndarray] = None
-    density_matrix: Optional[np.ndarray] = None
+    counts: Counter[OutcomeArray] | None = None
+    shots: OutcomeArray | None = None
+    state: np.ndarray | None = None
+    unitary: np.ndarray | None = None
+    density_matrix: np.ndarray | None = None
 
 
 class BackendResult:
@@ -89,14 +77,14 @@ class BackendResult:
     def __init__(
         self,
         *,
-        q_bits: Optional[Sequence[Qubit]] = None,
-        c_bits: Optional[Sequence[Bit]] = None,
-        counts: Optional[Counter[OutcomeArray]] = None,
-        shots: Optional[OutcomeArray] = None,
+        q_bits: Sequence[Qubit] | None = None,
+        c_bits: Sequence[Bit] | None = None,
+        counts: Counter[OutcomeArray] | None = None,
+        shots: OutcomeArray | None = None,
         state: Any = None,
         unitary: Any = None,
         density_matrix: Any = None,
-        ppcirc: Optional[Circuit] = None,
+        ppcirc: Circuit | None = None,
     ):
         # deal with mutable defaults
         if q_bits is None:
@@ -113,20 +101,18 @@ class BackendResult:
 
         self._ppcirc = ppcirc
 
-        self.c_bits: Dict[Bit, int] = dict()
-        self.q_bits: Dict[Qubit, int] = dict()
+        self.c_bits: dict[Bit, int] = dict()
+        self.q_bits: dict[Qubit, int] = dict()
 
         def _process_unitids(
-            var: Sequence[UnitID], attr: str, lent: int, uid: Type[UnitID]
+            var: Sequence[UnitID], attr: str, lent: int, uid: type[UnitID]
         ) -> None:
             if var:
                 setattr(self, attr, dict((unit, i) for i, unit in enumerate(var)))
                 if lent != len(var):
                     raise ValueError(
-                        (
-                            f"Length of {attr} ({len(var)}) does not"
-                            f" match input data dimensions ({lent})."
-                        )
+                        f"Length of {attr} ({len(var)}) does not"
+                        f" match input data dimensions ({lent})."
                     )
             else:
                 setattr(self, attr, dict((uid(i), i) for i in range(lent)))  # type: ignore
@@ -161,9 +147,9 @@ class BackendResult:
 
     def __repr__(self) -> str:
         return (
-            "BackendResult(q_bits={s.q_bits},c_bits={s.c_bits},counts={s._counts},"
-            "shots={s._shots},state={s._state},unitary={s._unitary},"
-            "density_matrix={s._density_matrix})".format(s=self)
+            f"BackendResult(q_bits={self.q_bits},c_bits={self.c_bits},"
+            f"counts={self._counts},shots={self._shots},state={self._state},"
+            f"unitary={self._unitary},density_matrix={self._density_matrix})"
         )
 
     @property
@@ -197,7 +183,7 @@ class BackendResult:
             and np.array_equal(self._density_matrix, other._density_matrix)
         )
 
-    def get_bitlist(self) -> List[Bit]:
+    def get_bitlist(self) -> list[Bit]:
         """Return list of Bits in internal storage order.
 
         :raises AttributeError: BackendResult does not include a Bits list.
@@ -206,7 +192,7 @@ class BackendResult:
         """
         return _sort_keys_by_val(self.c_bits)
 
-    def get_qbitlist(self) -> List[Qubit]:
+    def get_qbitlist(self) -> list[Qubit]:
         """Return list of Qubits in internal storage order.
 
         :raises AttributeError: BackendResult does not include a Qubits list.
@@ -217,9 +203,9 @@ class BackendResult:
         return _sort_keys_by_val(self.q_bits)
 
     def _get_measured_res(
-        self, bits: Sequence[Bit], ppcirc: Optional[Circuit] = None
+        self, bits: Sequence[Bit], ppcirc: Circuit | None = None
     ) -> StoredResult:
-        vals: Dict[str, Any] = {}
+        vals: dict[str, Any] = {}
 
         if not self.contains_measured_results:
             raise InvalidResultType("shots/counts")
@@ -281,7 +267,7 @@ class BackendResult:
     def _permute_statearray_qb_labels(
         self,
         array: np.ndarray,
-        relabling_map: Dict[Qubit, Qubit],
+        relabling_map: dict[Qubit, Qubit],
     ) -> np.ndarray:
         """Permute statevector/unitary according to a relabelling of Qubits.
 
@@ -292,7 +278,7 @@ class BackendResult:
         :return: Permuted array.
         :rtype: np.ndarray
         """
-        original_labeling: Sequence["Qubit"] = self.get_qbitlist()
+        original_labeling: Sequence[Qubit] = self.get_qbitlist()
         n_labels = len(original_labeling)
         permutation = [0] * n_labels
         for i, orig_qb in enumerate(original_labeling):
@@ -308,7 +294,7 @@ class BackendResult:
         return permuter(array, tuple(permutation))
 
     def _get_state_res(self, qubits: Sequence[Qubit]) -> StoredResult:
-        vals: Dict[str, Any] = {}
+        vals: dict[str, Any] = {}
         if not self.contains_state_results:
             raise InvalidResultType("state/unitary/density_matrix")
 
@@ -332,9 +318,9 @@ class BackendResult:
 
     def get_result(
         self,
-        request_ids: Optional[Sequence[UnitID]] = None,
+        request_ids: Sequence[UnitID] | None = None,
         basis: BasisOrder = BasisOrder.ilo,
-        ppcirc: Optional[Circuit] = None,
+        ppcirc: Circuit | None = None,
     ) -> StoredResult:
         """Retrieve all results, optionally according to a specified UnitID ordering
          or subset.
@@ -384,9 +370,9 @@ class BackendResult:
 
     def get_shots(
         self,
-        cbits: Optional[Sequence[Bit]] = None,
+        cbits: Sequence[Bit] | None = None,
         basis: BasisOrder = BasisOrder.ilo,
-        ppcirc: Optional[Circuit] = None,
+        ppcirc: Circuit | None = None,
     ) -> np.ndarray:
         """Return shots if available.
 
@@ -413,10 +399,10 @@ class BackendResult:
 
     def get_counts(
         self,
-        cbits: Optional[Sequence[Bit]] = None,
+        cbits: Sequence[Bit] | None = None,
         basis: BasisOrder = BasisOrder.ilo,
-        ppcirc: Optional[Circuit] = None,
-    ) -> Counter[Tuple[int, ...]]:
+        ppcirc: Circuit | None = None,
+    ) -> Counter[tuple[int, ...]]:
         """Return counts of outcomes if available.
 
         :param cbits: ordered subset of Bits, returns all results by default, defaults
@@ -441,7 +427,7 @@ class BackendResult:
 
     def get_state(
         self,
-        qbits: Optional[Sequence[Qubit]] = None,
+        qbits: Sequence[Qubit] | None = None,
         basis: BasisOrder = BasisOrder.ilo,
     ) -> np.ndarray:
         """Return statevector if available.
@@ -467,7 +453,7 @@ class BackendResult:
 
     def get_unitary(
         self,
-        qbits: Optional[Sequence[Qubit]] = None,
+        qbits: Sequence[Qubit] | None = None,
         basis: BasisOrder = BasisOrder.ilo,
     ) -> np.ndarray:
         """Return unitary if available.
@@ -490,7 +476,7 @@ class BackendResult:
 
     def get_density_matrix(
         self,
-        qbits: Optional[Sequence[Qubit]] = None,
+        qbits: Sequence[Qubit] | None = None,
         basis: BasisOrder = BasisOrder.ilo,
     ) -> np.ndarray:
         """Return density_matrix if available.
@@ -512,8 +498,8 @@ class BackendResult:
         raise InvalidResultType("density_matrix")
 
     def get_distribution(
-        self, units: Optional[Sequence[UnitID]] = None
-    ) -> Dict[Tuple[int, ...], float]:
+        self, units: Sequence[UnitID] | None = None
+    ) -> dict[tuple[int, ...], float]:
         """Calculate an exact or approximate probability distribution over outcomes.
 
         If the exact statevector is known, the exact probability distribution is
@@ -543,12 +529,11 @@ class BackendResult:
         except InvalidResultType:
             counts = self.get_counts(units)  # type: ignore
             total = sum(counts.values())
-            dist = {outcome: count / total for outcome, count in counts.items()}
-            return dist
+            return {outcome: count / total for outcome, count in counts.items()}
 
     def get_empirical_distribution(
-        self, bits: Optional[Sequence[Bit]] = None
-    ) -> EmpiricalDistribution[Tuple[int, ...]]:
+        self, bits: Sequence[Bit] | None = None
+    ) -> EmpiricalDistribution[tuple[int, ...]]:
         """Convert to a :py:class:`pytket.utils.distribution.EmpiricalDistribution`
         where the observations are sequences of 0s and 1s.
 
@@ -563,8 +548,8 @@ class BackendResult:
         return EmpiricalDistribution(self.get_counts(bits))
 
     def get_probability_distribution(
-        self, qubits: Optional[Sequence[Qubit]] = None, min_p: float = 0.0
-    ) -> ProbabilityDistribution[Tuple[int, ...]]:
+        self, qubits: Sequence[Qubit] | None = None, min_p: float = 0.0
+    ) -> ProbabilityDistribution[tuple[int, ...]]:
         """Convert to a :py:class:`pytket.utils.distribution.ProbabilityDistribution`
         where the possible outcomes are sequences of 0s and 1s.
 
@@ -582,7 +567,7 @@ class BackendResult:
         state = self.get_state(qubits)
         return ProbabilityDistribution(probs_from_state(state), min_p=min_p)
 
-    def get_debug_info(self) -> Dict[str, float]:
+    def get_debug_info(self) -> dict[str, float]:
         """Calculate the success rate of each assertion averaged across shots.
 
         Each assertion in pytket is decomposed into a sequence of transformations
@@ -594,7 +579,7 @@ class BackendResult:
         """
         _tket_debug_zero_prefix = _DEBUG_ZERO_REG_PREFIX + "_"
         _tket_debug_one_prefix = _DEBUG_ONE_REG_PREFIX + "_"
-        debug_bit_dict: Dict[str, Dict[str, Any]] = {}
+        debug_bit_dict: dict[str, dict[str, Any]] = {}
         for bit in self.c_bits:
             if bit.reg_name.startswith(_tket_debug_zero_prefix):
                 expectation = 0
@@ -609,7 +594,7 @@ class BackendResult:
             debug_bit_dict[assertion_name]["bits"].append(bit)
             debug_bit_dict[assertion_name]["expectations"].append(expectation)
 
-        debug_result_dict: Dict[str, float] = {}
+        debug_result_dict: dict[str, float] = {}
         for assertion_name, bits_info in debug_bit_dict.items():
             counts = self.get_counts(bits_info["bits"])
             debug_result_dict[assertion_name] = counts[
@@ -617,14 +602,14 @@ class BackendResult:
             ] / sum(counts.values())
         return debug_result_dict
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Generate a dictionary serialized representation of BackendResult,
          suitable for writing to JSON.
 
         :return: JSON serializable dictionary.
         :rtype: Dict[str, Any]
         """
-        outdict: Dict[str, Any] = dict()
+        outdict: dict[str, Any] = dict()
         outdict["qubits"] = [q.to_list() for q in self.get_qbitlist()]
         outdict["bits"] = [c.to_list() for c in self.get_bitlist()]
         if self._shots is not None:
@@ -645,7 +630,7 @@ class BackendResult:
         return outdict
 
     @classmethod
-    def from_dict(cls, res_dict: Dict[str, Any]) -> "BackendResult":
+    def from_dict(cls, res_dict: dict[str, Any]) -> "BackendResult":
         """Construct BackendResult object from JSON serializable dictionary
          representation, as generated by BackendResult.to_dict.
 
@@ -692,7 +677,7 @@ class BackendResult:
 T = TypeVar("T")
 
 
-def _sort_keys_by_val(dic: Dict[T, int]) -> List[T]:
+def _sort_keys_by_val(dic: dict[T, int]) -> list[T]:
     if not dic:
         return []
     vals, _ = zip(*sorted(dic.items(), key=lambda x: x[1]))
@@ -703,12 +688,12 @@ def _check_permuted_sequence(first: Collection[Any], second: Collection[Any]) ->
     return len(first) == len(second) and set(first) == set(second)
 
 
-def _complex_ar_to_dict(ar: np.ndarray) -> Dict[str, List]:
+def _complex_ar_to_dict(ar: np.ndarray) -> dict[str, list]:
     """Dictionary of real, imaginary parts of complex array, each in list form."""
     return {"real": ar.real.tolist(), "imag": ar.imag.tolist()}
 
 
-def _complex_ar_from_dict(dic: Dict[str, List]) -> np.ndarray:
+def _complex_ar_from_dict(dic: dict[str, list]) -> np.ndarray:
     """Construct complex array from dictionary of real and imaginary parts"""
 
     out = np.array(dic["real"], dtype=complex)

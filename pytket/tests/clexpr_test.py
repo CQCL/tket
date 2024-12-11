@@ -13,8 +13,10 @@
 # limitations under the License.
 
 import json
-from jsonschema import validate  # type: ignore
 from pathlib import Path
+
+from jsonschema import validate  # type: ignore
+
 from pytket.circuit import (
     Bit,
     CircBox,
@@ -26,10 +28,10 @@ from pytket.circuit import (
     ClRegVar,
     WiredClExpr,
 )
-from pytket.qasm import circuit_to_qasm_str, circuit_from_qasm_str
+from pytket.qasm import circuit_from_qasm_str, circuit_to_qasm_str
 
 with open(
-    Path(__file__).resolve().parent.parent.parent / "schemas/circuit_v1.json", "r"
+    Path(__file__).resolve().parent.parent.parent / "schemas/circuit_v1.json"
 ) as f:
     SCHEMA = json.load(f)
 
@@ -233,3 +235,23 @@ def test_circbox() -> None:
     c2 = c1.copy()
     c2.flatten_registers()
     assert c1 == c2
+
+
+def test_add_logicexp_as_clexpr() -> None:
+    c = Circuit()
+    a_reg = c.add_c_register("a", 3)
+    b_reg = c.add_c_register("b", 3)
+    c_reg = c.add_c_register("c", 3)
+    c.add_clexpr_from_logicexp(a_reg | b_reg, c_reg.to_list())
+    qasm = circuit_to_qasm_str(c, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+creg a[3];
+creg b[3];
+creg c[3];
+c = (a | b);
+"""
+    )

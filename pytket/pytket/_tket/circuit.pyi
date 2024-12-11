@@ -1438,6 +1438,7 @@ class Circuit:
     def add_classicalexpbox_bit(self, expression: pytket.circuit.logic_exp.BitLogicExp, target: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`ClassicalExpBox` over Bit to the circuit.
+        DEPRECATED: Please use :py:meth:`add_clexpr` instead. This method will be removed after pytket 1.40.
         
         :param classicalexpbox: The box to append
         :param args: Indices of the qubits to append the box to
@@ -1446,6 +1447,7 @@ class Circuit:
     def add_classicalexpbox_register(self, expression: pytket.circuit.logic_exp.RegLogicExp, target: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`ClassicalExpBox` over BitRegister to the circuit.
+        DEPRECATED: Please use :py:meth:`add_clexpr` instead. This method will be removed after pytket 1.40.
         
         :param classicalexpbox: The box to append
         :param args: Indices of the qubits to append the box to
@@ -1458,6 +1460,22 @@ class Circuit:
         :param expr: The expression to append
         :param args: The bits to apply the expression to
         :return: the new :py:class:`Circuit`
+        """
+    def add_clexpr_from_logicexp(self, exp: pytket.circuit.logic_exp.LogicExp, output_bits: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
+        """
+        Append a :py:class:`ClExprOp` defined in terms of a logical expression.
+        
+        Example:
+        >>> c = Circuit()
+        >>> x_reg = c.add_c_register('x', 3)
+        >>> y_reg = c.add_c_register('y', 3)
+        >>> z_reg = c.add_c_register('z', 3)
+        >>> c.add_clexpr_from_logicexp(x_reg | y_reg, z_reg.to_list())
+        >>> [ClExpr x[0], x[1], x[2], y[0], y[1], y[2], z[0], z[1], z[2]; ]
+        
+        :param exp: logical expression
+        :param output_bits: list of bits in output
+        :return: the updated circuit
         """
     @typing.overload
     def add_conditional_barrier(self, barrier_qubits: typing.Sequence[int], barrier_bits: typing.Sequence[int], condition_bits: typing.Sequence[int], value: int, data: str = '') -> Circuit:
@@ -2104,9 +2122,11 @@ class Circuit:
         :param types: the set of operation types of interest
         :return: the circuit depth with respect to operations matching an element of `types`
         """
-    def flatten_registers(self) -> dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]:
+    def flatten_registers(self, relabel_classical_expression: bool = True) -> dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]:
         """
         Combines all qubits into a single register namespace with the default name, and likewise for bits
+        
+        :param relabel_classical_expression: Determines whether python classical expressions held in `ClassicalExpBox` have their expression relabelled to match relabelled Bit.
         """
     def free_symbols(self) -> set[sympy.Symbol]:
         """
@@ -2235,7 +2255,7 @@ class Circuit:
         """
         Returns the number of vertices in the dag with two quantum edges.Ignores Input, Create, Output, Discard, Reset, Measure and Barrier vertices.
         """
-    def n_gates_of_type(self, type: OpType) -> int:
+    def n_gates_of_type(self, type: OpType, include_conditional: bool = False) -> int:
         """
         Returns the number of vertices in the dag of a given operation type.
         
@@ -2246,6 +2266,9 @@ class Circuit:
         2
         
         :param type: The operation type to search for
+        
+        :param include_conditional: if set to true, conditional gates will be counted, too
+        
         :return: the number of operations matching `type`
         """
     def n_nqb_gates(self, size: int) -> int:
@@ -2547,6 +2570,11 @@ class Circuit:
     def qubits(self) -> list[pytket._tket.unit_id.Qubit]:
         """
         A list of all qubit ids in the circuit
+        """
+    @property
+    def wasm_uid(self) -> str | None:
+        """
+        :return: the unique wasm uid of the circuit
         """
 class ClBitVar:
     """
@@ -3614,6 +3642,7 @@ class OpType:
       MultiBit : A classical operation applied to multiple bits simultaneously
     
       ClassicalExpBox : A box for holding compound classical operations on Bits.
+    DEPRECATED: Please use :py:class:`WiredClExpr` instead. This class will be removed after pytket 1.40.
     
       MultiplexorBox : A multiplexor (i.e. uniformly controlled operations)
     

@@ -410,7 +410,16 @@ PYBIND11_MODULE(transform, m) {
           "DecomposeNPhasedX", &Transforms::decompose_NPhasedX,
           "Decompose NPhasedX gates into single-qubit PhasedX gates.")
       .def_static(
-          "GlobalisePhasedX", &Transforms::globalise_PhasedX,
+          "GlobalisePhasedX",
+          [](bool squash) {
+            PyErr_WarnEx(
+                PyExc_DeprecationWarning,
+                "The GlobalisePhasedX transform is unreliable and deprecated. "
+                "It will be removed no earlier than three months after the "
+                "pytket 1.35 release.",
+                1);
+            return Transforms::globalise_PhasedX(squash);
+          },
           "Turns all PhasedX and NPhasedX gates into global gates\n\n"
           "Replaces any PhasedX gates with global NPhasedX gates. "
           "By default, this transform will squash all single-qubit gates "
@@ -420,6 +429,8 @@ PYBIND11_MODULE(transform, m) {
           "performance. If squashing is disabled, each non-global PhasedX gate "
           "will be replaced with two global NPhasedX, but any other gates will "
           "be left untouched."
+          "\n\nDEPRECATED: This transform will be removed no earlier than "
+          "three months after the pytket 1.35 release."
           "\n\n:param squash: Whether to squash the circuit in pre-processing "
           "(default: true)."
           "\n\nIf squash=true (default), the `GlobalisePhasedX` transform's "
@@ -464,10 +475,16 @@ PYBIND11_MODULE(transform, m) {
           "\n:param allow_zzphase: If set to True, allows the algorithm to "
           "implement 2-qubit rotations using ZZPhase gates when deemed "
           "optimal. Defaults to False."
+          "\n:param thread_timeout: Sets maximum out of time spent finding a "
+          "single solution in one thread."
+          "\n:param trials: Sets maximum number of found solutions. The "
+          "smallest circuit is returned, prioritising the number of 2qb-gates, "
+          "then the number of gates, then the depth."
           "\n:return: a pass to perform the simplification",
           py::arg("discount_rate") = 0.7, py::arg("depth_weight") = 0.3,
           py::arg("max_tqe_candidates") = 500, py::arg("max_lookahead") = 500,
-          py::arg("seed") = 0, py::arg("allow_zzphase") = false)
+          py::arg("seed") = 0, py::arg("allow_zzphase") = false,
+          py::arg("thread_timeout") = 100, py::arg("trials") = 1)
       .def_static(
           "ZZPhaseToRz", &Transforms::ZZPhase_to_Rz,
           "Fixes all ZZPhase gate angles to [-1, 1) half turns.")

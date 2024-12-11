@@ -116,6 +116,15 @@ SCENARIO("generating circ with wasm") {
 
     REQUIRE(wop.is_equal(wop_2));
   }
+  GIVEN("compare wasmop 6") {
+    WASMOp wop = WASMOp(4, 0, uv, uv_2, wasm_func, wasm_file);
+
+    WASMOp wop_2 = WASMOp(4, 0, uv, uv_2, wasm_func, wasm_file);
+
+    REQUIRE(wop.is_equal(wop_2));
+    REQUIRE(wop.get_ww_n() == 0);
+    REQUIRE(wop_2.get_ww_n() == 0);
+  }
   GIVEN("wasmop is_extern") {
     const std::shared_ptr<WASMOp> wop_ptr =
         std::make_shared<WASMOp>(4, 1, uv, uv_2, wasm_func, wasm_file);
@@ -182,6 +191,170 @@ SCENARIO("generating circ with wasm") {
     REQUIRE(u.depth() == 2);
     REQUIRE(u.w_inputs().size() == 3);
     REQUIRE(u.w_outputs().size() == 3);
+  }
+  GIVEN("circuit get wasm uid") {
+    Circuit u(1, 1);
+
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(2, 1, uv_2, uv_2, wasm_func, wasm_file);
+
+    const std::shared_ptr<WASMOp> wop_ptr_2 =
+        std::make_shared<WASMOp>(1, 3, uv_2, uv_3, wasm_func, wasm_file);
+
+    u.add_op<UnitID>(wop_ptr, {Bit(0), Bit(0), WasmState(0)});
+    u.add_op<UnitID>(
+        wop_ptr_2, {Bit(0), WasmState(0), WasmState(1), WasmState(2)});
+
+    u.assert_valid();
+    REQUIRE(u.depth() == 2);
+    REQUIRE(u.get_wasm_file_uid() == wasm_file);
+  }
+  GIVEN("circuit get wasm uid 2") {
+    Circuit u(0, 1);
+
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(2, 1, uv_2, uv_2, wasm_func, wasm_file);
+
+    const std::shared_ptr<WASMOp> wop_ptr_2 =
+        std::make_shared<WASMOp>(1, 3, uv_2, uv_3, wasm_func, wasm_file);
+
+    u.add_op<UnitID>(wop_ptr, {Bit(0), Bit(0), WasmState(0)});
+    u.add_op<UnitID>(
+        wop_ptr_2, {Bit(0), WasmState(0), WasmState(1), WasmState(2)});
+
+    u.assert_valid();
+    REQUIRE(u.depth() == 2);
+    REQUIRE(u.get_wasm_file_uid() == wasm_file);
+
+    CircBox circbox(u);
+    Circuit major_circ(0, 1);
+    major_circ.add_box(circbox, {0});
+
+    REQUIRE(major_circ.depth() == 1);
+    REQUIRE(major_circ.get_wasm_file_uid() == wasm_file);
+  }
+  GIVEN("circuit get wasm uid 3") {
+    Circuit u(0, 1);
+
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(2, 1, uv_2, uv_2, wasm_func, wasm_file);
+
+    const std::shared_ptr<WASMOp> wop_ptr_2 =
+        std::make_shared<WASMOp>(1, 3, uv_2, uv_3, wasm_func, wasm_file);
+
+    u.assert_valid();
+    REQUIRE(u.depth() == 0);
+    REQUIRE(u.get_wasm_file_uid() == std::nullopt);
+
+    CircBox circbox(u);
+    Circuit major_circ(0, 1);
+    major_circ.add_box(circbox, {0});
+
+    REQUIRE(major_circ.depth() == 1);
+    REQUIRE(major_circ.get_wasm_file_uid() == std::nullopt);
+  }
+  GIVEN("circuit with wasm append") {
+    Circuit u(1, 1);
+    Circuit u2(1, 1);
+
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(2, 1, uv_2, uv_2, wasm_func, wasm_file);
+
+    const std::shared_ptr<WASMOp> wop_ptr_2 =
+        std::make_shared<WASMOp>(1, 3, uv_2, uv_3, wasm_func, wasm_file);
+
+    u.add_op<UnitID>(wop_ptr, {Bit(0), Bit(0), WasmState(0)});
+    u.add_op<UnitID>(
+        wop_ptr_2, {Bit(0), WasmState(0), WasmState(1), WasmState(2)});
+
+    u.assert_valid();
+    REQUIRE(u.depth() == 2);
+    REQUIRE(u.w_inputs().size() == 3);
+    REQUIRE(u.w_outputs().size() == 3);
+    REQUIRE(u2.depth() == 0);
+    REQUIRE(u2.w_inputs().size() == 0);
+    REQUIRE(u2.w_outputs().size() == 0);
+    u2.append(u);
+    REQUIRE(u2.depth() == 2);
+    REQUIRE(u2.w_inputs().size() == 3);
+    REQUIRE(u2.w_outputs().size() == 3);
+  }
+  GIVEN("circuit with wasm append 2 ") {
+    Circuit u(1, 1);
+    Circuit u2(1, 1);
+
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(2, 1, uv_2, uv_2, wasm_func, wasm_file);
+
+    const std::shared_ptr<WASMOp> wop_ptr_2 =
+        std::make_shared<WASMOp>(1, 1, uv_2, uv_3, wasm_func, wasm_file);
+
+    u.add_op<UnitID>(wop_ptr, {Bit(0), Bit(0), WasmState(0)});
+    u.add_op<UnitID>(wop_ptr_2, {Bit(0), WasmState(0)});
+
+    u.assert_valid();
+    REQUIRE(u.depth() == 2);
+    REQUIRE(u.w_inputs().size() == 1);
+    REQUIRE(u.w_outputs().size() == 1);
+    REQUIRE(u2.depth() == 0);
+    REQUIRE(u2.w_inputs().size() == 0);
+    REQUIRE(u2.w_outputs().size() == 0);
+    u2.append(u);
+    REQUIRE(u2.depth() == 2);
+    REQUIRE(u2.w_inputs().size() == 1);
+    REQUIRE(u2.w_outputs().size() == 1);
+  }
+  GIVEN("circuit with wasm append 3 ") {
+    Circuit u(1, 1);
+    Circuit u2(1, 1);
+
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(1, 1, uv_2, uv_3, wasm_func, wasm_file);
+
+    u.add_op<UnitID>(wop_ptr, {Bit(0), WasmState(0)});
+
+    u.assert_valid();
+    REQUIRE(u.depth() == 1);
+    REQUIRE(u.w_inputs().size() == 1);
+    REQUIRE(u.w_outputs().size() == 1);
+    REQUIRE(u2.depth() == 0);
+    REQUIRE(u2.w_inputs().size() == 0);
+    REQUIRE(u2.w_outputs().size() == 0);
+    u2.append(u);
+    REQUIRE(u2.depth() == 1);
+    REQUIRE(u2.w_inputs().size() == 1);
+    REQUIRE(u2.w_outputs().size() == 1);
+  }
+  GIVEN("circuit with wasm append 4") {
+    Circuit u(1, 1);
+    Circuit u2(1, 1);
+
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(2, 1, uv_2, uv_2, wasm_func, wasm_file);
+
+    const std::shared_ptr<WASMOp> wop_ptr_2 =
+        std::make_shared<WASMOp>(1, 1, uv_2, uv_3, wasm_func, wasm_file);
+
+    const std::shared_ptr<WASMOp> wop_ptr_3 =
+        std::make_shared<WASMOp>(1, 3, uv_3, uv_2, wasm_func, wasm_file);
+
+    u.add_op<UnitID>(wop_ptr, {Bit(0), Bit(0), WasmState(0)});
+    u.add_op<UnitID>(wop_ptr_2, {Bit(0), WasmState(0)});
+    u2.add_op<UnitID>(
+        wop_ptr_3, {Bit(0), WasmState(0), WasmState(1), WasmState(2)});
+
+    u.assert_valid();
+    u2.assert_valid();
+    REQUIRE(u.depth() == 2);
+    REQUIRE(u.w_inputs().size() == 1);
+    REQUIRE(u.w_outputs().size() == 1);
+    REQUIRE(u2.depth() == 1);
+    REQUIRE(u2.w_inputs().size() == 3);
+    REQUIRE(u2.w_outputs().size() == 3);
+    u2.append(u);
+    REQUIRE(u2.depth() == 3);
+    REQUIRE(u2.w_inputs().size() == 3);
+    REQUIRE(u2.w_outputs().size() == 3);
   }
 }
 

@@ -12,17 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import pytest
+
+from pytket.architecture import Architecture
 from pytket.circuit import Circuit, OpType, reg_eq
 from pytket.passes import (
+    CXMappingPass,
     FullPeepholeOptimise,
     PassSelector,
-    CXMappingPass,
     scratch_reg_resize_pass,
 )
-from pytket.architecture import Architecture
 from pytket.placement import Placement
 from pytket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
-import pytest
 
 
 def test_compilation() -> None:
@@ -182,9 +183,6 @@ def test_PassSelector() -> None:
 
 
 def test_PassSelector_wrong_pass() -> None:
-    fp = FullPeepholeOptimise()
-    fp2 = FullPeepholeOptimise(allow_swaps=False)
-
     arc = Architecture([(1, 2)])
 
     pl = Placement(arc)
@@ -200,7 +198,7 @@ def test_PassSelector_wrong_pass() -> None:
     circ = Circuit(3).H(1).H(0).H(1).H(0).X(1).CX(1, 0).CX(0, 1).CX(1, 2)
 
     with pytest.raises(Exception):
-        result = sp.apply(circ)
+        _ = sp.apply(circ)
 
 
 def test_PassSelector_empty_pass() -> None:
@@ -208,7 +206,7 @@ def test_PassSelector_empty_pass() -> None:
         return circ.depth()
 
     with pytest.raises(Exception):
-        sp = PassSelector([], circ_depth)
+        _ = PassSelector([], circ_depth)
 
 
 def test_PassSelector_ii() -> None:

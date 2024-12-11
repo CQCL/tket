@@ -17,26 +17,26 @@
 ### WARNING: TketSimBackend accepts Measure gates but does not apply them
 ### TketSimBackend will not work properly if there are extra bits that are unwritten to.
 
-from .tket_sim_wrapper import TketSimWrapper
-
-from typing import TYPE_CHECKING, List, Optional, Sequence, Union, cast
+from collections.abc import Sequence
+from typing import List, Optional, Union, cast
 from uuid import uuid4
 
 import numpy as np
-from pytket.circuit import BasisOrder, Circuit, OpType
+
 from pytket.backends.backend import Backend, KwargTypes
 from pytket.backends.backend_exceptions import CircuitNotRunError
 from pytket.backends.backendresult import BackendResult
 from pytket.backends.resulthandle import ResultHandle, _ResultIdTuple
 from pytket.backends.status import CircuitStatus, StatusEnum
+from pytket.circuit import BasisOrder, Circuit, OpType
 from pytket.passes import (
-    BasePass,
-    SequencePass,
-    SynthesiseTket,
-    FullPeepholeOptimise,
-    DecomposeBoxes,
-    SimplifyInitial,
     AutoRebase,
+    BasePass,
+    DecomposeBoxes,
+    FullPeepholeOptimise,
+    SequencePass,
+    SimplifyInitial,
+    SynthesiseTket,
 )
 from pytket.predicates import (
     NoClassicalControlPredicate,
@@ -47,6 +47,7 @@ from pytket.utils import prepare_circuit
 from pytket.utils.outcomearray import OutcomeArray
 from pytket.utils.results import probs_from_state
 
+from .tket_sim_wrapper import TketSimWrapper
 
 _GATE_SET = {
     OpType.SWAP,
@@ -90,7 +91,7 @@ class TketSimBackend(Backend):
         return (str,)
 
     @property
-    def required_predicates(self) -> List[Predicate]:
+    def required_predicates(self) -> list[Predicate]:
         # We don't include a GateSetPredicate; don't list allowed gates.
         # It's only for testing, so let it raise an exception naturally
         # if an unknown gate is passed in.
@@ -106,22 +107,21 @@ class TketSimBackend(Backend):
         assert optimisation_level in range(3)
         if optimisation_level == 0:
             return SequencePass([DecomposeBoxes(), self.rebase_pass()])
-        elif optimisation_level == 1:
+        if optimisation_level == 1:
             return SequencePass(
                 [DecomposeBoxes(), SynthesiseTket(), self.rebase_pass()]
             )
-        else:
-            return SequencePass(
-                [DecomposeBoxes(), FullPeepholeOptimise(), self.rebase_pass()]
-            )
+        return SequencePass(
+            [DecomposeBoxes(), FullPeepholeOptimise(), self.rebase_pass()]
+        )
 
     def process_circuits(
         self,
         circuits: Sequence[Circuit],
-        n_shots: Optional[Union[int, Sequence[int]]] = None,
+        n_shots: int | Sequence[int] | None = None,
         valid_check: bool = True,
         **kwargs: KwargTypes,
-    ) -> List[ResultHandle]:
+    ) -> list[ResultHandle]:
         circuits = list(circuits)
         if valid_check:
             self._check_all_circuits(circuits)
@@ -157,7 +157,7 @@ class TketSimShotBackend(TketSimBackend):
         assert optimisation_level in range(3)
         if optimisation_level == 0:
             return SequencePass([DecomposeBoxes(), self.rebase_pass()])
-        elif optimisation_level == 1:
+        if optimisation_level == 1:
             return SequencePass(
                 [
                     DecomposeBoxes(),
@@ -166,32 +166,31 @@ class TketSimShotBackend(TketSimBackend):
                     SimplifyInitial(allow_classical=False, create_all_qubits=True),
                 ]
             )
-        else:
-            return SequencePass(
-                [
-                    DecomposeBoxes(),
-                    FullPeepholeOptimise(),
-                    self.rebase_pass(),
-                    SimplifyInitial(allow_classical=False, create_all_qubits=True),
-                ]
-            )
+        return SequencePass(
+            [
+                DecomposeBoxes(),
+                FullPeepholeOptimise(),
+                self.rebase_pass(),
+                SimplifyInitial(allow_classical=False, create_all_qubits=True),
+            ]
+        )
 
     def process_circuits(
         self,
         circuits: Sequence[Circuit],
-        n_shots: Optional[Union[int, Sequence[int]]] = None,
+        n_shots: int | Sequence[int] | None = None,
         valid_check: bool = True,
         **kwargs: KwargTypes,
-    ) -> List[ResultHandle]:
+    ) -> list[ResultHandle]:
         circuits = list(circuits)
-        n_shots_list: List[int] = []
+        n_shots_list: list[int] = []
         if hasattr(n_shots, "__iter__"):
-            if any(n is None or n < 1 for n in cast(Sequence[Optional[int]], n_shots)):
+            if any(n is None or n < 1 for n in cast(Sequence[int | None], n_shots)):
                 raise ValueError(
                     "Shots are artificially generated, specify a positive value "
                     "for all list entries of n_shots."
                 )
-            n_shots_list = cast(List[int], n_shots)
+            n_shots_list = cast(list[int], n_shots)
             if len(n_shots_list) != len(circuits):
                 raise ValueError("The length of n_shots and circuits must match")
         else:
