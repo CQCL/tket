@@ -4,6 +4,11 @@ Changelog
 1.37.0 (Unreleased)
 -------------------
 
+Features:
+
+* Rebase to TK2 using fewer two-qubit gates, improving compilation results in
+  some scenarios.
+
 Fixes:
 
 * Fix circuit iteration giving invalid slices in some cases.
