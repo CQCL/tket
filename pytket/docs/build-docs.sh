@@ -4,7 +4,7 @@ cp pytket-docs-theming/conf.py .
 
 sphinx-build -b html . build -D html_title="pytket"
 find build/ -type f -name "*.html" | xargs sed -e 's/pytket._tket/pytket/g' -i ""
-#sed -i 's/pytket._tket/pytket/g' build/html/searchindex.js
+sed -i 's/pytket._tket/pytket/g' build/html/searchindex.js
 
 # Remove copied files. This ensures reusability.
 rm -r _static 
