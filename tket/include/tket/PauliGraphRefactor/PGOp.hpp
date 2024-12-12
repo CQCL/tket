@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include "tket/Clifford/APState.hpp"
 #include "tket/Clifford/ChoiMixTableau.hpp"
 #include "tket/Utils/PauliTensor.hpp"
 
@@ -262,7 +263,11 @@ class PGRotation : public PGOp {
 
   /**
    * Constructs a rotation corresponding to exp(-i * \p tensor * \p angle *
-   * pi/2).
+   * pi/2) exp(i * I * \p angle * pi/2).
+   *
+   * The additional global phase term keeps the angle range to mod 2pi, as well
+   * as making it work more consistently with stabiliser rewrites and quantum
+   * control (matching a controlled global phase gate).
    */
   PGRotation(const SpPauliStabiliser& tensor, const Expr& angle);
 
@@ -302,7 +307,11 @@ class PGCliffordRot : public PGOp {
 
   /**
    * Constructs a Clifford-angled rotation corresponding to exp(-i * \p tensor *
-   * \p angle * pi/4).
+   * \p angle * pi/4) exp(i * I * \p angle * pi/4).
+   *
+   * The additional global phase term keeps the angle range to mod 2pi, as well
+   * as making it work more consistently with stabiliser rewrites and quantum
+   * control (matching a controlled global phase gate).
    */
   PGCliffordRot(const SpPauliStabiliser& tensor, unsigned angle);
 
@@ -696,15 +705,22 @@ class PGInputTableau : public PGOp {
   const ChoiMixTableau::row_tensor_t& get_full_row(unsigned p) const;
 
   /**
+   * Access the underlying APState for a phase-tracking representation of the
+   * tableau.
+   */
+  const ChoiAPState& get_apstate() const;
+
+  /**
    * Combine all rows back into a ChoiMixTableau object for a complete view of
    * the process.
    */
   ChoiMixTableau to_cm_tableau() const;
 
   /**
-   * Constructs an input tableau operation from the given tableau.
+   * Constructs an input tableau operation from the given tableau. Also requires
+   * an APState to specify global phase.
    */
-  PGInputTableau(const ChoiMixTableau& tableau);
+  PGInputTableau(const ChoiMixTableau& tableau, const ChoiAPState& ap);
 
   // Overrides from PGOp
   virtual SymSet free_symbols() const override;
@@ -728,6 +744,11 @@ class PGInputTableau : public PGOp {
    * this back into a tableau to make use of row combinations easier.
    */
   std::vector<ChoiMixTableau::row_tensor_t> rows_;
+
+  /**
+   * Duplicate the tableau as an APState to track global phase.
+   */
+  ChoiAPState ap_;
 };
 
 /**
@@ -749,15 +770,22 @@ class PGOutputTableau : public PGOp {
   const ChoiMixTableau::row_tensor_t& get_full_row(unsigned p) const;
 
   /**
+   * Access the underlying APState for a phase-tracking representation of the
+   * tableau.
+   */
+  const ChoiAPState& get_apstate() const;
+
+  /**
    * Combine all rows back into a ChoiMixTableau object for a complete view of
    * the process.
    */
   ChoiMixTableau to_cm_tableau() const;
 
   /**
-   * Constructs an output tableau operation from the given tableau.
+   * Constructs an output tableau operation from the given tableau. Also
+   * requires an APState to specify global phase.
    */
-  PGOutputTableau(const ChoiMixTableau& tableau);
+  PGOutputTableau(const ChoiMixTableau& tableau, const ChoiAPState& ap);
 
   // Overrides from PGOp
   virtual SymSet free_symbols() const override;
@@ -782,6 +810,11 @@ class PGOutputTableau : public PGOp {
    * easier.
    */
   std::vector<ChoiMixTableau::row_tensor_t> rows_;
+
+  /**
+   * Duplicate the tableau as an APState to track global phase.
+   */
+  ChoiAPState ap_;
 };
 
 }  // namespace pg

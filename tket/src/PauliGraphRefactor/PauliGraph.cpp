@@ -14,6 +14,7 @@
 
 #include "tket/PauliGraphRefactor/PauliGraph.hpp"
 
+#include "tket/PauliGraphRefactor/Converters.hpp"
 #include "tket/Utils/SequencedContainers.hpp"
 
 namespace tket {
@@ -324,6 +325,17 @@ void PauliGraph::verify() const {
                   "InputTableau of PauliGraph does not have commuting rows");
           }
         }
+        // Tableau matches the APState
+        ChoiMixTableau tab_from_ap =
+            choi_apstate_to_cm_tableau(tab.get_apstate());
+        tab_from_ap.canonical_column_order();
+        tab_from_ap.gaussian_form();
+        ChoiMixTableau tab_from_op = tab.to_cm_tableau();
+        tab_from_op.canonical_column_order();
+        tab_from_op.gaussian_form();
+        if (tab_from_ap != tab_from_op)
+          throw PGError(
+              "Mismatch between InputTableau and APState in PauliGraph");
       } else if (op->get_type() == PGOpType::OutputTableau) {
         if (final_tableau_ != v)
           throw PGError("PauliGraph contains an untracked OutputTableau");
@@ -348,6 +360,18 @@ void PauliGraph::verify() const {
                   "OutputTableau of PauliGraph does not have commuting rows");
           }
         }
+        // Tableau matches the APState
+        ChoiAPState ap = tab.get_apstate();
+        ap.normal_form();
+        ChoiMixTableau tab_from_ap = choi_apstate_to_cm_tableau(ap);
+        tab_from_ap.canonical_column_order();
+        tab_from_ap.gaussian_form();
+        ChoiMixTableau tab_from_op = tab.to_cm_tableau();
+        tab_from_op.canonical_column_order();
+        tab_from_op.gaussian_form();
+        if (tab_from_ap != tab_from_op)
+          throw PGError(
+              "Mismatch between OutputTableau and APState in PauliGraph");
       }
     }
   }

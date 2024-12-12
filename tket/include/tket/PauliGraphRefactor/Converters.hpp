@@ -32,6 +32,11 @@ std::pair<Circuit, qubit_map_t> cm_tableau_to_unitary_extension_circuit(
     CXConfigType cx_config = CXConfigType::Snake);
 UnitaryTableau circuit_to_unitary_tableau(const Circuit& circ);
 Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab);
+ChoiAPState cm_tableau_to_choi_apstate(const ChoiMixTableau& tab);
+std::pair<Circuit, qubit_map_t> choi_apstate_to_exact_circuit(
+    ChoiAPState ap, CXConfigType cx_config = CXConfigType::Snake);
+ChoiAPState circuit_to_choi_apstate(const Circuit& circ);
+ChoiMixTableau choi_apstate_to_cm_tableau(const ChoiAPState& ap);
 class CXMaker {
  public:
   explicit CXMaker(unsigned qubits, bool reverse_cx_dirs = false)

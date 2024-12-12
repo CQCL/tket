@@ -647,6 +647,8 @@ const ChoiMixTableau::row_tensor_t& PGInputTableau::get_full_row(
   return rows_.at(p);
 }
 
+const ChoiAPState& PGInputTableau::get_apstate() const { return ap_; }
+
 ChoiMixTableau PGInputTableau::to_cm_tableau() const {
   std::list<ChoiMixTableau::row_tensor_t> rows;
   for (unsigned i = 0; i < n_paulis(); ++i) {
@@ -655,8 +657,9 @@ ChoiMixTableau PGInputTableau::to_cm_tableau() const {
   return ChoiMixTableau(rows);
 }
 
-PGInputTableau::PGInputTableau(const ChoiMixTableau& tableau)
-    : PGOp(PGOpType::InputTableau), rows_() {
+PGInputTableau::PGInputTableau(
+    const ChoiMixTableau& tableau, const ChoiAPState& ap)
+    : PGOp(PGOpType::InputTableau), rows_(), ap_(ap) {
   for (unsigned i = 0; i < tableau.get_n_rows(); ++i)
     rows_.push_back(tableau.get_row(i));
 }
@@ -669,8 +672,10 @@ PGOp_ptr PGInputTableau::symbol_substitution(
 }
 
 PGOp_ptr PGInputTableau::clone() const {
-  return std::make_shared<PGInputTableau>(ChoiMixTableau(
-      std::list<ChoiMixTableau::row_tensor_t>{rows_.begin(), rows_.end()}));
+  return std::make_shared<PGInputTableau>(
+      ChoiMixTableau(
+          std::list<ChoiMixTableau::row_tensor_t>{rows_.begin(), rows_.end()}),
+      ap_);
 }
 
 std::string PGInputTableau::get_name(bool) const {
@@ -685,7 +690,7 @@ std::string PGInputTableau::get_name(bool) const {
 
 bool PGInputTableau::is_equal(const PGOp& op_other) const {
   const PGInputTableau& other = dynamic_cast<const PGInputTableau&>(op_other);
-  return (rows_ == other.rows_);
+  return (rows_ == other.rows_) && (ap_ == other.ap_);
 }
 
 unsigned PGInputTableau::n_paulis() const { return rows_.size(); }
@@ -748,6 +753,8 @@ const ChoiMixTableau::row_tensor_t& PGOutputTableau::get_full_row(
   return rows_.at(p);
 }
 
+const ChoiAPState& PGOutputTableau::get_apstate() const { return ap_; }
+
 ChoiMixTableau PGOutputTableau::to_cm_tableau() const {
   std::list<ChoiMixTableau::row_tensor_t> rows;
   for (unsigned i = 0; i < n_paulis(); ++i) {
@@ -756,8 +763,9 @@ ChoiMixTableau PGOutputTableau::to_cm_tableau() const {
   return ChoiMixTableau(rows);
 }
 
-PGOutputTableau::PGOutputTableau(const ChoiMixTableau& tableau)
-    : PGOp(PGOpType::OutputTableau), rows_() {
+PGOutputTableau::PGOutputTableau(
+    const ChoiMixTableau& tableau, const ChoiAPState& ap)
+    : PGOp(PGOpType::OutputTableau), rows_(), ap_(ap) {
   for (unsigned i = 0; i < tableau.get_n_rows(); ++i)
     rows_.push_back(tableau.get_row(i));
 }
@@ -770,8 +778,10 @@ PGOp_ptr PGOutputTableau::symbol_substitution(
 }
 
 PGOp_ptr PGOutputTableau::clone() const {
-  return std::make_shared<PGOutputTableau>(ChoiMixTableau(
-      std::list<ChoiMixTableau::row_tensor_t>{rows_.begin(), rows_.end()}));
+  return std::make_shared<PGOutputTableau>(
+      ChoiMixTableau(
+          std::list<ChoiMixTableau::row_tensor_t>{rows_.begin(), rows_.end()}),
+      ap_);
 }
 
 std::string PGOutputTableau::get_name(bool) const {
@@ -786,7 +796,7 @@ std::string PGOutputTableau::get_name(bool) const {
 
 bool PGOutputTableau::is_equal(const PGOp& op_other) const {
   const PGOutputTableau& other = dynamic_cast<const PGOutputTableau&>(op_other);
-  return (rows_ == other.rows_);
+  return (rows_ == other.rows_) && (ap_ == other.ap_);
 }
 
 unsigned PGOutputTableau::n_paulis() const { return rows_.size(); }

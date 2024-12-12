@@ -18,6 +18,7 @@
 #include "../testutil.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/PauliGraphRefactor/Converters.hpp"
 #include "tket/PauliGraphRefactor/PauliGraph.hpp"
 #include "tket/Transformations/CliffordReductionPass.hpp"
@@ -514,14 +515,30 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     circ.add_op<unsigned>(OpType::CX, {1, 2});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::H, {0});
+    ChoiAPState correct_ap = circuit_to_choi_apstate(circ);
+    correct_ap.normal_form();
     circ.add_measure(0, 0);
     circ.add_measure(1, 1);
     circ.add_conditional_gate<unsigned>(OpType::X, {}, uvec{2}, {1}, 1);
     circ.add_conditional_gate<unsigned>(OpType::Z, {}, uvec{2}, {0}, 1);
     PauliGraph pg = circuit_to_pauli_graph3(circ);
     std::list<PGOp_ptr> sequence = pg.pgop_sequence();
+    ChoiMixTableau correct_out_tab = ChoiMixTableau({
+        {SpPauliStabiliser({Pauli::X, Pauli::Z, Pauli::X}),
+         SpPauliStabiliser(Qubit(0), Pauli::Z)},
+        {SpPauliStabiliser({Pauli::Z, Pauli::I, Pauli::I}),
+         SpPauliStabiliser(Qubit(0), Pauli::X)},
+        {SpPauliStabiliser({Pauli::Z, Pauli::X, Pauli::I}),
+         SpPauliStabiliser(Qubit(1), Pauli::Z)},
+        {SpPauliStabiliser({Pauli::I, Pauli::Z, Pauli::X}),
+         SpPauliStabiliser(Qubit(1), Pauli::X)},
+        {SpPauliStabiliser({Pauli::I, Pauli::X, Pauli::Z}),
+         SpPauliStabiliser(Qubit(2), Pauli::Z)},
+        {SpPauliStabiliser({Pauli::I, Pauli::I, Pauli::X}),
+         SpPauliStabiliser(Qubit(2), Pauli::X)},
+    });
     std::list<PGOp_ptr> correct_sequence{
-        std::make_shared<PGInputTableau>(ChoiMixTableau(3)),
+        std::make_shared<PGInputTableau>(ChoiMixTableau(3), ChoiAPState(3)),
         std::make_shared<PGMeasure>(
             SpPauliStabiliser({Pauli::Z, Pauli::X, Pauli::I}), Bit(1)),
         std::make_shared<PGMeasure>(
@@ -534,20 +551,7 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
             std::make_shared<PGCliffordRot>(
                 SpPauliStabiliser({Pauli::I, Pauli::X, Pauli::Z}), 2),
             bit_vector_t{Bit(0)}, 1),
-        std::make_shared<PGOutputTableau>(ChoiMixTableau({
-            {SpPauliStabiliser({Pauli::X, Pauli::Z, Pauli::X}),
-             SpPauliStabiliser(Qubit(0), Pauli::Z)},
-            {SpPauliStabiliser({Pauli::Z, Pauli::I, Pauli::I}),
-             SpPauliStabiliser(Qubit(0), Pauli::X)},
-            {SpPauliStabiliser({Pauli::Z, Pauli::X, Pauli::I}),
-             SpPauliStabiliser(Qubit(1), Pauli::Z)},
-            {SpPauliStabiliser({Pauli::I, Pauli::Z, Pauli::X}),
-             SpPauliStabiliser(Qubit(1), Pauli::X)},
-            {SpPauliStabiliser({Pauli::I, Pauli::X, Pauli::Z}),
-             SpPauliStabiliser(Qubit(2), Pauli::Z)},
-            {SpPauliStabiliser({Pauli::I, Pauli::I, Pauli::X}),
-             SpPauliStabiliser(Qubit(2), Pauli::X)},
-        }))};
+        std::make_shared<PGOutputTableau>(correct_out_tab, correct_ap)};
     REQUIRE_NOTHROW(pg.verify());
     CHECK(comp_seqs(sequence, correct_sequence));
     THEN("Print diagram to file") {
@@ -678,26 +682,31 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     PauliGraph pg = circuit_to_pauli_graph3(circ);
     REQUIRE_NOTHROW(pg.verify());
     SpPauliStabiliser zzi(DensePauliMap{Pauli::Z, Pauli::Z});
+    ChoiMixTableau correct_out_tab = ChoiMixTableau({
+        {zzi, SpPauliStabiliser(Qubit(0), Pauli::Z)},
+        {SpPauliStabiliser(Qubit(0), Pauli::X),
+         SpPauliStabiliser(Qubit(0), Pauli::X)},
+        {SpPauliStabiliser(Qubit(1), Pauli::Z),
+         SpPauliStabiliser(Qubit(1), Pauli::Z)},
+        {SpPauliStabiliser({Pauli::X, Pauli::X, Pauli::I}),
+         SpPauliStabiliser(Qubit(1), Pauli::X)},
+        {SpPauliStabiliser(Qubit(2), Pauli::Z),
+         SpPauliStabiliser(Qubit(2), Pauli::Z)},
+        {SpPauliStabiliser(Qubit(2), Pauli::X),
+         SpPauliStabiliser(Qubit(2), Pauli::X)},
+    });
+    Circuit cliff_circ(3);
+    cliff_circ.add_op<unsigned>(OpType::CX, {1, 0});
+    ChoiAPState correct_ap = circuit_to_choi_apstate(cliff_circ);
+    correct_ap.normal_form();
     std::list<PGOp_ptr> correct_sequence{
-        std::make_shared<PGInputTableau>(ChoiMixTableau(3)),
+        std::make_shared<PGInputTableau>(ChoiMixTableau(3), ChoiAPState(3)),
         std::make_shared<PGMeasure>(
             SpPauliStabiliser(Qubit(2), Pauli::Z), Bit(1)),
         std::make_shared<PGRotation>(
             SpPauliStabiliser(Qubit(0), Pauli::Z), 1.35),
         std::make_shared<PGMeasure>(zzi, Bit(0)),
-        std::make_shared<PGOutputTableau>(ChoiMixTableau({
-            {zzi, SpPauliStabiliser(Qubit(0), Pauli::Z)},
-            {SpPauliStabiliser(Qubit(0), Pauli::X),
-             SpPauliStabiliser(Qubit(0), Pauli::X)},
-            {SpPauliStabiliser(Qubit(1), Pauli::Z),
-             SpPauliStabiliser(Qubit(1), Pauli::Z)},
-            {SpPauliStabiliser({Pauli::X, Pauli::X, Pauli::I}),
-             SpPauliStabiliser(Qubit(1), Pauli::X)},
-            {SpPauliStabiliser(Qubit(2), Pauli::Z),
-             SpPauliStabiliser(Qubit(2), Pauli::Z)},
-            {SpPauliStabiliser(Qubit(2), Pauli::X),
-             SpPauliStabiliser(Qubit(2), Pauli::X)},
-        }))};
+        std::make_shared<PGOutputTableau>(correct_out_tab, correct_ap)};
     CHECK(comp_seqs(pg.pgop_sequence(), correct_sequence));
     WHEN("Legacy individual synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_individually(pg);
@@ -747,8 +756,26 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     std::list<PGOp_ptr> sequence = pg.pgop_sequence();
     SpPauliStabiliser anc_z(Qubit(1), Pauli::Z);
     SpPauliStabiliser anc_x(DensePauliMap{Pauli::X, Pauli::X});
+    ChoiMixTableau correct_out_tab = ChoiMixTableau({
+        {SpPauliStabiliser({Pauli::Z, Pauli::Z, Pauli::I}),
+         SpPauliStabiliser(Qubit(0), Pauli::Z)},
+        {SpPauliStabiliser(Qubit(0), Pauli::X),
+         SpPauliStabiliser(Qubit(0), Pauli::X)},
+        {SpPauliStabiliser(Qubit(1), Pauli::Z),
+         SpPauliStabiliser(Qubit(1), Pauli::Z)},
+        {SpPauliStabiliser({Pauli::X, Pauli::X, Pauli::I}),
+         SpPauliStabiliser(Qubit(1), Pauli::X)},
+        {SpPauliStabiliser(Qubit(2), Pauli::Z),
+         SpPauliStabiliser(Qubit(2), Pauli::Z)},
+        {SpPauliStabiliser(Qubit(2), Pauli::X),
+         SpPauliStabiliser(Qubit(2), Pauli::X)},
+    });
+    Circuit cliff_circ(3);
+    cliff_circ.add_op<unsigned>(OpType::CX, {1, 0});
+    ChoiAPState correct_ap = circuit_to_choi_apstate(cliff_circ);
+    correct_ap.normal_form();
     std::list<PGOp_ptr> correct_sequence{
-        std::make_shared<PGInputTableau>(ChoiMixTableau(3)),
+        std::make_shared<PGInputTableau>(ChoiMixTableau(3), ChoiAPState(3)),
         std::make_shared<PGRotation>(
             SpPauliStabiliser(Qubit(0), Pauli::Z), 1.5),
         std::make_shared<PGStabAssertion>(
@@ -772,20 +799,7 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
             SpPauliStabiliser({Pauli::Y, Pauli::Z, Pauli::Y}, 2), anc_z, anc_x,
             Bit(c_debug_one_prefix() + "_" + c_debug_default_name() + "(1)",
                 0)),
-        std::make_shared<PGOutputTableau>(ChoiMixTableau({
-            {SpPauliStabiliser({Pauli::Z, Pauli::Z, Pauli::I}),
-             SpPauliStabiliser(Qubit(0), Pauli::Z)},
-            {SpPauliStabiliser(Qubit(0), Pauli::X),
-             SpPauliStabiliser(Qubit(0), Pauli::X)},
-            {SpPauliStabiliser(Qubit(1), Pauli::Z),
-             SpPauliStabiliser(Qubit(1), Pauli::Z)},
-            {SpPauliStabiliser({Pauli::X, Pauli::X, Pauli::I}),
-             SpPauliStabiliser(Qubit(1), Pauli::X)},
-            {SpPauliStabiliser(Qubit(2), Pauli::Z),
-             SpPauliStabiliser(Qubit(2), Pauli::Z)},
-            {SpPauliStabiliser(Qubit(2), Pauli::X),
-             SpPauliStabiliser(Qubit(2), Pauli::X)},
-        }))};
+        std::make_shared<PGOutputTableau>(correct_out_tab, correct_ap)};
     CHECK(comp_seqs(sequence, correct_sequence));
     WHEN("General individual synthesis") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);

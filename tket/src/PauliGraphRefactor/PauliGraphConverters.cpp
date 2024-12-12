@@ -28,52 +28,57 @@ namespace tket {
 
 using namespace pg;
 
-std::vector<PGOp_ptr> op_to_pgops(
+// TODO:: CHECK GLOBAL PHASES FOR EACH OF THESE OPS WITH TESTS
+std::pair<std::vector<PGOp_ptr>, Expr> op_to_pgops(
     const Op_ptr& op, const unit_vector_t& args, UnitaryRevTableau& tab,
-    bool allow_tableau) {
+    ChoiAPState& ap, bool allow_tableau) {
   if (allow_tableau && is_clifford_type(op->get_type())) {
     qubit_vector_t qs;
     for (const UnitID& a : args) qs.push_back(Qubit(a));
     tab.apply_gate_at_end(op->get_type(), qs);
-    return {};
+    ap.apply_gate(op->get_type(), qs, ChoiAPState::TableauSegment::Output);
+    return {{}, 0};
   }
   switch (op->get_type()) {
     case OpType::Z: {
       Qubit q(args.front());
-      return {std::make_shared<PGCliffordRot>(tab.get_zrow(q), 2)};
+      return {{std::make_shared<PGCliffordRot>(tab.get_zrow(q), 2)}, 0};
     }
     case OpType::X: {
       Qubit q(args.front());
-      return {std::make_shared<PGCliffordRot>(tab.get_xrow(q), 2)};
+      return {{std::make_shared<PGCliffordRot>(tab.get_xrow(q), 2)}, 0};
     }
     case OpType::Y: {
       Qubit q(args.front());
-      return {std::make_shared<PGCliffordRot>(
-          tab.get_row_product(SpPauliStabiliser(q, Pauli::Y)), 2)};
+      return {
+          {std::make_shared<PGCliffordRot>(
+              tab.get_row_product(SpPauliStabiliser(q, Pauli::Y)), 2)},
+          0};
     }
     case OpType::S: {
       Qubit q(args.front());
-      return {std::make_shared<PGCliffordRot>(tab.get_zrow(q), 1)};
+      return {{std::make_shared<PGCliffordRot>(tab.get_zrow(q), 1)}, 0};
     }
     case OpType::Sdg: {
       Qubit q(args.front());
-      return {std::make_shared<PGCliffordRot>(tab.get_zrow(q), 3)};
+      return {{std::make_shared<PGCliffordRot>(tab.get_zrow(q), 3)}, 0};
     }
     case OpType::V: {
       Qubit q(args.front());
-      return {std::make_shared<PGCliffordRot>(tab.get_xrow(q), 1)};
+      return {{std::make_shared<PGCliffordRot>(tab.get_xrow(q), 1)}, -0.25};
     }
     case OpType::Vdg: {
       Qubit q(args.front());
-      return {std::make_shared<PGCliffordRot>(tab.get_xrow(q), 3)};
+      return {{std::make_shared<PGCliffordRot>(tab.get_xrow(q), 3)}, 0.25};
     }
     case OpType::H: {
       Qubit q(args.front());
       SpPauliStabiliser zq = tab.get_zrow(q);
       return {
-          std::make_shared<PGCliffordRot>(zq, 1),
-          std::make_shared<PGCliffordRot>(tab.get_xrow(q), 1),
-          std::make_shared<PGCliffordRot>(zq, 1)};
+          {std::make_shared<PGCliffordRot>(zq, 1),
+           std::make_shared<PGCliffordRot>(tab.get_xrow(q), 1),
+           std::make_shared<PGCliffordRot>(zq, 1)},
+          0};
     }
     case OpType::CX: {
       Qubit c(args.at(0));
@@ -81,9 +86,10 @@ std::vector<PGOp_ptr> op_to_pgops(
       SpPauliStabiliser zc = tab.get_zrow(c);
       SpPauliStabiliser xt = tab.get_xrow(t);
       return {
-          std::make_shared<PGCliffordRot>(zc, 3),
-          std::make_shared<PGCliffordRot>(xt, 3),
-          std::make_shared<PGCliffordRot>(zc * xt, 1)};
+          {std::make_shared<PGCliffordRot>(zc, 3),
+           std::make_shared<PGCliffordRot>(xt, 3),
+           std::make_shared<PGCliffordRot>(zc * xt, 1)},
+          0};
     }
     case OpType::CY: {
       Qubit c(args.at(0));
@@ -92,9 +98,10 @@ std::vector<PGOp_ptr> op_to_pgops(
       SpPauliStabiliser yt =
           tab.get_row_product(SpPauliStabiliser(t, Pauli::Y));
       return {
-          std::make_shared<PGCliffordRot>(zc, 3),
-          std::make_shared<PGCliffordRot>(yt, 3),
-          std::make_shared<PGCliffordRot>(zc * yt, 1)};
+          {std::make_shared<PGCliffordRot>(zc, 3),
+           std::make_shared<PGCliffordRot>(yt, 3),
+           std::make_shared<PGCliffordRot>(zc * yt, 1)},
+          0};
     }
     case OpType::CZ: {
       Qubit c(args.at(0));
@@ -102,16 +109,17 @@ std::vector<PGOp_ptr> op_to_pgops(
       SpPauliStabiliser zc = tab.get_zrow(c);
       SpPauliStabiliser zt = tab.get_zrow(t);
       return {
-          std::make_shared<PGCliffordRot>(zc, 3),
-          std::make_shared<PGCliffordRot>(zt, 3),
-          std::make_shared<PGCliffordRot>(zc * zt, 1)};
+          {std::make_shared<PGCliffordRot>(zc, 3),
+           std::make_shared<PGCliffordRot>(zt, 3),
+           std::make_shared<PGCliffordRot>(zc * zt, 1)},
+          0};
     }
     case OpType::ZZMax: {
       Qubit c(args.at(0));
       Qubit t(args.at(1));
       SpPauliStabiliser zc = tab.get_zrow(c);
       SpPauliStabiliser zt = tab.get_zrow(t);
-      return {std::make_shared<PGCliffordRot>(zc * zt, 1)};
+      return {{std::make_shared<PGCliffordRot>(zc * zt, 1)}, 0};
     }
     case OpType::SWAP: {
       Qubit c(args.at(0));
@@ -123,52 +131,61 @@ std::vector<PGOp_ptr> op_to_pgops(
       SpPauliStabiliser yy = zc * xc * zt * xt;
       yy.coeff = (yy.coeff + 2) % 4;
       return {
-          std::make_shared<PGCliffordRot>(zc * zt, 1),
-          std::make_shared<PGCliffordRot>(xc * xt, 1),
-          std::make_shared<PGCliffordRot>(yy, 1)};
+          {std::make_shared<PGCliffordRot>(zc * zt, 1),
+           std::make_shared<PGCliffordRot>(xc * xt, 1),
+           std::make_shared<PGCliffordRot>(yy, 1)},
+          0};
     }
     case OpType::T: {
       Qubit q(args.front());
-      return {std::make_shared<PGRotation>(tab.get_zrow(q), 0.25)};
+      return {{std::make_shared<PGRotation>(tab.get_zrow(q), 0.25)}, 0};
     }
     case OpType::Tdg: {
       Qubit q(args.front());
-      return {std::make_shared<PGRotation>(tab.get_zrow(q), -0.25)};
+      return {{std::make_shared<PGRotation>(tab.get_zrow(q), -0.25)}, 0};
     }
     case OpType::Rz: {
       Qubit q(args.front());
       const Gate& g = dynamic_cast<const Gate&>(*op);
       return {
-          std::make_shared<PGRotation>(tab.get_zrow(q), g.get_params().at(0))};
+          {std::make_shared<PGRotation>(tab.get_zrow(q), g.get_params().at(0))},
+          g.get_params().at(0)};
     }
     case OpType::Rx: {
       Qubit q(args.front());
       const Gate& g = dynamic_cast<const Gate&>(*op);
       return {
-          std::make_shared<PGRotation>(tab.get_xrow(q), g.get_params().at(0))};
+          {std::make_shared<PGRotation>(tab.get_xrow(q), g.get_params().at(0))},
+          0};
     }
     case OpType::Ry: {
       Qubit q(args.front());
       const Gate& g = dynamic_cast<const Gate&>(*op);
-      return {std::make_shared<PGRotation>(
-          tab.get_row_product(SpPauliStabiliser(q, Pauli::Y)),
-          g.get_params().at(0))};
+      return {
+          {std::make_shared<PGRotation>(
+              tab.get_row_product(SpPauliStabiliser(q, Pauli::Y)),
+              g.get_params().at(0))},
+          0};
     }
     case OpType::TK1: {
       Qubit q(args.front());
       const Gate& g = dynamic_cast<const Gate&>(*op);
       SpPauliStabiliser zq = tab.get_zrow(q);
       return {
-          std::make_shared<PGRotation>(zq, g.get_params().at(2)),
-          std::make_shared<PGRotation>(tab.get_xrow(q), g.get_params().at(1)),
-          std::make_shared<PGRotation>(zq, g.get_params().at(0))};
+          {std::make_shared<PGRotation>(zq, g.get_params().at(2)),
+           std::make_shared<PGRotation>(tab.get_xrow(q), g.get_params().at(1)),
+           std::make_shared<PGRotation>(zq, g.get_params().at(0))},
+          0};
     }
     case OpType::PhaseGadget: {
       const Gate& g = dynamic_cast<const Gate&>(*op);
       QubitPauliMap qpm;
       for (const UnitID& a : args) qpm.insert({Qubit(a), Pauli::Z});
-      return {std::make_shared<PGRotation>(
-          tab.get_row_product(SpPauliStabiliser(qpm)), g.get_params().at(0))};
+      return {
+          {std::make_shared<PGRotation>(
+              tab.get_row_product(SpPauliStabiliser(qpm)),
+              g.get_params().at(0))},
+          0};
     }
     case OpType::ZZPhase: {
       Qubit q0(args.at(0));
@@ -176,7 +193,7 @@ std::vector<PGOp_ptr> op_to_pgops(
       const Gate& g = dynamic_cast<const Gate&>(*op);
       SpPauliStabiliser z0 = tab.get_zrow(q0);
       SpPauliStabiliser z1 = tab.get_zrow(q1);
-      return {std::make_shared<PGRotation>(z0 * z1, g.get_params().at(0))};
+      return {{std::make_shared<PGRotation>(z0 * z1, g.get_params().at(0))}, 0};
     }
     case OpType::XXPhase: {
       Qubit q0(args.at(0));
@@ -184,7 +201,7 @@ std::vector<PGOp_ptr> op_to_pgops(
       const Gate& g = dynamic_cast<const Gate&>(*op);
       SpPauliStabiliser x0 = tab.get_xrow(q0);
       SpPauliStabiliser x1 = tab.get_xrow(q1);
-      return {std::make_shared<PGRotation>(x0 * x1, g.get_params().at(0))};
+      return {{std::make_shared<PGRotation>(x0 * x1, g.get_params().at(0))}, 0};
     }
     case OpType::YYPhase: {
       Qubit q0(args.at(0));
@@ -192,7 +209,7 @@ std::vector<PGOp_ptr> op_to_pgops(
       const Gate& g = dynamic_cast<const Gate&>(*op);
       SpPauliStabiliser yy = tab.get_row_product(
           SpPauliStabiliser({{q0, Pauli::Y}, {q1, Pauli::Y}}));
-      return {std::make_shared<PGRotation>(yy, g.get_params().at(0))};
+      return {{std::make_shared<PGRotation>(yy, g.get_params().at(0))}, 0};
     }
     case OpType::TK2: {
       Qubit q0(args.at(0));
@@ -205,21 +222,25 @@ std::vector<PGOp_ptr> op_to_pgops(
       SpPauliStabiliser yy = z0 * x0 * z1 * x1;
       yy.coeff = (yy.coeff + 2) % 4;
       return {
-          std::make_shared<PGRotation>(x0 * x1, g.get_params().at(0)),
-          std::make_shared<PGRotation>(yy, g.get_params().at(1)),
-          std::make_shared<PGRotation>(z0 * z1, g.get_params().at(2))};
+          {std::make_shared<PGRotation>(x0 * x1, g.get_params().at(0)),
+           std::make_shared<PGRotation>(yy, g.get_params().at(1)),
+           std::make_shared<PGRotation>(z0 * z1, g.get_params().at(2))},
+          0};
     }
     case OpType::Measure: {
-      return {std::make_shared<PGMeasure>(
-          tab.get_zrow(Qubit(args.at(0))), Bit(args.at(1)))};
+      return {
+          {std::make_shared<PGMeasure>(
+              tab.get_zrow(Qubit(args.at(0))), Bit(args.at(1)))},
+          0};
     }
     case OpType::Collapse: {
       return {
-          std::make_shared<PGDecoherence>(tab.get_zrow(Qubit(args.front())))};
+          {std::make_shared<PGDecoherence>(tab.get_zrow(Qubit(args.front())))},
+          0};
     }
     case OpType::Reset: {
       Qubit q(args.front());
-      return {std::make_shared<PGReset>(tab.get_zrow(q), tab.get_xrow(q))};
+      return {{std::make_shared<PGReset>(tab.get_zrow(q), tab.get_xrow(q))}, 0};
     }
     case OpType::PauliExpBox: {
       const PauliExpBox& box = dynamic_cast<const PauliExpBox&>(*op);
@@ -227,8 +248,10 @@ std::vector<PGOp_ptr> op_to_pgops(
       QubitPauliMap qpm;
       for (unsigned i = 0; i < args.size(); ++i)
         qpm.insert({Qubit(args.at(i)), paulis.at(i)});
-      return {std::make_shared<PGRotation>(
-          tab.get_row_product(SpPauliStabiliser(qpm)), box.get_phase())};
+      return {
+          {std::make_shared<PGRotation>(
+              tab.get_row_product(SpPauliStabiliser(qpm)), box.get_phase())},
+          0};
     }
     case OpType::QControlBox: {
       const QControlBox& box = dynamic_cast<const QControlBox&>(*op);
@@ -237,16 +260,37 @@ std::vector<PGOp_ptr> op_to_pgops(
       unit_vector_t inner_args;
       for (unsigned i = n_controls; i < args.size(); ++i)
         inner_args.push_back(args.at(i));
-      std::vector<PGOp_ptr> inner_ops =
-          op_to_pgops(box.get_op(), inner_args, tab, false);
+      std::pair<std::vector<PGOp_ptr>, Expr> inner_ops =
+          op_to_pgops(box.get_op(), inner_args, tab, ap, false);
       std::vector<SpPauliStabiliser> control_paulis;
       for (unsigned i = 0; i < n_controls; ++i)
         control_paulis.push_back(tab.get_zrow(Qubit(args.at(i))));
-      std::vector<PGOp_ptr> ret;
-      for (const PGOp_ptr& inn_op : inner_ops)
-        ret.push_back(std::make_shared<PGQControl>(
+      std::vector<PGOp_ptr> ret_ops;
+      for (const PGOp_ptr& inn_op : inner_ops.first)
+        ret_ops.push_back(std::make_shared<PGQControl>(
             inn_op, control_paulis, control_state));
-      return ret;
+      if (inner_ops.second == 0 || n_controls == 0)
+        return {ret_ops, inner_ops.second};
+      else {
+        SpPauliStabiliser last_control = control_paulis.back();
+        control_paulis.pop_back();
+        bool last_control_state = control_state.back();
+        control_state.pop_back();
+        if (last_control_state) {
+          // apply phase on -1 eigenstate, same as a rotation
+          ret_ops.push_back(std::make_shared<PGQControl>(
+              std::make_shared<PGRotation>(last_control, inner_ops.second),
+              control_paulis, control_state));
+          return {ret_ops, 0};
+        } else {
+          // apply phase on +1 eigenstate, so instead apply phase globally and
+          // apply negative phase on the -1 eigenstate
+          ret_ops.push_back(std::make_shared<PGQControl>(
+              std::make_shared<PGRotation>(last_control, -inner_ops.second),
+              control_paulis, control_state));
+          return {ret_ops, inner_ops.second};
+        }
+      }
     }
     case OpType::MultiplexorBox: {
       const MultiplexorBox& box = dynamic_cast<const MultiplexorBox&>(*op);
@@ -263,8 +307,10 @@ std::vector<PGOp_ptr> op_to_pgops(
         target_paulis.push_back(tab.get_zrow(Qubit(args.at(i))));
         target_paulis.push_back(tab.get_xrow(Qubit(args.at(i))));
       }
-      return {std::make_shared<PGMultiplexedTensoredBox>(
-          op_map, control_paulis, target_paulis)};
+      return {
+          {std::make_shared<PGMultiplexedTensoredBox>(
+              op_map, control_paulis, target_paulis)},
+          0};
     }
     case OpType::MultiplexedRotationBox: {
       const MultiplexedRotationBox& box =
@@ -282,20 +328,26 @@ std::vector<PGOp_ptr> op_to_pgops(
       OpType rotation_basis = box.get_ops().begin()->second->get_type();
       switch (rotation_basis) {
         case OpType::Rx: {
-          return {std::make_shared<PGMultiplexedRotation>(
-              angle_map, control_paulis,
-              tab.get_xrow(Qubit(args.at(n_controls))))};
+          return {
+              {std::make_shared<PGMultiplexedRotation>(
+                  angle_map, control_paulis,
+                  tab.get_xrow(Qubit(args.at(n_controls))))},
+              0};
         }
         case OpType::Ry: {
-          return {std::make_shared<PGMultiplexedRotation>(
-              angle_map, control_paulis,
-              tab.get_row_product(
-                  SpPauliStabiliser(Qubit(args.at(n_controls)), Pauli::Y)))};
+          return {
+              {std::make_shared<PGMultiplexedRotation>(
+                  angle_map, control_paulis,
+                  tab.get_row_product(SpPauliStabiliser(
+                      Qubit(args.at(n_controls)), Pauli::Y)))},
+              0};
         }
         case OpType::Rz: {
-          return {std::make_shared<PGMultiplexedRotation>(
-              angle_map, control_paulis,
-              tab.get_zrow(Qubit(args.at(n_controls))))};
+          return {
+              {std::make_shared<PGMultiplexedRotation>(
+                  angle_map, control_paulis,
+                  tab.get_zrow(Qubit(args.at(n_controls))))},
+              0};
         }
         default: {
           throw PGError(
@@ -317,8 +369,10 @@ std::vector<PGOp_ptr> op_to_pgops(
       std::vector<SpPauliStabiliser> target_paulis;
       target_paulis.push_back(tab.get_zrow(Qubit(args.at(n_controls))));
       target_paulis.push_back(tab.get_xrow(Qubit(args.at(n_controls))));
-      return {std::make_shared<PGMultiplexedTensoredBox>(
-          op_map, control_paulis, target_paulis)};
+      return {
+          {std::make_shared<PGMultiplexedTensoredBox>(
+              op_map, control_paulis, target_paulis)},
+          0};
     }
     case OpType::MultiplexedTensoredU2Box: {
       const MultiplexedTensoredU2Box& box =
@@ -332,8 +386,10 @@ std::vector<PGOp_ptr> op_to_pgops(
         target_paulis.push_back(tab.get_zrow(Qubit(args.at(i))));
         target_paulis.push_back(tab.get_xrow(Qubit(args.at(i))));
       }
-      return {std::make_shared<PGMultiplexedTensoredBox>(
-          box.get_op_map(), control_paulis, target_paulis)};
+      return {
+          {std::make_shared<PGMultiplexedTensoredBox>(
+              box.get_op_map(), control_paulis, target_paulis)},
+          0};
     }
     case OpType::StabiliserAssertionBox: {
       const StabiliserAssertionBox& box =
@@ -356,7 +412,7 @@ std::vector<PGOp_ptr> op_to_pgops(
         ops.push_back(
             std::make_shared<PGStabAssertion>(prod, anc_z, anc_x, target));
       }
-      return ops;
+      return {ops, 0};
     }
     case OpType::Conditional: {
       const Conditional& cond = dynamic_cast<const Conditional&>(*op);
@@ -366,13 +422,14 @@ std::vector<PGOp_ptr> op_to_pgops(
         cond_bits.push_back(Bit(args.at(i)));
       for (unsigned i = cond.get_width(); i < args.size(); ++i)
         inner_args.push_back(args.at(i));
+      // Ignore global phase between conditional branches
       std::vector<PGOp_ptr> inner_ops =
-          op_to_pgops(cond.get_op(), inner_args, tab, false);
+          op_to_pgops(cond.get_op(), inner_args, tab, ap, false).first;
       std::vector<PGOp_ptr> ret;
       for (const PGOp_ptr& inn_op : inner_ops)
         ret.push_back(std::make_shared<PGConditional>(
             inn_op, cond_bits, cond.get_value()));
-      return ret;
+      return {ret, 0};
     }
     default: {
       std::vector<SpPauliStabiliser> paulis;
@@ -383,7 +440,7 @@ std::vector<PGOp_ptr> op_to_pgops(
           paulis.push_back(tab.get_xrow(q));
         }
       }
-      return {std::make_shared<PGBox>(op, args, paulis)};
+      return {{std::make_shared<PGBox>(op, args, paulis)}, 0};
     }
   }
 }
@@ -394,13 +451,16 @@ pg::PauliGraph circuit_to_pauli_graph3(
   ChoiMixTableau initial(circ.all_qubits());
   for (const Qubit& q : circ.created_qubits())
     initial.post_select(q, ChoiMixTableau::TableauSegment::Input);
-  res.add_vertex_at_end(std::make_shared<PGInputTableau>(initial));
+  ChoiAPState initial_ap = cm_tableau_to_choi_apstate(initial);
+  initial_ap.ap_.phase = circ.get_phase();
+  res.add_vertex_at_end(std::make_shared<PGInputTableau>(initial, initial_ap));
   UnitaryRevTableau final_u(circ.all_qubits());
+  ChoiAPState final_ap(circ.all_qubits());
   for (const Command& com : circ) {
     unit_vector_t args = com.get_args();
-    for (const PGOp_ptr& pgop :
-         op_to_pgops(com.get_op_ptr(), args, final_u, collect_cliffords))
-      res.add_vertex_at_end(pgop);
+    std::pair<std::vector<PGOp_ptr>, Expr> pgops = op_to_pgops(
+        com.get_op_ptr(), args, final_u, final_ap, collect_cliffords);
+    for (const PGOp_ptr& pgop : pgops.first) res.add_vertex_at_end(pgop);
   }
   std::list<ChoiMixTableau::row_tensor_t> final_rows;
   qubit_map_t implicit_perm = circ.implicit_qubit_permutation();
@@ -413,7 +473,9 @@ pg::PauliGraph circuit_to_pauli_graph3(
   }
   ChoiMixTableau final_cm(final_rows);
   for (const Qubit& q : circ.discarded_qubits()) final_cm.discard_qubit(q);
-  res.add_vertex_at_end(std::make_shared<PGOutputTableau>(final_cm));
+  for (const Qubit& q : circ.discarded_qubits()) final_ap.discard_qubit(q);
+  final_ap.normal_form();
+  res.add_vertex_at_end(std::make_shared<PGOutputTableau>(final_cm, final_ap));
   return res;
 }
 
@@ -449,7 +511,7 @@ IndividualSynth synth_pgop(const PGOp_ptr& pgop) {
       return IndividualSynth{
           ChoiMixTableau(
               {{rot.port(0), SpPauliStabiliser(Qubit(0), Pauli::Z)}}),
-          get_op_ptr(OpType::Rz, rot.get_angle()),
+          get_op_ptr(OpType::U1, rot.get_angle()),
           {Qubit(0)}};
     }
     case PGOpType::CliffordRot: {
@@ -709,12 +771,12 @@ Circuit pauli_graph3_to_circuit_individual(
   for (const PGOp_ptr& pgop : pgop_sequence) {
     if (pgop->get_type() == PGOpType::InputTableau) {
       PGInputTableau& tab_op = dynamic_cast<PGInputTableau&>(*pgop);
-      ChoiMixTableau tab = tab_op.to_cm_tableau();
+      const ChoiAPState& ap = tab_op.get_apstate();
       // Set this as the new circuit so that any initialisations are applied
       // without adding Reset operations; need to readd all bits and any qubits
       // that weren't included in the tableau
       qubit_map_t perm;
-      std::tie(circ, perm) = cm_tableau_to_exact_circuit(tab, cx_config);
+      std::tie(circ, perm) = choi_apstate_to_exact_circuit(ap, cx_config);
       qubit_map_t rev_perm;
       for (const std::pair<const Qubit, Qubit>& p : perm)
         rev_perm.insert({p.second, p.first});
@@ -723,8 +785,8 @@ Circuit pauli_graph3_to_circuit_individual(
       for (const Bit& b : bits) circ.add_bit(b, false);
     } else if (pgop->get_type() == PGOpType::OutputTableau) {
       PGOutputTableau& tab_op = dynamic_cast<PGOutputTableau&>(*pgop);
-      ChoiMixTableau tab = tab_op.to_cm_tableau();
-      auto [tab_circ, perm] = cm_tableau_to_exact_circuit(tab, cx_config);
+      ChoiAPState ap = tab_op.get_apstate();
+      auto [tab_circ, perm] = choi_apstate_to_exact_circuit(ap, cx_config);
       qubit_map_t rev_perm;
       for (const std::pair<const Qubit, Qubit>& p : perm)
         rev_perm.insert({p.second, p.first});
@@ -750,12 +812,12 @@ Circuit pauli_graph3_to_circuit_sets(
   if (itab_v) {
     PGOp_ptr pgop = pg.get_vertex_PGOp_ptr(*itab_v);
     PGInputTableau& tab_op = dynamic_cast<PGInputTableau&>(*pgop);
-    ChoiMixTableau cmtab = tab_op.to_cm_tableau();
+    const ChoiAPState& ap = tab_op.get_apstate();
     // Set this as the new circuit so that any initialisations are applied
-    // without adding Reset operations; need to readd all bits and any qubits
+    // without adding Reset operations; need to read all bits and any qubits
     // that weren't included in the tableau
     qubit_map_t perm;
-    std::tie(circ, perm) = cm_tableau_to_exact_circuit(cmtab, cx_config);
+    std::tie(circ, perm) = choi_apstate_to_exact_circuit(ap, cx_config);
     qubit_map_t rev_perm;
     for (const std::pair<const Qubit, Qubit>& p : perm)
       rev_perm.insert({p.second, p.first});
@@ -815,10 +877,8 @@ Circuit pauli_graph3_to_circuit_sets(
   if (otab_v) {
     PGOp_ptr pgop = pg.get_vertex_PGOp_ptr(*otab_v);
     PGOutputTableau& tab_op = dynamic_cast<PGOutputTableau&>(*pgop);
-    ChoiMixTableau cmtab = tab_op.to_cm_tableau();
-    // UnitaryTableau out_utab = cm_tableau_to_unitary_tableau(cmtab);
-    // Circuit out_cliff_circuit = unitary_tableau_to_circuit(out_utab);
-    auto [tab_circ, perm] = cm_tableau_to_exact_circuit(cmtab, cx_config);
+    ChoiAPState ap = tab_op.get_apstate();
+    auto [tab_circ, perm] = choi_apstate_to_exact_circuit(ap, cx_config);
     qubit_map_t rev_perm;
     for (const std::pair<const Qubit, Qubit>& p : perm)
       rev_perm.insert({p.second, p.first});
@@ -1017,6 +1077,13 @@ Circuit pauli_graph3_to_circuit_legacy(
     ChoiMixTableau cmtab = tab_op.to_cm_tableau();
     UnitaryTableau in_utab = cm_tableau_to_unitary_tableau(cmtab);
     Circuit in_cliff_circuit = unitary_tableau_to_circuit(in_utab);
+    ChoiAPState target = tab_op.get_apstate();
+    target.canonical_column_order();
+    target.normal_form();
+    ChoiAPState recreated = circuit_to_choi_apstate(in_cliff_circuit);
+    recreated.canonical_column_order();
+    recreated.normal_form();
+    in_cliff_circuit.add_phase(target.ap_.phase - recreated.ap_.phase);
     circ.append(in_cliff_circuit);
   }
   // Assert form is legacy-compatible and push measures to the end
@@ -1051,7 +1118,16 @@ Circuit pauli_graph3_to_circuit_legacy(
   }
   // Synthesise output tableau
   if (out_utab) {
+    PGOp_ptr pgop = pg.get_vertex_PGOp_ptr(*otab_v);
+    PGOutputTableau& tab_op = dynamic_cast<PGOutputTableau&>(*pgop);
     Circuit out_cliff_circuit = unitary_tableau_to_circuit(*out_utab);
+    ChoiAPState target = tab_op.get_apstate();
+    target.canonical_column_order();
+    target.normal_form();
+    ChoiAPState recreated = circuit_to_choi_apstate(out_cliff_circuit);
+    recreated.canonical_column_order();
+    recreated.normal_form();
+    out_cliff_circuit.add_phase(target.ap_.phase - recreated.ap_.phase);
     circ.append(out_cliff_circuit);
   }
   // Add measures
