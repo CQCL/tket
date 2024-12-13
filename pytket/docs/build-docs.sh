@@ -2,15 +2,13 @@ cp -R pytket-docs-theming/_static .
 cp -R pytket-docs-theming/quantinuum-sphinx .
 cp pytket-docs-theming/conf.py .
 
-
 # Get pytket extension version
 PYTKET_VERSION="$(pip show pytket| grep Version | awk '{print $2}')"
 
 PACKAGE="pytket $PYTKET_VERSION"
 
-# Build the docs
+# Build the docs setting the html title to show the correct pytket version.
 sphinx-build -b html . build -D html_title="$PACKAGE API documentation"
-
 
 # Replace unnecessary _tket for all classes and functions in the built html
 # Apple MACOSX and Linux have differing sed replace syntax
