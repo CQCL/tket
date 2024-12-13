@@ -2,7 +2,7 @@ cp -R pytket-docs-theming/_static .
 cp -R pytket-docs-theming/quantinuum-sphinx .
 cp pytket-docs-theming/conf.py .
 
-# Get pytket extension version
+# Get pytket package version to be used in page title
 PYTKET_VERSION="$(pip show pytket| grep Version | awk '{print $2}')"
 
 PACKAGE="pytket $PYTKET_VERSION"
