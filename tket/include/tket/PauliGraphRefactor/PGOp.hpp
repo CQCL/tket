@@ -711,6 +711,12 @@ class PGInputTableau : public PGOp {
   const ChoiAPState& get_apstate() const;
 
   /**
+   * Reduces the underlying APState to its normal form. Useful for equivalence
+   * checking.
+   */
+  void normal_form();
+
+  /**
    * Combine all rows back into a ChoiMixTableau object for a complete view of
    * the process.
    */
@@ -774,6 +780,12 @@ class PGOutputTableau : public PGOp {
    * tableau.
    */
   const ChoiAPState& get_apstate() const;
+
+  /**
+   * Reduces the underlying APState to its normal form. Useful for equivalence
+   * checking.
+   */
+  void normal_form();
 
   /**
    * Combine all rows back into a ChoiMixTableau object for a complete view of

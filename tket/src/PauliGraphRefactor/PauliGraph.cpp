@@ -362,7 +362,6 @@ void PauliGraph::verify() const {
         }
         // Tableau matches the APState
         ChoiAPState ap = tab.get_apstate();
-        ap.normal_form();
         ChoiMixTableau tab_from_ap = choi_apstate_to_cm_tableau(ap);
         tab_from_ap.canonical_column_order();
         tab_from_ap.gaussian_form();

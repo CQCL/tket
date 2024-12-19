@@ -1151,7 +1151,7 @@ bool APState::operator==(const APState& other) const {
     if (((unsigned)P(i) % 4) != ((unsigned)other.P(i) % 4)) return false;
   }
   return (A == other.A) && (B == other.B) && (C == other.C) && (E == other.E) &&
-         (phase == other.phase);
+         equiv_0(phase - other.phase);
 }
 
 void to_json(nlohmann::json& j, const APState& aps) {

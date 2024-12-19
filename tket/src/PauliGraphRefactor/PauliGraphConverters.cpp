@@ -28,7 +28,6 @@ namespace tket {
 
 using namespace pg;
 
-// TODO:: CHECK GLOBAL PHASES FOR EACH OF THESE OPS WITH TESTS
 std::pair<std::vector<PGOp_ptr>, Expr> op_to_pgops(
     const Op_ptr& op, const unit_vector_t& args, UnitaryRevTableau& tab,
     ChoiAPState& ap, bool allow_tableau) {
@@ -78,7 +77,7 @@ std::pair<std::vector<PGOp_ptr>, Expr> op_to_pgops(
           {std::make_shared<PGCliffordRot>(zq, 1),
            std::make_shared<PGCliffordRot>(tab.get_xrow(q), 1),
            std::make_shared<PGCliffordRot>(zq, 1)},
-          0};
+          -0.25};
     }
     case OpType::CX: {
       Qubit c(args.at(0));
@@ -119,7 +118,7 @@ std::pair<std::vector<PGOp_ptr>, Expr> op_to_pgops(
       Qubit t(args.at(1));
       SpPauliStabiliser zc = tab.get_zrow(c);
       SpPauliStabiliser zt = tab.get_zrow(t);
-      return {{std::make_shared<PGCliffordRot>(zc * zt, 1)}, 0};
+      return {{std::make_shared<PGCliffordRot>(zc * zt, 1)}, -0.25};
     }
     case OpType::SWAP: {
       Qubit c(args.at(0));
@@ -134,7 +133,7 @@ std::pair<std::vector<PGOp_ptr>, Expr> op_to_pgops(
           {std::make_shared<PGCliffordRot>(zc * zt, 1),
            std::make_shared<PGCliffordRot>(xc * xt, 1),
            std::make_shared<PGCliffordRot>(yy, 1)},
-          0};
+          -0.5};
     }
     case OpType::T: {
       Qubit q(args.front());
@@ -149,14 +148,21 @@ std::pair<std::vector<PGOp_ptr>, Expr> op_to_pgops(
       const Gate& g = dynamic_cast<const Gate&>(*op);
       return {
           {std::make_shared<PGRotation>(tab.get_zrow(q), g.get_params().at(0))},
-          g.get_params().at(0)};
+          -g.get_params().at(0) / 2};
+    }
+    case OpType::U1: {
+      Qubit q(args.front());
+      const Gate& g = dynamic_cast<const Gate&>(*op);
+      return {
+          {std::make_shared<PGRotation>(tab.get_zrow(q), g.get_params().at(0))},
+          0};
     }
     case OpType::Rx: {
       Qubit q(args.front());
       const Gate& g = dynamic_cast<const Gate&>(*op);
       return {
           {std::make_shared<PGRotation>(tab.get_xrow(q), g.get_params().at(0))},
-          0};
+          -g.get_params().at(0) / 2};
     }
     case OpType::Ry: {
       Qubit q(args.front());
@@ -165,7 +171,7 @@ std::pair<std::vector<PGOp_ptr>, Expr> op_to_pgops(
           {std::make_shared<PGRotation>(
               tab.get_row_product(SpPauliStabiliser(q, Pauli::Y)),
               g.get_params().at(0))},
-          0};
+          -g.get_params().at(0) / 2};
     }
     case OpType::TK1: {
       Qubit q(args.front());
@@ -175,7 +181,8 @@ std::pair<std::vector<PGOp_ptr>, Expr> op_to_pgops(
           {std::make_shared<PGRotation>(zq, g.get_params().at(2)),
            std::make_shared<PGRotation>(tab.get_xrow(q), g.get_params().at(1)),
            std::make_shared<PGRotation>(zq, g.get_params().at(0))},
-          0};
+          -g.get_params().at(0) / 2 - g.get_params().at(1) / 2 -
+              g.get_params().at(2) / 2};
     }
     case OpType::PhaseGadget: {
       const Gate& g = dynamic_cast<const Gate&>(*op);
@@ -185,7 +192,7 @@ std::pair<std::vector<PGOp_ptr>, Expr> op_to_pgops(
           {std::make_shared<PGRotation>(
               tab.get_row_product(SpPauliStabiliser(qpm)),
               g.get_params().at(0))},
-          0};
+          -g.get_params().at(0) / 2};
     }
     case OpType::ZZPhase: {
       Qubit q0(args.at(0));
@@ -193,7 +200,9 @@ std::pair<std::vector<PGOp_ptr>, Expr> op_to_pgops(
       const Gate& g = dynamic_cast<const Gate&>(*op);
       SpPauliStabiliser z0 = tab.get_zrow(q0);
       SpPauliStabiliser z1 = tab.get_zrow(q1);
-      return {{std::make_shared<PGRotation>(z0 * z1, g.get_params().at(0))}, 0};
+      return {
+          {std::make_shared<PGRotation>(z0 * z1, g.get_params().at(0))},
+          -g.get_params().at(0) / 2};
     }
     case OpType::XXPhase: {
       Qubit q0(args.at(0));
@@ -201,7 +210,9 @@ std::pair<std::vector<PGOp_ptr>, Expr> op_to_pgops(
       const Gate& g = dynamic_cast<const Gate&>(*op);
       SpPauliStabiliser x0 = tab.get_xrow(q0);
       SpPauliStabiliser x1 = tab.get_xrow(q1);
-      return {{std::make_shared<PGRotation>(x0 * x1, g.get_params().at(0))}, 0};
+      return {
+          {std::make_shared<PGRotation>(x0 * x1, g.get_params().at(0))},
+          -g.get_params().at(0) / 2};
     }
     case OpType::YYPhase: {
       Qubit q0(args.at(0));
@@ -209,7 +220,9 @@ std::pair<std::vector<PGOp_ptr>, Expr> op_to_pgops(
       const Gate& g = dynamic_cast<const Gate&>(*op);
       SpPauliStabiliser yy = tab.get_row_product(
           SpPauliStabiliser({{q0, Pauli::Y}, {q1, Pauli::Y}}));
-      return {{std::make_shared<PGRotation>(yy, g.get_params().at(0))}, 0};
+      return {
+          {std::make_shared<PGRotation>(yy, g.get_params().at(0))},
+          -g.get_params().at(0) / 2};
     }
     case OpType::TK2: {
       Qubit q0(args.at(0));
@@ -225,7 +238,8 @@ std::pair<std::vector<PGOp_ptr>, Expr> op_to_pgops(
           {std::make_shared<PGRotation>(x0 * x1, g.get_params().at(0)),
            std::make_shared<PGRotation>(yy, g.get_params().at(1)),
            std::make_shared<PGRotation>(z0 * z1, g.get_params().at(2))},
-          0};
+          -g.get_params().at(0) / 2 - g.get_params().at(1) / 2 -
+              g.get_params().at(2) / 2};
     }
     case OpType::Measure: {
       return {
@@ -251,7 +265,7 @@ std::pair<std::vector<PGOp_ptr>, Expr> op_to_pgops(
       return {
           {std::make_shared<PGRotation>(
               tab.get_row_product(SpPauliStabiliser(qpm)), box.get_phase())},
-          0};
+          -box.get_phase() / 2};
     }
     case OpType::QControlBox: {
       const QControlBox& box = dynamic_cast<const QControlBox&>(*op);
@@ -452,15 +466,16 @@ pg::PauliGraph circuit_to_pauli_graph3(
   for (const Qubit& q : circ.created_qubits())
     initial.post_select(q, ChoiMixTableau::TableauSegment::Input);
   ChoiAPState initial_ap = cm_tableau_to_choi_apstate(initial);
-  initial_ap.ap_.phase = circ.get_phase();
   res.add_vertex_at_end(std::make_shared<PGInputTableau>(initial, initial_ap));
   UnitaryRevTableau final_u(circ.all_qubits());
   ChoiAPState final_ap(circ.all_qubits());
+  final_ap.ap_.phase = circ.get_phase();
   for (const Command& com : circ) {
     unit_vector_t args = com.get_args();
     std::pair<std::vector<PGOp_ptr>, Expr> pgops = op_to_pgops(
         com.get_op_ptr(), args, final_u, final_ap, collect_cliffords);
     for (const PGOp_ptr& pgop : pgops.first) res.add_vertex_at_end(pgop);
+    final_ap.ap_.phase += pgops.second;
   }
   std::list<ChoiMixTableau::row_tensor_t> final_rows;
   qubit_map_t implicit_perm = circ.implicit_qubit_permutation();
@@ -471,10 +486,13 @@ pg::PauliGraph circuit_to_pauli_graph3(
     final_rows.push_back(
         {final_u.get_xrow(q), SpPauliStabiliser(out_q, Pauli::X)});
   }
+  qubit_map_t rev_perm;
+  for (const std::pair<const Qubit, Qubit>& qp : implicit_perm)
+    rev_perm.insert({qp.second, qp.first});
+  final_ap.rename_qubits(rev_perm, ChoiAPState::TableauSegment::Output);
   ChoiMixTableau final_cm(final_rows);
   for (const Qubit& q : circ.discarded_qubits()) final_cm.discard_qubit(q);
   for (const Qubit& q : circ.discarded_qubits()) final_ap.discard_qubit(q);
-  final_ap.normal_form();
   res.add_vertex_at_end(std::make_shared<PGOutputTableau>(final_cm, final_ap));
   return res;
 }
@@ -960,19 +978,21 @@ std::pair<std::list<PGOp_ptr>, std::map<Qubit, Bit>> rotations_and_end_measures(
   return {rotations, measure_map};
 }
 
-SpSymPauliTensor gadget_from_rotation(const PGOp_ptr& pgop) {
+std::pair<SpSymPauliTensor, Expr> gadget_from_rotation(const PGOp_ptr& pgop) {
   switch (pgop->get_type()) {
     case PGOpType::Rotation: {
       PGRotation& r = dynamic_cast<PGRotation&>(*pgop);
       const SpPauliStabiliser& pauli = r.get_tensor();
       const Expr& angle = r.get_angle();
-      return SpSymPauliTensor(pauli) * SpSymPauliTensor({}, angle);
+      return {SpSymPauliTensor(pauli) * SpSymPauliTensor({}, angle), angle / 2};
     }
     case PGOpType::CliffordRot: {
       PGCliffordRot& r = dynamic_cast<PGCliffordRot&>(*pgop);
       const SpPauliStabiliser& pauli = r.get_tensor();
       unsigned angle = r.get_angle();
-      return SpSymPauliTensor(pauli) * SpSymPauliTensor({}, angle * 0.5);
+      return {
+          SpSymPauliTensor(pauli) * SpSymPauliTensor({}, angle * 0.5),
+          angle / 4.};
     }
     default: {
       // Only Rotation and CliffordRot are identified as rotations by
@@ -986,8 +1006,9 @@ void append_rotations_to_circuit_individually(
     Circuit& circ, const std::list<PGOp_ptr>& rotations,
     CXConfigType cx_config) {
   for (const PGOp_ptr& pgop : rotations) {
-    append_single_pauli_gadget_as_pauli_exp_box(
-        circ, gadget_from_rotation(pgop), cx_config);
+    auto [gadget, phase] = gadget_from_rotation(pgop);
+    append_single_pauli_gadget_as_pauli_exp_box(circ, gadget, cx_config);
+    circ.add_phase(phase);
   }
 }
 
@@ -996,12 +1017,14 @@ void append_rotations_to_circuit_pairwise(
     CXConfigType cx_config) {
   auto it = rotations.begin();
   while (it != rotations.end()) {
-    SpSymPauliTensor gadget0 = gadget_from_rotation(*it);
+    auto [gadget0, phase0] = gadget_from_rotation(*it);
+    circ.add_phase(phase0);
     ++it;
     if (it == rotations.end()) {
       append_single_pauli_gadget_as_pauli_exp_box(circ, gadget0, cx_config);
     } else {
-      SpSymPauliTensor gadget1 = gadget_from_rotation(*it);
+      auto [gadget1, phase1] = gadget_from_rotation(*it);
+      circ.add_phase(phase1);
       ++it;
       // The new PauliGraph does not automatically merge rotations on
       // construction, leaving this for an explicit rewrite. However, the
@@ -1023,11 +1046,12 @@ void append_rotations_to_circuit_setwise(
   auto it = rotations.begin();
   while (it != rotations.end()) {
     std::map<SpPauliString, SpSymPauliTensor> gadget_map;
-    SpSymPauliTensor gadget = gadget_from_rotation(*it);
+    auto [gadget, phase] = gadget_from_rotation(*it);
+    circ.add_phase(phase);
     gadget_map.insert({gadget.string, gadget});
     ++it;
     while (it != rotations.end()) {
-      SpSymPauliTensor gadget = gadget_from_rotation(*it);
+      auto [gadget, phase] = gadget_from_rotation(*it);
       bool commutes_with_all = true;
       for (const std::pair<const SpPauliString, SpSymPauliTensor>& g :
            gadget_map) {
@@ -1037,6 +1061,7 @@ void append_rotations_to_circuit_setwise(
         }
       }
       if (!commutes_with_all) break;
+      circ.add_phase(phase);
       // Merge any gadgets with identical strings which may not have been merged
       // by explicit rewrites on the PauliGraph.
       auto inserted = gadget_map.insert({gadget.string, gadget});

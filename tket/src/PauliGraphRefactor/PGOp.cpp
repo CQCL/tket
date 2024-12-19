@@ -649,6 +649,11 @@ const ChoiMixTableau::row_tensor_t& PGInputTableau::get_full_row(
 
 const ChoiAPState& PGInputTableau::get_apstate() const { return ap_; }
 
+void PGInputTableau::normal_form() {
+  ap_.canonical_column_order();
+  ap_.normal_form();
+}
+
 ChoiMixTableau PGInputTableau::to_cm_tableau() const {
   std::list<ChoiMixTableau::row_tensor_t> rows;
   for (unsigned i = 0; i < n_paulis(); ++i) {
@@ -664,11 +669,18 @@ PGInputTableau::PGInputTableau(
     rows_.push_back(tableau.get_row(i));
 }
 
-SymSet PGInputTableau::free_symbols() const { return {}; }
+SymSet PGInputTableau::free_symbols() const {
+  return expr_free_symbols(ap_.ap_.phase);
+}
 
 PGOp_ptr PGInputTableau::symbol_substitution(
-    const SymEngine::map_basic_basic&) const {
-  return PGOp_ptr();
+    const SymEngine::map_basic_basic& sub_map) const {
+  ChoiAPState ap2 = ap_;
+  ap2.ap_.phase = ap_.ap_.phase.subs(sub_map);
+  return std::make_shared<PGInputTableau>(
+      ChoiMixTableau(
+          std::list<ChoiMixTableau::row_tensor_t>{rows_.begin(), rows_.end()}),
+      ap2);
 }
 
 PGOp_ptr PGInputTableau::clone() const {
@@ -755,6 +767,11 @@ const ChoiMixTableau::row_tensor_t& PGOutputTableau::get_full_row(
 
 const ChoiAPState& PGOutputTableau::get_apstate() const { return ap_; }
 
+void PGOutputTableau::normal_form() {
+  ap_.canonical_column_order();
+  ap_.normal_form();
+}
+
 ChoiMixTableau PGOutputTableau::to_cm_tableau() const {
   std::list<ChoiMixTableau::row_tensor_t> rows;
   for (unsigned i = 0; i < n_paulis(); ++i) {
@@ -770,11 +787,18 @@ PGOutputTableau::PGOutputTableau(
     rows_.push_back(tableau.get_row(i));
 }
 
-SymSet PGOutputTableau::free_symbols() const { return {}; }
+SymSet PGOutputTableau::free_symbols() const {
+  return expr_free_symbols(ap_.ap_.phase);
+}
 
 PGOp_ptr PGOutputTableau::symbol_substitution(
-    const SymEngine::map_basic_basic&) const {
-  return PGOp_ptr();
+    const SymEngine::map_basic_basic& sub_map) const {
+  ChoiAPState ap2 = ap_;
+  ap2.ap_.phase = ap_.ap_.phase.subs(sub_map);
+  return std::make_shared<PGOutputTableau>(
+      ChoiMixTableau(
+          std::list<ChoiMixTableau::row_tensor_t>{rows_.begin(), rows_.end()}),
+      ap2);
 }
 
 PGOp_ptr PGOutputTableau::clone() const {

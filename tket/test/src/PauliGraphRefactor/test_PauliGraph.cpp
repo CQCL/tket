@@ -69,25 +69,25 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     WHEN("Legacy individual synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_individually(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy pairwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_pairwise(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy setwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_sets(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General individual synthesis") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General setwise synthesis") {
       Circuit res = pauli_graph3_to_circuit_sets(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
   }
   GIVEN("A 1qb circuit") {
@@ -101,25 +101,25 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     WHEN("Legacy individual synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_individually(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy pairwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_pairwise(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy setwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_sets(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General individual synthesis") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General setwise synthesis") {
       Circuit res = pauli_graph3_to_circuit_sets(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
   }
   GIVEN("A 2qb circuit with no interaction") {
@@ -136,25 +136,25 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     WHEN("Legacy individual synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_individually(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy pairwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_pairwise(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy setwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_sets(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General individual synthesis") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General setwise synthesis") {
       Circuit res = pauli_graph3_to_circuit_sets(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
   }
   GIVEN("A 2qb circuit with some anti-commuting interaction") {
@@ -167,25 +167,25 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     WHEN("Legacy individual synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_individually(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy pairwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_pairwise(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy setwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_sets(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General individual synthesis") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General setwise synthesis") {
       Circuit res = pauli_graph3_to_circuit_sets(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
   }
   GIVEN("A 2qb circuit with some commuting interaction") {
@@ -198,25 +198,25 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     WHEN("Legacy individual synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_individually(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy pairwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_pairwise(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy setwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_sets(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General individual synthesis") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General setwise synthesis") {
       Circuit res = pauli_graph3_to_circuit_sets(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
   }
   GIVEN("A 2qb circuit a Clifford-angled ZZPhase") {
@@ -229,25 +229,25 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     WHEN("Legacy individual synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_individually(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy pairwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_pairwise(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy setwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_sets(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General individual synthesis") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General setwise synthesis") {
       Circuit res = pauli_graph3_to_circuit_sets(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
   }
   GIVEN("A 1qb circuit with stuff to merge") {
@@ -262,25 +262,25 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     WHEN("Legacy individual synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_individually(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy pairwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_pairwise(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy setwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_sets(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General individual synthesis") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General setwise synthesis") {
       Circuit res = pauli_graph3_to_circuit_sets(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
   }
   GIVEN("A 2qb circuit with stuff to merge") {
@@ -295,25 +295,25 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     WHEN("Legacy individual synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_individually(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy pairwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_pairwise(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy setwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_sets(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General individual synthesis") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General setwise synthesis") {
       Circuit res = pauli_graph3_to_circuit_sets(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
   }
   GIVEN("A circuit with Cliffords and non-Cliffords") {
@@ -329,25 +329,25 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     WHEN("Legacy individual synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_individually(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy pairwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_pairwise(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy setwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_sets(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General individual synthesis") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General setwise synthesis") {
       Circuit res = pauli_graph3_to_circuit_sets(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
   }
   GIVEN("A dense example") {
@@ -376,25 +376,25 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     WHEN("Legacy individual synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_individually(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy pairwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_pairwise(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy setwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_sets(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General individual synthesis") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General setwise synthesis") {
       Circuit res = pauli_graph3_to_circuit_sets(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
   }
   GIVEN("A more interesting example (tof_3)") {
@@ -455,25 +455,25 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     WHEN("Legacy individual synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_individually(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy pairwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_pairwise(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy setwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_sets(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General individual synthesis") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General setwise synthesis") {
       Circuit res = pauli_graph3_to_circuit_sets(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
   }
   GIVEN("A circuit with a PauliExpBox") {
@@ -488,25 +488,25 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     WHEN("Legacy individual synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_individually(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy pairwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_pairwise(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy setwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_sets(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General individual synthesis") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General setwise synthesis") {
       Circuit res = pauli_graph3_to_circuit_sets(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
   }
   GIVEN("Teleportation") {
@@ -515,6 +515,8 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     circ.add_op<unsigned>(OpType::CX, {1, 2});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::H, {0});
+    ChoiAPState correct_ap_in(3);
+    correct_ap_in.ap_.phase = 0.;
     ChoiAPState correct_ap = circuit_to_choi_apstate(circ);
     correct_ap.normal_form();
     circ.add_measure(0, 0);
@@ -522,6 +524,9 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     circ.add_conditional_gate<unsigned>(OpType::X, {}, uvec{2}, {1}, 1);
     circ.add_conditional_gate<unsigned>(OpType::Z, {}, uvec{2}, {0}, 1);
     PauliGraph pg = circuit_to_pauli_graph3(circ);
+    PGOp_ptr out_tab = pg.get_vertex_PGOp_ptr(*pg.get_output_tableau());
+    PGOutputTableau& out_tab_op = dynamic_cast<PGOutputTableau&>(*out_tab);
+    out_tab_op.normal_form();
     std::list<PGOp_ptr> sequence = pg.pgop_sequence();
     ChoiMixTableau correct_out_tab = ChoiMixTableau({
         {SpPauliStabiliser({Pauli::X, Pauli::Z, Pauli::X}),
@@ -538,7 +543,7 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
          SpPauliStabiliser(Qubit(2), Pauli::X)},
     });
     std::list<PGOp_ptr> correct_sequence{
-        std::make_shared<PGInputTableau>(ChoiMixTableau(3), ChoiAPState(3)),
+        std::make_shared<PGInputTableau>(ChoiMixTableau(3), correct_ap_in),
         std::make_shared<PGMeasure>(
             SpPauliStabiliser({Pauli::Z, Pauli::X, Pauli::I}), Bit(1)),
         std::make_shared<PGMeasure>(
@@ -562,10 +567,20 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     }
     Circuit res = pauli_graph3_to_circuit_individual(pg);
     PauliGraph res_pg = circuit_to_pauli_graph3(res);
+    PGOp_ptr res_out_tab =
+        res_pg.get_vertex_PGOp_ptr(*res_pg.get_output_tableau());
+    PGOutputTableau& res_out_tab_op =
+        dynamic_cast<PGOutputTableau&>(*res_out_tab);
+    res_out_tab_op.normal_form();
     std::list<PGOp_ptr> res_sequence = res_pg.pgop_sequence();
     CHECK(comp_seqs(res_sequence, correct_sequence));
     Circuit res_sets = pauli_graph3_to_circuit_sets(pg);
     PauliGraph res_sets_pg = circuit_to_pauli_graph3(res_sets);
+    PGOp_ptr res_sets_out_tab =
+        res_pg.get_vertex_PGOp_ptr(*res_sets_pg.get_output_tableau());
+    PGOutputTableau& res_sets_out_tab_op =
+        dynamic_cast<PGOutputTableau&>(*res_sets_out_tab);
+    res_sets_out_tab_op.normal_form();
     std::list<PGOp_ptr> res_sets_sequence = res_pg.pgop_sequence();
     CHECK(comp_seqs(res_sets_sequence, correct_sequence));
   }
@@ -634,7 +649,7 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
       REQUIRE(res.count_gates(OpType::MultiplexedRotationBox) == 1);
       REQUIRE(res.count_gates(OpType::MultiplexedU2Box) == 1);
       REQUIRE(res.count_gates(OpType::MultiplexedTensoredU2Box) == 1);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General setwise synthesis") {
       Circuit res = pauli_graph3_to_circuit_sets(pg);
@@ -647,7 +662,7 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
       REQUIRE(res.count_gates(OpType::MultiplexedRotationBox) == 1);
       REQUIRE(res.count_gates(OpType::MultiplexedU2Box) == 1);
       REQUIRE(res.count_gates(OpType::MultiplexedTensoredU2Box) == 1);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
   }
   GIVEN("A conjugated Box") {
@@ -664,22 +679,25 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     WHEN("General individual synthesis") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);
       REQUIRE(res.count_gates(OpType::Sycamore) == 1);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General setwise synthesis") {
       Circuit res = pauli_graph3_to_circuit_sets(pg);
       res.decompose_boxes_recursively();
       REQUIRE(res.count_gates(OpType::Sycamore) == 1);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
   }
   GIVEN("Some end-of-circuit measurements") {
     Circuit circ(3, 2);
-    circ.add_op<unsigned>(OpType::Rz, 1.35, {0});
+    circ.add_op<unsigned>(OpType::U1, 1.35, {0});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
     circ.add_measure(0, 0);
     circ.add_measure(2, 1);
     PauliGraph pg = circuit_to_pauli_graph3(circ);
+    PGOp_ptr out_tab = pg.get_vertex_PGOp_ptr(*pg.get_output_tableau());
+    PGOutputTableau& out_tab_op = dynamic_cast<PGOutputTableau&>(*out_tab);
+    out_tab_op.normal_form();
     REQUIRE_NOTHROW(pg.verify());
     SpPauliStabiliser zzi(DensePauliMap{Pauli::Z, Pauli::Z});
     ChoiMixTableau correct_out_tab = ChoiMixTableau({
@@ -699,8 +717,10 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     cliff_circ.add_op<unsigned>(OpType::CX, {1, 0});
     ChoiAPState correct_ap = circuit_to_choi_apstate(cliff_circ);
     correct_ap.normal_form();
+    ChoiAPState correct_ap_in(3);
+    correct_ap_in.ap_.phase = 0.;
     std::list<PGOp_ptr> correct_sequence{
-        std::make_shared<PGInputTableau>(ChoiMixTableau(3), ChoiAPState(3)),
+        std::make_shared<PGInputTableau>(ChoiMixTableau(3), correct_ap_in),
         std::make_shared<PGMeasure>(
             SpPauliStabiliser(Qubit(2), Pauli::Z), Bit(1)),
         std::make_shared<PGRotation>(
@@ -712,24 +732,44 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_individually(pg);
       CHECK(res.count_gates(OpType::Measure) == 2);
       PauliGraph res_pg = circuit_to_pauli_graph3(res);
+      PGOp_ptr res_out_tab =
+          res_pg.get_vertex_PGOp_ptr(*res_pg.get_output_tableau());
+      PGOutputTableau& res_out_tab_op =
+          dynamic_cast<PGOutputTableau&>(*res_out_tab);
+      res_out_tab_op.normal_form();
       CHECK(comp_seqs(res_pg.pgop_sequence(), correct_sequence));
     }
     WHEN("Legacy pairwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_pairwise(pg);
       CHECK(res.count_gates(OpType::Measure) == 2);
       PauliGraph res_pg = circuit_to_pauli_graph3(res);
+      PGOp_ptr res_out_tab =
+          res_pg.get_vertex_PGOp_ptr(*res_pg.get_output_tableau());
+      PGOutputTableau& res_out_tab_op =
+          dynamic_cast<PGOutputTableau&>(*res_out_tab);
+      res_out_tab_op.normal_form();
       CHECK(comp_seqs(res_pg.pgop_sequence(), correct_sequence));
     }
     WHEN("Legacy setwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_sets(pg);
       CHECK(res.count_gates(OpType::Measure) == 2);
       PauliGraph res_pg = circuit_to_pauli_graph3(res);
+      PGOp_ptr res_out_tab =
+          res_pg.get_vertex_PGOp_ptr(*res_pg.get_output_tableau());
+      PGOutputTableau& res_out_tab_op =
+          dynamic_cast<PGOutputTableau&>(*res_out_tab);
+      res_out_tab_op.normal_form();
       CHECK(comp_seqs(res_pg.pgop_sequence(), correct_sequence));
     }
     WHEN("General individual synthesis") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);
       CHECK(res.count_gates(OpType::Measure) == 2);
       PauliGraph res_pg = circuit_to_pauli_graph3(res);
+      PGOp_ptr res_out_tab =
+          res_pg.get_vertex_PGOp_ptr(*res_pg.get_output_tableau());
+      PGOutputTableau& res_out_tab_op =
+          dynamic_cast<PGOutputTableau&>(*res_out_tab);
+      res_out_tab_op.normal_form();
       CHECK(comp_seqs(res_pg.pgop_sequence(), correct_sequence));
     }
     WHEN("General setwise synthesis") {
@@ -737,6 +777,11 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
       res.decompose_boxes_recursively();
       CHECK(res.count_gates(OpType::Measure) == 2);
       PauliGraph res_pg = circuit_to_pauli_graph3(res);
+      PGOp_ptr res_out_tab =
+          res_pg.get_vertex_PGOp_ptr(*res_pg.get_output_tableau());
+      PGOutputTableau& res_out_tab_op =
+          dynamic_cast<PGOutputTableau&>(*res_out_tab);
+      res_out_tab_op.normal_form();
       CHECK(comp_seqs(res_pg.pgop_sequence(), correct_sequence));
     }
   }
@@ -752,6 +797,9 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     circ.add_assertion(box, {Qubit(0), Qubit(2)}, Qubit(1));
     circ.add_assertion(box, {Qubit(0), Qubit(2)}, Qubit(1));
     PauliGraph pg = circuit_to_pauli_graph3(circ);
+    PGOp_ptr out_tab = pg.get_vertex_PGOp_ptr(*pg.get_output_tableau());
+    PGOutputTableau& out_tab_op = dynamic_cast<PGOutputTableau&>(*out_tab);
+    out_tab_op.normal_form();
     REQUIRE_NOTHROW(pg.verify());
     std::list<PGOp_ptr> sequence = pg.pgop_sequence();
     SpPauliStabiliser anc_z(Qubit(1), Pauli::Z);
@@ -774,8 +822,11 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     cliff_circ.add_op<unsigned>(OpType::CX, {1, 0});
     ChoiAPState correct_ap = circuit_to_choi_apstate(cliff_circ);
     correct_ap.normal_form();
+    // Phase from the Rz gate gets added here
+    correct_ap.ap_.phase -= 0.75;
+    ChoiAPState correct_ap_in(3);
     std::list<PGOp_ptr> correct_sequence{
-        std::make_shared<PGInputTableau>(ChoiMixTableau(3), ChoiAPState(3)),
+        std::make_shared<PGInputTableau>(ChoiMixTableau(3), correct_ap_in),
         std::make_shared<PGRotation>(
             SpPauliStabiliser(Qubit(0), Pauli::Z), 1.5),
         std::make_shared<PGStabAssertion>(
@@ -805,6 +856,11 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);
       REQUIRE(res.count_gates(OpType::StabiliserAssertionBox) == 6);
       PauliGraph res_pg = circuit_to_pauli_graph3(res);
+      PGOp_ptr res_out_tab =
+          res_pg.get_vertex_PGOp_ptr(*res_pg.get_output_tableau());
+      PGOutputTableau& res_out_tab_op =
+          dynamic_cast<PGOutputTableau&>(*res_out_tab);
+      res_out_tab_op.normal_form();
       std::list<PGOp_ptr> res_sequence = res_pg.pgop_sequence();
       CHECK(comp_seqs(res_sequence, correct_sequence));
     }
@@ -813,6 +869,11 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
       res.decompose_boxes_recursively({OpType::StabiliserAssertionBox});
       REQUIRE(res.count_gates(OpType::StabiliserAssertionBox) == 6);
       PauliGraph res_pg = circuit_to_pauli_graph3(res);
+      PGOp_ptr res_out_tab =
+          res_pg.get_vertex_PGOp_ptr(*res_pg.get_output_tableau());
+      PGOutputTableau& res_out_tab_op =
+          dynamic_cast<PGOutputTableau&>(*res_out_tab);
+      res_out_tab_op.normal_form();
       std::list<PGOp_ptr> res_sequence = res_pg.pgop_sequence();
       CHECK(comp_seqs(res_sequence, correct_sequence));
     }
@@ -836,14 +897,14 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
       res.decompose_boxes_recursively();
       CHECK(res.created_qubits() == qubit_vector_t{Qubit(0)});
       CHECK(res.discarded_qubits() == qubit_vector_t{Qubit(2)});
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General setwise synthesis") {
       Circuit res = pauli_graph3_to_circuit_sets(pg);
       res.decompose_boxes_recursively();
       CHECK(res.created_qubits() == qubit_vector_t{Qubit(0)});
       CHECK(res.discarded_qubits() == qubit_vector_t{Qubit(2)});
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
   }
   GIVEN("A symbolic circuit") {
@@ -872,14 +933,14 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);
       REQUIRE(res.count_gates(OpType::FSim) == 1);
       circ.symbol_substitution(sub_map);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General setwise synthesis") {
       Circuit res = pauli_graph3_to_circuit_sets(pg);
       res.decompose_boxes_recursively();
       REQUIRE(res.count_gates(OpType::FSim) == 1);
       circ.symbol_substitution(sub_map);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
   }
   GIVEN("Don't collect cliffords") {
@@ -904,26 +965,69 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     WHEN("Legacy individual synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_individually(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy pairwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_pairwise(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("Legacy setwise synthesis") {
       Circuit res = pauli_graph3_to_pauli_exp_box_circuit_sets(pg);
       res.decompose_boxes_recursively();
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General individual synthesis") {
       Circuit res = pauli_graph3_to_circuit_individual(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
     WHEN("General setwise synthesis") {
       Circuit res = pauli_graph3_to_circuit_sets(pg);
-      REQUIRE(test_unitary_comparison(circ, res, true));
+      REQUIRE(test_unitary_comparison(circ, res, false));
     }
+  }
+}
+
+SCENARIO("Check global phase in converters") {
+  std::list<std::pair<OpType, std::vector<unsigned>>> test_gates = {
+      {OpType::Z, {0}},       {OpType::X, {0}},
+      {OpType::Y, {0}},       {OpType::S, {0}},
+      {OpType::Sdg, {0}},     {OpType::V, {0}},
+      {OpType::Vdg, {0}},     {OpType::SX, {0}},
+      {OpType::SXdg, {0}},    {OpType::H, {0}},
+      {OpType::CX, {0, 1}},   {OpType::CY, {0, 1}},
+      {OpType::CZ, {0, 1}},   {OpType::ZZMax, {0, 1}},
+      {OpType::ECR, {0, 1}},  {OpType::ISWAPMax, {0, 1}},
+      {OpType::SWAP, {0, 1}}, {OpType::BRIDGE, {0, 1, 2}},
+      {OpType::noop, {0}},    {OpType::T, {0}},
+      {OpType::Tdg, {0}},
+  };
+  for (const auto& com : test_gates) {
+    Circuit circ(3);
+    circ.add_op<unsigned>(com.first, com.second);
+    PauliGraph pg = circuit_to_pauli_graph3(circ, false);
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    CHECK(test_unitary_comparison(circ, res, false));
+  }
+  std::list<std::tuple<OpType, std::vector<Expr>, std::vector<unsigned>>>
+      test_param_gates = {
+          {OpType::Rz, {0.35}, {0}},
+          {OpType::U1, {0.35}, {0}},
+          {OpType::Rx, {0.35}, {0}},
+          {OpType::Ry, {0.35}, {0}},
+          {OpType::TK1, {0.35, 0.98, 1.72}, {0}},
+          {OpType::PhaseGadget, {0.35}, {0, 1, 2}},
+          {OpType::ZZPhase, {0.35}, {0, 1}},
+          {OpType::XXPhase, {0.35}, {0, 1}},
+          {OpType::YYPhase, {0.35}, {0, 1}},
+          {OpType::TK2, {0.35, 0.98, 1.72}, {0, 1}},
+      };
+  for (const auto& com : test_param_gates) {
+    Circuit circ(3);
+    circ.add_op<unsigned>(std::get<0>(com), std::get<1>(com), std::get<2>(com));
+    PauliGraph pg = circuit_to_pauli_graph3(circ, false);
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    CHECK(test_unitary_comparison(circ, res, false));
   }
 }
 

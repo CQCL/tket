@@ -131,8 +131,6 @@ ChoiAPState circuit_to_choi_apstate(const Circuit& circ) {
   for (const Qubit& q : circ.discarded_qubits()) {
     ap.discard_qubit(q);
   }
-  ap.canonical_column_order();
-  ap.normal_form();
   return ap;
 }
 
@@ -367,6 +365,7 @@ SymplecticTableau apstate_to_tableau(APState ap) {
   for (unsigned q = 0; q < n_qbs; ++q) {
     if (leader_to_row.find(q) == leader_to_row.end() &&
         mixed_to_row.find(q) == mixed_to_row.end()) {
+      unsigned n_is = 0;
       // Calculate the Xs
       xmat(r, q) = true;
       for (const std::pair<const unsigned, unsigned>& mr : mixed_to_row) {
@@ -389,14 +388,21 @@ SymplecticTableau apstate_to_tableau(APState ap) {
               zmat(r, q3) ^= true;
               // If both qubits of a CZ have Xs, we will need to reorder the X
               // and Z on one to match the other
-              if (q2 < q3 && xmat(r, q3)) phase(r) ^= true;
+              if (xmat(r, q3)) ++n_is;
             }
           }
           // Pushing an X through the local phase
           zmat(r, q2) ^= ((unsigned)ap.P(q2) % 2 == 1);
-          phase(r) ^= ((unsigned)ap.P(q2) % 4 > 1);
+          n_is += (unsigned)ap.P(q2) % 4;
         }
       }
+      unsigned n_ys = 0;
+      for (unsigned q2 = 0; q2 < n_qbs; ++q2) {
+        if (xmat(r, q2) && zmat(r, q2)) ++n_ys;
+      }
+      n_is += 3 * n_ys;
+      TKET_ASSERT(n_is % 2 == 0);
+      phase(r) = (n_is % 4 == 2);
       ++r;
     }
   }
