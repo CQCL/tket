@@ -40,7 +40,7 @@ class StandardSquasher : public AbstractSquasher {
 
   StandardSquasher(const OpTypeSet &singleqs, const Func &tk1_replacement);
 
-  bool accepts(Gate_ptr gp) const override;
+  bool accepts(OpType optype) const override;
 
   void append(Gate_ptr gp) override;
 
