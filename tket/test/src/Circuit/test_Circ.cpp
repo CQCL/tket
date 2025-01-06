@@ -3548,5 +3548,16 @@ SCENARIO("Finding subcircuits") {
   }
 }
 
+SCENARIO("Filter conditional commands") {
+  // https://github.com/CQCL/tket/issues/1726
+  GIVEN("Circuit with a conditional after a measure") {
+    Circuit c(1, 1);
+    c.add_measure(0, 0);
+    c.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
+    std::list<Command> cmds = c.get_commands_of_type(OpType::Conditional);
+    REQUIRE(cmds.size() == 1);
+  }
+}
+
 }  // namespace test_Circ
 }  // namespace tket
