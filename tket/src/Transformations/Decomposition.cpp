@@ -178,14 +178,24 @@ static bool convert_singleqs_TK1(Circuit &circ) {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     OpType optype = op->get_type();
+    bool conditional = optype == OpType::Conditional;
+    if (conditional) {
+      const Conditional &cond = static_cast<const Conditional &>(*op);
+      op = cond.get_op();
+      optype = op->get_type();
+    }
     if (is_gate_type(optype) && !is_projective_type(optype) &&
         op->n_qubits() == 1 && optype != OpType::TK1) {
       std::vector<Expr> tk1_angs = as_gate_ptr(op)->get_tk1_angles();
       Circuit rep(1);
       rep.add_op<unsigned>(
           OpType::TK1, {tk1_angs[0], tk1_angs[1], tk1_angs[2]}, {0});
-      circ.substitute(rep, v, Circuit::VertexDeletion::No);
-      circ.add_phase(tk1_angs[3]);
+      if (conditional) {
+        circ.substitute_conditional(rep, v, Circuit::VertexDeletion::No);
+      } else {
+        circ.substitute(rep, v, Circuit::VertexDeletion::No);
+        circ.add_phase(tk1_angs[3]);
+      }
       bin.push_back(v);
       success = true;
     }
@@ -405,15 +415,25 @@ Transform decompose_tk1_to_rzrx() {
     auto [it, end] = boost::vertices(circ.dag);
     for (auto next = it; it != end; it = next) {
       ++next;
-      if (circ.get_OpType_from_Vertex(*it) == OpType::TK1) {
+      Op_ptr op = circ.get_Op_ptr_from_Vertex(*it);
+      OpType optype = op->get_type();
+      bool conditional = optype == OpType::Conditional;
+      if (conditional) {
+        const Conditional &cond = static_cast<const Conditional &>(*op);
+        op = cond.get_op();
+        optype = op->get_type();
+      }
+      if (optype == OpType::TK1) {
         success = true;
-        const Op_ptr g = circ.get_Op_ptr_from_Vertex(*it);
-        const std::vector<Expr> &params = g->get_params();
+        const std::vector<Expr> &params = op->get_params();
         Circuit newcirc =
             CircPool::tk1_to_rzrx(params[0], params[1], params[2]);
-        Subcircuit sc = {
-            {circ.get_in_edges(*it)}, {circ.get_all_out_edges(*it)}, {*it}};
-        circ.substitute(newcirc, sc, Circuit::VertexDeletion::Yes);
+        if (conditional) {
+          circ.substitute_conditional(
+              newcirc, *it, Circuit::VertexDeletion::Yes);
+        } else {
+          circ.substitute(newcirc, *it, Circuit::VertexDeletion::Yes);
+        }
       }
     }
     return success;
