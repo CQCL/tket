@@ -412,10 +412,9 @@ Transform decompose_XY() { return Transform(convert_to_xyx); }
 Transform decompose_tk1_to_rzrx() {
   return Transform([](Circuit &circ) {
     bool success = false;
-    auto [it, end] = boost::vertices(circ.dag);
-    for (auto next = it; it != end; it = next) {
-      ++next;
-      Op_ptr op = circ.get_Op_ptr_from_Vertex(*it);
+    VertexList bin;
+    BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+      Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
       OpType optype = op->get_type();
       bool conditional = optype == OpType::Conditional;
       if (conditional) {
@@ -425,17 +424,19 @@ Transform decompose_tk1_to_rzrx() {
       }
       if (optype == OpType::TK1) {
         success = true;
+        bin.push_back(v);
         const std::vector<Expr> &params = op->get_params();
         Circuit newcirc =
             CircPool::tk1_to_rzrx(params[0], params[1], params[2]);
         if (conditional) {
-          circ.substitute_conditional(
-              newcirc, *it, Circuit::VertexDeletion::Yes);
+          circ.substitute_conditional(newcirc, v, Circuit::VertexDeletion::No);
         } else {
-          circ.substitute(newcirc, *it, Circuit::VertexDeletion::Yes);
+          circ.substitute(newcirc, v, Circuit::VertexDeletion::No);
         }
       }
     }
+    circ.remove_vertices(
+        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
     return success;
   });
 }
