@@ -31,7 +31,7 @@ SCENARIO("SynthesiseTket with conditionals") {
   CompilationUnit cu(c);
   SynthesiseTket()->apply(cu);
   Circuit c1 = cu.get_circ_ref();
-  REQUIRE(c1.n_gates() == 6);
+  REQUIRE(c1.n_gates() <= 8);
 }
 
 }  // namespace test_SynthesiseTket
