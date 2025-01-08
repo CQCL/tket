@@ -123,6 +123,6 @@ jobs:
         UPLOAD_PACKAGE=${UPLOAD_PACKAGE}
         JFROG_ARTIFACTORY_TOKEN_3=${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }}
         JFROG_ARTIFACTORY_USER_3=${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
-        CONAN_PROFILE=linux-x86_64-gcc12
+        CONAN_PROFILE=linux-x86_64-gcc14
         EOF
         docker exec --env-file env-vars linux_build /bin/bash -c "/linuxbuildlib"

@@ -63,7 +63,7 @@ jobs:
     - name: Install and upload packages
       run: |
         docker start linux_build
-        docker exec -e JFROG_ARTIFACTORY_TOKEN_3="${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }}" -e JFROG_ARTIFACTORY_USER_3="${{ secrets.JFROG_ARTIFACTORY_USER_3 }}" -e CONAN_PROFILE=linux-x86_64-gcc12 linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildpackages"
+        docker exec -e JFROG_ARTIFACTORY_TOKEN_3="${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }}" -e JFROG_ARTIFACTORY_USER_3="${{ secrets.JFROG_ARTIFACTORY_USER_3 }}" -e CONAN_PROFILE=linux-x86_64-gcc14 linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildpackages"
 
   build_manylinux_aarch64:
     name: Build on manylinux (aarch64)

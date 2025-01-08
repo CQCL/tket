@@ -27,7 +27,7 @@ jobs:
     - name: Run build
       run: |
         docker start linux_build
-        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-x86_64-gcc12 linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
+        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-x86_64-gcc14 linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
         mkdir wheelhouse
         docker cp linux_build:/tket/pytket/audited/. wheelhouse/
     - uses: actions/upload-artifact@v4
