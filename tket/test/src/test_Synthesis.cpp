@@ -42,6 +42,7 @@
 #include "tket/Transformations/RzPhasedXSquash.hpp"
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/Expression.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 /* This test file covers decomposition, basic optimisation and synthesis passes.
 It does not cover Rebasing, Clifford optimisation, Phase Gadgets,
@@ -2341,6 +2342,20 @@ SCENARIO("Test squash Rz PhasedX") {
     // The Rz should not be commuted through the CZ, since if it were a cycle
     // (CZ->CX->Measure->Rz->CZ) would be introduced.
     REQUIRE_FALSE(sqs.squash_between(out, in));
+  }
+
+  GIVEN("Chains of identically-controlled Rz and PhasedX") {
+    // https://github.com/CQCL/tket/issues/1723
+    Circuit circ(1, 2);
+    for (int i = 0; i < 10; i++) {
+      circ.add_conditional_gate<unsigned>(OpType::Rz, {0.67 * i}, {0}, {0}, 1);
+      circ.add_conditional_gate<unsigned>(
+          OpType::PhasedX, {0.76 * i, 0.77 * i}, {0}, {0}, 1);
+    }
+    circ.add_measure(Qubit(0), Bit(1));
+    Transforms::squash_1qb_to_Rz_PhasedX().apply(circ);
+    CHECK(circ.count_gates(OpType::Rz, true) == 1);
+    CHECK(circ.count_gates(OpType::PhasedX, true) == 1);
   }
 }
 

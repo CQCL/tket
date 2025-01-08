@@ -40,9 +40,9 @@ StandardSquasher::StandardSquasher(
   }
 }
 
-bool StandardSquasher::accepts(Gate_ptr gp) const {
-  OpType type = gp->get_type();
-  return (singleqs_.find(type) != singleqs_.end()) && !is_projective_type(type);
+bool StandardSquasher::accepts(OpType optype) const {
+  return (singleqs_.find(optype) != singleqs_.end()) &&
+         !is_projective_type(optype);
 }
 
 void StandardSquasher::append(Gate_ptr gp) {

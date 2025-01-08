@@ -197,8 +197,7 @@ class PhasedXSquasher : public StandardSquasher {
             CircPool::tk1_to_PhasedXRz) {}
 
   // Accept any single-qubit gate that has TK1 angles to squash it.
-  bool accepts(Gate_ptr gp) const override {
-    OpType optype = gp->get_type();
+  bool accepts(OpType optype) const override {
     return is_single_qubit_unitary_type(optype);
   }
 };
