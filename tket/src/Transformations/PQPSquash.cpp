@@ -17,6 +17,7 @@
 #include <memory>
 
 #include "tket/Gate/Rotation.hpp"
+#include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeInfo.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Transformations/Decomposition.hpp"
@@ -48,14 +49,14 @@ PQPSquasher::PQPSquasher(OpType p, OpType q, bool smart_squash, bool reversed)
   }
 }
 
-bool PQPSquasher::accepts(Gate_ptr gp) const {
-  OpType type = gp->get_type();
-  return type == p_ || type == q_;
+bool PQPSquasher::accepts(OpType optype) const {
+  return optype == p_ || optype == q_;
 }
 
 void PQPSquasher::append(Gate_ptr gp) {
-  if (!accepts(gp)) {
-    throw BadOpType("PQPSquasher: cannot append OpType", gp->get_type());
+  OpType optype = gp->get_type();
+  if (!accepts(optype)) {
+    throw BadOpType("PQPSquasher: cannot append OpType", optype);
   }
   rotation_chain.push_back(gp);
 }

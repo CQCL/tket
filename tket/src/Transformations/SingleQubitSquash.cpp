@@ -84,8 +84,7 @@ bool SingleQubitSquash::squash_between(const Edge &in, const Edge &out) {
     }
 
     bool is_squashable = circ_.n_in_edges_of_type(v, EdgeType::Quantum) == 1 &&
-                         is_gate_type(v_type) &&
-                         squasher_->accepts(as_gate_ptr(v_op));
+                         is_gate_type(v_type) && squasher_->accepts(v_type);
 
     if (e != out && condition == this_condition && is_squashable) {
       // => add gate to current squash

@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Features:
+
+* Squash sequences of conditional gates in `SquashRzPhasedX` pass.
+
 1.37.0 (December 2024)
 ----------------------
 
