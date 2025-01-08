@@ -8,6 +8,10 @@ Features:
 
 * Squash sequences of conditional gates in `SquashRzPhasedX` pass.
 
+Fixes:
+
+* Fix issue with `Circuit.commands_of_type(OpType.Conditional)`.
+
 1.37.0 (December 2024)
 ----------------------
 
