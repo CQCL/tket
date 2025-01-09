@@ -133,7 +133,7 @@ cmake --install .
 
 ```
 cd ${TMP_DIR}
-wget https://github.com/pybind/pybind11_json/archive/refs/tags/0.2.14.tar.gz
+wget https://github.com/pybind/pybind11_json/archive/refs/tags/0.2.15.tar.gz
 tar xzvf 0.2.14.tar.gz
 cd pybind11_json-0.2.14/
 mkdir build
