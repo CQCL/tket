@@ -344,7 +344,7 @@ jobs:
     if: github.event_name == 'release'
     needs: [test_linux_wheels, test_linux_aarch64_wheels, test_macos_x86_wheels, test_macos_arm64_wheels, test_Windows_wheels]
     runs-on: ubuntu-latest
-    environmemt:
+    environment:
       name: release
       url: https://pypi.org/p/pytket
     permissions:
