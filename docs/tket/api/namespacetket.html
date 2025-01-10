@@ -1898,6 +1898,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a2d94f055f24088e089fe9cf8fd6b7445" id="r_a2d94f055f24088e089fe9cf8fd6b7445"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a2d94f055f24088e089fe9cf8fd6b7445">ZXGraphlikeOptimisation</a> ()</td></tr>
 <tr class="memdesc:a2d94f055f24088e089fe9cf8fd6b7445"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempt to optimise the circuit by simplifying in ZX calculus and extracting a circuit back out.  <br /></td></tr>
 <tr class="separator:a2d94f055f24088e089fe9cf8fd6b7445"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7526d3f1b80c9ba2dea864ba12b7ca6b" id="r_a7526d3f1b80c9ba2dea864ba12b7ca6b"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a7526d3f1b80c9ba2dea864ba12b7ca6b">RemovePhaseOps</a> ()</td></tr>
+<tr class="memdesc:a7526d3f1b80c9ba2dea864ba12b7ca6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove all <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5e35d7fff7b903516cba242ff68fc6d3">OpType::Phase</a> (including conditionals) from the circuit.  <br /></td></tr>
+<tr class="separator:a7526d3f1b80c9ba2dea864ba12b7ca6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f64eb1930e0f91098fbd9f83872f938" id="r_a4f64eb1930e0f91098fbd9f83872f938"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a4f64eb1930e0f91098fbd9f83872f938">predicate_name</a> (std::type_index idx)</td></tr>
 <tr class="separator:a4f64eb1930e0f91098fbd9f83872f938"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a903d0e05c58620dc0d082c414c078911" id="r_a903d0e05c58620dc0d082c414c078911"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a903d0e05c58620dc0d082c414c078911">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="namespacetket.html#ad6db3955c4f1dbc5fb33f72bc2822e35">PredicatePtr</a> &amp;pred_ptr)</td></tr>
@@ -8243,7 +8246,7 @@ template&lt;typename <a class="el" href="namespacetket.html#a13e81344da4794f2648
 <p>For every two CnX gates, reorder their control qubits to improve the chance of gate cancellation</p>
 <dl class="section return"><dt>Returns</dt><dd>compilation pass to perform this transformation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00435">435</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00436">436</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -8392,7 +8395,7 @@ template&lt;typename <a class="el" href="namespacetket.html#a13e81344da4794f2648
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00105">105</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00106">106</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -9088,7 +9091,7 @@ template&lt;&gt; </div>
 <li>barrier) this pass will replace all wire swaps in the given circuit and they will be included in the last or an additional phase poly boxes</li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00187">187</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00188">188</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -9669,7 +9672,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00118">118</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00119">119</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -9710,7 +9713,7 @@ template&lt;&gt; </div>
 <p>Preserves Max2QubitGatesPredicate since any box with &gt;2 qubits is already invalid. Preserves <a class="el" href="classtket_1_1ConnectivityPredicate.html">ConnectivityPredicate</a> (and <a class="el" href="classtket_1_1DirectednessPredicate.html">DirectednessPredicate</a>) since the verification looks inside CircBoxes and any other boxes with &gt;2 qubits are already invalid. Most others are preserved since the predicates look within CircBoxes.</p>
 <p>Invalidates <a class="el" href="classtket_1_1GateSetPredicate.html" title="Asserts that all operations are in the specified set of types.">GateSetPredicate</a> because it doesn't look inside boxes or account for the gate set of their decomposition.</p>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00218">218</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00219">219</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -9729,7 +9732,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00261">261</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00262">262</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -9748,7 +9751,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00133">133</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00134">134</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -9767,7 +9770,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00162">162</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00163">163</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -10069,7 +10072,7 @@ template&lt;&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00326">326</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00327">327</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -10597,7 +10600,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00276">276</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00277">277</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -16289,7 +16292,7 @@ template&lt;&gt; </div>
 <p>After this pass, all TK2 angles will be normalised and the circuit will satisfy <code><a class="el" href="classtket_1_1NormalisedTK2Predicate.html" title="Asserts that all TK2 gates are normalised.">NormalisedTK2Predicate</a></code>.</p>
 <dl class="section return"><dt>Returns</dt><dd>compilation pass to perform this transformation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00384">384</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00385">385</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -18005,7 +18008,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00078">78</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00079">79</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -18024,7 +18027,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00085">85</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00086">86</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -18240,7 +18243,7 @@ template&lt;&gt; </div>
 
 <p>Remove all&amp; <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a48656da7a6e48c6887d94f4c69c731b6">OpType::Barrier</a> from the circuit. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00300">300</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00301">301</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -18261,7 +18264,7 @@ template&lt;&gt; </div>
 
 <p>Remove all operations that have no <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a29c2c02a361c9d7028472e5d92cd4a54">OpType::Output</a> or <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a6c4e5627d56328e52b12a2aeb0164d0d">OpType::ClOutput</a> in their causal future. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00354">354</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00355">355</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -18284,7 +18287,28 @@ template&lt;&gt; </div>
 <p>Note that if the circuit contains measurements, they may become mid-circuit measurements in the transformed circuit.</p>
 <dl class="section return"><dt>Returns</dt><dd>compilation pass to perform this transformation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00449">449</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00450">450</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a7526d3f1b80c9ba2dea864ba12b7ca6b" name="a7526d3f1b80c9ba2dea864ba12b7ca6b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7526d3f1b80c9ba2dea864ba12b7ca6b">&#9670;&#160;</a></span>RemovePhaseOps()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> &amp; tket::RemovePhaseOps </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Remove all <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5e35d7fff7b903516cba242ff68fc6d3">OpType::Phase</a> (including conditionals) from the circuit. </p>
+
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00516">516</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -18303,7 +18327,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00092">92</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00093">93</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -18668,7 +18692,7 @@ template&lt;typename BoxT &gt; </div>
 
 <p>Replace all measured classical maps that are followed by Measure operations whose quantum output is discarded with classical operations following the Measure. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00366">366</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00367">367</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -18713,7 +18737,7 @@ template&lt;typename BoxT &gt; </div>
 <p>Squash single qubit gates into PhasedX and Rz gates. </p>
 <p>Commute Rzs to the back if possible. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00421">421</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00422">422</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -18734,7 +18758,7 @@ template&lt;typename BoxT &gt; </div>
 
 <p>Squash sequences of single-qubit gates to TK1 gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00246">246</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00247">247</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -18782,7 +18806,7 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00060">60</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00061">61</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -18801,7 +18825,7 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00066">66</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00067">67</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -18820,7 +18844,7 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00072">72</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00073">73</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -21096,7 +21120,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 <p>As a resynthesis pass, this will ignore almost all optimisations achieved beforehand and may increase the cost of the circuit.</p>
 <dl class="section return"><dt>Returns</dt><dd>compilation pass to perform this transformation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00474">474</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00475">475</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -21118,7 +21142,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 <p>Converts ZZPhase with angle 1 or -1 to two <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aca877e9e6cc89dfdd87b1797169c9a9e">Rz(1)</a> gates. </p>
 <dl class="section return"><dt>Returns</dt><dd>compilation pass to perform this transformation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00404">404</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00405">405</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
