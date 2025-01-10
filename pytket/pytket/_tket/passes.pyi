@@ -9,7 +9,7 @@ import pytket._tket.transform
 import pytket._tket.unit_id
 import sympy
 import typing
-__all__ = ['AASRouting', 'Audit', 'AutoRebase', 'AutoSquash', 'BasePass', 'CNotSynthType', 'CXMappingPass', 'CliffordPushThroughMeasures', 'CliffordResynthesis', 'CliffordSimp', 'CnXPairwiseDecomposition', 'CommuteThroughMultis', 'ComposePhasePolyBoxes', 'ContextSimp', 'CustomPass', 'CustomRoutingPass', 'DecomposeArbitrarilyControlledGates', 'DecomposeBoxes', 'DecomposeClassicalExp', 'DecomposeMultiQubitsCX', 'DecomposeSingleQubitsTK1', 'DecomposeSwapsToCXs', 'DecomposeSwapsToCircuit', 'DecomposeTK2', 'Default', 'DefaultMappingPass', 'DelayMeasures', 'EulerAngleReduction', 'FlattenRegisters', 'FlattenRelabelRegistersPass', 'FullMappingPass', 'FullPeepholeOptimise', 'GlobalisePhasedX', 'GreedyPauliSimp', 'GuidedPauliSimp', 'HamPath', 'KAKDecomposition', 'NaivePlacementPass', 'NormaliseTK2', 'OptimisePhaseGadgets', 'PauliExponentials', 'PauliSimp', 'PauliSquash', 'PeepholeOptimise2Q', 'PlacementPass', 'RebaseCustom', 'RebaseTket', 'Rec', 'RemoveBarriers', 'RemoveDiscarded', 'RemoveImplicitQubitPermutation', 'RemoveRedundancies', 'RenameQubitsPass', 'RepeatPass', 'RepeatUntilSatisfiedPass', 'RepeatWithMetricPass', 'RoundAngles', 'RoutingPass', 'SWAP', 'SafetyMode', 'SequencePass', 'SimplifyInitial', 'SimplifyMeasured', 'SquashCustom', 'SquashRzPhasedX', 'SquashTK1', 'SynthesiseTK', 'SynthesiseTket', 'SynthesiseUMD', 'ThreeQubitSquash', 'ZXGraphlikeOptimisation', 'ZZPhaseToRz']
+__all__ = ['AASRouting', 'Audit', 'AutoRebase', 'AutoSquash', 'BasePass', 'CNotSynthType', 'CXMappingPass', 'CliffordPushThroughMeasures', 'CliffordResynthesis', 'CliffordSimp', 'CnXPairwiseDecomposition', 'CommuteThroughMultis', 'ComposePhasePolyBoxes', 'ContextSimp', 'CustomPass', 'CustomRoutingPass', 'DecomposeArbitrarilyControlledGates', 'DecomposeBoxes', 'DecomposeClassicalExp', 'DecomposeMultiQubitsCX', 'DecomposeSingleQubitsTK1', 'DecomposeSwapsToCXs', 'DecomposeSwapsToCircuit', 'DecomposeTK2', 'Default', 'DefaultMappingPass', 'DelayMeasures', 'EulerAngleReduction', 'FlattenRegisters', 'FlattenRelabelRegistersPass', 'FullMappingPass', 'FullPeepholeOptimise', 'GlobalisePhasedX', 'GreedyPauliSimp', 'GuidedPauliSimp', 'HamPath', 'KAKDecomposition', 'NaivePlacementPass', 'NormaliseTK2', 'OptimisePhaseGadgets', 'PauliExponentials', 'PauliSimp', 'PauliSquash', 'PeepholeOptimise2Q', 'PlacementPass', 'RebaseCustom', 'RebaseTket', 'Rec', 'RemoveBarriers', 'RemoveDiscarded', 'RemoveImplicitQubitPermutation', 'RemovePhaseOps', 'RemoveRedundancies', 'RenameQubitsPass', 'RepeatPass', 'RepeatUntilSatisfiedPass', 'RepeatWithMetricPass', 'RoundAngles', 'RoutingPass', 'SWAP', 'SafetyMode', 'SequencePass', 'SimplifyInitial', 'SimplifyMeasured', 'SquashCustom', 'SquashRzPhasedX', 'SquashTK1', 'SynthesiseTK', 'SynthesiseTket', 'SynthesiseUMD', 'ThreeQubitSquash', 'ZXGraphlikeOptimisation', 'ZZPhaseToRz']
 class BasePass:
     """
     Base class for passes.
@@ -617,6 +617,10 @@ def RemoveImplicitQubitPermutation() -> BasePass:
     Remove any implicit qubit permutation by appending SWAP gates.
     
     Note that if the circuit contains measurements, they may become mid-circuit measurements in the transformed circuit.
+    """
+def RemovePhaseOps() -> BasePass:
+    """
+    A pass to remove all Phase operations from the circuit.
     """
 def RemoveRedundancies() -> BasePass:
     """
