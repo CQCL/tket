@@ -138,6 +138,7 @@
             "RemoveDiscarded",
             "SimplifyMeasured",
             "RemoveBarriers",
+            "RemovePhaseOps",
             "DecomposeBridges",
             "KAKDecomposition",
             "ThreeQubitSquash",
@@ -948,6 +949,7 @@
                   "RemoveDiscarded",
                   "SimplifyMeasured",
                   "RemoveBarriers",
+                  "RemovePhaseOps",
                   "DecomposeBridges"
                 ]
               }

@@ -68,6 +68,7 @@ from pytket.passes import (
     RemoveBarriers,
     RemoveDiscarded,
     RemoveImplicitQubitPermutation,
+    RemovePhaseOps,
     RemoveRedundancies,
     RenameQubitsPass,
     RepeatPass,
@@ -494,6 +495,15 @@ def test_remove_barriers() -> None:
 
     for cmd in circ1.get_commands():
         assert cmd.op.type == OpType.CX
+
+
+def test_remove_phase_ops() -> None:
+    circ = Circuit(2, 2).H(0).H(1).measure_all()
+    circ0 = circ.copy()
+    circ.Phase(0.0)
+    circ.Phase(0.1, condition_bits=[Bit(0), Bit(1)], condition_value=3)
+    assert RemovePhaseOps().apply(circ)
+    assert circ == circ0
 
 
 def test_user_defined_swap_decomp() -> None:
