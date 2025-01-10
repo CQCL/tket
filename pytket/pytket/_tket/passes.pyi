@@ -620,7 +620,7 @@ def RemoveImplicitQubitPermutation() -> BasePass:
     """
 def RemovePhaseOps() -> BasePass:
     """
-    A pass to remove all Phase operations from the circuit.
+    A pass to remove all Phase operations from the circuit. This includes conditional Phase operations, but not Phase operations inside CircBoxes, QControlBoxes or other nested structures.
     """
 def RemoveRedundancies() -> BasePass:
     """

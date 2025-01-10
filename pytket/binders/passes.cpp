@@ -681,7 +681,9 @@ PYBIND11_MODULE(passes, m) {
       "A pass to remove all barrier instructions from the circuit.");
   m.def(
       "RemovePhaseOps", &RemovePhaseOps,
-      "A pass to remove all Phase operations from the circuit.");
+      "A pass to remove all Phase operations from the circuit. This includes "
+      "conditional Phase operations, but not Phase operations inside "
+      "CircBoxes, QControlBoxes or other nested structures.");
   m.def(
       "ZXGraphlikeOptimisation", &ZXGraphlikeOptimisation,
       "Attempt to optimise the circuit by simplifying in ZX calculus and "
