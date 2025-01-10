@@ -146,4 +146,7 @@ const PassPtr &RemoveImplicitQubitPermutation();
  */
 const PassPtr &ZXGraphlikeOptimisation();
 
+/** Remove all \ref OpType::Phase (including conditionals) from the circuit. */
+const PassPtr &RemovePhaseOps();
+
 }  // namespace tket

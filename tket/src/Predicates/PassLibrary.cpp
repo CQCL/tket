@@ -17,6 +17,7 @@
 #include <memory>
 
 #include "tket/Converters/Converters.hpp"
+#include "tket/OpType/OpType.hpp"
 #include "tket/Predicates/CompilationUnit.hpp"
 #include "tket/Predicates/CompilerPass.hpp"
 #include "tket/Predicates/Predicates.hpp"
@@ -508,6 +509,36 @@ const PassPtr &ZXGraphlikeOptimisation() {
     nlohmann::json j;
     j["name"] = "ZXGraphlikeOptimisation";
     return std::make_shared<StandardPass>(precons, t, postcons, j);
+  }());
+  return pp;
+}
+
+const PassPtr &RemovePhaseOps() {
+  static const PassPtr pp([]() {
+    Transform t = Transform([](Circuit &circ) {
+      VertexList phases;
+      BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+        Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+        OpType optype = op->get_type();
+        bool conditional = optype == OpType::Conditional;
+        if (conditional) {
+          const Conditional &cond = static_cast<const Conditional &>(*op);
+          op = cond.get_op();
+          optype = op->get_type();
+        }
+        if (optype == OpType::Phase) {
+          phases.push_back(v);
+        }
+      }
+      circ.remove_vertices(
+          phases, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::Yes);
+      return !phases.empty();
+    });
+    const PredicatePtrMap no_precons;
+    PostConditions postcons = {{}, {}, Guarantee::Preserve};
+    nlohmann::json j;
+    j["name"] = "RemovePhaseOps";
+    return std::make_shared<StandardPass>(no_precons, t, postcons, j);
   }());
   return pp;
 }

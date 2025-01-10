@@ -41,6 +41,7 @@ from pytket.passes import (
     RebaseTket,
     RemoveBarriers,
     RemoveDiscarded,
+    RemovePhaseOps,
     RemoveRedundancies,
     RepeatPass,
     SequencePass,
@@ -85,6 +86,7 @@ basic_pass:
     | rebase_tket
     | remove_barriers
     | remove_discarded
+    | remove_phase_ops
     | remove_redundancies
     | simplify_initial
     | simplify_initial_no_classical
@@ -127,6 +129,7 @@ peephole_optimise_2q: "PeepholeOptimise2Q"
 rebase_tket: "RebaseTket"
 remove_barriers: "RemoveBarriers"
 remove_discarded: "RemoveDiscarded"
+remove_phase_ops: "RemovePhaseOps"
 remove_redundancies: "RemoveRedundancies"
 simplify_initial: "SimplifyInitial"
 simplify_initial_no_classical: "SimplifyInitialNoClassical"
@@ -285,6 +288,9 @@ class PassTransformer(Transformer):
 
     def remove_discarded(self, t: list) -> BasePass:
         return RemoveDiscarded()
+
+    def remove_phase_ops(self, t: list) -> BasePass:
+        return RemovePhaseOps()
 
     def remove_redundancies(self, t: list) -> BasePass:
         return RemoveRedundancies()

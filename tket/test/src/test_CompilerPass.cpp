@@ -619,6 +619,25 @@ SCENARIO("RemoveBarriers pass") {
   }
 }
 
+SCENARIO("RemovePhaseOps pass") {
+  GIVEN("A circuit containing Phase ops") {
+    Circuit circ(1, 1), circ0(1, 1);
+    circ.add_op<unsigned>(OpType::Phase, 0.1, {});
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ0.add_op<unsigned>(OpType::H, {0});
+    circ.add_measure(0, 0);
+    circ0.add_measure(0, 0);
+    circ.add_conditional_gate<unsigned>(OpType::Phase, {0.2}, {}, {0}, 1);
+    circ.add_op<unsigned>(OpType::Phase, 0.3, {});
+    CompilationUnit cu(circ);
+    REQUIRE(RemovePhaseOps()->apply(cu));
+    const Circuit& circ1 = cu.get_circ_ref();
+    REQUIRE(circ1 == circ0);
+    CompilationUnit cu0(circ0);
+    REQUIRE_FALSE(RemovePhaseOps()->apply(cu0));
+  }
+}
+
 SCENARIO("gen_placement_pass test") {
   GIVEN("A simple circuit and device and base Placement.") {
     Circuit circ(4);

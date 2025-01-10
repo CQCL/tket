@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Features:
+
+* Add `RemovePhaseOps` pass.
+
 1.38.0 (January 2025)
 ---------------------
 
