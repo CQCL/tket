@@ -1209,6 +1209,23 @@ c[1] = b[1] & c[0];
     )
 
 
+def test_existing_name_conversion() -> None:
+    # https://github.com/CQCL/tket/issues/1605
+    assert (
+        circuit_from_qasm_str(
+            """OPENQASM 2.0;
+include "qelib1.inc";
+gate iswap q0,q1 { s q0; s q1; h q0; cx q0,q1; cx q1,q0; h q1; }
+qreg qr[3];
+creg cr[3];
+iswap qr[1],qr[2];"""
+        )
+        .get_commands()[0]
+        .op.type
+        == OpType.CustomGate
+    )
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
@@ -1247,3 +1264,4 @@ if __name__ == "__main__":
     test_classical_expbox_arg_order(True)
     test_classical_expbox_arg_order(False)
     test_register_name_check()
+    test_existing_name_conversion()
