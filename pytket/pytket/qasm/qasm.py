@@ -892,7 +892,7 @@ class CircuitTransformer(Transformer):
         existing_op: bool = False
         # NOPARAM_EXTRA_COMMANDS and PARAM_EXTRA_COMMANDS are
         # gates that aren't in the standard qasm spec but in the standard TKET
-        # optypes 
+        # optypes
         if gate in NOPARAM_EXTRA_COMMANDS:
             qubit_args = [
                 Qubit(gate + "q" + str(index), 0) for index in list(range(len(args)))
@@ -912,12 +912,16 @@ class CircuitTransformer(Transformer):
                 existing_op = False
             else:
                 qubit_args = [
-                    Qubit(gate + "q" + str(index), 0) for index in list(range(len(args)))
+                    Qubit(gate + "q" + str(index), 0)
+                    for index in list(range(len(args)))
                 ]
                 comparison_circ = _get_gate_circuit(
                     optype,
                     qubit_args,
-                    [Symbol("param" + str(index) + "/pi") for index in range(len(symbols))],
+                    [
+                        Symbol("param" + str(index) + "/pi")
+                        for index in range(len(symbols))
+                    ],
                 )
                 # checks that each command has same string
                 existing_op = all(
