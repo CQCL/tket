@@ -8,6 +8,10 @@ Features:
 
 * Add `RemovePhaseOps` pass.
 
+Fixes:
+
+* Fix issue with custom gates in qasm to circuit conversion.
+
 1.38.0 (January 2025)
 ---------------------
 
