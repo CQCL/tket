@@ -8,6 +8,10 @@ Features:
 
 * Add `RemovePhaseOps` pass.
 
+Fixes:
+
+* Ignore boxes when applying `KAKDecomposition`.
+
 1.38.0 (January 2025)
 ---------------------
 
