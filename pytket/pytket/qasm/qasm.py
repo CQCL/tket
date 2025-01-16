@@ -912,8 +912,7 @@ class CircuitTransformer(Transformer):
                 existing_op = False
             else:
                 qubit_args = [
-                    Qubit(gate + "q" + str(index), 0)
-                    for index in range(len(args))
+                    Qubit(gate + "q" + str(index), 0) for index in range(len(args))
                 ]
                 comparison_circ = _get_gate_circuit(
                     optype,
