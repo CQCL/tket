@@ -49,7 +49,6 @@ using namespace tket;
   DO(FlattenRegisters)                    \
   DO(RemoveBarriers)                      \
   DO(DelayMeasures)                       \
-  DO(GlobalisePhasedX)                    \
   DO(NormaliseTK2)                        \
   DO(SquashRzPhasedX)                     \
   DO(CnXPairwiseDecomposition)            \

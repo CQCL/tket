@@ -1,6 +1,13 @@
 Changelog
 =========
 
+2.0.0 (February 2025)
+---------------------
+
+API changes:
+
+* Remove `GlobalisePhasedX` transform and pass.
+
 1.40.0 (February 2025)
 ----------------------
 

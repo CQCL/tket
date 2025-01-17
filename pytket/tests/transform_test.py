@@ -175,13 +175,6 @@ def test_commute() -> None:
     assert c.n_gates_of_type(OpType.TK1) == 12
 
 
-def test_global_phasedx() -> None:
-    c = Circuit(3).add_gate(OpType.NPhasedX, [0.4, 2.3], [0, 1])
-    Transform.GlobalisePhasedX().apply(c)
-    assert c.n_gates_of_type(OpType.NPhasedX) == 2
-    assert c.n_gates_of_type(OpType.Rz) == 4
-
-
 def test_KAK() -> None:
     for allow_swaps, n_cx in [(False, 8), (True, 4)]:
         c = get_KAK_test_circuit()

@@ -809,7 +809,6 @@ SCENARIO("Test predicate serializations") {
   BASICPREDJSONTEST(NoBarriersPredicate)
   BASICPREDJSONTEST(NoMidMeasurePredicate)
   BASICPREDJSONTEST(NoSymbolsPredicate)
-  BASICPREDJSONTEST(GlobalPhasedXPredicate)
   BASICPREDJSONTEST(NormalisedTK2Predicate)
 #undef BASICPREDJSONTEST
   GIVEN("GateSetPredicate") {
