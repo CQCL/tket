@@ -136,7 +136,6 @@ NONPARAM_PREDICATES = [
     "CommutableMeasuresPredicate",
     "NoMidMeasurePredicate",
     "NoSymbolsPredicate",
-    "GlobalPhasedXPredicate",
     "NormalisedTK2Predicate",
 ]
 

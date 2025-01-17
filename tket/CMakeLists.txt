@@ -256,7 +256,6 @@ target_sources(tket
         src/Transformations/MeasurePass.cpp
         src/Transformations/OptimisationPass.cpp
         src/Transformations/PauliOptimisation.cpp
-        src/Transformations/PhasedXFrontier.cpp
         src/Transformations/PhaseOptimisation.cpp
         src/Transformations/PQPSquash.cpp
         src/Transformations/Rebase.cpp
@@ -407,7 +406,6 @@ target_sources(tket
         include/tket/Transformations/MeasurePass.hpp
         include/tket/Transformations/OptimisationPass.hpp
         include/tket/Transformations/PauliOptimisation.hpp
-        include/tket/Transformations/PhasedXFrontier.hpp
         include/tket/Transformations/PhaseOptimisation.hpp
         include/tket/Transformations/PQPSquash.hpp
         include/tket/Transformations/Rebase.hpp

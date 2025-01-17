@@ -546,38 +546,6 @@ PYBIND11_MODULE(passes, m) {
       "DecomposeMultiQubitsCX", &DecomposeMultiQubitsCX,
       "Converts all multi-qubit gates into CX and single-qubit gates.");
   m.def(
-      "GlobalisePhasedX",
-      [](bool squash) {
-        PyErr_WarnEx(
-            PyExc_DeprecationWarning,
-            "The GlobalisePhasedX pass is unreliable and deprecated. It will "
-            "be removed no earlier that three months after the pytket 1.35 "
-            "release.",
-            1);
-        return GlobalisePhasedX(squash);
-      },
-      "Turns all PhasedX and NPhasedX gates into global gates\n\n"
-      "Replaces any PhasedX gates with global NPhasedX gates. "
-      "By default, this transform will squash all single-qubit gates "
-      "to PhasedX and Rz gates before proceeding further. "
-      "Existing non-global NPhasedX will not be preserved. "
-      "This is the recommended setting for best "
-      "performance. If squashing is disabled, each non-global PhasedX gate "
-      "will be replaced with two global NPhasedX, but any other gates will "
-      "be left untouched."
-      "\n\nDEPRECATED: This pass will be removed no earlier than three months "
-      "after the pytket 1.35 release."
-      "\n\n:param squash: Whether to squash the circuit in pre-processing "
-      "(default: true)."
-      "\n\nIf squash=true (default), the `GlobalisePhasedX` transform's "
-      "`apply` method "
-      "will always return true. "
-      "For squash=false, `apply()` will return true if the circuit was "
-      "changed and false otherwise.\n\n"
-      "It is not recommended to use this pass with symbolic expressions, as"
-      " in certain cases a blow-up in symbolic expression sizes may occur.",
-      py::arg("squash") = true);
-  m.def(
       "DecomposeSingleQubitsTK1", &DecomposeSingleQubitsTK1,
       "Converts all single-qubit gates into TK1 gates.");
   m.def(
