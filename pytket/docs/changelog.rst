@@ -7,6 +7,7 @@ Changelog
 API changes:
 
 * Remove `GlobalisePhasedX` transform and pass.
+* Remove `SynthesiseUMD` pass.
 
 1.41.0 (Unreleased)
 ----------------------

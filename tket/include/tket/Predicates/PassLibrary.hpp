@@ -20,7 +20,6 @@ namespace tket {
 
 const PassPtr &SynthesiseTK();
 const PassPtr &SynthesiseTket();
-const PassPtr &SynthesiseUMD();
 
 const PassPtr &RemoveRedundancies();
 const PassPtr &CommuteThroughMultis();

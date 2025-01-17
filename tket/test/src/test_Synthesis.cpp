@@ -1937,7 +1937,6 @@ SCENARIO("Synthesis with conditional gates") {
     c.add_measure(2, 2);
     check_conditions(SynthesiseTK(), c);
     check_conditions(SynthesiseTket(), c);
-    check_conditions(SynthesiseUMD(), c);
   }
 
   GIVEN("SynthesiseTK with conditional 2-qubit gates") {

@@ -581,10 +581,6 @@ PYBIND11_MODULE(passes, m) {
       "SynthesiseTket", &SynthesiseTket,
       "Optimises and converts all gates to CX, TK1 and Phase gates.");
   m.def(
-      "SynthesiseUMD", &SynthesiseUMD,
-      "Optimises and converts all gates to XXPhase, PhasedX, Rz and Phase. "
-      "DEPRECATED: will be removed after pytket 1.32.");
-  m.def(
       "SquashTK1", &SquashTK1,
       "Squash sequences of single-qubit gates to TK1 gates.");
   m.def(

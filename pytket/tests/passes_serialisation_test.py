@@ -343,7 +343,6 @@ TWO_WAY_NONPARAM_PASSES = [
     "RemoveRedundancies",
     "SynthesiseTK",
     "SynthesiseTket",
-    "SynthesiseUMD",
     "SquashTK1",
     "SquashRzPhasedX",
     "FlattenRegisters",

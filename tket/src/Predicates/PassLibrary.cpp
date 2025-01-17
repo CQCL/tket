@@ -71,12 +71,6 @@ const PassPtr &SynthesiseTket() {
       "SynthesiseTket"));
   return pp;
 }
-const PassPtr &SynthesiseUMD() {
-  static const PassPtr pp(gate_translation_pass(
-      Transforms::synthesise_UMD(),
-      {OpType::XXPhase, OpType::PhasedX, OpType::Rz}, true, "SynthesiseUMD"));
-  return pp;
-}
 const PassPtr &RebaseTket() {
   static const PassPtr pp(gate_translation_pass(
       Transforms::rebase_tket(), {OpType::CX, OpType::TK1}, true,
