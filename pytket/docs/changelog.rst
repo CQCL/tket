@@ -11,6 +11,7 @@ Features:
 Fixes:
 
 * Fix issue with custom gates in qasm to circuit conversion.
+* Ignore boxes when applying `KAKDecomposition`.
 
 1.38.0 (January 2025)
 ---------------------
