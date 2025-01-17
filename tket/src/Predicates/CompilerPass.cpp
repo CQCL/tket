@@ -428,8 +428,6 @@ PassPtr deserialise(
       pp = SynthesiseTK();
     } else if (passname == "SynthesiseTket") {
       pp = SynthesiseTket();
-    } else if (passname == "SynthesiseUMD") {
-      pp = SynthesiseUMD();
     } else if (passname == "SquashTK1") {
       pp = SquashTK1();
     } else if (passname == "SquashRzPhasedX") {

@@ -83,7 +83,6 @@ from pytket.passes import (
     SquashTK1,
     SynthesiseTK,
     SynthesiseTket,
-    SynthesiseUMD,
     ThreeQubitSquash,
     ZXGraphlikeOptimisation,
     ZZPhaseToRz,
@@ -135,7 +134,7 @@ def test_compilation_unit_generation() -> None:
 
 
 def test_compilerpass_seq() -> None:
-    passlist = [SynthesiseTket(), SynthesiseTK(), SynthesiseUMD()]
+    passlist = [SynthesiseTket(), SynthesiseTK()]
     seq = SequencePass(passlist)
     circ = Circuit(2)
     circ.X(0).Z(1)
@@ -286,7 +285,7 @@ def test_routing_and_placement_pass() -> None:
     assert cu.initial_map == expected_map
 
     # check composition works ok
-    seq_pass = SequencePass([SynthesiseTket(), placement, routing, SynthesiseUMD()])
+    seq_pass = SequencePass([SynthesiseTket(), placement, routing])
     cu2 = CompilationUnit(circ.copy())
     assert seq_pass.apply(cu2)
     assert cu2.initial_map == expected_map

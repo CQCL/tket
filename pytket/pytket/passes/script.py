@@ -48,7 +48,6 @@ from pytket.passes import (
     SimplifyInitial,
     SimplifyMeasured,
     SynthesiseTket,
-    SynthesiseUMD,
     ThreeQubitSquash,
 )
 from pytket.transform import PauliSynthStrat
@@ -92,7 +91,6 @@ basic_pass:
     | simplify_initial_no_classical
     | simplify_measured
     | synthesise_tket
-    | synthesise_umd
     | three_qubit_squash
 seq_pass: "[" pass_list "]"
 pass_list: comp_pass ("," comp_pass)*
@@ -135,7 +133,6 @@ simplify_initial: "SimplifyInitial"
 simplify_initial_no_classical: "SimplifyInitialNoClassical"
 simplify_measured: "SimplifyMeasured"
 synthesise_tket: "SynthesiseTket"
-synthesise_umd: "SynthesiseUMD"
 three_qubit_squash: "ThreeQubitSquash"
 
 cx_config_type:
@@ -306,9 +303,6 @@ class PassTransformer(Transformer):
 
     def synthesise_tket(self, t: list) -> BasePass:
         return SynthesiseTket()
-
-    def synthesise_umd(self, t: list) -> BasePass:
-        return SynthesiseUMD()
 
     def three_qubit_squash(self, t: list) -> BasePass:
         return ThreeQubitSquash()
