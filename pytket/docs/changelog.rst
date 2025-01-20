@@ -8,6 +8,8 @@ API changes:
 
 * Remove `GlobalisePhasedX` transform and pass.
 * Remove `SynthesiseUMD` pass.
+* Remove `NoiseAwarePlacement.modify_config` and `GraphPlacement.modify_config`
+  methods.
 
 1.40.0 (February 2025)
 ----------------------

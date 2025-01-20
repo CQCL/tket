@@ -175,22 +175,9 @@ PYBIND11_MODULE(placement, m) {
           py::arg("arc"), py::arg("maximum_matches") = 1000,
           py::arg("timeout") = 1000, py::arg("maximum_pattern_gates") = 100,
           py::arg("maximum_pattern_depth") = 100)
-      .def(
-          "__repr__",
-          [](const Placement &) { return "<tket::GraphPlacement>"; })
-      .def(
-          "modify_config",
-          [](GraphPlacement & /*pobj*/, py::kwargs /*kwargs*/) {
-            PyErr_WarnEx(
-                PyExc_DeprecationWarning,
-                "GraphPlacement.modify_config no longer changes the parameters "
-                "for finding solutions. Please create a new GraphPlacement "
-                "object with the changed parameters.",
-                1);
-            return;
-          },
-          "Deprecated and no longer modifies parameters for finding solutions. "
-          "Please create a new GraphPlacement object instead");
+      .def("__repr__", [](const Placement &) {
+        return "<tket::GraphPlacement>";
+      });
 
   py::class_<
       NoiseAwarePlacement, std::shared_ptr<NoiseAwarePlacement>, Placement>(
@@ -232,22 +219,9 @@ PYBIND11_MODULE(placement, m) {
           py::arg("maximum_matches") = 1000, py::arg("timeout") = 1000,
           py::arg("maximum_pattern_gates") = 100,
           py::arg("maximum_pattern_depth") = 100)
-      .def(
-          "__repr__",
-          [](const Placement &) { return "<tket::NoiseAwarePlacement>"; })
-      .def(
-          "modify_config",
-          [](NoiseAwarePlacement & /*pobj*/, py::kwargs /*kwargs*/) {
-            PyErr_WarnEx(
-                PyExc_DeprecationWarning,
-                "NoiseAwarePlacement.modify_config no longer changes the "
-                "parameters for finding solutions. Please create a new "
-                "NoiseAwarePlacement object with the changed parameters.",
-                1);
-            return;
-          },
-          "Deprecated and no longer modifies paramters for finding solutions. "
-          "Please create a new NoiseAwarePlacement object instead");
+      .def("__repr__", [](const Placement &) {
+        return "<tket::NoiseAwarePlacement>";
+      });
 
   m.def(
       "place_with_map", &place_with_map,
