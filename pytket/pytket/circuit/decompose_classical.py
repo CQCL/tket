@@ -21,7 +21,6 @@ from typing import Any, Generic, TypeVar
 
 from pytket._tket.circuit import (
     Circuit,
-    ClassicalExpBox,
     ClBitVar,
     ClExpr,
     ClExprOp,
@@ -376,7 +375,7 @@ class ClExprDecomposer:
 
 
 def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:
-    """Rewrite a circuit command-wise, decomposing ClassicalExpBox and ClExprOp."""
+    """Rewrite a circuit command-wise, decomposing ClExprOp."""
     if not check_register_alignments(circ):
         raise DecomposeClassicalError("Circuit contains non-register-aligned ClExprOp.")
     bit_heap = BitHeap()
@@ -446,38 +445,6 @@ def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:
                         args[i] = Bit(new_target.name, a.index[0])  # type: ignore
                 # operations conditional on this bit should remain so
                 replace_targets[target] = target
-
-        elif optype == OpType.ClassicalExpBox:
-            assert isinstance(op, ClassicalExpBox)
-            pred_exp = copy.deepcopy(op.get_exp())
-            n_out_bits = op.get_n_o() + op.get_n_io()
-            # copied as it will be modified in place
-            if isinstance(pred_exp, BitLogicExp):
-                assert n_out_bits == 1
-                target = args[-1]
-                assert isinstance(target, Bit)
-
-                comp_bit = bit_recursive_walk(pred_exp, target, kwargs)
-
-                replace_targets[target] = comp_bit
-
-            else:
-                assert isinstance(pred_exp, RegLogicExp)
-                output_args = args[-n_out_bits:]
-                if not all(
-                    arg.reg_name == output_args[0].reg_name for arg in output_args
-                ):
-                    raise DecomposeClassicalError(
-                        "Classical Expression must"
-                        " only write to one Bit or one Register."
-                    )
-                out_reg = BitRegister(output_args[0].reg_name, len(output_args))
-
-                comp_reg = reg_recursive_walk(pred_exp, out_reg, kwargs)
-                if comp_reg.name != out_reg.name:  # type: ignore
-                    replace_targets[out_reg] = comp_reg
-            modified = True
-            continue
 
         elif optype == OpType.ClExpr:
             assert isinstance(op, ClExprOp)

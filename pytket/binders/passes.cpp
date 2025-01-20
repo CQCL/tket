@@ -111,8 +111,7 @@ static PassPtr gen_default_aas_routing_pass(
 }
 
 const PassPtr &DecomposeClassicalExp() {
-  // a special box decomposer for Circuits containing
-  // ClassicalExpBox<py::object> and ClExprOp
+  // a special box decomposer for Circuits containing ClExprOp
   static const PassPtr pp([]() {
     Transform t = Transform([](Circuit &circ) {
       py::module decomposer =
@@ -540,8 +539,7 @@ PYBIND11_MODULE(passes, m) {
       py::arg("excluded_opgroups") = std::unordered_set<std::string>());
   m.def(
       "DecomposeClassicalExp", &DecomposeClassicalExp,
-      "Replaces each :py:class:`ClassicalExpBox` and `ClExprOp` by a sequence "
-      "of classical gates.");
+      "Replaces each `ClExprOp` by a sequence of classical gates.");
   m.def(
       "DecomposeMultiQubitsCX", &DecomposeMultiQubitsCX,
       "Converts all multi-qubit gates into CX and single-qubit gates.");
@@ -788,18 +786,16 @@ PYBIND11_MODULE(passes, m) {
       "FlattenRelabelRegistersPass", &gen_flatten_relabel_registers_pass,
       "Removes empty Quantum wires from the Circuit and relabels all Qubit to "
       "a register from passed name. \n\n:param label: Name to relabel "
-      "remaining Qubit to, default 'q'.\n:param relabel_classical_expressions: "
-      "Whether to relabel arguments of expressions held in `ClassicalExpBox`. "
+      "remaining Qubit to, default 'q'."
       "\n:return: A pass that removes empty "
       "wires and relabels.",
-      py::arg("label") = q_default_reg(),
-      py::arg("relabel_classical_expressions") = true);
+      py::arg("label") = q_default_reg());
 
   m.def(
       "RenameQubitsPass", &gen_rename_qubits_pass,
       "Rename some or all qubits. "
       "\n\n"
-      ":param qubit_map: map from old to new qubit names ",
+      ":param qubit_map: map from old to new qubit names",
       py::arg("qubit_map"));
 
   m.def(

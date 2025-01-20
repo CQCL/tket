@@ -185,7 +185,7 @@ creg d[3];
 d = (((a + b) / 2) - c);
 """
     )
-    c1 = circuit_from_qasm_str(qasm, use_clexpr=True)
+    c1 = circuit_from_qasm_str(qasm)
     assert c == c1
 
 

@@ -307,7 +307,6 @@ target_sources(tket
         include/tket/Circuit/CircPool.hpp
         include/tket/Circuit/Circuit.hpp
         include/tket/Circuit/CircUtils.hpp
-        include/tket/Circuit/ClassicalExpBox.hpp
         include/tket/Circuit/Command.hpp
         include/tket/Circuit/Conditional.hpp
         include/tket/Circuit/ConjugationBox.hpp

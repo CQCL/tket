@@ -357,7 +357,7 @@ def DecomposeBoxes(excluded_types: set[pytket._tket.circuit.OpType] = set(), exc
     """
 def DecomposeClassicalExp() -> BasePass:
     """
-    Replaces each :py:class:`ClassicalExpBox` and `ClExprOp` by a sequence of classical gates.
+    Replaces each `ClExprOp` by a sequence of classical gates.
     """
 def DecomposeMultiQubitsCX() -> BasePass:
     """
@@ -425,12 +425,11 @@ def FlattenRegisters() -> BasePass:
     """
     Merges all quantum and classical registers into their respective default registers with contiguous indexing.
     """
-def FlattenRelabelRegistersPass(label: str = 'q', relabel_classical_expressions: bool = True) -> BasePass:
+def FlattenRelabelRegistersPass(label: str = 'q') -> BasePass:
     """
     Removes empty Quantum wires from the Circuit and relabels all Qubit to a register from passed name. 
     
     :param label: Name to relabel remaining Qubit to, default 'q'.
-    :param relabel_classical_expressions: Whether to relabel arguments of expressions held in `ClassicalExpBox`. 
     :return: A pass that removes empty wires and relabels.
     """
 def FullMappingPass(arc: pytket._tket.architecture.Architecture, placer: pytket._tket.placement.Placement, config: typing.Sequence[pytket._tket.mapping.RoutingMethod]) -> BasePass:
@@ -618,7 +617,7 @@ def RenameQubitsPass(qubit_map: dict[pytket._tket.unit_id.Qubit, pytket._tket.un
     """
     Rename some or all qubits. 
     
-    :param qubit_map: map from old to new qubit names 
+    :param qubit_map: map from old to new qubit names
     """
 def RoundAngles(n: int, only_zeros: bool = False) -> BasePass:
     """

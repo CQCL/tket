@@ -767,7 +767,7 @@ Circuit greedy_pauli_graph_synthesis_flag(
   if (name != std::nullopt) {
     new_circ.set_name(name.value());
   }
-  unit_map_t unit_map = circ_flat.flatten_registers(false);
+  unit_map_t unit_map = circ_flat.flatten_registers();
   unit_map_t rev_unit_map;
   for (const auto& pair : unit_map) {
     rev_unit_map.insert({pair.second, pair.first});
@@ -813,7 +813,7 @@ Circuit greedy_pauli_graph_synthesis_flag(
   for (auto it = measures.begin(); it != measures.end(); ++it) {
     new_circ.add_measure(it->left, it->right);
   }
-  new_circ.rename_units(rev_unit_map, false);
+  new_circ.rename_units(rev_unit_map);
   new_circ.replace_SWAPs();
   return new_circ;
 }

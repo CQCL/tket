@@ -104,11 +104,15 @@ const OpTypeSet& all_single_qubit_types() {
 
 const OpTypeSet& all_classical_types() {
   static const OpTypeSet optypes = {
-      OpType::ClassicalTransform, OpType::SetBits,
-      OpType::CopyBits,           OpType::RangePredicate,
-      OpType::ExplicitPredicate,  OpType::ExplicitModifier,
-      OpType::MultiBit,           OpType::WASM,
-      OpType::ClassicalExpBox,    OpType::ClExpr,
+      OpType::ClassicalTransform,
+      OpType::SetBits,
+      OpType::CopyBits,
+      OpType::RangePredicate,
+      OpType::ExplicitPredicate,
+      OpType::ExplicitModifier,
+      OpType::MultiBit,
+      OpType::WASM,
+      OpType::ClExpr,
   };
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
@@ -205,7 +209,6 @@ bool is_box_type(OpType optype) {
       OpType::StatePreparationBox,
       OpType::DiagonalBox,
       OpType::ConjugationBox,
-      OpType::ClassicalExpBox,
       OpType::ProjectorAssertionBox,
       OpType::StabiliserAssertionBox,
       OpType::UnitaryTableauBox,
