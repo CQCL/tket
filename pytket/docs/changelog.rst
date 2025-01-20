@@ -10,6 +10,7 @@ API changes:
 * Remove `SynthesiseUMD` pass.
 * Remove `NoiseAwarePlacement.modify_config` and `GraphPlacement.modify_config`
   methods.
+* Remove `ClassicalExpBox` and related methods.
 
 1.41.0 (Unreleased)
 ----------------------

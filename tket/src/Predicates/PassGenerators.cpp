@@ -356,8 +356,7 @@ PassPtr gen_clifford_push_through_pass() {
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
-PassPtr gen_flatten_relabel_registers_pass(
-    const std::string& label, bool relabel_classical_expressions) {
+PassPtr gen_flatten_relabel_registers_pass(const std::string& label) {
   Transform t =
       Transform([=](Circuit& circuit, std::shared_ptr<unit_bimaps_t> maps) {
         unsigned n_qubits = circuit.n_qubits();
@@ -369,7 +368,7 @@ PassPtr gen_flatten_relabel_registers_pass(
           relabelling_map.insert({all_qubits[i], Qubit(label, i)});
         }
 
-        circuit.rename_units(relabelling_map, relabel_classical_expressions);
+        circuit.rename_units(relabelling_map);
         changed |= update_maps(maps, relabelling_map, relabelling_map);
         return changed;
       });
@@ -379,7 +378,6 @@ PassPtr gen_flatten_relabel_registers_pass(
   nlohmann::json j;
   j["name"] = "FlattenRelabelRegistersPass";
   j["label"] = label;
-  j["relabel_classical_expressions"] = relabel_classical_expressions;
   return std::make_shared<StandardPass>(precons, t, postcons, j);
 }
 

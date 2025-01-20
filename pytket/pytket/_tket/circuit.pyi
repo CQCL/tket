@@ -11,7 +11,7 @@ import pytket.circuit.logic_exp
 import pytket.wasm.wasm
 import sympy
 import typing
-__all__ = ['BarrierOp', 'BasisOrder', 'CXConfigType', 'CircBox', 'Circuit', 'ClBitVar', 'ClExpr', 'ClExprOp', 'ClOp', 'ClRegVar', 'ClassicalEvalOp', 'ClassicalExpBox', 'ClassicalOp', 'Command', 'Conditional', 'ConjugationBox', 'CopyBitsOp', 'CustomGate', 'CustomGateDef', 'DiagonalBox', 'DummyBox', 'EdgeType', 'ExpBox', 'MetaOp', 'MultiBitOp', 'MultiplexedRotationBox', 'MultiplexedTensoredU2Box', 'MultiplexedU2Box', 'MultiplexorBox', 'Op', 'OpType', 'PauliExpBox', 'PauliExpCommutingSetBox', 'PauliExpPairBox', 'PhasePolyBox', 'ProjectorAssertionBox', 'QControlBox', 'RangePredicateOp', 'ResourceBounds', 'ResourceData', 'SetBitsOp', 'StabiliserAssertionBox', 'StatePreparationBox', 'TermSequenceBox', 'ToffoliBox', 'ToffoliBoxSynthStrat', 'Unitary1qBox', 'Unitary2qBox', 'Unitary3qBox', 'WASMOp', 'WiredClExpr', 'fresh_symbol']
+__all__ = ['BarrierOp', 'BasisOrder', 'CXConfigType', 'CircBox', 'Circuit', 'ClBitVar', 'ClExpr', 'ClExprOp', 'ClOp', 'ClRegVar', 'ClassicalEvalOp', 'ClassicalOp', 'Command', 'Conditional', 'ConjugationBox', 'CopyBitsOp', 'CustomGate', 'CustomGateDef', 'DiagonalBox', 'DummyBox', 'EdgeType', 'ExpBox', 'MetaOp', 'MultiBitOp', 'MultiplexedRotationBox', 'MultiplexedTensoredU2Box', 'MultiplexedU2Box', 'MultiplexorBox', 'Op', 'OpType', 'PauliExpBox', 'PauliExpCommutingSetBox', 'PauliExpPairBox', 'PhasePolyBox', 'ProjectorAssertionBox', 'QControlBox', 'RangePredicateOp', 'ResourceBounds', 'ResourceData', 'SetBitsOp', 'StabiliserAssertionBox', 'StatePreparationBox', 'TermSequenceBox', 'ToffoliBox', 'ToffoliBoxSynthStrat', 'Unitary1qBox', 'Unitary2qBox', 'Unitary3qBox', 'WASMOp', 'WiredClExpr', 'fresh_symbol']
 class BarrierOp(Op):
     """
     Barrier operations.
@@ -1442,24 +1442,6 @@ class Circuit:
         :param circuit: circuit to be appended
         :param unit_map: map from qubits and bits in the appended circuit to corresponding qubits and bits in `self`
         """
-    def add_classicalexpbox_bit(self, expression: pytket.circuit.logic_exp.BitLogicExp, target: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`ClassicalExpBox` over Bit to the circuit.
-        DEPRECATED: Please use :py:meth:`add_clexpr` instead. This method will be removed after pytket 1.40.
-        
-        :param classicalexpbox: The box to append
-        :param args: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    def add_classicalexpbox_register(self, expression: pytket.circuit.logic_exp.RegLogicExp, target: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`ClassicalExpBox` over BitRegister to the circuit.
-        DEPRECATED: Please use :py:meth:`add_clexpr` instead. This method will be removed after pytket 1.40.
-        
-        :param classicalexpbox: The box to append
-        :param args: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
     def add_clexpr(self, expr: WiredClExpr, args: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`WiredClExpr` to the circuit.
@@ -2129,11 +2111,9 @@ class Circuit:
         :param types: the set of operation types of interest
         :return: the circuit depth with respect to operations matching an element of `types`
         """
-    def flatten_registers(self, relabel_classical_expression: bool = True) -> dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]:
+    def flatten_registers(self) -> dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]:
         """
         Combines all qubits into a single register namespace with the default name, and likewise for bits
-        
-        :param relabel_classical_expression: Determines whether python classical expressions held in `ClassicalExpBox` have their expression relabelled to match relabelled Bit.
         """
     def free_symbols(self) -> set[sympy.Symbol]:
         """
@@ -2519,6 +2499,11 @@ class Circuit:
         A list of qubits whose output is a Discard operation
         """
     @property
+    def has_implicit_wireswaps(self) -> bool:
+        """
+        Indicates whether the circuit has a non-trivial qubit permutation (i.e., whether there are any implicit wire swaps).
+        """
+    @property
     def is_simple(self) -> bool:
         """
         Checks that the circuit has only 1 quantum and 1 classic register using the default names ('q' and 'c'). This means it is suitable to refer to qubits simply by their integer indices.
@@ -2582,12 +2567,6 @@ class Circuit:
     def wasm_uid(self) -> str | None:
         """
         :return: the unique WASM UID of the circuit, or `None` if the circuit has none
-        """
-    @property
-    def has_implicit_wireswaps(self) -> bool:
-        """
-        Indicates whether the circuit has a non-trivial qubit permutation
-        (i.e., whether there are any implicit wire swaps).
         """
 class ClBitVar:
     """
@@ -2836,37 +2815,6 @@ class ClassicalEvalOp(ClassicalOp):
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
         ...
-class ClassicalExpBox(Op):
-    """
-    A box for holding classical expressions on Bits.
-    """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
-    def __init__(self, n_i: int, n_io: int, n_o: int, exp: pytket.circuit.logic_exp.LogicExp) -> None:
-        """
-        Construct from signature (number of input, input/output, and output bits) and expression.
-        """
-    def content_equality(self, arg0: ClassicalExpBox) -> bool:
-        """
-        Check whether two ClassicalExpBox are equal in content
-        """
-    def get_exp(self) -> pytket.circuit.logic_exp.LogicExp:
-        """
-        :return: the classical expression
-        """
-    def get_n_i(self) -> int:
-        """
-        :return: the number of pure inputs to the box.
-        """
-    def get_n_io(self) -> int:
-        """
-        :return: the number of inputs/outputs to the box.
-        """
-    def get_n_o(self) -> int:
-        """
-        :return: the number of pure outputs from the box.
-        """
 class ClassicalOp(Op):
     """
     Classical operation.
@@ -3654,8 +3602,6 @@ class OpType:
     
       MultiBit : A classical operation applied to multiple bits simultaneously
     
-      ClassicalExpBox : A box for holding compound classical operations on Bits. DEPRECATED: This will be removed after pytket 1.40 (replaced by `ClExpr`).
-    
       MultiplexorBox : A multiplexor (i.e. uniformly controlled operations)
     
       MultiplexedRotationBox : A multiplexed rotation gate (i.e. uniformly controlled single-axis rotations)
@@ -3692,8 +3638,7 @@ class OpType:
     CY: typing.ClassVar[OpType]  # value = <OpType.CY: 46>
     CZ: typing.ClassVar[OpType]  # value = <OpType.CZ: 47>
     CircBox: typing.ClassVar[OpType]  # value = <OpType.CircBox: 89>
-    ClExpr: typing.ClassVar[OpType]  # value = <OpType.ClExpr: 116>
-    ClassicalExpBox: typing.ClassVar[OpType]  # value = <OpType.ClassicalExpBox: 109>
+    ClExpr: typing.ClassVar[OpType]  # value = <OpType.ClExpr: 115>
     ClassicalTransform: typing.ClassVar[OpType]  # value = <OpType.ClassicalTransform: 13>
     CnRx: typing.ClassVar[OpType]  # value = <OpType.CnRx: 84>
     CnRy: typing.ClassVar[OpType]  # value = <OpType.CnRy: 83>
@@ -3701,12 +3646,12 @@ class OpType:
     CnX: typing.ClassVar[OpType]  # value = <OpType.CnX: 86>
     CnY: typing.ClassVar[OpType]  # value = <OpType.CnY: 88>
     CnZ: typing.ClassVar[OpType]  # value = <OpType.CnZ: 87>
-    Conditional: typing.ClassVar[OpType]  # value = <OpType.Conditional: 110>
+    Conditional: typing.ClassVar[OpType]  # value = <OpType.Conditional: 109>
     ConjugationBox: typing.ClassVar[OpType]  # value = <OpType.ConjugationBox: 108>
     CopyBits: typing.ClassVar[OpType]  # value = <OpType.CopyBits: 16>
     CustomGate: typing.ClassVar[OpType]  # value = <OpType.CustomGate: 99>
     DiagonalBox: typing.ClassVar[OpType]  # value = <OpType.DiagonalBox: 107>
-    DummyBox: typing.ClassVar[OpType]  # value = <OpType.DummyBox: 115>
+    DummyBox: typing.ClassVar[OpType]  # value = <OpType.DummyBox: 114>
     ECR: typing.ClassVar[OpType]  # value = <OpType.ECR: 69>
     ESWAP: typing.ClassVar[OpType]  # value = <OpType.ESWAP: 78>
     ExpBox: typing.ClassVar[OpType]  # value = <OpType.ExpBox: 93>
@@ -3754,7 +3699,7 @@ class OpType:
     TK2: typing.ClassVar[OpType]  # value = <OpType.TK2: 44>
     Tdg: typing.ClassVar[OpType]  # value = <OpType.Tdg: 28>
     TermSequenceBox: typing.ClassVar[OpType]  # value = <OpType.TermSequenceBox: 97>
-    ToffoliBox: typing.ClassVar[OpType]  # value = <OpType.ToffoliBox: 113>
+    ToffoliBox: typing.ClassVar[OpType]  # value = <OpType.ToffoliBox: 112>
     U1: typing.ClassVar[OpType]  # value = <OpType.U1: 39>
     U2: typing.ClassVar[OpType]  # value = <OpType.U2: 38>
     U3: typing.ClassVar[OpType]  # value = <OpType.U3: 37>
@@ -3772,7 +3717,7 @@ class OpType:
     Z: typing.ClassVar[OpType]  # value = <OpType.Z: 22>
     ZZMax: typing.ClassVar[OpType]  # value = <OpType.ZZMax: 73>
     ZZPhase: typing.ClassVar[OpType]  # value = <OpType.ZZPhase: 76>
-    __members__: typing.ClassVar[dict[str, OpType]]  # value = {'Phase': <OpType.Phase: 21>, 'Z': <OpType.Z: 22>, 'X': <OpType.X: 23>, 'Y': <OpType.Y: 24>, 'S': <OpType.S: 25>, 'Sdg': <OpType.Sdg: 26>, 'T': <OpType.T: 27>, 'Tdg': <OpType.Tdg: 28>, 'V': <OpType.V: 29>, 'Vdg': <OpType.Vdg: 30>, 'SX': <OpType.SX: 31>, 'SXdg': <OpType.SXdg: 32>, 'H': <OpType.H: 33>, 'Rx': <OpType.Rx: 34>, 'Ry': <OpType.Ry: 35>, 'Rz': <OpType.Rz: 36>, 'U1': <OpType.U1: 39>, 'U2': <OpType.U2: 38>, 'U3': <OpType.U3: 37>, 'GPI': <OpType.GPI: 40>, 'GPI2': <OpType.GPI2: 41>, 'AAMS': <OpType.AAMS: 42>, 'TK1': <OpType.TK1: 43>, 'TK2': <OpType.TK2: 44>, 'CX': <OpType.CX: 45>, 'CY': <OpType.CY: 46>, 'CZ': <OpType.CZ: 47>, 'CH': <OpType.CH: 48>, 'CV': <OpType.CV: 49>, 'CVdg': <OpType.CVdg: 50>, 'CSX': <OpType.CSX: 51>, 'CSXdg': <OpType.CSXdg: 52>, 'CS': <OpType.CS: 53>, 'CSdg': <OpType.CSdg: 54>, 'CRz': <OpType.CRz: 55>, 'CRx': <OpType.CRx: 56>, 'CRy': <OpType.CRy: 57>, 'CU1': <OpType.CU1: 58>, 'CU3': <OpType.CU3: 59>, 'CCX': <OpType.CCX: 61>, 'ECR': <OpType.ECR: 69>, 'SWAP': <OpType.SWAP: 62>, 'CSWAP': <OpType.CSWAP: 63>, 'noop': <OpType.noop: 65>, 'Barrier': <OpType.Barrier: 8>, 'Label': <OpType.Label: 9>, 'Branch': <OpType.Branch: 10>, 'Goto': <OpType.Goto: 11>, 'Stop': <OpType.Stop: 12>, 'BRIDGE': <OpType.BRIDGE: 64>, 'Measure': <OpType.Measure: 66>, 'Reset': <OpType.Reset: 68>, 'CircBox': <OpType.CircBox: 89>, 'PhasePolyBox': <OpType.PhasePolyBox: 100>, 'Unitary1qBox': <OpType.Unitary1qBox: 90>, 'Unitary2qBox': <OpType.Unitary2qBox: 91>, 'Unitary3qBox': <OpType.Unitary3qBox: 92>, 'ExpBox': <OpType.ExpBox: 93>, 'PauliExpBox': <OpType.PauliExpBox: 94>, 'PauliExpPairBox': <OpType.PauliExpPairBox: 95>, 'PauliExpCommutingSetBox': <OpType.PauliExpCommutingSetBox: 96>, 'TermSequenceBox': <OpType.TermSequenceBox: 97>, 'QControlBox': <OpType.QControlBox: 101>, 'ToffoliBox': <OpType.ToffoliBox: 113>, 'ConjugationBox': <OpType.ConjugationBox: 108>, 'DummyBox': <OpType.DummyBox: 115>, 'CustomGate': <OpType.CustomGate: 99>, 'Conditional': <OpType.Conditional: 110>, 'ISWAP': <OpType.ISWAP: 70>, 'PhasedISWAP': <OpType.PhasedISWAP: 82>, 'XXPhase': <OpType.XXPhase: 74>, 'YYPhase': <OpType.YYPhase: 75>, 'ZZPhase': <OpType.ZZPhase: 76>, 'XXPhase3': <OpType.XXPhase3: 77>, 'PhasedX': <OpType.PhasedX: 71>, 'NPhasedX': <OpType.NPhasedX: 72>, 'CnRx': <OpType.CnRx: 84>, 'CnRy': <OpType.CnRy: 83>, 'CnRz': <OpType.CnRz: 85>, 'CnX': <OpType.CnX: 86>, 'CnY': <OpType.CnY: 88>, 'CnZ': <OpType.CnZ: 87>, 'ZZMax': <OpType.ZZMax: 73>, 'ESWAP': <OpType.ESWAP: 78>, 'FSim': <OpType.FSim: 79>, 'Sycamore': <OpType.Sycamore: 80>, 'ISWAPMax': <OpType.ISWAPMax: 81>, 'ClassicalTransform': <OpType.ClassicalTransform: 13>, 'WASM': <OpType.WASM: 14>, 'SetBits': <OpType.SetBits: 15>, 'CopyBits': <OpType.CopyBits: 16>, 'RangePredicate': <OpType.RangePredicate: 17>, 'ExplicitPredicate': <OpType.ExplicitPredicate: 18>, 'ExplicitModifier': <OpType.ExplicitModifier: 19>, 'MultiBit': <OpType.MultiBit: 20>, 'ClassicalExpBox': <OpType.ClassicalExpBox: 109>, 'MultiplexorBox': <OpType.MultiplexorBox: 102>, 'MultiplexedRotationBox': <OpType.MultiplexedRotationBox: 103>, 'MultiplexedU2Box': <OpType.MultiplexedU2Box: 104>, 'MultiplexedTensoredU2Box': <OpType.MultiplexedTensoredU2Box: 105>, 'StatePreparationBox': <OpType.StatePreparationBox: 106>, 'DiagonalBox': <OpType.DiagonalBox: 107>, 'ClExpr': <OpType.ClExpr: 116>}
+    __members__: typing.ClassVar[dict[str, OpType]]  # value = {'Phase': <OpType.Phase: 21>, 'Z': <OpType.Z: 22>, 'X': <OpType.X: 23>, 'Y': <OpType.Y: 24>, 'S': <OpType.S: 25>, 'Sdg': <OpType.Sdg: 26>, 'T': <OpType.T: 27>, 'Tdg': <OpType.Tdg: 28>, 'V': <OpType.V: 29>, 'Vdg': <OpType.Vdg: 30>, 'SX': <OpType.SX: 31>, 'SXdg': <OpType.SXdg: 32>, 'H': <OpType.H: 33>, 'Rx': <OpType.Rx: 34>, 'Ry': <OpType.Ry: 35>, 'Rz': <OpType.Rz: 36>, 'U1': <OpType.U1: 39>, 'U2': <OpType.U2: 38>, 'U3': <OpType.U3: 37>, 'GPI': <OpType.GPI: 40>, 'GPI2': <OpType.GPI2: 41>, 'AAMS': <OpType.AAMS: 42>, 'TK1': <OpType.TK1: 43>, 'TK2': <OpType.TK2: 44>, 'CX': <OpType.CX: 45>, 'CY': <OpType.CY: 46>, 'CZ': <OpType.CZ: 47>, 'CH': <OpType.CH: 48>, 'CV': <OpType.CV: 49>, 'CVdg': <OpType.CVdg: 50>, 'CSX': <OpType.CSX: 51>, 'CSXdg': <OpType.CSXdg: 52>, 'CS': <OpType.CS: 53>, 'CSdg': <OpType.CSdg: 54>, 'CRz': <OpType.CRz: 55>, 'CRx': <OpType.CRx: 56>, 'CRy': <OpType.CRy: 57>, 'CU1': <OpType.CU1: 58>, 'CU3': <OpType.CU3: 59>, 'CCX': <OpType.CCX: 61>, 'ECR': <OpType.ECR: 69>, 'SWAP': <OpType.SWAP: 62>, 'CSWAP': <OpType.CSWAP: 63>, 'noop': <OpType.noop: 65>, 'Barrier': <OpType.Barrier: 8>, 'Label': <OpType.Label: 9>, 'Branch': <OpType.Branch: 10>, 'Goto': <OpType.Goto: 11>, 'Stop': <OpType.Stop: 12>, 'BRIDGE': <OpType.BRIDGE: 64>, 'Measure': <OpType.Measure: 66>, 'Reset': <OpType.Reset: 68>, 'CircBox': <OpType.CircBox: 89>, 'PhasePolyBox': <OpType.PhasePolyBox: 100>, 'Unitary1qBox': <OpType.Unitary1qBox: 90>, 'Unitary2qBox': <OpType.Unitary2qBox: 91>, 'Unitary3qBox': <OpType.Unitary3qBox: 92>, 'ExpBox': <OpType.ExpBox: 93>, 'PauliExpBox': <OpType.PauliExpBox: 94>, 'PauliExpPairBox': <OpType.PauliExpPairBox: 95>, 'PauliExpCommutingSetBox': <OpType.PauliExpCommutingSetBox: 96>, 'TermSequenceBox': <OpType.TermSequenceBox: 97>, 'QControlBox': <OpType.QControlBox: 101>, 'ToffoliBox': <OpType.ToffoliBox: 112>, 'ConjugationBox': <OpType.ConjugationBox: 108>, 'DummyBox': <OpType.DummyBox: 114>, 'CustomGate': <OpType.CustomGate: 99>, 'Conditional': <OpType.Conditional: 109>, 'ISWAP': <OpType.ISWAP: 70>, 'PhasedISWAP': <OpType.PhasedISWAP: 82>, 'XXPhase': <OpType.XXPhase: 74>, 'YYPhase': <OpType.YYPhase: 75>, 'ZZPhase': <OpType.ZZPhase: 76>, 'XXPhase3': <OpType.XXPhase3: 77>, 'PhasedX': <OpType.PhasedX: 71>, 'NPhasedX': <OpType.NPhasedX: 72>, 'CnRx': <OpType.CnRx: 84>, 'CnRy': <OpType.CnRy: 83>, 'CnRz': <OpType.CnRz: 85>, 'CnX': <OpType.CnX: 86>, 'CnY': <OpType.CnY: 88>, 'CnZ': <OpType.CnZ: 87>, 'ZZMax': <OpType.ZZMax: 73>, 'ESWAP': <OpType.ESWAP: 78>, 'FSim': <OpType.FSim: 79>, 'Sycamore': <OpType.Sycamore: 80>, 'ISWAPMax': <OpType.ISWAPMax: 81>, 'ClassicalTransform': <OpType.ClassicalTransform: 13>, 'WASM': <OpType.WASM: 14>, 'SetBits': <OpType.SetBits: 15>, 'CopyBits': <OpType.CopyBits: 16>, 'RangePredicate': <OpType.RangePredicate: 17>, 'ExplicitPredicate': <OpType.ExplicitPredicate: 18>, 'ExplicitModifier': <OpType.ExplicitModifier: 19>, 'MultiBit': <OpType.MultiBit: 20>, 'MultiplexorBox': <OpType.MultiplexorBox: 102>, 'MultiplexedRotationBox': <OpType.MultiplexedRotationBox: 103>, 'MultiplexedU2Box': <OpType.MultiplexedU2Box: 104>, 'MultiplexedTensoredU2Box': <OpType.MultiplexedTensoredU2Box: 105>, 'StatePreparationBox': <OpType.StatePreparationBox: 106>, 'DiagonalBox': <OpType.DiagonalBox: 107>, 'ClExpr': <OpType.ClExpr: 115>}
     noop: typing.ClassVar[OpType]  # value = <OpType.noop: 65>
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
