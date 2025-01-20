@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.39.0 (January 2025)
+---------------------
 
 Features:
 
