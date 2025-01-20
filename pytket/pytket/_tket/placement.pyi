@@ -24,10 +24,6 @@ class GraphPlacement(Placement):
         """
     def __repr__(self: Placement) -> str:
         ...
-    def modify_config(self, **kwargs: Any) -> None:
-        """
-        Deprecated and no longer modifies parameters for finding solutions. Please create a new GraphPlacement object instead
-        """
 class LinePlacement(Placement):
     """
     The LinePlacement class, contains methods for getting maps between Circuit Qubits and Architecture Nodes and for relabelling Circuit Qubits.
@@ -67,10 +63,6 @@ class NoiseAwarePlacement(Placement):
         """
     def __repr__(self: Placement) -> str:
         ...
-    def modify_config(self, **kwargs: Any) -> None:
-        """
-        Deprecated and no longer modifies paramters for finding solutions. Please create a new NoiseAwarePlacement object instead
-        """
 class Placement:
     """
     The base Placement class, contains methods for getting maps between Circuit Qubits and Architecture Nodes and for relabelling Circuit Qubits.
