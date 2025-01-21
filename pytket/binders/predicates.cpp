@@ -169,7 +169,8 @@ PYBIND11_MODULE(predicates, m) {
       CliffordCircuitPredicate, std::shared_ptr<CliffordCircuitPredicate>,
       Predicate>(
       m, "CliffordCircuitPredicate",
-      "Predicate asserting that a circuit has only Clifford gates.")
+      "Predicate asserting that a circuit has only Clifford gates and "
+      "measurements.")
       .def(py::init<>(), "Constructor.");
   py::class_<
       UserDefinedPredicate, std::shared_ptr<UserDefinedPredicate>, Predicate>(
