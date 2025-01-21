@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Fixes:
+
+* Make `CliffordCircuitPredicate` accept circuits containing measurements.
+
 1.39.0 (January 2025)
 ---------------------
 
