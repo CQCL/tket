@@ -1472,7 +1472,10 @@ class Circuit {
    *
    * @return whether the vertex holds a box or a conditional box
    */
-  bool substitute_box_vertex(Vertex &vert, VertexDeletion vertex_deletion);
+  bool substitute_box_vertex(
+      Vertex &vert, VertexDeletion vertex_deletion,
+      const std::unordered_set<OpType> &excluded_types = {},
+      const std::unordered_set<std::string> &excluded_opgroups = {});
 
   /**
    * Recursively replace each \ref Box operation by applying \ref
