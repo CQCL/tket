@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+Features:
+
+* Add Python 3.13 support to the ZX module.
+
 Fixes:
 
 * Make `CliffordCircuitPredicate` accept circuits containing measurements.
