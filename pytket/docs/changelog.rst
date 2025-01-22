@@ -11,6 +11,7 @@ Features:
 Fixes:
 
 * Make `CliffordCircuitPredicate` accept circuits containing measurements.
+* Make `DecomposeBoxes` pass recurse into conditional boxes.
 
 1.39.0 (January 2025)
 ---------------------
