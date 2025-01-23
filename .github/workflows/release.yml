@@ -27,7 +27,7 @@ jobs:
     - name: Run build
       run: |
         docker start linux_build
-        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-x86_64-gcc12 linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
+        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-x86_64-gcc14 linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
         mkdir wheelhouse
         docker cp linux_build:/tket/pytket/audited/. wheelhouse/
     - uses: actions/upload-artifact@v4
@@ -150,7 +150,7 @@ jobs:
 
   build_Windows_wheels:
     name: Build Windows wheels
-    runs-on: windows-2022
+    runs-on: windows-2025
     strategy:
       matrix:
         python-version: ['3.10', '3.11', '3.12', '3.13']
@@ -170,7 +170,7 @@ jobs:
       run: |
         conan profile detect
         DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/windows-2022
+        PROFILE_PATH=./conan-profiles/windows-2025
         diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
         cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
@@ -312,7 +312,7 @@ jobs:
   test_Windows_wheels:
     name: Test Windows wheels
     needs: build_Windows_wheels
-    runs-on: windows-2022
+    runs-on: windows-2025
     strategy:
       matrix:
         python-version: ['3.10', '3.11', '3.12', '3.13']
@@ -343,7 +343,12 @@ jobs:
     name: Publish to pypi
     if: github.event_name == 'release'
     needs: [test_linux_wheels, test_linux_aarch64_wheels, test_macos_x86_wheels, test_macos_arm64_wheels, test_Windows_wheels]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
+    environment:
+      name: release
+      url: https://pypi.org/p/pytket
+    permissions:
+      id-token: write
     steps:
     - name: Download all wheels
       uses: actions/download-artifact@v4
@@ -355,7 +360,3 @@ jobs:
         for w in `find wheelhouse/ -type f -name "*.whl"` ; do cp $w dist/ ; done
     - name: Publish wheels
       uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_PYTKET_API_TOKEN }}
-        verbose: true

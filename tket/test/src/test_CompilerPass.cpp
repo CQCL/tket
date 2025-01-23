@@ -619,6 +619,25 @@ SCENARIO("RemoveBarriers pass") {
   }
 }
 
+SCENARIO("RemovePhaseOps pass") {
+  GIVEN("A circuit containing Phase ops") {
+    Circuit circ(1, 1), circ0(1, 1);
+    circ.add_op<unsigned>(OpType::Phase, 0.1, {});
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ0.add_op<unsigned>(OpType::H, {0});
+    circ.add_measure(0, 0);
+    circ0.add_measure(0, 0);
+    circ.add_conditional_gate<unsigned>(OpType::Phase, {0.2}, {}, {0}, 1);
+    circ.add_op<unsigned>(OpType::Phase, 0.3, {});
+    CompilationUnit cu(circ);
+    REQUIRE(RemovePhaseOps()->apply(cu));
+    const Circuit& circ1 = cu.get_circ_ref();
+    REQUIRE(circ1 == circ0);
+    CompilationUnit cu0(circ0);
+    REQUIRE_FALSE(RemovePhaseOps()->apply(cu0));
+  }
+}
+
 SCENARIO("gen_placement_pass test") {
   GIVEN("A simple circuit and device and base Placement.") {
     Circuit circ(4);
@@ -2145,12 +2164,13 @@ SCENARIO("GPI, GPI2 and AAMS operations") {
     REQUIRE(test_unitary_comparison(circ1, circ2));
   }
   GIVEN("A circuit made of Clifford gates") {
-    Circuit c(3);
+    Circuit c(3, 1);
     c.add_op<unsigned>(OpType::GPI, 0.25, {0});
     c.add_op<unsigned>(OpType::GPI2, 0.5, {1});
     c.add_op<unsigned>(OpType::AAMS, {0, 0.1, 0.2}, {0, 1});
     c.add_op<unsigned>(OpType::AAMS, {1., 0.25, 0.75}, {1, 2});
     c.add_op<unsigned>(OpType::AAMS, {0.5, 0.5, 1.5}, {0, 1});
+    c.add_measure(0, 0);
     REQUIRE(CliffordCircuitPredicate().verify(c));
   }
   GIVEN("A circuit with a non-Clifford AAMS gate") {

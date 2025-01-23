@@ -23,7 +23,7 @@ It is also currently necessary to use the local `pybind11_json` recipe, since
 the recipe on the `conan-center` is not yet compatible with conan 2:
 
 ```shell
-conan create recipes/pybind11_json/all --version=0.2.14
+conan create recipes/pybind11_json/all --version=0.2.15
 ```
 
 Then build the pytket module:

@@ -449,6 +449,8 @@ PassPtr deserialise(
       pp = SimplifyMeasured();
     } else if (passname == "RemoveBarriers") {
       pp = RemoveBarriers();
+    } else if (passname == "RemovePhaseOps") {
+      pp = RemovePhaseOps();
     } else if (passname == "ComposePhasePolyBoxes") {
       pp = ComposePhasePolyBoxes(content.at("min_size").get<unsigned>());
     } else if (passname == "RebaseCustom") {

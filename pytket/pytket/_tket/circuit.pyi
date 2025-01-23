@@ -2574,7 +2574,7 @@ class Circuit:
     @property
     def wasm_uid(self) -> str | None:
         """
-        :return: the unique wasm uid of the circuit
+        :return: the unique WASM UID of the circuit, or `None` if the circuit has none
         """
 class ClBitVar:
     """

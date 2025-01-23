@@ -1237,6 +1237,13 @@ def test_KAK_with_ClassicalExpBox() -> None:
     assert not kak.apply(circ)
 
 
+def test_KAK_with_CircBox() -> None:
+    # https://github.com/CQCL/tket/issues/1553
+    cbox = CircBox(Circuit(2))
+    c = Circuit(2).add_circbox(cbox, [0, 1]).add_circbox(cbox, [0, 1])
+    assert not Transform.KAKDecomposition().apply(c)
+
+
 def test_round_angles() -> None:
     circ0 = Circuit(3).H(0).CRz(0.001, 0, 1).TK2(0.5, 0.499, 0.501, 1, 2)
     circ1 = Circuit(3).H(0).TK2(0.5, 0.5, 0.5, 1, 2)

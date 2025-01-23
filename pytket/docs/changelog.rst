@@ -1,6 +1,41 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Features:
+
+* Add Python 3.13 support to the ZX module.
+
+Fixes:
+
+* Make `CliffordCircuitPredicate` accept circuits containing measurements.
+* Make `DecomposeBoxes` pass recurse into conditional boxes.
+
+1.39.0 (January 2025)
+---------------------
+
+Features:
+
+* Add `RemovePhaseOps` pass.
+
+Fixes:
+
+* Fix issue with custom gates in qasm to circuit conversion.
+* Ignore boxes when applying `KAKDecomposition`.
+
+1.38.0 (January 2025)
+---------------------
+
+Features:
+
+* Squash sequences of conditional gates in `SquashRzPhasedX` pass.
+
+Fixes:
+
+* Fix issue with `Circuit.commands_of_type(OpType.Conditional)`.
+
 1.37.0 (December 2024)
 ----------------------
 

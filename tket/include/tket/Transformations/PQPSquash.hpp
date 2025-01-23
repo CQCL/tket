@@ -64,7 +64,7 @@ class PQPSquasher : public AbstractSquasher {
 
   void clear() override;
 
-  bool accepts(Gate_ptr gp) const override;
+  bool accepts(OpType optype) const override;
 
   void append(Gate_ptr gp) override;
 

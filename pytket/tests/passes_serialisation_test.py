@@ -340,6 +340,7 @@ TWO_WAY_NONPARAM_PASSES = [
     "DecomposeSingleQubitsTK1",
     "RebaseTket",
     "RebaseUFR",
+    "RemovePhaseOps",
     "RemoveRedundancies",
     "SynthesiseTK",
     "SynthesiseTket",

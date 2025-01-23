@@ -82,20 +82,9 @@ VertexSet Circuit::get_gates_of_type(const OpType& op_type) const {
 
 std::list<Command> Circuit::get_commands_of_type(OpType op_type) const {
   std::list<Command> coms;
-  std::function<bool(Op_ptr)> skip_func = [=](Op_ptr op) {
-    return (op->get_type() != op_type);
-  };
-  SliceIterator slice_iter(*this, skip_func);
-  for (const Vertex& v : *slice_iter) {
-    coms.push_back(command_from_vertex(
-        v, slice_iter.get_u_frontier(), slice_iter.get_prev_b_frontier()));
-  }
-  while (!slice_iter.finished()) {
-    slice_iter.cut_ = next_cut(
-        slice_iter.cut_.u_frontier, slice_iter.cut_.b_frontier, skip_func);
-    for (const Vertex& v : *slice_iter) {
-      coms.push_back(command_from_vertex(
-          v, slice_iter.get_u_frontier(), slice_iter.get_prev_b_frontier()));
+  for (const Command& cmd : *this) {
+    if (cmd.get_op_ptr()->get_type() == op_type) {
+      coms.push_back(cmd);
     }
   }
   return coms;

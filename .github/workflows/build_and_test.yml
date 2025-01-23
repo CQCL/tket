@@ -151,7 +151,7 @@ jobs:
     if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
     strategy:
       matrix:
-        os: ['windows-2022']
+        os: ['windows-2025']
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -290,11 +290,7 @@ jobs:
     - name: Build pytket
       run: |
         cd pytket
-        if python --version | grep -q '3.13' ; then
-          pip install -e . -v
-        else
-          pip install -e .[ZX] -v
-        fi
+        pip install -e .[ZX] -v
     - name: Run doctests
       run: |
         cd pytket
@@ -382,9 +378,6 @@ jobs:
       run: |
         conan create recipes/pybind11
         conan create recipes/pybind11_json/all --version 0.2.15
-    - name: check that version is consistent
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Install pytket requirements
       run: |
         conan create recipes/pybind11
@@ -407,11 +400,7 @@ jobs:
     - name: Build pytket
       run: |
         cd pytket
-        if python --version | grep -q '3.13' ; then
-          pip install -e . -v
-        else
-          pip install -e .[ZX] -v
-        fi
+        pip install -e .[ZX] -v
     - name: Run doctests
       run: |
         cd pytket
@@ -440,7 +429,7 @@ jobs:
     name: Build and test pytket (windows)
     needs: check_changes
     if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.pytket_or_workflow_changed == 'true'
-    runs-on: windows-2022
+    runs-on: windows-2025
     steps:
     - uses: actions/checkout@v4
     - name: Select Python 3.12
@@ -454,7 +443,7 @@ jobs:
       run: |
         conan profile detect
         DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/windows-2022
+        PROFILE_PATH=./conan-profiles/windows-2025
         diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
         cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
@@ -489,9 +478,9 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ${{ steps.ccache-setup.outputs.ccache_dir }}
-        key: tket-dynamic-visual-studio-windows-2022-${{ steps.current_time.outputs.formattedTime }}
+        key: tket-dynamic-visual-studio-windows-2025-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
-          tket-dynamic-visual-studio-windows-2022
+          tket-dynamic-visual-studio-windows-2025
     - name: get ccache path
       id: ccache-path
       shell: bash
@@ -514,9 +503,6 @@ jobs:
       run: |
         conan create recipes/pybind11
         conan create recipes/pybind11_json/all --version 0.2.15
-    - name: check that version is consistent
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Install pytket requirements
       run: |
         conan create recipes/pybind11
@@ -540,11 +526,7 @@ jobs:
       shell: bash
       run: |
         cd pytket
-        if python --version | grep -q '3.13' ; then
-          pip install -e . -v
-        else
-          pip install -e .[ZX] -v
-        fi
+        pip install -e .[ZX] -v
     - name: Run doctests
       run: |
         cd pytket

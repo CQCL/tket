@@ -68,6 +68,7 @@ from pytket.passes import (
     RemoveBarriers,
     RemoveDiscarded,
     RemoveImplicitQubitPermutation,
+    RemovePhaseOps,
     RemoveRedundancies,
     RenameQubitsPass,
     RepeatPass,
@@ -494,6 +495,15 @@ def test_remove_barriers() -> None:
 
     for cmd in circ1.get_commands():
         assert cmd.op.type == OpType.CX
+
+
+def test_remove_phase_ops() -> None:
+    circ = Circuit(2, 2).H(0).H(1).measure_all()
+    circ0 = circ.copy()
+    circ.Phase(0.0)
+    circ.Phase(0.1, condition_bits=[Bit(0), Bit(1)], condition_value=3)
+    assert RemovePhaseOps().apply(circ)
+    assert circ == circ0
 
 
 def test_user_defined_swap_decomp() -> None:
@@ -1111,6 +1121,23 @@ def test_get_gate_set() -> None:
     assert OpType.CX in gate_set
     assert OpType.Measure in gate_set
     assert CliffordPushThroughMeasures().get_gate_set() is None
+
+
+def test_decompose_inside_conditionals() -> None:
+    # https://github.com/CQCL/tket/issues/1583
+    cbox1 = CircBox(Circuit(1).H(0))
+    cbox0 = CircBox(Circuit(1, 1).add_circbox(cbox1, [Qubit(0)], condition=Bit(0)))
+    c = Circuit(1, 2).add_circbox(cbox0, [Qubit(0), Bit(0)], condition=Bit(1))
+    DecomposeBoxes().apply(c)
+    cmds = c.get_commands()
+    assert len(cmds) == 1
+    cmd = cmds[0]
+    op0 = cmd.op
+    assert isinstance(op0, Conditional)
+    op1 = op0.op
+    assert isinstance(op1, Conditional)
+    op2 = op1.op
+    assert op2.type == OpType.H
 
 
 if __name__ == "__main__":
