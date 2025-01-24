@@ -90,6 +90,13 @@ def test_all_paulis() -> None:
     assert len(list(circs)) == 3
 
 
+def test_dict_export() -> None:
+    qps1 = QubitPauliString(Qubit(0), Pauli.Y)
+    qps2 = QubitPauliString(Qubit(0), Pauli.X)
+    op = QubitPauliOperator({qps1: 1j, qps2: 0.5})
+    assert op.get_dict() == op._dict
+
+
 def test_shots_to_counts() -> None:
     shot_table = np.asarray([[0, 0], [0, 1], [0, 0]])
     counts = counts_from_shot_table(shot_table)
