@@ -255,3 +255,32 @@ creg c[3];
 c = (a | b);
 """
     )
+
+
+def test_biteq_bitneq_to_qasm() -> None:
+    # https://github.com/CQCL/tket/issues/1753
+    c = Circuit(0, 3)
+    c.add_clexpr(
+        WiredClExpr(
+            expr=ClExpr(
+                op=ClOp.BitAnd,
+                args=[
+                    ClExpr(op=ClOp.BitEq, args=[ClBitVar(0), 0]),
+                    ClExpr(op=ClOp.BitNeq, args=[ClBitVar(1), 1]),
+                ],
+            ),
+            bit_posn={0: 0, 1: 1},
+            output_posn=[2],
+        ),
+        c.bits,
+    )
+    qasm = circuit_to_qasm_str(c, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+creg c[3];
+c[2] = ((~(c[0] ^ 0)) & (c[1] ^ 1));
+"""
+    )
