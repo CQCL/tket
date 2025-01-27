@@ -218,7 +218,8 @@ class QubitPauliOperator:
 
     def get_dict(self) -> dict[QubitPauliString, Expr]:
         """Generate a dict representation of QubitPauliOperator,
-        mapping each :py:class:`QubitPauliString` in the support to its corresponding value.
+        mapping each :py:class:`QubitPauliString` in the support
+        to its corresponding value.
 
         :return: A dict of Pauli strings and their coefficients
           as key-value pairs
