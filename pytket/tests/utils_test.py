@@ -22,7 +22,7 @@ import pytest
 from hypothesis import HealthCheck, given, settings, strategies
 from hypothesis.strategies._internal import SearchStrategy
 from simulator import TketSimBackend, TketSimShotBackend  # type: ignore
-from sympy import symbols
+from sympy import I, symbols
 
 from pytket.backends.backend import Backend
 from pytket.circuit import Circuit, OpType, Qubit
@@ -94,7 +94,8 @@ def test_dict_export() -> None:
     qps1 = QubitPauliString(Qubit(0), Pauli.Y)
     qps2 = QubitPauliString(Qubit(0), Pauli.X)
     op = QubitPauliOperator({qps1: 1j, qps2: 0.5})
-    assert op.get_dict() == {qps1: 1j, qps2: 0.5}
+    # Do equality check with a sympy "I" for the imaginary part
+    assert op.get_dict() == {qps1: 1 * I, qps2: 0.5}
 
 
 def test_shots_to_counts() -> None:
