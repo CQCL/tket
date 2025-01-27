@@ -76,6 +76,8 @@ lint.ignore = [
     "E501", # Allow long lines in strings
     "E731", # OK to assign to lambdas
     "E741", # Allow variable names like "l"
-    "F401", # Allow importing unused names in init files
     "F403", # Allow wildcard imports in init files
 ]
+
+[lint.per-file-ignores]
+"__init__.py" = ["F401"]

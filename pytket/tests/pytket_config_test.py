@@ -16,7 +16,7 @@ import json
 from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, ClassVar, Dict, Optional, Type
+from typing import Any, ClassVar
 
 import pytest
 from jsonschema import validate  # type: ignore

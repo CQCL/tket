@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from importlib.util import find_spec
 from math import isclose
-from typing import Tuple
 
 import numpy as np
 import pytest
@@ -37,10 +37,8 @@ from pytket.zx import (
     circuit_to_zx,
 )
 
-have_quimb: bool = True
-try:
-    import quimb.tensor  # type: ignore
-
+have_quimb: bool = find_spec("quimb") is not None
+if have_quimb:
     from pytket.zx.tensor_eval import (
         density_matrix_from_cptp_diagram,
         fix_boundaries_to_binary_states,
@@ -51,8 +49,6 @@ try:
         unitary_from_classical_diagram,
         unitary_from_quantum_diagram,
     )
-except ModuleNotFoundError:
-    have_quimb = False
 
 
 def test_generator_creation() -> None:

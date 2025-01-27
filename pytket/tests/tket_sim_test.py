@@ -14,7 +14,7 @@
 
 import math
 from enum import Enum
-from typing import Any, Tuple
+from typing import Any
 
 import numpy as np
 import pytest

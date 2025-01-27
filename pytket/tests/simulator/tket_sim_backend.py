@@ -18,7 +18,7 @@
 ### TketSimBackend will not work properly if there are extra bits that are unwritten to.
 
 from collections.abc import Sequence
-from typing import List, Optional, Union, cast
+from typing import cast
 from uuid import uuid4
 
 import numpy as np
