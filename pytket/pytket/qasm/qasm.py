@@ -1900,6 +1900,25 @@ class QasmWriter:
         self.write_params([param])
         self.write_args(args)
 
+    def add_cnx(self, args: Sequence[UnitID]) -> None:
+        n_ctrls = len(args) - 1
+        assert n_ctrls >= 0
+        match n_ctrls:
+            case 0:
+                self.strings.add_string("x")
+            case 1:
+                self.strings.add_string("cx")
+            case 2:
+                self.strings.add_string("ccx")
+            case 3:
+                self.strings.add_string("c3x")
+            case 4:
+                self.strings.add_string("c4x")
+            case _:
+                raise QASMUnsupportedError("CnX with n > 4 not supported in QASM")
+        self.strings.add_string(" ")
+        self.write_args(args)
+
     def add_data(self, op: BarrierOp, args: Sequence[UnitID]) -> None:
         if op.data == "":
             opstr = _tk_to_qasm_noparams[OpType.Barrier]
@@ -1980,6 +1999,8 @@ class QasmWriter:
             # special handling for zzphase
             assert len(op.params) == 1
             self.add_zzphase(op.params[0], args)
+        elif optype == OpType.CnX:
+            self.add_cnx(args)
         elif optype == OpType.Barrier and self.header == "hqslib1_dev":
             assert isinstance(op, BarrierOp)
             self.add_data(op, args)
