@@ -95,7 +95,7 @@ def test_dict_export() -> None:
     qps2 = QubitPauliString(Qubit(0), Pauli.X)
     op = QubitPauliOperator({qps1: 1j, qps2: 0.5})
     # Do equality check with a sympy "I" for the imaginary part
-    assert op.get_dict() == {qps1: 1 * I, qps2: 0.5}
+    assert op.get_dict() == {qps1: 1.0 * I, qps2: 0.5}
 
 
 def test_shots_to_counts() -> None:
