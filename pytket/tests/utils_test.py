@@ -94,7 +94,7 @@ def test_dict_export() -> None:
     qps1 = QubitPauliString(Qubit(0), Pauli.Y)
     qps2 = QubitPauliString(Qubit(0), Pauli.X)
     op = QubitPauliOperator({qps1: 1j, qps2: 0.5})
-    assert op.get_dict() == op._dict
+    assert op.get_dict() == {qps1: 1j, qps2: 0.5}
 
 
 def test_shots_to_counts() -> None:
