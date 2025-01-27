@@ -1,5 +1,3 @@
-from typing import Union
-
 import numpy as np
 
 from pytket.circuit import Circuit, PhasePolyBox, Qubit

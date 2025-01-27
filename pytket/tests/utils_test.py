@@ -15,7 +15,7 @@
 import types
 from collections import Counter
 from collections.abc import Callable
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import numpy as np
 import pytest
