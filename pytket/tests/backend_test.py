@@ -14,7 +14,7 @@
 
 import json
 from collections import Counter
-from typing import Any, List
+from typing import Any
 
 import numpy as np
 import pytest

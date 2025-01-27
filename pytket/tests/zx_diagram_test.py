@@ -13,7 +13,6 @@
 # limitations under the License.
 
 from math import isclose
-from typing import Tuple
 
 import numpy as np
 import pytest
