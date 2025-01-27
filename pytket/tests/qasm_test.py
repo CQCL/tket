@@ -1225,6 +1225,38 @@ iswap qr[1],qr[2];"""
     )
 
 
+def test_cnx() -> None:
+    # https://github.com/CQCL/tket/issues/1751
+    c3 = Circuit(4)
+    c3.add_gate(OpType.CnX, [0, 1, 2, 3])
+    c3_qasm = circuit_to_qasm_str(c3)
+    assert (
+        c3_qasm
+        == """OPENQASM 2.0;
+include "qelib1.inc";
+
+qreg q[4];
+c3x q[0],q[1],q[2],q[3];
+"""
+    )
+    c3a = circuit_from_qasm_str(c3_qasm)
+    assert c3 == c3a
+    c4 = Circuit(5)
+    c4.add_gate(OpType.CnX, [0, 1, 2, 3, 4])
+    c4_qasm = circuit_to_qasm_str(c4)
+    assert (
+        c4_qasm
+        == """OPENQASM 2.0;
+include "qelib1.inc";
+
+qreg q[5];
+c4x q[0],q[1],q[2],q[3],q[4];
+"""
+    )
+    c4a = circuit_from_qasm_str(c4_qasm)
+    assert c4 == c4a
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()

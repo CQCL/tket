@@ -14,6 +14,7 @@ Fixes:
 * Make `CliffordCircuitPredicate` accept circuits containing measurements.
 * Make `DecomposeBoxes` pass recurse into conditional boxes.
 * Fix conversion of `ClOp.BitEq` and `ClOp.BitNeq` to QASM.
+* Fix conversion of `OpType.CnX` to QASM.
 
 1.39.0 (January 2025)
 ---------------------
