@@ -7,7 +7,7 @@ Unreleased
 Features:
 
 * Add Python 3.13 support to the ZX module.
-* Add `QubitPauliOperator.get_dict` method.
+* Add :py:meth:`QubitPauliOperator.get_dict` method.
 
 Fixes:
 
