@@ -1194,10 +1194,48 @@ PassPtr CustomPass(
     circ = circ_out;
     return success;
   }};
+
   PredicatePtrMap precons;
   PostConditions postcons;
   nlohmann::json j;
   j["name"] = "CustomPass";
+  j["label"] = label;
+  return std::make_shared<StandardPass>(precons, t, postcons, j);
+}
+
+PassPtr CustomPassMap(
+    std::function<
+        std::pair<Circuit, std::pair<unit_map_t, unit_map_t>>(const Circuit&)>
+        transform,
+    const std::string& label) {
+  Transform t{[=](Circuit& circ, std::shared_ptr<unit_bimaps_t> maps) {
+    // run transformation
+    std::pair<Circuit, std::pair<unit_map_t, unit_map_t>> circ_maps =
+        transform(circ);
+
+    // get circuit
+    Circuit circ_out = circ_maps.first;
+    bool success = circ_out != circ;
+    circ = circ_out;
+
+    // get maps
+    unit_bimap_t init_m, final_m;
+    for (const auto& [key, value] : circ_maps.second.first) {
+      init_m.insert({key, value});
+    }
+    for (const auto& [key, value] : circ_maps.second.second) {
+      final_m.insert({key, value});
+    }
+    maps->initial = init_m;
+    maps->final = final_m;
+
+    return success;
+  }};
+
+  PredicatePtrMap precons;
+  PostConditions postcons;
+  nlohmann::json j;
+  j["name"] = "CustomPassMap";
   j["label"] = label;
   return std::make_shared<StandardPass>(precons, t, postcons, j);
 }

@@ -455,4 +455,9 @@ PassPtr CustomPass(
     std::function<Circuit(const Circuit&)> transform,
     const std::string& label = "");
 
+PassPtr CustomPassMap(
+    std::function<
+        std::pair<Circuit, std::pair<unit_map_t, unit_map_t>>(const Circuit&)>
+        transform,
+    const std::string& label = "");
 }  // namespace tket

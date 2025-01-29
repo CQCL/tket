@@ -1778,6 +1778,20 @@ SCENARIO("CustomPass") {
       }
     }
   }
+  // GIVEN("CustomPassMap with function that relabels qubits.") {
+  //   std::cout << "surely not here " << std::endl;
+  //   auto t = [](const Circuit& circ) {
+  //     Circuit copy = circ;
+  //     unit_map_t initial_m = {{Qubit(0), Qubit(0)}, {Qubit(1), Qubit(1)}};
+  //     unit_map_t final_m = {{Qubit(0), Qubit(1)}, {Qubit(1), Qubit(0)}};
+  //     std::pair<Circuit, std::pair<unit_map_t, unit_map_t>> ret = {
+  //         copy, {initial_m, final_m}};
+  //     return ret;
+  //   };
+  //   std::cout << "So i assume this then goes wrong? " << std::endl;
+  //   PassPtr pp = CustomPassMap(t);
+  //   std::cout <<" kms / " << std::endl;
+  // }
 }
 
 SCENARIO("Flatten and relabel registers") {
