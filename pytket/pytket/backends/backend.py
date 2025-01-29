@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-""" Abstract base class for all Backend encapsulations."""
+"""Abstract base class for all Backend encapsulations."""
 import warnings
 from abc import ABC, abstractmethod
 from collections.abc import Iterable, Sequence
