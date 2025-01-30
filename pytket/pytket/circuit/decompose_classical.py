@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """Functions for decomposing Circuits containing classical expressions
- in to primitive logical operations."""
+in to primitive logical operations."""
 import copy
 from collections.abc import Callable
 from heapq import heappop, heappush

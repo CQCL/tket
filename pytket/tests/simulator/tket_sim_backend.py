@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Methods to allow tket circuits to be run with the tket_sim simulator
-"""
+"""Methods to allow tket circuits to be run with the tket_sim simulator"""
 ### WARNING: TketSimBackend accepts Measure gates but does not apply them
 ### TketSimBackend will not work properly if there are extra bits that are unwritten to.
 

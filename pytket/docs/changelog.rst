@@ -15,6 +15,8 @@ Fixes:
 * Make `DecomposeBoxes` pass recurse into conditional boxes.
 * Fix conversion of `ClOp.BitEq` and `ClOp.BitNeq` to QASM.
 * Fix conversion of `OpType.CnX` to QASM.
+* Make `ThreeQubitSquash` work with subcircuits containing boxes for which we
+  can compute the unitary.
 
 1.39.0 (January 2025)
 ---------------------

@@ -13,8 +13,8 @@
 # limitations under the License.
 
 """The `placement` module provides an API to interact with the many
- :py:class:`Placement` options, providing methods for relabelling
- logical circuit qubit identifiers to physical architecture node identifiers,
- for the purpose of compilation."""
+:py:class:`Placement` options, providing methods for relabelling
+logical circuit qubit identifiers to physical architecture node identifiers,
+for the purpose of compilation."""
 
 from pytket._tket.placement import *

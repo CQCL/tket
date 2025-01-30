@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Status classes for circuits submitted to backends.
-"""
+"""Status classes for circuits submitted to backends."""
 from collections.abc import Callable
 from datetime import datetime
 from enum import Enum

@@ -13,8 +13,8 @@
 # limitations under the License.
 
 """The `mapping` module provides an API to interact with the
- :py:class:`MappingManager` class, with methods for
- mapping logical circuits to physical circuits and for
- defining custom routing solutions."""
+:py:class:`MappingManager` class, with methods for
+mapping logical circuits to physical circuits and for
+defining custom routing solutions."""
 
 from pytket._tket.mapping import *
