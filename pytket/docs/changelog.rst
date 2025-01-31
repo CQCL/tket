@@ -116,7 +116,7 @@ Fixes:
 
 * Fix `symbol_substitution` not preserving opgroups.
 * Remove hardware inefficient circuit construction in `_tk1_to_rzsx`
-* Support converting conditional `RangePredicate`s to QASM.
+* Support converting conditional `RangePredicate` s to QASM.
 * Fix `maxwidth` parameter of `circuit_from_qasm_str`
 * Add `scratch_reg_resize_pass` to `circuit_from_qasm_str`
 * Reject incompete classical registers in pytket to qasm conversion
@@ -411,7 +411,7 @@ Minor new features:
   the circuit is unchanged.
 * Add optional parameters ``excluded_types`` and ``excluded_opgroups``
   to ``DecomposeBoxes``.
-* More efficient decomposition for quantum controlled ``ConjugationBox``es.
+* More efficient decomposition for quantum controlled ``ConjugationBox`` es.
 * New ``PassSelector`` for automatically compiling with the best pass from a list
 * ``PauliExpBox``, ``PauliExpPairBox``, and ``PauliExpCommutingSetBox`` are now
   decomposed into a single ``ConjugationBox``.
@@ -432,7 +432,7 @@ Fixes:
 
 Fixes:
 
-* Fix ``Op.get_unitary()`` runtime error for non gate ``Op``s.
+* Fix ``Op.get_unitary()`` runtime error for non gate ``Op`` s.
 * Fix ``CliffordSimp`` slow runtime issue.
 * Correct implementation of ``free_symbols()`` and ``symbol_substitution()`` for
   ``ConjugationBox``.
@@ -634,7 +634,7 @@ Minor new features:
 
 Fixes:
 
-* ``DelayMeasures`` pass now correctly handles circuits with ``CircBox``es.
+* ``DelayMeasures`` pass now correctly handles circuits with ``CircBox`` es.
 * ``get_op_map`` in multiplexor boxes return unhashable python dictionaries.
 
 
@@ -802,7 +802,7 @@ Minor new features:
   fewer two-qubit gates.
 
 * Add ``SquashRzPhasedX`` pass to squash single qubit gates into
-  ``Rz`` and ``PhasedX`` gates while trying to commute ``Rz``s to the back. 
+  ``Rz`` and ``PhasedX`` gates while trying to commute ``Rz`` s to the back.
 
 1.5.1 (August 2022)
 -------------------

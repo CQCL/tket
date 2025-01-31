@@ -203,6 +203,7 @@ class QubitPauliOperator:
         """
         :return: The set of all qubits the operator ranges over (including qubits
             that were provided explicitly as identities)
+
         :rtype: Set[Qubit]
         """
         return self._all_qubits
