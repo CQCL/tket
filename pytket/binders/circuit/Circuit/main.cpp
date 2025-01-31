@@ -383,6 +383,18 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "\n:return: the new :py:class:`Circuit`",
           py::arg("circuit"), py::arg("qubits"), py::arg("bits") = no_bits)
       .def(
+          "add_circuit_with_map",
+          [](Circuit &circ, const Circuit &circ2, const unit_map_t &unit_map) {
+            circ.append_with_map(circ2, unit_map);
+            return &circ;
+          },
+          "In-place sequential composition of circuits, appending a copy of "
+          "the argument onto the end of the circuit."
+          "\n\n:param circuit: circuit to be appended"
+          "\n:param unit_map: map from qubits and bits in the appended circuit "
+          "to corresponding qubits and bits in `self`",
+          py::arg("circuit"), py::arg("unit_map"))
+      .def(
           "append", (void(Circuit::*)(const Circuit &)) & Circuit::append,
           "In-place sequential composition of circuits, appending a "
           "copy of the argument onto the end of the circuit. Inputs and "
