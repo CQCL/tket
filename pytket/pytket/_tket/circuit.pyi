@@ -3416,7 +3416,7 @@ class Op:
         """
     def is_clifford_type(self) -> bool:
         """
-        Check if the operation is one of the Clifford `OpType`s.
+        Check if the operation is one of the Clifford :py:class:`OpType` s.
         """
     def is_gate(self) -> bool:
         ...
