@@ -16,6 +16,8 @@ For more on pytket passes see the `compilation <https://docs.quantinuum.com/tket
     :members:
     :special-members: __init__
 
+.. autofunction:: pytket.passes.scratch_reg_resize_pass
+
 .. autoclass:: pytket.passes.PassSelector
     :special-members: __init__
     :members:
