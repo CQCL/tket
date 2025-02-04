@@ -7,7 +7,7 @@ import typing
 __all__ = ['CliffordCircuitPredicate', 'CommutableMeasuresPredicate', 'CompilationUnit', 'ConnectivityPredicate', 'DefaultRegisterPredicate', 'DirectednessPredicate', 'GateSetPredicate', 'MaxNClRegPredicate', 'MaxNQubitsPredicate', 'MaxTwoQubitGatesPredicate', 'NoBarriersPredicate', 'NoClassicalBitsPredicate', 'NoClassicalControlPredicate', 'NoFastFeedforwardPredicate', 'NoMidMeasurePredicate', 'NoSymbolsPredicate', 'NoWireSwapsPredicate', 'NormalisedTK2Predicate', 'PlacementPredicate', 'Predicate', 'UserDefinedPredicate']
 class CliffordCircuitPredicate(Predicate):
     """
-    Predicate asserting that a circuit has only Clifford gates.
+    Predicate asserting that a circuit has only Clifford gates and measurements.
     """
     @staticmethod
     def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore

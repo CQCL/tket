@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """Classes and functions for constructing logical
- expressions over Bit and BitRegister."""
+expressions over Bit and BitRegister."""
 from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import dataclass
 from enum import Enum

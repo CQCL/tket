@@ -18,6 +18,7 @@
 #include <tklog/TketLog.hpp>
 
 #include "binder_json.hpp"
+#include "binder_utils.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
 #include "tket/Mapping/LexiRouteRoutingMethod.hpp"
 #include "tket/Mapping/RoutingMethod.hpp"
@@ -532,7 +533,8 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "DecomposeBoxes", &DecomposeBoxes,
       "Recursively replaces all boxes by their decomposition into circuits."
-      "\n\n:param excluded_types: box `OpType`s excluded from decomposition"
+      "\n\n:param excluded_types: box " CLSOBJS(OpType) " excluded from "
+      "decomposition"
       "\n:param excluded_opgroups: opgroups excluded from decomposition",
       py::arg("excluded_types") = std::unordered_set<OpType>(),
       py::arg("excluded_opgroups") = std::unordered_set<std::string>());
@@ -1115,7 +1117,7 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "CnXPairwiseDecomposition", &CnXPairwiseDecomposition,
-      "Decompose CnX gates to 2-qubit gates `fand single qubit gates. "
+      "Decompose CnX gates to 2-qubit gates and single qubit gates. "
       "For every two CnX gates, reorder their control qubits to improve "
       "the chance of gate cancellation");
 

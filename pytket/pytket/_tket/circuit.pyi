@@ -1435,6 +1435,13 @@ class Circuit:
         :param bits: List mapping the (default register) bits of `circuit` to the (default register) bits of `self`
         :return: the new :py:class:`Circuit`
         """
+    def add_circuit_with_map(self, circuit: Circuit, unit_map: dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]) -> Circuit:
+        """
+        In-place sequential composition of circuits, appending a copy of the argument onto the end of the circuit.
+        
+        :param circuit: circuit to be appended
+        :param unit_map: map from qubits and bits in the appended circuit to corresponding qubits and bits in `self`
+        """
     def add_classicalexpbox_bit(self, expression: pytket.circuit.logic_exp.BitLogicExp, target: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`ClassicalExpBox` over Bit to the circuit.
@@ -3416,7 +3423,7 @@ class Op:
         """
     def is_clifford_type(self) -> bool:
         """
-        Check if the operation is one of the Clifford `OpType`s.
+        Check if the operation is one of the Clifford :py:class:`OpType` s.
         """
     def is_gate(self) -> bool:
         ...
@@ -3641,8 +3648,7 @@ class OpType:
     
       MultiBit : A classical operation applied to multiple bits simultaneously
     
-      ClassicalExpBox : A box for holding compound classical operations on Bits.
-    DEPRECATED: Please use :py:class:`WiredClExpr` instead. This class will be removed after pytket 1.40.
+      ClassicalExpBox : A box for holding compound classical operations on Bits. DEPRECATED: This will be removed after pytket 1.40 (replaced by `ClExpr`).
     
       MultiplexorBox : A multiplexor (i.e. uniformly controlled operations)
     

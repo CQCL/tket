@@ -94,7 +94,7 @@ def counts_from_shot_table(shot_table: np.ndarray) -> dict[tuple[int, ...], int]
 
 
 def probs_from_counts(
-    counts: dict[tuple[int, ...], int]
+    counts: dict[tuple[int, ...], int],
 ) -> dict[tuple[int, ...], float]:
     """Converts raw counts of observed outcomes into the observed probability
     distribution.

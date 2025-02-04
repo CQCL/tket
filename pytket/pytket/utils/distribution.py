@@ -261,7 +261,7 @@ class ProbabilityDistribution(Generic[T0]):
 
 
 def convex_combination(
-    dists: list[tuple[ProbabilityDistribution[T0], float]]
+    dists: list[tuple[ProbabilityDistribution[T0], float]],
 ) -> ProbabilityDistribution[T0]:
     """Return a convex combination of probability distributions.
 

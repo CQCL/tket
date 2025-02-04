@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""ResultHandle class
-"""
+"""ResultHandle class"""
 
 from ast import literal_eval
 from collections.abc import Iterator, Sequence
