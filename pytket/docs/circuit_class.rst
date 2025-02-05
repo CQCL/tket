@@ -42,6 +42,8 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_circuit
 
+   .. automethod:: add_circuit_with_map
+
    .. automethod:: add_qubit
 
    .. automethod:: add_bit
