@@ -402,10 +402,10 @@ def test_backendresult_serialization(backres: BackendResult) -> None:
 
 
 @given(
-    n_shots=strategies.integers(min_value=1, max_value=10),  # type: ignore
+    n_shots=strategies.integers(min_value=1, max_value=10),
     n_bits=strategies.integers(min_value=0, max_value=10),
 )
-def test_empty_result(n_shots, n_bits) -> None:
+def test_empty_result(n_shots: int, n_bits: int) -> None:
     circuit = Circuit(n_bits, n_bits)
     backend_results = Backend.empty_result(circuit, n_shots=n_shots)
 
