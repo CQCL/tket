@@ -327,10 +327,17 @@ PYBIND11_MODULE(passes, m) {
       .def_static(
           "from_dict",
           [](const py::dict &base_pass_dict,
-
-             std::map<std::string, std::function<Circuit(const Circuit &)>>
-                 &custom_deserialisation) {
-            return deserialise(base_pass_dict, custom_deserialisation);
+             const std::map<
+                 std::string, std::function<Circuit(const Circuit &)>>
+                 &custom_deserialisation,
+             const std::map<
+                 std::string,
+                 std::function<
+                     std::pair<Circuit, std::pair<unit_map_t, unit_map_t>>(
+                         const Circuit &)>> &custom_map_deserialisation) {
+            return deserialise(
+                base_pass_dict, custom_deserialisation,
+                custom_map_deserialisation);
           },
           "Construct a new Pass instance from a JSON serializable dictionary "
           "representation. `custom_deserialisation` is a map between "
@@ -342,7 +349,11 @@ PYBIND11_MODULE(passes, m) {
           "`custom_deserialisation` will be rejected.",
           py::arg("base_pass_dict"),
           py::arg("custom_deserialisation") =
-              std::map<std::string, std::function<Circuit(const Circuit &)>>{})
+              std::map<std::string, std::function<Circuit(const Circuit &)>>{},
+          py::arg("custom_map_deserialisation") = std::map<
+              std::string, std::function<std::pair<
+                               Circuit, std::pair<unit_map_t, unit_map_t>>(
+                               const Circuit &)>>{})
       .def(py::pickle(
           [](py::object self) {  // __getstate__
             return py::make_tuple(self.attr("to_dict")());
@@ -1146,6 +1157,22 @@ PYBIND11_MODULE(passes, m) {
       "\n\n"
       ":param transform: function taking a :py:class:`Circuit` as an argument "
       "and returning a new transformed circuit"
+      "\n"
+      ":param label: optional label for the pass"
+      "\n:return: a pass to perform the transformation",
+      py::arg("transform"), py::arg("label") = "");
+
+  m.def(
+      "CustomPassMap", &CustomPassMap,
+      "Generate a custom pass from a user-provided circuit transfomation "
+      "function."
+      "\n\n"
+      "It is the caller's responsibility to provide a valid transform."
+      "\n\n"
+      ":param transform: function taking a :py:class:`Circuit` as an argument "
+      "and returning a pair of a new transformed circuit and a pair of maps "
+      "corresponding to changes to the initial and final maps that the "
+      "transformation makes."
       "\n"
       ":param label: optional label for the pass"
       "\n:return: a pass to perform the transformation",
