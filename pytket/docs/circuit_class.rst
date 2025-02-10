@@ -66,6 +66,8 @@ condition on a specified set of bit values.)
 
    .. autoproperty:: is_symbolic
 
+   .. autoproperty:: has_implicit_wireswaps
+
    .. automethod:: add_q_register
 
    .. automethod:: get_q_register

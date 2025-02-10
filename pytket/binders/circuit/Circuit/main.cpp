@@ -831,6 +831,10 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "implicit_qubit_permutation", &Circuit::implicit_qubit_permutation,
           ":return: dictionary mapping input qubit to output qubit on "
           "the same path")
+      .def_property_readonly(
+          "has_implicit_wireswaps", &Circuit::has_implicit_wireswaps,
+          "Indicates whether the circuit has a non-trivial qubit permutation "
+          "(i.e., whether there are any implicit wire swaps).")
       .def(
           "replace_SWAPs", &Circuit::replace_SWAPs,
           "Replace all SWAP gates with implicit wire swaps.")

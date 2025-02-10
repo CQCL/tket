@@ -507,7 +507,7 @@ def test_dag_implicit_perm() -> None:
     # THET-701
     c = Circuit(3).CX(0, 1).CX(1, 0).CX(1, 2).CX(2, 1)
     Transform.OptimiseCliffords().apply(c)
-    assert not all(x == y for x, y in c.implicit_qubit_permutation().items())
+    assert c.has_implicit_wireswaps
     G = Graph(c)
     dag = G.get_DAG()
     assert dag.name == "Circuit"
