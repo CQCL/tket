@@ -803,6 +803,7 @@ def test_remove_implicit_qubit_permutation() -> None:
         Qubit(1): Qubit(0),
         Qubit(2): Qubit(1),
     }
+    assert c.has_implicit_wireswaps
     assert RemoveImplicitQubitPermutation().apply(c)
     assert c.n_gates_of_type(OpType.SWAP) == 2
     assert c.implicit_qubit_permutation() == {
@@ -810,6 +811,7 @@ def test_remove_implicit_qubit_permutation() -> None:
         Qubit(1): Qubit(1),
         Qubit(2): Qubit(2),
     }
+    assert not c.has_implicit_wireswaps
 
 
 def test_rz_phasedX_squash() -> None:
@@ -903,12 +905,10 @@ def test_round_angles_pass() -> None:
 def test_PeepholeOptimise2Q() -> None:
     c = Circuit(2).CX(0, 1).CX(1, 0)
     assert PeepholeOptimise2Q().apply(c)
-    perm = c.implicit_qubit_permutation()
-    assert any(k != v for k, v in perm.items())
+    assert c.has_implicit_wireswaps
     c = Circuit(2).CX(0, 1).CX(1, 0)
     assert not PeepholeOptimise2Q(allow_swaps=False).apply(c)
-    perm = c.implicit_qubit_permutation()
-    assert all(k == v for k, v in perm.items())
+    assert not c.has_implicit_wireswaps
 
 
 def test_rebase_custom_tk2() -> None:
