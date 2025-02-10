@@ -2583,6 +2583,12 @@ class Circuit:
         """
         :return: the unique WASM UID of the circuit, or `None` if the circuit has none
         """
+    @property
+    def has_implicit_wireswaps(self) -> bool:
+        """
+        Indicates whether the circuit has a non-trivial qubit permutation
+        (i.e., whether there are any implicit wire swaps).
+        """
 class ClBitVar:
     """
     A bit variable within an expression

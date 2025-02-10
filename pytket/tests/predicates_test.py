@@ -1140,6 +1140,18 @@ def test_decompose_inside_conditionals() -> None:
     assert op2.type == OpType.H
 
 
+def test_has_implicit_wireswaps() -> None:
+    c = Circuit(2)
+    c.SWAP(0, 1)
+    assert not c.has_implicit_wireswaps
+    c.replace_SWAPs()
+    assert c.has_implicit_wireswaps
+
+    # Property should be read-only
+    with pytest.raises(AttributeError):
+        c.has_implicit_wireswaps = True
+
+
 if __name__ == "__main__":
     test_predicate_generation()
     test_compilation_unit_generation()
