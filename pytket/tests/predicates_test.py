@@ -1148,7 +1148,7 @@ def test_has_implicit_wireswaps() -> None:
     assert c.has_implicit_wireswaps
 
     # Property should be read-only
-    with pytest.raises(AttributeError): # type: ignore[unreachable]
+    with pytest.raises(AttributeError):  # type: ignore[unreachable]
         c.has_implicit_wireswaps = True
 
 
