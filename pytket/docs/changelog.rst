@@ -9,6 +9,7 @@ Features:
 * Add Python 3.13 support to the ZX module.
 * Add :py:meth:`QubitPauliOperator.get_dict` method.
 * Add :py:meth:`Circuit.add_circuit_with_map` method.
+* Add :py:attr:`Circuit.has_implicit_wireswaps` property.
 
 Fixes:
 
