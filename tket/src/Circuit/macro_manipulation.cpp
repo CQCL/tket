@@ -251,8 +251,9 @@ void Circuit::substitute(
     const Circuit& to_insert, const Subcircuit& to_replace,
     VertexDeletion vertex_deletion, OpGroupTransfer opgroup_transfer) {
   if (!to_insert.is_simple()) throw SimpleOnly();
-  if (to_insert.n_qubits() != to_replace.q_in_hole.size() ||
-      to_insert.n_bits() != to_replace.c_in_hole.size())
+  if (to_insert.n_qubits() + to_insert.n_bits() +
+          to_insert._number_of_wasm_wires !=
+      to_replace.in_hole.size())
     throw CircuitInvalidity("Subcircuit boundary mismatch to hole");
 
   vertex_map_t vm = copy_graph(to_insert, BoundaryMerge::No, opgroup_transfer);
@@ -272,54 +273,98 @@ void Circuit::substitute(
 
   const Op_ptr noop = get_op_ptr(OpType::noop);
   const Op_ptr reset = get_op_ptr(OpType::Reset);
-  for (unsigned i = 0; i < to_replace.q_in_hole.size(); i++) {
-    Edge edge = to_replace.q_in_hole[i];
-    Vertex pred_v = source(edge);
-    port_t port1 = get_source_port(edge);
-    ebin.insert(edge);
-    Vertex inp = vm[to_insert.get_in(Qubit(i))];
-    add_edge({pred_v, port1}, {inp, 0}, EdgeType::Quantum);
-    if (reset_qbs.contains(Qubit(i))) {
-      dag[inp].op = reset;
-    } else {
-      dag[inp].op = noop;
-      bin.push_back(inp);
+  unsigned qubit_id = 0;
+  unsigned bit_id = 0;
+  unsigned wasm_id = 0;
+  for (unsigned i = 0; i < to_replace.in_hole.size(); ++i) {
+    Edge in_edge = to_replace.in_hole.at(i);
+    std::optional<Edge> out_edge = to_replace.out_hole.at(i);
+    Vertex in_pred = source(in_edge);
+    port_t in_port = get_source_port(in_edge);
+    ebin.insert(in_edge);
+    switch (get_edgetype(in_edge)) {
+      case EdgeType::Quantum: {
+        TKET_ASSERT(out_edge.has_value());
+        TKET_ASSERT(get_edgetype(*out_edge) == EdgeType::Quantum);
+        Vertex inp = vm[to_insert.get_in(Qubit(qubit_id))];
+        add_edge({in_pred, in_port}, {inp, 0}, EdgeType::Quantum);
+        if (reset_qbs.contains(Qubit(qubit_id))) {
+          set_vertex_Op_ptr(inp, reset);
+        } else {
+          set_vertex_Op_ptr(inp, noop);
+          bin.push_back(inp);
+        }
+        Vertex out_succ = target(*out_edge);
+        port_t out_port = get_target_port(*out_edge);
+        ebin.insert(*out_edge);
+        Vertex outp = vm[to_insert.get_out(Qubit(qubit_id))];
+        add_edge({outp, 0}, {out_succ, out_port}, EdgeType::Quantum);
+        set_vertex_Op_ptr(outp, noop);
+        bin.push_back(outp);
+        ++qubit_id;
+        break;
+      }
+      case EdgeType::Classical: {
+        TKET_ASSERT(out_edge.has_value());
+        TKET_ASSERT(get_edgetype(*out_edge) == EdgeType::Classical);
+        Vertex inp = vm[to_insert.get_in(Bit(bit_id))];
+        add_edge({in_pred, in_port}, {inp, 0}, EdgeType::Classical);
+        set_vertex_Op_ptr(inp, noop);
+        bin.push_back(inp);
+        Vertex out_succ = target(*out_edge);
+        port_t out_port = get_target_port(*out_edge);
+        ebin.insert(*out_edge);
+        Vertex outp = vm[to_insert.get_out(Bit(bit_id))];
+        add_edge({outp, 0}, {out_succ, out_port}, EdgeType::Classical);
+        set_vertex_Op_ptr(outp, noop);
+        bin.push_back(outp);
+        c_out_map.insert({*out_edge, outp});
+        ++bit_id;
+        break;
+      }
+      case EdgeType::Boolean: {
+        TKET_ASSERT(!out_edge.has_value());
+        Vertex inp = vm[to_insert.get_in(Bit(bit_id))];
+        Vertex outp = vm[to_insert.get_out(Bit(bit_id))];
+        if (to_insert.get_successors_of_type(inp, EdgeType::Classical).at(0) !=
+            outp)
+          throw CircuitInvalidity(
+              "Subcircuit replacement writes to a Bit from a read-only input "
+              "to the hole");
+        for (const Edge& new_edge :
+             get_out_edges_of_type(inp, EdgeType::Boolean)) {
+          add_edge(
+              {in_pred, in_port}, {target(new_edge), get_target_port(new_edge)},
+              EdgeType::Boolean);
+        }
+        set_vertex_Op_ptr(inp, noop);
+        set_vertex_Op_ptr(outp, noop);
+        bin.push_back(inp);
+        bin.push_back(outp);
+        ++bit_id;
+        break;
+      }
+      case EdgeType::WASM: {
+        TKET_ASSERT(out_edge.has_value());
+        TKET_ASSERT(get_edgetype(*out_edge) == EdgeType::WASM);
+        Vertex inp = vm[to_insert.get_in(WasmState(wasm_id))];
+        add_edge({in_pred, in_port}, {inp, 0}, EdgeType::WASM);
+        set_vertex_Op_ptr(inp, noop);
+        bin.push_back(inp);
+        Vertex out_succ = target(*out_edge);
+        port_t out_port = get_target_port(*out_edge);
+        ebin.insert(*out_edge);
+        Vertex outp = vm[to_insert.get_out(WasmState(wasm_id))];
+        add_edge({outp, 0}, {out_succ, out_port}, EdgeType::WASM);
+        set_vertex_Op_ptr(outp, noop);
+        bin.push_back(outp);
+        ++wasm_id;
+      }
     }
-  }
-  for (unsigned i = 0; i < to_replace.q_out_hole.size(); i++) {
-    Edge edge = to_replace.q_out_hole[i];
-    Vertex succ_v = target(edge);
-    port_t port2 = get_target_port(edge);
-    ebin.insert(edge);
-    Vertex outp = vm[to_insert.get_out(Qubit(i))];
-    add_edge({outp, 0}, {succ_v, port2}, EdgeType::Quantum);
-    dag[outp].op = noop;
-    bin.push_back(outp);
-  }
-  for (unsigned i = 0; i < to_replace.c_in_hole.size(); i++) {
-    Edge edge = to_replace.c_in_hole[i];
-    Vertex pred_v = source(edge);
-    port_t port1 = get_source_port(edge);
-    ebin.insert(edge);
-    Vertex inp = vm[to_insert.get_in(Bit(i))];
-    add_edge({pred_v, port1}, {inp, 0}, EdgeType::Classical);
-    dag[inp].op = noop;
-    bin.push_back(inp);
-  }
-  for (unsigned i = 0; i < to_replace.c_out_hole.size(); i++) {
-    Edge edge = to_replace.c_out_hole[i];
-    Vertex succ_v = target(edge);
-    port_t port2 = get_target_port(edge);
-    ebin.insert(edge);
-    Vertex outp = vm[to_insert.get_out(Bit(i))];
-    add_edge({outp, 0}, {succ_v, port2}, EdgeType::Classical);
-    dag[outp].op = noop;
-    bin.push_back(outp);
-    c_out_map.insert({edge, outp});
   }
   for (const Edge& e : to_replace.b_future) {
     Edge c_out = get_nth_out_edge(source(e), get_source_port(e));
-    Vertex outp = c_out_map[c_out];
+    Vertex outp = c_out_map.at(c_out);
     add_edge({outp, 0}, {target(e), get_target_port(e)}, EdgeType::Boolean);
     ebin.insert(e);
   }
@@ -339,6 +384,25 @@ void Circuit::substitute(
   substitute(to_insert, sub, vertex_deletion, opgroup_transfer);
 }
 
+// Helper function for substitute_conditional which recursively unpacks a
+// Conditional until we reach something that isn't a Conditional; we then wrap
+// base_circ with each layer of the conditional working back up
+Circuit recursive_conditional_circuit(
+    const Op_ptr& op, const Circuit& base_circ) {
+  if (op->get_type() != OpType::Conditional) return base_circ;
+  const Conditional& cond = static_cast<const Conditional&>(*op);
+  Op_ptr inner_op = cond.get_op();
+  Circuit inner_circ = recursive_conditional_circuit(inner_op, base_circ);
+  unsigned width = cond.get_width();
+  bit_map_t rename_map;
+  for (unsigned i = 0; i < inner_circ.n_bits(); ++i)
+    rename_map[Bit(i)] = Bit(i + width);
+  inner_circ.rename_units(rename_map);
+  bit_vector_t cond_bits(width);
+  for (unsigned i = 0; i < width; ++i) cond_bits[i] = Bit(i);
+  return inner_circ.conditional_circuit(cond_bits, cond.get_value());
+}
+
 void Circuit::substitute_conditional(
     Circuit to_insert, const Vertex& to_replace, VertexDeletion vertex_deletion,
     OpGroupTransfer opgroup_transfer) {
@@ -347,38 +411,16 @@ void Circuit::substitute_conditional(
     throw CircuitInvalidity(
         "substitute_conditional called with an unconditional gate");
   Subcircuit sub = singleton_subcircuit(to_replace);
-  const Conditional& cond = static_cast<const Conditional&>(*op);
-  unsigned width = cond.get_width();
-  // Conditions are first few args, so increase index of all others
-  bit_map_t rename_map;
-  for (unsigned i = 0; i < to_insert.n_bits(); ++i) {
-    rename_map[Bit(i)] = Bit(i + width);
-  }
-  to_insert.rename_units(rename_map);
-  // Extend subcircuit hole with space for condition bits
-  bit_vector_t cond_bits(width);
-  EdgeVec cond_sources;
-  for (unsigned i = 0; i < width; ++i) {
-    cond_bits[i] = Bit(i);
-    Edge read_in = get_nth_in_edge(to_replace, i);
-    Edge source_write =
-        get_nth_out_edge(source(read_in), get_source_port(read_in));
-    cond_sources.push_back(source_write);
-  }
-  sub.c_in_hole.insert(
-      sub.c_in_hole.begin(), cond_sources.begin(), cond_sources.end());
-  sub.c_out_hole.insert(
-      sub.c_out_hole.begin(), cond_sources.begin(), cond_sources.end());
-  to_insert = to_insert.conditional_circuit(cond_bits, cond.get_value());
+  to_insert = recursive_conditional_circuit(op, to_insert);
   substitute(to_insert, sub, vertex_deletion, opgroup_transfer);
 }
 
 // given the edges to be broken and new
 // circuit, implants circuit into old circuit
 void Circuit::cut_insert(
-    const Circuit& incirc, const EdgeVec& q_preds, const EdgeVec& c_preds,
-    const EdgeVec& b_future) {
-  Subcircuit sub = {q_preds, q_preds, c_preds, c_preds, b_future};
+    const Circuit& incirc, const EdgeVec& preds, const EdgeVec& b_future) {
+  std::vector<std::optional<Edge>> succs{preds.begin(), preds.end()};
+  Subcircuit sub = {preds, succs, b_future, {}};
   substitute(incirc, sub, VertexDeletion::No);
 }
 
@@ -564,8 +606,10 @@ bool Circuit::substitute_all(const Circuit& to_insert, const Op_ptr op) {
     if (*v_op == *op)
       to_replace.push_back(v);
     else if (v_op->get_type() == OpType::Conditional) {
-      const Conditional& cond = static_cast<const Conditional&>(*v_op);
-      if (*cond.get_op() == *op) conditional_to_replace.push_back(v);
+      while (v_op->get_type() == OpType::Conditional) {
+        v_op = static_cast<const Conditional&>(*v_op).get_op();
+      }
+      if (*v_op == *op) conditional_to_replace.push_back(v);
     }
   }
   for (const Vertex& v : to_replace) {
@@ -693,10 +737,10 @@ Circuit Circuit::conditional_circuit(
 bool Circuit::substitute_box_vertex(
     Vertex& vert, VertexDeletion vertex_deletion) {
   Op_ptr op = get_Op_ptr_from_Vertex(vert);
-  bool conditional = op->get_type() == OpType::Conditional;
-  if (conditional) {
-    const Conditional& cond = static_cast<const Conditional&>(*op);
-    op = cond.get_op();
+  bool conditional = false;
+  while (op->get_type() == OpType::Conditional) {
+    op = static_cast<const Conditional&>(*op).get_op();
+    conditional = true;
   }
   if (!op->get_desc().is_box()) return false;
   if (op->get_type() == OpType::ClassicalExpBox) return false;

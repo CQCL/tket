@@ -233,6 +233,7 @@ static bool multiq_clifford_match(Circuit &circ, bool allow_swaps) {
                  circ.get_nth_in_edge(s_gate, 0)},
                 {circ.get_nth_out_edge(v_gate, 0),
                  circ.get_nth_out_edge(s_gate, 0)},
+                {},
                 {v_gate, s_gate}};
             replacement = &CircPool::CX_VS_CX_reduced();
           } else {
@@ -243,6 +244,7 @@ static bool multiq_clifford_match(Circuit &circ, bool allow_swaps) {
             sub = {
                 {circ.get_nth_in_edge(v_gate, 0), default_h1},
                 {circ.get_nth_out_edge(v_gate, 0), default_h1},
+                {},
                 {v_gate}};
             replacement = &CircPool::CX_V_CX_reduced();
           }
@@ -258,6 +260,7 @@ static bool multiq_clifford_match(Circuit &circ, bool allow_swaps) {
           sub = {
               {default_h0, circ.get_nth_in_edge(s_gate, 0)},
               {default_h0, circ.get_nth_out_edge(s_gate, 0)},
+              {},
               {s_gate}};
           replacement = &CircPool::CX_S_CX_reduced();
         } else {
@@ -266,12 +269,12 @@ static bool multiq_clifford_match(Circuit &circ, bool allow_swaps) {
           /* --X--X--      ----  */
           continue;
         }
-        Vertex b0 = circ.source(sub.q_in_hole[0]);
-        port_t p0 = circ.get_source_port(sub.q_in_hole[0]);
-        Vertex b1 = circ.source(sub.q_in_hole[1]);
-        port_t p1 = circ.get_source_port(sub.q_in_hole[1]);
-        Vertex a0 = circ.target(sub.q_out_hole[0]);
-        Vertex a1 = circ.target(sub.q_out_hole[1]);
+        Vertex b0 = circ.source(sub.in_hole[0]);
+        port_t p0 = circ.get_source_port(sub.in_hole[0]);
+        Vertex b1 = circ.source(sub.in_hole[1]);
+        port_t p1 = circ.get_source_port(sub.in_hole[1]);
+        Vertex a0 = circ.target(*sub.out_hole[0]);
+        Vertex a1 = circ.target(*sub.out_hole[1]);
         circ.substitute(*replacement, sub, Circuit::VertexDeletion::No);
         // Scan through hole and add vertices to v_to_qb
         // and give estimates of depth and rev_depth
@@ -465,13 +468,14 @@ static bool multiq_clifford_match(Circuit &circ, bool allow_swaps) {
              circ.get_nth_out_edge(before1, pb1)},
             {circ.get_nth_in_edge(after0, pa0),
              circ.get_nth_in_edge(after1, pa1)},
+            {},
             to_remove};
-        Vertex b0 = circ.source(sub.q_in_hole[0]);
-        port_t p0 = circ.get_source_port(sub.q_in_hole[0]);
-        Vertex b1 = circ.source(sub.q_in_hole[1]);
-        port_t p1 = circ.get_source_port(sub.q_in_hole[1]);
-        Vertex a0 = circ.target(sub.q_out_hole[0]);
-        Vertex a1 = circ.target(sub.q_out_hole[1]);
+        Vertex b0 = circ.source(sub.in_hole[0]);
+        port_t p0 = circ.get_source_port(sub.in_hole[0]);
+        Vertex b1 = circ.source(sub.in_hole[1]);
+        port_t p1 = circ.get_source_port(sub.in_hole[1]);
+        Vertex a0 = circ.target(*sub.out_hole[0]);
+        Vertex a1 = circ.target(*sub.out_hole[1]);
         circ.substitute(*replacement, sub, Circuit::VertexDeletion::No);
         // Scan through hole and add vertices to v_to_qb
         unsigned new_depth = std::min(v_to_depth[a0], v_to_depth[a1]);
@@ -530,7 +534,7 @@ static bool copy_pi_through_CX_method(Circuit &circ) {
         circ.remove_vertex(
             vert, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
         after1 = circ.get_nth_in_edge(v_after1, pa1);
-        Subcircuit sub = {{afterX, after1}, {afterX, after1}};
+        Subcircuit sub = {{afterX, after1}, {afterX, after1}, {}, {}};
         circ.substitute(CircPool::X1_CX(), sub, Circuit::VertexDeletion::No);
         continue;
       }
@@ -546,7 +550,7 @@ static bool copy_pi_through_CX_method(Circuit &circ) {
         circ.remove_vertex(
             vert, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
         after0 = circ.get_nth_in_edge(v_after0, pa0);
-        Subcircuit sub = {{after0, afterZ}, {after0, afterZ}};
+        Subcircuit sub = {{after0, afterZ}, {after0, afterZ}, {}, {}};
         circ.substitute(CircPool::Z0_CX(), sub, Circuit::VertexDeletion::No);
       }
     }
@@ -603,7 +607,7 @@ static bool singleq_clifford_from_edge(
   }
   // if the sequence is not in the standard form, replace it
   if (cliff_last == 0) {
-    Subcircuit s = {{e}, {ei}, single_vs};
+    Subcircuit s = {{e}, {ei}, {}, single_vs};
     Circuit sub = circ.subcircuit(s);
     bool reduced = (decompose_single_qubits_TK1() >> squash_1qb_to_tk1() >>
                     decompose_cliffords_std())

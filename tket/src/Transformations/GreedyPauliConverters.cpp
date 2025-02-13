@@ -305,15 +305,14 @@ void GPGraph::apply_gate_at_end(
   switch (type) {
     case OpType::Conditional: {
       const Conditional& cond = static_cast<const Conditional&>(*op);
-      std::vector<unsigned> cond_bits;
       unit_vector_t inner_args;
       for (unsigned i = 0; i < cond.get_width(); ++i)
         cond_bits.push_back(Bit(args.at(i)).index().at(0));
       for (unsigned i = cond.get_width(); i < args.size(); ++i)
         inner_args.push_back(args.at(i));
+      cond_value = (cond_value << cond.get_width()) + cond.get_value();
       apply_gate_at_end(
-          Command(cond.get_op(), inner_args), true, cond_bits,
-          cond.get_value());
+          Command(cond.get_op(), inner_args), true, cond_bits, cond_value);
       return;
     }
     case OpType::Measure: {

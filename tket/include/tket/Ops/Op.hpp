@@ -44,6 +44,9 @@ class InvalidParameterCount : public std::logic_error {
       : std::logic_error("Gate has an invalid number of parameters") {}
 };
 
+/** A specific entry or exit port of a vertex */
+typedef unsigned port_t;
+
 /**
  * Abstract class representing an operation type
  */
@@ -99,29 +102,33 @@ class Op : public std::enable_shared_from_this<Op> {
   virtual SymSet free_symbols() const = 0;
 
   /**
-   * Which Pauli, if any, commutes with the operation at a given qubit
+   * Which Pauli, if any, commutes with the operation at a given port
    *
-   * @param i qubit number at which Pauli should commute
+   * @param i port at which Pauli should commute
    * @return A Pauli that commutes with the given operation
    * @retval std::nullopt no Pauli commutes (or operation not a gate)
    * @retval Pauli::I any Pauli commutes
    */
-  virtual std::optional<Pauli> commuting_basis(unsigned i) const {
+  virtual std::optional<Pauli> commuting_basis(port_t i) const {
     (void)i;
     return std::nullopt;
   }
 
   /**
-   * Whether the operation commutes with the given Pauli at the given qubit
+   * Whether the operation commutes with the given Pauli at the given port
    *
    * @param colour Pauli operation type
-   * @param i operation qubit index
+   * @param i port of the operation
    */
   virtual bool commutes_with_basis(
-      const std::optional<Pauli> &colour, unsigned i) const {
-    (void)colour;
-    (void)i;
-    return false;
+      const std::optional<Pauli> &colour, port_t i) const {
+    const std::optional<Pauli> my_colour = commuting_basis(i);
+    if (!colour || !my_colour) {
+      // Nothing can commute with std::nullopt
+      return false;
+    } else {
+      return colour == Pauli::I || my_colour == Pauli::I || colour == my_colour;
+    }
   }
 
   /**

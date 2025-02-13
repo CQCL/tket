@@ -90,9 +90,9 @@ bool GateSetPredicate::verify(const Circuit& circ) const {
     OpDesc desc = op->get_desc();
     if (desc.is_meta()) continue;
     OpType type = op->get_type();
-    if (type == OpType::Conditional) {
-      const Conditional& cond = static_cast<const Conditional&>(*op);
-      type = cond.get_op()->get_type();
+    while (type == OpType::Conditional) {
+      op = static_cast<const Conditional&>(*op).get_op();
+      type = op->get_type();
     }
     if (type == OpType::Phase) continue;
     if (!find_in_set(type, allowed_types_)) return false;
@@ -672,10 +672,8 @@ std::string GlobalPhasedXPredicate::to_string() const {
 bool NormalisedTK2Predicate::verify(const Circuit& circ) const {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
-    bool conditional = op->get_type() == OpType::Conditional;
-    if (conditional) {
-      const Conditional& cond = static_cast<const Conditional&>(*op);
-      op = cond.get_op();
+    while (op->get_type() == OpType::Conditional) {
+      op = static_cast<const Conditional&>(*op).get_op();
     }
     if (op->get_type() == OpType::TK2) {
       auto params = op->get_params();

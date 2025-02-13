@@ -34,9 +34,10 @@ bool BoxDecomposition::solve() {
       this->mapping_frontier_->circuit_.next_q_cut(frontier_edges);
   for (Vertex &vert : *next_cut.slice) {
     Op_ptr op = this->mapping_frontier_->circuit_.get_Op_ptr_from_Vertex(vert);
-    if (op->get_desc().is_box() ||
-        (op->get_type() == OpType::Conditional &&
-         static_cast<const Conditional &>(*op).get_op()->get_desc().is_box())) {
+    while (op->get_type() == OpType::Conditional) {
+      op = static_cast<const Conditional &>(*op).get_op();
+    }
+    if (op->get_desc().is_box()) {
       if (this->mapping_frontier_->circuit_.substitute_box_vertex(
               vert, Circuit::VertexDeletion::No)) {
         modified = true;

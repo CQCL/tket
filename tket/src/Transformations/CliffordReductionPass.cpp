@@ -324,23 +324,16 @@ void CliffordReductionPass::process_new_interaction(const Vertex &inter) {
     if (match) {
       Circuit replacement = interaction_replacement(*match);
       Subcircuit site;
-      site.q_in_hole = site.q_out_hole = {match->point0.e, match->point1.e};
+      site.in_hole = {match->point0.e, match->point1.e};
+      site.out_hole = {match->point0.e, match->point1.e};
       Subcircuit inserted = substitute(replacement, site);
       const Vertex &source = match->point0.source;
       Circuit source_locals =
           local_cliffords(circ.get_OpType_from_Vertex(source));
-      Subcircuit source_site;
-      source_site.q_in_hole = circ.get_in_edges(source);
-      source_site.q_out_hole = {
-          circ.get_nth_out_edge(source, 0), circ.get_nth_out_edge(source, 1)};
-      source_site.verts.insert(source);
+      Subcircuit source_site = circ.singleton_subcircuit(source);
       substitute(source_locals, source_site);
       Circuit v_locals = local_cliffords(op->get_type());
-      Subcircuit v_site;
-      v_site.q_in_hole = circ.get_in_edges(v);
-      v_site.q_out_hole = {
-          circ.get_nth_out_edge(v, 0), circ.get_nth_out_edge(v, 1)};
-      v_site.verts.insert(v);
+      Subcircuit v_site = circ.singleton_subcircuit(v);
       substitute(v_locals, v_site);
       for (const Vertex &new_v : inserted.verts) {
         if (circ.n_in_edges(new_v) == 2 &&
@@ -363,7 +356,7 @@ void CliffordReductionPass::process_new_interaction(const Vertex &inter) {
 
 Subcircuit CliffordReductionPass::substitute(
     const Circuit &to_insert, const Subcircuit &to_replace) {
-  unsigned q_width = to_replace.q_in_hole.size();
+  unsigned q_width = to_replace.in_hole.size();
   TKET_ASSERT(q_width == 2);
 
   // Construct tables of predecessors, successors, units, in-edges, out-edges.
@@ -374,8 +367,8 @@ Subcircuit CliffordReductionPass::substitute(
   std::vector<Edge> in_edges(q_width);
   std::vector<Edge> out_edges(q_width);
   for (unsigned qi = 0; qi < q_width; ++qi) {
-    const Edge &in = to_replace.q_in_hole.at(qi);
-    const Edge &out = to_replace.q_out_hole.at(qi);
+    const Edge &in = to_replace.in_hole.at(qi);
+    const Edge &out = *to_replace.out_hole.at(qi);
     preds[qi] = {circ.source(in), circ.get_source_port(in)};
     succs[qi] = {circ.target(out), circ.get_target_port(out)};
     units[qi] = e_to_unit.at(in);
@@ -495,9 +488,9 @@ Subcircuit CliffordReductionPass::substitute(
   Subcircuit inserted;
   for (unsigned qi = 0; qi < q_width; ++qi) {
     Edge in = in_edges[qi];
-    inserted.q_in_hole.push_back(in);
+    inserted.in_hole.push_back(in);
     Edge out = out_edges[qi];
-    inserted.q_out_hole.push_back(out);
+    inserted.out_hole.push_back(out);
     while (in != out) {
       Vertex next = circ.target(in);
       inserted.verts.insert(next);

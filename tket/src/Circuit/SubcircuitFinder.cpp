@@ -224,77 +224,43 @@ std::vector<VertexSet> Circuit::get_subcircuits(
 
 Subcircuit Circuit::make_subcircuit(VertexSet verts) const {
   const std::map<Edge, UnitID> unitmap = edge_unit_map();
-  EdgeSet q_ins, q_outs, c_ins, c_outs;
+  std::map<UnitID, Edge> out_lookup;
+  EdgeSet ins, outs, b_future;
   for (const Vertex &v : verts) {
-    for (const Edge &v_in : get_in_edges(v)) {
-      if (!verts.contains(source(v_in))) {
-        switch (get_edgetype(v_in)) {
-          case EdgeType::Quantum:
-            q_ins.insert(v_in);
-            break;
-          case EdgeType::Classical:
-            c_ins.insert(v_in);
-            break;
-          default:
-            // Boolean and WASM edges ignored.
-            // TODO What to do? Throw?
-            break;
-        }
+    for (const Edge &e : get_in_edges(v)) {
+      if (!verts.contains(source(e))) {
+        ins.insert(e);
       }
     }
-    for (const Edge &v_out : get_all_out_edges(v)) {
-      if (!verts.contains(target(v_out))) {
-        switch (get_edgetype(v_out)) {
-          case EdgeType::Quantum:
-            q_outs.insert(v_out);
-            break;
-          case EdgeType::Classical:
-            c_outs.insert(v_out);
-            break;
-          default:
-            // Boolean and WASM edges ignored.
-            // TODO What to do? Throw?
-            break;
+    for (const Edge &e : get_all_out_edges(v)) {
+      if (!verts.contains(target(e))) {
+        if (get_edgetype(e) == EdgeType::Boolean) {
+          b_future.insert(e);
+        } else {
+          outs.insert(e);
+          out_lookup.insert({unitmap.at(e), e});
         }
       }
     }
   }
-  EdgeSet crs;
-  for (const Edge &e : c_outs) {
-    Vertex v = source(e);
-    for (const Edge &b_out : get_out_edges_of_type(v, EdgeType::Boolean)) {
-      crs.insert(b_out);
+  // Convert to vectors, sort by UnitID, making UnitIDs of corresponding ins and
+  // outs match position
+  EdgeVec ins_vec{ins.begin(), ins.end()};
+  auto compare = [&unitmap](const Edge &e0, const Edge &e1) {
+    return unitmap.at(e0) < unitmap.at(e1);
+  };
+  std::sort(ins_vec.begin(), ins_vec.end(), compare);
+  std::vector<std::optional<Edge>> outs_vec;
+  for (const Edge &e : ins_vec) {
+    if (get_edgetype(e) == EdgeType::Boolean) {
+      outs_vec.push_back(std::nullopt);
+    } else {
+      outs_vec.push_back(out_lookup.at(unitmap.at(e)));
     }
   }
-  // Convert to vectors, taking care of order:
-  TKET_ASSERT(q_ins.size() == q_outs.size());
-  TKET_ASSERT(c_ins.size() == c_outs.size());
-  EdgeVec q_ins_vec{q_ins.begin(), q_ins.end()};
-  EdgeVec q_outs_vec{q_outs.begin(), q_outs.end()};
-  EdgeVec c_ins_vec{c_ins.begin(), c_ins.end()};
-  EdgeVec c_outs_vec{c_outs.begin(), c_outs.end()};
-  EdgeVec crs_vec{crs.begin(), crs.end()};
-  std::sort(
-      q_ins_vec.begin(), q_ins_vec.end(),
-      [&unitmap](const Edge &e0, const Edge &e1) {
-        return unitmap.at(e0) < unitmap.at(e1);
-      });
-  std::sort(
-      q_outs_vec.begin(), q_outs_vec.end(),
-      [&unitmap](const Edge &e0, const Edge &e1) {
-        return unitmap.at(e0) < unitmap.at(e1);
-      });
-  std::sort(
-      c_ins_vec.begin(), c_ins_vec.end(),
-      [&unitmap](const Edge &e0, const Edge &e1) {
-        return unitmap.at(e0) < unitmap.at(e1);
-      });
-  std::sort(
-      c_outs_vec.begin(), c_outs_vec.end(),
-      [&unitmap](const Edge &e0, const Edge &e1) {
-        return unitmap.at(e0) < unitmap.at(e1);
-      });
-  return {q_ins_vec, q_outs_vec, c_ins_vec, c_outs_vec, crs_vec, verts};
+  // b_future can go in any order
+  EdgeVec b_future_vec{b_future.begin(), b_future.end()};
+  return {ins_vec, outs_vec, b_future_vec, verts};
 }
 
 }  // namespace tket

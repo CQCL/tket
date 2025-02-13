@@ -496,6 +496,11 @@ void CircToPhasePolyConversion::convert() {
         input_circ_.add_barrier(qbs);
         break;
       }
+      case OpType::Phase: {
+        input_circ_.add_op<UnitID>(
+            ot, com.get_op_ptr()->get_params().at(0), qbs);
+        break;
+      }
       default: {
         throw BadOpType(
             "Please rebase with the compiler pass RebaseUFR to only CX, Rz, H, "
@@ -658,6 +663,10 @@ qubits states are reset to pre.
             TKET_ASSERT(!"Invalid Qubit Type in Phase Poly Box creation");
           }
         }
+        break;
+      }
+      case OpType::Phase: {
+        circ_.add_op<unsigned>(ot, com.get_op_ptr()->get_params().at(0), {});
         break;
       }
       default: {

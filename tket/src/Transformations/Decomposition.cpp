@@ -60,8 +60,7 @@ static bool convert_multiqs_TK2(Circuit &circ) {
     if (is_gate_type(optype) && !is_projective_type(optype) &&
         op->n_qubits() >= 2 && (optype != OpType::TK2)) {
       Circuit in_circ = TK2_circ_from_multiq(op);
-      Subcircuit sub = {
-          {circ.get_in_edges(v)}, {circ.get_all_out_edges(v)}, {v}};
+      Subcircuit sub = circ.singleton_subcircuit(v);
       bin.push_back(v);
       circ.substitute(in_circ, sub, Circuit::VertexDeletion::No);
       success = true;
@@ -86,8 +85,7 @@ static bool convert_multiqs_CX(Circuit &circ) {
     if (is_gate_type(optype) && !is_projective_type(optype) &&
         op->n_qubits() >= 2 && (optype != OpType::CX)) {
       Circuit in_circ = CX_circ_from_multiq(op);
-      Subcircuit sub = {
-          {circ.get_in_edges(v)}, {circ.get_all_out_edges(v)}, {v}};
+      Subcircuit sub = circ.singleton_subcircuit(v);
       bin.push_back(v);
       circ.substitute(in_circ, sub, Circuit::VertexDeletion::No);
       success = true;
@@ -126,8 +124,7 @@ static bool convert_to_zyz(Circuit &circ) {
       if (!equiv_0(c, 4)) {
         replacement.add_op<unsigned>(OpType::Rz, c, {0});
       }
-      Subcircuit sub = {
-          {circ.get_in_edges(v)}, {circ.get_all_out_edges(v)}, {v}};
+      Subcircuit sub = circ.singleton_subcircuit(v);
       bin.push_back(v);
       circ.substitute(replacement, sub, Circuit::VertexDeletion::No);
       success = true;
@@ -154,8 +151,7 @@ static bool convert_to_xyx(Circuit &circ) {
       replacement.add_op<unsigned>(OpType::Rx, params[0] - half, {0});
       replacement.add_op<unsigned>(OpType::Ry, -half, {0});
       remove_redundancies().apply(replacement);
-      Subcircuit sub = {
-          {circ.get_in_edges(v)}, {circ.get_all_out_edges(v)}, {v}};
+      Subcircuit sub = circ.singleton_subcircuit(v);
       bin.push_back(v);
       circ.substitute(replacement, sub, Circuit::VertexDeletion::No);
       success = true;
@@ -178,11 +174,11 @@ static bool convert_singleqs_TK1(Circuit &circ) {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     OpType optype = op->get_type();
-    bool conditional = optype == OpType::Conditional;
-    if (conditional) {
-      const Conditional &cond = static_cast<const Conditional &>(*op);
-      op = cond.get_op();
+    bool conditional = false;
+    while (optype == OpType::Conditional) {
+      op = static_cast<const Conditional &>(*op).get_op();
       optype = op->get_type();
+      conditional = true;
     }
     if (is_gate_type(optype) && !is_projective_type(optype) &&
         op->n_qubits() == 1 && optype != OpType::TK1) {
@@ -363,7 +359,7 @@ Transform decompose_ZXZ_to_TK1() {
             success = true;
             Circuit sub = tk1_angles_to_circ(
                 curr_angles[0], curr_angles[1], curr_angles[2]);
-            Subcircuit hole{{*first_edge}, {e}, curr_vs};
+            Subcircuit hole{{*first_edge}, {e}, {}, curr_vs};
             // Backup
             port_t backup_p = circ.get_target_port(e);
             // Substitute
@@ -416,11 +412,11 @@ Transform decompose_tk1_to_rzrx() {
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
       Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
       OpType optype = op->get_type();
-      bool conditional = optype == OpType::Conditional;
-      if (conditional) {
-        const Conditional &cond = static_cast<const Conditional &>(*op);
-        op = cond.get_op();
+      bool conditional = false;
+      while (optype == OpType::Conditional) {
+        op = static_cast<const Conditional &>(*op).get_op();
         optype = op->get_type();
+        conditional = true;
       }
       if (optype == OpType::TK1) {
         success = true;
@@ -449,7 +445,8 @@ Transform decompose_CX_to_HQS2() {
       if (circ.get_OpType_from_Vertex(v) == OpType::CX) {
         success = true;
         bin.push_back(v);
-        Subcircuit sub = {circ.get_in_edges(v), circ.get_all_out_edges(v)};
+        Subcircuit sub = {
+            circ.get_in_edges(v), circ.get_linear_out_edges(v), {}, {}};
         circ.substitute(
             CircPool::CX_using_ZZMax(), sub, Circuit::VertexDeletion::No);
       }
@@ -510,47 +507,45 @@ Transform decompose_MolmerSorensen() {
     VertexList bin;
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
       if (circ.get_OpType_from_Vertex(v) != OpType::CX) continue;
-      EdgeVec outs = circ.get_all_out_edges(v);
-      if (outs.size() == 2) {
-        Vertex next = circ.target(outs[0]);
-        // Is the next operation equivalent to an Rx, up to phase?
-        Op_ptr next_g = circ.get_Op_ptr_from_Vertex(next);
-        OpType next_type = next_g->get_type();
-        if (is_single_qubit_type(next_type) && !is_projective_type(next_type)) {
-          std::vector<Expr> angles = as_gate_ptr(next_g)->get_tk1_angles();
-          if (equiv_0(angles[0], 2) && equiv_0(angles[2], 2)) {
-            Expr angle = angles[1];
-            Expr phase = angles[3];
-            if (!equiv_0(angles[0], 4)) phase += 1;
-            if (!equiv_0(angles[2], 4)) phase += 1;
-            Edge next_e = circ.get_nth_out_edge(next, 0);
-            Vertex last = circ.target(next_e);
-            if (circ.get_OpType_from_Vertex(last) == OpType::CX &&
-                circ.get_nth_in_edge(last, 1) == outs[1]) {
-              // Recognise exp(-i XX * angle * pi/2)
-              const Op_ptr op_ptr = get_op_ptr(OpType::XXPhase, angle);
-              circ.dag[v] = {op_ptr};
-              bin.push_back(next);
-              circ.remove_vertex(
-                  next, Circuit::GraphRewiring::Yes,
-                  Circuit::VertexDeletion::No);
-              bin.push_back(last);
-              circ.remove_vertex(
-                  last, Circuit::GraphRewiring::Yes,
-                  Circuit::VertexDeletion::No);
-              circ.add_phase(phase);
-              success = true;
-              continue;
-            }
+      std::vector<std::optional<Edge>> outs = circ.get_linear_out_edges(v);
+      Vertex next = circ.target(*outs[0]);
+      // Is the next operation equivalent to an Rx, up to phase?
+      Op_ptr next_g = circ.get_Op_ptr_from_Vertex(next);
+      OpType next_type = next_g->get_type();
+      if (is_single_qubit_type(next_type) && !is_projective_type(next_type)) {
+        std::vector<Expr> angles = as_gate_ptr(next_g)->get_tk1_angles();
+        if (equiv_0(angles[0], 2) && equiv_0(angles[2], 2)) {
+          Expr angle = angles[1];
+          Expr phase = angles[3];
+          if (!equiv_0(angles[0], 4)) phase += 1;
+          if (!equiv_0(angles[2], 4)) phase += 1;
+          Edge next_e = circ.get_nth_out_edge(next, 0);
+          Vertex last = circ.target(next_e);
+          if (circ.get_OpType_from_Vertex(last) == OpType::CX &&
+              circ.get_nth_in_edge(last, 1) == *outs[1]) {
+            // Recognise exp(-i XX * angle * pi/2)
+            const Op_ptr op_ptr = get_op_ptr(OpType::XXPhase, angle);
+            circ.dag[v] = {op_ptr};
+            bin.push_back(next);
+            circ.remove_vertex(
+                next, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
+            bin.push_back(last);
+            circ.remove_vertex(
+                last, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
+            // Don't try to convert the other CX gate
+            circ.set_vertex_Op_ptr(last, get_op_ptr(OpType::noop));
+            circ.add_phase(phase);
+            success = true;
+            continue;
           }
         }
-        // Replace remaining CX gates
-        Subcircuit sub = {{circ.get_in_edges(v)}, {outs}, {v}};
-        bin.push_back(v);
-        circ.substitute(
-            CircPool::CX_using_XXPhase_1(), sub, Circuit::VertexDeletion::No);
-        success = true;
       }
+      // Replace remaining CX gates
+      Subcircuit sub = {circ.get_in_edges(v), outs, {}, {v}};
+      bin.push_back(v);
+      circ.substitute(
+          CircPool::CX_using_XXPhase_1(), sub, Circuit::VertexDeletion::No);
+      success = true;
     }
     circ.remove_vertices(
         bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
@@ -1152,8 +1147,7 @@ Transform decompose_cliffords_std() {
           if (!(all_reduced && all_roundable)) continue;
           Circuit replacement =
               clifford_from_tk1(iangles[0], iangles[1], iangles[2]);
-          Subcircuit sub = {
-              {circ.get_in_edges(v)}, {circ.get_all_out_edges(v)}, {v}};
+          Subcircuit sub = circ.singleton_subcircuit(v);
           bin.push_back(v);
           circ.substitute(replacement, sub, Circuit::VertexDeletion::No);
           circ.add_phase(tk1_param_exprs[3]);
@@ -1320,8 +1314,7 @@ Transform decompose_PhaseGadgets() {
                     OpType::PhaseGadget, rx_g->get_params()[0], {0, 1});
                 replacement.add_op<unsigned>(OpType::H, {0});
                 replacement.add_op<unsigned>(OpType::H, {1});
-                Subcircuit sub = {
-                    circ.get_in_edges(*it), circ.get_all_out_edges(*it), {*it}};
+                Subcircuit sub = circ.singleton_subcircuit(*it);
                 circ.substitute(replacement, sub, Circuit::VertexDeletion::Yes);
                 success = true;
               }
@@ -1414,8 +1407,9 @@ Transform decompose_SWAP_to_CX(const Architecture &arc) {
       VertexVec preds = circ.get_predecessors(v.first);
       VertexVec succs = circ.get_successors(v.first);
       EdgeVec in_edges = circ.get_in_edges(v.first);
-      EdgeVec out_edges = circ.get_all_out_edges(v.first);
-      Subcircuit sub = {in_edges, out_edges, {v.first}};
+      std::vector<std::optional<Edge>> out_edges =
+          circ.get_linear_out_edges(v.first);
+      Subcircuit sub = {in_edges, out_edges, {}, {v.first}};
 
       if (preds.size() == 1 &&
           circ.get_OpType_from_Vertex(preds[0]) == OpType::CX) {
@@ -1430,8 +1424,8 @@ Transform decompose_SWAP_to_CX(const Architecture &arc) {
         // if no CX gate before SWAP, check after.
         swap_sub(
             circ, CircPool::SWAP_using_CX_0(), CircPool::SWAP_using_CX_1(), sub,
-            {circ.get_target_port(out_edges[0]),
-             circ.get_target_port(out_edges[1])});
+            {circ.get_target_port(*out_edges[0]),
+             circ.get_target_port(*out_edges[1])});
       } else if (v.second) {
         // We assume in general that a CX gate saving is desired over H gate
         // savings. If SWAP doesn't lend itself to annihlation though, the
@@ -1460,9 +1454,11 @@ Transform decompose_BRIDGE_to_CX() {
         bin.push_back({v, false});
       }
       if (circ.get_OpType_from_Vertex(v) == OpType::Conditional) {
-        const Conditional &b =
-            static_cast<const Conditional &>(*circ.get_Op_ptr_from_Vertex(v));
-        if (b.get_op()->get_type() == OpType::BRIDGE) {
+        Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+        while (op->get_type() == OpType::Conditional) {
+          op = static_cast<const Conditional &>(*op).get_op();
+        }
+        if (op->get_type() == OpType::BRIDGE) {
           bin.push_back({v, true});
         }
       }
@@ -1485,8 +1481,9 @@ Transform decompose_BRIDGE_to_CX() {
       VertexVec preds = circ.get_predecessors(v.first);
       VertexVec succs = circ.get_successors(v.first);
       EdgeVec in_edges = circ.get_in_edges(v.first);
-      EdgeVec out_edges = circ.get_all_out_edges(v.first);
-      Subcircuit sub = {in_edges, out_edges, {v.first}};
+      std::vector<std::optional<Edge>> out_edges =
+          circ.get_linear_out_edges(v.first);
+      Subcircuit sub = {in_edges, out_edges, {}, {v.first}};
 
       bool done = false;
       if (preds.size() < 3) {  // Implies some predecessor vertices are in a
@@ -1508,8 +1505,8 @@ Transform decompose_BRIDGE_to_CX() {
       if (succs.size() < 3 && !done) {  // Implies some successor vertices are
                                         // in a multiq-ubit op together
         VertexVec comps = {
-            circ.target(out_edges[0]), circ.target(out_edges[1]),
-            circ.target(out_edges[2])};
+            circ.target(*out_edges[0]), circ.target(*out_edges[1]),
+            circ.target(*out_edges[2])};
         if (comps[0] == comps[1]) {  // First two qubits in BRIDGE in
                                      // multi-qubit op together before BRIDGE
           BRIDGE_sub(v, CircPool::BRIDGE_using_CX_1());
@@ -1546,9 +1543,11 @@ Transform decompose_CX_directed(const Architecture &arc) {
         }
       }
       if (it->get_op_ptr()->get_type() == OpType::Conditional) {
-        const Conditional &b =
-            static_cast<const Conditional &>(*it->get_op_ptr());
-        if (b.get_op()->get_type() == OpType::CX) {
+        Op_ptr op = it->get_op_ptr();
+        while (op->get_type() == OpType::Conditional) {
+          op = static_cast<const Conditional &>(*op).get_op();
+        }
+        if (op->get_type() == OpType::CX) {
           qubit_vector_t qbs = it->get_qubits();
           node_vector_t nodes = {qbs.begin(), qbs.end()};
           if (!arc.edge_exists(nodes[0], nodes[1]) &&
@@ -1558,10 +1557,10 @@ Transform decompose_CX_directed(const Architecture &arc) {
             bin.push_back({it.get_vertex(), true});
           }
         }
-        if (b.get_op()->get_type() == OpType::CircBox) {
+        if (op->get_type() == OpType::CircBox) {
           qubit_vector_t qbs = it->get_qubits();
           std::shared_ptr<const Box> box_ptr =
-              std::dynamic_pointer_cast<const Box>(b.get_op());
+              std::dynamic_pointer_cast<const Box>(op);
           qubit_vector_t all_qubits = box_ptr->to_circuit().get()->all_qubits();
           if (all_qubits.size() != 3)
             throw std::logic_error("Box being opened not a BRIDGE gate.");
@@ -1576,10 +1575,7 @@ Transform decompose_CX_directed(const Architecture &arc) {
     }
     for (std::pair<Vertex, bool> v : bin) {
       if (!v.second) {
-        Subcircuit sub = {
-            circ.get_in_edges(v.first),
-            circ.get_all_out_edges(v.first),
-            {v.first}};
+        Subcircuit sub = circ.singleton_subcircuit(v.first);
         circ.substitute(
             CircPool::CX_using_flipped_CX(), sub, Circuit::VertexDeletion::Yes);
       }
@@ -1833,8 +1829,7 @@ Transform decomp_controlled_Rys() {
       if (op->get_type() == OpType::CnRy) {
         success = true;
         Circuit rep = CircPool::CnRy_normal_decomp(op, arity);
-        EdgeVec inedges = circ.get_in_edges(v);
-        Subcircuit final_sub{inedges, circ.get_all_out_edges(v), {v}};
+        Subcircuit final_sub = circ.singleton_subcircuit(v);
         circ.substitute(rep, final_sub, Circuit::VertexDeletion::Yes);
       }
     }
@@ -1917,10 +1912,10 @@ Transform cnx_pairwise_decomposition() {
     std::vector<int> cnx_indices;
     for (unsigned i = 0; i < commands.size(); i++) {
       Op_ptr op = commands[i].get_op_ptr();
-      bool conditional = op->get_type() == OpType::Conditional;
-      if (conditional) {
-        const Conditional &cond = static_cast<const Conditional &>(*op);
-        op = cond.get_op();
+      bool conditional = false;
+      while (op->get_type() == OpType::Conditional) {
+        op = static_cast<const Conditional &>(*op).get_op();
+        conditional = true;
       }
 
       if (op->get_type() == OpType::CnX || op->get_type() == OpType::CCX) {

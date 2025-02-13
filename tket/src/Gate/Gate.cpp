@@ -832,7 +832,7 @@ static std::optional<Pauli> tk2_commuting_basis(std::vector<Expr> params) {
   }
 }
 
-std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
+std::optional<Pauli> Gate::commuting_basis(port_t i) const {
   unsigned n_q = n_qubits();
   if (i >= n_q) throw std::domain_error("Qubit index out of range");
   switch (get_type()) {
@@ -940,17 +940,6 @@ std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
     default: {
       return std::nullopt;
     }
-  }
-}
-
-bool Gate::commutes_with_basis(
-    const std::optional<Pauli>& colour, unsigned i) const {
-  const std::optional<Pauli> my_colour = commuting_basis(i);
-  if (!colour || !my_colour) {
-    // Nothing can commute with std::nullopt
-    return false;
-  } else {
-    return colour == Pauli::I || my_colour == Pauli::I || colour == my_colour;
   }
 }
 

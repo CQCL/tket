@@ -306,7 +306,8 @@ void PhasedXFrontier::insert_1_phasedx(unsigned i) {
   Expr beta = betas[i];
 
   VertexSet bin;
-  EdgeVec in_hole, out_hole;
+  EdgeVec in_hole;
+  std::vector<std::optional<Edge>> out_hole;
   Circuit sub1(circ_.n_qubits());
   Circuit sub2(circ_.n_qubits());
 
@@ -370,7 +371,7 @@ void PhasedXFrontier::insert_1_phasedx(unsigned i) {
   sub.add_op<Qubit>(OpType::NPhasedX, {beta, 0}, sub.all_qubits());
   sub.append(sub2);
 
-  Subcircuit hole{in_hole, out_hole, bin};
+  Subcircuit hole{in_hole, out_hole, {}, bin};
 
   // perform substitution
   BackupIntervals backup = backup_intervals();
@@ -381,7 +382,8 @@ void PhasedXFrontier::insert_1_phasedx(unsigned i) {
 }
 
 void PhasedXFrontier::insert_2_phasedx() {
-  EdgeVec hole_in, hole_out;
+  EdgeVec hole_in;
+  std::vector<std::optional<Edge>> hole_out;
   Circuit sub1(circ_.n_qubits());
   Circuit sub2(circ_.n_qubits());
   Circuit sub3(circ_.n_qubits());
@@ -426,7 +428,7 @@ void PhasedXFrontier::insert_2_phasedx() {
   sub.append(sub2);
   sub.add_op(OpType::NPhasedX, {0.5, 0.5}, sub.all_qubits());
   sub.append(sub3);
-  Subcircuit hole{hole_in, hole_out, bin};
+  Subcircuit hole{hole_in, hole_out, {}, bin};
 
   BackupIntervals backup = backup_intervals();
   circ_.substitute(sub, hole, Circuit::VertexDeletion::Yes);
