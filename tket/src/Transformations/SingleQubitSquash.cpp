@@ -102,8 +102,7 @@ bool SingleQubitSquash::squash_between(const Edge &in, const Edge &out) {
         Circuit sub;
         std::optional<Pauli> commutation_colour = std::nullopt;
         if (is_gate_type(v_type) && v_op->n_qubits() > 1) {
-          commutation_colour =
-              circ_.commuting_basis(v, PortType::Target, next_port(e));
+          commutation_colour = circ_.commuting_basis(v, next_port(e));
           move_to_next_vertex = true;
         }
         auto pair = squasher_->flush(commutation_colour);

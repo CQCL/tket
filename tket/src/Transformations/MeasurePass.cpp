@@ -119,7 +119,15 @@ static std::optional<port_t> op_commutes(
   } else if (optype == OpType::Conditional) {
     const Conditional& cond = static_cast<const Conditional&>(*op);
     if (in_port < cond.get_width()) return std::nullopt;
-    return op_commutes(cond.get_op(), in_port - cond.get_width(), only_boxes);
+    std::optional<port_t> inner_port =
+        op_commutes(cond.get_op(), in_port - cond.get_width(), only_boxes);
+    // We can only commute through the conditional gate if it commutes to the
+    // same port for both values of the condition, e.g. we ban conditional swap
+    // gates
+    if (inner_port && (*inner_port + cond.get_width() == in_port))
+      return in_port;
+    else
+      return std::nullopt;
   } else if (optype == OpType::CircBox || optype == OpType::CustomGate) {
     const Box& box = static_cast<const Box&>(*op);
     const Circuit& circ = *box.to_circuit();

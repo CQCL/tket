@@ -54,9 +54,8 @@ static bool ends_commute(const Circuit &circ, const Edge &e) {
     return false;
   }
 
-  auto colour = circ.commuting_basis(target, PortType::Target, ports.second);
-  return circ.commutes_with_basis(
-      source, colour, PortType::Source, ports.first);
+  auto colour = circ.commuting_basis(target, ports.second);
+  return circ.commutes_with_basis(source, colour, ports.first);
 }
 
 // moves single qubit operations past multiqubit operations they commute with,

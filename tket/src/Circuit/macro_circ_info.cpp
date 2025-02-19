@@ -172,6 +172,8 @@ Circuit Circuit::subcircuit(const Subcircuit& sc) const {
         Vertex in = sub.add_vertex(OpType::WASMInput);
         Vertex out = sub.add_vertex(OpType::WASMOutput);
         sub.boundary.insert({WasmState(n_wasm), in, out});
+        sub.wasmwire.push_back(WasmState(n_wasm));
+        ++sub._number_of_wasm_wires;
         ++n_wasm;
         vmap[source(in_edge)] = in;
         in_boundary_map.insert({in_edge, in});
@@ -274,6 +276,9 @@ std::map<UnitID, QPathDetailed> Circuit::all_unit_paths() const {
   }
   for (const Bit& b : all_bits()) {
     new_list_of_paths.insert({b, unit_path(b)});
+  }
+  for (const WasmState& w : wasmwire) {
+    new_list_of_paths.insert({w, unit_path(w)});
   }
   return new_list_of_paths;
 }
@@ -536,6 +541,14 @@ std::map<Edge, UnitID> Circuit::edge_unit_map() const {
     QPathDetailed::const_iterator it = path.second.begin();
     for (++it; it != path.second.end(); ++it) {
       map.insert({get_nth_in_edge(it->first, it->second), path.first});
+    }
+  }
+  // Boolean edges are non-linear so are not added by the traces, but we can
+  // still link them to bits
+  BGL_FORALL_EDGES(e, dag, DAG) {
+    if (get_edgetype(e) == EdgeType::Boolean) {
+      Edge linear_edge = get_linear_edge(e);
+      map.insert({e, map.at(linear_edge)});
     }
   }
   return map;

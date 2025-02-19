@@ -92,13 +92,13 @@ static bool multiq_clifford_match(Circuit &circ, bool allow_swaps) {
       unsigned front1_index = 0;
       while (front0_index < path0_length &&
              circ.commutes_with_basis(
-                 path0[front0_index].first, Pauli::Z, PortType::Target,
+                 path0[front0_index].first, Pauli::Z,
                  path0[front0_index].second)) {
         front0_index++;
       }
       while (front1_index < path1_length &&
              circ.commutes_with_basis(
-                 path1[front1_index].first, Pauli::X, PortType::Target,
+                 path1[front1_index].first, Pauli::X,
                  path1[front1_index].second)) {
         front1_index++;
       }
@@ -110,14 +110,14 @@ static bool multiq_clifford_match(Circuit &circ, bool allow_swaps) {
         unsigned back0_index = path0_length - 1;
         while (back0_index != front0_index && back0_index != (unsigned)-1 &&
                circ.commutes_with_basis(
-                   path0[back0_index].first, Pauli::Z, PortType::Target,
+                   path0[back0_index].first, Pauli::Z,
                    path0[back0_index].second)) {
           back0_index--;
         }
         unsigned back1_index = path1_length - 1;
         while (back1_index != front1_index && back1_index != (unsigned)-1 &&
                circ.commutes_with_basis(
-                   path1[back1_index].first, Pauli::X, PortType::Target,
+                   path1[back1_index].first, Pauli::X,
                    path1[back1_index].second)) {
           back1_index--;
         }
@@ -307,14 +307,14 @@ static bool multiq_clifford_match(Circuit &circ, bool allow_swaps) {
         unsigned back0_index = path0_length - 1;
         while (back0_index >= front0_index && back0_index != (unsigned)-1 &&
                circ.commutes_with_basis(
-                   path0[back0_index].first, Pauli::X, PortType::Target,
+                   path0[back0_index].first, Pauli::X,
                    path0[back0_index].second)) {
           back0_index--;
         }
         unsigned back1_index = path1_length - 1;
         while (back1_index >= front1_index && back1_index != (unsigned)-1 &&
                circ.commutes_with_basis(
-                   path1[back1_index].first, Pauli::Z, PortType::Target,
+                   path1[back1_index].first, Pauli::Z,
                    path1[back1_index].second)) {
           back1_index--;
         }

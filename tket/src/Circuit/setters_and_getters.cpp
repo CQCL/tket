@@ -751,14 +751,13 @@ bool Circuit::detect_singleq_unitary_op(const Vertex &vert) const {
 }
 
 std::optional<Pauli> Circuit::commuting_basis(
-    const Vertex &vert, PortType, port_t port) const {
+    const Vertex &vert, port_t port) const {
   Op_ptr op = get_Op_ptr_from_Vertex(vert);
   return op->commuting_basis(port);
 }
 
 bool Circuit::commutes_with_basis(
-    const Vertex &vert, const std::optional<Pauli> &colour, PortType,
-    port_t port) const {
+    const Vertex &vert, const std::optional<Pauli> &colour, port_t port) const {
   Op_ptr op = get_Op_ptr_from_Vertex(vert);
   return op->commutes_with_basis(colour, port);
 }

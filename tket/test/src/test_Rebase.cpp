@@ -282,6 +282,25 @@ SCENARIO("Building rebases with rebase_factory") {
     correct.add_phase(0.125);
     REQUIRE(circ == correct);
   }
+  GIVEN("A circuit with nested conditional gates") {
+    Circuit c0(1, 1);
+    c0.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
+    Op_ptr cbox_op = std::make_shared<CircBox>(c0);
+    Op_ptr cond_cond_x = std::make_shared<Conditional>(cbox_op, 1, 1);
+    Circuit circ(1, 2);
+    circ.add_op<UnitID>(cond_cond_x, {Bit(0), Qubit(0), Bit(1)});
+    Transforms::decomp_boxes().apply(circ);
+    CHECK(Transforms::rebase_tket().apply(circ));
+    CHECK(!Transforms::rebase_tket().apply(circ));
+    std::vector<Command> coms = circ.get_commands();
+    REQUIRE(coms.size() == 2);
+    REQUIRE(
+        coms.at(0).to_str() ==
+        "IF ([c[0]] == 1) THEN IF ([c[1]] == 1) THEN TK1(0, 1, 0) q[0];");
+    REQUIRE(
+        coms.at(1).to_str() ==
+        "IF ([c[0]] == 1) THEN IF ([c[1]] == 1) THEN Phase(0.5);");
+  }
 }
 
 SCENARIO("Decompose all boxes") {

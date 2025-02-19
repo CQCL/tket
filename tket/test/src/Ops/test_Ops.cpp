@@ -402,6 +402,22 @@ SCENARIO("Commutation relations") {
     Op_ptr op = get_op_ptr(OpType::Rx, 2.32);
     REQUIRE(op->commuting_basis(0) == Pauli::X);
   }
+  GIVEN("A nested conditional") {
+    Circuit c0(1, 1);
+    c0.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
+    Op_ptr cbox_op = std::make_shared<CircBox>(c0);
+    Op_ptr cond_cond_x = std::make_shared<Conditional>(cbox_op, 1, 1);
+    Circuit circ(1, 2);
+    circ.add_op<UnitID>(cond_cond_x, {Bit(0), Qubit(0), Bit(1)});
+    CompilationUnit cu(circ);
+    DecomposeBoxes()->apply(cu);
+    Command nested_cond_X = cu.get_circ_ref().get_commands().at(0);
+    REQUIRE(nested_cond_X.get_op_ptr()->commuting_basis(2) == Pauli::X);
+    CHECK(nested_cond_X.get_op_ptr()->commutes_with_basis(Pauli::I, 2));
+    CHECK(nested_cond_X.get_op_ptr()->commutes_with_basis(Pauli::X, 2));
+    CHECK_FALSE(nested_cond_X.get_op_ptr()->commutes_with_basis(Pauli::Y, 2));
+    CHECK_FALSE(nested_cond_X.get_op_ptr()->commutes_with_basis(Pauli::Z, 2));
+  }
 }
 
 SCENARIO("Check some daggers work correctly", "[ops]") {
