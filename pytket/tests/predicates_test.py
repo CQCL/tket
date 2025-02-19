@@ -1110,10 +1110,15 @@ def test_get_pre_conditions() -> None:
 
 
 def test_get_post_conditions() -> None:
-    gate_set = {OpType.CX, OpType.Rz, OpType.H, OpType.Reset, OpType.Measure, OpType.Phase}
+    gate_set = {
+        OpType.CX,
+        OpType.Rz,
+        OpType.H,
+        OpType.Reset,
+        OpType.Measure,
+        OpType.Phase,
+    }
     post_cons = AutoRebase(gate_set).get_postconditions()
-    for g in post_cons[0].gate_set:
-        print(g)
     assert post_cons[0].gate_set == gate_set  # type: ignore
 
 
