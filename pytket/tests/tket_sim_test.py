@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 
 import math
 from enum import Enum
-from typing import Any, Tuple
+from typing import Any
 
 import numpy as np
 import pytest

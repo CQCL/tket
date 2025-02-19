@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,8 +13,8 @@
 # limitations under the License.
 
 """The circuit module provides an API to interact with the
- tket :py:class:`Circuit` data structure.
-  This module is provided in binary form during the PyPI installation."""
+tket :py:class:`Circuit` data structure.
+ This module is provided in binary form during the PyPI installation."""
 from typing import (
     Any,
     Callable,

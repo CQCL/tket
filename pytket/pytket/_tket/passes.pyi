@@ -305,7 +305,7 @@ def CliffordSimp(allow_swaps: bool = True) -> BasePass:
     """
 def CnXPairwiseDecomposition() -> BasePass:
     """
-    Decompose CnX gates to 2-qubit gates `fand single qubit gates. For every two CnX gates, reorder their control qubits to improve the chance of gate cancellation
+    Decompose CnX gates to 2-qubit gates and single qubit gates. For every two CnX gates, reorder their control qubits to improve the chance of gate cancellation
     """
 def CommuteThroughMultis() -> BasePass:
     """
@@ -352,7 +352,7 @@ def DecomposeBoxes(excluded_types: set[pytket._tket.circuit.OpType] = set(), exc
     """
     Recursively replaces all boxes by their decomposition into circuits.
     
-    :param excluded_types: box `OpType`s excluded from decomposition
+    :param excluded_types: box :py:class:`OpType` s excluded from decomposition
     :param excluded_opgroups: opgroups excluded from decomposition
     """
 def DecomposeClassicalExp() -> BasePass:

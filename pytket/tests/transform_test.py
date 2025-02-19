@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 import itertools
 import json
 from pathlib import Path
-from typing import List
 
 import numpy as np
 import pytest
@@ -1235,6 +1234,13 @@ def test_KAK_with_ClassicalExpBox() -> None:
         allow_swaps=True, cx_fidelity=1, target_2qb_gate=OpType.TK2
     )
     assert not kak.apply(circ)
+
+
+def test_KAK_with_CircBox() -> None:
+    # https://github.com/CQCL/tket/issues/1553
+    cbox = CircBox(Circuit(2))
+    c = Circuit(2).add_circbox(cbox, [0, 1]).add_circbox(cbox, [0, 1])
+    assert not Transform.KAKDecomposition().apply(c)
 
 
 def test_round_angles() -> None:

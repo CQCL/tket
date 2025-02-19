@@ -1,4 +1,4 @@
-// Copyright 2019-2024 Cambridge Quantum Computing
+// Copyright Quantinuum
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -267,7 +267,9 @@ Transform two_qubit_squash(
                   circ.get_next_edge(*v, current_edge_on_qb[q]);
             }
           }
-        } else if (circ.n_in_edges_of_type(*v, EdgeType::Quantum) == 2) {
+        } else if (
+            is_gate_type(type) &&
+            circ.n_in_edges_of_type(*v, EdgeType::Quantum) == 2) {
           // Check for 2qb gate
           Qubit q0 = v_to_qb.at({*v, 0});
           Qubit q1 = v_to_qb.at({*v, 1});

@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -203,6 +203,7 @@ class QubitPauliOperator:
         """
         :return: The set of all qubits the operator ranges over (including qubits
             that were provided explicitly as identities)
+
         :rtype: Set[Qubit]
         """
         return self._all_qubits
@@ -215,6 +216,16 @@ class QubitPauliOperator:
         """
         for key, value in self._dict.items():
             self._dict[key] = value.subs(symbol_dict)
+
+    def get_dict(self) -> dict[QubitPauliString, Expr]:
+        """Generate a dict representation of QubitPauliOperator,
+        mapping each :py:class:`QubitPauliString` in the support
+        to its corresponding value.
+
+        :return: A dict of Pauli strings and their coefficients
+          as key-value pairs
+        """
+        return self._dict
 
     def to_list(self) -> list[dict[str, Any]]:
         """Generate a list serialized representation of QubitPauliOperator,

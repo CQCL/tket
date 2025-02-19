@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ import json
 import tempfile
 from collections import Counter
 from math import ceil
-from typing import Dict, List, Tuple, cast
+from typing import cast
 
 import pytest
 

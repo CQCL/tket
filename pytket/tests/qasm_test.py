@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 import re
 from io import StringIO
 from pathlib import Path
-from typing import List
 
 import pytest
 
@@ -1209,6 +1208,55 @@ c[1] = b[1] & c[0];
     )
 
 
+def test_existing_name_conversion() -> None:
+    # https://github.com/CQCL/tket/issues/1605
+    assert (
+        circuit_from_qasm_str(
+            """OPENQASM 2.0;
+include "qelib1.inc";
+gate iswap q0,q1 { s q0; s q1; h q0; cx q0,q1; cx q1,q0; h q1; }
+qreg qr[3];
+creg cr[3];
+iswap qr[1],qr[2];"""
+        )
+        .get_commands()[0]
+        .op.type
+        == OpType.CustomGate
+    )
+
+
+def test_cnx() -> None:
+    # https://github.com/CQCL/tket/issues/1751
+    c3 = Circuit(4)
+    c3.add_gate(OpType.CnX, [0, 1, 2, 3])
+    c3_qasm = circuit_to_qasm_str(c3)
+    assert (
+        c3_qasm
+        == """OPENQASM 2.0;
+include "qelib1.inc";
+
+qreg q[4];
+c3x q[0],q[1],q[2],q[3];
+"""
+    )
+    c3a = circuit_from_qasm_str(c3_qasm)
+    assert c3 == c3a
+    c4 = Circuit(5)
+    c4.add_gate(OpType.CnX, [0, 1, 2, 3, 4])
+    c4_qasm = circuit_to_qasm_str(c4)
+    assert (
+        c4_qasm
+        == """OPENQASM 2.0;
+include "qelib1.inc";
+
+qreg q[5];
+c4x q[0],q[1],q[2],q[3],q[4];
+"""
+    )
+    c4a = circuit_from_qasm_str(c4_qasm)
+    assert c4 == c4a
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
@@ -1247,3 +1295,4 @@ if __name__ == "__main__":
     test_classical_expbox_arg_order(True)
     test_classical_expbox_arg_order(False)
     test_register_name_check()
+    test_existing_name_conversion()

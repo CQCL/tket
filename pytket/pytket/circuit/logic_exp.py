@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """Classes and functions for constructing logical
- expressions over Bit and BitRegister."""
+expressions over Bit and BitRegister."""
 from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import dataclass
 from enum import Enum

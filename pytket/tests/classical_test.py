@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ import json
 import operator
 from collections.abc import Callable
 from pathlib import Path
-from typing import Dict, List, Tuple, TypeVar, Union
+from typing import TypeVar
 
 import pytest
 from hypothesis import given, settings, strategies
@@ -27,7 +27,6 @@ from sympy import Symbol
 
 from pytket import wasm
 from pytket._tket import unit_id
-from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
 from pytket.circuit import (
     Bit,
     BitRegister,

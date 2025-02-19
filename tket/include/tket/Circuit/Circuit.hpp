@@ -1,4 +1,4 @@
-// Copyright 2019-2024 Cambridge Quantum Computing
+// Copyright Quantinuum
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -1439,7 +1439,10 @@ class Circuit {
    *
    * @return whether the vertex holds a box or a conditional box
    */
-  bool substitute_box_vertex(Vertex &vert, VertexDeletion vertex_deletion);
+  bool substitute_box_vertex(
+      Vertex &vert, VertexDeletion vertex_deletion,
+      const std::unordered_set<OpType> &excluded_types = {},
+      const std::unordered_set<std::string> &excluded_opgroups = {});
 
   /**
    * Recursively replace each \ref Box operation by applying \ref

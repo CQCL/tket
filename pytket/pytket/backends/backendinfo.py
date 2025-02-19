@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-""" BackendInfo class: additional information on Backends """
+"""BackendInfo class: additional information on Backends"""
 
 from dataclasses import asdict, dataclass, field
 from typing import Any
@@ -25,7 +25,7 @@ _Edge = tuple[Node, Node]
 
 
 def _serialize_all_node_gate_errors(
-    d: dict[Node, _OpTypeErrs] | None
+    d: dict[Node, _OpTypeErrs] | None,
 ) -> list[list] | None:
     if d is None:
         return None
@@ -69,7 +69,7 @@ def _deserialize_all_edge_gate_errors(
 
 
 def _serialize_all_readout_errors(
-    d: dict[Node, list[list[float]]] | None
+    d: dict[Node, list[list[float]]] | None,
 ) -> list[list] | None:
     if d is None:
         return None
@@ -85,7 +85,7 @@ def _deserialize_all_readout_errors(
 
 
 def _serialize_averaged_node_gate_errors(
-    d: dict[Node, float] | None
+    d: dict[Node, float] | None,
 ) -> list[list] | None:
     if d is None:
         return None
@@ -101,7 +101,7 @@ def _deserialize_averaged_node_gate_errors(
 
 
 def _serialize_averaged_edge_gate_errors(
-    d: dict[_Edge, float] | None
+    d: dict[_Edge, float] | None,
 ) -> list[list] | None:
     if d is None:
         return None
@@ -117,7 +117,7 @@ def _deserialize_averaged_edge_gate_errors(
 
 
 def _serialize_averaged_readout_errors(
-    d: dict[Node, float] | None
+    d: dict[Node, float] | None,
 ) -> list[list] | None:
     if d is None:
         return None

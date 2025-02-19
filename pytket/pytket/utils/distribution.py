@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -261,7 +261,7 @@ class ProbabilityDistribution(Generic[T0]):
 
 
 def convex_combination(
-    dists: list[tuple[ProbabilityDistribution[T0], float]]
+    dists: list[tuple[ProbabilityDistribution[T0], float]],
 ) -> ProbabilityDistribution[T0]:
     """Return a convex combination of probability distributions.
 

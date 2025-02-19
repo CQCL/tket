@@ -1,4 +1,4 @@
-// Copyright 2019-2024 Cambridge Quantum Computing
+// Copyright Quantinuum
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -450,6 +450,7 @@ bool CliffordCircuitPredicate::verify(const Circuit& circ) const {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     if (op->get_desc().is_meta()) continue;
+    if (op->get_type() == OpType::Measure) continue;
     if (!op->is_clifford()) return false;
   }
   return true;

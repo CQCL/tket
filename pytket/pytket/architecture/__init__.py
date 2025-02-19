@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,6 +13,6 @@
 # limitations under the License.
 
 """The `architecture` module provides an API to interact with the
-    ::py:class:`Architecture` class."""
+::py:class:`Architecture` class."""
 
 from pytket._tket.architecture import *

@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,13 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Methods to allow tket circuits to be run with the tket_sim simulator
-"""
+"""Methods to allow tket circuits to be run with the tket_sim simulator"""
 ### WARNING: TketSimBackend accepts Measure gates but does not apply them
 ### TketSimBackend will not work properly if there are extra bits that are unwritten to.
 
 from collections.abc import Sequence
-from typing import List, Optional, Union, cast
+from typing import cast
 from uuid import uuid4
 
 import numpy as np

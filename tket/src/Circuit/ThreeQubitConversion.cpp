@@ -1,4 +1,4 @@
-// Copyright 2019-2024 Cambridge Quantum Computing
+// Copyright Quantinuum
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -505,15 +505,10 @@ Eigen::MatrixXcd get_3q_unitary(const Circuit &c) {
   for (const Command &cmd : c) {
     qubit_vector_t qbs = cmd.get_qubits();
     Op_ptr op = cmd.get_op_ptr();
-    Gate_ptr gate = as_gate_ptr(op);
-    if (!gate) {
-      throw CircuitInvalidity("Circuit in get_3q_unitary not unitary");
-    }
+    Eigen::MatrixXcd u = op->get_unitary();
     Eigen::MatrixXcd M = Eigen::MatrixXcd::Zero(8, 8);
     switch (qbs.size()) {
       case 1: {
-        std::vector<Expr> angles = gate->get_tk1_angles();
-        Eigen::Matrix2cd u = get_matrix_from_tk1_angles(angles);
         // Construct the 8x8 matrix representing u.
         unsigned i = idx[qbs[0]];
         switch (i) {
@@ -541,7 +536,6 @@ Eigen::MatrixXcd get_3q_unitary(const Circuit &c) {
         break;
       }
       case 2: {
-        Eigen::Matrix4cd m = gate->get_unitary();
         // Note reversal of indices here:
         unsigned i = 2 - idx[qbs[0]];
         unsigned j = 2 - idx[qbs[1]];
@@ -553,7 +547,7 @@ Eigen::MatrixXcd get_3q_unitary(const Circuit &c) {
           unsigned s0_ = ((s0 >> 1) << i) + ((s0 & 1) << j);
           for (unsigned s1 = 0; s1 < 4; s1++) {
             unsigned s1_ = ((s1 >> 1) << i) + ((s1 & 1) << j);
-            M(s0_, s1_) = M(s0_ + t, s1_ + t) = m(s0, s1);
+            M(s0_, s1_) = M(s0_ + t, s1_ + t) = u(s0, s1);
           }
         }
         break;

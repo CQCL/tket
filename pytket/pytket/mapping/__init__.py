@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,8 +13,8 @@
 # limitations under the License.
 
 """The `mapping` module provides an API to interact with the
- :py:class:`MappingManager` class, with methods for
- mapping logical circuits to physical circuits and for
- defining custom routing solutions."""
+:py:class:`MappingManager` class, with methods for
+mapping logical circuits to physical circuits and for
+defining custom routing solutions."""
 
 from pytket._tket.mapping import *

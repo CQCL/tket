@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """Functions for decomposing Circuits containing classical expressions
- in to primitive logical operations."""
+in to primitive logical operations."""
 import copy
 from collections.abc import Callable
 from heapq import heappop, heappush

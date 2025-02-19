@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -204,7 +204,7 @@ setup(
     ],
     extras_require={
         "ZX": [
-            "numba >= 0.60.0",
+            "numba >= 0.61.0",
             "quimb >= 1.8.2",
             "autoray >= 0.6.12",
         ],

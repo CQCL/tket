@@ -1,4 +1,4 @@
-// Copyright 2019-2024 Cambridge Quantum Computing
+// Copyright Quantinuum
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -169,7 +169,8 @@ PYBIND11_MODULE(predicates, m) {
       CliffordCircuitPredicate, std::shared_ptr<CliffordCircuitPredicate>,
       Predicate>(
       m, "CliffordCircuitPredicate",
-      "Predicate asserting that a circuit has only Clifford gates.")
+      "Predicate asserting that a circuit has only Clifford gates and "
+      "measurements.")
       .def(py::init<>(), "Constructor.");
   py::class_<
       UserDefinedPredicate, std::shared_ptr<UserDefinedPredicate>, Predicate>(

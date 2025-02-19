@@ -1,4 +1,4 @@
-// Copyright 2019-2024 Cambridge Quantum Computing
+// Copyright Quantinuum
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -149,9 +149,11 @@ static std::string qasm_expr_repr(
       if (n_args != 2) {
         throw std::logic_error("BitEq with != 2 arguments");
       }
+      ss << "~(";
       ss << qasm_arg_repr(args[0], input_bits, input_regs, ArgValueType::Bit);
-      ss << " == ";
+      ss << " ^ ";
       ss << qasm_arg_repr(args[1], input_bits, input_regs, ArgValueType::Bit);
+      ss << ")";
       break;
 
     case ClOp::BitNeq:
@@ -159,7 +161,7 @@ static std::string qasm_expr_repr(
         throw std::logic_error("BitNeq with != 2 arguments");
       }
       ss << qasm_arg_repr(args[0], input_bits, input_regs, ArgValueType::Bit)
-         << " != "
+         << " ^ "
          << qasm_arg_repr(args[1], input_bits, input_regs, ArgValueType::Bit);
       break;
 

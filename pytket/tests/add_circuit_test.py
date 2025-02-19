@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pytket import Circuit, OpType
+from pytket.circuit import Circuit, OpType, Qubit, UnitID
 
 
 def gen_bell_state(reset_start: bool = False) -> Circuit:
@@ -57,6 +57,14 @@ def test_sequencing() -> None:
     c = Circuit(5, 5)
     c.H(0).Z(2).CX(0, 1).Rz(0.1, 2).CZ(2, 4).measure_all().get_commands()
     assert len(c.get_commands()) == 10
+
+
+def test_add_with_map() -> None:
+    c = Circuit(3).X(0).Y(1).Z(2)
+    c1 = Circuit(2, 2).CX(0, 1).measure_all()
+    unit_map: dict[UnitID, UnitID] = {Qubit(0): Qubit(1), Qubit(1): Qubit(0)}
+    c.add_circuit_with_map(c1, unit_map)
+    assert c == Circuit(3, 2).X(0).Y(1).Z(2).CX(1, 0).Measure(0, 1).Measure(1, 0)
 
 
 if __name__ == "__main__":

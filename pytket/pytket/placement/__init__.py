@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,8 +13,8 @@
 # limitations under the License.
 
 """The `placement` module provides an API to interact with the many
- :py:class:`Placement` options, providing methods for relabelling
- logical circuit qubit identifiers to physical architecture node identifiers,
- for the purpose of compilation."""
+:py:class:`Placement` options, providing methods for relabelling
+logical circuit qubit identifiers to physical architecture node identifiers,
+for the purpose of compilation."""
 
 from pytket._tket.placement import *

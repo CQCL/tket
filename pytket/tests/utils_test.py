@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
 import types
 from collections import Counter
 from collections.abc import Callable
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import numpy as np
 import pytest
 from hypothesis import HealthCheck, given, settings, strategies
 from hypothesis.strategies._internal import SearchStrategy
 from simulator import TketSimBackend, TketSimShotBackend  # type: ignore
-from sympy import symbols
+from sympy import I, symbols
 
 from pytket.backends.backend import Backend
 from pytket.circuit import Circuit, OpType, Qubit
@@ -88,6 +88,14 @@ def test_all_paulis() -> None:
     circs = _all_pauli_measurements(op, c)
     assert isinstance(circs, types.GeneratorType)
     assert len(list(circs)) == 3
+
+
+def test_dict_export() -> None:
+    qps1 = QubitPauliString(Qubit(0), Pauli.Y)
+    qps2 = QubitPauliString(Qubit(0), Pauli.X)
+    op = QubitPauliOperator({qps1: 1j, qps2: 0.5})
+    # Do equality check with a sympy "I" for the imaginary part
+    assert op.get_dict() == {qps1: 1.0 * I, qps2: 0.5}
 
 
 def test_shots_to_counts() -> None:
@@ -499,7 +507,7 @@ def test_dag_implicit_perm() -> None:
     # THET-701
     c = Circuit(3).CX(0, 1).CX(1, 0).CX(1, 2).CX(2, 1)
     Transform.OptimiseCliffords().apply(c)
-    assert not all(x == y for x, y in c.implicit_qubit_permutation().items())
+    assert c.has_implicit_wireswaps
     G = Graph(c)
     dag = G.get_DAG()
     assert dag.name == "Circuit"

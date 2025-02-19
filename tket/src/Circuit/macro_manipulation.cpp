@@ -1,4 +1,4 @@
-// Copyright 2019-2024 Cambridge Quantum Computing
+// Copyright Quantinuum
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -735,7 +735,9 @@ Circuit Circuit::conditional_circuit(
 }
 
 bool Circuit::substitute_box_vertex(
-    Vertex& vert, VertexDeletion vertex_deletion) {
+    Vertex& vert, VertexDeletion vertex_deletion,
+    const std::unordered_set<OpType>& excluded_types,
+    const std::unordered_set<std::string>& excluded_opgroups) {
   Op_ptr op = get_Op_ptr_from_Vertex(vert);
   bool conditional = false;
   while (op->get_type() == OpType::Conditional) {
@@ -746,6 +748,7 @@ bool Circuit::substitute_box_vertex(
   if (op->get_type() == OpType::ClassicalExpBox) return false;
   const Box& b = static_cast<const Box&>(*op);
   Circuit replacement = *b.to_circuit();
+  replacement.decompose_boxes_recursively(excluded_types, excluded_opgroups);
   replacement.flatten_registers();
   if (conditional) {
     substitute_conditional(
@@ -769,7 +772,8 @@ bool Circuit::decompose_boxes_recursively(
     if (v_opgroup && excluded_opgroups.contains(v_opgroup.value())) {
       continue;
     }
-    if (substitute_box_vertex(v, VertexDeletion::No)) {
+    if (substitute_box_vertex(
+            v, VertexDeletion::No, excluded_types, excluded_opgroups)) {
       bin.push_back(v);
       success = true;
     }

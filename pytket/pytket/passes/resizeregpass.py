@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,8 +26,11 @@ def _is_scratch(bit: Bit) -> bool:
 
 
 def scratch_reg_resize_pass(max_size: int = MAX_C_REG_WIDTH) -> BasePass:
-    """Given a max scratch register width, return a compiler pass that
-    breaks up the internal scratch bit registers into smaller registers
+    """Create a pass that breaks up the internal scratch bit registers into smaller
+    registers.
+
+    :param max_size: desired maximum size of scratch bit registers
+    :return: a pass to break up the scratch registers
     """
 
     def trans(circ: Circuit, max_size: int = max_size) -> Circuit:

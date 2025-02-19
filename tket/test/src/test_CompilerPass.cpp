@@ -1,4 +1,4 @@
-// Copyright 2019-2024 Cambridge Quantum Computing
+// Copyright Quantinuum
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -856,6 +856,19 @@ SCENARIO("PeepholeOptimise2Q and FullPeepholeOptimise") {
     circ = cu.get_circ_ref();
 
     REQUIRE(circ.count_gates(OpType::TK2) == 1);
+  }
+  GIVEN("A circuit containing a Unitary1qBox") {
+    // https://github.com/CQCL/tket/issues/1750
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::CX, {0, 2});
+    Eigen::Matrix2cd u;
+    u << 1.0, 0.0, 0.0, 1.0;
+    Unitary1qBox ubox(u);
+    circ.add_box(ubox, {2});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::CX, {0, 2});
+    CompilationUnit cu(circ);
+    REQUIRE(FullPeepholeOptimise()->apply(cu));
   }
 }
 
@@ -2199,12 +2212,13 @@ SCENARIO("GPI, GPI2 and AAMS operations") {
     REQUIRE(test_unitary_comparison(circ1, circ2));
   }
   GIVEN("A circuit made of Clifford gates") {
-    Circuit c(3);
+    Circuit c(3, 1);
     c.add_op<unsigned>(OpType::GPI, 0.25, {0});
     c.add_op<unsigned>(OpType::GPI2, 0.5, {1});
     c.add_op<unsigned>(OpType::AAMS, {0, 0.1, 0.2}, {0, 1});
     c.add_op<unsigned>(OpType::AAMS, {1., 0.25, 0.75}, {1, 2});
     c.add_op<unsigned>(OpType::AAMS, {0.5, 0.5, 1.5}, {0, 1});
+    c.add_measure(0, 0);
     REQUIRE(CliffordCircuitPredicate().verify(c));
   }
   GIVEN("A circuit with a non-Clifford AAMS gate") {

@@ -1,4 +1,4 @@
-// Copyright 2019-2024 Cambridge Quantum Computing
+// Copyright Quantinuum
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -525,9 +525,9 @@ PYBIND11_MODULE(circuit, m) {
           "A classical operation applied to multiple bits simultaneously")
       .value(
           "ClassicalExpBox", OpType::ClassicalExpBox,
-          "A box for holding compound classical operations on Bits.\n"
-          "DEPRECATED: Please use :py:class:`WiredClExpr` instead. This class "
-          "will be removed after pytket 1.40.")
+          "A box for holding compound classical operations on Bits. "
+          "DEPRECATED: This will be removed after pytket 1.40 (replaced by "
+          "`ClExpr`).")
       .value(
           "MultiplexorBox", OpType::MultiplexorBox,
           "A multiplexor (i.e. uniformly controlled operations)")
@@ -596,7 +596,7 @@ PYBIND11_MODULE(circuit, m) {
       .def(
           "is_clifford_type",
           [](const Op &op) { return op.get_desc().is_clifford_gate(); },
-          "Check if the operation is one of the Clifford `OpType`s.")
+          "Check if the operation is one of the Clifford " CLSOBJS(OpType) ".")
       .def(
           "is_clifford", [](const Op &op) { return op.is_clifford(); },
           "Test whether the operation is in the Clifford group. A return value "

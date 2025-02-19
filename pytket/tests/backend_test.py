@@ -1,4 +1,4 @@
-# Copyright 2019-2024 Cambridge Quantum Computing
+# Copyright Quantinuum
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 
 import json
 from collections import Counter
-from typing import Any, List
+from typing import Any
 
 import numpy as np
 import pytest
@@ -402,10 +402,10 @@ def test_backendresult_serialization(backres: BackendResult) -> None:
 
 
 @given(
-    n_shots=strategies.integers(min_value=1, max_value=10),  # type: ignore
+    n_shots=strategies.integers(min_value=1, max_value=10),
     n_bits=strategies.integers(min_value=0, max_value=10),
 )
-def test_empty_result(n_shots, n_bits) -> None:
+def test_empty_result(n_shots: int, n_bits: int) -> None:
     circuit = Circuit(n_bits, n_bits)
     backend_results = Backend.empty_result(circuit, n_shots=n_shots)
 
