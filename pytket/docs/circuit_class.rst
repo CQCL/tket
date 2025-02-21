@@ -42,6 +42,8 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_circuit
 
+   .. automethod:: add_circuit_with_map
+
    .. automethod:: add_qubit
 
    .. automethod:: add_bit
@@ -63,6 +65,8 @@ condition on a specified set of bit values.)
    .. autoproperty:: n_gates
 
    .. autoproperty:: is_symbolic
+
+   .. autoproperty:: has_implicit_wireswaps
 
    .. automethod:: add_q_register
 
