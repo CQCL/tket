@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['make_5fsubcircuit_0',['make_subcircuit',['../classtket_1_1Circuit.html#aae0b91594f2bde0f31369f83c2650d08',1,'tket::Circuit']]],
+  ['make_5fsubcircuit_0',['make_subcircuit',['../classtket_1_1Circuit.html#a3bbd5abc44bfa8a35bc69c50a31dd52d',1,'tket::Circuit']]],
   ['make_5ftype_5fpair_1',['make_type_pair',['../classtket_1_1CompilationUnit.html#a889a2aa57da8f103175161684314b1bb',1,'tket::CompilationUnit']]],
   ['mappingfrontier_2',['mappingfrontier',['../structtket_1_1MappingFrontier.html#a7e00424bff17be04a8d7d0635ae20f0a',1,'tket::MappingFrontier::MappingFrontier(Circuit &amp;_circuit)'],['../structtket_1_1MappingFrontier.html#abfd674e6cb4db9d307bda2f6557d2828',1,'tket::MappingFrontier::MappingFrontier(Circuit &amp;_circuit, std::shared_ptr&lt; unit_bimaps_t &gt; _bimaps)'],['../structtket_1_1MappingFrontier.html#a93647ea4efc798d4dd60e4baa1c9ce93',1,'tket::MappingFrontier::MappingFrontier(const MappingFrontier &amp;mapping_frontier)']]],
   ['mappingfrontiererror_3',['MappingFrontierError',['../classtket_1_1MappingFrontierError.html#a4a2865e577c07cd10f1fcf4768774f72',1,'tket::MappingFrontierError']]],

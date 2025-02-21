@@ -147,12 +147,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1de8a6be1c1ee667053bc75369eeee2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f7d24fa47670d643081678e66a11695" id="r_a4f7d24fa47670d643081678e66a11695"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Gate.html#a4f7d24fa47670d643081678e66a11695">n_qubits</a> () const override</td></tr>
 <tr class="separator:a4f7d24fa47670d643081678e66a11695"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e8c0589d8fc3cc8eb37f79e9bcb2799" id="r_a8e8c0589d8fc3cc8eb37f79e9bcb2799"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Gate.html#a8e8c0589d8fc3cc8eb37f79e9bcb2799">commuting_basis</a> (unsigned i) const override</td></tr>
-<tr class="memdesc:a8e8c0589d8fc3cc8eb37f79e9bcb2799"><td class="mdescLeft">&#160;</td><td class="mdescRight">Which Pauli, if any, commutes with the operation at a given qubit.  <br /></td></tr>
-<tr class="separator:a8e8c0589d8fc3cc8eb37f79e9bcb2799"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae53051f8c98cbb3c8c3f31aed58ae776" id="r_ae53051f8c98cbb3c8c3f31aed58ae776"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Gate.html#ae53051f8c98cbb3c8c3f31aed58ae776">commutes_with_basis</a> (const std::optional&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;colour, unsigned i) const override</td></tr>
-<tr class="memdesc:ae53051f8c98cbb3c8c3f31aed58ae776"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the operation commutes with the given Pauli at the given qubit.  <br /></td></tr>
-<tr class="separator:ae53051f8c98cbb3c8c3f31aed58ae776"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51baf7616a2924c720937e822a37d153" id="r_a51baf7616a2924c720937e822a37d153"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Gate.html#a51baf7616a2924c720937e822a37d153">commuting_basis</a> (<a class="el" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> i) const override</td></tr>
+<tr class="memdesc:a51baf7616a2924c720937e822a37d153"><td class="mdescLeft">&#160;</td><td class="mdescRight">Which Pauli, if any, commutes with the operation at a given port.  <br /></td></tr>
+<tr class="separator:a51baf7616a2924c720937e822a37d153"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a412791dac3435aa74a22b1e286a6f4a8" id="r_a412791dac3435aa74a22b1e286a6f4a8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#ac9cc41e0b406b456fabc9ae1e4517ebd">op_signature_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Gate.html#a412791dac3435aa74a22b1e286a6f4a8">get_signature</a> () const override</td></tr>
 <tr class="memdesc:a412791dac3435aa74a22b1e286a6f4a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector specifying type of data for each port on op.  <br /></td></tr>
 <tr class="separator:a412791dac3435aa74a22b1e286a6f4a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -186,6 +183,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab36355c0f04fd893d986aed73ffd5f95 inherit pub_methods_classtket_1_1Op" id="r_ab36355c0f04fd893d986aed73ffd5f95"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#ab36355c0f04fd893d986aed73ffd5f95">get_type</a> () const</td></tr>
 <tr class="memdesc:ab36355c0f04fd893d986aed73ffd5f95 inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get operation type.  <br /></td></tr>
 <tr class="separator:ab36355c0f04fd893d986aed73ffd5f95 inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06dfb70fa5742a25784ca1b5c9fd6a1b inherit pub_methods_classtket_1_1Op" id="r_a06dfb70fa5742a25784ca1b5c9fd6a1b"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a06dfb70fa5742a25784ca1b5c9fd6a1b">commutes_with_basis</a> (const std::optional&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;colour, <a class="el" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> i) const</td></tr>
+<tr class="memdesc:a06dfb70fa5742a25784ca1b5c9fd6a1b inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the operation commutes with the given Pauli at the given port.  <br /></td></tr>
+<tr class="separator:a06dfb70fa5742a25784ca1b5c9fd6a1b inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a761892392e543ad92a252d7dfb4bc057 inherit pub_methods_classtket_1_1Op" id="r_a761892392e543ad92a252d7dfb4bc057"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a761892392e543ad92a252d7dfb4bc057">is_extern</a> () const</td></tr>
 <tr class="memdesc:a761892392e543ad92a252d7dfb4bc057 inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">return if the op is external  <br /></td></tr>
 <tr class="separator:a761892392e543ad92a252d7dfb4bc057 inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -239,7 +239,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Gate_8hpp_source.html#l00074">74</a> of file <a class="el" href="Gate_8hpp_source.html">Gate.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Gate_8hpp_source.html#l00071">71</a> of file <a class="el" href="Gate_8hpp_source.html">Gate.hpp</a>.</p>
 
 </div>
 </div>
@@ -275,7 +275,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Gate_8cpp_source.html#l01016">1016</a> of file <a class="el" href="Gate_8cpp_source.html">Gate.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Gate_8cpp_source.html#l01005">1005</a> of file <a class="el" href="Gate_8cpp_source.html">Gate.cpp</a>.</p>
 
 </div>
 </div>
@@ -294,62 +294,13 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Gate_8cpp_source.html#l01026">1026</a> of file <a class="el" href="Gate_8cpp_source.html">Gate.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Gate_8cpp_source.html#l01015">1015</a> of file <a class="el" href="Gate_8cpp_source.html">Gate.cpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ae53051f8c98cbb3c8c3f31aed58ae776" name="ae53051f8c98cbb3c8c3f31aed58ae776"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae53051f8c98cbb3c8c3f31aed58ae776">&#9670;&#160;</a></span>commutes_with_basis()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool tket::Gate::commutes_with_basis </td>
-          <td>(</td>
-          <td class="paramtype">const std::optional&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>colour</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned&#160;</td>
-          <td class="paramname"><em>i</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Whether the operation commutes with the given Pauli at the given qubit. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">colour</td><td>Pauli operation type </td></tr>
-    <tr><td class="paramname">i</td><td>operation qubit index </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Reimplemented from <a class="el" href="classtket_1_1Op.html#a71485b3d27d58a4c5054a214837084bd">tket::Op</a>.</p>
-
-<p class="definition">Definition at line <a class="el" href="Gate_8cpp_source.html#l00946">946</a> of file <a class="el" href="Gate_8cpp_source.html">Gate.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a8e8c0589d8fc3cc8eb37f79e9bcb2799" name="a8e8c0589d8fc3cc8eb37f79e9bcb2799"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8e8c0589d8fc3cc8eb37f79e9bcb2799">&#9670;&#160;</a></span>commuting_basis()</h2>
+<a id="a51baf7616a2924c720937e822a37d153" name="a51baf7616a2924c720937e822a37d153"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51baf7616a2924c720937e822a37d153">&#9670;&#160;</a></span>commuting_basis()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -360,7 +311,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">std::optional&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; tket::Gate::commuting_basis </td>
           <td>(</td>
-          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a>&#160;</td>
           <td class="paramname"><em>i</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -372,10 +323,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Which Pauli, if any, commutes with the operation at a given qubit. </p>
+<p>Which Pauli, if any, commutes with the operation at a given port. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">i</td><td>qubit number at which Pauli should commute </td></tr>
+    <tr><td class="paramname">i</td><td>port at which Pauli should commute </td></tr>
   </table>
   </dd>
 </dl>
@@ -388,7 +339,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p>Reimplemented from <a class="el" href="classtket_1_1Op.html#a8b8b2a15ff892473ec6108bb14f244b2">tket::Op</a>.</p>
+<p>Reimplemented from <a class="el" href="classtket_1_1Op.html#adb04ed6bfa73d9127bd0cf131308d33b">tket::Op</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="Gate_8cpp_source.html#l00835">835</a> of file <a class="el" href="Gate_8cpp_source.html">Gate.cpp</a>.</p>
 
@@ -455,7 +406,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Gate_8cpp_source.html#l00980">980</a> of file <a class="el" href="Gate_8cpp_source.html">Gate.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Gate_8cpp_source.html#l00969">969</a> of file <a class="el" href="Gate_8cpp_source.html">Gate.cpp</a>.</p>
 
 </div>
 </div>
@@ -643,7 +594,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classtket_1_1Op.html#af064c3b97d9c69ab70d622a425bf353b">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="Gate_8cpp_source.html#l00957">957</a> of file <a class="el" href="Gate_8cpp_source.html">Gate.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Gate_8cpp_source.html#l00946">946</a> of file <a class="el" href="Gate_8cpp_source.html">Gate.cpp</a>.</p>
 
 </div>
 </div>
@@ -705,7 +656,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classtket_1_1Op.html#a8036a6e71f1a9c064f692aedb654ddec">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="Gate_8cpp_source.html#l01001">1001</a> of file <a class="el" href="Gate_8cpp_source.html">Gate.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Gate_8cpp_source.html#l00990">990</a> of file <a class="el" href="Gate_8cpp_source.html">Gate.cpp</a>.</p>
 
 </div>
 </div>
@@ -920,7 +871,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classtket_1_1Op.html#a77ea214cee91f2366aa4ee3f2aabcd4f">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="Gate_8cpp_source.html#l00965">965</a> of file <a class="el" href="Gate_8cpp_source.html">Gate.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Gate_8cpp_source.html#l00954">954</a> of file <a class="el" href="Gate_8cpp_source.html">Gate.cpp</a>.</p>
 
 </div>
 </div>

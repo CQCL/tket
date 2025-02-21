@@ -5,5 +5,6 @@ var searchData=
   ['opgroup_2',['opgroup',['../structtket_1_1VertexProperties.html#aadb1db4744c7f5f539abfcdd4f4874ac',1,'tket::VertexProperties']]],
   ['optypecount_3',['OpTypeCount',['../structtket_1_1ResourceData.html#af612c76464dd8e990d501de667c7dffb',1,'tket::ResourceData']]],
   ['optypedepth_4',['OpTypeDepth',['../structtket_1_1ResourceData.html#ae202ee65cead9aa526590f51f3a42d24',1,'tket::ResourceData']]],
-  ['out_5f_5',['out_',['../structtket_1_1BoundaryElement.html#acd700ea9a66bc6aabccca09157288945',1,'tket::BoundaryElement']]]
+  ['out_5f_5',['out_',['../structtket_1_1BoundaryElement.html#acd700ea9a66bc6aabccca09157288945',1,'tket::BoundaryElement']]],
+  ['out_5fhole_6',['out_hole',['../structtket_1_1Subcircuit.html#aa529178793b9ce095d15dbcdae04d29c',1,'tket::Subcircuit']]]
 ];

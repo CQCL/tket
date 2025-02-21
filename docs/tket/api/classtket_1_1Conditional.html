@@ -141,6 +141,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a99b18f9e1d60dd18fe233be22394287b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abdd2d8b5753b5936e5dfac0d0885ddd6" id="r_abdd2d8b5753b5936e5dfac0d0885ddd6"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Conditional.html#abdd2d8b5753b5936e5dfac0d0885ddd6">n_qubits</a> () const override</td></tr>
 <tr class="separator:abdd2d8b5753b5936e5dfac0d0885ddd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4207c9101eba1f28c50735a199ccc884" id="r_a4207c9101eba1f28c50735a199ccc884"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Conditional.html#a4207c9101eba1f28c50735a199ccc884">commuting_basis</a> (<a class="el" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> i) const override</td></tr>
+<tr class="memdesc:a4207c9101eba1f28c50735a199ccc884"><td class="mdescLeft">&#160;</td><td class="mdescRight">Which Pauli, if any, commutes with the operation at a given port.  <br /></td></tr>
+<tr class="separator:a4207c9101eba1f28c50735a199ccc884"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44473636270063a3608869cb557f5f97" id="r_a44473636270063a3608869cb557f5f97"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#ac9cc41e0b406b456fabc9ae1e4517ebd">op_signature_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Conditional.html#a44473636270063a3608869cb557f5f97">get_signature</a> () const override</td></tr>
 <tr class="memdesc:a44473636270063a3608869cb557f5f97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector specifying type of data for each port on op.  <br /></td></tr>
 <tr class="separator:a44473636270063a3608869cb557f5f97"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -177,12 +180,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab36355c0f04fd893d986aed73ffd5f95 inherit pub_methods_classtket_1_1Op" id="r_ab36355c0f04fd893d986aed73ffd5f95"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#ab36355c0f04fd893d986aed73ffd5f95">get_type</a> () const</td></tr>
 <tr class="memdesc:ab36355c0f04fd893d986aed73ffd5f95 inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get operation type.  <br /></td></tr>
 <tr class="separator:ab36355c0f04fd893d986aed73ffd5f95 inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b8b2a15ff892473ec6108bb14f244b2 inherit pub_methods_classtket_1_1Op" id="r_a8b8b2a15ff892473ec6108bb14f244b2"><td class="memItemLeft" align="right" valign="top">virtual std::optional&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a8b8b2a15ff892473ec6108bb14f244b2">commuting_basis</a> (unsigned i) const</td></tr>
-<tr class="memdesc:a8b8b2a15ff892473ec6108bb14f244b2 inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">Which Pauli, if any, commutes with the operation at a given qubit.  <br /></td></tr>
-<tr class="separator:a8b8b2a15ff892473ec6108bb14f244b2 inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71485b3d27d58a4c5054a214837084bd inherit pub_methods_classtket_1_1Op" id="r_a71485b3d27d58a4c5054a214837084bd"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a71485b3d27d58a4c5054a214837084bd">commutes_with_basis</a> (const std::optional&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;colour, unsigned i) const</td></tr>
-<tr class="memdesc:a71485b3d27d58a4c5054a214837084bd inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the operation commutes with the given Pauli at the given qubit.  <br /></td></tr>
-<tr class="separator:a71485b3d27d58a4c5054a214837084bd inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06dfb70fa5742a25784ca1b5c9fd6a1b inherit pub_methods_classtket_1_1Op" id="r_a06dfb70fa5742a25784ca1b5c9fd6a1b"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a06dfb70fa5742a25784ca1b5c9fd6a1b">commutes_with_basis</a> (const std::optional&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;colour, <a class="el" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> i) const</td></tr>
+<tr class="memdesc:a06dfb70fa5742a25784ca1b5c9fd6a1b inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the operation commutes with the given Pauli at the given port.  <br /></td></tr>
+<tr class="separator:a06dfb70fa5742a25784ca1b5c9fd6a1b inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a761892392e543ad92a252d7dfb4bc057 inherit pub_methods_classtket_1_1Op" id="r_a761892392e543ad92a252d7dfb4bc057"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a761892392e543ad92a252d7dfb4bc057">is_extern</a> () const</td></tr>
 <tr class="memdesc:a761892392e543ad92a252d7dfb4bc057 inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">return if the op is external  <br /></td></tr>
 <tr class="separator:a761892392e543ad92a252d7dfb4bc057 inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -357,11 +357,57 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00098">98</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00105">105</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a4207c9101eba1f28c50735a199ccc884" name="a4207c9101eba1f28c50735a199ccc884"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4207c9101eba1f28c50735a199ccc884">&#9670;&#160;</a></span>commuting_basis()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; tket::Conditional::commuting_basis </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a>&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Which Pauli, if any, commutes with the operation at a given port. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">i</td><td>port at which Pauli should commute </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A Pauli that commutes with the given operation </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">std::nullopt</td><td>no Pauli commutes (or operation not a gate) </td></tr>
+    <tr><td class="paramname"><a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66aaa2fe267746e0e15b799ccea11e855878">Pauli::I</a></td><td>any Pauli commutes </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplemented from <a class="el" href="classtket_1_1Op.html#adb04ed6bfa73d9127bd0cf131308d33b">tket::Op</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00046">46</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a0d75132a681ff71e99bebe99b41ae5f2" name="a0d75132a681ff71e99bebe99b41ae5f2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0d75132a681ff71e99bebe99b41ae5f2">&#9670;&#160;</a></span>dagger()</h2>
 
@@ -395,7 +441,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classtket_1_1Op.html#a0184322dc89669726f8ddae2f5b8c005">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00087">87</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00094">94</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
 
 </div>
 </div>
@@ -423,7 +469,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00064">64</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00071">71</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
 
 </div>
 </div>
@@ -486,7 +532,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classtket_1_1Op.html#aafca574024c45736ebd97193a507b7f5">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00072">72</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00079">79</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
 
 </div>
 </div>
@@ -505,7 +551,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00092">92</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00099">99</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
 
 </div>
 </div>
@@ -536,7 +582,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classtket_1_1Op.html#af064c3b97d9c69ab70d622a425bf353b">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00046">46</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00053">53</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
 
 </div>
 </div>
@@ -555,7 +601,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00096">96</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00103">103</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
 
 </div>
 </div>
@@ -574,7 +620,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00094">94</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00101">101</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
 
 </div>
 </div>
@@ -664,7 +710,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classtket_1_1Op.html#a77ea214cee91f2366aa4ee3f2aabcd4f">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00053">53</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Conditional_8cpp_source.html#l00060">60</a> of file <a class="el" href="Conditional_8cpp_source.html">Conditional.cpp</a>.</p>
 
 </div>
 </div>

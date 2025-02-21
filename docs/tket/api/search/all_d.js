@@ -2,7 +2,7 @@ var searchData=
 [
   ['macro_5fcirc_5finfo_2ecpp_0',['macro_circ_info.cpp',['../macro__circ__info_8cpp.html',1,'']]],
   ['macro_5fmanipulation_2ecpp_1',['macro_manipulation.cpp',['../macro__manipulation_8cpp.html',1,'']]],
-  ['make_5fsubcircuit_2',['make_subcircuit',['../classtket_1_1Circuit.html#aae0b91594f2bde0f31369f83c2650d08',1,'tket::Circuit']]],
+  ['make_5fsubcircuit_2',['make_subcircuit',['../classtket_1_1Circuit.html#a3bbd5abc44bfa8a35bc69c50a31dd52d',1,'tket::Circuit']]],
   ['make_5ftype_5fpair_3',['make_type_pair',['../classtket_1_1CompilationUnit.html#a889a2aa57da8f103175161684314b1bb',1,'tket::CompilationUnit']]],
   ['map_4',['map',['../classtket_1_1graphs_1_1utils_1_1detail_1_1graph__utils__helper__with__map_3_01Derived_00_01Graph4f93c7182dd20c8b27502165efbd87e3.html#a081b757624c1d003614954f3ee94a642',1,'tket::graphs::utils::detail::graph_utils_helper_with_map&lt; Derived, Graph, Map, void, true &gt;::map'],['../structtket_1_1NeighbourPlacements_1_1Result.html#a16f94ebd6fd4fd9226bef21fe3ff7f0e',1,'tket::NeighbourPlacements::Result::map']]],
   ['mapping_5',['Mapping',['../structtket_1_1SubgraphMonomorphisms.html#ae7b182bcb878b6c8e24c57432d053a10',1,'tket::SubgraphMonomorphisms']]],
