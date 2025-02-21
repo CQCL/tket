@@ -1257,6 +1257,8 @@ SCENARIO("Test Pauli Graph Synthesis Pass") {
     circ.add_op<unsigned>(OpType::XXPhase, 1.5, {1, 2});
     circ.add_op<unsigned>(OpType::YYPhase, 2.5, {2, 0});
     circ.add_op<unsigned>(OpType::PhasedX, {3.5, 0.5}, {0});
+    circ.add_op<unsigned>(OpType::SX, {1});
+    circ.add_op<unsigned>(OpType::SXdg, {2});
 
     CompilationUnit cu(circ);
     graph_synth->apply(cu);
