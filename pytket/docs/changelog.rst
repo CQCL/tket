@@ -3,9 +3,11 @@ Changelog
 
 1.41.0 (Unreleased)
 ----------------------
+
 Features:
 
 * Add :py:attr:`Circuit.has_implicit_wireswaps` property.
+* Make :py:meth:`PauliSimp` accept circuits with SX and SXdg gates.
 
 1.40.0 (February 2025)
 ----------------------

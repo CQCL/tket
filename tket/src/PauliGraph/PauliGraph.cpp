@@ -108,6 +108,8 @@ void PauliGraph::apply_gate_at_end(
     case OpType::V:
     case OpType::Vdg:
     case OpType::H:
+    case OpType::SX:
+    case OpType::SXdg:
     case OpType::CX:
     case OpType::CY:
     case OpType::CZ:
