@@ -7,7 +7,7 @@ Changelog
 Features:
 
 * Add :py:attr:`Circuit.has_implicit_wireswaps` property.
-* Male :py:meth:`PauliSimp` accept circuits with SX and SXdg gates.
+* Make :py:meth:`PauliSimp` accept circuits with SX and SXdg gates.
 
 1.40.0 (February 2025)
 ----------------------
