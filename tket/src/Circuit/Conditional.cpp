@@ -43,6 +43,13 @@ bool Conditional::is_equal(const Op& op_other) const {
 
 unsigned Conditional::n_qubits() const { return op_->n_qubits(); }
 
+std::optional<Pauli> Conditional::commuting_basis(port_t i) const {
+  if (i < width_)
+    return std::nullopt;
+  else
+    return op_->commuting_basis(i - width_);
+}
+
 op_signature_t Conditional::get_signature() const {
   op_signature_t signature(width_, EdgeType::Boolean);
   op_signature_t inner_sig = op_->get_signature();

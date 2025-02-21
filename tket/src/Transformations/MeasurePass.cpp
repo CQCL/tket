@@ -102,7 +102,6 @@ static Edge follow_until_noncommuting(
  * Checks if the operation can commute. By default, it allows commutation
  * through SWAPs, gates that commute on the Pauli Z basis, and recursively
  * checks inside boxes and conditional operations.
- * @param circ The circuit containing the operation.
  * @param op The operation.
  * @param in_port The input port of the operation to check.
  * @param only_boxes Whether to only commute through straight wires in boxes or
@@ -111,7 +110,7 @@ static Edge follow_until_noncommuting(
  * @return The output port of the operation if it commutes, or nullopt.
  **/
 static std::optional<port_t> op_commutes(
-    const Circuit& circ, Op_ptr op, port_t in_port, bool only_boxes) {
+    Op_ptr op, port_t in_port, bool only_boxes) {
   OpType optype = op->get_type();
   if (optype == OpType::SWAP) {
     if (only_boxes) return std::nullopt;
@@ -119,8 +118,15 @@ static std::optional<port_t> op_commutes(
   } else if (optype == OpType::Conditional) {
     const Conditional& cond = static_cast<const Conditional&>(*op);
     if (in_port < cond.get_width()) return std::nullopt;
-    return op_commutes(
-        circ, cond.get_op(), in_port - cond.get_width(), only_boxes);
+    std::optional<port_t> inner_port =
+        op_commutes(cond.get_op(), in_port - cond.get_width(), only_boxes);
+    // We can only commute through the conditional gate if it commutes to the
+    // same port for both values of the condition, e.g. we ban conditional swap
+    // gates
+    if (inner_port && (*inner_port + cond.get_width() == in_port))
+      return in_port;
+    else
+      return std::nullopt;
   } else if (optype == OpType::CircBox || optype == OpType::CustomGate) {
     const Box& box = static_cast<const Box&>(*op);
     const Circuit& circ = *box.to_circuit();
@@ -139,16 +145,7 @@ static std::optional<port_t> op_commutes(
     return box_out_port;
   } else {
     if (only_boxes) return std::nullopt;
-    unsigned qubit_index = 0;
-    for (unsigned i = 0; i < in_port; ++i) {
-      EdgeType et = op->get_signature()[i];
-      if (et == EdgeType::Quantum) {
-        qubit_index++;
-      }
-    }
-    if (op->commutes_with_basis(Pauli::Z, qubit_index)) {
-      return in_port;
-    }
+    if (op->commutes_with_basis(Pauli::Z, in_port)) return in_port;
     return std::nullopt;
   }
 }
@@ -160,8 +157,7 @@ static Edge follow_until_noncommuting(
   OpType current_optype = circ.get_OpType_from_Vertex(current_vertex);
   while (!is_final_q_type(current_optype)) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(current_vertex);
-    std::optional<port_t> next_port =
-        op_commutes(circ, op, current_port, only_boxes);
+    std::optional<port_t> next_port = op_commutes(op, current_port, only_boxes);
     if (next_port.has_value()) {
       current_port = next_port.value();
     } else {

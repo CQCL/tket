@@ -116,49 +116,31 @@ typedef std::unordered_map<unsigned, unsigned> permutation_t;
  *
  * The Subcircuit is valid if there exist two possible frontiers (complete cuts)
  * through the circuit such that:
- * - q_in_hole and c_in_hole are contained within the first frontier
- * - q_out_hole and c_out_hole consist of exactly the edges in the later
- *      frontier corresponding to the same units as those in q_in_hole and
- *      c_in_hole
+ * - in_hole is contained within the first frontier
+ * - out_hole consists of exactly the edges in the later frontier corresponding
+ *      to the same units as those in in_hole
  * - b_future corresponds exactly to the set of Boolean edges in the
- *      later frontier whose origins are in c_out_hole (these are needed when
- *      an edge is in both c_in_hole and c_out_hole to determine where the
+ *      later frontier whose origins are in out_hole (these are needed when
+ *      an edge is in both in_hole and out_hole to determine where the
  *      replacement circuit should be placed with respect to the vertices with
  *      Booleans from that unit)
  */
 struct Subcircuit {
-  /** Ordered incoming Quantum edges into the subcircuit */
-  EdgeVec q_in_hole;
-  /** Ordered outgoing Quantum edges from the subcircuit */
-  EdgeVec q_out_hole;
-  /** Ordered incoming Classical edges into the subcircuit */
-  EdgeVec c_in_hole;
-  /** Ordered outgoing Classical edges from the subcircuit */
-  EdgeVec c_out_hole;
+  /** Ordered incoming edges into the subcircuit */
+  EdgeVec in_hole;
+  /** Ordered linear edges out of the subcircuit */
+  std::vector<std::optional<Edge>> out_hole;
   /** Boolean edges in the future of the subcircuit, to be rewired to
-   * the replacement of the corresponding edge from c_out_hole
+   * the replacement of the corresponding edge from out_hole
    */
   EdgeVec b_future;
   VertexSet verts;
 
   Subcircuit() {}
   Subcircuit(
-      const EdgeVec &q_ins, const EdgeVec &q_outs, const VertexSet &vs = {})
-      : q_in_hole(q_ins),
-        q_out_hole(q_outs),
-        c_in_hole(),
-        c_out_hole(),
-        b_future(),
-        verts(vs) {}
-  Subcircuit(
-      const EdgeVec &q_ins, const EdgeVec &q_outs, const EdgeVec &c_ins,
-      const EdgeVec &c_outs, const EdgeVec &crs, const VertexSet &vs = {})
-      : q_in_hole(q_ins),
-        q_out_hole(q_outs),
-        c_in_hole(c_ins),
-        c_out_hole(c_outs),
-        b_future(crs),
-        verts(vs) {}
+      const EdgeVec &ins, const std::vector<std::optional<Edge>> &outs,
+      const EdgeVec &b_outs, const VertexSet &vs)
+      : in_hole(ins), out_hole(outs), b_future(b_outs), verts(vs) {}
 };
 
 // Used for edge traversal in pattern-matching
@@ -647,42 +629,26 @@ class Circuit {
   bool detect_singleq_unitary_op(const Vertex &vert) const;
 
   /**
-   * Index of qubit for operation at a given vertex port
-   *
-   * @param vert vertex
-   * @param port_type type of specified port
-   * @param port port index
-   *
-   * @return qubit index
-   * @throw std::domain_error if port doesn't correspond to a quantum wire
-   */
-  unsigned qubit_index(
-      const Vertex &vert, PortType port_type, port_t port) const;
-
-  /**
    * Which Pauli, if any, commutes with the operation at a given vertex and port
    *
    * @param vert vertex
-   * @param port_type type of specified port
    * @param port port number at which Pauli should commute
    * @return a Pauli that commutes with the given operation
    * @retval std::nullopt no Pauli commutes (or operation is not a gate)
    * @retval Pauli::I every Pauli commutes
    */
-  std::optional<Pauli> commuting_basis(
-      const Vertex &vert, PortType port_type, port_t port) const;
+  std::optional<Pauli> commuting_basis(const Vertex &vert, port_t port) const;
 
   /**
    * Whether the operation at a vertex commutes with a Pauli at the given port
    *
    * @param vert vertex
    * @param colour Pauli operation type
-   * @param port_type type of specified port
    * @param port port number at which Pauli may commute
    */
   bool commutes_with_basis(
       const Vertex &vert, const std::optional<Pauli> &colour,
-      PortType port_type, port_t port) const;
+      port_t port) const;
 
   /**
    * Convert all quantum and classical bits to use default registers.
@@ -1160,7 +1126,9 @@ class Circuit {
   std::map<Edge, UnitID> edge_unit_map() const;
 
   /**
-   * Construct a new circuit representing the given subcircuit.
+   * Construct a new circuit representing the given subcircuit. Each Boolean
+   * edge entering the subcircuit is mapped to a unique classical Bit so we can
+   * verify that any modifications made preserve the "read-only" nature.
    *
    * @param sc subcircuit specification
    *
@@ -1275,8 +1243,7 @@ class Circuit {
 
   // O(E+V+q) -- E,V,q of incirc
   void cut_insert(
-      const Circuit &incirc, const EdgeVec &q_preds,
-      const EdgeVec &c_preds = {},
+      const Circuit &incirc, const EdgeVec &preds,
       const EdgeVec &b_future = {});  // naive insertion
 
   // Insert v2: Takes a subcircuit with valid boundary and replaces whatever
@@ -1584,7 +1551,7 @@ class Circuit {
    *
    * @return corresponding @ref Subcircuit
    */
-  Subcircuit make_subcircuit(VertexSet verts) const;
+  Subcircuit make_subcircuit(const VertexSet &verts) const;
 
   /**
    * Get the global phase offset as a multiple of pi (in the range [0,2)).

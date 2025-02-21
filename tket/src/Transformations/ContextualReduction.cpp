@@ -265,11 +265,7 @@ Transform simplify_initial(
           }
         }
       }
-      EdgeVec v_in_edges = circ.get_in_edges(v);        // all Quantum
-      EdgeVec v_out_edges = circ.get_all_out_edges(v);  // all Quantum
-      TKET_ASSERT(v_in_edges.size() == n_q);
-      TKET_ASSERT(v_out_edges.size() == n_q);
-      Subcircuit subc{v_in_edges, v_out_edges, {v}};
+      Subcircuit subc = circ.singleton_subcircuit(v);
       circ.substitute(xs_circ, subc, Circuit::VertexDeletion::No);
       bin.push_back(v);
     }
@@ -279,17 +275,7 @@ Transform simplify_initial(
       std::vector<bool> values = {bitval};
       Op_ptr setbitop = std::make_shared<SetBitsOp>(values);
       newc.add_op<Bit>(setbitop, {Bit(0)});
-      EdgeVec q_in_edges = circ.get_in_edges_of_type(v, EdgeType::Quantum);
-      TKET_ASSERT(q_in_edges.size() == 1);
-      EdgeVec q_out_edges = circ.get_out_edges_of_type(v, EdgeType::Quantum);
-      TKET_ASSERT(q_out_edges.size() == 1);
-      EdgeVec c_in_edges = circ.get_in_edges_of_type(v, EdgeType::Classical);
-      TKET_ASSERT(c_in_edges.size() == 1);
-      EdgeVec c_out_edges = circ.get_out_edges_of_type(v, EdgeType::Classical);
-      TKET_ASSERT(c_out_edges.size() == 1);
-      EdgeVec b_out_edges = circ.get_out_edges_of_type(v, EdgeType::Boolean);
-      Subcircuit subc{q_in_edges,  q_out_edges, c_in_edges,
-                      c_out_edges, b_out_edges, {v}};
+      Subcircuit subc = circ.singleton_subcircuit(v);
       circ.substitute(newc, subc, Circuit::VertexDeletion::No);
       bin.push_back(v);
     }
@@ -374,7 +360,9 @@ Transform simplify_measured() {
             TKET_ASSERT(m_c_outs.size() == 1);
             cl_edges[i] = m_c_outs[0];
           }
-          Subcircuit cl_subc{{}, {}, cl_edges, cl_edges, {}, {}};
+          std::vector<std::optional<Edge>> cl_outs{
+              cl_edges.begin(), cl_edges.end()};
+          Subcircuit cl_subc{cl_edges, cl_outs, {}, {}};
           Circuit cl_circ(0, n_qb);
           std::vector<unsigned> args(n_qb);
           std::iota(args.begin(), args.end(), 0);

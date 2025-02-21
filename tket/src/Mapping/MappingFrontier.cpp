@@ -498,6 +498,14 @@ EdgeVec convert_u_frontier_to_edges(const unit_frontier_t& u_frontier) {
   return edges;
 }
 
+EdgeVec convert_b_frontier_to_edges(const b_frontier_t& b_frontier) {
+  EdgeVec edges;
+  for (const std::pair<Bit, EdgeVec>& pair : b_frontier.get<TagKey>()) {
+    edges.insert(edges.end(), pair.second.begin(), pair.second.end());
+  }
+  return edges;
+}
+
 Subcircuit MappingFrontier::get_frontier_subcircuit(
     unsigned _max_subcircuit_depth, unsigned _max_subcircuit_size) const {
   CutFrontier current_cut = this->circuit_.next_cut(
@@ -519,10 +527,13 @@ Subcircuit MappingFrontier::get_frontier_subcircuit(
         current_cut.slice->begin(), current_cut.slice->end());
   }
   TKET_ASSERT(subcircuit_vertices.size() != 0);
+  EdgeVec out_edges = convert_u_frontier_to_edges(*current_cut.u_frontier);
+  std::vector<std::optional<Edge>> opt_out_edges{
+      out_edges.begin(), out_edges.end()};
   return Subcircuit(
       convert_u_frontier_to_edges(*frontier_convert_vertport_to_edge(
           this->circuit_, this->linear_boundary)),
-      convert_u_frontier_to_edges(*current_cut.u_frontier),
+      opt_out_edges, convert_b_frontier_to_edges(*current_cut.b_frontier),
       subcircuit_vertices);
 }
 
@@ -574,7 +585,7 @@ void MappingFrontier::update_linear_boundary_uids(
 
 void MappingFrontier::permute_subcircuit_q_out_hole(
     const unit_map_t& final_permutation, Subcircuit& subcircuit) {
-  EdgeVec new_q_out_hole;
+  std::vector<std::optional<Edge>> new_out_hole;
   int i = 0;
   if (this->linear_boundary->size() != final_permutation.size()) {
     throw MappingFrontierError(
@@ -590,13 +601,13 @@ void MappingFrontier::permute_subcircuit_q_out_hole(
     }
     std::pair<UnitID, UnitID> uid_pair = *it;
     if (uid_pair.first == uid_pair.second) {
-      new_q_out_hole.push_back(subcircuit.q_out_hole[i]);
+      new_out_hole.push_back(subcircuit.out_hole[i]);
     } else {
       int j = 0;
       for (auto it = this->linear_boundary->get<TagKey>().begin();
            it != this->linear_boundary->get<TagKey>().end(); ++it) {
         if (it->first == uid_pair.second) {
-          new_q_out_hole.push_back(subcircuit.q_out_hole[j]);
+          new_out_hole.push_back(subcircuit.out_hole[j]);
           break;
         }
         j++;
@@ -604,7 +615,7 @@ void MappingFrontier::permute_subcircuit_q_out_hole(
     }
     i++;
   }
-  subcircuit.q_out_hole = new_q_out_hole;
+  subcircuit.out_hole = new_out_hole;
 }
 
 /**

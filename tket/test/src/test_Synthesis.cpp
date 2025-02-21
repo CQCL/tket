@@ -104,9 +104,9 @@ SCENARIO("Check commutation through multiqubit ops") {
     const Op_ptr op_z = get_op_ptr(OpType::Rz, 0.2);
     const Op_ptr op_xxphase = get_op_ptr(OpType::XXPhase, 0.2);
     const Op_ptr op_xxphase3 = get_op_ptr(OpType::XXPhase3, 0.3);
-    Circuit circ(4);
+    Circuit circ(4, 1);
     circ.add_op<unsigned>(OpType::Z, {0});
-    circ.add_op<unsigned>(OpType::BRIDGE, {1, 2, 3});
+    circ.add_conditional_gate<unsigned>(OpType::BRIDGE, {}, {1, 2, 3}, {0}, 1);
     circ.add_op<unsigned>(OpType::CCX, {1, 2, 3});
 
     circ.add_op<unsigned>(OpType::noop, {2});
@@ -131,7 +131,7 @@ SCENARIO("Check commutation through multiqubit ops") {
       REQUIRE(Transforms::commute_through_multis().apply(circ));
 
       THEN("The correct final circuit is produced") {
-        Circuit correct(4);
+        Circuit correct(4, 1);
         correct.add_op<unsigned>(OpType::Z, {0});
         correct.add_op<unsigned>(OpType::Z, {1});
 
@@ -142,7 +142,8 @@ SCENARIO("Check commutation through multiqubit ops") {
         correct.add_op<unsigned>(op_z, {2});
         correct.add_op<unsigned>(OpType::X, {3});
 
-        correct.add_op<unsigned>(OpType::BRIDGE, {1, 2, 3});
+        correct.add_conditional_gate<unsigned>(
+            OpType::BRIDGE, {}, {1, 2, 3}, {0}, 1);
         correct.add_op<unsigned>(OpType::CCX, {1, 2, 3});
 
         correct.add_op<unsigned>(OpType::H, {2});
@@ -877,6 +878,14 @@ SCENARIO("Testing general 1qb squash") {
     REQUIRE_FALSE(success);
   }
   GIVEN("Squashing conditionals with PhasedX") {
+    Circuit inner(1, 1);
+    inner.add_conditional_gate<unsigned>(OpType::Rz, {0.849}, {0}, {0}, 0);
+    inner.add_conditional_gate<unsigned>(OpType::Rx, {0.234}, {0}, {0}, 0);
+    inner.add_conditional_gate<unsigned>(OpType::Rz, {0.014}, {0}, {0}, 0);
+    inner.add_conditional_gate<unsigned>(OpType::Rx, {0.547}, {0}, {0}, 0);
+    inner.add_conditional_gate<unsigned>(OpType::Rz, {0.832}, {0}, {0}, 0);
+    Op_ptr cbox_op = std::make_shared<CircBox>(inner);
+    Op_ptr cond_cbox_op = std::make_shared<Conditional>(cbox_op, 1, 1);
     Circuit circ(1, 2);
     circ.add_op<unsigned>(OpType::Rz, 0.142, {0});
     circ.add_op<unsigned>(OpType::Rx, 0.528, {0});
@@ -893,16 +902,18 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Rz, 0.142, {0});
     circ.add_op<unsigned>(OpType::Rx, 0.528, {0});
     circ.add_op<unsigned>(OpType::Rz, 1., {0});
+    circ.add_op<UnitID>(cond_cbox_op, {Bit(0), Qubit(0), Bit(1)});
+    Transforms::decomp_boxes().apply(circ);
     OpTypeSet singleqs = {OpType::Rz, OpType::Rx, OpType::PhasedX};
     bool success =
         Transforms::squash_factory(singleqs, CircPool::tk1_to_PhasedXRz)
             .apply(circ);
     REQUIRE(success);
     check_command_types(
-        circ,
-        {OpType::Rz, OpType::PhasedX, OpType::Conditional, OpType::Conditional,
-         OpType::Conditional, OpType::Conditional, OpType::Conditional,
-         OpType::Conditional, OpType::Rz, OpType::PhasedX});
+        circ, {OpType::Rz, OpType::PhasedX, OpType::Conditional,
+               OpType::Conditional, OpType::Conditional, OpType::Conditional,
+               OpType::Conditional, OpType::Conditional, OpType::Rz,
+               OpType::PhasedX, OpType::Conditional, OpType::Conditional});
     success = Transforms::squash_factory(singleqs, CircPool::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE_FALSE(success);

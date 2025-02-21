@@ -239,13 +239,7 @@ Transform special_UCC_synthesis(PauliSynthStrat strat, CXConfigType cx_config) {
       Circuit inner_circ = *(box_ptr->to_circuit());
       synther.apply(inner_circ);
       decomp_boxes().apply(inner_circ);
-      Subcircuit sub = {
-          circ.get_in_edges_of_type(v, EdgeType::Quantum),
-          circ.get_out_edges_of_type(v, EdgeType::Quantum),
-          circ.get_in_edges_of_type(v, EdgeType::Classical),
-          circ.get_out_edges_of_type(v, EdgeType::Classical),
-          circ.get_in_edges_of_type(v, EdgeType::Boolean),
-          {v}};
+      Subcircuit sub = circ.singleton_subcircuit(v);
       circ.substitute(inner_circ, sub);
     }
     return !circbox_verts
