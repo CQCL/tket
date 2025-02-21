@@ -222,7 +222,7 @@ std::vector<VertexSet> Circuit::get_subcircuits(
   return finder.find_subcircuits(criterion);
 }
 
-Subcircuit Circuit::make_subcircuit(VertexSet verts) const {
+Subcircuit Circuit::make_subcircuit(const VertexSet &verts) const {
   const std::map<Edge, UnitID> unitmap = edge_unit_map();
   std::map<UnitID, Edge> out_lookup;
   EdgeSet ins, outs, b_future;

@@ -1551,7 +1551,7 @@ class Circuit {
    *
    * @return corresponding @ref Subcircuit
    */
-  Subcircuit make_subcircuit(VertexSet verts) const;
+  Subcircuit make_subcircuit(const VertexSet &verts) const;
 
   /**
    * Get the global phase offset as a multiple of pi (in the range [0,2)).
