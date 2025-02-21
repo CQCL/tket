@@ -365,7 +365,11 @@ nlohmann::json serialise(const std::vector<PassPtr>& pp) {
 PassPtr deserialise(
     const nlohmann::json& j,
     const std::map<std::string, std::function<Circuit(const Circuit&)>>&
-        custom_deserialise) {
+        custom_deserialise,
+    const std::map<
+        std::string,
+        std::function<std::pair<Circuit, std::pair<unit_map_t, unit_map_t>>(
+            const Circuit&)>>& custom_map_deserialise) {
   std::string classname = j.at("pass_class").get<std::string>();
   PassPtr pp;
   if (classname == "StandardPass") {
@@ -602,6 +606,17 @@ PassPtr deserialise(
       } else {
         throw JsonError(
             "Cannot deserialise CustomPass without passing a "
+            "custom_deserialisation map "
+            "with a key corresponding to the pass's label.");
+      }
+    } else if (passname == "CustomPassMap") {
+      std::string label = content.at("label").get<std::string>();
+      auto it = custom_map_deserialise.find(label);
+      if (it != custom_map_deserialise.end()) {
+        pp = CustomPassMap(it->second, label);
+      } else {
+        throw JsonError(
+            "Cannot deserialise CustomPassMap without passing a "
             "custom_deserialisation map "
             "with a key corresponding to the pass's label.");
       }

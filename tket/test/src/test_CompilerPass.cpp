@@ -1826,6 +1826,30 @@ SCENARIO("CustomPass") {
       }
     }
   }
+  GIVEN("CustomPassMap with function that relabels qubits.") {
+    auto t = [](const Circuit& circ) {
+      Circuit copy = circ;
+      unit_map_t initial_m = {{Qubit(0), Qubit(1)}, {Qubit(1), Qubit(0)}};
+      unit_map_t final_m = {{Qubit(0), Qubit(1)}, {Qubit(1), Qubit(0)}};
+      std::pair<Circuit, std::pair<unit_map_t, unit_map_t>> ret = {
+          copy, {initial_m, final_m}};
+      return ret;
+    };
+    PassPtr pp = CustomPassMap(t);
+
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    CompilationUnit cu(c);
+    pp->apply(cu);
+
+    unit_bimap_t cu_initial = cu.get_initial_map_ref();
+    unit_bimap_t cu_final = cu.get_final_map_ref();
+
+    TKET_ASSERT(cu_initial.left.find(Qubit(0))->second == Qubit(1));
+    TKET_ASSERT(cu_initial.left.find(Qubit(1))->second == Qubit(0));
+    TKET_ASSERT(cu_final.left.find(Qubit(0))->second == Qubit(1));
+    TKET_ASSERT(cu_final.left.find(Qubit(1))->second == Qubit(0));
+  }
 }
 
 SCENARIO("Flatten and relabel registers") {
