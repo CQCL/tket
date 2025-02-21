@@ -987,7 +987,7 @@ PassPtr gen_pauli_exponentials(
                    OpType::T,       OpType::Tdg,         OpType::ZZMax,
                    OpType::ZZPhase, OpType::PhaseGadget, OpType::XXPhase,
                    OpType::YYPhase, OpType::PauliExpBox, OpType::Measure,
-                   OpType::PhasedX};
+                   OpType::PhasedX, OpType::SX,          OpType::SXdg};
   PredicatePtr in_gates = std::make_shared<GateSetPredicate>(ins);
   PredicatePtrMap precons{
       CompilationUnit::make_type_pair(ccontrol_pred),
