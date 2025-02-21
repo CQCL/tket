@@ -61,10 +61,10 @@ static bool standard_rebase(
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     unsigned n_qubits = circ.n_in_edges_of_type(v, EdgeType::Quantum);
     if (n_qubits <= 1) continue;
-    bool conditional = op->get_type() == OpType::Conditional;
-    if (conditional) {
-      const Conditional& cond = static_cast<const Conditional&>(*op);
-      op = cond.get_op();
+    bool conditional = false;
+    while (op->get_type() == OpType::Conditional) {
+      op = static_cast<const Conditional&>(*op).get_op();
+      conditional = true;
     }
     OpType type = op->get_type();
     if (allowed_gates.find(type) != allowed_gates.end() || type == OpType::CX ||
@@ -88,14 +88,15 @@ static bool standard_rebase(
     if (bin.contains(v)) continue;
     if (circ.n_in_edges_of_type(v, EdgeType::Quantum) > 1) continue;
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
-    bool conditional = op->get_type() == OpType::Conditional;
-    if (conditional) {
-      const Conditional& cond = static_cast<const Conditional&>(*op);
-      op = cond.get_op();
+    bool conditional = false;
+    while (op->get_type() == OpType::Conditional) {
+      op = static_cast<const Conditional&>(*op).get_op();
+      conditional = true;
     }
     OpType type = op->get_type();
     if (!is_gate_type(type) || is_projective_type(type) ||
-        allowed_gates.find(type) != allowed_gates.end())
+        allowed_gates.find(type) != allowed_gates.end() ||
+        (type == OpType::Phase))
       continue;
     // need to convert
     Circuit replacement = rebase_op(as_gate_ptr(op), tk1_replacement);
@@ -125,10 +126,10 @@ static bool standard_rebase_via_tk2(
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     unsigned n_qubits = circ.n_in_edges_of_type(v, EdgeType::Quantum);
     if (n_qubits <= 1) continue;
-    bool conditional = op->get_type() == OpType::Conditional;
-    if (conditional) {
-      const Conditional& cond = static_cast<const Conditional&>(*op);
-      op = cond.get_op();
+    bool conditional = false;
+    while (op->get_type() == OpType::Conditional) {
+      op = static_cast<const Conditional&>(*op).get_op();
+      conditional = true;
     }
     OpType type = op->get_type();
     if (allowed_gates.contains(type) || type == OpType::Barrier) continue;
@@ -166,14 +167,14 @@ static bool standard_rebase_via_tk2(
     if (bin.contains(v)) continue;
     if (circ.n_in_edges_of_type(v, EdgeType::Quantum) > 1) continue;
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
-    bool conditional = op->get_type() == OpType::Conditional;
-    if (conditional) {
-      const Conditional& cond = static_cast<const Conditional&>(*op);
-      op = cond.get_op();
+    bool conditional = false;
+    while (op->get_type() == OpType::Conditional) {
+      op = static_cast<const Conditional&>(*op).get_op();
+      conditional = true;
     }
     OpType type = op->get_type();
     if (!is_gate_type(type) || is_projective_type(type) ||
-        allowed_gates.contains(type))
+        allowed_gates.contains(type) || (type == OpType::Phase))
       continue;
     // need to convert
     Circuit replacement = rebase_op(as_gate_ptr(op), tk1_replacement);

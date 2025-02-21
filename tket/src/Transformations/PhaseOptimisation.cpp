@@ -166,8 +166,7 @@ static bool align_phases_all(Circuit &circ) {
         spare_port++;
       }
       // substitute into circuit
-      Subcircuit sub = {
-          {circ.get_in_edges(v)}, {circ.get_all_out_edges(v)}, {v}};
+      Subcircuit sub = circ.singleton_subcircuit(v);
       bin.push_back(v);
       circ.substitute(phase_replacement, sub, Circuit::VertexDeletion::No);
       success = true;

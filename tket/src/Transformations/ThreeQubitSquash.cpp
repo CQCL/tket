@@ -65,7 +65,10 @@ class QInteraction {
 
   unsigned n_vertices() const { return vertices_.size(); }
 
-  Subcircuit subcircuit() const { return {in_edges_, out_edges_, vertices_}; }
+  Subcircuit subcircuit() const {
+    std::vector<std::optional<Edge>> outs{out_edges_.begin(), out_edges_.end()};
+    return {in_edges_, outs, {}, vertices_};
+  }
 
   // Append a vertex following the subcircuit. It is assumed that every input
   // edge of the vertex matches exactly one output edge of the existing

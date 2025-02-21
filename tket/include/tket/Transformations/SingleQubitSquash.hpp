@@ -86,7 +86,7 @@ class AbstractSquasher {
  */
 class SingleQubitSquash {
  private:
-  using Condition = std::optional<std::pair<std::list<VertPort>, unsigned>>;
+  using Condition = std::list<std::pair<std::list<VertPort>, unsigned>>;
 
  public:
   /**

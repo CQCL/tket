@@ -54,9 +54,8 @@ static bool ends_commute(const Circuit &circ, const Edge &e) {
     return false;
   }
 
-  auto colour = circ.commuting_basis(target, PortType::Target, ports.second);
-  return circ.commutes_with_basis(
-      source, colour, PortType::Source, ports.first);
+  auto colour = circ.commuting_basis(target, ports.second);
+  return circ.commutes_with_basis(source, colour, ports.first);
 }
 
 // moves single qubit operations past multiqubit operations they commute with,
@@ -122,7 +121,8 @@ static bool replace_two_qubit_interaction(
     Circuit &circ, Interaction &i, std::map<Qubit, Edge> &current_edges,
     VertexList &bin, OpType target, double cx_fidelity, bool allow_swaps) {
   EdgeVec in_edges = {i.e0, i.e1};
-  EdgeVec out_edges = {current_edges[i.q0], current_edges[i.q1]};
+  std::vector<std::optional<Edge>> out_edges = {
+      current_edges[i.q0], current_edges[i.q1]};
   Edge next0, next1;
   bool q0_is_out = is_final_q_type(
       circ.get_OpType_from_Vertex(circ.target(current_edges[i.q0])));
@@ -137,7 +137,7 @@ static bool replace_two_qubit_interaction(
         circ.target(current_edges[i.q1]), current_edges[i.q1]);
   }
   // Circuit to (potentially) substitute
-  Subcircuit sub = {in_edges, out_edges, i.vertices};
+  Subcircuit sub = {in_edges, out_edges, {}, i.vertices};
   Circuit subc = circ.subcircuit(sub);
 
   // Try to simplify using KAK
@@ -550,7 +550,7 @@ Transform absorb_Rz_NPhasedX() {
               in_e = out_e;
               bin = {};
             }
-            Subcircuit sub{{in_e}, {out_e}, bin};
+            Subcircuit sub{{in_e}, {out_e}, {}, bin};
             Circuit c(1);
             if (!equiv_0(angle, 4)) {
               c.add_op<unsigned>(OpType::Rz, angle, {0});
@@ -569,7 +569,7 @@ Transform absorb_Rz_NPhasedX() {
               out_e = in_e;
               bin = {};
             }
-            sub = Subcircuit{{in_e}, {out_e}, bin};
+            sub = Subcircuit{{in_e}, {out_e}, {}, bin};
             c = Circuit(1);
             if (!equiv_0(angle, 4)) {
               c.add_op<unsigned>(OpType::Rz, angle, {0});
@@ -624,10 +624,10 @@ Transform normalise_TK2() {
 
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
       Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
-      bool conditional = op->get_type() == OpType::Conditional;
-      if (conditional) {
-        const Conditional &cond = static_cast<const Conditional &>(*op);
-        op = cond.get_op();
+      bool conditional = false;
+      while (op->get_type() == OpType::Conditional) {
+        op = static_cast<const Conditional &>(*op).get_op();
+        conditional = true;
       }
       if (op->get_type() == OpType::TK2) {
         auto params = op->get_params();
@@ -667,10 +667,10 @@ Transform round_angles(unsigned n, bool only_zeros) {
     const unsigned pow2n = 1 << n;
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
       Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
-      bool conditional = op->get_type() == OpType::Conditional;
-      if (conditional) {
-        const Conditional &cond = static_cast<const Conditional &>(*op);
-        op = cond.get_op();
+      bool conditional = false;
+      while (op->get_type() == OpType::Conditional) {
+        op = static_cast<const Conditional &>(*op).get_op();
+        conditional = true;
       }
       if (op->get_desc().is_gate()) {
         std::vector<Expr> params = op->get_params();

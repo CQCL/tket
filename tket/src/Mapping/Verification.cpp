@@ -30,10 +30,8 @@ bool respects_connectivity_constraints(
       if (qb_lookup.find(arg) != qb_lookup.end()) qbs.push_back(arg);
     }
     Op_ptr op = com.get_op_ptr();
-    if (op->get_type() == OpType::Conditional) {
-      std::shared_ptr<const Conditional> cond_ptr =
-          std::dynamic_pointer_cast<const Conditional>(op);
-      op = cond_ptr->get_op();
+    while (op->get_type() == OpType::Conditional) {
+      op = static_cast<const Conditional &>(*op).get_op();
     }
     if (op->get_type() == OpType::Barrier) continue;
     if (op->get_type() == OpType::CircBox) {

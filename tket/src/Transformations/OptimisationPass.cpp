@@ -110,8 +110,7 @@ static Transform CXs_from_phase_gadgets(CXConfigType cx_config) {
         unsigned n_qubits = op->n_qubits();
         Circuit replacement =
             phase_gadget(n_qubits, op->get_params()[0], cx_config);
-        Subcircuit sub = {
-            {circ.get_in_edges(a)}, {circ.get_all_out_edges(a)}, {a}};
+        Subcircuit sub = circ.singleton_subcircuit(a);
         circ.substitute(replacement, sub, Circuit::VertexDeletion::Yes);
         success = true;
       }
@@ -143,8 +142,7 @@ Transform synthesise_UMD() {
                Circuit in_circ = CircPool::tk1_to_PhasedXRz(
                    tk1_angles[0], tk1_angles[1], tk1_angles[2]);
                remove_redundancies().apply(in_circ);
-               Subcircuit sub = {
-                   {circ.get_in_edges(v)}, {circ.get_all_out_edges(v)}, {v}};
+               Subcircuit sub = circ.singleton_subcircuit(v);
                bin.push_back(v);
                circ.substitute(in_circ, sub, Circuit::VertexDeletion::No);
                circ.add_phase(tk1_angles[3]);

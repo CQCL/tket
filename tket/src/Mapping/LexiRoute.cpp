@@ -622,19 +622,11 @@ swap_set_t LexiRoute::get_candidate_swaps() {
 }
 
 bool is_vertex_CX(const Circuit& circ_, const Vertex& v) {
-  OpType ot = circ_.get_OpType_from_Vertex(v);
-  if (ot != OpType::CX) {
-    if (ot == OpType::Conditional) {
-      const Conditional& b =
-          static_cast<const Conditional&>(*circ_.get_Op_ptr_from_Vertex(v));
-      if (b.get_op()->get_type() != OpType::CX) {
-        return false;
-      }
-    } else {
-      return false;
-    }
+  Op_ptr op = circ_.get_Op_ptr_from_Vertex(v);
+  while (op->get_type() == OpType::Conditional) {
+    op = static_cast<const Conditional&>(*op).get_op();
   }
-  return true;
+  return op->get_type() == OpType::CX;
 }
 
 std::pair<bool, bool> LexiRoute::check_bridge(
