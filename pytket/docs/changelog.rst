@@ -6,6 +6,7 @@ Changelog
 Features:
 
 * Add :py:attr:`Circuit.has_implicit_wireswaps` property.
+* Add `CustomPassMap`.
 
 1.40.0 (February 2025)
 ----------------------
