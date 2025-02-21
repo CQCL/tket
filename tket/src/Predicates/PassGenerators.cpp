@@ -60,6 +60,7 @@ PassPtr gen_rebase_pass(
   all_types.insert(OpType::Measure);
   all_types.insert(OpType::Collapse);
   all_types.insert(OpType::Reset);
+  all_types.insert(OpType::Phase);
   PredicatePtr postcon1 = std::make_shared<GateSetPredicate>(all_types);
   PredicatePtr postcon2 = std::make_shared<MaxTwoQubitGatesPredicate>();
   std::pair<const std::type_index, PredicatePtr> pair2 =
@@ -91,6 +92,7 @@ PassPtr gen_rebase_pass_via_tk2(
   all_types.insert(OpType::Measure);
   all_types.insert(OpType::Collapse);
   all_types.insert(OpType::Reset);
+  all_types.insert(OpType::Phase);
   PredicatePtr postcon1 = std::make_shared<GateSetPredicate>(all_types);
   PredicatePtr postcon2 = std::make_shared<MaxTwoQubitGatesPredicate>();
   std::pair<const std::type_index, PredicatePtr> pair2 =
@@ -245,6 +247,7 @@ PassPtr gen_auto_rebase_pass(const OpTypeSet& allowed_gates, bool allow_swaps) {
   OpTypeSet all_types(allowed_gates);
   all_types.insert(OpType::Measure);
   all_types.insert(OpType::Reset);
+  all_types.insert(OpType::Phase);
   PredicatePtr postcon1 = std::make_shared<GateSetPredicate>(all_types);
   PredicatePtr postcon2 = std::make_shared<MaxTwoQubitGatesPredicate>();
   std::pair<const std::type_index, PredicatePtr> pair2 =
@@ -878,9 +881,8 @@ PassPtr ThreeQubitSquash(bool allow_swaps) {
 }
 
 PassPtr PeepholeOptimise2Q(bool allow_swaps) {
-  OpTypeSet after_set = {
-      OpType::TK1, OpType::CX, OpType::Measure, OpType::Collapse,
-      OpType::Reset};
+  OpTypeSet after_set = {OpType::TK1,      OpType::CX,    OpType::Measure,
+                         OpType::Collapse, OpType::Reset, OpType::Phase};
   PredicatePtrMap precons = {};
   PredicatePtr out_gateset = std::make_shared<GateSetPredicate>(after_set);
   PredicatePtr max2qb = std::make_shared<MaxTwoQubitGatesPredicate>();
@@ -907,7 +909,8 @@ PassPtr PeepholeOptimise2Q(bool allow_swaps) {
 
 PassPtr FullPeepholeOptimise(bool allow_swaps, OpType target_2qb_gate) {
   OpTypeSet after_set = {
-      OpType::TK1, OpType::Measure, OpType::Collapse, OpType::Reset};
+      OpType::TK1, OpType::Measure, OpType::Collapse, OpType::Reset,
+      OpType::Phase};
   after_set.insert(target_2qb_gate);
   PredicatePtrMap precons = {};
   after_set.insert(all_classical_types().begin(), all_classical_types().end());
@@ -932,9 +935,8 @@ PassPtr gen_optimise_phase_gadgets(CXConfigType cx_config) {
   Transform t = Transforms::optimise_via_PhaseGadget(cx_config);
   PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
   PredicatePtrMap precons{CompilationUnit::make_type_pair(ccontrol_pred)};
-  OpTypeSet after_set{
-      OpType::Measure, OpType::Collapse, OpType::Reset, OpType::TK1,
-      OpType::CX};
+  OpTypeSet after_set{OpType::Measure, OpType::Collapse, OpType::Reset,
+                      OpType::Phase,   OpType::TK1,      OpType::CX};
   std::type_index ti = typeid(ConnectivityPredicate);
   PredicatePtr out_gateset = std::make_shared<GateSetPredicate>(after_set);
   PredicatePtr max2qb = std::make_shared<MaxTwoQubitGatesPredicate>();

@@ -39,6 +39,7 @@ static PassPtr gate_translation_pass(
   after_set.insert(OpType::Measure);
   after_set.insert(OpType::Collapse);
   after_set.insert(OpType::Reset);
+  after_set.insert(OpType::Phase);
   PredicatePtrMap precons;
   std::type_index ti = typeid(ConnectivityPredicate);
   PredicatePtr out_gateset = std::make_shared<GateSetPredicate>(after_set);
@@ -520,10 +521,8 @@ const PassPtr &RemovePhaseOps() {
       BGL_FORALL_VERTICES(v, circ.dag, DAG) {
         Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
         OpType optype = op->get_type();
-        bool conditional = optype == OpType::Conditional;
-        if (conditional) {
-          const Conditional &cond = static_cast<const Conditional &>(*op);
-          op = cond.get_op();
+        while (optype == OpType::Conditional) {
+          op = static_cast<const Conditional &>(*op).get_op();
           optype = op->get_type();
         }
         if (optype == OpType::Phase) {

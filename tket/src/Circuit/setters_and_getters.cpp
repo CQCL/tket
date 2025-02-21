@@ -294,37 +294,16 @@ opt_reg_info_t Circuit::get_reg_info(std::string reg_name) const {
 std::optional<std::string> Circuit::get_wasm_file_uid() const {
   std::optional<std::string> result = std::nullopt;
   BGL_FORALL_VERTICES(v, dag, DAG) {
-    if (get_OpType_from_Vertex(v) == OpType::WASM) {
-      result = (static_cast<const WASMOp &>(*get_Op_ptr_from_Vertex(v)))
-                   .get_wasm_file_uid();
+    Op_ptr op = get_Op_ptr_from_Vertex(v);
+    while (op->get_type() == OpType::Conditional) {
+      op = static_cast<const Conditional &>(*op).get_op();
+    }
+    if (op->get_type() == OpType::WASM) {
+      result = static_cast<const WASMOp &>(*op).get_wasm_file_uid();
       return result;
-    } else if (
-        (get_OpType_from_Vertex(v) == OpType::Conditional) &&
-        (static_cast<const Conditional &>(*get_Op_ptr_from_Vertex(v))
-             .get_op()
-             ->get_type() == OpType::WASM)) {
+    } else if (op->get_type() == OpType::CircBox) {
       result =
-          static_cast<const WASMOp &>(
-              *(static_cast<const Conditional &>(*get_Op_ptr_from_Vertex(v)))
-                   .get_op())
-              .get_wasm_file_uid();
-      return result;
-    } else if (get_OpType_from_Vertex(v) == OpType::CircBox) {
-      result = (static_cast<const CircBox &>(*get_Op_ptr_from_Vertex(v)))
-                   .to_circuit()
-                   ->get_wasm_file_uid();
-      if (result != std::nullopt) return result;
-    } else if (
-        (get_OpType_from_Vertex(v) == OpType::Conditional) &&
-        (static_cast<const Conditional &>(*get_Op_ptr_from_Vertex(v))
-             .get_op()
-             ->get_type() == OpType::CircBox)) {
-      result =
-          (static_cast<const CircBox &>(
-               *(static_cast<const Conditional &>(*get_Op_ptr_from_Vertex(v)))
-                    .get_op()))
-              .to_circuit()
-              ->get_wasm_file_uid();
+          static_cast<const CircBox &>(*op).to_circuit()->get_wasm_file_uid();
       if (result != std::nullopt) return result;
     }
   }
@@ -771,38 +750,16 @@ bool Circuit::detect_singleq_unitary_op(const Vertex &vert) const {
   return desc.is_gate() && desc.is_singleq_unitary();
 }
 
-unsigned Circuit::qubit_index(
-    const Vertex &vert, PortType port_type, port_t port) const {
-  const EdgeVec edges = (port_type == PortType::Source)
-                            ? get_out_edges_of_type(vert, EdgeType::Quantum)
-                            : get_in_edges_of_type(vert, EdgeType::Quantum);
-  unsigned n_edges = edges.size();
-  for (unsigned i = 0; i < n_edges; i++) {
-    const Edge &e = edges[i];
-    port_t p = (port_type == PortType::Source) ? get_source_port(e)
-                                               : get_target_port(e);
-    if (p == port) return i;
-  }
-  throw std::domain_error("Invalid port for vertex");
-}
-
 std::optional<Pauli> Circuit::commuting_basis(
-    const Vertex &vert, PortType port_type, port_t port) const {
+    const Vertex &vert, port_t port) const {
   Op_ptr op = get_Op_ptr_from_Vertex(vert);
-  if (op->get_type() == OpType::Conditional) {
-    op = static_cast<const Conditional &>(*op).get_op();
-  }
-  return op->commuting_basis(qubit_index(vert, port_type, port));
+  return op->commuting_basis(port);
 }
 
 bool Circuit::commutes_with_basis(
-    const Vertex &vert, const std::optional<Pauli> &colour, PortType port_type,
-    port_t port) const {
+    const Vertex &vert, const std::optional<Pauli> &colour, port_t port) const {
   Op_ptr op = get_Op_ptr_from_Vertex(vert);
-  if (op->get_type() == OpType::Conditional) {
-    op = static_cast<const Conditional &>(*op).get_op();
-  }
-  return op->commutes_with_basis(colour, qubit_index(vert, port_type, port));
+  return op->commutes_with_basis(colour, port);
 }
 
 }  // namespace tket

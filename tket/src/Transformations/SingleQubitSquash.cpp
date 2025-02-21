@@ -64,19 +64,21 @@ bool SingleQubitSquash::squash_between(const Edge &in, const Edge &out) {
   std::vector<Gate_ptr> single_chain;
   VertexVec bin;
   bool success = false;
-  Condition condition = std::nullopt;
+  Condition condition = {};
   while (true) {
     Op_ptr v_op = circ_.get_Op_ptr_from_Vertex(v);
     OpType v_type = v_op->get_type();
     bool move_to_next_vertex = false;
     bool reset_search = false;
-    Condition this_condition = std::nullopt;
+    Condition this_condition = {};
 
     if (v_type == OpType::Conditional) {
       // => deal with conditional case
       this_condition = get_condition(v);
-      v_op = static_cast<const Conditional &>(*v_op).get_op();
-      v_type = v_op->get_type();
+      while (v_type == OpType::Conditional) {
+        v_op = static_cast<const Conditional &>(*v_op).get_op();
+        v_type = v_op->get_type();
+      }
 
       if (single_chain.empty()) {
         condition = this_condition;
@@ -100,8 +102,7 @@ bool SingleQubitSquash::squash_between(const Edge &in, const Edge &out) {
         Circuit sub;
         std::optional<Pauli> commutation_colour = std::nullopt;
         if (is_gate_type(v_type) && v_op->n_qubits() > 1) {
-          commutation_colour =
-              circ_.commuting_basis(v, PortType::Target, next_port(e));
+          commutation_colour = circ_.commuting_basis(v, next_port(e));
           move_to_next_vertex = true;
         }
         auto pair = squasher_->flush(commutation_colour);
@@ -145,7 +146,7 @@ bool SingleQubitSquash::squash_between(const Edge &in, const Edge &out) {
       bin.clear();
       single_chain.clear();
       squasher_->clear();
-      condition = std::nullopt;
+      condition = {};
     }
   }
   return success;
@@ -157,7 +158,7 @@ void SingleQubitSquash::substitute(
   // backup edge
   VertPort backup = {next_vertex(e), next_port(e)};
 
-  if (condition) {
+  if (!condition.empty()) {
     circ_.substitute_conditional(
         sub, single_chain.front(), Circuit::VertexDeletion::No);
   } else {
@@ -197,12 +198,13 @@ bool SingleQubitSquash::path_exists(
 
 bool SingleQubitSquash::commute_ok(
     const Edge &e, const Condition &condition) const {
-  if (!condition) return true;
-  std::list<VertPort> vps = condition->first;
   VertexSet vs;
-  for (const VertPort &vp : vps) {
-    vs.insert(vp.first);
+  for (const std::pair<std::list<VertPort>, unsigned> &cond : condition) {
+    for (const VertPort &vp : cond.first) {
+      vs.insert(vp.first);
+    }
   }
+  if (vs.empty()) return true;
   if (reversed_) {
     // Return true iff there is no path in the DAG from source(e) to any vertex
     // in vs. (Such a path would introduce a cycle after the commutation.)
@@ -222,13 +224,16 @@ void SingleQubitSquash::insert_left_over_gate(
   }
   EdgeVec preds;
   op_signature_t sigs;
-  if (condition) {
+  // Conditions are ordered from outermost to innermost; iterate in reverse to
+  // build back up in the same order
+  for (auto c_rit = condition.rbegin(); c_rit != condition.rend(); ++c_rit) {
     left_over = std::make_shared<Conditional>(
-        left_over, (unsigned)condition->first.size(), condition->second);
+        left_over, (unsigned)c_rit->first.size(), c_rit->second);
   }
   Vertex new_v = circ_.add_vertex(left_over);
-  if (condition) {
-    for (const VertPort &vp : condition->first) {
+  // Arguments consider outermost conditions first, so iterate in forwards order
+  for (const std::pair<std::list<VertPort>, unsigned> &c : condition) {
+    for (const VertPort &vp : c.first) {
       preds.push_back(circ_.get_nth_out_edge(vp.first, vp.second));
       sigs.push_back(EdgeType::Boolean);
     }
@@ -269,16 +274,22 @@ SingleQubitSquash::Condition SingleQubitSquash::get_condition(Vertex v) const {
   if (v_type != OpType::Conditional) {
     throw BadOpType("Cannot get condition from non-conditional OpType", v_type);
   }
-  const Conditional &cond_op = static_cast<const Conditional &>(*v_op);
+  Condition conds = {};
+  unsigned port_offset = 0;
   EdgeVec ins = circ_.get_in_edges(v);
-  Condition cond = std::pair<std::list<VertPort>, unsigned>();
-  for (port_t p = 0; p < cond_op.get_width(); ++p) {
-    Edge in_p = ins.at(p);
-    VertPort vp = {circ_.source(in_p), circ_.get_source_port(in_p)};
-    cond->first.push_back(vp);
+  while (v_type == OpType::Conditional) {
+    const Conditional &cond_op = static_cast<const Conditional &>(*v_op);
+    std::list<VertPort> bool_ports;
+    for (port_t p = 0; p < cond_op.get_width(); ++p) {
+      Edge in_p = ins.at(port_offset + p);
+      VertPort vp = {circ_.source(in_p), circ_.get_source_port(in_p)};
+      bool_ports.push_back(vp);
+    }
+    conds.push_back({bool_ports, cond_op.get_value()});
+    v_op = cond_op.get_op();
+    v_type = v_op->get_type();
   }
-  cond->second = cond_op.get_value();
-  return cond;
+  return conds;
 }
 
 // simple utils respecting reversed boolean

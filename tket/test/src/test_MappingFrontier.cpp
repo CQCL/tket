@@ -475,7 +475,7 @@ SCENARIO("Test permute_subcircuit_q_out_hole.") {
     mf.advance_frontier_boundary(shared_arc);
     Subcircuit sc = mf.get_frontier_subcircuit(2, 5);
     // assume only 1 subcircuit
-    EdgeVec original_q_out = sc.q_out_hole;
+    std::vector<std::optional<Edge>> original_out = sc.out_hole;
 
     unit_map_t permutation = {
         {nodes[0], nodes[1]},
@@ -484,12 +484,12 @@ SCENARIO("Test permute_subcircuit_q_out_hole.") {
         {nodes[3], nodes[0]}};
     mf.permute_subcircuit_q_out_hole(permutation, sc);
 
-    EdgeVec permuted_q_out = sc.q_out_hole;
+    std::vector<std::optional<Edge>> permuted_out = sc.out_hole;
 
-    REQUIRE(original_q_out[1] == permuted_q_out[0]);
-    REQUIRE(original_q_out[2] == permuted_q_out[1]);
-    REQUIRE(original_q_out[3] == permuted_q_out[2]);
-    REQUIRE(original_q_out[0] == permuted_q_out[3]);
+    REQUIRE(*original_out[1] == *permuted_out[0]);
+    REQUIRE(*original_out[2] == *permuted_out[1]);
+    REQUIRE(*original_out[3] == *permuted_out[2]);
+    REQUIRE(*original_out[0] == *permuted_out[3]);
   }
   GIVEN("A four qubit subcircuit with a partial permutation.") {
     Circuit circ(0);
@@ -520,7 +520,7 @@ SCENARIO("Test permute_subcircuit_q_out_hole.") {
     mf.advance_frontier_boundary(shared_arc);
     Subcircuit sc = mf.get_frontier_subcircuit(2, 5);
     // assume only 1 subcircuit
-    EdgeVec original_q_out = sc.q_out_hole;
+    std::vector<std::optional<Edge>> original_out = sc.out_hole;
 
     unit_map_t permutation = {
         {nodes[0], nodes[1]},
@@ -529,12 +529,12 @@ SCENARIO("Test permute_subcircuit_q_out_hole.") {
         {nodes[3], nodes[3]}};
     mf.permute_subcircuit_q_out_hole(permutation, sc);
 
-    EdgeVec permuted_q_out = sc.q_out_hole;
+    std::vector<std::optional<Edge>> permuted_out = sc.out_hole;
 
-    REQUIRE(original_q_out[1] == permuted_q_out[0]);
-    REQUIRE(original_q_out[0] == permuted_q_out[1]);
-    REQUIRE(original_q_out[2] == permuted_q_out[2]);
-    REQUIRE(original_q_out[3] == permuted_q_out[3]);
+    REQUIRE(*original_out[1] == *permuted_out[0]);
+    REQUIRE(*original_out[0] == *permuted_out[1]);
+    REQUIRE(*original_out[2] == *permuted_out[2]);
+    REQUIRE(*original_out[3] == *permuted_out[3]);
   }
 }
 SCENARIO("Test MappingFrontier::advance_next_2qb_slice") {

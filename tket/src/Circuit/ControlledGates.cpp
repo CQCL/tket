@@ -455,13 +455,14 @@ static void lemma73(Circuit& circ, const std::pair<Edge, Vertex>& pairy) {
     throw Unsupported(
         "Lemma 7.3 cannot decompose CnX with n = " + std::to_string(N - 1));
 
-  EdgeVec out_edges = circ.get_all_out_edges(original_cnx);
+  std::vector<std::optional<Edge>> out_edges =
+      circ.get_linear_out_edges(original_cnx);
 
   in_edges.insert(in_edges.begin() + in_edges.size() - 1, original_spare_edge);
   out_edges.insert(
       out_edges.begin() + out_edges.size() - 1, original_spare_edge);
 
-  Subcircuit to_delete{in_edges, out_edges, {original_cnx}};
+  Subcircuit to_delete{in_edges, out_edges, {}, {original_cnx}};
   bool odd_N = N % 2;
   unsigned m1 = (N + 1) / 2;  // number of controls on the first type of CnX
   unsigned m2 = N - m1 - 1;   // number of controls on the second type of CnX
@@ -601,10 +602,7 @@ static void lemma73(Circuit& circ, const std::pair<Edge, Vertex>& pairy) {
   for (auto next = vit; vit != vend; vit = next) {
     ++next;
     if (new_circ.get_OpType_from_Vertex(*vit) == OpType::CCX) {
-      Subcircuit sub{
-          new_circ.get_in_edges(*vit),
-          new_circ.get_all_out_edges(*vit),
-          {*vit}};
+      Subcircuit sub = new_circ.singleton_subcircuit(*vit);
       if (normal_decomp_vertices.find(*vit) == normal_decomp_vertices.end()) {
         new_circ.substitute(
             CCX_modulo_phase_shift(), sub, Circuit::VertexDeletion::Yes);
@@ -790,7 +788,7 @@ Circuit CnRy_normal_decomp(const Op_ptr op, unsigned arity) {
         if (type == OpType::CRy) {
           Expr x_angle = rep.get_Op_ptr_from_Vertex(*x)->get_params()[0];
           Circuit new_circ = CircPool::CRy_using_CX(x_angle);
-          Subcircuit sub{rep.get_in_edges(*x), rep.get_all_out_edges(*x), {*x}};
+          Subcircuit sub = rep.singleton_subcircuit(*x);
           rep.substitute(new_circ, sub, Circuit::VertexDeletion::Yes);
         } else if (type == OpType::CRz) {
           throw ControlDecompError(

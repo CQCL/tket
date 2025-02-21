@@ -84,8 +84,7 @@ vertex_is_succeeded_only_by_z_basis_measurements_with_which_it_commutes(
 
   return std::all_of(ports.cbegin(), ports.cend(), [&](port_t port) {
     return vertex_is_a_measurement(circuit, successors[port]) &&
-           circuit.commutes_with_basis(
-               vertex, Pauli::Z, PortType::Source, port);
+           circuit.commutes_with_basis(vertex, Pauli::Z, port);
   });
 }
 

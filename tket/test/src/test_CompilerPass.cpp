@@ -1186,6 +1186,16 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     REQUIRE(test_unitary_comparison(result, circ));
     REQUIRE(NoWireSwapsPredicate().verify(result));
   }
+  GIVEN("A circuit with some global phase to be preserved") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::ZZMax, {2, 1});
+    circ.add_op<unsigned>(OpType::Phase, 0.974579, std::vector<unsigned>{});
+    circ.add_op<unsigned>(OpType::CCX, {0, 1, 2});
+    circ.add_phase(0.23428);
+    CompilationUnit cu(circ);
+    ComposePhasePolyBoxes()->apply(cu);
+    REQUIRE(test_unitary_comparison(circ, cu.get_circ_ref()));
+  }
 }
 
 SCENARIO("DecomposeArbitrarilyControlledGates test") {
@@ -1313,11 +1323,17 @@ SCENARIO("Commute measurements to the end of a circuit") {
     REQUIRE(mid_meas_pred->verify(cu.get_circ_ref()));
   }
   GIVEN("Gates after measure") {
+    Circuit inner(2);
+    inner.add_op<unsigned>(OpType::ZZMax, {0, 1});
+    inner.add_op<unsigned>(OpType::Y, {1});
+    Op_ptr box_op = std::make_shared<CircBox>(inner);
     Circuit c(2, 2);
     c.add_op<unsigned>(OpType::Measure, {0, 1});
     c.add_op<unsigned>(OpType::Z, {0});
     c.add_op<unsigned>(OpType::CX, {0, 1});
     c.add_op<unsigned>(OpType::Rx, 0.3, {1});
+    c.add_conditional_gate<unsigned>(OpType::CZ, {}, {0, 1}, {0}, 1);
+    c.add_op<UnitID>(box_op, {Qubit(0), Qubit(1)});
     c.add_op<unsigned>(OpType::SWAP, {0, 1});
     c.add_op<unsigned>(OpType::Measure, {0, 0});
     CompilationUnit cu(c);
@@ -1327,6 +1343,8 @@ SCENARIO("Commute measurements to the end of a circuit") {
     expected.add_op<unsigned>(OpType::Z, {0});
     expected.add_op<unsigned>(OpType::CX, {0, 1});
     expected.add_op<unsigned>(OpType::Rx, 0.3, {1});
+    expected.add_conditional_gate<unsigned>(OpType::CZ, {}, {0, 1}, {0}, 1);
+    expected.add_op<UnitID>(box_op, {Qubit(0), Qubit(1)});
     expected.add_op<unsigned>(OpType::SWAP, {0, 1});
     expected.add_op<unsigned>(OpType::Measure, {0, 0});
     expected.add_op<unsigned>(OpType::Measure, {1, 1});
@@ -1378,6 +1396,23 @@ SCENARIO("Commute measurements to the end of a circuit") {
     c.add_op<unsigned>(OpType::Measure, {0, 0});
     c.add_op<unsigned>(OpType::Z, {0});
     c.add_conditional_gate<unsigned>(OpType::Z, {}, {1}, {0}, 1);
+    CompilationUnit cu(c);
+    REQUIRE(try_delay_pass->apply(cu));
+  }
+  GIVEN("Measure blocked by conditional SWAP") {
+    Circuit c(2, 2);
+    c.add_op<unsigned>(OpType::CZ, {0, 1});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_conditional_gate<unsigned>(OpType::SWAP, {}, {0, 1}, {1}, 1);
+    CompilationUnit cu(c);
+    REQUIRE_THROWS_AS(delay_pass->apply(cu), UnsatisfiedPredicate);
+  }
+  GIVEN("Measure partially blocked by conditional SWAP") {
+    Circuit c(2, 2);
+    c.add_op<unsigned>(OpType::CZ, {0, 1});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::Z, {0});
+    c.add_conditional_gate<unsigned>(OpType::SWAP, {}, {0, 1}, {1}, 1);
     CompilationUnit cu(c);
     REQUIRE(try_delay_pass->apply(cu));
   }

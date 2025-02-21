@@ -31,7 +31,9 @@ bool Circuit::is_simple() const {
   if (!default_regs_ok()) return false;
   for (const BoundaryElement& el : boundary.get<TagID>()) {
     std::string reg = el.id_.reg_name();
-    if (!(reg == q_default_reg() || reg == c_default_reg())) return false;
+    if (!(reg == q_default_reg() || reg == c_default_reg() ||
+          reg == w_default_reg()))
+      return false;
   }
   return true;
 }
@@ -43,6 +45,9 @@ bool Circuit::default_regs_ok() const {
   opt_reg_info_t c_info = get_reg_info(c_default_reg());
   register_info_t correct_c_info = {UnitType::Bit, 1};
   if (c_info && c_info.value() != correct_c_info) return false;
+  opt_reg_info_t w_info = get_reg_info(w_default_reg());
+  register_info_t correct_w_info = {UnitType::WasmState, 1};
+  if (w_info && w_info.value() != correct_w_info) return false;
   return true;
 }
 
@@ -56,16 +61,11 @@ unsigned Circuit::count_gates(
     const OpType& op_type, const bool include_conditional) const {
   unsigned counter = 0;
   BGL_FORALL_VERTICES(v, dag, DAG) {
-    if (get_OpType_from_Vertex(v) == op_type) {
-      ++counter;
-    } else if (
-        include_conditional &&
-        (get_OpType_from_Vertex(v) == OpType::Conditional) &&
-        (static_cast<const Conditional&>(*get_Op_ptr_from_Vertex(v))
-             .get_op()
-             ->get_type() == op_type)) {
-      ++counter;
+    Op_ptr op = get_Op_ptr_from_Vertex(v);
+    while (include_conditional && op->get_type() == OpType::Conditional) {
+      op = static_cast<const Conditional&>(*op).get_op();
     }
+    if (op->get_type() == op_type) ++counter;
   }
   return counter;
 }
@@ -116,47 +116,81 @@ unsigned Circuit::count_n_qubit_gates(unsigned size) const {
 
 Circuit Circuit::subcircuit(const Subcircuit& sc) const {
   Circuit sub;
+  // A map from vertices in *this to vertices in sub. There may be some vertices
+  // in *this corresponding to multiple distinct boundary vertices in sub, in
+  // which case an arbitrary one is given here and we use in_boundary_map or
+  // out_boundary_map to distinguish
   vertex_map_t vmap;
-  VertexVec q_ins;
-  VertexVec q_outs;
-  VertexVec c_ins;
-  VertexVec c_outs;
+  VertexVec ins;
+  VertexVec outs;
   std::map<Edge, Vertex> in_boundary_map;
   std::map<Edge, Vertex> out_boundary_map;
-  for (const Edge& e : sc.q_in_hole) {
-    Vertex added = sub.add_vertex(OpType::Input);
-    vmap[source(e)] = added;
-    q_ins.push_back(added);
-    in_boundary_map.insert({e, added});
-  }
-  for (const Edge& e : sc.q_out_hole) {
-    Vertex added = sub.add_vertex(OpType::Output);
-    vmap[target(e)] = added;
-    q_outs.push_back(added);
-    out_boundary_map.insert({e, added});
-  }
-  for (const Edge& e : sc.c_in_hole) {
-    Vertex added = sub.add_vertex(OpType::ClInput);
-    vmap[source(e)] = added;
-    c_ins.push_back(added);
-    in_boundary_map.insert({e, added});
-  }
-  for (const Edge& e : sc.c_out_hole) {
-    Vertex added = sub.add_vertex(OpType::ClOutput);
-    vmap[target(e)] = added;
-    c_outs.push_back(added);
-    out_boundary_map.insert({e, added});
-  }
-  for (unsigned i = 0; i < q_ins.size(); i++) {
-    sub.boundary.insert({Qubit(i), q_ins[i], q_outs[i]});
-  }
-  for (unsigned i = 0; i < c_ins.size(); i++) {
-    sub.boundary.insert({Bit(i), c_ins[i], c_outs[i]});
+  unsigned n_qbs = 0;
+  unsigned n_bits = 0;
+  unsigned n_wasm = 0;
+  for (unsigned i = 0; i < sc.in_hole.size(); ++i) {
+    Edge in_edge = sc.in_hole.at(i);
+    std::optional<Edge> out_edge = sc.out_hole.at(i);
+    switch (get_edgetype(in_edge)) {
+      case EdgeType::Quantum: {
+        TKET_ASSERT(out_edge.has_value());
+        Vertex in = sub.add_vertex(OpType::Input);
+        Vertex out = sub.add_vertex(OpType::Output);
+        sub.boundary.insert({Qubit(n_qbs), in, out});
+        ++n_qbs;
+        vmap[source(in_edge)] = in;
+        in_boundary_map.insert({in_edge, in});
+        vmap[target(*out_edge)] = out;
+        out_boundary_map.insert({*out_edge, out});
+        break;
+      }
+      case EdgeType::Classical: {
+        TKET_ASSERT(out_edge.has_value());
+        Vertex in = sub.add_vertex(OpType::ClInput);
+        Vertex out = sub.add_vertex(OpType::ClOutput);
+        sub.boundary.insert({Bit(n_bits), in, out});
+        ++n_bits;
+        vmap[source(in_edge)] = in;
+        in_boundary_map.insert({in_edge, in});
+        vmap[target(*out_edge)] = out;
+        out_boundary_map.insert({*out_edge, out});
+        break;
+      }
+      case EdgeType::Boolean: {
+        TKET_ASSERT(!out_edge.has_value());
+        Vertex in = sub.add_vertex(OpType::ClInput);
+        Vertex out = sub.add_vertex(OpType::ClOutput);
+        sub.boundary.insert({Bit(n_bits), in, out});
+        ++n_bits;
+        sub.add_edge({in, 0}, {out, 0}, EdgeType::Classical);
+        vmap[source(in_edge)] = in;
+        in_boundary_map.insert({in_edge, in});
+        break;
+      }
+      case EdgeType::WASM: {
+        TKET_ASSERT(out_edge.has_value());
+        Vertex in = sub.add_vertex(OpType::WASMInput);
+        Vertex out = sub.add_vertex(OpType::WASMOutput);
+        sub.boundary.insert({WasmState(n_wasm), in, out});
+        sub.wasmwire.push_back(WasmState(n_wasm));
+        ++sub._number_of_wasm_wires;
+        ++n_wasm;
+        vmap[source(in_edge)] = in;
+        in_boundary_map.insert({in_edge, in});
+        vmap[target(*out_edge)] = out;
+        out_boundary_map.insert({*out_edge, out});
+        break;
+      }
+      default: {
+        TKET_ASSERT(false);
+      }
+    }
   }
   for (const Vertex& v : sc.verts) {
     Vertex added = sub.add_vertex(get_Op_ptr_from_Vertex(v));
     vmap[v] = added;
   }
+  // Add edges into internal vertices
   for (const Vertex& v : sc.verts) {
     // iterate through original circuit as order of the set varies between Mac
     // and Docker
@@ -165,50 +199,39 @@ Circuit Circuit::subcircuit(const Subcircuit& sc) const {
       Vertex sub_source = vmap.at(source);
       port_t in_port = get_source_port(e);
       OpType type = sub.get_OpType_from_Vertex(sub_source);
-      if (is_initial_q_type(type) || type == OpType::ClInput) {
-        Edge boundary_edge = get_linear_edge(e);
+      if (is_initial_q_type(type) || type == OpType::ClInput ||
+          type == OpType::WASMInput) {
         // Multiple inputs might be mapped to the same source
         // so need to distinguish them.
-        sub_source = in_boundary_map.at(boundary_edge);
+        sub_source = in_boundary_map.at(e);
         in_port = 0;
       }
       sub.add_edge(
-          {sub_source, in_port}, {vmap.at(v), get_target_port(e)}, dag[e].type);
+          {sub_source, in_port}, {vmap.at(v), get_target_port(e)},
+          get_edgetype(e));
     }
   }
-  for (const Edge& e : sc.q_out_hole) {
-    // Multiple outputs might be mapped to the same target
-    // so need to distinguish them.
-    Vertex out = out_boundary_map[e];
-    Vertex sub_source = vmap.at(source(e));
-    port_t in_port = get_source_port(e);
-    std::map<Edge, Vertex>::iterator found = in_boundary_map.find(e);
-    if (found != in_boundary_map.end()) {
-      sub_source = found->second;
-      in_port = 0;
+  // Add edges into outputs
+  for (const std::optional<Edge>& e : sc.out_hole) {
+    if (e.has_value()) {
+      Vertex out = out_boundary_map.at(*e);
+      Vertex sub_source = vmap.at(source(*e));
+      port_t in_port = get_source_port(*e);
+      std::map<Edge, Vertex>::iterator found = in_boundary_map.find(*e);
+      if (found != in_boundary_map.end()) {
+        sub_source = found->second;
+        in_port = 0;
+      }
+      sub.add_edge({sub_source, in_port}, {out, 0}, get_edgetype(*e));
     }
-    sub.add_edge({sub_source, in_port}, {out, 0}, EdgeType::Quantum);
-  }
-  for (const Edge& e : sc.c_out_hole) {
-    Vertex out = out_boundary_map[e];
-    Vertex sub_source = vmap.at(source(e));
-    port_t in_port = get_source_port(e);
-    std::map<Edge, Vertex>::iterator found = in_boundary_map.find(e);
-    if (found != in_boundary_map.end()) {
-      sub_source = found->second;
-      in_port = 0;
-    }
-    sub.add_edge({sub_source, in_port}, {out, 0}, EdgeType::Classical);
   }
   return sub;
 }
 
 Subcircuit Circuit::singleton_subcircuit(const Vertex& v) const {
   return {
-      get_in_edges_of_type(v, EdgeType::Quantum),
-      get_out_edges_of_type(v, EdgeType::Quantum),
-      get_in_edges_of_type(v, EdgeType::Classical),
-      get_out_edges_of_type(v, EdgeType::Classical),
+      get_in_edges(v),
+      get_linear_out_edges(v),
       get_out_edges_of_type(v, EdgeType::Boolean),
       {v}};
 }
@@ -253,6 +276,9 @@ std::map<UnitID, QPathDetailed> Circuit::all_unit_paths() const {
   }
   for (const Bit& b : all_bits()) {
     new_list_of_paths.insert({b, unit_path(b)});
+  }
+  for (const WasmState& w : wasmwire) {
+    new_list_of_paths.insert({w, unit_path(w)});
   }
   return new_list_of_paths;
 }
@@ -515,6 +541,14 @@ std::map<Edge, UnitID> Circuit::edge_unit_map() const {
     QPathDetailed::const_iterator it = path.second.begin();
     for (++it; it != path.second.end(); ++it) {
       map.insert({get_nth_in_edge(it->first, it->second), path.first});
+    }
+  }
+  // Boolean edges are non-linear so are not added by the traces, but we can
+  // still link them to bits
+  BGL_FORALL_EDGES(e, dag, DAG) {
+    if (get_edgetype(e) == EdgeType::Boolean) {
+      Edge linear_edge = get_linear_edge(e);
+      map.insert({e, map.at(linear_edge)});
     }
   }
   return map;

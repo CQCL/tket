@@ -194,6 +194,22 @@ SCENARIO("test conditional count") {
     REQUIRE(circ.count_gates(OpType::CX, true) == 0);
     REQUIRE(circ.count_gates(OpType::H, true) == 5);
   }
+  GIVEN("A circuit with nested conditionals") {
+    Circuit c0(1, 1);
+    c0.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
+    c0.add_op<unsigned>(OpType::X, {0});
+    Op_ptr cbox_op = std::make_shared<CircBox>(c0);
+    Op_ptr cond_cond_x = std::make_shared<Conditional>(cbox_op, 1, 1);
+    Circuit circ(1, 2);
+    circ.add_op<UnitID>(cond_cond_x, {Bit(0), Qubit(0), Bit(1)});
+    circ.add_op<unsigned>(OpType::X, {0});
+    circ.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 0);
+    Transforms::decomp_boxes().apply(circ);
+    REQUIRE(circ.n_qubits() == 1);
+    REQUIRE(circ.n_bits() == 2);
+    REQUIRE(circ.count_gates(OpType::X, false) == 1);
+    REQUIRE(circ.count_gates(OpType::X, true) == 4);
+  }
 }
 
 SCENARIO("Creating gates via Qubits and Registers") {
@@ -883,7 +899,7 @@ SCENARIO(
       Edge e2 = test2.get_nth_in_edge(x2, 0);
       Edge e3 = test2.get_nth_out_edge(x1, 0);
       Edge e4 = test2.get_nth_out_edge(x2, 0);
-      Subcircuit sub = {{e1, e2}, {e3, e4}, {x1, x2}};
+      Subcircuit sub = {{e1, e2}, {e3, e4}, {}, {x1, x2}};
       test2.substitute(test, sub);
       REQUIRE(test2.get_slices().size() == depth_before);
       test2.assert_valid();
@@ -893,7 +909,7 @@ SCENARIO(
       Edge f2 = test.get_nth_in_edge(h2, 0);
       Edge f3 = test.get_nth_out_edge(h1, 0);
       Edge f4 = test.get_nth_out_edge(h2, 0);
-      Subcircuit sub = {{f1, f2}, {f3, f4}, {h1, h2}};
+      Subcircuit sub = {{f1, f2}, {f3, f4}, {}, {h1, h2}};
       test.substitute(test2, sub, Circuit::VertexDeletion::Yes);
       REQUIRE(test.get_slices().size() == depth_before);
       test.assert_valid();
@@ -904,7 +920,7 @@ SCENARIO(
       Edge e2 = test2.get_nth_in_edge(x2, 0);
       Edge e3 = test2.get_nth_out_edge(x1, 0);
       Edge e4 = test2.get_nth_out_edge(x2, 0);
-      Subcircuit sub = {{e1, e2}, {e3, e4}, {x1, x2}};
+      Subcircuit sub = {{e1, e2}, {e3, e4}, {}, {x1, x2}};
       test2.substitute(test, sub);
       qmap.insert({Qubit(0), Qubit("a", 1)});
       qmap.insert({Qubit(1), Qubit("b", 0)});
@@ -920,21 +936,35 @@ SCENARIO(
         circ.add_conditional_gate<unsigned>(OpType::Z, {}, {0}, {0}, 1);
     Vertex condcx =
         circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
-    Subcircuit sub = {
-        circ.get_in_edges_of_type(condz, EdgeType::Quantum),
-        circ.get_out_edges_of_type(condz, EdgeType::Quantum),
-        circ.get_out_edges_of_type(meas, EdgeType::Classical),
-        circ.get_out_edges_of_type(meas, EdgeType::Classical),
-        circ.get_in_edges_of_type(condcx, EdgeType::Boolean),
-        {condz}};
+    Subcircuit sub = circ.singleton_subcircuit(condz);
     Circuit rep(1, 1);
-    rep.add_op<unsigned>(OpType::Measure, {0, 0});
+    rep.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 0);
     circ.substitute(rep, sub, Circuit::VertexDeletion::Yes);
-    REQUIRE(circ.get_commands()[2].get_op_ptr()->get_type() == OpType::Measure);
-    Vertex source_of_condition = circ.source(circ.get_nth_in_edge(condcx, 0));
     REQUIRE(
-        circ.get_OpType_from_Vertex(source_of_condition) == OpType::Measure);
-    REQUIRE(source_of_condition != meas);
+        circ.get_commands()[2].get_op_ptr()->get_type() == OpType::Conditional);
+    Vertex source_of_condition = circ.source(circ.get_nth_in_edge(condcx, 0));
+    REQUIRE(source_of_condition == meas);
+  }
+  GIVEN("Circuits with WASM") {
+    Circuit circ(1, 2);
+    Op_ptr wop_ptr = std::make_shared<WASMOp>(
+        3, 2, std::vector<unsigned>{1, 1}, std::vector<unsigned>{1}, "wasmfunc",
+        "path/to/file");
+    Vertex wv = circ.add_op<UnitID>(
+        wop_ptr, {Bit(0), Bit(1), Bit(0), WasmState(0), WasmState(1)});
+    circ.assert_valid();
+    Subcircuit sub = circ.singleton_subcircuit(wv);
+
+    Circuit rep(0, 3);
+    rep.add_wasm_register(2);
+    Op_ptr wop_ptr2 = std::make_shared<WASMOp>(
+        2, 1, std::vector<unsigned>{1}, std::vector<unsigned>{1}, "smallerfunc",
+        "path/to/file2");
+    rep.add_op<UnitID>(wop_ptr2, {Bit(0), Bit(2), WasmState(1)});
+    circ.substitute(rep, sub, Circuit::VertexDeletion::Yes);
+    circ.assert_valid();
+    REQUIRE(circ.n_vertices() == 11);
+    REQUIRE(circ.get_commands().at(0).to_str() == "WASM c[0], c[0], _w[1];");
   }
 }
 
@@ -942,7 +972,7 @@ SCENARIO("Test that subsituting edge cases works correctly") {
   GIVEN("A circuit with 1 op acting on all qubits") {
     Circuit test(2);
     Vertex cx = test.add_op<unsigned>(OpType::CX, {0, 1});
-    Subcircuit sub = {test.get_in_edges(cx), test.get_all_out_edges(cx), {cx}};
+    Subcircuit sub = test.singleton_subcircuit(cx);
     Qubit qb0(0);
     Qubit qb1(1);
     WHEN("A cross-wire is substituted") {
@@ -981,11 +1011,11 @@ SCENARIO("Test that subsituting edge cases works correctly") {
     for (const Vertex& i : test2.q_inputs()) {
       ins.push_back(test2.get_nth_out_edge(i, 0));
     }
-    EdgeVec outs;
+    std::vector<std::optional<Edge>> outs;
     for (const Vertex& o : test2.q_outputs()) {
       outs.push_back(test2.get_nth_in_edge(o, 0));
     }
-    Subcircuit sub = {ins, outs, {x1, rx, cx1, cx2, cx3, x2, swap}};
+    Subcircuit sub = {ins, outs, {}, {x1, rx, cx1, cx2, cx3, x2, swap}};
     WHEN("A single vertex is substituted") {
       Circuit test3(4);
       test3.add_barrier({0, 1, 2, 3});
@@ -1006,8 +1036,8 @@ SCENARIO("Test that subsituting edge cases works correctly") {
     Vertex cz = circ.add_op<unsigned>(OpType::CZ, {0, 1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     Subcircuit subcirc;
-    subcirc.q_in_hole = circ.get_all_out_edges(cz);
-    subcirc.q_out_hole = circ.get_all_out_edges(cz);
+    subcirc.in_hole = circ.get_all_out_edges(cz);
+    subcirc.out_hole = circ.get_linear_out_edges(cz);
     circ.substitute(to_sub, subcirc, Circuit::VertexDeletion::Yes);
     REQUIRE(circ.n_gates() == 4);
     REQUIRE(circ.count_gates(OpType::CZ) == 2);
@@ -1236,6 +1266,7 @@ SCENARIO("Test that subcircuits are correctly generated") {
     Subcircuit s = {
         circ.get_in_edges(cx),
         {circ.get_nth_out_edge(z, 0), circ.get_nth_out_edge(cx, 1)},
+        {},
         {cx, z}};
     Circuit sub = circ.subcircuit(s);
     bool test =
@@ -1250,21 +1281,45 @@ SCENARIO("Test that subcircuits are correctly generated") {
   GIVEN("A subcircuit with conditional gates") {
     Circuit circ(2, 1);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    Vertex meas = circ.add_op<unsigned>(OpType::Measure, {0, 0});
+    circ.add_op<unsigned>(OpType::Measure, {0, 0});
     Vertex condz =
         circ.add_conditional_gate<unsigned>(OpType::Z, {}, {0}, {0}, 1);
-    Vertex condcx =
-        circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
-    Subcircuit s = {
-        circ.get_in_edges_of_type(condz, EdgeType::Quantum),
-        circ.get_out_edges_of_type(condz, EdgeType::Quantum),
-        circ.get_out_edges_of_type(meas, EdgeType::Classical),
-        circ.get_out_edges_of_type(meas, EdgeType::Classical),
-        circ.get_in_edges_of_type(condcx, EdgeType::Boolean),
-        {condz}};
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    Subcircuit s = circ.singleton_subcircuit(condz);
     Circuit sub = circ.subcircuit(s);
     REQUIRE(
         sub.get_commands()[0].get_op_ptr()->get_type() == OpType::Conditional);
+  }
+  GIVEN("A subcircuit of multiple gates, including all kinds of edges") {
+    Circuit circ(2, 2);
+    circ.add_conditional_gate<unsigned>(OpType::Z, {}, {0}, {0}, 1);
+    Vertex cx = circ.add_op<unsigned>(OpType::CX, {0, 1});
+    Vertex cond_y =
+        circ.add_conditional_gate<unsigned>(OpType::Y, {}, {0}, {0}, 1);
+    Op_ptr wop_ptr = std::make_shared<WASMOp>(
+        3, 2, std::vector<unsigned>{1, 1}, std::vector<unsigned>{1}, "wasmfunc",
+        "path/to/file");
+    Vertex wv = circ.add_op<UnitID>(
+        wop_ptr, {Bit(0), Bit(1), Bit(0), WasmState(0), WasmState(1)});
+    circ.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
+    Subcircuit s = circ.make_subcircuit({cx, cond_y, wv});
+    Circuit sub = circ.subcircuit(s);
+    sub.assert_valid();
+    REQUIRE(sub.get_commands().size() == 3);
+    CHECK(sub.get_commands()[0].get_op_ptr()->get_type() == OpType::WASM);
+    CHECK(sub.get_commands()[1].get_op_ptr()->get_type() == OpType::CX);
+    CHECK(
+        sub.get_commands()[2].get_op_ptr()->get_type() == OpType::Conditional);
+    THEN("Substitute with a blank circuit to check it wires up correctly") {
+      // Each Boolean input to the subcircuit is treated as a separate classical
+      // wire
+      Circuit blank(2, 4);
+      blank.add_wasm_register(2);
+      circ.substitute(blank, s, Circuit::VertexDeletion::Yes);
+      REQUIRE(circ.get_commands().size() == 2);
+      CHECK(circ.get_commands()[0].to_str() == "IF ([c[0]] == 1) THEN Z q[0];");
+      CHECK(circ.get_commands()[1].to_str() == "IF ([c[0]] == 1) THEN X q[0];");
+    }
   }
 }
 
