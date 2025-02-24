@@ -5,7 +5,7 @@ Contains :py:class:`Backend` abstract class and associated methods. In pytket a 
 
 If you are interested in developing your own :py:class:`Backend` or pytket extension then see the `creating backends <https://docs.quantinuum.com/tket/user-guide/examples/backends/creating_backends.html>`_ tutorial.
 
-Documentation relating to Quantinuum systems device and emulator access can be found at https://docs.quantinuum.com/systems/.
+Documentation relating to Quantinuum Systems device and emulator access can be found at https://docs.quantinuum.com/systems/.
 
 See also the `Running on backends <https://docs.quantinuum.com/tket/user-guide/manual/manual_backend.html>`_ section of the pytket user manual.
 
