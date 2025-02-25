@@ -1,4 +1,3 @@
-from typing import Any
 from __future__ import annotations
 import typing
 __all__ = ['level', 'set_level']
@@ -28,9 +27,6 @@ class level:
     off: typing.ClassVar[level]  # value = <level.off: 6>
     trace: typing.ClassVar[level]  # value = <level.trace: 0>
     warn: typing.ClassVar[level]  # value = <level.warn: 3>
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:

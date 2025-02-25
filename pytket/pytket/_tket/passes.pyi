@@ -15,9 +15,6 @@ class BasePass:
     Base class for passes.
     """
     @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
-    @staticmethod
     def from_dict(base_pass_dict: dict, custom_deserialisation: dict[str, typing.Callable[[pytket._tket.circuit.Circuit], pytket._tket.circuit.Circuit]] = {}) -> BasePass:
         """
         Construct a new Pass instance from a JSON serializable dictionary representation. `custom_deserialisation` is a map between `CustomPass` label attributes and a Circuit to Circuit function matching the `CustomPass` `transform` argument. This allows the construction of some `CustomPass` from JSON. `CustomPass` without a matching entry in `custom_deserialisation` will be rejected.
@@ -87,9 +84,6 @@ class CNotSynthType:
     Rec: typing.ClassVar[CNotSynthType]  # value = <CNotSynthType.Rec: 2>
     SWAP: typing.ClassVar[CNotSynthType]  # value = <CNotSynthType.SWAP: 0>
     __members__: typing.ClassVar[dict[str, CNotSynthType]]  # value = {'SWAP': <CNotSynthType.SWAP: 0>, 'HamPath': <CNotSynthType.HamPath: 1>, 'Rec': <CNotSynthType.Rec: 2>}
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -120,9 +114,6 @@ class RepeatPass(BasePass):
     """
     Repeat a pass until its `apply()` method returns False, or if `strict_check` is True until it stops modifying the circuit.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, compilation_pass: BasePass, strict_check: bool = False) -> None:
         """
         Construct from a compilation pass.
@@ -137,9 +128,6 @@ class RepeatUntilSatisfiedPass(BasePass):
     """
     Repeat a compilation pass until a predicate on the circuit is satisfied.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @typing.overload
     def __init__(self, compilation_pass: BasePass, predicate: pytket._tket.predicates.Predicate) -> None:
         """
@@ -164,9 +152,6 @@ class RepeatWithMetricPass(BasePass):
     """
     Repeat a compilation pass until the given metric stops decreasing.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, compilation_pass: BasePass, metric: typing.Callable[[pytket._tket.circuit.Circuit], int]) -> None:
         """
         Construct from a compilation pass and a metric function.
@@ -192,9 +177,6 @@ class SafetyMode:
     Audit: typing.ClassVar[SafetyMode]  # value = <SafetyMode.Audit: 0>
     Default: typing.ClassVar[SafetyMode]  # value = <SafetyMode.Default: 1>
     __members__: typing.ClassVar[dict[str, SafetyMode]]  # value = {'Audit': <SafetyMode.Audit: 0>, 'Default': <SafetyMode.Default: 1>}
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -225,9 +207,6 @@ class SequencePass(BasePass):
     """
     A sequence of compilation passes.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, pass_list: typing.Sequence[BasePass], strict: bool = True) -> None:
         """
         Construct from a list of compilation passes arranged in order of application.
