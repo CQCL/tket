@@ -1,4 +1,3 @@
-from typing import Any
 from __future__ import annotations
 import pytket._tket.architecture
 import pytket._tket.circuit
