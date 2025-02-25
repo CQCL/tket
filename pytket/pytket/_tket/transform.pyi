@@ -24,9 +24,6 @@ class PauliSynthStrat:
     Pairwise: typing.ClassVar[PauliSynthStrat]  # value = <PauliSynthStrat.Pairwise: 1>
     Sets: typing.ClassVar[PauliSynthStrat]  # value = <PauliSynthStrat.Sets: 2>
     __members__: typing.ClassVar[dict[str, PauliSynthStrat]]  # value = {'Individual': <PauliSynthStrat.Individual: 0>, 'Pairwise': <PauliSynthStrat.Pairwise: 1>, 'Sets': <PauliSynthStrat.Sets: 2>, 'Greedy': <PauliSynthStrat.Greedy: 3>}
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -320,9 +317,6 @@ class Transform:
         """
         Fixes all ZZPhase gate angles to [-1, 1) half turns.
         """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @staticmethod
     def repeat(transform: Transform) -> Transform:
         """

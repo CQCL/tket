@@ -1,5 +1,4 @@
 from numpy.typing import NDArray
-from typing import Any
 from __future__ import annotations
 import numpy
 import pytket._tket.unit_id
@@ -23,9 +22,6 @@ class Pauli:
     Y: typing.ClassVar[Pauli]  # value = <Pauli.Y: 2>
     Z: typing.ClassVar[Pauli]  # value = <Pauli.Z: 3>
     __members__: typing.ClassVar[dict[str, Pauli]]  # value = {'I': <Pauli.I: 0>, 'X': <Pauli.X: 1>, 'Y': <Pauli.Y: 2>, 'Z': <Pauli.Z: 3>}
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -56,9 +52,6 @@ class PauliStabiliser:
     """
     A string of Pauli letters from the alphabet {I, X, Y, Z} with a +/- 1 coefficient.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, arg0: typing.Any) -> bool:
         ...
     def __hash__(self) -> int:
@@ -91,9 +84,6 @@ class QubitPauliString:
     """
     A string of Pauli letters from the alphabet {I, X, Y, Z}, implemented as a sparse list, indexed by qubit.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @staticmethod
     def from_list(arg0: list) -> QubitPauliString:
         """
@@ -217,9 +207,6 @@ class QubitPauliTensor:
     """
     A tensor formed by Pauli terms, consisting of a sparse map from :py:class:`Qubit` to :py:class:`Pauli` (implemented as a :py:class:`QubitPauliString`) and a complex coefficient.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, arg0: typing.Any) -> bool:
         ...
     def __getitem__(self, arg0: pytket._tket.unit_id.Qubit) -> Pauli:
