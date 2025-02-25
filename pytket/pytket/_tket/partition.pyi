@@ -1,4 +1,3 @@
-from typing import Any
 from __future__ import annotations
 import pytket._tket.circuit
 import pytket._tket.pauli
@@ -20,9 +19,6 @@ class GraphColourMethod:
     LargestFirst: typing.ClassVar[GraphColourMethod]  # value = <GraphColourMethod.LargestFirst: 1>
     Lazy: typing.ClassVar[GraphColourMethod]  # value = <GraphColourMethod.Lazy: 0>
     __members__: typing.ClassVar[dict[str, GraphColourMethod]]  # value = {'Lazy': <GraphColourMethod.Lazy: 0>, 'LargestFirst': <GraphColourMethod.LargestFirst: 1>, 'Exhaustive': <GraphColourMethod.Exhaustive: 2>}
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -53,9 +49,6 @@ class MeasurementBitMap:
     """
     Maps Pauli tensors to Clifford circuit indices and bits required for measurement. A MeasurementBitMap belongs to a MeasurementSetup object, and dictates which bits are to be included in the measurement. As Clifford circuits may flip the parity of the corresponding Pauli tensor, the MeasurementBitMap optionally inverts the result.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @staticmethod
     def from_dict(arg0: dict) -> MeasurementBitMap:
         """
@@ -96,9 +89,6 @@ class MeasurementSetup:
     """
     Encapsulates an experiment in which the expectation value of an operator is to be measured via decomposition into QubitPauliStrings. Each tensor expectation value can be measured using shots. These values are then summed together with some weights to retrieve the desired operator expctation value.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @staticmethod
     def from_dict(arg0: dict) -> MeasurementSetup:
         """
@@ -153,9 +143,6 @@ class PauliPartitionStrat:
     CommutingSets: typing.ClassVar[PauliPartitionStrat]  # value = <PauliPartitionStrat.CommutingSets: 1>
     NonConflictingSets: typing.ClassVar[PauliPartitionStrat]  # value = <PauliPartitionStrat.NonConflictingSets: 0>
     __members__: typing.ClassVar[dict[str, PauliPartitionStrat]]  # value = {'NonConflictingSets': <PauliPartitionStrat.NonConflictingSets: 0>, 'CommutingSets': <PauliPartitionStrat.CommutingSets: 1>}
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
