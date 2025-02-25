@@ -2519,6 +2519,11 @@ class Circuit:
         A list of qubits whose output is a Discard operation
         """
     @property
+    def has_implicit_wireswaps(self) -> bool:
+        """
+        Indicates whether the circuit has a non-trivial qubit permutation (i.e., whether there are any implicit wire swaps).
+        """
+    @property
     def is_simple(self) -> bool:
         """
         Checks that the circuit has only 1 quantum and 1 classic register using the default names ('q' and 'c'). This means it is suitable to refer to qubits simply by their integer indices.
@@ -2582,12 +2587,6 @@ class Circuit:
     def wasm_uid(self) -> str | None:
         """
         :return: the unique WASM UID of the circuit, or `None` if the circuit has none
-        """
-    @property
-    def has_implicit_wireswaps(self) -> bool:
-        """
-        Indicates whether the circuit has a non-trivial qubit permutation
-        (i.e., whether there are any implicit wire swaps).
         """
 class ClBitVar:
     """
