@@ -20,6 +20,10 @@ Features:
 * Add :py:attr:`Circuit.has_implicit_wireswaps` property.
 * Make :py:meth:`PauliSimp` accept circuits with SX and SXdg gates.
 
+Fixes:
+
+* Fix segfault listing registers of circuit containing unindexed units.
+
 1.40.0 (February 2025)
 ----------------------
 
