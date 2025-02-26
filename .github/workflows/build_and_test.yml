@@ -3,10 +3,10 @@ name: Build and test
 on:
   pull_request:
     branches:
-      - main
+      - pytket1
   push:
     branches:
-      - main
+      - pytket1
   schedule:
     # 03:00 every Saturday morning
     - cron: '0 3 * * 6'
@@ -296,18 +296,11 @@ jobs:
         cd pytket
         pip install pytest
         pytest --doctest-modules pytket
-    - name: Test pytket with coverage
-      if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    -- name: Test pytket
       run: |
         cd pytket/tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/ --hypothesis-seed=1 --cov=../pytket --cov-branch --cov-report=html --cov-report=xml:htmlcov/cov.xml
-    - name: Test pytket
-      if: github.event_name != 'pull_request' || github.event_name == 'workflow_dispatch'
-      run: |
-        cd pytket/tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
+        python -m pip install -r requirements.txt
+        python -m pytest --ignore=simulator/
     - name: Test building docs
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       timeout-minutes: 20
@@ -323,12 +316,6 @@ jobs:
       with:
         name: pytket_docs
         path: pytket/docs/build/
-    - name: Upload pytket coverage artefact
-      if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-      uses: actions/upload-artifact@v4
-      with:
-        name: pytket_test_coverage
-        path: pytket/tests/htmlcov
     - name: Upload package
       if: github.event_name == 'push' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
@@ -547,52 +534,6 @@ jobs:
         ccache -s  #show stats
         ccache -z  #show stats
 
-  publish_pytket_coverage:
-    name: Publish pytket coverage
-    needs: build_test_pytket_ubuntu
-    concurrency: gh_pages
-    if: github.event_name == 'push'
-    runs-on: ubuntu-24.04
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        ref: gh-pages
-    - name: Download artefact
-      uses: actions/download-artifact@v4
-      with:
-        name: pytket_test_coverage
-        path: htmlcov/
-    - name: Configure git
-      run: |
-        git config --global user.email "tket-bot@cambridgequantum.com"
-        git config --global user.name  "«$GITHUB_WORKFLOW» github action"
-    - name: Remove old report
-      run: git rm -r docs/pytket/test-coverage
-    - name: Add report to repository
-      run: |
-        mv htmlcov docs/pytket/test-coverage
-        git add -f docs/pytket/test-coverage
-        git commit --allow-empty -m "Add generated pytket coverage report."
-    - name: Publish report
-      run: git push origin gh-pages:gh-pages
-
-  check_pytket_coverage:
-    name: Check pytket line and branch coverage
-    needs: build_test_pytket_ubuntu
-    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-24.04
-    steps:
-    - uses: actions/checkout@v4
-    - name: Download artefact
-      uses: actions/download-artifact@v4
-      with:
-        name: pytket_test_coverage
-        path: pytket-test-coverage/
-    - name: Compare with latest report from main
-      run: |
-        wget https://cqcl.github.io/tket/pytket/test-coverage/cov.xml -O oldcov.xml
-        ./.github/workflows/compare-pytket-coverage oldcov.xml pytket-test-coverage/cov.xml
-
   check_all_build_and_test_jobs_successful:
     name: All build and test jobs successful (or skipped)
     needs:
@@ -601,12 +542,9 @@ jobs:
       - check_format_tket
       - build_test_tket
       - build_test_tket_windows
-      - publish_pytket_coverage
       - build_test_pytket_macos
       - build_test_pytket_ubuntu
       - build_test_pytket_windows
-      - publish_pytket_coverage
-      - check_pytket_coverage
     if: always()
     runs-on: ubuntu-24.04
     steps:
@@ -619,12 +557,9 @@ jobs:
               "${{ needs.check_format_tket.result }}",
               "${{ needs.build_test_tket.result }}",
               "${{ needs.build_test_tket_windows.result }}",
-              "${{ needs.publish_pytket_coverage.result }}",
               "${{ needs.build_test_pytket_macos.result }}",
               "${{ needs.build_test_pytket_ubuntu.result }}",
               "${{ needs.build_test_pytket_windows.result }}"
-              "${{ needs.publish_pytket_coverage.result }}",
-              "${{ needs.check_pytket_coverage.result }}",
           ]
           if "failure" in results or "cancelled" in results:
               raise Exception
