@@ -30,7 +30,6 @@ using namespace tket;
 #define ALL_PASSES(DO)                    \
   DO(SynthesiseTK)                        \
   DO(SynthesiseTket)                      \
-  DO(SynthesiseUMD)                       \
   DO(PeepholeOptimise2Q)                  \
   DO(FullPeepholeOptimise)                \
   DO(RemoveRedundancies)                  \
@@ -49,7 +48,6 @@ using namespace tket;
   DO(FlattenRegisters)                    \
   DO(RemoveBarriers)                      \
   DO(DelayMeasures)                       \
-  DO(GlobalisePhasedX)                    \
   DO(NormaliseTK2)                        \
   DO(SquashRzPhasedX)                     \
   DO(CnXPairwiseDecomposition)            \

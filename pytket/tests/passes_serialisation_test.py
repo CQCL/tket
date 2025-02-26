@@ -136,7 +136,6 @@ NONPARAM_PREDICATES = [
     "CommutableMeasuresPredicate",
     "NoMidMeasurePredicate",
     "NoSymbolsPredicate",
-    "GlobalPhasedXPredicate",
     "NormalisedTK2Predicate",
 ]
 
@@ -344,7 +343,6 @@ TWO_WAY_NONPARAM_PASSES = [
     "RemoveRedundancies",
     "SynthesiseTK",
     "SynthesiseTket",
-    "SynthesiseUMD",
     "SquashTK1",
     "SquashRzPhasedX",
     "FlattenRegisters",

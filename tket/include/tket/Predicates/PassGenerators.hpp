@@ -110,8 +110,7 @@ PassPtr gen_clifford_push_through_pass();
  * Qubits removed from the Circuit are preserved in the bimap, but not updated
  * to a new labelling.
  */
-PassPtr gen_flatten_relabel_registers_pass(
-    const std::string& label, bool relabel_classical_expressions = true);
+PassPtr gen_flatten_relabel_registers_pass(const std::string& label);
 /**
  * Pass to rename some or all qubits according to the given map.
  *
@@ -401,29 +400,6 @@ PassPtr gen_contextual_pass(
  * FullPeepholeOptimise
  */
 PassPtr PauliSquash(Transforms::PauliSynthStrat strat, CXConfigType cx_config);
-
-/**
- * Turns all PhasedX and NPhasedX gates into global gates
- *
- * Replaces any PhasedX gates with global NPhasedX gates.
- * By default, this transform will squash all single-qubit gates to PhasedX and
- * Rz gates before proceeding further. Existing non-global NPhasedX will not
- * be preserved. This is the recommended setting for best performance.
- *
- * If squashing is disabled, each non-global PhasedX gate will be replaced with
- * two global NPhasedX, but any other gates will be left untouched.
- *
- * @param squash Whether to squash the circuit in pre-processing
- *      (default: true).
- *
- * If squash=true (default), the `GlobalisePhasedX().apply` method will always
- * return true. For squash=false, `apply()` will return true if the circuit was
- * changed and false otherwise.
- *
- * It is not recommended to use this pass with symbolic expressions, as
- * in certain cases a blow-up in symbolic expression sizes may occur.
- */
-PassPtr GlobalisePhasedX(bool squash = true);
 
 /**
  * Generate a pass that rounds all angles to the nearest \f$ \pi / 2^n \f$.

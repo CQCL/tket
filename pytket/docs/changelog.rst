@@ -1,6 +1,17 @@
 Changelog
 =========
 
+2.0.0 (February 2025)
+---------------------
+
+API changes:
+
+* Remove `GlobalisePhasedX` transform and pass.
+* Remove `SynthesiseUMD` pass.
+* Remove `NoiseAwarePlacement.modify_config` and `GraphPlacement.modify_config`
+  methods.
+* Remove `ClassicalExpBox` and related methods.
+
 1.41.0 (Unreleased)
 ----------------------
 

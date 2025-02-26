@@ -204,27 +204,6 @@ Transform decompose_CX_directed(const Architecture& arc);
  */
 Transform decompose_NPhasedX();
 
-/**
- * @brief Turns all PhasedX and NPhasedX gates into global gates
- *
- * Replaces any PhasedX gates with global NPhasedX gates. By default, this
- * transform will squash all single-qubit gates to PhasedX and Rz gates before
- * proceeding further. Existing non-global NPhasedX will not be preserved. This
- * is the recommended setting for best performance. If squashing is disabled,
- * each non-global PhasedX gate will be replaced with two global NPhasedX, but
- * any other gates will be left untouched.
- *
- * @param squash Whether to squash the circuit before globalisation.
- *
- * If squash=true (default), this transform always returns true. For
- * squash=false, it will return true if the circuit was transformed and
- * false otherwise.
- *
- * It is not recommended to use this pass with symbolic expressions, as in
- * certain cases a blow-up in symbolic expression sizes may occur.
- */
-Transform globalise_PhasedX(bool squash = true);
-
 // does not use ancillae
 // Expects: CCX + any other gates
 // returns CX, H, T, Tdg + any previous gates

@@ -70,7 +70,6 @@ const std::string& predicate_name(std::type_index idx) {
       SET_PRED_NAME(CommutableMeasuresPredicate),
       SET_PRED_NAME(NoMidMeasurePredicate),
       SET_PRED_NAME(NoSymbolsPredicate),
-      SET_PRED_NAME(GlobalPhasedXPredicate),
       SET_PRED_NAME(NormalisedTK2Predicate),
       SET_PRED_NAME(NoWireSwapsPredicate),
       SET_PRED_NAME(PlacementPredicate),
@@ -647,29 +646,6 @@ PredicatePtr NoSymbolsPredicate::meet(const Predicate& other) const {
 
 std::string NoSymbolsPredicate::to_string() const { return auto_name(*this); }
 
-bool GlobalPhasedXPredicate::verify(const Circuit& circ) const {
-  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-    if (circ.get_OpType_from_Vertex(v) == OpType::NPhasedX) {
-      if (circ.n_in_edges_of_type(v, EdgeType::Quantum) != circ.n_qubits()) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-bool GlobalPhasedXPredicate::implies(const Predicate& other) const {
-  return auto_implication(*this, other);
-}
-
-PredicatePtr GlobalPhasedXPredicate::meet(const Predicate& other) const {
-  return auto_meet(*this, other);
-}
-
-std::string GlobalPhasedXPredicate::to_string() const {
-  return auto_name(*this);
-}
-
 bool NormalisedTK2Predicate::verify(const Circuit& circ) const {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
@@ -780,10 +756,6 @@ void to_json(nlohmann::json& j, const PredicatePtr& pred_ptr) {
           std::dynamic_pointer_cast<NoSymbolsPredicate>(pred_ptr)) {
     j["type"] = "NoSymbolsPredicate";
   } else if (
-      std::shared_ptr<GlobalPhasedXPredicate> cast_pred =
-          std::dynamic_pointer_cast<GlobalPhasedXPredicate>(pred_ptr)) {
-    j["type"] = "GlobalPhasedXPredicate";
-  } else if (
       std::shared_ptr<NormalisedTK2Predicate> cast_pred =
           std::dynamic_pointer_cast<NormalisedTK2Predicate>(pred_ptr)) {
     j["type"] = "NormalisedTK2Predicate";
@@ -836,8 +808,6 @@ void from_json(const nlohmann::json& j, PredicatePtr& pred_ptr) {
     pred_ptr = std::make_shared<NoMidMeasurePredicate>();
   } else if (classname == "NoSymbolsPredicate") {
     pred_ptr = std::make_shared<NoSymbolsPredicate>();
-  } else if (classname == "GlobalPhasedXPredicate") {
-    pred_ptr = std::make_shared<GlobalPhasedXPredicate>();
   } else if (classname == "NormalisedTK2Predicate") {
     pred_ptr = std::make_shared<NormalisedTK2Predicate>();
   } else {

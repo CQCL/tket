@@ -356,8 +356,7 @@ PassPtr gen_clifford_push_through_pass() {
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
-PassPtr gen_flatten_relabel_registers_pass(
-    const std::string& label, bool relabel_classical_expressions) {
+PassPtr gen_flatten_relabel_registers_pass(const std::string& label) {
   Transform t =
       Transform([=](Circuit& circuit, std::shared_ptr<unit_bimaps_t> maps) {
         unsigned n_qubits = circuit.n_qubits();
@@ -369,7 +368,7 @@ PassPtr gen_flatten_relabel_registers_pass(
           relabelling_map.insert({all_qubits[i], Qubit(label, i)});
         }
 
-        circuit.rename_units(relabelling_map, relabel_classical_expressions);
+        circuit.rename_units(relabelling_map);
         changed |= update_maps(maps, relabelling_map, relabelling_map);
         return changed;
       });
@@ -379,7 +378,6 @@ PassPtr gen_flatten_relabel_registers_pass(
   nlohmann::json j;
   j["name"] = "FlattenRelabelRegistersPass";
   j["label"] = label;
-  j["relabel_classical_expressions"] = relabel_classical_expressions;
   return std::make_shared<StandardPass>(precons, t, postcons, j);
 }
 
@@ -1159,21 +1157,6 @@ PassPtr PauliSquash(Transforms::PauliSynthStrat strat, CXConfigType cx_config) {
   std::vector<PassPtr> seq = {
       gen_synthesise_pauli_graph(strat, cx_config), FullPeepholeOptimise()};
   return std::make_shared<SequencePass>(seq);
-}
-
-PassPtr GlobalisePhasedX(bool squash) {
-  Transform t = Transforms::globalise_PhasedX(squash);
-  PredicatePtrMap precons;
-  PredicatePtr globalphasedx = std::make_shared<GlobalPhasedXPredicate>();
-  PredicatePtrMap spec_postcons = {
-      CompilationUnit::make_type_pair(globalphasedx)};
-  PredicateClassGuarantees g_postcons;
-  PostConditions postcon{spec_postcons, {}, Guarantee::Preserve};
-  // record pass config
-  nlohmann::json j;
-  j["name"] = "GlobalisePhasedX";
-  j["squash"] = squash;
-  return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
 PassPtr RoundAngles(unsigned n, bool only_zeros) {
