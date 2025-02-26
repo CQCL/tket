@@ -1217,6 +1217,18 @@ def test_getting_registers_with_non_consective_indices() -> None:
     assert q_regs[0] == QubitRegister("a", 3)
 
 
+def test_getting_registers_with_unindexed_bits() -> None:
+    # https://github.com/CQCL/tket/issues/1785
+    c = Circuit()
+    qubit = Qubit("q", [])
+    bit = Bit("a", [])
+    c.add_qubit(qubit)
+    c.add_bit(bit)
+    c.PhasedX(0.5, 0.5, qubit).Measure(qubit, bit)
+    assert c.q_registers == []
+    assert c.c_registers == []
+
+
 def test_measuring_registers() -> None:
     c = Circuit()
     with pytest.raises(RuntimeError) as e:

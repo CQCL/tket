@@ -12,6 +12,10 @@ API changes:
   methods.
 * Remove `ClassicalExpBox` and related methods.
 
+Fixes:
+
+* Fix segfault listing registers of circuit containing unindexed units.
+
 1.41.0 (Unreleased)
 ----------------------
 
