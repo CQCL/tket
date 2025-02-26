@@ -15,6 +15,5 @@ var searchData=
   ['qubit_5fpath_5fvertices_12',['qubit_path_vertices',['../classtket_1_1Circuit.html#a033a777a8ba781b40a9bda9aeb4db418',1,'tket::Circuit']]],
   ['qubit_5freadout_13',['qubit_readout',['../classtket_1_1Circuit.html#a285d65e0b4b5d6aa2e9513ad95c70b8e',1,'tket::Circuit']]],
   ['qubit_5fto_5fbit_5fmap_14',['qubit_to_bit_map',['../classtket_1_1Circuit.html#a56060e34bb66448943e5de78237bf674',1,'tket::Circuit']]],
-  ['qubitgraph_15',['qubitgraph',['../classtket_1_1QubitGraph.html#ac8ffd379f13b43b6445d8a12c06e4d3d',1,'tket::QubitGraph::QubitGraph()'],['../classtket_1_1QubitGraph.html#a5527958ec4603a0434518cecef9aac85',1,'tket::QubitGraph::QubitGraph(const qubit_vector_t &amp;_qubits)']]],
-  ['qubits_5fending_5fin_16',['qubits_ending_in',['../classtket_1_1Transforms_1_1PhasedXFrontier.html#aeca04da8e33b207d6090fba689e40aad',1,'tket::Transforms::PhasedXFrontier']]]
+  ['qubitgraph_15',['qubitgraph',['../classtket_1_1QubitGraph.html#ac8ffd379f13b43b6445d8a12c06e4d3d',1,'tket::QubitGraph::QubitGraph()'],['../classtket_1_1QubitGraph.html#a5527958ec4603a0434518cecef9aac85',1,'tket::QubitGraph::QubitGraph(const qubit_vector_t &amp;_qubits)']]]
 ];

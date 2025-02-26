@@ -1,26 +1,19 @@
 <map id="include/tket/Transformations/SingleQubitSquash.hpp" name="include/tket/Transformations/SingleQubitSquash.hpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="664,5,871,45"/>
-<area shape="rect" id="Node000002" href="$PQPSquash_8hpp.html" title=" " alt="" coords="180,93,387,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="651,50,387,96,387,91,650,45"/>
-<area shape="rect" id="Node000006" href="$PhasedXFrontier_8hpp.html" title=" " alt="" coords="433,93,640,133"/>
-<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="705,53,588,96,586,91,703,48"/>
-<area shape="rect" id="Node000009" href="$StandardSquash_8hpp.html" title=" " alt="" coords="664,93,871,133"/>
-<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="770,59,770,93,765,93,765,59"/>
-<area shape="rect" id="Node000010" href="$StandardSquash_8cpp.html" title=" " alt="" coords="828,181,987,221"/>
-<area shape="poly" id="edge13_Node000001_Node000010" title=" " alt="" coords="834,50,862,68,885,92,898,114,905,138,910,181,905,181,900,139,893,116,881,95,858,72,831,54"/>
-<area shape="rect" id="Node000011" href="$SingleQubitSquash_8cpp.html" title=" " alt="" coords="947,93,1121,133"/>
-<area shape="poly" id="edge12_Node000001_Node000011" title=" " alt="" coords="840,47,976,91,975,96,838,52"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="448,5,655,45"/>
+<area shape="rect" id="Node000002" href="$PQPSquash_8hpp.html" title=" " alt="" coords="147,93,353,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="473,52,317,96,315,91,471,47"/>
+<area shape="rect" id="Node000006" href="$StandardSquash_8hpp.html" title=" " alt="" coords="377,93,584,133"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="529,58,498,95,494,91,525,54"/>
+<area shape="rect" id="Node000007" href="$StandardSquash_8cpp.html" title=" " alt="" coords="503,181,661,221"/>
+<area shape="poly" id="edge9_Node000001_Node000007" title=" " alt="" coords="579,55,599,92,603,116,602,141,592,182,587,180,597,140,598,117,594,94,575,57"/>
+<area shape="rect" id="Node000008" href="$SingleQubitSquash_8cpp.html" title=" " alt="" coords="660,93,835,133"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="608,48,705,91,703,96,606,53"/>
 <area shape="rect" id="Node000003" href="$RzPhasedXSquash_8hpp.html" title=" " alt="" coords="5,181,212,221"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="234,142,148,184,146,179,232,137"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="209,143,141,184,138,179,206,138"/>
 <area shape="rect" id="Node000004" href="$RzPhasedXSquash_8cpp.html" title=" " alt="" coords="93,269,265,309"/>
-<area shape="poly" id="edge5_Node000002_Node000004" title=" " alt="" coords="269,147,226,223,195,270,190,268,221,220,264,144"/>
+<area shape="poly" id="edge5_Node000002_Node000004" title=" " alt="" coords="247,148,239,184,226,222,197,271,192,268,221,220,234,183,242,147"/>
 <area shape="rect" id="Node000005" href="$PQPSquash_8cpp.html" title=" " alt="" coords="288,181,439,221"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="312,142,348,179,344,183,308,145"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="287,140,340,179,337,183,284,144"/>
 <area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="135,230,166,267,162,271,131,234"/>
-<area shape="rect" id="Node000007" href="$Decomposition_8cpp.html" title=" " alt="" coords="463,181,613,221"/>
-<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="540,147,540,181,535,181,535,147"/>
-<area shape="rect" id="Node000008" href="$PhasedXFrontier_8cpp.html" title=" " alt="" coords="643,181,801,221"/>
-<area shape="poly" id="edge8_Node000006_Node000008" title=" " alt="" coords="591,137,683,179,680,184,589,142"/>
-<area shape="poly" id="edge10_Node000009_Node000008" title=" " alt="" coords="753,147,734,182,730,180,749,144"/>
-<area shape="poly" id="edge11_Node000009_Node000010" title=" " alt="" coords="811,138,878,179,875,184,808,143"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="515,140,561,179,558,183,512,144"/>
 </map>
