@@ -228,6 +228,18 @@ SCENARIO("Testing for vertex reuse bug") {
   }
 }
 
+SCENARIO("ZX resynthesis with implicit permutation removed") {
+  {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    CompilationUnit cu(circ);
+    ZXGraphlikeOptimisation(false)->apply(cu);
+    const auto& resynth = cu.get_circ_ref();
+    CHECK(!resynth.has_implicit_wireswaps());
+  }
+}
+
 }  // namespace test_ZXSimp
 }  // namespace zx
 }  // namespace tket
