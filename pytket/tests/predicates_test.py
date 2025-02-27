@@ -1155,6 +1155,19 @@ def test_has_implicit_wireswaps() -> None:
         c.has_implicit_wireswaps = True
 
 
+def test_zx_optimisation_wireswaps() -> None:
+    c = Circuit(3)
+    c.CX(0, 1)
+    c.CX(1, 2)
+    c.CX(2, 0)
+
+    ZXGraphlikeOptimisation(True).apply(c)
+    assert c.has_implicit_wireswaps
+
+    ZXGraphlikeOptimisation(False).apply(c)
+    assert not c.has_implicit_wireswaps
+
+
 if __name__ == "__main__":
     test_predicate_generation()
     test_compilation_unit_generation()
