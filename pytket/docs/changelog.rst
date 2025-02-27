@@ -1,6 +1,13 @@
 Changelog
 =========
 
+2.0.1 (Unreleased)
+---------------------
+
+Features:
+
+* Add optional `allow_swaps` argument to :py:meth:`ZXGraphlikeOptimisation`.
+
 2.0.0 (February 2025)
 ---------------------
 
@@ -23,7 +30,6 @@ Features:
 
 * Add :py:attr:`Circuit.has_implicit_wireswaps` property.
 * Make :py:meth:`PauliSimp` accept circuits with SX and SXdg gates.
-* Add optional `allow_swaps` argument to :py:meth:`ZXGraphlikeOptimisation`.
 
 1.40.0 (February 2025)
 ----------------------
