@@ -654,7 +654,10 @@ PYBIND11_MODULE(passes, m) {
       "extracting a circuit back out. Due to limitations in extraction, may "
       "not work if the circuit contains created or discarded qubits. As a "
       "resynthesis pass, this will ignore almost all optimisations achieved "
-      "beforehand and may increase the cost of the circuit.");
+      "beforehand and may increase the cost of the circuit."
+      "\n\n:param allow_swaps: Whether to allow implicit wire swaps (default "
+      "True).",
+      py::arg("allow_swaps") = true);
 
   /* Pass generators */
 

@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+---------------------
+
+Features:
+
+* Add optional `allow_swaps` argument to :py:meth:`ZXGraphlikeOptimisation`.
+
 2.0.0 (February 2025)
 ---------------------
 
