@@ -660,6 +660,7 @@ def ThreeQubitSquash(allow_swaps: bool = True) -> BasePass:
 def ZXGraphlikeOptimisation(allow_swaps: bool = True) -> BasePass:
     """
     Attempt to optimise the circuit by simplifying in ZX calculus and extracting a circuit back out. Due to limitations in extraction, may not work if the circuit contains created or discarded qubits. As a resynthesis pass, this will ignore almost all optimisations achieved beforehand and may increase the cost of the circuit.
+    
     :param allow_swaps: Whether to allow implicit wire swaps (default True).
     """
 def ZZPhaseToRz() -> BasePass:
