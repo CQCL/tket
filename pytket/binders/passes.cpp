@@ -655,7 +655,7 @@ PYBIND11_MODULE(passes, m) {
       "not work if the circuit contains created or discarded qubits. As a "
       "resynthesis pass, this will ignore almost all optimisations achieved "
       "beforehand and may increase the cost of the circuit."
-      "\n:param allow_swaps: Whether to allow implicit wire swaps (default "
+      "\n\n:param allow_swaps: Whether to allow implicit wire swaps (default "
       "True).",
       py::arg("allow_swaps") = true);
 

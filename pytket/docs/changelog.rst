@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.0.1 (Unreleased)
+Unreleased
 ---------------------
 
 Features:
