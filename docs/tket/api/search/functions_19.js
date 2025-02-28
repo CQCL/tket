@@ -10,7 +10,7 @@ var searchData=
   ['zxdirected_7',['ZXDirected',['../classtket_1_1zx_1_1ZXDirected.html#a4f7f8784260e4ec45a12fe43501e65ff',1,'tket::zx::ZXDirected']]],
   ['zxerror_8',['ZXError',['../classtket_1_1zx_1_1ZXError.html#a127be7c2360cd2a04842d3949550fedf',1,'tket::zx::ZXError']]],
   ['zxgen_9',['ZXGen',['../classtket_1_1zx_1_1ZXGen.html#aa2ece2681213981fe7f7b948b0f77a62',1,'tket::zx::ZXGen']]],
-  ['zxgraphlikeoptimisation_10',['ZXGraphlikeOptimisation',['../namespacetket.html#a2d94f055f24088e089fe9cf8fd6b7445',1,'tket']]],
+  ['zxgraphlikeoptimisation_10',['ZXGraphlikeOptimisation',['../namespacetket.html#a0a99d42aeb5b50cc4fdca8961389a6ee',1,'tket']]],
   ['zzmax_11',['ZZMax',['../structtket_1_1internal_1_1GateUnitaryMatrixImplementations.html#ade9f5a7bc39ed159cd2b64a609cf7d36',1,'tket::internal::GateUnitaryMatrixImplementations']]],
   ['zzmax_5fusing_5fcx_12',['ZZMax_using_CX',['../namespacetket_1_1CircPool.html#a39c7327973bf62f8fa3e96b2e3434c95',1,'tket::CircPool']]],
   ['zzphase_13',['ZZPhase',['../structtket_1_1internal_1_1GateUnitaryMatrixImplementations.html#a7dc0eb8ce3ad540871650fa16c1f9a8e',1,'tket::internal::GateUnitaryMatrixImplementations']]],

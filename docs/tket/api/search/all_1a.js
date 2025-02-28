@@ -30,7 +30,7 @@ var searchData=
   ['zxgenerator_2ecpp_27',['ZXGenerator.cpp',['../ZXGenerator_8cpp.html',1,'']]],
   ['zxgenerator_2ehpp_28',['ZXGenerator.hpp',['../ZXGenerator_8hpp.html',1,'']]],
   ['zxgraph_29',['ZXGraph',['../namespacetket_1_1zx.html#a9f6e55a9bc3137cdeec27ddd4076e589',1,'tket::zx']]],
-  ['zxgraphlikeoptimisation_30',['ZXGraphlikeOptimisation',['../namespacetket.html#a2d94f055f24088e089fe9cf8fd6b7445',1,'tket']]],
+  ['zxgraphlikeoptimisation_30',['ZXGraphlikeOptimisation',['../namespacetket.html#a0a99d42aeb5b50cc4fdca8961389a6ee',1,'tket']]],
   ['zxporttype_31',['ZXPortType',['../namespacetket.html#ada996db81e915837fb2a8b96ab83d3fd',1,'tket']]],
   ['zxrwaxioms_2ecpp_32',['ZXRWAxioms.cpp',['../ZXRWAxioms_8cpp.html',1,'']]],
   ['zxrwcombinators_2ecpp_33',['ZXRWCombinators.cpp',['../ZXRWCombinators_8cpp.html',1,'']]],
