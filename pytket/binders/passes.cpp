@@ -657,7 +657,7 @@ PYBIND11_MODULE(passes, m) {
       "beforehand and may increase the cost of the circuit."
       "\n:param allow_swaps: Whether to allow implicit wire swaps (default "
       "True).",
-      py::arg("allow_swaps") = false);
+      py::arg("allow_swaps") = true);
 
   /* Pass generators */
 
