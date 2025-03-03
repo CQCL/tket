@@ -2294,5 +2294,21 @@ SCENARIO("AutoSquash") {
   }
 }
 
+SCENARIO("Efficient TK2 synthesis") {
+  // https://github.com/CQCL/tket/issues/1738
+  GIVEN("A single YYPhase") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::YYPhase, 0.3, {0, 1});
+
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::TK2, {0.0, 0.3, 0.0}, {0, 1});
+
+    CompilationUnit cu(c);
+    CHECK(FullPeepholeOptimise(true, OpType::TK2)->apply(cu));
+    Circuit c1 = cu.get_circ_ref();
+    REQUIRE(c1 == c0);
+  }
+}
+
 }  // namespace test_CompilerPass
 }  // namespace tket
