@@ -1045,6 +1045,7 @@ PassPtr gen_greedy_pauli_simp(
     return gpo.apply(circ);
   });
   OpTypeSet ins = {
+      OpType::Phase,
       OpType::Z,
       OpType::X,
       OpType::Y,
