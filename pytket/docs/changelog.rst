@@ -7,6 +7,7 @@ Unreleased
 Features:
 
 * Add optional `allow_swaps` argument to :py:meth:`ZXGraphlikeOptimisation`.
+* Allow GreedyPauliSimp to accept circuits containing Phase gates.
 
 2.0.0 (February 2025)
 ---------------------
