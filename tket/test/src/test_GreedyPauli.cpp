@@ -14,6 +14,8 @@
 
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
+#include <memory>
+#include <vector>
 
 #include "testutil.hpp"
 #include "tket/Circuit/Circuit.hpp"
@@ -21,6 +23,8 @@
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Gate/SymTable.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Predicates/CompilationUnit.hpp"
+#include "tket/Predicates/CompilerPass.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Transformations/GreedyPauliOptimisation.hpp"
@@ -829,6 +833,17 @@ SCENARIO("Test GreedyPauliSimp with multiple trials and threads") {
                 .apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
   }
+}
+SCENARIO("Following a rebase pass") {
+  PassPtr rebase =
+      gen_auto_rebase_pass({OpType::ZZPhase, OpType::PhasedX, OpType::Rz});
+  PassPtr paulisynth = gen_greedy_pauli_simp(0.3, 0.5);
+  std::vector<PassPtr> passes = {rebase, paulisynth};
+  PassPtr seq = std::make_shared<SequencePass>(passes);
+  Circuit circ(1);
+  circ.add_op<unsigned>(OpType::H, {0});
+  CompilationUnit cu(circ);
+  CHECK(seq->apply(cu));
 }
 
 }  // namespace test_GreedyPauliSimp
