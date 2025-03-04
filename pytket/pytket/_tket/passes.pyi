@@ -275,11 +275,12 @@ def CliffordResynthesis(transform: typing.Callable[[pytket._tket.circuit.Circuit
     :param allow_swaps: whether the rewriting may introduce wire swaps (only relevant to the default resynthesis method used when the `transform` argument is not provided)
     :return: a pass to perform the rewriting
     """
-def CliffordSimp(allow_swaps: bool = True) -> BasePass:
+def CliffordSimp(allow_swaps: bool = True, target_2qb_gate: pytket._tket.circuit.OpType = pytket._tket.circuit.OpType.CX) -> BasePass:
     """
-    An optimisation pass that performs a number of rewrite rules for simplifying Clifford gate sequences, similar to Duncan & Fagan (https://arxiv.org/abs/1901.10114). Given a circuit with CXs and any single-qubit gates, produces a circuit with TK1, CX gates.
+    An optimisation pass that applies a number of rewrite rules for simplifying Clifford gate sequences, similar to Duncan & Fagan (https://arxiv.org/abs/1901.10114). Produces a circuit comprising TK1 gates and the two-qubit gate specified as the target.
     
-    :param allow_swaps: dictates whether the rewriting will disregard CX placement or orientation and introduce wire swaps.
+    :param allow_swaps: whether the rewriting may introduce implicit wire swaps
+    :param target_2qb_gate: target two-qubit gate (either CX or TK2)
     :return: a pass to perform the rewriting
     """
 def CnXPairwiseDecomposition() -> BasePass:
