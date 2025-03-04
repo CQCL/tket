@@ -1,6 +1,16 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Features:
+
+* Add `target_2qb_gate` parameter to `CliffordSimp` pass and `OptimiseCliffords`
+  transform.
+* Add `tk2_to_cx` parameter to `RebaseToCliffordSingles` transform.
+* Reduce depth of circuits resulting from `FullPeepholeOptimise` in some cases.
+
 2.0.1 (March 2025)
 ------------------
 
