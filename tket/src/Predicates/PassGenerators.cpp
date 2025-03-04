@@ -306,10 +306,8 @@ PassPtr gen_euler_pass(const OpType& q, const OpType& p, bool strict) {
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
-PassPtr gen_clifford_simp_pass(bool allow_swaps) {
-  // Expects: CX and any single-qubit gates,
-  // but does not break if it encounters others
-  Transform t = Transforms::clifford_simp(allow_swaps);
+PassPtr gen_clifford_simp_pass(bool allow_swaps, OpType target_2qb_gate) {
+  Transform t = Transforms::clifford_simp(allow_swaps, target_2qb_gate);
   PredicatePtrMap precons;
   PredicateClassGuarantees g_postcons;
   if (allow_swaps) {
@@ -324,6 +322,7 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps) {
   nlohmann::json j;
   j["name"] = "CliffordSimp";
   j["allow_swaps"] = allow_swaps;
+  j["target_2qb_gate"] = target_2qb_gate;
 
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }

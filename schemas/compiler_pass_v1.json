@@ -546,9 +546,10 @@
           },
           "then": {
             "required": [
-              "allow_swaps"
+              "allow_swaps",
+              "target_2qb_gate"
             ],
-            "maxProperties": 2
+            "maxProperties": 3
           }
         },
         {

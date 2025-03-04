@@ -221,6 +221,7 @@ TWO_WAY_PARAM_PASSES = {
         {
             "name": "CliffordSimp",
             "allow_swaps": True,
+            "target_2qb_gate": "TK2",
         }
     ),
     "DecomposeSwapsToCXs": standard_pass_dict(
