@@ -52,9 +52,10 @@ Transform full_peephole_optimise(bool allow_swaps, OpType target_2qb_gate) {
     case OpType::TK2:
       return (
           synthesise_tk() >> two_qubit_squash(OpType::TK2, 1., allow_swaps) >>
-          clifford_simp(allow_swaps) >>
+          clifford_simp(allow_swaps, OpType::TK2) >>
           two_qubit_squash(OpType::TK2, 1., allow_swaps) >> synthesise_tk() >>
-          three_qubit_squash(OpType::TK2) >> clifford_simp(allow_swaps) >>
+          three_qubit_squash(OpType::TK2) >>
+          clifford_simp(allow_swaps, OpType::TK2) >>
           two_qubit_squash(OpType::TK2, 1., allow_swaps) >> synthesise_tk());
     default:
       throw std::invalid_argument("Invalid target 2-qubit gate");
