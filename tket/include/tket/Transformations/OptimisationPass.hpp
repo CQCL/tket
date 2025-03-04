@@ -50,10 +50,6 @@ Transform peephole_optimise_2q(bool allow_swaps = true);
 Transform full_peephole_optimise(
     bool allow_swaps = true, OpType target_2qb_gate = OpType::CX);
 
-// kitchen sink optimisation - phase gadget resynthesis, two-qubit Cartan
-// forms, Clifford Expects: Any gates Produces: CX, TK1
-Transform canonical_hyper_clifford_squash();
-
 /**
  * runs clifford_simp
  * @param allow_swaps whether to allow introduction of implicit wire swaps

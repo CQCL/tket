@@ -60,11 +60,6 @@ Transform full_peephole_optimise(bool allow_swaps, OpType target_2qb_gate) {
   }
 }
 
-Transform canonical_hyper_clifford_squash() {
-  return optimise_via_PhaseGadget() >> two_qubit_squash() >>
-         hyper_clifford_squash();
-}
-
 Transform hyper_clifford_squash(bool allow_swaps) {
   return decompose_multi_qubits_CX() >> clifford_simp(allow_swaps);
 }
