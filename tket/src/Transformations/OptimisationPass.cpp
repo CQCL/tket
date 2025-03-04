@@ -66,7 +66,8 @@ Transform clifford_simp(bool allow_swaps, OpType target_2qb_gate) {
   if (target_2qb_gate != OpType::CX && target_2qb_gate != OpType::TK2) {
     throw std::invalid_argument("Invalid target 2-qubit gate");
   }
-  return decompose_cliffords_std() >> clifford_reduction(allow_swaps) >>
+  return decompose_cliffords_std(target_2qb_gate == OpType::CX) >>
+         clifford_reduction(allow_swaps) >>
          (target_2qb_gate == OpType::CX ? decompose_multi_qubits_CX()
                                         : decompose_multi_qubits_TK2()) >>
          singleq_clifford_sweep() >> squash_1qb_to_tk1();

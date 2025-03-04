@@ -142,7 +142,10 @@ PYBIND11_MODULE(transform, m) {
           "RebaseToCliffordSingles", &Transforms::decompose_cliffords_std,
           "Replace all single-qubit unitary gates outside the set {Z, X, S, V} "
           "that are recognized as Clifford operations with an equivalent "
-          "sequence of gates from that set.")
+          "sequence of gates from that set."
+          "\n\n:param tk2_to_cx: whether to rebase TK2 gates to CX and "
+          "standard Cliffords",
+          py::arg("tk2_to_cx") = true)
       .def_static(
           "RebaseToCirq", &Transforms::rebase_cirq,
           "Rebase from any gate set into PhasedX, Rz, CZ.")

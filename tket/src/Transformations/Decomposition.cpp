@@ -1115,8 +1115,8 @@ static Circuit clifford_from_tk1(int i, int j, int k) {
   return c;
 }
 
-Transform decompose_cliffords_std() {
-  return Transform([](Circuit &circ) {
+Transform decompose_cliffords_std(bool tk2_to_cx) {
+  return Transform([tk2_to_cx](Circuit &circ) {
     bool success = false;
     VertexList bin;
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
@@ -1154,15 +1154,16 @@ Transform decompose_cliffords_std() {
         } else {
           switch (type) {
             case OpType::TK2: {
-              auto params = op->get_params();
-              TKET_ASSERT(params.size() == 3);
-              // TODO: Maybe handle TK2 gates natively within clifford_simp?
-              Circuit replacement =
-                  CircPool::TK2_using_CX(params[0], params[1], params[2]);
-              decompose_cliffords_std().apply(replacement);
-              bin.push_back(v);
-              circ.substitute(replacement, v, Circuit::VertexDeletion::No);
-              success = true;
+              if (tk2_to_cx) {
+                auto params = op->get_params();
+                TKET_ASSERT(params.size() == 3);
+                Circuit replacement =
+                    CircPool::TK2_using_CX(params[0], params[1], params[2]);
+                decompose_cliffords_std().apply(replacement);
+                bin.push_back(v);
+                circ.substitute(replacement, v, Circuit::VertexDeletion::No);
+                success = true;
+              }
               break;
             }
             case OpType::NPhasedX: {
