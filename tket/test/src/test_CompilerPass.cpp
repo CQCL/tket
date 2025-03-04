@@ -2308,6 +2308,15 @@ SCENARIO("Efficient TK2 synthesis") {
     Circuit c1 = cu.get_circ_ref();
     REQUIRE(c1 == c0);
   }
+  GIVEN("An unnormalized TK2") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {0, 1});
+
+    CompilationUnit cu(c);
+    FullPeepholeOptimise(true, OpType::TK2)->apply(cu);
+    Circuit c1 = cu.get_circ_ref();
+    REQUIRE(c1 == c);
+  }
 }
 
 }  // namespace test_CompilerPass
