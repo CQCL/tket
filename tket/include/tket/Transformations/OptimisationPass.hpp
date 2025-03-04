@@ -51,14 +51,6 @@ Transform full_peephole_optimise(
     bool allow_swaps = true, OpType target_2qb_gate = OpType::CX);
 
 /**
- * runs clifford_simp
- * @param allow_swaps whether to allow introduction of implicit wire swaps
- * Expects: Any gates
- * Produces: CX, TK1
- */
-Transform hyper_clifford_squash(bool allow_swaps = true);
-
-/**
  * Simplify a circuit using Clifford rules.
  *
  * The resulting circuit will consist of the target two-qubit gate (which may be

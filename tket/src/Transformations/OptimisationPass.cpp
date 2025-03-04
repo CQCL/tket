@@ -37,7 +37,8 @@ namespace Transforms {
 Transform peephole_optimise_2q(bool allow_swaps) {
   return (
       synthesise_tket() >> two_qubit_squash(allow_swaps) >>
-      hyper_clifford_squash(allow_swaps) >> synthesise_tket());
+      decompose_multi_qubits_CX() >> clifford_simp(allow_swaps) >>
+      synthesise_tket());
 }
 
 Transform full_peephole_optimise(bool allow_swaps, OpType target_2qb_gate) {
@@ -58,10 +59,6 @@ Transform full_peephole_optimise(bool allow_swaps, OpType target_2qb_gate) {
     default:
       throw std::invalid_argument("Invalid target 2-qubit gate");
   }
-}
-
-Transform hyper_clifford_squash(bool allow_swaps) {
-  return decompose_multi_qubits_CX() >> clifford_simp(allow_swaps);
 }
 
 Transform clifford_simp(bool allow_swaps, OpType target_2qb_gate) {
