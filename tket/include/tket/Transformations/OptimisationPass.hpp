@@ -14,7 +14,8 @@
 
 #pragma once
 
-#include "Transform.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Transformations/Transform.hpp"
 
 namespace tket {
 
@@ -61,10 +62,17 @@ Transform canonical_hyper_clifford_squash();
  */
 Transform hyper_clifford_squash(bool allow_swaps = true);
 
-// simplifies a circuit using Clifford rules
-// Expects: CX and any single-qubit gates
-// Produces: CX, TK1
-Transform clifford_simp(bool allow_swaps = true);
+/**
+ * Simplify a circuit using Clifford rules.
+ *
+ * The resulting circuit will consist of the target two-qubit gate (which may be
+ * either CX or TK2) and TK1 gates.
+ *
+ * @param allow_swaps whether to allow introduction of implicit wire swaps
+ * @param target_2qb_gate target two-qubit gate
+ */
+Transform clifford_simp(
+    bool allow_swaps = true, OpType target_2qb_gate = OpType::CX);
 
 //////////////////
 // Synthesis Pass//
