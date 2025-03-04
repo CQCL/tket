@@ -281,17 +281,15 @@ PYBIND11_MODULE(transform, m) {
           py::arg("cx_config") = CXConfigType::Snake)
       .def_static(
           "OptimiseCliffords", &Transforms::clifford_simp,
-          "An optimisation pass that performs a number of rewrite "
-          "rules for simplifying Clifford gate sequences, similar to "
-          "Duncan & Fagan (https://arxiv.org/abs/1901.10114). "
-          "Given a circuit with CXs and any single-qubit gates, "
-          "produces a circuit with Z, X, S, V, U1, U2, U3, CX gates. "
-          "This will not preserve CX placement or orientation and "
-          "may introduce implicit wire swaps."
-          "\n\n:param allow_swaps: dictates whether the rewriting "
-          "will disregard CX placement or orientation and introduce "
-          "wire swaps.",
-          py::arg("allow_swaps") = true)
+          "An optimisation pass that applies a number of rewrite rules for "
+          "simplifying Clifford gate sequences, similar to Duncan & Fagan "
+          "(https://arxiv.org/abs/1901.10114). Produces a circuit comprising "
+          "TK1 gates and the two-qubit gate specified as the target."
+          "\n\n:param allow_swaps: whether the rewriting may introduce "
+          "implicit wire swaps"
+          "\n:param target_2qb_gate: target two-qubit gate (either CX or TK2)",
+          py::arg("allow_swaps") = true,
+          py::arg("target_2qb_gate") = OpType::CX)
       .def_static(
           "OptimisePauliGadgets", &Transforms::pairwise_pauli_gadgets,
           "An optimisation pass that identifies the Pauli gadgets "
