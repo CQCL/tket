@@ -134,34 +134,40 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; c : j) {</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    std::string name = c.at(<span class="stringliteral">&quot;name&quot;</span>).get&lt;std::string&gt;();</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="keywordflow">if</span> (name == <span class="stringliteral">&quot;LexiLabellingMethod&quot;</span>) {</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>      rmp_v.push_back(std::make_shared&lt;LexiLabellingMethod&gt;(</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>          <a class="code hl_function" href="classtket_1_1LexiLabellingMethod.html#aec06fcc4c09647de469181837030d718">LexiLabellingMethod::deserialize</a>(c)));</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (name == <span class="stringliteral">&quot;LexiRouteRoutingMethod&quot;</span>) {</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>      rmp_v.push_back(std::make_shared&lt;LexiRouteRoutingMethod&gt;(</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>          <a class="code hl_function" href="classtket_1_1LexiRouteRoutingMethod.html#ac1ef6eee2715b2da30498be083d86a01">LexiRouteRoutingMethod::deserialize</a>(c)));</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (name == <span class="stringliteral">&quot;RoutingMethod&quot;</span>) {</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>      rmp_v.push_back(std::make_shared&lt;RoutingMethod&gt;());</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (name == <span class="stringliteral">&quot;AASRouteRoutingMethod&quot;</span>) {</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>      rmp_v.push_back(std::make_shared&lt;AASRouteRoutingMethod&gt;(</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>          <a class="code hl_function" href="classtket_1_1AASRouteRoutingMethod.html#a580bee227fe590bd2c270f2e66dcbfde">AASRouteRoutingMethod::deserialize</a>(c)));</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (name == <span class="stringliteral">&quot;AASLabellingMethod&quot;</span>) {</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>      rmp_v.push_back(std::make_shared&lt;AASLabellingMethod&gt;(</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>          <a class="code hl_function" href="classtket_1_1AASLabellingMethod.html#a115dd8875976cc0287bf0358bd1c051f">AASLabellingMethod::deserialize</a>(c)));</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (name == <span class="stringliteral">&quot;MultiGateReorderRoutingMethod&quot;</span>) {</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>      rmp_v.push_back(std::make_shared&lt;MultiGateReorderRoutingMethod&gt;(</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>          <a class="code hl_function" href="classtket_1_1MultiGateReorderRoutingMethod.html#aebcddda27a1faf7da2d5e917941b4214">MultiGateReorderRoutingMethod::deserialize</a>(c)));</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (name == <span class="stringliteral">&quot;BoxDecompositionRoutingMethod&quot;</span>) {</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>      rmp_v.push_back(std::make_shared&lt;BoxDecompositionRoutingMethod&gt;(</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>          <a class="code hl_function" href="classtket_1_1BoxDecompositionRoutingMethod.html#a56d65c3f0e3c4b0945543f7e04f29474">BoxDecompositionRoutingMethod::deserialize</a>(c)));</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>      std::logic_error(</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>          <span class="stringliteral">&quot;Deserialization for given RoutingMethod not supported.&quot;</span>);</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    }</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>  }</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>}</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>      rmp_v.push_back(</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>          std::make_shared&lt;LexiLabellingMethod&gt;(</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>              <a class="code hl_function" href="classtket_1_1LexiLabellingMethod.html#aec06fcc4c09647de469181837030d718">LexiLabellingMethod::deserialize</a>(c)));</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (name == <span class="stringliteral">&quot;LexiRouteRoutingMethod&quot;</span>) {</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>      rmp_v.push_back(</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>          std::make_shared&lt;LexiRouteRoutingMethod&gt;(</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>              <a class="code hl_function" href="classtket_1_1LexiRouteRoutingMethod.html#ac1ef6eee2715b2da30498be083d86a01">LexiRouteRoutingMethod::deserialize</a>(c)));</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (name == <span class="stringliteral">&quot;RoutingMethod&quot;</span>) {</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>      rmp_v.push_back(std::make_shared&lt;RoutingMethod&gt;());</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (name == <span class="stringliteral">&quot;AASRouteRoutingMethod&quot;</span>) {</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>      rmp_v.push_back(</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>          std::make_shared&lt;AASRouteRoutingMethod&gt;(</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>              <a class="code hl_function" href="classtket_1_1AASRouteRoutingMethod.html#a580bee227fe590bd2c270f2e66dcbfde">AASRouteRoutingMethod::deserialize</a>(c)));</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (name == <span class="stringliteral">&quot;AASLabellingMethod&quot;</span>) {</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>      rmp_v.push_back(</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>          std::make_shared&lt;AASLabellingMethod&gt;(</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>              <a class="code hl_function" href="classtket_1_1AASLabellingMethod.html#a115dd8875976cc0287bf0358bd1c051f">AASLabellingMethod::deserialize</a>(c)));</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (name == <span class="stringliteral">&quot;MultiGateReorderRoutingMethod&quot;</span>) {</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>      rmp_v.push_back(</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>          std::make_shared&lt;MultiGateReorderRoutingMethod&gt;(</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>              <a class="code hl_function" href="classtket_1_1MultiGateReorderRoutingMethod.html#aebcddda27a1faf7da2d5e917941b4214">MultiGateReorderRoutingMethod::deserialize</a>(c)));</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (name == <span class="stringliteral">&quot;BoxDecompositionRoutingMethod&quot;</span>) {</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>      rmp_v.push_back(</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>          std::make_shared&lt;BoxDecompositionRoutingMethod&gt;(</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>              <a class="code hl_function" href="classtket_1_1BoxDecompositionRoutingMethod.html#a56d65c3f0e3c4b0945543f7e04f29474">BoxDecompositionRoutingMethod::deserialize</a>(c)));</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>      std::logic_error(</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>          <span class="stringliteral">&quot;Deserialization for given RoutingMethod not supported.&quot;</span>);</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    }</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>  }</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>}</div>
 </div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>}  <span class="comment">// namespace tket</span></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>}  <span class="comment">// namespace tket</span></div>
 <div class="ttc" id="aAASLabelling_8hpp_html"><div class="ttname"><a href="AASLabelling_8hpp.html">AASLabelling.hpp</a></div></div>
 <div class="ttc" id="aAASRoute_8hpp_html"><div class="ttname"><a href="AASRoute_8hpp.html">AASRoute.hpp</a></div></div>
 <div class="ttc" id="aBoxDecomposition_8hpp_html"><div class="ttname"><a href="BoxDecomposition_8hpp.html">BoxDecomposition.hpp</a></div></div>

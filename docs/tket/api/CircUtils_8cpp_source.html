@@ -203,8 +203,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a605943552629c6e31b20ee3733694927">OpType::TK2</a>: {</div>
 <div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>          <span class="keyword">auto</span> params = o-&gt;get_params();</div>
 <div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>          TKET_ASSERT(params.size() == 3);</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>          v_to_op[it-&gt;first] =</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>              <a class="code hl_function" href="namespacetket.html#a6167185d250e02a0192b414f73634a4b">get_matrix_from_2qb_circ</a>(<a class="code hl_function" href="namespacetket_1_1CircPool.html#af0dc3e2b8eaa4346c689162f95a338e8">CircPool::normalised_TK2_using_CX</a>(</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>          v_to_op[it-&gt;first] = <a class="code hl_function" href="namespacetket.html#a6167185d250e02a0192b414f73634a4b">get_matrix_from_2qb_circ</a>(</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>              <a class="code hl_function" href="namespacetket_1_1CircPool.html#af0dc3e2b8eaa4346c689162f95a338e8">CircPool::normalised_TK2_using_CX</a>(</div>
 <div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>                  params[0], params[1], params[2]));</div>
 <div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>          <span class="keywordflow">break</span>;</div>
 <div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>        }</div>
