@@ -25,8 +25,9 @@ namespace tket {
 using Connection = Architecture::Connection;
 SCENARIO("Routing of aas example") {
   GIVEN("aas routing - simple example") {
-    Architecture arc(std::vector<Connection>{
-        {Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
+    Architecture arc(
+        std::vector<Connection>{
+            {Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
     PassPtr pass = gen_full_mapping_pass_phase_poly(arc);
     Circuit circ(4);
     circ.add_op<unsigned>(OpType::H, {0});
@@ -51,8 +52,9 @@ SCENARIO("Routing of aas example") {
     REQUIRE(test_unitary_comparison(circ, result));
   }
   GIVEN("aas routing - simple example II") {
-    Architecture arc(std::vector<Connection>{
-        {Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
+    Architecture arc(
+        std::vector<Connection>{
+            {Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
     PassPtr pass = gen_full_mapping_pass_phase_poly(arc);
     Circuit circ(4);
     circ.add_op<unsigned>(OpType::H, {0});
@@ -84,8 +86,9 @@ SCENARIO("Routing of aas example") {
     REQUIRE(test_unitary_comparison(circ, result));
   }
   GIVEN("aas routing - simple example III") {
-    Architecture arc(std::vector<Connection>{
-        {Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
+    Architecture arc(
+        std::vector<Connection>{
+            {Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
     PassPtr pass = gen_full_mapping_pass_phase_poly(arc);
     Circuit circ(4);
     circ.add_op<unsigned>(OpType::H, {0});
@@ -122,8 +125,9 @@ SCENARIO("Routing of aas example") {
     REQUIRE(test_unitary_comparison(circ, result));
   }
   GIVEN("aas routing - simple example IV") {
-    Architecture arc(std::vector<Connection>{
-        {Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
+    Architecture arc(
+        std::vector<Connection>{
+            {Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
     PassPtr pass = gen_full_mapping_pass_phase_poly(arc);
     Circuit circ(4);
     circ.add_op<unsigned>(OpType::H, {0});
@@ -206,12 +210,14 @@ SCENARIO("Routing of aas example") {
 
     const auto s = tket_sim::get_unitary(circ);
     const auto s1 = tket_sim::get_unitary(result);
-    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
-        s, s1, tket_sim::MatrixEquivalence::EQUAL));
+    REQUIRE(
+        tket_sim::compare_statevectors_or_unitaries(
+            s, s1, tket_sim::MatrixEquivalence::EQUAL));
   }
   GIVEN("aas routing - simple example VII") {
-    Architecture arc(std::vector<Connection>{
-        {Node(0), Node(2)}, {Node(2), Node(4)}, {Node(4), Node(6)}});
+    Architecture arc(
+        std::vector<Connection>{
+            {Node(0), Node(2)}, {Node(2), Node(4)}, {Node(4), Node(6)}});
     PassPtr pass = gen_full_mapping_pass_phase_poly(arc);
     Circuit circ(4);
     circ.add_op<unsigned>(OpType::H, {0});
@@ -240,12 +246,16 @@ SCENARIO("Routing of aas example") {
 
     const auto s = tket_sim::get_unitary(circ);
     const auto s1 = tket_sim::get_unitary(result);
-    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
-        s, s1, tket_sim::MatrixEquivalence::EQUAL));
+    REQUIRE(
+        tket_sim::compare_statevectors_or_unitaries(
+            s, s1, tket_sim::MatrixEquivalence::EQUAL));
   }
   GIVEN("aas routing - simple example VIII") {
-    Architecture arc(std::vector<Connection>{
-        {Node(1000), Node(10)}, {Node(10), Node(100)}, {Node(100), Node(1)}});
+    Architecture arc(
+        std::vector<Connection>{
+            {Node(1000), Node(10)},
+            {Node(10), Node(100)},
+            {Node(100), Node(1)}});
     PassPtr pass = gen_full_mapping_pass_phase_poly(arc);
     Circuit circ(4);
     circ.add_op<unsigned>(OpType::H, {0});
@@ -273,8 +283,11 @@ SCENARIO("Routing of aas example") {
     REQUIRE(test_unitary_comparison(circ, result));
   }
   GIVEN("aas routing - simple example IX, other gate set") {
-    Architecture arc(std::vector<Connection>{
-        {Node(1000), Node(10)}, {Node(10), Node(100)}, {Node(100), Node(1)}});
+    Architecture arc(
+        std::vector<Connection>{
+            {Node(1000), Node(10)},
+            {Node(10), Node(100)},
+            {Node(100), Node(1)}});
     PassPtr pass = gen_full_mapping_pass_phase_poly(arc);
     Circuit circ(4);
     circ.add_op<unsigned>(OpType::X, {0});
@@ -320,8 +333,9 @@ SCENARIO("Routing of aas example") {
     REQUIRE(pass->apply(cu));
   }
   GIVEN("aas routing - circuit with fewer qubits then nodes in the arch") {
-    Architecture arc(std::vector<Connection>{
-        {Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
+    Architecture arc(
+        std::vector<Connection>{
+            {Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
     PassPtr pass = gen_full_mapping_pass_phase_poly(arc);
     Circuit circ(3);
     circ.add_op<unsigned>(OpType::X, {0});
@@ -343,11 +357,12 @@ SCENARIO("Routing of aas example") {
     REQUIRE(test_unitary_comparison(circ, result));
   }
   GIVEN("aas routing - circuit with fewer qubits then nodes in the arch II") {
-    Architecture arc(std::vector<Connection>{
-        {Node(0), Node(1)},
-        {Node(1), Node(2)},
-        {Node(2), Node(3)},
-        {Node(3), Node(4)}});
+    Architecture arc(
+        std::vector<Connection>{
+            {Node(0), Node(1)},
+            {Node(1), Node(2)},
+            {Node(2), Node(3)},
+            {Node(3), Node(4)}});
     PassPtr pass = gen_full_mapping_pass_phase_poly(arc);
     Circuit circ(3);
     circ.add_op<unsigned>(OpType::X, {0});

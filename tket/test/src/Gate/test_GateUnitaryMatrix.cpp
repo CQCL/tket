@@ -518,10 +518,12 @@ SCENARIO("Trivial unitary matrix identities") {
         const auto other_op = inner_entry.second.other_type;
         const auto& params = inner_entry.second.params;
 
-        CHECK(GateUnitaryMatrix::get_unitary(
-                  op_with_no_params, number_of_qubits, no_params)
-                  .isApprox(GateUnitaryMatrix::get_unitary(
-                      other_op, number_of_qubits, params)));
+        CHECK(
+            GateUnitaryMatrix::get_unitary(
+                op_with_no_params, number_of_qubits, no_params)
+                .isApprox(
+                    GateUnitaryMatrix::get_unitary(
+                        other_op, number_of_qubits, params)));
       }
     }
   }
