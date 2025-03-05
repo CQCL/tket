@@ -25,6 +25,5 @@ var searchData=
   ['hbox_22',['Hbox',['../namespacetket_1_1zx.html#ab1dacff6605c3bc8caa5f7fa6e3f5646a2489d00ce364c16072a0aef3dde2de5e',1,'tket::zx']]],
   ['helperfunctions_2ecpp_23',['HelperFunctions.cpp',['../HelperFunctions_8cpp.html',1,'']]],
   ['helperfunctions_2ehpp_24',['HelperFunctions.hpp',['../HelperFunctions_8hpp.html',1,'']]],
-  ['history_25',['history',['../structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3',1,'tket::CycleHistory']]],
-  ['hyper_5fclifford_5fsquash_26',['hyper_clifford_squash',['../namespacetket_1_1Transforms.html#a5107ad8ab9b99fa98a0d2ad1d4ed1a12',1,'tket::Transforms']]]
+  ['history_25',['history',['../structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3',1,'tket::CycleHistory']]]
 ];

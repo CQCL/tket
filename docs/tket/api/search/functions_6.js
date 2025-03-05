@@ -15,7 +15,7 @@ var searchData=
   ['gen_5fauto_5fsquash_5fpass_12',['gen_auto_squash_pass',['../namespacetket.html#af0b9726aaa54367969e4903bf035d94b',1,'tket']]],
   ['gen_5fclifford_5fpush_5fthrough_5fpass_13',['gen_clifford_push_through_pass',['../namespacetket.html#a2b8905267410c8af28392dab54be292c',1,'tket']]],
   ['gen_5fclifford_5fresynthesis_5fpass_14',['gen_clifford_resynthesis_pass',['../namespacetket.html#aec9b6595d5ecf1e6a98b923d8f65f010',1,'tket']]],
-  ['gen_5fclifford_5fsimp_5fpass_15',['gen_clifford_simp_pass',['../namespacetket.html#aed2e05e652ba5938bbc5c21306d62e5f',1,'tket']]],
+  ['gen_5fclifford_5fsimp_5fpass_15',['gen_clifford_simp_pass',['../namespacetket.html#aa0d9a691eb25baea736f31babbccb655',1,'tket']]],
   ['gen_5fcontextual_5fpass_16',['gen_contextual_pass',['../namespacetket.html#a93727fa79d5117e997a68cff98864494',1,'tket']]],
   ['gen_5fcx_5fmapping_5fpass_17',['gen_cx_mapping_pass',['../namespacetket.html#ac25a34e6768eeff8b3f5ffa57bb717c6',1,'tket']]],
   ['gen_5fdecompose_5frouting_5fgates_5fto_5fcxs_5fpass_18',['gen_decompose_routing_gates_to_cxs_pass',['../namespacetket.html#a906d3a97e59bef558312f56b7c0098ec',1,'tket']]],

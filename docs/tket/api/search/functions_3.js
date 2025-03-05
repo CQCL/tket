@@ -14,7 +14,7 @@ var searchData=
   ['decompose_5fboxes_5frecursively_11',['decompose_boxes_recursively',['../classtket_1_1Circuit.html#a017f266f3731467e7e2fdca4e7f5f317',1,'tket::Circuit']]],
   ['decompose_5fbridge_5fto_5fcx_12',['decompose_BRIDGE_to_CX',['../namespacetket_1_1Transforms.html#aedc2a6c73363553bc6a3fcc7d4fe1e1d',1,'tket::Transforms']]],
   ['decompose_5fcircuit_13',['decompose_circuit',['../namespacetket_1_1tket__sim_1_1internal.html#a3f9535338a2dc8deb0761abc65903d8c',1,'tket::tket_sim::internal']]],
-  ['decompose_5fcliffords_5fstd_14',['decompose_cliffords_std',['../namespacetket_1_1Transforms.html#a6195d1cae2fc9f46bc761c981188c26d',1,'tket::Transforms']]],
+  ['decompose_5fcliffords_5fstd_14',['decompose_cliffords_std',['../namespacetket_1_1Transforms.html#a48be29550b850b574d7790a887d68043',1,'tket::Transforms']]],
   ['decompose_5fcx_5fdirected_15',['decompose_CX_directed',['../namespacetket_1_1Transforms.html#aaf31d7ea658935d1bd052285919074e6',1,'tket::Transforms']]],
   ['decompose_5fcx_5fto_5fhqs2_16',['decompose_CX_to_HQS2',['../namespacetket_1_1Transforms.html#a7869b7c566fee7f87d8eeea73a01b5d4',1,'tket::Transforms']]],
   ['decompose_5fmolmersorensen_17',['decompose_MolmerSorensen',['../namespacetket_1_1Transforms.html#afed169155f9056acecc68b587fe34b04',1,'tket::Transforms']]],
