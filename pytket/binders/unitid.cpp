@@ -152,17 +152,19 @@ PYBIND11_MODULE(unit_id, m) {
           "index\n\n:param name: The readable name for the "
           "register\n:param index: The index vector",
           py::arg("name"), py::arg("index"))
-      .def(py::pickle(
-          [](const Qubit &q) {
-            return py::make_tuple(q.reg_name(), q.index());
-          },
-          [](const py::tuple &t) {
-            if (t.size() != 2)
-              throw std::runtime_error(
-                  "Invalid state: tuple size: " + std::to_string(t.size()));
-            return Qubit(
-                t[0].cast<std::string>(), t[1].cast<std::vector<unsigned>>());
-          }))
+      .def(
+          py::pickle(
+              [](const Qubit &q) {
+                return py::make_tuple(q.reg_name(), q.index());
+              },
+              [](const py::tuple &t) {
+                if (t.size() != 2)
+                  throw std::runtime_error(
+                      "Invalid state: tuple size: " + std::to_string(t.size()));
+                return Qubit(
+                    t[0].cast<std::string>(),
+                    t[1].cast<std::vector<unsigned>>());
+              }))
       .def(
           "to_list",
           [](const Qubit &q) { return py::object(json(q)).cast<py::list>(); },
@@ -211,15 +213,19 @@ PYBIND11_MODULE(unit_id, m) {
           py::arg("name"), py::arg("index"))
       .def("__eq__", &py_equals<Bit>)
       .def("__hash__", [](const Bit &b) { return hash_value(b); })
-      .def(py::pickle(
-          [](const Bit &b) { return py::make_tuple(b.reg_name(), b.index()); },
-          [](const py::tuple &t) {
-            if (t.size() != 2)
-              throw std::runtime_error(
-                  "Invalid state: tuple size: " + std::to_string(t.size()));
-            return Bit(
-                t[0].cast<std::string>(), t[1].cast<std::vector<unsigned>>());
-          }))
+      .def(
+          py::pickle(
+              [](const Bit &b) {
+                return py::make_tuple(b.reg_name(), b.index());
+              },
+              [](const py::tuple &t) {
+                if (t.size() != 2)
+                  throw std::runtime_error(
+                      "Invalid state: tuple size: " + std::to_string(t.size()));
+                return Bit(
+                    t[0].cast<std::string>(),
+                    t[1].cast<std::vector<unsigned>>());
+              }))
       .def(
           "to_list",
           [](const Bit &b) { return py::object(json(b)).cast<py::list>(); },
@@ -244,17 +250,19 @@ PYBIND11_MODULE(unit_id, m) {
           py::arg("index"))
       .def("__eq__", &py_equals<WasmState>)
       .def("__hash__", [](const WasmState &b) { return hash_value(b); })
-      .def(py::pickle(
-          [](const WasmState &b) {
-            return py::make_tuple(b.reg_name(), b.index());
-          },
-          [](const py::tuple &t) {
-            if (t.size() != 2)
-              throw std::runtime_error(
-                  "Invalid state: tuple size: " + std::to_string(t.size()));
-            return WasmState(
-                t[0].cast<std::string>(), t[1].cast<std::vector<unsigned>>());
-          }))
+      .def(
+          py::pickle(
+              [](const WasmState &b) {
+                return py::make_tuple(b.reg_name(), b.index());
+              },
+              [](const py::tuple &t) {
+                if (t.size() != 2)
+                  throw std::runtime_error(
+                      "Invalid state: tuple size: " + std::to_string(t.size()));
+                return WasmState(
+                    t[0].cast<std::string>(),
+                    t[1].cast<std::vector<unsigned>>());
+              }))
       .def(
           "to_list",
           [](const WasmState &b) {

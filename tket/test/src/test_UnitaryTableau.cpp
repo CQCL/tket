@@ -750,14 +750,15 @@ SCENARIO("Unitary inversions") {
 
 SCENARIO("Compare SymplecticTableau and UnitaryTableau") {
   GIVEN("The same sequence of gates, compare string representations") {
-    SymplecticTableau stab(PauliStabiliserVec{
-        {DensePauliMap{Pauli::X, Pauli::I, Pauli::I}},
-        {DensePauliMap{Pauli::I, Pauli::X, Pauli::I}},
-        {DensePauliMap{Pauli::I, Pauli::I, Pauli::X}},
-        {DensePauliMap{Pauli::Z, Pauli::I, Pauli::I}},
-        {DensePauliMap{Pauli::I, Pauli::Z, Pauli::I}},
-        {DensePauliMap{Pauli::I, Pauli::I, Pauli::Z}},
-    });
+    SymplecticTableau stab(
+        PauliStabiliserVec{
+            {DensePauliMap{Pauli::X, Pauli::I, Pauli::I}},
+            {DensePauliMap{Pauli::I, Pauli::X, Pauli::I}},
+            {DensePauliMap{Pauli::I, Pauli::I, Pauli::X}},
+            {DensePauliMap{Pauli::Z, Pauli::I, Pauli::I}},
+            {DensePauliMap{Pauli::I, Pauli::Z, Pauli::I}},
+            {DensePauliMap{Pauli::I, Pauli::I, Pauli::Z}},
+        });
     // Paulis cancel with subsequent gadget
     stab.apply_gate(OpType::X, uvec{0});
     stab.apply_gate(OpType::Y, uvec{1});

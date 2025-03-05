@@ -62,8 +62,9 @@ struct ResultChecker {
     // So initially, (token at i) = (target vertex).
     // Then, performing the swaps, all tokens should reach their home.
     for (const auto& swap : lookup_result.swaps) {
-      REQUIRE(std::binary_search(
-          sorted_edges_vect.cbegin(), sorted_edges_vect.cend(), swap));
+      REQUIRE(
+          std::binary_search(
+              sorted_edges_vect.cbegin(), sorted_edges_vect.cend(), swap));
       std::swap(desired_mapping[swap.first], desired_mapping[swap.second]);
     }
     CHECK(all_tokens_home(desired_mapping));

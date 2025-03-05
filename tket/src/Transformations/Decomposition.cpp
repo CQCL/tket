@@ -632,12 +632,13 @@ static double best_noise_aware_decomposition(
     for (unsigned n_zz = 0; n_zz <= max_nzz; ++n_zz) {
       if (n_zz > 0) {
         double gate_fid = std::visit(
-            overloaded{// Constant value
-                       [](double arg) { return arg; },
-                       // A value depending on the angle
-                       [angles, n_zz](std::function<double(double)> arg) {
-                         return (arg)(angles[n_zz - 1]);
-                       }},
+            overloaded{
+                // Constant value
+                [](double arg) { return arg; },
+                // A value depending on the angle
+                [angles, n_zz](std::function<double(double)> arg) {
+                  return (arg)(angles[n_zz - 1]);
+                }},
             *fid.ZZPhase_fidelity);
         if (gate_fid < 0 || gate_fid > 1) {
           throw std::domain_error(
@@ -880,10 +881,11 @@ Transform decompose_TK2(const TwoQbFidelities &fid, bool allow_swaps) {
   }
   if (fid.ZZMax_fidelity && fid.ZZPhase_fidelity) {
     double ZZPhase_half = std::visit(
-        overloaded{// A constant value.
-                   [](double arg) { return arg; },
-                   // A value depending on the input.
-                   [](std::function<double(double)> arg) { return (arg)(.5); }},
+        overloaded{
+            // A constant value.
+            [](double arg) { return arg; },
+            // A value depending on the input.
+            [](std::function<double(double)> arg) { return (arg)(.5); }},
         *fid.ZZPhase_fidelity);
     if (*fid.ZZMax_fidelity < ZZPhase_half) {
       throw std::domain_error(

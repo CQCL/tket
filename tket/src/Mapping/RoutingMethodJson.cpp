@@ -39,25 +39,31 @@ void from_json(const nlohmann::json& j, std::vector<RoutingMethodPtr>& rmp_v) {
   for (const auto& c : j) {
     std::string name = c.at("name").get<std::string>();
     if (name == "LexiLabellingMethod") {
-      rmp_v.push_back(std::make_shared<LexiLabellingMethod>(
-          LexiLabellingMethod::deserialize(c)));
+      rmp_v.push_back(
+          std::make_shared<LexiLabellingMethod>(
+              LexiLabellingMethod::deserialize(c)));
     } else if (name == "LexiRouteRoutingMethod") {
-      rmp_v.push_back(std::make_shared<LexiRouteRoutingMethod>(
-          LexiRouteRoutingMethod::deserialize(c)));
+      rmp_v.push_back(
+          std::make_shared<LexiRouteRoutingMethod>(
+              LexiRouteRoutingMethod::deserialize(c)));
     } else if (name == "RoutingMethod") {
       rmp_v.push_back(std::make_shared<RoutingMethod>());
     } else if (name == "AASRouteRoutingMethod") {
-      rmp_v.push_back(std::make_shared<AASRouteRoutingMethod>(
-          AASRouteRoutingMethod::deserialize(c)));
+      rmp_v.push_back(
+          std::make_shared<AASRouteRoutingMethod>(
+              AASRouteRoutingMethod::deserialize(c)));
     } else if (name == "AASLabellingMethod") {
-      rmp_v.push_back(std::make_shared<AASLabellingMethod>(
-          AASLabellingMethod::deserialize(c)));
+      rmp_v.push_back(
+          std::make_shared<AASLabellingMethod>(
+              AASLabellingMethod::deserialize(c)));
     } else if (name == "MultiGateReorderRoutingMethod") {
-      rmp_v.push_back(std::make_shared<MultiGateReorderRoutingMethod>(
-          MultiGateReorderRoutingMethod::deserialize(c)));
+      rmp_v.push_back(
+          std::make_shared<MultiGateReorderRoutingMethod>(
+              MultiGateReorderRoutingMethod::deserialize(c)));
     } else if (name == "BoxDecompositionRoutingMethod") {
-      rmp_v.push_back(std::make_shared<BoxDecompositionRoutingMethod>(
-          BoxDecompositionRoutingMethod::deserialize(c)));
+      rmp_v.push_back(
+          std::make_shared<BoxDecompositionRoutingMethod>(
+              BoxDecompositionRoutingMethod::deserialize(c)));
     } else {
       std::logic_error(
           "Deserialization for given RoutingMethod not supported.");

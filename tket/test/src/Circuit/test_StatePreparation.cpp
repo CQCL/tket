@@ -72,8 +72,10 @@ SCENARIO("Test state preparation") {
     test_states.push_back(Eigen::Vector4cd(0, 1, 0, 0));
     test_states.push_back(Eigen::Vector4cd(0, 0, 0, 1));
     test_states.push_back(Eigen::Vector4cd(1, 0, 0, 0));
-    test_states.push_back(Eigen::Vector4cd(
-        -std::sqrt(0.25), std::sqrt(0.25), std::sqrt(0.25), -std::sqrt(0.25)));
+    test_states.push_back(
+        Eigen::Vector4cd(
+            -std::sqrt(0.25), std::sqrt(0.25), std::sqrt(0.25),
+            -std::sqrt(0.25)));
     for (unsigned i = 0; i < 5; i++) {
       test_states.push_back(random_state(8, i));
       test_states.push_back(random_state(16, i));
