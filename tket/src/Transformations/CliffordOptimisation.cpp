@@ -628,74 +628,78 @@ Transform singleq_clifford_sweep() {
     std::vector<Vertex> vertices = circ.vertices_in_order();
     for (auto it = vertices.crbegin(); it != vertices.crend(); ++it) {
       const Vertex &v = *it;
-      if (circ.get_OpType_from_Vertex(v) == OpType::CX) {
+      OpType v_type = circ.get_OpType_from_Vertex(v);
+      if (v_type != OpType::Conditional &&
+          circ.n_out_edges_of_type(v, EdgeType::Quantum) == 2) {
         for (port_t p = 0; p < 2; p++) {
           // put both subsequent single qubit sequences into normal form
           // stuff for obtaining next single qubit subcircuit
           Edge e = circ.get_nth_out_edge(v, p);
           success = singleq_clifford_from_edge(circ, e, bin) || success;
         }
-        // commute Z, X and whatever else we can through
-        Edge e0 = circ.get_nth_out_edge(v, 0);
-        Vertex v0 = circ.target(e0);
+        if (v_type == OpType::CX) {
+          // commute Z, X and whatever else we can through
+          Edge e0 = circ.get_nth_out_edge(v, 0);
+          Vertex v0 = circ.target(e0);
 
-        if (circ.get_OpType_from_Vertex(v0) == OpType::Z) {
-          circ.remove_vertex(
-              v0, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-          Edge in_e = circ.get_nth_in_edge(v, 0);
-          circ.rewire(v0, {in_e}, {EdgeType::Quantum});
-          success = true;
-          e0 = circ.get_nth_out_edge(v, 0);
-          v0 = circ.target(e0);
-        }
-        if (circ.get_OpType_from_Vertex(v0) == OpType::X) {
-          circ.remove_vertex(
-              v0, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-          Edge in_e = circ.get_nth_in_edge(v, 0);
-          circ.rewire(v0, {in_e}, {EdgeType::Quantum});
-          Vertex new_v = circ.add_vertex(OpType::X);
-          in_e = circ.get_nth_in_edge(v, 1);
-          circ.rewire(new_v, {in_e}, {EdgeType::Quantum});
-          success = true;
-          e0 = circ.get_nth_out_edge(v, 0);
-          v0 = circ.target(e0);
-        }
-        if (circ.get_OpType_from_Vertex(v0) == OpType::S) {
-          circ.remove_vertex(
-              v0, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-          Edge in_e = circ.get_nth_in_edge(v, 0);
-          circ.rewire(v0, {in_e}, {EdgeType::Quantum});
-          success = true;
-        }
-        Edge e1 = circ.get_nth_out_edge(v, 1);
-        Vertex v1 = circ.target(e1);
-        if (circ.get_OpType_from_Vertex(v1) == OpType::Z) {
-          circ.remove_vertex(
-              v1, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-          Edge in_e = circ.get_nth_in_edge(v, 1);
-          circ.rewire(v1, {in_e}, {EdgeType::Quantum});
-          Vertex new_v = circ.add_vertex(OpType::Z);
-          in_e = circ.get_nth_in_edge(v, 0);
-          circ.rewire(new_v, {in_e}, {EdgeType::Quantum});
-          success = true;
-          e1 = circ.get_nth_out_edge(v, 1);
-          v1 = circ.target(e1);
-        }
-        if (circ.get_OpType_from_Vertex(v1) == OpType::X) {
-          circ.remove_vertex(
-              v1, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-          Edge in_e = circ.get_nth_in_edge(v, 1);
-          circ.rewire(v1, {in_e}, {EdgeType::Quantum});
-          success = true;
-          e1 = circ.get_nth_out_edge(v, 1);
-          v1 = circ.target(e1);
-        }
-        if (circ.get_OpType_from_Vertex(v1) == OpType::V) {
-          circ.remove_vertex(
-              v1, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-          Edge in_e = circ.get_nth_in_edge(v, 1);
-          circ.rewire(v1, {in_e}, {EdgeType::Quantum});
-          success = true;
+          if (circ.get_OpType_from_Vertex(v0) == OpType::Z) {
+            circ.remove_vertex(
+                v0, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
+            Edge in_e = circ.get_nth_in_edge(v, 0);
+            circ.rewire(v0, {in_e}, {EdgeType::Quantum});
+            success = true;
+            e0 = circ.get_nth_out_edge(v, 0);
+            v0 = circ.target(e0);
+          }
+          if (circ.get_OpType_from_Vertex(v0) == OpType::X) {
+            circ.remove_vertex(
+                v0, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
+            Edge in_e = circ.get_nth_in_edge(v, 0);
+            circ.rewire(v0, {in_e}, {EdgeType::Quantum});
+            Vertex new_v = circ.add_vertex(OpType::X);
+            in_e = circ.get_nth_in_edge(v, 1);
+            circ.rewire(new_v, {in_e}, {EdgeType::Quantum});
+            success = true;
+            e0 = circ.get_nth_out_edge(v, 0);
+            v0 = circ.target(e0);
+          }
+          if (circ.get_OpType_from_Vertex(v0) == OpType::S) {
+            circ.remove_vertex(
+                v0, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
+            Edge in_e = circ.get_nth_in_edge(v, 0);
+            circ.rewire(v0, {in_e}, {EdgeType::Quantum});
+            success = true;
+          }
+          Edge e1 = circ.get_nth_out_edge(v, 1);
+          Vertex v1 = circ.target(e1);
+          if (circ.get_OpType_from_Vertex(v1) == OpType::Z) {
+            circ.remove_vertex(
+                v1, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
+            Edge in_e = circ.get_nth_in_edge(v, 1);
+            circ.rewire(v1, {in_e}, {EdgeType::Quantum});
+            Vertex new_v = circ.add_vertex(OpType::Z);
+            in_e = circ.get_nth_in_edge(v, 0);
+            circ.rewire(new_v, {in_e}, {EdgeType::Quantum});
+            success = true;
+            e1 = circ.get_nth_out_edge(v, 1);
+            v1 = circ.target(e1);
+          }
+          if (circ.get_OpType_from_Vertex(v1) == OpType::X) {
+            circ.remove_vertex(
+                v1, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
+            Edge in_e = circ.get_nth_in_edge(v, 1);
+            circ.rewire(v1, {in_e}, {EdgeType::Quantum});
+            success = true;
+            e1 = circ.get_nth_out_edge(v, 1);
+            v1 = circ.target(e1);
+          }
+          if (circ.get_OpType_from_Vertex(v1) == OpType::V) {
+            circ.remove_vertex(
+                v1, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
+            Edge in_e = circ.get_nth_in_edge(v, 1);
+            circ.rewire(v1, {in_e}, {EdgeType::Quantum});
+            success = true;
+          }
         }
       }
     }

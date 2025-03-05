@@ -883,15 +883,15 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "CliffordSimp", &gen_clifford_simp_pass,
-      "An optimisation pass that performs a number of rewrite rules for "
+      "An optimisation pass that applies a number of rewrite rules for "
       "simplifying Clifford gate sequences, similar to Duncan & Fagan "
-      "(https://arxiv.org/abs/1901.10114). "
-      "Given a circuit with CXs and any single-qubit gates, produces a "
-      "circuit with TK1, CX gates."
-      "\n\n:param allow_swaps: dictates whether the rewriting will "
-      "disregard CX placement or orientation and introduce wire swaps."
+      "(https://arxiv.org/abs/1901.10114). Produces a circuit comprising TK1 "
+      "gates and the two-qubit gate specified as the target."
+      "\n\n:param allow_swaps: whether the rewriting may introduce implicit "
+      "wire swaps"
+      "\n:param target_2qb_gate: target two-qubit gate (either CX or TK2)"
       "\n:return: a pass to perform the rewriting",
-      py::arg("allow_swaps") = true);
+      py::arg("allow_swaps") = true, py::arg("target_2qb_gate") = OpType::CX);
 
   m.def(
       "CliffordResynthesis", &gen_clifford_resynthesis_pass,

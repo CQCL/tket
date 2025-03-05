@@ -484,7 +484,9 @@ PassPtr deserialise(
       pp = gen_rename_qubits_pass(
           content.at("qubit_map").get<std::map<Qubit, Qubit>>());
     } else if (passname == "CliffordSimp") {
-      pp = gen_clifford_simp_pass(content.at("allow_swaps").get<bool>());
+      pp = gen_clifford_simp_pass(
+          content.at("allow_swaps").get<bool>(),
+          content.at("target_2qb_gate").get<OpType>());
     } else if (passname == "DecomposeSwapsToCXs") {
       Architecture arc = content.at("architecture").get<Architecture>();
       bool d = content.at("directed").get<bool>();

@@ -76,7 +76,9 @@ PassPtr gen_auto_rebase_pass(
 PassPtr gen_auto_squash_pass(const OpTypeSet& singleqs);
 
 PassPtr gen_euler_pass(const OpType& q, const OpType& p, bool strict = false);
-PassPtr gen_clifford_simp_pass(bool allow_swaps = true);
+
+PassPtr gen_clifford_simp_pass(
+    bool allow_swaps = true, OpType target_2qb_gate = OpType::CX);
 
 /**
  * Pass to resynthesise Clifford subcircuits and simplify using Clifford rules.

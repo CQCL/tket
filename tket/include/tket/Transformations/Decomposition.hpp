@@ -136,8 +136,10 @@ Transform decompose_ZZPhase();
  * Replaces all single-qubit unitary gates outside the set {Z, X, S, V} that are
  * recognized as Clifford operations with an equivalent sequence of gates from
  * that set.
+ *
+ * @param tk2_to_cx whether to rebase TK2 gates to CX and standard Cliffords
  */
-Transform decompose_cliffords_std();
+Transform decompose_cliffords_std(bool tk2_to_cx = true);
 
 Transform decompose_ZX_to_cliffords();
 

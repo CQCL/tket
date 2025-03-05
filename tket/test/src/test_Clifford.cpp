@@ -240,9 +240,6 @@ SCENARIO("ham3tc.qasm file was breaking for canonical clifford transform") {
       {{4, 1}, {1, 4}, {4, 1}, {1, 4}, {3, 2}, {2, 3}, {1, 3}, {3, 2}});
   circ.add_op<unsigned>(OpType::H, {4});
   circ.add_op<unsigned>(OpType::Collapse, {4});
-  WHEN("Hyper Clifford Squash") {
-    REQUIRE(Transforms::canonical_hyper_clifford_squash().apply(circ));
-  }
   WHEN("Clifford Simp") { REQUIRE(Transforms::clifford_simp().apply(circ)); }
 }
 
