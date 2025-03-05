@@ -100,8 +100,8 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("other"))
       .def(
           "to_sparse_matrix",
-          (CmplxSpMat(SpPauliString::*)(void)
-               const)&SpPauliString::to_sparse_matrix,
+          (CmplxSpMat (SpPauliString::*)(void) const) &
+              SpPauliString::to_sparse_matrix,
           "Represents the sparse string as a dense string (without "
           "padding for extra qubits) and generates the matrix for the "
           "tensor. Uses the ILO-BE convention, so ``Qubit(\"a\", 0)`` "
@@ -110,8 +110,8 @@ PYBIND11_MODULE(pauli, m) {
           "\n\n:return: a sparse matrix corresponding to the operator")
       .def(
           "to_sparse_matrix",
-          (CmplxSpMat(SpPauliString::*)(const unsigned)
-               const)&SpPauliString::to_sparse_matrix,
+          (CmplxSpMat (SpPauliString::*)(const unsigned) const) &
+              SpPauliString::to_sparse_matrix,
           "Represents the sparse string as a dense string over "
           "`n_qubits` qubits (sequentially indexed from 0 in the "
           "default register) and generates the matrix for the tensor. "
@@ -137,8 +137,9 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("qubits"))
       .def(
           "dot_state",
-          (Eigen::VectorXcd(SpPauliString::*)(const Eigen::VectorXcd &)
-               const)&SpPauliString::dot_state,
+          (Eigen::VectorXcd (SpPauliString::*)(const Eigen::VectorXcd &)
+               const) &
+              SpPauliString::dot_state,
           "Performs the dot product of the state with the pauli string. "
           "Maps the qubits of the statevector with sequentially-indexed "
           "qubits in the default register, with ``Qubit(0)`` being the "
@@ -191,24 +192,27 @@ PYBIND11_MODULE(pauli, m) {
           "\n:return: expectation value with respect to state",
           py::arg("state"), py::arg("qubits"))
 
-      .def(py::pickle(
-          [](const SpPauliString &qps) {
-            /* Hackery to avoid pickling an opaque object */
-            std::list<Qubit> qubits;
-            std::list<Pauli> paulis;
-            for (const std::pair<const Qubit, Pauli> &qp_pair : qps.string) {
-              qubits.push_back(qp_pair.first);
-              paulis.push_back(qp_pair.second);
-            }
-            return py::make_tuple(qubits, paulis);
-          },
-          [](const py::tuple &t) {
-            if (t.size() != 2)
-              throw std::runtime_error(
-                  "Invalid state: tuple size: " + std::to_string(t.size()));
-            return SpPauliString(
-                t[0].cast<std::list<Qubit>>(), t[1].cast<std::list<Pauli>>());
-          }));
+      .def(
+          py::pickle(
+              [](const SpPauliString &qps) {
+                /* Hackery to avoid pickling an opaque object */
+                std::list<Qubit> qubits;
+                std::list<Pauli> paulis;
+                for (const std::pair<const Qubit, Pauli> &qp_pair :
+                     qps.string) {
+                  qubits.push_back(qp_pair.first);
+                  paulis.push_back(qp_pair.second);
+                }
+                return py::make_tuple(qubits, paulis);
+              },
+              [](const py::tuple &t) {
+                if (t.size() != 2)
+                  throw std::runtime_error(
+                      "Invalid state: tuple size: " + std::to_string(t.size()));
+                return SpPauliString(
+                    t[0].cast<std::list<Qubit>>(),
+                    t[1].cast<std::list<Pauli>>());
+              }));
 
   m.def(
       "pauli_string_mult",
@@ -419,23 +423,25 @@ PYBIND11_MODULE(pauli, m) {
           "\n:return: expectation value with respect to state",
           py::arg("state"), py::arg("qubits"))
 
-      .def(py::pickle(
-          [](const SpCxPauliTensor &qpt) {
-            std::list<Qubit> qubits;
-            std::list<Pauli> paulis;
-            for (const std::pair<const Qubit, Pauli> &qp_pair : qpt.string) {
-              qubits.push_back(qp_pair.first);
-              paulis.push_back(qp_pair.second);
-            }
-            return py::make_tuple(qubits, paulis, qpt.coeff);
-          },
-          [](const py::tuple &t) {
-            if (t.size() != 3)
-              throw std::runtime_error(
-                  "Invalid state: tuple size: " + std::to_string(t.size()));
-            return SpCxPauliTensor(
-                t[0].cast<std::list<Qubit>>(), t[1].cast<std::list<Pauli>>(),
-                t[2].cast<Complex>());
-          }));
+      .def(
+          py::pickle(
+              [](const SpCxPauliTensor &qpt) {
+                std::list<Qubit> qubits;
+                std::list<Pauli> paulis;
+                for (const std::pair<const Qubit, Pauli> &qp_pair :
+                     qpt.string) {
+                  qubits.push_back(qp_pair.first);
+                  paulis.push_back(qp_pair.second);
+                }
+                return py::make_tuple(qubits, paulis, qpt.coeff);
+              },
+              [](const py::tuple &t) {
+                if (t.size() != 3)
+                  throw std::runtime_error(
+                      "Invalid state: tuple size: " + std::to_string(t.size()));
+                return SpCxPauliTensor(
+                    t[0].cast<std::list<Qubit>>(),
+                    t[1].cast<std::list<Pauli>>(), t[2].cast<Complex>());
+              }));
 }
 }  // namespace tket

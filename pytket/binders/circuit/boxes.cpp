@@ -726,9 +726,10 @@ void init_boxes(py::module &m) {
       m, "CustomGateDef",
       "A custom unitary gate definition, given as a composition of other "
       "gates")
-      .def(py::init<
-           const std::string &, const Circuit &,
-           const py::tket_custom::SequenceVec<Sym> &>())
+      .def(
+          py::init<
+              const std::string &, const Circuit &,
+              const py::tket_custom::SequenceVec<Sym> &>())
       .def_static(
           "define",
           [](const std::string &name, const Circuit &def,

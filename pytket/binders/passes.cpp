@@ -342,14 +342,15 @@ PYBIND11_MODULE(passes, m) {
           py::arg("base_pass_dict"),
           py::arg("custom_deserialisation") =
               std::map<std::string, std::function<Circuit(const Circuit &)>>{})
-      .def(py::pickle(
-          [](py::object self) {  // __getstate__
-            return py::make_tuple(self.attr("to_dict")());
-          },
-          [](const py::tuple &t) {  // __setstate__
-            const json j = t[0].cast<json>();
-            return deserialise(j);
-          }));
+      .def(
+          py::pickle(
+              [](py::object self) {  // __getstate__
+                return py::make_tuple(self.attr("to_dict")());
+              },
+              [](const py::tuple &t) {  // __setstate__
+                const json j = t[0].cast<json>();
+                return deserialise(j);
+              }));
   py::class_<SequencePass, std::shared_ptr<SequencePass>, BasePass>(
       m, "SequencePass", "A sequence of compilation passes.")
       .def(
