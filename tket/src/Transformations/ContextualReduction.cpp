@@ -424,7 +424,8 @@ std::pair<Circuit, Circuit> separate_classical(const Circuit &circ) {
   for (const Command &cmd : cmds) {
     Vertex v = cmd.get_vertex();
     VertexVec preds = circ.get_predecessors(v);
-    if (std::all_of(preds.begin(), preds.end(), [&c1_verts](const Vertex &v) {
+    if (circ.get_in_edges_of_type(v, EdgeType::Quantum).empty() &&
+        std::all_of(preds.begin(), preds.end(), [&c1_verts](const Vertex &v) {
           return c1_verts.find(v) != c1_verts.end();
         })) {
       c1_verts.insert(v);
