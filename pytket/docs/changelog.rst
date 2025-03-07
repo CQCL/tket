@@ -11,6 +11,11 @@ Features:
 * Add `tk2_to_cx` parameter to `RebaseToCliffordSingles` transform.
 * Reduce depth of circuits resulting from `FullPeepholeOptimise` in some cases.
 
+Fixes:
+
+* Fix error in `separate_classical` when quantum operations come after final
+  measurements.
+
 2.0.1 (March 2025)
 ------------------
 
