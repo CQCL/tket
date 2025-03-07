@@ -336,6 +336,16 @@ SCENARIO("Contextual optimization") {
       REQUIRE(new_values[Bit(1)] == new_values[Bit(0)]);
     }
   }
+  GIVEN("Circuit with quantum op following final measurement") {
+    // https://github.com/CQCL/tket/issues/1794
+    Circuit c(1, 1);
+    c.add_op<unsigned>(OpType::X, {0});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::X, {0});
+    auto [c0, ppc] = Transforms::separate_classical(c);
+    CHECK(c0 == c);
+    CHECK(ppc == Circuit(0, 1));
+  }
 }
 
 }  // namespace test_ContextOpt
