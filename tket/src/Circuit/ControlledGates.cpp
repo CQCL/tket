@@ -871,6 +871,157 @@ Circuit CnX_gray_decomp(unsigned n) {
   }
 }
 
+namespace Maslov2015 {
+// Gate sequences defined in https://arxiv.org/pdf/1508.03273 (page 12), used to
+// construct decompositions of CnX gates.
+//
+// The paper uses a convention where a CnX gate has n - 1 controls. Gate names
+// in this implementation follow the convention that a CnX gate has n controls.
+
+const Circuit& RTS() {
+  static std::unique_ptr<const Circuit> pCirc = std::make_unique<Circuit>([]() {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::H, {2});
+    circ.add_op<unsigned>(OpType::T, {2});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::Tdg, {2});
+    circ.add_op<unsigned>(OpType::CX, {0, 2});
+    return circ;
+  }());
+  return *pCirc;
+}
+
+const Circuit& RTSdag() {
+  static std::unique_ptr<const Circuit> pCirc =
+      std::make_unique<Circuit>(RTS().dagger());
+  return *pCirc;
+}
+
+// Toffoli gate up to relative phase (dashed box in Fig. 3 of
+// https://arxiv.org/pdf/1508.03273)
+const Circuit& RTL() {
+  static std::unique_ptr<const Circuit> pCirc = std::make_unique<Circuit>([]() {
+    auto circ = RTS();
+    circ.add_op<unsigned>(OpType::T, {2});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::Tdg, {2});
+    circ.add_op<unsigned>(OpType::H, {2});
+    return circ;
+  }());
+  return *pCirc;
+}
+
+const Circuit& RTLdag() {
+  static std::unique_ptr<const Circuit> pCirc =
+      std::make_unique<Circuit>(RTL().dagger());
+  return *pCirc;
+}
+
+const Circuit& RT3S() {
+  static std::unique_ptr<const Circuit> pCirc = std::make_unique<Circuit>([]() {
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::H, {3});
+    circ.add_op<unsigned>(OpType::T, {3});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::Tdg, {3});
+    circ.add_op<unsigned>(OpType::H, {3});
+    circ.add_op<unsigned>(OpType::CX, {0, 3});
+    circ.add_op<unsigned>(OpType::T, {3});
+    circ.add_op<unsigned>(OpType::CX, {1, 3});
+    circ.add_op<unsigned>(OpType::Tdg, {3});
+    circ.add_op<unsigned>(OpType::CX, {0, 3});
+    return circ;
+  }());
+  return *pCirc;
+}
+
+const Circuit& RT3Sdag() {
+  static std::unique_ptr<const Circuit> pCirc =
+      std::make_unique<Circuit>(RT3S().dagger());
+  return *pCirc;
+}
+
+// C3X gate up to relative phase (Fig. 4 of https://arxiv.org/pdf/1508.03273)
+const Circuit& RT3L() {
+  static std::unique_ptr<const Circuit> pCirc = std::make_unique<Circuit>([]() {
+    auto circ = RT3S();
+    circ.add_op<unsigned>(OpType::T, {3});
+    circ.add_op<unsigned>(OpType::CX, {1, 3});
+    circ.add_op<unsigned>(OpType::Tdg, {3});
+    circ.add_op<unsigned>(OpType::H, {3});
+    circ.add_op<unsigned>(OpType::T, {3});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::Tdg, {3});
+    circ.add_op<unsigned>(OpType::H, {3});
+    return circ;
+  }());
+  return *pCirc;
+}
+
+const Circuit& RT3Ldag() {
+  static std::unique_ptr<const Circuit> pCirc =
+      std::make_unique<Circuit>(RT3L().dagger());
+  return *pCirc;
+}
+
+}  // namespace Maslov2015
+
+Circuit CnX_vchain_decomp(unsigned n, bool zeroed_ancillas) {
+  // Multi-controlled Toffoli decompositions that return clean ancilla qubits
+  switch (n) {
+    case 0: {
+      return X();
+    }
+    case 1: {
+      return CX();
+    }
+    case 2: {
+      return CCX_normal_decomp();
+    }
+  }
+
+  const unsigned n_ancillas = n / 2;
+  Circuit circ(n + 1 + n_ancillas);
+
+  // Index of ith ancilla qubit
+  auto a = [&n](int ii) { return n + 1 + ii; };
+
+  using namespace Maslov2015;
+
+  if (zeroed_ancillas) {
+    // Decomposition from Proposition 4 of https://arxiv.org/pdf/1508.03273
+
+    const unsigned num_rt3l = n < 5 ? 0 : (n - 3) / 2;
+
+    circ.append_qubits(RTL(), {0, 1, n + 1});
+
+    for (unsigned ii = 0; ii < num_rt3l; ii++) {
+      circ.append_qubits(RT3L(), {a(ii), 2 * ii + 2, 2 * ii + 3, a(ii + 1)});
+    }
+    if (n % 2 == 0) {
+      circ.append_qubits(RTL(), {a(n_ancillas - 2), n - 2, a(n_ancillas - 1)});
+    }
+
+    circ.append_qubits(CCX_normal_decomp(), {a(n_ancillas - 1), n - 1, n});
+
+    if (n % 2 == 0) {
+      circ.append_qubits(
+          RTLdag(), {a(n_ancillas - 2), n - 2, a(n_ancillas - 1)});
+    }
+    for (unsigned jj = 0; jj < num_rt3l; jj++) {
+      const auto ii = num_rt3l - 1 - jj;
+      circ.append_qubits(RT3Ldag(), {a(ii), 2 * ii + 2, 2 * ii + 3, a(ii + 1)});
+    }
+
+    circ.append_qubits(RTLdag(), {0, 1, n + 1});
+    return circ;
+  }
+
+  // ToDo
+  // Decomposition from Proposition 5 of https://arxiv.org/pdf/1508.03273
+  return circ;
+}
+
 static void add_cu_using_cu3(
     const unsigned& ctrl, const unsigned& trgt, Circuit& circ,
     const Eigen::Matrix2cd& u) {

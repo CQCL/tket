@@ -522,6 +522,20 @@ Circuit CnX_normal_decomp(unsigned n);
 
 Circuit CnX_gray_decomp(unsigned n);
 
+/**
+ * @brief Implement CnX gate with floor(n/2) ancilla qubits, using H, T, and CX
+ * gates (https://arxiv.org/pdf/1508.03273).
+ *
+ * @param n Number of controls
+ * @param zeroed_ancillas If true, the gate will be implemented assuming that
+ * all ancilla qubits start in state |0>. If false, uses an implementation that
+ * uses ancillae in arbitrary states.
+ * @return Circuit with the following gate counts:
+ *   * 8n - 9 T, 6n - 6 CX, 4n - 6 H if zeroed_ancillas = true
+ *   * 8n - 8 T, 8n - 12 CX, 4n - 6 H if zeroed_ancillas = false
+ */
+Circuit CnX_vchain_decomp(unsigned n, bool zeroed_ancillas = true);
+
 Circuit CnRy_normal_decomp(const Op_ptr op, unsigned arity);
 
 Circuit CnRx_normal_decomp(const Op_ptr op, unsigned arity);

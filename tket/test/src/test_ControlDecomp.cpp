@@ -908,5 +908,46 @@ SCENARIO("Test cnx_pairwise_decomposition") {
   }
 }
 
+SCENARIO("Test CnX_vchain with zeroed ancillas") {
+  using namespace CircPool;
+
+  GIVEN("n = 3, ... , 10 controls") {
+    for (unsigned n = 3; n < 11; n++) {
+      auto circ = CnX_vchain_decomp(n, true);
+      const unsigned n_ancillas = n / 2;
+      const unsigned n_qubits = n + n_ancillas + 1;
+      REQUIRE(circ.n_qubits() == n_qubits);
+      REQUIRE(
+          circ.count_gates(OpType::T) + circ.count_gates(OpType::Tdg) ==
+          8 * n - 9);
+      REQUIRE(circ.count_gates(OpType::CX) == 6 * n - 6);
+      REQUIRE(circ.count_gates(OpType::H) == 4 * n - 6);
+
+      if (n_qubits > 11) {
+        continue;
+      }
+
+      // Compare with CnX, considering only the the subspace where all ancilla
+      // qubits are zero
+      const unsigned rows = 1 << n_qubits;
+      const unsigned cols = 1 << (n + 1);
+      Eigen::MatrixXcd m(rows, cols);
+
+      const unsigned ancillas_one = (1 << n_ancillas) - 1;
+      unsigned jj = 0;
+      for (unsigned ii = 0; ii < rows; ii++) {
+        if (!(ii & ancillas_one)) {
+          m(ii, jj++) = 1;
+        }
+      }
+      Eigen::MatrixXcd mT = m.transpose();
+
+      tket_sim::apply_unitary(circ, m);
+      mT *= m;
+      REQUIRE(mT.isApprox(get_CnX_matrix(n), ERR_EPS));
+    }
+  }
+}
+
 }  // namespace test_ControlDecomp
 }  // namespace tket
