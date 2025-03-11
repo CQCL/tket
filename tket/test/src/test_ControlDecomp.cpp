@@ -908,13 +908,11 @@ SCENARIO("Test cnx_pairwise_decomposition") {
   }
 }
 
-SCENARIO("Test CnX_vchain with zeroed ancillas") {
-  using namespace CircPool;
-
-  GIVEN("n = 3, ... , 10 controls") {
-    for (unsigned n = 3; n < 11; n++) {
-      auto circ = CnX_vchain_decomp(n, true);
-      const unsigned n_ancillas = (n-1) / 2;
+SCENARIO("Test CnX_vchain_decomp") {
+  GIVEN("Ancilla qubits initialized to |0>") {
+    for (unsigned n = 3; n < 9; n++) {
+      auto circ = CircPool::CnX_vchain_decomp(n, true);
+      const unsigned n_ancillas = (n - 1) / 2;
       const unsigned n_qubits = n + n_ancillas + 1;
       REQUIRE(circ.n_qubits() == n_qubits);
       REQUIRE(
@@ -945,6 +943,52 @@ SCENARIO("Test CnX_vchain with zeroed ancillas") {
       tket_sim::apply_unitary(circ, m);
       mT *= m;
       REQUIRE(mT.isApprox(get_CnX_matrix(n), ERR_EPS));
+    }
+  }
+
+  GIVEN("Ancilla qubits in arbitrary state") {
+    for (unsigned n = 3; n < 9; n++) {
+      auto circ = CircPool::CnX_vchain_decomp(n, false);
+      const unsigned n_ancillas = (n - 1) / 2;
+      const unsigned n_qubits = n + n_ancillas + 1;
+      REQUIRE(circ.n_qubits() == n_qubits);
+      REQUIRE(
+          circ.count_gates(OpType::T) + circ.count_gates(OpType::Tdg) ==
+          8 * n - 8);
+      if (n == 3) {
+        // Edge case (see page 10 of https://arxiv.org/pdf/1508.03273)
+        REQUIRE(circ.count_gates(OpType::CX) == 14);
+      } else {
+        REQUIRE(circ.count_gates(OpType::CX) == 8 * n - 12);
+      }
+      REQUIRE(circ.count_gates(OpType::H) == 4 * n - 6);
+
+      if (n_qubits > 11) {
+        continue;
+      }
+
+      auto m = tket_sim::get_unitary(circ);
+
+      const unsigned dim = 1 << n_qubits;
+      const unsigned dim_lr = 1 << (n_ancillas + 1);
+      const unsigned dim_ul = dim - dim_lr;
+
+      // Upper left block
+      {
+        auto m_ul = m.block(0, 0, dim_ul, dim_ul);
+        REQUIRE(
+            m_ul.isApprox(Eigen::MatrixXcd::Identity(dim_ul, dim_ul), ERR_EPS));
+      }
+
+      // Lower right block
+      {
+        auto m_lr = m.block(dim_ul, dim_ul, dim_lr, dim_lr);
+        const unsigned half_dim_lr = dim_lr >> 1;
+        auto m_expected = Eigen::kroneckerProduct(
+            GateUnitaryMatrix::get_unitary(OpType::X, 1, {}),
+            Eigen::MatrixXcd::Identity(half_dim_lr, half_dim_lr));
+        REQUIRE(m_lr.isApprox(m_expected, ERR_EPS));
+      }
     }
   }
 }

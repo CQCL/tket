@@ -872,11 +872,11 @@ Circuit CnX_gray_decomp(unsigned n) {
 }
 
 namespace Maslov2015 {
-// Gate sequences defined in https://arxiv.org/pdf/1508.03273 (page 12), used to
-// construct decompositions of CnX gates.
+// Gate sequences using the nomenclature in https://arxiv.org/pdf/1508.03273
+// (page 12), used to construct decompositions of CnX gates.
 //
-// The paper uses a convention where a CnX gate has n - 1 controls. Gate names
-// in this implementation follow the convention that a CnX gate has n controls.
+// The paper uses a convention where a CnX gate has n - 1 controls. Names here
+// follow the convention that a CnX gate has n controls.
 
 const Circuit& RTS() {
   static std::unique_ptr<const Circuit> pCirc = std::make_unique<Circuit>([]() {
@@ -900,6 +900,23 @@ const Circuit& RTL() {
     circ.add_op<unsigned>(OpType::CX, {1, 2});
     circ.add_op<unsigned>(OpType::Tdg, {2});
     circ.add_op<unsigned>(OpType::H, {2});
+    return circ;
+  }());
+  return *pCirc;
+}
+
+const Circuit& SRTS() {
+  static std::unique_ptr<const Circuit> pCirc = std::make_unique<Circuit>([]() {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::H, {2});
+    circ.add_op<unsigned>(OpType::CX, {2, 1});
+    circ.add_op<unsigned>(OpType::Tdg, {1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::T, {1});
+    circ.add_op<unsigned>(OpType::CX, {2, 1});
+    circ.add_op<unsigned>(OpType::Tdg, {1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::T, {1});
     return circ;
   }());
   return *pCirc;
@@ -961,7 +978,12 @@ Circuit CnX_vchain_decomp(unsigned n, bool zeroed_ancillas) {
   Circuit circ(n_qubits);
 
   // Index of ii^th ancilla qubit
-  auto a = [&n](int ii) { return n + 1 + ii; };
+  auto a = [&n, &n_qubits](int ii) {
+    if (ii >= 0) {
+      return n + 1 + ii;
+    }
+    return n_qubits + ii;
+  };
 
   using namespace Maslov2015;
 
@@ -972,7 +994,7 @@ Circuit CnX_vchain_decomp(unsigned n, bool zeroed_ancillas) {
     Circuit rtl_chain(n_qubits);
     if (n == 3) {
       // Edge case (circuit 4, page 10)
-      rtl_chain.append_qubits(RTL(), {0, 1, 4});
+      rtl_chain.append_qubits(RTL(), {0, 1, a(0)});
     } else {
       rtl_chain.append_qubits(RT3L(), {0, 1, 2, a(0)});
       const unsigned num_rt3l = n % 2 == 0 ? n_ancillas - 1 : n_ancillas - 2;
@@ -981,19 +1003,55 @@ Circuit CnX_vchain_decomp(unsigned n, bool zeroed_ancillas) {
             RT3L(), {a(ii), 2 * ii + 3, 2 * ii + 4, a(ii + 1)});
       }
       if (n % 2 == 1) {
-        rtl_chain.append_qubits(
-            RTL(), {a(n_ancillas - 2), n - 2, a(n_ancillas - 1)});
+        rtl_chain.append_qubits(RTL(), {a(-2), n - 2, a(-1)});
       }
     }
 
     circ.append(rtl_chain);
-    circ.append_qubits(CCX_normal_decomp(), {a(n_ancillas - 1), n - 1, n});
+    circ.append_qubits(CCX_normal_decomp(), {a(-1), n - 1, n});
     circ.append(rtl_chain.dagger());
     return circ;
   }  // if (zeroed_ancillas)
 
-  // ToDo: zeroed_ancillas == false
   // Decomposition from Proposition 5 of https://arxiv.org/pdf/1508.03273
+  if (n == 3) {
+    // Edge case (circuit 5, page 10)
+    Circuit rtl(n_qubits);
+    rtl.append_qubits(RTL(), {0, 1, a(0)});
+    Circuit srts(n_qubits);
+    srts.append_qubits(SRTS(), {2, a(0), 3});
+
+    circ.append(rtl);
+    circ.append(srts);
+    circ.append(rtl.dagger());
+    circ.append(srts.dagger());
+  } else {
+    Circuit srts(n_qubits);
+    srts.append_qubits(SRTS(), {0, a(0), n});
+
+    Circuit rts_chain(n_qubits);
+    const int nmod2 = n % 2;
+    if (nmod2 == 1) {
+      rts_chain.append_qubits(RTS(), {a(1), 1, a(0)});
+    }
+    for (unsigned ii = nmod2; ii < n_ancillas - 1; ii++) {
+      const unsigned ctrl = 2 * ii + (1 - nmod2);
+      rts_chain.append_qubits(RT3S(), {a(ii + 1), ctrl, ctrl + 1, a(ii)});
+    }
+
+    Circuit rt3l(n_qubits);
+    rt3l.append_qubits(RT3L(), {n - 3, n - 2, n - 1, a(-1)});
+
+    circ.append(srts);
+    circ.append(rts_chain);
+    circ.append(rt3l);
+    circ.append(rts_chain.dagger());
+    circ.append(srts.dagger());
+    circ.append(rts_chain);
+    circ.append(rt3l.dagger());
+    circ.append(rts_chain.dagger());
+  }
+
   return circ;
 }
 
