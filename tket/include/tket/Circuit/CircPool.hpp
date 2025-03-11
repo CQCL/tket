@@ -523,8 +523,8 @@ Circuit CnX_normal_decomp(unsigned n);
 Circuit CnX_gray_decomp(unsigned n);
 
 /**
- * @brief Implement CnX gate with floor(n/2) ancilla qubits, using H, T, and CX
- * gates (https://arxiv.org/pdf/1508.03273).
+ * @brief Implement CnX gate with floor((n-1)/2) ancilla qubits, using H, T, and
+ * CX gates (https://arxiv.org/pdf/1508.03273).
  *
  * @param n Number of controls
  * @param zeroed_ancillas If true, the gate will be implemented assuming that

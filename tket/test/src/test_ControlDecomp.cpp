@@ -914,7 +914,7 @@ SCENARIO("Test CnX_vchain with zeroed ancillas") {
   GIVEN("n = 3, ... , 10 controls") {
     for (unsigned n = 3; n < 11; n++) {
       auto circ = CnX_vchain_decomp(n, true);
-      const unsigned n_ancillas = n / 2;
+      const unsigned n_ancillas = (n-1) / 2;
       const unsigned n_qubits = n + n_ancillas + 1;
       REQUIRE(circ.n_qubits() == n_qubits);
       REQUIRE(

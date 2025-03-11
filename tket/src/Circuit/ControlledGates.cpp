@@ -980,10 +980,10 @@ Circuit CnX_vchain_decomp(unsigned n, bool zeroed_ancillas) {
     }
   }
 
-  const unsigned n_ancillas = n / 2;
+  const unsigned n_ancillas = (n - 1) / 2;
   Circuit circ(n + 1 + n_ancillas);
 
-  // Index of ith ancilla qubit
+  // Index of ii^th ancilla qubit
   auto a = [&n](int ii) { return n + 1 + ii; };
 
   using namespace Maslov2015;
@@ -991,33 +991,40 @@ Circuit CnX_vchain_decomp(unsigned n, bool zeroed_ancillas) {
   if (zeroed_ancillas) {
     // Decomposition from Proposition 4 of https://arxiv.org/pdf/1508.03273
 
-    const unsigned num_rt3l = n < 5 ? 0 : (n - 3) / 2;
-
-    circ.append_qubits(RTL(), {0, 1, n + 1});
-
-    for (unsigned ii = 0; ii < num_rt3l; ii++) {
-      circ.append_qubits(RT3L(), {a(ii), 2 * ii + 2, 2 * ii + 3, a(ii + 1)});
+    if (n == 3) {
+      // Edge case (circuit 4, page 10)
+      circ.append_qubits(RTL(), {0, 1, 4});
+      circ.append_qubits(CCX_normal_decomp(), {4, 2, 3});
+      circ.append_qubits(RTLdag(), {0, 1, 4});
+      return circ;
     }
-    if (n % 2 == 0) {
+
+    const unsigned num_rt3l = n % 2 == 0 ? n_ancillas - 1 : n_ancillas - 2;
+
+    circ.append_qubits(RT3L(), {0, 1, 2, a(0)});
+    for (unsigned ii = 0; ii < num_rt3l; ii++) {
+      circ.append_qubits(RT3L(), {a(ii), 2 * ii + 3, 2 * ii + 4, a(ii + 1)});
+    }
+    if (n % 2 == 1) {
       circ.append_qubits(RTL(), {a(n_ancillas - 2), n - 2, a(n_ancillas - 1)});
     }
 
     circ.append_qubits(CCX_normal_decomp(), {a(n_ancillas - 1), n - 1, n});
 
-    if (n % 2 == 0) {
+    if (n % 2 == 1) {
       circ.append_qubits(
           RTLdag(), {a(n_ancillas - 2), n - 2, a(n_ancillas - 1)});
     }
     for (unsigned jj = 0; jj < num_rt3l; jj++) {
       const auto ii = num_rt3l - 1 - jj;
-      circ.append_qubits(RT3Ldag(), {a(ii), 2 * ii + 2, 2 * ii + 3, a(ii + 1)});
+      circ.append_qubits(RT3Ldag(), {a(ii), 2 * ii + 3, 2 * ii + 4, a(ii + 1)});
     }
 
-    circ.append_qubits(RTLdag(), {0, 1, n + 1});
+    circ.append_qubits(RT3Ldag(), {0, 1, 2, a(0)});
     return circ;
-  }
+  }  // if (zeroed_ancillas)
 
-  // ToDo
+  // ToDo: zeroed_ancillas == false
   // Decomposition from Proposition 5 of https://arxiv.org/pdf/1508.03273
   return circ;
 }
