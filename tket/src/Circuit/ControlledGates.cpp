@@ -872,12 +872,13 @@ Circuit CnX_gray_decomp(unsigned n) {
 }
 
 namespace Maslov2015 {
-// Gate sequences using the nomenclature in https://arxiv.org/pdf/1508.03273
-// (page 12), used to construct decompositions of CnX gates.
-//
-// The paper uses a convention where a CnX gate has n - 1 controls. Names here
-// follow the convention that a CnX gate has n controls.
+// Gate sequences from https://arxiv.org/pdf/1508.03273, used to construct
+// decompositions of CnX gates. Nomenclature follows the proof of Proposition 5
+// (page 12), with one difference. The paper uses a convention where a CnX gate
+// has n - 1 controls. Names here follow the convention that a CnX gate has n
+// controls.
 
+// Gates 2-6 of Fig. 3
 const Circuit& RTS() {
   static std::unique_ptr<const Circuit> pCirc = std::make_unique<Circuit>([]() {
     Circuit circ(3);
@@ -891,8 +892,7 @@ const Circuit& RTS() {
   return *pCirc;
 }
 
-// Toffoli gate up to relative phase (dashed box in Fig. 3 of
-// https://arxiv.org/pdf/1508.03273)
+// Toffoli gate up to relative phase (dashed box in Fig. 3)
 const Circuit& RTL() {
   static std::unique_ptr<const Circuit> pCirc = std::make_unique<Circuit>([]() {
     auto circ = RTS();
@@ -905,6 +905,7 @@ const Circuit& RTL() {
   return *pCirc;
 }
 
+// Dashed box in circuit (3) (page 8)
 const Circuit& SRTS() {
   static std::unique_ptr<const Circuit> pCirc = std::make_unique<Circuit>([]() {
     Circuit circ(3);
@@ -922,6 +923,7 @@ const Circuit& SRTS() {
   return *pCirc;
 }
 
+// Dashed box in Fig. 4
 const Circuit& RT3S() {
   static std::unique_ptr<const Circuit> pCirc = std::make_unique<Circuit>([]() {
     Circuit circ(4);
@@ -940,7 +942,7 @@ const Circuit& RT3S() {
   return *pCirc;
 }
 
-// C3X gate up to relative phase (Fig. 4 of https://arxiv.org/pdf/1508.03273)
+// C3X gate up to relative phase (Fig. 4)
 const Circuit& RT3L() {
   static std::unique_ptr<const Circuit> pCirc = std::make_unique<Circuit>([]() {
     auto circ = RT3S();
@@ -988,7 +990,7 @@ Circuit CnX_vchain_decomp(unsigned n, bool zeroed_ancillas) {
   using namespace Maslov2015;
 
   if (zeroed_ancillas) {
-    // Decomposition from Proposition 4 of https://arxiv.org/pdf/1508.03273
+    // Decomposition from Proposition 4 of the paper
 
     // Build the part of the circuit before the central CCX
     Circuit rtl_chain(n_qubits);
@@ -1013,7 +1015,7 @@ Circuit CnX_vchain_decomp(unsigned n, bool zeroed_ancillas) {
     return circ;
   }  // if (zeroed_ancillas)
 
-  // Decomposition from Proposition 5 of https://arxiv.org/pdf/1508.03273
+  // Decomposition from Proposition 5 of the paper
   if (n == 3) {
     // Edge case (circuit 5, page 10)
     Circuit rtl(n_qubits);

@@ -530,9 +530,12 @@ Circuit CnX_gray_decomp(unsigned n);
  * @param zeroed_ancillas If true, the gate will be implemented assuming that
  * all ancilla qubits start in state |0>. If false, uses an implementation that
  * uses ancillae in arbitrary states.
- * @return Circuit with the following gate counts:
+ * @return Circuit with control qubits at indices 0, ..., n - 1, target qubit n,
+ * ancilla qubits n + 1, ... , n + floor((n-1)/2), and the following gate
+ * counts:
  *   * 8n - 9 T, 6n - 6 CX, 4n - 6 H if zeroed_ancillas = true
- *   * 8n - 8 T, 8n - 12 CX, 4n - 6 H if zeroed_ancillas = false
+ *   * 8n - 8 T, 8n - 12 CX, 4n - 6 H if zeroed_ancillas = false (for n = 3, the
+ * circuit has 14 CX gates)
  */
 Circuit CnX_vchain_decomp(unsigned n, bool zeroed_ancillas = true);
 
