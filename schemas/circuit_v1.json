@@ -1353,7 +1353,7 @@
           "type": "integer",
           "minimum": 0
         },
-        "uid": {
+        "wasm_file_uid": {
           "description": "UID of WASM object.",
           "type": "string"
         },
