@@ -3106,6 +3106,11 @@ class MultiBitOp(ClassicalEvalOp):
         """
         Underlying bitwise op.
         """
+    @property
+    def multiplier(self) -> int:
+        """
+        Multiplier.
+        """
 class MultiplexedRotationBox(Op):
     """
     A user-defined multiplexed rotation gate (i.e. uniformly controlled single-axis rotations) specified by a map from bitstrings to :py:class:`Op` sor a list of bitstring-:py:class:`Op` s pairs. Implementation based on arxiv.org/abs/quant-ph/0410066. The decomposed circuit has at most 2^k single-qubit rotations, 2^k CX gates, and two additional H gates if the rotation axis is X. k is the number of control qubits.
