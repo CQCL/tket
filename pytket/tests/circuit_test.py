@@ -71,6 +71,7 @@ from pytket.circuit.named_types import (
     ParamType,
     PermutationMap,
 )
+from pytket.circuit_library import CnX_vchain_decomp
 from pytket.passes import (
     CliffordSimp,
     DecomposeBoxes,
@@ -1585,6 +1586,54 @@ def greedy_TermSequenceBox() -> None:
     assert cmds[1].op.type == OpType.TK1
     assert cmds[2].op.type == OpType.TK1
     assert c.n_2qb_gates() <= 2
+
+
+def test_cnx_vchain_zeroed_ancillas() -> None:
+    from pytket.circuit_library import CnX_vchain_decomp
+
+    for n in range(3, 7):
+        circ = CnX_vchain_decomp(n, True)
+
+        n_ancillas = (n - 1) // 2
+        n_qubits = n + n_ancillas + 1
+
+        m = circ.get_unitary()
+        dim = 1 << n_qubits
+        ancillas_one = (1 << n_ancillas) - 1
+        idx = np.array([ii for ii in range(dim) if (ii & ancillas_one) == 0])
+
+        m_sub = m[idx][:, idx]
+        cnx_matrix = np.eye(1 << (n + 1), dtype=np.complex128)
+        cnx_matrix[-2:, -2:] = np.array([[0, 1], [1, 0]])
+
+        assert np.allclose(m_sub, cnx_matrix)
+
+
+def test_cnx_vchain_arbitrary_ancillas() -> None:
+    for n in range(3, 7):
+        circ = CnX_vchain_decomp(n, False)
+
+        n_ancillas = (n - 1) // 2
+        n_qubits = n + n_ancillas + 1
+
+        m = circ.get_unitary()
+        dim = 1 << n_qubits
+        dim_lr = 1 << (n_ancillas + 1)
+        dim_ul = dim - dim_lr
+
+        # Upper left block
+        assert np.allclose(m[:dim_ul, :dim_ul], np.eye(dim_ul, dtype=np.complex128))
+
+        # Lower right block
+        half_dim_lr = dim_lr >> 1
+        assert np.allclose(
+            m[dim_ul:, dim_ul:],
+            np.kron([[0, 1], [1, 0]], np.eye(half_dim_lr, dtype=np.complex128)),
+        )
+
+        # Off-diagonal blocks
+        assert np.allclose(m[:dim_ul, -dim_lr:], np.zeros((dim_ul, dim_lr)))
+        assert np.allclose(m[-dim_lr:, :dim_ul], np.zeros((dim_lr, dim_ul)))
 
 
 if __name__ == "__main__":
