@@ -137,7 +137,7 @@ static nlohmann::json wasm_to_json(const Op_ptr &op) {
   j_class["width_i_parameter"] = wasm.get_width_i_parameter();
   j_class["width_o_parameter"] = wasm.get_width_o_parameter();
   j_class["func_name"] = wasm.get_func_name();
-  j_class["wasm_file_uid"] = wasm.get_wasm_file_uid();
+  j_class["uid"] = wasm.get_wasm_file_uid();
   return j_class;
 }
 
@@ -147,7 +147,7 @@ static std::shared_ptr<WASMOp> wasm_from_json(const nlohmann::json &j_class) {
       j_class.at("width_i_parameter").get<std::vector<unsigned>>(),
       j_class.at("width_o_parameter").get<std::vector<unsigned>>(),
       j_class.at("func_name").get<std::string>(),
-      j_class.at("wasm_file_uid").get<std::string>());
+      j_class.at("uid").get<std::string>());
 }
 
 ClassicalOp::ClassicalOp(

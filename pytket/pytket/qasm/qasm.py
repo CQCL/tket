@@ -830,7 +830,7 @@ class CircuitTransformer(Transformer):
                     "n": sum(n_i_vec),
                     "width_i_parameter": n_i_vec,
                     "width_o_parameter": [],  # this will be set in the assign function
-                    "wasm_file_uid": str(self.wasm),
+                    "uid": str(self.wasm),
                 },
             },
         }
