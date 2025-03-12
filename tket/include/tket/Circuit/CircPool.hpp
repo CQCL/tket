@@ -524,12 +524,12 @@ Circuit CnX_gray_decomp(unsigned n);
 
 /**
  * @brief Implement CnX gate with floor((n-1)/2) ancilla qubits, using H, T, and
- * CX gates (https://arxiv.org/pdf/1508.03273).
+ * CX gates (https://arxiv.org/abs/1508.03273).
  *
  * @param n Number of controls
  * @param zeroed_ancillas If true, the gate will be implemented assuming that
  * all ancilla qubits start in state |0>. If false, uses an implementation that
- * uses ancillae in arbitrary states.
+ * uses ancilla qubits in arbitrary states.
  * @return Circuit with control qubits at indices 0, ..., n - 1, target qubit n,
  * ancilla qubits n + 1, ... , n + floor((n-1)/2), and the following gate
  * counts:

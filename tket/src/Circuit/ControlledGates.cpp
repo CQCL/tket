@@ -872,7 +872,7 @@ Circuit CnX_gray_decomp(unsigned n) {
 }
 
 namespace Maslov2015 {
-// Gate sequences from https://arxiv.org/pdf/1508.03273, used to construct
+// Gate sequences from https://arxiv.org/abs/1508.03273, used to construct
 // decompositions of CnX gates. Nomenclature follows the proof of Proposition 5
 // (page 12), with one difference. The paper uses a convention where a CnX gate
 // has n - 1 controls. Names here follow the convention that a CnX gate has n
@@ -984,27 +984,34 @@ Circuit CnX_vchain_decomp(unsigned n, bool zeroed_ancillas) {
     if (ii >= 0) {
       return n + 1 + ii;
     }
+    // Allow negative indices
     return n_qubits + ii;
   };
 
   using namespace Maslov2015;
 
   if (zeroed_ancillas) {
-    // Decomposition from Proposition 4 of the paper
+    // Decomposition from Proposition 4 of the paper:
+    // (1) a chain of C3X and/or CCX gates (up to relative phase) where each
+    // target is an ancilla qubit
+    // (2) a CCX gate targeting qubit n
+    // (3) the inverse of (1)
 
-    // Build the part of the circuit before the central CCX
+    // Build the chain (1)
     Circuit rtl_chain(n_qubits);
     if (n == 3) {
       // Edge case (circuit 4, page 10)
       rtl_chain.append_qubits(RTL(), {0, 1, a(0)});
     } else {
       rtl_chain.append_qubits(RT3L(), {0, 1, 2, a(0)});
-      const unsigned num_rt3l = n % 2 == 0 ? n_ancillas - 1 : n_ancillas - 2;
+      const unsigned num_rt3l = n_ancillas - 1 - (n % 2);
       for (unsigned ii = 0; ii < num_rt3l; ii++) {
         rtl_chain.append_qubits(
             RT3L(), {a(ii), 2 * ii + 3, 2 * ii + 4, a(ii + 1)});
       }
       if (n % 2 == 1) {
+        // For odd n, we have one control qubit that was not used in the
+        // preceding loop
         rtl_chain.append_qubits(RTL(), {a(-2), n - 2, a(-1)});
       }
     }
@@ -1015,7 +1022,7 @@ Circuit CnX_vchain_decomp(unsigned n, bool zeroed_ancillas) {
     return circ;
   }  // if (zeroed_ancillas)
 
-  // Decomposition from Proposition 5 of the paper
+  // Decomposition for arbitrarily initialized ancillas
   if (n == 3) {
     // Edge case (circuit 5, page 10)
     Circuit rtl(n_qubits);
@@ -1028,6 +1035,16 @@ Circuit CnX_vchain_decomp(unsigned n, bool zeroed_ancillas) {
     circ.append(rtl.dagger());
     circ.append(srts.dagger());
   } else {
+    // Decomposition from Proposition 5 of the paper:
+    // (1) a relative-phase CCX gate targeting qubit n
+    // (2) a chain of relative-phase CCX and C3X gates targeting all but one
+    // ancilla
+    // (3) a relative-phase C3X gate targeting the last ancilla
+    // (4) inverse of (2)
+    // (5) inverse of (1)
+    // (6) copy of (2)
+    // (7) inverse of (3)
+    // (8) inverse of (2)
     Circuit srts(n_qubits);
     srts.append_qubits(SRTS(), {0, a(0), n});
 

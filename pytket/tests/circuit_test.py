@@ -1597,16 +1597,18 @@ def test_cnx_vchain_zeroed_ancillas() -> None:
         n_ancillas = (n - 1) // 2
         n_qubits = n + n_ancillas + 1
 
+        # Compare with CnX, considering only the the subspace
+        # where all ancilla qubits are in state |0>
         m = circ.get_unitary()
         dim = 1 << n_qubits
         ancillas_one = (1 << n_ancillas) - 1
         idx = np.array([ii for ii in range(dim) if (ii & ancillas_one) == 0])
 
         m_sub = m[idx][:, idx]
-        cnx_matrix = np.eye(1 << (n + 1), dtype=np.complex128)
-        cnx_matrix[-2:, -2:] = np.array([[0, 1], [1, 0]])
+        m_cnx = np.eye(1 << (n + 1), dtype=np.complex128)
+        m_cnx[-2:, -2:] = np.array([[0, 1], [1, 0]])
 
-        assert np.allclose(m_sub, cnx_matrix)
+        assert np.allclose(m_sub, m_cnx)
 
 
 def test_cnx_vchain_arbitrary_ancillas() -> None:
@@ -1614,26 +1616,15 @@ def test_cnx_vchain_arbitrary_ancillas() -> None:
         circ = CnX_vchain_decomp(n, False)
 
         n_ancillas = (n - 1) // 2
-        n_qubits = n + n_ancillas + 1
 
+        # Compare with CnX acting on the first n + 1 qubits
         m = circ.get_unitary()
-        dim = 1 << n_qubits
-        dim_lr = 1 << (n_ancillas + 1)
-        dim_ul = dim - dim_lr
 
-        # Upper left block
-        assert np.allclose(m[:dim_ul, :dim_ul], np.eye(dim_ul, dtype=np.complex128))
+        m_cnx = np.eye(1 << (n + 1), dtype=np.complex128)
+        m_cnx[-2:, -2:] = np.array([[0, 1], [1, 0]])
+        m_cnx_with_ancillas = np.kron(m_cnx, np.eye(1 << n_ancillas))
 
-        # Lower right block
-        half_dim_lr = dim_lr >> 1
-        assert np.allclose(
-            m[dim_ul:, dim_ul:],
-            np.kron([[0, 1], [1, 0]], np.eye(half_dim_lr, dtype=np.complex128)),
-        )
-
-        # Off-diagonal blocks
-        assert np.allclose(m[:dim_ul, -dim_lr:], np.zeros((dim_ul, dim_lr)))
-        assert np.allclose(m[-dim_lr:, :dim_ul], np.zeros((dim_lr, dim_ul)))
+        assert np.allclose(m, m_cnx_with_ancillas)
 
 
 if __name__ == "__main__":
