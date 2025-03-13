@@ -984,9 +984,10 @@ SCENARIO("Test CnX_vchain_decomp") {
       {
         auto m_lr = m.block(dim_ul, dim_ul, dim_lr, dim_lr);
         const unsigned half_dim_lr = dim_lr >> 1;
+        Eigen::MatrixXcd x_mat =
+            GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
         auto m_expected = Eigen::kroneckerProduct(
-            GateUnitaryMatrix::get_unitary(OpType::X, 1, {}),
-            Eigen::MatrixXcd::Identity(half_dim_lr, half_dim_lr));
+            x_mat, Eigen::MatrixXcd::Identity(half_dim_lr, half_dim_lr));
         REQUIRE(m_lr.isApprox(m_expected, ERR_EPS));
       }
     }
