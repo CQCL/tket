@@ -80,7 +80,8 @@ void init_classical(py::module& m) {
           "Construct from a basic operation and a multiplier.", py::arg("op"),
           py::arg("multiplier"))
       .def_property_readonly(
-          "basic_op", &MultiBitOp::get_op, "Underlying bitwise op.");
+          "basic_op", &MultiBitOp::get_op, "Underlying bitwise op.")
+      .def_property_readonly("multiplier", &MultiBitOp::get_n, "Multiplier.");
   py::class_<
       RangePredicateOp, std::shared_ptr<RangePredicateOp>, ClassicalEvalOp>(
       m, "RangePredicateOp",

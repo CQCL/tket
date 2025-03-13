@@ -1352,6 +1352,7 @@ def test_depth_classical_only() -> None:
     # https://github.com/CQCL/tket/issues/1673
     set_bits = SetBitsOp([True, True])
     multi_bit = MultiBitOp(set_bits, 2)
+    assert multi_bit.multiplier == 2
     eq_pred_values = [True, False, False, True]
     and_values = [bool(i) for i in [0, 0, 0, 1]]
     circ = Circuit(4, 4, name="test")

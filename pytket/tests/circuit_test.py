@@ -1548,6 +1548,13 @@ def test_deserialization_from_junk() -> None:
         )
 
 
+def test_wasm_serialization() -> None:
+    c = Circuit(2, 2).H(0).H(1).measure_all()
+    c._add_wasm("some_name", "some_uid", [1, 1], [], [Bit(0), Bit(1)], [0])
+    c.CZ(0, 1).measure_all()
+    assert json_validate(c)
+
+
 def test_pickle_bit() -> None:
     # https://github.com/CQCL/tket/issues/1293
     for b in [Bit(1), Bit("z", 0), Bit("z", (2, 0, 3))]:
