@@ -71,6 +71,7 @@ from pytket.circuit.named_types import (
     ParamType,
     PermutationMap,
 )
+from pytket.circuit_library import CnX_vchain_decomp
 from pytket.passes import (
     CliffordSimp,
     DecomposeBoxes,
@@ -1592,6 +1593,45 @@ def greedy_TermSequenceBox() -> None:
     assert cmds[1].op.type == OpType.TK1
     assert cmds[2].op.type == OpType.TK1
     assert c.n_2qb_gates() <= 2
+
+
+def test_cnx_vchain_zeroed_ancillas() -> None:
+    from pytket.circuit_library import CnX_vchain_decomp
+
+    for n in range(3, 7):
+        circ = CnX_vchain_decomp(n, True)
+
+        n_ancillas = (n - 1) // 2
+        n_qubits = n + n_ancillas + 1
+
+        # Compare with CnX, considering only the the subspace
+        # where all ancilla qubits are in state |0>
+        m = circ.get_unitary()
+        dim = 1 << n_qubits
+        ancillas_one = (1 << n_ancillas) - 1
+        idx = np.array([ii for ii in range(dim) if (ii & ancillas_one) == 0])
+
+        m_sub = m[idx][:, idx]
+        m_cnx = np.eye(1 << (n + 1), dtype=np.complex128)
+        m_cnx[-2:, -2:] = np.array([[0, 1], [1, 0]])
+
+        assert np.allclose(m_sub, m_cnx)
+
+
+def test_cnx_vchain_arbitrary_ancillas() -> None:
+    for n in range(3, 7):
+        circ = CnX_vchain_decomp(n, False)
+
+        n_ancillas = (n - 1) // 2
+
+        # Compare with CnX acting on the first n + 1 qubits
+        m = circ.get_unitary()
+
+        m_cnx = np.eye(1 << (n + 1), dtype=np.complex128)
+        m_cnx[-2:, -2:] = np.array([[0, 1], [1, 0]])
+        m_cnx_with_ancillas = np.kron(m_cnx, np.eye(1 << n_ancillas))
+
+        assert np.allclose(m, m_cnx_with_ancillas)
 
 
 if __name__ == "__main__":
