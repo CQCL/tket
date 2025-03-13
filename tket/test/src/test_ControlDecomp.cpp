@@ -920,6 +920,29 @@ SCENARIO("Test CnX_vchain_decomp") {
           8 * n - 9);
       REQUIRE(circ.count_gates(OpType::CX) == 6 * n - 6);
       REQUIRE(circ.count_gates(OpType::H) == 4 * n - 6);
+
+      if (n_qubits > 11) {
+        continue;
+      }
+
+      // Compare with CnX, considering only the the subspace where all ancilla
+      // qubits are zero
+      const unsigned rows = 1 << n_qubits;
+      const unsigned cols = 1 << (n + 1);
+      Eigen::MatrixXcd m(rows, cols);
+
+      const unsigned ancillas_one = (1 << n_ancillas) - 1;
+      unsigned jj = 0;
+      for (unsigned ii = 0; ii < rows; ii++) {
+        if (!(ii & ancillas_one)) {
+          m(ii, jj++) = 1;
+        }
+      }
+      Eigen::MatrixXcd mT = m.transpose();
+
+      tket_sim::apply_unitary(circ, m);
+      mT *= m;
+      REQUIRE(mT.isApprox(get_CnX_matrix(n), ERR_EPS));
     }
   }
 
@@ -939,6 +962,33 @@ SCENARIO("Test CnX_vchain_decomp") {
         REQUIRE(circ.count_gates(OpType::CX) == 8 * n - 12);
       }
       REQUIRE(circ.count_gates(OpType::H) == 4 * n - 6);
+
+      if (n_qubits > 11) {
+        continue;
+      }
+
+      auto m = tket_sim::get_unitary(circ);
+
+      const unsigned dim = 1 << n_qubits;
+      const unsigned dim_lr = 1 << (n_ancillas + 1);
+      const unsigned dim_ul = dim - dim_lr;
+
+      // Upper left block
+      {
+        auto m_ul = m.block(0, 0, dim_ul, dim_ul);
+        REQUIRE(
+            m_ul.isApprox(Eigen::MatrixXcd::Identity(dim_ul, dim_ul), ERR_EPS));
+      }
+
+      // Lower right block
+      {
+        auto m_lr = m.block(dim_ul, dim_ul, dim_lr, dim_lr);
+        const unsigned half_dim_lr = dim_lr >> 1;
+        auto m_expected = Eigen::kroneckerProduct(
+            GateUnitaryMatrix::get_unitary(OpType::X, 1, {}),
+            Eigen::MatrixXcd::Identity(half_dim_lr, half_dim_lr));
+        REQUIRE(m_lr.isApprox(m_expected, ERR_EPS));
+      }
     }
   }
 }
