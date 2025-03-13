@@ -13,17 +13,6 @@ and Windows. To install, run
     pip install pytket
 
 
-.. admonition:: Known issue installing pytket (Added 2nd August 2024)
-   :class: attention
-
-   Due to the removal of the `types-pkg_resources` package from pypi there will likely be issues when installing old versions of pytket. It is recommend to use pytket `>=1.31` where possible.
-
-   If you require using a version of pytket older than 1.31 then you can try the following.
-
-   
-    `pip install types-pkg-resources==0.1.3 pytket==<set version>` 
-
-
 If you have issues installing ``pytket`` please visit the `installation troubleshooting <https://docs.quantinuum.com/tket/api-docs/install.html>`_ page.
 
 To use ``pytket``, you can simply import the appropriate modules into your python code or in an interactive Python notebook. We can build circuits directly using the ``pytket`` interface by creating a blank circuit and adding gates in the order we want to apply them.
