@@ -26,7 +26,7 @@ def main() -> None:
     in_docs = set(pattern.findall(rst))
     missing = in_methods - in_docs
     missing_public_docs = [s for s in missing if not s.startswith("_")]
-    if len(missing) != 0:
+    if len(missing_public_docs) != 0:
         raise MissingCircuitDocsError(missing_list=missing_public_docs)
 
 
