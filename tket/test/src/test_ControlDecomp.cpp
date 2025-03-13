@@ -929,7 +929,7 @@ SCENARIO("Test CnX_vchain_decomp") {
       // qubits are zero
       const unsigned rows = 1 << n_qubits;
       const unsigned cols = 1 << (n + 1);
-      Eigen::MatrixXcd m(rows, cols);
+      Eigen::MatrixXcd m = Eigen::MatrixXcd::Zero(rows, cols);
 
       const unsigned ancillas_one = (1 << n_ancillas) - 1;
       unsigned jj = 0;
