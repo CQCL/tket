@@ -50,10 +50,6 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_phase
 
-   .. automethod:: add_clexpr_from_logicexp
-
-   .. automethod:: wasm_uid
-
    .. autoproperty:: name
 
    .. autoproperty:: n_qubits
