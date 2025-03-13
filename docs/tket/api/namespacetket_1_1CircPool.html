@@ -81,6 +81,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#namespaces">Namespaces</a> &#124;
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
@@ -88,6 +89,11 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespacetket_1_1CircPool_1_1Maslov2015" id="r_namespacetket_1_1CircPool_1_1Maslov2015"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1CircPool_1_1Maslov2015.html">Maslov2015</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1CircPool_1_1ControlDecompError.html">ControlDecompError</a></td></tr>
@@ -434,6 +440,9 @@ Functions</h2></td></tr>
 <tr class="separator:a211dfe73df735b85ff4a37f59ec84bea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6458a4527ccf8003830da3be35a8b1a6" id="r_a6458a4527ccf8003830da3be35a8b1a6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1CircPool.html#a6458a4527ccf8003830da3be35a8b1a6">CnX_gray_decomp</a> (unsigned n)</td></tr>
 <tr class="separator:a6458a4527ccf8003830da3be35a8b1a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a449c2902935f0e99312e51d76b40f3c3" id="r_a449c2902935f0e99312e51d76b40f3c3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1CircPool.html#a449c2902935f0e99312e51d76b40f3c3">CnX_vchain_decomp</a> (unsigned n, bool zeroed_ancillas=true)</td></tr>
+<tr class="memdesc:a449c2902935f0e99312e51d76b40f3c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implement CnX gate with floor((n-1)/2) ancilla qubits, using H, T, and CX gates (<a href="https://arxiv.org/abs/1508.03273">https://arxiv.org/abs/1508.03273</a>).  <br /></td></tr>
+<tr class="separator:a449c2902935f0e99312e51d76b40f3c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adde59ccc922be9d9c857ae94fc8c9aa0" id="r_adde59ccc922be9d9c857ae94fc8c9aa0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1CircPool.html#adde59ccc922be9d9c857ae94fc8c9aa0">incrementer_linear_depth</a> (unsigned n, bool lsb=true)</td></tr>
 <tr class="memdesc:adde59ccc922be9d9c857ae94fc8c9aa0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get an n-qubit incrementer circuit with linear depth and O(n^2) gate count.  <br /></td></tr>
 <tr class="separator:adde59ccc922be9d9c857ae94fc8c9aa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -986,7 +995,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ControlledGates_8cpp_source.html#l00979">979</a> of file <a class="el" href="ControlledGates_8cpp_source.html">ControlledGates.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ControlledGates_8cpp_source.html#l01182">1182</a> of file <a class="el" href="ControlledGates_8cpp_source.html">ControlledGates.cpp</a>.</p>
 
 </div>
 </div>
@@ -1107,7 +1116,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> containing CRx, TK1, U1, and CU3 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ControlledGates_8cpp_source.html#l00940">940</a> of file <a class="el" href="ControlledGates_8cpp_source.html">ControlledGates.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ControlledGates_8cpp_source.html#l01143">1143</a> of file <a class="el" href="ControlledGates_8cpp_source.html">ControlledGates.cpp</a>.</p>
 
 </div>
 </div>
@@ -1148,6 +1157,50 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="ControlledGates_8cpp_source.html#l00234">234</a> of file <a class="el" href="ControlledGates_8cpp_source.html">ControlledGates.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a449c2902935f0e99312e51d76b40f3c3" name="a449c2902935f0e99312e51d76b40f3c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a449c2902935f0e99312e51d76b40f3c3">&#9670;&#160;</a></span>CnX_vchain_decomp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::CircPool::CnX_vchain_decomp </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>zeroed_ancillas</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Implement CnX gate with floor((n-1)/2) ancilla qubits, using H, T, and CX gates (<a href="https://arxiv.org/abs/1508.03273">https://arxiv.org/abs/1508.03273</a>). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">n</td><td>Number of controls </td></tr>
+    <tr><td class="paramname">zeroed_ancillas</td><td>If true, the gate will be implemented assuming that all ancilla qubits start in state |0&gt;. If false, uses an implementation that uses ancilla qubits in arbitrary states. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> with control qubits at indices 0, ..., n - 1, target qubit n, ancilla qubits n + 1, ... , n + floor((n-1)/2), and the following gate counts:<ul>
+<li>8n - 9 T, 6n - 6 CX, 4n - 6 H if zeroed_ancillas = true</li>
+<li>8n - 8 T, 8n - 12 CX, 4n - 6 H if zeroed_ancillas = false (for n = 3, the circuit has 14 CX gates) </li>
+</ul>
+</dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="ControlledGates_8cpp_source.html#l00964">964</a> of file <a class="el" href="ControlledGates_8cpp_source.html">ControlledGates.cpp</a>.</p>
 
 </div>
 </div>
@@ -2102,7 +2155,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> containing CRx, X </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ControlledGates_8cpp_source.html#l00922">922</a> of file <a class="el" href="ControlledGates_8cpp_source.html">ControlledGates.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ControlledGates_8cpp_source.html#l01125">1125</a> of file <a class="el" href="ControlledGates_8cpp_source.html">ControlledGates.cpp</a>.</p>
 
 </div>
 </div>
