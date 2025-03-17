@@ -178,6 +178,8 @@ SCENARIO("Test Architecture utility methods.") {
     REQUIRE(!architecture.valid_operation({Node("test", 0)}));
     REQUIRE(architecture.valid_operation({Node(0)}));
     REQUIRE(architecture.valid_operation({Node(0), Node(1)}));
+    REQUIRE(architecture.valid_operation({Node(1), Node(0)}));
+    REQUIRE(!architecture.valid_operation({Node(1), Node(0)}, false));
     REQUIRE(!architecture.valid_operation({Node(0), Node(2)}));
     REQUIRE(!architecture.valid_operation({Node(0), Node(1), Node(2)}));
   }

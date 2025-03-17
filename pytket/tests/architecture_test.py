@@ -146,6 +146,8 @@ def test_valid_operation() -> None:
     assert not arc.valid_operation([Node(1), Node(3)])
     assert arc.valid_operation([Node(0)])
     assert arc.valid_operation([Node(0), Node(1)])
+    assert arc.valid_operation([Node(1), Node(0)])
+    assert not arc.valid_operation([Node(1), Node(0)], bidirectional=False)
     assert not arc.valid_operation([Node(0), Node(1), Node(2)])
     assert not arc.valid_operation([Node(10)])
     assert not arc.valid_operation([Node(10), Node(11), Node(15)])

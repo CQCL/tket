@@ -54,11 +54,18 @@ class Architecture:
         
         :return: dict containing nodes and links.
         """
-    def valid_operation(self, uids: typing.Sequence[pytket._tket.unit_id.Node]) -> bool:
+    def valid_operation(self, uids: typing.Sequence[pytket._tket.unit_id.Node], bidirectional: bool = True) -> bool:
         """
-        nodes can be executed on the Architecture connectivity graph.
+        Checks if a given operation on the given nodes can be executed on the Architecture's connectivity graph.
+        The operation is considered valid if:
+         - The operation acts on a single node that belongs to the Architecture.
+         - The operation acts on two nodes, and either:
+           - `bidirectional` is True and an edge exists between the two nodes in either direction.
+           - `bidirectional` is False and an edge exists from uids[0] to uids[1].
+        The function always returns False if the number of nodes exceeds 2.
         
-        :param uids: list of UnitIDs validity is being checked for
+        :param uids: list of UnitIDs validity is being checked for.
+        :param bidirectional: If True, treats edges in the coupling graph as bidirectional. Defaults to True.
         """
     @property
     def coupling(self) -> list[tuple[pytket._tket.unit_id.Node, pytket._tket.unit_id.Node]]:
