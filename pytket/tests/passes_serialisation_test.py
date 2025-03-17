@@ -137,7 +137,6 @@ NONPARAM_PREDICATES = [
     "CommutableMeasuresPredicate",
     "NoMidMeasurePredicate",
     "NoSymbolsPredicate",
-    "GlobalPhasedXPredicate",
     "NormalisedTK2Predicate",
 ]
 
@@ -223,6 +222,7 @@ TWO_WAY_PARAM_PASSES = {
         {
             "name": "CliffordSimp",
             "allow_swaps": True,
+            "target_2qb_gate": "TK2",
         }
     ),
     "DecomposeSwapsToCXs": standard_pass_dict(
@@ -345,7 +345,6 @@ TWO_WAY_NONPARAM_PASSES = [
     "RemoveRedundancies",
     "SynthesiseTK",
     "SynthesiseTket",
-    "SynthesiseUMD",
     "SquashTK1",
     "SquashRzPhasedX",
     "FlattenRegisters",

@@ -908,5 +908,40 @@ SCENARIO("Test cnx_pairwise_decomposition") {
   }
 }
 
+SCENARIO("Test CnX_vchain_decomp") {
+  GIVEN("Ancilla qubits initialized to |0>") {
+    for (unsigned n = 3; n < 9; n++) {
+      auto circ = CircPool::CnX_vchain_decomp(n, true);
+      const unsigned n_ancillas = (n - 1) / 2;
+      const unsigned n_qubits = n + n_ancillas + 1;
+      REQUIRE(circ.n_qubits() == n_qubits);
+      REQUIRE(
+          circ.count_gates(OpType::T) + circ.count_gates(OpType::Tdg) ==
+          8 * n - 9);
+      REQUIRE(circ.count_gates(OpType::CX) == 6 * n - 6);
+      REQUIRE(circ.count_gates(OpType::H) == 4 * n - 6);
+    }
+  }
+
+  GIVEN("Ancilla qubits in arbitrary state") {
+    for (unsigned n = 3; n < 9; n++) {
+      auto circ = CircPool::CnX_vchain_decomp(n, false);
+      const unsigned n_ancillas = (n - 1) / 2;
+      const unsigned n_qubits = n + n_ancillas + 1;
+      REQUIRE(circ.n_qubits() == n_qubits);
+      REQUIRE(
+          circ.count_gates(OpType::T) + circ.count_gates(OpType::Tdg) ==
+          8 * n - 8);
+      if (n == 3) {
+        // Edge case (see page 10 of https://arxiv.org/pdf/1508.03273)
+        REQUIRE(circ.count_gates(OpType::CX) == 14);
+      } else {
+        REQUIRE(circ.count_gates(OpType::CX) == 8 * n - 12);
+      }
+      REQUIRE(circ.count_gates(OpType::H) == 4 * n - 6);
+    }
+  }
+}
+
 }  // namespace test_ControlDecomp
 }  // namespace tket

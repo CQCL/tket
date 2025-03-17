@@ -37,7 +37,8 @@ namespace Transforms {
 Transform peephole_optimise_2q(bool allow_swaps) {
   return (
       synthesise_tket() >> two_qubit_squash(allow_swaps) >>
-      hyper_clifford_squash(allow_swaps) >> synthesise_tket());
+      decompose_multi_qubits_CX() >> clifford_simp(allow_swaps) >>
+      synthesise_tket());
 }
 
 Transform full_peephole_optimise(bool allow_swaps, OpType target_2qb_gate) {
@@ -51,28 +52,25 @@ Transform full_peephole_optimise(bool allow_swaps, OpType target_2qb_gate) {
     case OpType::TK2:
       return (
           synthesise_tk() >> two_qubit_squash(OpType::TK2, 1., allow_swaps) >>
-          clifford_simp(allow_swaps) >>
+          clifford_simp(allow_swaps, OpType::TK2) >>
           two_qubit_squash(OpType::TK2, 1., allow_swaps) >> synthesise_tk() >>
-          three_qubit_squash(OpType::TK2) >> clifford_simp(allow_swaps) >>
+          three_qubit_squash(OpType::TK2) >>
+          clifford_simp(allow_swaps, OpType::TK2) >>
           two_qubit_squash(OpType::TK2, 1., allow_swaps) >> synthesise_tk());
     default:
       throw std::invalid_argument("Invalid target 2-qubit gate");
   }
 }
 
-Transform canonical_hyper_clifford_squash() {
-  return optimise_via_PhaseGadget() >> two_qubit_squash() >>
-         hyper_clifford_squash();
-}
-
-Transform hyper_clifford_squash(bool allow_swaps) {
-  return decompose_multi_qubits_CX() >> clifford_simp(allow_swaps);
-}
-
-Transform clifford_simp(bool allow_swaps) {
-  return decompose_cliffords_std() >> clifford_reduction(allow_swaps) >>
-         decompose_multi_qubits_CX() >> singleq_clifford_sweep() >>
-         squash_1qb_to_tk1();
+Transform clifford_simp(bool allow_swaps, OpType target_2qb_gate) {
+  if (target_2qb_gate != OpType::CX && target_2qb_gate != OpType::TK2) {
+    throw std::invalid_argument("Invalid target 2-qubit gate");
+  }
+  return decompose_cliffords_std(target_2qb_gate == OpType::CX) >>
+         clifford_reduction(allow_swaps) >>
+         (target_2qb_gate == OpType::CX ? decompose_multi_qubits_CX()
+                                        : decompose_multi_qubits_TK2()) >>
+         singleq_clifford_sweep() >> squash_1qb_to_tk1();
 }
 
 Transform synthesise_tk() {

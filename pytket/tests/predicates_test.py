@@ -83,7 +83,6 @@ from pytket.passes import (
     SquashTK1,
     SynthesiseTK,
     SynthesiseTket,
-    SynthesiseUMD,
     ThreeQubitSquash,
     ZXGraphlikeOptimisation,
     ZZPhaseToRz,
@@ -135,7 +134,7 @@ def test_compilation_unit_generation() -> None:
 
 
 def test_compilerpass_seq() -> None:
-    passlist = [SynthesiseTket(), SynthesiseTK(), SynthesiseUMD()]
+    passlist = [SynthesiseTket(), SynthesiseTK()]
     seq = SequencePass(passlist)
     circ = Circuit(2)
     circ.X(0).Z(1)
@@ -286,7 +285,7 @@ def test_routing_and_placement_pass() -> None:
     assert cu.initial_map == expected_map
 
     # check composition works ok
-    seq_pass = SequencePass([SynthesiseTket(), placement, routing, SynthesiseUMD()])
+    seq_pass = SequencePass([SynthesiseTket(), placement, routing])
     cu2 = CompilationUnit(circ.copy())
     assert seq_pass.apply(cu2)
     assert cu2.initial_map == expected_map
@@ -1051,7 +1050,6 @@ def test_greedy_pauli_synth() -> None:
     range_predicate = RangePredicateOp(3, 0, 6)
     set_bits = SetBitsOp([True, True])
     multi_bit = MultiBitOp(set_bits, 2)
-    exp = Bit(2) & Bit(3)
     eq_pred_values = [True, False, False, True]
     and_values = [bool(i) for i in [0, 0, 0, 1]]
     pg1 = PauliExpBox([Pauli.X, Pauli.Z], 0.3)
@@ -1059,7 +1057,6 @@ def test_greedy_pauli_synth() -> None:
     circ.add_pauliexpbox(pg1, [0, 1])
     circ.add_gate(multi_bit, [0, 1, 2, 3])
     circ.add_gate(range_predicate, [0, 1, 2, 3])
-    circ.add_classicalexpbox_bit(exp, [Bit(0)])
     circ.add_c_predicate(eq_pred_values, [0, 1], 2, "EQ")
     circ.add_c_modifier(and_values, [1], 2)
     circ._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0])
@@ -1074,7 +1071,6 @@ def test_greedy_pauli_synth() -> None:
     d.H(0)
     d.add_gate(multi_bit, [0, 1, 2, 3])
     d.add_gate(range_predicate, [0, 1, 2, 3])
-    d.add_classicalexpbox_bit(exp, [Bit(0)])
     d.add_c_predicate(eq_pred_values, [0, 1], 2, "EQ")
     d.add_c_modifier(and_values, [1], 2)
     d._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0])
@@ -1157,6 +1153,19 @@ def test_has_implicit_wireswaps() -> None:
     # Property should be read-only
     with pytest.raises(AttributeError):  # type: ignore[unreachable]
         c.has_implicit_wireswaps = True
+
+
+def test_zx_optimisation_wireswaps() -> None:
+    c = Circuit(3)
+    c.CX(0, 1)
+    c.CX(1, 2)
+    c.CX(2, 0)
+
+    ZXGraphlikeOptimisation(True).apply(c)
+    assert c.has_implicit_wireswaps
+
+    ZXGraphlikeOptimisation(False).apply(c)
+    assert not c.has_implicit_wireswaps
 
 
 if __name__ == "__main__":

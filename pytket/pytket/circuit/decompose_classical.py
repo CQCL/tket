@@ -14,14 +14,12 @@
 
 """Functions for decomposing Circuits containing classical expressions
 in to primitive logical operations."""
-import copy
-from collections.abc import Callable
+
 from heapq import heappop, heappush
 from typing import Any, Generic, TypeVar
 
 from pytket._tket.circuit import (
     Circuit,
-    ClassicalExpBox,
     ClBitVar,
     ClExpr,
     ClExprOp,
@@ -39,15 +37,7 @@ from pytket._tket.unit_id import (
     BitRegister,
 )
 from pytket.circuit.clexpr import check_register_alignments, has_reg_output
-from pytket.circuit.logic_exp import (
-    BitLogicExp,
-    BitWiseOp,
-    Constant,
-    RegLogicExp,
-    RegWiseOp,
-    Variable,
-    filter_by_type,
-)
+from pytket.circuit.logic_exp import Constant, Variable
 
 T = TypeVar("T")
 
@@ -162,96 +152,6 @@ def get_bit_width(x: int) -> int:
         x >>= 1
         c += 1
     return c
-
-
-def _gen_walk(var_type: VarType, newcirc: Circuit, heap: VarHeap) -> Callable[
-    [RegLogicExp | BitLogicExp, Variable | None, dict | None],
-    Variable,
-]:
-    """Generate a recursive walk method for decomposing an expression tree."""
-    # map operation enum to circuit method
-    _method_map = {
-        BitWiseOp.AND: newcirc.add_c_and,
-        BitWiseOp.OR: newcirc.add_c_or,
-        BitWiseOp.XOR: newcirc.add_c_xor,
-        RegWiseOp.AND: newcirc.add_c_and_to_registers,
-        RegWiseOp.OR: newcirc.add_c_or_to_registers,
-        RegWiseOp.XOR: newcirc.add_c_xor_to_registers,
-    }
-    if var_type is Bit:
-        op_type: type[BitWiseOp] | type[RegWiseOp] = BitWiseOp
-        exp_type: type[BitLogicExp] | type[RegLogicExp] = BitLogicExp
-    else:
-        assert var_type is BitRegister
-        op_type = RegWiseOp
-        exp_type = RegLogicExp
-
-    def add_method(var: Variable) -> None:
-        if isinstance(var, Bit):
-            newcirc.add_bit(var, reject_dups=False)
-        else:
-            assert isinstance(var, BitRegister)
-            for i in range(var.size):
-                newcirc.add_bit(var.__getitem__(i), reject_dups=False)
-
-    # method for setting bits during walk
-    def set_bits(var: Variable, val: Constant, kwargs: dict) -> None:
-        if isinstance(var, Bit):
-            newcirc.add_c_setbits([bool(val)], [var], **kwargs)
-        else:
-            assert isinstance(var, BitRegister)
-            bit_width = get_bit_width(val) if val else 1
-            # make sure register size matches constant and add bits to circuit
-            assert bit_width <= _TEMP_REG_SIZE
-            reg = copy.copy(var)
-            reg.size = bit_width
-            add_method(reg)
-            newcirc.add_c_setreg(val, reg, **kwargs)
-
-    # convert an expression to gates on the circuit
-    # and return the variable holding the result
-    def recursive_walk(
-        exp: RegLogicExp | BitLogicExp,
-        targ_bit: Variable | None = None,
-        kwargs: dict | None = None,
-    ) -> Variable:
-        assert isinstance(exp.op, op_type)
-        kwargs = kwargs or {}
-        # decompose children
-        for i, sub_e in filter_by_type(exp.args, exp_type):
-            assert isinstance(sub_e, (BitLogicExp, RegLogicExp))
-            exp.args[i] = recursive_walk(sub_e, None, kwargs)
-        # all args should now be Constant or Variable
-        # write Constant to temporary Variable
-        for idx, constant in filter_by_type(exp.args, Constant):
-            fresh_var = heap.fresh_var()
-            add_method(fresh_var)
-            set_bits(fresh_var, constant, kwargs)
-
-            exp.args[idx] = fresh_var
-
-        arg1, arg2 = exp.args
-        assert isinstance(arg1, var_type) and isinstance(arg2, var_type)
-        # if argument is temporary, enable its reuse
-        for arg in (arg1, arg2):
-            if heap.is_heap_var(arg):
-                heap.push(arg)
-
-        if targ_bit is None:
-            targ_bit = heap.fresh_var()
-        add_method(targ_bit)
-        # exp should now be a binary operation on args: List[Bit]
-
-        try:
-            _method_map[exp.op](arg1, arg2, targ_bit, **kwargs)  # type: ignore
-        except KeyError as e:
-            raise DecomposeClassicalError(
-                f"{exp.op} cannot be decomposed to TKET primitives."
-                " If targetting extended QASM you may not need to decompose."
-            ) from e
-        return targ_bit
-
-    return recursive_walk
 
 
 class ClExprDecomposer:
@@ -376,7 +276,7 @@ class ClExprDecomposer:
 
 
 def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:
-    """Rewrite a circuit command-wise, decomposing ClassicalExpBox and ClExprOp."""
+    """Rewrite a circuit command-wise, decomposing ClExprOp."""
     if not check_register_alignments(circ):
         raise DecomposeClassicalError("Circuit contains non-register-aligned ClExprOp.")
     bit_heap = BitHeap()
@@ -399,10 +299,6 @@ def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:
             or cb.reg_name.startswith(_TEMP_BIT_REG_BASE)
         ):
             newcirc.add_bit(cb)
-
-    # recursive functions for converting expressions to gates
-    bit_recursive_walk = _gen_walk(Bit, newcirc, bit_heap)
-    reg_recursive_walk = _gen_walk(BitRegister, newcirc, reg_heap)
 
     # targets of predicates that need to be relabelled
     replace_targets: dict[Variable, Variable] = dict()
@@ -446,38 +342,6 @@ def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:
                         args[i] = Bit(new_target.name, a.index[0])  # type: ignore
                 # operations conditional on this bit should remain so
                 replace_targets[target] = target
-
-        elif optype == OpType.ClassicalExpBox:
-            assert isinstance(op, ClassicalExpBox)
-            pred_exp = copy.deepcopy(op.get_exp())
-            n_out_bits = op.get_n_o() + op.get_n_io()
-            # copied as it will be modified in place
-            if isinstance(pred_exp, BitLogicExp):
-                assert n_out_bits == 1
-                target = args[-1]
-                assert isinstance(target, Bit)
-
-                comp_bit = bit_recursive_walk(pred_exp, target, kwargs)
-
-                replace_targets[target] = comp_bit
-
-            else:
-                assert isinstance(pred_exp, RegLogicExp)
-                output_args = args[-n_out_bits:]
-                if not all(
-                    arg.reg_name == output_args[0].reg_name for arg in output_args
-                ):
-                    raise DecomposeClassicalError(
-                        "Classical Expression must"
-                        " only write to one Bit or one Register."
-                    )
-                out_reg = BitRegister(output_args[0].reg_name, len(output_args))
-
-                comp_reg = reg_recursive_walk(pred_exp, out_reg, kwargs)
-                if comp_reg.name != out_reg.name:  # type: ignore
-                    replace_targets[out_reg] = comp_reg
-            modified = True
-            continue
 
         elif optype == OpType.ClExpr:
             assert isinstance(op, ClExprOp)

@@ -24,9 +24,6 @@ class PauliSynthStrat:
     Pairwise: typing.ClassVar[PauliSynthStrat]  # value = <PauliSynthStrat.Pairwise: 1>
     Sets: typing.ClassVar[PauliSynthStrat]  # value = <PauliSynthStrat.Sets: 2>
     __members__: typing.ClassVar[dict[str, PauliSynthStrat]]  # value = {'Individual': <PauliSynthStrat.Individual: 0>, 'Pairwise': <PauliSynthStrat.Pairwise: 1>, 'Sets': <PauliSynthStrat.Sets: 2>, 'Greedy': <PauliSynthStrat.Greedy: 3>}
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -152,21 +149,6 @@ class Transform:
         :param allow_swaps: Whether to allow implicit wire swaps.
         """
     @staticmethod
-    def GlobalisePhasedX(squash: bool = True) -> Transform:
-        """
-        Turns all PhasedX and NPhasedX gates into global gates
-        
-        Replaces any PhasedX gates with global NPhasedX gates. By default, this transform will squash all single-qubit gates to PhasedX and Rz gates before proceeding further. Existing non-global NPhasedX will not be preserved. This is the recommended setting for best performance. If squashing is disabled, each non-global PhasedX gate will be replaced with two global NPhasedX, but any other gates will be left untouched.
-        
-        DEPRECATED: This transform will be removed no earlier than three months after the pytket 1.35 release.
-        
-        :param squash: Whether to squash the circuit in pre-processing (default: true).
-        
-        If squash=true (default), the `GlobalisePhasedX` transform's `apply` method will always return true. For squash=false, `apply()` will return true if the circuit was changed and false otherwise.
-        
-        It is not recommended to use this transformation with symbolic expressions, as in certain cases a blow-up in symbolic expression sizes may occur.
-        """
-    @staticmethod
     def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3, max_tqe_candidates: int = 500, max_lookahead: int = 500, seed: int = 0, allow_zzphase: bool = False, thread_timeout: int = 100, trials: int = 1) -> Transform:
         """
         Convert a circuit into a graph of Pauli gadgets to account for commutation and phase folding, and resynthesises them using a greedy algorithm adapted from arxiv.org/abs/2103.08602. The method for synthesising the final Clifford operator is adapted from arxiv.org/abs/2305.10966.
@@ -219,11 +201,12 @@ class Transform:
         After this transform, all TK2 angles will be normalised and the circuit will satisfy `NormalisedTK2Predicate`.
         """
     @staticmethod
-    def OptimiseCliffords(allow_swaps: bool = True) -> Transform:
+    def OptimiseCliffords(allow_swaps: bool = True, target_2qb_gate: pytket._tket.circuit.OpType = pytket._tket.circuit.OpType.CX) -> Transform:
         """
-        An optimisation pass that performs a number of rewrite rules for simplifying Clifford gate sequences, similar to Duncan & Fagan (https://arxiv.org/abs/1901.10114). Given a circuit with CXs and any single-qubit gates, produces a circuit with Z, X, S, V, U1, U2, U3, CX gates. This will not preserve CX placement or orientation and may introduce implicit wire swaps.
+        An optimisation pass that applies a number of rewrite rules for simplifying Clifford gate sequences, similar to Duncan & Fagan (https://arxiv.org/abs/1901.10114). Produces a circuit comprising TK1 gates and the two-qubit gate specified as the target.
         
-        :param allow_swaps: dictates whether the rewriting will disregard CX placement or orientation and introduce wire swaps.
+        :param allow_swaps: whether the rewriting may introduce implicit wire swaps
+        :param target_2qb_gate: target two-qubit gate (either CX or TK2)
         """
     @staticmethod
     def OptimisePauliGadgets(cx_config: pytket._tket.circuit.CXConfigType = pytket._tket.circuit.CXConfigType.Snake) -> Transform:
@@ -256,9 +239,11 @@ class Transform:
         Rebase from any gate set into PhasedX, Rz, CZ.
         """
     @staticmethod
-    def RebaseToCliffordSingles() -> Transform:
+    def RebaseToCliffordSingles(tk2_to_cx: bool = True) -> Transform:
         """
         Replace all single-qubit unitary gates outside the set {Z, X, S, V} that are recognized as Clifford operations with an equivalent sequence of gates from that set.
+        
+        :param tk2_to_cx: whether to rebase TK2 gates to CX and standard Cliffords
         """
     @staticmethod
     def RebaseToIonQ() -> Transform:
@@ -320,9 +305,6 @@ class Transform:
         """
         Fixes all ZZPhase gate angles to [-1, 1) half turns.
         """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @staticmethod
     def repeat(transform: Transform) -> Transform:
         """

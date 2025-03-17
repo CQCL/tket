@@ -29,7 +29,6 @@ from sympy import Expr, Symbol, pi
 
 from pytket._tket.circuit import (
     BarrierOp,
-    ClassicalExpBox,
     ClExpr,
     ClExprOp,
     Command,
@@ -306,7 +305,6 @@ class CircuitTransformer(Transformer):
         self,
         return_gate_dict: bool = False,
         maxwidth: int = 32,
-        use_clexpr: bool = True,
     ) -> None:
         super().__init__()
         self.q_registers: dict[str, int] = {}
@@ -316,7 +314,6 @@ class CircuitTransformer(Transformer):
         self.include = ""
         self.return_gate_dict = return_gate_dict
         self.maxwidth = maxwidth
-        self.use_clexpr = use_clexpr
 
     def _fresh_temp_bit(self) -> list:
         if _TEMP_BIT_NAME in self.c_registers:
@@ -710,22 +707,6 @@ class CircuitTransformer(Transformer):
         }
         return exp_args, numbers_dict
 
-    def _cexpbox_dict(self, exp: LogicExp, args: list[list]) -> CommandDict:
-        box = {
-            "exp": exp.to_dict(),
-            "id": str(uuid.uuid4()),
-            "type": "ClassicalExpBox",
-        }
-        args, numbers = self._calc_exp_io(exp, args)
-        box.update(numbers)
-        return {
-            "args": args,
-            "op": {
-                "box": box,
-                "type": "ClassicalExpBox",
-            },
-        }
-
     def _clexpr_dict(self, exp: LogicExp, out_args: list[list]) -> CommandDict:
         # Convert the LogicExp to a serialization of a command containing the
         # corresponding ClExprOp.
@@ -739,15 +720,6 @@ class CircuitTransformer(Transformer):
             },
             "args": [arg.to_list() for arg in args],
         }
-
-    def _logic_exp_as_cmd_dict(
-        self, exp: LogicExp, out_args: list[list]
-    ) -> CommandDict:
-        return (
-            self._clexpr_dict(exp, out_args)
-            if self.use_clexpr
-            else self._cexpbox_dict(exp, out_args)
-        )
 
     def assign(self, tree: list) -> Iterable[CommandDict]:
         child_iter = iter(tree)
@@ -786,7 +758,7 @@ class CircuitTransformer(Transformer):
         args = args_uids[0]
         if isinstance(out_arg, list):
             if isinstance(exp, LogicExp):
-                yield self._logic_exp_as_cmd_dict(exp, args)
+                yield self._clexpr_dict(exp, args)
             elif isinstance(exp, (int, bool)):
                 assert exp in (0, 1, True, False)
                 yield {
@@ -803,9 +775,9 @@ class CircuitTransformer(Transformer):
         else:
             reg = out_arg
             if isinstance(exp, RegLogicExp):
-                yield self._logic_exp_as_cmd_dict(exp, args)
+                yield self._clexpr_dict(exp, args)
             elif isinstance(exp, BitLogicExp):
-                yield self._logic_exp_as_cmd_dict(exp, args[:1])
+                yield self._clexpr_dict(exp, args[:1])
             elif isinstance(exp, int):
                 yield {
                     "args": args,
@@ -969,42 +941,38 @@ class CircuitTransformer(Transformer):
         return outdict
 
 
-def parser(maxwidth: int, use_clexpr: bool) -> Lark:
+def parser(maxwidth: int) -> Lark:
     return Lark(
         grammar,
         start="prog",
         debug=False,
         parser="lalr",
         cache=True,
-        transformer=CircuitTransformer(maxwidth=maxwidth, use_clexpr=use_clexpr),
+        transformer=CircuitTransformer(maxwidth=maxwidth),
     )
 
 
 g_parser = None
 g_maxwidth = 32
-g_use_clexpr = False
 
 
-def set_parser(maxwidth: int, use_clexpr: bool) -> None:
-    global g_parser, g_maxwidth, g_use_clexpr
-    if (g_parser is None) or (g_maxwidth != maxwidth) or g_use_clexpr != use_clexpr:  # type: ignore
-        g_parser = parser(maxwidth=maxwidth, use_clexpr=use_clexpr)
+def set_parser(maxwidth: int) -> None:
+    global g_parser, g_maxwidth
+    if (g_parser is None) or (g_maxwidth != maxwidth):  # type: ignore
+        g_parser = parser(maxwidth=maxwidth)
         g_maxwidth = maxwidth
-        g_use_clexpr = use_clexpr
 
 
 def circuit_from_qasm(
     input_file: Union[str, "os.PathLike[Any]"],
     encoding: str = "utf-8",
     maxwidth: int = 32,
-    use_clexpr: bool = True,
 ) -> Circuit:
     """A method to generate a tket Circuit from a qasm file.
 
     :param input_file: path to qasm file; filename must have ``.qasm`` extension
     :param encoding: file encoding (default utf-8)
     :param maxwidth: maximum allowed width of classical registers (default 32)
-    :param use_clexpr: whether to use ClExprOp to represent classical expressions
     :return: pytket circuit
     """
     ext = os.path.splitext(input_file)[-1]
@@ -1012,24 +980,21 @@ def circuit_from_qasm(
         raise TypeError("Can only convert .qasm files")
     with open(input_file, encoding=encoding) as f:
         try:
-            circ = circuit_from_qasm_io(f, maxwidth=maxwidth, use_clexpr=use_clexpr)
+            circ = circuit_from_qasm_io(f, maxwidth=maxwidth)
         except QASMParseError as e:
             raise QASMParseError(e.msg, e.line, str(input_file))
     return circ
 
 
-def circuit_from_qasm_str(
-    qasm_str: str, maxwidth: int = 32, use_clexpr: bool = True
-) -> Circuit:
+def circuit_from_qasm_str(qasm_str: str, maxwidth: int = 32) -> Circuit:
     """A method to generate a tket Circuit from a qasm string.
 
     :param qasm_str: qasm string
     :param maxwidth: maximum allowed width of classical registers (default 32)
-    :param use_clexpr: whether to use ClExprOp to represent classical expressions
     :return: pytket circuit
     """
     global g_parser
-    set_parser(maxwidth=maxwidth, use_clexpr=use_clexpr)
+    set_parser(maxwidth=maxwidth)
     assert g_parser is not None
     cast(CircuitTransformer, g_parser.options.transformer)._reset_context(
         reset_wasm=False
@@ -1041,13 +1006,9 @@ def circuit_from_qasm_str(
     return circ
 
 
-def circuit_from_qasm_io(
-    stream_in: TextIO, maxwidth: int = 32, use_clexpr: bool = True
-) -> Circuit:
+def circuit_from_qasm_io(stream_in: TextIO, maxwidth: int = 32) -> Circuit:
     """A method to generate a tket Circuit from a qasm text stream"""
-    return circuit_from_qasm_str(
-        stream_in.read(), maxwidth=maxwidth, use_clexpr=use_clexpr
-    )
+    return circuit_from_qasm_str(stream_in.read(), maxwidth=maxwidth)
 
 
 def circuit_from_qasm_wasm(
@@ -1055,7 +1016,6 @@ def circuit_from_qasm_wasm(
     wasm_file: Union[str, "os.PathLike[Any]"],
     encoding: str = "utf-8",
     maxwidth: int = 32,
-    use_clexpr: bool = True,
 ) -> Circuit:
     """A method to generate a tket Circuit from a qasm string and external WASM module.
 
@@ -1067,12 +1027,10 @@ def circuit_from_qasm_wasm(
     """
     global g_parser
     wasm_module = WasmFileHandler(str(wasm_file))
-    set_parser(maxwidth=maxwidth, use_clexpr=use_clexpr)
+    set_parser(maxwidth=maxwidth)
     assert g_parser is not None
     cast(CircuitTransformer, g_parser.options.transformer).wasm = wasm_module
-    return circuit_from_qasm(
-        input_file, encoding=encoding, maxwidth=maxwidth, use_clexpr=use_clexpr
-    )
+    return circuit_from_qasm(input_file, encoding=encoding, maxwidth=maxwidth)
 
 
 def circuit_to_qasm(
@@ -1131,7 +1089,6 @@ def check_can_convert_circuit(circ: Circuit, header: str, maxwidth: int) -> None
             OpType.ExplicitModifier,
             OpType.SetBits,
             OpType.CopyBits,
-            OpType.ClassicalExpBox,
         )
     ) and (not hqs_header(header)):
         raise QASMUnsupportedError(
@@ -1797,27 +1754,6 @@ class QasmWriter:
         )
         self.mark_as_written(label, f"{args[-1]}")
 
-    def add_classical_exp_box(self, op: ClassicalExpBox, args: list[Bit]) -> None:
-        out_args = args[op.get_n_i() :]
-        if len(out_args) == 1:
-            label = self.strings.add_string(f"{out_args[0]} = {op.get_exp()!s};\n")
-            self.mark_as_written(label, f"{out_args[0]}")
-        elif (
-            out_args
-            == self.cregs[out_args[0].reg_name].to_list()[
-                : op.get_n_io() + op.get_n_o()
-            ]
-        ):
-            label = self.strings.add_string(
-                f"{out_args[0].reg_name} = {op.get_exp()!s};\n"
-            )
-            self.mark_as_written(label, f"{out_args[0].reg_name}")
-        else:
-            raise QASMUnsupportedError(
-                "ClassicalExpBox only supported"
-                " for writing to a single bit or whole registers."
-            )
-
     def add_wired_clexpr(self, op: ClExprOp, args: list[Bit]) -> None:
         wexpr: WiredClExpr = op.expr
         # 1. Determine the mappings from bit variables to bits and from register
@@ -1984,9 +1920,6 @@ class QasmWriter:
             self.add_multi_bit(op, cast(list[Bit], args))
         elif optype in (OpType.ExplicitPredicate, OpType.ExplicitModifier):
             self.add_explicit_op(op, cast(list[Bit], args))
-        elif optype == OpType.ClassicalExpBox:
-            assert isinstance(op, ClassicalExpBox)
-            self.add_classical_exp_box(op, cast(list[Bit], args))
         elif optype == OpType.ClExpr:
             assert isinstance(op, ClExprOp)
             self.add_wired_clexpr(op, cast(list[Bit], args))

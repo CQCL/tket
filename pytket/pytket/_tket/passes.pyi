@@ -9,14 +9,11 @@ import pytket._tket.transform
 import pytket._tket.unit_id
 import sympy
 import typing
-__all__ = ['AASRouting', 'Audit', 'AutoRebase', 'AutoSquash', 'BasePass', 'CNotSynthType', 'CXMappingPass', 'CliffordPushThroughMeasures', 'CliffordResynthesis', 'CliffordSimp', 'CnXPairwiseDecomposition', 'CommuteThroughMultis', 'ComposePhasePolyBoxes', 'ContextSimp', 'CustomPass', 'CustomRoutingPass', 'DecomposeArbitrarilyControlledGates', 'DecomposeBoxes', 'DecomposeClassicalExp', 'DecomposeMultiQubitsCX', 'DecomposeSingleQubitsTK1', 'DecomposeSwapsToCXs', 'DecomposeSwapsToCircuit', 'DecomposeTK2', 'Default', 'DefaultMappingPass', 'DelayMeasures', 'EulerAngleReduction', 'FlattenRegisters', 'FlattenRelabelRegistersPass', 'FullMappingPass', 'FullPeepholeOptimise', 'GlobalisePhasedX', 'GreedyPauliSimp', 'GuidedPauliSimp', 'HamPath', 'KAKDecomposition', 'NaivePlacementPass', 'NormaliseTK2', 'OptimisePhaseGadgets', 'PauliExponentials', 'PauliSimp', 'PauliSquash', 'PeepholeOptimise2Q', 'PlacementPass', 'RebaseCustom', 'RebaseTket', 'Rec', 'RemoveBarriers', 'RemoveDiscarded', 'RemoveImplicitQubitPermutation', 'RemovePhaseOps', 'RemoveRedundancies', 'RenameQubitsPass', 'RepeatPass', 'RepeatUntilSatisfiedPass', 'RepeatWithMetricPass', 'RoundAngles', 'RoutingPass', 'SWAP', 'SafetyMode', 'SequencePass', 'SimplifyInitial', 'SimplifyMeasured', 'SquashCustom', 'SquashRzPhasedX', 'SquashTK1', 'SynthesiseTK', 'SynthesiseTket', 'SynthesiseUMD', 'ThreeQubitSquash', 'ZXGraphlikeOptimisation', 'ZZPhaseToRz']
+__all__ = ['AASRouting', 'Audit', 'AutoRebase', 'AutoSquash', 'BasePass', 'CNotSynthType', 'CXMappingPass', 'CliffordPushThroughMeasures', 'CliffordResynthesis', 'CliffordSimp', 'CnXPairwiseDecomposition', 'CommuteThroughMultis', 'ComposePhasePolyBoxes', 'ContextSimp', 'CustomPass', 'CustomRoutingPass', 'DecomposeArbitrarilyControlledGates', 'DecomposeBoxes', 'DecomposeClassicalExp', 'DecomposeMultiQubitsCX', 'DecomposeSingleQubitsTK1', 'DecomposeSwapsToCXs', 'DecomposeSwapsToCircuit', 'DecomposeTK2', 'Default', 'DefaultMappingPass', 'DelayMeasures', 'EulerAngleReduction', 'FlattenRegisters', 'FlattenRelabelRegistersPass', 'FullMappingPass', 'FullPeepholeOptimise', 'GreedyPauliSimp', 'GuidedPauliSimp', 'HamPath', 'KAKDecomposition', 'NaivePlacementPass', 'NormaliseTK2', 'OptimisePhaseGadgets', 'PauliExponentials', 'PauliSimp', 'PauliSquash', 'PeepholeOptimise2Q', 'PlacementPass', 'RebaseCustom', 'RebaseTket', 'Rec', 'RemoveBarriers', 'RemoveDiscarded', 'RemoveImplicitQubitPermutation', 'RemovePhaseOps', 'RemoveRedundancies', 'RenameQubitsPass', 'RepeatPass', 'RepeatUntilSatisfiedPass', 'RepeatWithMetricPass', 'RoundAngles', 'RoutingPass', 'SWAP', 'SafetyMode', 'SequencePass', 'SimplifyInitial', 'SimplifyMeasured', 'SquashCustom', 'SquashRzPhasedX', 'SquashTK1', 'SynthesiseTK', 'SynthesiseTket', 'ThreeQubitSquash', 'ZXGraphlikeOptimisation', 'ZZPhaseToRz']
 class BasePass:
     """
     Base class for passes.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @staticmethod
     def from_dict(base_pass_dict: dict, custom_deserialisation: dict[str, typing.Callable[[pytket._tket.circuit.Circuit], pytket._tket.circuit.Circuit]] = {}) -> BasePass:
         """
@@ -87,9 +84,6 @@ class CNotSynthType:
     Rec: typing.ClassVar[CNotSynthType]  # value = <CNotSynthType.Rec: 2>
     SWAP: typing.ClassVar[CNotSynthType]  # value = <CNotSynthType.SWAP: 0>
     __members__: typing.ClassVar[dict[str, CNotSynthType]]  # value = {'SWAP': <CNotSynthType.SWAP: 0>, 'HamPath': <CNotSynthType.HamPath: 1>, 'Rec': <CNotSynthType.Rec: 2>}
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -120,9 +114,6 @@ class RepeatPass(BasePass):
     """
     Repeat a pass until its `apply()` method returns False, or if `strict_check` is True until it stops modifying the circuit.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, compilation_pass: BasePass, strict_check: bool = False) -> None:
         """
         Construct from a compilation pass.
@@ -137,9 +128,6 @@ class RepeatUntilSatisfiedPass(BasePass):
     """
     Repeat a compilation pass until a predicate on the circuit is satisfied.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @typing.overload
     def __init__(self, compilation_pass: BasePass, predicate: pytket._tket.predicates.Predicate) -> None:
         """
@@ -164,9 +152,6 @@ class RepeatWithMetricPass(BasePass):
     """
     Repeat a compilation pass until the given metric stops decreasing.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, compilation_pass: BasePass, metric: typing.Callable[[pytket._tket.circuit.Circuit], int]) -> None:
         """
         Construct from a compilation pass and a metric function.
@@ -192,9 +177,6 @@ class SafetyMode:
     Audit: typing.ClassVar[SafetyMode]  # value = <SafetyMode.Audit: 0>
     Default: typing.ClassVar[SafetyMode]  # value = <SafetyMode.Default: 1>
     __members__: typing.ClassVar[dict[str, SafetyMode]]  # value = {'Audit': <SafetyMode.Audit: 0>, 'Default': <SafetyMode.Default: 1>}
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -225,9 +207,6 @@ class SequencePass(BasePass):
     """
     A sequence of compilation passes.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, pass_list: typing.Sequence[BasePass], strict: bool = True) -> None:
         """
         Construct from a list of compilation passes arranged in order of application.
@@ -296,11 +275,12 @@ def CliffordResynthesis(transform: typing.Callable[[pytket._tket.circuit.Circuit
     :param allow_swaps: whether the rewriting may introduce wire swaps (only relevant to the default resynthesis method used when the `transform` argument is not provided)
     :return: a pass to perform the rewriting
     """
-def CliffordSimp(allow_swaps: bool = True) -> BasePass:
+def CliffordSimp(allow_swaps: bool = True, target_2qb_gate: pytket._tket.circuit.OpType = pytket._tket.circuit.OpType.CX) -> BasePass:
     """
-    An optimisation pass that performs a number of rewrite rules for simplifying Clifford gate sequences, similar to Duncan & Fagan (https://arxiv.org/abs/1901.10114). Given a circuit with CXs and any single-qubit gates, produces a circuit with TK1, CX gates.
+    An optimisation pass that applies a number of rewrite rules for simplifying Clifford gate sequences, similar to Duncan & Fagan (https://arxiv.org/abs/1901.10114). Produces a circuit comprising TK1 gates and the two-qubit gate specified as the target.
     
-    :param allow_swaps: dictates whether the rewriting will disregard CX placement or orientation and introduce wire swaps.
+    :param allow_swaps: whether the rewriting may introduce implicit wire swaps
+    :param target_2qb_gate: target two-qubit gate (either CX or TK2)
     :return: a pass to perform the rewriting
     """
 def CnXPairwiseDecomposition() -> BasePass:
@@ -357,7 +337,7 @@ def DecomposeBoxes(excluded_types: set[pytket._tket.circuit.OpType] = set(), exc
     """
 def DecomposeClassicalExp() -> BasePass:
     """
-    Replaces each :py:class:`ClassicalExpBox` and `ClExprOp` by a sequence of classical gates.
+    Replaces each `ClExprOp` by a sequence of classical gates.
     """
 def DecomposeMultiQubitsCX() -> BasePass:
     """
@@ -425,12 +405,11 @@ def FlattenRegisters() -> BasePass:
     """
     Merges all quantum and classical registers into their respective default registers with contiguous indexing.
     """
-def FlattenRelabelRegistersPass(label: str = 'q', relabel_classical_expressions: bool = True) -> BasePass:
+def FlattenRelabelRegistersPass(label: str = 'q') -> BasePass:
     """
     Removes empty Quantum wires from the Circuit and relabels all Qubit to a register from passed name. 
     
     :param label: Name to relabel remaining Qubit to, default 'q'.
-    :param relabel_classical_expressions: Whether to relabel arguments of expressions held in `ClassicalExpBox`. 
     :return: A pass that removes empty wires and relabels.
     """
 def FullMappingPass(arc: pytket._tket.architecture.Architecture, placer: pytket._tket.placement.Placement, config: typing.Sequence[pytket._tket.mapping.RoutingMethod]) -> BasePass:
@@ -447,20 +426,6 @@ def FullPeepholeOptimise(allow_swaps: bool = True, target_2qb_gate: pytket._tket
     Performs peephole optimisation including resynthesis of 2- and 3-qubit gate sequences, and converts to a circuit containing only the given 2-qubit gate (which may be CX or TK2) and TK1 gates.
     
     :param allow_swaps: whether to allow implicit wire swaps
-    """
-def GlobalisePhasedX(squash: bool = True) -> BasePass:
-    """
-    Turns all PhasedX and NPhasedX gates into global gates
-    
-    Replaces any PhasedX gates with global NPhasedX gates. By default, this transform will squash all single-qubit gates to PhasedX and Rz gates before proceeding further. Existing non-global NPhasedX will not be preserved. This is the recommended setting for best performance. If squashing is disabled, each non-global PhasedX gate will be replaced with two global NPhasedX, but any other gates will be left untouched.
-    
-    DEPRECATED: This pass will be removed no earlier than three months after the pytket 1.35 release.
-    
-    :param squash: Whether to squash the circuit in pre-processing (default: true).
-    
-    If squash=true (default), the `GlobalisePhasedX` transform's `apply` method will always return true. For squash=false, `apply()` will return true if the circuit was changed and false otherwise.
-    
-    It is not recommended to use this pass with symbolic expressions, as in certain cases a blow-up in symbolic expression sizes may occur.
     """
 def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3, max_lookahead: int = 500, max_tqe_candidates: int = 500, seed: int = 0, allow_zzphase: bool = False, thread_timeout: int = 100, only_reduce: bool = False, trials: int = 1) -> BasePass:
     """
@@ -632,7 +597,7 @@ def RenameQubitsPass(qubit_map: dict[pytket._tket.unit_id.Qubit, pytket._tket.un
     """
     Rename some or all qubits. 
     
-    :param qubit_map: map from old to new qubit names 
+    :param qubit_map: map from old to new qubit names
     """
 def RoundAngles(n: int, only_zeros: bool = False) -> BasePass:
     """
@@ -685,10 +650,6 @@ def SynthesiseTket() -> BasePass:
     """
     Optimises and converts all gates to CX, TK1 and Phase gates.
     """
-def SynthesiseUMD() -> BasePass:
-    """
-    Optimises and converts all gates to XXPhase, PhasedX, Rz and Phase. DEPRECATED: will be removed after pytket 1.32.
-    """
 def ThreeQubitSquash(allow_swaps: bool = True) -> BasePass:
     """
     Squash three-qubit subcircuits into subcircuits having fewer CX gates, when possible, and apply Clifford simplification.
@@ -697,9 +658,11 @@ def ThreeQubitSquash(allow_swaps: bool = True) -> BasePass:
     
     :param allow_swaps: whether to allow implicit wire swaps
     """
-def ZXGraphlikeOptimisation() -> BasePass:
+def ZXGraphlikeOptimisation(allow_swaps: bool = True) -> BasePass:
     """
     Attempt to optimise the circuit by simplifying in ZX calculus and extracting a circuit back out. Due to limitations in extraction, may not work if the circuit contains created or discarded qubits. As a resynthesis pass, this will ignore almost all optimisations achieved beforehand and may increase the cost of the circuit.
+    
+    :param allow_swaps: Whether to allow implicit wire swaps (default True).
     """
 def ZZPhaseToRz() -> BasePass:
     """

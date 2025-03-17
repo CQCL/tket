@@ -1,4 +1,3 @@
-from typing import Any
 from __future__ import annotations
 import pytket._tket.unit_id
 import typing
@@ -7,9 +6,6 @@ class Architecture:
     """
     Class describing the connectivity of qubits on a general device.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @staticmethod
     def from_dict(arg0: dict) -> Architecture:
         """
@@ -79,9 +75,6 @@ class FullyConnected:
     A specialised non-Architecture object emulating an architecture with all qubits connected. Not compatible with Routing or Placement methods.
     """
     @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
-    @staticmethod
     def from_dict(arg0: dict) -> FullyConnected:
         """
         Construct FullyConnected instance from dict representation.
@@ -118,9 +111,6 @@ class RingArch(Architecture):
     """
     Inherited Architecture class for number of qubits arranged in a ring.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __deepcopy__(self, arg0: dict) -> RingArch:
         ...
     def __init__(self, nodes: int, label: str = 'ringNode') -> None:
@@ -142,9 +132,6 @@ class SquareGrid(Architecture):
     
      6 7 8
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __deepcopy__(self, arg0: dict) -> SquareGrid:
         ...
     @typing.overload

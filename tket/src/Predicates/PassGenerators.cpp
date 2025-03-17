@@ -306,10 +306,8 @@ PassPtr gen_euler_pass(const OpType& q, const OpType& p, bool strict) {
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
-PassPtr gen_clifford_simp_pass(bool allow_swaps) {
-  // Expects: CX and any single-qubit gates,
-  // but does not break if it encounters others
-  Transform t = Transforms::clifford_simp(allow_swaps);
+PassPtr gen_clifford_simp_pass(bool allow_swaps, OpType target_2qb_gate) {
+  Transform t = Transforms::clifford_simp(allow_swaps, target_2qb_gate);
   PredicatePtrMap precons;
   PredicateClassGuarantees g_postcons;
   if (allow_swaps) {
@@ -324,6 +322,7 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps) {
   nlohmann::json j;
   j["name"] = "CliffordSimp";
   j["allow_swaps"] = allow_swaps;
+  j["target_2qb_gate"] = target_2qb_gate;
 
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
@@ -356,8 +355,7 @@ PassPtr gen_clifford_push_through_pass() {
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
-PassPtr gen_flatten_relabel_registers_pass(
-    const std::string& label, bool relabel_classical_expressions) {
+PassPtr gen_flatten_relabel_registers_pass(const std::string& label) {
   Transform t =
       Transform([=](Circuit& circuit, std::shared_ptr<unit_bimaps_t> maps) {
         unsigned n_qubits = circuit.n_qubits();
@@ -369,7 +367,7 @@ PassPtr gen_flatten_relabel_registers_pass(
           relabelling_map.insert({all_qubits[i], Qubit(label, i)});
         }
 
-        circuit.rename_units(relabelling_map, relabel_classical_expressions);
+        circuit.rename_units(relabelling_map);
         changed |= update_maps(maps, relabelling_map, relabelling_map);
         return changed;
       });
@@ -379,7 +377,6 @@ PassPtr gen_flatten_relabel_registers_pass(
   nlohmann::json j;
   j["name"] = "FlattenRelabelRegistersPass";
   j["label"] = label;
-  j["relabel_classical_expressions"] = relabel_classical_expressions;
   return std::make_shared<StandardPass>(precons, t, postcons, j);
 }
 
@@ -989,7 +986,7 @@ PassPtr gen_pauli_exponentials(
                    OpType::T,       OpType::Tdg,         OpType::ZZMax,
                    OpType::ZZPhase, OpType::PhaseGadget, OpType::XXPhase,
                    OpType::YYPhase, OpType::PauliExpBox, OpType::Measure,
-                   OpType::PhasedX};
+                   OpType::PhasedX, OpType::SX,          OpType::SXdg};
   PredicatePtr in_gates = std::make_shared<GateSetPredicate>(ins);
   PredicatePtrMap precons{
       CompilationUnit::make_type_pair(ccontrol_pred),
@@ -1047,6 +1044,7 @@ PassPtr gen_greedy_pauli_simp(
     return gpo.apply(circ);
   });
   OpTypeSet ins = {
+      OpType::Phase,
       OpType::Z,
       OpType::X,
       OpType::Y,
@@ -1159,21 +1157,6 @@ PassPtr PauliSquash(Transforms::PauliSynthStrat strat, CXConfigType cx_config) {
   std::vector<PassPtr> seq = {
       gen_synthesise_pauli_graph(strat, cx_config), FullPeepholeOptimise()};
   return std::make_shared<SequencePass>(seq);
-}
-
-PassPtr GlobalisePhasedX(bool squash) {
-  Transform t = Transforms::globalise_PhasedX(squash);
-  PredicatePtrMap precons;
-  PredicatePtr globalphasedx = std::make_shared<GlobalPhasedXPredicate>();
-  PredicatePtrMap spec_postcons = {
-      CompilationUnit::make_type_pair(globalphasedx)};
-  PredicateClassGuarantees g_postcons;
-  PostConditions postcon{spec_postcons, {}, Guarantee::Preserve};
-  // record pass config
-  nlohmann::json j;
-  j["name"] = "GlobalisePhasedX";
-  j["squash"] = squash;
-  return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
 PassPtr RoundAngles(unsigned n, bool only_zeros) {

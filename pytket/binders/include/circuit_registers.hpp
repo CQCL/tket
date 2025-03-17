@@ -38,7 +38,7 @@ std::vector<T> get_unit_registers(Circuit &circ) {
   std::vector<T> regs;
   for (const T2 &unitid : unitids) {
     // UnitRegisters only describe registers with 1-d indices
-    if (unitid.reg_dim() > 1) continue;
+    if (unitid.reg_dim() != 1) continue;
     auto it = unit_map.find(unitid.reg_name());
     if (it == unit_map.end()) {
       unit_map.insert({unitid.reg_name(), {unitid.index()[0]}});

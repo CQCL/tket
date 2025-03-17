@@ -121,6 +121,18 @@ PYBIND11_MODULE(circuit_library, library_m) {
       "C4X_normal_decomp", &CircPool::C4X_normal_decomp,
       "Equivalent to CCCCX, using 36 CX ");
   library_m.def(
+      "CnX_vchain_decomp", &CircPool::CnX_vchain_decomp,
+      "CnX decomposition from https://arxiv.org/abs/1906.01734/1508.03273.\n\n"
+      ":param n: Number of control qubits\n"
+      ":param zeroed_ancillas: If True, the gate will be implemented assuming "
+      "that all ancilla qubits start in state :math:`\\ket{0}`. If False, "
+      "ancilla qubits may be initialized in any state, at the cost of higher "
+      "CX-count.\n\n"
+      ":return: Circuit with control qubits at indices :math:`0, \\ldots, "
+      "n-1`, target qubit :math:`n`, and ancilla qubits :math:`n+1, \\ldots, n "
+      "+ \\lfloor(n-1)/2\\rfloor`.",
+      pybind11::arg("n"), pybind11::arg("zeroed_ancillas") = true);
+  library_m.def(
       "ladder_down", &CircPool::ladder_down, "CX[0,1]; CX[2,0]; CCX[0,1,2]");
   library_m.def(
       "ladder_down_2", &CircPool::ladder_down_2,

@@ -148,8 +148,9 @@ void RiverFlowPathFinder::Impl::update_data_with_path() {
 RiverFlowPathFinder::RiverFlowPathFinder(
     DistancesInterface& distances_interface,
     NeighboursInterface& neighbours_interface, RNG& rng)
-    : m_pimpl(std::make_unique<Impl>(
-          distances_interface, neighbours_interface, rng)) {}
+    : m_pimpl(
+          std::make_unique<Impl>(
+              distances_interface, neighbours_interface, rng)) {}
 
 RiverFlowPathFinder::~RiverFlowPathFinder() {}
 

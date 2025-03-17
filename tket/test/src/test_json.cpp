@@ -784,9 +784,10 @@ SCENARIO("Test RoutingMethod serializations") {
   CHECK(!loaded_rmp_j[0]
              ->routing_method(mf_sp, std::make_shared<SquareGrid>(2, 2))
              .first);
-  CHECK(loaded_rmp_j[1]
-            ->routing_method(mf_sp, std::make_shared<SquareGrid>(2, 2))
-            .first);
+  CHECK(
+      loaded_rmp_j[1]
+          ->routing_method(mf_sp, std::make_shared<SquareGrid>(2, 2))
+          .first);
 }
 
 SCENARIO("Test predicate serializations") {
@@ -809,7 +810,6 @@ SCENARIO("Test predicate serializations") {
   BASICPREDJSONTEST(NoBarriersPredicate)
   BASICPREDJSONTEST(NoMidMeasurePredicate)
   BASICPREDJSONTEST(NoSymbolsPredicate)
-  BASICPREDJSONTEST(GlobalPhasedXPredicate)
   BASICPREDJSONTEST(NormalisedTK2Predicate)
 #undef BASICPREDJSONTEST
   GIVEN("GateSetPredicate") {
@@ -925,7 +925,6 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(RemoveRedundancies, RemoveRedundancies())
   COMPPASSJSONTEST(SynthesiseTK, SynthesiseTK())
   COMPPASSJSONTEST(SynthesiseTket, SynthesiseTket())
-  COMPPASSJSONTEST(SynthesiseUMD, SynthesiseUMD())
   COMPPASSJSONTEST(SquashTK1, SquashTK1())
   COMPPASSJSONTEST(SquashRzPhasedX, SquashRzPhasedX())
   COMPPASSJSONTEST(FlattenRegisters, FlattenRegisters())
@@ -950,7 +949,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(RenameQubitsPass, gen_rename_qubits_pass(qmap))
   COMPPASSJSONTEST(
       FlattenRelabelRegistersPass, gen_flatten_relabel_registers_pass("test"))
-  COMPPASSJSONTEST(CliffordSimp, gen_clifford_simp_pass(true))
+  COMPPASSJSONTEST(CliffordSimp, gen_clifford_simp_pass(true, OpType::TK2))
   COMPPASSJSONTEST(
       DecomposeSwapsToCXs, gen_decompose_routing_gates_to_cxs_pass(arc, false))
   COMPPASSJSONTEST(

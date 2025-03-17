@@ -117,7 +117,6 @@ add_executable(test-tket
     src/test_DeviceCharacterisation.cpp
     src/test_Diagonalisation.cpp
     src/test_FrameRandomisation.cpp
-    src/test_GlobalisePhasedX.cpp
     src/test_GreedyPauli.cpp
     src/test_json.cpp
     src/test_LexicographicalComparison.cpp
@@ -132,7 +131,6 @@ add_executable(test-tket
     src/test_Path.cpp
     src/test_PauliGraph.cpp
     src/test_PauliTensor.cpp
-    src/test_PhasedXFrontier.cpp
     src/test_PhaseGadget.cpp
     src/test_PhasePolynomials.cpp
     src/test_Predicates.cpp

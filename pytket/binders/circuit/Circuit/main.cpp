@@ -322,12 +322,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
       .def(
           "flatten_registers", &Circuit::flatten_registers,
           "Combines all qubits into a single register namespace with "
-          "the default name, and likewise for bits"
-          "\n\n:param relabel_classical_expression: Determines whether python "
-          "classical expressions held in `ClassicalExpBox` have their "
-          "expression "
-          "relabelled to match relabelled Bit.",
-          py::arg("relabel_classical_expression") = true)
+          "the default name, and likewise for bits")
 
       // Circuit composition:
       .def(
@@ -395,7 +390,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "to corresponding qubits and bits in `self`",
           py::arg("circuit"), py::arg("unit_map"))
       .def(
-          "append", (void(Circuit::*)(const Circuit &)) & Circuit::append,
+          "append", (void (Circuit::*)(const Circuit &))&Circuit::append,
           "In-place sequential composition of circuits, appending a "
           "copy of the argument onto the end of the circuit. Inputs and "
           "Outputs are unified if they share the same id, defaulting to "
@@ -589,14 +584,15 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           },
           "Construct Circuit instance from JSON serializable "
           "dictionary representation of the Circuit.")
-      .def(py::pickle(
-          [](const py::object &self) {  // __getstate__
-            return py::make_tuple(self.attr("to_dict")());
-          },
-          [](const py::tuple &t) {  // __setstate__
-            const json j = t[0].cast<json>();
-            return j.get<Circuit>();
-          }))
+      .def(
+          py::pickle(
+              [](const py::object &self) {  // __getstate__
+                return py::make_tuple(self.attr("to_dict")());
+              },
+              [](const py::tuple &t) {  // __setstate__
+                const json j = t[0].cast<json>();
+                return j.get<Circuit>();
+              }))
       .def(
           "to_latex_file", &Circuit::to_latex_file,
           "Produces a latex file with a visualisation of the circuit "
@@ -631,8 +627,8 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           ":return: an identical copy of the circuit")
       .def(
           "symbol_substitution",
-          (void(Circuit::*)(const symbol_map_t &)) &
-              Circuit::symbol_substitution,
+          (void (Circuit::*)(
+              const symbol_map_t &))&Circuit::symbol_substitution,
           "In-place substitution for symbolic expressions; iterates "
           "through each parameterised gate/box and performs the "
           "substitution. \n\n:param symbol_map: A map from "
@@ -640,9 +636,9 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           py::arg("symbol_map"))
       .def(
           "symbol_substitution",
-          (void(Circuit::*)(
-              const std::map<Sym, double, SymEngine::RCPBasicKeyLess> &)) &
-              Circuit::symbol_substitution,
+          (void (Circuit::*)(
+              const std::map<Sym, double, SymEngine::RCPBasicKeyLess>
+                  &))&Circuit::symbol_substitution,
           "In-place substitution for symbolic expressions; iterates "
           "through each gate/box and performs the "
           "substitution. \n\n:param symbol_map: A map from "

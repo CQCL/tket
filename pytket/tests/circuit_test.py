@@ -31,7 +31,6 @@ from pytket.circuit import (
     BitRegister,
     CircBox,
     Circuit,
-    ClassicalExpBox,
     Command,
     ConjugationBox,
     CustomGate,
@@ -72,6 +71,7 @@ from pytket.circuit.named_types import (
     ParamType,
     PermutationMap,
 )
+from pytket.circuit_library import CnX_vchain_decomp
 from pytket.passes import (
     CliffordSimp,
     DecomposeBoxes,
@@ -1218,6 +1218,18 @@ def test_getting_registers_with_non_consective_indices() -> None:
     assert q_regs[0] == QubitRegister("a", 3)
 
 
+def test_getting_registers_with_unindexed_bits() -> None:
+    # https://github.com/CQCL/tket/issues/1785
+    c = Circuit()
+    qubit = Qubit("q", [])
+    bit = Bit("a", [])
+    c.add_qubit(qubit)
+    c.add_bit(bit)
+    c.PhasedX(0.5, 0.5, qubit).Measure(qubit, bit)
+    assert c.q_registers == []
+    assert c.c_registers == []
+
+
 def test_measuring_registers() -> None:
     c = Circuit()
     with pytest.raises(RuntimeError) as e:
@@ -1536,32 +1548,11 @@ def test_deserialization_from_junk() -> None:
         )
 
 
-def test_decompose_clexpbox() -> None:
-    # https://github.com/CQCL/tket/issues/1289
-    c0 = Circuit()
-    c_reg = c0.add_c_register("c", 2)
-    c0.add_classicalexpbox_register(c_reg | c_reg, c_reg)  # type: ignore
-    cbox = CircBox(c0)
-    c = Circuit(0, 2)
-    c.add_circbox(cbox, [0, 1])
-    assert Transform.DecomposeBoxes().apply(c)
-    cmds = c.get_commands()
-    assert len(cmds) == 1
-    op = cmds[0].op
-    assert isinstance(op, ClassicalExpBox)
-    assert op.get_n_io() == 2
-    expr = op.get_exp()
-    assert expr.args == [BitRegister("c", 2), BitRegister("c", 2)]
-
-
-def test_bad_circbox() -> None:
-    circ = Circuit(3)
-    a = circ.add_c_register("a", 5)
-    b = circ.add_c_register("b", 5)
-    c = circ.add_c_register("c", 5)
-    circ.add_classicalexpbox_register(a | b, c.to_list())
-    with pytest.raises(RuntimeError):
-        _ = CircBox(circ)
+def test_wasm_serialization() -> None:
+    c = Circuit(2, 2).H(0).H(1).measure_all()
+    c._add_wasm("some_name", "some_uid", [1, 1], [], [Bit(0), Bit(1)], [0])
+    c.CZ(0, 1).measure_all()
+    assert json_validate(c)
 
 
 def test_pickle_bit() -> None:
@@ -1602,6 +1593,45 @@ def greedy_TermSequenceBox() -> None:
     assert cmds[1].op.type == OpType.TK1
     assert cmds[2].op.type == OpType.TK1
     assert c.n_2qb_gates() <= 2
+
+
+def test_cnx_vchain_zeroed_ancillas() -> None:
+    from pytket.circuit_library import CnX_vchain_decomp
+
+    for n in range(3, 7):
+        circ = CnX_vchain_decomp(n, True)
+
+        n_ancillas = (n - 1) // 2
+        n_qubits = n + n_ancillas + 1
+
+        # Compare with CnX, considering only the the subspace
+        # where all ancilla qubits are in state |0>
+        m = circ.get_unitary()
+        dim = 1 << n_qubits
+        ancillas_one = (1 << n_ancillas) - 1
+        idx = np.array([ii for ii in range(dim) if (ii & ancillas_one) == 0])
+
+        m_sub = m[idx][:, idx]
+        m_cnx = np.eye(1 << (n + 1), dtype=np.complex128)
+        m_cnx[-2:, -2:] = np.array([[0, 1], [1, 0]])
+
+        assert np.allclose(m_sub, m_cnx)
+
+
+def test_cnx_vchain_arbitrary_ancillas() -> None:
+    for n in range(3, 7):
+        circ = CnX_vchain_decomp(n, False)
+
+        n_ancillas = (n - 1) // 2
+
+        # Compare with CnX acting on the first n + 1 qubits
+        m = circ.get_unitary()
+
+        m_cnx = np.eye(1 << (n + 1), dtype=np.complex128)
+        m_cnx[-2:, -2:] = np.array([[0, 1], [1, 0]])
+        m_cnx_with_ancillas = np.kron(m_cnx, np.eye(1 << n_ancillas))
+
+        assert np.allclose(m, m_cnx_with_ancillas)
 
 
 if __name__ == "__main__":

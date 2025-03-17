@@ -26,6 +26,7 @@ from pytket._tket.circuit_library import (
     CCX_modulo_phase_shift,
     CCX_normal_decomp,
     CH_using_CX,
+    CnX_vchain_decomp,
     CRx_using_CX,
     CRx_using_TK2,
     CRy_using_CX,

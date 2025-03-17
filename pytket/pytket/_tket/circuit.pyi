@@ -11,14 +11,11 @@ import pytket.circuit.logic_exp
 import pytket.wasm.wasm
 import sympy
 import typing
-__all__ = ['BarrierOp', 'BasisOrder', 'CXConfigType', 'CircBox', 'Circuit', 'ClBitVar', 'ClExpr', 'ClExprOp', 'ClOp', 'ClRegVar', 'ClassicalEvalOp', 'ClassicalExpBox', 'ClassicalOp', 'Command', 'Conditional', 'ConjugationBox', 'CopyBitsOp', 'CustomGate', 'CustomGateDef', 'DiagonalBox', 'DummyBox', 'EdgeType', 'ExpBox', 'MetaOp', 'MultiBitOp', 'MultiplexedRotationBox', 'MultiplexedTensoredU2Box', 'MultiplexedU2Box', 'MultiplexorBox', 'Op', 'OpType', 'PauliExpBox', 'PauliExpCommutingSetBox', 'PauliExpPairBox', 'PhasePolyBox', 'ProjectorAssertionBox', 'QControlBox', 'RangePredicateOp', 'ResourceBounds', 'ResourceData', 'SetBitsOp', 'StabiliserAssertionBox', 'StatePreparationBox', 'TermSequenceBox', 'ToffoliBox', 'ToffoliBoxSynthStrat', 'Unitary1qBox', 'Unitary2qBox', 'Unitary3qBox', 'WASMOp', 'WiredClExpr', 'fresh_symbol']
+__all__ = ['BarrierOp', 'BasisOrder', 'CXConfigType', 'CircBox', 'Circuit', 'ClBitVar', 'ClExpr', 'ClExprOp', 'ClOp', 'ClRegVar', 'ClassicalEvalOp', 'ClassicalOp', 'Command', 'Conditional', 'ConjugationBox', 'CopyBitsOp', 'CustomGate', 'CustomGateDef', 'DiagonalBox', 'DummyBox', 'EdgeType', 'ExpBox', 'MetaOp', 'MultiBitOp', 'MultiplexedRotationBox', 'MultiplexedTensoredU2Box', 'MultiplexedU2Box', 'MultiplexorBox', 'Op', 'OpType', 'PauliExpBox', 'PauliExpCommutingSetBox', 'PauliExpPairBox', 'PhasePolyBox', 'ProjectorAssertionBox', 'QControlBox', 'RangePredicateOp', 'ResourceBounds', 'ResourceData', 'SetBitsOp', 'StabiliserAssertionBox', 'StatePreparationBox', 'TermSequenceBox', 'ToffoliBox', 'ToffoliBoxSynthStrat', 'Unitary1qBox', 'Unitary2qBox', 'Unitary3qBox', 'WASMOp', 'WiredClExpr', 'fresh_symbol']
 class BarrierOp(Op):
     """
     Barrier operations.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, signature: typing.Sequence[EdgeType], data: str) -> None:
         """
         Construct BarrierOp with signature and additional data string
@@ -47,9 +44,6 @@ class BasisOrder:
     __members__: typing.ClassVar[dict[str, BasisOrder]]  # value = {'ilo': <BasisOrder.ilo: 0>, 'dlo': <BasisOrder.dlo: 1>}
     dlo: typing.ClassVar[BasisOrder]  # value = <BasisOrder.dlo: 1>
     ilo: typing.ClassVar[BasisOrder]  # value = <BasisOrder.ilo: 0>
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -95,9 +89,6 @@ class CXConfigType:
     Star: typing.ClassVar[CXConfigType]  # value = <CXConfigType.Star: 2>
     Tree: typing.ClassVar[CXConfigType]  # value = <CXConfigType.Tree: 1>
     __members__: typing.ClassVar[dict[str, CXConfigType]]  # value = {'Snake': <CXConfigType.Snake: 0>, 'Star': <CXConfigType.Star: 2>, 'Tree': <CXConfigType.Tree: 1>, 'MultiQGate': <CXConfigType.MultiQGate: 3>}
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -128,9 +119,6 @@ class CircBox(Op):
     """
     A user-defined operation specified by a :py:class:`Circuit`.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, circ: Circuit) -> None:
         """
         Construct from a :py:class:`Circuit`.
@@ -167,9 +155,6 @@ class Circuit:
     >>> c.Rx(0.5,1) # Angles of rotation are expressed in half-turns (i.e. 0.5 means PI/2)
     >>> c.Measure(1,0) # Measure qubit 1, saving result in bit 0
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @staticmethod
     def from_dict(arg0: dict) -> Circuit:
         """
@@ -1442,24 +1427,6 @@ class Circuit:
         :param circuit: circuit to be appended
         :param unit_map: map from qubits and bits in the appended circuit to corresponding qubits and bits in `self`
         """
-    def add_classicalexpbox_bit(self, expression: pytket.circuit.logic_exp.BitLogicExp, target: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`ClassicalExpBox` over Bit to the circuit.
-        DEPRECATED: Please use :py:meth:`add_clexpr` instead. This method will be removed after pytket 1.40.
-        
-        :param classicalexpbox: The box to append
-        :param args: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    def add_classicalexpbox_register(self, expression: pytket.circuit.logic_exp.RegLogicExp, target: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`ClassicalExpBox` over BitRegister to the circuit.
-        DEPRECATED: Please use :py:meth:`add_clexpr` instead. This method will be removed after pytket 1.40.
-        
-        :param classicalexpbox: The box to append
-        :param args: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
     def add_clexpr(self, expr: WiredClExpr, args: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`WiredClExpr` to the circuit.
@@ -2129,11 +2096,9 @@ class Circuit:
         :param types: the set of operation types of interest
         :return: the circuit depth with respect to operations matching an element of `types`
         """
-    def flatten_registers(self, relabel_classical_expression: bool = True) -> dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]:
+    def flatten_registers(self) -> dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]:
         """
         Combines all qubits into a single register namespace with the default name, and likewise for bits
-        
-        :param relabel_classical_expression: Determines whether python classical expressions held in `ClassicalExpBox` have their expression relabelled to match relabelled Bit.
         """
     def free_symbols(self) -> set[sympy.Symbol]:
         """
@@ -2519,6 +2484,11 @@ class Circuit:
         A list of qubits whose output is a Discard operation
         """
     @property
+    def has_implicit_wireswaps(self) -> bool:
+        """
+        Indicates whether the circuit has a non-trivial qubit permutation (i.e., whether there are any implicit wire swaps).
+        """
+    @property
     def is_simple(self) -> bool:
         """
         Checks that the circuit has only 1 quantum and 1 classic register using the default names ('q' and 'c'). This means it is suitable to refer to qubits simply by their integer indices.
@@ -2583,19 +2553,10 @@ class Circuit:
         """
         :return: the unique WASM UID of the circuit, or `None` if the circuit has none
         """
-    @property
-    def has_implicit_wireswaps(self) -> bool:
-        """
-        Indicates whether the circuit has a non-trivial qubit permutation
-        (i.e., whether there are any implicit wire swaps).
-        """
 class ClBitVar:
     """
     A bit variable within an expression
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, arg0: typing.Any) -> bool:
         ...
     def __hash__(self) -> int:
@@ -2619,9 +2580,6 @@ class ClExpr:
     """
     A classical expression
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, arg0: typing.Any) -> bool:
         ...
     def __hash__(self) -> int:
@@ -2655,9 +2613,6 @@ class ClExprOp(Op):
     """
     An operation defined by a classical expression
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, arg0: WiredClExpr) -> None:
         """
         Construct from a wired classical expression
@@ -2766,9 +2721,6 @@ class ClOp:
     RegXor: typing.ClassVar[ClOp]  # value = <ClOp.RegXor: 11>
     RegZero: typing.ClassVar[ClOp]  # value = <ClOp.RegZero: 15>
     __members__: typing.ClassVar[dict[str, ClOp]]  # value = {'INVALID': <ClOp.INVALID: 0>, 'BitAnd': <ClOp.BitAnd: 1>, 'BitOr': <ClOp.BitOr: 2>, 'BitXor': <ClOp.BitXor: 3>, 'BitEq': <ClOp.BitEq: 4>, 'BitNeq': <ClOp.BitNeq: 5>, 'BitNot': <ClOp.BitNot: 6>, 'BitZero': <ClOp.BitZero: 7>, 'BitOne': <ClOp.BitOne: 8>, 'RegAnd': <ClOp.RegAnd: 9>, 'RegOr': <ClOp.RegOr: 10>, 'RegXor': <ClOp.RegXor: 11>, 'RegEq': <ClOp.RegEq: 12>, 'RegNeq': <ClOp.RegNeq: 13>, 'RegNot': <ClOp.RegNot: 14>, 'RegZero': <ClOp.RegZero: 15>, 'RegOne': <ClOp.RegOne: 16>, 'RegLt': <ClOp.RegLt: 17>, 'RegGt': <ClOp.RegGt: 18>, 'RegLeq': <ClOp.RegLeq: 19>, 'RegGeq': <ClOp.RegGeq: 20>, 'RegAdd': <ClOp.RegAdd: 21>, 'RegSub': <ClOp.RegSub: 22>, 'RegMul': <ClOp.RegMul: 23>, 'RegDiv': <ClOp.RegDiv: 24>, 'RegPow': <ClOp.RegPow: 25>, 'RegLsh': <ClOp.RegLsh: 26>, 'RegRsh': <ClOp.RegRsh: 27>, 'RegNeg': <ClOp.RegNeg: 28>}
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __ge__(self, other: typing.Any) -> bool:
@@ -2807,9 +2759,6 @@ class ClRegVar:
     """
     A register variable within an expression
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, arg0: typing.Any) -> bool:
         ...
     def __hash__(self) -> int:
@@ -2833,47 +2782,10 @@ class ClassicalEvalOp(ClassicalOp):
     """
     Evaluatable classical operation.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
-class ClassicalExpBox(Op):
-    """
-    A box for holding classical expressions on Bits.
-    """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
-    def __init__(self, n_i: int, n_io: int, n_o: int, exp: pytket.circuit.logic_exp.LogicExp) -> None:
-        """
-        Construct from signature (number of input, input/output, and output bits) and expression.
-        """
-    def content_equality(self, arg0: ClassicalExpBox) -> bool:
-        """
-        Check whether two ClassicalExpBox are equal in content
-        """
-    def get_exp(self) -> pytket.circuit.logic_exp.LogicExp:
-        """
-        :return: the classical expression
-        """
-    def get_n_i(self) -> int:
-        """
-        :return: the number of pure inputs to the box.
-        """
-    def get_n_io(self) -> int:
-        """
-        :return: the number of inputs/outputs to the box.
-        """
-    def get_n_o(self) -> int:
-        """
-        :return: the number of pure outputs from the box.
-        """
 class ClassicalOp(Op):
     """
     Classical operation.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @property
     def n_input_outputs(self) -> int:
         """
@@ -2893,9 +2805,6 @@ class Command:
     """
     A single quantum command in the circuit, defined by the Op, the qubits it acts on, and the op group name if any.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, arg0: typing.Any) -> bool:
         ...
     def __hash__(self) -> int:
@@ -2941,9 +2850,6 @@ class Conditional(Op):
     """
     A wrapper for an operation to be applied conditionally on the value of some classical bits (following the nature of conditional operations in the OpenQASM specification).
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, op: Op, width: int, value: int) -> None:
         """
         Construct from operation, bit width and (little-endian) value
@@ -2967,9 +2873,6 @@ class ConjugationBox(Op):
     """
     A box to express computations that follow the compute-action-uncompute pattern.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, compute: Op, action: Op, uncompute: Op | None = None) -> None:
         """
         Construct from operations that perform compute, action, and uncompute. All three operations need to be quantum and have the same size.
@@ -2998,16 +2901,10 @@ class CopyBitsOp(ClassicalEvalOp):
     """
     An operation to copy the values of Bits to other Bits.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
 class CustomGate(Op):
     """
     A user-defined gate defined by a parametrised :py:class:`Circuit`.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, gatedef: CustomGateDef, params: typing.Sequence[sympy.Expr | float]) -> None:
         """
         Instantiate a custom gate.
@@ -3035,9 +2932,6 @@ class CustomGateDef:
     """
     A custom unitary gate definition, given as a composition of other gates
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @staticmethod
     def define(name: str, circ: Circuit, args: typing.Sequence[sympy.Symbol]) -> CustomGateDef:
         """
@@ -3082,9 +2976,6 @@ class DiagonalBox(Op):
     """
     A box for synthesising a diagonal unitary matrix into a sequence of multiplexed-Rz gates. Implementation based on Theorem 7 of arxiv.org/abs/quant-ph/0406176. The decomposed circuit has at most 2^n-2 CX gates.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, diagonal: NDArray[numpy.complex128], upper_triangle: bool = True) -> None:
         """
         Construct from the diagonal entries of the unitary operator. The size of the vector must be 2^n where n is a positive integer.
@@ -3108,9 +2999,6 @@ class DummyBox(Op):
     """
     A placeholder operation that holds resource data. This box type cannot be decomposed into a circuit. It only serves to record resource data for a region of a circuit: for example, upper and lower bounds on gate counts and depth. A circuit containing such a box cannot be executed.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, n_qubits: int, n_bits: int, resource_data: ResourceData) -> None:
         """
         Construct a new instance from some resource data.
@@ -3146,9 +3034,6 @@ class EdgeType:
     Quantum: typing.ClassVar[EdgeType]  # value = <EdgeType.Quantum: 0>
     WASM: typing.ClassVar[EdgeType]  # value = <EdgeType.WASM: 3>
     __members__: typing.ClassVar[dict[str, EdgeType]]  # value = {'Boolean': <EdgeType.Boolean: 2>, 'Classical': <EdgeType.Classical: 1>, 'Quantum': <EdgeType.Quantum: 0>, 'WASM': <EdgeType.WASM: 3>}
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -3179,9 +3064,6 @@ class ExpBox(Op):
     """
     A user-defined two-qubit operation whose corresponding unitary matrix is the exponential of a user-defined hermitian matrix.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, A: NDArray[numpy.complex128], t: float, basis: BasisOrder = BasisOrder.ilo) -> None:
         """
         Construct :math:`e^{itA}` from a hermitian matrix :math:`A` and a parameter :math:`t`.
@@ -3198,9 +3080,6 @@ class MetaOp(Op):
     """
     Meta operation, such as input or output vertices.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, type: OpType, signature: typing.Sequence[EdgeType], data: str) -> None:
         """
         Construct MetaOp with optype, signature and additional data string
@@ -3218,9 +3097,6 @@ class MultiBitOp(ClassicalEvalOp):
     """
     An operation to apply a classical op multiple times in parallel.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, op: ClassicalEvalOp, multiplier: int) -> None:
         """
         Construct from a basic operation and a multiplier.
@@ -3230,13 +3106,15 @@ class MultiBitOp(ClassicalEvalOp):
         """
         Underlying bitwise op.
         """
+    @property
+    def multiplier(self) -> int:
+        """
+        Multiplier.
+        """
 class MultiplexedRotationBox(Op):
     """
     A user-defined multiplexed rotation gate (i.e. uniformly controlled single-axis rotations) specified by a map from bitstrings to :py:class:`Op` sor a list of bitstring-:py:class:`Op` s pairs. Implementation based on arxiv.org/abs/quant-ph/0410066. The decomposed circuit has at most 2^k single-qubit rotations, 2^k CX gates, and two additional H gates if the rotation axis is X. k is the number of control qubits.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @typing.overload
     def __init__(self, bistring_to_op_list: typing.Sequence[tuple[typing.Sequence[bool], Op]]) -> None:
         """
@@ -3277,9 +3155,6 @@ class MultiplexedTensoredU2Box(Op):
     """
     A user-defined multiplexed tensor product of U2 gates specified by a map from bitstrings to lists of :py:class:`Op` sor a list of bitstring-list(:py:class:`Op` s) pairs. A box with k control qubits and t target qubits is implemented as t k-controlled multiplexed-U2 gates with their diagonal components merged and commuted to the end. The resulting circuit contains t non-diagonal components of the multiplexed-U2 decomposition, t k-controlled multiplexed-Rz boxes, and a k-qubit DiagonalBox at the end. The total CX count is at most 2^k(2t+1)-t-2.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @typing.overload
     def __init__(self, bistring_to_op_list: typing.Sequence[tuple[typing.Sequence[bool], typing.Sequence[Op]]]) -> None:
         """
@@ -3312,9 +3187,6 @@ class MultiplexedU2Box(Op):
     """
     A user-defined multiplexed U2 gate (i.e. uniformly controlled U2 gate) specified by a map from bitstrings to :py:class:`Op` sor a list of bitstring-:py:class:`Op` s pairsImplementation based on arxiv.org/abs/quant-ph/0410066. The decomposed circuit has at most 2^k single-qubit gates, 2^k -1 CX gates, and a k+1 qubit DiagonalBox at the end. k is the number of control qubits.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @typing.overload
     def __init__(self, bistring_to_op_list: typing.Sequence[tuple[typing.Sequence[bool], Op]], impl_diag: bool = True) -> None:
         """
@@ -3353,9 +3225,6 @@ class MultiplexorBox(Op):
     """
     A user-defined multiplexor (i.e. uniformly controlled operations) specified by a map from bitstrings to :py:class:`Op` sor a list of bitstring-:py:class:`Op` s pairs
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @typing.overload
     def __init__(self, bistring_to_op_list: typing.Sequence[tuple[typing.Sequence[bool], Op]]) -> None:
         """
@@ -3386,9 +3255,6 @@ class Op:
     """
     Encapsulates operation information
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @staticmethod
     @typing.overload
     def create(arg0: OpType) -> Op:
@@ -3654,8 +3520,6 @@ class OpType:
     
       MultiBit : A classical operation applied to multiple bits simultaneously
     
-      ClassicalExpBox : A box for holding compound classical operations on Bits. DEPRECATED: This will be removed after pytket 1.40 (replaced by `ClExpr`).
-    
       MultiplexorBox : A multiplexor (i.e. uniformly controlled operations)
     
       MultiplexedRotationBox : A multiplexed rotation gate (i.e. uniformly controlled single-axis rotations)
@@ -3692,8 +3556,7 @@ class OpType:
     CY: typing.ClassVar[OpType]  # value = <OpType.CY: 46>
     CZ: typing.ClassVar[OpType]  # value = <OpType.CZ: 47>
     CircBox: typing.ClassVar[OpType]  # value = <OpType.CircBox: 89>
-    ClExpr: typing.ClassVar[OpType]  # value = <OpType.ClExpr: 116>
-    ClassicalExpBox: typing.ClassVar[OpType]  # value = <OpType.ClassicalExpBox: 109>
+    ClExpr: typing.ClassVar[OpType]  # value = <OpType.ClExpr: 115>
     ClassicalTransform: typing.ClassVar[OpType]  # value = <OpType.ClassicalTransform: 13>
     CnRx: typing.ClassVar[OpType]  # value = <OpType.CnRx: 84>
     CnRy: typing.ClassVar[OpType]  # value = <OpType.CnRy: 83>
@@ -3701,12 +3564,12 @@ class OpType:
     CnX: typing.ClassVar[OpType]  # value = <OpType.CnX: 86>
     CnY: typing.ClassVar[OpType]  # value = <OpType.CnY: 88>
     CnZ: typing.ClassVar[OpType]  # value = <OpType.CnZ: 87>
-    Conditional: typing.ClassVar[OpType]  # value = <OpType.Conditional: 110>
+    Conditional: typing.ClassVar[OpType]  # value = <OpType.Conditional: 109>
     ConjugationBox: typing.ClassVar[OpType]  # value = <OpType.ConjugationBox: 108>
     CopyBits: typing.ClassVar[OpType]  # value = <OpType.CopyBits: 16>
     CustomGate: typing.ClassVar[OpType]  # value = <OpType.CustomGate: 99>
     DiagonalBox: typing.ClassVar[OpType]  # value = <OpType.DiagonalBox: 107>
-    DummyBox: typing.ClassVar[OpType]  # value = <OpType.DummyBox: 115>
+    DummyBox: typing.ClassVar[OpType]  # value = <OpType.DummyBox: 114>
     ECR: typing.ClassVar[OpType]  # value = <OpType.ECR: 69>
     ESWAP: typing.ClassVar[OpType]  # value = <OpType.ESWAP: 78>
     ExpBox: typing.ClassVar[OpType]  # value = <OpType.ExpBox: 93>
@@ -3754,7 +3617,7 @@ class OpType:
     TK2: typing.ClassVar[OpType]  # value = <OpType.TK2: 44>
     Tdg: typing.ClassVar[OpType]  # value = <OpType.Tdg: 28>
     TermSequenceBox: typing.ClassVar[OpType]  # value = <OpType.TermSequenceBox: 97>
-    ToffoliBox: typing.ClassVar[OpType]  # value = <OpType.ToffoliBox: 113>
+    ToffoliBox: typing.ClassVar[OpType]  # value = <OpType.ToffoliBox: 112>
     U1: typing.ClassVar[OpType]  # value = <OpType.U1: 39>
     U2: typing.ClassVar[OpType]  # value = <OpType.U2: 38>
     U3: typing.ClassVar[OpType]  # value = <OpType.U3: 37>
@@ -3772,11 +3635,8 @@ class OpType:
     Z: typing.ClassVar[OpType]  # value = <OpType.Z: 22>
     ZZMax: typing.ClassVar[OpType]  # value = <OpType.ZZMax: 73>
     ZZPhase: typing.ClassVar[OpType]  # value = <OpType.ZZPhase: 76>
-    __members__: typing.ClassVar[dict[str, OpType]]  # value = {'Phase': <OpType.Phase: 21>, 'Z': <OpType.Z: 22>, 'X': <OpType.X: 23>, 'Y': <OpType.Y: 24>, 'S': <OpType.S: 25>, 'Sdg': <OpType.Sdg: 26>, 'T': <OpType.T: 27>, 'Tdg': <OpType.Tdg: 28>, 'V': <OpType.V: 29>, 'Vdg': <OpType.Vdg: 30>, 'SX': <OpType.SX: 31>, 'SXdg': <OpType.SXdg: 32>, 'H': <OpType.H: 33>, 'Rx': <OpType.Rx: 34>, 'Ry': <OpType.Ry: 35>, 'Rz': <OpType.Rz: 36>, 'U1': <OpType.U1: 39>, 'U2': <OpType.U2: 38>, 'U3': <OpType.U3: 37>, 'GPI': <OpType.GPI: 40>, 'GPI2': <OpType.GPI2: 41>, 'AAMS': <OpType.AAMS: 42>, 'TK1': <OpType.TK1: 43>, 'TK2': <OpType.TK2: 44>, 'CX': <OpType.CX: 45>, 'CY': <OpType.CY: 46>, 'CZ': <OpType.CZ: 47>, 'CH': <OpType.CH: 48>, 'CV': <OpType.CV: 49>, 'CVdg': <OpType.CVdg: 50>, 'CSX': <OpType.CSX: 51>, 'CSXdg': <OpType.CSXdg: 52>, 'CS': <OpType.CS: 53>, 'CSdg': <OpType.CSdg: 54>, 'CRz': <OpType.CRz: 55>, 'CRx': <OpType.CRx: 56>, 'CRy': <OpType.CRy: 57>, 'CU1': <OpType.CU1: 58>, 'CU3': <OpType.CU3: 59>, 'CCX': <OpType.CCX: 61>, 'ECR': <OpType.ECR: 69>, 'SWAP': <OpType.SWAP: 62>, 'CSWAP': <OpType.CSWAP: 63>, 'noop': <OpType.noop: 65>, 'Barrier': <OpType.Barrier: 8>, 'Label': <OpType.Label: 9>, 'Branch': <OpType.Branch: 10>, 'Goto': <OpType.Goto: 11>, 'Stop': <OpType.Stop: 12>, 'BRIDGE': <OpType.BRIDGE: 64>, 'Measure': <OpType.Measure: 66>, 'Reset': <OpType.Reset: 68>, 'CircBox': <OpType.CircBox: 89>, 'PhasePolyBox': <OpType.PhasePolyBox: 100>, 'Unitary1qBox': <OpType.Unitary1qBox: 90>, 'Unitary2qBox': <OpType.Unitary2qBox: 91>, 'Unitary3qBox': <OpType.Unitary3qBox: 92>, 'ExpBox': <OpType.ExpBox: 93>, 'PauliExpBox': <OpType.PauliExpBox: 94>, 'PauliExpPairBox': <OpType.PauliExpPairBox: 95>, 'PauliExpCommutingSetBox': <OpType.PauliExpCommutingSetBox: 96>, 'TermSequenceBox': <OpType.TermSequenceBox: 97>, 'QControlBox': <OpType.QControlBox: 101>, 'ToffoliBox': <OpType.ToffoliBox: 113>, 'ConjugationBox': <OpType.ConjugationBox: 108>, 'DummyBox': <OpType.DummyBox: 115>, 'CustomGate': <OpType.CustomGate: 99>, 'Conditional': <OpType.Conditional: 110>, 'ISWAP': <OpType.ISWAP: 70>, 'PhasedISWAP': <OpType.PhasedISWAP: 82>, 'XXPhase': <OpType.XXPhase: 74>, 'YYPhase': <OpType.YYPhase: 75>, 'ZZPhase': <OpType.ZZPhase: 76>, 'XXPhase3': <OpType.XXPhase3: 77>, 'PhasedX': <OpType.PhasedX: 71>, 'NPhasedX': <OpType.NPhasedX: 72>, 'CnRx': <OpType.CnRx: 84>, 'CnRy': <OpType.CnRy: 83>, 'CnRz': <OpType.CnRz: 85>, 'CnX': <OpType.CnX: 86>, 'CnY': <OpType.CnY: 88>, 'CnZ': <OpType.CnZ: 87>, 'ZZMax': <OpType.ZZMax: 73>, 'ESWAP': <OpType.ESWAP: 78>, 'FSim': <OpType.FSim: 79>, 'Sycamore': <OpType.Sycamore: 80>, 'ISWAPMax': <OpType.ISWAPMax: 81>, 'ClassicalTransform': <OpType.ClassicalTransform: 13>, 'WASM': <OpType.WASM: 14>, 'SetBits': <OpType.SetBits: 15>, 'CopyBits': <OpType.CopyBits: 16>, 'RangePredicate': <OpType.RangePredicate: 17>, 'ExplicitPredicate': <OpType.ExplicitPredicate: 18>, 'ExplicitModifier': <OpType.ExplicitModifier: 19>, 'MultiBit': <OpType.MultiBit: 20>, 'ClassicalExpBox': <OpType.ClassicalExpBox: 109>, 'MultiplexorBox': <OpType.MultiplexorBox: 102>, 'MultiplexedRotationBox': <OpType.MultiplexedRotationBox: 103>, 'MultiplexedU2Box': <OpType.MultiplexedU2Box: 104>, 'MultiplexedTensoredU2Box': <OpType.MultiplexedTensoredU2Box: 105>, 'StatePreparationBox': <OpType.StatePreparationBox: 106>, 'DiagonalBox': <OpType.DiagonalBox: 107>, 'ClExpr': <OpType.ClExpr: 116>}
+    __members__: typing.ClassVar[dict[str, OpType]]  # value = {'Phase': <OpType.Phase: 21>, 'Z': <OpType.Z: 22>, 'X': <OpType.X: 23>, 'Y': <OpType.Y: 24>, 'S': <OpType.S: 25>, 'Sdg': <OpType.Sdg: 26>, 'T': <OpType.T: 27>, 'Tdg': <OpType.Tdg: 28>, 'V': <OpType.V: 29>, 'Vdg': <OpType.Vdg: 30>, 'SX': <OpType.SX: 31>, 'SXdg': <OpType.SXdg: 32>, 'H': <OpType.H: 33>, 'Rx': <OpType.Rx: 34>, 'Ry': <OpType.Ry: 35>, 'Rz': <OpType.Rz: 36>, 'U1': <OpType.U1: 39>, 'U2': <OpType.U2: 38>, 'U3': <OpType.U3: 37>, 'GPI': <OpType.GPI: 40>, 'GPI2': <OpType.GPI2: 41>, 'AAMS': <OpType.AAMS: 42>, 'TK1': <OpType.TK1: 43>, 'TK2': <OpType.TK2: 44>, 'CX': <OpType.CX: 45>, 'CY': <OpType.CY: 46>, 'CZ': <OpType.CZ: 47>, 'CH': <OpType.CH: 48>, 'CV': <OpType.CV: 49>, 'CVdg': <OpType.CVdg: 50>, 'CSX': <OpType.CSX: 51>, 'CSXdg': <OpType.CSXdg: 52>, 'CS': <OpType.CS: 53>, 'CSdg': <OpType.CSdg: 54>, 'CRz': <OpType.CRz: 55>, 'CRx': <OpType.CRx: 56>, 'CRy': <OpType.CRy: 57>, 'CU1': <OpType.CU1: 58>, 'CU3': <OpType.CU3: 59>, 'CCX': <OpType.CCX: 61>, 'ECR': <OpType.ECR: 69>, 'SWAP': <OpType.SWAP: 62>, 'CSWAP': <OpType.CSWAP: 63>, 'noop': <OpType.noop: 65>, 'Barrier': <OpType.Barrier: 8>, 'Label': <OpType.Label: 9>, 'Branch': <OpType.Branch: 10>, 'Goto': <OpType.Goto: 11>, 'Stop': <OpType.Stop: 12>, 'BRIDGE': <OpType.BRIDGE: 64>, 'Measure': <OpType.Measure: 66>, 'Reset': <OpType.Reset: 68>, 'CircBox': <OpType.CircBox: 89>, 'PhasePolyBox': <OpType.PhasePolyBox: 100>, 'Unitary1qBox': <OpType.Unitary1qBox: 90>, 'Unitary2qBox': <OpType.Unitary2qBox: 91>, 'Unitary3qBox': <OpType.Unitary3qBox: 92>, 'ExpBox': <OpType.ExpBox: 93>, 'PauliExpBox': <OpType.PauliExpBox: 94>, 'PauliExpPairBox': <OpType.PauliExpPairBox: 95>, 'PauliExpCommutingSetBox': <OpType.PauliExpCommutingSetBox: 96>, 'TermSequenceBox': <OpType.TermSequenceBox: 97>, 'QControlBox': <OpType.QControlBox: 101>, 'ToffoliBox': <OpType.ToffoliBox: 112>, 'ConjugationBox': <OpType.ConjugationBox: 108>, 'DummyBox': <OpType.DummyBox: 114>, 'CustomGate': <OpType.CustomGate: 99>, 'Conditional': <OpType.Conditional: 109>, 'ISWAP': <OpType.ISWAP: 70>, 'PhasedISWAP': <OpType.PhasedISWAP: 82>, 'XXPhase': <OpType.XXPhase: 74>, 'YYPhase': <OpType.YYPhase: 75>, 'ZZPhase': <OpType.ZZPhase: 76>, 'XXPhase3': <OpType.XXPhase3: 77>, 'PhasedX': <OpType.PhasedX: 71>, 'NPhasedX': <OpType.NPhasedX: 72>, 'CnRx': <OpType.CnRx: 84>, 'CnRy': <OpType.CnRy: 83>, 'CnRz': <OpType.CnRz: 85>, 'CnX': <OpType.CnX: 86>, 'CnY': <OpType.CnY: 88>, 'CnZ': <OpType.CnZ: 87>, 'ZZMax': <OpType.ZZMax: 73>, 'ESWAP': <OpType.ESWAP: 78>, 'FSim': <OpType.FSim: 79>, 'Sycamore': <OpType.Sycamore: 80>, 'ISWAPMax': <OpType.ISWAPMax: 81>, 'ClassicalTransform': <OpType.ClassicalTransform: 13>, 'WASM': <OpType.WASM: 14>, 'SetBits': <OpType.SetBits: 15>, 'CopyBits': <OpType.CopyBits: 16>, 'RangePredicate': <OpType.RangePredicate: 17>, 'ExplicitPredicate': <OpType.ExplicitPredicate: 18>, 'ExplicitModifier': <OpType.ExplicitModifier: 19>, 'MultiBit': <OpType.MultiBit: 20>, 'MultiplexorBox': <OpType.MultiplexorBox: 102>, 'MultiplexedRotationBox': <OpType.MultiplexedRotationBox: 103>, 'MultiplexedU2Box': <OpType.MultiplexedU2Box: 104>, 'MultiplexedTensoredU2Box': <OpType.MultiplexedTensoredU2Box: 105>, 'StatePreparationBox': <OpType.StatePreparationBox: 106>, 'DiagonalBox': <OpType.DiagonalBox: 107>, 'ClExpr': <OpType.ClExpr: 115>}
     noop: typing.ClassVar[OpType]  # value = <OpType.noop: 65>
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @staticmethod
     def from_name(arg0: str) -> OpType:
         """
@@ -3820,9 +3680,6 @@ class PauliExpBox(Op):
     """
     An operation defined as the exponential of a tensor of Pauli operations and a (possibly symbolic) phase parameter.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, paulis: typing.Sequence[pytket._tket.pauli.Pauli], t: sympy.Expr | float, cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
         """
         Construct :math:`e^{-\\frac12 i \\pi t \\sigma_0 \\otimes \\sigma_1 \\otimes \\cdots}` from Pauli operators :math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and a parameter :math:`t`.
@@ -3847,9 +3704,6 @@ class PauliExpCommutingSetBox(Op):
     """
     An operation defined as a set of commuting of exponentials of atensor of Pauli operations and their (possibly symbolic) phase parameters.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, pauli_gadgets: typing.Sequence[tuple[typing.Sequence[pytket._tket.pauli.Pauli], sympy.Expr | float]], cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
         """
         Construct a set of necessarily commuting Pauli exponentials of the form :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes \\sigma_1 \\otimes \\cdots}` from Pauli operator strings :math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters :math:`t_j, j \\in \\{0, 1, \\cdots \\}`.
@@ -3872,9 +3726,6 @@ class PauliExpPairBox(Op):
     Pairing up exponentials for synthesis can reduce gate costs of synthesis compared to synthesising individually, with the best reductions found when the Pauli tensors act on a large number of the same qubits.
     Phase parameters may be symbolic.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, paulis0: typing.Sequence[pytket._tket.pauli.Pauli], t0: sympy.Expr | float, paulis1: typing.Sequence[pytket._tket.pauli.Pauli], t1: sympy.Expr | float, cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
         """
         Construct a pair of Pauli exponentials of the form :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes \\sigma_1 \\otimes \\cdots}` from Pauli operator strings :math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters :math:`t_j, j \\in \\{0,1\\}`.
@@ -3899,9 +3750,6 @@ class PhasePolyBox(Op):
     """
     Box encapsulating any Circuit made up of CNOT and RZ as a phase polynomial + linear transformation
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @typing.overload
     def __init__(self, n_qubits: int, qubit_indices: dict[pytket._tket.unit_id.Qubit, int], phase_polynomial: dict[tuple[bool, ...], sympy.Expr | float], linear_transformation: NDArray[numpy.bool_]) -> None:
         """
@@ -3952,9 +3800,6 @@ class ProjectorAssertionBox(Op):
     """
     A user-defined assertion specified by a 2x2, 4x4, or 8x8 projector matrix.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, m: NDArray[numpy.complex128], basis: BasisOrder = BasisOrder.ilo) -> None:
         """
         Construct from a projector matrix.
@@ -3974,9 +3819,6 @@ class QControlBox(Op):
     """
     A user-defined controlled operation specified by an :py:class:`Op`, the number of quantum controls, and the control state expressed as an integer or a bit vector.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @typing.overload
     def __init__(self, op: Op, n_controls: int = 1, control_state: typing.Sequence[bool] = []) -> None:
         """
@@ -4024,9 +3866,6 @@ class RangePredicateOp(ClassicalEvalOp):
     """
     A predicate defined by a range of values in binary encoding.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, width: int, lower: int, upper: int) -> None:
         """
         Construct from a bit width, a lower bound and an upper bound.
@@ -4045,9 +3884,6 @@ class ResourceBounds:
     """
     Structure holding a minimum and maximum value of some resource, where both values are unsigned integers.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, min: int, max: int) -> None:
         """
         Constructs a ResourceBounds object.
@@ -4071,9 +3907,6 @@ class ResourceData:
     
     See :py:meth:`Circuit.get_resources` for how to use this data.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, op_type_count: dict[OpType, ResourceBounds], gate_depth: ResourceBounds, op_type_depth: dict[OpType, ResourceBounds], two_qubit_gate_depth: ResourceBounds) -> None:
         """
         Constructs a ResourceData object.
@@ -4105,9 +3938,6 @@ class SetBitsOp(ClassicalEvalOp):
     """
     An operation to set the values of Bits to some constants.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, values: typing.Sequence[bool]) -> None:
         """
         Construct from a table of values.
@@ -4121,9 +3951,6 @@ class StabiliserAssertionBox(Op):
     """
     A user-defined assertion specified by a list of Pauli stabilisers.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @typing.overload
     def __init__(self, stabilisers: typing.Sequence[pytket._tket.pauli.PauliStabiliser]) -> None:
         """
@@ -4150,9 +3977,6 @@ class StatePreparationBox(Op):
     """
     A box for preparing quantum states using multiplexed-Ry and multiplexed-Rz gates. Implementation based on Theorem 9 of arxiv.org/abs/quant-ph/0406176. The decomposed circuit has at most 2*(2^n-2) CX gates, and 2^n-2 CX gates if the coefficients are all real.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, statevector: NDArray[numpy.complex128], is_inverse: bool = False, with_initial_reset: bool = False) -> None:
         """
         Construct from a statevector
@@ -4181,9 +4005,6 @@ class TermSequenceBox(Op):
     """
     An unordered collection of Pauli exponentials that can be synthesised in any order, causing a change in the unitary operation. Synthesis order depends on the synthesis strategy chosen only.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, pauli_gadgets: typing.Sequence[tuple[typing.Sequence[pytket._tket.pauli.Pauli], sympy.Expr | float]], synthesis_strategy: pytket._tket.transform.PauliSynthStrat = pytket._tket.transform.PauliSynthStrat.Sets, partitioning_strategy: pytket._tket.partition.PauliPartitionStrat = pytket._tket.partition.PauliPartitionStrat.CommutingSets, graph_colouring: pytket._tket.partition.GraphColourMethod = pytket._tket.partition.GraphColourMethod.Lazy, cx_config_type: CXConfigType = CXConfigType.Tree, depth_weight: float = 0.3) -> None:
         """
         Construct a set of Pauli exponentials of the form :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes \\sigma_1 \\otimes \\cdots}` from Pauli operator strings :math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters :math:`t_j, j \\in \\{0, 1, \\cdots \\}`.
@@ -4221,9 +4042,6 @@ class ToffoliBox(Op):
     """
     An operation that constructs a circuit to implement the specified permutation of classical basis states.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @typing.overload
     def __init__(self, permutation: typing.Sequence[tuple[typing.Sequence[bool], typing.Sequence[bool]]], strat: ToffoliBoxSynthStrat, rotation_axis: OpType = OpType.Ry) -> None:
         """
@@ -4297,9 +4115,6 @@ class ToffoliBoxSynthStrat:
     Cycle: typing.ClassVar[ToffoliBoxSynthStrat]  # value = <ToffoliBoxSynthStrat.Cycle: 1>
     Matching: typing.ClassVar[ToffoliBoxSynthStrat]  # value = <ToffoliBoxSynthStrat.Matching: 0>
     __members__: typing.ClassVar[dict[str, ToffoliBoxSynthStrat]]  # value = {'Matching': <ToffoliBoxSynthStrat.Matching: 0>, 'Cycle': <ToffoliBoxSynthStrat.Cycle: 1>}
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -4330,9 +4145,6 @@ class Unitary1qBox(Op):
     """
     A user-defined one-qubit operation specified by a unitary matrix.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, m: NDArray[numpy.complex128]) -> None:
         """
         Construct from a unitary matrix.
@@ -4349,9 +4161,6 @@ class Unitary2qBox(Op):
     """
     A user-defined two-qubit operation specified by a unitary matrix.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, m: NDArray[numpy.complex128], basis: BasisOrder = BasisOrder.ilo) -> None:
         """
         Construct from a unitary matrix.
@@ -4371,9 +4180,6 @@ class Unitary3qBox(Op):
     """
     A user-defined three-qubit operation specified by a unitary matrix.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, m: NDArray[numpy.complex128], basis: BasisOrder = BasisOrder.ilo) -> None:
         """
         Construct from a unitary matrix.
@@ -4393,9 +4199,6 @@ class WASMOp(ClassicalOp):
     """
     An op holding an external classical call, defined by the external module id, the name of the function and the arguments. External calls can only act on entire registers (which will be interpreted as fixed-width integers).
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __init__(self, num_bits: int, num_w: int, n_inputs: typing.Sequence[int], n_outputs: typing.Sequence[int], func_name: str, wasm_uid: str) -> None:
         """
         Construct from number of bits, bitwidths of inputs and outputs, function name and module id.
@@ -4439,9 +4242,6 @@ class WiredClExpr:
     """
     An operation defined by a classical expression over a sequence of bits
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @staticmethod
     def from_dict(arg0: dict) -> WiredClExpr:
         """

@@ -305,6 +305,9 @@
         },
         "expr": {
           "$ref": "#/definitions/wiredclexpr"
+        },
+        "wasm": {
+          "$ref": "#/definitions/wasm"
         }
       },
       "required": [
@@ -1334,6 +1337,46 @@
       "properties": {
         "index": {
           "type": "integer"
+        }
+      }
+    },
+    "wasm": {
+      "type": "object",
+      "description": "A classical operation defined in a WASM program.",
+      "properties": {
+        "func_name": {
+          "description": "Name of the function.",
+          "type": "string"
+        },
+        "n": {
+          "description": "Number of bits on which the operation acts.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "wasm_file_uid": {
+          "description": "UID of WASM object.",
+          "type": "string"
+        },
+        "width_i_parameter": {
+          "description": "Array of number of bits used in each i32 input.",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "width_o_parameter": {
+          "description": "Array of number of bits used in each i32 output.",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "ww_n": {
+          "description": "Number of WASM wires attached to the operation.",
+          "type": "integer",
+          "minimum": 0
         }
       }
     }

@@ -71,12 +71,6 @@ const PassPtr &SynthesiseTket() {
       "SynthesiseTket"));
   return pp;
 }
-const PassPtr &SynthesiseUMD() {
-  static const PassPtr pp(gate_translation_pass(
-      Transforms::synthesise_UMD(),
-      {OpType::XXPhase, OpType::PhasedX, OpType::Rz}, true, "SynthesiseUMD"));
-  return pp;
-}
 const PassPtr &RebaseTket() {
   static const PassPtr pp(gate_translation_pass(
       Transforms::rebase_tket(), {OpType::CX, OpType::TK1}, true,
@@ -473,8 +467,8 @@ const PassPtr &RemoveImplicitQubitPermutation() {
   return pp;
 }
 
-const PassPtr &ZXGraphlikeOptimisation() {
-  static const PassPtr pp([]() {
+const PassPtr &ZXGraphlikeOptimisation(bool allow_swaps) {
+  auto create_pass_ptr = []<bool allow_wire_swaps>() -> PassPtr {
     Transform t = Transform([](Circuit &circ) {
       zx::ZXDiagram diag = circuit_to_zx(circ).first;
       zx::Rewrite::to_graphlike_form().apply(diag);
@@ -487,6 +481,9 @@ const PassPtr &ZXGraphlikeOptimisation() {
       for (unsigned i = 0; i < orig_qs.size(); ++i)
         qmap.insert({c_qs.at(i), orig_qs.at(i)});
       c.rename_units<Qubit, Qubit>(qmap);
+      if constexpr (!allow_wire_swaps) {
+        c.replace_all_implicit_wire_swaps();
+      }
       circ = c;
       return true;
     });
@@ -510,8 +507,16 @@ const PassPtr &ZXGraphlikeOptimisation() {
     nlohmann::json j;
     j["name"] = "ZXGraphlikeOptimisation";
     return std::make_shared<StandardPass>(precons, t, postcons, j);
-  }());
-  return pp;
+  };
+
+  static const PassPtr pp{create_pass_ptr.operator()<true>()};
+  if (allow_swaps) {
+    return pp;
+  }
+
+  static const PassPtr pp_no_implicit_swaps{
+      create_pass_ptr.operator()<false>()};
+  return pp_no_implicit_swaps;
 }
 
 const PassPtr &RemovePhaseOps() {

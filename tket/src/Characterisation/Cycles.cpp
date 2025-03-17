@@ -53,8 +53,9 @@ void CycleFinder::update_cycle_out_edges(const UnitID& uid, const Edge& e) {
       return;
     }
   }
-  throw CycleError(std::string(
-      "UnitID " + uid.repr() + " not in std::map<Edge, UnitID> object."));
+  throw CycleError(
+      std::string(
+          "UnitID " + uid.repr() + " not in std::map<Edge, UnitID> object."));
   return;
 }
 

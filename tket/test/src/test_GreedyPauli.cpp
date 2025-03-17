@@ -14,6 +14,8 @@
 
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
+#include <memory>
+#include <vector>
 
 #include "testutil.hpp"
 #include "tket/Circuit/Circuit.hpp"
@@ -21,6 +23,8 @@
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Gate/SymTable.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Predicates/CompilationUnit.hpp"
+#include "tket/Predicates/CompilerPass.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Transformations/GreedyPauliOptimisation.hpp"
@@ -565,10 +569,12 @@ SCENARIO("Complete synthesis") {
         PauliExpBox(SymPauliTensor({Pauli::X, Pauli::X}, 0.3)), {0, 1});
     Circuit d1(circ);
     Circuit d2(circ);
-    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
-                .apply(d1));
-    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, false)
-                .apply(d2));
+    REQUIRE(
+        Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
+            .apply(d1));
+    REQUIRE(
+        Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, false)
+            .apply(d2));
     REQUIRE(test_unitary_comparison(circ, d1, true));
     REQUIRE(test_unitary_comparison(circ, d2, true));
     REQUIRE(d1.count_n_qubit_gates(2) == 1);
@@ -583,8 +589,9 @@ SCENARIO("Complete synthesis") {
     circ.add_box(
         PauliExpBox(SymPauliTensor({Pauli::X, Pauli::Y}, 0.2)), {4, 5});
     Circuit d(circ);
-    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
-                .apply(d));
+    REQUIRE(
+        Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
+            .apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
     REQUIRE(d.count_n_qubit_gates(2) == 3);
   }
@@ -665,8 +672,9 @@ SCENARIO("Complete synthesis") {
         PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Y, Pauli::X}, 0.15)),
         {0, 1, 2});
     Circuit d(circ);
-    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
-                .apply(d));
+    REQUIRE(
+        Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
+            .apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
     // if the first XY was implemented using a ZZPhase
     // then 2 TQEs is needed to conjugate the remaining two strings to weight 2
@@ -824,11 +832,23 @@ SCENARIO("Test GreedyPauliSimp with multiple trials and threads") {
     REQUIRE(!Transforms::greedy_pauli_optimisation(
                  0.7, 0.3, 500, 500, 0, true, 1, 10)
                  .apply(d));
-    REQUIRE(Transforms::greedy_pauli_optimisation(
-                0.7, 0.3, 500, 500, 0, true, 100, 10)
-                .apply(d));
+    REQUIRE(
+        Transforms::greedy_pauli_optimisation(
+            0.7, 0.3, 500, 500, 0, true, 100, 10)
+            .apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
   }
+}
+SCENARIO("Following a rebase pass") {
+  PassPtr rebase =
+      gen_auto_rebase_pass({OpType::ZZPhase, OpType::PhasedX, OpType::Rz});
+  PassPtr paulisynth = gen_greedy_pauli_simp(0.3, 0.5);
+  std::vector<PassPtr> passes = {rebase, paulisynth};
+  PassPtr seq = std::make_shared<SequencePass>(passes);
+  Circuit circ(1);
+  circ.add_op<unsigned>(OpType::H, {0});
+  CompilationUnit cu(circ);
+  CHECK(seq->apply(cu));
 }
 
 }  // namespace test_GreedyPauliSimp

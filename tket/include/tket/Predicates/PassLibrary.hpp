@@ -20,7 +20,6 @@ namespace tket {
 
 const PassPtr &SynthesiseTK();
 const PassPtr &SynthesiseTket();
-const PassPtr &SynthesiseUMD();
 
 const PassPtr &RemoveRedundancies();
 const PassPtr &CommuteThroughMultis();
@@ -142,9 +141,13 @@ const PassPtr &RemoveImplicitQubitPermutation();
  * As a resynthesis pass, this will ignore almost all optimisations achieved
  * beforehand and may increase the cost of the circuit.
  *
+ * @param allow_swaps Determines whether the extracted circuit may have
+ * implicit wire swaps. If set to false, implict wire swaps will be removed
+ * by adding SWAP gates at the end of the circuit.
+ *
  * @return compilation pass to perform this transformation
  */
-const PassPtr &ZXGraphlikeOptimisation();
+const PassPtr &ZXGraphlikeOptimisation(bool allow_swaps = true);
 
 /** Remove all \ref OpType::Phase (including conditionals) from the circuit. */
 const PassPtr &RemovePhaseOps();

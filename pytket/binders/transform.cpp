@@ -142,7 +142,10 @@ PYBIND11_MODULE(transform, m) {
           "RebaseToCliffordSingles", &Transforms::decompose_cliffords_std,
           "Replace all single-qubit unitary gates outside the set {Z, X, S, V} "
           "that are recognized as Clifford operations with an equivalent "
-          "sequence of gates from that set.")
+          "sequence of gates from that set."
+          "\n\n:param tk2_to_cx: whether to rebase TK2 gates to CX and "
+          "standard Cliffords",
+          py::arg("tk2_to_cx") = true)
       .def_static(
           "RebaseToCirq", &Transforms::rebase_cirq,
           "Rebase from any gate set into PhasedX, Rz, CZ.")
@@ -281,17 +284,15 @@ PYBIND11_MODULE(transform, m) {
           py::arg("cx_config") = CXConfigType::Snake)
       .def_static(
           "OptimiseCliffords", &Transforms::clifford_simp,
-          "An optimisation pass that performs a number of rewrite "
-          "rules for simplifying Clifford gate sequences, similar to "
-          "Duncan & Fagan (https://arxiv.org/abs/1901.10114). "
-          "Given a circuit with CXs and any single-qubit gates, "
-          "produces a circuit with Z, X, S, V, U1, U2, U3, CX gates. "
-          "This will not preserve CX placement or orientation and "
-          "may introduce implicit wire swaps."
-          "\n\n:param allow_swaps: dictates whether the rewriting "
-          "will disregard CX placement or orientation and introduce "
-          "wire swaps.",
-          py::arg("allow_swaps") = true)
+          "An optimisation pass that applies a number of rewrite rules for "
+          "simplifying Clifford gate sequences, similar to Duncan & Fagan "
+          "(https://arxiv.org/abs/1901.10114). Produces a circuit comprising "
+          "TK1 gates and the two-qubit gate specified as the target."
+          "\n\n:param allow_swaps: whether the rewriting may introduce "
+          "implicit wire swaps"
+          "\n:param target_2qb_gate: target two-qubit gate (either CX or TK2)",
+          py::arg("allow_swaps") = true,
+          py::arg("target_2qb_gate") = OpType::CX)
       .def_static(
           "OptimisePauliGadgets", &Transforms::pairwise_pauli_gadgets,
           "An optimisation pass that identifies the Pauli gadgets "
@@ -385,39 +386,6 @@ PYBIND11_MODULE(transform, m) {
       .def_static(
           "DecomposeNPhasedX", &Transforms::decompose_NPhasedX,
           "Decompose NPhasedX gates into single-qubit PhasedX gates.")
-      .def_static(
-          "GlobalisePhasedX",
-          [](bool squash) {
-            PyErr_WarnEx(
-                PyExc_DeprecationWarning,
-                "The GlobalisePhasedX transform is unreliable and deprecated. "
-                "It will be removed no earlier than three months after the "
-                "pytket 1.35 release.",
-                1);
-            return Transforms::globalise_PhasedX(squash);
-          },
-          "Turns all PhasedX and NPhasedX gates into global gates\n\n"
-          "Replaces any PhasedX gates with global NPhasedX gates. "
-          "By default, this transform will squash all single-qubit gates "
-          "to PhasedX and Rz gates before proceeding further. "
-          "Existing non-global NPhasedX will not be preserved. "
-          "This is the recommended setting for best "
-          "performance. If squashing is disabled, each non-global PhasedX gate "
-          "will be replaced with two global NPhasedX, but any other gates will "
-          "be left untouched."
-          "\n\nDEPRECATED: This transform will be removed no earlier than "
-          "three months after the pytket 1.35 release."
-          "\n\n:param squash: Whether to squash the circuit in pre-processing "
-          "(default: true)."
-          "\n\nIf squash=true (default), the `GlobalisePhasedX` transform's "
-          "`apply` method "
-          "will always return true. "
-          "For squash=false, `apply()` will return true if the circuit was "
-          "changed and false otherwise.\n\n"
-          "It is not recommended to use this transformation with symbolic "
-          "expressions, as in certain cases a blow-up in symbolic expression "
-          "sizes may occur.",
-          py::arg("squash") = true)
       .def_static(
           "SynthesisePauliGraph", &Transforms::synthesise_pauli_graph,
           "Synthesises Pauli Graphs.",

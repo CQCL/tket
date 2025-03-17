@@ -111,8 +111,7 @@ static PassPtr gen_default_aas_routing_pass(
 }
 
 const PassPtr &DecomposeClassicalExp() {
-  // a special box decomposer for Circuits containing
-  // ClassicalExpBox<py::object> and ClExprOp
+  // a special box decomposer for Circuits containing ClExprOp
   static const PassPtr pp([]() {
     Transform t = Transform([](Circuit &circ) {
       py::module decomposer =
@@ -362,6 +361,16 @@ PYBIND11_MODULE(passes, m) {
             const json j = t[0].cast<json>();
             return deserialise(j);
           }));
+              std::map<std::string, std::function<Circuit(const Circuit &)>>{})
+      .def(
+          py::pickle(
+              [](py::object self) {  // __getstate__
+                return py::make_tuple(self.attr("to_dict")());
+              },
+              [](const py::tuple &t) {  // __setstate__
+                const json j = t[0].cast<json>();
+                return deserialise(j);
+              }));
   py::class_<SequencePass, std::shared_ptr<SequencePass>, BasePass>(
       m, "SequencePass", "A sequence of compilation passes.")
       .def(
@@ -551,43 +560,10 @@ PYBIND11_MODULE(passes, m) {
       py::arg("excluded_opgroups") = std::unordered_set<std::string>());
   m.def(
       "DecomposeClassicalExp", &DecomposeClassicalExp,
-      "Replaces each :py:class:`ClassicalExpBox` and `ClExprOp` by a sequence "
-      "of classical gates.");
+      "Replaces each `ClExprOp` by a sequence of classical gates.");
   m.def(
       "DecomposeMultiQubitsCX", &DecomposeMultiQubitsCX,
       "Converts all multi-qubit gates into CX and single-qubit gates.");
-  m.def(
-      "GlobalisePhasedX",
-      [](bool squash) {
-        PyErr_WarnEx(
-            PyExc_DeprecationWarning,
-            "The GlobalisePhasedX pass is unreliable and deprecated. It will "
-            "be removed no earlier that three months after the pytket 1.35 "
-            "release.",
-            1);
-        return GlobalisePhasedX(squash);
-      },
-      "Turns all PhasedX and NPhasedX gates into global gates\n\n"
-      "Replaces any PhasedX gates with global NPhasedX gates. "
-      "By default, this transform will squash all single-qubit gates "
-      "to PhasedX and Rz gates before proceeding further. "
-      "Existing non-global NPhasedX will not be preserved. "
-      "This is the recommended setting for best "
-      "performance. If squashing is disabled, each non-global PhasedX gate "
-      "will be replaced with two global NPhasedX, but any other gates will "
-      "be left untouched."
-      "\n\nDEPRECATED: This pass will be removed no earlier than three months "
-      "after the pytket 1.35 release."
-      "\n\n:param squash: Whether to squash the circuit in pre-processing "
-      "(default: true)."
-      "\n\nIf squash=true (default), the `GlobalisePhasedX` transform's "
-      "`apply` method "
-      "will always return true. "
-      "For squash=false, `apply()` will return true if the circuit was "
-      "changed and false otherwise.\n\n"
-      "It is not recommended to use this pass with symbolic expressions, as"
-      " in certain cases a blow-up in symbolic expression sizes may occur.",
-      py::arg("squash") = true);
   m.def(
       "DecomposeSingleQubitsTK1", &DecomposeSingleQubitsTK1,
       "Converts all single-qubit gates into TK1 gates.");
@@ -623,10 +599,6 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "SynthesiseTket", &SynthesiseTket,
       "Optimises and converts all gates to CX, TK1 and Phase gates.");
-  m.def(
-      "SynthesiseUMD", &SynthesiseUMD,
-      "Optimises and converts all gates to XXPhase, PhasedX, Rz and Phase. "
-      "DEPRECATED: will be removed after pytket 1.32.");
   m.def(
       "SquashTK1", &SquashTK1,
       "Squash sequences of single-qubit gates to TK1 gates.");
@@ -703,7 +675,10 @@ PYBIND11_MODULE(passes, m) {
       "extracting a circuit back out. Due to limitations in extraction, may "
       "not work if the circuit contains created or discarded qubits. As a "
       "resynthesis pass, this will ignore almost all optimisations achieved "
-      "beforehand and may increase the cost of the circuit.");
+      "beforehand and may increase the cost of the circuit."
+      "\n\n:param allow_swaps: Whether to allow implicit wire swaps (default "
+      "True).",
+      py::arg("allow_swaps") = true);
 
   /* Pass generators */
 
@@ -835,18 +810,16 @@ PYBIND11_MODULE(passes, m) {
       "FlattenRelabelRegistersPass", &gen_flatten_relabel_registers_pass,
       "Removes empty Quantum wires from the Circuit and relabels all Qubit to "
       "a register from passed name. \n\n:param label: Name to relabel "
-      "remaining Qubit to, default 'q'.\n:param relabel_classical_expressions: "
-      "Whether to relabel arguments of expressions held in `ClassicalExpBox`. "
+      "remaining Qubit to, default 'q'."
       "\n:return: A pass that removes empty "
       "wires and relabels.",
-      py::arg("label") = q_default_reg(),
-      py::arg("relabel_classical_expressions") = true);
+      py::arg("label") = q_default_reg());
 
   m.def(
       "RenameQubitsPass", &gen_rename_qubits_pass,
       "Rename some or all qubits. "
       "\n\n"
-      ":param qubit_map: map from old to new qubit names ",
+      ":param qubit_map: map from old to new qubit names",
       py::arg("qubit_map"));
 
   m.def(
@@ -930,15 +903,15 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "CliffordSimp", &gen_clifford_simp_pass,
-      "An optimisation pass that performs a number of rewrite rules for "
+      "An optimisation pass that applies a number of rewrite rules for "
       "simplifying Clifford gate sequences, similar to Duncan & Fagan "
-      "(https://arxiv.org/abs/1901.10114). "
-      "Given a circuit with CXs and any single-qubit gates, produces a "
-      "circuit with TK1, CX gates."
-      "\n\n:param allow_swaps: dictates whether the rewriting will "
-      "disregard CX placement or orientation and introduce wire swaps."
+      "(https://arxiv.org/abs/1901.10114). Produces a circuit comprising TK1 "
+      "gates and the two-qubit gate specified as the target."
+      "\n\n:param allow_swaps: whether the rewriting may introduce implicit "
+      "wire swaps"
+      "\n:param target_2qb_gate: target two-qubit gate (either CX or TK2)"
       "\n:return: a pass to perform the rewriting",
-      py::arg("allow_swaps") = true);
+      py::arg("allow_swaps") = true, py::arg("target_2qb_gate") = OpType::CX);
 
   m.def(
       "CliffordResynthesis", &gen_clifford_resynthesis_pass,

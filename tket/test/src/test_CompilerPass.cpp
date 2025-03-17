@@ -269,8 +269,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
         {std::make_shared<LexiLabellingMethod>(),
          std::make_shared<LexiRouteRoutingMethod>()});
 
-    PassPtr all_passes =
-        SynthesiseTket() >> SynthesiseUMD() >> SynthesiseTK() >> cp_route;
+    PassPtr all_passes = SynthesiseTket() >> SynthesiseTK() >> cp_route;
     REQUIRE(all_passes->apply(cu));
     REQUIRE(cu.check_all_predicates());
   }
@@ -446,8 +445,7 @@ SCENARIO("Construct sequence pass") {
 }
 
 SCENARIO("Construct sequence pass that is invalid in strict mode") {
-  std::vector<PassPtr> invalid_pass_to_combo{
-      SynthesiseTket(), SynthesiseUMD(), SynthesiseTK()};
+  std::vector<PassPtr> invalid_pass_to_combo{SynthesiseTket(), SynthesiseTK()};
   for (const PassPtr& pass : invalid_pass_to_combo) {
     std::vector<PassPtr> passes = {pass};
     OpTypeSet ots = {OpType::CX};
@@ -694,8 +692,8 @@ SCENARIO("gen_placement_pass test") {
     avg_node_errors_t empty_node_errors = {};
     avg_readout_errors_t empty_readout_errors = {};
     avg_link_errors_t empty_link_errors = {};
-    PassPtr noise_place =
-        gen_placement_pass(std::make_shared<NoiseAwarePlacement>(
+    PassPtr noise_place = gen_placement_pass(
+        std::make_shared<NoiseAwarePlacement>(
             line_arc, empty_node_errors, empty_link_errors,
             empty_readout_errors, 10, 1000000));
     CompilationUnit noise_cu((Circuit(circ)));
@@ -712,8 +710,8 @@ SCENARIO("gen_placement_pass test") {
     graph_fall_back_place->apply(graph_fall_back_cu);
     // Get a fall back placement from a noise -
     // aware placement
-    PassPtr noise_fall_back_place =
-        gen_placement_pass(std::make_shared<NoiseAwarePlacement>(
+    PassPtr noise_fall_back_place = gen_placement_pass(
+        std::make_shared<NoiseAwarePlacement>(
             line_arc, empty_node_errors, empty_link_errors,
             empty_readout_errors, 1000000, 0));
     CompilationUnit noise_fall_back_cu((Circuit(circ)));
@@ -1267,6 +1265,8 @@ SCENARIO("Test Pauli Graph Synthesis Pass") {
     circ.add_op<unsigned>(OpType::XXPhase, 1.5, {1, 2});
     circ.add_op<unsigned>(OpType::YYPhase, 2.5, {2, 0});
     circ.add_op<unsigned>(OpType::PhasedX, {3.5, 0.5}, {0});
+    circ.add_op<unsigned>(OpType::SX, {1});
+    circ.add_op<unsigned>(OpType::SXdg, {2});
 
     CompilationUnit cu(circ);
     graph_synth->apply(cu);
@@ -2315,6 +2315,31 @@ SCENARIO("AutoSquash") {
   GIVEN("Test exception") {
     REQUIRE_THROWS_AS(gen_auto_squash_pass({OpType::Rx}), Unsupported);
     REQUIRE_THROWS_AS(gen_auto_squash_pass({}), Unsupported);
+  }
+}
+
+SCENARIO("Efficient TK2 synthesis") {
+  // https://github.com/CQCL/tket/issues/1738
+  GIVEN("A single YYPhase") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::YYPhase, 0.3, {0, 1});
+
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::TK2, {0.0, 0.3, 0.0}, {0, 1});
+
+    CompilationUnit cu(c);
+    CHECK(FullPeepholeOptimise(true, OpType::TK2)->apply(cu));
+    Circuit c1 = cu.get_circ_ref();
+    REQUIRE(c1 == c0);
+  }
+  GIVEN("An unnormalized TK2") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {0, 1});
+
+    CompilationUnit cu(c);
+    FullPeepholeOptimise(true, OpType::TK2)->apply(cu);
+    Circuit c1 = cu.get_circ_ref();
+    REQUIRE(c1 == c);
   }
 }
 

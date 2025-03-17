@@ -149,8 +149,9 @@ SCENARIO("Create and Discard operations") {
     const auto s = tket_sim::get_statevector(c);
     REQUIRE(Transforms::simplify_initial().apply(c));
     const auto s1 = tket_sim::get_statevector(c);
-    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
-        s, s1, tket_sim::MatrixEquivalence::EQUAL_UP_TO_GLOBAL_PHASE));
+    REQUIRE(
+        tket_sim::compare_statevectors_or_unitaries(
+            s, s1, tket_sim::MatrixEquivalence::EQUAL_UP_TO_GLOBAL_PHASE));
   }
   GIVEN("Circuit with zero-preserving ops") {
     Circuit c(3);
@@ -172,8 +173,9 @@ SCENARIO("Create and Discard operations") {
     REQUIRE(c.count_gates(OpType::Z) == 0);
     REQUIRE(c.count_gates(OpType::X) == 1);
     const auto s1 = tket_sim::get_statevector(c);
-    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
-        s, s1, tket_sim::MatrixEquivalence::EQUAL_UP_TO_GLOBAL_PHASE));
+    REQUIRE(
+        tket_sim::compare_statevectors_or_unitaries(
+            s, s1, tket_sim::MatrixEquivalence::EQUAL_UP_TO_GLOBAL_PHASE));
   }
   GIVEN("Circuit tracking known computational-basis states") {
     Circuit c(2);
@@ -333,6 +335,16 @@ SCENARIO("Contextual optimization") {
       REQUIRE(new_values[Bit(0)] == values[Bit(0)]);
       REQUIRE(new_values[Bit(1)] == new_values[Bit(0)]);
     }
+  }
+  GIVEN("Circuit with quantum op following final measurement") {
+    // https://github.com/CQCL/tket/issues/1794
+    Circuit c(1, 1);
+    c.add_op<unsigned>(OpType::X, {0});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::X, {0});
+    auto [c0, ppc] = Transforms::separate_classical(c);
+    CHECK(c0 == c);
+    CHECK(ppc == Circuit(0, 1));
   }
 }
 

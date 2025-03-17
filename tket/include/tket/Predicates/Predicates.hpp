@@ -289,19 +289,6 @@ class NoSymbolsPredicate : public Predicate {
 };
 
 /**
- * Asserts that all NPhasedX gates act on all qubits
- * In the future, it might be useful to have a generic GlobalGatePredicate
- * for other global gates, or flag some gates as global
- */
-class GlobalPhasedXPredicate : public Predicate {
- public:
-  bool verify(const Circuit& circ) const override;
-  bool implies(const Predicate& other) const override;
-  PredicatePtr meet(const Predicate& other) const override;
-  std::string to_string() const override;
-};
-
-/**
  * Asserts that all TK2 gates are normalised
  *
  * A gate TK2(a, b, c) is considered normalised if
