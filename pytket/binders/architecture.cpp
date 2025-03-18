@@ -63,13 +63,25 @@ PYBIND11_MODULE(architecture, m) {
       .def(
           "valid_operation",
           [](const Architecture &arch,
-             const py::tket_custom::SequenceVec<Node> &ids) {
-            return arch.valid_operation(ids);
+             const py::tket_custom::SequenceVec<Node> &ids,
+             bool bidirectional) {
+            return arch.valid_operation(ids, bidirectional);
           },
-          "Returns true if the given operation acting on the given ",
-          "nodes can be executed on the Architecture connectivity graph."
-          "\n\n:param uids: list of UnitIDs validity is being checked for",
-          py::arg("uids"))
+          "Checks if a given operation on the given nodes can be executed on "
+          "the Architecture's connectivity graph.\n"
+          "The operation is considered valid if:\n"
+          " - The operation acts on a single node that belongs to the "
+          "Architecture.\n"
+          " - The operation acts on two nodes, and either:\n"
+          "   - `bidirectional` is True and an edge exists between the two "
+          "nodes in either direction.\n"
+          "   - `bidirectional` is False and an edge exists from uids[0] to "
+          "uids[1].\nThe function always returns False if the number of nodes "
+          "exceeds 2."
+          "\n\n:param uids: list of UnitIDs validity is being checked for."
+          "\n:param bidirectional: If True, treats edges in the coupling graph "
+          "as bidirectional. Defaults to True.",
+          py::arg("uids"), py::arg("bidirectional") = true)
       .def(
           "get_adjacent_nodes", &Architecture::get_neighbour_nodes,
           "given a node, returns adjacent nodes in Architecture.",

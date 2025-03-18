@@ -11,6 +11,7 @@ Features:
 * Add `tk2_to_cx` parameter to `RebaseToCliffordSingles` transform.
 * Reduce depth of circuits resulting from `FullPeepholeOptimise` in some cases.
 * Add `MultiBitOp.multiplier` property.
+* Add `bidirectional` argument to `Architecture.valid_operation`.
 
 Fixes:
 
