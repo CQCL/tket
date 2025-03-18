@@ -1,4 +1,3 @@
-from typing import Any
 from __future__ import annotations
 import pytket.circuit.logic_exp
 import typing
@@ -7,9 +6,6 @@ class Bit(UnitID):
     """
     A handle to a bit
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @staticmethod
     def from_list(arg0: list) -> Bit:
         """
@@ -88,9 +84,6 @@ class BitRegister:
     """
     Linear register of UnitID types.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __add__(self: typing.Union[pytket.circuit.logic_exp.LogicExp, pytket._tket.unit_id.BitRegister, int], other: typing.Union[pytket.circuit.logic_exp.LogicExp, pytket._tket.unit_id.BitRegister, int]) -> pytket.circuit.logic_exp.RegLogicExp:
         ...
     def __and__(self: typing.Union[pytket.circuit.logic_exp.LogicExp, pytket._tket.unit_id.BitRegister, int], other: typing.Union[pytket.circuit.logic_exp.LogicExp, pytket._tket.unit_id.BitRegister, int]) -> pytket.circuit.logic_exp.RegLogicExp:
@@ -179,9 +172,6 @@ class Node(Qubit):
     A handle to a device node
     """
     @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
-    @staticmethod
     def from_list(arg0: list) -> Node:
         """
         Construct Node instance from JSON serializable list representation of the Node.
@@ -240,9 +230,6 @@ class Qubit(UnitID):
     """
     A handle to a qubit
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @staticmethod
     def from_list(arg0: list) -> Qubit:
         """
@@ -303,9 +290,6 @@ class QubitRegister:
     """
     Linear register of UnitID types.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __contains__(self, arg0: Qubit) -> bool:
         ...
     def __copy__(self) -> QubitRegister:
@@ -367,9 +351,6 @@ class UnitID:
     """
     A handle to a computational unit (e.g. qubit, bit)
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __copy__(self) -> UnitID:
         ...
     def __deepcopy__(self, arg0: dict) -> UnitID:
@@ -415,9 +396,6 @@ class UnitType:
     bit: typing.ClassVar[UnitType]  # value = <UnitType.bit: 1>
     qubit: typing.ClassVar[UnitType]  # value = <UnitType.qubit: 0>
     wasmstate: typing.ClassVar[UnitType]  # value = <UnitType.wasmstate: 2>
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -448,9 +426,6 @@ class WasmState(UnitID):
     """
     A handle to a wasmstate
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @staticmethod
     def from_list(arg0: list) -> WasmState:
         """

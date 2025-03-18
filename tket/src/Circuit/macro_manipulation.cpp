@@ -745,7 +745,6 @@ bool Circuit::substitute_box_vertex(
     conditional = true;
   }
   if (!op->get_desc().is_box()) return false;
-  if (op->get_type() == OpType::ClassicalExpBox) return false;
   const Box& b = static_cast<const Box&>(*op);
   Circuit replacement = *b.to_circuit();
   replacement.decompose_boxes_recursively(excluded_types, excluded_opgroups);

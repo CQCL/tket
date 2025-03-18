@@ -23,15 +23,18 @@
 
 namespace tket {
 
-bool Architecture::valid_operation(const std::vector<Node>& uids) const {
+bool Architecture::valid_operation(
+    const std::vector<Node>& uids, bool bidirectional) const {
   for (Node n : uids) {
     if (!this->node_exists(Node(n))) return false;
   }
   if (uids.size() == 1) {
     return true;
   } else if (uids.size() == 2) {
-    if (this->bidirectional_edge_exists(uids[0], uids[1])) {
+    if (bidirectional && this->bidirectional_edge_exists(uids[0], uids[1])) {
       return true;
+    } else if (!bidirectional && this->edge_exists(uids[0], uids[1])) {
+      return false;
     }
   }
   return false;

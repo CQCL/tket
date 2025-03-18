@@ -62,8 +62,9 @@ SCENARIO("Reorder circuits") {
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
-    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
-        u, u1, tket_sim::MatrixEquivalence::EQUAL));
+    REQUIRE(
+        tket_sim::compare_statevectors_or_unitaries(
+            u, u1, tket_sim::MatrixEquivalence::EQUAL));
   }
 
   GIVEN("Simple CZ circuit 2.") {
@@ -103,8 +104,9 @@ SCENARIO("Reorder circuits") {
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
-    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
-        u, u1, tket_sim::MatrixEquivalence::EQUAL));
+    REQUIRE(
+        tket_sim::compare_statevectors_or_unitaries(
+            u, u1, tket_sim::MatrixEquivalence::EQUAL));
   }
   GIVEN("Simple CZ circuit with single_qs.") {
     Circuit circ(4, 1);
@@ -148,8 +150,9 @@ SCENARIO("Reorder circuits") {
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
-    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
-        u, u1, tket_sim::MatrixEquivalence::EQUAL));
+    REQUIRE(
+        tket_sim::compare_statevectors_or_unitaries(
+            u, u1, tket_sim::MatrixEquivalence::EQUAL));
   }
 
   GIVEN("Circuit with multi qubit gates.") {
@@ -195,8 +198,9 @@ SCENARIO("Reorder circuits") {
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
-    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
-        u, u1, tket_sim::MatrixEquivalence::EQUAL));
+    REQUIRE(
+        tket_sim::compare_statevectors_or_unitaries(
+            u, u1, tket_sim::MatrixEquivalence::EQUAL));
   }
 
   GIVEN("Reorder that frees up physically permitted gates") {
@@ -228,8 +232,9 @@ SCENARIO("Reorder circuits") {
     REQUIRE(*subc.verts.begin() == v1);
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
-    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
-        u, u1, tket_sim::MatrixEquivalence::EQUAL));
+    REQUIRE(
+        tket_sim::compare_statevectors_or_unitaries(
+            u, u1, tket_sim::MatrixEquivalence::EQUAL));
   }
 }
 
@@ -272,8 +277,9 @@ SCENARIO("Reorder circuits with limited search space") {
         {Node(commands[1].get_args()[0]), Node(commands[1].get_args()[1])}));
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
-    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
-        u, u1, tket_sim::MatrixEquivalence::EQUAL));
+    REQUIRE(
+        tket_sim::compare_statevectors_or_unitaries(
+            u, u1, tket_sim::MatrixEquivalence::EQUAL));
   }
 }
 
@@ -325,8 +331,9 @@ SCENARIO("Test MultiGateReorderRoutingMethod") {
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
-    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
-        u, u1, tket_sim::MatrixEquivalence::EQUAL));
+    REQUIRE(
+        tket_sim::compare_statevectors_or_unitaries(
+            u, u1, tket_sim::MatrixEquivalence::EQUAL));
 
     // Test with limits
     Circuit circ2(circ_copy);
@@ -355,8 +362,9 @@ SCENARIO("Test MultiGateReorderRoutingMethod") {
     REQUIRE(!mf2->valid_boundary_operation(
         shared_arc, commands2[4].get_op_ptr(), nodes));
     const auto u2 = tket_sim::get_unitary(circ2);
-    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
-        u2, u1, tket_sim::MatrixEquivalence::EQUAL));
+    REQUIRE(
+        tket_sim::compare_statevectors_or_unitaries(
+            u2, u1, tket_sim::MatrixEquivalence::EQUAL));
   }
 }
 

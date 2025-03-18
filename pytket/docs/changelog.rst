@@ -1,12 +1,54 @@
 Changelog
 =========
 
-1.41.0 (Unreleased)
+Unreleased
+----------
+
+Features:
+
+* Add `target_2qb_gate` parameter to `CliffordSimp` pass and `OptimiseCliffords`
+  transform.
+* Add `tk2_to_cx` parameter to `RebaseToCliffordSingles` transform.
+* Reduce depth of circuits resulting from `FullPeepholeOptimise` in some cases.
+* Add `MultiBitOp.multiplier` property.
+* Add `bidirectional` argument to `Architecture.valid_operation`.
+* Add `CustomPassMap`.
+
+Fixes:
+
+* Fix error in `separate_classical` when quantum operations come after final
+  measurements.
+
+2.0.1 (March 2025)
+------------------
+
+Features:
+
+* Add optional `allow_swaps` argument to :py:meth:`ZXGraphlikeOptimisation`.
+* Allow GreedyPauliSimp to accept circuits containing Phase gates.
+
+2.0.0 (February 2025)
+---------------------
+
+API changes:
+
+* Remove `GlobalisePhasedX` transform and pass.
+* Remove `SynthesiseUMD` pass.
+* Remove `NoiseAwarePlacement.modify_config` and `GraphPlacement.modify_config`
+  methods.
+* Remove `ClassicalExpBox` and related methods.
+
+Fixes:
+
+* Fix segfault listing registers of circuit containing unindexed units.
+
+1.41.0 (February 2025)
 ----------------------
+
 Features:
 
 * Add :py:attr:`Circuit.has_implicit_wireswaps` property.
-* Add `CustomPassMap`.
+* Make :py:meth:`PauliSimp` accept circuits with SX and SXdg gates.
 
 1.40.0 (February 2025)
 ----------------------

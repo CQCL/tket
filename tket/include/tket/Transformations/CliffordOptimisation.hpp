@@ -28,10 +28,10 @@ Transform multiq_clifford_replacement(bool allow_swaps = false);
 // copies Z through the target of a CX and X through the control
 Transform copy_pi_through_CX();
 
-// These apply some of the Clifford rules in the paper "Optimising Clifford
-// Circuits with Quantomatic" All of these expect and produce CX, Z, X, S, V,
-// and other single qubit gates
-
+/**
+ * Apply some of the Clifford rules in the paper "Optimising Clifford Circuits
+ * with Quantomatic".
+ */
 Transform singleq_clifford_sweep();
 
 // In some cases, 2-qubit gates can be saved by:

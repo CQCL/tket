@@ -128,7 +128,6 @@
             "SynthesiseTK",
             "SynthesiseTket",
             "SynthesiseOQC",
-            "SynthesiseUMD",
             "SquashTK1",
             "SquashRzPhasedX",
             "AutoSquash",
@@ -547,9 +546,10 @@
           },
           "then": {
             "required": [
-              "allow_swaps"
+              "allow_swaps",
+              "target_2qb_gate"
             ],
-            "maxProperties": 2
+            "maxProperties": 3
           }
         },
         {
@@ -941,7 +941,6 @@
                   "SynthesiseTK",
                   "SynthesiseTket",
                   "SynthesiseOQC",
-                  "SynthesiseUMD",
                   "SquashTK1",
                   "SquashRzPhasedX",
                   "FlattenRegisters",

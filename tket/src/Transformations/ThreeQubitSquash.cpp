@@ -110,10 +110,7 @@ static Circuit candidate_sub(const Circuit &circ, OpType target_2qb_gate) {
   unsigned n_qb = circ.n_qubits();
   if (n_qb == 2) {
     Circuit repl = two_qubit_canonical(get_matrix_from_2qb_circ(circ));
-    // TODO Remove this once `clifford_simp` supports TK2.
-    if (target_2qb_gate == OpType::CX) {
-      clifford_simp(false).apply(repl);
-    }
+    clifford_simp(false, target_2qb_gate).apply(repl);
     return repl;
   } else {
     TKET_ASSERT(n_qb == 3);

@@ -371,23 +371,26 @@ SCENARIO("Exception handling", "[boxes]") {
         {{1}, get_op_ptr(OpType::Rz, 0.3)}, {{0}, get_op_ptr(OpType::Rx, 1.4)}};
     REQUIRE_THROWS_MATCHES(
         MultiplexedRotationBox(op_map), std::invalid_argument,
-        MessageContains("Ops passed to MultiplexedRotationBox must have the "
-                        "same rotation type"));
+        MessageContains(
+            "Ops passed to MultiplexedRotationBox must have the "
+            "same rotation type"));
   }
   GIVEN("Non-rotation type") {
     ctrl_op_map_t op_map = {{{1}, get_op_ptr(OpType::H)}};
     REQUIRE_THROWS_MATCHES(
         MultiplexedRotationBox(op_map), BadOpType,
-        MessageContains("Ops passed to MultiplexedRotationBox must be either "
-                        "Rx, Ry, or Rz"));
+        MessageContains(
+            "Ops passed to MultiplexedRotationBox must be either "
+            "Rx, Ry, or Rz"));
   }
   GIVEN("MultiplexedU2Box unsupported gate") {
     ctrl_op_map_t op_map = {
         {{0, 1}, get_op_ptr(OpType::H)}, {{1, 0}, get_op_ptr(OpType::CX)}};
     REQUIRE_THROWS_MATCHES(
         MultiplexedU2Box(op_map), BadOpType,
-        MessageContains("Ops passed to MultiplexedU2Box must be single-qubit "
-                        "unitary gate types or Unitary1qBox"));
+        MessageContains(
+            "Ops passed to MultiplexedU2Box must be single-qubit "
+            "unitary gate types or Unitary1qBox"));
   }
   GIVEN("Decompose symbolic MultiplexedU2Box") {
     Sym a = SymTable::fresh_symbol("a");
@@ -773,8 +776,9 @@ SCENARIO("Test MultiplexedTensoredU2Box exceptions", "[boxes]") {
     ctrl_tensored_op_map_t op_map;
     REQUIRE_THROWS_MATCHES(
         MultiplexedTensoredU2Box(op_map), std::invalid_argument,
-        MessageContains("The op_map argument passed to "
-                        "MultiplexedTensoredU2Box cannot be empty."));
+        MessageContains(
+            "The op_map argument passed to "
+            "MultiplexedTensoredU2Box cannot be empty."));
   }
   GIVEN("Bitstrings are too long") {
     std::vector<bool> bits(33);
@@ -789,8 +793,9 @@ SCENARIO("Test MultiplexedTensoredU2Box exceptions", "[boxes]") {
         {{0, 1}, {get_op_ptr(OpType::H)}}, {{1}, {get_op_ptr(OpType::X)}}};
     REQUIRE_THROWS_MATCHES(
         MultiplexedTensoredU2Box(op_map), std::invalid_argument,
-        MessageContains("The bitstrings passed to MultiplexedTensoredU2Box "
-                        "must have the same width."));
+        MessageContains(
+            "The bitstrings passed to MultiplexedTensoredU2Box "
+            "must have the same width."));
   }
   GIVEN("Unmatched op sizes") {
     ctrl_tensored_op_map_t op_map = {
@@ -807,8 +812,9 @@ SCENARIO("Test MultiplexedTensoredU2Box exceptions", "[boxes]") {
         {{0, 1}, {get_op_ptr(OpType::H)}}, {{1, 0}, {get_op_ptr(OpType::CX)}}};
     REQUIRE_THROWS_MATCHES(
         MultiplexedTensoredU2Box(op_map), BadOpType,
-        MessageContains("Ops passed to MultiplexedTensoredU2Box must be "
-                        "single-qubit unitary gate types or Unitary1qBox"));
+        MessageContains(
+            "Ops passed to MultiplexedTensoredU2Box must be "
+            "single-qubit unitary gate types or Unitary1qBox"));
   }
 }
 SCENARIO("Test MultiplexedTensoredU2Box value error") {

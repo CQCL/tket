@@ -30,7 +30,6 @@
 #include "tket/OpType/OpTypeInfo.hpp"
 #include "tket/Ops/OpPtr.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
-#include "tket/Transformations/PhasedXFrontier.hpp"
 #include "tket/Transformations/Rebase.hpp"
 #include "tket/Transformations/Replacement.hpp"
 #include "tket/Transformations/Transform.hpp"
@@ -633,12 +632,13 @@ static double best_noise_aware_decomposition(
     for (unsigned n_zz = 0; n_zz <= max_nzz; ++n_zz) {
       if (n_zz > 0) {
         double gate_fid = std::visit(
-            overloaded{// Constant value
-                       [](double arg) { return arg; },
-                       // A value depending on the angle
-                       [angles, n_zz](std::function<double(double)> arg) {
-                         return (arg)(angles[n_zz - 1]);
-                       }},
+            overloaded{
+                // Constant value
+                [](double arg) { return arg; },
+                // A value depending on the angle
+                [angles, n_zz](std::function<double(double)> arg) {
+                  return (arg)(angles[n_zz - 1]);
+                }},
             *fid.ZZPhase_fidelity);
         if (gate_fid < 0 || gate_fid > 1) {
           throw std::domain_error(
@@ -881,10 +881,11 @@ Transform decompose_TK2(const TwoQbFidelities &fid, bool allow_swaps) {
   }
   if (fid.ZZMax_fidelity && fid.ZZPhase_fidelity) {
     double ZZPhase_half = std::visit(
-        overloaded{// A constant value.
-                   [](double arg) { return arg; },
-                   // A value depending on the input.
-                   [](std::function<double(double)> arg) { return (arg)(.5); }},
+        overloaded{
+            // A constant value.
+            [](double arg) { return arg; },
+            // A value depending on the input.
+            [](std::function<double(double)> arg) { return (arg)(.5); }},
         *fid.ZZPhase_fidelity);
     if (*fid.ZZMax_fidelity < ZZPhase_half) {
       throw std::domain_error(
@@ -1116,8 +1117,8 @@ static Circuit clifford_from_tk1(int i, int j, int k) {
   return c;
 }
 
-Transform decompose_cliffords_std() {
-  return Transform([](Circuit &circ) {
+Transform decompose_cliffords_std(bool tk2_to_cx) {
+  return Transform([tk2_to_cx](Circuit &circ) {
     bool success = false;
     VertexList bin;
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
@@ -1155,15 +1156,16 @@ Transform decompose_cliffords_std() {
         } else {
           switch (type) {
             case OpType::TK2: {
-              auto params = op->get_params();
-              TKET_ASSERT(params.size() == 3);
-              // TODO: Maybe handle TK2 gates natively within clifford_simp?
-              Circuit replacement =
-                  CircPool::TK2_using_CX(params[0], params[1], params[2]);
-              decompose_cliffords_std().apply(replacement);
-              bin.push_back(v);
-              circ.substitute(replacement, v, Circuit::VertexDeletion::No);
-              success = true;
+              if (tk2_to_cx) {
+                auto params = op->get_params();
+                TKET_ASSERT(params.size() == 3);
+                Circuit replacement =
+                    CircPool::TK2_using_CX(params[0], params[1], params[2]);
+                decompose_cliffords_std().apply(replacement);
+                bin.push_back(v);
+                circ.substitute(replacement, v, Circuit::VertexDeletion::No);
+                success = true;
+              }
               break;
             }
             case OpType::NPhasedX: {
@@ -1613,199 +1615,6 @@ Transform decompose_NPhasedX() {
         bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
     return success;
   });
-}
-
-///////////////////////////////
-//     GlobalisePhasedX      //
-///////////////////////////////
-
-static unsigned n_distinct_beta(const Circuit &circ, const OptVertexVec &gates);
-template <typename T>
-static bool all_equal(const std::vector<T> &vs);
-
-// Any PhasedX or NPhasedX gate is replaced by an NPhasedX that is global
-Transform globalise_PhasedX(bool squash) {
-  // The key bit: choose the decomposition strategy depending on the current
-  // beta angles.
-  //
-  // Given the set of PhasedX gates to synthesise, choose which decomposition
-  // strategy. Valid strategies are 0, 1, 2, corresponding to the number of
-  // NPhasedX gates to be inserted.
-  //
-  // The current strategy is rather simple: it chooses to insert a single
-  // NPhasedX whenever it would solve the current problem and there are further
-  // PhasedX left (meaning that the rest of the computation can be deferred till
-  // later), otherwise inserts 2x PhasedX.
-  auto choose_strategy = [](const PhasedXFrontier &frontier, unsigned n_target,
-                            unsigned n_all) {
-    if (n_all == 0 || n_target == 0) {
-      return 0;
-    }
-    if (n_target == 1 && n_all == 1) {
-      return 1;
-    }
-    if (n_target == 1 && frontier.are_phasedx_left()) {
-      return 1;
-    }
-    return 2;
-  };
-
-  // the actual transform
-  return Transform([squash, choose_strategy](Circuit &circ) {
-    // if we squash, we start by removing all NPhasedX gates
-    if (squash) {
-      Transforms::decompose_NPhasedX().apply(circ);
-    }
-
-    std::vector<unsigned> range_qbs(circ.n_qubits());
-    std::iota(range_qbs.begin(), range_qbs.end(), 0);
-    PhasedXFrontier frontier(circ);
-
-    // find a total ordering of boundary gates (aka non-NPhasedX multi-qb gates)
-    auto is_boundary = [&circ](Vertex v) {
-      Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
-      return PhasedXFrontier::is_interval_boundary(op);
-    };
-    // get a lexicographic ordering of boundary vertices
-    auto vertices_in_order = circ.vertices_in_order();
-    auto r = vertices_in_order | boost::adaptors::filtered(is_boundary);
-    OptVertexVec boundary_gates(r.begin(), r.end());
-    // Add sentinel to process the gates after last boundary_gate.
-    // This is required to force flush the frontier after the last multi-qubit
-    // gate.
-    OptVertex optv;
-    boundary_gates.push_back(optv);
-
-    // whether transform is successful (always true if squash=true)
-    bool success = squash;
-
-    // Loop through each multi-qb gate.
-    // At each iteration, decide how to decompose the single-qb gates
-    // immediately preceding the current multi-qb gate into global gates.
-    //
-    // The rationale: defer any computation until just before the next multi-qb
-    // gate. At that point, the single-qb gates on the qubits where the multi-qb
-    // gate is acting HAVE TO be decomposed. Figure out how to do that and take
-    // care of the garbage you might have created on other qubits at a later
-    // point.
-
-    for (OptVertex v : boundary_gates) {
-      // the qubits whose intervals must be decomposed into global gates
-      std::set<unsigned> curr_qubits;
-      while (true) {
-        if (v) {
-          curr_qubits = frontier.qubits_ending_in(*v);
-        } else {
-          curr_qubits.clear();
-          for (unsigned i = 0; i < circ.n_qubits(); ++i) {
-            curr_qubits.insert(curr_qubits.end(), i);
-          }
-        }
-        if (squash) {
-          frontier.squash_intervals();
-        }
-        OptVertexVec all_phasedx = frontier.get_all_beta_vertices();
-        OptVertexVec curr_phasedx;
-        for (unsigned q : curr_qubits) {
-          curr_phasedx.push_back(all_phasedx[q]);
-        }
-
-        if (all_nullopt(curr_phasedx)) {
-          // there is nothing to decompose anymore, move to next boundary_gate
-          break;
-        }
-        if (all_equal(all_phasedx)) {
-          // this is already a global NPhasedX gate, leave untouched
-          frontier.skip_global_gates(1);
-          continue;
-        }
-
-        // find best decomposition strategy
-        unsigned n_curr_betas = n_distinct_beta(circ, curr_phasedx);
-        unsigned n_all_betas = n_distinct_beta(circ, all_phasedx);
-        unsigned strategy;
-        if (squash) {
-          strategy = choose_strategy(frontier, n_curr_betas, n_all_betas);
-        } else {
-          // if we don't squash we decompose each NPhasedX with 2x global
-          strategy = 2;
-        }
-        switch (strategy) {
-          case 0:
-            // do nothing
-            break;
-          case 1:
-            // insert one single global NPhasedX
-            TKET_ASSERT(curr_qubits.size() > 0);
-            frontier.insert_1_phasedx(*(curr_qubits.begin()));
-            success = true;
-            break;
-          case 2:
-            // insert two global NPhasedX
-            frontier.insert_2_phasedx();
-            success = true;
-            break;
-          default:
-            TKET_ASSERT(!"Invalid strategy in replace_non_global_phasedx");
-        }
-      }
-      if (v) {
-        frontier.next_multiqb(*v);
-      }
-    }
-    TKET_ASSERT(frontier.is_finished());
-
-    success |= absorb_Rz_NPhasedX().apply(circ);
-
-    return success;
-  });
-}
-
-// The number of distinct beta angles in `gates`.
-//
-// Performs O(n^2) pairwise equivalence comparisons between expressions to
-// handle symbolic variables and floating point errors
-unsigned n_distinct_beta(const Circuit &circ, const OptVertexVec &gates) {
-  std::vector<Expr> vals;
-
-  // collect all epxressions
-  for (OptVertex v : gates) {
-    if (v) {
-      Expr angle = circ.get_Op_ptr_from_Vertex(*v)->get_params()[0];
-      vals.push_back(angle);
-    } else {
-      vals.push_back(0.);
-    }
-  }
-
-  unsigned n_distinct = 0;
-
-  // perform pairwise equivalence checks
-  for (unsigned i = 0; i < vals.size(); ++i) {
-    bool is_unique = true;
-    for (unsigned j = i + 1; j < vals.size(); ++j) {
-      if (equiv_expr(vals[i], vals[j])) {
-        is_unique = false;
-        break;
-      }
-    }
-    n_distinct += is_unique;
-  }
-  return n_distinct;
-}
-
-template <typename T>
-bool all_equal(const std::vector<T> &vs) {
-  if (vs.empty()) {
-    return true;
-  }
-  T front = vs.front();
-  for (auto v : vs) {
-    if (front != v) {
-      return false;
-    }
-  }
-  return true;
 }
 
 /* naive decomposition - there are cases we can do better if we can eg. ignore

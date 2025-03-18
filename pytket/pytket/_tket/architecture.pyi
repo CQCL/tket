@@ -1,4 +1,3 @@
-from typing import Any
 from __future__ import annotations
 import pytket._tket.unit_id
 import typing
@@ -7,9 +6,6 @@ class Architecture:
     """
     Class describing the connectivity of qubits on a general device.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @staticmethod
     def from_dict(arg0: dict) -> Architecture:
         """
@@ -58,11 +54,18 @@ class Architecture:
         
         :return: dict containing nodes and links.
         """
-    def valid_operation(self, uids: typing.Sequence[pytket._tket.unit_id.Node]) -> bool:
+    def valid_operation(self, uids: typing.Sequence[pytket._tket.unit_id.Node], bidirectional: bool = True) -> bool:
         """
-        nodes can be executed on the Architecture connectivity graph.
+        Checks if a given operation on the given nodes can be executed on the Architecture's connectivity graph.
+        The operation is considered valid if:
+         - The operation acts on a single node that belongs to the Architecture.
+         - The operation acts on two nodes, and either:
+           - `bidirectional` is True and an edge exists between the two nodes in either direction.
+           - `bidirectional` is False and an edge exists from uids[0] to uids[1].
+        The function always returns False if the number of nodes exceeds 2.
         
-        :param uids: list of UnitIDs validity is being checked for
+        :param uids: list of UnitIDs validity is being checked for.
+        :param bidirectional: If True, treats edges in the coupling graph as bidirectional. Defaults to True.
         """
     @property
     def coupling(self) -> list[tuple[pytket._tket.unit_id.Node, pytket._tket.unit_id.Node]]:
@@ -78,9 +81,6 @@ class FullyConnected:
     """
     A specialised non-Architecture object emulating an architecture with all qubits connected. Not compatible with Routing or Placement methods.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     @staticmethod
     def from_dict(arg0: dict) -> FullyConnected:
         """
@@ -118,9 +118,6 @@ class RingArch(Architecture):
     """
     Inherited Architecture class for number of qubits arranged in a ring.
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __deepcopy__(self, arg0: dict) -> RingArch:
         ...
     def __init__(self, nodes: int, label: str = 'ringNode') -> None:
@@ -142,9 +139,6 @@ class SquareGrid(Architecture):
     
      6 7 8
     """
-    @staticmethod
-    def _pybind11_conduit_v1_(*args, **kwargs):  # type: ignore
-        ...
     def __deepcopy__(self, arg0: dict) -> SquareGrid:
         ...
     @typing.overload

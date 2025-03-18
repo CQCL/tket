@@ -15,8 +15,6 @@
 import json
 from pathlib import Path
 
-import pytest
-
 from pytket import Circuit
 from pytket.architecture import Architecture, FullyConnected
 from pytket.circuit import Node, Qubit
@@ -113,8 +111,6 @@ def test_placement_config() -> None:
     test_pl = GraphPlacement(test_architecture)
     c = Circuit(4).CX(0, 1).CX(1, 2).CX(2, 3)
     pm = test_pl.get_placement_map(c)
-    with pytest.deprecated_call():
-        test_pl.modify_config()
     assert test_pl.get_placement_map(c) == pm
 
 

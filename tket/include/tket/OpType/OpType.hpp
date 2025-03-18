@@ -738,11 +738,6 @@ enum class OpType {
   ConjugationBox,
 
   /**
-   * See \ref ClassicalExpBox
-   */
-  ClassicalExpBox,
-
-  /**
    * See \ref Conditional
    */
   Conditional,

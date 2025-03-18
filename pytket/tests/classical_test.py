@@ -32,7 +32,6 @@ from pytket.circuit import (
     BitRegister,
     CircBox,
     Circuit,
-    ClassicalExpBox,
     Conditional,
     MultiBitOp,
     Op,
@@ -70,8 +69,7 @@ from pytket.circuit.logic_exp import (
     reg_lt,
     reg_neq,
 )
-from pytket.circuit.named_types import RenameUnitsMap
-from pytket.passes import DecomposeClassicalExp, FlattenRegisters
+from pytket.passes import DecomposeClassicalExp
 
 curr_file_path = Path(__file__).resolve().parent
 
@@ -1198,11 +1196,8 @@ def test_regpredicate(condition: PredicateExp) -> None:
             circ.add_bit(inp, reject_dups=False)
 
     circ.X(qb, condition=condition)
-    assert circ.n_gates_of_type(OpType.ClassicalExpBox) == 0
     newcirc = circ.copy()
     DecomposeClassicalExp().apply(newcirc)
-
-    assert newcirc.n_gates_of_type(OpType.ClassicalExpBox) == 0
 
     assert newcirc.n_gates >= circ.n_gates
     if isinstance(condition, RegLogicExp):
@@ -1226,22 +1221,12 @@ def compare_commands_box(
     for c1, c2 in zip(circ1, circ2):
         if print_com:
             print(c1, c2)
-        if c1.op.type == OpType.ClassicalExpBox:
-            assert isinstance(c1.op, ClassicalExpBox)
-            assert isinstance(c2.op, ClassicalExpBox)
-            commands_equal &= c1.op.content_equality(c2.op)
-            commands_equal &= c1.args == c2.args
-        elif c1.op.type == OpType.Conditional:
+        if c1.op.type == OpType.Conditional:
             assert isinstance(c1.op, Conditional)
             assert isinstance(c2.op, Conditional)
             commands_equal &= c1.op.value == c2.op.value
             commands_equal &= c1.op.width == c2.op.width
-            if c1.op.op.type == OpType.ClassicalExpBox:
-                assert isinstance(c1.op.op, ClassicalExpBox)
-                assert isinstance(c2.op.op, ClassicalExpBox)
-                commands_equal &= c1.op.op.content_equality(c2.op.op)
-            else:
-                commands_equal &= c1.op == c2.op
+            commands_equal &= c1.op == c2.op
             commands_equal &= c1.args == c2.args
         else:
             commands_equal &= c1 == c2
@@ -1284,56 +1269,10 @@ def test_conditional() -> None:
     assert op == cond_op
 
 
-def test_classical_ops() -> None:
-    set_bits = SetBitsOp([True, True, False])
-    multi_bit = MultiBitOp(set_bits, 2)
-    range_predicate = RangePredicateOp(6, 27, 27)
-    c = Circuit(0, 7)
-    c.add_gate(multi_bit, [0, 1, 2, 3, 4, 5])
-    c.add_gate(range_predicate, [0, 1, 2, 3, 4, 5, 6])
-    exp = Bit(2) & Bit(3)
-    c.add_classicalexpbox_bit(exp, [Bit(4)])
-    cmds = c.get_commands()
-    assert cmds[0].op.type == OpType.MultiBit
-    assert cmds[1].op.type == OpType.RangePredicate
-    ceb = ClassicalExpBox(2, 0, 1, exp)
-    op2 = cmds[2].op
-    assert isinstance(op2, ClassicalExpBox)
-    assert ceb.get_exp() == op2.get_exp()
-
-
 def test_range_predicate_properties() -> None:
     range_predicate = RangePredicateOp(width=8, lower=3, upper=5)
     assert range_predicate.lower == 3
     assert range_predicate.upper == 5
-
-
-def test_add_expbox_bug() -> None:
-    # previously a bug where if IO args weren't
-    # at the back of the input iterator, the op signature
-    # and wiring were incorrect
-    c = Circuit()
-    b = c.add_c_register("b", 2)
-    c.add_classicalexpbox_bit(b[0] & b[1], [b[0]])
-    com = c.get_commands()[0]
-    op = com.op
-    assert isinstance(op, ClassicalExpBox)
-    assert op.get_n_i() == 1
-    assert op.get_n_io() == 1
-    assert op.get_n_o() == 0
-
-    assert com.args == [b[1], b[0]]
-
-    b1 = c.add_c_register("b1", 2)
-    c.add_classicalexpbox_register(b | b1, b.to_list())
-    com = c.get_commands()[1]
-    op = com.op
-    assert isinstance(op, ClassicalExpBox)
-    assert op.get_n_i() == 2
-    assert op.get_n_io() == 2
-    assert op.get_n_o() == 0
-
-    assert com.args == [b1[0], b1[1], b[0], b[1]]
 
 
 def test_conditional_classicals() -> None:
@@ -1400,112 +1339,6 @@ def test_conditional_wasm_iv() -> None:
     )
 
 
-def test_arithmetic_ops() -> None:
-    circ = Circuit()
-    a = circ.add_c_register("a", 3)
-    b = circ.add_c_register("b", 3)
-    c = circ.add_c_register("c", 3)
-
-    circ.add_classicalexpbox_register(a + b // c, a.to_list())
-    circ.add_classicalexpbox_register(b << 2, c.to_list())
-    circ.add_classicalexpbox_register(c >> 2, b.to_list())
-    circ.add_classicalexpbox_register(a**c - b, a.to_list())
-
-    commands = circ.get_commands()
-    assert all(com.op.type == OpType.ClassicalExpBox for com in commands)
-
-    assert commands[0].args == b.to_list() + c.to_list() + a.to_list()
-    assert commands[1].args == b.to_list() + c.to_list()
-    assert commands[2].args == c.to_list() + b.to_list()
-    assert commands[3].args == b.to_list() + c.to_list() + a.to_list()
-
-    ops = [com.op for com in commands]
-    assert isinstance(ops[0], ClassicalExpBox)
-    assert isinstance(ops[1], ClassicalExpBox)
-    assert isinstance(ops[2], ClassicalExpBox)
-    assert isinstance(ops[3], ClassicalExpBox)
-    assert str(ops[0].get_exp()) == "(a + (b / c))"
-    assert str(ops[1].get_exp()) == "(b << 2)"
-    assert str(ops[2].get_exp()) == "(c >> 2)"
-    assert str(ops[3].get_exp()) == "((a ** c) - b)"
-
-
-def test_renaming() -> None:
-    circ = Circuit()
-    a = circ.add_c_register("a", 3)
-    b = circ.add_c_register("b", 3)
-    c = circ.add_c_register("c", 3)
-    circ.add_classicalexpbox_bit(a[0] & b[0] | c[0], [a[0]])
-    circ.add_classicalexpbox_bit(a[0] & c[2], [c[0]])
-    d = [Bit("d", index) for index in range(3)]
-    bmap: RenameUnitsMap = {a[0]: d[0], b[0]: d[1], c[0]: d[2]}
-    original_commands = circ.get_commands()
-    assert circ.rename_units(bmap)
-    commands = circ.get_commands()
-    op0 = commands[0].op
-    assert isinstance(op0, ClassicalExpBox)
-    op1 = commands[1].op
-    assert isinstance(op1, ClassicalExpBox)
-    assert str(op0.get_exp()) == "((d[0] & d[1]) | d[2])"
-    assert commands[0].args == [bmap[arg] for arg in original_commands[0].args]
-    assert str(op1.get_exp()) == "(d[0] & c[2])"
-    assert commands[1].args == [
-        bmap[arg] if arg in bmap else arg for arg in original_commands[1].args
-    ]
-    assert DecomposeClassicalExp().apply(circ)
-
-    # Register-wise renaming should raise error
-    circ = Circuit()
-    a = circ.add_c_register("a", 3)
-    b = circ.add_c_register("b", 3)
-    c = circ.add_c_register("c", 3)
-    circ.add_classicalexpbox_register(a + b // c, a.to_list())
-    bmap = {a[0]: d[0]}
-
-    with pytest.raises(ValueError) as e:
-        circ.rename_units(bmap)
-    err_msg = f"Can't rename bits in {a.__repr__()}"
-    assert err_msg in str(e.value)
-
-
-def test_flatten_registers_with_classical_exps() -> None:
-    # circuit with register-wise expressions
-    circ = Circuit(3)
-    a = circ.add_c_register("a", 5)
-    b = circ.add_c_register("b", 5)
-    c = circ.add_c_register("c", 5)
-    circ.add_classicalexpbox_register(a | b, c.to_list())
-    with pytest.raises(RuntimeError) as e:
-        FlattenRegisters().apply(circ)
-    err_msg = "Unable to flatten registers"
-    assert err_msg in str(e.value)
-    # circuit with bit-wise expressions
-    circ = Circuit(3)
-    a = circ.add_c_register("a", 5)
-    b = circ.add_c_register("b", 5)
-    c = circ.add_c_register("c", 5)
-    circ.add_classicalexpbox_bit((a[2] & b[3]), [c[0]])
-    circ.add_classicalexpbox_bit((a[4] | b[4] ^ a[1]), [c[2]])
-    assert FlattenRegisters().apply(circ)
-    assert all(bit.reg_name == "c" for bit in circ.bits)
-    commands = circ.get_commands()
-    ops = [com.op for com in commands]
-    assert isinstance(ops[0], ClassicalExpBox)
-    assert isinstance(ops[1], ClassicalExpBox)
-    assert str(ops[0].get_exp()) == "(c[2] & c[8])"
-    assert str(ops[1].get_exp()) == "(c[4] | (c[9] ^ c[1]))"
-
-
-def test_box_equality_check() -> None:
-    exp1 = Bit(2) & Bit(3)
-    exp2 = Bit(1) & Bit(3)
-    ceb1 = ClassicalExpBox(2, 0, 1, exp1)
-    ceb2 = ClassicalExpBox(2, 0, 1, exp2)
-    assert ceb1 != ceb2
-    assert ceb1 == ceb1
-    assert ceb1 == ClassicalExpBox(2, 0, 1, exp1)
-
-
 def test_sym_sub_range_pred() -> None:
     c = Circuit(1, 2)
     c.H(0, condition=reg_eq(BitRegister("c", 2), 3))
@@ -1515,32 +1348,11 @@ def test_sym_sub_range_pred() -> None:
     assert c == c1
 
 
-def test_decompose_clexpbox_overwrite() -> None:
-    # https://github.com/CQCL/tket/issues/1582
-    circuit = Circuit(1, 3)
-    bits = circuit.bits
-    circuit.add_classicalexpbox_bit(
-        expression=bits[0] ^ (bits[1] ^ bits[2]), target=[bits[0]]
-    )
-    DecomposeClassicalExp().apply(circuit)
-    cmd0, cmd1 = circuit.get_commands()
-    op0, op1 = cmd0.op, cmd1.op
-    args0, args1 = cmd0.args, cmd1.args
-    assert op0.get_name() == "XOR"
-    assert op1.get_name() == "XOR"
-    assert len(args0) == 3
-    assert len(args1) == 2
-    assert args0[0] == bits[1]
-    assert args0[1] == bits[2]
-    assert args0[2] not in bits
-    assert args1[0] == args0[2]
-    assert args1[1] == bits[0]
-
-
 def test_depth_classical_only() -> None:
     # https://github.com/CQCL/tket/issues/1673
     set_bits = SetBitsOp([True, True])
     multi_bit = MultiBitOp(set_bits, 2)
+    assert multi_bit.multiplier == 2
     eq_pred_values = [True, False, False, True]
     and_values = [bool(i) for i in [0, 0, 0, 1]]
     circ = Circuit(4, 4, name="test")

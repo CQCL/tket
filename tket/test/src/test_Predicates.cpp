@@ -140,31 +140,6 @@ SCENARIO("Test out basic Predicate useage") {
     circ.rename_units<Qubit, Qubit>({{unusual, Qubit(7)}});
     REQUIRE(pp->verify(circ));
   }
-  GIVEN("GlobalPhasedXPredicate") {
-    PredicatePtr pp = std::make_shared<GlobalPhasedXPredicate>();
-    Circuit circ(3);
-    circ.add_op<unsigned>(OpType::H, {0});
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    circ.add_op<unsigned>(OpType::CX, {1, 2});
-    REQUIRE(pp->verify(circ));
-    WHEN("Add a non-global NPhasedX gate") {
-      circ.add_op<unsigned>(OpType::NPhasedX, {0.2, 0.3}, {0, 1});
-      REQUIRE_FALSE(pp->verify(circ));
-    }
-    WHEN("Add two global NPhasedX gates") {
-      circ.add_op<unsigned>(OpType::NPhasedX, {0.2, 0.3}, {0, 1, 2});
-      circ.add_op<unsigned>(OpType::NPhasedX, {0.5, 0.2}, {1, 0, 2});
-      REQUIRE(pp->verify(circ));
-    }
-    WHEN("Add some global and some non-global NPhasedX gates") {
-      circ.add_op<unsigned>(OpType::NPhasedX, {0.2, 0.3}, {0, 1, 2});
-      circ.add_op<unsigned>(OpType::NPhasedX, {0.5, 0.2}, {1, 0, 2});
-      REQUIRE(pp->verify(circ));
-      circ.add_op<unsigned>(OpType::NPhasedX, {0.5, 0.2}, {1, 0});
-      circ.add_op<unsigned>(OpType::NPhasedX, {0.2, 0.3}, {0, 1, 2});
-      REQUIRE_FALSE(pp->verify(circ));
-    }
-  }
   GIVEN("NormalisedTK2Predicate") {
     PredicatePtr pp = std::make_shared<NormalisedTK2Predicate>();
     Circuit circ(3, 1);
