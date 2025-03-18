@@ -212,10 +212,9 @@ PauliFrameRandomisation::get_out_frame(
         qpm[Qubit("frame", i)] = Pauli::Z;
         break;
       default: {
-        throw FrameRandomisationError(
-            std::string(
-                "Frame OpType " + OpDesc(in_frame[i]).name() +
-                " not a Pauli OpType."));
+        throw FrameRandomisationError(std::string(
+            "Frame OpType " + OpDesc(in_frame[i]).name() +
+            " not a Pauli OpType."));
       }
     }
   }
@@ -250,10 +249,9 @@ PauliFrameRandomisation::get_out_frame(
             Qubit("frame", cycle_op.indices[1]));
         break;
       default: {
-        throw FrameRandomisationError(
-            std::string(
-                "Cycle OpType " + OpDesc(cycle_op.type).name() +
-                " not supported for PauliFrameRandomisation."));
+        throw FrameRandomisationError(std::string(
+            "Cycle OpType " + OpDesc(cycle_op.type).name() +
+            " not supported for PauliFrameRandomisation."));
       }
     }
   }
@@ -298,10 +296,9 @@ UniversalFrameRandomisation::get_out_frame(
         qpm[Qubit("frame", i)] = Pauli::Z;
         break;
       default: {
-        throw FrameRandomisationError(
-            std::string(
-                "Frame OpType " + OpDesc(in_frame[i]).name() +
-                " not a Pauli OpType."));
+        throw FrameRandomisationError(std::string(
+            "Frame OpType " + OpDesc(in_frame[i]).name() +
+            " not a Pauli OpType."));
       }
     }
   }
@@ -356,16 +353,14 @@ std::vector<Circuit> FrameRandomisation::label_frames(
     std::vector<Vertex> dagger_vertices;
     if (cycle_frames.size() != cycles.size()) {
       throw FrameRandomisationError(
-          std::string(
-              "Length of combination of Frame Permutations does not "
-              "equal number of Cycles."));
+          std::string("Length of combination of Frame Permutations does not "
+                      "equal number of Cycles."));
     }
     for (unsigned i = 0; i < cycle_frames.size(); i++) {
       if (cycle_frames[i].size() != cycles[i].size()) {
         throw FrameRandomisationError(
-            std::string(
-                "Size of frame does not match the number "
-                "of qubits in Cycles."));
+            std::string("Size of frame does not match the number "
+                        "of qubits in Cycles."));
       }
       OpTypeVector in_frame = cycle_frames[i];
       std::pair<OpTypeVector, std::vector<Vertex>> frame_and_vertices =
@@ -460,9 +455,8 @@ void FrameRandomisation::assign_vertices(
   if (in_frame.size() != out_frame.size() ||
       in_frame.size() != frame_vertices.size()) {
     throw FrameRandomisationError(
-        std::string(
-            "Number of gates in sampled frame doesn't match "
-            "number of qubits in frame"));
+        std::string("Number of gates in sampled frame doesn't match "
+                    "number of qubits in frame"));
   }
   for (unsigned i = 0; i < frame_vertices.size(); i++) {
     circuit_.set_vertex_Op_ptr(

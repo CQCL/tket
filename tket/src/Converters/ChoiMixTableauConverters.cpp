@@ -202,18 +202,16 @@ ChoiMixBuilder::ChoiMixBuilder(
       out_circ_tp.add_qubit(key.first);
   }
   for (const Qubit& init_q : unitary_init_names) {
-    if (tab.col_index_.left.find(
-            ChoiMixTableau::col_key_t{
-                init_q, ChoiMixTableau::TableauSegment::Input}) !=
+    if (tab.col_index_.left.find(ChoiMixTableau::col_key_t{
+            init_q, ChoiMixTableau::TableauSegment::Input}) !=
         tab.col_index_.left.end())
       throw std::logic_error(
           "Free qubit name for initialisation conflicts with existing live "
           "input of ChoiMixTableau");
   }
   for (const Qubit& post_q : unitary_post_names) {
-    if (tab.col_index_.left.find(
-            ChoiMixTableau::col_key_t{
-                post_q, ChoiMixTableau::TableauSegment::Output}) !=
+    if (tab.col_index_.left.find(ChoiMixTableau::col_key_t{
+            post_q, ChoiMixTableau::TableauSegment::Output}) !=
         tab.col_index_.left.end())
       throw std::logic_error(
           "Free qubit name for post-selection conflicts with existing live "
@@ -338,9 +336,8 @@ void ChoiMixBuilder::solve_id_subspace() {
       // Remove these solved qubits from other rows; by commutation of rows, a
       // row contains Z@in_diag_circ.second iff it contains
       // Z@out_diag_circ_dag.second and similarly for X
-      unsigned in_c = tab.col_index_.left.at(
-          ChoiMixTableau::col_key_t{
-              in_diag_circ.second, ChoiMixTableau::TableauSegment::Input});
+      unsigned in_c = tab.col_index_.left.at(ChoiMixTableau::col_key_t{
+          in_diag_circ.second, ChoiMixTableau::TableauSegment::Input});
       for (unsigned r3 = 0; r3 < tab.get_n_rows(); ++r3) {
         if (r3 != r && tab.tab_.xmat(r3, in_c)) tab.tab_.row_mult(r, r3);
         if (r3 != r2 && tab.tab_.zmat(r3, in_c)) tab.tab_.row_mult(r2, r3);
@@ -472,9 +469,8 @@ void ChoiMixBuilder::solve_postselected_subspace() {
           "ChoiMixTableau synthesis");
     Qubit post_selected_qb = row.first.string.begin()->first;
     // Multiply other rows to remove Z_qb components
-    unsigned qb_col = tab.col_index_.left.at(
-        ChoiMixTableau::col_key_t{
-            post_selected_qb, ChoiMixTableau::TableauSegment::Input});
+    unsigned qb_col = tab.col_index_.left.at(ChoiMixTableau::col_key_t{
+        post_selected_qb, ChoiMixTableau::TableauSegment::Input});
     for (unsigned s = 0; s < final_row; ++s)
       if (tab.tab_.zmat(s, qb_col)) tab.tab_.row_mult(final_row, s);
     // Post-select on correct phase
@@ -526,9 +522,8 @@ void ChoiMixBuilder::solve_initialised_subspace() {
           "ChoiMixTableau synthesis");
     Qubit initialised_qb = row.second.string.begin()->first;
     // Multiply other rows to remove Z_qb components
-    unsigned qb_col = tab.col_index_.left.at(
-        ChoiMixTableau::col_key_t{
-            initialised_qb, ChoiMixTableau::TableauSegment::Output});
+    unsigned qb_col = tab.col_index_.left.at(ChoiMixTableau::col_key_t{
+        initialised_qb, ChoiMixTableau::TableauSegment::Output});
     for (unsigned s = 0; s < r; ++s)
       if (tab.tab_.zmat(s, qb_col)) tab.tab_.row_mult(r, s);
     // Initialise with correct phase

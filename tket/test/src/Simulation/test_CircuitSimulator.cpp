@@ -140,9 +140,8 @@ SCENARIO("Simple circuits produce the correct statevectors") {
     circ2.add_op<unsigned>(OpType::H, {0});
     circ2.add_op<unsigned>(OpType::CZ, {1, 0});
     circ2.add_op<unsigned>(OpType::H, {0});
-    REQUIRE(
-        tket_sim::compare_statevectors_or_unitaries(
-            tket_sim::get_statevector(circ), tket_sim::get_statevector(circ2)));
+    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
+        tket_sim::get_statevector(circ), tket_sim::get_statevector(circ2)));
   }
 
   GIVEN("A circuit with 0 qubits and a global phase") {
@@ -701,18 +700,16 @@ SCENARIO(
   GIVEN("Equal up to roundoff") {
     for (const auto& entry : almost_equal_pairs) {
       for (auto equiv : equivalences) {
-        CHECK(
-            tket_sim::compare_statevectors_or_unitaries(
-                entry.first, entry.second, equiv));
+        CHECK(tket_sim::compare_statevectors_or_unitaries(
+            entry.first, entry.second, equiv));
       }
       const auto almost_phase_equivalent_matrix =
           get_almost_phase_equivalent_matrix(entry.second);
       CHECK(!tket_sim::compare_statevectors_or_unitaries(
           entry.first, almost_phase_equivalent_matrix));
-      CHECK(
-          tket_sim::compare_statevectors_or_unitaries(
-              entry.first, almost_phase_equivalent_matrix,
-              tket_sim::MatrixEquivalence::EQUAL_UP_TO_GLOBAL_PHASE));
+      CHECK(tket_sim::compare_statevectors_or_unitaries(
+          entry.first, almost_phase_equivalent_matrix,
+          tket_sim::MatrixEquivalence::EQUAL_UP_TO_GLOBAL_PHASE));
     }
   }
   GIVEN("Different inputs") {

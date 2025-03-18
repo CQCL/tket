@@ -247,9 +247,8 @@ static void check_correctness(
   try {
     const auto u1 = tket_sim::get_unitary(c1);
     const auto u0 = tket_sim::get_unitary(c0_copy);
-    RC_ASSERT(
-        tket_sim::compare_statevectors_or_unitaries(
-            u0, m_inv_fin * u1 * m_ini, equivalence));
+    RC_ASSERT(tket_sim::compare_statevectors_or_unitaries(
+        u0, m_inv_fin * u1 * m_ini, equivalence));
   } catch (const Unsupported &) {
   } catch (const BadOpType &) {
   }
@@ -394,10 +393,8 @@ bool check_initial_simplification() {
         try {
           const auto s = tket_sim::get_statevector(c);
           const auto s1 = tket_sim::get_statevector(c1);
-          RC_ASSERT(
-              tket_sim::compare_statevectors_or_unitaries(
-                  s, s1,
-                  tket_sim::MatrixEquivalence::EQUAL_UP_TO_GLOBAL_PHASE));
+          RC_ASSERT(tket_sim::compare_statevectors_or_unitaries(
+              s, s1, tket_sim::MatrixEquivalence::EQUAL_UP_TO_GLOBAL_PHASE));
         } catch (const Unsupported &) {
         } catch (const BadOpType &) {
         }

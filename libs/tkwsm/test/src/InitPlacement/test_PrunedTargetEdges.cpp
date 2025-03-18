@@ -76,10 +76,9 @@ static void test_validity_of_new_graph_data(
     if (!std::binary_search(
             assigned_target_vertices.cbegin(), assigned_target_vertices.cend(),
             edge.first)) {
-      REQUIRE(
-          std::binary_search(
-              assigned_target_vertices.cbegin(),
-              assigned_target_vertices.cend(), edge.second));
+      REQUIRE(std::binary_search(
+          assigned_target_vertices.cbegin(), assigned_target_vertices.cend(),
+          edge.second));
     }
   }
 }
