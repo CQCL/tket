@@ -361,7 +361,6 @@ PYBIND11_MODULE(passes, m) {
             const json j = t[0].cast<json>();
             return deserialise(j);
           }));
-              std::map<std::string, std::function<Circuit(const Circuit &)>>{})
       .def(
           py::pickle(
               [](py::object self) {  // __getstate__
