@@ -261,17 +261,9 @@ jobs:
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
-    - name: Install pytket requirements
-      run: |
-        conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.15
     - name: check that version is consistent
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
-    - name: Install pytket requirements
-      run: |
-        conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.15
     - name: Set up Python (pull request)
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v5
@@ -375,14 +367,6 @@ jobs:
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
-    - name: Install pytket requirements
-      run: |
-        conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.15
-    - name: Install pytket requirements
-      run: |
-        conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.15
     - name: Set up Python (pull request)
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v5
@@ -500,14 +484,6 @@ jobs:
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
-    - name: Install pytket requirements
-      run: |
-        conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.15
-    - name: Install pytket requirements
-      run: |
-        conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.15
     - name: Set up Python 3.10
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v5
