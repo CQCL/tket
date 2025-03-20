@@ -23,7 +23,7 @@ from referencing.jsonschema import DRAFT7
 
 import pytket.circuit_library as _library
 from pytket.architecture import Architecture
-from pytket.circuit import Circuit, Node, OpType, Qubit
+from pytket.circuit import Circuit, Node, OpType, Qubit, UnitID
 from pytket.circuit.named_types import ParamType
 from pytket.mapping import (
     BoxDecompositionRoutingMethod,
