@@ -125,10 +125,10 @@ PYBIND11_MODULE(partition, m) {
           py::arg("circ"))
       .def(
           "add_result_for_term",
-          (void (MeasurementSetup::*)(
+          (void(MeasurementSetup::*)(
               const SpPauliString &,
-              const MeasurementSetup::MeasurementBitMap
-                  &))&MeasurementSetup::add_result_for_term,
+              const MeasurementSetup::MeasurementBitMap &)) &
+              MeasurementSetup::add_result_for_term,
           "Add a new Pauli string with a corresponding BitMap", py::arg("term"),
           py::arg("result"))
       .def(

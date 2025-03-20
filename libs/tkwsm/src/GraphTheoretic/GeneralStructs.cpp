@@ -110,12 +110,10 @@ WeightWSM get_checked_scalar_product(
   std::set<VertexWSM> used_tv;
 
   for (const auto& assignment : solution) {
-    TKET_ASSERT(
-        std::binary_search(
-            sorted_pv.cbegin(), sorted_pv.cend(), assignment.first));
-    TKET_ASSERT(
-        std::binary_search(
-            sorted_tv.cbegin(), sorted_tv.cend(), assignment.second));
+    TKET_ASSERT(std::binary_search(
+        sorted_pv.cbegin(), sorted_pv.cend(), assignment.first));
+    TKET_ASSERT(std::binary_search(
+        sorted_tv.cbegin(), sorted_tv.cend(), assignment.second));
     TKET_ASSERT(used_tv.count(assignment.second) == 0);
     used_tv.insert(assignment.second);
     assignments_map.emplace(assignment);

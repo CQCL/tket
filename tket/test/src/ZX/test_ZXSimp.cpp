@@ -106,10 +106,9 @@ SCENARIO("Testing graph state simplification") {
    **/
 
   CHECK(Rewrite::remove_interior_cliffords().apply(diag1));
-  CHECK_FALSE(
-      Rewrite::extend_at_boundary_paulis().apply(
-          diag1));  // If remove_interior_cliffords is exhaustive, this should
-                    // not need to be applied
+  CHECK_FALSE(Rewrite::extend_at_boundary_paulis().apply(
+      diag1));  // If remove_interior_cliffords is exhaustive, this should
+                // not need to be applied
   CHECK(Rewrite::remove_interior_paulis().apply(diag1));
   // This example will have no gadgets to gadgetise
   CHECK_FALSE(Rewrite::gadgetise_interior_paulis().apply(diag1));

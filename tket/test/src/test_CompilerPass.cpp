@@ -692,8 +692,8 @@ SCENARIO("gen_placement_pass test") {
     avg_node_errors_t empty_node_errors = {};
     avg_readout_errors_t empty_readout_errors = {};
     avg_link_errors_t empty_link_errors = {};
-    PassPtr noise_place = gen_placement_pass(
-        std::make_shared<NoiseAwarePlacement>(
+    PassPtr noise_place =
+        gen_placement_pass(std::make_shared<NoiseAwarePlacement>(
             line_arc, empty_node_errors, empty_link_errors,
             empty_readout_errors, 10, 1000000));
     CompilationUnit noise_cu((Circuit(circ)));
@@ -710,8 +710,8 @@ SCENARIO("gen_placement_pass test") {
     graph_fall_back_place->apply(graph_fall_back_cu);
     // Get a fall back placement from a noise -
     // aware placement
-    PassPtr noise_fall_back_place = gen_placement_pass(
-        std::make_shared<NoiseAwarePlacement>(
+    PassPtr noise_fall_back_place =
+        gen_placement_pass(std::make_shared<NoiseAwarePlacement>(
             line_arc, empty_node_errors, empty_link_errors,
             empty_readout_errors, 1000000, 0));
     CompilationUnit noise_fall_back_cu((Circuit(circ)));
@@ -1825,6 +1825,30 @@ SCENARIO("CustomPass") {
         REQUIRE(cu.get_circ_ref().n_gates() == 1);
       }
     }
+  }
+  GIVEN("CustomPassMap with function that relabels qubits.") {
+    auto t = [](const Circuit& circ) {
+      Circuit copy = circ;
+      unit_map_t initial_m = {{Qubit(0), Qubit(1)}, {Qubit(1), Qubit(0)}};
+      unit_map_t final_m = {{Qubit(0), Qubit(1)}, {Qubit(1), Qubit(0)}};
+      std::pair<Circuit, std::pair<unit_map_t, unit_map_t>> ret = {
+          copy, {initial_m, final_m}};
+      return ret;
+    };
+    PassPtr pp = CustomPassMap(t);
+
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    CompilationUnit cu(c);
+    pp->apply(cu);
+
+    unit_bimap_t cu_initial = cu.get_initial_map_ref();
+    unit_bimap_t cu_final = cu.get_final_map_ref();
+
+    TKET_ASSERT(cu_initial.left.find(Qubit(0))->second == Qubit(1));
+    TKET_ASSERT(cu_initial.left.find(Qubit(1))->second == Qubit(0));
+    TKET_ASSERT(cu_final.left.find(Qubit(0))->second == Qubit(1));
+    TKET_ASSERT(cu_final.left.find(Qubit(1))->second == Qubit(0));
   }
 }
 

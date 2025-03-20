@@ -69,10 +69,9 @@ std::vector<std::pair<Node, Node>> BestTsaWithArch::get_swaps(
   for (auto id_opt = raw_swap_list.front_id(); id_opt;
        id_opt = raw_swap_list.next(id_opt.value())) {
     const auto& raw_swap = raw_swap_list.at(id_opt.value());
-    swaps.emplace_back(
-        std::make_pair(
-            arch_mapping.get_node(raw_swap.first),
-            arch_mapping.get_node(raw_swap.second)));
+    swaps.emplace_back(std::make_pair(
+        arch_mapping.get_node(raw_swap.first),
+        arch_mapping.get_node(raw_swap.second)));
   }
   return swaps;
 }

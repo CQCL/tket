@@ -306,7 +306,11 @@ nlohmann::json serialise(const std::vector<PassPtr>& pp);
 PassPtr deserialise(
     const nlohmann::json& j,
     const std::map<std::string, std::function<Circuit(const Circuit&)>>&
-        custom_deserialise = {});
+        custom_deserialise = {},
+    const std::map<
+        std::string,
+        std::function<std::pair<Circuit, std::pair<unit_map_t, unit_map_t>>(
+            const Circuit&)>>& custom_map_deserialise = {});
 // TODO: Repeat with a metric, repeat until a Predicate is satisfied...
 
 }  // namespace tket

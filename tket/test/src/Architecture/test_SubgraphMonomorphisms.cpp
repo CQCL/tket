@@ -63,28 +63,26 @@ static void test(
 
 SCENARIO("get all embeddings") {
   // Diamond with extra edge
-  Architecture pattern(
-      std::vector<Connection>{
-          {Node(0), Node(1)},
-          {Node(0), Node(2)},
-          {Node(1), Node(2)},
-          {Node(1), Node(3)},
-          {Node(3), Node(4)},
-          {Node(2), Node(3)}});
+  Architecture pattern(std::vector<Connection>{
+      {Node(0), Node(1)},
+      {Node(0), Node(2)},
+      {Node(1), Node(2)},
+      {Node(1), Node(3)},
+      {Node(3), Node(4)},
+      {Node(2), Node(3)}});
 
   // Four triangles - beginning of Sierpinski triangle!
-  Architecture target(
-      std::vector<Connection>{
-          {Node(0), Node(1)},
-          {Node(1), Node(2)},
-          {Node(2), Node(3)},
-          {Node(3), Node(4)},
-          {Node(4), Node(5)},
-          {Node(5), Node(0)},
-          {Node(1), Node(3)},
-          {Node(3), Node(5)},
-          {Node(5), Node(1)},
-      });
+  Architecture target(std::vector<Connection>{
+      {Node(0), Node(1)},
+      {Node(1), Node(2)},
+      {Node(2), Node(3)},
+      {Node(3), Node(4)},
+      {Node(4), Node(5)},
+      {Node(5), Node(0)},
+      {Node(1), Node(3)},
+      {Node(3), Node(5)},
+      {Node(5), Node(1)},
+  });
 
   test(
       pattern, target,

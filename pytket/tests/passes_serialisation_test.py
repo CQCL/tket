@@ -14,7 +14,7 @@
 
 import json
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 import pytest
 from jsonschema import Draft7Validator, ValidationError  # type: ignore
@@ -23,7 +23,7 @@ from referencing.jsonschema import DRAFT7
 
 import pytket.circuit_library as _library
 from pytket.architecture import Architecture
-from pytket.circuit import Circuit, Node, OpType, Qubit
+from pytket.circuit import Circuit, Node, OpType, Qubit, UnitID
 from pytket.circuit.named_types import ParamType
 from pytket.mapping import (
     BoxDecompositionRoutingMethod,
@@ -36,6 +36,7 @@ from pytket.passes import (
     BasePass,
     CommuteThroughMultis,
     CustomPass,
+    CustomPassMap,
     DefaultMappingPass,
     FullMappingPass,
     RebaseCustom,
@@ -46,7 +47,7 @@ from pytket.passes import (
     SquashCustom,
 )
 from pytket.placement import GraphPlacement, Placement
-from pytket.predicates import Predicate
+from pytket.predicates import CompilationUnit, Predicate
 
 
 def standard_pass_dict(content: Dict[str, Any]) -> Dict[str, Any]:
@@ -783,3 +784,23 @@ def test_custom_deserialisation() -> None:
     c: Circuit = Circuit(3).H(0).H(1).H(2)
     custom_pass_post.apply(c)
     assert c == Circuit(2).CX(0, 1)
+
+
+def test_custom_map_deserialisation() -> None:
+    i_map: Dict[UnitID, UnitID] = {Qubit(0): Qubit(2), Qubit(1): Qubit(3)}
+    f_map: Dict[UnitID, UnitID] = {Qubit(2): Qubit(3), Qubit(3): Qubit(4)}
+
+    def t(
+        c: Circuit,
+    ) -> Tuple[Circuit, Tuple[Dict[UnitID, UnitID], Dict[UnitID, UnitID]]]:
+        return (Circuit(2).CX(0, 1), (i_map, f_map))
+
+    custom_pass_post = BasePass.from_dict(
+        CustomPassMap(t, label="test").to_dict(), {}, {"test": t}
+    )
+    c: Circuit = Circuit(3).H(0).H(1).H(2)
+    cu = CompilationUnit(c)
+    custom_pass_post.apply(cu)
+    assert cu.circuit == Circuit(2).CX(0, 1)
+    assert cu.initial_map == i_map
+    assert cu.final_map == f_map
