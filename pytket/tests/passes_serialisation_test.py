@@ -789,7 +789,10 @@ def test_custom_deserialisation() -> None:
 def test_custom_map_deserialisation() -> None:
     i_map: Dict[Qubit, Qubit] = {Qubit(0): Qubit(2), Qubit(1): Qubit(3)}
     f_map: Dict[Qubit, Qubit] = {Qubit(2): Qubit(3), Qubit(3): Qubit(4)}
-    def t(c: Circuit) -> Tuple[Circuit, Tuple[Dict[UnitID, UnitID], Dict[UnitID, UnitID]]]:
+
+    def t(
+        c: Circuit,
+    ) -> Tuple[Circuit, Tuple[Dict[UnitID, UnitID], Dict[UnitID, UnitID]]]:
         return (Circuit(2).CX(0, 1), (i_map, f_map))
 
     custom_pass_post = BasePass.from_dict(
