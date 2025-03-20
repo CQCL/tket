@@ -794,6 +794,7 @@ def test_custom_map_deserialisation() -> None:
         c: Circuit,
     ) -> Tuple[Circuit, Tuple[Dict[UnitID, UnitID], Dict[UnitID, UnitID]]]:
         return (Circuit(2).CX(0, 1), (i_map, f_map))
+
     custom_pass_post = BasePass.from_dict(
         CustomPassMap(t, label="test").to_dict(), {}, {"test": t}
     )
