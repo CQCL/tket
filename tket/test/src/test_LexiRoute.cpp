@@ -1113,13 +1113,15 @@ SCENARIO("Dense CX circuits route succesfully") {
         }
       }
     }
-    Architecture arc(std::vector<std::pair<unsigned, unsigned>>{
-        {0, 1},   {1, 2},   {2, 3},   {3, 4},   {0, 5},   {1, 6},   {1, 7},
-        {2, 6},   {2, 7},   {3, 8},   {3, 9},   {4, 8},   {4, 9},   {5, 6},
-        {5, 10},  {5, 11},  {6, 10},  {6, 11},  {6, 7},   {7, 12},  {7, 13},
-        {7, 8},   {8, 12},  {8, 13},  {8, 9},   {10, 11}, {11, 16}, {11, 17},
-        {11, 12}, {12, 16}, {12, 17}, {12, 13}, {13, 18}, {13, 19}, {13, 14},
-        {14, 18}, {14, 19}, {15, 16}, {16, 17}, {17, 18}, {18, 19}});
+    Architecture arc(
+        std::vector<std::pair<unsigned, unsigned>>{
+            {0, 1},   {1, 2},   {2, 3},   {3, 4},   {0, 5},   {1, 6},
+            {1, 7},   {2, 6},   {2, 7},   {3, 8},   {3, 9},   {4, 8},
+            {4, 9},   {5, 6},   {5, 10},  {5, 11},  {6, 10},  {6, 11},
+            {6, 7},   {7, 12},  {7, 13},  {7, 8},   {8, 12},  {8, 13},
+            {8, 9},   {10, 11}, {11, 16}, {11, 17}, {11, 12}, {12, 16},
+            {12, 17}, {12, 13}, {13, 18}, {13, 19}, {13, 14}, {14, 18},
+            {14, 19}, {15, 16}, {16, 17}, {17, 18}, {18, 19}});
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(mm.route_circuit(
         circ, {std::make_shared<LexiLabellingMethod>(),
@@ -1171,22 +1173,23 @@ SCENARIO(
         }
       }
     }
-    Architecture arc(std::vector<std::pair<unsigned, unsigned>>{
-        {0, 1},
-        {2, 0},
-        {2, 4},
-        {6, 4},
-        {8, 6},
-        {8, 10},
-        {12, 10},
-        {3, 1},
-        {3, 5},
-        {7, 5},
-        {7, 9},
-        {11, 9},
-        {11, 13},
-        {12, 13},
-        {6, 7}});
+    Architecture arc(
+        std::vector<std::pair<unsigned, unsigned>>{
+            {0, 1},
+            {2, 0},
+            {2, 4},
+            {6, 4},
+            {8, 6},
+            {8, 10},
+            {12, 10},
+            {3, 1},
+            {3, 5},
+            {7, 5},
+            {7, 9},
+            {11, 9},
+            {11, 13},
+            {12, 13},
+            {6, 7}});
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(mm.route_circuit(
         circ, {std::make_shared<LexiLabellingMethod>(),
@@ -1628,11 +1631,13 @@ SCENARIO("Test failing case") {
   std::ifstream circuit_file("lexiroute_circuit.json");
   nlohmann::json j = nlohmann::json::parse(circuit_file);
   auto c = j.get<Circuit>();
-  Architecture arc(std::vector<std::pair<unsigned, unsigned>>{
-      {0, 1},   {1, 2},   {2, 3},   {3, 5},   {4, 1},   {4, 7},   {5, 8},
-      {6, 7},   {7, 10},  {8, 9},   {8, 11},  {10, 12}, {11, 14}, {12, 13},
-      {14, 13}, {14, 16}, {12, 15}, {15, 18}, {17, 18}, {16, 19}, {19, 20},
-      {18, 21}, {21, 23}, {19, 22}, {22, 25}, {23, 24}, {24, 25}, {25, 26}});
+  Architecture arc(
+      std::vector<std::pair<unsigned, unsigned>>{
+          {0, 1},   {1, 2},   {2, 3},   {3, 5},   {4, 1},   {4, 7},
+          {5, 8},   {6, 7},   {7, 10},  {8, 9},   {8, 11},  {10, 12},
+          {11, 14}, {12, 13}, {14, 13}, {14, 16}, {12, 15}, {15, 18},
+          {17, 18}, {16, 19}, {19, 20}, {18, 21}, {21, 23}, {19, 22},
+          {22, 25}, {23, 24}, {24, 25}, {25, 26}});
 
   CompilationUnit cu(c);
   PassPtr r_p = gen_routing_pass(
@@ -1823,9 +1828,10 @@ SCENARIO(
     circuit.add_op<unsigned>(OpType::CX, {0, 2});
     circuit.add_op<unsigned>(OpType::CX, {0, 4});
 
-    std::map<Qubit, Node> p_map = {// mapping for qbs with 2qb gates
-                                   {Qubit(0), nodes[0]},
-                                   {Qubit(1), nodes[8]}};
+    std::map<Qubit, Node> p_map = {
+        // mapping for qbs with 2qb gates
+        {Qubit(0), nodes[0]},
+        {Qubit(1), nodes[8]}};
     Placement::place_with_map(circuit, p_map);
     CompilationUnit cu(circuit);
     PassPtr r_p = gen_routing_pass(
@@ -1883,9 +1889,10 @@ SCENARIO(
     }
     circuit.add_op<unsigned>(OpType::CX, {2, 3});
     circuit.add_op<unsigned>(OpType::CX, {2, 4});
-    std::map<Qubit, Node> p_map = {// mapping for qbs with 2qb gates
-                                   {Qubit(0), nodes[6]},
-                                   {Qubit(1), nodes[n_nodes - 1]}};
+    std::map<Qubit, Node> p_map = {
+        // mapping for qbs with 2qb gates
+        {Qubit(0), nodes[6]},
+        {Qubit(1), nodes[n_nodes - 1]}};
 
     Placement::place_with_map(circuit, p_map);
     CompilationUnit cu(circuit);
@@ -1980,9 +1987,10 @@ SCENARIO(
     circuit.add_op<unsigned>(OpType::CZ, {3, 4});
     circuit.add_op<unsigned>(OpType::CZ, {4, 10});
 
-    std::map<Qubit, Node> p_map = {// mapping for qbs with 2qb gates
-                                   {Qubit(3), nodes[14]},
-                                   {Qubit(10), nodes[n_nodes - 1]}};
+    std::map<Qubit, Node> p_map = {
+        // mapping for qbs with 2qb gates
+        {Qubit(3), nodes[14]},
+        {Qubit(10), nodes[n_nodes - 1]}};
 
     Placement::place_with_map(circuit, p_map);
     CompilationUnit cu(circuit);

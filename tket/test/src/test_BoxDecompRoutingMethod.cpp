@@ -53,8 +53,9 @@ SCENARIO("Decompose boxes") {
     bd.solve();
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
-    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
-        u, u1, tket_sim::MatrixEquivalence::EQUAL));
+    REQUIRE(
+        tket_sim::compare_statevectors_or_unitaries(
+            u, u1, tket_sim::MatrixEquivalence::EQUAL));
     std::vector<Command> commands = mf->circuit_.get_commands();
     for (Command c : commands) {
       REQUIRE(!c.get_op_ptr()->get_desc().is_box());

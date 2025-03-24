@@ -784,9 +784,10 @@ SCENARIO("Test RoutingMethod serializations") {
   CHECK(!loaded_rmp_j[0]
              ->routing_method(mf_sp, std::make_shared<SquareGrid>(2, 2))
              .first);
-  CHECK(loaded_rmp_j[1]
-            ->routing_method(mf_sp, std::make_shared<SquareGrid>(2, 2))
-            .first);
+  CHECK(
+      loaded_rmp_j[1]
+          ->routing_method(mf_sp, std::make_shared<SquareGrid>(2, 2))
+          .first);
 }
 
 SCENARIO("Test predicate serializations") {

@@ -183,7 +183,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "Counts the number of edges in the diagram.")
       .def(
           "count_vertices",
-          (unsigned(ZXDiagram::*)(ZXType) const) & ZXDiagram::count_vertices,
+          (unsigned (ZXDiagram::*)(ZXType) const) & ZXDiagram::count_vertices,
           "Counts the number of vertices of a given :py:class:`ZXType` in the "
           "diagram.",
           py::arg("type"))
@@ -278,7 +278,8 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           py::arg("v"), py::arg("gen"))
       .def(
           "get_wire_qtype",
-          (QuantumType(ZXDiagram::*)(const Wire&) const) & ZXDiagram::get_qtype,
+          (QuantumType (ZXDiagram::*)(const Wire&) const) &
+              ZXDiagram::get_qtype,
           "Returns the :py:class:`QuantumType` of the given wire.",
           py::arg("w"))
       .def(
@@ -327,8 +328,8 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           ":py:class:`QuantumType` s of the ports they attach to.")
       .def(
           "symbol_substitution",
-          (void(ZXDiagram::*)(const symbol_map_t&)) &
-              ZXDiagram::symbol_substitution,
+          (void (ZXDiagram::*)(
+              const symbol_map_t&))&ZXDiagram::symbol_substitution,
           "In-place substitution for symbolic expressions; iterated through "
           "each parameterised vertex and performs the substitution. This will "
           "not affect any symbols captured within boxed operations.\n\n"
@@ -336,9 +337,10 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           py::arg("symbol_map"))
       .def(
           "symbol_substitution",
-          (void(ZXDiagram::*)(
-              const std::map<Sym, double, SymEngine::RCPBasicKeyLess>&)) &
-              ZXDiagram::symbol_substitution,
+          (void (ZXDiagram::*)(
+              const std::map<
+                  Sym, double,
+                  SymEngine::RCPBasicKeyLess>&))&ZXDiagram::symbol_substitution,
           "In-place substitution for symbolic expressions; iterated through "
           "each parameterised vertex and performs the substitution. This will "
           "not affect any symbols captured within boxed operations.\n\n"
@@ -445,7 +447,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           py::arg("v"))
       .def(
           "remove_wire",
-          (void(ZXDiagram::*)(const Wire&)) & ZXDiagram::remove_wire,
+          (void (ZXDiagram::*)(const Wire&))&ZXDiagram::remove_wire,
           "Removes the given wire from the diagram.", py::arg("w"))
       .def(
           "to_circuit", &wrapped_zx_to_circuit,
