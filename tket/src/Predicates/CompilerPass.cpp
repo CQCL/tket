@@ -605,18 +605,22 @@ PassPtr deserialise(
       } else {
         throw JsonError(
             "Cannot deserialise CustomPass without passing a "
-            "custom_deserialisation map "
+            "custom_deserialisation "
             "with a key corresponding to the pass's label.");
       }
     } else if (passname == "CustomPassMap") {
       std::string label = content.at("label").get<std::string>();
       auto it = custom_map_deserialise.find(label);
+      std::cout << "We want " << label << " so here are all the keys:" << std::endl;
+      for(const auto& pair : custom_map_deserialise){
+        std::cout << pair.first << std::endl;
+      }
       if (it != custom_map_deserialise.end()) {
         pp = CustomPassMap(it->second, label);
       } else {
         throw JsonError(
             "Cannot deserialise CustomPassMap without passing a "
-            "custom_deserialisation map "
+            "custom_deserialisation_map "
             "with a key corresponding to the pass's label.");
       }
     } else {
