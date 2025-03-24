@@ -475,6 +475,8 @@ Circuit with_TK2(Gate_ptr op) {
   switch (op->get_type()) {
     case OpType::ISWAP:
       return CircPool::ISWAP_using_TK2(params[0]);
+    case OpType::ISWAPMax:
+      return CircPool::ISWAPMax_using_TK2();
     case OpType::PhasedISWAP:
       return CircPool::PhasedISWAP_using_TK2(params[0], params[1]);
     case OpType::XXPhase:
@@ -603,7 +605,7 @@ Circuit with_CX(Gate_ptr op) {
     case OpType::Sycamore:
       return CircPool::FSim_using_CX(1. / 2., 1. / 6.);
     case OpType::ISWAPMax:
-      return CircPool::ISWAP_using_CX(1.);
+      return CircPool::ISWAPMax_using_CX();
     case OpType::PhasedISWAP:
       return CircPool::PhasedISWAP_using_CX(params[0], params[1]);
     case OpType::NPhasedX:
