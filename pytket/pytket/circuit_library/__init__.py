@@ -66,6 +66,8 @@ from pytket._tket.circuit_library import (
     FSim_using_TK2,
     ISWAP_using_CX,
     ISWAP_using_TK2,
+    ISWAPMax_using_CX,
+    ISWAPMax_using_TK2,
     NPhasedX_using_PhasedX,
     PhasedISWAP_using_CX,
     PhasedISWAP_using_TK2,

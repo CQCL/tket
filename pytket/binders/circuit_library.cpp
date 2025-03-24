@@ -214,6 +214,12 @@ PYBIND11_MODULE(circuit_library, library_m) {
       "ISWAP_using_CX", &CircPool::ISWAP_using_CX,
       "Equivalent to ISWAP, using CX, U3 and Rz gates");
   library_m.def(
+      "ISWAPMax_using_TK2", &CircPool::ISWAPMax_using_TK2,
+      "Equivalent to ISWAPMax, using a TK2 gate");
+  library_m.def(
+      "ISWAPMax_using_CX", &CircPool::ISWAPMax_using_CX,
+      "Equivalent to ISWAPMax, using CX, U3 and Rz gates");
+  library_m.def(
       "XXPhase_using_TK2", &CircPool::XXPhase_using_TK2,
       "Equivalent to XXPhase, using a TK2 gate");
   library_m.def(
