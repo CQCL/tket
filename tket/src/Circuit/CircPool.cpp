@@ -684,6 +684,31 @@ const Circuit &ZZMax_using_CX() {
   return *C;
 }
 
+const Circuit &ISWAPMax_using_TK2() {
+  static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::TK2, {-0.5, -0.5, 0}, {0, 1});
+    return c;
+  }());
+  return *C;
+}
+
+const Circuit &ISWAPMax_using_CX() {
+  static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::U3, {0.5, -0.5, 0.5}, {0});
+    c.add_op<unsigned>(OpType::U3, {0.5, -0.5, 0.5}, {1});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::U3, {-0.5, -0.5, 0.5}, {0});
+    c.add_op<unsigned>(OpType::Rz, -0.5, {1});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::U3, {-0.5, -0.5, 0.5}, {0});
+    c.add_op<unsigned>(OpType::U3, {-0.5, -0.5, 0.5}, {1});
+    return c;
+  }());
+  return *C;
+}
+
 Circuit CRz_using_TK2(const Expr &alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 1}, {0});

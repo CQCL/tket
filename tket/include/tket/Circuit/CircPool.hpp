@@ -196,6 +196,12 @@ const Circuit &ECR_using_CX();
 /** Equivalent to ZZMax, using CX, Rz and U3 gates */
 const Circuit &ZZMax_using_CX();
 
+/** Equivalent to ISWAPMax, using a TK2 gate **/
+const Circuit &ISWAPMax_using_TK2();
+
+/** Equivalent to ISWAPMax, using CX, Rz and U3 gates **/
+const Circuit &ISWAPMax_using_CX();
+
 /** Equivalent to CRz, using a TK2 and TK1 gates */
 Circuit CRz_using_TK2(const Expr &alpha);
 
