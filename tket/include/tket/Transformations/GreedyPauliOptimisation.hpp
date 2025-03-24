@@ -37,7 +37,7 @@ class GreedyPauliSimpError : public std::logic_error {
  *
  */
 enum class TQEType : unsigned {
-  XX,
+  XX = 0,
   XY,
   XZ,
   YX,

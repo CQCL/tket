@@ -72,18 +72,18 @@ int SingleNode::tqe_cost_increase(const TQE& tqe) const {
   const unsigned& b = tqe.b;
   Pauli p0 = string_[a];
   Pauli p1 = string_[b];
-  auto [new_p0, new_p1, sign] = TQE_PAULI_MAP.at({g, p0, p1});
+  auto [new_p0, new_p1, sign] = TQE_PAULI_MAP::at({g, p0, p1});
   return (p0 == Pauli::I) + (p1 == Pauli::I) - (new_p0 == Pauli::I) -
          (new_p1 == Pauli::I);
 }
 
 void SingleNode::update(const TQE& tqe) {
-  const TQEType& g = tqe.type;
+    const TQEType& g = tqe.type;
   const unsigned& a = tqe.a;
   const unsigned& b = tqe.b;
   Pauli p0 = string_[a];
   Pauli p1 = string_[b];
-  auto [new_p0, new_p1, sign] = TQE_PAULI_MAP.at({g, p0, p1});
+  auto [new_p0, new_p1, sign] = TQE_PAULI_MAP::at({g, p0, p1});
   string_[a] = new_p0;
   string_[b] = new_p1;
   weight_ += (p0 == Pauli::I) + (p1 == Pauli::I) - (new_p0 == Pauli::I) -
@@ -168,8 +168,8 @@ int ACPairNode::tqe_cost_increase(const TQE& tqe) const {
   Pauli z_p1 = z_string_[b];
   Pauli x_p0 = x_string_[a];
   Pauli x_p1 = x_string_[b];
-  auto [new_z_p0, new_z_p1, z_sign] = TQE_PAULI_MAP.at({g, z_p0, z_p1});
-  auto [new_x_p0, new_x_p1, x_sign] = TQE_PAULI_MAP.at({g, x_p0, x_p1});
+  auto [new_z_p0, new_z_p1, z_sign] = TQE_PAULI_MAP::at({g, z_p0, z_p1});
+  auto [new_x_p0, new_x_p1, x_sign] = TQE_PAULI_MAP::at({g, x_p0, x_p1});
   CommuteType new_a_type = get_pauli_pair_commute_type(new_z_p0, new_x_p0);
   CommuteType new_b_type = get_pauli_pair_commute_type(new_z_p1, new_x_p1);
   unsigned old_anti_commutes = (commute_type_vec_[a] == CommuteType::A) +
@@ -193,8 +193,8 @@ void ACPairNode::update(const TQE& tqe) {
   Pauli z_p1 = z_string_[b];
   Pauli x_p0 = x_string_[a];
   Pauli x_p1 = x_string_[b];
-  auto [new_z_p0, new_z_p1, z_sign] = TQE_PAULI_MAP.at({g, z_p0, z_p1});
-  auto [new_x_p0, new_x_p1, x_sign] = TQE_PAULI_MAP.at({g, x_p0, x_p1});
+  auto [new_z_p0, new_z_p1, z_sign] = TQE_PAULI_MAP::at({g, z_p0, z_p1});
+  auto [new_x_p0, new_x_p1, x_sign] = TQE_PAULI_MAP::at({g, x_p0, x_p1});
   CommuteType new_a_type = get_pauli_pair_commute_type(new_z_p0, new_x_p0);
   CommuteType new_b_type = get_pauli_pair_commute_type(new_z_p1, new_x_p1);
   unsigned old_anti_commutes = (commute_type_vec_[a] == CommuteType::A) +
@@ -328,7 +328,7 @@ int ConditionalBlock::tqe_cost_increase(const TQE& tqe) const {
     const unsigned& b = tqe.b;
     Pauli p0 = std::get<0>(rot)[a];
     Pauli p1 = std::get<0>(rot)[b];
-    auto [new_p0, new_p1, sign] = TQE_PAULI_MAP.at({g, p0, p1});
+    auto [new_p0, new_p1, sign] = TQE_PAULI_MAP::at({g, p0, p1});
     total_increase += (p0 == Pauli::I) + (p1 == Pauli::I) -
                       (new_p0 == Pauli::I) - (new_p1 == Pauli::I);
   }
@@ -342,7 +342,7 @@ void ConditionalBlock::update(const TQE& tqe) {
     const unsigned& b = tqe.b;
     Pauli p0 = std::get<0>(rot)[a];
     Pauli p1 = std::get<0>(rot)[b];
-    auto [new_p0, new_p1, sign] = TQE_PAULI_MAP.at({g, p0, p1});
+    auto [new_p0, new_p1, sign] = TQE_PAULI_MAP::at({g, p0, p1});
     std::get<0>(rot)[a] = new_p0;
     std::get<0>(rot)[b] = new_p1;
     total_weight_ += (p0 == Pauli::I) + (p1 == Pauli::I) -
