@@ -626,18 +626,20 @@ PassPtr deserialise(
     const nlohmann::json& content = j.at("SequencePass");
     std::vector<PassPtr> seq;
     for (const auto& j_entry : content.at("sequence")) {
-      seq.push_back(deserialise(j_entry, custom_deserialise, custom_map_deserialise));
+      seq.push_back(
+          deserialise(j_entry, custom_deserialise, custom_map_deserialise));
     }
     pp = std::make_shared<SequencePass>(seq);
   } else if (classname == "RepeatPass") {
     const nlohmann::json& content = j.at("RepeatPass");
-    pp = std::make_shared<RepeatPass>(
-        deserialise(content.at("body"), custom_deserialise, custom_map_deserialise));
+    pp = std::make_shared<RepeatPass>(deserialise(
+        content.at("body"), custom_deserialise, custom_map_deserialise));
   } else if (classname == "RepeatWithMetricPass") {
     throw PassNotSerializable(classname);
   } else if (classname == "RepeatUntilSatisfiedPass") {
     const nlohmann::json& content = j.at("RepeatUntilSatisfiedPass");
-    PassPtr body = deserialise(content.at("body"), custom_deserialise, custom_map_deserialise);
+    PassPtr body = deserialise(
+        content.at("body"), custom_deserialise, custom_map_deserialise);
     PredicatePtr pred = content.at("predicate").get<PredicatePtr>();
     pp = std::make_shared<RepeatUntilSatisfiedPass>(body, pred);
   } else {
