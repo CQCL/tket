@@ -2289,6 +2289,21 @@ SCENARIO("AutoRebase") {
         gen_auto_rebase_pass({OpType::CRz, OpType::TK1}, false), Unsupported);
     REQUIRE_THROWS_AS(gen_auto_rebase_pass({}, false), Unsupported);
   }
+  GIVEN("Rebasing to ISWAPMax") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CZ, {0, 1});
+    Circuit circ1 = circ;
+    PassPtr p_noswaps =
+        gen_auto_rebase_pass({OpType::ISWAPMax, OpType::TK1}, false);
+    PassPtr p_swapsok =
+        gen_auto_rebase_pass({OpType::ISWAPMax, OpType::TK1}, true);
+    CompilationUnit cu(circ);
+    CompilationUnit cu1(circ1);
+    CHECK(p_noswaps->apply(cu));
+    CHECK(p_swapsok->apply(cu1));
+    REQUIRE(test_unitary_comparison(circ, cu.get_circ_ref()));
+    REQUIRE(test_unitary_comparison(circ1, cu1.get_circ_ref()));
+  }
 }
 
 SCENARIO("AutoSquash") {
