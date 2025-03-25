@@ -9,13 +9,13 @@ import pytket._tket.transform
 import pytket._tket.unit_id
 import sympy
 import typing
-__all__ = ['AASRouting', 'Audit', 'AutoRebase', 'AutoSquash', 'BasePass', 'CNotSynthType', 'CXMappingPass', 'CliffordPushThroughMeasures', 'CliffordResynthesis', 'CliffordSimp', 'CnXPairwiseDecomposition', 'CommuteThroughMultis', 'ComposePhasePolyBoxes', 'ContextSimp', 'CustomPass', 'CustomRoutingPass', 'DecomposeArbitrarilyControlledGates', 'DecomposeBoxes', 'DecomposeClassicalExp', 'DecomposeMultiQubitsCX', 'DecomposeSingleQubitsTK1', 'DecomposeSwapsToCXs', 'DecomposeSwapsToCircuit', 'DecomposeTK2', 'Default', 'DefaultMappingPass', 'DelayMeasures', 'EulerAngleReduction', 'FlattenRegisters', 'FlattenRelabelRegistersPass', 'FullMappingPass', 'FullPeepholeOptimise', 'GreedyPauliSimp', 'GuidedPauliSimp', 'HamPath', 'KAKDecomposition', 'NaivePlacementPass', 'NormaliseTK2', 'OptimisePhaseGadgets', 'PauliExponentials', 'PauliSimp', 'PauliSquash', 'PeepholeOptimise2Q', 'PlacementPass', 'RebaseCustom', 'RebaseTket', 'Rec', 'RemoveBarriers', 'RemoveDiscarded', 'RemoveImplicitQubitPermutation', 'RemovePhaseOps', 'RemoveRedundancies', 'RenameQubitsPass', 'RepeatPass', 'RepeatUntilSatisfiedPass', 'RepeatWithMetricPass', 'RoundAngles', 'RoutingPass', 'SWAP', 'SafetyMode', 'SequencePass', 'SimplifyInitial', 'SimplifyMeasured', 'SquashCustom', 'SquashRzPhasedX', 'SquashTK1', 'SynthesiseTK', 'SynthesiseTket', 'ThreeQubitSquash', 'ZXGraphlikeOptimisation', 'ZZPhaseToRz']
+__all__ = ['AASRouting', 'Audit', 'AutoRebase', 'AutoSquash', 'BasePass', 'CNotSynthType', 'CXMappingPass', 'CliffordPushThroughMeasures', 'CliffordResynthesis', 'CliffordSimp', 'CnXPairwiseDecomposition', 'CommuteThroughMultis', 'ComposePhasePolyBoxes', 'ContextSimp', 'CustomPass', 'CustomPassMap', 'CustomRoutingPass', 'DecomposeArbitrarilyControlledGates', 'DecomposeBoxes', 'DecomposeClassicalExp', 'DecomposeMultiQubitsCX', 'DecomposeSingleQubitsTK1', 'DecomposeSwapsToCXs', 'DecomposeSwapsToCircuit', 'DecomposeTK2', 'Default', 'DefaultMappingPass', 'DelayMeasures', 'EulerAngleReduction', 'FlattenRegisters', 'FlattenRelabelRegistersPass', 'FullMappingPass', 'FullPeepholeOptimise', 'GreedyPauliSimp', 'GuidedPauliSimp', 'HamPath', 'KAKDecomposition', 'NaivePlacementPass', 'NormaliseTK2', 'OptimisePhaseGadgets', 'PauliExponentials', 'PauliSimp', 'PauliSquash', 'PeepholeOptimise2Q', 'PlacementPass', 'RebaseCustom', 'RebaseTket', 'Rec', 'RemoveBarriers', 'RemoveDiscarded', 'RemoveImplicitQubitPermutation', 'RemovePhaseOps', 'RemoveRedundancies', 'RenameQubitsPass', 'RepeatPass', 'RepeatUntilSatisfiedPass', 'RepeatWithMetricPass', 'RoundAngles', 'RoutingPass', 'SWAP', 'SafetyMode', 'SequencePass', 'SimplifyInitial', 'SimplifyMeasured', 'SquashCustom', 'SquashRzPhasedX', 'SquashTK1', 'SynthesiseTK', 'SynthesiseTket', 'ThreeQubitSquash', 'ZXGraphlikeOptimisation', 'ZZPhaseToRz']
 class BasePass:
     """
     Base class for passes.
     """
     @staticmethod
-    def from_dict(base_pass_dict: dict, custom_deserialisation: dict[str, typing.Callable[[pytket._tket.circuit.Circuit], pytket._tket.circuit.Circuit]] = {}) -> BasePass:
+    def from_dict(base_pass_dict: dict, custom_deserialisation: dict[str, typing.Callable[[pytket._tket.circuit.Circuit], pytket._tket.circuit.Circuit]] = {}, custom_map_deserialisation: dict[str, typing.Callable[[pytket._tket.circuit.Circuit], tuple[pytket._tket.circuit.Circuit, tuple[dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID], dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]]]]] = {}) -> BasePass:
         """
         Construct a new Pass instance from a JSON serializable dictionary representation. `custom_deserialisation` is a map between `CustomPass` label attributes and a Circuit to Circuit function matching the `CustomPass` `transform` argument. This allows the construction of some `CustomPass` from JSON. `CustomPass` without a matching entry in `custom_deserialisation` will be rejected.
         """
@@ -315,6 +315,16 @@ def CustomPass(transform: typing.Callable[[pytket._tket.circuit.Circuit], pytket
     It is the caller's responsibility to provide a valid transform.
     
     :param transform: function taking a :py:class:`Circuit` as an argument and returning a new transformed circuit
+    :param label: optional label for the pass
+    :return: a pass to perform the transformation
+    """
+def CustomPassMap(transform: typing.Callable[[pytket._tket.circuit.Circuit], tuple[pytket._tket.circuit.Circuit, tuple[dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID], dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]]]], label: str = '') -> BasePass:
+    """
+    Generate a custom pass from a user-provided circuit transfomation function.
+    
+    It is the caller's responsibility to provide a valid transform.
+    
+    :param transform: function taking a :py:class:`Circuit` as an argument and returning a pair of a new transformed circuit and a pair of maps corresponding to the initial and final maps that the transformation makes.
     :param label: optional label for the pass
     :return: a pass to perform the transformation
     """
