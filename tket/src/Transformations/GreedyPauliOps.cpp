@@ -78,12 +78,16 @@ int SingleNode::tqe_cost_increase(const TQE& tqe) const {
 }
 
 void SingleNode::update(const TQE& tqe) {
-    const TQEType& g = tqe.type;
+  const TQEType& g = tqe.type;
   const unsigned& a = tqe.a;
   const unsigned& b = tqe.b;
-  Pauli p0 = string_[a];
-  Pauli p1 = string_[b];
-  auto [new_p0, new_p1, sign] = TQE_PAULI_MAP::at({g, p0, p1});
+  const Pauli p0 = string_[a];
+  const Pauli p1 = string_[b];
+  const TQE_PAULI_MAP::Key key{g, p0, p1};
+  if (TQE_PAULI_MAP::tqe_commutes(key)) {
+    return;
+  }
+  const auto [new_p0, new_p1, sign] = TQE_PAULI_MAP::at(key);
   string_[a] = new_p0;
   string_[b] = new_p1;
   weight_ += (p0 == Pauli::I) + (p1 == Pauli::I) - (new_p0 == Pauli::I) -

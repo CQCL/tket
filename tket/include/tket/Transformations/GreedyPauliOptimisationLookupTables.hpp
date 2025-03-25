@@ -108,6 +108,7 @@ struct TQE_PAULI_MAP {
   using Key = std::tuple<TQEType, Pauli, Pauli>;
   using Value = std::tuple<Pauli, Pauli, bool>;
 
+ private:
   // Readable array of key-value pairs
   constexpr static std::array<std::pair<Key, Value>, 144> TQEPairs = {
       {{{TQEType::XX, Pauli::X, Pauli::X}, {Pauli::X, Pauli::X, true}},
@@ -256,17 +257,32 @@ struct TQE_PAULI_MAP {
        {{TQEType::ZZ, Pauli::I, Pauli::I}, {Pauli::I, Pauli::I, true}}}};
 
   // Initialize the lookup table
-  constexpr static std::array<Value, 144> LookupTable =
-      []() {
-        std::array<Value, 144> lookupTable;
-        for (const auto& [key, val] : TQEPairs) {
-          lookupTable[hash_triple(key)] = val;
-        }
-        return lookupTable;
-      }();
+  constexpr static std::array<Value, 144> LookupTable = []() {
+    std::array<Value, 144> lookupTable;
+    for (const auto& [key, val] : TQEPairs) {
+      lookupTable[hash_triple(key)] = val;
+    }
+    return lookupTable;
+  }();
 
+  // Pre-compute cases where the TQE gate commutes with the two Pauli operators
+  constexpr static std::array<bool, 144> CommuteTable = []() {
+    std::array<bool, 144> lookupTable;
+    for (const auto& [key, val] : TQEPairs) {
+      const auto [_tqe, p0, p1] = key;
+      const auto [new_p0, new_p1, sign] = val;
+      lookupTable[hash_triple(key)] = (p0 == new_p0) && (p1 == new_p1) && sign;
+    }
+    return lookupTable;
+  }();
+
+ public:
   static const Value at(const Key& key) {
     return LookupTable[hash_triple(key)];
+  }
+
+  static bool tqe_commutes(const Key& key) {
+    return CommuteTable[hash_triple(key)];
   }
 };
 
