@@ -324,7 +324,7 @@ def CustomPassMap(transform: typing.Callable[[pytket._tket.circuit.Circuit], tup
     
     It is the caller's responsibility to provide a valid transform.
     
-    :param transform: function taking a :py:class:`Circuit` as an argument and returning a pair of a new transformed circuit and a pair of maps corresponding to changes to the initial and final maps that the transformation makes.
+    :param transform: function taking a :py:class:`Circuit` as an argument and returning a pair of a new transformed circuit and a pair of maps corresponding to the initial and final maps that the transformation makes.
     :param label: optional label for the pass
     :return: a pass to perform the transformation
     """
