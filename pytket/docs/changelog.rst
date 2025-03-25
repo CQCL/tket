@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+* Add methods in `circuit_library` to convert `CX` and `TK2` to and from
+  `ISWAPMax`, and support for `AutoRebase` targeting `ISWAPMax`.
+
 2.1.0 (March 2025)
 ------------------
 
