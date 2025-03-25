@@ -40,6 +40,9 @@ const Circuit &CX_using_ECR();
 /** Equivalent to CX, using only ZZMax, Rx and Rz gates */
 const Circuit &CX_using_ZZMax();
 
+/** Equivalent to CX, using only ISWAPMax and single-qubit gates */
+const Circuit &CX_using_ISWAPMax();
+
 /** Equivalent to CX, using only ZZPhase, Rx and Rz gates */
 const Circuit &CX_using_ZZPhase();
 
@@ -428,6 +431,9 @@ Circuit TK2_using_ZZMax(const Expr &alpha, const Expr &beta, const Expr &gamma);
  * @return Circuit equivalent to TK2(α, β, γ) up to a wire swap.
  */
 Circuit TK2_using_ZZMax_and_swap(
+    const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+Circuit TK2_using_ISWAPMax(
     const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 /** Equivalent to XXPhase3, using three TK2 gates */

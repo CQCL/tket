@@ -105,6 +105,19 @@ const Circuit &CX_using_ZZMax() {
   return *C;
 }
 
+const Circuit &CX_using_ISWAPMax() {
+  static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::ISWAPMax, {0, 1});
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::ISWAPMax, {0, 1});
+    c.add_op<unsigned>(OpType::Sdg, {0});
+    c.add_op<unsigned>(OpType::V, {1});
+    return c;
+  }());
+  return *C;
+}
+
 const Circuit &CX_using_ZZPhase() {
   static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
     Circuit c(2);
@@ -1139,6 +1152,23 @@ Circuit TK2_using_ZZMax_and_swap(
   }
 
   return TK2_using_ZZMax(alpha, beta, gamma);
+}
+
+Circuit TK2_using_ISWAPMax(
+    const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c = TK2_using_CX(alpha, beta, gamma);
+  // Find the CX gates and replace them with ISWAPMax.
+  VertexSet bin;
+  BGL_FORALL_VERTICES(v, c.dag, DAG) {
+    Op_ptr op = c.get_Op_ptr_from_Vertex(v);
+    if (op->get_type() == OpType::CX) {
+      c.substitute(CX_using_ISWAPMax(), v, Circuit::VertexDeletion::No);
+      bin.insert(v);
+    }
+  }
+  c.remove_vertices(
+      bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+  return c;
 }
 
 Circuit XXPhase3_using_TK2(const Expr &alpha) {
