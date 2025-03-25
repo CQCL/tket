@@ -1135,7 +1135,7 @@ PYBIND11_MODULE(passes, m) {
       "\n\n"
       ":param transform: function taking a :py:class:`Circuit` as an argument "
       "and returning a pair of a new transformed circuit and a pair of maps "
-      "corresponding to changes to the initial and final maps that the "
+      "corresponding to the initial and final maps that the "
       "transformation makes."
       "\n"
       ":param label: optional label for the pass"
