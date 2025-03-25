@@ -436,7 +436,8 @@ PassPtr CustomPass(
 /**
  * Generate a custom pass that tracks map
  *
- * @param transform circuit transformation function and modified intial and final maps
+ * @param transform circuit transformation function and modified intial and
+ * final maps
  * @param label optional user-defined label for the pass
  *
  * It is the caller's responsibility to provide a valid transform: there are no
