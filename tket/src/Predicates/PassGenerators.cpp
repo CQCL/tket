@@ -170,6 +170,9 @@ static Circuit find_cx_replacement(const OpTypeSet& gateset) {
   if (gateset.contains(OpType::ZZMax)) {
     return CircPool::CX_using_ZZMax();
   }
+  if (gateset.contains(OpType::ISWAPMax)) {
+    return CircPool::CX_using_ISWAPMax();
+  }
   if (gateset.contains(OpType::XXPhase)) {
     return CircPool::CX_using_XXPhase_0();
   }
@@ -199,6 +202,9 @@ find_tk2_replacement(const OpTypeSet& gateset, bool allow_swaps) {
     }
     if (gateset.contains(OpType::ZZMax)) {
       return CircPool::TK2_using_ZZMax;
+    }
+    if (gateset.contains(OpType::ISWAPMax)) {
+      return CircPool::TK2_using_ISWAPMax;
     }
     if (gateset.contains(OpType::AAMS)) {
       return CircPool::TK2_using_AAMS;
