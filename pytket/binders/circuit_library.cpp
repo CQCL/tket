@@ -72,6 +72,11 @@ PYBIND11_MODULE(circuit_library, library_m) {
       "CX_using_ISWAPMax", &CircPool::CX_using_ISWAPMax,
       "Equivalent to CX, using only ISWAPMax and single-qubit gates");
   library_m.def(
+      "CX_using_ISWAPMax_and_swap", &CircPool::CX_using_ISWAPMax_and_swap,
+      "Equivalent to CX, using only ISWAPMax and single-qubit gates, up to a "
+      "wire swap that is encoded in the implicit qubit permutation of the "
+      "Circuit");
+  library_m.def(
       "CX_using_ZZPhase", &CircPool::CX_using_ZZPhase,
       "Equivalent to CX, using only ZZPhase, Rx and Rz gates");
   library_m.def(
@@ -273,6 +278,11 @@ PYBIND11_MODULE(circuit_library, library_m) {
   library_m.def(
       "TK2_using_ISWAPMax", &CircPool::TK2_using_ISWAPMax,
       "Equivalent to TK2, using only ISWAPMax and single-qubit gates.");
+  library_m.def(
+      "TK2_using_ISWAPMax_and_swap", &CircPool::TK2_using_ISWAPMax_and_swap,
+      "Equivalent to TK2, using only ISWAPMax and single-qubit gates, up to a "
+      "wire swap that is encoded in the implicit qubit permutation of the "
+      "Circuit.");
   library_m.def(
       "XXPhase3_using_TK2", &CircPool::XXPhase3_using_TK2,
       "Equivalent to XXPhase3, using three TK2 gates");
