@@ -16,13 +16,13 @@
 
 #include "typecast.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 
 namespace tket {
 namespace zx {
 
-void init_rewrite(py::module &m) {
-  py::class_<Rewrite> rewrite_cls(
+void init_rewrite(nb::module_ &m) {
+  nb::class_<Rewrite> rewrite_cls(
       m, "Rewrite", "An in-place transformation of a ZXDiagram.");
   rewrite_cls
       .def(
@@ -31,10 +31,10 @@ void init_rewrite(py::module &m) {
           "Performs the transformation on the diagram in place.\n\n"
           ":param diag: The diagram to be transformed.\n"
           ":return: True if any changes were made, else False.",
-          py::arg("diag"))
+          nb::arg("diag"))
       .def_static(
           "sequence",
-          [](const py::tket_custom::SequenceVec<Rewrite> &rvec) {
+          [](const nb::tket_custom::SequenceVec<Rewrite> &rvec) {
             return Rewrite::sequence(rvec);
           },
           "Composes a list of :py:class:`Rewrite` s together in sequence. The "
@@ -42,7 +42,7 @@ void init_rewrite(py::module &m) {
           "returned True.\n\n:param sequence: The list of "
           ":py:class:`Rewrite` s to be composed.\n:return: The combined "
           ":py:class:`Rewrite`.",
-          py::arg("sequence"))
+          nb::arg("sequence"))
       .def_static(
           "repeat", &Rewrite::repeat,
           "Applies a given :py:class:`Rewrite` repeatedly to a diagram until "
@@ -51,7 +51,7 @@ void init_rewrite(py::module &m) {
           "rewrite: The :py:class:`Rewrite` to be applied "
           "repeatedly.\n:return: A new :py:class:`Rewrite` representing the "
           "iteration.",
-          py::arg("rewrite"))
+          nb::arg("rewrite"))
       .def_static(
           "decompose_boxes", &Rewrite::decompose_boxes,
           "Replaces every :py:class:`ZXBox` by its internal diagram "

@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <pybind11/pybind11.h>
-#include <pybind11/pytypes.h>
-#include <pybind11/stl.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/map.h>
+#include <nanobind/stl/optional.h>
+#include <nanobind/stl/shared_ptr.h>
+#include <nanobind/stl/string.h>
+#include <nanobind/stl/vector.h>
 
 #include <memory>
 #include <optional>
@@ -37,29 +40,29 @@
 #include "tket/Ops/ClExpr.hpp"
 #include "tket/Utils/UnitID.hpp"
 #include "typecast.hpp"
-namespace py = pybind11;
+namespace nb = nanobind;
 
 namespace tket {
 
-typedef py::tket_custom::SequenceVec<UnitID> py_unit_vector_t;
-typedef py::tket_custom::SequenceVec<Bit> py_bit_vector_t;
-typedef py::tket_custom::SequenceVec<Qubit> py_qubit_vector_t;
-typedef py::tket_custom::SequenceVec<QubitRegister> py_qreg_vector_t;
-typedef py::tket_custom::SequenceVec<BitRegister> py_creg_vector_t;
+typedef nb::tket_custom::SequenceVec<UnitID> py_unit_vector_t;
+typedef nb::tket_custom::SequenceVec<Bit> py_bit_vector_t;
+typedef nb::tket_custom::SequenceVec<Qubit> py_qubit_vector_t;
+typedef nb::tket_custom::SequenceVec<QubitRegister> py_qreg_vector_t;
+typedef nb::tket_custom::SequenceVec<BitRegister> py_creg_vector_t;
 
 const bit_vector_t no_bits;
 
 template <typename ID>
 static Circuit *add_gate_method_sequence_args(
     Circuit *circ, const Op_ptr &op,
-    const py::tket_custom::SequenceVec<ID> &args, const py::kwargs &kwargs) {
+    const nb::tket_custom::SequenceVec<ID> &args, const nb::kwargs &kwargs) {
   return add_gate_method(circ, op, args, kwargs);
 }
 
 template <typename ID>
 static Circuit *add_gate_method_noparams(
-    Circuit *circ, OpType type, const py::tket_custom::SequenceVec<ID> &args,
-    const py::kwargs &kwargs) {
+    Circuit *circ, OpType type, const nb::tket_custom::SequenceVec<ID> &args,
+    const nb::kwargs &kwargs) {
   return add_gate_method(
       circ, get_op_ptr(type, std::vector<Expr>{}, args.size()), args, kwargs);
 }
@@ -67,37 +70,37 @@ static Circuit *add_gate_method_noparams(
 template <typename ID>
 static Circuit *add_gate_method_oneparam(
     Circuit *circ, OpType type, const Expr &p,
-    const py::tket_custom::SequenceVec<ID> &args, const py::kwargs &kwargs) {
+    const nb::tket_custom::SequenceVec<ID> &args, const nb::kwargs &kwargs) {
   return add_gate_method(circ, get_op_ptr(type, p, args.size()), args, kwargs);
 }
 
 template <typename ID>
 static Circuit *add_gate_method_manyparams(
-    Circuit *circ, OpType type, const py::tket_custom::SequenceVec<Expr> &ps,
-    const py::tket_custom::SequenceVec<ID> &args, const py::kwargs &kwargs) {
+    Circuit *circ, OpType type, const nb::tket_custom::SequenceVec<Expr> &ps,
+    const nb::tket_custom::SequenceVec<ID> &args, const nb::kwargs &kwargs) {
   return add_gate_method(circ, get_op_ptr(type, ps, args.size()), args, kwargs);
 }
 
 template <typename ID>
 static Circuit *add_box_method(
     Circuit *circ, Op_ptr box_ptr, const std::vector<ID> &args,
-    const py::kwargs &kwargs) {
+    const nb::kwargs &kwargs) {
   return add_gate_method(circ, box_ptr, args, kwargs);
 }
 
-void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
+void init_circuit_add_op(nb::class_<Circuit> &c) {
   c.def(
        "add_gate", &add_gate_method_sequence_args<unsigned>,
        "Appends a single operation to the end of the circuit on some "
        "particular qubits/bits. The number of qubits/bits specified "
        "must match the arity of the gate.",
-       py::arg("Op"), py::arg("args"))
+       nb::arg("Op"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_gate", &add_gate_method_sequence_args<UnitID>,
           "Appends a single operation to the end of the circuit on some "
           "particular qubits/bits. The number of qubits/bits specified "
           "must match the arity of the gate.",
-          py::arg("Op"), py::arg("args"))
+          nb::arg("Op"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_gate", &add_gate_method_noparams<unsigned>,
           "Appends a single (non-parameterised) gate to the end of the "
@@ -114,7 +117,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:param kwargs: Additional properties for classical "
           "conditions"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("type"), py::arg("args"))
+          nb::arg("type"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_gate", &add_gate_method_noparams<UnitID>,
           "Appends a single (non-parameterised) gate to the end of the "
@@ -130,7 +133,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:param kwargs: Additional properties for classical "
           "conditions"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("type"), py::arg("args"))
+          nb::arg("type"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_gate", &add_gate_method_oneparam<unsigned>,
           "Appends a single gate, parameterised by an expression, to "
@@ -143,7 +146,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:param kwargs: Additional properties for classical "
           "conditions"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("type"), py::arg("angle"), py::arg("args"))
+          nb::arg("type"), nb::arg("angle"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_gate", &add_gate_method_oneparam<UnitID>,
           "Appends a single gate, parameterised by an expression, to "
@@ -155,7 +158,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:param kwargs: Additional properties for classical "
           "conditions"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("type"), py::arg("angle"), py::arg("args"))
+          nb::arg("type"), nb::arg("angle"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_gate", &add_gate_method_manyparams<unsigned>,
           "Appends a single gate, parameterised with a vector of "
@@ -169,7 +172,8 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:param kwargs: Additional properties for classical "
           "conditions"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("type"), py::arg("angles"), py::arg("args"))
+          nb::arg("type"), nb::arg("angles"), nb::arg("args"),
+          nb::arg("kwargs"))
       .def(
           "add_gate", &add_gate_method_manyparams<UnitID>,
           "Appends a single gate to the end of the circuit"
@@ -179,12 +183,13 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:param kwargs: Additional properties for classical "
           "conditions"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("type"), py::arg("angles"), py::arg("args"))
+          nb::arg("type"), nb::arg("angles"), nb::arg("args"),
+          nb::arg("kwargs"))
       .def(
           "add_barrier",
           [](Circuit *circ,
-             const py::tket_custom::SequenceVec<unsigned> &qubits,
-             const py::tket_custom::SequenceVec<unsigned> &bits,
+             const nb::tket_custom::SequenceVec<unsigned> &qubits,
+             const nb::tket_custom::SequenceVec<unsigned> &bits,
              const std::string &data) {
             circ->add_barrier(qubits, bits, data);
             return circ;
@@ -192,13 +197,13 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "Append a Barrier on the given units"
           "\n\n:param data: additional data stored in the barrier"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("qubits"), py::arg("bits") = no_bits, py::arg("data") = "")
+          nb::arg("qubits"), nb::arg("bits") = no_bits, nb::arg("data") = "")
       .def(
           "add_conditional_barrier",
           [](Circuit *circ,
-             const py::tket_custom::SequenceVec<unsigned> &barrier_qubits,
-             const py::tket_custom::SequenceVec<unsigned> &barrier_bits,
-             const py::tket_custom::SequenceVec<unsigned> &condition_bits,
+             const nb::tket_custom::SequenceVec<unsigned> &barrier_qubits,
+             const nb::tket_custom::SequenceVec<unsigned> &barrier_bits,
+             const nb::tket_custom::SequenceVec<unsigned> &condition_bits,
              unsigned value, const std::string &_data) {
             circ->add_conditional_barrier(
                 barrier_qubits, barrier_bits, condition_bits, value, _data);
@@ -214,13 +219,13 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "hold (little-endian)."
           "\n:param data: Additional data stored in Barrier operation."
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("barrier_qubits"), py::arg("barrier_bits"),
-          py::arg("condition_bits"), py::arg("value"), py::arg("data") = "")
+          nb::arg("barrier_qubits"), nb::arg("barrier_bits"),
+          nb::arg("condition_bits"), nb::arg("value"), nb::arg("data") = "")
       .def(
           "add_circbox",
           [](Circuit *circ, const CircBox &box,
-             const py::tket_custom::SequenceVec<unsigned> &args,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<unsigned> &args,
+             const nb::kwargs &kwargs) {
             return add_box_method(
                 circ, std::make_shared<CircBox>(box), args, kwargs);
           },
@@ -232,11 +237,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:param args: Indices of the (default-register) qubits/bits to "
           "append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("circbox"), py::arg("args"))
+          nb::arg("circbox"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_unitary1qbox",
           [](Circuit *circ, const Unitary1qBox &box, unsigned q0,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_box_method<unsigned>(
                 circ, std::make_shared<Unitary1qBox>(box), {q0}, kwargs);
           },
@@ -245,11 +250,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "unitarybox: The box to append\n:param qubit_0: Index of "
           "the qubit to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("unitarybox"), py::arg("qubit_0"))
+          nb::arg("unitarybox"), nb::arg("qubit_0"), nb::arg("kwargs"))
       .def(
           "add_unitary2qbox",
           [](Circuit *circ, const Unitary2qBox &box, unsigned q0, unsigned q1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_box_method<unsigned>(
                 circ, std::make_shared<Unitary2qBox>(box), {q0, q1}, kwargs);
           },
@@ -259,11 +264,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "target "
           "qubit\n:param qubit_1: Index of the second target qubit"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("unitarybox"), py::arg("qubit_0"), py::arg("qubit_1"))
+          nb::arg("unitarybox"), nb::arg("qubit_0"), nb::arg("qubit_1"), nb::arg("kwargs"))
       .def(
           "add_unitary3qbox",
           [](Circuit *circ, const Unitary3qBox &box, unsigned q0, unsigned q1,
-             unsigned q2, const py::kwargs &kwargs) {
+             unsigned q2, const nb::kwargs &kwargs) {
             return add_box_method<unsigned>(
                 circ, std::make_shared<Unitary3qBox>(box), {q0, q1, q2},
                 kwargs);
@@ -274,12 +279,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:param qubit_1: index of target qubit 1"
           "\n:param qubit_2: index of target qubit 2"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("unitarybox"), py::arg("qubit_0"), py::arg("qubit_1"),
-          py::arg("qubit_2"))
+          nb::arg("unitarybox"), nb::arg("qubit_0"), nb::arg("qubit_1"),
+          nb::arg("qubit_2"), nb::arg("kwargs"))
       .def(
           "add_expbox",
           [](Circuit *circ, const ExpBox &box, unsigned q0, unsigned q1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_box_method<unsigned>(
                 circ, std::make_shared<ExpBox>(box), {q0, q1}, kwargs);
           },
@@ -288,12 +293,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "box to append\n:param qubit_0: Index of the first target "
           "qubit\n:param qubit_1: Index of the second target qubit"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("expbox"), py::arg("qubit_0"), py::arg("qubit_1"))
+          nb::arg("expbox"), nb::arg("qubit_0"), nb::arg("qubit_1"), nb::arg("kwargs"))
       .def(
           "add_pauliexpbox",
           [](Circuit *circ, const PauliExpBox &box,
-             const py::tket_custom::SequenceVec<unsigned> &qubits,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<unsigned> &qubits,
+             const nb::kwargs &kwargs) {
             return add_box_method<unsigned>(
                 circ, std::make_shared<PauliExpBox>(box), qubits, kwargs);
           },
@@ -301,12 +306,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "circuit.\n\n:param pauliexpbox: The box to append\n:param "
           "qubits: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("pauliexpbox"), py::arg("qubits"))
+          nb::arg("pauliexpbox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_pauliexppairbox",
           [](Circuit *circ, const PauliExpPairBox &box,
-             const py::tket_custom::SequenceVec<unsigned> &qubits,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<unsigned> &qubits,
+             const nb::kwargs &kwargs) {
             return add_box_method<unsigned>(
                 circ, std::make_shared<PauliExpPairBox>(box), qubits, kwargs);
           },
@@ -314,12 +319,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "circuit.\n\n:param pauliexppairbox: The box to append\n:param "
           "qubits: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("pauliexppairbox"), py::arg("qubits"))
+          nb::arg("pauliexppairbox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_pauliexpcommutingsetbox",
           [](Circuit *circ, const PauliExpCommutingSetBox &box,
-             const py::tket_custom::SequenceVec<unsigned> &qubits,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<unsigned> &qubits,
+             const nb::kwargs &kwargs) {
             return add_box_method<unsigned>(
                 circ, std::make_shared<PauliExpCommutingSetBox>(box), qubits,
                 kwargs);
@@ -329,12 +334,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "append\n:param "
           "qubits: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("pauliexpcommutingsetbox"), py::arg("qubits"))
+          nb::arg("pauliexpcommutingsetbox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_termsequencebox",
           [](Circuit *circ, const TermSequenceBox &box,
-             const py::tket_custom::SequenceVec<unsigned> &qubits,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<unsigned> &qubits,
+             const nb::kwargs &kwargs) {
             return add_box_method<unsigned>(
                 circ, std::make_shared<TermSequenceBox>(box), qubits, kwargs);
           },
@@ -343,12 +348,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "append\n:param "
           "qubits: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("termsequencebox"), py::arg("qubits"))
+          nb::arg("termsequencebox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_toffolibox",
           [](Circuit *circ, const ToffoliBox &box,
-             const py::tket_custom::SequenceVec<unsigned> &qubits,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<unsigned> &qubits,
+             const nb::kwargs &kwargs) {
             return add_box_method<unsigned>(
                 circ, std::make_shared<ToffoliBox>(box), qubits, kwargs);
           },
@@ -356,13 +361,13 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "circuit.\n\n:param toffolibox: The box to append\n:param "
           "qubits: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("toffolibox"), py::arg("qubits"))
+          nb::arg("toffolibox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_dummybox",
           [](Circuit *circ, const DummyBox &box,
-             const py::tket_custom::SequenceVec<unsigned> &qubits,
-             const py::tket_custom::SequenceVec<unsigned> &bits,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<unsigned> &qubits,
+             const nb::tket_custom::SequenceVec<unsigned> &bits,
+             const nb::kwargs &kwargs) {
             std::vector<UnitID> args;
             for (unsigned i : qubits) {
               args.push_back(Qubit(i));
@@ -380,12 +385,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:param bits: Indices of the bits (in the default register) to "
           "append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("dummybox"), py::arg("qubits"), py::arg("bits"))
+          nb::arg("dummybox"), nb::arg("qubits"), nb::arg("bits"), nb::arg("kwargs"))
       .def(
           "add_qcontrolbox",
           [](Circuit *circ, const QControlBox &box,
-             const py::tket_custom::SequenceVec<unsigned> &args,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<unsigned> &args,
+             const nb::kwargs &kwargs) {
             return add_box_method<unsigned>(
                 circ, std::make_shared<QControlBox>(box), args, kwargs);
           },
@@ -393,12 +398,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param qcontrolbox: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("qcontrolbox"), py::arg("args"))
+          nb::arg("qcontrolbox"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_phasepolybox",
           [](Circuit *circ, const PhasePolyBox &box,
-             const py::tket_custom::SequenceVec<unsigned> &qubits,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<unsigned> &qubits,
+             const nb::kwargs &kwargs) {
             return add_box_method<unsigned>(
                 circ, std::make_shared<PhasePolyBox>(box), qubits, kwargs);
           },
@@ -406,12 +411,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "circuit.\n\n:param phasepolybox: The box to append\n:param "
           "qubits: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("phasepolybox"), py::arg("qubits"))
+          nb::arg("phasepolybox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_clexpr",
           [](Circuit *circ, const WiredClExpr &expr,
-             const py::tket_custom::SequenceVec<Bit> &args,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<Bit> &args,
+             const nb::kwargs &kwargs) {
             Op_ptr op = std::make_shared<ClExprOp>(expr);
             return add_gate_method<Bit>(circ, op, args, kwargs);
           },
@@ -419,18 +424,18 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param expr: The expression to append\n"
           ":param args: The bits to apply the expression to\n"
           ":return: the new :py:class:`Circuit`",
-          py::arg("expr"), py::arg("args"))
+          nb::arg("expr"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_clexpr_from_logicexp",
-          [](Circuit *circ, const py::tket_custom::LogicExpression &exp,
-             const py::tket_custom::SequenceVec<Bit> &output_bits,
-             const py::kwargs &kwargs) {
-            py::list outputs;
+          [](Circuit *circ, const nb::tket_custom::LogicExpression &exp,
+             const nb::tket_custom::SequenceVec<Bit> &output_bits,
+             const nb::kwargs &kwargs) {
+            nb::list outputs;
             for (const auto &bit : output_bits) {
               outputs.append(bit);
             }
-            py::module clexpr = py::module::import("pytket.circuit.clexpr");
-            py::object add_op =
+            nb::module_ clexpr = nb::module_::import_("pytket.circuit.clexpr");
+            nb::object add_op =
                 clexpr.attr("_add_clexpr_to_circuit_from_logicexp");
             add_op(circ, exp, outputs, **kwargs);
             return circ;
@@ -448,13 +453,13 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param exp: logical expression\n"
           ":param output_bits: list of bits in output\n"
           ":return: the updated circuit",
-          py::arg("exp"), py::arg("output_bits"))
+          nb::arg("exp"), nb::arg("output_bits"), nb::arg("kwargs"))
       .def(
           "add_custom_gate",
           [](Circuit *circ, const composite_def_ptr_t &definition,
-             const py::tket_custom::SequenceVec<Expr> &params,
-             const py::tket_custom::SequenceVec<unsigned> &qubits,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<Expr> &params,
+             const nb::tket_custom::SequenceVec<unsigned> &qubits,
+             const nb::kwargs &kwargs) {
             return add_box_method<unsigned>(
                 circ, std::make_shared<CustomGate>(definition, params), qubits,
                 kwargs);
@@ -465,7 +470,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "instantiate the gate with, in halfturns\n:param qubits: "
           "Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("definition"), py::arg("params"), py::arg("qubits"))
+          nb::arg("definition"), nb::arg("params"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_barrier",
           [](Circuit *circ, const py_unit_vector_t &units,
@@ -476,7 +481,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "Append a Barrier on the given units"
           "\n\n:param data: additional data stored in the barrier"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("units"), py::arg("data") = "")
+          nb::arg("units"), nb::arg("data") = "")
       .def(
           "add_conditional_barrier",
           [](Circuit *circ, const py_unit_vector_t &barrier_args,
@@ -495,12 +500,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "hold (little-endian)."
           "\n:param data: Additional data stored in Barrier operation."
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("barrier_args"), py::arg("condition_bits"), py::arg("value"),
-          py::arg("data") = "")
+          nb::arg("barrier_args"), nb::arg("condition_bits"), nb::arg("value"),
+          nb::arg("data") = "")
       .def(
           "add_circbox",
           [](Circuit *circ, const CircBox &box, const py_unit_vector_t &args,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_box_method(
                 circ, std::make_shared<CircBox>(box), args, kwargs);
           },
@@ -511,11 +516,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:param circbox: The box to append"
           "\n:param args: The qubits/bits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("circbox"), py::arg("args"))
+          nb::arg("circbox"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_circbox_regwise",
           [](Circuit *circ, const CircBox &box, const py_qreg_vector_t &qregs,
-             const py_creg_vector_t &cregs, const py::kwargs &kwargs) {
+             const py_creg_vector_t &cregs, const nb::kwargs &kwargs) {
             std::vector<UnitID> args;
 
             for (const QubitRegister &qreg : qregs) {
@@ -545,13 +550,13 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "lexicographic order of corresponding registers in the "
           ":py:class:`CircBox`"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("circbox"), py::arg("qregs"), py::arg("cregs"))
+          nb::arg("circbox"), nb::arg("qregs"), nb::arg("cregs"), nb::arg("kwargs"))
       .def(
           "add_circbox_with_regmap",
           [](Circuit *circ, const CircBox &box,
              const std::map<std::string, std::string> &qregmap,
              const std::map<std::string, std::string> &cregmap,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             // Get registers of circuit:
             std::vector<QubitRegister> circ_qregs =
                 get_unit_registers<QubitRegister>(*circ);
@@ -646,11 +651,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":py:class:`CircBox` (the map's keys) matches which register in the "
           "outer circuit (the map's values)"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("circbox"), py::arg("qregmap"), py::arg("cregmap"))
+          nb::arg("circbox"), nb::arg("qregmap"), nb::arg("cregmap"), nb::arg("kwargs"))
       .def(
           "add_unitary1qbox",
           [](Circuit *circ, const Unitary1qBox &box, const Qubit &q0,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<Unitary1qBox>(box), {q0}, kwargs);
           },
@@ -658,11 +663,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "circuit.\n\n:param unitarybox: The box to append\n:param "
           "qubit_0: The qubit to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("unitarybox"), py::arg("qubit_0"))
+          nb::arg("unitarybox"), nb::arg("qubit_0"), nb::arg("kwargs"))
       .def(
           "add_unitary2qbox",
           [](Circuit *circ, const Unitary2qBox &box, const Qubit &q0,
-             const Qubit &q1, const py::kwargs &kwargs) {
+             const Qubit &q1, const nb::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<Unitary2qBox>(box), {q0, q1}, kwargs);
           },
@@ -671,11 +676,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "The box to append\n:param qubit_0: The first target "
           "qubit\n:param qubit_1: The second target qubit"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("unitarybox"), py::arg("qubit_0"), py::arg("qubit_1"))
+          nb::arg("unitarybox"), nb::arg("qubit_0"), nb::arg("qubit_1"), nb::arg("kwargs"))
       .def(
           "add_unitary3qbox",
           [](Circuit *circ, const Unitary3qBox &box, const Qubit &q0,
-             const Qubit &q1, const Qubit &q2, const py::kwargs &kwargs) {
+             const Qubit &q1, const Qubit &q2, const nb::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<Unitary3qBox>(box), {q0, q1, q2},
                 kwargs);
@@ -686,12 +691,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:param qubit_1: index of target qubit 1"
           "\n:param qubit_2: index of target qubit 2"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("unitarybox"), py::arg("qubit_0"), py::arg("qubit_1"),
-          py::arg("qubit_2"))
+          nb::arg("unitarybox"), nb::arg("qubit_0"), nb::arg("qubit_1"),
+          nb::arg("qubit_2"), nb::arg("kwargs"))
       .def(
           "add_expbox",
           [](Circuit *circ, const ExpBox &box, const Qubit &q0, const Qubit &q1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<ExpBox>(box), {q0, q1}, kwargs);
           },
@@ -700,11 +705,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "box to append\n:param qubit_0: The first target "
           "qubit\n:param qubit_1: The second target qubit"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("expbox"), py::arg("qubit_0"), py::arg("qubit_1"))
+          nb::arg("expbox"), nb::arg("qubit_0"), nb::arg("qubit_1"), nb::arg("kwargs"))
       .def(
           "add_pauliexpbox",
           [](Circuit *circ, const PauliExpBox &box,
-             const py_qubit_vector_t &qubits, const py::kwargs &kwargs) {
+             const py_qubit_vector_t &qubits, const nb::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<PauliExpBox>(box),
                 {qubits.begin(), qubits.end()}, kwargs);
@@ -713,11 +718,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "circuit.\n\n:param pauliexpbox: The box to append\n:param "
           "qubits: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("pauliexpbox"), py::arg("qubits"))
+          nb::arg("pauliexpbox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_pauliexppairbox",
           [](Circuit *circ, const PauliExpPairBox &box,
-             const py_qubit_vector_t &qubits, const py::kwargs &kwargs) {
+             const py_qubit_vector_t &qubits, const nb::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<PauliExpPairBox>(box),
                 {qubits.begin(), qubits.end()}, kwargs);
@@ -726,11 +731,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "circuit.\n\n:param pauliexppairbox: The box to append\n:param "
           "qubits: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("pauliexppairbox"), py::arg("qubits"))
+          nb::arg("pauliexppairbox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_pauliexpcommutingsetbox",
           [](Circuit *circ, const PauliExpCommutingSetBox &box,
-             const py_qubit_vector_t &qubits, const py::kwargs &kwargs) {
+             const py_qubit_vector_t &qubits, const nb::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<PauliExpCommutingSetBox>(box),
                 {qubits.begin(), qubits.end()}, kwargs);
@@ -740,11 +745,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "append\n:param "
           "qubits: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("pauliexpcommutingsetbox"), py::arg("qubits"))
+          nb::arg("pauliexpcommutingsetbox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_termsequencebox",
           [](Circuit *circ, const TermSequenceBox &box,
-             const py_qubit_vector_t &qubits, const py::kwargs &kwargs) {
+             const py_qubit_vector_t &qubits, const nb::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<TermSequenceBox>(box),
                 {qubits.begin(), qubits.end()}, kwargs);
@@ -754,11 +759,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "append\n:param "
           "qubits: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("termsequencebox"), py::arg("qubits"))
+          nb::arg("termsequencebox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_toffolibox",
           [](Circuit *circ, const ToffoliBox &box,
-             const py_qubit_vector_t &qubits, const py::kwargs &kwargs) {
+             const py_qubit_vector_t &qubits, const nb::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<ToffoliBox>(box),
                 {qubits.begin(), qubits.end()}, kwargs);
@@ -767,12 +772,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "circuit.\n\n:param toffolibox: The box to append\n:param "
           "qubits: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("toffolibox"), py::arg("qubits"))
+          nb::arg("toffolibox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_dummybox",
           [](Circuit *circ, const DummyBox &box,
              const py_qubit_vector_t &qubits, const py_bit_vector_t &bits,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             std::vector<UnitID> args = {qubits.begin(), qubits.end()};
             args.insert(args.end(), bits.begin(), bits.end());
             return add_box_method<UnitID>(
@@ -783,11 +788,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:param qubits: Qubits to append the box to"
           "\n:param bits: Bits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("dummybox"), py::arg("qubits"), py::arg("bits"))
+          nb::arg("dummybox"), nb::arg("qubits"), nb::arg("bits"), nb::arg("kwargs"))
       .def(
           "add_qcontrolbox",
           [](Circuit *circ, const QControlBox &box,
-             const py_unit_vector_t &args, const py::kwargs &kwargs) {
+             const py_unit_vector_t &args, const nb::kwargs &kwargs) {
             return add_box_method(
                 circ, std::make_shared<QControlBox>(box), args, kwargs);
           },
@@ -795,11 +800,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param qcontrolbox: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("qcontrolbox"), py::arg("args"))
+          nb::arg("qcontrolbox"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_phasepolybox",
           [](Circuit *circ, const PhasePolyBox &box,
-             const py_qubit_vector_t &qubits, const py::kwargs &kwargs) {
+             const py_qubit_vector_t &qubits, const nb::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<PhasePolyBox>(box),
                 {qubits.begin(), qubits.end()}, kwargs);
@@ -808,12 +813,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "circuit.\n\n:param phasepolybox: The box to append\n:param "
           "qubits: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("phasepolybox"), py::arg("qubits"))
+          nb::arg("phasepolybox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_custom_gate",
           [](Circuit *circ, const composite_def_ptr_t &definition,
-             const py::tket_custom::SequenceVec<Expr> &params,
-             const py_qubit_vector_t &qubits, const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<Expr> &params,
+             const nb::tket_custom::SequenceVec<Qubit> &qubits, const nb::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<CustomGate>(definition, params),
                 {qubits.begin(), qubits.end()}, kwargs);
@@ -824,11 +829,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "instantiate the gate with, in halfturns\n:param qubits: "
           "The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("definition"), py::arg("params"), py::arg("qubits"))
+          nb::arg("definition"), nb::arg("params"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_assertion",
           [](Circuit *circ, const ProjectorAssertionBox &box,
-             const py::tket_custom::SequenceVec<unsigned> &qubits,
+             const nb::tket_custom::SequenceVec<unsigned> &qubits,
              const std::optional<unsigned> &ancilla,
              const std::optional<std::string> &name) -> Circuit * {
             std::vector<Qubit> qubits_;
@@ -851,12 +856,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:param ancilla: index of ancilla qubit"
           "\n:param name: name used to identify this assertion"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("qubits"), py::arg("ancilla") = std::nullopt,
-          py::arg("name") = std::nullopt)
+          nb::arg("box"), nb::arg("qubits"), nb::arg("ancilla") = std::nullopt,
+          nb::arg("name") = std::nullopt)
       .def(
           "add_assertion",
           [](Circuit *circ, const ProjectorAssertionBox &box,
-             const py::tket_custom::SequenceVec<Qubit> &qubits,
+             const nb::tket_custom::SequenceVec<Qubit> &qubits,
              const std::optional<Qubit> &ancilla,
              const std::optional<std::string> &name) -> Circuit * {
             circ->add_assertion(box, qubits, ancilla, name);
@@ -868,12 +873,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:param ancilla: ancilla qubit"
           "\n:param name: name used to identify this assertion"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("qubits"), py::arg("ancilla") = std::nullopt,
-          py::arg("name") = std::nullopt)
+          nb::arg("box"), nb::arg("qubits"), nb::arg("ancilla") = std::nullopt,
+          nb::arg("name") = std::nullopt)
       .def(
           "add_assertion",
           [](Circuit *circ, const StabiliserAssertionBox &box,
-             const py::tket_custom::SequenceVec<unsigned> &qubits,
+             const nb::tket_custom::SequenceVec<unsigned> &qubits,
              const unsigned &ancilla,
              const std::optional<std::string> &name) -> Circuit * {
             std::vector<Qubit> qubits_;
@@ -891,12 +896,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:param ancilla: index of ancilla qubit"
           "\n:param name: name used to identify this assertion"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("qubits"), py::arg("ancilla"),
-          py::arg("name") = std::nullopt)
+          nb::arg("box"), nb::arg("qubits"), nb::arg("ancilla"),
+          nb::arg("name") = std::nullopt)
       .def(
           "add_assertion",
           [](Circuit *circ, const StabiliserAssertionBox &box,
-             const py::tket_custom::SequenceVec<Qubit> &qubits,
+             const nb::tket_custom::SequenceVec<Qubit> &qubits,
              const Qubit &ancilla,
              const std::optional<std::string> &name) -> Circuit * {
             circ->add_assertion(box, qubits, ancilla, name);
@@ -908,12 +913,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:param ancilla: ancilla qubit"
           "\n:param name: name used to identify this assertion"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("qubits"), py::arg("ancilla"),
-          py::arg("name") = std::nullopt)
+          nb::arg("box"), nb::arg("qubits"), nb::arg("ancilla"),
+          nb::arg("name") = std::nullopt)
       .def(
           "add_multiplexor",
           [](Circuit *circ, const MultiplexorBox &box,
-             const py_unit_vector_t &args, const py::kwargs &kwargs) {
+             const py_unit_vector_t &args, const nb::kwargs &kwargs) {
             return add_box_method(
                 circ, std::make_shared<MultiplexorBox>(box), args, kwargs);
           },
@@ -921,12 +926,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_multiplexor",
           [](Circuit *circ, const MultiplexorBox &box,
-             const py::tket_custom::SequenceVec<unsigned> &args,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<unsigned> &args,
+             const nb::kwargs &kwargs) {
             return add_box_method(
                 circ, std::make_shared<MultiplexorBox>(box), args, kwargs);
           },
@@ -934,11 +939,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param box: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_multiplexedrotation",
           [](Circuit *circ, const MultiplexedRotationBox &box,
-             const py_unit_vector_t &args, const py::kwargs &kwargs) {
+             const py_unit_vector_t &args, const nb::kwargs &kwargs) {
             return add_box_method(
                 circ, std::make_shared<MultiplexedRotationBox>(box), args,
                 kwargs);
@@ -947,12 +952,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_multiplexedrotation",
           [](Circuit *circ, const MultiplexedRotationBox &box,
-             const py::tket_custom::SequenceVec<unsigned> &args,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<unsigned> &args,
+             const nb::kwargs &kwargs) {
             return add_box_method(
                 circ, std::make_shared<MultiplexedRotationBox>(box), args,
                 kwargs);
@@ -961,11 +966,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param box: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_multiplexedu2",
           [](Circuit *circ, const MultiplexedU2Box &box,
-             const py_unit_vector_t &args, const py::kwargs &kwargs) {
+             const py_unit_vector_t &args, const nb::kwargs &kwargs) {
             return add_box_method(
                 circ, std::make_shared<MultiplexedU2Box>(box), args, kwargs);
           },
@@ -973,12 +978,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_multiplexedu2",
           [](Circuit *circ, const MultiplexedU2Box &box,
-             const py::tket_custom::SequenceVec<unsigned> &args,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<unsigned> &args,
+             const nb::kwargs &kwargs) {
             return add_box_method(
                 circ, std::make_shared<MultiplexedU2Box>(box), args, kwargs);
           },
@@ -986,11 +991,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param box: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_multiplexed_tensored_u2",
           [](Circuit *circ, const MultiplexedTensoredU2Box &box,
-             const py_unit_vector_t &args, const py::kwargs &kwargs) {
+             const py_unit_vector_t &args, const nb::kwargs &kwargs) {
             return add_box_method(
                 circ, std::make_shared<MultiplexedTensoredU2Box>(box), args,
                 kwargs);
@@ -999,12 +1004,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_multiplexed_tensored_u2",
           [](Circuit *circ, const MultiplexedTensoredU2Box &box,
-             const py::tket_custom::SequenceVec<unsigned> &args,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<unsigned> &args,
+             const nb::kwargs &kwargs) {
             return add_box_method(
                 circ, std::make_shared<MultiplexedTensoredU2Box>(box), args,
                 kwargs);
@@ -1013,11 +1018,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param box: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_state_preparation_box",
           [](Circuit *circ, const StatePreparationBox &box,
-             const py_unit_vector_t &args, const py::kwargs &kwargs) {
+             const py_unit_vector_t &args, const nb::kwargs &kwargs) {
             return add_box_method(
                 circ, std::make_shared<StatePreparationBox>(box), args, kwargs);
           },
@@ -1025,12 +1030,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_state_preparation_box",
           [](Circuit *circ, const StatePreparationBox &box,
-             const py::tket_custom::SequenceVec<unsigned> &args,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<unsigned> &args,
+             const nb::kwargs &kwargs) {
             return add_box_method(
                 circ, std::make_shared<StatePreparationBox>(box), args, kwargs);
           },
@@ -1038,11 +1043,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param box: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_diagonal_box",
           [](Circuit *circ, const DiagonalBox &box,
-             const py_unit_vector_t &args, const py::kwargs &kwargs) {
+             const py_unit_vector_t &args, const nb::kwargs &kwargs) {
             return add_box_method(
                 circ, std::make_shared<DiagonalBox>(box), args, kwargs);
           },
@@ -1050,12 +1055,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_diagonal_box",
           [](Circuit *circ, const DiagonalBox &box,
-             const py::tket_custom::SequenceVec<unsigned> &args,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<unsigned> &args,
+             const nb::kwargs &kwargs) {
             return add_box_method(
                 circ, std::make_shared<DiagonalBox>(box), args, kwargs);
           },
@@ -1063,11 +1068,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param box: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_conjugation_box",
           [](Circuit *circ, const ConjugationBox &box,
-             const py_unit_vector_t &args, const py::kwargs &kwargs) {
+             const py_unit_vector_t &args, const nb::kwargs &kwargs) {
             return add_box_method(
                 circ, std::make_shared<ConjugationBox>(box), args, kwargs);
           },
@@ -1075,12 +1080,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_conjugation_box",
           [](Circuit *circ, const ConjugationBox &box,
-             const py::tket_custom::SequenceVec<unsigned> &args,
-             const py::kwargs &kwargs) {
+             const nb::tket_custom::SequenceVec<unsigned> &args,
+             const nb::kwargs &kwargs) {
             return add_box_method(
                 circ, std::make_shared<ConjugationBox>(box), args, kwargs);
           },
@@ -1088,228 +1093,228 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           ":param box: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("box"), py::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "H",
-          [](Circuit *circ, unsigned qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::H, {qb}, kwargs);
           },
           "Appends a Hadamard gate."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "X",
-          [](Circuit *circ, unsigned qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::X, {qb}, kwargs);
           },
           "Appends an X gate.", "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Y",
-          [](Circuit *circ, unsigned qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::Y, {qb}, kwargs);
           },
           "Appends a Y gate.", "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Z",
-          [](Circuit *circ, unsigned qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::Z, {qb}, kwargs);
           },
           "Appends a Z gate.", "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "T",
-          [](Circuit *circ, unsigned qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::T, {qb}, kwargs);
           },
           "Appends a T gate (equivalent to U1(0.25,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Tdg",
-          [](Circuit *circ, unsigned qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::Tdg, {qb}, kwargs);
           },
           "Appends a T-dagger gate (equivalent to U1(-0.25,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "S",
-          [](Circuit *circ, unsigned qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::S, {qb}, kwargs);
           },
           "Appends an S gate (equivalent to U1(0.5,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Sdg",
-          [](Circuit *circ, unsigned qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::Sdg, {qb}, kwargs);
           },
           "Appends an S-dagger gate (equivalent to U1(-0.5,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "V",
-          [](Circuit *circ, unsigned qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::V, {qb}, kwargs);
           },
           "Appends a V gate (equivalent to Rx(0.5,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Vdg",
-          [](Circuit *circ, unsigned qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::Vdg, {qb}, kwargs);
           },
           "Appends a V-dagger gate (equivalent to Rx(-0.5,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "SX",
-          [](Circuit *circ, unsigned qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::SX, {qb}, kwargs);
           },
           "Appends a SX gate (equivalent to Rx(0.5,-)"
           " up to a 0.25 global phase)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "SXdg",
-          [](Circuit *circ, unsigned qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::SXdg, {qb}, kwargs);
           },
           "Appends a SXdg gate (equivalent to Rx(-0.5,-)"
           " up to a -0.25 global phase)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Measure",
-          [](Circuit *circ, unsigned qb, unsigned b, const py::kwargs &kwargs) {
+          [](Circuit *circ, unsigned qb, unsigned b, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::Measure, {qb, b}, kwargs);
           },
           "Appends a single-qubit measurement in the computational "
           "(Z) basis."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"), py::arg("bit_index"))
+          nb::arg("qubit"), nb::arg("bit_index"), nb::arg("kwargs"))
       .def(
           "Reset",
-          [](Circuit *circ, unsigned qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::Reset, {qb}, kwargs);
           },
           "Appends a Reset operation. Sets a qubit to the Z-basis 0 state. "
           "Non-unitary operation."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Rz",
           [](Circuit *circ, const Expr &angle, unsigned qb,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::Rz, angle, {qb}, kwargs);
           },
           "Appends an Rz gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Rx",
           [](Circuit *circ, const Expr &angle, unsigned qb,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::Rx, angle, {qb}, kwargs);
           },
           "Appends an Rx gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Ry",
           [](Circuit *circ, const Expr &angle, unsigned qb,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::Ry, angle, {qb}, kwargs);
           },
           "Appends an Ry gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "U1",
           [](Circuit *circ, const Expr &angle, unsigned qb,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::U1, angle, {qb}, kwargs);
           },
           "Appends a U1 gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "U2",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             const unsigned &qb, const py::kwargs &kwargs) {
+             const unsigned &qb, const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<unsigned>(
                 circ, OpType::U2, {angle0, angle1}, {qb}, kwargs);
           },
           "Appends a U2 gate with possibly symbolic angles "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("qubit"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "U3",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             const Expr &angle2, const unsigned &qb, const py::kwargs &kwargs) {
+             const Expr &angle2, const unsigned &qb, const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<unsigned>(
                 circ, OpType::U3, {angle0, angle1, angle2}, {qb}, kwargs);
           },
           "Appends a U3 gate with possibly symbolic angles "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
-          py::arg("qubit"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "GPI",
           [](Circuit *circ, const Expr &angle, unsigned qb,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::GPI, angle, {qb}, kwargs);
           },
           "Appends a GPI gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "GPI2",
           [](Circuit *circ, const Expr &angle, unsigned qb,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::GPI2, angle, {qb}, kwargs);
           },
           "Appends a GPI2 gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "AAMS",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
              const Expr &angle2, const unsigned &qb0, const unsigned &qb1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<unsigned>(
                 circ, OpType::AAMS, {angle0, angle1, angle2}, {qb0, qb1},
                 kwargs);
@@ -1317,25 +1322,25 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "Appends an AAMS gate with possibly symbolic angles "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
-          py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "TK1",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             const Expr &angle2, const unsigned &qb, const py::kwargs &kwargs) {
+             const Expr &angle2, const unsigned &qb, const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<unsigned>(
                 circ, OpType::TK1, {angle0, angle1, angle2}, {qb}, kwargs);
           },
           "Appends a TK1 gate with possibly symbolic angles "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
-          py::arg("qubit"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "TK2",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
              const Expr &angle2, const unsigned &qb0, const unsigned &qb1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<unsigned>(
                 circ, OpType::TK2, {angle0, angle1, angle2}, {qb0, qb1},
                 kwargs);
@@ -1343,122 +1348,122 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "Appends a TK2 gate with possibly symbolic angles "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
-          py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "CX",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::CX, {ctrl, trgt}, kwargs);
           },
           "Appends a CX gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CY",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::CY, {ctrl, trgt}, kwargs);
           },
           "Appends a CY gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CZ",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::CZ, {ctrl, trgt}, kwargs);
           },
           "Appends a CZ gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CH",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::CH, {ctrl, trgt}, kwargs);
           },
           "Appends a CH gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CV",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::CV, {ctrl, trgt}, kwargs);
           },
           "Appends a CV gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CVdg",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::CVdg, {ctrl, trgt}, kwargs);
           },
           "Appends a CVdg gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CSX",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::CSX, {ctrl, trgt}, kwargs);
           },
           "Appends a CSX gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CSXdg",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::CSXdg, {ctrl, trgt}, kwargs);
           },
           "Appends a CSXdg gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CS",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::CS, {ctrl, trgt}, kwargs);
           },
           "Appends a CS gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CSdg",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::CSdg, {ctrl, trgt}, kwargs);
           },
           "Appends a CSdg gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CRz",
           [](Circuit *circ, const Expr &angle, unsigned ctrl, unsigned trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::CRz, angle, {ctrl, trgt}, kwargs);
           },
@@ -1466,11 +1471,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CRx",
           [](Circuit *circ, const Expr &angle, unsigned ctrl, unsigned trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::CRx, angle, {ctrl, trgt}, kwargs);
           },
@@ -1478,11 +1483,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CRy",
           [](Circuit *circ, const Expr &angle, unsigned ctrl, unsigned trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::CRy, angle, {ctrl, trgt}, kwargs);
           },
@@ -1490,11 +1495,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CU1",
           [](Circuit *circ, const Expr &angle, unsigned ctrl, unsigned trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::CU1, angle, {ctrl, trgt}, kwargs);
           },
@@ -1502,12 +1507,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CU3",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
              const Expr &angle2, unsigned ctrl, unsigned trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<unsigned>(
                 circ, OpType::CU3, {angle0, angle1, angle2}, {ctrl, trgt},
                 kwargs);
@@ -1516,88 +1521,88 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "ZZPhase",
           [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::ZZPhase, angle, {qb0, qb1}, kwargs);
           },
           "Appends a ZZ gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "ZZMax",
           [](Circuit *circ, unsigned qb0, unsigned qb1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::ZZMax, {qb0, qb1}, kwargs);
           },
           "Appends a ZZMax gate on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "ESWAP",
           [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::ESWAP, angle, {qb0, qb1}, kwargs);
           },
           "Appends an ESWAP gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "FSim",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             unsigned qb0, unsigned qb1, const py::kwargs &kwargs) {
+             unsigned qb0, unsigned qb1, const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<unsigned>(
                 circ, OpType::FSim, {angle0, angle1}, {qb0, qb1}, kwargs);
           },
           "Appends an FSim gate with possibly symbolic angles (specified in "
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("qubit0"),
-          py::arg("qubit1"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit0"),
+          nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "Sycamore",
           [](Circuit *circ, unsigned qubit0, unsigned qubit1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::Sycamore, {qubit0, qubit1}, kwargs);
           },
           "Appends a Sycamore gate on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "XXPhase",
           [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::XXPhase, angle, {qb0, qb1}, kwargs);
           },
           "Appends a XX gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "YYPhase",
           [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::YYPhase, angle, {qb0, qb1}, kwargs);
           },
           "Appends a YY gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "XXPhase3",
           [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
-             unsigned qb2, const py::kwargs &kwargs) {
+             unsigned qb2, const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::XXPhase3, angle, {qb0, qb1, qb2}, kwargs);
           },
@@ -1605,86 +1610,86 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "in "
           "half-turns) on the wires for the specified three qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"),
-          py::arg("qubit2"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"),
+          nb::arg("qubit2"), nb::arg("kwargs"))
       .def(
           "PhasedX",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1, unsigned qb,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<unsigned>(
                 circ, OpType::PhasedX, {angle0, angle1}, {qb}, kwargs);
           },
           "Appends a PhasedX gate with possibly symbolic angles (specified in "
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("qubit"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "CCX",
           [](Circuit *circ, unsigned ctrl1, unsigned ctrl2, unsigned trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::CCX, {ctrl1, ctrl2, trgt}, kwargs);
           },
           "Appends a CCX gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_0"), py::arg("control_1"), py::arg("target"))
+          nb::arg("control_0"), nb::arg("control_1"), nb::arg("target"), nb::arg("kwargs"))
       .def(
           "ECR",
           [](Circuit *circ, unsigned qb0, unsigned qb1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::ECR, {qb0, qb1}, kwargs);
           },
           "Appends an ECR gate on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit_0"), py::arg("qubit_1"))
+          nb::arg("qubit_0"), nb::arg("qubit_1"), nb::arg("kwargs"))
       .def(
           "SWAP",
           [](Circuit *circ, unsigned qb0, unsigned qb1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::SWAP, {qb0, qb1}, kwargs);
           },
           "Appends a SWAP gate on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit_0"), py::arg("qubit_1"))
+          nb::arg("qubit_0"), nb::arg("qubit_1"), nb::arg("kwargs"))
       .def(
           "CSWAP",
           [](Circuit *circ, unsigned ctrl, unsigned trgt0, unsigned trgt1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::CSWAP, {ctrl, trgt0, trgt1}, kwargs);
           },
           "Appends a CSWAP gate on the wires for the specified "
           "control and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control"), py::arg("target_0"), py::arg("target_1"))
+          nb::arg("control"), nb::arg("target_0"), nb::arg("target_1"), nb::arg("kwargs"))
       .def(
           "ISWAP",
           [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::ISWAP, angle, {qb0, qb1}, kwargs);
           },
           "Appends an ISWAP gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "ISWAPMax",
           [](Circuit *circ, unsigned qb0, unsigned qb1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::ISWAPMax, {qb0, qb1}, kwargs);
           },
           "Appends an ISWAPMax gate on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "PhasedISWAP",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             unsigned qb0, unsigned qb1, const py::kwargs &kwargs) {
+             unsigned qb0, unsigned qb1, const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<unsigned>(
                 circ, OpType::PhasedISWAP, {angle0, angle1}, {qb0, qb1},
                 kwargs);
@@ -1693,8 +1698,8 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "in "
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("qubit0"),
-          py::arg("qubit1"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit0"),
+          nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "measure_all",
           [](Circuit *circ) {
@@ -1746,229 +1751,229 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:return: the new :py:class:`Circuit`")
       .def(
           "H",
-          [](Circuit *circ, const Qubit &qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::H, {qb}, kwargs);
           },
           "Appends a Hadamard gate."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "X",
-          [](Circuit *circ, const Qubit &qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::X, {qb}, kwargs);
           },
           "Appends an X gate."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Y",
-          [](Circuit *circ, const Qubit &qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::Y, {qb}, kwargs);
           },
           "Appends a Y gate."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Z",
-          [](Circuit *circ, const Qubit &qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::Z, {qb}, kwargs);
           },
           "Appends a Z gate."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "T",
-          [](Circuit *circ, const Qubit &qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::T, {qb}, kwargs);
           },
           "Appends a T gate (equivalent to Rz(0.25,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Tdg",
-          [](Circuit *circ, const Qubit &qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::Tdg, {qb}, kwargs);
           },
           "Appends a T-dagger gate (equivalent to Rz(-0.25,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "S",
-          [](Circuit *circ, const Qubit &qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::S, {qb}, kwargs);
           },
           "Appends an S gate (equivalent to Rz(0.5,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Sdg",
-          [](Circuit *circ, const Qubit &qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::Sdg, {qb}, kwargs);
           },
           "Appends an S-dagger gate (equivalent to Rz(-0.5,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "V",
-          [](Circuit *circ, const Qubit &qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::V, {qb}, kwargs);
           },
           "Appends a V gate (equivalent to Rx(0.5,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Vdg",
-          [](Circuit *circ, const Qubit &qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::Vdg, {qb}, kwargs);
           },
           "Appends a V-dagger gate (equivalent to Rx(-0.5,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "SX",
-          [](Circuit *circ, const Qubit &qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::SX, {qb}, kwargs);
           },
           "Appends a SX gate (equivalent to Rx(0.5,-)"
           " up to a 0.25 global phase)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "SXdg",
-          [](Circuit *circ, const Qubit &qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::SXdg, {qb}, kwargs);
           },
           "Appends a SXdg gate (equivalent to Rx(-0.5,-)"
           " up to a -0.25 global phase)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Measure",
           [](Circuit *circ, const Qubit &qb, const Bit &b,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::Measure, {qb, b}, kwargs);
           },
           "Appends a single-qubit measurement in the computational "
           "(Z) basis."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"), py::arg("bit"))
+          nb::arg("qubit"), nb::arg("bit"), nb::arg("kwargs"))
       .def(
           "Reset",
-          [](Circuit *circ, const Qubit &qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::Reset, {qb}, kwargs);
           },
           "Appends a Reset operation. Sets a qubit to the Z-basis 0 state. "
           "Non-unitary operation."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Rz",
           [](Circuit *circ, const Expr &angle, const Qubit &qb,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::Rz, angle, {qb}, kwargs);
           },
           "Appends an Rz gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Rx",
           [](Circuit *circ, const Expr &angle, const Qubit &qb,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::Rx, angle, {qb}, kwargs);
           },
           "Appends an Rx gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Ry",
           [](Circuit *circ, const Expr &angle, const Qubit &qb,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::Ry, angle, {qb}, kwargs);
           },
           "Appends an Ry gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "U1",
           [](Circuit *circ, const Expr &angle, const Qubit &qb,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::U1, angle, {qb}, kwargs);
           },
           "Appends a U1 gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "U2",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             const Qubit &qb, const py::kwargs &kwargs) {
+             const Qubit &qb, const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<UnitID>(
                 circ, OpType::U2, {angle0, angle1}, {qb}, kwargs);
           },
           "Appends a U2 gate with possibly symbolic angles "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("qubit"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "U3",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             const Expr &angle2, const Qubit &qb, const py::kwargs &kwargs) {
+             const Expr &angle2, const Qubit &qb, const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<UnitID>(
                 circ, OpType::U3, {angle0, angle1, angle2}, {qb}, kwargs);
           },
           "Appends a U3 gate with possibly symbolic angles "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
-          py::arg("qubit"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "GPI",
           [](Circuit *circ, const Expr &angle, const Qubit &qb,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::GPI, angle, {qb}, kwargs);
           },
           "Appends a GPI gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "GPI2",
           [](Circuit *circ, const Expr &angle, const Qubit &qb,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::GPI2, angle, {qb}, kwargs);
           },
           "Appends a GPI2 gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "AAMS",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
              const Expr &angle2, const Qubit &qb0, const Qubit &qb1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<UnitID>(
                 circ, OpType::AAMS, {angle0, angle1, angle2}, {qb0, qb1},
                 kwargs);
@@ -1976,25 +1981,25 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "Appends an AAMS gate with possibly symbolic angles "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
-          py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "TK1",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             const Expr &angle2, const Qubit &qb, const py::kwargs &kwargs) {
+             const Expr &angle2, const Qubit &qb, const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<UnitID>(
                 circ, OpType::TK1, {angle0, angle1, angle2}, {qb}, kwargs);
           },
           "Appends a TK1 gate with possibly symbolic angles "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
-          py::arg("qubit"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "TK2",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
              const Expr &angle2, const Qubit &qb0, const Qubit &qb1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<UnitID>(
                 circ, OpType::TK2, {angle0, angle1, angle2}, {qb0, qb1},
                 kwargs);
@@ -2002,122 +2007,122 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "Appends a TK2 gate with possibly symbolic angles "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
-          py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "CX",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::CX, {ctrl, trgt}, kwargs);
           },
           "Appends a CX gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CY",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::CY, {ctrl, trgt}, kwargs);
           },
           "Appends a CY gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CZ",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::CZ, {ctrl, trgt}, kwargs);
           },
           "Appends a CZ gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CH",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::CH, {ctrl, trgt}, kwargs);
           },
           "Appends a CH gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CV",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::CV, {ctrl, trgt}, kwargs);
           },
           "Appends a CV gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CVdg",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::CVdg, {ctrl, trgt}, kwargs);
           },
           "Appends a CVdg gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CSX",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::CSX, {ctrl, trgt}, kwargs);
           },
           "Appends a CSX gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CSXdg",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::CSXdg, {ctrl, trgt}, kwargs);
           },
           "Appends a CSXdg gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CS",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::CS, {ctrl, trgt}, kwargs);
           },
           "Appends a CS gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CSdg",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::CSdg, {ctrl, trgt}, kwargs);
           },
           "Appends a CSdg gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CRz",
           [](Circuit *circ, const Expr &angle, const Qubit &ctrl,
-             const Qubit &trgt, const py::kwargs &kwargs) {
+             const Qubit &trgt, const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::CRz, angle, {ctrl, trgt}, kwargs);
           },
@@ -2125,11 +2130,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CRx",
           [](Circuit *circ, const Expr &angle, const Qubit &ctrl,
-             const Qubit &trgt, const py::kwargs &kwargs) {
+             const Qubit &trgt, const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::CRx, angle, {ctrl, trgt}, kwargs);
           },
@@ -2137,11 +2142,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CRy",
           [](Circuit *circ, const Expr &angle, const Qubit &ctrl,
-             const Qubit &trgt, const py::kwargs &kwargs) {
+             const Qubit &trgt, const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::CRy, angle, {ctrl, trgt}, kwargs);
           },
@@ -2149,11 +2154,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CU1",
           [](Circuit *circ, const Expr &angle, const Qubit &ctrl,
-             const Qubit &trgt, const py::kwargs &kwargs) {
+             const Qubit &trgt, const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::CU1, angle, {ctrl, trgt}, kwargs);
           },
@@ -2161,12 +2166,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CU3",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
              const Expr &angle2, const Qubit &ctrl, const Qubit &trgt,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<UnitID>(
                 circ, OpType::CU3, {angle0, angle1, angle2}, {ctrl, trgt},
                 kwargs);
@@ -2175,175 +2180,175 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
-          py::arg("control_qubit"), py::arg("target_qubit"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
 
       .def(
           "ZZPhase",
           [](Circuit *circ, const Expr &angle, const Qubit &qb0,
-             const Qubit &qb1, const py::kwargs &kwargs) {
+             const Qubit &qb1, const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::ZZPhase, angle, {qb0, qb1}, kwargs);
           },
           "Appends a ZZ gate with a symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "ZZMax",
           [](Circuit *circ, const Qubit &qb0, const Qubit &qb1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::ZZMax, {qb0, qb1}, kwargs);
           },
           "Appends a ZZMax gate on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "ESWAP",
           [](Circuit *circ, const Expr &angle, const Qubit &qb0,
-             const Qubit &qb1, const py::kwargs &kwargs) {
+             const Qubit &qb1, const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::ESWAP, angle, {qb0, qb1}, kwargs);
           },
           "Appends an ESWAP gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "FSim",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             const Qubit &qb0, const Qubit &qb1, const py::kwargs &kwargs) {
+             const Qubit &qb0, const Qubit &qb1, const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<UnitID>(
                 circ, OpType::FSim, {angle0, angle1}, {qb0, qb1}, kwargs);
           },
           "Appends an FSim gate with possibly symbolic angles (specified in "
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("qubit0"),
-          py::arg("qubit1"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit0"),
+          nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "Sycamore",
           [](Circuit *circ, const Qubit &qubit0, const Qubit &qubit1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::Sycamore, {qubit0, qubit1}, kwargs);
           },
           "Appends a Sycamore gate on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "XXPhase",
           [](Circuit *circ, const Expr &angle, const Qubit &qb0,
-             const Qubit &qb1, const py::kwargs &kwargs) {
+             const Qubit &qb1, const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::XXPhase, angle, {qb0, qb1}, kwargs);
           },
           "Appends a XX gate with a symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit0"), py::arg("qubit1"), py::arg("angle"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("angle"), nb::arg("kwargs"))
       .def(
           "YYPhase",
           [](Circuit *circ, const Expr &angle, const Qubit &qb0,
-             const Qubit &qb1, const py::kwargs &kwargs) {
+             const Qubit &qb1, const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::YYPhase, angle, {qb0, qb1}, kwargs);
           },
           "Appends a YY gate with a symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit0"), py::arg("qubit1"), py::arg("angle"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("angle"), nb::arg("kwargs"))
       .def(
           "XXPhase3",
           [](Circuit *circ, const Expr &angle, const Qubit &qb0,
-             const Qubit &qb1, const Qubit &qb2, const py::kwargs &kwargs) {
+             const Qubit &qb1, const Qubit &qb2, const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::XXPhase3, angle, {qb0, qb1, qb2}, kwargs);
           },
           "Appends a 3-qubit XX gate with a symbolic angle (specified in "
           "half-turns) on the wires for the specified three qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"),
-          py::arg("qubit2"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"),
+          nb::arg("qubit2"), nb::arg("kwargs"))
       .def(
           "PhasedX",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             const Qubit &qubit, const py::kwargs &kwargs) {
+             const Qubit &qubit, const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<UnitID>(
                 circ, OpType::PhasedX, {angle0, angle1}, {qubit}, kwargs);
           },
           "Appends a PhasedX gate with possibly symbolic angles (specified in "
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("qubit"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "CCX",
           [](Circuit *circ, const Qubit &ctrl1, const Qubit &ctrl2,
-             const Qubit &trgt, const py::kwargs &kwargs) {
+             const Qubit &trgt, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::CCX, {ctrl1, ctrl2, trgt}, kwargs);
           },
           "Appends a CCX gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control_0"), py::arg("control_1"), py::arg("target"))
+          nb::arg("control_0"), nb::arg("control_1"), nb::arg("target"), nb::arg("kwargs"))
       .def(
           "ECR",
           [](Circuit *circ, const Qubit &qb1, const Qubit &qb2,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::ECR, {qb1, qb2}, kwargs);
           },
           "Appends an ECR gate on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit_0"), py::arg("qubit_1"))
+          nb::arg("qubit_0"), nb::arg("qubit_1"), nb::arg("kwargs"))
       .def(
           "SWAP",
           [](Circuit *circ, const Qubit &qb1, const Qubit &qb2,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::SWAP, {qb1, qb2}, kwargs);
           },
           "Appends a SWAP gate on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit_0"), py::arg("qubit_1"))
+          nb::arg("qubit_0"), nb::arg("qubit_1"), nb::arg("kwargs"))
       .def(
           "CSWAP",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt1,
-             const Qubit &trgt2, const py::kwargs &kwargs) {
+             const Qubit &trgt2, const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::CSWAP, {ctrl, trgt1, trgt2}, kwargs);
           },
           "Appends a CSWAP gate on the wires for the specified "
           "control and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control"), py::arg("target_0"), py::arg("target_1"))
+          nb::arg("control"), nb::arg("target_0"), nb::arg("target_1"), nb::arg("kwargs"))
       .def(
           "ISWAP",
           [](Circuit *circ, const Expr &angle, const Qubit &qb0,
-             const Qubit &qb1, const py::kwargs &kwargs) {
+             const Qubit &qb1, const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::ISWAP, angle, {qb0, qb1}, kwargs);
           },
           "Appends an ISWAP gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "ISWAPMax",
           [](Circuit *circ, const Qubit &qb0, const Qubit &qb1,
-             const py::kwargs &kwargs) {
+             const nb::kwargs &kwargs) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::ISWAPMax, {qb0, qb1}, kwargs);
           },
           "Appends an ISWAPMax gate on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit0"), py::arg("qubit1"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "PhasedISWAP",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             const Qubit &qb0, const Qubit &qb1, const py::kwargs &kwargs) {
+             const Qubit &qb0, const Qubit &qb1, const nb::kwargs &kwargs) {
             return add_gate_method_manyparams<UnitID>(
                 circ, OpType::PhasedISWAP, {angle0, angle1}, {qb0, qb1},
                 kwargs);
@@ -2352,11 +2357,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "in "
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("angle0"), py::arg("angle1"), py::arg("qubit0"),
-          py::arg("qubit1"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit0"),
+          nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "Phase",
-          [](Circuit *circ, const Expr &angle, const py::kwargs &kwargs) {
+          [](Circuit *circ, const Expr &angle, const nb::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::Phase, angle, {}, kwargs);
           });
