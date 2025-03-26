@@ -1,116 +1,88 @@
 #!/usr/bin/env python3
+
+import importlib
 import os
-import re
-import subprocess
 from pathlib import Path
-import argparse
-import pytket
 import pkgutil
+import re
+
+from stubgen import StubGen
+import pytket
 
 
-def replace_in_file_string(
-    file_string: str, matcher: str, replacement: str
-) -> tuple[str, int]:
-    split_text = re.split(matcher, file_string)
+def replace_in_string(stub: str, matcher: str, replacement: str) -> tuple[str, bool]:
+    split_text = re.split(matcher, stub)
     modified_text = replacement.join(split_text)
-    return modified_text, len(split_text) - 1
+    return modified_text, len(split_text) > 1
 
 
-def replace_in_file_string_multiline(
-    file_string: str, matcher: str, replacement: str
-) -> tuple[str, int]:
-    split_text = re.split(matcher, file_string, re.MULTILINE)
-    modified_text = replacement.join(split_text)
-    return modified_text, len(split_text) - 1
+def handle_any_insertion(stub: str) -> str:
+    modified, b_args = replace_in_string(stub, "\\*args(?=[^:])", "*args: Any")
+    modified, b_kwargs = replace_in_string(
+        modified, "\\*\\*kwargs(?=[^:])", "**kwargs: Any"
+    )
+    modified, b_call = replace_in_string(
+        modified,
+        "Callable\\[\\[pytket\\._tket\\.predicates\\.CompilationUnit, object\\], None\\]",
+        "Callable[[pytket._tket.predicates.CompilationUnit, Any], None]",
+    )
+    any_changes = b_args or b_kwargs or b_call
+    if any_changes and not re.search("from typing import .*Any", modified):
+        modified = "from typing import Any" + os.linesep + modified
+    return modified
 
 
-class StubFixer:
-    handle_args_kwargs_needed: bool = False
-    handle_set_conversion_needed: bool = False
-    handle_numpy_stuff_needed: bool = False
-    handle_circuit_depth_needed: bool = False
+def gen_module_stubs(modname, private_exceptions, output_file):
+    mod_imported = importlib.import_module(f"pytket._tket.{modname}")
+    sg = StubGen(
+        module=mod_imported,
+        private_exceptions=private_exceptions,
+        private_submodule="_tket",
+        output_file=output_file,
+    )
+    sg.put(mod_imported)
+    with open(output_file, "w", encoding="utf-8") as f:
+        stub: str = sg.get()
 
-    def handle_args_kwargs_types(self, file_string: str) -> str:
-        modified, n_args = replace_in_file_string(
-            file_string, "\*args(?=[^:])", "*args: Any"
+        stub = handle_any_insertion(stub)
+        stub = re.sub(" = OpType\\.", " = pytket._tket.circuit.OpType.", stub)
+        stub = re.sub(
+            "def to_dict\\(self\\) -> JSON:", "def to_dict(self) -> dict:", stub
         )
-        modified, n_kwargs = replace_in_file_string(
-            modified, "\*\*kwargs(?=[^:])", "**kwargs: Any"
-        )
-        n_total = n_args + n_kwargs
-        if n_total > 0 and not re.search("from typing import .*Any", modified):
-            self.handle_args_kwargs_needed = True
-            modified = "from typing import Any" + os.linesep + modified
-        return modified
-
-    def handle_numpy_stuff(self, file_string: str) -> str:
-        split_text = re.split("numpy\.ndarray\[", file_string)
-        modified_text = "NDArray[".join(split_text)
-        if len(split_text) > 1:
-            modified_text, _ = replace_in_file_string(modified_text, "\[., .\]", "")
-            modified_text, _ = replace_in_file_string(
-                modified_text, "NDArray\[bool\]", "NDArray[numpy.bool_]"
-            )
-            modified_text = (
-                "from numpy.typing import NDArray" + os.linesep + modified_text
-            )
-            self.handle_numpy_stuff_needed = True
-            return modified_text
-        return file_string
-
-    def print_info(self):
-        if not self.handle_args_kwargs_needed:
-            print(
-                f"Info: No file required the transformation `{self.handle_args_kwargs_types.__name__}`. Is it still needed?"
-            )
-        if not self.handle_numpy_stuff_needed:
-            print(
-                f"Info: No file required the transformation `{self.handle_numpy_stuff.__name__}`. Is it still needed?"
-            )
+        stub = re.sub("LogicExpression", "pytket.circuit.logic_exp.LogicExp", stub)
+        stub = re.sub("Mapping\\[Sequence\\[bool\\],", "dict[tuple[bool, ...],", stub)
+        f.write(stub)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        prog="StubGenerator",
-        description="generates type stubs for pybind11 modules",
-    )
-
-    pytket_dir = Path(__file__).parent.parent.resolve()
-    gen_root_dir = pytket_dir
+    output_dir = Path(__file__).parent.parent.resolve() / "pytket" / "_tket"
+    private_exceptions = {
+        "circuit": set(
+            [
+                "_add_wasm",
+                "_add_w_register",
+                "_classical_eval",
+                "_dag_data",
+                "_n_vertices",
+            ]
+        ),
+        "unit_id": set(
+            [
+                "_current",
+                "_DEBUG_ONE_REG_PREFIX",
+                "_DEBUG_ZERO_REG_PREFIX",
+                "_TEMP_BIT_NAME",
+                "_TEMP_BIT_REG_BASE",
+                "_TEMP_REG_SIZE",
+            ]
+        ),
+    }
     for mod in pkgutil.iter_modules(pytket._tket.__path__):
-        if not mod.name.startswith("lib"):
-            print(f"Generate {mod.name}.pyi")
-            subprocess.run(
-                [
-                    "pybind11-stubgen",
-                    f"pytket._tket.{mod.name}",
-                    "--enum-class-locations",
-                    "CXConfigType|BasisOrder|OpType:pytket._tket.circuit",
-                    "--enum-class-locations",
-                    "PauliSynthStrat:pytket._tket.transform",
-                    "--enum-class-locations",
-                    "GraphColourMethod|PauliPartitionStrat:pytket._tket.partition",
-                    "--enum-class-locations",
-                    "SafetyMode:pytket._tket.passes",
-                    "--enum-class-locations",
-                    "ZXWireType|QuantumType:pytket._tket.zx",
-                    "-o",
-                    gen_root_dir,
-                ]
+        modname = mod.name
+        if not modname.startswith("lib"):
+            print(f"Generate {modname}.pyi")
+            gen_module_stubs(
+                modname,
+                private_exceptions=private_exceptions.get(modname, set()),
+                output_file=output_dir / f"{modname}.pyi",
             )
-
-    print("Cleanup:")
-    stub_fixer = StubFixer()
-    for path in Path(f"{gen_root_dir}/pytket/_tket").iterdir():
-        if path.is_file() and path.suffix == ".pyi":
-            print(f"  Fixing {path}")
-            with path.open("r+") as file:
-                text = file.read()
-                text = stub_fixer.handle_args_kwargs_types(text)
-                text = stub_fixer.handle_numpy_stuff(text)
-            with path.open("w") as file:
-                file.write(text)
-
-    print("")
-    stub_fixer.print_info()
-    print("Done")

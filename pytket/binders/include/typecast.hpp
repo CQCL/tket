@@ -14,19 +14,15 @@
 
 #pragma once
 
-#include <pybind11/cast.h>
-#include <pybind11/detail/typeid.h>
-#include <pybind11/functional.h>
-#include <pybind11/operators.h>
-#include <pybind11/pybind11.h>
-#include <pybind11/pytypes.h>
-#include <pybind11/stl.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/list.h>
+#include <nanobind/stl/vector.h>
 
 #include "tket/Utils/Expression.hpp"
 #include "unit_downcast.hpp"
 
-PYBIND11_NAMESPACE_BEGIN(PYBIND11_NAMESPACE)
-PYBIND11_NAMESPACE_BEGIN(tket_custom)
+NAMESPACE_BEGIN(NB_NAMESPACE)
+NAMESPACE_BEGIN(tket_custom)
 // Statically castable to a c++ vector and uses same type caster, but translates
 // to Sequence[T] on python side Instead of list[T]. Should only use as a
 // parameter type, not return type (because "Sequence" as return type is
@@ -51,9 +47,9 @@ class TupleVec : public std::vector<T> {
   using std::vector<T>::vector;
 };
 
-// Make some custom named py::object's
+// Make some custom named nb::object's
 class LogicExpression : public object {
-  PYBIND11_OBJECT_DEFAULT(LogicExpression, object, [](PyObject*) {
+  NB_OBJECT_DEFAULT(LogicExpression, object, "LogicExpression", [](PyObject*) {
     return true;
   })
 };
@@ -63,86 +59,28 @@ class BitLogicExpression : public LogicExpression {
 class BitRegisterLogicExpression : public LogicExpression {
   using LogicExpression::LogicExpression;
 };
-PYBIND11_NAMESPACE_END(tket_custom)
-PYBIND11_NAMESPACE_BEGIN(detail)
-// This struct is copied from the struct "list_caster" in pybind11/stl.h with
-// some minor customization. It adds the ability to customize the type name
-// (using a handle_type_name<T> struct) and specify the python type that the
-// object is cast to. Changes to the pybind11 code may warrant/require changes
-// here. The struct is used to define custom type casters for the "tket_custom"
-// types.
-template <typename Type, typename Value, typename castToType>
-struct tket_sequence_caster {
-  using value_conv = make_caster<Value>;
+NAMESPACE_END(tket_custom)
+NAMESPACE_BEGIN(detail)
 
-  bool load(handle src, bool convert) {
-    if (!isinstance<sequence>(src) || isinstance<bytes>(src) ||
-        isinstance<str>(src)) {
-      return false;
-    }
-    auto s = reinterpret_borrow<sequence>(src);
-    value.clear();
-    reserve_maybe(s, &value);
-    for (auto it : s) {
-      value_conv conv;
-      if (!conv.load(it, convert)) {
-        return false;
-      }
-      value.push_back(cast_op<Value&&>(std::move(conv)));
-    }
-    return true;
-  }
-
- private:
-  template <
-      typename T = Type, enable_if_t<has_reserve_method<T>::value, int> = 0>
-  void reserve_maybe(const sequence& s, Type*) {
-    value.reserve(s.size());
-  }
-  void reserve_maybe(const sequence&, void*) {}
-
- public:
-  template <typename T>
-  static handle cast(T&& src, return_value_policy policy, handle parent) {
-    if (!std::is_lvalue_reference<T>::value) {
-      policy = return_value_policy_override<Value>::policy(policy);
-    }
-    castToType l(src.size());
-    ssize_t index = 0;
-    for (auto&& value : src) {
-      auto value_ = reinterpret_steal<object>(
-          value_conv::cast(detail::forward_like<T>(value), policy, parent));
-      if (!value_) {
-        return handle();
-      }
-      if (std::is_same<castToType, list>::value) {
-        PyList_SET_ITEM(
-            l.ptr(), index++, value_.release().ptr());  // steals a reference
-      } else {
-        static_assert(std::is_same<castToType, tuple>::value);
-        PyTuple_SET_ITEM(
-            l.ptr(), index++, value_.release().ptr());  // steals a reference
-      }
-    }
-    return l.release();
-  }
-
-  PYBIND11_TYPE_CASTER(Type, handle_type_name<Type>::name);
+template <typename T>
+struct handle_type_name {
+  static constexpr auto name = const_name<T>();
 };
+
 template <typename T>
 struct handle_type_name<tket_custom::SequenceVec<T>> {
   static constexpr auto name =
-      const_name("Sequence[") + make_caster<T>::name + const_name("]");
+      const_name("Sequence[") + make_caster<T>::Name + const_name("]");
 };
 template <typename T>
 struct handle_type_name<tket_custom::SequenceList<T>> {
   static constexpr auto name =
-      const_name("Sequence[") + make_caster<T>::name + const_name("]");
+      const_name("Sequence[") + make_caster<T>::Name + const_name("]");
 };
 template <typename T>
 struct handle_type_name<tket_custom::TupleVec<T>> {
   static constexpr auto name =
-      const_name("tuple[") + make_caster<T>::name + const_name(", ...]");
+      const_name("tuple[") + make_caster<T>::Name + const_name(", ...]");
 };
 template <>
 struct handle_type_name<tket_custom::LogicExpression> {
@@ -160,29 +98,30 @@ struct handle_type_name<tket_custom::BitRegisterLogicExpression> {
 };
 template <typename Type>
 struct type_caster<tket_custom::SequenceVec<Type>>
-    : tket_sequence_caster<tket_custom::SequenceVec<Type>, Type, list> {};
+    : list_caster<tket_custom::SequenceVec<Type>, Type> {};
 template <typename Type>
 struct type_caster<tket_custom::SequenceList<Type>>
-    : tket_sequence_caster<tket_custom::SequenceList<Type>, Type, list> {};
+    : list_caster<tket_custom::SequenceList<Type>, Type> {};
 template <typename Type>
 struct type_caster<tket_custom::TupleVec<Type>>
-    : tket_sequence_caster<tket_custom::TupleVec<Type>, Type, tuple> {};
+    : list_caster<tket_custom::TupleVec<Type>, Type> {};
 template <>
 struct type_caster<SymEngine::Expression> {
  public:
-  PYBIND11_TYPE_CASTER(
+  NB_TYPE_CASTER(
       SymEngine::Expression, const_name("typing.Union[sympy.Expr, float]"));
 
-  static void assert_tuple_length(tuple t, unsigned len) {
+  static void assert_tuple_length(nanobind::tuple t, unsigned len) {
     if (t.size() != len)
       throw std::logic_error("Sympy expression is not well-formed");
   };
 
-  static tuple get_checked_args(handle py_expr, unsigned expected_len) {
-    tuple arg_tuple = py_expr.attr("args");
+  static nanobind::tuple get_checked_args(
+      handle py_expr, unsigned expected_len) {
+    nanobind::tuple arg_tuple = py_expr.attr("args");
     if (arg_tuple.size() != expected_len) {
       std::stringstream err;
-      err << "Expected " << repr(py_expr);
+      err << "Expected " << nanobind::cast<std::string>(repr(py_expr));
       err << " to have " << expected_len;
       err << " arguments, but it had " << arg_tuple.size();
       throw std::invalid_argument(err.str());
@@ -191,38 +130,38 @@ struct type_caster<SymEngine::Expression> {
   }
 
   static tket::Expr sympy_to_expr(handle py_expr) {
-    pybind11::module sympy = pybind11::module::import("sympy");
+    nanobind::module_ sympy = nanobind::module_::import_("sympy");
     handle numbers = sympy.attr("core").attr("numbers");
 
     if (isinstance(py_expr, sympy.attr("Symbol"))) {
       handle expr_name = py_expr.attr("name");
-      tket::Sym sym = SymEngine::symbol(expr_name.cast<std::string>());
+      tket::Sym sym = SymEngine::symbol(nanobind::cast<std::string>(expr_name));
       return tket::Expr(sym);
     } else if (isinstance(py_expr, sympy.attr("Mul"))) {
-      tuple arg_tuple = py_expr.attr("args");
+      nanobind::tuple arg_tuple = py_expr.attr("args");
       tket::Expr res(1);
       for (handle elem : arg_tuple) {
         res *= sympy_to_expr(elem);
       }
       return res;
     } else if (isinstance(py_expr, sympy.attr("Add"))) {
-      tuple arg_tuple = py_expr.attr("args");
+      nanobind::tuple arg_tuple = py_expr.attr("args");
       tket::Expr res(0);
       for (handle elem : arg_tuple) {
         res += sympy_to_expr(elem);
       }
       return res;
     } else if (isinstance(py_expr, sympy.attr("Pow"))) {
-      tuple arg_tuple = get_checked_args(py_expr, 2);
+      nanobind::tuple arg_tuple = get_checked_args(py_expr, 2);
       return SymEngine::pow(
           sympy_to_expr(arg_tuple[0]), sympy_to_expr(arg_tuple[1]));
     } else if (isinstance(py_expr, sympy.attr("Integer"))) {
-      return tket::Expr(py_expr.attr("p").cast<long>());
+      return tket::Expr(nanobind::cast<long>(py_expr.attr("p")));
     } else if (isinstance(py_expr, sympy.attr("Rational"))) {
-      return tket::Expr(py_expr.attr("p").cast<long>()) /
-             tket::Expr(py_expr.attr("q").cast<long>());
+      return tket::Expr(nanobind::cast<long>(py_expr.attr("p"))) /
+             tket::Expr(nanobind::cast<long>(py_expr.attr("q")));
     } else if (isinstance(py_expr, sympy.attr("Float"))) {
-      return tket::Expr(repr(py_expr));
+      return tket::Expr(nanobind::cast<std::string>(repr(py_expr)));
     } else if (isinstance(py_expr, numbers.attr("ImaginaryUnit"))) {
       return tket::Expr(SymEngine::I);
     } else if (isinstance(py_expr, numbers.attr("Exp1"))) {
@@ -239,12 +178,12 @@ struct type_caster<SymEngine::Expression> {
       return tket::Expr(SymEngine::Nan);
     }
 // functions with a single argument that have an equivalent in symengine
-#define SECONVERT(engmeth, pyclass)                     \
-  else if (isinstance(py_expr, sympy.attr(#pyclass))) { \
-    tuple arg_tuple = get_checked_args(py_expr, 1);     \
-    tket::Expr the_arg = sympy_to_expr(arg_tuple[0]);   \
-    tket::ExprPtr res = SymEngine::engmeth(the_arg);    \
-    return tket::Expr(res);                             \
+#define SECONVERT(engmeth, pyclass)                           \
+  else if (isinstance(py_expr, sympy.attr(#pyclass))) {       \
+    nanobind::tuple arg_tuple = get_checked_args(py_expr, 1); \
+    tket::Expr the_arg = sympy_to_expr(arg_tuple[0]);         \
+    tket::ExprPtr res = SymEngine::engmeth(the_arg);          \
+    return tket::Expr(res);                                   \
   }
     SECONVERT(log, log)
     SECONVERT(conjugate, conjugate)
@@ -278,18 +217,19 @@ struct type_caster<SymEngine::Expression> {
     SECONVERT(exp, exp)
 #undef SECONVERT
     else if (isinstance(py_expr, sympy.attr("atan2"))) {
-      tuple arg_tuple = get_checked_args(py_expr, 2);
+      nanobind::tuple arg_tuple = get_checked_args(py_expr, 2);
       return SymEngine::atan2(
           sympy_to_expr(arg_tuple[0]), sympy_to_expr(arg_tuple[1]));
     }
     else {
       std::stringstream err;
-      err << "Unable to convert sympy expression " << repr(py_expr);
+      err << "Unable to convert sympy expression "
+          << nanobind::cast<std::string>(repr(py_expr));
       throw std::logic_error(err.str());
     }
   }
-  bool load(handle src, bool) {
-    pybind11::module sympy = pybind11::module::import("sympy");
+  bool from_python(handle src, uint8_t, cleanup_list*) noexcept {
+    nanobind::module_ sympy = nanobind::module_::import_("sympy");
     if (isinstance(src, sympy.attr("Expr"))) {
       value = sympy_to_expr(src);
       return true;
@@ -305,7 +245,7 @@ struct type_caster<SymEngine::Expression> {
   }
 
   static object basic_to_sympy(const tket::ExprPtr& e_) {
-    pybind11::module sympy = pybind11::module::import("sympy");
+    nanobind::module_ sympy = nanobind::module_::import_("sympy");
     switch (e_->get_type_code()) {
       case SymEngine::TypeID::SYMENGINE_SYMBOL: {
         const SymEngine::Symbol* s =
@@ -341,7 +281,7 @@ struct type_caster<SymEngine::Expression> {
       case SymEngine::TypeID::SYMENGINE_INTEGER: {
         const SymEngine::Integer* i =
             dynamic_cast<const SymEngine::Integer*>(e_.get());
-        return reinterpret_borrow<object>(PyLong_FromLong(i->as_int()));
+        return borrow<object>(PyLong_FromLong(i->as_int()));
       }
       case SymEngine::TypeID::SYMENGINE_RATIONAL: {
         const SymEngine::Rational* r =
@@ -352,7 +292,7 @@ struct type_caster<SymEngine::Expression> {
       case SymEngine::TypeID::SYMENGINE_REAL_DOUBLE: {
         const SymEngine::RealDouble* d =
             dynamic_cast<const SymEngine::RealDouble*>(e_.get());
-        return reinterpret_borrow<object>(PyFloat_FromDouble(d->as_double()));
+        return borrow<object>(PyFloat_FromDouble(d->as_double()));
       }
       case SymEngine::TypeID::SYMENGINE_COMPLEX:
       case SymEngine::TypeID::SYMENGINE_COMPLEX_DOUBLE: {
@@ -439,9 +379,9 @@ struct type_caster<SymEngine::Expression> {
     }
   }
 
-  static handle cast(
-      SymEngine::Expression src, return_value_policy /* policy */,
-      handle /* parent */) {
+  static handle from_cpp(
+      SymEngine::Expression src, rv_policy /* policy */,
+      cleanup_list* /* cleanup */) noexcept {
     std::optional<double> eval = tket::eval_expr(src);
     if (!eval)
       return basic_to_sympy(src).release();
@@ -454,21 +394,21 @@ struct type_caster<SymEngine::Expression> {
 template <>
 struct type_caster<SymEngine::RCP<const SymEngine::Symbol>> {
  public:
-  PYBIND11_TYPE_CASTER(
+  NB_TYPE_CASTER(
       SymEngine::RCP<const SymEngine::Symbol>, const_name("sympy.Symbol"));
-  bool load(handle src, bool) {
-    pybind11::module sympy = pybind11::module::import("sympy");
+  bool from_python(handle src, uint8_t, cleanup_list*) noexcept {
+    nanobind::module_ sympy = nanobind::module_::import_("sympy");
     if (!isinstance(src, sympy.attr("Symbol"))) return false;
-    value = SymEngine::symbol(repr(src));
+    value = SymEngine::symbol(repr(src).c_str());
     return true;
   }
-  static handle cast(
-      SymEngine::RCP<const SymEngine::Symbol> src,
-      return_value_policy /* policy */, handle /* parent */) {
-    pybind11::module sympy = pybind11::module_::import("sympy");
+  static handle from_cpp(
+      SymEngine::RCP<const SymEngine::Symbol> src, rv_policy /* policy */,
+      cleanup_list* /* cleanup */) noexcept {
+    nanobind::module_ sympy = nanobind::module_::import_("sympy");
     return sympy.attr("Symbol")(src->get_name()).release();
   }
 };
 // namespace detail
-PYBIND11_NAMESPACE_END(detail)
-PYBIND11_NAMESPACE_END(PYBIND11_NAMESPACE)
+NAMESPACE_END(detail)
+NAMESPACE_END(NB_NAMESPACE)

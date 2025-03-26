@@ -13,20 +13,23 @@
 // limitations under the License.
 
 #pragma once
-#include <pybind11/pybind11.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/pair.h>
+#include <nanobind/stl/string.h>
+#include <nanobind/stl/vector.h>
 
 #include <vector>
 
 #include "tket/Circuit/Circuit.hpp"
 #include "typecast.hpp"
-namespace py = pybind11;
+namespace nb = nanobind;
 
 namespace tket {
 template <typename ID>
 static Circuit *add_gate_method_sequence(
     Circuit *circ, const Op_ptr &op,
-    const py::tket_custom::SequenceVec<ID> &args_seq,
-    const py::kwargs &kwargs) {
+    const nb::tket_custom::SequenceVec<ID> &args_seq,
+    const nb::kwargs &kwargs) {
   std::vector<ID> args = args_seq;
   return add_gate_method(circ, op, args, kwargs);
 }
@@ -34,7 +37,7 @@ static Circuit *add_gate_method_sequence(
 template <typename ID>
 static Circuit *add_gate_method(
     Circuit *circ, const Op_ptr &op, const std::vector<ID> &args,
-    const py::kwargs &kwargs) {
+    const nb::kwargs &kwargs) {
   if (op->get_desc().is_meta()) {
     throw CircuitInvalidity("Cannot add metaop to a circuit.");
   }
@@ -46,7 +49,7 @@ static Circuit *add_gate_method(
   static const std::set<std::string> allowed_kwargs = {
       "opgroup", "condition", "condition_bits", "condition_value"};
   for (const auto kwarg : kwargs) {
-    const std::string kwargstr = py::cast<std::string>(kwarg.first);
+    const std::string kwargstr = nb::cast<std::string>(kwarg.first);
     if (!allowed_kwargs.contains(kwargstr)) {
       std::stringstream msg;
       msg << "Unsupported keyword argument '" << kwargstr << "'";
@@ -55,7 +58,7 @@ static Circuit *add_gate_method(
   }
   std::optional<std::string> opgroup;
   if (kwargs.contains("opgroup")) {
-    opgroup = py::cast<std::string>(kwargs["opgroup"]);
+    opgroup = nb::cast<std::string>(kwargs["opgroup"]);
   }
   bool condition_given = kwargs.contains("condition");
   bool condition_bits_given = kwargs.contains("condition_bits");
@@ -68,10 +71,11 @@ static Circuit *add_gate_method(
         "`condition_value` specified without `condition_bits`");
   }
   if (condition_given) {
-    py::module condition = py::module::import("pytket.circuit.add_condition");
-    py::object add_condition = condition.attr("_add_condition");
-    auto conditions =
-        add_condition(circ, kwargs["condition"]).cast<std::pair<Bit, bool>>();
+    nb::module_ condition =
+        nb::module_::import_("pytket.circuit.add_condition");
+    nb::object add_condition = condition.attr("_add_condition");
+    auto conditions = nb::cast<std::pair<Bit, bool>>(
+        add_condition(circ, kwargs["condition"]));
     unit_vector_t new_args = {conditions.first};
     unsigned n_new_args = new_args.size();
     Op_ptr cond =
@@ -101,10 +105,10 @@ static Circuit *add_gate_method(
     circ->add_op(cond, new_args, opgroup);
   } else if (condition_bits_given) {
     std::vector<ID> new_args =
-        py::cast<std::vector<ID>>(kwargs["condition_bits"]);
+        nb::cast<std::vector<ID>>(kwargs["condition_bits"]);
     unsigned n_new_args = new_args.size();
     unsigned value = condition_value_given
-                         ? py::cast<unsigned>(kwargs["condition_value"])
+                         ? nb::cast<unsigned>(kwargs["condition_value"])
                          : (1u << n_new_args) - 1;
     Op_ptr cond = std::make_shared<Conditional>(op, n_new_args, value);
     new_args.insert(new_args.end(), args.begin(), args.end());

@@ -14,13 +14,19 @@
 
 #include "tket/Placement/Placement.hpp"
 
-#include <pybind11/pybind11.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/map.h>
+#include <nanobind/stl/pair.h>
+#include <nanobind/stl/shared_ptr.h>
+#include <nanobind/stl/string.h>
+#include <nanobind/stl/vector.h>
 
-#include "binder_json.hpp"
+#include <memory>
+
 #include "binder_utils.hpp"
-#include "typecast.hpp"
+#include "nanobind_json/nanobind_json.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 using json = nlohmann::json;
 
 namespace tket {
@@ -47,18 +53,19 @@ void place_fully_connected(
   place_with_map(circ, qmap);
 }
 
-PYBIND11_MODULE(placement, m) {
-  py::class_<Placement, std::shared_ptr<Placement>>(
+NB_MODULE(placement, m) {
+  nb::set_leak_warnings(false);
+  nb::class_<Placement>(
             m, "Placement",
             "The base Placement class, contains methods for getting maps "
             "between Circuit Qubits and Architecture Nodes and for relabelling "
             "Circuit Qubits.")
 
-            .def(py::init<Architecture &>(),
+            .def(nb::init<Architecture &>(),
                  "The constructor for a Placement object. The Architecture object "
                  "describes the connectivity between "
                  "qubits.\n\n:param arc: An Architecture object.",
-                 py::arg("arc"))
+                 nb::arg("arc"))
             .def("__repr__",
                  [](const Placement &) { return "<tket::Placement>"; })
             .def("place",
@@ -68,7 +75,7 @@ PYBIND11_MODULE(placement, m) {
               "Relabels Circuit Qubits to Architecture Nodes and 'unplaced'. For "
               "base Placement, all Qubits and labelled 'unplaced'. "
               "\n\n:param circuit: The Circuit being relabelled.",
-              py::arg("circuit"))
+              nb::arg("circuit"))
             .def_static(
               "place_with_map",
               [](Circuit &circ, std::map<Qubit, Node>& qmap) {
@@ -77,14 +84,14 @@ PYBIND11_MODULE(placement, m) {
               "Relabels Circuit Qubits to Architecture Nodes using given map. "
               "\n\n:param circuit: The circuit being relabelled\n:param "
               "qmap: The map from logical to physical qubits to apply.",
-              py::arg("circuit"), py::arg("qmap"))
+              nb::arg("circuit"), nb::arg("qmap"))
             .def("get_placement_map", &Placement::get_placement_map,
                  "Returns a map from logical to physical qubits that is Architecture "
                  "appropriate for the given Circuit. "
                  "\n\n:param circuit: The circuit a map is designed for."
                  "\n:return: dictionary mapping " CLSOBJS(Qubit) " to "
                  CLSOBJS(Node),
-                 py::arg("circuit"))
+                 nb::arg("circuit"))
             .def("get_placement_maps", &Placement::get_all_placement_maps,
                  "Returns a list of maps from logical to physical qubits that "
                  "are Architecture appropriate for the given Circuit. Each map is "
@@ -93,26 +100,26 @@ PYBIND11_MODULE(placement, m) {
                  "\n:param matches: The maximum number of maps returned by the method."
                  "\n:return: list of dictionaries mapping " CLSOBJS(Qubit) " "
                  "to " CLSOBJS(Node),
-                 py::arg("circuit"), py::arg("matches")=100)
+                 nb::arg("circuit"), nb::arg("matches")=100)
             .def(
-                "to_dict", [](const Placement::Ptr &placement) {
-                    return py::object(json(placement)); },
+                "to_dict", [](const Placement &placement) {
+                    return nb::object(json(std::make_shared<Placement>(placement))); },
                 "Return a JSON serializable dict representation of "
                 "the Placement."
                 "\n\n:return: dict representing the Placement.")
             .def_static(
-                "from_dict", [](const py::dict &dict) {
+                "from_dict", [](const nb::dict &dict) {
                     return json(dict).get<Placement::Ptr>(); },
                 "Construct Placement instance from JSON serializable "
                 "dict representation of the Placement.");
 
-  py::class_<LinePlacement, std::shared_ptr<LinePlacement>, Placement>(
+  nb::class_<LinePlacement, Placement>(
       m, "LinePlacement",
       "The LinePlacement class, contains methods for getting maps "
       "between Circuit Qubits and Architecture Nodes and for relabelling "
       "Circuit Qubits.")
       .def(
-          py::init<Architecture &, unsigned, unsigned>(),
+          nb::init<Architecture &, unsigned, unsigned>(),
           "The constructor for a LinePlacement object. The Architecture "
           "object describes the connectivity "
           "between qubits. In this class, a reduced qubit interaction "
@@ -127,19 +134,26 @@ PYBIND11_MODULE(placement, m) {
           "when constructing lines for assigning to the graph"
           "\n:param maximum_line_depth: maximum depth of circuit considered "
           "when constructing lines for assigning to the graph",
-          py::arg("arc"), py::arg("maximum_line_gates") = 100,
-          py::arg("maximum_line_depth") = 100)
-      .def("__repr__", [](const Placement &) {
-        return "<tket::LinePlacement>";
-      });
+          nb::arg("arc"), nb::arg("maximum_line_gates") = 100,
+          nb::arg("maximum_line_depth") = 100)
+      .def(
+          "__repr__", [](const Placement &) { return "<tket::LinePlacement>"; })
+      .def(
+          "to_dict",
+          [](const LinePlacement &placement) {
+            return nb::object(json(std::make_shared<LinePlacement>(placement)));
+          },
+          "Return a JSON serializable dict representation of "
+          "the LinePlacement."
+          "\n\n:return: dict representing the LinePlacement.");
 
-  py::class_<GraphPlacement, std::shared_ptr<GraphPlacement>, Placement>(
+  nb::class_<GraphPlacement, Placement>(
       m, "GraphPlacement",
       "The GraphPlacement class, contains methods for getting maps "
       "between Circuit Qubits and Architecture Nodes and for relabelling "
       "Circuit Qubits.")
       .def(
-          py::init<
+          nb::init<
               const Architecture &, unsigned, unsigned, unsigned, unsigned>(),
           "The constructor for a GraphPlacement object. The Architecture "
           "object describes the connectivity "
@@ -172,22 +186,30 @@ PYBIND11_MODULE(placement, m) {
           "gates "
           "are added to the pattern graph to for finding subgraph "
           "monomorphisms.",
-          py::arg("arc"), py::arg("maximum_matches") = 1000,
-          py::arg("timeout") = 1000, py::arg("maximum_pattern_gates") = 100,
-          py::arg("maximum_pattern_depth") = 100)
-      .def("__repr__", [](const Placement &) {
-        return "<tket::GraphPlacement>";
-      });
+          nb::arg("arc"), nb::arg("maximum_matches") = 1000,
+          nb::arg("timeout") = 1000, nb::arg("maximum_pattern_gates") = 100,
+          nb::arg("maximum_pattern_depth") = 100)
+      .def(
+          "__repr__",
+          [](const Placement &) { return "<tket::GraphPlacement>"; })
+      .def(
+          "to_dict",
+          [](const GraphPlacement &placement) {
+            return nb::object(
+                json(std::make_shared<GraphPlacement>(placement)));
+          },
+          "Return a JSON serializable dict representation of "
+          "the GraphPlacement."
+          "\n\n:return: dict representing the GraphPlacement.");
 
-  py::class_<
-      NoiseAwarePlacement, std::shared_ptr<NoiseAwarePlacement>, Placement>(
+  nb::class_<NoiseAwarePlacement, Placement>(
       m, "NoiseAwarePlacement",
       "The NoiseAwarePlacement class, contains methods for getting maps "
       "between Circuit Qubits and Architecture Nodes and for relabelling "
       "Circuit Qubits. It uses gate error rates and readout errors "
       "to find the best placement map.")
       .def(
-          py::init<
+          nb::init<
               Architecture &, avg_node_errors_t, avg_link_errors_t,
               avg_readout_errors_t, unsigned, unsigned, unsigned, unsigned>(),
           "The constructor for a NoiseAwarePlacement object. The Architecture"
@@ -213,15 +235,24 @@ PYBIND11_MODULE(placement, m) {
           ":param maximum_pattern_depth: The upper bound on the circuit depth "
           "gates are added to the pattern graph to for finding subgraph "
           "monomorphisms.",
-          py::arg("arc"), py::arg("node_errors") = py::dict(),
-          py::arg("link_errors") = py::dict(),
-          py::arg("readout_errors") = py::dict(),
-          py::arg("maximum_matches") = 1000, py::arg("timeout") = 1000,
-          py::arg("maximum_pattern_gates") = 100,
-          py::arg("maximum_pattern_depth") = 100)
-      .def("__repr__", [](const Placement &) {
-        return "<tket::NoiseAwarePlacement>";
-      });
+          nb::arg("arc"), nb::arg("node_errors") = nb::dict(),
+          nb::arg("link_errors") = nb::dict(),
+          nb::arg("readout_errors") = nb::dict(),
+          nb::arg("maximum_matches") = 1000, nb::arg("timeout") = 1000,
+          nb::arg("maximum_pattern_gates") = 100,
+          nb::arg("maximum_pattern_depth") = 100)
+      .def(
+          "__repr__",
+          [](const Placement &) { return "<tket::NoiseAwarePlacement>"; })
+      .def(
+          "to_dict",
+          [](const NoiseAwarePlacement &placement) {
+            return nb::object(
+                json(std::make_shared<NoiseAwarePlacement>(placement)));
+          },
+          "Return a JSON serializable dict representation of "
+          "the NoiseAwarePlacement."
+          "\n\n:return: dict representing the NoiseAwarePlacement.");
 
   m.def(
       "place_with_map", &place_with_map,
@@ -229,7 +260,7 @@ PYBIND11_MODULE(placement, m) {
       "is partial, remaining Circuit Qubits are left 'unplaced'. "
       "\n\n:param circuit: The Circuit being relabelled. \n:param qmap: "
       "The map from logical to physical qubits to apply.",
-      py::arg("circuit"), py::arg("qmap"));
+      nb::arg("circuit"), nb::arg("qmap"));
 
   m.def(
       "place_fully_connected", &place_fully_connected,
@@ -238,6 +269,6 @@ PYBIND11_MODULE(placement, m) {
       "\n\n:param circuit: The Circuit being relabelled. \n:param "
       "fully_connected: "
       "FullyConnected object Qubits being relabelled to match.",
-      py::arg("circuit"), py::arg("fully_connected"));
+      nb::arg("circuit"), nb::arg("fully_connected"));
 }
 }  // namespace tket
