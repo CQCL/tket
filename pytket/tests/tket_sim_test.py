@@ -122,25 +122,22 @@ def test_premultiplication() -> None:
     # The precise object we want to use as a matrix,
     # followed by the expected result.
     initial_matrices_data = [
-        (((1, 2), (3, 4), (5, 6), (7, 8)), Behaviour.SUCCESS),
-        (((1, 2, -1), (3, 0, 4), (5, -9.72342, 6), (7, 2j, 8)), Behaviour.SUCCESS),
-        # When passed into C++, arrays are silently converted
-        # into an Eigen column vector, NOT a row vector.
-        ([1, 2, 3, 4], Behaviour.RESULT_NEEDS_RESHAPING),
-        (np.asarray([1, 2, 3, 4]), Behaviour.RESULT_NEEDS_RESHAPING),
+        (np.asarray(((1, 2), (3, 4), (5, 6), (7, 8))), Behaviour.SUCCESS),
+        (
+            np.asarray(((1, 2, -1), (3, 0, 4), (5, -9.72342, 6), (7, 2j, 8))),
+            Behaviour.SUCCESS,
+        ),
         # Include some deliberately wrong sized matrices.
         # This really IS a row vector!
-        (((1, 2, 3, 4),), Behaviour.INVALID_MATRIX_PRODUCT),
+        (np.asarray(((1, 2, 3, 4),)), Behaviour.INVALID_MATRIX_PRODUCT),
         (np.asarray([[1, 2, 3, 4]]), Behaviour.INVALID_MATRIX_PRODUCT),
-        ([[1, 0], [0, 0]], Behaviour.INVALID_MATRIX_PRODUCT),
-        ([1, 0, 0], Behaviour.INVALID_MATRIX_PRODUCT),
-        ([1, 0, 0, -9, 2], Behaviour.INVALID_MATRIX_PRODUCT),
-        ([[1, 0], [0, 2]], Behaviour.INVALID_MATRIX_PRODUCT),
+        (np.asarray([[1, 0], [0, 0]]), Behaviour.INVALID_MATRIX_PRODUCT),
+        (np.asarray([[1, 0], [0, 2]]), Behaviour.INVALID_MATRIX_PRODUCT),
     ]
     for circ in get_circuit_triple():
         unitary = get_checked_unitary_matrix(circ)
         for entry in initial_matrices_data:
-            matr: Any = entry[0]
+            matr: np.ndarray = entry[0]
             expected_behaviour = entry[1]
             if expected_behaviour == Behaviour.INVALID_MATRIX_PRODUCT:
                 check_that_premultiplication_fails(circ, unitary, matr)
@@ -229,7 +226,7 @@ def test_statevector() -> None:
         # 1D array of length 4, or as a 2D array of size 1x4".
         assert sv.shape == (4,)
         sv = sv.reshape(4, 1)
-        unitary = np.asarray([1, 0, 0, 0], dtype=np.complex128)
+        unitary = np.asarray([[1], [0], [0], [0]], dtype=np.complex128)
         sv_with_premultiplication = circ.get_unitary_times_other(unitary)
         assert np.allclose(sv, sv_with_premultiplication)
 

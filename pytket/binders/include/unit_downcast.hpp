@@ -13,30 +13,31 @@
 // limitations under the License.
 
 #pragma once
-#include <pybind11/pybind11.h>
+#include <nanobind/nanobind.h>
+
+#include <typeinfo>
 
 #include "tket/Utils/UnitID.hpp"
 
-namespace pybind11 {
+namespace nanobind::detail {
 
 /** Enable automatic downcasting of UnitIDs as required for some Circuit methods
  */
 template <>
-struct polymorphic_type_hook<tket::UnitID> {
-  static const void* get(const tket::UnitID* src, const std::type_info*& type) {
+struct type_hook<tket::UnitID> {
+  static const std::type_info *get(tket::UnitID *src) {
     if (src) {
       if (src->type() == tket::UnitType::Qubit) {
         // Node has no additional info but is more specific
         // If Qubit is needed, then subtyping is sufficient
-        type = &typeid(tket::Node);
+        return &typeid(tket::Node);
       } else if (src->type() == tket::UnitType::WasmState) {
-        type = &typeid(tket::WasmState);
+        return &typeid(tket::WasmState);
       } else {
-        type = &typeid(tket::Bit);
+        return &typeid(tket::Bit);
       }
-    } else
-      type = nullptr;
-    return src;
+    }
+    return &typeid(tket::UnitID);
   }
 };
-}  // namespace pybind11
+}  // namespace nanobind::detail
