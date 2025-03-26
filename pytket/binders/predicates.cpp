@@ -19,7 +19,7 @@
 #include "tket/Utils/UnitID.hpp"
 #include "typecast.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 using json = nlohmann::json;
 
 namespace tket {
@@ -32,7 +32,7 @@ static std::map<UnitID, UnitID> unit_bimap_to_map(const unit_bimap_t &bimap) {
   return res;
 }
 
-PYBIND11_MODULE(predicates, m) {
+NB_MODULE(predicates, m) {
   /* Predicates */
 
   class PyPredicate : public Predicate {
@@ -73,34 +73,34 @@ PYBIND11_MODULE(predicates, m) {
     }
   };
 
-  py::class_<Predicate, PredicatePtr, PyPredicate>(
+  nb::class_<Predicate, PredicatePtr, PyPredicate>(
       m, "Predicate", "A predicate that may be satisfied by a circuit.")
       .def(
           "verify", &Predicate::verify,
           ":return: True if circuit satisfies predicate, else False",
-          py::arg("circuit"))
+          nb::arg("circuit"))
       .def(
           "implies", &Predicate::implies,
           ":return: True if predicate implies another one, else False",
-          py::arg("other"))
+          nb::arg("other"))
       .def("__str__", &Predicate::to_string)
       .def("__repr__", &Predicate::to_string)
       .def(
           "to_dict",
           [](const PredicatePtr &predicate) {
-            return py::object(json(predicate)).cast<py::dict>();
+            return nb::object(json(predicate)).cast<nb::dict>();
           },
           "Return a JSON serializable dict representation of "
           "the Predicate.\n\n"
           ":return: dict representation of the Predicate.")
       .def_static(
           "from_dict",
-          [](const py::dict &predicate_dict) {
+          [](const nb::dict &predicate_dict) {
             return json(predicate_dict).get<PredicatePtr>();
           },
           "Construct Predicate instance from JSON serializable "
           "dict representation of the Predicate.");
-  py::class_<GateSetPredicate, std::shared_ptr<GateSetPredicate>, Predicate>(
+  nb::class_<GateSetPredicate, std::shared_ptr<GateSetPredicate>, Predicate>(
       m, "GateSetPredicate",
       "Predicate asserting that all operations are in the specified set of "
       "types."
@@ -114,126 +114,126 @@ PYBIND11_MODULE(predicates, m) {
       "Classically conditioned operations are permitted provided that the "
       "conditioned operation is of a permitted type.")
       .def(
-          py::init<const OpTypeSet &>(), "Construct from a set of gate types.",
-          py::arg("allowed_types"))
+          nb::init<const OpTypeSet &>(), "Construct from a set of gate types.",
+          nb::arg("allowed_types"))
       .def_property_readonly("gate_set", &GateSetPredicate::get_allowed_types);
-  py::class_<
+  nb::class_<
       NoClassicalControlPredicate, std::shared_ptr<NoClassicalControlPredicate>,
       Predicate>(
       m, "NoClassicalControlPredicate",
       "Predicate asserting that a circuit has no classical controls.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
+      .def(nb::init<>(), "Constructor.");
+  nb::class_<
       NoFastFeedforwardPredicate, std::shared_ptr<NoFastFeedforwardPredicate>,
       Predicate>(
       m, "NoFastFeedforwardPredicate",
       "Predicate asserting that a circuit has no fast feedforward.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
+      .def(nb::init<>(), "Constructor.");
+  nb::class_<
       NoClassicalBitsPredicate, std::shared_ptr<NoClassicalBitsPredicate>,
       Predicate>(
       m, "NoClassicalBitsPredicate",
       "Predicate asserting that a circuit has no classical wires.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
+      .def(nb::init<>(), "Constructor.");
+  nb::class_<
       NoWireSwapsPredicate, std::shared_ptr<NoWireSwapsPredicate>, Predicate>(
       m, "NoWireSwapsPredicate",
       "Predicate asserting that a circuit has no wire swaps.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
+      .def(nb::init<>(), "Constructor.");
+  nb::class_<
       MaxTwoQubitGatesPredicate, std::shared_ptr<MaxTwoQubitGatesPredicate>,
       Predicate>(
       m, "MaxTwoQubitGatesPredicate",
       "Predicate asserting that a circuit has no gates with more than "
       "two input wires.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
+      .def(nb::init<>(), "Constructor.");
+  nb::class_<
       ConnectivityPredicate, std::shared_ptr<ConnectivityPredicate>, Predicate>(
       m, "ConnectivityPredicate",
       "Predicate asserting that a circuit satisfies a given connectivity "
       "graph. The graph is always considered to be undirected.")
       .def(
-          py::init<const Architecture &>(),
+          nb::init<const Architecture &>(),
           "Construct from an :py:class:`Architecture`.",
-          py::arg("architecture"));
-  py::class_<
+          nb::arg("architecture"));
+  nb::class_<
       DirectednessPredicate, std::shared_ptr<DirectednessPredicate>, Predicate>(
       m, "DirectednessPredicate",
       "Predicate asserting that a circuit satisfies a given connectivity "
       "graph. The graph is always considered to be directed.")
       .def(
-          py::init<const Architecture &>(),
+          nb::init<const Architecture &>(),
           "Construct from an :py:class:`Architecture`.",
-          py::arg("architecture"));
-  py::class_<
+          nb::arg("architecture"));
+  nb::class_<
       CliffordCircuitPredicate, std::shared_ptr<CliffordCircuitPredicate>,
       Predicate>(
       m, "CliffordCircuitPredicate",
       "Predicate asserting that a circuit has only Clifford gates and "
       "measurements.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
+      .def(nb::init<>(), "Constructor.");
+  nb::class_<
       UserDefinedPredicate, std::shared_ptr<UserDefinedPredicate>, Predicate>(
       m, "UserDefinedPredicate", "User-defined predicate.")
       .def(
-          py::init<const std::function<bool(const Circuit &)> &>(),
+          nb::init<const std::function<bool(const Circuit &)> &>(),
           "Construct from a user-defined function from "
           ":py:class:`Circuit` to `bool`.",
-          py::arg("check_function"));
-  py::class_<
+          nb::arg("check_function"));
+  nb::class_<
       DefaultRegisterPredicate, std::shared_ptr<DefaultRegisterPredicate>,
       Predicate>(
       m, "DefaultRegisterPredicate",
       "Predicate asserting that a circuit only uses the default quantum "
       "and classical registers.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
+      .def(nb::init<>(), "Constructor.");
+  nb::class_<
       MaxNQubitsPredicate, std::shared_ptr<MaxNQubitsPredicate>, Predicate>(
       m, "MaxNQubitsPredicate",
       "Predicate asserting that a circuit has at most n qubits.")
-      .def(py::init<unsigned>(), "Constructor.");
-  py::class_<
+      .def(nb::init<unsigned>(), "Constructor.");
+  nb::class_<
       MaxNClRegPredicate, std::shared_ptr<MaxNClRegPredicate>, Predicate>(
       m, "MaxNClRegPredicate",
       "Predicate asserting that a circuit has at most n classical registers.")
-      .def(py::init<unsigned>(), "Constructor.");
-  py::class_<
+      .def(nb::init<unsigned>(), "Constructor.");
+  nb::class_<
       PlacementPredicate, std::shared_ptr<PlacementPredicate>, Predicate>(
       m, "PlacementPredicate",
       "Predicate asserting that a circuit has been acted on by some "
       "Placement object.")
       .def(
-          py::init<const Architecture &>(),
+          nb::init<const Architecture &>(),
           "Construct from an :py:class:`Architecture`.",
-          py::arg("architecture"))
+          nb::arg("architecture"))
       .def(
-          py::init<const node_set_t &>(), "Construct from a set of Node.",
-          py::arg("nodes"));
-  py::class_<
+          nb::init<const node_set_t &>(), "Construct from a set of Node.",
+          nb::arg("nodes"));
+  nb::class_<
       NoBarriersPredicate, std::shared_ptr<NoBarriersPredicate>, Predicate>(
       m, "NoBarriersPredicate",
       "Predicate asserting that a circuit contains no Barrier operations.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
+      .def(nb::init<>(), "Constructor.");
+  nb::class_<
       CommutableMeasuresPredicate, std::shared_ptr<CommutableMeasuresPredicate>,
       Predicate>(
       m, "CommutableMeasuresPredicate",
       "Predicate asserting that all measurements can be delayed to the end of "
       "the circuit.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
+      .def(nb::init<>(), "Constructor.");
+  nb::class_<
       NoMidMeasurePredicate, std::shared_ptr<NoMidMeasurePredicate>, Predicate>(
       m, "NoMidMeasurePredicate",
       "Predicate asserting that all measurements occur at the end of the "
       "circuit.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
+      .def(nb::init<>(), "Constructor.");
+  nb::class_<
       NoSymbolsPredicate, std::shared_ptr<NoSymbolsPredicate>, Predicate>(
       m, "NoSymbolsPredicate",
       "Predicate asserting that no gates in the circuit have symbolic "
       "parameters.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
+      .def(nb::init<>(), "Constructor.");
+  nb::class_<
       NormalisedTK2Predicate, std::shared_ptr<NormalisedTK2Predicate>,
       Predicate>(
       m, "NormalisedTK2Predicate",
@@ -246,23 +246,23 @@ PYBIND11_MODULE(predicates, m) {
       "still be ordered in non-increasing order and must be in the interval "
       "[0, 1/2], with the exception of the last one that may be in "
       "[-1/2, 1/2].\n")
-      .def(py::init<>(), "Constructor.");
+      .def(nb::init<>(), "Constructor.");
 
   /* Compilation units */
 
-  py::class_<CompilationUnit>(
+  nb::class_<CompilationUnit>(
       m, "CompilationUnit",
       "This class comprises a circuit and the predicates that the "
       "circuit is required to satisfy, for example to run on a backend.")
       .def(
-          py::init<const Circuit &>(),
-          "Construct from a circuit, with no predicates.", py::arg("circuit"))
+          nb::init<const Circuit &>(),
+          "Construct from a circuit, with no predicates.", nb::arg("circuit"))
       .def(
-          py::init<
+          nb::init<
               const Circuit &,
-              const py::tket_custom::SequenceVec<PredicatePtr> &>(),
+              const nb::tket_custom::SequenceVec<PredicatePtr> &>(),
           "Construct from a circuit and some required predicates.",
-          py::arg("circuit"), py::arg("predicates"))
+          nb::arg("circuit"), nb::arg("predicates"))
       .def(
           "check_all_predicates", &CompilationUnit::check_all_predicates,
           ":return: True if all predicates are satisfied, else False")

@@ -14,8 +14,8 @@
 
 #include "tket/Circuit/Boxes.hpp"
 
-#include <pybind11/eigen.h>
-#include <pybind11/pybind11.h>
+#include <nanobind/eigen/dense.h>
+#include <nanobind/nanobind.h>
 
 #include <memory>
 #include <sstream>
@@ -36,15 +36,15 @@
 #include "tket/Utils/HelperFunctions.hpp"
 #include "typecast.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 using json = nlohmann::json;
 
 namespace tket {
 
 // The typedef PhasePolynomial leads to the python type Dict[List[bool], ...],
 // which is not allowed at runtime because lists aren't hashable
-typedef py::tket_custom::SequenceVec<
-    std::pair<py::tket_custom::SequenceVec<bool>, Expr>>
+typedef nb::tket_custom::SequenceVec<
+    std::pair<nb::tket_custom::SequenceVec<bool>, Expr>>
     PyPhasePolynomialAlternate;
 PhasePolynomial to_cpp_phase_poly(
     const PyPhasePolynomialAlternate &py_phase_poly) {
@@ -54,7 +54,7 @@ PhasePolynomial to_cpp_phase_poly(
   }
   return phase_poly;
 }
-typedef std::map<py::tket_custom::TupleVec<bool>, Expr> PyPhasePolynomial;
+typedef std::map<nb::tket_custom::TupleVec<bool>, Expr> PyPhasePolynomial;
 PhasePolynomial to_cpp_phase_poly(const PyPhasePolynomial &py_phase_poly) {
   return PhasePolynomial(
       std::make_move_iterator(py_phase_poly.begin()),
@@ -62,8 +62,8 @@ PhasePolynomial to_cpp_phase_poly(const PyPhasePolynomial &py_phase_poly) {
 }
 
 // state_perm_t has the same hashability problem
-typedef py::tket_custom::SequenceVec<std::pair<
-    py::tket_custom::SequenceVec<bool>, py::tket_custom::SequenceVec<bool>>>
+typedef nb::tket_custom::SequenceVec<std::pair<
+    nb::tket_custom::SequenceVec<bool>, nb::tket_custom::SequenceVec<bool>>>
     py_state_perm_t;
 state_perm_t to_cpp_state_perm_t(const py_state_perm_t &py_state_perm) {
   return state_perm_t(
@@ -71,7 +71,7 @@ state_perm_t to_cpp_state_perm_t(const py_state_perm_t &py_state_perm) {
       std::make_move_iterator(py_state_perm.end()));
 }
 typedef std::map<
-    py::tket_custom::TupleVec<bool>, py::tket_custom::SequenceVec<bool>>
+    nb::tket_custom::TupleVec<bool>, nb::tket_custom::SequenceVec<bool>>
     py_state_perm_t2;
 state_perm_t to_cpp_state_perm_t(const py_state_perm_t2 &py_state_perm) {
   return state_perm_t(
@@ -79,8 +79,8 @@ state_perm_t to_cpp_state_perm_t(const py_state_perm_t2 &py_state_perm) {
       std::make_move_iterator(py_state_perm.end()));
 }
 
-typedef py::tket_custom::SequenceVec<
-    std::pair<py::tket_custom::SequenceVec<bool>, Op_ptr>>
+typedef nb::tket_custom::SequenceVec<
+    std::pair<nb::tket_custom::SequenceVec<bool>, Op_ptr>>
     py_ctrl_op_map_t_alt;
 ctrl_op_map_t to_cpp_ctrl_op_map_t(const py_ctrl_op_map_t_alt &ctrl_op_list) {
   ctrl_op_map_t ctrl_op_map;
@@ -89,15 +89,15 @@ ctrl_op_map_t to_cpp_ctrl_op_map_t(const py_ctrl_op_map_t_alt &ctrl_op_list) {
   }
   return ctrl_op_map;
 }
-typedef std::map<py::tket_custom::TupleVec<bool>, Op_ptr> py_ctrl_op_map_t;
+typedef std::map<nb::tket_custom::TupleVec<bool>, Op_ptr> py_ctrl_op_map_t;
 ctrl_op_map_t to_cpp_ctrl_op_map_t(const py_ctrl_op_map_t &ctrl_op_map) {
   return ctrl_op_map_t(
       std::make_move_iterator(ctrl_op_map.begin()),
       std::make_move_iterator(ctrl_op_map.end()));
 }
 
-typedef py::tket_custom::SequenceVec<std::pair<
-    py::tket_custom::SequenceVec<bool>, py::tket_custom::SequenceVec<Op_ptr>>>
+typedef nb::tket_custom::SequenceVec<std::pair<
+    nb::tket_custom::SequenceVec<bool>, nb::tket_custom::SequenceVec<Op_ptr>>>
     py_ctrl_tensored_op_map_t_alt;
 ctrl_tensored_op_map_t to_cpp_ctrl_op_map_t(
     const py_ctrl_tensored_op_map_t_alt &ctrl_op_list) {
@@ -108,7 +108,7 @@ ctrl_tensored_op_map_t to_cpp_ctrl_op_map_t(
   return ctrl_op_map;
 }
 typedef std::map<
-    py::tket_custom::TupleVec<bool>, py::tket_custom::SequenceVec<Op_ptr>>
+    nb::tket_custom::TupleVec<bool>, nb::tket_custom::SequenceVec<Op_ptr>>
     py_ctrl_tensored_op_map_t;
 ctrl_tensored_op_map_t to_cpp_ctrl_op_map_t(
     const py_ctrl_tensored_op_map_t &ctrl_op_map) {
@@ -117,14 +117,14 @@ ctrl_tensored_op_map_t to_cpp_ctrl_op_map_t(
       std::make_move_iterator(ctrl_op_map.end()));
 }
 
-// Cast the std::vector keys in a map to py::tuple, since vector is not hashable
+// Cast the std::vector keys in a map to nb::tuple, since vector is not hashable
 // in python
 template <class T1, class T2>
-std::map<py::tket_custom::TupleVec<T1>, T2> cast_keys_to_tuples(
+std::map<nb::tket_custom::TupleVec<T1>, T2> cast_keys_to_tuples(
     const std::map<std::vector<T1>, T2> &map) {
-  std::map<py::tket_custom::TupleVec<T1>, T2> outmap;
+  std::map<nb::tket_custom::TupleVec<T1>, T2> outmap;
   for (const auto &pair : map) {
-    py::tket_custom::TupleVec<T1> tuple_vec(
+    nb::tket_custom::TupleVec<T1> tuple_vec(
         std::make_move_iterator(pair.first.begin()),
         std::make_move_iterator(pair.first.end()));
     outmap.emplace(tuple_vec, pair.second);
@@ -144,13 +144,13 @@ std::vector<std::pair<T1, T2>> cast_map_to_vector_of_pairs(
   return result;
 }
 
-void init_boxes(py::module &m) {
-  py::class_<CircBox, std::shared_ptr<CircBox>, Op>(
+void init_boxes(nb::module &m) {
+  nb::class_<CircBox, std::shared_ptr<CircBox>, Op>(
       m, "CircBox",
       "A user-defined operation specified by a :py:class:`Circuit`.")
       .def(
-          py::init<const Circuit &>(), "Construct from a :py:class:`Circuit`.",
-          py::arg("circ"))
+          nb::init<const Circuit &>(), "Construct from a :py:class:`Circuit`.",
+          nb::arg("circ"))
       .def(
           "get_circuit", [](CircBox &cbox) { return *cbox.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
@@ -168,7 +168,7 @@ void init_boxes(py::module &m) {
           "any Circuit that the CircBox has been added to "
           "(via Circuit.add_circbox). \n\n:param symbol_map: "
           "A map from SymPy symbols to SymPy expressions",
-          py::arg("symbol_map"))
+          nb::arg("symbol_map"))
       .def_property(
           "circuit_name", &CircBox::get_circuit_name,
           &CircBox::set_circuit_name,
@@ -178,30 +178,30 @@ void init_boxes(py::module &m) {
           "any changes are propagated to "
           "any Circuit that the CircBox has been added to "
           "(via Circuit.add_circbox).");
-  py::class_<Unitary1qBox, std::shared_ptr<Unitary1qBox>, Op>(
+  nb::class_<Unitary1qBox, std::shared_ptr<Unitary1qBox>, Op>(
       m, "Unitary1qBox",
       "A user-defined one-qubit operation specified by a unitary matrix.")
       .def(
-          py::init<const Eigen::Matrix2cd &>(),
-          "Construct from a unitary matrix.", py::arg("m"))
+          nb::init<const Eigen::Matrix2cd &>(),
+          "Construct from a unitary matrix.", nb::arg("m"))
       .def(
           "get_circuit", [](Unitary1qBox &ubox) { return *ubox.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
           "get_matrix", &Unitary1qBox::get_matrix,
           ":return: the unitary matrix as a numpy array");
-  py::class_<Unitary2qBox, std::shared_ptr<Unitary2qBox>, Op>(
+  nb::class_<Unitary2qBox, std::shared_ptr<Unitary2qBox>, Op>(
       m, "Unitary2qBox",
       "A user-defined two-qubit operation specified by a unitary matrix.")
       .def(
-          py::init<const Eigen::Matrix4cd &, BasisOrder>(),
+          nb::init<const Eigen::Matrix4cd &, BasisOrder>(),
           "Construct from a unitary matrix.\n\n"
           ":param m: The unitary matrix\n"
           ":param basis: Whether the provided unitary is in the ILO-BE "
           "(increasing lexicographic order of qubit ids, big-endian "
           "indexing) format, or DLO-BE (decreasing lexicographic order "
           "of ids)",
-          py::arg("m"), py::arg("basis") = BasisOrder::ilo)
+          nb::arg("m"), nb::arg("basis") = BasisOrder::ilo)
       .def(
           "get_circuit", [](Unitary2qBox &ubox) { return *ubox.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
@@ -209,31 +209,31 @@ void init_boxes(py::module &m) {
           "get_matrix", &Unitary2qBox::get_matrix,
           ":return: the unitary matrix (in ILO-BE format) as a numpy "
           "array");
-  py::class_<Unitary3qBox, std::shared_ptr<Unitary3qBox>, Op>(
+  nb::class_<Unitary3qBox, std::shared_ptr<Unitary3qBox>, Op>(
       m, "Unitary3qBox",
       "A user-defined three-qubit operation specified by a unitary matrix.")
       .def(
-          py::init<const Eigen::MatrixXcd &, BasisOrder>(),
+          nb::init<const Eigen::MatrixXcd &, BasisOrder>(),
           "Construct from a unitary matrix.\n\n"
           ":param m: The unitary matrix\n"
           ":param basis: Whether the provided unitary is in the ILO-BE "
           "(increasing lexicographic order of qubit ids, big-endian "
           "indexing) format, or DLO-BE (decreasing lexicographic order "
           "of ids)",
-          py::arg("m"), py::arg("basis") = BasisOrder::ilo)
+          nb::arg("m"), nb::arg("basis") = BasisOrder::ilo)
       .def(
           "get_circuit", [](Unitary3qBox &ubox) { return *ubox.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
           "get_matrix", &Unitary3qBox::get_matrix,
           ":return: the unitary matrix (in ILO-BE format) as a numpy array");
-  py::class_<ExpBox, std::shared_ptr<ExpBox>, Op>(
+  nb::class_<ExpBox, std::shared_ptr<ExpBox>, Op>(
       m, "ExpBox",
       "A user-defined two-qubit operation whose corresponding unitary "
       "matrix "
       "is the exponential of a user-defined hermitian matrix.")
       .def(
-          py::init<const Eigen::Matrix4cd &, double, BasisOrder>(),
+          nb::init<const Eigen::Matrix4cd &, double, BasisOrder>(),
           "Construct :math:`e^{itA}` from a hermitian matrix :math:`A` "
           "and a parameter :math:`t`.\n\n"
           ":param A: A hermitian matrix\n"
@@ -242,16 +242,16 @@ void init_boxes(py::module &m) {
           "(increasing lexicographic order of qubit ids, big-endian "
           "indexing) format, or DLO-BE (decreasing lexicographic order "
           "of ids)",
-          py::arg("A"), py::arg("t"), py::arg("basis") = BasisOrder::ilo)
+          nb::arg("A"), nb::arg("t"), nb::arg("basis") = BasisOrder::ilo)
       .def(
           "get_circuit", [](ExpBox &ebox) { return *ebox.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box");
-  py::class_<PauliExpBox, std::shared_ptr<PauliExpBox>, Op>(
+  nb::class_<PauliExpBox, std::shared_ptr<PauliExpBox>, Op>(
       m, "PauliExpBox",
       "An operation defined as the exponential of a tensor of Pauli "
       "operations and a (possibly symbolic) phase parameter.")
       .def(
-          py::init([](const py::tket_custom::SequenceVec<Pauli> &paulis, Expr t,
+          nb::init([](const nb::tket_custom::SequenceVec<Pauli> &paulis, Expr t,
                       CXConfigType config) {
             return PauliExpBox(SymPauliTensor(paulis, t), config);
           }),
@@ -259,8 +259,8 @@ void init_boxes(py::module &m) {
           "\\sigma_1 \\otimes \\cdots}` from Pauli operators "
           ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and a parameter "
           ":math:`t`.",
-          py::arg("paulis"), py::arg("t"),
-          py::arg("cx_config_type") = CXConfigType::Tree)
+          nb::arg("paulis"), nb::arg("t"),
+          nb::arg("cx_config_type") = CXConfigType::Tree)
       .def(
           "get_circuit", [](PauliExpBox &pbox) { return *pbox.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
@@ -273,7 +273,7 @@ void init_boxes(py::module &m) {
       .def(
           "get_cx_config", &PauliExpBox::get_cx_config,
           ":return: decomposition method");
-  py::class_<PauliExpPairBox, std::shared_ptr<PauliExpPairBox>, Op>(
+  nb::class_<PauliExpPairBox, std::shared_ptr<PauliExpPairBox>, Op>(
       m, "PauliExpPairBox",
       "A pair of (not necessarily commuting) Pauli exponentials performed in "
       "sequence.\nPairing up exponentials for synthesis can reduce gate costs "
@@ -281,9 +281,9 @@ void init_boxes(py::module &m) {
       "reductions found when the Pauli tensors act on a large number of the "
       "same qubits.\nPhase parameters may be symbolic.")
       .def(
-          py::init([](const py::tket_custom::SequenceVec<Pauli> &paulis0,
+          nb::init([](const nb::tket_custom::SequenceVec<Pauli> &paulis0,
                       Expr t0,
-                      const py::tket_custom::SequenceVec<Pauli> &paulis1,
+                      const nb::tket_custom::SequenceVec<Pauli> &paulis1,
                       Expr t1, CXConfigType config) {
             return PauliExpPairBox(
                 SymPauliTensor(paulis0, t0), SymPauliTensor(paulis1, t1),
@@ -294,8 +294,8 @@ void init_boxes(py::module &m) {
           "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
           ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters "
           ":math:`t_j, j \\in \\{0,1\\}`.",
-          py::arg("paulis0"), py::arg("t0"), py::arg("paulis1"), py::arg("t1"),
-          py::arg("cx_config_type") = CXConfigType::Tree)
+          nb::arg("paulis0"), nb::arg("t0"), nb::arg("paulis1"), nb::arg("t1"),
+          nb::arg("cx_config_type") = CXConfigType::Tree)
       .def(
           "get_circuit",
           [](PauliExpPairBox &pbox) { return *pbox.to_circuit(); },
@@ -310,19 +310,19 @@ void init_boxes(py::module &m) {
       .def(
           "get_cx_config", &PauliExpPairBox::get_cx_config,
           ":return: decomposition method");
-  py::class_<
+  nb::class_<
       PauliExpCommutingSetBox, std::shared_ptr<PauliExpCommutingSetBox>, Op>(
       m, "PauliExpCommutingSetBox",
       "An operation defined as a set of commuting of exponentials of a"
       "tensor of Pauli operations and their (possibly symbolic) phase "
       "parameters.")
       .def(
-          py::init([](const py::tket_custom::SequenceVec<
-                          std::pair<py::tket_custom::SequenceVec<Pauli>, Expr>>
+          nb::init([](const nb::tket_custom::SequenceVec<
+                          std::pair<nb::tket_custom::SequenceVec<Pauli>, Expr>>
                           &pauli_gadgets,
                       CXConfigType config) {
             std::vector<SymPauliTensor> gadgets;
-            for (const std::pair<py::tket_custom::SequenceVec<Pauli>, Expr> &g :
+            for (const std::pair<nb::tket_custom::SequenceVec<Pauli>, Expr> &g :
                  pauli_gadgets)
               gadgets.push_back(SymPauliTensor(g.first, g.second));
             return PauliExpCommutingSetBox(gadgets, config);
@@ -333,8 +333,8 @@ void init_boxes(py::module &m) {
           "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
           ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters "
           ":math:`t_j, j \\in \\{0, 1, \\cdots \\}`.",
-          py::arg("pauli_gadgets"),
-          py::arg("cx_config_type") = CXConfigType::Tree)
+          nb::arg("pauli_gadgets"),
+          nb::arg("cx_config_type") = CXConfigType::Tree)
       .def(
           "get_circuit",
           [](PauliExpCommutingSetBox &pbox) { return *pbox.to_circuit(); },
@@ -353,24 +353,24 @@ void init_boxes(py::module &m) {
           "get_cx_config", &PauliExpCommutingSetBox::get_cx_config,
           ":return: decomposition method");
 
-  py::module::import("pytket._tket.transform");
-  py::module::import("pytket._tket.partition");
-  py::class_<TermSequenceBox, std::shared_ptr<TermSequenceBox>, Op>(
+  nb::module::import("pytket._tket.transform");
+  nb::module::import("pytket._tket.partition");
+  nb::class_<TermSequenceBox, std::shared_ptr<TermSequenceBox>, Op>(
       m, "TermSequenceBox",
       "An unordered collection of Pauli exponentials "
       "that can be synthesised in any order, causing a "
       "change in the unitary operation. Synthesis order "
       "depends on the synthesis strategy chosen only.")
       .def(
-          py::init([](const py::tket_custom::SequenceVec<
-                          std::pair<py::tket_custom::SequenceVec<Pauli>, Expr>>
+          nb::init([](const nb::tket_custom::SequenceVec<
+                          std::pair<nb::tket_custom::SequenceVec<Pauli>, Expr>>
                           &pauli_gadgets,
                       Transforms::PauliSynthStrat synth_strat,
                       PauliPartitionStrat partition_strat,
                       GraphColourMethod graph_colouring, CXConfigType cx_config,
                       double depth_weight) {
             std::vector<SymPauliTensor> gadgets;
-            for (const std::pair<py::tket_custom::SequenceVec<Pauli>, Expr> &g :
+            for (const std::pair<nb::tket_custom::SequenceVec<Pauli>, Expr> &g :
                  pauli_gadgets)
               gadgets.push_back(SymPauliTensor(g.first, g.second));
             return TermSequenceBox(
@@ -387,12 +387,12 @@ void init_boxes(py::module &m) {
           "applies to synthesis_strategy `PauliSynthStrat:Greedy`. "
           "`partitioning_strategy`, `graph_colouring`, and `cx_config_type` "
           "have no effect if `PauliSynthStrat:Greedy` is used.",
-          py::arg("pauli_gadgets"),
-          py::arg("synthesis_strategy") = Transforms::PauliSynthStrat::Sets,
-          py::arg("partitioning_strategy") = PauliPartitionStrat::CommutingSets,
-          py::arg("graph_colouring") = GraphColourMethod::Lazy,
-          py::arg("cx_config_type") = CXConfigType::Tree,
-          py::arg("depth_weight") = 0.3)
+          nb::arg("pauli_gadgets"),
+          nb::arg("synthesis_strategy") = Transforms::PauliSynthStrat::Sets,
+          nb::arg("partitioning_strategy") = PauliPartitionStrat::CommutingSets,
+          nb::arg("graph_colouring") = GraphColourMethod::Lazy,
+          nb::arg("cx_config_type") = CXConfigType::Tree,
+          nb::arg("depth_weight") = 0.3)
       .def(
           "get_circuit",
           [](TermSequenceBox &pbox) { return *pbox.to_circuit(); },
@@ -423,7 +423,7 @@ void init_boxes(py::module &m) {
           "get_depth_weight", &TermSequenceBox::get_depth_weight,
           ":return: depth tuning parameter");
 
-  py::enum_<ToffoliBoxSynthStrat>(
+  nb::enum_<ToffoliBoxSynthStrat>(
       m, "ToffoliBoxSynthStrat",
       "Enum strategies for synthesising ToffoliBoxes")
       .value(
@@ -432,12 +432,12 @@ void init_boxes(py::module &m) {
       .value(
           "Cycle", ToffoliBoxSynthStrat::Cycle,
           "Use CnX gates to perform transpositions");
-  py::class_<ToffoliBox, std::shared_ptr<ToffoliBox>, Op>(
+  nb::class_<ToffoliBox, std::shared_ptr<ToffoliBox>, Op>(
       m, "ToffoliBox",
       "An operation that constructs a circuit to implement the specified "
       "permutation of classical basis states.")
       .def(
-          py::init([](const py_state_perm_t &perm, ToffoliBoxSynthStrat strat,
+          nb::init([](const py_state_perm_t &perm, ToffoliBoxSynthStrat strat,
                       OpType optype) {
             return ToffoliBox(to_cpp_state_perm_t(perm), strat, optype);
           }),
@@ -447,10 +447,10 @@ void init_boxes(py::module &m) {
           ":param rotation_axis: the rotation axis of the multiplexors used in "
           "the decomposition. Can be either Rx or Ry. Only applicable to the "
           "Matching strategy. Default to Ry.",
-          py::arg("permutation"), py::arg("strat"),
-          py::arg("rotation_axis") = OpType::Ry)
+          nb::arg("permutation"), nb::arg("strat"),
+          nb::arg("rotation_axis") = OpType::Ry)
       .def(
-          py::init(
+          nb::init(
               [](const py_state_perm_t &perm, const OpType &rotation_axis) {
                 return ToffoliBox(
                     to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching,
@@ -461,9 +461,9 @@ void init_boxes(py::module &m) {
           ":param permutation: a list of bitstring pairs\n"
           ":param rotation_axis: the rotation axis of the multiplexors used in "
           "the decomposition. Can be either Rx or Ry, default to Ry.",
-          py::arg("permutation"), py::arg("rotation_axis") = OpType::Ry)
+          nb::arg("permutation"), nb::arg("rotation_axis") = OpType::Ry)
       .def(
-          py::init([](unsigned n_qubits, const py_state_perm_t &perm,
+          nb::init([](unsigned n_qubits, const py_state_perm_t &perm,
                       const OpType &rotation_axis) {
             (void)n_qubits;
             PyErr_WarnEx(
@@ -476,10 +476,10 @@ void init_boxes(py::module &m) {
                 rotation_axis);
           }),
           "Constructor for backward compatibility. Subject to deprecation.",
-          py::arg("n_qubits"), py::arg("permutation"),
-          py::arg("rotation_axis") = OpType::Ry)
+          nb::arg("n_qubits"), nb::arg("permutation"),
+          nb::arg("rotation_axis") = OpType::Ry)
       .def(
-          py::init([](const py_state_perm_t2 &perm, ToffoliBoxSynthStrat strat,
+          nb::init([](const py_state_perm_t2 &perm, ToffoliBoxSynthStrat strat,
                       OpType optype) {
             return ToffoliBox(to_cpp_state_perm_t(perm), strat, optype);
           }),
@@ -489,10 +489,10 @@ void init_boxes(py::module &m) {
           ":param rotation_axis: the rotation axis of the multiplexors used in "
           "the decomposition. Can be either Rx or Ry. Only applicable to the "
           "Matching strategy. Default to Ry.",
-          py::arg("permutation"), py::arg("strat"),
-          py::arg("rotation_axis") = OpType::Ry)
+          nb::arg("permutation"), nb::arg("strat"),
+          nb::arg("rotation_axis") = OpType::Ry)
       .def(
-          py::init(
+          nb::init(
               [](const py_state_perm_t2 &perm, const OpType &rotation_axis) {
                 return ToffoliBox(
                     to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching,
@@ -503,9 +503,9 @@ void init_boxes(py::module &m) {
           ":param permutation: a map between bitstrings\n"
           ":param rotation_axis: the rotation axis of the multiplexors used in "
           "the decomposition. Can be either Rx or Ry, default to Ry.",
-          py::arg("permutation"), py::arg("rotation_axis") = OpType::Ry)
+          nb::arg("permutation"), nb::arg("rotation_axis") = OpType::Ry)
       .def(
-          py::init([](unsigned n_qubits, const py_state_perm_t2 &perm,
+          nb::init([](unsigned n_qubits, const py_state_perm_t2 &perm,
                       const OpType &rotation_axis) {
             (void)n_qubits;
             PyErr_WarnEx(
@@ -518,19 +518,19 @@ void init_boxes(py::module &m) {
                 rotation_axis);
           }),
           "Constructor for backward compatibility. Subject to deprecation.",
-          py::arg("n_qubits"), py::arg("permutation"),
-          py::arg("rotation_axis") = OpType::Ry)
+          nb::arg("n_qubits"), nb::arg("permutation"),
+          nb::arg("rotation_axis") = OpType::Ry)
       .def(
           "get_circuit", [](ToffoliBox &tbox) { return *tbox.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
           "get_permutation",
           [](ToffoliBox &box) {
-            std::map<py::tuple, py::tuple> outmap;
+            std::map<nb::tuple, nb::tuple> outmap;
             for (const auto &pair : box.get_permutation()) {
               outmap.insert(
-                  {py::tuple(py::cast(pair.first)),
-                   py::tuple(py::cast(pair.second))});
+                  {nb::tuple(nb::cast(pair.first)),
+                   nb::tuple(nb::cast(pair.second))});
             }
             return outmap;
           },
@@ -541,12 +541,12 @@ void init_boxes(py::module &m) {
       .def(
           "get_rotation_axis", &ToffoliBox::get_rotation_axis,
           ":return: the rotation axis");
-  py::class_<ResourceBounds<unsigned>>(
+  nb::class_<ResourceBounds<unsigned>>(
       m, "ResourceBounds",
       "Structure holding a minimum and maximum value of some resource, where "
       "both values are unsigned integers.")
       .def(
-          py::init([](unsigned min, unsigned max) {
+          nb::init([](unsigned min, unsigned max) {
             if (min > max) {
               throw std::invalid_argument(
                   "minimum must be less than or equal to maximum");
@@ -556,7 +556,7 @@ void init_boxes(py::module &m) {
           "Constructs a ResourceBounds object.\n\n"
           ":param min: minimum value\n"
           ":param max: maximum value\n",
-          py::arg("min"), py::arg("max"))
+          nb::arg("min"), nb::arg("max"))
       .def(
           "get_min",
           [](const ResourceBounds<unsigned> &resource_bounds) {
@@ -569,7 +569,7 @@ void init_boxes(py::module &m) {
             return resource_bounds.max;
           },
           ":return: the maximum value");
-  py::class_<ResourceData>(
+  nb::class_<ResourceData>(
       m, "ResourceData",
       "An object holding resource data for use in a :py:class:`DummyBox`."
       "\n\nThe object holds several fields representing minimum and maximum "
@@ -578,7 +578,7 @@ void init_boxes(py::module &m) {
       "in the (imagined) circuit."
       "\n\nSee :py:meth:`Circuit.get_resources` for how to use this data.")
       .def(
-          py::init([](std::map<OpType, ResourceBounds<unsigned>> op_type_count,
+          nb::init([](std::map<OpType, ResourceBounds<unsigned>> op_type_count,
                       ResourceBounds<unsigned> gate_depth,
                       std::map<OpType, ResourceBounds<unsigned>> op_type_depth,
                       ResourceBounds<unsigned> two_qubit_gate_depth) {
@@ -592,8 +592,8 @@ void init_boxes(py::module &m) {
           ":param op_type_depth: dictionary of depths of selected "
           ":py:class:`OpType`\n"
           ":param two_qubit_gate_depth: overall two-qubit-gate depth",
-          py::arg("op_type_count"), py::arg("gate_depth"),
-          py::arg("op_type_depth"), py::arg("two_qubit_gate_depth"))
+          nb::arg("op_type_count"), nb::arg("gate_depth"),
+          nb::arg("op_type_depth"), nb::arg("two_qubit_gate_depth"))
       .def(
           "get_op_type_count",
           [](const ResourceData &resource_data) {
@@ -643,19 +643,19 @@ void init_boxes(py::module &m) {
         ss << ")";
         return ss.str();
       });
-  py::class_<DummyBox, std::shared_ptr<DummyBox>, Op>(
+  nb::class_<DummyBox, std::shared_ptr<DummyBox>, Op>(
       m, "DummyBox",
       "A placeholder operation that holds resource data. This box type cannot "
       "be decomposed into a circuit. It only serves to record resource data "
       "for a region of a circuit: for example, upper and lower bounds on gate "
       "counts and depth. A circuit containing such a box cannot be executed.")
       .def(
-          py::init([](unsigned n_qubits, unsigned n_bits,
+          nb::init([](unsigned n_qubits, unsigned n_bits,
                       const ResourceData &resource_data) {
             return DummyBox(n_qubits, n_bits, resource_data);
           }),
           "Construct a new instance from some resource data.",
-          py::arg("n_qubits"), py::arg("n_bits"), py::arg("resource_data"))
+          nb::arg("n_qubits"), nb::arg("n_bits"), nb::arg("resource_data"))
       .def(
           "get_n_qubits", &DummyBox::get_n_qubits,
           ":return: the number of qubits covered by the box")
@@ -665,13 +665,13 @@ void init_boxes(py::module &m) {
       .def(
           "get_resource_data", &DummyBox::get_resource_data,
           ":return: the associated resource data");
-  py::class_<QControlBox, std::shared_ptr<QControlBox>, Op>(
+  nb::class_<QControlBox, std::shared_ptr<QControlBox>, Op>(
       m, "QControlBox",
       "A user-defined controlled operation specified by an "
       ":py:class:`Op`, the number of quantum controls, and the control state "
       "expressed as an integer or a bit vector.")
       .def(
-          py::init<Op_ptr &, unsigned, py::tket_custom::SequenceVec<bool> &>(),
+          nb::init<Op_ptr &, unsigned, nb::tket_custom::SequenceVec<bool> &>(),
           "Construct from an :py:class:`Op`, a number of quantum "
           "controls, and the control state expressed as a bit vector. The "
           "controls occupy the low-index ports of the "
@@ -680,10 +680,10 @@ void init_boxes(py::module &m) {
           ":param n_controls: the number of control qubits. Default to 1\n"
           ":param control_state: the control state expressed as a bit vector. "
           "Default to all 1s\n",
-          py::arg("op"), py::arg("n_controls") = 1,
-          py::arg("control_state") = std::vector<bool>())
+          nb::arg("op"), nb::arg("n_controls") = 1,
+          nb::arg("control_state") = std::vector<bool>())
       .def(
-          py::init([](Op_ptr &op, unsigned n_controls,
+          nb::init([](Op_ptr &op, unsigned n_controls,
                       unsigned long long control_state) {
             return QControlBox(
                 op, n_controls, dec_to_bin(control_state, n_controls));
@@ -696,13 +696,13 @@ void init_boxes(py::module &m) {
           ":param n_controls: the number of control qubits\n"
           ":param control_state: the control state expressed as an integer. "
           "Big-endian\n",
-          py::arg("op"), py::arg("n_controls"), py::arg("control_state"))
+          nb::arg("op"), nb::arg("n_controls"), nb::arg("control_state"))
       .def(
-          py::init<Op_ptr &, unsigned>(),
+          nb::init<Op_ptr &, unsigned>(),
           "Construct from an :py:class:`Op` and a number of quantum "
           "controls. The controls occupy the low-index ports of the "
           "resulting operation.",
-          py::arg("op"), py::arg("n") = 1)
+          nb::arg("op"), nb::arg("n") = 1)
       .def(
           "get_circuit", [](QControlBox &qcbox) { return *qcbox.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
@@ -722,18 +722,18 @@ void init_boxes(py::module &m) {
           [](QControlBox &qcbox) { return qcbox.get_control_state(); },
           ":return: the control state as a bit vector");
 
-  py::class_<CompositeGateDef, composite_def_ptr_t>(
+  nb::class_<CompositeGateDef, composite_def_ptr_t>(
       m, "CustomGateDef",
       "A custom unitary gate definition, given as a composition of other "
       "gates")
       .def(
-          py::init<
+          nb::init<
               const std::string &, const Circuit &,
-              const py::tket_custom::SequenceVec<Sym> &>())
+              const nb::tket_custom::SequenceVec<Sym> &>())
       .def_static(
           "define",
           [](const std::string &name, const Circuit &def,
-             const py::tket_custom::SequenceVec<Sym> &args) {
+             const nb::tket_custom::SequenceVec<Sym> &args) {
             return CompositeGateDef::define_gate(name, def, args);
           },
           "Define a new custom gate as a composite of other "
@@ -741,7 +741,7 @@ void init_boxes(py::module &m) {
           "gate\n:param circ: The definition of the gate as a "
           "Circuit\n:param args: Symbols to be encapsulated as "
           "arguments of the custom gate",
-          py::arg("name"), py::arg("circ"), py::arg("args"))
+          nb::arg("name"), nb::arg("circ"), nb::arg("args"))
       .def_property_readonly(
           "name", &CompositeGateDef::get_name, "The readable name of the gate")
       .def_property_readonly(
@@ -756,28 +756,28 @@ void init_boxes(py::module &m) {
       .def(
           "to_dict",
           [](const CompositeGateDef &c) {
-            return py::object(json(std::make_shared<CompositeGateDef>(c)))
+            return nb::object(json(std::make_shared<CompositeGateDef>(c)))
                 .
 
-                cast<py::dict>();
+                cast<nb::dict>();
           },
           ":return: a JSON serializable dictionary representation of "
           "the CustomGateDef")
       .def_static(
           "from_dict",
-          [](const py::dict &composite_gate_def_dict) {
+          [](const nb::dict &composite_gate_def_dict) {
             return json(composite_gate_def_dict).get<composite_def_ptr_t>();
           },
           "Construct Circuit instance from JSON serializable "
           "dictionary representation of the Circuit.");
-  py::class_<CustomGate, std::shared_ptr<CustomGate>, Op>(
+  nb::class_<CustomGate, std::shared_ptr<CustomGate>, Op>(
       m, "CustomGate",
       "A user-defined gate defined by a parametrised :py:class:`Circuit`.")
       .def(
-          py::init<
+          nb::init<
               const composite_def_ptr_t &,
-              const py::tket_custom::SequenceVec<Expr> &>(),
-          "Instantiate a custom gate.", py::arg("gatedef"), py::arg("params"))
+              const nb::tket_custom::SequenceVec<Expr> &>(),
+          "Instantiate a custom gate.", nb::arg("gatedef"), nb::arg("params"))
       .def_property_readonly(
           "name", [](CustomGate &cgate) { return cgate.get_name(false); },
           "The readable name of the gate.")
@@ -789,12 +789,12 @@ void init_boxes(py::module &m) {
           "get_circuit",
           [](CustomGate &composite) { return *composite.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the gate.");
-  py::class_<PhasePolyBox, std::shared_ptr<PhasePolyBox>, Op>(
+  nb::class_<PhasePolyBox, std::shared_ptr<PhasePolyBox>, Op>(
       m, "PhasePolyBox",
       "Box encapsulating any Circuit made up of CNOT and RZ as a phase "
       "polynomial + linear transformation")
       .def(
-          py::init([](unsigned n_qb, const std::map<Qubit, unsigned> &q_ind,
+          nb::init([](unsigned n_qb, const std::map<Qubit, unsigned> &q_ind,
                       const PyPhasePolynomial &p_p, const MatrixXb &lin_trans) {
             boost::bimap<Qubit, unsigned> bmap;
             for (const auto &pair : q_ind) {
@@ -805,10 +805,10 @@ void init_boxes(py::module &m) {
           "\n\nConstruct from the number of qubits, the mapping from "
           "Qubit to index, the phase polynomial (map from bitstring "
           "to phase) and the linear transformation (boolean matrix)",
-          py::arg("n_qubits"), py::arg("qubit_indices"),
-          py::arg("phase_polynomial"), py::arg("linear_transformation"))
+          nb::arg("n_qubits"), nb::arg("qubit_indices"),
+          nb::arg("phase_polynomial"), nb::arg("linear_transformation"))
       .def(
-          py::init([](unsigned n_qb, const std::map<Qubit, unsigned> &q_ind,
+          nb::init([](unsigned n_qb, const std::map<Qubit, unsigned> &q_ind,
                       const PyPhasePolynomialAlternate &p_p,
                       const MatrixXb &lin_trans) {
             boost::bimap<Qubit, unsigned> bmap;
@@ -822,13 +822,13 @@ void init_boxes(py::module &m) {
           "phase pairs) and the linear transformation (boolean matrix)\n\n"
           "If any bitstring is repeated in the phase polynomial list, the last "
           "given value for that bistring will be used",
-          py::arg("n_qubits"), py::arg("qubit_indices"),
-          py::arg("phase_polynomial"), py::arg("linear_transformation"))
+          nb::arg("n_qubits"), nb::arg("qubit_indices"),
+          nb::arg("phase_polynomial"), nb::arg("linear_transformation"))
       .def(
-          py::init([](const Circuit &circ) { return PhasePolyBox(circ); }),
+          nb::init([](const Circuit &circ) { return PhasePolyBox(circ); }),
           "Construct a PhasePolyBox from a given circuit containing only Rz "
           "and CX gates.",
-          py::arg("circuit"))
+          nb::arg("circuit"))
       .def_property_readonly(
           "n_qubits", &PhasePolyBox::get_n_qubits,
           "Number of gates the polynomial acts on.")
@@ -871,19 +871,19 @@ void init_boxes(py::module &m) {
             return outmap;
           },
           "Map from Qubit to index in polynomial.");
-  py::class_<ProjectorAssertionBox, std::shared_ptr<ProjectorAssertionBox>, Op>(
+  nb::class_<ProjectorAssertionBox, std::shared_ptr<ProjectorAssertionBox>, Op>(
       m, "ProjectorAssertionBox",
       "A user-defined assertion specified by a 2x2, 4x4, or 8x8 projector "
       "matrix.")
       .def(
-          py::init<const Eigen::MatrixXcd &, BasisOrder>(),
+          nb::init<const Eigen::MatrixXcd &, BasisOrder>(),
           "Construct from a projector matrix.\n\n"
           ":param m: The projector matrix\n"
           ":param basis: Whether the provided unitary is in the ILO-BE "
           "(increasing lexicographic order of qubit ids, big-endian "
           "indexing) format, or DLO-BE (decreasing lexicographic order "
           "of ids)",
-          py::arg("m"), py::arg("basis") = BasisOrder::ilo)
+          nb::arg("m"), nb::arg("basis") = BasisOrder::ilo)
       .def(
           "get_circuit",
           [](ProjectorAssertionBox &ubox) { return *ubox.to_circuit(); },
@@ -891,17 +891,17 @@ void init_boxes(py::module &m) {
       .def(
           "get_matrix", &ProjectorAssertionBox::get_matrix,
           ":return: the unitary matrix (in ILO-BE format) as a numpy array");
-  py::class_<
+  nb::class_<
       StabiliserAssertionBox, std::shared_ptr<StabiliserAssertionBox>, Op>(
       m, "StabiliserAssertionBox",
       "A user-defined assertion specified by a list of Pauli stabilisers.")
       .def(
-          py::init<const py::tket_custom::SequenceVec<PauliStabiliser>>(),
+          nb::init<const nb::tket_custom::SequenceVec<PauliStabiliser>>(),
           "Construct from a list of Pauli stabilisers.\n\n"
           ":param stabilisers: The list of Pauli stabilisers\n",
-          py::arg("stabilisers"))
+          nb::arg("stabilisers"))
       .def(
-          py::init([](const py::tket_custom::SequenceVec<std::string>
+          nb::init([](const nb::tket_custom::SequenceVec<std::string>
                           &pauli_strings) {
             PauliStabiliserVec stabilisers;
             for (auto &raw_string : pauli_strings) {
@@ -941,7 +941,7 @@ void init_boxes(py::module &m) {
           "Construct from a list of Pauli stabilisers.\n\n"
           ":param m: The list of Pauli stabilisers expressed as Python "
           "strings\n",
-          py::arg("stabilisers"))
+          nb::arg("stabilisers"))
       .def(
           "get_circuit",
           [](StabiliserAssertionBox &ubox) { return *ubox.to_circuit(); },
@@ -950,24 +950,24 @@ void init_boxes(py::module &m) {
           "get_stabilisers", &StabiliserAssertionBox::get_stabilisers,
           ":return: the list of Pauli stabilisers");
 
-  py::class_<MultiplexorBox, std::shared_ptr<MultiplexorBox>, Op>(
+  nb::class_<MultiplexorBox, std::shared_ptr<MultiplexorBox>, Op>(
       m, "MultiplexorBox",
       "A user-defined multiplexor (i.e. uniformly controlled operations) "
       "specified by a "
       "map from bitstrings to " CLSOBJS(Op)
       "or a list of bitstring-" CLSOBJS(Op) " pairs")
       .def(
-              py::init([](const py_ctrl_op_map_t_alt & bitstring_op_pairs){
+              nb::init([](const py_ctrl_op_map_t_alt & bitstring_op_pairs){
                   return MultiplexorBox(to_cpp_ctrl_op_map_t(bitstring_op_pairs));}),
       "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
       ":param bitstring_to_op_list: List of bitstring-" CLSOBJS(Op) "pairs\n",
-      py::arg("bistring_to_op_list"))
+      nb::arg("bistring_to_op_list"))
       .def(
-              py::init([](const py_ctrl_op_map_t & bitstring_op_map){
+              nb::init([](const py_ctrl_op_map_t & bitstring_op_map){
                   return MultiplexorBox(to_cpp_ctrl_op_map_t(bitstring_op_map));}),
           "Construct from a map from bitstrings to " CLSOBJS(Op) "\n\n"
           ":param op_map: Map from bitstrings to " CLSOBJS(Op) "\n",
-          py::arg("op_map"))
+          nb::arg("op_map"))
       .def(
           "get_circuit", [](MultiplexorBox &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
@@ -983,7 +983,7 @@ void init_boxes(py::module &m) {
           return cast_map_to_vector_of_pairs(box.get_op_map());
           },
           ":return: the underlying bistring-op pairs");
-  py::class_<
+  nb::class_<
       MultiplexedRotationBox, std::shared_ptr<MultiplexedRotationBox>, Op>(
       m, "MultiplexedRotationBox",
       "A user-defined multiplexed rotation gate (i.e. "
@@ -995,23 +995,23 @@ void init_boxes(py::module &m) {
       "2^k CX gates, and two additional H gates if the rotation axis is X. "
       "k is the number of control qubits.")
       .def(
-              py::init([](const py_ctrl_op_map_t_alt & bitstring_op_pairs){
+              nb::init([](const py_ctrl_op_map_t_alt & bitstring_op_pairs){
           return MultiplexedRotationBox(to_cpp_ctrl_op_map_t(bitstring_op_pairs));}),
           "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
           "All " CLSOBJS(Op) "  must share the same single-qubit rotation type: "
           "Rx, Ry, or Rz.\n\n"
           ":param bitstring_to_op_list: List of bitstring-" CLSOBJS(Op) "pairs\n",
-          py::arg("bistring_to_op_list"))
+          nb::arg("bistring_to_op_list"))
       .def(
-              py::init([](const py_ctrl_op_map_t & bitstring_op_map){
+              nb::init([](const py_ctrl_op_map_t & bitstring_op_map){
                   return MultiplexedRotationBox(to_cpp_ctrl_op_map_t(bitstring_op_map));}),
           "Construct from a map from bitstrings to :py:class:`Op` s."
           "All " CLSOBJS(Op) "  must share the same single-qubit rotation type: "
           "Rx, Ry, or Rz.\n\n"
           ":param op_map: Map from bitstrings to " CLSOBJS(Op) "\n",
-          py::arg("op_map"))
+          nb::arg("op_map"))
       .def(
-          py::init([](const py::tket_custom::SequenceVec<double> &angles, const OpType &axis) {
+          nb::init([](const nb::tket_custom::SequenceVec<double> &angles, const OpType &axis) {
             if (angles.size() == 0) {
               throw std::invalid_argument("Angles are empty.");
             }
@@ -1038,7 +1038,7 @@ void init_boxes(py::module &m) {
           ":param angles: List of rotation angles in half-turns. angles[i] is "
           "the angle activated by the binary representation of i\n"
           ":param axis: ``OpType.Rx``, ``OpType.Ry`` or ``OpType.Rz``\n",
-          py::arg("angles"), py::arg("axis"))
+          nb::arg("angles"), nb::arg("axis"))
       .def(
           "get_circuit",
           [](MultiplexedRotationBox &box) { return *box.to_circuit(); },
@@ -1055,7 +1055,7 @@ void init_boxes(py::module &m) {
             return cast_keys_to_tuples(box.get_op_map());
           },
           ":return: the underlying op map");
-  py::class_<MultiplexedU2Box, std::shared_ptr<MultiplexedU2Box>, Op>(
+  nb::class_<MultiplexedU2Box, std::shared_ptr<MultiplexedU2Box>, Op>(
       m, "MultiplexedU2Box",
       "A user-defined multiplexed U2 gate (i.e. uniformly controlled U2 "
       "gate) specified by a "
@@ -1066,7 +1066,7 @@ void init_boxes(py::module &m) {
       "and a k+1 qubit DiagonalBox at the end. "
       "k is the number of control qubits.")
       .def(
-              py::init([](const py_ctrl_op_map_t_alt & bitstring_op_pairs, bool impl_diag){
+              nb::init([](const py_ctrl_op_map_t_alt & bitstring_op_pairs, bool impl_diag){
           return MultiplexedU2Box(to_cpp_ctrl_op_map_t(bitstring_op_pairs), impl_diag);}),
       "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
       "Only supports single qubit unitary gate types and "
@@ -1074,9 +1074,9 @@ void init_boxes(py::module &m) {
       ":param op_map: List of bitstring-" CLSOBJS(Op) "pairs\n"
       ":param impl_diag: Whether to implement the final diagonal gate, "
       "default to True.",
-      py::arg("bistring_to_op_list"), py::arg("impl_diag") = true)
+      nb::arg("bistring_to_op_list"), nb::arg("impl_diag") = true)
       .def(
-              py::init([](const py_ctrl_op_map_t & bitstring_op_map, bool impl_diag){
+              nb::init([](const py_ctrl_op_map_t & bitstring_op_map, bool impl_diag){
                   return MultiplexedU2Box(to_cpp_ctrl_op_map_t(bitstring_op_map), impl_diag);}),
           "Construct from a map from bitstrings to " CLSOBJS(Op) "."
           "Only supports single qubit unitary gate types and "
@@ -1084,7 +1084,7 @@ void init_boxes(py::module &m) {
           ":param op_map: Map from bitstrings to " CLSOBJS(Op) "\n"
           ":param impl_diag: Whether to implement the final diagonal gate, "
           "default to True.",
-          py::arg("op_map"), py::arg("impl_diag") = true)
+          nb::arg("op_map"), nb::arg("impl_diag") = true)
       .def(
           "get_circuit",
           [](MultiplexedU2Box &box) { return *box.to_circuit(); },
@@ -1106,7 +1106,7 @@ void init_boxes(py::module &m) {
           ":return: flag indicating whether to implement the final diagonal "
           "gate.");
 
-  py::class_<
+  nb::class_<
       MultiplexedTensoredU2Box, std::shared_ptr<MultiplexedTensoredU2Box>, Op>(
       m, "MultiplexedTensoredU2Box",
       "A user-defined multiplexed tensor product of U2 gates specified by a "
@@ -1120,22 +1120,22 @@ void init_boxes(py::module &m) {
       "The total CX count is at most 2^k(2t+1)-t-2."
       )
       .def(
-              py::init([](const py_ctrl_tensored_op_map_t_alt & bitstring_op_pairs){
+              nb::init([](const py_ctrl_tensored_op_map_t_alt & bitstring_op_pairs){
           return MultiplexedTensoredU2Box(to_cpp_ctrl_op_map_t(bitstring_op_pairs));}),
           "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
           "Only supports single qubit unitary gate types and "
           ":py:class:`Unitary1qBox`.\n\n"
           ":param bitstring_to_op_list: List of bitstring-List of " CLSOBJS(Op) " pairs\n",
-          py::arg("bistring_to_op_list"))
+          nb::arg("bistring_to_op_list"))
       .def(
-              py::init([](const py_ctrl_tensored_op_map_t & bitstring_op_map){
+              nb::init([](const py_ctrl_tensored_op_map_t & bitstring_op_map){
                   return MultiplexedTensoredU2Box(to_cpp_ctrl_op_map_t(bitstring_op_map));}),
           "Construct from a map from bitstrings to equal-sized lists of "
           CLSOBJS(Op) ". "
           "Only supports single qubit unitary gate types and "
           ":py:class:`Unitary1qBox`.\n\n"
           ":param op_map: Map from bitstrings to lists of " CLSOBJS(Op),
-          py::arg("op_map"))
+          nb::arg("op_map"))
       .def(
           "get_circuit",
           [](MultiplexedTensoredU2Box &box) { return *box.to_circuit(); },
@@ -1152,7 +1152,7 @@ void init_boxes(py::module &m) {
             return cast_keys_to_tuples(box.get_op_map());
           },
           ":return: the underlying op map");
-  py::class_<StatePreparationBox, std::shared_ptr<StatePreparationBox>, Op>(
+  nb::class_<StatePreparationBox, std::shared_ptr<StatePreparationBox>, Op>(
       m, "StatePreparationBox",
       "A box for preparing quantum states using multiplexed-Ry and "
       "multiplexed-Rz gates. "
@@ -1161,7 +1161,7 @@ void init_boxes(py::module &m) {
       "The decomposed circuit has at most 2*(2^n-2) CX gates, and "
       "2^n-2 CX gates if the coefficients are all real.")
       .def(
-          py::init<const Eigen::VectorXcd &, bool, bool>(),
+          nb::init<const Eigen::VectorXcd &, bool, bool>(),
           "Construct from a statevector\n\n"
           ":param statevector: normalised statevector\n"
           ":param is_inverse: whether to implement the dagger of the state "
@@ -1169,8 +1169,8 @@ void init_boxes(py::module &m) {
           ":param with_initial_reset: whether to explicitly set the state to "
           "zero initially (by default the initial zero state is assumed and no "
           "explicit reset is applied)",
-          py::arg("statevector"), py::arg("is_inverse") = false,
-          py::arg("with_initial_reset") = false)
+          nb::arg("statevector"), nb::arg("is_inverse") = false,
+          nb::arg("with_initial_reset") = false)
       .def(
           "get_circuit",
           [](StatePreparationBox &box) { return *box.to_circuit(); },
@@ -1186,7 +1186,7 @@ void init_boxes(py::module &m) {
           "with_initial_reset", &StatePreparationBox::with_initial_reset,
           ":return: flag indicating whether the qubits are explicitly "
           "set to the zero state initially");
-  py::class_<DiagonalBox, std::shared_ptr<DiagonalBox>, Op>(
+  nb::class_<DiagonalBox, std::shared_ptr<DiagonalBox>, Op>(
       m, "DiagonalBox",
       "A box for synthesising a diagonal unitary matrix into a sequence of "
       "multiplexed-Rz gates. "
@@ -1194,14 +1194,14 @@ void init_boxes(py::module &m) {
       "arxiv.org/abs/quant-ph/0406176. "
       "The decomposed circuit has at most 2^n-2 CX gates.")
       .def(
-          py::init<const Eigen::VectorXcd &, bool>(),
+          nb::init<const Eigen::VectorXcd &, bool>(),
           "Construct from the diagonal entries of the unitary operator. The "
           "size of the vector must be 2^n where n is a positive integer.\n\n"
           ":param diagonal: diagonal entries\n"
           ":param upper_triangle: indicates whether the multiplexed-Rz gates "
           "take the shape of an upper triangle or a lower triangle. Default to "
           "true.",
-          py::arg("diagonal"), py::arg("upper_triangle") = true)
+          nb::arg("diagonal"), nb::arg("upper_triangle") = true)
       .def(
           "get_circuit", [](DiagonalBox &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
@@ -1211,12 +1211,12 @@ void init_boxes(py::module &m) {
       .def(
           "is_upper_triangle", &DiagonalBox::is_upper_triangle,
           ":return: the upper_triangle flag");
-  py::class_<ConjugationBox, std::shared_ptr<ConjugationBox>, Op>(
+  nb::class_<ConjugationBox, std::shared_ptr<ConjugationBox>, Op>(
       m, "ConjugationBox",
       "A box to express computations that follow the compute-action-uncompute "
       "pattern.")
       .def(
-          py::init<
+          nb::init<
               const Op_ptr &, const Op_ptr &, const std::optional<Op_ptr>>(),
           "Construct from operations that perform compute, action, and "
           "uncompute. All three operations need to be quantum and have the "
@@ -1226,8 +1226,8 @@ void init_boxes(py::module &m) {
           ":param uncompute: optional uncompute operation, default to "
           "compute.dagger(). If provided, the user needs to make sure that "
           "uncompute.dagger() and compute have the same unitary.",
-          py::arg("compute"), py::arg("action"),
-          py::arg("uncompute") = std::nullopt)
+          nb::arg("compute"), nb::arg("action"),
+          nb::arg("uncompute") = std::nullopt)
       .def(
           "get_circuit", [](ConjugationBox &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")

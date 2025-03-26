@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <pybind11/functional.h>
-#include <pybind11/operators.h>
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-#include <pybind11/stl_bind.h>
+// #include <pybind11/functional.h>
+#include <nanobind/operators.h>
+#include <nanobind/nanobind.h>
+// #include <pybind11/stl.h>
+// #include <pybind11/stl_bind.h>
 
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Mapping/AASLabelling.hpp"
@@ -29,18 +29,18 @@
 #include "tket/Mapping/RoutingMethodCircuit.hpp"
 #include "typecast.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 
 namespace tket {
-PYBIND11_MODULE(mapping, m) {
-  py::module::import("pytket._tket.architecture");
-  py::class_<RoutingMethod, std::shared_ptr<RoutingMethod>>(
+NB_MODULE(mapping, m) {
+  nb::module::import("pytket._tket.architecture");
+  nb::class_<RoutingMethod, std::shared_ptr<RoutingMethod>>(
       m, "RoutingMethod",
       "Parent class for RoutingMethod, for inheritance purposes only, not for "
       "usage.")
-      .def(py::init<>());
+      .def(nb::init<>());
 
-  py::class_<
+  nb::class_<
       RoutingMethodCircuit, std::shared_ptr<RoutingMethodCircuit>,
       RoutingMethod>(
       m, "RoutingMethodCircuit",
@@ -49,7 +49,7 @@ PYBIND11_MODULE(mapping, m) {
       "Ranked RoutingMethod objects are used by the MappingManager to route "
       "whole circuits.")
       .def(
-          py::init<
+          nb::init<
               const std::function<
                   std::tuple<bool, Circuit, unit_map_t, unit_map_t>(
                       const Circuit&, const ArchitecturePtr&)>&,
@@ -65,10 +65,10 @@ PYBIND11_MODULE(mapping, m) {
           "modified circuit\n:param max_size: The maximum number of gates "
           "permitted in a subcircuit\n:param max_depth: The maximum permitted "
           "depth of a subcircuit.",
-          py::arg("route_subcircuit"), py::arg("max_size"),
-          py::arg("max_depth"));
+          nb::arg("route_subcircuit"), nb::arg("max_size"),
+          nb::arg("max_depth"));
 
-  py::class_<
+  nb::class_<
       LexiRouteRoutingMethod, std::shared_ptr<LexiRouteRoutingMethod>,
       RoutingMethod>(
       m, "LexiRouteRoutingMethod",
@@ -76,76 +76,76 @@ PYBIND11_MODULE(mapping, m) {
       "Lexicographical Comparison approach outlined in arXiv:1902.08091."
       "Only supports 1-qubit, 2-qubit and barrier gates.")
       .def(
-          py::init<unsigned>(),
+          nb::init<unsigned>(),
           "LexiRoute constructor.\n\n:param lookahead: Maximum depth of "
           "lookahead employed when picking SWAP for purpose of logical to "
           "physical mapping.",
-          py::arg("lookahead") = 10);
+          nb::arg("lookahead") = 10);
 
-  py::class_<
+  nb::class_<
       AASRouteRoutingMethod, std::shared_ptr<AASRouteRoutingMethod>,
       RoutingMethod>(
       m, "AASRouteRoutingMethod",
       "Defines a RoutingMethod object for mapping circuits that uses the "
       "architecture aware synthesis method implemented in tket.")
       .def(
-          py::init<unsigned>(),
+          nb::init<unsigned>(),
           "AASRouteRoutingMethod constructor.\n\n:param aaslookahead: "
           "recursive interation depth of the architecture aware synthesis."
           "method.",
-          py::arg("aaslookahead"));
+          nb::arg("aaslookahead"));
 
-  py::class_<
+  nb::class_<
       AASLabellingMethod, std::shared_ptr<AASLabellingMethod>, RoutingMethod>(
       m, "AASLabellingMethod",
       "Defines a Labeling Method for aas for labelling all unplaced qubits in "
       "a circuit")
-      .def(py::init<>(), "AASLabellingMethod constructor.");
+      .def(nb::init<>(), "AASLabellingMethod constructor.");
 
-  py::class_<
+  nb::class_<
       LexiLabellingMethod, std::shared_ptr<LexiLabellingMethod>, RoutingMethod>(
       m, "LexiLabellingMethod",
       "Defines a RoutingMethod for labelling Qubits that uses the "
       "Lexicographical Comparison approach outlined in arXiv:1902.08091.")
-      .def(py::init<>(), "LexiLabellingMethod constructor.");
+      .def(nb::init<>(), "LexiLabellingMethod constructor.");
 
-  py::class_<
+  nb::class_<
       MultiGateReorderRoutingMethod,
       std::shared_ptr<MultiGateReorderRoutingMethod>, RoutingMethod>(
       m, "MultiGateReorderRoutingMethod",
       "Defines a RoutingMethod object for commuting physically permitted "
       "multi-qubit gates to the front of the subcircuit.")
       .def(
-          py::init<unsigned, unsigned>(),
+          nb::init<unsigned, unsigned>(),
           "MultiGateReorderRoutingMethod constructor.\n\n:param max_depth: "
           "Maximum number of layers of gates checked for simultaneous "
           "commutation. "
           "\n:param max_size: Maximum number of gates checked for simultaneous "
           "commutation.",
-          py::arg("max_depth") = 10, py::arg("max_size") = 10);
+          nb::arg("max_depth") = 10, nb::arg("max_size") = 10);
 
-  py::class_<
+  nb::class_<
       BoxDecompositionRoutingMethod,
       std::shared_ptr<BoxDecompositionRoutingMethod>, RoutingMethod>(
       m, "BoxDecompositionRoutingMethod",
       "Defines a RoutingMethod object for decomposing boxes.")
-      .def(py::init<>(), "BoxDecompositionRoutingMethod constructor.");
+      .def(nb::init<>(), "BoxDecompositionRoutingMethod constructor.");
 
-  py::class_<MappingManager>(
+  nb::class_<MappingManager>(
       m, "MappingManager",
       "Defined by a pytket Architecture object, maps Circuit logical qubits "
       "to physically permitted Architecture qubits. Mapping is completed by "
       "sequential routing (full or partial) of subcircuits. A custom method "
       "for routing (full or partial) of subcircuits can be defined in Python.")
       .def(
-          py::init<const ArchitecturePtr&>(),
+          nb::init<const ArchitecturePtr&>(),
           "MappingManager constructor.\n\n:param architecture: pytket "
           "Architecture object.",
-          py::arg("architecture"))
+          nb::arg("architecture"))
       .def(
           "route_circuit",
           [](const MappingManager& self, Circuit& circuit,
-             const py::tket_custom::SequenceVec<RoutingMethodPtr>&
+             const nb::tket_custom::SequenceVec<RoutingMethodPtr>&
                  routing_methods) {
             return self.route_circuit(circuit, routing_methods);
           },
@@ -156,6 +156,6 @@ PYBIND11_MODULE(mapping, m) {
           "\n:param routing_methods: Ranked methods to use for routing "
           "subcircuits. In given order, each method is sequentially checked "
           "for viability, with the first viable method being used.",
-          py::arg("circuit"), py::arg("routing_methods"));
+          nb::arg("circuit"), nb::arg("routing_methods"));
 }
 }  // namespace tket

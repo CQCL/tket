@@ -20,7 +20,7 @@
 #pragma GCC diagnostic ignored "-Wrange-loop-analysis"
 #endif
 
-#include <pybind11_json/pybind11_json.hpp>
+#include <nanobind_json/nanobind_json.hpp>
 
 #if defined(__clang__)
 #pragma GCC diagnostic pop

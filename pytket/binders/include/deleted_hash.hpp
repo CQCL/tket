@@ -14,15 +14,15 @@
 
 #pragma once
 
-#include <pybind11/pybind11.h>
-namespace py = pybind11;
+#include <nanobind/nanobind.h>
+namespace nb = nanobind;
 
 template <class T>
 int deletedHash(const T&) {
-  py::type T_py = py::type::of<T>();
+  nb::type T_py = nb::type::of<T>();
   auto T_name = T_py.attr("__name__").cast<std::string>();
   auto error_message = std::string("unhashable type: '") + T_name + "'";
-  throw py::type_error(error_message);
+  throw nb::type_error(error_message);
 }
 
 constexpr auto deletedHashDocstring =

@@ -23,12 +23,12 @@
 #include "tket/ZX/ZXDiagram.hpp"
 #include "typecast.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 
 namespace tket {
 namespace zx {
 
-void init_rewrite(py::module& m);
+void init_rewrite(nb::module& m);
 
 class ZXVertWrapper {
   // ZXVert is a void*
@@ -98,11 +98,11 @@ std::pair<Circuit, std::map<ZXVertWrapper, UnitID>> wrapped_zx_to_circuit(
 
 class ZXDiagramPybind {
  public:
-  static void init_zxdiagram(py::module& m);
+  static void init_zxdiagram(nb::module& m);
 };
 
-void ZXDiagramPybind::init_zxdiagram(py::module& m) {
-  py::class_<ZXDiagram, std::shared_ptr<ZXDiagram>>(
+void ZXDiagramPybind::init_zxdiagram(nb::module& m) {
+  nb::class_<ZXDiagram, std::shared_ptr<ZXDiagram>>(
       m, "ZXDiagram",
       "Undirected graphs for mixed process ZX diagrams. The boundary is an "
       "ordered list which may mix inputs, outputs, and \"open\" vertices (not "
@@ -115,22 +115,22 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
       "have a :py:class:`ZXWireType` (e.g. Basic, Hadamard) and "
       ":py:class:`QuantumType` (a single wire or a doubled pair for a quantum "
       "system).")
-      .def(py::init<>(), "Constructs an empty ZX diagram.")
+      .def(nb::init<>(), "Constructs an empty ZX diagram.")
       .def(
-          py::init<unsigned, unsigned, unsigned, unsigned>(),
+          nb::init<unsigned, unsigned, unsigned, unsigned>(),
           "Constructs an empty ZX diagram with a given number of unconnected "
           "boundary vertices.\n\n"
           ":param in: Number of quantum inputs.\n"
           ":param out: Number of quantum outputs.\n"
           ":param classical_in: Number of classical inputs.\n"
           ":param classical_out: Number of classical outputs.",
-          py::arg("inputs"), py::arg("outputs"), py::arg("classical_inputs"),
-          py::arg("classical_outputs"))
+          nb::arg("inputs"), nb::arg("outputs"), nb::arg("classical_inputs"),
+          nb::arg("classical_outputs"))
       .def(
-          py::init<const ZXDiagram&>(),
+          nb::init<const ZXDiagram&>(),
           "Constructs a copy of an existing ZX diagram.\n\n"
           ":param other: ZX diagram to copy.",
-          py::arg("other"))
+          nb::arg("other"))
       .def(
           "get_boundary",
           [](const ZXDiagram& diag, std::optional<ZXType> type,
@@ -146,7 +146,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "\n\n:param qtype: :py:class:`QuantumType` to filter by, from "
           "{:py:meth:`QuantumType.Quantum`, :py:meth:`QuantumType.Classical`, "
           "None}. Defaults to None.",
-          py::arg("type") = std::nullopt, py::arg("qtype") = std::nullopt)
+          nb::arg("type") = std::nullopt, nb::arg("qtype") = std::nullopt)
       .def_property_readonly(
           "scalar", &ZXDiagram::get_scalar,
           "Returns the global scalar stored numerically. This may be a "
@@ -155,7 +155,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "multiply_scalar", &ZXDiagram::multiply_scalar,
           "Multiplies the global scalar by a numerical (possibly symbolic) "
           "constant.",
-          py::arg("scalar"))
+          nb::arg("scalar"))
       .def_property_readonly(
           "vertices",
           [](const ZXDiagram& diag) {
@@ -186,18 +186,18 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           (unsigned (ZXDiagram::*)(ZXType) const) & ZXDiagram::count_vertices,
           "Counts the number of vertices of a given :py:class:`ZXType` in the "
           "diagram.",
-          py::arg("type"))
+          nb::arg("type"))
       .def(
           "count_wires", &ZXDiagram::count_wires,
           "Counts the number of wired of a given :py:class:`ZXWireType` in the "
           "diagram.",
-          py::arg("type"))
+          nb::arg("type"))
       .def(
           "degree",
           [](const ZXDiagram& diag, const ZXVertWrapper& v) {
             return diag.degree(v);
           },
-          "Returns the degree of the given vertex.", py::arg("v"))
+          "Returns the degree of the given vertex.", nb::arg("v"))
       .def(
           "neighbours",
           [](const ZXDiagram& diag, const ZXVertWrapper& v) {
@@ -208,7 +208,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "Each neighbour will only appear in the list once regardless of how "
           "many shared edges there are. The order of the neighbour list may "
           "not be semantically relevant.",
-          py::arg("v"))
+          nb::arg("v"))
       .def(
           "adj_wires",
           [](const ZXDiagram& diag, const ZXVertWrapper& v) {
@@ -217,21 +217,21 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "Given a vertex, returns a list of all incident wires. Self-loops "
           "will only appear once in the list. The order of the wire list may "
           "not be semantically relevant.",
-          py::arg("v"))
+          nb::arg("v"))
       .def(
           "wires_between",
           [](const ZXDiagram& diag, const ZXVertWrapper& u,
              const ZXVertWrapper& v) { return diag.wires_between(u, v); },
           "Given two vertices, returns a list of all wires between them. The "
           "order of the wire list may not be semantically relevant.",
-          py::arg("u"), py::arg("v"))
+          nb::arg("u"), nb::arg("v"))
       .def(
           "wire_between",
           [](const ZXDiagram& diag, const ZXVertWrapper& u,
              const ZXVertWrapper& v) { return diag.wire_between(u, v); },
           "Given two vertices, returns either an arbitrary edge between them "
           "if one exists or None if they are not adjacent.",
-          py::arg("u"), py::arg("v"))
+          nb::arg("u"), nb::arg("v"))
       .def(
           "wire_at_port",
           [](const ZXDiagram& diag, const ZXVertWrapper& v, unsigned port) {
@@ -239,27 +239,27 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           },
           "Given a vertex, returns the unique wire at the given port number. "
           "Raises an exception if multiple wires are found at the given port.",
-          py::arg("v"), py::arg("port"))
+          nb::arg("v"), nb::arg("port"))
       .def(
           "get_vertex_ZXGen",
           [](const ZXDiagram& diag, const ZXVertWrapper& v) {
             return diag.get_vertex_ZXGen_ptr(v);
           },
           "Returns the content of a given vertex as a :py:class:`ZXGen`.",
-          py::arg("v"))
+          nb::arg("v"))
       .def(
           "get_name",
           [](const ZXDiagram& diag, const ZXVertWrapper& v) {
             return diag.get_name(v);
           },
           "Returns the readable string description of a given vertex",
-          py::arg("v"))
+          nb::arg("v"))
       .def(
           "get_zxtype",
           [](const ZXDiagram& diag, const ZXVertWrapper& v) {
             return diag.get_zxtype(v);
           },
-          "Returns the :py:class:`ZXType` of the given vertex.", py::arg("v"))
+          "Returns the :py:class:`ZXType` of the given vertex.", nb::arg("v"))
       .def(
           "get_qtype",
           [](const ZXDiagram& diag, const ZXVertWrapper& v) {
@@ -267,7 +267,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           },
           "Returns the :py:class:`QuantumType` of the given vertex if defined, "
           "None otherwise.",
-          py::arg("v"))
+          nb::arg("v"))
       .def(
           "set_vertex_ZXGen",
           [](ZXDiagram& diag, const ZXVertWrapper& v, ZXGen_ptr gen) {
@@ -275,24 +275,24 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           },
           "Updates the content of a given vertex to a particular "
           ":py:class:`ZXGen`.",
-          py::arg("v"), py::arg("gen"))
+          nb::arg("v"), nb::arg("gen"))
       .def(
           "get_wire_qtype",
           (QuantumType (ZXDiagram::*)(const Wire&) const) &
               ZXDiagram::get_qtype,
           "Returns the :py:class:`QuantumType` of the given wire.",
-          py::arg("w"))
+          nb::arg("w"))
       .def(
           "get_wire_type", &ZXDiagram::get_wire_type,
-          "Returns the :py:class:`ZXWireType` of the given wire.", py::arg("w"))
+          "Returns the :py:class:`ZXWireType` of the given wire.", nb::arg("w"))
       .def(
           "set_wire_qtype", &ZXDiagram::set_wire_qtype,
           "Updates the :py:class:`QuantumType` of the given wire.",
-          py::arg("w"), py::arg("qtype"))
+          nb::arg("w"), nb::arg("qtype"))
       .def(
           "set_wire_type", &ZXDiagram::set_wire_type,
-          "Updates the :py:class:`ZXWireType` of the given wire.", py::arg("w"),
-          py::arg("type"))
+          "Updates the :py:class:`ZXWireType` of the given wire.", nb::arg("w"),
+          nb::arg("type"))
       .def(
           "get_wire_ends",
           [](const ZXDiagram& diag, const Wire& w) {
@@ -304,7 +304,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           },
           "Returns a tuple ((vertex0, port0), (vertex1, port1)) describing the "
           "two ends of the wire.",
-          py::arg("w"))
+          nb::arg("w"))
       .def(
           "other_end",
           [](const ZXDiagram& diag, const Wire& w, const ZXVertWrapper& v) {
@@ -313,7 +313,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "Given a wire and a vertex at one end of the wire, gives the vertex "
           "at the other end of the wire. This can be used to traverse the "
           "undirected edges of the graph.",
-          py::arg("w"), py::arg("v"))
+          nb::arg("w"), nb::arg("v"))
       .def(
           "check_validity", &ZXDiagram::check_validity,
           "Performs a check for the internal validity of the "
@@ -334,7 +334,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "each parameterised vertex and performs the substitution. This will "
           "not affect any symbols captured within boxed operations.\n\n"
           ":param symbol_map: A map from SymPy symbols to SymPy expressions.",
-          py::arg("symbol_map"))
+          nb::arg("symbol_map"))
       .def(
           "symbol_substitution",
           (void (ZXDiagram::*)(
@@ -346,7 +346,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "not affect any symbols captured within boxed operations.\n\n"
           ":param symbol_map: A map from SymPy symbols to floating-point "
           "values.",
-          py::arg("symbol_map"))
+          nb::arg("symbol_map"))
       .def(
           "free_symbols", &ZXDiagram::free_symbols,
           "Returns the set of symbolic parameters in the diagram.")
@@ -363,7 +363,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           ":py:class:`ZXGen`.\n\n"
           ":param gen: The :py:class:`ZXGen` for the new vertex.\n"
           ":return: The handle to the new vertex.",
-          py::arg("gen"))
+          nb::arg("gen"))
       .def(
           "add_vertex",
           [](ZXDiagram& diag, ZXType type, QuantumType qtype) {
@@ -375,7 +375,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           ":param qtype: The :py:class:`QuantumType` for the new vertex. "
           "Defaults to Quantum.\n"
           ":return: The handle to the new vertex.",
-          py::arg("type"), py::arg("qtype") = QuantumType::Quantum)
+          nb::arg("type"), nb::arg("qtype") = QuantumType::Quantum)
       .def(
           "add_vertex",
           [](ZXDiagram& diag, ZXType type, bool param, QuantumType qtype) {
@@ -388,8 +388,8 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           ":param qtype: The :py:class:`QuantumType` for the new vertex. "
           "Defaults to Quantum.\n"
           ":return: The handle to the new vertex.",
-          py::arg("type"), py::arg("param"),
-          py::arg("qtype") = QuantumType::Quantum)
+          nb::arg("type"), nb::arg("param"),
+          nb::arg("qtype") = QuantumType::Quantum)
       .def(
           "add_vertex",
           [](ZXDiagram& diag, ZXType type, const Expr& param,
@@ -403,8 +403,8 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           ":param qtype: The :py:class:`QuantumType` for the new vertex. "
           "Defaults to Quantum.\n"
           ":return: The handle to the new vertex.",
-          py::arg("type"), py::arg("param"),
-          py::arg("qtype") = QuantumType::Quantum)
+          nb::arg("type"), nb::arg("param"),
+          nb::arg("qtype") = QuantumType::Quantum)
       .def(
           "add_zxbox",
           [](ZXDiagram& diag, const ZXDiagram& inner) {
@@ -416,7 +416,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           ":param inner: The :py:class:`ZXDiagram` to internalise inside the "
           "box. The current state is copied by value.\n"
           ":return: The handle to the new vertex.",
-          py::arg("inner"))
+          nb::arg("inner"))
       .def(
           "add_wire",
           [](ZXDiagram& diag, const ZXVertWrapper& u, const ZXVertWrapper& v,
@@ -434,9 +434,9 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           ":param u_port: Port on vertex u to connect to. Defaults to None.\n"
           ":param v_port: Port on vertex v to connect to. Defaults to None.\n"
           ":return: The handle to the new wire.",
-          py::arg("u"), py::arg("v"), py::arg("type") = ZXWireType::Basic,
-          py::arg("qtype") = QuantumType::Quantum,
-          py::arg("u_port") = std::nullopt, py::arg("v_port") = std::nullopt)
+          nb::arg("u"), nb::arg("v"), nb::arg("type") = ZXWireType::Basic,
+          nb::arg("qtype") = QuantumType::Quantum,
+          nb::arg("u_port") = std::nullopt, nb::arg("v_port") = std::nullopt)
       .def(
           "remove_vertex",
           [](ZXDiagram& diag, const ZXVertWrapper& v) {
@@ -444,11 +444,11 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           },
           "Removes the given vertex and all incident wires from the diagram. "
           "If the vertex is in the boundary, it is removed from the boundary.",
-          py::arg("v"))
+          nb::arg("v"))
       .def(
           "remove_wire",
           (void (ZXDiagram::*)(const Wire&))&ZXDiagram::remove_wire,
-          "Removes the given wire from the diagram.", py::arg("w"))
+          "Removes the given wire from the diagram.", nb::arg("w"))
       .def(
           "to_circuit", &wrapped_zx_to_circuit,
           "Extracts a unitary diagram in MBQC form as a Circuit following the "
@@ -474,8 +474,8 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "Returns a graphviz source string");
 }
 
-PYBIND11_MODULE(zx, m) {
-  py::enum_<ZXType>(
+NB_MODULE(zx, m) {
+  nb::enum_<ZXType>(
       m, "ZXType",
       "Enum for available types of generators in :py:class:`ZXDiagram` s.")
       .value(
@@ -545,12 +545,12 @@ PYBIND11_MODULE(zx, m) {
           "from the boundary of the internal diagram, with port numbers "
           "matching the boundary order and :py:class:`QuantumType` admitted at "
           "each port matching that of the boundary vertex.");
-  py::enum_<ZXWireType>(
+  nb::enum_<ZXWireType>(
       m, "ZXWireType",
       "Enum for available types of wires in :py:class:`ZXDiagram` s.")
       .value("Basic", ZXWireType::Basic, "A basic identity wire.")
       .value("H", ZXWireType::H, "A Hadamard edge.");
-  py::enum_<QuantumType>(
+  nb::enum_<QuantumType>(
       m, "QuantumType",
       "Enum for specifying quantumness of vertices, ports, and wires in "
       ":py:class:`ZXDiagram` s for mixed quantum-classical processes.")
@@ -563,7 +563,7 @@ PYBIND11_MODULE(zx, m) {
           "Classical", QuantumType::Classical,
           "Classical components of diagrams, represented in the framework of "
           "completely-positive maps by a single self-conjugate system.");
-  py::class_<ZXVertWrapper>(
+  nb::class_<ZXVertWrapper>(
       m, "ZXVert",
       "A handle to a vertex in a :py:class:`ZXDiagram`. Each instance is "
       "specific to a given :py:class:`ZXDiagram` instance and can be "
@@ -573,9 +573,9 @@ PYBIND11_MODULE(zx, m) {
       .def("__repr__", &ZXVertWrapper::to_string)
       .def("__eq__", &py_equals<ZXVertWrapper>)
       .def("__hash__", [](const ZXVertWrapper& v) {
-        return py::hash(py::str(v.to_string()));
+        return nb::hash(nb::str(v.to_string()));
       });
-  py::class_<Wire>(
+  nb::class_<Wire>(
       m, "ZXWire",
       "A handle to a wire in a :py:class:`ZXDiagram`. Each instance is "
       "specific to a given :py:class:`ZXDiagram` instance and can be "
@@ -586,9 +586,9 @@ PYBIND11_MODULE(zx, m) {
       .def("__hash__", [](const Wire& w) {
         std::stringstream st;
         st << w;
-        return py::hash(py::str(st.str()));
+        return nb::hash(nb::str(st.str()));
       });
-  py::class_<ZXGen, std::shared_ptr<ZXGen>>(
+  nb::class_<ZXGen, std::shared_ptr<ZXGen>>(
       m, "ZXGen",
       "Encapsulates the information about the generator depicted by a given "
       "vertex in a :py:class:`ZXDiagram`.")
@@ -597,15 +597,15 @@ PYBIND11_MODULE(zx, m) {
           [](ZXType type, QuantumType qtype) {
             return ZXGen::create_gen(type, qtype);
           },
-          "Create a boundary type generator.", py::arg("type"),
-          py::arg("qtype") = QuantumType::Quantum)
+          "Create a boundary type generator.", nb::arg("type"),
+          nb::arg("qtype") = QuantumType::Quantum)
       .def_static(
           "create",
           [](ZXType type, const Expr& param, QuantumType qtype) {
             return ZXGen::create_gen(type, param, qtype);
           },
-          "Create a boundary type generator.", py::arg("type"),
-          py::arg("param"), py::arg("qtype") = QuantumType::Quantum)
+          "Create a boundary type generator.", nb::arg("type"),
+          nb::arg("param"), nb::arg("qtype") = QuantumType::Quantum)
       .def_property_readonly("type", &ZXGen::get_type, "The type of generator.")
       .def_property_readonly(
           "qtype", &ZXGen::get_qtype,
@@ -613,37 +613,37 @@ PYBIND11_MODULE(zx, m) {
       .def("__eq__", &py_equals<ZXGen>)
       .def("__hash__", &deletedHash<ZXGen>, deletedHashDocstring)
       .def("__repr__", [](const ZXGen& gen) { return gen.get_name(); });
-  py::class_<PhasedGen, std::shared_ptr<PhasedGen>, ZXGen>(
+  nb::class_<PhasedGen, std::shared_ptr<PhasedGen>, ZXGen>(
       m, "PhasedGen",
       "Specialisation of :py:class:`ZXGen` for arbitrary-arity, symmetric "
       "generators with a single continuous parameter.")
       .def(
-          py::init<ZXType, const Expr&, QuantumType>(),
+          nb::init<ZXType, const Expr&, QuantumType>(),
           "Construct from a ZX type, parameter and quantum type.",
-          py::arg("zxtype"), py::arg("param") = 0.,
-          py::arg("qtype") = QuantumType::Quantum)
+          nb::arg("zxtype"), nb::arg("param") = 0.,
+          nb::arg("qtype") = QuantumType::Quantum)
       .def_property_readonly(
           "param", &PhasedGen::get_param, "The parameter of the generator.");
-  py::class_<CliffordGen, std::shared_ptr<CliffordGen>, ZXGen>(
+  nb::class_<CliffordGen, std::shared_ptr<CliffordGen>, ZXGen>(
       m, "CliffordGen",
       "Specialisation of :py:class:`ZXGen` for arbitrary-arity, symmetric "
       "Clifford generators with a single boolean parameter.")
       .def(
-          py::init<ZXType, bool, QuantumType>(),
+          nb::init<ZXType, bool, QuantumType>(),
           "Construct from a ZX type, parameter and quantum type.",
-          py::arg("zxtype"), py::arg("param") = false,
-          py::arg("qtype") = QuantumType::Quantum)
+          nb::arg("zxtype"), nb::arg("param") = false,
+          nb::arg("qtype") = QuantumType::Quantum)
       .def_property_readonly(
           "param", &CliffordGen::get_param, "The parameter of the generator.");
-  py::class_<DirectedGen, std::shared_ptr<DirectedGen>, ZXGen>(
+  nb::class_<DirectedGen, std::shared_ptr<DirectedGen>, ZXGen>(
       m, "DirectedGen",
       "Specialisation of :py:class:`ZXGen` for asymmetric ZX generators which "
       "can be doubled to form a Quantum variant. Asymmetric effects handled by "
       "ports to distinguish operands.")
       .def(
-          py::init<ZXType, QuantumType>(),
-          "Construct from a ZX type and quantum type.", py::arg("zxtype"),
-          py::arg("qtype"))
+          nb::init<ZXType, QuantumType>(),
+          "Construct from a ZX type and quantum type.", nb::arg("zxtype"),
+          nb::arg("qtype"))
       .def_property_readonly(
           "n_ports", &DirectedGen::n_ports,
           "The number of ports on the generator.")
@@ -652,15 +652,15 @@ PYBIND11_MODULE(zx, m) {
           "A list of :py:class:`QuantumType` s indicating the expected "
           ":py:class:`QuantumType` at each port.");
   ZXDiagramPybind::init_zxdiagram(m);
-  py::class_<ZXBox, std::shared_ptr<ZXBox>, ZXGen>(
+  nb::class_<ZXBox, std::shared_ptr<ZXBox>, ZXGen>(
       m, "ZXBox",
       "Specialisation of :py:class:`ZXGen` for encapsulations of some other ZX "
       "diagrams. In general, arbitrary diagrams may be asymmetric tensors with "
       "both Quantum and Classical boundaries, so ports are used to distinguish "
       "each boundary.")
       .def(
-          py::init<const ZXDiagram&>(), "Construct from a ZX diagram.",
-          py::arg("zxdiag"))
+          nb::init<const ZXDiagram&>(), "Construct from a ZX diagram.",
+          nb::arg("zxdiag"))
       .def_property_readonly(
           "n_ports", &ZXBox::n_ports, "The number of ports on the generator.")
       .def_property_readonly(
@@ -670,7 +670,7 @@ PYBIND11_MODULE(zx, m) {
       .def_property_readonly(
           "diagram", &ZXBox::get_diagram,
           "The internal diagram represented by the box.");
-  py::class_<Flow>(
+  nb::class_<Flow>(
       m, "Flow",
       "Data structure for describing the Flow in a given MBQC-form "
       ":py:class:`ZXDiagram` object. Constructors are identification methods "
@@ -684,7 +684,7 @@ PYBIND11_MODULE(zx, m) {
               clist.push_back(ZXVertWrapper(c));
             return clist;
           },
-          "The correction set for the given :py:class:`ZXVert`.", py::arg("v"))
+          "The correction set for the given :py:class:`ZXVert`.", nb::arg("v"))
       .def_property_readonly(
           "cmap",
           [](const Flow& fl) {
@@ -709,7 +709,7 @@ PYBIND11_MODULE(zx, m) {
           },
           "The odd neighbourhood of the correction set for the given "
           ":py:class:`ZXVert`.",
-          py::arg("v"), py::arg("diag"))
+          nb::arg("v"), nb::arg("diag"))
       .def(
           "d", [](const Flow& fl, const ZXVertWrapper& v) { return fl.d(v); },
           "The depth of the given :py:class:`ZXVert` from the outputs in the "
@@ -725,13 +725,13 @@ PYBIND11_MODULE(zx, m) {
             return dmap;
           },
           "The map from a vertex to its depth")
-      .def("focus", &Flow::focus, "Focusses a flow.", py::arg("diag"))
+      .def("focus", &Flow::focus, "Focusses a flow.", nb::arg("diag"))
       .def_static(
           "identify_causal_flow", &Flow::identify_causal_flow,
-          "Attempts to identify a causal flow for a diagram.", py::arg("diag"))
+          "Attempts to identify a causal flow for a diagram.", nb::arg("diag"))
       .def_static(
           "identify_pauli_flow", &Flow::identify_pauli_flow,
-          "Attempts to identify a Pauli flow for a diagram.", py::arg("diag"))
+          "Attempts to identify a Pauli flow for a diagram.", nb::arg("diag"))
       .def_static(
           "identify_focussed_sets",
           [](const ZXDiagram& diag) {
@@ -748,7 +748,7 @@ PYBIND11_MODULE(zx, m) {
           "Attempts to identify the sets of vertices which are focussed over "
           "all vertices, i.e. the remaining stabilisers not generated by "
           "correction sets within a flow.",
-          py::arg("diag"));
+          nb::arg("diag"));
   init_rewrite(m);
   m.def(
       "circuit_to_zx", &wrapped_circuit_to_zx,

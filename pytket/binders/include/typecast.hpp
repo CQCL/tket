@@ -14,13 +14,13 @@
 
 #pragma once
 
-#include <pybind11/cast.h>
-#include <pybind11/detail/typeid.h>
-#include <pybind11/functional.h>
-#include <pybind11/operators.h>
-#include <pybind11/pybind11.h>
-#include <pybind11/pytypes.h>
-#include <pybind11/stl.h>
+#include <nanobind/nb_cast.h>
+// #include <pybind11/detail/typeid.h>
+// #include <pybind11/functional.h>
+#include <nanobind/operators.h>
+#include <nanobind/nanobind.h>
+// #include <pybind11/pytypes.h>
+// #include <pybind11/stl.h>
 
 #include "tket/Utils/Expression.hpp"
 #include "unit_downcast.hpp"
@@ -51,7 +51,7 @@ class TupleVec : public std::vector<T> {
   using std::vector<T>::vector;
 };
 
-// Make some custom named py::object's
+// Make some custom named nb::object's
 class LogicExpression : public object {
   PYBIND11_OBJECT_DEFAULT(LogicExpression, object, [](PyObject*) {
     return true;

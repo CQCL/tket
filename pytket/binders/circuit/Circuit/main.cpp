@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <pybind11/eigen.h>
-#include <pybind11/operators.h>
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
+#include <nanobind/eigen/dense.h>
+#include <nanobind/operators.h>
+#include <nanobind/nanobind.h>
+// #include <pybind11/stl.h>
 
 #include <optional>
 #include <sstream>
@@ -37,7 +37,7 @@
 #include "tket/Mapping/Verification.hpp"
 #include "typecast.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 using json = nlohmann::json;
 
 namespace tket {
@@ -55,36 +55,36 @@ UnitID to_cpp_unitid(const PyUnitID &py_unitid) {
   return get<Bit>(py_unitid);
 }
 
-void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c);
+void init_circuit_add_op(nb::class_<Circuit, std::shared_ptr<Circuit>> &c);
 void init_circuit_add_classical_op(
-    py::class_<Circuit, std::shared_ptr<Circuit>> &c);
+    nb::class_<Circuit, std::shared_ptr<Circuit>> &c);
 
-void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
+void def_circuit(nb::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
   init_circuit_add_op(pyCircuit);
   init_circuit_add_classical_op(pyCircuit);
   pyCircuit
-      .def(py::init<>(), "Constructs a circuit with a completely empty DAG.")
+      .def(nb::init<>(), "Constructs a circuit with a completely empty DAG.")
       .def(
-          py::init<const std::string &>(),
+          nb::init<const std::string &>(),
           "Constructs a named circuit with a completely empty DAG."
           "\n\n:param name: name for the circuit",
-          py::arg("name"))
+          nb::arg("name"))
       .def(
-          py::init<unsigned, std::optional<std::string>>(),
+          nb::init<unsigned, std::optional<std::string>>(),
           "Constructs a circuit with a given number of qubits/blank "
           "wires.\n\n>>> c = Circuit()\n>>> c.add_blank_wires(3)\n\nis "
           "equivalent to\n\n>>> c = Circuit(3)\n\n:param n_qubits: The "
           "number of qubits in the circuit\n:param name: Optional name "
           "for the circuit.",
-          py::arg("n_qubits"), py::arg("name") = std::nullopt)
+          nb::arg("n_qubits"), nb::arg("name") = std::nullopt)
       .def(
-          py::init<unsigned, unsigned, std::optional<std::string>>(),
+          nb::init<unsigned, unsigned, std::optional<std::string>>(),
           "Constructs a circuit with a given number of quantum and "
           "classical bits\n\n:param n_qubits: The number of qubits in "
           "the circuit\n:param n_bits: The number of classical bits in "
           "the circuit\n:param name: Optional name for the circuit.",
-          py::arg("n_qubits"), py::arg("n_bits"),
-          py::arg("name") = std::nullopt)
+          nb::arg("n_qubits"), nb::arg("n_bits"),
+          nb::arg("name") = std::nullopt)
       .def("__eq__", &py_equals<Circuit>)
       .def("__hash__", &deletedHash<Circuit>, deletedHashDocstring)
       .def(
@@ -113,10 +113,10 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
       .def(
           "__iter__",
           [](const Circuit &circ) {
-            return py::make_iterator(circ.begin(), circ.end());
+            return nb::make_iterator(circ.begin(), circ.end());
           },
           "Iterate through the circuit, a Command at a time.",
-          py::keep_alive<
+          nb::keep_alive<
               0, 1>() /* Essential: keep object alive while iterator exists */)
       .def(
           "get_commands",
@@ -143,7 +143,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "fewer columns than U."
           "\n\n:param matr: The matrix to be multiplied."
           "\n:return: The product of the circuit unitary and the given matrix.",
-          py::arg("matr"))
+          nb::arg("matr"))
       .def(
           "get_statevector",
           [](const Circuit &circ) { return tket_sim::get_statevector(circ); },
@@ -167,7 +167,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "the register\n:param size: Number of qubits "
           "required\n:return: a map from index to the corresponding "
           "UnitIDs",
-          py::arg("name"), py::arg("size"))
+          nb::arg("name"), nb::arg("size"))
       .def(
           "add_q_register",
           [](Circuit &circ, const QubitRegister &reg) {
@@ -189,7 +189,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           },
           "Adds QubitRegister to Circuit"
           "\n\n:param register: QubitRegister ",
-          py::arg("register"))
+          nb::arg("register"))
       .def(
           "_add_w_register",
           [](Circuit &circ, const std::size_t &size) {
@@ -200,7 +200,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "additional wasm bits will be added. "
           "\n\n:param size: Number of wasm bits that "
           "should be added to the circuit",
-          py::arg("size"))
+          nb::arg("size"))
       .def(
           "add_c_register",
           [](Circuit &circ, const std::string &name, const std::size_t &size) {
@@ -211,7 +211,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "number of bits.\n\n:param name: Unique readable name for the "
           "register\n:param size: Number of bits required\n:return: a "
           "map from index to the corresponding UnitIDs",
-          py::arg("name"), py::arg("size"))
+          nb::arg("name"), nb::arg("size"))
       .def(
           "add_c_register",
           [](Circuit &circ, const BitRegister &reg) {
@@ -233,7 +233,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           },
           "Adds BitRegister to Circuit"
           "\n\n:param register: BitRegister ",
-          py::arg("register"))
+          nb::arg("register"))
       .def(
           "get_c_register",
           [](Circuit &circ, const std::string &name) {
@@ -247,7 +247,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "Get the classical register with the given name.\n\n:param name: "
           "name for the register\n:return: the retrieved "
           ":py:class:`BitRegister`",
-          py::arg("name"))
+          nb::arg("name"))
       .def_property_readonly(
           "c_registers", &get_unit_registers<BitRegister>,
           "Get all classical registers.\n\n"
@@ -267,7 +267,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "Get the quantum register with the given name.\n\n:param name: "
           "name for the register\n:return: the retrieved "
           ":py:class:`QubitRegister`",
-          py::arg("name"))
+          nb::arg("name"))
       .def_property_readonly(
           "q_registers", &get_unit_registers<QubitRegister>,
           "Get all quantum registers.\n\n"
@@ -280,13 +280,13 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "Unique id for the qubit\n:param reject_dups: Fail if there "
           "is already a qubit in this circuit with the id. Default to "
           "True",
-          py::arg("id"), py::arg("reject_dups") = true)
+          nb::arg("id"), nb::arg("reject_dups") = true)
       .def(
           "add_bit", &Circuit::add_bit,
           "Constructs a single bit with the given id.\n\n:param id: "
           "Unique id for the bit\n:param reject_dups: Fail if there is "
           "already a bit in this circuit with the id. Default to True",
-          py::arg("id"), py::arg("reject_dups") = true)
+          nb::arg("id"), nb::arg("reject_dups") = true)
       .def_property_readonly(
           "qubits", &Circuit::all_qubits,
           "A list of all qubit ids in the circuit")
@@ -328,8 +328,8 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
       .def(
           "add_circuit",
           [](Circuit &circ, const Circuit &circ2,
-             const py::tket_custom::SequenceVec<Qubit> &qbs,
-             const py::tket_custom::SequenceVec<Bit> &bits) {
+             const nb::tket_custom::SequenceVec<Qubit> &qbs,
+             const nb::tket_custom::SequenceVec<Bit> &bits) {
             unit_map_t umap;
             unsigned i = 0;
             for (const Qubit &q : qbs) {
@@ -355,12 +355,12 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "\n:param bits: List mapping the (default register) bits "
           "of `circuit` to the bits of `self`"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("circuit"), py::arg("qubits"), py::arg("bits") = no_bits)
+          nb::arg("circuit"), nb::arg("qubits"), nb::arg("bits") = no_bits)
       .def(
           "add_circuit",
           [](Circuit &circ, const Circuit &circ2,
-             const py::tket_custom::SequenceVec<unsigned> &qbs,
-             const py::tket_custom::SequenceVec<unsigned> &bits) {
+             const nb::tket_custom::SequenceVec<unsigned> &qbs,
+             const nb::tket_custom::SequenceVec<unsigned> &bits) {
             circ.append_qubits(circ2, qbs, bits);
             return &circ;
           },
@@ -376,7 +376,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "\n:param bits: List mapping the (default register) bits "
           "of `circuit` to the (default register) bits of `self`"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("circuit"), py::arg("qubits"), py::arg("bits") = no_bits)
+          nb::arg("circuit"), nb::arg("qubits"), nb::arg("bits") = no_bits)
       .def(
           "add_circuit_with_map",
           [](Circuit &circ, const Circuit &circ2, const unit_map_t &unit_map) {
@@ -388,7 +388,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "\n\n:param circuit: circuit to be appended"
           "\n:param unit_map: map from qubits and bits in the appended circuit "
           "to corresponding qubits and bits in `self`",
-          py::arg("circuit"), py::arg("unit_map"))
+          nb::arg("circuit"), nb::arg("unit_map"))
       .def(
           "append", (void (Circuit::*)(const Circuit &))&Circuit::append,
           "In-place sequential composition of circuits, appending a "
@@ -397,7 +397,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "parallel composition if there is no match."
           "\n\n:param circuit: The circuit to be appended to the end of "
           "`self`",
-          py::arg("circuit"))
+          nb::arg("circuit"))
       .def(
           "add_phase",
           [](Circuit &circ, const Expr &a) {
@@ -406,7 +406,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           },
           "Add a global phase to the circuit.\n\n:param a: Phase to "
           "add, in halfturns\n\n:return: circuit with added phase",
-          py::arg("a"))
+          nb::arg("a"))
       .def(
           "_n_vertices", &Circuit::n_vertices,
           ":return: the number of vertices in the DAG, i.e. the sum of "
@@ -449,14 +449,14 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "\n\n:param "
           "keep_blank_classical_wires: select if "
           "empty classical wires should not be removed",
-          py::arg("keep_blank_classical_wires") = false)
+          nb::arg("keep_blank_classical_wires") = false)
       .def(
           "add_blank_wires", &Circuit::add_blank_wires,
           "Adds a number of new qubits to the circuit. These will be "
           "added to the default register ('q') if possible, filling out "
           "the unused indices from 0.\n\n:param number: Number of "
           "qubits to add",
-          py::arg("number"))
+          nb::arg("number"))
       .def(
           "rename_units",
           [](Circuit &self, const std::map<PyUnitID, PyUnitID> &py_map) {
@@ -469,7 +469,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "Rename qubits and bits simultaneously according to the map "
           "of ids provided\n\n:param map: Dictionary from current ids "
           "to new ids",
-          py::arg("map"))
+          nb::arg("map"))
       .def(
           "depth", &Circuit::depth,
           // for some reason, each c.depth() in this docstring causes stubgen to
@@ -500,7 +500,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "include_conditional: if set to true, conditional gates will "
           "be counted, too\n\n:return: the number of operations "
           "matching `type`",
-          py::arg("type"), py::arg("include_conditional") = false)
+          nb::arg("type"), nb::arg("include_conditional") = false)
       .def(
           "n_1qb_gates",
           [](const Circuit &circ) { return circ.count_n_qubit_gates(1); },
@@ -519,7 +519,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "quantum edges."
           "Ignores Input, Create, Output, Discard, Reset, Measure and Barrier "
           "vertices.",
-          py::arg("size"))
+          nb::arg("size"))
       .def(
           "depth_by_type", &Circuit::depth_by_type,
           "Returns the number of vertices in the longest path through the "
@@ -534,7 +534,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "\n\n:param type: the operation type of interest"
           "\n:return: the circuit depth with respect to operations matching "
           "`type`",
-          py::arg("type"))
+          nb::arg("type"))
       .def(
           "depth_by_type", &Circuit::depth_by_types,
           "Returns the number of vertices in the longest path through the "
@@ -549,7 +549,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "\n\n:param types: the set of operation types of interest"
           "\n:return: the circuit depth with respect to operations matching an "
           "element of `types`",
-          py::arg("types"))
+          nb::arg("types"))
       .def(
           "depth_2q", &Circuit::depth_2q,
           // for some reason, each c.depth_2q() in this docstring causes stubgen
@@ -571,25 +571,25 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
       .def(
           "_to_graphviz_file", &Circuit::to_graphviz_file,
           "Saves a visualisation of a circuit's DAG to a \".dot\" file",
-          py::arg("filename"))
+          nb::arg("filename"))
       .def(
           "to_dict",
-          [](const Circuit &c) { return py::object(json(c)).cast<py::dict>(); },
+          [](const Circuit &c) { return nb::object(json(c)).cast<nb::dict>(); },
           ":return: a JSON serializable dictionary representation of "
           "the Circuit")
       .def_static(
           "from_dict",
-          [](const py::dict &circuit_dict) {
+          [](const nb::dict &circuit_dict) {
             return json(circuit_dict).get<Circuit>();
           },
           "Construct Circuit instance from JSON serializable "
           "dictionary representation of the Circuit.")
       .def(
-          py::pickle(
-              [](const py::object &self) {  // __getstate__
-                return py::make_tuple(self.attr("to_dict")());
+          nb::pickle(
+              [](const nb::object &self) {  // __getstate__
+                return nb::make_tuple(self.attr("to_dict")());
               },
-              [](const py::tuple &t) {  // __setstate__
+              [](const nb::tuple &t) {  // __setstate__
                 const json j = t[0].cast<json>();
                 return j.get<Circuit>();
               }))
@@ -598,15 +598,15 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "Produces a latex file with a visualisation of the circuit "
           "using the Quantikz package.\n\n:param filename: Name of file "
           "to write output to (must end in \".tex\")",
-          py::arg("filename"))
+          nb::arg("filename"))
       .def(
-          py::self >> py::self,
+          nb::self >> nb::self,
           "Creates a new Circuit, corresponding to the sequential "
           "composition of the given Circuits. Any qubits/bits with the "
           "same ids will be unified. Any ids without a match will be "
           "added in parallel.")
       .def(
-          py::self * py::self,
+          nb::self * nb::self,
           "Creates a new Circuit, corresponding to the parallel "
           "composition of the given Circuits. This will fail if the "
           "circuits share qubits/bits with the same ids.")
@@ -633,7 +633,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "through each parameterised gate/box and performs the "
           "substitution. \n\n:param symbol_map: A map from "
           "SymPy symbols to SymPy expressions",
-          py::arg("symbol_map"))
+          nb::arg("symbol_map"))
       .def(
           "symbol_substitution",
           (void (Circuit::*)(
@@ -643,7 +643,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "through each gate/box and performs the "
           "substitution. \n\n:param symbol_map: A map from "
           "SymPy symbols to floating-point values",
-          py::arg("symbol_map"))
+          nb::arg("symbol_map"))
       .def(
           "free_symbols", &Circuit::free_symbols,
           ":return: set of symbolic parameters in the circuit")
@@ -661,7 +661,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           ":param op: the replacement operation\n"
           ":param opgroup: the name of the operations group to replace\n"
           ":return: whether any replacements were made",
-          py::arg("op"), py::arg("opgroup"))
+          nb::arg("op"), nb::arg("opgroup"))
       .def(
           "substitute_named",
           [](Circuit &circ, const Circuit &repl, const std::string &opgroup) {
@@ -673,7 +673,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           ":param repl: the replacement circuit\n"
           ":param opgroup: the name of the operations group to replace\n"
           ":return: whether any replacements were made",
-          py::arg("repl"), py::arg("opgroup"))
+          nb::arg("repl"), nb::arg("opgroup"))
       .def(
           "substitute_named",
           [](Circuit &circ, const CircBox &box, const std::string &opgroup) {
@@ -684,7 +684,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           ":param box: the replacement CircBox\n"
           ":param opgroup: the name of the operations group to replace\n"
           ":return: whether any replacements were made",
-          py::arg("box"), py::arg("opgroup"))
+          nb::arg("box"), nb::arg("opgroup"))
       .def(
           "substitute_named",
           [](Circuit &circ, const Unitary1qBox &box,
@@ -696,7 +696,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           ":param box: the replacement Unitary1qBox\n"
           ":param opgroup: the name of the operations group to replace\n"
           ":return: whether any replacements were made",
-          py::arg("box"), py::arg("opgroup"))
+          nb::arg("box"), nb::arg("opgroup"))
       .def(
           "substitute_named",
           [](Circuit &circ, const Unitary2qBox &box,
@@ -708,7 +708,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           ":param box: the replacement Unitary2qBox\n"
           ":param opgroup: the name of the operations group to replace\n"
           ":return: whether any replacements were made",
-          py::arg("box"), py::arg("opgroup"))
+          nb::arg("box"), nb::arg("opgroup"))
       .def(
           "substitute_named",
           [](Circuit &circ, const Unitary3qBox &box,
@@ -720,7 +720,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           ":param box: the replacement Unitary3qBox\n"
           ":param opgroup: the name of the operations group to replace\n"
           ":return: whether any replacements were made",
-          py::arg("box"), py::arg("opgroup"))
+          nb::arg("box"), nb::arg("opgroup"))
       .def(
           "substitute_named",
           [](Circuit &circ, const ExpBox &box, const std::string &opgroup) {
@@ -731,7 +731,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           ":param box: the replacement ExpBox\n"
           ":param opgroup: the name of the operations group to replace\n"
           ":return: whether any replacements were made",
-          py::arg("box"), py::arg("opgroup"))
+          nb::arg("box"), nb::arg("opgroup"))
       .def(
           "substitute_named",
           [](Circuit &circ, const PauliExpBox &box,
@@ -743,7 +743,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           ":param box: the replacement PauliExpBox\n"
           ":param opgroup: the name of the operations group to replace\n"
           ":return: whether any replacements were made",
-          py::arg("box"), py::arg("opgroup"))
+          nb::arg("box"), nb::arg("opgroup"))
       .def(
           "substitute_named",
           [](Circuit &circ, const ToffoliBox &box, const std::string &opgroup) {
@@ -754,7 +754,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           ":param box: the replacement ToffoliBox\n"
           ":param opgroup: the name of the operations group to replace\n"
           ":return: whether any replacements were made",
-          py::arg("box"), py::arg("opgroup"))
+          nb::arg("box"), nb::arg("opgroup"))
       .def(
           "substitute_named",
           [](Circuit &circ, const DummyBox &box, const std::string &opgroup) {
@@ -765,7 +765,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           ":param box: the replacement DummyBox\n"
           ":param opgroup: the name of the operations group to replace\n"
           ":return: whether any replacements were made",
-          py::arg("box"), py::arg("opgroup"))
+          nb::arg("box"), nb::arg("opgroup"))
       .def(
           "substitute_named",
           [](Circuit &circ, const QControlBox &box,
@@ -777,7 +777,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           ":param box: the replacement QControlBox\n"
           ":param opgroup: the name of the operations group to replace\n"
           ":return: whether any replacements were made",
-          py::arg("box"), py::arg("opgroup"))
+          nb::arg("box"), nb::arg("opgroup"))
       .def(
           "substitute_named",
           [](Circuit &circ, const CustomGate &box, const std::string &opgroup) {
@@ -788,7 +788,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           ":param box: the replacement CustomGate\n"
           ":param opgroup: the name of the operations group to replace\n"
           ":return: whether any replacements were made",
-          py::arg("box"), py::arg("opgroup"))
+          nb::arg("box"), nb::arg("opgroup"))
 
       // Methods for contextual optimization
       .def(
@@ -822,7 +822,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "\n:param allow_bridge: Accept BRIDGEs as valid, assuming the "
           "middle qubit neighbours the others"
           "\n\n:return: True or False",
-          py::arg("arch"), py::arg("directed"), py::arg("allow_bridge") = false)
+          nb::arg("arch"), nb::arg("directed"), nb::arg("allow_bridge") = false)
       .def(
           "implicit_qubit_permutation", &Circuit::implicit_qubit_permutation,
           ":return: dictionary mapping input qubit to output qubit on "
@@ -852,7 +852,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "\n\nThe order is not guaranteed."
           "\n\n:param optype: operation type"
           "\n\n:return: list of :py:class:`Op`",
-          py::arg("optype"))
+          nb::arg("optype"))
       .def(
           "commands_of_type", &Circuit::get_commands_of_type,
           "Get all commands in a circuit of a given type."
@@ -860,7 +860,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "operations in the circuit."
           "\n\n:param optype: operation type"
           "\n\n:return: list of :py:class:`Command`",
-          py::arg("optype"))
+          nb::arg("optype"))
       .def(
           "get_resources", &Circuit::get_resources,
           "Calculate the overall resources of the circuit."

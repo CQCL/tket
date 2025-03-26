@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <pybind11/eigen.h>
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
+#include <nanobind/eigen/dense.h>
+#include <nanobind/nanobind.h>
+// #include <pybind11/stl.h>
 
 #include <tket/Circuit/Circuit.hpp>
 
@@ -32,24 +32,24 @@
 #include "tket/Utils/Constants.hpp"
 #include "typecast.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 using json = nlohmann::json;
 
 namespace tket {
 
-typedef py::tket_custom::SequenceVec<EdgeType> py_op_signature_t;
-typedef py::tket_custom::SequenceVec<UnitID> py_unit_vector_t;
+typedef nb::tket_custom::SequenceVec<EdgeType> py_op_signature_t;
+typedef nb::tket_custom::SequenceVec<UnitID> py_unit_vector_t;
 
-void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &);
-void init_classical(py::module &m);
-void init_boxes(py::module &m);
-void init_clexpr(py::module &m);
+void def_circuit(nb::class_<Circuit, std::shared_ptr<Circuit>> &);
+void init_classical(nb::module &m);
+void init_boxes(nb::module &m);
+void init_clexpr(nb::module &m);
 
-PYBIND11_MODULE(circuit, m) {
-  py::module::import("pytket._tket.unit_id");
-  py::module::import("pytket._tket.pauli");
-  py::module::import("pytket._tket.architecture");
-  py::enum_<CXConfigType>(
+NB_MODULE(circuit, m) {
+  nb::module::import("pytket._tket.unit_id");
+  nb::module::import("pytket._tket.pauli");
+  nb::module::import("pytket._tket.architecture");
+  nb::enum_<CXConfigType>(
       m, "CXConfigType",
       "Enum for available configurations for CXs upon decompose phase "
       "gadgets")
@@ -67,18 +67,18 @@ PYBIND11_MODULE(circuit, m) {
           "MultiQGate", CXConfigType::MultiQGate,
           "Support for multi-qubit architectures, decomposing to 3-qubit "
           "XXPhase3 gates instead of CXs where possible.");
-  py::enum_<EdgeType>(
+  nb::enum_<EdgeType>(
       m, "EdgeType", "Type of a wire in a circuit or input to an op")
       .value("Boolean", EdgeType::Boolean)
       .value("Classical", EdgeType::Classical)
       .value("Quantum", EdgeType::Quantum)
       .value("WASM", EdgeType::WASM);
   // NOTE: Sphinx does not automatically pick up the docstring for OpType
-  py::enum_<OpType>(
+  nb::enum_<OpType>(
       m, "OpType",
       "Enum for available operations compatible with "
       "tket " CLSOBJS(Circuit) ".",
-      py::arithmetic())
+      nb::arithmetic())
       .value(
           "Phase", OpType::Phase,
           "Global phase: :math:`(\\alpha) \\mapsto \\left[ \\begin{array}{c} "
@@ -547,9 +547,9 @@ PYBIND11_MODULE(circuit, m) {
       .value("ClExpr", OpType::ClExpr, "A classical expression")
       .def_static(
           "from_name",
-          [](const py::str &name) { return json(name).get<OpType>(); },
+          [](const nb::str &name) { return json(name).get<OpType>(); },
           "Construct from name");
-  py::class_<Op, std::shared_ptr<Op>>(
+  nb::class_<Op, std::shared_ptr<Op>>(
       m, "Op", "Encapsulates operation information")
       .def_static(
           "create",
@@ -563,7 +563,7 @@ PYBIND11_MODULE(circuit, m) {
           "Create an :py:class:`Op` with given type and parameter")
       .def_static(
           "create",
-          [](OpType optype, const py::tket_custom::SequenceVec<Expr> &params) {
+          [](OpType optype, const nb::tket_custom::SequenceVec<Expr> &params) {
             return get_op_ptr(optype, params);
           },
           "Create an :py:class:`Op` with given type and parameters")
@@ -582,7 +582,7 @@ PYBIND11_MODULE(circuit, m) {
       .def_property_readonly("transpose", &Op::transpose, "Transpose of op")
       .def(
           "get_name", &Op::get_name, "String representation of op",
-          py::arg("latex") = false)
+          nb::arg("latex") = false)
       .def("__eq__", &py_equals<Op>)
       .def("__hash__", &deletedHash<Op>, deletedHashDocstring)
       .def("__repr__", [](const Op &op) { return op.get_name(); })
@@ -600,7 +600,7 @@ PYBIND11_MODULE(circuit, m) {
           "detected as such.")
       .def("is_gate", [](const Op &op) { return op.get_desc().is_gate(); });
 
-  py::enum_<BasisOrder>(
+  nb::enum_<BasisOrder>(
       m, "BasisOrder",
       "Enum for readout basis and ordering.\n"
       "Readouts are viewed in increasing lexicographic order (ILO) of "
@@ -625,14 +625,14 @@ PYBIND11_MODULE(circuit, m) {
           "dlo", BasisOrder::dlo,
           "Decreasing Lexicographic Order of UnitID, big-endian");
 
-  py::class_<Command>(
+  nb::class_<Command>(
       m, "Command",
       "A single quantum command in the circuit, defined by the Op, the "
       "qubits it acts on, and the op group name if any.")
       .def(
-          py::init<const Op_ptr, py_unit_vector_t>(),
-          "Construct from an operation and a vector of unit IDs", py::arg("op"),
-          py::arg("args"))
+          nb::init<const Op_ptr, py_unit_vector_t>(),
+          "Construct from an operation and a vector of unit IDs", nb::arg("op"),
+          nb::arg("args"))
       .def("__eq__", &py_equals<Command>)
       .def("__hash__", &deletedHash<Command>, deletedHashDocstring)
       .def("__repr__", &Command::to_str)
@@ -655,30 +655,30 @@ PYBIND11_MODULE(circuit, m) {
           [](const Command &com) { return com.get_op_ptr()->free_symbols(); },
           ":return: set of symbolic parameters for the command");
 
-  py::class_<MetaOp, std::shared_ptr<MetaOp>, Op>(
+  nb::class_<MetaOp, std::shared_ptr<MetaOp>, Op>(
       m, "MetaOp", "Meta operation, such as input or output vertices.")
       .def(
-          py::init<OpType, py_op_signature_t, const std::string &>(),
+          nb::init<OpType, py_op_signature_t, const std::string &>(),
           "Construct MetaOp with optype, signature and additional data string"
           "\n\n:param type: type for the meta op"
           "\n:param signature: signature for the op"
           "\n:param data: additional string stored in the op",
-          py::arg("type"), py::arg("signature"), py::arg("data"))
+          nb::arg("type"), nb::arg("signature"), nb::arg("data"))
       .def_property_readonly("data", &MetaOp::get_data, "Get data from MetaOp");
 
-  py::class_<BarrierOp, std::shared_ptr<BarrierOp>, Op>(
+  nb::class_<BarrierOp, std::shared_ptr<BarrierOp>, Op>(
       m, "BarrierOp", "Barrier operations.")
       .def(
-          py::init<py_op_signature_t, const std::string &>(),
+          nb::init<py_op_signature_t, const std::string &>(),
           "Construct BarrierOp with signature and additional data string"
           "\n:param signature: signature for the op"
           "\n:param data: additional string stored in the op",
-          py::arg("signature"), py::arg("data"))
+          nb::arg("signature"), nb::arg("data"))
       .def_property_readonly(
           "data", &BarrierOp::get_data, "Get data from BarrierOp");
 
-  auto pyCircuit = py::class_<Circuit, std::shared_ptr<Circuit>>(
-      m, "Circuit", py::dynamic_attr(),
+  auto pyCircuit = nb::class_<Circuit, std::shared_ptr<Circuit>>(
+      m, "Circuit", nb::dynamic_attr(),
       "Encapsulates a quantum circuit using a DAG representation.\n\n>>> "
       "from pytket import Circuit\n>>> c = Circuit(4,2) # Create a circuit "
       "with 4 qubits and 2 classical bits"
@@ -699,7 +699,7 @@ PYBIND11_MODULE(circuit, m) {
       "session.\n\n:param preferred: The preferred readable symbol name "
       "as "
       "a string (default is 'a')\n\n:return: A new sympy symbol object",
-      py::arg("preferred") = 'a');
+      nb::arg("preferred") = 'a');
 }
 
 }  // namespace tket
