@@ -116,30 +116,16 @@ cmake --build .
 cmake --install .
 ```
 
-### `pybind11` (needed for pytket)
+### `nanobind` (needed for pytket)
 
 ```
 cd ${TMP_DIR}
-wget https://github.com/pybind/pybind11/archive/refs/tags/v2.13.6.tar.gz
-tar xzvf v2.13.6.tar.gz
-cd pybind11-2.13.6/
+wget https://github.com/wjakob/nanobind/archive/refs/tags/v2.6.1.tar.gz
+tar xzvf v2.6.1.tar.gz
+cd nanobind-2.6.1/
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DPYBIND11_TEST=OFF ..
-cmake --build .
-cmake --install .
-```
-
-### `pybind11_json` (needed for pytket)
-
-```
-cd ${TMP_DIR}
-wget https://github.com/pybind/pybind11_json/archive/refs/tags/0.2.15.tar.gz
-tar xzvf 0.2.14.tar.gz
-cd pybind11_json-0.2.14/
-mkdir build
-cd build
-cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
+cmake -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DNB_TEST=OFF -DNB_USE_SUBMODULE_DEPS=OFF ..
 cmake --build .
 cmake --install .
 ```

@@ -14,32 +14,31 @@
 
 #pragma once
 
-#include <pybind11/pybind11.h>
+#include <nanobind/nanobind.h>
 
-namespace py = pybind11;
+namespace nb = nanobind;
 
 /*
  * This function template implements python equality for any class that
  * implements ==
- * -> Using py::object as the parameter solves mypy error in the stubs generated
+ * -> Using nb::object as the parameter solves mypy error in the stubs generated
  * when equality is defined only for a subset of the python objects (which is
  * frowned upon due to pythons lack of strict typing)
- * -> The typical way to do this in pybind11 leads to this error
  */
 
 template <typename T>
-bool py_equals(const T& self, const py::object& pyObject) {
-  if (py::isinstance<T>(pyObject)) {
-    T* cppObject = pyObject.cast<T*>();
+bool py_equals(const T& self, const nb::object& pyObject) {
+  if (nb::isinstance<T>(pyObject)) {
+    T* cppObject = nb::cast<T*>(pyObject);
     return *cppObject == self;
   }
   return false;
 }
 
 template <typename T>
-bool py_not_equals(const T& self, const py::object& pyObject) {
-  if (py::isinstance<T>(pyObject)) {
-    T* cppObject = pyObject.cast<T*>();
+bool py_not_equals(const T& self, const nb::object& pyObject) {
+  if (nb::isinstance<T>(pyObject)) {
+    T* cppObject = nb::cast<T*>(pyObject);
     return *cppObject != self;
   }
   return true;
