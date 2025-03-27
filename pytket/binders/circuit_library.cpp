@@ -139,7 +139,7 @@ NB_MODULE(circuit_library, library_m) {
       ":return: Circuit with control qubits at indices :math:`0, \\ldots, "
       "n-1`, target qubit :math:`n`, and ancilla qubits :math:`n+1, \\ldots, n "
       "+ \\lfloor(n-1)/2\\rfloor`.",
-      pybind11::arg("n"), pybind11::arg("zeroed_ancillas") = true);
+      nanobind::arg("n"), nanobind::arg("zeroed_ancillas") = true);
   library_m.def(
       "ladder_down", &CircPool::ladder_down, "CX[0,1]; CX[2,0]; CCX[0,1,2]");
   library_m.def(

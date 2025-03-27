@@ -39,25 +39,25 @@ void init_classical(nb::module& m) {
           nb::init<const Op_ptr&, unsigned, unsigned>(),
           "Construct from operation, bit width and (little-endian) value",
           nb::arg("op"), nb::arg("width"), nb::arg("value"))
-      .def_property_readonly(
+      .def_prop_ro(
           "op", &Conditional::get_op,
           "The operation to be applied conditionally")
-      .def_property_readonly(
+      .def_prop_ro(
           "width", &Conditional::get_width,
           "The number of bits in the condition register")
-      .def_property_readonly(
+      .def_prop_ro(
           "value", &Conditional::get_value,
           "The little-endian value the classical register must read "
           "in order to apply the operation (e.g. value 2 (10b) means "
           "bits[0] must be 0 and bits[1] must be 1)");
   nb::class_<ClassicalOp, std::shared_ptr<ClassicalOp>, Op>(
       m, "ClassicalOp", "Classical operation.")
-      .def_property_readonly(
+      .def_prop_ro(
           "n_inputs", &ClassicalOp::get_n_i, "Number of pure inputs.")
-      .def_property_readonly(
+      .def_prop_ro(
           "n_input_outputs", &ClassicalOp::get_n_io,
           "Number of pure input/output arguments.")
-      .def_property_readonly(
+      .def_prop_ro(
           "n_outputs", &ClassicalOp::get_n_o, "Number of pure outputs.");
   nb::class_<ClassicalEvalOp, std::shared_ptr<ClassicalEvalOp>, ClassicalOp>(
       m, "ClassicalEvalOp", "Evaluatable classical operation.");
@@ -67,7 +67,7 @@ void init_classical(nb::module& m) {
       .def(
           nb::init<const nb::tket_custom::SequenceVec<bool>&>(),
           "Construct from a table of values.", nb::arg("values"))
-      .def_property_readonly(
+      .def_prop_ro(
           "values", &SetBitsOp::get_values, "The values to set bits to.");
   nb::class_<CopyBitsOp, std::shared_ptr<CopyBitsOp>, ClassicalEvalOp>(
       m, "CopyBitsOp",
@@ -79,9 +79,9 @@ void init_classical(nb::module& m) {
           nb::init<std::shared_ptr<const ClassicalEvalOp>, unsigned>(),
           "Construct from a basic operation and a multiplier.", nb::arg("op"),
           nb::arg("multiplier"))
-      .def_property_readonly(
+      .def_prop_ro(
           "basic_op", &MultiBitOp::get_op, "Underlying bitwise op.")
-      .def_property_readonly("multiplier", &MultiBitOp::get_n, "Multiplier.");
+      .def_prop_ro("multiplier", &MultiBitOp::get_n, "Multiplier.");
   nb::class_<
       RangePredicateOp, std::shared_ptr<RangePredicateOp>, ClassicalEvalOp>(
       m, "RangePredicateOp",
@@ -90,9 +90,9 @@ void init_classical(nb::module& m) {
           nb::init<unsigned, _tket_uint_t, _tket_uint_t>(),
           "Construct from a bit width, a lower bound and an upper bound.",
           nb::arg("width"), nb::arg("lower"), nb::arg("upper"))
-      .def_property_readonly(
+      .def_prop_ro(
           "lower", &RangePredicateOp::lower, "Inclusive lower bound.")
-      .def_property_readonly(
+      .def_prop_ro(
           "upper", &RangePredicateOp::upper, "Inclusive upper bound.");
 
   nb::class_<WASMOp, std::shared_ptr<WASMOp>, ClassicalOp>(
@@ -110,20 +110,20 @@ void init_classical(nb::module& m) {
           "function name and module id.",
           nb::arg("num_bits"), nb::arg("num_w"), nb::arg("n_inputs"),
           nb::arg("n_outputs"), nb::arg("func_name"), nb::arg("wasm_uid"))
-      .def_property_readonly(
+      .def_prop_ro(
           "wasm_uid", &WASMOp::get_wasm_file_uid, "Wasm module id.")
-      .def_property_readonly(
+      .def_prop_ro(
           "num_w", &WASMOp::get_ww_n, "Number of wasm wire in the op")
-      .def_property_readonly(
+      .def_prop_ro(
           "func_name", &WASMOp::get_func_name, "Name of function.")
-      .def_property_readonly(
+      .def_prop_ro(
           "num_bits", &WASMOp::get_n, "Number of bits interacted with.")
-      .def_property_readonly(
+      .def_prop_ro(
           "n_i32", &WASMOp::get_n_i32, "Number of integers acted on.")
-      .def_property_readonly(
+      .def_prop_ro(
           "input_widths", &WASMOp::get_width_i_parameter,
           "Widths of input integers.")
-      .def_property_readonly(
+      .def_prop_ro(
           "output_widths", &WASMOp::get_width_o_parameter,
           "Widths of output integers.");
 }

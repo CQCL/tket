@@ -147,7 +147,7 @@ void ZXDiagramPybind::init_zxdiagram(nb::module& m) {
           "{:py:meth:`QuantumType.Quantum`, :py:meth:`QuantumType.Classical`, "
           "None}. Defaults to None.",
           nb::arg("type") = std::nullopt, nb::arg("qtype") = std::nullopt)
-      .def_property_readonly(
+      .def_prop_ro(
           "scalar", &ZXDiagram::get_scalar,
           "Returns the global scalar stored numerically. This may be a "
           "symbolic expression.")
@@ -156,7 +156,7 @@ void ZXDiagramPybind::init_zxdiagram(nb::module& m) {
           "Multiplies the global scalar by a numerical (possibly symbolic) "
           "constant.",
           nb::arg("scalar"))
-      .def_property_readonly(
+      .def_prop_ro(
           "vertices",
           [](const ZXDiagram& diag) {
             std::list<ZXVertWrapper> verts;
@@ -165,7 +165,7 @@ void ZXDiagramPybind::init_zxdiagram(nb::module& m) {
           },
           "Returns a list of handles to all vertices in the diagram. The order "
           "of vertices may not be semantically relevant.")
-      .def_property_readonly(
+      .def_prop_ro(
           "wires",
           [](const ZXDiagram& diag) {
             std::list<Wire> wires;
@@ -174,11 +174,11 @@ void ZXDiagramPybind::init_zxdiagram(nb::module& m) {
           },
           "Returns a list of handles to all wires in the diagram. The order of "
           "wires may not be semantically relevant.")
-      .def_property_readonly(
+      .def_prop_ro(
           "n_vertices", &ZXDiagram::n_vertices,
           "Counts the number of vertices in the diagram. Includes boundary "
           "vertices and disconnected vertices.")
-      .def_property_readonly(
+      .def_prop_ro(
           "n_wires", &ZXDiagram::n_wires,
           "Counts the number of edges in the diagram.")
       .def(
@@ -606,8 +606,8 @@ NB_MODULE(zx, m) {
           },
           "Create a boundary type generator.", nb::arg("type"),
           nb::arg("param"), nb::arg("qtype") = QuantumType::Quantum)
-      .def_property_readonly("type", &ZXGen::get_type, "The type of generator.")
-      .def_property_readonly(
+      .def_prop_ro("type", &ZXGen::get_type, "The type of generator.")
+      .def_prop_ro(
           "qtype", &ZXGen::get_qtype,
           "The :py:class:`QuantumType` of the generator (if applicable).")
       .def("__eq__", &py_equals<ZXGen>)
@@ -622,7 +622,7 @@ NB_MODULE(zx, m) {
           "Construct from a ZX type, parameter and quantum type.",
           nb::arg("zxtype"), nb::arg("param") = 0.,
           nb::arg("qtype") = QuantumType::Quantum)
-      .def_property_readonly(
+      .def_prop_ro(
           "param", &PhasedGen::get_param, "The parameter of the generator.");
   nb::class_<CliffordGen, std::shared_ptr<CliffordGen>, ZXGen>(
       m, "CliffordGen",
@@ -633,7 +633,7 @@ NB_MODULE(zx, m) {
           "Construct from a ZX type, parameter and quantum type.",
           nb::arg("zxtype"), nb::arg("param") = false,
           nb::arg("qtype") = QuantumType::Quantum)
-      .def_property_readonly(
+      .def_prop_ro(
           "param", &CliffordGen::get_param, "The parameter of the generator.");
   nb::class_<DirectedGen, std::shared_ptr<DirectedGen>, ZXGen>(
       m, "DirectedGen",
@@ -644,10 +644,10 @@ NB_MODULE(zx, m) {
           nb::init<ZXType, QuantumType>(),
           "Construct from a ZX type and quantum type.", nb::arg("zxtype"),
           nb::arg("qtype"))
-      .def_property_readonly(
+      .def_prop_ro(
           "n_ports", &DirectedGen::n_ports,
           "The number of ports on the generator.")
-      .def_property_readonly(
+      .def_prop_ro(
           "signature", &DirectedGen::get_signature,
           "A list of :py:class:`QuantumType` s indicating the expected "
           ":py:class:`QuantumType` at each port.");
@@ -661,13 +661,13 @@ NB_MODULE(zx, m) {
       .def(
           nb::init<const ZXDiagram&>(), "Construct from a ZX diagram.",
           nb::arg("zxdiag"))
-      .def_property_readonly(
+      .def_prop_ro(
           "n_ports", &ZXBox::n_ports, "The number of ports on the generator.")
-      .def_property_readonly(
+      .def_prop_ro(
           "signature", &ZXBox::get_signature,
           "A list of :py:class:`QuantumType` s indicating the expected "
           ":py:class:`QuantumType` at each port.")
-      .def_property_readonly(
+      .def_prop_ro(
           "diagram", &ZXBox::get_diagram,
           "The internal diagram represented by the box.");
   nb::class_<Flow>(
@@ -685,7 +685,7 @@ NB_MODULE(zx, m) {
             return clist;
           },
           "The correction set for the given :py:class:`ZXVert`.", nb::arg("v"))
-      .def_property_readonly(
+      .def_prop_ro(
           "cmap",
           [](const Flow& fl) {
             std::map<ZXVertWrapper, std::list<ZXVertWrapper>> cmap;
@@ -715,7 +715,7 @@ NB_MODULE(zx, m) {
           "The depth of the given :py:class:`ZXVert` from the outputs in the "
           "ordering of the flow, e.g. an output vertex will have depth 0, the "
           "last measured vertex has depth 1.")
-      .def_property_readonly(
+      .def_prop_ro(
           "dmap",
           [](const Flow& fl) {
             std::map<ZXVertWrapper, unsigned> dmap;

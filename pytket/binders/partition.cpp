@@ -80,19 +80,19 @@ NB_MODULE(partition, m) {
           "\n:param invert: whether to flip the parity of the result",
           nb::arg("circ_index"), nb::arg("bits"), nb::arg("invert") = false)
       .def("__repr__", &MeasurementSetup::MeasurementBitMap::to_str)
-      .def_property_readonly(
+      .def_prop_ro(
           "circ_index", &MeasurementSetup::MeasurementBitMap::get_circ_index,
           "Clifford circuit index")
-      .def_property_readonly(
+      .def_prop_ro(
           "bits", &MeasurementSetup::MeasurementBitMap::get_bits,
           "Bits to measure")
-      .def_property_readonly(
+      .def_prop_ro(
           "invert", &MeasurementSetup::MeasurementBitMap::get_invert,
           "Whether result is inverted or not")
       .def(
           "to_dict",
           [](const MeasurementSetup::MeasurementBitMap &map) {
-            return nb::object(json(map)).cast<nb::dict>();
+            return nb::cast<nb::dict>(nb::object(json(map)));
           },
           "JSON-serializable dict representation of the MeasurementBitMap."
           "\n\n:return: dict representation of the MeasurementBitMap")
@@ -113,10 +113,10 @@ NB_MODULE(partition, m) {
       "weights to retrieve the desired operator expctation value.")
       .def(nb::init<>(), "Constructs an empty MeasurementSetup object")
       .def("__repr__", &MeasurementSetup::to_str)
-      .def_property_readonly(
+      .def_prop_ro(
           "measurement_circs", &MeasurementSetup::get_circs,
           "Clifford measurement circuits.")
-      .def_property_readonly(
+      .def_prop_ro(
           "results", &MeasurementSetup::get_result_map,
           "Map from Pauli strings to MeasurementBitMaps")
       .def(
@@ -140,7 +140,7 @@ NB_MODULE(partition, m) {
       .def(
           "to_dict",
           [](const MeasurementSetup &setup) {
-            return nb::object(json(setup)).cast<nb::dict>();
+            return nb::cast<nb::dict>(nb::object(json(setup)));
           },
           "JSON-serializable dict representation of the MeasurementSetup."
           "\n\n:return: dict representation of the MeasurementSetup")

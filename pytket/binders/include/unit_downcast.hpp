@@ -17,7 +17,7 @@
 
 #include "tket/Utils/UnitID.hpp"
 
-namespace pybind11 {
+namespace nanobind {
 
 /** Enable automatic downcasting of UnitIDs as required for some Circuit methods
  */
@@ -39,4 +39,4 @@ struct polymorphic_type_hook<tket::UnitID> {
     return src;
   }
 };
-}  // namespace pybind11
+}  // namespace nanobind

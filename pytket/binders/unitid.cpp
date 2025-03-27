@@ -58,13 +58,13 @@ void declare_register(nb::module &m, const std::string &typestr) {
             reg.set_current(0);
             return reg;
           })
-      .def_property(
+      .def_prop_rw(
           "name", &UnitRegister<T>::name, &UnitRegister<T>::set_name,
           "Name of register.")
-      .def_property(
+      .def_prop_rw(
           "size", &UnitRegister<T>::size, &UnitRegister<T>::set_size,
           "Size of register.")
-      .def_property(
+      .def_prop_rw(
           "_current", &UnitRegister<T>::current, &UnitRegister<T>::set_current,
           "Internal property for iteration.")
       .def("to_list", &UnitRegister<T>::to_vector)
@@ -106,13 +106,13 @@ NB_MODULE(unit_id, m) {
       .def(
           "__deepcopy__",
           [](const UnitID &id, const nb::dict &) { return UnitID(id); })
-      .def_property_readonly(
+      .def_prop_ro(
           "reg_name", &UnitID::reg_name, "Readable name of register")
-      .def_property_readonly(
+      .def_prop_ro(
           "index", &UnitID::index,
           "Index vector describing position in the register. The "
           "length of this vector is the dimension of the register")
-      .def_property_readonly(
+      .def_prop_ro(
           "type", &UnitID::type,
           "Type of unit, either ``UnitType.qubit`` or "
           "``UnitType.bit`` or ``UnitType.wasmstate``");
@@ -162,12 +162,12 @@ NB_MODULE(unit_id, m) {
                   throw std::runtime_error(
                       "Invalid state: tuple size: " + std::to_string(t.size()));
                 return Qubit(
-                    t[0].cast<std::string>(),
-                    t[1].cast<std::vector<unsigned>>());
+                    nb::cast<std::string>(t[0]),
+                    nb::cast<std::vector<unsigned>>(t[1]));
               }))
       .def(
           "to_list",
-          [](const Qubit &q) { return nb::object(json(q)).cast<nb::list>(); },
+          [](const Qubit &q) { return nb::cast<nb::list>(nb::object(json(q))); },
           ":return: a JSON serializable list representation of "
           "the Qubit")
       .def_static(
@@ -223,12 +223,12 @@ NB_MODULE(unit_id, m) {
                   throw std::runtime_error(
                       "Invalid state: tuple size: " + std::to_string(t.size()));
                 return Bit(
-                    t[0].cast<std::string>(),
-                    t[1].cast<std::vector<unsigned>>());
+                    nb::cast<std::string>(t[0]),
+                    nb::cast<std::vector<unsigned>>(t[1]));
               }))
       .def(
           "to_list",
-          [](const Bit &b) { return nb::object(json(b)).cast<nb::list>(); },
+          [](const Bit &b) { return nb::cast<nb::list>(nb::object(json(b))); },
           "Return a JSON serializable list representation of "
           "the Bit."
           "\n\n:return: list containing register name and index")
@@ -260,13 +260,13 @@ NB_MODULE(unit_id, m) {
                   throw std::runtime_error(
                       "Invalid state: tuple size: " + std::to_string(t.size()));
                 return WasmState(
-                    t[0].cast<std::string>(),
-                    t[1].cast<std::vector<unsigned>>());
+                    nb::cast<std::string>(t[0]),
+                    nb::cast<std::vector<unsigned>>(t[1]));
               }))
       .def(
           "to_list",
           [](const WasmState &b) {
-            return nb::object(json(b)).cast<nb::list>();
+            return nb::cast<nb::list>(nb::object(json(b)));
           },
           "Return a JSON serializable list representation of "
           "the WasmState."
@@ -318,7 +318,7 @@ NB_MODULE(unit_id, m) {
           nb::arg("name"), nb::arg("index"))
       .def(
           "to_list",
-          [](const Node &n) { return nb::object(json(n)).cast<nb::list>(); },
+          [](const Node &n) { return nb::cast<nb::list>(nb::object(json(n))); },
           ":return: a JSON serializable list representation of "
           "the Node")
       .def_static(

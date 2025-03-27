@@ -86,17 +86,17 @@ NB_MODULE(architecture, m) {
           "get_adjacent_nodes", &Architecture::get_neighbour_nodes,
           "given a node, returns adjacent nodes in Architecture.",
           nb::arg("node"))
-      .def_property_readonly(
+      .def_prop_ro(
           "nodes", &Architecture::get_all_nodes_vec,
           "Returns all nodes of architecture as Node objects.")
-      .def_property_readonly(
+      .def_prop_ro(
           "coupling", &Architecture::get_all_edges_vec,
           "Returns the coupling map of the Architecture as "
           "UnitIDs. ")
       .def(
           "to_dict",
           [](const Architecture &arch) {
-            return nb::object(json(arch)).cast<nb::dict>();
+            return nb::cast<nb::dict>(nb::object(json(arch)));
           },
           "Return a JSON serializable dict representation of "
           "the Architecture."
@@ -210,13 +210,13 @@ NB_MODULE(architecture, m) {
           })
       .def("__eq__", &py_equals<FullyConnected>)
       .def("__hash__", &deletedHash<FullyConnected>, deletedHashDocstring)
-      .def_property_readonly(
+      .def_prop_ro(
           "nodes", &FullyConnected::get_all_nodes_vec,
           "All nodes of the architecture as :py:class:`Node` objects.")
       .def(
           "to_dict",
           [](const FullyConnected &arch) {
-            return nb::object(json(arch)).cast<nb::dict>();
+            return nb::cast<nb::dict>(nb::object(json(arch)));
           },
           "JSON-serializable dict representation of the architecture."
           "\n\n"

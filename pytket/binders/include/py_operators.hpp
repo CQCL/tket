@@ -30,7 +30,7 @@ namespace nb = nanobind;
 template <typename T>
 bool py_equals(const T& self, const nb::object& pyObject) {
   if (nb::isinstance<T>(pyObject)) {
-    T* cppObject = pyObject.cast<T*>();
+    T* cppObject = nb::cast<T*>(pyObject);
     return *cppObject == self;
   }
   return false;
@@ -39,7 +39,7 @@ bool py_equals(const T& self, const nb::object& pyObject) {
 template <typename T>
 bool py_not_equals(const T& self, const nb::object& pyObject) {
   if (nb::isinstance<T>(pyObject)) {
-    T* cppObject = pyObject.cast<T*>();
+    T* cppObject = nb::cast<T*>(pyObject);
     return *cppObject != self;
   }
   return true;

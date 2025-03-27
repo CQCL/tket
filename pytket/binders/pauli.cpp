@@ -67,7 +67,7 @@ NB_MODULE(pauli, m) {
       .def("__lt__", &SpPauliString::operator<)
       .def("__getitem__", &SpPauliString::get<QubitPauliMap>)
       .def("__setitem__", &SpPauliString::set<QubitPauliMap>)
-      .def_property_readonly(
+      .def_prop_ro(
           "map", [](const SpPauliString &qps) { return qps.string; },
           ":return: the QubitPauliString's underlying dict mapping "
           ":py:class:`Qubit` to :py:class:`Pauli`")
@@ -76,7 +76,7 @@ NB_MODULE(pauli, m) {
           [](const SpPauliString &qps) {
             // Just return the QubitPauliMap for backwards compatibility with
             // before templated PauliTensor
-            return nb::object(json(qps.string)).cast<nb::list>();
+            return nb::cast<nb::list>(nb::object(json(qps.string)));
           },
           "A JSON-serializable representation of the QubitPauliString.\n\n"
           ":return: a list of :py:class:`Qubit`-to-:py:class:`Pauli` "
@@ -210,8 +210,8 @@ NB_MODULE(pauli, m) {
                   throw std::runtime_error(
                       "Invalid state: tuple size: " + std::to_string(t.size()));
                 return SpPauliString(
-                    t[0].cast<std::list<Qubit>>(),
-                    t[1].cast<std::list<Pauli>>());
+                    nb::cast<std::list<Qubit>>(t[0]),
+                    nb::cast<std::list<Pauli>>(t[1]));
               }));
 
   m.def(
@@ -244,13 +244,13 @@ NB_MODULE(pauli, m) {
           }),
           "Constructs a PauliStabiliser with a list of Pauli terms.",
           nb::arg("string"), nb::arg("coeff"))
-      .def_property_readonly(
+      .def_prop_ro(
           "coeff",
           [](const PauliStabiliser &stabiliser) {
             return stabiliser.is_real_negative() ? -1 : 1;
           },
           "The coefficient of the stabiliser")
-      .def_property_readonly(
+      .def_prop_ro(
           "string",
           [](const PauliStabiliser &stabiliser) { return stabiliser.string; },
           "The list of Pauli terms")
@@ -308,7 +308,7 @@ NB_MODULE(pauli, m) {
             return SpCxPauliTensor(qpt.string, qpt.coeff * c);
           },
           nb::is_operator())
-      .def_property(
+      .def_prop_rw(
           "string",
           [](const SpCxPauliTensor &qpt) {
             // Return as SpPauliString for backwards compatibility with before
@@ -440,8 +440,8 @@ NB_MODULE(pauli, m) {
                   throw std::runtime_error(
                       "Invalid state: tuple size: " + std::to_string(t.size()));
                 return SpCxPauliTensor(
-                    t[0].cast<std::list<Qubit>>(),
-                    t[1].cast<std::list<Pauli>>(), t[2].cast<Complex>());
+                    nb::cast<std::list<Qubit>>(t[0]),
+                    nb::cast<std::list<Pauli>>(t[1]), nb::cast<Complex>(t[2]));
               }));
 }
 }  // namespace tket

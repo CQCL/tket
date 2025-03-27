@@ -88,7 +88,7 @@ NB_MODULE(predicates, m) {
       .def(
           "to_dict",
           [](const PredicatePtr &predicate) {
-            return nb::object(json(predicate)).cast<nb::dict>();
+            return nb::cast<nb::dict>(nb::object(json(predicate)));
           },
           "Return a JSON serializable dict representation of "
           "the Predicate.\n\n"
@@ -116,7 +116,7 @@ NB_MODULE(predicates, m) {
       .def(
           nb::init<const OpTypeSet &>(), "Construct from a set of gate types.",
           nb::arg("allowed_types"))
-      .def_property_readonly("gate_set", &GateSetPredicate::get_allowed_types);
+      .def_prop_ro("gate_set", &GateSetPredicate::get_allowed_types);
   nb::class_<
       NoClassicalControlPredicate, std::shared_ptr<NoClassicalControlPredicate>,
       Predicate>(
@@ -266,18 +266,18 @@ NB_MODULE(predicates, m) {
       .def(
           "check_all_predicates", &CompilationUnit::check_all_predicates,
           ":return: True if all predicates are satisfied, else False")
-      .def_property_readonly(
+      .def_prop_ro(
           "circuit",
           [](const CompilationUnit &cu) { return Circuit(cu.get_circ_ref()); },
           "Return a copy of the circuit.")
-      .def_property_readonly(
+      .def_prop_ro(
           "initial_map",
           [](const CompilationUnit &cu) {
             return unit_bimap_to_map(cu.get_initial_map_ref());
           },
           "Returns the map from the original qubits to the "
           "corresponding qubits at the start of the current circuit.")
-      .def_property_readonly(
+      .def_prop_ro(
           "final_map",
           [](const CompilationUnit &cu) {
             return unit_bimap_to_map(cu.get_final_map_ref());

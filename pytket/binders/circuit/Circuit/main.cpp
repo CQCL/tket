@@ -248,7 +248,7 @@ void def_circuit(nb::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "name for the register\n:return: the retrieved "
           ":py:class:`BitRegister`",
           nb::arg("name"))
-      .def_property_readonly(
+      .def_prop_ro(
           "c_registers", &get_unit_registers<BitRegister>,
           "Get all classical registers.\n\n"
           "The list only includes registers that are singly-indexed "
@@ -268,7 +268,7 @@ void def_circuit(nb::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "name for the register\n:return: the retrieved "
           ":py:class:`QubitRegister`",
           nb::arg("name"))
-      .def_property_readonly(
+      .def_prop_ro(
           "q_registers", &get_unit_registers<QubitRegister>,
           "Get all quantum registers.\n\n"
           "The list only includes registers that are singly-indexed "
@@ -287,36 +287,36 @@ void def_circuit(nb::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "Unique id for the bit\n:param reject_dups: Fail if there is "
           "already a bit in this circuit with the id. Default to True",
           nb::arg("id"), nb::arg("reject_dups") = true)
-      .def_property_readonly(
+      .def_prop_ro(
           "qubits", &Circuit::all_qubits,
           "A list of all qubit ids in the circuit")
-      .def_property_readonly(
+      .def_prop_ro(
           "created_qubits", &Circuit::created_qubits,
           "A list of qubits whose input is a Create operation")
-      .def_property_readonly(
+      .def_prop_ro(
           "discarded_qubits", &Circuit::discarded_qubits,
           "A list of qubits whose output is a Discard operation")
-      .def_property_readonly(
+      .def_prop_ro(
           "bits", &Circuit::all_bits,
           "A list of all classical bit ids in the circuit")
-      .def_property_readonly(
+      .def_prop_ro(
           "bit_readout", &Circuit::bit_readout,
           "A map from bit to its (left-to-right) index in readouts "
           "from backends (following the increasing lexicographic "
           "order convention)")
-      .def_property_readonly(
+      .def_prop_ro(
           "qubit_readout", &Circuit::qubit_readout,
           "A map from qubit to its (left-to-right) index in readouts "
           "from backends. A qubit will feature in this map if it is "
           "measured and neither it nor the bit containing the "
           "measurement result is subsequently acted on")
-      .def_property_readonly(
+      .def_prop_ro(
           "qubit_to_bit_map", &Circuit::qubit_to_bit_map,
           "A map from qubit to the bit it is measured to. "
           "A qubit will feature in this map if it is "
           "measured and neither it nor the bit containing the "
           "measurement result is subsequently acted on")
-      .def_property_readonly(
+      .def_prop_ro(
           "opgroups", &Circuit::get_opgroups,
           "A set of all opgroup names in the circuit")
       .def(
@@ -411,32 +411,32 @@ void def_circuit(nb::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "_n_vertices", &Circuit::n_vertices,
           ":return: the number of vertices in the DAG, i.e. the sum of "
           "the number of operations, inputs, and outputs")
-      .def_property_readonly(
+      .def_prop_ro(
           "is_simple", [](const Circuit &circ) { return circ.is_simple(); },
           "Checks that the circuit has only 1 quantum and 1 classic "
           "register using the default names ('q' and 'c'). This "
           "means it is suitable to refer to qubits simply by their "
           "integer indices.")
-      .def_property_readonly(
+      .def_prop_ro(
           "n_gates", &Circuit::n_gates,
           ":return: the number of gates in the Circuit")
-      .def_property_readonly(
+      .def_prop_ro(
           "wasm_uid",
           [](const Circuit &circ) { return circ.get_wasm_file_uid(); },
           ":return: the unique WASM UID of the circuit, or `None` if the "
           "circuit has none")
-      .def_property_readonly(
+      .def_prop_ro(
           "n_qubits", &Circuit::n_qubits,
           ":return: the number of qubits in the circuit")
-      .def_property_readonly(
+      .def_prop_ro(
           "n_bits", &Circuit::n_bits,
           ":return: the number of classiclal bits in the circuit")
-      .def_property_readonly(
+      .def_prop_ro(
           "phase", &Circuit::get_phase,
           ":return: the global phase applied to the circuit, in "
           "halfturns (not meaningful for circuits with classical "
           "interactions)")
-      .def_property("name", &Circuit::get_name, &Circuit::set_name)
+      .def_prop_rw("name", &Circuit::get_name, &Circuit::set_name)
       .def(
           "remove_blank_wires", &Circuit::remove_blank_wires,
           "Removes any Input-Output pairs in the DAG with no "
@@ -574,7 +574,7 @@ void def_circuit(nb::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           nb::arg("filename"))
       .def(
           "to_dict",
-          [](const Circuit &c) { return nb::object(json(c)).cast<nb::dict>(); },
+          [](const Circuit &c) { return nb::cast<nb::dict>(nb::object(json(c))); },
           ":return: a JSON serializable dictionary representation of "
           "the Circuit")
       .def_static(
@@ -590,7 +590,7 @@ void def_circuit(nb::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
                 return nb::make_tuple(self.attr("to_dict")());
               },
               [](const nb::tuple &t) {  // __setstate__
-                const json j = t[0].cast<json>();
+                const json j = nb::cast<json>(t[0]);
                 return j.get<Circuit>();
               }))
       .def(
@@ -827,7 +827,7 @@ void def_circuit(nb::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "implicit_qubit_permutation", &Circuit::implicit_qubit_permutation,
           ":return: dictionary mapping input qubit to output qubit on "
           "the same path")
-      .def_property_readonly(
+      .def_prop_ro(
           "has_implicit_wireswaps", &Circuit::has_implicit_wireswaps,
           "Indicates whether the circuit has a non-trivial qubit permutation "
           "(i.e., whether there are any implicit wire swaps).")
@@ -926,7 +926,7 @@ void def_circuit(nb::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "ResourceBounds(5, 17), OpType.CX: ResourceBounds(4, 5), OpType.CZ: "
           "ResourceBounds(7, 8), }, two_qubit_gate_depth=ResourceBounds(10, "
           "13))")
-      .def_property_readonly(
+      .def_prop_ro(
           "_dag_data",
           [](Circuit &circ) {
             IndexMap im = circ.index_map();

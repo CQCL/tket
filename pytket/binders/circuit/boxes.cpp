@@ -169,7 +169,7 @@ void init_boxes(nb::module &m) {
           "(via Circuit.add_circbox). \n\n:param symbol_map: "
           "A map from SymPy symbols to SymPy expressions",
           nb::arg("symbol_map"))
-      .def_property(
+      .def_prop_rw(
           "circuit_name", &CircBox::get_circuit_name,
           &CircBox::set_circuit_name,
           ":return: the name of the contained circuit. "
@@ -742,15 +742,15 @@ void init_boxes(nb::module &m) {
           "Circuit\n:param args: Symbols to be encapsulated as "
           "arguments of the custom gate",
           nb::arg("name"), nb::arg("circ"), nb::arg("args"))
-      .def_property_readonly(
+      .def_prop_ro(
           "name", &CompositeGateDef::get_name, "The readable name of the gate")
-      .def_property_readonly(
+      .def_prop_ro(
           "definition", &CompositeGateDef::get_def,
           "Return definition as a circuit.")
-      .def_property_readonly(
+      .def_prop_ro(
           "args", &CompositeGateDef::get_args,
           "Return symbolic arguments of gate.")
-      .def_property_readonly(
+      .def_prop_ro(
           "arity", &CompositeGateDef::n_args,
           "The number of real parameters for the gate")
       .def(
@@ -778,12 +778,12 @@ void init_boxes(nb::module &m) {
               const composite_def_ptr_t &,
               const nb::tket_custom::SequenceVec<Expr> &>(),
           "Instantiate a custom gate.", nb::arg("gatedef"), nb::arg("params"))
-      .def_property_readonly(
+      .def_prop_ro(
           "name", [](CustomGate &cgate) { return cgate.get_name(false); },
           "The readable name of the gate.")
-      .def_property_readonly(
+      .def_prop_ro(
           "params", &CustomGate::get_params, "The parameters of the gate.")
-      .def_property_readonly(
+      .def_prop_ro(
           "gate", &CustomGate::get_gate, "Underlying gate object.")
       .def(
           "get_circuit",
@@ -829,37 +829,37 @@ void init_boxes(nb::module &m) {
           "Construct a PhasePolyBox from a given circuit containing only Rz "
           "and CX gates.",
           nb::arg("circuit"))
-      .def_property_readonly(
+      .def_prop_ro(
           "n_qubits", &PhasePolyBox::get_n_qubits,
           "Number of gates the polynomial acts on.")
-      .def_property_readonly(
+      .def_prop_ro(
           "phase_polynomial_as_list",
           [](PhasePolyBox &ppoly) {
             const PhasePolynomial &phase_pol = ppoly.get_phase_polynomial();
             return cast_map_to_vector_of_pairs(phase_pol);
           },
           "List of bitstring(basis state)-phase pairs.")
-      .def_property_readonly(
+      .def_prop_ro(
           "phase_polynomial",
           [](PhasePolyBox &ppoly) {
             const PhasePolynomial &phase_pol = ppoly.get_phase_polynomial();
             return cast_keys_to_tuples(phase_pol);
           },
           "Map from bitstring (basis state) to phase.")
-      .def_property_readonly(
+      .def_prop_ro(
           "phase_polynomial_as_list",
           [](PhasePolyBox &ppoly) {
             const PhasePolynomial &phase_pol = ppoly.get_phase_polynomial();
             return cast_map_to_vector_of_pairs(phase_pol);
           },
           "List of bitstring(basis state)-phase pairs.")
-      .def_property_readonly(
+      .def_prop_ro(
           "linear_transformation", &PhasePolyBox::get_linear_transformation,
           "Boolean matrix corresponding to linear transformation.")
       .def(
           "get_circuit", [](PhasePolyBox &ppb) { return *ppb.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box.")
-      .def_property_readonly(
+      .def_prop_ro(
           "qubit_indices",
           [](PhasePolyBox &ppoly) {
             const boost::bimap<Qubit, unsigned> &bmap =

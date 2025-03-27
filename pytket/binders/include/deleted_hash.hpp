@@ -19,10 +19,10 @@ namespace nb = nanobind;
 
 template <class T>
 int deletedHash(const T&) {
-  nb::type T_py = nb::type::of<T>();
-  auto T_name = T_py.attr("__name__").cast<std::string>();
+  nb::type_object T_py = nb::type<T>();
+  auto T_name = nb::cast<std::string>(T_py.attr("__name__"));
   auto error_message = std::string("unhashable type: '") + T_name + "'";
-  throw nb::type_error(error_message);
+  throw nb::type_error(error_message.c_str());
 }
 
 constexpr auto deletedHashDocstring =

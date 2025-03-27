@@ -65,8 +65,8 @@ NB_MODULE(tailoring, m) {
             for (const auto &actions : cycle_frame_actions) {
               std::map<OpTypeVector, OpTypeVector> otv_map;
               for (const auto &tups : actions.second) {
-                otv_map[tups.first.cast<OpTypeVector>()] =
-                    tups.second.cast<OpTypeVector>();
+                otv_map[nb::cast<OpTypeVector>(tups.first)] =
+                    nb::cast<OpTypeVector>(tups.second);
               }
               real_cycle_frame_actions[actions.first] = otv_map;
             }

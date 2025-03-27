@@ -445,7 +445,7 @@ void init_clexpr(nb::module &m) {
             return ss.str();
           })
       .def("__hash__", [](const ClBitVar &var) { return var.index; })
-      .def_property_readonly(
+      .def_prop_ro(
           "index", [](const ClBitVar &var) { return var.index; },
           "integer identifier for the variable");
 
@@ -472,7 +472,7 @@ void init_clexpr(nb::module &m) {
             return ss.str();
           })
       .def("__hash__", [](const ClRegVar &var) { return var.index; })
-      .def_property_readonly(
+      .def_prop_ro(
           "index", [](const ClRegVar &var) { return var.index; },
           "integer identifier for the variable");
 
@@ -495,8 +495,8 @@ void init_clexpr(nb::module &m) {
             return ss.str();
           })
       .def("__hash__", &deletedHash<ClExpr>, deletedHashDocstring)
-      .def_property_readonly("op", &ClExpr::get_op, "main operation")
-      .def_property_readonly("args", &ClExpr::get_args, "arguments")
+      .def_prop_ro("op", &ClExpr::get_op, "main operation")
+      .def_prop_ro("args", &ClExpr::get_args, "arguments")
       .def(
           "as_qasm",
           [](const ClExpr &expr, const std::map<int, Bit> input_bits,
@@ -539,17 +539,17 @@ void init_clexpr(nb::module &m) {
             return ss.str();
           })
       .def("__hash__", &deletedHash<WiredClExpr>, deletedHashDocstring)
-      .def_property_readonly("expr", &WiredClExpr::get_expr, "expression")
-      .def_property_readonly(
+      .def_prop_ro("expr", &WiredClExpr::get_expr, "expression")
+      .def_prop_ro(
           "bit_posn", &WiredClExpr::get_bit_posn, "bit positions")
-      .def_property_readonly(
+      .def_prop_ro(
           "reg_posn", &WiredClExpr::get_reg_posn, "register positions")
-      .def_property_readonly(
+      .def_prop_ro(
           "output_posn", &WiredClExpr::get_output_posn, "output positions")
       .def(
           "to_dict",
           [](const WiredClExpr &wexpr) {
-            return nb::object(nlohmann::json(wexpr)).cast<nb::dict>();
+            return nb::cast<nb::dict>(nb::object(nlohmann::json(wexpr)));
           },
           ":return: JSON-serializable dict representation")
       .def_static(
@@ -564,8 +564,8 @@ void init_clexpr(nb::module &m) {
       .def(
           nb::init<WiredClExpr>(),
           "Construct from a wired classical expression")
-      .def_property_readonly("type", &ClExprOp::get_type, "operation type")
-      .def_property_readonly(
+      .def_prop_ro("type", &ClExprOp::get_type, "operation type")
+      .def_prop_ro(
           "expr", &ClExprOp::get_wired_expr, "wired expression");
 }
 

@@ -567,19 +567,19 @@ NB_MODULE(circuit, m) {
             return get_op_ptr(optype, params);
           },
           "Create an :py:class:`Op` with given type and parameters")
-      .def_property_readonly(
+      .def_prop_ro(
           "type", &Op::get_type, "Type of op being performed")
-      .def_property_readonly(
+      .def_prop_ro(
           "params", &Op::get_params_reduced,
           "Angular parameters of the op, in half-turns (e.g. 1.0 "
           "half-turns is :math:`\\pi` radians). The parameters "
           "returned are constrained to the appropriate canonical "
           "range, which is usually the half-open interval [0,2) but "
           "for some operations (e.g. Rx, Ry and Rz) is [0,4).")
-      .def_property_readonly(
+      .def_prop_ro(
           "n_qubits", &Op::n_qubits, "Number of qubits of op")
-      .def_property_readonly("dagger", &Op::dagger, "Dagger of op")
-      .def_property_readonly("transpose", &Op::transpose, "Transpose of op")
+      .def_prop_ro("dagger", &Op::dagger, "Dagger of op")
+      .def_prop_ro("transpose", &Op::transpose, "Transpose of op")
       .def(
           "get_name", &Op::get_name, "String representation of op",
           nb::arg("latex") = false)
@@ -636,17 +636,17 @@ NB_MODULE(circuit, m) {
       .def("__eq__", &py_equals<Command>)
       .def("__hash__", &deletedHash<Command>, deletedHashDocstring)
       .def("__repr__", &Command::to_str)
-      .def_property_readonly(
+      .def_prop_ro(
           "op", &Command::get_op_ptr, "Operation for this command.")
-      .def_property_readonly(
+      .def_prop_ro(
           "args", &Command::get_args, "The qubits/bits the command acts on.")
-      .def_property_readonly(
+      .def_prop_ro(
           "qubits", &Command::get_qubits, "The qubits the command acts on.")
-      .def_property_readonly(
+      .def_prop_ro(
           "bits", &Command::get_bits,
           "The bits the command could write to (does not include "
           "read-only bits).")
-      .def_property_readonly(
+      .def_prop_ro(
           "opgroup", &Command::get_opgroup,
           "The op group name assigned to the command (or `None` if "
           "no name is defined).")
@@ -664,7 +664,7 @@ NB_MODULE(circuit, m) {
           "\n:param signature: signature for the op"
           "\n:param data: additional string stored in the op",
           nb::arg("type"), nb::arg("signature"), nb::arg("data"))
-      .def_property_readonly("data", &MetaOp::get_data, "Get data from MetaOp");
+      .def_prop_ro("data", &MetaOp::get_data, "Get data from MetaOp");
 
   nb::class_<BarrierOp, std::shared_ptr<BarrierOp>, Op>(
       m, "BarrierOp", "Barrier operations.")
@@ -674,7 +674,7 @@ NB_MODULE(circuit, m) {
           "\n:param signature: signature for the op"
           "\n:param data: additional string stored in the op",
           nb::arg("signature"), nb::arg("data"))
-      .def_property_readonly(
+      .def_prop_ro(
           "data", &BarrierOp::get_data, "Get data from BarrierOp");
 
   auto pyCircuit = nb::class_<Circuit, std::shared_ptr<Circuit>>(

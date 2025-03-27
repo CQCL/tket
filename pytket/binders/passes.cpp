@@ -117,9 +117,9 @@ const PassPtr &DecomposeClassicalExp() {
       nb::module decomposer =
           nb::module::import("pytket.circuit.decompose_classical");
       const nb::tuple result = decomposer.attr("_decompose_expressions")(circ);
-      const bool success = result[1].cast<bool>();
+      const bool success = nb::cast<bool>(result[1]);
       if (success) {
-        circ = result[0].cast<Circuit>();
+        circ = nb::cast<Circuit>(result[0]);
       }
       return success;
     });
@@ -359,7 +359,7 @@ NB_MODULE(passes, m) {
                 return nb::make_tuple(self.attr("to_dict")());
               },
               [](const nb::tuple &t) {  // __setstate__
-                const json j = t[0].cast<json>();
+                const json j = nb::cast<json>(t[0]);
                 return deserialise(j);
               }));
   nb::class_<SequencePass, std::shared_ptr<SequencePass>, BasePass>(
