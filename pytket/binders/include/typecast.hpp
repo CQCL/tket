@@ -111,7 +111,7 @@ struct tket_sequence_caster {
     ssize_t index = 0;
     for (auto&& value : src) {
       auto value_ = reinterpret_steal<object>(
-          value_conv::cast(detail::forward_like<T>(value), policy, parent));
+          value_conv::cast(detail::forward_like_<T>(value), policy, parent));
       if (!value_) {
         return handle();
       }
@@ -191,12 +191,12 @@ struct type_caster<SymEngine::Expression> {
   }
 
   static tket::Expr sympy_to_expr(handle py_expr) {
-    nanobind::module sympy = nanobind::module::import("sympy");
+    nanobind::module_ sympy = nanobind::module_::import_("sympy");
     handle numbers = sympy.attr("core").attr("numbers");
 
     if (isinstance(py_expr, sympy.attr("Symbol"))) {
       handle expr_name = py_expr.attr("name");
-      tket::Sym sym = nb::cast<std::string>(SymEngine::symbol(expr_name));
+      tket::Sym sym = SymEngine::symbol(nb::cast<std::string>(expr_name));
       return tket::Expr(sym);
     } else if (isinstance(py_expr, sympy.attr("Mul"))) {
       tuple arg_tuple = py_expr.attr("args");
@@ -289,7 +289,7 @@ struct type_caster<SymEngine::Expression> {
     }
   }
   bool load(handle src, bool) {
-    nanobind::module sympy = nanobind::module::import("sympy");
+    nanobind::module_ sympy = nanobind::module_::import_("sympy");
     if (isinstance(src, sympy.attr("Expr"))) {
       value = sympy_to_expr(src);
       return true;
@@ -305,7 +305,7 @@ struct type_caster<SymEngine::Expression> {
   }
 
   static object basic_to_sympy(const tket::ExprPtr& e_) {
-    nanobind::module sympy = nanobind::module::import("sympy");
+    nanobind::module_ sympy = nanobind::module_::import_("sympy");
     switch (e_->get_type_code()) {
       case SymEngine::TypeID::SYMENGINE_SYMBOL: {
         const SymEngine::Symbol* s =
@@ -457,7 +457,7 @@ struct type_caster<SymEngine::RCP<const SymEngine::Symbol>> {
   NB_TYPE_CASTER(
       SymEngine::RCP<const SymEngine::Symbol>, const_name("sympy.Symbol"));
   bool load(handle src, bool) {
-    nanobind::module sympy = nanobind::module::import("sympy");
+    nanobind::module_ sympy = nanobind::module_::import_("sympy");
     if (!isinstance(src, sympy.attr("Symbol"))) return false;
     value = SymEngine::symbol(repr(src));
     return true;
@@ -465,7 +465,7 @@ struct type_caster<SymEngine::RCP<const SymEngine::Symbol>> {
   static handle cast(
       SymEngine::RCP<const SymEngine::Symbol> src,
       return_value_policy /* policy */, handle /* parent */) {
-    nanobind::module sympy = nanobind::module_::import("sympy");
+    nanobind::module_ sympy = nanobind::module_::import_("sympy");
     return sympy.attr("Symbol")(src->get_name()).release();
   }
 };
