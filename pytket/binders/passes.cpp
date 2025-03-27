@@ -170,7 +170,7 @@ std::optional<OpTypeSet> get_gate_set(const BasePass &base_pass) {
 }
 
 NB_MODULE(passes, m) {
-  nb::module_::import("pytket._tket.predicates");
+  nb::module_::import_("pytket._tket.predicates");
   m.def(
       "_sympy_import", []() { return Expr(); },
       "This function only exists so that sympy gets imported in the resulting "
