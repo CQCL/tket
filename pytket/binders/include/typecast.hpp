@@ -75,10 +75,10 @@ template <typename Type, typename Val, typename castToType>
 struct tket_sequence_caster {
   using value_conv = make_caster<Val>;
 
-  // Checks if a container has a STL style reserve method.
-  // This will only return true for a `reserve()` with a `void` return.
+  // ((( Copied from pybind11 (stl.h)
   template <typename C>
   using has_reserve_method = std::is_same<decltype(std::declval<C>().reserve(0)), void>;
+  // )))
 
   bool load(handle src, bool convert) {
     if (!isinstance<sequence>(src) || isinstance<bytes>(src) ||
