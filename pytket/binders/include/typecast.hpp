@@ -17,7 +17,7 @@
 // #include <nanobind/nb_cast.h>
 // #include <pybind11/detail/typeid.h>
 // #include <pybind11/functional.h>
-#include <nanobind/operators.h>
+// #include <nanobind/operators.h>
 #include <nanobind/nanobind.h>
 // #include <pybind11/pytypes.h>
 // #include <pybind11/stl.h>
@@ -141,7 +141,7 @@ struct tket_sequence_caster {
         PyList_SET_ITEM(
             l.ptr(), index++, value_.release().ptr());  // steals a reference
       } else {
-        static_assert(std::is_same<castToType, tuple>::value);
+        static_assert(std::is_same<castToType, nanobind::tuple>::value);
         PyTuple_SET_ITEM(
             l.ptr(), index++, value_.release().ptr());  // steals a reference
       }
@@ -188,23 +188,23 @@ struct type_caster<tket_custom::SequenceList<Type>>
     : tket_sequence_caster<tket_custom::SequenceList<Type>, Type, list> {};
 template <typename Type>
 struct type_caster<tket_custom::TupleVec<Type>>
-    : tket_sequence_caster<tket_custom::TupleVec<Type>, Type, tuple> {};
+    : tket_sequence_caster<tket_custom::TupleVec<Type>, Type, nanobind::tuple> {};
 template <>
 struct type_caster<SymEngine::Expression> {
  public:
   NB_TYPE_CASTER(
       SymEngine::Expression, const_name("typing.Union[sympy.Expr, float]"));
 
-  static void assert_tuple_length(tuple t, unsigned len) {
+  static void assert_tuple_length(nanobind::tuple t, unsigned len) {
     if (t.size() != len)
       throw std::logic_error("Sympy expression is not well-formed");
   };
 
-  static tuple get_checked_args(handle py_expr, unsigned expected_len) {
-    tuple arg_tuple = py_expr.attr("args");
+  static nanobind::tuple get_checked_args(handle py_expr, unsigned expected_len) {
+    nanobind::tuple arg_tuple = py_expr.attr("args");
     if (arg_tuple.size() != expected_len) {
       std::stringstream err;
-      err << "Expected " << repr(py_expr);
+      err << "Expected " << nanobind::cast<std::string>(repr(py_expr));
       err << " to have " << expected_len;
       err << " arguments, but it had " << arg_tuple.size();
       throw std::invalid_argument(err.str());
@@ -218,33 +218,33 @@ struct type_caster<SymEngine::Expression> {
 
     if (isinstance(py_expr, sympy.attr("Symbol"))) {
       handle expr_name = py_expr.attr("name");
-      tket::Sym sym = SymEngine::symbol(nb::cast<std::string>(expr_name));
+      tket::Sym sym = SymEngine::symbol(nanobind::cast<std::string>(expr_name));
       return tket::Expr(sym);
     } else if (isinstance(py_expr, sympy.attr("Mul"))) {
-      tuple arg_tuple = py_expr.attr("args");
+      nanobind::tuple arg_tuple = py_expr.attr("args");
       tket::Expr res(1);
       for (handle elem : arg_tuple) {
         res *= sympy_to_expr(elem);
       }
       return res;
     } else if (isinstance(py_expr, sympy.attr("Add"))) {
-      tuple arg_tuple = py_expr.attr("args");
+      nanobind::tuple arg_tuple = py_expr.attr("args");
       tket::Expr res(0);
       for (handle elem : arg_tuple) {
         res += sympy_to_expr(elem);
       }
       return res;
     } else if (isinstance(py_expr, sympy.attr("Pow"))) {
-      tuple arg_tuple = get_checked_args(py_expr, 2);
+      nanobind::tuple arg_tuple = get_checked_args(py_expr, 2);
       return SymEngine::pow(
           sympy_to_expr(arg_tuple[0]), sympy_to_expr(arg_tuple[1]));
     } else if (isinstance(py_expr, sympy.attr("Integer"))) {
-      return nb::cast<long>(tket::Expr(py_expr.attr("p")));
+      return nanobind::cast<long>(tket::Expr(py_expr.attr("p")));
     } else if (isinstance(py_expr, sympy.attr("Rational"))) {
-      return nb::cast<long>(tket::Expr(py_expr.attr("p"))) /
-             nb::cast<long>(tket::Expr(py_expr.attr("q")));
+      return nanobind::cast<long>(tket::Expr(py_expr.attr("p"))) /
+             nanobind::cast<long>(tket::Expr(py_expr.attr("q")));
     } else if (isinstance(py_expr, sympy.attr("Float"))) {
-      return tket::Expr(repr(py_expr));
+      return tket::Expr(nanobind::cast<std::string>(repr(py_expr)));
     } else if (isinstance(py_expr, numbers.attr("ImaginaryUnit"))) {
       return tket::Expr(SymEngine::I);
     } else if (isinstance(py_expr, numbers.attr("Exp1"))) {
