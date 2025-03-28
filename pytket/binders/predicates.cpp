@@ -100,7 +100,7 @@ NB_MODULE(predicates, m) {
           },
           "Construct Predicate instance from JSON serializable "
           "dict representation of the Predicate.");
-  nb::class_<GateSetPredicate, std::shared_ptr<GateSetPredicate>, Predicate>(
+  nb::class_<GateSetPredicate, Predicate>(
       m, "GateSetPredicate",
       "Predicate asserting that all operations are in the specified set of "
       "types."
@@ -118,37 +118,37 @@ NB_MODULE(predicates, m) {
           nb::arg("allowed_types"))
       .def_prop_ro("gate_set", &GateSetPredicate::get_allowed_types);
   nb::class_<
-      NoClassicalControlPredicate, std::shared_ptr<NoClassicalControlPredicate>,
+      NoClassicalControlPredicate,
       Predicate>(
       m, "NoClassicalControlPredicate",
       "Predicate asserting that a circuit has no classical controls.")
       .def(nb::init<>(), "Constructor.");
   nb::class_<
-      NoFastFeedforwardPredicate, std::shared_ptr<NoFastFeedforwardPredicate>,
+      NoFastFeedforwardPredicate,
       Predicate>(
       m, "NoFastFeedforwardPredicate",
       "Predicate asserting that a circuit has no fast feedforward.")
       .def(nb::init<>(), "Constructor.");
   nb::class_<
-      NoClassicalBitsPredicate, std::shared_ptr<NoClassicalBitsPredicate>,
+      NoClassicalBitsPredicate,
       Predicate>(
       m, "NoClassicalBitsPredicate",
       "Predicate asserting that a circuit has no classical wires.")
       .def(nb::init<>(), "Constructor.");
   nb::class_<
-      NoWireSwapsPredicate, std::shared_ptr<NoWireSwapsPredicate>, Predicate>(
+      NoWireSwapsPredicate, Predicate>(
       m, "NoWireSwapsPredicate",
       "Predicate asserting that a circuit has no wire swaps.")
       .def(nb::init<>(), "Constructor.");
   nb::class_<
-      MaxTwoQubitGatesPredicate, std::shared_ptr<MaxTwoQubitGatesPredicate>,
+      MaxTwoQubitGatesPredicate,
       Predicate>(
       m, "MaxTwoQubitGatesPredicate",
       "Predicate asserting that a circuit has no gates with more than "
       "two input wires.")
       .def(nb::init<>(), "Constructor.");
   nb::class_<
-      ConnectivityPredicate, std::shared_ptr<ConnectivityPredicate>, Predicate>(
+      ConnectivityPredicate, Predicate>(
       m, "ConnectivityPredicate",
       "Predicate asserting that a circuit satisfies a given connectivity "
       "graph. The graph is always considered to be undirected.")
@@ -157,7 +157,7 @@ NB_MODULE(predicates, m) {
           "Construct from an :py:class:`Architecture`.",
           nb::arg("architecture"));
   nb::class_<
-      DirectednessPredicate, std::shared_ptr<DirectednessPredicate>, Predicate>(
+      DirectednessPredicate, Predicate>(
       m, "DirectednessPredicate",
       "Predicate asserting that a circuit satisfies a given connectivity "
       "graph. The graph is always considered to be directed.")
@@ -166,14 +166,14 @@ NB_MODULE(predicates, m) {
           "Construct from an :py:class:`Architecture`.",
           nb::arg("architecture"));
   nb::class_<
-      CliffordCircuitPredicate, std::shared_ptr<CliffordCircuitPredicate>,
+      CliffordCircuitPredicate,
       Predicate>(
       m, "CliffordCircuitPredicate",
       "Predicate asserting that a circuit has only Clifford gates and "
       "measurements.")
       .def(nb::init<>(), "Constructor.");
   nb::class_<
-      UserDefinedPredicate, std::shared_ptr<UserDefinedPredicate>, Predicate>(
+      UserDefinedPredicate, Predicate>(
       m, "UserDefinedPredicate", "User-defined predicate.")
       .def(
           nb::init<const std::function<bool(const Circuit &)> &>(),
@@ -181,24 +181,24 @@ NB_MODULE(predicates, m) {
           ":py:class:`Circuit` to `bool`.",
           nb::arg("check_function"));
   nb::class_<
-      DefaultRegisterPredicate, std::shared_ptr<DefaultRegisterPredicate>,
+      DefaultRegisterPredicate,
       Predicate>(
       m, "DefaultRegisterPredicate",
       "Predicate asserting that a circuit only uses the default quantum "
       "and classical registers.")
       .def(nb::init<>(), "Constructor.");
   nb::class_<
-      MaxNQubitsPredicate, std::shared_ptr<MaxNQubitsPredicate>, Predicate>(
+      MaxNQubitsPredicate, Predicate>(
       m, "MaxNQubitsPredicate",
       "Predicate asserting that a circuit has at most n qubits.")
       .def(nb::init<unsigned>(), "Constructor.");
   nb::class_<
-      MaxNClRegPredicate, std::shared_ptr<MaxNClRegPredicate>, Predicate>(
+      MaxNClRegPredicate, Predicate>(
       m, "MaxNClRegPredicate",
       "Predicate asserting that a circuit has at most n classical registers.")
       .def(nb::init<unsigned>(), "Constructor.");
   nb::class_<
-      PlacementPredicate, std::shared_ptr<PlacementPredicate>, Predicate>(
+      PlacementPredicate, Predicate>(
       m, "PlacementPredicate",
       "Predicate asserting that a circuit has been acted on by some "
       "Placement object.")
@@ -210,31 +210,31 @@ NB_MODULE(predicates, m) {
           nb::init<const node_set_t &>(), "Construct from a set of Node.",
           nb::arg("nodes"));
   nb::class_<
-      NoBarriersPredicate, std::shared_ptr<NoBarriersPredicate>, Predicate>(
+      NoBarriersPredicate, Predicate>(
       m, "NoBarriersPredicate",
       "Predicate asserting that a circuit contains no Barrier operations.")
       .def(nb::init<>(), "Constructor.");
   nb::class_<
-      CommutableMeasuresPredicate, std::shared_ptr<CommutableMeasuresPredicate>,
+      CommutableMeasuresPredicate,
       Predicate>(
       m, "CommutableMeasuresPredicate",
       "Predicate asserting that all measurements can be delayed to the end of "
       "the circuit.")
       .def(nb::init<>(), "Constructor.");
   nb::class_<
-      NoMidMeasurePredicate, std::shared_ptr<NoMidMeasurePredicate>, Predicate>(
+      NoMidMeasurePredicate, Predicate>(
       m, "NoMidMeasurePredicate",
       "Predicate asserting that all measurements occur at the end of the "
       "circuit.")
       .def(nb::init<>(), "Constructor.");
   nb::class_<
-      NoSymbolsPredicate, std::shared_ptr<NoSymbolsPredicate>, Predicate>(
+      NoSymbolsPredicate, Predicate>(
       m, "NoSymbolsPredicate",
       "Predicate asserting that no gates in the circuit have symbolic "
       "parameters.")
       .def(nb::init<>(), "Constructor.");
   nb::class_<
-      NormalisedTK2Predicate, std::shared_ptr<NormalisedTK2Predicate>,
+      NormalisedTK2Predicate,
       Predicate>(
       m, "NormalisedTK2Predicate",
       "Asserts that all TK2 gates are normalised\n\n"

@@ -55,11 +55,11 @@ UnitID to_cpp_unitid(const PyUnitID &py_unitid) {
   return get<Bit>(py_unitid);
 }
 
-void init_circuit_add_op(nb::class_<Circuit, std::shared_ptr<Circuit>> &c);
+void init_circuit_add_op(nb::class_<Circuit> &c);
 void init_circuit_add_classical_op(
     nb::class_<Circuit, std::shared_ptr<Circuit>> &c);
 
-void def_circuit(nb::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
+void def_circuit(nb::class_<Circuit> &pyCircuit) {
   init_circuit_add_op(pyCircuit);
   init_circuit_add_classical_op(pyCircuit);
   pyCircuit

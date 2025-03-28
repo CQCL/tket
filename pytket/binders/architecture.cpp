@@ -27,8 +27,8 @@ using json = nlohmann::json;
 namespace tket {
 
 NB_MODULE(architecture, m) {
-  nb::module::import("pytket._tket.unit_id");
-  nb::class_<Architecture, std::shared_ptr<Architecture>>(
+  nb::module_::import_("pytket._tket.unit_id");
+  nb::class_<Architecture>(
       m, "Architecture",
       "Class describing the connectivity of qubits on a general device.")
       .def(nb::init<>(), "Produces an empty architecture")
@@ -114,7 +114,7 @@ NB_MODULE(architecture, m) {
                              const nb::dict & = nb::dict()) { return arc; })
       .def("__eq__", &py_equals<Architecture>)
       .def("__hash__", &deletedHash<Architecture>, deletedHashDocstring);
-  nb::class_<SquareGrid, std::shared_ptr<SquareGrid>, Architecture>(
+  nb::class_<SquareGrid, Architecture>(
       m, "SquareGrid",
       "Inherited Architecture class for qubits arranged in a square lattice of "
       "given number of rows and columns. Qubits are arranged with qubits "
@@ -172,7 +172,7 @@ NB_MODULE(architecture, m) {
                ", columns=" + std::to_string(arc.get_columns()) +
                ", layers=" + std::to_string(arc.get_layers()) + ">";
       });
-  nb::class_<RingArch, std::shared_ptr<RingArch>, Architecture>(
+  nb::class_<RingArch, Architecture>(
       m, "RingArch",
       "Inherited Architecture class for number of qubits arranged in a ring.")
       .def(

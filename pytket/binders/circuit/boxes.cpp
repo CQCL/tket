@@ -145,7 +145,7 @@ std::vector<std::pair<T1, T2>> cast_map_to_vector_of_pairs(
 }
 
 void init_boxes(nb::module &m) {
-  nb::class_<CircBox, std::shared_ptr<CircBox>, Op>(
+  nb::class_<CircBox, Op>(
       m, "CircBox",
       "A user-defined operation specified by a :py:class:`Circuit`.")
       .def(
@@ -178,7 +178,7 @@ void init_boxes(nb::module &m) {
           "any changes are propagated to "
           "any Circuit that the CircBox has been added to "
           "(via Circuit.add_circbox).");
-  nb::class_<Unitary1qBox, std::shared_ptr<Unitary1qBox>, Op>(
+  nb::class_<Unitary1qBox, Op>(
       m, "Unitary1qBox",
       "A user-defined one-qubit operation specified by a unitary matrix.")
       .def(
@@ -190,7 +190,7 @@ void init_boxes(nb::module &m) {
       .def(
           "get_matrix", &Unitary1qBox::get_matrix,
           ":return: the unitary matrix as a numpy array");
-  nb::class_<Unitary2qBox, std::shared_ptr<Unitary2qBox>, Op>(
+  nb::class_<Unitary2qBox, Op>(
       m, "Unitary2qBox",
       "A user-defined two-qubit operation specified by a unitary matrix.")
       .def(
@@ -209,7 +209,7 @@ void init_boxes(nb::module &m) {
           "get_matrix", &Unitary2qBox::get_matrix,
           ":return: the unitary matrix (in ILO-BE format) as a numpy "
           "array");
-  nb::class_<Unitary3qBox, std::shared_ptr<Unitary3qBox>, Op>(
+  nb::class_<Unitary3qBox, Op>(
       m, "Unitary3qBox",
       "A user-defined three-qubit operation specified by a unitary matrix.")
       .def(
@@ -227,7 +227,7 @@ void init_boxes(nb::module &m) {
       .def(
           "get_matrix", &Unitary3qBox::get_matrix,
           ":return: the unitary matrix (in ILO-BE format) as a numpy array");
-  nb::class_<ExpBox, std::shared_ptr<ExpBox>, Op>(
+  nb::class_<ExpBox, Op>(
       m, "ExpBox",
       "A user-defined two-qubit operation whose corresponding unitary "
       "matrix "
@@ -246,7 +246,7 @@ void init_boxes(nb::module &m) {
       .def(
           "get_circuit", [](ExpBox &ebox) { return *ebox.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box");
-  nb::class_<PauliExpBox, std::shared_ptr<PauliExpBox>, Op>(
+  nb::class_<PauliExpBox, Op>(
       m, "PauliExpBox",
       "An operation defined as the exponential of a tensor of Pauli "
       "operations and a (possibly symbolic) phase parameter.")
@@ -273,7 +273,7 @@ void init_boxes(nb::module &m) {
       .def(
           "get_cx_config", &PauliExpBox::get_cx_config,
           ":return: decomposition method");
-  nb::class_<PauliExpPairBox, std::shared_ptr<PauliExpPairBox>, Op>(
+  nb::class_<PauliExpPairBox, Op>(
       m, "PauliExpPairBox",
       "A pair of (not necessarily commuting) Pauli exponentials performed in "
       "sequence.\nPairing up exponentials for synthesis can reduce gate costs "
@@ -311,7 +311,7 @@ void init_boxes(nb::module &m) {
           "get_cx_config", &PauliExpPairBox::get_cx_config,
           ":return: decomposition method");
   nb::class_<
-      PauliExpCommutingSetBox, std::shared_ptr<PauliExpCommutingSetBox>, Op>(
+      PauliExpCommutingSetBox, Op>(
       m, "PauliExpCommutingSetBox",
       "An operation defined as a set of commuting of exponentials of a"
       "tensor of Pauli operations and their (possibly symbolic) phase "
@@ -353,9 +353,9 @@ void init_boxes(nb::module &m) {
           "get_cx_config", &PauliExpCommutingSetBox::get_cx_config,
           ":return: decomposition method");
 
-  nb::module::import("pytket._tket.transform");
-  nb::module::import("pytket._tket.partition");
-  nb::class_<TermSequenceBox, std::shared_ptr<TermSequenceBox>, Op>(
+  nb::module_::import_("pytket._tket.transform");
+  nb::module_::import_("pytket._tket.partition");
+  nb::class_<TermSequenceBox, Op>(
       m, "TermSequenceBox",
       "An unordered collection of Pauli exponentials "
       "that can be synthesised in any order, causing a "
@@ -432,7 +432,7 @@ void init_boxes(nb::module &m) {
       .value(
           "Cycle", ToffoliBoxSynthStrat::Cycle,
           "Use CnX gates to perform transpositions");
-  nb::class_<ToffoliBox, std::shared_ptr<ToffoliBox>, Op>(
+  nb::class_<ToffoliBox, Op>(
       m, "ToffoliBox",
       "An operation that constructs a circuit to implement the specified "
       "permutation of classical basis states.")
@@ -643,7 +643,7 @@ void init_boxes(nb::module &m) {
         ss << ")";
         return ss.str();
       });
-  nb::class_<DummyBox, std::shared_ptr<DummyBox>, Op>(
+  nb::class_<DummyBox, Op>(
       m, "DummyBox",
       "A placeholder operation that holds resource data. This box type cannot "
       "be decomposed into a circuit. It only serves to record resource data "
@@ -665,7 +665,7 @@ void init_boxes(nb::module &m) {
       .def(
           "get_resource_data", &DummyBox::get_resource_data,
           ":return: the associated resource data");
-  nb::class_<QControlBox, std::shared_ptr<QControlBox>, Op>(
+  nb::class_<QControlBox, Op>(
       m, "QControlBox",
       "A user-defined controlled operation specified by an "
       ":py:class:`Op`, the number of quantum controls, and the control state "
@@ -770,7 +770,7 @@ void init_boxes(nb::module &m) {
           },
           "Construct Circuit instance from JSON serializable "
           "dictionary representation of the Circuit.");
-  nb::class_<CustomGate, std::shared_ptr<CustomGate>, Op>(
+  nb::class_<CustomGate, Op>(
       m, "CustomGate",
       "A user-defined gate defined by a parametrised :py:class:`Circuit`.")
       .def(
@@ -789,7 +789,7 @@ void init_boxes(nb::module &m) {
           "get_circuit",
           [](CustomGate &composite) { return *composite.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the gate.");
-  nb::class_<PhasePolyBox, std::shared_ptr<PhasePolyBox>, Op>(
+  nb::class_<PhasePolyBox, Op>(
       m, "PhasePolyBox",
       "Box encapsulating any Circuit made up of CNOT and RZ as a phase "
       "polynomial + linear transformation")
@@ -871,7 +871,7 @@ void init_boxes(nb::module &m) {
             return outmap;
           },
           "Map from Qubit to index in polynomial.");
-  nb::class_<ProjectorAssertionBox, std::shared_ptr<ProjectorAssertionBox>, Op>(
+  nb::class_<ProjectorAssertionBox, Op>(
       m, "ProjectorAssertionBox",
       "A user-defined assertion specified by a 2x2, 4x4, or 8x8 projector "
       "matrix.")
@@ -892,7 +892,7 @@ void init_boxes(nb::module &m) {
           "get_matrix", &ProjectorAssertionBox::get_matrix,
           ":return: the unitary matrix (in ILO-BE format) as a numpy array");
   nb::class_<
-      StabiliserAssertionBox, std::shared_ptr<StabiliserAssertionBox>, Op>(
+      StabiliserAssertionBox, Op>(
       m, "StabiliserAssertionBox",
       "A user-defined assertion specified by a list of Pauli stabilisers.")
       .def(
@@ -950,7 +950,7 @@ void init_boxes(nb::module &m) {
           "get_stabilisers", &StabiliserAssertionBox::get_stabilisers,
           ":return: the list of Pauli stabilisers");
 
-  nb::class_<MultiplexorBox, std::shared_ptr<MultiplexorBox>, Op>(
+  nb::class_<MultiplexorBox, Op>(
       m, "MultiplexorBox",
       "A user-defined multiplexor (i.e. uniformly controlled operations) "
       "specified by a "
@@ -984,7 +984,7 @@ void init_boxes(nb::module &m) {
           },
           ":return: the underlying bistring-op pairs");
   nb::class_<
-      MultiplexedRotationBox, std::shared_ptr<MultiplexedRotationBox>, Op>(
+      MultiplexedRotationBox, Op>(
       m, "MultiplexedRotationBox",
       "A user-defined multiplexed rotation gate (i.e. "
       "uniformly controlled single-axis rotations) specified by "
@@ -1055,7 +1055,7 @@ void init_boxes(nb::module &m) {
             return cast_keys_to_tuples(box.get_op_map());
           },
           ":return: the underlying op map");
-  nb::class_<MultiplexedU2Box, std::shared_ptr<MultiplexedU2Box>, Op>(
+  nb::class_<MultiplexedU2Box, Op>(
       m, "MultiplexedU2Box",
       "A user-defined multiplexed U2 gate (i.e. uniformly controlled U2 "
       "gate) specified by a "
@@ -1152,7 +1152,7 @@ void init_boxes(nb::module &m) {
             return cast_keys_to_tuples(box.get_op_map());
           },
           ":return: the underlying op map");
-  nb::class_<StatePreparationBox, std::shared_ptr<StatePreparationBox>, Op>(
+  nb::class_<StatePreparationBox, Op>(
       m, "StatePreparationBox",
       "A box for preparing quantum states using multiplexed-Ry and "
       "multiplexed-Rz gates. "
@@ -1186,7 +1186,7 @@ void init_boxes(nb::module &m) {
           "with_initial_reset", &StatePreparationBox::with_initial_reset,
           ":return: flag indicating whether the qubits are explicitly "
           "set to the zero state initially");
-  nb::class_<DiagonalBox, std::shared_ptr<DiagonalBox>, Op>(
+  nb::class_<DiagonalBox, Op>(
       m, "DiagonalBox",
       "A box for synthesising a diagonal unitary matrix into a sequence of "
       "multiplexed-Rz gates. "
@@ -1211,7 +1211,7 @@ void init_boxes(nb::module &m) {
       .def(
           "is_upper_triangle", &DiagonalBox::is_upper_triangle,
           ":return: the upper_triangle flag");
-  nb::class_<ConjugationBox, std::shared_ptr<ConjugationBox>, Op>(
+  nb::class_<ConjugationBox, Op>(
       m, "ConjugationBox",
       "A box to express computations that follow the compute-action-uncompute "
       "pattern.")

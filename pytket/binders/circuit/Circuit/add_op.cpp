@@ -85,7 +85,7 @@ static Circuit *add_box_method(
   return add_gate_method(circ, box_ptr, args, kwargs);
 }
 
-void init_circuit_add_op(nb::class_<Circuit, std::shared_ptr<Circuit>> &c) {
+void init_circuit_add_op(nb::class_<Circuit> &c) {
   c.def(
        "add_gate", &add_gate_method_sequence_args<unsigned>,
        "Appends a single operation to the end of the circuit on some "
@@ -429,7 +429,7 @@ void init_circuit_add_op(nb::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             for (const auto &bit : output_bits) {
               outputs.append(bit);
             }
-            nb::module clexpr = nb::module::import("pytket.circuit.clexpr");
+            nb::module clexpr = nb::module_::import_("pytket.circuit.clexpr");
             nb::object add_op =
                 clexpr.attr("_add_clexpr_to_circuit_from_logicexp");
             add_op(circ, exp, outputs, **kwargs);

@@ -40,15 +40,15 @@ namespace tket {
 typedef nb::tket_custom::SequenceVec<EdgeType> py_op_signature_t;
 typedef nb::tket_custom::SequenceVec<UnitID> py_unit_vector_t;
 
-void def_circuit(nb::class_<Circuit, std::shared_ptr<Circuit>> &);
+void def_circuit(nb::class_<Circuit> &);
 void init_classical(nb::module &m);
 void init_boxes(nb::module &m);
 void init_clexpr(nb::module &m);
 
 NB_MODULE(circuit, m) {
-  nb::module::import("pytket._tket.unit_id");
-  nb::module::import("pytket._tket.pauli");
-  nb::module::import("pytket._tket.architecture");
+  nb::module_::import_("pytket._tket.unit_id");
+  nb::module_::import_("pytket._tket.pauli");
+  nb::module_::import_("pytket._tket.architecture");
   nb::enum_<CXConfigType>(
       m, "CXConfigType",
       "Enum for available configurations for CXs upon decompose phase "
@@ -549,7 +549,7 @@ NB_MODULE(circuit, m) {
           "from_name",
           [](const nb::str &name) { return json(name).get<OpType>(); },
           "Construct from name");
-  nb::class_<Op, std::shared_ptr<Op>>(
+  nb::class_<Op>(
       m, "Op", "Encapsulates operation information")
       .def_static(
           "create",
@@ -655,7 +655,7 @@ NB_MODULE(circuit, m) {
           [](const Command &com) { return com.get_op_ptr()->free_symbols(); },
           ":return: set of symbolic parameters for the command");
 
-  nb::class_<MetaOp, std::shared_ptr<MetaOp>, Op>(
+  nb::class_<MetaOp, Op>(
       m, "MetaOp", "Meta operation, such as input or output vertices.")
       .def(
           nb::init<OpType, py_op_signature_t, const std::string &>(),
@@ -666,7 +666,7 @@ NB_MODULE(circuit, m) {
           nb::arg("type"), nb::arg("signature"), nb::arg("data"))
       .def_prop_ro("data", &MetaOp::get_data, "Get data from MetaOp");
 
-  nb::class_<BarrierOp, std::shared_ptr<BarrierOp>, Op>(
+  nb::class_<BarrierOp, Op>(
       m, "BarrierOp", "Barrier operations.")
       .def(
           nb::init<py_op_signature_t, const std::string &>(),
@@ -677,7 +677,7 @@ NB_MODULE(circuit, m) {
       .def_prop_ro(
           "data", &BarrierOp::get_data, "Get data from BarrierOp");
 
-  auto pyCircuit = nb::class_<Circuit, std::shared_ptr<Circuit>>(
+  auto pyCircuit = nb::class_<Circuit>(
       m, "Circuit", nb::dynamic_attr(),
       "Encapsulates a quantum circuit using a DAG representation.\n\n>>> "
       "from pytket import Circuit\n>>> c = Circuit(4,2) # Create a circuit "

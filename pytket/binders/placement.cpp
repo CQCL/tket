@@ -48,7 +48,7 @@ void place_fully_connected(
 }
 
 NB_MODULE(placement, m) {
-  nb::class_<Placement, std::shared_ptr<Placement>>(
+  nb::class_<Placement>(
             m, "Placement",
             "The base Placement class, contains methods for getting maps "
             "between Circuit Qubits and Architecture Nodes and for relabelling "
@@ -106,7 +106,7 @@ NB_MODULE(placement, m) {
                 "Construct Placement instance from JSON serializable "
                 "dict representation of the Placement.");
 
-  nb::class_<LinePlacement, std::shared_ptr<LinePlacement>, Placement>(
+  nb::class_<LinePlacement, Placement>(
       m, "LinePlacement",
       "The LinePlacement class, contains methods for getting maps "
       "between Circuit Qubits and Architecture Nodes and for relabelling "
@@ -133,7 +133,7 @@ NB_MODULE(placement, m) {
         return "<tket::LinePlacement>";
       });
 
-  nb::class_<GraphPlacement, std::shared_ptr<GraphPlacement>, Placement>(
+  nb::class_<GraphPlacement, Placement>(
       m, "GraphPlacement",
       "The GraphPlacement class, contains methods for getting maps "
       "between Circuit Qubits and Architecture Nodes and for relabelling "
@@ -180,7 +180,7 @@ NB_MODULE(placement, m) {
       });
 
   nb::class_<
-      NoiseAwarePlacement, std::shared_ptr<NoiseAwarePlacement>, Placement>(
+      NoiseAwarePlacement, Placement>(
       m, "NoiseAwarePlacement",
       "The NoiseAwarePlacement class, contains methods for getting maps "
       "between Circuit Qubits and Architecture Nodes and for relabelling "

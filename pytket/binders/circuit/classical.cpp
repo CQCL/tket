@@ -30,7 +30,7 @@ using json = nlohmann::json;
 namespace tket {
 
 void init_classical(nb::module& m) {
-  nb::class_<Conditional, std::shared_ptr<Conditional>, Op>(
+  nb::class_<Conditional, Op>(
       m, "Conditional",
       "A wrapper for an operation to be applied conditionally on the "
       "value of some classical bits (following the nature of conditional "
@@ -50,7 +50,7 @@ void init_classical(nb::module& m) {
           "The little-endian value the classical register must read "
           "in order to apply the operation (e.g. value 2 (10b) means "
           "bits[0] must be 0 and bits[1] must be 1)");
-  nb::class_<ClassicalOp, std::shared_ptr<ClassicalOp>, Op>(
+  nb::class_<ClassicalOp, Op>(
       m, "ClassicalOp", "Classical operation.")
       .def_prop_ro(
           "n_inputs", &ClassicalOp::get_n_i, "Number of pure inputs.")
@@ -59,9 +59,9 @@ void init_classical(nb::module& m) {
           "Number of pure input/output arguments.")
       .def_prop_ro(
           "n_outputs", &ClassicalOp::get_n_o, "Number of pure outputs.");
-  nb::class_<ClassicalEvalOp, std::shared_ptr<ClassicalEvalOp>, ClassicalOp>(
+  nb::class_<ClassicalEvalOp, ClassicalOp>(
       m, "ClassicalEvalOp", "Evaluatable classical operation.");
-  nb::class_<SetBitsOp, std::shared_ptr<SetBitsOp>, ClassicalEvalOp>(
+  nb::class_<SetBitsOp, ClassicalEvalOp>(
       m, "SetBitsOp",
       "An operation to set the values of Bits to some constants.")
       .def(
@@ -69,10 +69,10 @@ void init_classical(nb::module& m) {
           "Construct from a table of values.", nb::arg("values"))
       .def_prop_ro(
           "values", &SetBitsOp::get_values, "The values to set bits to.");
-  nb::class_<CopyBitsOp, std::shared_ptr<CopyBitsOp>, ClassicalEvalOp>(
+  nb::class_<CopyBitsOp, ClassicalEvalOp>(
       m, "CopyBitsOp",
       "An operation to copy the values of Bits to other Bits.");
-  nb::class_<MultiBitOp, std::shared_ptr<MultiBitOp>, ClassicalEvalOp>(
+  nb::class_<MultiBitOp, ClassicalEvalOp>(
       m, "MultiBitOp",
       "An operation to apply a classical op multiple times in parallel.")
       .def(
@@ -83,7 +83,7 @@ void init_classical(nb::module& m) {
           "basic_op", &MultiBitOp::get_op, "Underlying bitwise op.")
       .def_prop_ro("multiplier", &MultiBitOp::get_n, "Multiplier.");
   nb::class_<
-      RangePredicateOp, std::shared_ptr<RangePredicateOp>, ClassicalEvalOp>(
+      RangePredicateOp, ClassicalEvalOp>(
       m, "RangePredicateOp",
       "A predicate defined by a range of values in binary encoding.")
       .def(
@@ -95,7 +95,7 @@ void init_classical(nb::module& m) {
       .def_prop_ro(
           "upper", &RangePredicateOp::upper, "Inclusive upper bound.");
 
-  nb::class_<WASMOp, std::shared_ptr<WASMOp>, ClassicalOp>(
+  nb::class_<WASMOp, ClassicalOp>(
       m, "WASMOp",
       "An op holding an external classical call, defined by the external "
       "module id, the name of the function and the arguments. External calls "

@@ -244,7 +244,7 @@ NB_MODULE(tableau, m) {
           "\"Improved Simulation of Stabilizer Circuits\", Theorem 8. This is "
           "not optimised for gate count, so is not recommended for "
           "performance-sensitive usage.");
-  nb::class_<UnitaryTableauBox, std::shared_ptr<UnitaryTableauBox>, Op>(
+  nb::class_<UnitaryTableauBox, Op>(
       m, "UnitaryTableauBox",
       "A Clifford unitary specified by its actions on Paulis.")
       .def(

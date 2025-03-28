@@ -30,7 +30,7 @@ namespace tket {
 
 typedef nb::tket_custom::SequenceVec<Qubit> py_qubit_vector_t;
 NB_MODULE(pauli, m) {
-  nb::module::import("pytket._tket.unit_id");
+  nb::module_::import_("pytket._tket.unit_id");
   nb::enum_<Pauli>(m, "Pauli")
       .value("I", Pauli::I)
       .value("X", Pauli::X)

@@ -102,7 +102,7 @@ class ZXDiagramPybind {
 };
 
 void ZXDiagramPybind::init_zxdiagram(nb::module& m) {
-  nb::class_<ZXDiagram, std::shared_ptr<ZXDiagram>>(
+  nb::class_<ZXDiagram>(
       m, "ZXDiagram",
       "Undirected graphs for mixed process ZX diagrams. The boundary is an "
       "ordered list which may mix inputs, outputs, and \"open\" vertices (not "
@@ -588,7 +588,7 @@ NB_MODULE(zx, m) {
         st << w;
         return nb::hash(nb::str(st.str()));
       });
-  nb::class_<ZXGen, std::shared_ptr<ZXGen>>(
+  nb::class_<ZXGen>(
       m, "ZXGen",
       "Encapsulates the information about the generator depicted by a given "
       "vertex in a :py:class:`ZXDiagram`.")
@@ -613,7 +613,7 @@ NB_MODULE(zx, m) {
       .def("__eq__", &py_equals<ZXGen>)
       .def("__hash__", &deletedHash<ZXGen>, deletedHashDocstring)
       .def("__repr__", [](const ZXGen& gen) { return gen.get_name(); });
-  nb::class_<PhasedGen, std::shared_ptr<PhasedGen>, ZXGen>(
+  nb::class_<PhasedGen, ZXGen>(
       m, "PhasedGen",
       "Specialisation of :py:class:`ZXGen` for arbitrary-arity, symmetric "
       "generators with a single continuous parameter.")
@@ -624,7 +624,7 @@ NB_MODULE(zx, m) {
           nb::arg("qtype") = QuantumType::Quantum)
       .def_prop_ro(
           "param", &PhasedGen::get_param, "The parameter of the generator.");
-  nb::class_<CliffordGen, std::shared_ptr<CliffordGen>, ZXGen>(
+  nb::class_<CliffordGen, ZXGen>(
       m, "CliffordGen",
       "Specialisation of :py:class:`ZXGen` for arbitrary-arity, symmetric "
       "Clifford generators with a single boolean parameter.")
@@ -635,7 +635,7 @@ NB_MODULE(zx, m) {
           nb::arg("qtype") = QuantumType::Quantum)
       .def_prop_ro(
           "param", &CliffordGen::get_param, "The parameter of the generator.");
-  nb::class_<DirectedGen, std::shared_ptr<DirectedGen>, ZXGen>(
+  nb::class_<DirectedGen, ZXGen>(
       m, "DirectedGen",
       "Specialisation of :py:class:`ZXGen` for asymmetric ZX generators which "
       "can be doubled to form a Quantum variant. Asymmetric effects handled by "
@@ -652,7 +652,7 @@ NB_MODULE(zx, m) {
           "A list of :py:class:`QuantumType` s indicating the expected "
           ":py:class:`QuantumType` at each port.");
   ZXDiagramPybind::init_zxdiagram(m);
-  nb::class_<ZXBox, std::shared_ptr<ZXBox>, ZXGen>(
+  nb::class_<ZXBox, ZXGen>(
       m, "ZXBox",
       "Specialisation of :py:class:`ZXGen` for encapsulations of some other ZX "
       "diagrams. In general, arbitrary diagrams may be asymmetric tensors with "

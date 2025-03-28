@@ -115,7 +115,7 @@ const PassPtr &DecomposeClassicalExp() {
   static const PassPtr pp([]() {
     Transform t = Transform([](Circuit &circ) {
       nb::module decomposer =
-          nb::module::import("pytket.circuit.decompose_classical");
+          nb::module_::import_("pytket.circuit.decompose_classical");
       const nb::tuple result = decomposer.attr("_decompose_expressions")(circ);
       const bool success = nb::cast<bool>(result[1]);
       if (success) {
@@ -362,7 +362,7 @@ NB_MODULE(passes, m) {
                 const json j = nb::cast<json>(t[0]);
                 return deserialise(j);
               }));
-  nb::class_<SequencePass, std::shared_ptr<SequencePass>, BasePass>(
+  nb::class_<SequencePass, BasePass>(
       m, "SequencePass", "A sequence of compilation passes.")
       .def(
           nb::init<const nb::tket_custom::SequenceVec<PassPtr> &, bool>(),
@@ -387,7 +387,7 @@ NB_MODULE(passes, m) {
           "get_sequence", &SequencePass::get_sequence,
           ":return: The underlying sequence of passes.");
 
-  nb::class_<RepeatPass, std::shared_ptr<RepeatPass>, BasePass>(
+  nb::class_<RepeatPass, BasePass>(
       m, "RepeatPass",
       "Repeat a pass until its `apply()` method returns False, or if "
       "`strict_check` is True until it stops modifying the circuit.")
@@ -400,7 +400,7 @@ NB_MODULE(passes, m) {
           "get_pass", &RepeatPass::get_pass,
           ":return: The underlying compilation pass.");
   nb::class_<
-      RepeatWithMetricPass, std::shared_ptr<RepeatWithMetricPass>, BasePass>(
+      RepeatWithMetricPass, BasePass>(
       m, "RepeatWithMetricPass",
       "Repeat a compilation pass until the given metric stops "
       "decreasing.")
@@ -418,7 +418,7 @@ NB_MODULE(passes, m) {
           "get_metric", &RepeatWithMetricPass::get_metric,
           ":return: The underlying metric.");
   nb::class_<
-      RepeatUntilSatisfiedPass, std::shared_ptr<RepeatUntilSatisfiedPass>,
+      RepeatUntilSatisfiedPass,
       BasePass>(
       m, "RepeatUntilSatisfiedPass",
       "Repeat a compilation pass until a predicate on the circuit is "

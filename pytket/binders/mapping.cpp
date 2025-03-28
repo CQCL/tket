@@ -33,15 +33,15 @@ namespace nb = nanobind;
 
 namespace tket {
 NB_MODULE(mapping, m) {
-  nb::module::import("pytket._tket.architecture");
-  nb::class_<RoutingMethod, std::shared_ptr<RoutingMethod>>(
+  nb::module_::import_("pytket._tket.architecture");
+  nb::class_<RoutingMethod>(
       m, "RoutingMethod",
       "Parent class for RoutingMethod, for inheritance purposes only, not for "
       "usage.")
       .def(nb::init<>());
 
   nb::class_<
-      RoutingMethodCircuit, std::shared_ptr<RoutingMethodCircuit>,
+      RoutingMethodCircuit,
       RoutingMethod>(
       m, "RoutingMethodCircuit",
       "The RoutingMethod class captures a method for partially mapping logical "
@@ -69,7 +69,7 @@ NB_MODULE(mapping, m) {
           nb::arg("max_depth"));
 
   nb::class_<
-      LexiRouteRoutingMethod, std::shared_ptr<LexiRouteRoutingMethod>,
+      LexiRouteRoutingMethod,
       RoutingMethod>(
       m, "LexiRouteRoutingMethod",
       "Defines a RoutingMethod object for mapping circuits that uses the "
@@ -83,7 +83,7 @@ NB_MODULE(mapping, m) {
           nb::arg("lookahead") = 10);
 
   nb::class_<
-      AASRouteRoutingMethod, std::shared_ptr<AASRouteRoutingMethod>,
+      AASRouteRoutingMethod,
       RoutingMethod>(
       m, "AASRouteRoutingMethod",
       "Defines a RoutingMethod object for mapping circuits that uses the "
@@ -96,14 +96,14 @@ NB_MODULE(mapping, m) {
           nb::arg("aaslookahead"));
 
   nb::class_<
-      AASLabellingMethod, std::shared_ptr<AASLabellingMethod>, RoutingMethod>(
+      AASLabellingMethod, RoutingMethod>(
       m, "AASLabellingMethod",
       "Defines a Labeling Method for aas for labelling all unplaced qubits in "
       "a circuit")
       .def(nb::init<>(), "AASLabellingMethod constructor.");
 
   nb::class_<
-      LexiLabellingMethod, std::shared_ptr<LexiLabellingMethod>, RoutingMethod>(
+      LexiLabellingMethod, RoutingMethod>(
       m, "LexiLabellingMethod",
       "Defines a RoutingMethod for labelling Qubits that uses the "
       "Lexicographical Comparison approach outlined in arXiv:1902.08091.")
@@ -111,7 +111,7 @@ NB_MODULE(mapping, m) {
 
   nb::class_<
       MultiGateReorderRoutingMethod,
-      std::shared_ptr<MultiGateReorderRoutingMethod>, RoutingMethod>(
+      RoutingMethod>(
       m, "MultiGateReorderRoutingMethod",
       "Defines a RoutingMethod object for commuting physically permitted "
       "multi-qubit gates to the front of the subcircuit.")
@@ -126,7 +126,7 @@ NB_MODULE(mapping, m) {
 
   nb::class_<
       BoxDecompositionRoutingMethod,
-      std::shared_ptr<BoxDecompositionRoutingMethod>, RoutingMethod>(
+      RoutingMethod>(
       m, "BoxDecompositionRoutingMethod",
       "Defines a RoutingMethod object for decomposing boxes.")
       .def(nb::init<>(), "BoxDecompositionRoutingMethod constructor.");

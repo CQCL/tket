@@ -422,7 +422,7 @@ void init_clexpr(nb::module &m) {
       .value("RegRsh", ClOp::RegRsh, "Right shift")
       .value("RegNeg", ClOp::RegNeg, "Integer negation");
 
-  nb::class_<ClBitVar, std::shared_ptr<ClBitVar>>(
+  nb::class_<ClBitVar>(
       m, "ClBitVar", "A bit variable within an expression")
       .def(
           nb::init<unsigned>(),
@@ -449,7 +449,7 @@ void init_clexpr(nb::module &m) {
           "index", [](const ClBitVar &var) { return var.index; },
           "integer identifier for the variable");
 
-  nb::class_<ClRegVar, std::shared_ptr<ClRegVar>>(
+  nb::class_<ClRegVar>(
       m, "ClRegVar", "A register variable within an expression")
       .def(
           nb::init<unsigned>(),
@@ -476,7 +476,7 @@ void init_clexpr(nb::module &m) {
           "index", [](const ClRegVar &var) { return var.index; },
           "integer identifier for the variable");
 
-  nb::class_<ClExpr, std::shared_ptr<ClExpr>>(
+  nb::class_<ClExpr>(
       m, "ClExpr", "A classical expression")
       .def(
           nb::init<ClOp, std::vector<ClExprArg>>(),
@@ -507,7 +507,7 @@ void init_clexpr(nb::module &m) {
           "registers",
           nb::arg("input_bits"), nb::arg("input_regs"));
 
-  nb::class_<WiredClExpr, std::shared_ptr<WiredClExpr>>(
+  nb::class_<WiredClExpr>(
       m, "WiredClExpr",
       "An operation defined by a classical expression over a sequence of bits")
       .def(
@@ -559,7 +559,7 @@ void init_clexpr(nb::module &m) {
           },
           "Construct from JSON-serializable dict representation");
 
-  nb::class_<ClExprOp, std::shared_ptr<ClExprOp>, Op>(
+  nb::class_<ClExprOp, Op>(
       m, "ClExprOp", "An operation defined by a classical expression")
       .def(
           nb::init<WiredClExpr>(),
