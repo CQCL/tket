@@ -65,6 +65,26 @@ class BitRegisterLogicExpression : public LogicExpression {
 };
 NAMESPACE_END(tket_custom)
 NAMESPACE_BEGIN(detail)
+
+// ((( Copied from pybind11 (cast.h)
+template <typename T>
+struct handle_type_name {
+    static constexpr auto name = const_name<T>();
+};
+// )))
+
+// ((( Copied from pybind11 (stl.h)
+template <typename C>
+using has_reserve_method = std::is_same<decltype(std::declval<C>().reserve(0)), void>;
+// )))
+
+// ((( Copied from pybind11 (cast.h)
+template <typename Return, typename SFINAE = void>
+struct return_value_policy_override {
+    static rv_policy policy(rv_policy p) { return p; }
+};
+// )))
+
 // This struct is copied from the struct "list_caster" in pybind11/stl.h with
 // some minor customization. It adds the ability to customize the type name
 // (using a handle_type_name<T> struct) and specify the python type that the
@@ -75,10 +95,7 @@ template <typename Type, typename Val, typename castToType>
 struct tket_sequence_caster {
   using value_conv = make_caster<Val>;
 
-  // ((( Copied from pybind11 (stl.h)
-  template <typename C>
-  using has_reserve_method = std::is_same<decltype(std::declval<C>().reserve(0)), void>;
-  // )))
+
 
   bool load(handle src, bool convert) {
     if (!isinstance<sequence>(src) || isinstance<bytes>(src) ||
@@ -101,8 +118,8 @@ struct tket_sequence_caster {
  private:
   template <
       typename T = Type, std::enable_if_t<has_reserve_method<T>::value, int> = 0>
-  void reserve_maybe(const sequence& s, Type*) {
-    value.reserve(s.size());
+  void reserve_maybe(const sequence& /*s*/, Type*) {
+    // value.reserve(s.size());
   }
   void reserve_maybe(const sequence&, void*) {}
 
