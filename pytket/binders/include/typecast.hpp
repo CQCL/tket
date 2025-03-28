@@ -239,10 +239,10 @@ struct type_caster<SymEngine::Expression> {
       return SymEngine::pow(
           sympy_to_expr(arg_tuple[0]), sympy_to_expr(arg_tuple[1]));
     } else if (isinstance(py_expr, sympy.attr("Integer"))) {
-      return nanobind::cast<long>(tket::Expr(py_expr.attr("p")));
+      return tket::Expr(nanobind::cast<long>(py_expr.attr("p")));
     } else if (isinstance(py_expr, sympy.attr("Rational"))) {
-      return nanobind::cast<long>(tket::Expr(py_expr.attr("p"))) /
-             nanobind::cast<long>(tket::Expr(py_expr.attr("q")));
+      return tket::Expr(nanobind::cast<long>(py_expr.attr("p"))) /
+             tket::Expr(nanobind::cast<long>(py_expr.attr("q")));
     } else if (isinstance(py_expr, sympy.attr("Float"))) {
       return tket::Expr(nanobind::cast<std::string>(repr(py_expr)));
     } else if (isinstance(py_expr, numbers.attr("ImaginaryUnit"))) {
