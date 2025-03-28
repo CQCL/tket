@@ -263,7 +263,7 @@ struct type_caster<SymEngine::Expression> {
 // functions with a single argument that have an equivalent in symengine
 #define SECONVERT(engmeth, pyclass)                     \
   else if (isinstance(py_expr, sympy.attr(#pyclass))) { \
-    tuple arg_tuple = get_checked_args(py_expr, 1);     \
+    nanobind::tuple arg_tuple = get_checked_args(py_expr, 1);     \
     tket::Expr the_arg = sympy_to_expr(arg_tuple[0]);   \
     tket::ExprPtr res = SymEngine::engmeth(the_arg);    \
     return tket::Expr(res);                             \
@@ -300,13 +300,13 @@ struct type_caster<SymEngine::Expression> {
     SECONVERT(exp, exp)
 #undef SECONVERT
     else if (isinstance(py_expr, sympy.attr("atan2"))) {
-      tuple arg_tuple = get_checked_args(py_expr, 2);
+      nanobind::tuple arg_tuple = get_checked_args(py_expr, 2);
       return SymEngine::atan2(
           sympy_to_expr(arg_tuple[0]), sympy_to_expr(arg_tuple[1]));
     }
     else {
       std::stringstream err;
-      err << "Unable to convert sympy expression " << repr(py_expr);
+      err << "Unable to convert sympy expression " << nanobind::cast<std::string>(repr(py_expr));
       throw std::logic_error(err.str());
     }
   }
@@ -481,7 +481,7 @@ struct type_caster<SymEngine::RCP<const SymEngine::Symbol>> {
   bool load(handle src, bool) {
     nanobind::module_ sympy = nanobind::module_::import_("sympy");
     if (!isinstance(src, sympy.attr("Symbol"))) return false;
-    value = SymEngine::symbol(repr(src));
+    value = SymEngine::symbol(repr(src).c_str());
     return true;
   }
   static handle cast(
