@@ -34,8 +34,8 @@ NB_MODULE(architecture, m) {
       .def(nb::init<>(), "Produces an empty architecture")
       .def(
           "__init__",
-            [](nb::tket_custom::SequenceVec<std::pair<unsigned, unsigned>> *connections) {
-              new (connections) Architecture(*connections);
+            [](Architecture *t, const nb::tket_custom::SequenceVec<std::pair<unsigned, unsigned>> &connections) {
+              new (t) Architecture(connections);
             },
           "The constructor for an architecture with connectivity "
           "between qubits.\n\n:param connections: A list of pairs "
@@ -121,10 +121,10 @@ NB_MODULE(architecture, m) {
       "values increasing first along rows then along columns i.e. for a "
       "3 x 3 grid:\n\n 0 1 2\n\n 3 4 5\n\n 6 7 8")
       .def(
-          nb::init([](const unsigned &x, const unsigned &y,
-                      const std::string &label) {
-            return SquareGrid(x, y, 1, label);
-          }),
+          "__init__",
+          [](SquareGrid *t, unsigned x, unsigned y, const std::string &label) {
+            new (t) SquareGrid(x, y, 1, label);
+          },
           "The constructor for a Square Grid architecture with some "
           "undirected connectivity between qubits.\n\n:param n_rows: "
           "The number of rows in the grid\n:param n_columns: The number "
