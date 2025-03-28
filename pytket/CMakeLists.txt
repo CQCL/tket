@@ -14,7 +14,6 @@
 
 cmake_minimum_required(VERSION 3.23)
 project(pytket CXX)
-add_definitions(-DPYBIND11_DETAILED_ERROR_MESSAGES)
 
 find_package(Boost CONFIG REQUIRED)
 find_package(Eigen3 CONFIG REQUIRED)

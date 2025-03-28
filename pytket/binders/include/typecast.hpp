@@ -71,16 +71,21 @@ NAMESPACE_BEGIN(detail)
 // object is cast to. Changes to the pybind11 code may warrant/require changes
 // here. The struct is used to define custom type casters for the "tket_custom"
 // types.
-template <typename Type, typename Value, typename castToType>
+template <typename Type, typename Val, typename castToType>
 struct tket_sequence_caster {
-  using value_conv = make_caster<Value>;
+  using value_conv = make_caster<Val>;
+
+  // Checks if a container has a STL style reserve method.
+  // This will only return true for a `reserve()` with a `void` return.
+  template <typename C>
+  using has_reserve_method = std::is_same<decltype(std::declval<C>().reserve(0)), void>;
 
   bool load(handle src, bool convert) {
     if (!isinstance<sequence>(src) || isinstance<bytes>(src) ||
         isinstance<str>(src)) {
       return false;
     }
-    auto s = reinterpret_borrow<sequence>(src);
+    auto s = borrow<sequence>(src);
     value.clear();
     reserve_maybe(s, &value);
     for (auto it : s) {
@@ -88,14 +93,14 @@ struct tket_sequence_caster {
       if (!conv.load(it, convert)) {
         return false;
       }
-      value.push_back(cast_op<Value&&>(std::move(conv)));
+      value.push_back(cast_op<Val&&>(std::move(conv)));
     }
     return true;
   }
 
  private:
   template <
-      typename T = Type, enable_if_t<has_reserve_method<T>::value, int> = 0>
+      typename T = Type, std::enable_if_t<has_reserve_method<T>::value, int> = 0>
   void reserve_maybe(const sequence& s, Type*) {
     value.reserve(s.size());
   }
@@ -103,14 +108,14 @@ struct tket_sequence_caster {
 
  public:
   template <typename T>
-  static handle cast(T&& src, return_value_policy policy, handle parent) {
+  static handle cast(T&& src, rv_policy policy, handle parent) {
     if (!std::is_lvalue_reference<T>::value) {
-      policy = return_value_policy_override<Value>::policy(policy);
+      policy = return_value_policy_override<Val>::policy(policy);
     }
     castToType l(src.size());
     ssize_t index = 0;
     for (auto&& value : src) {
-      auto value_ = reinterpret_steal<object>(
+      auto value_ = steal<object>(
           value_conv::cast(detail::forward_like_<T>(value), policy, parent));
       if (!value_) {
         return handle();
@@ -341,7 +346,7 @@ struct type_caster<SymEngine::Expression> {
       case SymEngine::TypeID::SYMENGINE_INTEGER: {
         const SymEngine::Integer* i =
             dynamic_cast<const SymEngine::Integer*>(e_.get());
-        return reinterpret_borrow<object>(PyLong_FromLong(i->as_int()));
+        return borrow<object>(PyLong_FromLong(i->as_int()));
       }
       case SymEngine::TypeID::SYMENGINE_RATIONAL: {
         const SymEngine::Rational* r =
@@ -352,7 +357,7 @@ struct type_caster<SymEngine::Expression> {
       case SymEngine::TypeID::SYMENGINE_REAL_DOUBLE: {
         const SymEngine::RealDouble* d =
             dynamic_cast<const SymEngine::RealDouble*>(e_.get());
-        return reinterpret_borrow<object>(PyFloat_FromDouble(d->as_double()));
+        return borrow<object>(PyFloat_FromDouble(d->as_double()));
       }
       case SymEngine::TypeID::SYMENGINE_COMPLEX:
       case SymEngine::TypeID::SYMENGINE_COMPLEX_DOUBLE: {
@@ -440,7 +445,7 @@ struct type_caster<SymEngine::Expression> {
   }
 
   static handle cast(
-      SymEngine::Expression src, return_value_policy /* policy */,
+      SymEngine::Expression src, rv_policy /* policy */,
       handle /* parent */) {
     std::optional<double> eval = tket::eval_expr(src);
     if (!eval)
@@ -464,7 +469,7 @@ struct type_caster<SymEngine::RCP<const SymEngine::Symbol>> {
   }
   static handle cast(
       SymEngine::RCP<const SymEngine::Symbol> src,
-      return_value_policy /* policy */, handle /* parent */) {
+      rv_policy /* policy */, handle /* parent */) {
     nanobind::module_ sympy = nanobind::module_::import_("sympy");
     return sympy.attr("Symbol")(src->get_name()).release();
   }
