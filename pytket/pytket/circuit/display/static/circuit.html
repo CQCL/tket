@@ -30,10 +30,14 @@
         ></circuit-display-container>
     </div>
     <script type="application/javascript">
-      const circuitRendererUid = "{{ uid }}";
-      const displayOptions = JSON.parse('{{display_options}}');
+      (async function () {
+        await window['_circuitRendererLoading']
 
-      {% include_raw "js/main.js" %}
+        const circuitRendererUid = "{{ uid }}";
+        const displayOptions = JSON.parse('{{display_options}}');
+
+        {% include_raw "js/main.js" %}
+      })()
     </script>
 
 {% if not jupyter %}
