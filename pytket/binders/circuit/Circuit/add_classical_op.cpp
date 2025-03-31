@@ -75,7 +75,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
        " `condition_value`"
        "\n:return: the new :py:class:`Circuit`",
        nb::arg("values"), nb::arg("args"),
-       nb::arg("name") = "ClassicalTransform")
+       nb::arg("name") = "ClassicalTransform", nb::arg("kwargs"))
       .def(
           "add_c_transform",
           [](Circuit &circ, const nb::tket_custom::SequenceVec<_tket_uint_t> &values,
@@ -87,7 +87,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
             return add_gate_method<Bit>(&circ, op, args, kwargs);
           },
           "See :py:meth:`add_c_transform`.", nb::arg("values"), nb::arg("args"),
-          nb::arg("name") = "ClassicalTransform")
+          nb::arg("name") = "ClassicalTransform", nb::arg("kwargs"))
       .def(
           "_add_wasm",
           [](Circuit &circ, const std::string &funcname,
@@ -130,7 +130,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           nb::arg("funcname"), nb::arg("wasm_uid"), nb::arg("width_i_parameter"),
-          nb::arg("width_o_parameter"), nb::arg("args"), nb::arg("wasm_wire_args"))
+          nb::arg("width_o_parameter"), nb::arg("args"), nb::arg("wasm_wire_args"),
+          nb::arg("kwargs"))
       .def(
           "_add_wasm",
           [](Circuit &circ, const std::string &funcname,
@@ -172,7 +173,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           nb::arg("funcname"), nb::arg("wasm_uid"), nb::arg("width_i_parameter"),
-          nb::arg("width_o_parameter"), nb::arg("args"), nb::arg("wasm_wire_args"))
+          nb::arg("width_o_parameter"), nb::arg("args"), nb::arg("wasm_wire_args"),
+          nb::arg("kwargs"))
       .def(
           "_add_wasm",
           [](Circuit &circ, const std::string &funcname,
@@ -246,7 +248,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           nb::arg("funcname"), nb::arg("wasm_uid"), nb::arg("list_reg_in"),
-          nb::arg("list_reg_out"), nb::arg("wasm_wire_args"))
+          nb::arg("list_reg_out"), nb::arg("wasm_wire_args"), nb::arg("kwargs"))
       .def(
           "add_c_setbits",
           [](Circuit &circ, const nb::tket_custom::SequenceVec<bool> &values,
@@ -261,7 +263,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("values"), nb::arg("args"))
+          nb::arg("values"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_c_setbits",
           [](Circuit &circ, const nb::tket_custom::SequenceVec<bool> &values,
@@ -269,7 +271,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
             std::shared_ptr<SetBitsOp> op = std::make_shared<SetBitsOp>(values);
             return add_gate_method<Bit>(&circ, op, args, kwargs);
           },
-          "See :py:meth:`add_c_setbits`.", nb::arg("values"), nb::arg("args"))
+          "See :py:meth:`add_c_setbits`.", nb::arg("values"), nb::arg("args"),
+          nb::arg("kwargs"))
       .def(
           "add_c_setreg",
           [](Circuit &circ, const _tket_uint_t value, const BitRegister &reg,
@@ -292,7 +295,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "little-endian bitwise representation of the integer is truncated to "
           "the register size, up to " STR(_TKET_REG_WIDTH) " bit width. It is "
 	  "zero-padded if the width of the register is greater than " STR(_TKET_REG_WIDTH) ".",
-          nb::arg("value"), nb::arg("arg"))
+          nb::arg("value"), nb::arg("arg"), nb::arg("kwargs"))
       .def(
           "add_c_copybits",
           [](Circuit &circ, const nb::tket_custom::SequenceVec<unsigned> &args_in,
@@ -311,7 +314,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("args_in"), nb::arg("args_out"))
+          nb::arg("args_in"), nb::arg("args_out"), nb::arg("kwargs"))
       .def(
           "add_c_copybits",
           [](Circuit &circ, const nb::tket_custom::SequenceVec<Bit> &args_in,
@@ -324,7 +327,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
             return add_gate_method<Bit>(&circ, op, args, kwargs);
           },
           "See :py:meth:`add_c_copybits`.", nb::arg("args_in"),
-          nb::arg("args_out"))
+          nb::arg("args_out"), nb::arg("kwargs"))
       .def(
           "add_c_copyreg",
           [](Circuit &circ, const BitRegister &input_reg,
@@ -343,7 +346,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           },
           "Copy a classical register to another. Copying is truncated to the "
           "size of the smaller of the two registers.",
-          nb::arg("input_reg"), nb::arg("output_reg"))
+          nb::arg("input_reg"), nb::arg("output_reg"), nb::arg("kwargs"))
       .def(
           "add_c_predicate",
           [](Circuit &circ, const nb::tket_custom::SequenceVec<bool> &values,
@@ -370,7 +373,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           nb::arg("values"), nb::arg("args_in"), nb::arg("arg_out"),
-          nb::arg("name") = "ExplicitPredicate")
+          nb::arg("name") = "ExplicitPredicate", nb::arg("kwargs"))
       .def(
           "add_c_predicate",
           [](Circuit &circ, const nb::tket_custom::SequenceVec<bool> &values,
@@ -385,7 +388,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           },
           "See :py:meth:`add_c_predicate`.", nb::arg("values"),
           nb::arg("args_in"), nb::arg("arg_out"),
-          nb::arg("name") = "ExplicitPredicate")
+          nb::arg("name") = "ExplicitPredicate", nb::arg("kwargs"))
       .def(
           "add_c_modifier",
           [](Circuit &circ, const nb::tket_custom::SequenceVec<bool> &values,
@@ -414,7 +417,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           nb::arg("values"), nb::arg("args_in"), nb::arg("arg_inout"),
-          nb::arg("name") = "ExplicitModifier")
+          nb::arg("name") = "ExplicitModifier", nb::arg("kwargs"))
       .def(
           "add_c_modifier",
           [](Circuit &circ, const nb::tket_custom::SequenceVec<bool> &values,
@@ -429,7 +432,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           },
           "See :py:meth:`add_c_modifier`.", nb::arg("values"),
           nb::arg("args_in"), nb::arg("arg_inout"),
-          nb::arg("name") = "ExplicitModifier")
+          nb::arg("name") = "ExplicitModifier", nb::arg("kwargs"))
       .def(
           "add_c_and",
           [](Circuit &circ, unsigned arg0_in, unsigned arg1_in,
@@ -456,7 +459,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("arg0_in"), nb::arg("arg1_in"), nb::arg("arg_out"))
+          nb::arg("arg0_in"), nb::arg("arg1_in"), nb::arg("arg_out"),
+          nb::arg("kwargs"))
       .def(
           "add_c_and",
           [](Circuit &circ, const Bit& arg0_in, const Bit& arg1_in, const Bit& arg_out,
@@ -476,7 +480,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
             return add_gate_method<Bit>(&circ, op, args, kwargs);
           },
           "See :py:meth:`add_c_and`.", nb::arg("arg0_in"), nb::arg("arg1_in"),
-          nb::arg("arg_out"))
+          nb::arg("arg_out"), nb::arg("kwargs"))
       .def(
           "add_c_or",
           [](Circuit &circ, unsigned arg0_in, unsigned arg1_in,
@@ -503,7 +507,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("arg0_in"), nb::arg("arg1_in"), nb::arg("arg_out"))
+          nb::arg("arg0_in"), nb::arg("arg1_in"), nb::arg("arg_out"),
+          nb::arg("kwargs"))
       .def(
           "add_c_or",
           [](Circuit &circ, const Bit& arg0_in, const Bit& arg1_in, const Bit& arg_out,
@@ -523,7 +528,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
             return add_gate_method<Bit>(&circ, op, args, kwargs);
           },
           "See :py:meth:`add_c_or`.", nb::arg("arg0_in"), nb::arg("arg1_in"),
-          nb::arg("arg_out"))
+          nb::arg("arg_out"), nb::arg("kwargs"))
       .def(
           "add_c_xor",
           [](Circuit &circ, unsigned arg0_in, unsigned arg1_in,
@@ -550,7 +555,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("arg0_in"), nb::arg("arg1_in"), nb::arg("arg_out"))
+          nb::arg("arg0_in"), nb::arg("arg1_in"), nb::arg("arg_out"),
+          nb::arg("kwargs"))
       .def(
           "add_c_xor",
           [](Circuit &circ, const Bit& arg0_in, const Bit& arg1_in, const Bit& arg_out,
@@ -570,7 +576,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
             return add_gate_method<Bit>(&circ, op, args, kwargs);
           },
           "See :py:meth:`add_c_xor`.", nb::arg("arg0_in"), nb::arg("arg1_in"),
-          nb::arg("arg_out"))
+          nb::arg("arg_out"), nb::arg("kwargs"))
       .def(
           "add_c_not",
           [](Circuit &circ, unsigned arg_in, unsigned arg_out,
@@ -585,14 +591,15 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("arg_in"), nb::arg("arg_out"))
+          nb::arg("arg_in"), nb::arg("arg_out"), nb::arg("kwargs"))
       .def(
           "add_c_not",
           [](Circuit &circ, Bit arg_in, Bit arg_out, const nb::kwargs &kwargs) {
             return add_gate_method<Bit>(
                 &circ, NotOp(), {std::move(arg_in), std::move(arg_out)}, kwargs);
           },
-          "See :py:meth:`add_c_not`.", nb::arg("arg_in"), nb::arg("arg_out"))
+          "See :py:meth:`add_c_not`.", nb::arg("arg_in"), nb::arg("arg_out"),
+          nb::arg("kwargs"))
       .def(
           "add_c_range_predicate",
           [](Circuit &circ, _tket_uint_t a, _tket_uint_t b,
@@ -615,7 +622,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           nb::arg("minval"), nb::arg("maxval"), nb::arg("args_in"),
-          nb::arg("arg_out"))
+          nb::arg("arg_out"), nb::arg("kwargs"))
       .def(
           "add_c_range_predicate",
           [](Circuit &circ, _tket_uint_t a, _tket_uint_t b,
@@ -638,7 +645,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           nb::arg("minval"), nb::arg("maxval"), nb::arg("args_in"),
-          nb::arg("arg_out"))
+          nb::arg("arg_out"), nb::arg("kwargs"))
       .def(
           "add_c_and_to_registers",
           [](Circuit &circ, const BitRegister &reg0_in,
@@ -667,7 +674,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("reg0_in"), nb::arg("reg1_in"), nb::arg("reg_out"))
+          nb::arg("reg0_in"), nb::arg("reg1_in"), nb::arg("reg_out"),
+          nb::arg("kwargs"))
       .def(
           "add_c_or_to_registers",
           [](Circuit &circ, const BitRegister &reg0_in,
@@ -696,7 +704,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("reg0_in"), nb::arg("reg1_in"), nb::arg("reg_out"))
+          nb::arg("reg0_in"), nb::arg("reg1_in"), nb::arg("reg_out"),
+          nb::arg("kwargs"))
       .def(
           "add_c_xor_to_registers",
           [](Circuit &circ, const BitRegister &reg0_in,
@@ -725,7 +734,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("reg0_in"), nb::arg("reg1_in"), nb::arg("reg_out"))
+          nb::arg("reg0_in"), nb::arg("reg1_in"), nb::arg("reg_out"),
+          nb::arg("kwargs"))
       .def(
           "add_c_not_to_registers",
           [](Circuit &circ, const BitRegister &reg_in,
@@ -744,7 +754,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("reg_in"), nb::arg("reg_out"));
+          nb::arg("reg_in"), nb::arg("reg_out"), nb::arg("kwargs"));
 }
 
 }  // namespace tket
