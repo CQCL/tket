@@ -137,7 +137,7 @@ struct type_caster<nl::json> {
  public:
   static constexpr auto Name = const_name("JSON");
 
-  bool from_python(handle src, bool) noexcept {
+  bool from_python(handle src, uint8_t, cleanup_list*) noexcept {
     try {
       auto value = pyjson::to_json(src);
       return true;
