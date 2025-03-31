@@ -23,10 +23,10 @@
 #include <utility>
 
 #include "UnitRegister.hpp"
-#include "binder_json.hpp"
 #include "boost/graph/iteration_macros.hpp"
 #include "circuit_registers.hpp"
 #include "deleted_hash.hpp"
+#include "nanobind_json/nanobind_json.hpp"
 #include "py_operators.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"

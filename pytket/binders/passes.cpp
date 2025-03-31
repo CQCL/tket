@@ -17,8 +17,8 @@
 #include <optional>
 #include <tklog/TketLog.hpp>
 
-#include "binder_json.hpp"
 #include "binder_utils.hpp"
+#include "nanobind_json/nanobind_json.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
 #include "tket/Mapping/LexiRouteRoutingMethod.hpp"
 #include "tket/Mapping/RoutingMethod.hpp"

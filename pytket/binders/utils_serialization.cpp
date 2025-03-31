@@ -17,7 +17,7 @@
 
 #include <complex>
 
-#include "binder_json.hpp"
+#include "nanobind_json/nanobind_json.hpp"
 #include "tket/Utils/Json.hpp"
 
 namespace nb = nanobind;

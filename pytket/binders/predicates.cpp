@@ -14,7 +14,7 @@
 
 #include "tket/Predicates/Predicates.hpp"
 
-#include "binder_json.hpp"
+#include "nanobind_json/nanobind_json.hpp"
 #include "tket/Predicates/CompilationUnit.hpp"
 #include "tket/Utils/UnitID.hpp"
 #include "typecast.hpp"

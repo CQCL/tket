@@ -16,8 +16,8 @@
 
 #include <nanobind/nanobind.h>
 
-#include "binder_json.hpp"
 #include "binder_utils.hpp"
+#include "nanobind_json/nanobind_json.hpp"
 #include "typecast.hpp"
 
 namespace nb = nanobind;

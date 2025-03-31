@@ -20,8 +20,8 @@
 #include <memory>
 #include <sstream>
 
-#include "binder_json.hpp"
 #include "binder_utils.hpp"
+#include "nanobind_json/nanobind_json.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"

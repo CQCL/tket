@@ -18,9 +18,9 @@
 
 #include <tket/Circuit/Circuit.hpp>
 
-#include "binder_json.hpp"
 #include "binder_utils.hpp"
 #include "deleted_hash.hpp"
+#include "nanobind_json/nanobind_json.hpp"
 #include "py_operators.hpp"
 #include "tket/Circuit/Command.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"

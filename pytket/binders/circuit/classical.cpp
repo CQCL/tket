@@ -18,7 +18,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include "UnitRegister.hpp"
-#include "binder_json.hpp"
+#include "nanobind_json/nanobind_json.hpp"
 #include "tket/Circuit/Conditional.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
 #include "tket/Ops/OpJsonFactory.hpp"

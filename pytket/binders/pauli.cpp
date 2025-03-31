@@ -17,8 +17,8 @@
 #include <nanobind/stl/complex.h>
 // #include <pybind11/stl.h>
 
-#include "binder_json.hpp"
 #include "deleted_hash.hpp"
+#include "nanobind_json/nanobind_json.hpp"
 #include "py_operators.hpp"
 #include "tket/Utils/PauliTensor.hpp"
 #include "typecast.hpp"
