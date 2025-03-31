@@ -191,29 +191,26 @@ NB_MODULE(pauli, m) {
           "least significant"
           "\n:return: expectation value with respect to state",
           nb::arg("state"), nb::arg("qubits"))
-
       .def(
-          nb::pickle(
-              [](const SpPauliString &qps) {
-                /* Hackery to avoid pickling an opaque object */
-                std::list<Qubit> qubits;
-                std::list<Pauli> paulis;
-                for (const std::pair<const Qubit, Pauli> &qp_pair :
-                     qps.string) {
-                  qubits.push_back(qp_pair.first);
-                  paulis.push_back(qp_pair.second);
-                }
-                return nb::make_tuple(qubits, paulis);
-              },
-              [](const nb::tuple &t) {
-                if (t.size() != 2)
-                  throw std::runtime_error(
-                      "Invalid state: tuple size: " + std::to_string(t.size()));
-                return SpPauliString(
-                    nb::cast<std::list<Qubit>>(t[0]),
-                    nb::cast<std::list<Pauli>>(t[1]));
-              }));
-
+          "__getstate__",
+          [](const SpPauliString &qps) {
+            /* Hackery to avoid pickling an opaque object */
+            std::list<Qubit> qubits;
+            std::list<Pauli> paulis;
+            for (const std::pair<const Qubit, Pauli> &qp_pair : qps.string) {
+              qubits.push_back(qp_pair.first);
+              paulis.push_back(qp_pair.second);
+            }
+            return nb::make_tuple(qubits, paulis);
+          })
+      .def("__setstate__", [](SpPauliString &qps, const nb::tuple &t) {
+        if (t.size() != 2) {
+          throw std::runtime_error(
+              "Invalid state: tuple size: " + std::to_string(t.size()));
+        }
+        new (&qps) SpPauliString(
+            nb::cast<std::list<Qubit>>(t[0]), nb::cast<std::list<Pauli>>(t[1]));
+      });
   m.def(
       "pauli_string_mult",
       [](const SpPauliString &qps1, const SpPauliString &qps2) {
@@ -422,26 +419,25 @@ NB_MODULE(pauli, m) {
           "least significant"
           "\n:return: expectation value with respect to state",
           nb::arg("state"), nb::arg("qubits"))
-
       .def(
-          nb::pickle(
-              [](const SpCxPauliTensor &qpt) {
-                std::list<Qubit> qubits;
-                std::list<Pauli> paulis;
-                for (const std::pair<const Qubit, Pauli> &qp_pair :
-                     qpt.string) {
-                  qubits.push_back(qp_pair.first);
-                  paulis.push_back(qp_pair.second);
-                }
-                return nb::make_tuple(qubits, paulis, qpt.coeff);
-              },
-              [](const nb::tuple &t) {
-                if (t.size() != 3)
-                  throw std::runtime_error(
-                      "Invalid state: tuple size: " + std::to_string(t.size()));
-                return SpCxPauliTensor(
-                    nb::cast<std::list<Qubit>>(t[0]),
-                    nb::cast<std::list<Pauli>>(t[1]), nb::cast<Complex>(t[2]));
-              }));
+          "__getstate__",
+          [](const SpCxPauliTensor &qpt) {
+            std::list<Qubit> qubits;
+            std::list<Pauli> paulis;
+            for (const std::pair<const Qubit, Pauli> &qp_pair : qpt.string) {
+              qubits.push_back(qp_pair.first);
+              paulis.push_back(qp_pair.second);
+            }
+            return nb::make_tuple(qubits, paulis, qpt.coeff);
+          })
+      .def("__setstate__", [](SpCxPauliTensor &qpt, const nb::tuple &t) {
+        if (t.size() != 3) {
+          throw std::runtime_error(
+              "Invalid state: tuple size: " + std::to_string(t.size()));
+        }
+        new (&qpt) SpCxPauliTensor(
+            nb::cast<std::list<Qubit>>(t[0]), nb::cast<std::list<Pauli>>(t[1]),
+            nb::cast<Complex>(t[2]));
+      });
 }
 }  // namespace tket

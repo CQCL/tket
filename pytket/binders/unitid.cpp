@@ -152,18 +152,21 @@ NB_MODULE(unit_id, m) {
           "register\n:param index: The index vector",
           nb::arg("name"), nb::arg("index"))
       .def(
-          nb::pickle(
-              [](const Qubit &q) {
-                return nb::make_tuple(q.reg_name(), q.index());
-              },
-              [](const nb::tuple &t) {
-                if (t.size() != 2)
-                  throw std::runtime_error(
-                      "Invalid state: tuple size: " + std::to_string(t.size()));
-                return Qubit(
-                    nb::cast<std::string>(t[0]),
-                    nb::cast<std::vector<unsigned>>(t[1]));
-              }))
+          "__getstate__",
+          [](const Qubit &q) {
+            return nb::make_tuple(q.reg_name(), q.index());
+          })
+      .def(
+          "__setstate__",
+          [](Qubit &q, const nb::tuple &t) {
+            if (t.size() != 2) {
+              throw std::runtime_error(
+                  "Invalid state: tuple size: " + std::to_string(t.size()));
+            }
+            new (&q) Qubit(
+                nb::cast<std::string>(t[0]),
+                nb::cast<std::vector<unsigned>>(t[1]));
+          })
       .def(
           "to_list",
           [](const Qubit &q) {
@@ -215,18 +218,18 @@ NB_MODULE(unit_id, m) {
       .def("__eq__", &py_equals<Bit>)
       .def("__hash__", [](const Bit &b) { return hash_value(b); })
       .def(
-          nb::pickle(
-              [](const Bit &b) {
-                return nb::make_tuple(b.reg_name(), b.index());
-              },
-              [](const nb::tuple &t) {
-                if (t.size() != 2)
-                  throw std::runtime_error(
-                      "Invalid state: tuple size: " + std::to_string(t.size()));
-                return Bit(
-                    nb::cast<std::string>(t[0]),
+          "__getstate__",
+          [](const Bit &b) { return nb::make_tuple(b.reg_name(), b.index()); })
+      .def(
+          "__setstate__",
+          [](Bit &b, const nb::tuple &t) {
+            if (t.size() != 2)
+              throw std::runtime_error(
+                  "Invalid state: tuple size: " + std::to_string(t.size()));
+            new (&b)
+                Bit(nb::cast<std::string>(t[0]),
                     nb::cast<std::vector<unsigned>>(t[1]));
-              }))
+          })
       .def(
           "to_list",
           [](const Bit &b) { return nb::cast<nb::list>(nb::object(json(b))); },
@@ -252,18 +255,20 @@ NB_MODULE(unit_id, m) {
       .def("__eq__", &py_equals<WasmState>)
       .def("__hash__", [](const WasmState &b) { return hash_value(b); })
       .def(
-          nb::pickle(
-              [](const WasmState &b) {
-                return nb::make_tuple(b.reg_name(), b.index());
-              },
-              [](const nb::tuple &t) {
-                if (t.size() != 2)
-                  throw std::runtime_error(
-                      "Invalid state: tuple size: " + std::to_string(t.size()));
-                return WasmState(
-                    nb::cast<std::string>(t[0]),
-                    nb::cast<std::vector<unsigned>>(t[1]));
-              }))
+          "__getstate__",
+          [](const WasmState &b) {
+            return nb::make_tuple(b.reg_name(), b.index());
+          })
+      .def(
+          "__setstate__",
+          [](WasmState &b, const nb::tuple &t) {
+            if (t.size() != 2)
+              throw std::runtime_error(
+                  "Invalid state: tuple size: " + std::to_string(t.size()));
+            new (&b) WasmState(
+                nb::cast<std::string>(t[0]),
+                nb::cast<std::vector<unsigned>>(t[1]));
+          })
       .def(
           "to_list",
           [](const WasmState &b) {

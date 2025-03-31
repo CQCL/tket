@@ -352,16 +352,15 @@ NB_MODULE(passes, m) {
           nb::arg("custom_map_deserialisation") = std::map<
               std::string, std::function<std::pair<
                                Circuit, std::pair<unit_map_t, unit_map_t>>(
-                               const Circuit &)>>{})
-      .def(
-          nb::pickle(
-              [](nb::object self) {  // __getstate__
-                return nb::make_tuple(self.attr("to_dict")());
-              },
-              [](const nb::tuple &t) {  // __setstate__
-                const json j = nb::cast<json>(t[0]);
-                return deserialise(j);
-              }));
+                               const Circuit &)>>{});
+  // .def("__getstate__", [](const BasePass &pass) {
+  //   return nb::make_tuple(nb::cast(serialise(pass)));
+  // })
+  // .def("__setstate__", [](BasePass &pass, const nb::tuple &t) {
+  //   const json j = nb::cast<json>(t[0]);
+  //   PassPtr pp = deserialise(j);
+  //   new(&pass) BasePass(pp);
+  // });
   nb::class_<SequencePass, BasePass>(
       m, "SequencePass", "A sequence of compilation passes.")
       .def(
