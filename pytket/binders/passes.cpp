@@ -114,7 +114,7 @@ const PassPtr &DecomposeClassicalExp() {
   // a special box decomposer for Circuits containing ClExprOp
   static const PassPtr pp([]() {
     Transform t = Transform([](Circuit &circ) {
-      nb::module decomposer =
+      nb::module_ decomposer =
           nb::module_::import_("pytket.circuit.decompose_classical");
       const nb::tuple result = decomposer.attr("_decompose_expressions")(circ);
       const bool success = nb::cast<bool>(result[1]);

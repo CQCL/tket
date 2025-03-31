@@ -30,7 +30,7 @@ namespace tket {
 const std::string bit_reg_name = std::string("BitRegister");
 const std::string qubit_reg_name = std::string("QubitRegister");
 template <typename T>
-void declare_register(nb::module &m, const std::string &typestr) {
+void declare_register(nb::module_ &m, const std::string &typestr) {
   nb::class_<UnitRegister<T>>(
       m, typestr.c_str(), "Linear register of UnitID types.")
       .def(

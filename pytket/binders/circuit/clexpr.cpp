@@ -390,7 +390,7 @@ static std::string qasm_expr_repr(
   return ss.str();
 }
 
-void init_clexpr(nb::module &m) {
+void init_clexpr(nb::module_ &m) {
   nb::enum_<ClOp>(m, "ClOp", "A classical operation", nb::arithmetic())
       .value("INVALID", ClOp::INVALID, "Invalid")
       .value("BitAnd", ClOp::BitAnd, "Bitwise AND")

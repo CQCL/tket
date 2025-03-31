@@ -41,9 +41,9 @@ typedef nb::tket_custom::SequenceVec<EdgeType> py_op_signature_t;
 typedef nb::tket_custom::SequenceVec<UnitID> py_unit_vector_t;
 
 void def_circuit(nb::class_<Circuit> &);
-void init_classical(nb::module &m);
-void init_boxes(nb::module &m);
-void init_clexpr(nb::module &m);
+void init_classical(nb::module_ &m);
+void init_boxes(nb::module_ &m);
+void init_clexpr(nb::module_ &m);
 
 NB_MODULE(circuit, m) {
   nb::module_::import_("pytket._tket.unit_id");

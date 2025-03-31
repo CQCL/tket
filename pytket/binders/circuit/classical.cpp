@@ -29,7 +29,7 @@ using json = nlohmann::json;
 
 namespace tket {
 
-void init_classical(nb::module& m) {
+void init_classical(nb::module_& m) {
   nb::class_<Conditional, Op>(
       m, "Conditional",
       "A wrapper for an operation to be applied conditionally on the "

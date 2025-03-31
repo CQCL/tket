@@ -28,7 +28,7 @@ namespace nb = nanobind;
 namespace tket {
 namespace zx {
 
-void init_rewrite(nb::module& m);
+void init_rewrite(nb::module_& m);
 
 class ZXVertWrapper {
   // ZXVert is a void*
@@ -98,10 +98,10 @@ std::pair<Circuit, std::map<ZXVertWrapper, UnitID>> wrapped_zx_to_circuit(
 
 class ZXDiagramPybind {
  public:
-  static void init_zxdiagram(nb::module& m);
+  static void init_zxdiagram(nb::module_& m);
 };
 
-void ZXDiagramPybind::init_zxdiagram(nb::module& m) {
+void ZXDiagramPybind::init_zxdiagram(nb::module_& m) {
   nb::class_<ZXDiagram>(
       m, "ZXDiagram",
       "Undirected graphs for mixed process ZX diagrams. The boundary is an "

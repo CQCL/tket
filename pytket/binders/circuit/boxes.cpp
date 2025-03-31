@@ -144,7 +144,7 @@ std::vector<std::pair<T1, T2>> cast_map_to_vector_of_pairs(
   return result;
 }
 
-void init_boxes(nb::module &m) {
+void init_boxes(nb::module_ &m) {
   nb::class_<CircBox, Op>(
       m, "CircBox",
       "A user-defined operation specified by a :py:class:`Circuit`.")

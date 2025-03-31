@@ -104,17 +104,17 @@ set(HEADER_FILES
         binders/include/UnitRegister.hpp
    )
 
-# nanobind_add_module(circuit
-#     binders/circuit/boxes.cpp
-#     binders/circuit/Circuit/add_classical_op.cpp
-#     binders/circuit/Circuit/add_op.cpp
-#     binders/circuit/Circuit/main.cpp
-#     binders/circuit/classical.cpp
-#     binders/circuit/clexpr.cpp
-#     binders/circuit/main.cpp
-#     ${HEADER_FILES})
-# target_include_directories(circuit PRIVATE binders/include)
-# target_link_libraries(circuit PRIVATE ${lib_deps})
+nanobind_add_module(circuit
+    binders/circuit/boxes.cpp
+    binders/circuit/Circuit/add_classical_op.cpp
+    binders/circuit/Circuit/add_op.cpp
+    binders/circuit/Circuit/main.cpp
+    binders/circuit/classical.cpp
+    binders/circuit/clexpr.cpp
+    binders/circuit/main.cpp
+    ${HEADER_FILES})
+target_include_directories(circuit PRIVATE binders/include)
+target_link_libraries(circuit PRIVATE ${lib_deps})
 
 # nanobind_add_module(circuit_library binders/circuit_library.cpp ${HEADER_FILES})
 # target_include_directories(circuit_library PRIVATE binders/include)
@@ -181,7 +181,7 @@ target_link_libraries(architecture PRIVATE ${lib_deps})
 
 install(TARGETS
     architecture
-    # circuit
+    circuit
     # circuit_library
     # logging
     # mapping

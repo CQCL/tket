@@ -429,7 +429,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
             for (const auto &bit : output_bits) {
               outputs.append(bit);
             }
-            nb::module clexpr = nb::module_::import_("pytket.circuit.clexpr");
+            nb::module_ clexpr = nb::module_::import_("pytket.circuit.clexpr");
             nb::object add_op =
                 clexpr.attr("_add_clexpr_to_circuit_from_logicexp");
             add_op(circ, exp, outputs, **kwargs);

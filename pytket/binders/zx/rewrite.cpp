@@ -21,7 +21,7 @@ namespace nb = nanobind;
 namespace tket {
 namespace zx {
 
-void init_rewrite(nb::module &m) {
+void init_rewrite(nb::module_ &m) {
   nb::class_<Rewrite> rewrite_cls(
       m, "Rewrite", "An in-place transformation of a ZXDiagram.");
   rewrite_cls
