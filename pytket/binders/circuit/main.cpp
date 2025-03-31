@@ -76,9 +76,8 @@ NB_MODULE(circuit, m) {
   // NOTE: Sphinx does not automatically pick up the docstring for OpType
   nb::enum_<OpType>(
       m, "OpType",
-      "Enum for available operations compatible with "
-      "tket " CLSOBJS(Circuit) ".",
-      nb::arithmetic())
+      "Enum for available operations compatible with tket " CLSOBJS(Circuit)
+      ".")
       .value(
           "Phase", OpType::Phase,
           "Global phase: :math:`(\\alpha) \\mapsto \\left[ \\begin{array}{c} "
