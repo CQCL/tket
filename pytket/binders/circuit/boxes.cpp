@@ -251,10 +251,11 @@ void init_boxes(nb::module_ &m) {
       "An operation defined as the exponential of a tensor of Pauli "
       "operations and a (possibly symbolic) phase parameter.")
       .def(
-          nb::init([](const nb::tket_custom::SequenceVec<Pauli> &paulis, Expr t,
-                      CXConfigType config) {
-            return PauliExpBox(SymPauliTensor(paulis, t), config);
-          }),
+          "__init__",
+          [](PauliExpBox *p, const nb::tket_custom::SequenceVec<Pauli> &paulis,
+             Expr t, CXConfigType config) {
+            new (p) PauliExpBox(SymPauliTensor(paulis, t), config);
+          },
           "Construct :math:`e^{-\\frac12 i \\pi t \\sigma_0 \\otimes "
           "\\sigma_1 \\otimes \\cdots}` from Pauli operators "
           ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and a parameter "
@@ -281,14 +282,15 @@ void init_boxes(nb::module_ &m) {
       "reductions found when the Pauli tensors act on a large number of the "
       "same qubits.\nPhase parameters may be symbolic.")
       .def(
-          nb::init([](const nb::tket_custom::SequenceVec<Pauli> &paulis0,
-                      Expr t0,
-                      const nb::tket_custom::SequenceVec<Pauli> &paulis1,
-                      Expr t1, CXConfigType config) {
-            return PauliExpPairBox(
+          "__init__",
+          [](PauliExpPairBox *p,
+             const nb::tket_custom::SequenceVec<Pauli> &paulis0, Expr t0,
+             const nb::tket_custom::SequenceVec<Pauli> &paulis1, Expr t1,
+             CXConfigType config) {
+            new (p) PauliExpPairBox(
                 SymPauliTensor(paulis0, t0), SymPauliTensor(paulis1, t1),
                 config);
-          }),
+          },
           "Construct a pair of Pauli exponentials of the form"
           " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
           "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
@@ -316,16 +318,17 @@ void init_boxes(nb::module_ &m) {
       "tensor of Pauli operations and their (possibly symbolic) phase "
       "parameters.")
       .def(
-          nb::init([](const nb::tket_custom::SequenceVec<
-                          std::pair<nb::tket_custom::SequenceVec<Pauli>, Expr>>
-                          &pauli_gadgets,
-                      CXConfigType config) {
+          "__init__",
+          [](PauliExpCommutingSetBox *p,
+             const nb::tket_custom::SequenceVec<std::pair<
+                 nb::tket_custom::SequenceVec<Pauli>, Expr>> &pauli_gadgets,
+             CXConfigType config) {
             std::vector<SymPauliTensor> gadgets;
             for (const std::pair<nb::tket_custom::SequenceVec<Pauli>, Expr> &g :
                  pauli_gadgets)
               gadgets.push_back(SymPauliTensor(g.first, g.second));
-            return PauliExpCommutingSetBox(gadgets, config);
-          }),
+            new (p) PauliExpCommutingSetBox(gadgets, config);
+          },
           "Construct a set of necessarily commuting Pauli exponentials of the "
           "form"
           " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
@@ -361,21 +364,22 @@ void init_boxes(nb::module_ &m) {
       "change in the unitary operation. Synthesis order "
       "depends on the synthesis strategy chosen only.")
       .def(
-          nb::init([](const nb::tket_custom::SequenceVec<
-                          std::pair<nb::tket_custom::SequenceVec<Pauli>, Expr>>
-                          &pauli_gadgets,
-                      Transforms::PauliSynthStrat synth_strat,
-                      PauliPartitionStrat partition_strat,
-                      GraphColourMethod graph_colouring, CXConfigType cx_config,
-                      double depth_weight) {
+          "__init__",
+          [](TermSequenceBox *p,
+             const nb::tket_custom::SequenceVec<std::pair<
+                 nb::tket_custom::SequenceVec<Pauli>, Expr>> &pauli_gadgets,
+             Transforms::PauliSynthStrat synth_strat,
+             PauliPartitionStrat partition_strat,
+             GraphColourMethod graph_colouring, CXConfigType cx_config,
+             double depth_weight) {
             std::vector<SymPauliTensor> gadgets;
             for (const std::pair<nb::tket_custom::SequenceVec<Pauli>, Expr> &g :
                  pauli_gadgets)
               gadgets.push_back(SymPauliTensor(g.first, g.second));
-            return TermSequenceBox(
+            new (p) TermSequenceBox(
                 gadgets, synth_strat, partition_strat, graph_colouring,
                 cx_config, depth_weight);
-          }),
+          },
           "Construct a set of Pauli exponentials of the "
           "form"
           " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
@@ -436,10 +440,11 @@ void init_boxes(nb::module_ &m) {
       "An operation that constructs a circuit to implement the specified "
       "permutation of classical basis states.")
       .def(
-          nb::init([](const py_state_perm_t &perm, ToffoliBoxSynthStrat strat,
-                      OpType optype) {
-            return ToffoliBox(to_cpp_state_perm_t(perm), strat, optype);
-          }),
+          "__init__",
+          [](ToffoliBox *p, const py_state_perm_t &perm,
+             ToffoliBoxSynthStrat strat, OpType optype) {
+            new (p) ToffoliBox(to_cpp_state_perm_t(perm), strat, optype);
+          },
           "Construct from a permutation of basis states\n\n"
           ":param permutation: a list of bitstring pairs\n"
           ":param strat: synthesis strategy\n"
@@ -449,12 +454,13 @@ void init_boxes(nb::module_ &m) {
           nb::arg("permutation"), nb::arg("strat"),
           nb::arg("rotation_axis") = OpType::Ry)
       .def(
-          nb::init(
-              [](const py_state_perm_t &perm, const OpType &rotation_axis) {
-                return ToffoliBox(
-                    to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching,
-                    rotation_axis);
-              }),
+          "__init__",
+          [](ToffoliBox *p, const py_state_perm_t &perm,
+             const OpType &rotation_axis) {
+            new (p) ToffoliBox(
+                to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching,
+                rotation_axis);
+          },
           "Construct from a permutation of basis states and perform synthesis "
           "using the Matching strategy\n\n"
           ":param permutation: a list of bitstring pairs\n"
@@ -462,26 +468,28 @@ void init_boxes(nb::module_ &m) {
           "the decomposition. Can be either Rx or Ry, default to Ry.",
           nb::arg("permutation"), nb::arg("rotation_axis") = OpType::Ry)
       .def(
-          nb::init([](unsigned n_qubits, const py_state_perm_t &perm,
-                      const OpType &rotation_axis) {
+          "__init__",
+          [](ToffoliBox *p, unsigned n_qubits, const py_state_perm_t &perm,
+             const OpType &rotation_axis) {
             (void)n_qubits;
             PyErr_WarnEx(
                 PyExc_DeprecationWarning,
                 "The argument n_qubits is no longer needed. "
                 "Please create ToffoliBoxes without n_qubits.",
                 1);
-            return ToffoliBox(
+            new (p) ToffoliBox(
                 to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching,
                 rotation_axis);
-          }),
+          },
           "Constructor for backward compatibility. Subject to deprecation.",
           nb::arg("n_qubits"), nb::arg("permutation"),
           nb::arg("rotation_axis") = OpType::Ry)
       .def(
-          nb::init([](const py_state_perm_t2 &perm, ToffoliBoxSynthStrat strat,
-                      OpType optype) {
-            return ToffoliBox(to_cpp_state_perm_t(perm), strat, optype);
-          }),
+          "__init__",
+          [](ToffoliBox *p, const py_state_perm_t2 &perm,
+             ToffoliBoxSynthStrat strat, OpType optype) {
+            new (p) ToffoliBox(to_cpp_state_perm_t(perm), strat, optype);
+          },
           "Construct from a permutation of basis states\n\n"
           ":param permutation: a map between bitstrings\n"
           ":param strat: synthesis strategy\n"
@@ -491,12 +499,13 @@ void init_boxes(nb::module_ &m) {
           nb::arg("permutation"), nb::arg("strat"),
           nb::arg("rotation_axis") = OpType::Ry)
       .def(
-          nb::init(
-              [](const py_state_perm_t2 &perm, const OpType &rotation_axis) {
-                return ToffoliBox(
-                    to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching,
-                    rotation_axis);
-              }),
+          "__init__",
+          [](ToffoliBox *p, const py_state_perm_t2 &perm,
+             const OpType &rotation_axis) {
+            new (p) ToffoliBox(
+                to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching,
+                rotation_axis);
+          },
           "Construct from a permutation of basis states and perform synthesis "
           "using the Matching strategy\n\n"
           ":param permutation: a map between bitstrings\n"
@@ -504,18 +513,19 @@ void init_boxes(nb::module_ &m) {
           "the decomposition. Can be either Rx or Ry, default to Ry.",
           nb::arg("permutation"), nb::arg("rotation_axis") = OpType::Ry)
       .def(
-          nb::init([](unsigned n_qubits, const py_state_perm_t2 &perm,
-                      const OpType &rotation_axis) {
+          "__init__",
+          [](ToffoliBox *p, unsigned n_qubits, const py_state_perm_t2 &perm,
+             const OpType &rotation_axis) {
             (void)n_qubits;
             PyErr_WarnEx(
                 PyExc_DeprecationWarning,
                 "The argument n_qubits is no longer needed. "
                 "Please create ToffoliBoxes without n_qubits.",
                 1);
-            return ToffoliBox(
+            new (p) ToffoliBox(
                 to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching,
                 rotation_axis);
-          }),
+          },
           "Constructor for backward compatibility. Subject to deprecation.",
           nb::arg("n_qubits"), nb::arg("permutation"),
           nb::arg("rotation_axis") = OpType::Ry)
@@ -545,13 +555,14 @@ void init_boxes(nb::module_ &m) {
       "Structure holding a minimum and maximum value of some resource, where "
       "both values are unsigned integers.")
       .def(
-          nb::init([](unsigned min, unsigned max) {
+          "__init__",
+          [](ResourceBounds<unsigned> *p, unsigned min, unsigned max) {
             if (min > max) {
               throw std::invalid_argument(
                   "minimum must be less than or equal to maximum");
             }
-            return ResourceBounds<unsigned>{min, max};
-          }),
+            new (p) ResourceBounds<unsigned>{min, max};
+          },
           "Constructs a ResourceBounds object.\n\n"
           ":param min: minimum value\n"
           ":param max: maximum value\n",
@@ -577,13 +588,11 @@ void init_boxes(nb::module_ &m) {
       "in the (imagined) circuit."
       "\n\nSee :py:meth:`Circuit.get_resources` for how to use this data.")
       .def(
-          nb::init([](std::map<OpType, ResourceBounds<unsigned>> op_type_count,
-                      ResourceBounds<unsigned> gate_depth,
-                      std::map<OpType, ResourceBounds<unsigned>> op_type_depth,
-                      ResourceBounds<unsigned> two_qubit_gate_depth) {
-            return ResourceData{
-                op_type_count, gate_depth, op_type_depth, two_qubit_gate_depth};
-          }),
+          nb::init<
+              const std::map<OpType, ResourceBounds<unsigned>> &,
+              const ResourceBounds<unsigned> &,
+              const std::map<OpType, ResourceBounds<unsigned>> &,
+              const ResourceBounds<unsigned> &>(),
           "Constructs a ResourceData object.\n\n"
           ":param op_type_count: dictionary of counts of selected "
           ":py:class:`OpType`\n"
@@ -649,10 +658,7 @@ void init_boxes(nb::module_ &m) {
       "for a region of a circuit: for example, upper and lower bounds on gate "
       "counts and depth. A circuit containing such a box cannot be executed.")
       .def(
-          nb::init([](unsigned n_qubits, unsigned n_bits,
-                      const ResourceData &resource_data) {
-            return DummyBox(n_qubits, n_bits, resource_data);
-          }),
+          nb::init<unsigned, unsigned, const ResourceData &>(),
           "Construct a new instance from some resource data.",
           nb::arg("n_qubits"), nb::arg("n_bits"), nb::arg("resource_data"))
       .def(
@@ -682,11 +688,12 @@ void init_boxes(nb::module_ &m) {
           nb::arg("op"), nb::arg("n_controls") = 1,
           nb::arg("control_state") = std::vector<bool>())
       .def(
-          nb::init([](Op_ptr &op, unsigned n_controls,
-                      unsigned long long control_state) {
-            return QControlBox(
+          "__init__",
+          [](QControlBox *p, Op_ptr &op, unsigned n_controls,
+             unsigned long long control_state) {
+            new (p) QControlBox(
                 op, n_controls, dec_to_bin(control_state, n_controls));
-          }),
+          },
           "Construct from an :py:class:`Op`, a number of quantum "
           "controls, and the control state expressed as an integer. The "
           "controls occupy the low-index ports of the "
@@ -721,7 +728,7 @@ void init_boxes(nb::module_ &m) {
           [](QControlBox &qcbox) { return qcbox.get_control_state(); },
           ":return: the control state as a bit vector");
 
-  nb::class_<CompositeGateDef, composite_def_ptr_t>(
+  nb::class_<CompositeGateDef>(
       m, "CustomGateDef",
       "A custom unitary gate definition, given as a composition of other "
       "gates")
@@ -755,10 +762,8 @@ void init_boxes(nb::module_ &m) {
       .def(
           "to_dict",
           [](const CompositeGateDef &c) {
-            return nb::object(json(std::make_shared<CompositeGateDef>(c)))
-                .
-
-                cast<nb::dict>();
+            return nb::cast<nb::dict>(
+                nb::object(json(std::make_shared<CompositeGateDef>(c))));
           },
           ":return: a JSON serializable dictionary representation of "
           "the CustomGateDef")
@@ -792,29 +797,32 @@ void init_boxes(nb::module_ &m) {
       "Box encapsulating any Circuit made up of CNOT and RZ as a phase "
       "polynomial + linear transformation")
       .def(
-          nb::init([](unsigned n_qb, const std::map<Qubit, unsigned> &q_ind,
-                      const PyPhasePolynomial &p_p, const MatrixXb &lin_trans) {
+          "__init__",
+          [](PhasePolyBox *p, unsigned n_qb,
+             const std::map<Qubit, unsigned> &q_ind,
+             const PyPhasePolynomial &p_p, const MatrixXb &lin_trans) {
             boost::bimap<Qubit, unsigned> bmap;
             for (const auto &pair : q_ind) {
               bmap.insert({pair.first, pair.second});
             }
-            return PhasePolyBox(n_qb, bmap, to_cpp_phase_poly(p_p), lin_trans);
-          }),
+            new (p) PhasePolyBox(n_qb, bmap, to_cpp_phase_poly(p_p), lin_trans);
+          },
           "\n\nConstruct from the number of qubits, the mapping from "
           "Qubit to index, the phase polynomial (map from bitstring "
           "to phase) and the linear transformation (boolean matrix)",
           nb::arg("n_qubits"), nb::arg("qubit_indices"),
           nb::arg("phase_polynomial"), nb::arg("linear_transformation"))
       .def(
-          nb::init([](unsigned n_qb, const std::map<Qubit, unsigned> &q_ind,
-                      const PyPhasePolynomialAlternate &p_p,
-                      const MatrixXb &lin_trans) {
+          "__init__",
+          [](PhasePolyBox *p, unsigned n_qb,
+             const std::map<Qubit, unsigned> &q_ind,
+             const PyPhasePolynomialAlternate &p_p, const MatrixXb &lin_trans) {
             boost::bimap<Qubit, unsigned> bmap;
             for (const auto &pair : q_ind) {
               bmap.insert({pair.first, pair.second});
             }
-            return PhasePolyBox(n_qb, bmap, to_cpp_phase_poly(p_p), lin_trans);
-          }),
+            new (p) PhasePolyBox(n_qb, bmap, to_cpp_phase_poly(p_p), lin_trans);
+          },
           "Construct from the number of qubits, the mapping from "
           "Qubit to index, the phase polynomial (list of bitstring "
           "phase pairs) and the linear transformation (boolean matrix)\n\n"
@@ -823,7 +831,7 @@ void init_boxes(nb::module_ &m) {
           nb::arg("n_qubits"), nb::arg("qubit_indices"),
           nb::arg("phase_polynomial"), nb::arg("linear_transformation"))
       .def(
-          nb::init([](const Circuit &circ) { return PhasePolyBox(circ); }),
+          nb::init<const Circuit &>(),
           "Construct a PhasePolyBox from a given circuit containing only Rz "
           "and CX gates.",
           nb::arg("circuit"))
@@ -898,8 +906,9 @@ void init_boxes(nb::module_ &m) {
           ":param stabilisers: The list of Pauli stabilisers\n",
           nb::arg("stabilisers"))
       .def(
-          nb::init([](const nb::tket_custom::SequenceVec<std::string>
-                          &pauli_strings) {
+          "__init__",
+          [](StabiliserAssertionBox *p,
+             const nb::tket_custom::SequenceVec<std::string> &pauli_strings) {
             PauliStabiliserVec stabilisers;
             for (auto &raw_string : pauli_strings) {
               std::vector<Pauli> string;
@@ -933,8 +942,8 @@ void init_boxes(nb::module_ &m) {
               }
               stabilisers.emplace_back(string, coeff);
             }
-            return StabiliserAssertionBox(stabilisers);
-          }),
+            new (p) StabiliserAssertionBox(stabilisers);
+          },
           "Construct from a list of Pauli stabilisers.\n\n"
           ":param m: The list of Pauli stabilisers expressed as Python "
           "strings\n",
@@ -954,14 +963,18 @@ void init_boxes(nb::module_ &m) {
       "map from bitstrings to " CLSOBJS(Op)
       "or a list of bitstring-" CLSOBJS(Op) " pairs")
       .def(
-              nb::init([](const py_ctrl_op_map_t_alt & bitstring_op_pairs){
-                  return MultiplexorBox(to_cpp_ctrl_op_map_t(bitstring_op_pairs));}),
+        "__init__",
+        [](MultiplexorBox *p, const py_ctrl_op_map_t_alt & bitstring_op_pairs) {
+          new(p) MultiplexorBox(to_cpp_ctrl_op_map_t(bitstring_op_pairs));
+        },
       "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
       ":param bitstring_to_op_list: List of bitstring-" CLSOBJS(Op) "pairs\n",
       nb::arg("bistring_to_op_list"))
       .def(
-              nb::init([](const py_ctrl_op_map_t & bitstring_op_map){
-                  return MultiplexorBox(to_cpp_ctrl_op_map_t(bitstring_op_map));}),
+          "__init__",
+          [](MultiplexorBox *p, const py_ctrl_op_map_t & bitstring_op_map) {
+            new(p) MultiplexorBox(to_cpp_ctrl_op_map_t(bitstring_op_map));
+          },
           "Construct from a map from bitstrings to " CLSOBJS(Op) "\n\n"
           ":param op_map: Map from bitstrings to " CLSOBJS(Op) "\n",
           nb::arg("op_map"))
@@ -992,23 +1005,28 @@ void init_boxes(nb::module_ &m) {
       "2^k CX gates, and two additional H gates if the rotation axis is X. "
       "k is the number of control qubits.")
       .def(
-              nb::init([](const py_ctrl_op_map_t_alt & bitstring_op_pairs){
-          return MultiplexedRotationBox(to_cpp_ctrl_op_map_t(bitstring_op_pairs));}),
+          "__init__",
+          [](MultiplexedRotationBox *p, const py_ctrl_op_map_t_alt & bitstring_op_pairs) {
+            new(p) MultiplexedRotationBox(to_cpp_ctrl_op_map_t(bitstring_op_pairs));
+          },
           "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
           "All " CLSOBJS(Op) "  must share the same single-qubit rotation type: "
           "Rx, Ry, or Rz.\n\n"
           ":param bitstring_to_op_list: List of bitstring-" CLSOBJS(Op) "pairs\n",
           nb::arg("bistring_to_op_list"))
       .def(
-              nb::init([](const py_ctrl_op_map_t & bitstring_op_map){
-                  return MultiplexedRotationBox(to_cpp_ctrl_op_map_t(bitstring_op_map));}),
+          "__init__",
+          [](MultiplexedRotationBox *p, const py_ctrl_op_map_t & bitstring_op_map) {
+            new(p) MultiplexedRotationBox(to_cpp_ctrl_op_map_t(bitstring_op_map));
+          },
           "Construct from a map from bitstrings to :py:class:`Op` s."
           "All " CLSOBJS(Op) "  must share the same single-qubit rotation type: "
           "Rx, Ry, or Rz.\n\n"
           ":param op_map: Map from bitstrings to " CLSOBJS(Op) "\n",
           nb::arg("op_map"))
       .def(
-          nb::init([](const nb::tket_custom::SequenceVec<double> &angles, const OpType &axis) {
+          "__init__",
+          [](MultiplexedRotationBox *p, const nb::tket_custom::SequenceVec<double> &angles, const OpType &axis) {
             if (angles.size() == 0) {
               throw std::invalid_argument("Angles are empty.");
             }
@@ -1029,8 +1047,8 @@ void init_boxes(nb::module_ &m) {
                 op_map.insert({bits, get_op_ptr(axis, angles[i])});
               }
             }
-            return MultiplexedRotationBox(op_map);
-          }),
+            new(p) MultiplexedRotationBox(op_map)
+          },
           "Construct from a list of angles and the rotation axis.\n\n"
           ":param angles: List of rotation angles in half-turns. angles[i] is "
           "the angle activated by the binary representation of i\n"
@@ -1063,8 +1081,10 @@ void init_boxes(nb::module_ &m) {
       "and a k+1 qubit DiagonalBox at the end. "
       "k is the number of control qubits.")
       .def(
-              nb::init([](const py_ctrl_op_map_t_alt & bitstring_op_pairs, bool impl_diag){
-          return MultiplexedU2Box(to_cpp_ctrl_op_map_t(bitstring_op_pairs), impl_diag);}),
+          "__init__",
+          [](MultiplexedU2Box *p, const py_ctrl_op_map_t_alt & bitstring_op_pairs, bool impl_diag) {
+            new(p) MultiplexedU2Box(to_cpp_ctrl_op_map_t(bitstring_op_pairs), impl_diag);
+          },
       "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
       "Only supports single qubit unitary gate types and "
       ":py:class:`Unitary1qBox`.\n\n"
@@ -1073,8 +1093,10 @@ void init_boxes(nb::module_ &m) {
       "default to True.",
       nb::arg("bistring_to_op_list"), nb::arg("impl_diag") = true)
       .def(
-              nb::init([](const py_ctrl_op_map_t & bitstring_op_map, bool impl_diag){
-                  return MultiplexedU2Box(to_cpp_ctrl_op_map_t(bitstring_op_map), impl_diag);}),
+          "__init__",
+          [](MultiplexedU2Box *p, const py_ctrl_op_map_t & bitstring_op_map, bool impl_diag) {
+            new(p) MultiplexedU2Box(to_cpp_ctrl_op_map_t(bitstring_op_map), impl_diag);
+          },
           "Construct from a map from bitstrings to " CLSOBJS(Op) "."
           "Only supports single qubit unitary gate types and "
           ":py:class:`Unitary1qBox`.\n\n"
@@ -1103,8 +1125,7 @@ void init_boxes(nb::module_ &m) {
           ":return: flag indicating whether to implement the final diagonal "
           "gate.");
 
-  nb::class_<
-      MultiplexedTensoredU2Box, std::shared_ptr<MultiplexedTensoredU2Box>, Op>(
+  nb::class_<MultiplexedTensoredU2Box, Op>(
       m, "MultiplexedTensoredU2Box",
       "A user-defined multiplexed tensor product of U2 gates specified by a "
       "map from bitstrings to lists of " CLSOBJS(Op)
@@ -1117,16 +1138,20 @@ void init_boxes(nb::module_ &m) {
       "The total CX count is at most 2^k(2t+1)-t-2."
       )
       .def(
-              nb::init([](const py_ctrl_tensored_op_map_t_alt & bitstring_op_pairs){
-          return MultiplexedTensoredU2Box(to_cpp_ctrl_op_map_t(bitstring_op_pairs));}),
+          "__init__",
+          [](MultiplexedTensoredU2Box *p, const py_ctrl_tensored_op_map_t_alt & bitstring_op_pairs) {
+            new(p) MultiplexedTensoredU2Box(to_cpp_ctrl_op_map_t(bitstring_op_pairs));
+          },
           "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
           "Only supports single qubit unitary gate types and "
           ":py:class:`Unitary1qBox`.\n\n"
           ":param bitstring_to_op_list: List of bitstring-List of " CLSOBJS(Op) " pairs\n",
           nb::arg("bistring_to_op_list"))
       .def(
-              nb::init([](const py_ctrl_tensored_op_map_t & bitstring_op_map){
-                  return MultiplexedTensoredU2Box(to_cpp_ctrl_op_map_t(bitstring_op_map));}),
+          "__init__",
+          [](MultiplexedTensoredU2Box *p, const py_ctrl_tensored_op_map_t & bitstring_op_map) {
+            new(p) MultiplexedTensoredU2Box(to_cpp_ctrl_op_map_t(bitstring_op_map));
+          },
           "Construct from a map from bitstrings to equal-sized lists of "
           CLSOBJS(Op) ". "
           "Only supports single qubit unitary gate types and "
