@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <nanobind/eigen/dense.h>
+#include <nanobind/make_iterator.h>
 #include <nanobind/nanobind.h>
 #include <nanobind/operators.h>
 // #include <pybind11/stl.h>
