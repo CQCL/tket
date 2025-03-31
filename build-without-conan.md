@@ -51,7 +51,7 @@ cd ${TMP_DIR}
 wget https://github.com/symengine/symengine/archive/refs/tags/v0.14.0.tar.gz
 tar xzvf v0.14.0.tar.gz
 cd symengine-0.14.0/
-sed -i -e 's/cmake_minimum_required(VERSION 2.8.12)/cmake_minimum_required(VERSION 3.5)/g' SymEngineConfig.cmake.in
+sed -i -e 's/cmake_minimum_required(VERSION 2.8.12)/cmake_minimum_required(VERSION 3.5)/g' cmake/SymEngineConfig.cmake.in
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DBUILD_TESTS=OFF -DBUILD_BENCHMARKS=OFF ..
