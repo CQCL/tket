@@ -19,6 +19,7 @@
 // #include <pybind11/functional.h>
 // #include <nanobind/operators.h>
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/list.h>
 // #include <pybind11/pytypes.h>
 // #include <pybind11/stl.h>
 
@@ -86,72 +87,6 @@ struct return_value_policy_override {
 };
 // )))
 
-// This struct is copied from the struct "list_caster" in pybind11/stl.h with
-// some minor customization. It adds the ability to customize the type name
-// (using a handle_type_name<T> struct) and specify the python type that the
-// object is cast to. Changes to the pybind11 code may warrant/require changes
-// here. The struct is used to define custom type casters for the "tket_custom"
-// types.
-template <typename Type, typename Val, typename castToType>
-struct tket_sequence_caster {
-  using value_conv = make_caster<Val>;
-
-  bool from_python(handle src, uint8_t flags, cleanup_list* cleanup) noexcept {
-    if (!isinstance<sequence>(src) || isinstance<bytes>(src) ||
-        isinstance<str>(src)) {
-      return false;
-    }
-    auto s = borrow<sequence>(src);
-    value.clear();
-    reserve_maybe(s, &value);
-    for (auto it : s) {
-      value_conv conv;
-      if (!conv.from_python(it, flags, cleanup)) {
-        return false;
-      }
-      value.push_back(cast_op<Val&&>(std::move(conv)));
-    }
-    return true;
-  }
-
- private:
-  template <
-      typename T = Type,
-      std::enable_if_t<has_reserve_method<T>::value, int> = 0>
-  void reserve_maybe(const sequence& /*s*/, Type*) {
-    // value.reserve(s.size());
-  }
-  void reserve_maybe(const sequence&, void*) {}
-
- public:
-  template <typename T>
-  static handle from_cpp(
-      T&& src, rv_policy policy, cleanup_list* cleanup) noexcept {
-    if (!std::is_lvalue_reference<T>::value) {
-      policy = return_value_policy_override<Val>::policy(policy);
-    }
-    castToType l(src.size());
-    ssize_t index = 0;
-    for (auto&& value : src) {
-      auto value_ = steal<object>(
-          value_conv::cast(detail::forward_like_<T>(value), policy, cleanup));
-      if (!value_) {
-        return handle();
-      }
-      if (std::is_same<castToType, list>::value) {
-        PyList_SET_ITEM(
-            l.ptr(), index++, value_.release().ptr());  // steals a reference
-      } else {
-        static_assert(std::is_same<castToType, nanobind::tuple>::value);
-        PyTuple_SET_ITEM(
-            l.ptr(), index++, value_.release().ptr());  // steals a reference
-      }
-    }
-    return l.release();
-  }
-
-  NB_TYPE_CASTER(Type, handle_type_name<Type>::name);
-};
 template <typename T>
 struct handle_type_name<tket_custom::SequenceVec<T>> {
   static constexpr auto name =
@@ -183,14 +118,13 @@ struct handle_type_name<tket_custom::BitRegisterLogicExpression> {
 };
 template <typename Type>
 struct type_caster<tket_custom::SequenceVec<Type>>
-    : tket_sequence_caster<tket_custom::SequenceVec<Type>, Type, list> {};
+    : list_caster<tket_custom::SequenceVec<Type>, Type> {};
 template <typename Type>
 struct type_caster<tket_custom::SequenceList<Type>>
-    : tket_sequence_caster<tket_custom::SequenceList<Type>, Type, list> {};
+    : list_caster<tket_custom::SequenceList<Type>, Type> {};
 template <typename Type>
 struct type_caster<tket_custom::TupleVec<Type>>
-    : tket_sequence_caster<tket_custom::TupleVec<Type>, Type, nanobind::tuple> {
-};
+    : list_caster<tket_custom::TupleVec<Type>, Type> {};
 template <>
 struct type_caster<SymEngine::Expression> {
  public:
