@@ -57,8 +57,7 @@ UnitID to_cpp_unitid(const PyUnitID &py_unitid) {
 }
 
 void init_circuit_add_op(nb::class_<Circuit> &c);
-void init_circuit_add_classical_op(
-    nb::class_<Circuit> &c);
+void init_circuit_add_classical_op(nb::class_<Circuit> &c);
 
 void def_circuit(nb::class_<Circuit> &pyCircuit) {
   init_circuit_add_op(pyCircuit);
@@ -114,7 +113,8 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
       .def(
           "__iter__",
           [](const Circuit &circ) {
-            return nb::make_iterator(circ.begin(), circ.end());
+            return nb::make_iterator(
+                nb::type<Circuit>(), "iterator", circ.begin(), circ.end());
           },
           "Iterate through the circuit, a Command at a time.",
           nb::keep_alive<

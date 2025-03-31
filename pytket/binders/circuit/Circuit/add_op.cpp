@@ -169,7 +169,8 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "\n:param kwargs: Additional properties for classical "
           "conditions"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("type"), nb::arg("angles"), nb::arg("args"), nb::arg("kwargs"))
+          nb::arg("type"), nb::arg("angles"), nb::arg("args"),
+          nb::arg("kwargs"))
       .def(
           "add_gate", &add_gate_method_manyparams<UnitID>,
           "Appends a single gate to the end of the circuit"
@@ -179,7 +180,8 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "\n:param kwargs: Additional properties for classical "
           "conditions"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("type"), nb::arg("angles"), nb::arg("args"), nb::arg("kwargs"))
+          nb::arg("type"), nb::arg("angles"), nb::arg("args"),
+          nb::arg("kwargs"))
       .def(
           "add_barrier",
           [](Circuit *circ,
