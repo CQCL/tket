@@ -1047,7 +1047,7 @@ void init_boxes(nb::module_ &m) {
                 op_map.insert({bits, get_op_ptr(axis, angles[i])});
               }
             }
-            new(p) MultiplexedRotationBox(op_map)
+            new(p) MultiplexedRotationBox(op_map);
           },
           "Construct from a list of angles and the rotation axis.\n\n"
           ":param angles: List of rotation angles in half-turns. angles[i] is "

@@ -57,7 +57,7 @@ UnitID to_cpp_unitid(const PyUnitID &py_unitid) {
 
 void init_circuit_add_op(nb::class_<Circuit> &c);
 void init_circuit_add_classical_op(
-    nb::class_<Circuit, std::shared_ptr<Circuit>> &c);
+    nb::class_<Circuit> &c);
 
 void def_circuit(nb::class_<Circuit> &pyCircuit) {
   init_circuit_add_op(pyCircuit);
