@@ -234,7 +234,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "\n:param args: Indices of the (default-register) qubits/bits to "
           "append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("circbox"), nb::arg("args"))
+          nb::arg("circbox"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_unitary1qbox",
           [](Circuit *circ, const Unitary1qBox &box, unsigned q0,
@@ -247,7 +247,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "unitarybox: The box to append\n:param qubit_0: Index of "
           "the qubit to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("unitarybox"), nb::arg("qubit_0"))
+          nb::arg("unitarybox"), nb::arg("qubit_0"), nb::arg("kwargs"))
       .def(
           "add_unitary2qbox",
           [](Circuit *circ, const Unitary2qBox &box, unsigned q0, unsigned q1,
@@ -261,7 +261,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "target "
           "qubit\n:param qubit_1: Index of the second target qubit"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("unitarybox"), nb::arg("qubit_0"), nb::arg("qubit_1"))
+          nb::arg("unitarybox"), nb::arg("qubit_0"), nb::arg("qubit_1"), nb::arg("kwargs"))
       .def(
           "add_unitary3qbox",
           [](Circuit *circ, const Unitary3qBox &box, unsigned q0, unsigned q1,
@@ -277,7 +277,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "\n:param qubit_2: index of target qubit 2"
           "\n:return: the new :py:class:`Circuit`",
           nb::arg("unitarybox"), nb::arg("qubit_0"), nb::arg("qubit_1"),
-          nb::arg("qubit_2"))
+          nb::arg("qubit_2"), nb::arg("kwargs"))
       .def(
           "add_expbox",
           [](Circuit *circ, const ExpBox &box, unsigned q0, unsigned q1,
@@ -290,7 +290,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "box to append\n:param qubit_0: Index of the first target "
           "qubit\n:param qubit_1: Index of the second target qubit"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("expbox"), nb::arg("qubit_0"), nb::arg("qubit_1"))
+          nb::arg("expbox"), nb::arg("qubit_0"), nb::arg("qubit_1"), nb::arg("kwargs"))
       .def(
           "add_pauliexpbox",
           [](Circuit *circ, const PauliExpBox &box,
@@ -303,7 +303,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "circuit.\n\n:param pauliexpbox: The box to append\n:param "
           "qubits: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("pauliexpbox"), nb::arg("qubits"))
+          nb::arg("pauliexpbox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_pauliexppairbox",
           [](Circuit *circ, const PauliExpPairBox &box,
@@ -316,7 +316,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "circuit.\n\n:param pauliexppairbox: The box to append\n:param "
           "qubits: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("pauliexppairbox"), nb::arg("qubits"))
+          nb::arg("pauliexppairbox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_pauliexpcommutingsetbox",
           [](Circuit *circ, const PauliExpCommutingSetBox &box,
@@ -331,7 +331,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "append\n:param "
           "qubits: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("pauliexpcommutingsetbox"), nb::arg("qubits"))
+          nb::arg("pauliexpcommutingsetbox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_termsequencebox",
           [](Circuit *circ, const TermSequenceBox &box,
@@ -345,7 +345,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "append\n:param "
           "qubits: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("termsequencebox"), nb::arg("qubits"))
+          nb::arg("termsequencebox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_toffolibox",
           [](Circuit *circ, const ToffoliBox &box,
@@ -358,7 +358,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "circuit.\n\n:param toffolibox: The box to append\n:param "
           "qubits: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("toffolibox"), nb::arg("qubits"))
+          nb::arg("toffolibox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_dummybox",
           [](Circuit *circ, const DummyBox &box,
@@ -382,7 +382,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "\n:param bits: Indices of the bits (in the default register) to "
           "append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("dummybox"), nb::arg("qubits"), nb::arg("bits"))
+          nb::arg("dummybox"), nb::arg("qubits"), nb::arg("bits"), nb::arg("kwargs"))
       .def(
           "add_qcontrolbox",
           [](Circuit *circ, const QControlBox &box,
@@ -395,7 +395,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param qcontrolbox: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("qcontrolbox"), nb::arg("args"))
+          nb::arg("qcontrolbox"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_phasepolybox",
           [](Circuit *circ, const PhasePolyBox &box,
@@ -408,7 +408,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "circuit.\n\n:param phasepolybox: The box to append\n:param "
           "qubits: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("phasepolybox"), nb::arg("qubits"))
+          nb::arg("phasepolybox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_clexpr",
           [](Circuit *circ, const WiredClExpr &expr,
@@ -421,7 +421,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param expr: The expression to append\n"
           ":param args: The bits to apply the expression to\n"
           ":return: the new :py:class:`Circuit`",
-          nb::arg("expr"), nb::arg("args"))
+          nb::arg("expr"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_clexpr_from_logicexp",
           [](Circuit *circ, const nb::tket_custom::LogicExpression &exp,
@@ -450,7 +450,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param exp: logical expression\n"
           ":param output_bits: list of bits in output\n"
           ":return: the updated circuit",
-          nb::arg("exp"), nb::arg("output_bits"))
+          nb::arg("exp"), nb::arg("output_bits"), nb::arg("kwargs"))
       .def(
           "add_custom_gate",
           [](Circuit *circ, const composite_def_ptr_t &definition,
@@ -467,7 +467,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "instantiate the gate with, in halfturns\n:param qubits: "
           "Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("definition"), nb::arg("params"), nb::arg("qubits"))
+          nb::arg("definition"), nb::arg("params"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_barrier",
           [](Circuit *circ, const py_unit_vector_t &units,
@@ -513,7 +513,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "\n\n:param circbox: The box to append"
           "\n:param args: The qubits/bits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("circbox"), nb::arg("args"))
+          nb::arg("circbox"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_circbox_regwise",
           [](Circuit *circ, const CircBox &box, const py_qreg_vector_t &qregs,
@@ -547,7 +547,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "lexicographic order of corresponding registers in the "
           ":py:class:`CircBox`"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("circbox"), nb::arg("qregs"), nb::arg("cregs"))
+          nb::arg("circbox"), nb::arg("qregs"), nb::arg("cregs"), nb::arg("kwargs"))
       .def(
           "add_circbox_with_regmap",
           [](Circuit *circ, const CircBox &box,
@@ -648,7 +648,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":py:class:`CircBox` (the map's keys) matches which register in the "
           "outer circuit (the map's values)"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("circbox"), nb::arg("qregmap"), nb::arg("cregmap"))
+          nb::arg("circbox"), nb::arg("qregmap"), nb::arg("cregmap"), nb::arg("kwargs"))
       .def(
           "add_unitary1qbox",
           [](Circuit *circ, const Unitary1qBox &box, const Qubit &q0,
@@ -660,7 +660,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "circuit.\n\n:param unitarybox: The box to append\n:param "
           "qubit_0: The qubit to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("unitarybox"), nb::arg("qubit_0"))
+          nb::arg("unitarybox"), nb::arg("qubit_0"), nb::arg("kwargs"))
       .def(
           "add_unitary2qbox",
           [](Circuit *circ, const Unitary2qBox &box, const Qubit &q0,
@@ -673,7 +673,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "The box to append\n:param qubit_0: The first target "
           "qubit\n:param qubit_1: The second target qubit"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("unitarybox"), nb::arg("qubit_0"), nb::arg("qubit_1"))
+          nb::arg("unitarybox"), nb::arg("qubit_0"), nb::arg("qubit_1"), nb::arg("kwargs"))
       .def(
           "add_unitary3qbox",
           [](Circuit *circ, const Unitary3qBox &box, const Qubit &q0,
@@ -689,7 +689,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "\n:param qubit_2: index of target qubit 2"
           "\n:return: the new :py:class:`Circuit`",
           nb::arg("unitarybox"), nb::arg("qubit_0"), nb::arg("qubit_1"),
-          nb::arg("qubit_2"))
+          nb::arg("qubit_2"), nb::arg("kwargs"))
       .def(
           "add_expbox",
           [](Circuit *circ, const ExpBox &box, const Qubit &q0, const Qubit &q1,
@@ -702,7 +702,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "box to append\n:param qubit_0: The first target "
           "qubit\n:param qubit_1: The second target qubit"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("expbox"), nb::arg("qubit_0"), nb::arg("qubit_1"))
+          nb::arg("expbox"), nb::arg("qubit_0"), nb::arg("qubit_1"), nb::arg("kwargs"))
       .def(
           "add_pauliexpbox",
           [](Circuit *circ, const PauliExpBox &box,
@@ -715,7 +715,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "circuit.\n\n:param pauliexpbox: The box to append\n:param "
           "qubits: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("pauliexpbox"), nb::arg("qubits"))
+          nb::arg("pauliexpbox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_pauliexppairbox",
           [](Circuit *circ, const PauliExpPairBox &box,
@@ -728,7 +728,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "circuit.\n\n:param pauliexppairbox: The box to append\n:param "
           "qubits: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("pauliexppairbox"), nb::arg("qubits"))
+          nb::arg("pauliexppairbox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_pauliexpcommutingsetbox",
           [](Circuit *circ, const PauliExpCommutingSetBox &box,
@@ -742,7 +742,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "append\n:param "
           "qubits: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("pauliexpcommutingsetbox"), nb::arg("qubits"))
+          nb::arg("pauliexpcommutingsetbox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_termsequencebox",
           [](Circuit *circ, const TermSequenceBox &box,
@@ -756,7 +756,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "append\n:param "
           "qubits: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("termsequencebox"), nb::arg("qubits"))
+          nb::arg("termsequencebox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_toffolibox",
           [](Circuit *circ, const ToffoliBox &box,
@@ -769,7 +769,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "circuit.\n\n:param toffolibox: The box to append\n:param "
           "qubits: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("toffolibox"), nb::arg("qubits"))
+          nb::arg("toffolibox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_dummybox",
           [](Circuit *circ, const DummyBox &box,
@@ -785,7 +785,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "\n:param qubits: Qubits to append the box to"
           "\n:param bits: Bits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("dummybox"), nb::arg("qubits"), nb::arg("bits"))
+          nb::arg("dummybox"), nb::arg("qubits"), nb::arg("bits"), nb::arg("kwargs"))
       .def(
           "add_qcontrolbox",
           [](Circuit *circ, const QControlBox &box,
@@ -797,7 +797,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param qcontrolbox: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("qcontrolbox"), nb::arg("args"))
+          nb::arg("qcontrolbox"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_phasepolybox",
           [](Circuit *circ, const PhasePolyBox &box,
@@ -810,7 +810,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "circuit.\n\n:param phasepolybox: The box to append\n:param "
           "qubits: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("phasepolybox"), nb::arg("qubits"))
+          nb::arg("phasepolybox"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_custom_gate",
           [](Circuit *circ, const composite_def_ptr_t &definition,
@@ -826,7 +826,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "instantiate the gate with, in halfturns\n:param qubits: "
           "The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("definition"), nb::arg("params"), nb::arg("qubits"))
+          nb::arg("definition"), nb::arg("params"), nb::arg("qubits"), nb::arg("kwargs"))
       .def(
           "add_assertion",
           [](Circuit *circ, const ProjectorAssertionBox &box,
@@ -923,7 +923,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("box"), nb::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_multiplexor",
           [](Circuit *circ, const MultiplexorBox &box,
@@ -936,7 +936,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param box: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("box"), nb::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_multiplexedrotation",
           [](Circuit *circ, const MultiplexedRotationBox &box,
@@ -949,7 +949,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("box"), nb::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_multiplexedrotation",
           [](Circuit *circ, const MultiplexedRotationBox &box,
@@ -963,7 +963,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param box: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("box"), nb::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_multiplexedu2",
           [](Circuit *circ, const MultiplexedU2Box &box,
@@ -975,7 +975,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("box"), nb::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_multiplexedu2",
           [](Circuit *circ, const MultiplexedU2Box &box,
@@ -988,7 +988,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param box: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("box"), nb::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_multiplexed_tensored_u2",
           [](Circuit *circ, const MultiplexedTensoredU2Box &box,
@@ -1001,7 +1001,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("box"), nb::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_multiplexed_tensored_u2",
           [](Circuit *circ, const MultiplexedTensoredU2Box &box,
@@ -1015,7 +1015,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param box: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("box"), nb::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_state_preparation_box",
           [](Circuit *circ, const StatePreparationBox &box,
@@ -1027,7 +1027,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("box"), nb::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_state_preparation_box",
           [](Circuit *circ, const StatePreparationBox &box,
@@ -1040,7 +1040,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param box: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("box"), nb::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_diagonal_box",
           [](Circuit *circ, const DiagonalBox &box,
@@ -1052,7 +1052,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("box"), nb::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_diagonal_box",
           [](Circuit *circ, const DiagonalBox &box,
@@ -1065,7 +1065,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param box: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("box"), nb::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_conjugation_box",
           [](Circuit *circ, const ConjugationBox &box,
@@ -1077,7 +1077,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("box"), nb::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_conjugation_box",
           [](Circuit *circ, const ConjugationBox &box,
@@ -1090,7 +1090,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           ":param box: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          nb::arg("box"), nb::arg("args"))
+          nb::arg("box"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "H",
           [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
@@ -1099,7 +1099,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a Hadamard gate."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "X",
           [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
@@ -1107,7 +1107,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
                 circ, OpType::X, {qb}, kwargs);
           },
           "Appends an X gate.", "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Y",
           [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
@@ -1115,7 +1115,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
                 circ, OpType::Y, {qb}, kwargs);
           },
           "Appends a Y gate.", "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Z",
           [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
@@ -1123,7 +1123,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
                 circ, OpType::Z, {qb}, kwargs);
           },
           "Appends a Z gate.", "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "T",
           [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
@@ -1132,7 +1132,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a T gate (equivalent to U1(0.25,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Tdg",
           [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
@@ -1141,7 +1141,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a T-dagger gate (equivalent to U1(-0.25,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "S",
           [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
@@ -1150,7 +1150,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends an S gate (equivalent to U1(0.5,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Sdg",
           [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
@@ -1159,7 +1159,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends an S-dagger gate (equivalent to U1(-0.5,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "V",
           [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
@@ -1168,7 +1168,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a V gate (equivalent to Rx(0.5,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Vdg",
           [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
@@ -1177,7 +1177,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a V-dagger gate (equivalent to Rx(-0.5,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "SX",
           [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
@@ -1187,7 +1187,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a SX gate (equivalent to Rx(0.5,-)"
           " up to a 0.25 global phase)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "SXdg",
           [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
@@ -1197,7 +1197,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a SXdg gate (equivalent to Rx(-0.5,-)"
           " up to a -0.25 global phase)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Measure",
           [](Circuit *circ, unsigned qb, unsigned b, const nb::kwargs &kwargs) {
@@ -1207,7 +1207,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a single-qubit measurement in the computational "
           "(Z) basis."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"), nb::arg("bit_index"))
+          nb::arg("qubit"), nb::arg("bit_index"), nb::arg("kwargs"))
       .def(
           "Reset",
           [](Circuit *circ, unsigned qb, const nb::kwargs &kwargs) {
@@ -1217,7 +1217,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a Reset operation. Sets a qubit to the Z-basis 0 state. "
           "Non-unitary operation."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Rz",
           [](Circuit *circ, const Expr &angle, unsigned qb,
@@ -1228,7 +1228,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends an Rz gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Rx",
           [](Circuit *circ, const Expr &angle, unsigned qb,
@@ -1239,7 +1239,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends an Rx gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Ry",
           [](Circuit *circ, const Expr &angle, unsigned qb,
@@ -1250,7 +1250,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends an Ry gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "U1",
           [](Circuit *circ, const Expr &angle, unsigned qb,
@@ -1261,7 +1261,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a U1 gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "U2",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -1272,7 +1272,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a U2 gate with possibly symbolic angles "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "U3",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -1284,7 +1284,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
           nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "GPI",
           [](Circuit *circ, const Expr &angle, unsigned qb,
@@ -1295,7 +1295,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a GPI gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "GPI2",
           [](Circuit *circ, const Expr &angle, unsigned qb,
@@ -1306,7 +1306,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a GPI2 gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "AAMS",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -1320,7 +1320,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
           nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
-          nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "TK1",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -1332,7 +1332,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
           nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "TK2",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -1346,7 +1346,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
           nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
-          nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "CX",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
@@ -1357,7 +1357,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CX gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CY",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
@@ -1368,7 +1368,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CY gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CZ",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
@@ -1379,7 +1379,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CZ gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CH",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
@@ -1390,7 +1390,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CH gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CV",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
@@ -1401,7 +1401,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CV gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CVdg",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
@@ -1412,7 +1412,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CVdg gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CSX",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
@@ -1423,7 +1423,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CSX gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CSXdg",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
@@ -1434,7 +1434,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CSXdg gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CS",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
@@ -1445,7 +1445,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CS gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CSdg",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
@@ -1456,7 +1456,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CSdg gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CRz",
           [](Circuit *circ, const Expr &angle, unsigned ctrl, unsigned trgt,
@@ -1468,7 +1468,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CRx",
           [](Circuit *circ, const Expr &angle, unsigned ctrl, unsigned trgt,
@@ -1480,7 +1480,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CRy",
           [](Circuit *circ, const Expr &angle, unsigned ctrl, unsigned trgt,
@@ -1492,7 +1492,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CU1",
           [](Circuit *circ, const Expr &angle, unsigned ctrl, unsigned trgt,
@@ -1504,7 +1504,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CU3",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -1519,7 +1519,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "ZZPhase",
           [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
@@ -1530,7 +1530,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a ZZ gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "ZZMax",
           [](Circuit *circ, unsigned qb0, unsigned qb1,
@@ -1540,7 +1540,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a ZZMax gate on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "ESWAP",
           [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
@@ -1551,7 +1551,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends an ESWAP gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "FSim",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -1563,7 +1563,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit0"),
-          nb::arg("qubit1"))
+          nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "Sycamore",
           [](Circuit *circ, unsigned qubit0, unsigned qubit1,
@@ -1573,7 +1573,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a Sycamore gate on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "XXPhase",
           [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
@@ -1584,7 +1584,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a XX gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "YYPhase",
           [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
@@ -1595,7 +1595,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a YY gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "XXPhase3",
           [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
@@ -1608,7 +1608,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "half-turns) on the wires for the specified three qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"),
-          nb::arg("qubit2"))
+          nb::arg("qubit2"), nb::arg("kwargs"))
       .def(
           "PhasedX",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1, unsigned qb,
@@ -1619,7 +1619,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a PhasedX gate with possibly symbolic angles (specified in "
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "CCX",
           [](Circuit *circ, unsigned ctrl1, unsigned ctrl2, unsigned trgt,
@@ -1630,7 +1630,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CCX gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_0"), nb::arg("control_1"), nb::arg("target"))
+          nb::arg("control_0"), nb::arg("control_1"), nb::arg("target"), nb::arg("kwargs"))
       .def(
           "ECR",
           [](Circuit *circ, unsigned qb0, unsigned qb1,
@@ -1640,7 +1640,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends an ECR gate on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit_0"), nb::arg("qubit_1"))
+          nb::arg("qubit_0"), nb::arg("qubit_1"), nb::arg("kwargs"))
       .def(
           "SWAP",
           [](Circuit *circ, unsigned qb0, unsigned qb1,
@@ -1650,7 +1650,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a SWAP gate on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit_0"), nb::arg("qubit_1"))
+          nb::arg("qubit_0"), nb::arg("qubit_1"), nb::arg("kwargs"))
       .def(
           "CSWAP",
           [](Circuit *circ, unsigned ctrl, unsigned trgt0, unsigned trgt1,
@@ -1661,7 +1661,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CSWAP gate on the wires for the specified "
           "control and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control"), nb::arg("target_0"), nb::arg("target_1"))
+          nb::arg("control"), nb::arg("target_0"), nb::arg("target_1"), nb::arg("kwargs"))
       .def(
           "ISWAP",
           [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
@@ -1672,7 +1672,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends an ISWAP gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "ISWAPMax",
           [](Circuit *circ, unsigned qb0, unsigned qb1,
@@ -1682,7 +1682,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends an ISWAPMax gate on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "PhasedISWAP",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -1696,7 +1696,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit0"),
-          nb::arg("qubit1"))
+          nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "measure_all",
           [](Circuit *circ) {
@@ -1754,7 +1754,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a Hadamard gate."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "X",
           [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
@@ -1763,7 +1763,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends an X gate."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Y",
           [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
@@ -1772,7 +1772,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a Y gate."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Z",
           [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
@@ -1781,7 +1781,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a Z gate."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "T",
           [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
@@ -1790,7 +1790,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a T gate (equivalent to Rz(0.25,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Tdg",
           [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
@@ -1799,7 +1799,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a T-dagger gate (equivalent to Rz(-0.25,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "S",
           [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
@@ -1808,7 +1808,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends an S gate (equivalent to Rz(0.5,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Sdg",
           [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
@@ -1817,7 +1817,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends an S-dagger gate (equivalent to Rz(-0.5,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "V",
           [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
@@ -1826,7 +1826,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a V gate (equivalent to Rx(0.5,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Vdg",
           [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
@@ -1835,7 +1835,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a V-dagger gate (equivalent to Rx(-0.5,-))."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "SX",
           [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
@@ -1845,7 +1845,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a SX gate (equivalent to Rx(0.5,-)"
           " up to a 0.25 global phase)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "SXdg",
           [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
@@ -1855,7 +1855,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a SXdg gate (equivalent to Rx(-0.5,-)"
           " up to a -0.25 global phase)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Measure",
           [](Circuit *circ, const Qubit &qb, const Bit &b,
@@ -1866,7 +1866,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a single-qubit measurement in the computational "
           "(Z) basis."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"), nb::arg("bit"))
+          nb::arg("qubit"), nb::arg("bit"), nb::arg("kwargs"))
       .def(
           "Reset",
           [](Circuit *circ, const Qubit &qb, const nb::kwargs &kwargs) {
@@ -1876,7 +1876,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a Reset operation. Sets a qubit to the Z-basis 0 state. "
           "Non-unitary operation."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Rz",
           [](Circuit *circ, const Expr &angle, const Qubit &qb,
@@ -1887,7 +1887,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends an Rz gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Rx",
           [](Circuit *circ, const Expr &angle, const Qubit &qb,
@@ -1898,7 +1898,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends an Rx gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "Ry",
           [](Circuit *circ, const Expr &angle, const Qubit &qb,
@@ -1909,7 +1909,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends an Ry gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "U1",
           [](Circuit *circ, const Expr &angle, const Qubit &qb,
@@ -1920,7 +1920,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a U1 gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "U2",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -1931,7 +1931,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a U2 gate with possibly symbolic angles "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "U3",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -1943,7 +1943,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
           nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "GPI",
           [](Circuit *circ, const Expr &angle, const Qubit &qb,
@@ -1954,7 +1954,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a GPI gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "GPI2",
           [](Circuit *circ, const Expr &angle, const Qubit &qb,
@@ -1965,7 +1965,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a GPI2 gate with a possibly symbolic angle "
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit"))
+          nb::arg("angle"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "AAMS",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -1979,7 +1979,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
           nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
-          nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "TK1",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -1991,7 +1991,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
           nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
-          nb::arg("qubit"))
+          nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "TK2",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -2005,7 +2005,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
           nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
-          nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "CX",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
@@ -2016,7 +2016,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CX gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CY",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
@@ -2027,7 +2027,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CY gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CZ",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
@@ -2038,7 +2038,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CZ gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CH",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
@@ -2049,7 +2049,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CH gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CV",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
@@ -2060,7 +2060,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CV gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CVdg",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
@@ -2071,7 +2071,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CVdg gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CSX",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
@@ -2082,7 +2082,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CSX gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CSXdg",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
@@ -2093,7 +2093,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CSXdg gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CS",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
@@ -2104,7 +2104,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CS gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CSdg",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
@@ -2115,7 +2115,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CSdg gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CRz",
           [](Circuit *circ, const Expr &angle, const Qubit &ctrl,
@@ -2127,7 +2127,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CRx",
           [](Circuit *circ, const Expr &angle, const Qubit &ctrl,
@@ -2139,7 +2139,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CRy",
           [](Circuit *circ, const Expr &angle, const Qubit &ctrl,
@@ -2151,7 +2151,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CU1",
           [](Circuit *circ, const Expr &angle, const Qubit &ctrl,
@@ -2163,7 +2163,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("angle"), nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
       .def(
           "CU3",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -2178,7 +2178,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           nb::arg("angle0"), nb::arg("angle1"), nb::arg("angle2"),
-          nb::arg("control_qubit"), nb::arg("target_qubit"))
+          nb::arg("control_qubit"), nb::arg("target_qubit"), nb::arg("kwargs"))
 
       .def(
           "ZZPhase",
@@ -2190,7 +2190,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a ZZ gate with a symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "ZZMax",
           [](Circuit *circ, const Qubit &qb0, const Qubit &qb1,
@@ -2200,7 +2200,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a ZZMax gate on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "ESWAP",
           [](Circuit *circ, const Expr &angle, const Qubit &qb0,
@@ -2211,7 +2211,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends an ESWAP gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "FSim",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -2223,7 +2223,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit0"),
-          nb::arg("qubit1"))
+          nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "Sycamore",
           [](Circuit *circ, const Qubit &qubit0, const Qubit &qubit1,
@@ -2233,7 +2233,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a Sycamore gate on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "XXPhase",
           [](Circuit *circ, const Expr &angle, const Qubit &qb0,
@@ -2244,7 +2244,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a XX gate with a symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("angle"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("angle"), nb::arg("kwargs"))
       .def(
           "YYPhase",
           [](Circuit *circ, const Expr &angle, const Qubit &qb0,
@@ -2255,7 +2255,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a YY gate with a symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("angle"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("angle"), nb::arg("kwargs"))
       .def(
           "XXPhase3",
           [](Circuit *circ, const Expr &angle, const Qubit &qb0,
@@ -2267,7 +2267,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "half-turns) on the wires for the specified three qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"),
-          nb::arg("qubit2"))
+          nb::arg("qubit2"), nb::arg("kwargs"))
       .def(
           "PhasedX",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -2278,7 +2278,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a PhasedX gate with possibly symbolic angles (specified in "
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit"))
+          nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit"), nb::arg("kwargs"))
       .def(
           "CCX",
           [](Circuit *circ, const Qubit &ctrl1, const Qubit &ctrl2,
@@ -2289,7 +2289,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CCX gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control_0"), nb::arg("control_1"), nb::arg("target"))
+          nb::arg("control_0"), nb::arg("control_1"), nb::arg("target"), nb::arg("kwargs"))
       .def(
           "ECR",
           [](Circuit *circ, const Qubit &qb1, const Qubit &qb2,
@@ -2299,7 +2299,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends an ECR gate on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit_0"), nb::arg("qubit_1"))
+          nb::arg("qubit_0"), nb::arg("qubit_1"), nb::arg("kwargs"))
       .def(
           "SWAP",
           [](Circuit *circ, const Qubit &qb1, const Qubit &qb2,
@@ -2309,7 +2309,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends a SWAP gate on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit_0"), nb::arg("qubit_1"))
+          nb::arg("qubit_0"), nb::arg("qubit_1"), nb::arg("kwargs"))
       .def(
           "CSWAP",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt1,
@@ -2320,7 +2320,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends a CSWAP gate on the wires for the specified "
           "control and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("control"), nb::arg("target_0"), nb::arg("target_1"))
+          nb::arg("control"), nb::arg("target_0"), nb::arg("target_1"), nb::arg("kwargs"))
       .def(
           "ISWAP",
           [](Circuit *circ, const Expr &angle, const Qubit &qb0,
@@ -2331,7 +2331,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "Appends an ISWAP gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("angle"), nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "ISWAPMax",
           [](Circuit *circ, const Qubit &qb0, const Qubit &qb1,
@@ -2341,7 +2341,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           },
           "Appends an ISWAPMax gate on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          nb::arg("qubit0"), nb::arg("qubit1"))
+          nb::arg("qubit0"), nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "PhasedISWAP",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -2355,7 +2355,7 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           nb::arg("angle0"), nb::arg("angle1"), nb::arg("qubit0"),
-          nb::arg("qubit1"))
+          nb::arg("qubit1"), nb::arg("kwargs"))
       .def(
           "Phase",
           [](Circuit *circ, const Expr &angle, const nb::kwargs &kwargs) {
