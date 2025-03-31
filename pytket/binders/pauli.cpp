@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <nanobind/stl/complex.h>
 #include <nanobind/eigen/dense.h>
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/complex.h>
 // #include <pybind11/stl.h>
 
 #include "binder_json.hpp"

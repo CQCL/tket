@@ -422,8 +422,7 @@ void init_clexpr(nb::module &m) {
       .value("RegRsh", ClOp::RegRsh, "Right shift")
       .value("RegNeg", ClOp::RegNeg, "Integer negation");
 
-  nb::class_<ClBitVar>(
-      m, "ClBitVar", "A bit variable within an expression")
+  nb::class_<ClBitVar>(m, "ClBitVar", "A bit variable within an expression")
       .def(
           nb::init<unsigned>(),
           "Construct from an integer identifier.\n\n"
@@ -476,8 +475,7 @@ void init_clexpr(nb::module &m) {
           "index", [](const ClRegVar &var) { return var.index; },
           "integer identifier for the variable");
 
-  nb::class_<ClExpr>(
-      m, "ClExpr", "A classical expression")
+  nb::class_<ClExpr>(m, "ClExpr", "A classical expression")
       .def(
           nb::init<ClOp, std::vector<ClExprArg>>(),
           "Construct from an operation type and a list of arguments.\n\n"
@@ -540,10 +538,8 @@ void init_clexpr(nb::module &m) {
           })
       .def("__hash__", &deletedHash<WiredClExpr>, deletedHashDocstring)
       .def_prop_ro("expr", &WiredClExpr::get_expr, "expression")
-      .def_prop_ro(
-          "bit_posn", &WiredClExpr::get_bit_posn, "bit positions")
-      .def_prop_ro(
-          "reg_posn", &WiredClExpr::get_reg_posn, "register positions")
+      .def_prop_ro("bit_posn", &WiredClExpr::get_bit_posn, "bit positions")
+      .def_prop_ro("reg_posn", &WiredClExpr::get_reg_posn, "register positions")
       .def_prop_ro(
           "output_posn", &WiredClExpr::get_output_posn, "output positions")
       .def(
@@ -565,8 +561,7 @@ void init_clexpr(nb::module &m) {
           nb::init<WiredClExpr>(),
           "Construct from a wired classical expression")
       .def_prop_ro("type", &ClExprOp::get_type, "operation type")
-      .def_prop_ro(
-          "expr", &ClExprOp::get_wired_expr, "wired expression");
+      .def_prop_ro("expr", &ClExprOp::get_wired_expr, "wired expression");
 }
 
 }  // namespace tket

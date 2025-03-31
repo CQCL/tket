@@ -34,9 +34,9 @@ NB_MODULE(architecture, m) {
       .def(nb::init<>(), "Produces an empty architecture")
       .def(
           "__init__",
-            [](Architecture *t, const nb::tket_custom::SequenceVec<std::pair<unsigned, unsigned>> &connections) {
-              new (t) Architecture(connections);
-            },
+          [](Architecture *t,
+             const nb::tket_custom::SequenceVec<std::pair<unsigned, unsigned>>
+                 &connections) { new (t) Architecture(connections); },
           "The constructor for an architecture with connectivity "
           "between qubits.\n\n:param connections: A list of pairs "
           "representing qubit indices that can perform two-qubit "

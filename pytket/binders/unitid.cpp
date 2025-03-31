@@ -14,8 +14,8 @@
 
 #include "tket/Utils/UnitID.hpp"
 
-#include <nanobind/operators.h>
 #include <nanobind/nanobind.h>
+#include <nanobind/operators.h>
 // #include <pybind11/stl.h>
 
 #include "UnitRegister.hpp"
@@ -106,8 +106,7 @@ NB_MODULE(unit_id, m) {
       .def(
           "__deepcopy__",
           [](const UnitID &id, const nb::dict &) { return UnitID(id); })
-      .def_prop_ro(
-          "reg_name", &UnitID::reg_name, "Readable name of register")
+      .def_prop_ro("reg_name", &UnitID::reg_name, "Readable name of register")
       .def_prop_ro(
           "index", &UnitID::index,
           "Index vector describing position in the register. The "
@@ -167,7 +166,9 @@ NB_MODULE(unit_id, m) {
               }))
       .def(
           "to_list",
-          [](const Qubit &q) { return nb::cast<nb::list>(nb::object(json(q))); },
+          [](const Qubit &q) {
+            return nb::cast<nb::list>(nb::object(json(q)));
+          },
           ":return: a JSON serializable list representation of "
           "the Qubit")
       .def_static(

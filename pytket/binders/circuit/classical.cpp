@@ -50,10 +50,8 @@ void init_classical(nb::module& m) {
           "The little-endian value the classical register must read "
           "in order to apply the operation (e.g. value 2 (10b) means "
           "bits[0] must be 0 and bits[1] must be 1)");
-  nb::class_<ClassicalOp, Op>(
-      m, "ClassicalOp", "Classical operation.")
-      .def_prop_ro(
-          "n_inputs", &ClassicalOp::get_n_i, "Number of pure inputs.")
+  nb::class_<ClassicalOp, Op>(m, "ClassicalOp", "Classical operation.")
+      .def_prop_ro("n_inputs", &ClassicalOp::get_n_i, "Number of pure inputs.")
       .def_prop_ro(
           "n_input_outputs", &ClassicalOp::get_n_io,
           "Number of pure input/output arguments.")
@@ -79,21 +77,17 @@ void init_classical(nb::module& m) {
           nb::init<std::shared_ptr<const ClassicalEvalOp>, unsigned>(),
           "Construct from a basic operation and a multiplier.", nb::arg("op"),
           nb::arg("multiplier"))
-      .def_prop_ro(
-          "basic_op", &MultiBitOp::get_op, "Underlying bitwise op.")
+      .def_prop_ro("basic_op", &MultiBitOp::get_op, "Underlying bitwise op.")
       .def_prop_ro("multiplier", &MultiBitOp::get_n, "Multiplier.");
-  nb::class_<
-      RangePredicateOp, ClassicalEvalOp>(
+  nb::class_<RangePredicateOp, ClassicalEvalOp>(
       m, "RangePredicateOp",
       "A predicate defined by a range of values in binary encoding.")
       .def(
           nb::init<unsigned, _tket_uint_t, _tket_uint_t>(),
           "Construct from a bit width, a lower bound and an upper bound.",
           nb::arg("width"), nb::arg("lower"), nb::arg("upper"))
-      .def_prop_ro(
-          "lower", &RangePredicateOp::lower, "Inclusive lower bound.")
-      .def_prop_ro(
-          "upper", &RangePredicateOp::upper, "Inclusive upper bound.");
+      .def_prop_ro("lower", &RangePredicateOp::lower, "Inclusive lower bound.")
+      .def_prop_ro("upper", &RangePredicateOp::upper, "Inclusive upper bound.");
 
   nb::class_<WASMOp, ClassicalOp>(
       m, "WASMOp",
@@ -110,16 +104,12 @@ void init_classical(nb::module& m) {
           "function name and module id.",
           nb::arg("num_bits"), nb::arg("num_w"), nb::arg("n_inputs"),
           nb::arg("n_outputs"), nb::arg("func_name"), nb::arg("wasm_uid"))
-      .def_prop_ro(
-          "wasm_uid", &WASMOp::get_wasm_file_uid, "Wasm module id.")
-      .def_prop_ro(
-          "num_w", &WASMOp::get_ww_n, "Number of wasm wire in the op")
-      .def_prop_ro(
-          "func_name", &WASMOp::get_func_name, "Name of function.")
+      .def_prop_ro("wasm_uid", &WASMOp::get_wasm_file_uid, "Wasm module id.")
+      .def_prop_ro("num_w", &WASMOp::get_ww_n, "Number of wasm wire in the op")
+      .def_prop_ro("func_name", &WASMOp::get_func_name, "Name of function.")
       .def_prop_ro(
           "num_bits", &WASMOp::get_n, "Number of bits interacted with.")
-      .def_prop_ro(
-          "n_i32", &WASMOp::get_n_i32, "Number of integers acted on.")
+      .def_prop_ro("n_i32", &WASMOp::get_n_i32, "Number of integers acted on.")
       .def_prop_ro(
           "input_widths", &WASMOp::get_width_i_parameter,
           "Widths of input integers.")

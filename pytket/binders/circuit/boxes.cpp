@@ -310,8 +310,7 @@ void init_boxes(nb::module &m) {
       .def(
           "get_cx_config", &PauliExpPairBox::get_cx_config,
           ":return: decomposition method");
-  nb::class_<
-      PauliExpCommutingSetBox, Op>(
+  nb::class_<PauliExpCommutingSetBox, Op>(
       m, "PauliExpCommutingSetBox",
       "An operation defined as a set of commuting of exponentials of a"
       "tensor of Pauli operations and their (possibly symbolic) phase "
@@ -783,8 +782,7 @@ void init_boxes(nb::module &m) {
           "The readable name of the gate.")
       .def_prop_ro(
           "params", &CustomGate::get_params, "The parameters of the gate.")
-      .def_prop_ro(
-          "gate", &CustomGate::get_gate, "Underlying gate object.")
+      .def_prop_ro("gate", &CustomGate::get_gate, "Underlying gate object.")
       .def(
           "get_circuit",
           [](CustomGate &composite) { return *composite.to_circuit(); },
@@ -891,8 +889,7 @@ void init_boxes(nb::module &m) {
       .def(
           "get_matrix", &ProjectorAssertionBox::get_matrix,
           ":return: the unitary matrix (in ILO-BE format) as a numpy array");
-  nb::class_<
-      StabiliserAssertionBox, Op>(
+  nb::class_<StabiliserAssertionBox, Op>(
       m, "StabiliserAssertionBox",
       "A user-defined assertion specified by a list of Pauli stabilisers.")
       .def(

@@ -13,8 +13,8 @@
 // limitations under the License.
 
 // #include <pybind11/functional.h>
-#include <nanobind/operators.h>
 #include <nanobind/nanobind.h>
+#include <nanobind/operators.h>
 // #include <pybind11/stl.h>
 // #include <pybind11/stl_bind.h>
 
@@ -40,9 +40,7 @@ NB_MODULE(mapping, m) {
       "usage.")
       .def(nb::init<>());
 
-  nb::class_<
-      RoutingMethodCircuit,
-      RoutingMethod>(
+  nb::class_<RoutingMethodCircuit, RoutingMethod>(
       m, "RoutingMethodCircuit",
       "The RoutingMethod class captures a method for partially mapping logical "
       "subcircuits to physical operations as permitted by some architecture. "
@@ -68,9 +66,7 @@ NB_MODULE(mapping, m) {
           nb::arg("route_subcircuit"), nb::arg("max_size"),
           nb::arg("max_depth"));
 
-  nb::class_<
-      LexiRouteRoutingMethod,
-      RoutingMethod>(
+  nb::class_<LexiRouteRoutingMethod, RoutingMethod>(
       m, "LexiRouteRoutingMethod",
       "Defines a RoutingMethod object for mapping circuits that uses the "
       "Lexicographical Comparison approach outlined in arXiv:1902.08091."
@@ -82,9 +78,7 @@ NB_MODULE(mapping, m) {
           "physical mapping.",
           nb::arg("lookahead") = 10);
 
-  nb::class_<
-      AASRouteRoutingMethod,
-      RoutingMethod>(
+  nb::class_<AASRouteRoutingMethod, RoutingMethod>(
       m, "AASRouteRoutingMethod",
       "Defines a RoutingMethod object for mapping circuits that uses the "
       "architecture aware synthesis method implemented in tket.")
@@ -95,23 +89,19 @@ NB_MODULE(mapping, m) {
           "method.",
           nb::arg("aaslookahead"));
 
-  nb::class_<
-      AASLabellingMethod, RoutingMethod>(
+  nb::class_<AASLabellingMethod, RoutingMethod>(
       m, "AASLabellingMethod",
       "Defines a Labeling Method for aas for labelling all unplaced qubits in "
       "a circuit")
       .def(nb::init<>(), "AASLabellingMethod constructor.");
 
-  nb::class_<
-      LexiLabellingMethod, RoutingMethod>(
+  nb::class_<LexiLabellingMethod, RoutingMethod>(
       m, "LexiLabellingMethod",
       "Defines a RoutingMethod for labelling Qubits that uses the "
       "Lexicographical Comparison approach outlined in arXiv:1902.08091.")
       .def(nb::init<>(), "LexiLabellingMethod constructor.");
 
-  nb::class_<
-      MultiGateReorderRoutingMethod,
-      RoutingMethod>(
+  nb::class_<MultiGateReorderRoutingMethod, RoutingMethod>(
       m, "MultiGateReorderRoutingMethod",
       "Defines a RoutingMethod object for commuting physically permitted "
       "multi-qubit gates to the front of the subcircuit.")
@@ -124,9 +114,7 @@ NB_MODULE(mapping, m) {
           "commutation.",
           nb::arg("max_depth") = 10, nb::arg("max_size") = 10);
 
-  nb::class_<
-      BoxDecompositionRoutingMethod,
-      RoutingMethod>(
+  nb::class_<BoxDecompositionRoutingMethod, RoutingMethod>(
       m, "BoxDecompositionRoutingMethod",
       "Defines a RoutingMethod object for decomposing boxes.")
       .def(nb::init<>(), "BoxDecompositionRoutingMethod constructor.");

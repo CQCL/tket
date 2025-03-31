@@ -549,8 +549,7 @@ NB_MODULE(circuit, m) {
           "from_name",
           [](const nb::str &name) { return json(name).get<OpType>(); },
           "Construct from name");
-  nb::class_<Op>(
-      m, "Op", "Encapsulates operation information")
+  nb::class_<Op>(m, "Op", "Encapsulates operation information")
       .def_static(
           "create",
           [](OpType optype) { return get_op_ptr(optype, std::vector<Expr>()); },
@@ -567,8 +566,7 @@ NB_MODULE(circuit, m) {
             return get_op_ptr(optype, params);
           },
           "Create an :py:class:`Op` with given type and parameters")
-      .def_prop_ro(
-          "type", &Op::get_type, "Type of op being performed")
+      .def_prop_ro("type", &Op::get_type, "Type of op being performed")
       .def_prop_ro(
           "params", &Op::get_params_reduced,
           "Angular parameters of the op, in half-turns (e.g. 1.0 "
@@ -576,8 +574,7 @@ NB_MODULE(circuit, m) {
           "returned are constrained to the appropriate canonical "
           "range, which is usually the half-open interval [0,2) but "
           "for some operations (e.g. Rx, Ry and Rz) is [0,4).")
-      .def_prop_ro(
-          "n_qubits", &Op::n_qubits, "Number of qubits of op")
+      .def_prop_ro("n_qubits", &Op::n_qubits, "Number of qubits of op")
       .def_prop_ro("dagger", &Op::dagger, "Dagger of op")
       .def_prop_ro("transpose", &Op::transpose, "Transpose of op")
       .def(
@@ -636,8 +633,7 @@ NB_MODULE(circuit, m) {
       .def("__eq__", &py_equals<Command>)
       .def("__hash__", &deletedHash<Command>, deletedHashDocstring)
       .def("__repr__", &Command::to_str)
-      .def_prop_ro(
-          "op", &Command::get_op_ptr, "Operation for this command.")
+      .def_prop_ro("op", &Command::get_op_ptr, "Operation for this command.")
       .def_prop_ro(
           "args", &Command::get_args, "The qubits/bits the command acts on.")
       .def_prop_ro(
@@ -666,16 +662,14 @@ NB_MODULE(circuit, m) {
           nb::arg("type"), nb::arg("signature"), nb::arg("data"))
       .def_prop_ro("data", &MetaOp::get_data, "Get data from MetaOp");
 
-  nb::class_<BarrierOp, Op>(
-      m, "BarrierOp", "Barrier operations.")
+  nb::class_<BarrierOp, Op>(m, "BarrierOp", "Barrier operations.")
       .def(
           nb::init<py_op_signature_t, const std::string &>(),
           "Construct BarrierOp with signature and additional data string"
           "\n:param signature: signature for the op"
           "\n:param data: additional string stored in the op",
           nb::arg("signature"), nb::arg("data"))
-      .def_prop_ro(
-          "data", &BarrierOp::get_data, "Get data from BarrierOp");
+      .def_prop_ro("data", &BarrierOp::get_data, "Get data from BarrierOp");
 
   auto pyCircuit = nb::class_<Circuit>(
       m, "Circuit", nb::dynamic_attr(),

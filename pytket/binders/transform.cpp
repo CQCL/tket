@@ -14,8 +14,8 @@
 
 #include "tket/Transformations/Transform.hpp"
 
-#include <nanobind/operators.h>
 #include <nanobind/nanobind.h>
+#include <nanobind/operators.h>
 // #include <pybind11/stl.h>
 
 #include <functional>

@@ -49,8 +49,7 @@ static void apply_classical_op_to_registers(
   add_gate_method<Bit>(&circ, mbop, args, kwargs);
 }
 
-void init_circuit_add_classical_op(
-    nb::class_<Circuit> &c) {
+void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
   c.def(
        "add_c_transform",
        [](Circuit &circ, const nb::tket_custom::SequenceVec<_tket_uint_t> &values,

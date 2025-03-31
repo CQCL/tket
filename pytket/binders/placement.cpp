@@ -179,8 +179,7 @@ NB_MODULE(placement, m) {
         return "<tket::GraphPlacement>";
       });
 
-  nb::class_<
-      NoiseAwarePlacement, Placement>(
+  nb::class_<NoiseAwarePlacement, Placement>(
       m, "NoiseAwarePlacement",
       "The NoiseAwarePlacement class, contains methods for getting maps "
       "between Circuit Qubits and Architecture Nodes and for relabelling "

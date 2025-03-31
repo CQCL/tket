@@ -399,8 +399,7 @@ NB_MODULE(passes, m) {
       .def(
           "get_pass", &RepeatPass::get_pass,
           ":return: The underlying compilation pass.");
-  nb::class_<
-      RepeatWithMetricPass, BasePass>(
+  nb::class_<RepeatWithMetricPass, BasePass>(
       m, "RepeatWithMetricPass",
       "Repeat a compilation pass until the given metric stops "
       "decreasing.")
@@ -417,9 +416,7 @@ NB_MODULE(passes, m) {
       .def(
           "get_metric", &RepeatWithMetricPass::get_metric,
           ":return: The underlying metric.");
-  nb::class_<
-      RepeatUntilSatisfiedPass,
-      BasePass>(
+  nb::class_<RepeatUntilSatisfiedPass, BasePass>(
       m, "RepeatUntilSatisfiedPass",
       "Repeat a compilation pass until a predicate on the circuit is "
       "satisfied.")

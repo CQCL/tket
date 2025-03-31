@@ -13,8 +13,8 @@
 // limitations under the License.
 
 #include <nanobind/eigen/dense.h>
-#include <nanobind/operators.h>
 #include <nanobind/nanobind.h>
+#include <nanobind/operators.h>
 // #include <pybind11/stl.h>
 
 #include <optional>
@@ -574,7 +574,9 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
           nb::arg("filename"))
       .def(
           "to_dict",
-          [](const Circuit &c) { return nb::cast<nb::dict>(nb::object(json(c))); },
+          [](const Circuit &c) {
+            return nb::cast<nb::dict>(nb::object(json(c)));
+          },
           ":return: a JSON serializable dictionary representation of "
           "the Circuit")
       .def_static(

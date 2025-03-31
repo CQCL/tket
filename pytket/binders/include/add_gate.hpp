@@ -70,8 +70,8 @@ static Circuit *add_gate_method(
   if (condition_given) {
     nb::module condition = nb::module_::import_("pytket.circuit.add_condition");
     nb::object add_condition = condition.attr("_add_condition");
-    auto conditions =
-        nb::cast<std::pair<Bit, bool>>(add_condition(circ, kwargs["condition"]));
+    auto conditions = nb::cast<std::pair<Bit, bool>>(
+        add_condition(circ, kwargs["condition"]));
     unit_vector_t new_args = {conditions.first};
     unsigned n_new_args = new_args.size();
     Op_ptr cond =
