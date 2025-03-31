@@ -154,17 +154,17 @@ struct tket_sequence_caster {
 template <typename T>
 struct handle_type_name<tket_custom::SequenceVec<T>> {
   static constexpr auto name =
-      const_name("Sequence[") + make_caster<T>::name + const_name("]");
+      const_name("Sequence[") + make_caster<T>::Name + const_name("]");
 };
 template <typename T>
 struct handle_type_name<tket_custom::SequenceList<T>> {
   static constexpr auto name =
-      const_name("Sequence[") + make_caster<T>::name + const_name("]");
+      const_name("Sequence[") + make_caster<T>::Name + const_name("]");
 };
 template <typename T>
 struct handle_type_name<tket_custom::TupleVec<T>> {
   static constexpr auto name =
-      const_name("tuple[") + make_caster<T>::name + const_name(", ...]");
+      const_name("tuple[") + make_caster<T>::Name + const_name(", ...]");
 };
 template <>
 struct handle_type_name<tket_custom::LogicExpression> {
