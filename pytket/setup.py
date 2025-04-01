@@ -36,7 +36,7 @@ binders = [
     # "utils_serialization",
     "circuit",
     "circuit_library",
-    # "unit_id",
+    "unit_id",
     "passes",
     "predicates",
     "partition",

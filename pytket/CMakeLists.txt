@@ -119,9 +119,9 @@ nanobind_add_module(circuit_library binders/circuit_library.cpp ${HEADER_FILES})
 target_include_directories(circuit_library PRIVATE binders/include)
 target_link_libraries(circuit_library PRIVATE ${lib_deps})
 
-# nanobind_add_module(unit_id binders/unitid.cpp ${HEADER_FILES})
-# target_include_directories(unit_id PRIVATE binders/include)
-# target_link_libraries(unit_id PRIVATE ${lib_deps})
+nanobind_add_module(unit_id binders/unitid.cpp ${HEADER_FILES})
+target_include_directories(unit_id PRIVATE binders/include)
+target_link_libraries(unit_id PRIVATE ${lib_deps})
 
 nanobind_add_module(mapping binders/mapping.cpp ${HEADER_FILES})
 target_include_directories(mapping PRIVATE binders/include)
@@ -192,7 +192,7 @@ install(TARGETS
     tableau
     tailoring
     transform
-    # unit_id
+    unit_id
     # utils_serialization
     # zx
     LIBRARY DESTINATION lib)

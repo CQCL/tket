@@ -16,7 +16,6 @@
 
 #include <nanobind/nanobind.h>
 #include <nanobind/operators.h>
-// #include <pybind11/stl.h>
 
 #include "UnitRegister.hpp"
 #include "nanobind_json/nanobind_json.hpp"
@@ -85,8 +84,8 @@ NB_MODULE(unit_id, m) {
   m.attr("_TEMP_REG_SIZE") = _TKET_REG_WIDTH;
   m.attr("_TEMP_BIT_NAME") = "tk_SCRATCH_BIT";
   m.attr("_TEMP_BIT_REG_BASE") = "tk_SCRATCH_BITREG";
-  m.attr("_DEBUG_ONE_REG_PREFIX") = nb::str(c_debug_one_prefix());
-  m.attr("_DEBUG_ZERO_REG_PREFIX") = nb::str(c_debug_zero_prefix());
+  m.attr("_DEBUG_ONE_REG_PREFIX") = nb::str(c_debug_one_prefix().c_str());
+  m.attr("_DEBUG_ZERO_REG_PREFIX") = nb::str(c_debug_zero_prefix().c_str());
 
   nb::enum_<UnitType>(
       m, "UnitType",
