@@ -32,7 +32,7 @@ class CMakeExtension(Extension):
 
 
 binders = [
-    # "logging",
+    "logging",
     # "utils_serialization",
     "circuit",
     "circuit_library",
@@ -41,7 +41,7 @@ binders = [
     # "predicates",
     # "partition",
     # "pauli",
-    # "mapping",
+    "mapping",
     # "transform",
     # "tailoring",
     # "tableau",

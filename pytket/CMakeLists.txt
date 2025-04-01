@@ -123,9 +123,9 @@ target_link_libraries(circuit_library PRIVATE ${lib_deps})
 # target_include_directories(unit_id PRIVATE binders/include)
 # target_link_libraries(unit_id PRIVATE ${lib_deps})
 
-# nanobind_add_module(mapping binders/mapping.cpp ${HEADER_FILES})
-# target_include_directories(mapping PRIVATE binders/include)
-# target_link_libraries(mapping PRIVATE ${lib_deps})
+nanobind_add_module(mapping binders/mapping.cpp ${HEADER_FILES})
+target_include_directories(mapping PRIVATE binders/include)
+target_link_libraries(mapping PRIVATE ${lib_deps})
 
 # nanobind_add_module(transform binders/transform.cpp ${HEADER_FILES})
 # target_include_directories(transform PRIVATE binders/include)
@@ -155,9 +155,9 @@ target_link_libraries(architecture PRIVATE ${lib_deps})
 # target_include_directories(pauli PRIVATE binders/include)
 # target_link_libraries(pauli PRIVATE ${lib_deps})
 
-# nanobind_add_module(logging binders/logging.cpp ${HEADER_FILES})
-# target_include_directories(logging PRIVATE binders/include)
-# target_link_libraries(logging PRIVATE ${lib_deps})
+nanobind_add_module(logging binders/logging.cpp ${HEADER_FILES})
+target_include_directories(logging PRIVATE binders/include)
+target_link_libraries(logging PRIVATE ${lib_deps})
 
 # nanobind_add_module(utils_serialization binders/utils_serialization.cpp ${HEADER_FILES})
 # target_include_directories(utils_serialization PRIVATE binders/include)
@@ -182,8 +182,8 @@ install(TARGETS
     architecture
     circuit
     circuit_library
-    # logging
-    # mapping
+    logging
+    mapping
     # partition
     # passes
     # pauli
