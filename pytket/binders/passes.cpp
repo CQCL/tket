@@ -117,7 +117,7 @@ const PassPtr &DecomposeClassicalExp() {
     Transform t = Transform([](Circuit &circ) {
       nb::module_ decomposer =
           nb::module_::import_("pytket.circuit.decompose_classical");
-      const nb::tuple result = decomposer.attr("_decompose_expressions")(circ);
+      const nb::tuple result = nb::cast<nb::tuple>(decomposer.attr("_decompose_expressions")(circ));
       const bool success = nb::cast<bool>(result[1]);
       if (success) {
         circ = nb::cast<Circuit>(result[0]);
