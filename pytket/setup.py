@@ -40,7 +40,7 @@ binders = [
     "passes",
     # "predicates",
     "partition",
-    # "pauli",
+    "pauli",
     "mapping",
     # "transform",
     # "tailoring",

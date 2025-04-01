@@ -151,9 +151,9 @@ nanobind_add_module(partition binders/partition.cpp ${HEADER_FILES})
 target_include_directories(partition PRIVATE binders/include)
 target_link_libraries(partition PRIVATE ${lib_deps})
 
-# nanobind_add_module(pauli binders/pauli.cpp ${HEADER_FILES})
-# target_include_directories(pauli PRIVATE binders/include)
-# target_link_libraries(pauli PRIVATE ${lib_deps})
+nanobind_add_module(pauli binders/pauli.cpp ${HEADER_FILES})
+target_include_directories(pauli PRIVATE binders/include)
+target_link_libraries(pauli PRIVATE ${lib_deps})
 
 nanobind_add_module(logging binders/logging.cpp ${HEADER_FILES})
 target_include_directories(logging PRIVATE binders/include)
@@ -186,7 +186,7 @@ install(TARGETS
     mapping
     partition
     passes
-    # pauli
+    pauli
     # placement
     # predicates
     # tableau

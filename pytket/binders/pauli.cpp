@@ -229,16 +229,16 @@ NB_MODULE(pauli, m) {
       "with a +/- 1 coefficient.")
       .def(nb::init<>(), "Constructs an empty PauliStabiliser.")
       .def(
-          nb::init([](const nb::tket_custom::SequenceVec<Pauli> &string,
-                      const int &coeff) {
-            if (coeff == 1) {
-              return PauliStabiliser(string, 0);
+          "__init__",
+          [](PauliStabiliser *p,
+             const nb::tket_custom::SequenceVec<Pauli> &string,
+             const int &coeff) {
+            int half_pis = 1 - coeff;
+            if (half_pis != 0 && half_pis != 2) {
+              throw std::invalid_argument("Coefficient must be -1 or 1.");
             }
-            if (coeff == -1) {
-              return PauliStabiliser(string, 2);
-            }
-            throw std::invalid_argument("Coefficient must be -1 or 1.");
-          }),
+            new (p) PauliStabiliser(string, half_pis);
+          },
           "Constructs a PauliStabiliser with a list of Pauli terms.",
           nb::arg("string"), nb::arg("coeff"))
       .def_prop_ro(
@@ -261,8 +261,10 @@ NB_MODULE(pauli, m) {
       ":py:class:`Qubit` to :py:class:`Pauli` (implemented as a "
       ":py:class:`QubitPauliString`) and a complex coefficient.")
       .def(
-          nb::init(
-              [](const Complex &coeff) { return SpCxPauliTensor({}, coeff); }),
+          "__init__",
+          [](SpCxPauliTensor *p, const Complex &coeff) {
+            new (p) SpCxPauliTensor({}, coeff);
+          },
           "Constructs an empty QubitPauliTensor, representing the identity.",
           nb::arg("coeff") = 1.)
       .def(
@@ -270,11 +272,9 @@ NB_MODULE(pauli, m) {
           "Constructs a QubitPauliTensor with a single Pauli term.",
           nb::arg("qubit"), nb::arg("pauli"), nb::arg("coeff") = 1.)
       .def(
-          nb::init([](const nb::tket_custom::SequenceList<Qubit> &qubits,
-                      const nb::tket_custom::SequenceList<Pauli> &paulis,
-                      const Complex &coeff) {
-            return SpCxPauliTensor(qubits, paulis, coeff);
-          }),
+          nb::init<
+              const nb::tket_custom::SequenceList<Qubit> &,
+              const nb::tket_custom::SequenceList<Pauli> &, const Complex &>(),
           "Constructs a QubitPauliTensor from two matching lists of "
           "Qubits and Paulis.",
           nb::arg("qubits"), nb::arg("paulis"), nb::arg("coeff") = 1.)
@@ -284,9 +284,10 @@ NB_MODULE(pauli, m) {
           ":py:class:`Qubit` to :py:class:`Pauli`.",
           nb::arg("map"), nb::arg("coeff") = 1.)
       .def(
-          nb::init([](const SpPauliString &qps, const Complex &c) {
-            return SpCxPauliTensor(qps.string, c);
-          }),
+          "__init__",
+          [](SpCxPauliTensor *p, const SpPauliString &qps, const Complex &c) {
+            new (p) SpCxPauliTensor(qps.string, c);
+          },
           "Construct a QubitPauliTensor from a QubitPauliString.",
           nb::arg("string"), nb::arg("coeff") = 1.)
       .def(
