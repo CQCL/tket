@@ -15,6 +15,7 @@
 // #include <pybind11/functional.h>
 
 #include <optional>
+#include <string>
 #include <tklog/TketLog.hpp>
 
 #include "binder_utils.hpp"
@@ -59,8 +60,8 @@ Transforms::TwoQbFidelities get_fidelities(const nb::kwargs &kwargs) {
     } else if (kwargstr == "ZZPhase_fidelity") {
       fid.ZZPhase_fidelity = nb::cast<std::variant<double, Func>>(kwarg.second);
     } else {
-      throw nb::type_error(
-          "got an unexpected keyword argument '" + kwargstr + "'");
+      std::string msg = "got an unexpected keyword argument '" + kwargstr + "'";
+      throw nb::type_error(msg.c_str());
     }
   }
   return fid;

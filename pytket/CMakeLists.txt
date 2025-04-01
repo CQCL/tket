@@ -135,9 +135,9 @@ target_link_libraries(mapping PRIVATE ${lib_deps})
 # target_include_directories(predicates PRIVATE binders/include)
 # target_link_libraries(predicates PRIVATE ${lib_deps})
 
-# nanobind_add_module(passes binders/passes.cpp ${HEADER_FILES})
-# target_include_directories(passes PRIVATE binders/include)
-# target_link_libraries(passes PRIVATE ${lib_deps})
+nanobind_add_module(passes binders/passes.cpp ${HEADER_FILES})
+target_include_directories(passes PRIVATE binders/include)
+target_link_libraries(passes PRIVATE ${lib_deps})
 
 nanobind_add_module(architecture binders/architecture.cpp ${HEADER_FILES})
 target_include_directories(architecture PRIVATE binders/include)
@@ -185,7 +185,7 @@ install(TARGETS
     logging
     mapping
     partition
-    # passes
+    passes
     # pauli
     # placement
     # predicates
