@@ -115,9 +115,9 @@ nanobind_add_module(circuit
 target_include_directories(circuit PRIVATE binders/include)
 target_link_libraries(circuit PRIVATE ${lib_deps})
 
-# nanobind_add_module(circuit_library binders/circuit_library.cpp ${HEADER_FILES})
-# target_include_directories(circuit_library PRIVATE binders/include)
-# target_link_libraries(circuit_library PRIVATE ${lib_deps})
+nanobind_add_module(circuit_library binders/circuit_library.cpp ${HEADER_FILES})
+target_include_directories(circuit_library PRIVATE binders/include)
+target_link_libraries(circuit_library PRIVATE ${lib_deps})
 
 # nanobind_add_module(unit_id binders/unitid.cpp ${HEADER_FILES})
 # target_include_directories(unit_id PRIVATE binders/include)
@@ -181,7 +181,7 @@ target_link_libraries(architecture PRIVATE ${lib_deps})
 install(TARGETS
     architecture
     circuit
-    # circuit_library
+    circuit_library
     # logging
     # mapping
     # partition
