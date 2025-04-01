@@ -15,6 +15,7 @@
 #include "tket/Predicates/PassLibrary.hpp"
 
 #include <memory>
+#include <optional>
 
 #include "tket/Converters/Converters.hpp"
 #include "tket/OpType/OpType.hpp"
@@ -470,6 +471,7 @@ const PassPtr &RemoveImplicitQubitPermutation() {
 const PassPtr &ZXGraphlikeOptimisation(bool allow_swaps) {
   auto create_pass_ptr = []<bool allow_wire_swaps>() -> PassPtr {
     Transform t = Transform([](Circuit &circ) {
+      std::optional<std::string> name = circ.get_name();
       zx::ZXDiagram diag = circuit_to_zx(circ).first;
       zx::Rewrite::to_graphlike_form().apply(diag);
       zx::Rewrite::reduce_graphlike_form().apply(diag);
@@ -485,6 +487,9 @@ const PassPtr &ZXGraphlikeOptimisation(bool allow_swaps) {
         c.replace_all_implicit_wire_swaps();
       }
       circ = c;
+      if (name.has_value()) {
+        circ.set_name(*name);
+      }
       return true;
     });
     OpTypeSet in_optypes = {OpType::Input, OpType::Output, OpType::noop,
