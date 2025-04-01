@@ -38,7 +38,7 @@ binders = [
     "circuit_library",
     # "unit_id",
     "passes",
-    # "predicates",
+    "predicates",
     "partition",
     "pauli",
     "mapping",

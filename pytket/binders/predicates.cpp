@@ -14,6 +14,9 @@
 
 #include "tket/Predicates/Predicates.hpp"
 
+#include <nanobind/nanobind.h>
+#include <nanobind/trampoline.h>
+
 #include "nanobind_json/nanobind_json.hpp"
 #include "tket/Predicates/CompilationUnit.hpp"
 #include "tket/Utils/UnitID.hpp"
@@ -37,43 +40,24 @@ NB_MODULE(predicates, m) {
 
   class PyPredicate : public Predicate {
    public:
-    using Predicate::Predicate;
+    NB_TRAMPOLINE(Predicate, 4);
 
     /* Trampolines (need one for each virtual function */
     virtual bool verify(const Circuit &circ) const override {
-      PYBIND11_OVERLOAD_PURE(
-          bool,      /* Return type */
-          Predicate, /* Parent class */
-          verify,    /* Name of function in C++ (must match Python name) */
-          circ       /* Argument(s) */
-      );
+      NB_OVERRIDE_PURE(verify, circ);
     }
     virtual bool implies(const Predicate &other) const override {
-      PYBIND11_OVERLOAD_PURE(
-          bool,      /* Return type */
-          Predicate, /* Parent class */
-          implies,   /* Name of function in C++ (must match Python name) */
-          other      /* Argument(s) */
-      );
+      NB_OVERRIDE_PURE(implies, other);
     }
     virtual PredicatePtr meet(const Predicate &other) const override {
-      PYBIND11_OVERLOAD_PURE(
-          PredicatePtr, /* Return type */
-          Predicate,    /* Parent class */
-          meet,         /* Name of function in C++ (must match Python name) */
-          other         /* Argument(s) */
-      );
+      NB_OVERRIDE_PURE(meet, other);
     }
     virtual std::string to_string() const override {
-      PYBIND11_OVERLOAD_PURE(
-          std::string, /* Return type */
-          Predicate,   /* Parent class */
-          to_string    /* Name of function in C++ (must match Python name) */
-      );
+      NB_OVERRIDE_PURE(to_string);
     }
   };
 
-  nb::class_<Predicate, PredicatePtr, PyPredicate>(
+  nb::class_<Predicate, PyPredicate>(
       m, "Predicate", "A predicate that may be satisfied by a circuit.")
       .def(
           "verify", &Predicate::verify,

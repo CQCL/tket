@@ -131,9 +131,9 @@ target_link_libraries(mapping PRIVATE ${lib_deps})
 # target_include_directories(transform PRIVATE binders/include)
 # target_link_libraries(transform PRIVATE ${lib_deps})
 
-# nanobind_add_module(predicates binders/predicates.cpp ${HEADER_FILES})
-# target_include_directories(predicates PRIVATE binders/include)
-# target_link_libraries(predicates PRIVATE ${lib_deps})
+nanobind_add_module(predicates binders/predicates.cpp ${HEADER_FILES})
+target_include_directories(predicates PRIVATE binders/include)
+target_link_libraries(predicates PRIVATE ${lib_deps})
 
 nanobind_add_module(passes binders/passes.cpp ${HEADER_FILES})
 target_include_directories(passes PRIVATE binders/include)
@@ -188,7 +188,7 @@ install(TARGETS
     passes
     pauli
     placement
-    # predicates
+    predicates
     # tableau
     # tailoring
     # transform
