@@ -143,9 +143,9 @@ nanobind_add_module(architecture binders/architecture.cpp ${HEADER_FILES})
 target_include_directories(architecture PRIVATE binders/include)
 target_link_libraries(architecture PRIVATE ${lib_deps})
 
-# nanobind_add_module(placement binders/placement.cpp ${HEADER_FILES})
-# target_include_directories(placement PRIVATE binders/include)
-# target_link_libraries(placement PRIVATE ${lib_deps})
+nanobind_add_module(placement binders/placement.cpp ${HEADER_FILES})
+target_include_directories(placement PRIVATE binders/include)
+target_link_libraries(placement PRIVATE ${lib_deps})
 
 nanobind_add_module(partition binders/partition.cpp ${HEADER_FILES})
 target_include_directories(partition PRIVATE binders/include)
@@ -187,7 +187,7 @@ install(TARGETS
     partition
     passes
     pauli
-    # placement
+    placement
     # predicates
     # tableau
     # tailoring

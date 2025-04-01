@@ -46,7 +46,7 @@ binders = [
     # "tailoring",
     # "tableau",
     # "zx",
-    # "placement",
+    "placement",
     "architecture",
 ]
 
