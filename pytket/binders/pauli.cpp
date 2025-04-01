@@ -14,6 +14,7 @@
 
 #include <nanobind/eigen/dense.h>
 #include <nanobind/nanobind.h>
+#include <nanobind/operators.h>
 #include <nanobind/stl/complex.h>
 // #include <pybind11/stl.h>
 
@@ -317,7 +318,7 @@ NB_MODULE(pauli, m) {
             qpt.string = qps.string;
           },
           "The QubitPauliTensor's underlying :py:class:`QubitPauliString`")
-      .def_readwrite(
+      .def_rw(
           "coeff", &SpCxPauliTensor::coeff,
           "The global coefficient of the tensor")
       .def(
