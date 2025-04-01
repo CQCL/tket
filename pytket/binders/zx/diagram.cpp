@@ -573,7 +573,7 @@ NB_MODULE(zx, m) {
       .def("__repr__", &ZXVertWrapper::to_string)
       .def("__eq__", &py_equals<ZXVertWrapper>)
       .def("__hash__", [](const ZXVertWrapper& v) {
-        return nb::hash(nb::str(v.to_string()));
+        return nb::hash(nb::str(v.to_string().c_str()));
       });
   nb::class_<Wire>(
       m, "ZXWire",
@@ -586,7 +586,7 @@ NB_MODULE(zx, m) {
       .def("__hash__", [](const Wire& w) {
         std::stringstream st;
         st << w;
-        return nb::hash(nb::str(st.str()));
+        return nb::hash(nb::str(st.str().c_str()));
       });
   nb::class_<ZXGen>(
       m, "ZXGen",

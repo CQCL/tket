@@ -171,12 +171,12 @@ nanobind_add_module(tableau binders/tableau.cpp ${HEADER_FILES})
 target_include_directories(tableau PRIVATE binders/include)
 target_link_libraries(tableau PRIVATE ${lib_deps})
 
-# nanobind_add_module(zx
-#     binders/zx/diagram.cpp
-#     binders/zx/rewrite.cpp
-#     ${HEADER_FILES})
-# target_include_directories(zx PRIVATE binders/include)
-# target_link_libraries(zx PRIVATE ${lib_deps})
+nanobind_add_module(zx
+    binders/zx/diagram.cpp
+    binders/zx/rewrite.cpp
+    ${HEADER_FILES})
+target_include_directories(zx PRIVATE binders/include)
+target_link_libraries(zx PRIVATE ${lib_deps})
 
 install(TARGETS
     architecture
@@ -194,5 +194,5 @@ install(TARGETS
     transform
     unit_id
     utils_serialization
-    # zx
+    zx
     LIBRARY DESTINATION lib)
