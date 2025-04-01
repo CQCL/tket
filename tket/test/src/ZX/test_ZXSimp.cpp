@@ -13,6 +13,8 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
+#include <optional>
+#include <string>
 
 #include "tket/Converters/Converters.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
@@ -238,6 +240,22 @@ SCENARIO("ZX resynthesis with implicit permutation removed") {
     ZXGraphlikeOptimisation(false)->apply(cu);
     const auto& resynth = cu.get_circ_ref();
     CHECK(!resynth.has_implicit_wireswaps());
+  }
+}
+
+SCENARIO("ZXGraphlikeOptimisation") {
+  GIVEN("Circuit with name") {
+    // https://github.com/CQCL/tket/issues/1821
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.set_name("Fred");
+    CompilationUnit cu(circ);
+    CHECK(ZXGraphlikeOptimisation(false)->apply(cu));
+    Circuit circ1 = cu.get_circ_ref();
+    std::optional<std::string> name = circ1.get_name();
+    REQUIRE(name.has_value());
+    REQUIRE(*name == "Fred");
   }
 }
 
