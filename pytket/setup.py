@@ -42,7 +42,7 @@ binders = [
     "partition",
     "pauli",
     "mapping",
-    # "transform",
+    "transform",
     "tailoring",
     "tableau",
     # "zx",

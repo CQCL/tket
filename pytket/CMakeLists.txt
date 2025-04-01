@@ -127,9 +127,9 @@ nanobind_add_module(mapping binders/mapping.cpp ${HEADER_FILES})
 target_include_directories(mapping PRIVATE binders/include)
 target_link_libraries(mapping PRIVATE ${lib_deps})
 
-# nanobind_add_module(transform binders/transform.cpp ${HEADER_FILES})
-# target_include_directories(transform PRIVATE binders/include)
-# target_link_libraries(transform PRIVATE ${lib_deps})
+nanobind_add_module(transform binders/transform.cpp ${HEADER_FILES})
+target_include_directories(transform PRIVATE binders/include)
+target_link_libraries(transform PRIVATE ${lib_deps})
 
 nanobind_add_module(predicates binders/predicates.cpp ${HEADER_FILES})
 target_include_directories(predicates PRIVATE binders/include)
@@ -191,7 +191,7 @@ install(TARGETS
     predicates
     tableau
     tailoring
-    # transform
+    transform
     # unit_id
     # utils_serialization
     # zx

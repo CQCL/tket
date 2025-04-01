@@ -16,9 +16,9 @@
 
 #include <nanobind/nanobind.h>
 #include <nanobind/operators.h>
-// #include <pybind11/stl.h>
 
 #include <functional>
+#include <string>
 
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
@@ -50,8 +50,9 @@ Transforms::TwoQbFidelities get_fidelities(const nb::kwargs &kwargs) {
     } else if (kwargstr == "ZZPhase_fidelity") {
       fid.ZZPhase_fidelity = nb::cast<std::variant<double, Func>>(kwarg.second);
     } else {
-      throw nb::type_error(
-          "got an unexpected keyword argument '" + kwargstr + "'");
+      const std::string msg =
+          "got an unexpected keyword argument '" + kwargstr + "'";
+      throw nb::type_error(msg.c_str());
     }
   }
   return fid;
@@ -242,7 +243,7 @@ NB_MODULE(transform, m) {
           "to obtain optimal decompositions for arbitrary symbolic parameters, "
           "so consider substituting for concrete values if possible."
           "\n\n:param allow_swaps: Whether to allow implicit wire swaps.",
-          nb::arg("allow_swaps") = true)
+          nb::arg("allow_swaps") = true, nb::arg("kwargs"))
       .def_static(
           "NormaliseTK2", &Transforms::normalise_TK2,
           "Normalises all TK2 gates.\n\n"
