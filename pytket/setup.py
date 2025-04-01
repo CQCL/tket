@@ -39,7 +39,7 @@ binders = [
     # "unit_id",
     # "passes",
     # "predicates",
-    # "partition",
+    "partition",
     # "pauli",
     "mapping",
     # "transform",
