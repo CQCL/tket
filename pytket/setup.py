@@ -43,7 +43,7 @@ binders = [
     "pauli",
     "mapping",
     # "transform",
-    # "tailoring",
+    "tailoring",
     "tableau",
     # "zx",
     "placement",

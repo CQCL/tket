@@ -163,9 +163,9 @@ target_link_libraries(logging PRIVATE ${lib_deps})
 # target_include_directories(utils_serialization PRIVATE binders/include)
 # target_link_libraries(utils_serialization PRIVATE ${lib_deps})
 
-# nanobind_add_module(tailoring binders/tailoring.cpp ${HEADER_FILES})
-# target_include_directories(tailoring PRIVATE binders/include)
-# target_link_libraries(tailoring PRIVATE ${lib_deps})
+nanobind_add_module(tailoring binders/tailoring.cpp ${HEADER_FILES})
+target_include_directories(tailoring PRIVATE binders/include)
+target_link_libraries(tailoring PRIVATE ${lib_deps})
 
 nanobind_add_module(tableau binders/tableau.cpp ${HEADER_FILES})
 target_include_directories(tableau PRIVATE binders/include)
@@ -190,7 +190,7 @@ install(TARGETS
     placement
     predicates
     tableau
-    # tailoring
+    tailoring
     # transform
     # unit_id
     # utils_serialization

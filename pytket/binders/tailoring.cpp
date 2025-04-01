@@ -12,10 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <nanobind/eigen/dense.h>
 #include <nanobind/nanobind.h>
-// #include <pybind11/stl.h>
-// #include <pybind11/stl_bind.h>
 
 #include "binder_utils.hpp"
 #include "tket/Characterisation/FrameRandomisation.hpp"
@@ -56,10 +53,11 @@ NB_MODULE(tailoring, m) {
       "deduced such that the circuit unitary doesn't change, achieved by "
       "computing the action of cycle gates on frame gates.")
       .def(
-          nb::init([](const OpTypeSet &_cycle_types,
-                      const OpTypeSet &_frame_types,
-                      const std::map<OpType, std::map<nb::tuple, nb::tuple>>
-                          &cycle_frame_actions) {
+          "__init__",
+          [](FrameRandomisation *p, const OpTypeSet &_cycle_types,
+             const OpTypeSet &_frame_types,
+             const std::map<OpType, std::map<nb::tuple, nb::tuple>>
+                 &cycle_frame_actions) {
             std::map<OpType, std::map<OpTypeVector, OpTypeVector>>
                 real_cycle_frame_actions;
             for (const auto &actions : cycle_frame_actions) {
@@ -70,9 +68,9 @@ NB_MODULE(tailoring, m) {
               }
               real_cycle_frame_actions[actions.first] = otv_map;
             }
-            return FrameRandomisation(
+            new (p) FrameRandomisation(
                 _cycle_types, _frame_types, real_cycle_frame_actions);
-          }),
+          },
           "Constructor for FrameRandomisation."
           "\n\n:param cycletypes: "
           "A set of OpType corresponding to the gates cycles found are "
