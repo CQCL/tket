@@ -14,6 +14,9 @@
 
 // #include <pybind11/functional.h>
 
+#include <nanobind/nanobind.h>
+#include <nanobind/trampoline.h>
+
 #include <optional>
 #include <string>
 #include <tklog/TketLog.hpp>
@@ -117,7 +120,8 @@ const PassPtr &DecomposeClassicalExp() {
     Transform t = Transform([](Circuit &circ) {
       nb::module_ decomposer =
           nb::module_::import_("pytket.circuit.decompose_classical");
-      const nb::tuple result = nb::cast<nb::tuple>(decomposer.attr("_decompose_expressions")(circ));
+      const nb::tuple result =
+          nb::cast<nb::tuple>(decomposer.attr("_decompose_expressions")(circ));
       const bool success = nb::cast<bool>(result[1]);
       if (success) {
         circ = nb::cast<Circuit>(result[0]);
@@ -208,37 +212,23 @@ NB_MODULE(passes, m) {
 
   class PyBasePass : public BasePass {
    public:
-    using BasePass::BasePass;
+    NB_TRAMPOLINE(BasePass, 2 /*3*/);
 
     /* Trampolines (need one for each virtual function */
     virtual bool apply(
         CompilationUnit &c_unit, SafetyMode safe_mode = SafetyMode::Default,
         const PassCallback &before_apply = trivial_callback,
         const PassCallback &after_apply = trivial_callback) const override {
-      PYBIND11_OVERLOAD_PURE(
-          bool,     /* Return type */
-          BasePass, /* Parent class */
-          apply,    /* Name of function in C++ (must match Python name) */
-          c_unit, before_apply, after_apply, safe_mode /* Argument(s) */
-      );
+      NB_OVERRIDE_PURE(apply, c_unit, safe_mode, before_apply, after_apply);
     }
     virtual std::string to_string() const override {
-      PYBIND11_OVERLOAD_PURE(
-          std::string, /* Return type */
-          BasePass,    /* Parent class */
-          to_string    /* Name of function in C++ (must match Python name) */
-      );
+      NB_OVERRIDE_PURE(to_string);
     }
-    virtual json get_config() const override {
-      PYBIND11_OVERLOAD_PURE(
-          json,      /* Return type */
-          BasePass,  /* Parent class */
-          get_config /* Name of function in C++ (must match Python name) */
-      );
-    }
+    // virtual json get_config() const override {
+    //   NB_OVERRIDE_PURE(get_config);
+    // }
   };
-  nb::class_<BasePass, PassPtr, PyBasePass>(
-      m, "BasePass", "Base class for passes.")
+  nb::class_<BasePass, PyBasePass>(m, "BasePass", "Base class for passes.")
       .def(
           "apply",
           [](const BasePass &pass, CompilationUnit &cu,
@@ -506,7 +496,7 @@ NB_MODULE(passes, m) {
       "to obtain optimal decompositions for arbitrary symbolic parameters, "
       "so consider substituting for concrete values if possible."
       "\n\n:param allow_swaps: Whether to allow implicit wire swaps.",
-      nb::arg("allow_swaps") = true);
+      nb::arg("allow_swaps") = true, nb::arg("kwargs"));
   m.def(
       "NormaliseTK2", &NormaliseTK2,
       "Normalises all TK2 gates.\n\n"
@@ -860,7 +850,7 @@ NB_MODULE(passes, m) {
       "\n\n:param arc: target architecture"
       "\n:param \\**kwargs: parameters for routing (described above)"
       "\n:return: a pass to perform the remapping",
-      nb::arg("arc"));
+      nb::arg("arc"), nb::arg("kwargs"));
 
   m.def(
       "ComposePhasePolyBoxes", &ComposePhasePolyBoxes,
@@ -870,7 +860,6 @@ NB_MODULE(passes, m) {
       "\n\n- (unsigned) min_size=0: minimal number of CX gates in each phase "
       "polynominal box: groups with a smaller number of CX gates are not "
       "affected by this transformation\n"
-      "\n:param \\**kwargs: parameters for composition (described above)"
       "\n:return: a pass to perform the composition",
       nb::arg("min_size") = 0);
 
@@ -887,7 +876,7 @@ NB_MODULE(passes, m) {
       "\n:param \\**kwargs: Parameters for routing: "
       "(bool)directed_cx=false, (bool)delay_measures=true"
       "\n:return: a pass to perform the remapping",
-      nb::arg("arc"), nb::arg("placer"));
+      nb::arg("arc"), nb::arg("placer"), nb::arg("kwargs"));
 
   m.def(
       "CliffordSimp", &gen_clifford_simp_pass,

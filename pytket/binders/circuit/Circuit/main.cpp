@@ -590,7 +590,8 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
       // .def(
       //     "__getstate__",
       //     [](const Circuit &circ) {
-      //       return nb::make_tuple(nb::cast<nb::dict>(nb::object(json(circ))));
+      //       return
+      //       nb::make_tuple(nb::cast<nb::dict>(nb::object(json(circ))));
       //     })
       // .def(
       //     "__setstate__",
