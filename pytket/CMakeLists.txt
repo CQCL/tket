@@ -159,9 +159,9 @@ nanobind_add_module(logging binders/logging.cpp ${HEADER_FILES})
 target_include_directories(logging PRIVATE binders/include)
 target_link_libraries(logging PRIVATE ${lib_deps})
 
-# nanobind_add_module(utils_serialization binders/utils_serialization.cpp ${HEADER_FILES})
-# target_include_directories(utils_serialization PRIVATE binders/include)
-# target_link_libraries(utils_serialization PRIVATE ${lib_deps})
+nanobind_add_module(utils_serialization binders/utils_serialization.cpp ${HEADER_FILES})
+target_include_directories(utils_serialization PRIVATE binders/include)
+target_link_libraries(utils_serialization PRIVATE ${lib_deps})
 
 nanobind_add_module(tailoring binders/tailoring.cpp ${HEADER_FILES})
 target_include_directories(tailoring PRIVATE binders/include)
@@ -193,6 +193,6 @@ install(TARGETS
     tailoring
     transform
     unit_id
-    # utils_serialization
+    utils_serialization
     # zx
     LIBRARY DESTINATION lib)

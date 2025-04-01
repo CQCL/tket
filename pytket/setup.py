@@ -33,7 +33,7 @@ class CMakeExtension(Extension):
 
 binders = [
     "logging",
-    # "utils_serialization",
+    "utils_serialization",
     "circuit",
     "circuit_library",
     "unit_id",
