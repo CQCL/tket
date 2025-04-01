@@ -167,9 +167,9 @@ target_link_libraries(logging PRIVATE ${lib_deps})
 # target_include_directories(tailoring PRIVATE binders/include)
 # target_link_libraries(tailoring PRIVATE ${lib_deps})
 
-# nanobind_add_module(tableau binders/tableau.cpp ${HEADER_FILES})
-# target_include_directories(tableau PRIVATE binders/include)
-# target_link_libraries(tableau PRIVATE ${lib_deps})
+nanobind_add_module(tableau binders/tableau.cpp ${HEADER_FILES})
+target_include_directories(tableau PRIVATE binders/include)
+target_link_libraries(tableau PRIVATE ${lib_deps})
 
 # nanobind_add_module(zx
 #     binders/zx/diagram.cpp
@@ -189,7 +189,7 @@ install(TARGETS
     pauli
     placement
     predicates
-    # tableau
+    tableau
     # tailoring
     # transform
     # unit_id

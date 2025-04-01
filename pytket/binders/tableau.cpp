@@ -14,10 +14,10 @@
 
 #include <nanobind/eigen/dense.h>
 #include <nanobind/nanobind.h>
-// #include <pybind11/stl.h>
 
 #include <sstream>
 
+#include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Converters/Converters.hpp"
 #include "tket/Converters/UnitaryTableauBox.hpp"
 #include "typecast.hpp"
@@ -55,9 +55,10 @@ NB_MODULE(tableau, m) {
           nb::arg("xx"), nb::arg("xz"), nb::arg("xph"), nb::arg("zx"),
           nb::arg("zz"), nb::arg("zph"))
       .def(
-          nb::init<>([](const Circuit& circ) {
-            return circuit_to_unitary_tableau(circ);
-          }),
+          "__init__",
+          [](UnitaryTableau* p, const Circuit& circ) {
+            new (p) UnitaryTableau(circuit_to_unitary_tableau(circ));
+          },
           "Constructs a :py:class:`UnitaryTableau` from a unitary "
           ":py:class:`Circuit`. Throws an exception if the input contains "
           "non-unitary operations."
@@ -164,9 +165,10 @@ NB_MODULE(tableau, m) {
           nb::arg("xx"), nb::arg("xz"), nb::arg("xph"), nb::arg("zx"),
           nb::arg("zz"), nb::arg("zph"))
       .def(
-          nb::init<>([](const Circuit& circ) {
-            return circuit_to_unitary_rev_tableau(circ);
-          }),
+          "__init__",
+          [](UnitaryRevTableau* p, const Circuit& circ) {
+            new (p) UnitaryRevTableau(circuit_to_unitary_rev_tableau(circ));
+          },
           "Constructs a :py:class:`UnitaryRevTableau` from a unitary "
           ":py:class:`Circuit`. Throws an exception if the input contains "
           "non-unitary operations."
