@@ -14,7 +14,9 @@
 
 #include <nanobind/nanobind.h>
 #include <nanobind/stl/optional.h>
+#include <nanobind/stl/shared_ptr.h>
 #include <nanobind/stl/string.h>
+#include <nanobind/stl/vector.h>
 
 #include <memory>
 #include <optional>
@@ -454,8 +456,8 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
       .def(
           "add_custom_gate",
           [](Circuit *circ, const composite_def_ptr_t &definition,
-             const nb::tket_custom::SequenceVec<Expr> &params,
-             const nb::tket_custom::SequenceVec<unsigned> &qubits,
+             const std::vector<Expr> &params,
+             const std::vector<unsigned> &qubits,
              const nb::kwargs &kwargs) {
             return add_box_method<unsigned>(
                 circ, std::make_shared<CustomGate>(definition, params), qubits,
@@ -814,8 +816,8 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
       .def(
           "add_custom_gate",
           [](Circuit *circ, const composite_def_ptr_t &definition,
-             const nb::tket_custom::SequenceVec<Expr> &params,
-             const py_qubit_vector_t &qubits, const nb::kwargs &kwargs) {
+             const std::vector<Expr> &params,
+             const std::vector<Qubit> &qubits, const nb::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<CustomGate>(definition, params),
                 {qubits.begin(), qubits.end()}, kwargs);
