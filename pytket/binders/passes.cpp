@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// #include <pybind11/functional.h>
-
 #include <nanobind/nanobind.h>
 #include <nanobind/trampoline.h>
 

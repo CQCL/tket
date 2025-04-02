@@ -14,7 +14,6 @@
 
 #include <nanobind/eigen/dense.h>
 #include <nanobind/nanobind.h>
-// #include <pybind11/stl.h>
 
 #include <tket/Circuit/Circuit.hpp>
 

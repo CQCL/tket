@@ -13,8 +13,6 @@
 // limitations under the License.
 
 #include <nanobind/nanobind.h>
-// #include <pybind11/pytypes.h>
-// #include <pybind11/stl.h>
 
 #include <memory>
 #include <optional>

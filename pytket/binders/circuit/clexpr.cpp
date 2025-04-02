@@ -15,7 +15,6 @@
 #include "tket/Ops/ClExpr.hpp"
 
 #include <nanobind/nanobind.h>
-// #include <pybind11/stl.h>
 
 #include <memory>
 #include <sstream>

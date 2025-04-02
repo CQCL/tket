@@ -14,14 +14,8 @@
 
 #pragma once
 
-// #include <nanobind/nb_cast.h>
-// #include <pybind11/detail/typeid.h>
-// #include <pybind11/functional.h>
-// #include <nanobind/operators.h>
 #include <nanobind/nanobind.h>
 #include <nanobind/stl/list.h>
-// #include <pybind11/pytypes.h>
-// #include <pybind11/stl.h>
 
 #include "tket/Utils/Expression.hpp"
 #include "unit_downcast.hpp"
