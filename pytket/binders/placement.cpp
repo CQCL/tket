@@ -16,6 +16,8 @@
 
 #include <nanobind/nanobind.h>
 
+#include <memory>
+
 #include "binder_utils.hpp"
 #include "nanobind_json/nanobind_json.hpp"
 #include "typecast.hpp"
@@ -95,8 +97,8 @@ NB_MODULE(placement, m) {
                  "to " CLSOBJS(Node),
                  nb::arg("circuit"), nb::arg("matches")=100)
             .def(
-                "to_dict", [](const Placement::Ptr &placement) {
-                    return nb::object(json(placement)); },
+                "to_dict", [](const Placement &placement) {
+                    return nb::object(json(std::make_shared<Placement>(placement))); },
                 "Return a JSON serializable dict representation of "
                 "the Placement."
                 "\n\n:return: dict representing the Placement.")

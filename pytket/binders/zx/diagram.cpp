@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <memory>
-
 #include <nanobind/nanobind.h>
 #include <nanobind/stl/optional.h>
+
+#include <memory>
 
 #include "deleted_hash.hpp"
 #include "py_operators.hpp"

@@ -17,6 +17,7 @@
 #include <nanobind/nanobind.h>
 #include <nanobind/stl/pair.h>
 #include <nanobind/stl/vector.h>
+
 #include <vector>
 
 #include "deleted_hash.hpp"
@@ -37,16 +38,16 @@ NB_MODULE(architecture, m) {
       .def(
           "__init__",
           [](Architecture *t,
-             const std::vector<std::pair<unsigned, unsigned>>
-                 &connections) { new (t) Architecture(connections); },
+             const std::vector<std::pair<unsigned, unsigned>> &connections) {
+            new (t) Architecture(connections);
+          },
           "The constructor for an architecture with connectivity "
           "between qubits.\n\n:param connections: A list of pairs "
           "representing qubit indices that can perform two-qubit "
           "operations",
           nb::arg("connections"))
       .def(
-          nb::init<
-              const std::vector<std::pair<Node, Node>> &>(),
+          nb::init<const std::vector<std::pair<Node, Node>> &>(),
           "The constructor for an architecture with connectivity "
           "between qubits.\n\n:param connections: A list of pairs "
           "representing Nodes that can perform two-qubit operations",
@@ -64,8 +65,7 @@ NB_MODULE(architecture, m) {
           nb::arg("node_0"), nb::arg("node_1"))
       .def(
           "valid_operation",
-          [](const Architecture &arch,
-             const std::vector<Node> &ids,
+          [](const Architecture &arch, const std::vector<Node> &ids,
              bool bidirectional) {
             return arch.valid_operation(ids, bidirectional);
           },
