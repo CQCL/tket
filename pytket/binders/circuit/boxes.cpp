@@ -127,14 +127,11 @@ ctrl_tensored_op_map_t to_cpp_ctrl_op_map_t(
 // Cast the std::vector keys in a map to nb::tuple, since vector is not hashable
 // in python
 template <class T1, class T2>
-std::map<nb::tket_custom::TupleVec<T1>, T2> cast_keys_to_tuples(
+std::map<nb::tuple, T2> cast_keys_to_tuples(
     const std::map<std::vector<T1>, T2> &map) {
-  std::map<nb::tket_custom::TupleVec<T1>, T2> outmap;
+  std::map<nb::tuple, T2> outmap;
   for (const auto &pair : map) {
-    nb::tket_custom::TupleVec<T1> tuple_vec(
-        std::make_move_iterator(pair.first.begin()),
-        std::make_move_iterator(pair.first.end()));
-    outmap.emplace(tuple_vec, pair.second);
+    outmap.insert({nb::tuple(nb::cast(pair.first)), pair.second});
   }
   return outmap;
 }
