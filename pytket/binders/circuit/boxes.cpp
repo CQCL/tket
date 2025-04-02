@@ -16,12 +16,16 @@
 
 #include <nanobind/eigen/dense.h>
 #include <nanobind/nanobind.h>
+#include <nanobind/ndarray.h>
+#include <nanobind/stl/map.h>
 #include <nanobind/stl/optional.h>
+#include <nanobind/stl/pair.h>
 #include <nanobind/stl/string.h>
 #include <nanobind/stl/vector.h>
 
 #include <memory>
 #include <sstream>
+#include <vector>
 
 #include "binder_utils.hpp"
 #include "nanobind_json/nanobind_json.hpp"
@@ -46,8 +50,8 @@ namespace tket {
 
 // The typedef PhasePolynomial leads to the python type Dict[List[bool], ...],
 // which is not allowed at runtime because lists aren't hashable
-typedef nb::tket_custom::SequenceVec<
-    std::pair<nb::tket_custom::SequenceVec<bool>, Expr>>
+typedef std::vector<
+    std::pair<std::vector<bool>, Expr>>
     PyPhasePolynomialAlternate;
 PhasePolynomial to_cpp_phase_poly(
     const PyPhasePolynomialAlternate &py_phase_poly) {
