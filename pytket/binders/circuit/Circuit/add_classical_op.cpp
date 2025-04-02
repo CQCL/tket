@@ -15,9 +15,13 @@
 #define STR(x) #x
 
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/string.h>
+#include <nanobind/stl/vector.h>
 
 #include <bitset>
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "UnitRegister.hpp"
 #include "add_gate.hpp"
@@ -52,8 +56,8 @@ static void apply_classical_op_to_registers(
 void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
   c.def(
        "add_c_transform",
-       [](Circuit &circ, const nb::tket_custom::SequenceVec<_tket_uint_t> &values,
-          const nb::tket_custom::SequenceVec<unsigned> &args, const std::string &name,
+       [](Circuit &circ, const std::vector<_tket_uint_t> &values,
+          const std::vector<unsigned> &args, const std::string &name,
           const nb::kwargs &kwargs) {
          unsigned n_args = args.size();
          std::shared_ptr<ClassicalTransformOp> op =
@@ -78,8 +82,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
        nb::arg("name") = "ClassicalTransform", nb::arg("kwargs"))
       .def(
           "add_c_transform",
-          [](Circuit &circ, const nb::tket_custom::SequenceVec<_tket_uint_t> &values,
-             const nb::tket_custom::SequenceVec<Bit> &args, const std::string &name,
+          [](Circuit &circ, const std::vector<_tket_uint_t> &values,
+             const std::vector<Bit> &args, const std::string &name,
              const nb::kwargs &kwargs) {
             unsigned n_args = args.size();
             std::shared_ptr<ClassicalTransformOp> op =
