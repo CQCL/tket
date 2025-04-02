@@ -15,6 +15,7 @@
 #include "tket/Predicates/Predicates.hpp"
 
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/unordered_set.h>
 #include <nanobind/trampoline.h>
 
 #include "nanobind_json/nanobind_json.hpp"
