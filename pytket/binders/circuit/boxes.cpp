@@ -16,6 +16,7 @@
 
 #include <nanobind/eigen/dense.h>
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/vector.h>
 
 #include <memory>
 #include <sstream>
@@ -676,7 +677,7 @@ void init_boxes(nb::module_ &m) {
       ":py:class:`Op`, the number of quantum controls, and the control state "
       "expressed as an integer or a bit vector.")
       .def(
-          nb::init<Op_ptr &, unsigned, nb::tket_custom::SequenceVec<bool> &>(),
+          nb::init<Op_ptr &, unsigned, std::vector<bool> &>(),
           "Construct from an :py:class:`Op`, a number of quantum "
           "controls, and the control state expressed as a bit vector. The "
           "controls occupy the low-index ports of the "
