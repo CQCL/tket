@@ -17,12 +17,13 @@
 #include <nanobind/nanobind.h>
 #include <nanobind/stl/string.h>
 #include <nanobind/stl/unordered_set.h>
+#include <nanobind/stl/vector.h>
 #include <nanobind/trampoline.h>
+#include <vector>
 
 #include "nanobind_json/nanobind_json.hpp"
 #include "tket/Predicates/CompilationUnit.hpp"
 #include "tket/Utils/UnitID.hpp"
-#include "typecast.hpp"
 
 namespace nb = nanobind;
 using json = nlohmann::json;
@@ -220,7 +221,7 @@ NB_MODULE(predicates, m) {
       .def(
           nb::init<
               const Circuit &,
-              const nb::tket_custom::SequenceVec<PredicatePtr> &>(),
+              const std::vector<PredicatePtr> &>(),
           "Construct from a circuit and some required predicates.",
           nb::arg("circuit"), nb::arg("predicates"))
       .def(
