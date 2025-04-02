@@ -15,11 +15,13 @@
 #include "tket/Architecture/Architecture.hpp"
 
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/pair.h>
+#include <nanobind/stl/vector.h>
+#include <vector>
 
 #include "deleted_hash.hpp"
 #include "nanobind_json/nanobind_json.hpp"
 #include "py_operators.hpp"
-#include "typecast.hpp"
 
 namespace nb = nanobind;
 using json = nlohmann::json;
@@ -35,7 +37,7 @@ NB_MODULE(architecture, m) {
       .def(
           "__init__",
           [](Architecture *t,
-             const nb::tket_custom::SequenceVec<std::pair<unsigned, unsigned>>
+             const std::vector<std::pair<unsigned, unsigned>>
                  &connections) { new (t) Architecture(connections); },
           "The constructor for an architecture with connectivity "
           "between qubits.\n\n:param connections: A list of pairs "
@@ -44,7 +46,7 @@ NB_MODULE(architecture, m) {
           nb::arg("connections"))
       .def(
           nb::init<
-              const nb::tket_custom::SequenceVec<std::pair<Node, Node>> &>(),
+              const std::vector<std::pair<Node, Node>> &>(),
           "The constructor for an architecture with connectivity "
           "between qubits.\n\n:param connections: A list of pairs "
           "representing Nodes that can perform two-qubit operations",
@@ -63,7 +65,7 @@ NB_MODULE(architecture, m) {
       .def(
           "valid_operation",
           [](const Architecture &arch,
-             const nb::tket_custom::SequenceVec<Node> &ids,
+             const std::vector<Node> &ids,
              bool bidirectional) {
             return arch.valid_operation(ids, bidirectional);
           },
