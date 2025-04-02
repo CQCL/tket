@@ -13,7 +13,11 @@
 // limitations under the License.
 
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/map.h>
 #include <nanobind/stl/string.h>
+#include <nanobind/stl/unordered_set.h>
+#include <nanobind/stl/vector.h>
+
 
 #include "binder_utils.hpp"
 #include "tket/Characterisation/FrameRandomisation.hpp"

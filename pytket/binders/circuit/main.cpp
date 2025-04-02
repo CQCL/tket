@@ -78,7 +78,8 @@ NB_MODULE(circuit, m) {
   nb::enum_<OpType>(
       m, "OpType",
       "Enum for available operations compatible with tket " CLSOBJS(
-          Circuit) ".")
+          Circuit) ".",
+      nb::is_arithmetic())
       .value(
           "Phase", OpType::Phase,
           "Global phase: :math:`(\\alpha) \\mapsto \\left[ \\begin{array}{c} "
