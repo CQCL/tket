@@ -16,6 +16,7 @@
 #include <nanobind/make_iterator.h>
 #include <nanobind/nanobind.h>
 #include <nanobind/operators.h>
+#include <nanobind/stl/optional.h>
 
 #include <optional>
 #include <sstream>

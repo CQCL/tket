@@ -15,6 +15,8 @@
 #include "tket/Ops/ClExpr.hpp"
 
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/map.h>
+#include <nanobind/stl/vector.h>
 
 #include <memory>
 #include <sstream>

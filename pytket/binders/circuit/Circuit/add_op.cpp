@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/optional.h>
 
 #include <memory>
 #include <optional>

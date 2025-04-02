@@ -14,6 +14,9 @@
 
 #include <memory>
 
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/optional.h>
+
 #include "deleted_hash.hpp"
 #include "py_operators.hpp"
 #include "tket/Circuit/Circuit.hpp"
