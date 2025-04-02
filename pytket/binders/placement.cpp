@@ -15,12 +15,12 @@
 #include "tket/Placement/Placement.hpp"
 
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/string.h>
 
 #include <memory>
 
 #include "binder_utils.hpp"
 #include "nanobind_json/nanobind_json.hpp"
-#include "typecast.hpp"
 
 namespace nb = nanobind;
 using json = nlohmann::json;

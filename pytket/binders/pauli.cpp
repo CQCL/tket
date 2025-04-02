@@ -16,6 +16,8 @@
 #include <nanobind/nanobind.h>
 #include <nanobind/operators.h>
 #include <nanobind/stl/complex.h>
+#include <nanobind/stl/map.h>
+#include <nanobind/stl/string.h>
 
 #include "deleted_hash.hpp"
 #include "nanobind_json/nanobind_json.hpp"

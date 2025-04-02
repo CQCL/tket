@@ -14,6 +14,7 @@
 
 #include <nanobind/eigen/dense.h>
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/string.h>
 
 #include <sstream>
 

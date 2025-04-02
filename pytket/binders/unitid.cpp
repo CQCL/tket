@@ -16,6 +16,7 @@
 
 #include <nanobind/nanobind.h>
 #include <nanobind/operators.h>
+#include <nanobind/stl/string.h>
 
 #include "UnitRegister.hpp"
 #include "nanobind_json/nanobind_json.hpp"

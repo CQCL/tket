@@ -14,6 +14,7 @@
 
 #include <nanobind/nanobind.h>
 #include <nanobind/stl/optional.h>
+#include <nanobind/stl/string.h>
 
 #include <memory>
 
@@ -21,10 +22,8 @@
 #include "py_operators.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Converters/Converters.hpp"
-#include "tket/Utils/GraphHeaders.hpp"
 #include "tket/ZX/Flow.hpp"
 #include "tket/ZX/ZXDiagram.hpp"
-#include "typecast.hpp"
 
 namespace nb = nanobind;
 
