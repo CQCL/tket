@@ -4,8 +4,14 @@ Changelog
 Unreleased
 ----------
 
+Features:
+
 * Add methods in `circuit_library` to convert `CX` and `TK2` to and from
   `ISWAPMax`, and support for `AutoRebase` targeting `ISWAPMax`.
+
+Fixes:
+
+* Make `ZXGraphlikeOptimisation` pass preserve the circuit's name.
 
 2.1.0 (March 2025)
 ------------------
