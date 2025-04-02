@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/unordered_set.h>
 #include <nanobind/trampoline.h>
 
 #include <optional>
