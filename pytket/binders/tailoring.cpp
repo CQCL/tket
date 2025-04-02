@@ -18,7 +18,6 @@
 #include <nanobind/stl/unordered_set.h>
 #include <nanobind/stl/vector.h>
 
-
 #include "binder_utils.hpp"
 #include "tket/Characterisation/FrameRandomisation.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"

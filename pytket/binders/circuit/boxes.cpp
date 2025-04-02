@@ -51,8 +51,7 @@ namespace tket {
 
 // The typedef PhasePolynomial leads to the python type Dict[List[bool], ...],
 // which is not allowed at runtime because lists aren't hashable
-typedef std::vector<
-    std::pair<std::vector<bool>, Expr>>
+typedef std::vector<std::pair<std::vector<bool>, Expr>>
     PyPhasePolynomialAlternate;
 PhasePolynomial to_cpp_phase_poly(
     const PyPhasePolynomialAlternate &py_phase_poly) {

@@ -19,6 +19,7 @@
 #include <nanobind/stl/unordered_set.h>
 #include <nanobind/stl/vector.h>
 #include <nanobind/trampoline.h>
+
 #include <vector>
 
 #include "nanobind_json/nanobind_json.hpp"
@@ -219,9 +220,7 @@ NB_MODULE(predicates, m) {
           nb::init<const Circuit &>(),
           "Construct from a circuit, with no predicates.", nb::arg("circuit"))
       .def(
-          nb::init<
-              const Circuit &,
-              const std::vector<PredicatePtr> &>(),
+          nb::init<const Circuit &, const std::vector<PredicatePtr> &>(),
           "Construct from a circuit and some required predicates.",
           nb::arg("circuit"), nb::arg("predicates"))
       .def(
