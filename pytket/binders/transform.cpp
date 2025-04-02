@@ -16,6 +16,7 @@
 
 #include <nanobind/nanobind.h>
 #include <nanobind/operators.h>
+#include <nanobind/stl/pair.h>
 #include <nanobind/stl/unordered_set.h>
 
 #include <functional>
