@@ -13,6 +13,8 @@
 // limitations under the License.
 
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/shared_ptr.h>
+#include <nanobind/stl/vector.h>
 
 #include <boost/lexical_cast.hpp>
 
@@ -20,7 +22,6 @@
 #include "nanobind_json/nanobind_json.hpp"
 #include "tket/Circuit/Conditional.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
-#include "tket/Ops/OpJsonFactory.hpp"
 #include "typecast.hpp"
 
 namespace nb = nanobind;
