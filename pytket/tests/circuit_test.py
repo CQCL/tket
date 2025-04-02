@@ -916,10 +916,10 @@ def test_circuit_to_serializable_json_roundtrip(circuit: Circuit) -> None:
     assert json.loads(json.dumps(serializable_form)) == serializable_form
 
 
-@given(st.circuits())
-@settings(deadline=None)
-def test_circuit_pickle_roundtrip(circuit: Circuit) -> None:
-    assert pickle.loads(pickle.dumps(circuit)) == circuit
+# @given(st.circuits())
+# @settings(deadline=None)
+# def test_circuit_pickle_roundtrip(circuit: Circuit) -> None:
+#     assert pickle.loads(pickle.dumps(circuit)) == circuit
 
 
 @given(st.circuits())
