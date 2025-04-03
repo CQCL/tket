@@ -29,6 +29,82 @@ namespace py = pybind11;
 
 namespace tket {
 
+typedef std::variant<
+    py::tket_custom::SequenceVec<unsigned>, py::tket_custom::SequenceVec<Bit>>
+    var_seq_bs_t;
+
+static std::variant<std::vector<unsigned>, std::vector<UnitID>>
+var_sequence_to_var_vecs(const var_seq_bs_t &var_seq) {
+  if (std::holds_alternative<py::tket_custom::SequenceVec<unsigned>>(var_seq)) {
+    return std::get<py::tket_custom::SequenceVec<unsigned>>(var_seq);
+  } else {
+    auto b_vec = std::get<py::tket_custom::SequenceVec<Bit>>(var_seq);
+    return std::vector<UnitID>{b_vec.begin(), b_vec.end()};
+  }
+}
+
+static std::variant<std::vector<unsigned>, std::vector<UnitID>>
+var_bs_b_to_var_vec(
+    const var_seq_bs_t &reg, const std::variant<unsigned, Bit> &b,
+    const std::string &method_name) {
+  bool is_unsigned =
+      std::holds_alternative<py::tket_custom::SequenceVec<unsigned>>(reg);
+  if (std::holds_alternative<unsigned>(b) != is_unsigned) {
+    throw CircuitInvalidity(
+        "Bits passed to `" + method_name +
+        "` must either all be `int` or all `Bit`.");
+  }
+  if (is_unsigned) {
+    std::vector<unsigned> bs =
+        std::get<py::tket_custom::SequenceVec<unsigned>>(reg);
+    bs.push_back(std::get<unsigned>(b));
+    return bs;
+  } else {
+    std::vector<UnitID> out;
+    for (const Bit &b : std::get<py::tket_custom::SequenceVec<Bit>>(reg))
+      out.push_back(b);
+    out.push_back(std::get<Bit>(b));
+    return out;
+  }
+}
+
+static std::variant<std::vector<unsigned>, std::vector<UnitID>>
+var_bs_bs_to_var_vec(
+    const var_seq_bs_t &reg0, const var_seq_bs_t &reg1,
+    const std::string &method_name) {
+  bool is_unsigned =
+      std::holds_alternative<py::tket_custom::SequenceVec<unsigned>>(reg0);
+  if (std::holds_alternative<py::tket_custom::SequenceVec<unsigned>>(reg1) !=
+      is_unsigned) {
+    throw CircuitInvalidity(
+        "Bits passed to `" + method_name +
+        "` must either all be `int` or all `Bit`.");
+  }
+  if (is_unsigned) {
+    std::vector<unsigned> bs0 =
+        std::get<py::tket_custom::SequenceVec<unsigned>>(reg0);
+    std::vector<unsigned> bs1 =
+        std::get<py::tket_custom::SequenceVec<unsigned>>(reg1);
+    bs0.insert(bs0.end(), bs1.begin(), bs1.end());
+    return bs0;
+  } else {
+    std::vector<UnitID> out;
+    for (const Bit &b : std::get<py::tket_custom::SequenceVec<Bit>>(reg0))
+      out.push_back(b);
+    for (const Bit &b : std::get<py::tket_custom::SequenceVec<Bit>>(reg1))
+      out.push_back(b);
+    return out;
+  }
+}
+
+static unsigned var_seq_len(const var_seq_bs_t &var_seq) {
+  if (std::holds_alternative<py::tket_custom::SequenceVec<unsigned>>(var_seq)) {
+    return std::get<py::tket_custom::SequenceVec<unsigned>>(var_seq).size();
+  } else {
+    return std::get<py::tket_custom::SequenceVec<Bit>>(var_seq).size();
+  }
+}
+
 static void apply_classical_op_to_registers(
     Circuit &circ, const std::shared_ptr<const ClassicalEvalOp> &op,
     const std::vector<BitRegister> &registers, const py::kwargs &kwargs) {
@@ -39,14 +115,14 @@ static void apply_classical_op_to_registers(
                                 return i.size() < j.size();
                               })
                               ->size();
-  std::vector<Bit> args(n_bits * n_op_args);
+  std::vector<UnitID> args(n_bits * n_op_args);
   for (unsigned i = 0; i < n_bits; i++) {
     for (unsigned j = 0; j < n_op_args; j++) {
       args[n_op_args * i + j] = registers[j][i];
     }
   }
   std::shared_ptr<MultiBitOp> mbop = std::make_shared<MultiBitOp>(op, n_bits);
-  add_gate_method<Bit>(&circ, mbop, args, kwargs);
+  add_gate_method_any(&circ, mbop, args, kwargs);
 }
 
 void init_circuit_add_classical_op(
@@ -54,12 +130,12 @@ void init_circuit_add_classical_op(
   c.def(
        "add_c_transform",
        [](Circuit &circ, const py::tket_custom::SequenceVec<_tket_uint_t> &values,
-          const py::tket_custom::SequenceVec<unsigned> &args, const std::string &name,
+          const var_seq_bs_t &args, const std::string &name,
           const py::kwargs &kwargs) {
-         unsigned n_args = args.size();
+         unsigned n_args = var_seq_len(args);
          std::shared_ptr<ClassicalTransformOp> op =
              std::make_shared<ClassicalTransformOp>(n_args, values, name);
-         return add_gate_method<unsigned>(&circ, op, args, kwargs);
+         return add_gate_method_any(&circ, op, var_sequence_to_var_vecs(args), kwargs);
        },
        "Appends a purely classical transformation, defined by a table of "
        "values, to "
@@ -78,44 +154,32 @@ void init_circuit_add_classical_op(
        py::arg("values"), py::arg("args"),
        py::arg("name") = "ClassicalTransform")
       .def(
-          "add_c_transform",
-          [](Circuit &circ, const py::tket_custom::SequenceVec<_tket_uint_t> &values,
-             const py::tket_custom::SequenceVec<Bit> &args, const std::string &name,
-             const py::kwargs &kwargs) {
-            unsigned n_args = args.size();
-            std::shared_ptr<ClassicalTransformOp> op =
-                std::make_shared<ClassicalTransformOp>(n_args, values, name);
-            return add_gate_method<Bit>(&circ, op, args, kwargs);
-          },
-          "See :py:meth:`add_c_transform`.", py::arg("values"), py::arg("args"),
-          py::arg("name") = "ClassicalTransform")
-      .def(
           "_add_wasm",
           [](Circuit &circ, const std::string &funcname,
              const std::string &wasm_uid,
              const py::tket_custom::SequenceVec<unsigned> &width_i_parameter,
              const py::tket_custom::SequenceVec<unsigned> &width_o_parameter,
-             const py::tket_custom::SequenceVec<unsigned> &args,
+             const var_seq_bs_t &args,
              const py::tket_custom::SequenceVec<unsigned> &wasm_wire_args,
              const py::kwargs &kwargs) -> Circuit * {
-
-            unsigned n_args = args.size();
-            unsigned ww_n = wasm_wire_args.size();
-
-            std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
-                n_args, ww_n, width_i_parameter, width_o_parameter, funcname, wasm_uid);
-
             std::vector<UnitID> new_args;
-
-            for (auto i : args) {
-              new_args.push_back(Bit(i));
+            if (std::holds_alternative<py::tket_custom::SequenceVec<unsigned>>(args)) {
+              for (unsigned i : std::get<py::tket_custom::SequenceVec<unsigned>>(args)) {
+                new_args.push_back(Bit(i));
+              }
+            } else {
+              for (const Bit &b : std::get<py::tket_custom::SequenceVec<Bit>>(args)) {
+                new_args.push_back(b);
+              }
             }
-
+            unsigned n_args = new_args.size();
             for (auto i : wasm_wire_args) {
               new_args.push_back(WasmState(i));
             }
-
-            return add_gate_method<UnitID>(&circ, op, new_args, kwargs);
+            unsigned ww_n = wasm_wire_args.size();
+            std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
+                n_args, ww_n, width_i_parameter, width_o_parameter, funcname, wasm_uid);
+            return add_gate_method_any(&circ, op, new_args, kwargs);
           },
           "Add a classical function call from a wasm file to the circuit. "
           "\n\n:param funcname: name of the function that is called"
@@ -126,48 +190,6 @@ void init_circuit_add_classical_op(
           "variables"
           "\n:param args: vector of circuit bits the wasm op should be added to"
           "\n:param wasm_wire_args: vector of circuit wasmwires the wasm op should be added to"
-          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
-          " `condition_value`"
-          "\n:return: the new :py:class:`Circuit`",
-          py::arg("funcname"), py::arg("wasm_uid"), py::arg("width_i_parameter"),
-          py::arg("width_o_parameter"), py::arg("args"), py::arg("wasm_wire_args"))
-      .def(
-          "_add_wasm",
-          [](Circuit &circ, const std::string &funcname,
-             const std::string &wasm_uid,
-             const py::tket_custom::SequenceVec<unsigned> &width_i_parameter,
-             const py::tket_custom::SequenceVec<unsigned> &width_o_parameter,
-             const py::tket_custom::SequenceVec<Bit> &args,
-             const py::tket_custom::SequenceVec<unsigned> &wasm_wire_args,
-             const py::kwargs &kwargs) -> Circuit * {
-
-            unsigned n_args = args.size();
-            unsigned ww_n = wasm_wire_args.size();
-
-            std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
-                n_args, ww_n, width_i_parameter, width_o_parameter, funcname, wasm_uid);
-
-            std::vector<UnitID> new_args;
-
-            for (const auto& b : args) {
-              new_args.push_back(b);
-            }
-
-            for (auto i : wasm_wire_args) {
-              new_args.push_back(WasmState(i));
-            }
-
-            return add_gate_method<UnitID>(&circ, op, new_args, kwargs);
-          },
-          "Add a classical function call from a wasm file to the circuit. "
-          "\n\n:param funcname: name of the function that is called"
-          "\n:param wasm_uid: unit id to identify the wasm file"
-          "\n:param width_i_parameter: list of the number of bits in the input "
-          "variables"
-          "\n:param width_o_parameter: list of the number of bits in the output "
-          "variables"
-          "\n:param args: vector of circuit bits the wasm op should be added to"
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
@@ -233,7 +255,7 @@ void init_circuit_add_classical_op(
               new_args.push_back(WasmState(ii));
             }                 
 
-            return add_gate_method<UnitID>(&circ, op, new_args, kwargs);
+            return add_gate_method_any(&circ, op, new_args, kwargs);
           },
           "Add a classical function call from a wasm file to the circuit. "
           "\n\n:param funcname: name of the function that is called"
@@ -251,9 +273,9 @@ void init_circuit_add_classical_op(
       .def(
           "add_c_setbits",
           [](Circuit &circ, const py::tket_custom::SequenceVec<bool> &values,
-             const py::tket_custom::SequenceVec<unsigned>& args, const py::kwargs &kwargs) {
+             const var_seq_bs_t& args, const py::kwargs &kwargs) {
             std::shared_ptr<SetBitsOp> op = std::make_shared<SetBitsOp>(values);
-            return add_gate_method<unsigned>(&circ, op, args, kwargs);
+            return add_gate_method_any(&circ, op, var_sequence_to_var_vecs(args), kwargs);
           },
           "Appends an operation to set some bit values."
           "\n\n:param values: values to set"
@@ -264,14 +286,6 @@ void init_circuit_add_classical_op(
           "\n:return: the new :py:class:`Circuit`",
           py::arg("values"), py::arg("args"))
       .def(
-          "add_c_setbits",
-          [](Circuit &circ, const py::tket_custom::SequenceVec<bool> &values,
-             const py::tket_custom::SequenceVec<Bit>& args, const py::kwargs &kwargs) {
-            std::shared_ptr<SetBitsOp> op = std::make_shared<SetBitsOp>(values);
-            return add_gate_method<Bit>(&circ, op, args, kwargs);
-          },
-          "See :py:meth:`add_c_setbits`.", py::arg("values"), py::arg("args"))
-      .def(
           "add_c_setreg",
           [](Circuit &circ, const _tket_uint_t value, const BitRegister &reg,
              const py::kwargs &kwargs) {
@@ -279,15 +293,15 @@ void init_circuit_add_classical_op(
 	       throw std::runtime_error("Value " + std::to_string(value) + " cannot be held on a " + std::to_string(reg.size()) + "-bit register."); 
 	    }
             auto bs = std::bitset<_TKET_REG_WIDTH>(value);
-            std::vector<Bit> args(reg.size());
+            std::vector<UnitID> args(reg.size());
             std::vector<bool> vals(reg.size());
             for (unsigned i = 0; i < reg.size(); i++) {
               args[i] = reg[i];
-	      vals[i] = (i < _TKET_REG_WIDTH) && bs[i];
+	            vals[i] = (i < _TKET_REG_WIDTH) && bs[i];
             }
 
             std::shared_ptr<SetBitsOp> op = std::make_shared<SetBitsOp>(vals);
-            return add_gate_method<Bit>(&circ, op, args, kwargs);
+            return add_gate_method_any(&circ, op, args, kwargs);
           },
           "Set a classical register to an unsigned integer value. The "
           "little-endian bitwise representation of the integer is truncated to "
@@ -296,14 +310,12 @@ void init_circuit_add_classical_op(
           py::arg("value"), py::arg("arg"))
       .def(
           "add_c_copybits",
-          [](Circuit &circ, const py::tket_custom::SequenceVec<unsigned> &args_in,
-             const py::tket_custom::SequenceVec<unsigned> &args_out, const py::kwargs &kwargs) {
-            unsigned n_args_in = args_in.size();
+          [](Circuit &circ, const var_seq_bs_t &args_in,
+             const var_seq_bs_t &args_out, const py::kwargs &kwargs) {
+            unsigned n_args_in = var_seq_len(args_in);
             std::shared_ptr<CopyBitsOp> op =
                 std::make_shared<CopyBitsOp>(n_args_in);
-            std::vector<unsigned> args = args_in;
-            args.insert(args.end(), args_out.begin(), args_out.end());
-            return add_gate_method<unsigned>(&circ, op, args, kwargs);
+            return add_gate_method_any(&circ, op, var_bs_bs_to_var_vec(args_in, args_out, "add_c_copybits"), kwargs);
           },
           "Appends a classical copy operation"
           "\n\n:param args_in: source bits"
@@ -314,19 +326,6 @@ void init_circuit_add_classical_op(
           "\n:return: the new :py:class:`Circuit`",
           py::arg("args_in"), py::arg("args_out"))
       .def(
-          "add_c_copybits",
-          [](Circuit &circ, const py::tket_custom::SequenceVec<Bit> &args_in,
-             const py::tket_custom::SequenceVec<Bit> &args_out, const py::kwargs &kwargs) {
-            unsigned n_args_in = args_in.size();
-            std::shared_ptr<CopyBitsOp> op =
-                std::make_shared<CopyBitsOp>(n_args_in);
-            std::vector<Bit> args = args_in;
-            args.insert(args.end(), args_out.begin(), args_out.end());
-            return add_gate_method<Bit>(&circ, op, args, kwargs);
-          },
-          "See :py:meth:`add_c_copybits`.", py::arg("args_in"),
-          py::arg("args_out"))
-      .def(
           "add_c_copyreg",
           [](Circuit &circ, const BitRegister &input_reg,
              const BitRegister &output_reg, const py::kwargs &kwargs) {
@@ -335,12 +334,12 @@ void init_circuit_add_classical_op(
 
             std::shared_ptr<CopyBitsOp> op =
                 std::make_shared<CopyBitsOp>(width);
-            std::vector<Bit> args(width * 2);
+            std::vector<UnitID> args(width * 2);
             for (unsigned i = 0; i < width; i++) {
               args[i] = input_reg[i];
               args[i + width] = output_reg[i];
             }
-            return add_gate_method<Bit>(&circ, op, args, kwargs);
+            return add_gate_method_any(&circ, op, args, kwargs);
           },
           "Copy a classical register to another. Copying is truncated to the "
           "size of the smaller of the two registers.",
@@ -348,14 +347,12 @@ void init_circuit_add_classical_op(
       .def(
           "add_c_predicate",
           [](Circuit &circ, const py::tket_custom::SequenceVec<bool> &values,
-             const py::tket_custom::SequenceVec<unsigned> &args_in, unsigned arg_out,
+             const var_seq_bs_t &args_in, const std::variant<unsigned, Bit> &arg_out,
              const std::string &name, const py::kwargs &kwargs) {
-            unsigned n_args_in = args_in.size();
+            unsigned n_args_in = var_seq_len(args_in);
             std::shared_ptr<ExplicitPredicateOp> op =
                 std::make_shared<ExplicitPredicateOp>(n_args_in, values, name);
-            std::vector<unsigned> args = args_in;
-            args.push_back(arg_out);
-            return add_gate_method<unsigned>(&circ, op, args, kwargs);
+            return add_gate_method_any(&circ, op, var_bs_b_to_var_vec(args_in, arg_out, "add_c_predicate"), kwargs);
           },
           "Appends a classical predicate, defined by a truth table, to the end "
           "of the "
@@ -373,31 +370,14 @@ void init_circuit_add_classical_op(
           py::arg("values"), py::arg("args_in"), py::arg("arg_out"),
           py::arg("name") = "ExplicitPredicate")
       .def(
-          "add_c_predicate",
-          [](Circuit &circ, const py::tket_custom::SequenceVec<bool> &values,
-             const py::tket_custom::SequenceVec<Bit> &args_in, const Bit& arg_out,
-             const std::string &name, const py::kwargs &kwargs) {
-            unsigned n_args_in = args_in.size();
-            std::shared_ptr<ExplicitPredicateOp> op =
-                std::make_shared<ExplicitPredicateOp>(n_args_in, values, name);
-            std::vector<Bit> args = args_in;
-            args.push_back(arg_out);
-            return add_gate_method<Bit>(&circ, op, args, kwargs);
-          },
-          "See :py:meth:`add_c_predicate`.", py::arg("values"),
-          py::arg("args_in"), py::arg("arg_out"),
-          py::arg("name") = "ExplicitPredicate")
-      .def(
           "add_c_modifier",
           [](Circuit &circ, const py::tket_custom::SequenceVec<bool> &values,
-             const py::tket_custom::SequenceVec<unsigned> &args_in, unsigned arg_inout,
+             const var_seq_bs_t &args_in, const std::variant<unsigned, Bit> &arg_inout,
              const std::string &name, const py::kwargs &kwargs) {
-            unsigned n_args_in = args_in.size();
+            unsigned n_args_in = var_seq_len(args_in);
             std::shared_ptr<ExplicitModifierOp> op =
                 std::make_shared<ExplicitModifierOp>(n_args_in, values, name);
-            std::vector<unsigned> args = args_in;
-            args.push_back(arg_inout);
-            return add_gate_method<unsigned>(&circ, op, args, kwargs);
+            return add_gate_method_any(&circ, op, var_bs_b_to_var_vec(args_in, arg_inout, "add_c_modifier"), kwargs);
           },
           "Appends a classical modifying operation, defined by a truth table, "
           "to the "
@@ -417,37 +397,29 @@ void init_circuit_add_classical_op(
           py::arg("values"), py::arg("args_in"), py::arg("arg_inout"),
           py::arg("name") = "ExplicitModifier")
       .def(
-          "add_c_modifier",
-          [](Circuit &circ, const py::tket_custom::SequenceVec<bool> &values,
-             const py::tket_custom::SequenceVec<Bit> &args_in, const Bit& arg_inout,
-             const std::string &name, const py::kwargs &kwargs) {
-            unsigned n_args_in = args_in.size();
-            std::shared_ptr<ExplicitModifierOp> op =
-                std::make_shared<ExplicitModifierOp>(n_args_in, values, name);
-            std::vector<Bit> args = args_in;
-            args.push_back(arg_inout);
-            return add_gate_method<Bit>(&circ, op, args, kwargs);
-          },
-          "See :py:meth:`add_c_modifier`.", py::arg("values"),
-          py::arg("args_in"), py::arg("arg_inout"),
-          py::arg("name") = "ExplicitModifier")
-      .def(
           "add_c_and",
-          [](Circuit &circ, unsigned arg0_in, unsigned arg1_in,
-             unsigned arg_out, const py::kwargs &kwargs) {
-            Op_ptr op;
-            std::vector<unsigned> args;
-            if (arg0_in == arg_out) {
-              op = AndWithOp();
-              args = {arg1_in, arg_out};
-            } else if (arg1_in == arg_out) {
-              op = AndWithOp();
-              args = {arg0_in, arg_out};
-            } else {
-              op = AndOp();
-              args = {arg0_in, arg1_in, arg_out};
+          [](Circuit &circ, const std::variant<unsigned, Bit> &arg0_in, const std::variant<unsigned, Bit> &arg1_in,
+             const std::variant<unsigned, Bit> &arg_out, const py::kwargs &kwargs) {
+            bool is_unsigned = std::holds_alternative<unsigned>(arg0_in);
+            if (std::holds_alternative<unsigned>(arg1_in) != is_unsigned || std::holds_alternative<unsigned>(arg_out) != is_unsigned) {
+              throw CircuitInvalidity("Bits passed to `add_c_and` must either all be `int` or all `Bit`.");
             }
-            return add_gate_method<unsigned>(&circ, op, args, kwargs);
+            if (is_unsigned) {
+              unsigned uin0 = std::get<unsigned>(arg0_in);
+              unsigned uin1 = std::get<unsigned>(arg1_in);
+              unsigned uout = std::get<unsigned>(arg_out);
+              if (uin0 == uout) return add_gate_method_any(&circ, AndWithOp(), std::vector<unsigned>{uin1, uout}, kwargs);
+              else if (uin1 == uout) return add_gate_method_any(&circ, AndWithOp(), std::vector<unsigned>{uin0, uout}, kwargs);
+              else return add_gate_method_any(&circ, AndOp(), std::vector<unsigned>{uin0, uin1, uout}, kwargs);
+            }
+            else {
+              Bit bin0 = std::get<Bit>(arg0_in);
+              Bit bin1 = std::get<Bit>(arg1_in);
+              Bit bout = std::get<Bit>(arg_out);
+              if (bin0 == bout) return add_gate_method_any(&circ, AndWithOp(), std::vector<UnitID>{bin1, bout}, kwargs);
+              else if (bin1 == bout) return add_gate_method_any(&circ, AndWithOp(), std::vector<UnitID>{bin0, bout}, kwargs);
+              else return add_gate_method_any(&circ, AndOp(), std::vector<UnitID>{bin0, bin1, bout}, kwargs);
+            }
           },
           "Appends a binary AND operation to the end of the circuit."
           "\n\n:param arg0_in: first input bit"
@@ -458,44 +430,31 @@ void init_circuit_add_classical_op(
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("arg0_in"), py::arg("arg1_in"), py::arg("arg_out"))
-      .def(
-          "add_c_and",
-          [](Circuit &circ, const Bit& arg0_in, const Bit& arg1_in, const Bit& arg_out,
-             const py::kwargs &kwargs) {
-            Op_ptr op;
-            std::vector<Bit> args;
-            if (arg0_in == arg_out) {
-              op = AndWithOp();
-              args = {arg1_in, arg_out};
-            } else if (arg1_in == arg_out) {
-              op = AndWithOp();
-              args = {arg0_in, arg_out};
-            } else {
-              op = AndOp();
-              args = {arg0_in, arg1_in, arg_out};
-            }
-            return add_gate_method<Bit>(&circ, op, args, kwargs);
-          },
-          "See :py:meth:`add_c_and`.", py::arg("arg0_in"), py::arg("arg1_in"),
-          py::arg("arg_out"))
-      .def(
-          "add_c_or",
-          [](Circuit &circ, unsigned arg0_in, unsigned arg1_in,
-             unsigned arg_out, const py::kwargs &kwargs) {
-            Op_ptr op;
-            std::vector<unsigned> args;
-            if (arg0_in == arg_out) {
-              op = OrWithOp();
-              args = {arg1_in, arg_out};
-            } else if (arg1_in == arg_out) {
-              op = OrWithOp();
-              args = {arg0_in, arg_out};
-            } else {
-              op = OrOp();
-              args = {arg0_in, arg1_in, arg_out};
-            }
-            return add_gate_method<unsigned>(&circ, op, args, kwargs);
-          },
+          .def(
+            "add_c_or",
+            [](Circuit &circ, const std::variant<unsigned, Bit> &arg0_in, const std::variant<unsigned, Bit> &arg1_in,
+               const std::variant<unsigned, Bit> &arg_out, const py::kwargs &kwargs) {
+              bool is_unsigned = std::holds_alternative<unsigned>(arg0_in);
+              if (std::holds_alternative<unsigned>(arg1_in) != is_unsigned || std::holds_alternative<unsigned>(arg_out) != is_unsigned) {
+                throw CircuitInvalidity("Bits passed to `add_c_or` must either all be `int` or all `Bit`.");
+              }
+              if (is_unsigned) {
+                unsigned uin0 = std::get<unsigned>(arg0_in);
+                unsigned uin1 = std::get<unsigned>(arg1_in);
+                unsigned uout = std::get<unsigned>(arg_out);
+                if (uin0 == uout) return add_gate_method_any(&circ, OrWithOp(), std::vector<unsigned>{uin1, uout}, kwargs);
+                else if (uin1 == uout) return add_gate_method_any(&circ, OrWithOp(), std::vector<unsigned>{uin0, uout}, kwargs);
+                else return add_gate_method_any(&circ, OrOp(), std::vector<unsigned>{uin0, uin1, uout}, kwargs);
+              }
+              else {
+                Bit bin0 = std::get<Bit>(arg0_in);
+                Bit bin1 = std::get<Bit>(arg1_in);
+                Bit bout = std::get<Bit>(arg_out);
+                if (bin0 == bout) return add_gate_method_any(&circ, OrWithOp(), std::vector<UnitID>{bin1, bout}, kwargs);
+                else if (bin1 == bout) return add_gate_method_any(&circ, OrWithOp(), std::vector<UnitID>{bin0, bout}, kwargs);
+                else return add_gate_method_any(&circ, OrOp(), std::vector<UnitID>{bin0, bin1, bout}, kwargs);
+              }
+            },
           "Appends a binary OR operation to the end of the circuit."
           "\n\n:param arg0_in: first input bit"
           "\n:param arg1_in: second input bit"
@@ -506,42 +465,29 @@ void init_circuit_add_classical_op(
           "\n:return: the new :py:class:`Circuit`",
           py::arg("arg0_in"), py::arg("arg1_in"), py::arg("arg_out"))
       .def(
-          "add_c_or",
-          [](Circuit &circ, const Bit& arg0_in, const Bit& arg1_in, const Bit& arg_out,
-             const py::kwargs &kwargs) {
-            Op_ptr op;
-            std::vector<Bit> args;
-            if (arg0_in == arg_out) {
-              op = OrWithOp();
-              args = {arg1_in, arg_out};
-            } else if (arg1_in == arg_out) {
-              op = OrWithOp();
-              args = {arg0_in, arg_out};
-            } else {
-              op = OrOp();
-              args = {arg0_in, arg1_in, arg_out};
-            }
-            return add_gate_method<Bit>(&circ, op, args, kwargs);
-          },
-          "See :py:meth:`add_c_or`.", py::arg("arg0_in"), py::arg("arg1_in"),
-          py::arg("arg_out"))
-      .def(
           "add_c_xor",
-          [](Circuit &circ, unsigned arg0_in, unsigned arg1_in,
-             unsigned arg_out, const py::kwargs &kwargs) {
-            Op_ptr op;
-            std::vector<unsigned> args;
-            if (arg0_in == arg_out) {
-              op = XorWithOp();
-              args = {arg1_in, arg_out};
-            } else if (arg1_in == arg_out) {
-              op = XorWithOp();
-              args = {arg0_in, arg_out};
-            } else {
-              op = XorOp();
-              args = {arg0_in, arg1_in, arg_out};
+          [](Circuit &circ, const std::variant<unsigned, Bit> &arg0_in, const std::variant<unsigned, Bit> &arg1_in,
+             const std::variant<unsigned, Bit> &arg_out, const py::kwargs &kwargs) {
+            bool is_unsigned = std::holds_alternative<unsigned>(arg0_in);
+            if (std::holds_alternative<unsigned>(arg1_in) != is_unsigned || std::holds_alternative<unsigned>(arg_out) != is_unsigned) {
+              throw CircuitInvalidity("Bits passed to `add_c_xor` must either all be `int` or all `Bit`.");
             }
-            return add_gate_method<unsigned>(&circ, op, args, kwargs);
+            if (is_unsigned) {
+              unsigned uin0 = std::get<unsigned>(arg0_in);
+              unsigned uin1 = std::get<unsigned>(arg1_in);
+              unsigned uout = std::get<unsigned>(arg_out);
+              if (uin0 == uout) return add_gate_method_any(&circ, XorWithOp(), std::vector<unsigned>{uin1, uout}, kwargs);
+              else if (uin1 == uout) return add_gate_method_any(&circ, XorWithOp(), std::vector<unsigned>{uin0, uout}, kwargs);
+              else return add_gate_method_any(&circ, XorOp(), std::vector<unsigned>{uin0, uin1, uout}, kwargs);
+            }
+            else {
+              Bit bin0 = std::get<Bit>(arg0_in);
+              Bit bin1 = std::get<Bit>(arg1_in);
+              Bit bout = std::get<Bit>(arg_out);
+              if (bin0 == bout) return add_gate_method_any(&circ, XorWithOp(), std::vector<UnitID>{bin1, bout}, kwargs);
+              else if (bin1 == bout) return add_gate_method_any(&circ, XorWithOp(), std::vector<UnitID>{bin0, bout}, kwargs);
+              else return add_gate_method_any(&circ, XorOp(), std::vector<UnitID>{bin0, bin1, bout}, kwargs);
+            }
           },
           "Appends a binary XOR operation to the end of the circuit."
           "\n\n:param arg0_in: first input bit"
@@ -553,31 +499,23 @@ void init_circuit_add_classical_op(
           "\n:return: the new :py:class:`Circuit`",
           py::arg("arg0_in"), py::arg("arg1_in"), py::arg("arg_out"))
       .def(
-          "add_c_xor",
-          [](Circuit &circ, const Bit& arg0_in, const Bit& arg1_in, const Bit& arg_out,
-             const py::kwargs &kwargs) {
-            Op_ptr op;
-            std::vector<Bit> args;
-            if (arg0_in == arg_out) {
-              op = XorWithOp();
-              args = {arg1_in, arg_out};
-            } else if (arg1_in == arg_out) {
-              op = XorWithOp();
-              args = {arg0_in, arg_out};
-            } else {
-              op = XorOp();
-              args = {arg0_in, arg1_in, arg_out};
-            }
-            return add_gate_method<Bit>(&circ, op, args, kwargs);
-          },
-          "See :py:meth:`add_c_xor`.", py::arg("arg0_in"), py::arg("arg1_in"),
-          py::arg("arg_out"))
-      .def(
           "add_c_not",
-          [](Circuit &circ, unsigned arg_in, unsigned arg_out,
+          [](Circuit &circ, const std::variant<unsigned, Bit> &arg_in, const std::variant<unsigned, Bit> &arg_out,
              const py::kwargs &kwargs) {
-            return add_gate_method<unsigned>(
-                &circ, NotOp(), {arg_in, arg_out}, kwargs);
+            bool is_unsigned = std::holds_alternative<unsigned>(arg_in);
+            if (std::holds_alternative<unsigned>(arg_out) != is_unsigned) {
+              throw CircuitInvalidity("Bits passed to `add_c_not` must either all be `int` or all `Bit`.");
+            }
+            if (is_unsigned) {
+              unsigned uin = std::get<unsigned>(arg_in);
+              unsigned uout = std::get<unsigned>(arg_out);
+              return add_gate_method_any(&circ, NotOp(), std::vector<unsigned>{uin, uout}, kwargs);
+            }
+            else {
+              Bit bin = std::get<Bit>(arg_in);
+              Bit bout = std::get<Bit>(arg_out);
+              return add_gate_method_any(&circ, NotOp(), std::vector<UnitID>{bin, bout}, kwargs);
+            }
           },
           "Appends a NOT operation to the end of the circuit."
           "\n\n:param arg_in: input bit"
@@ -588,46 +526,14 @@ void init_circuit_add_classical_op(
           "\n:return: the new :py:class:`Circuit`",
           py::arg("arg_in"), py::arg("arg_out"))
       .def(
-          "add_c_not",
-          [](Circuit &circ, Bit arg_in, Bit arg_out, const py::kwargs &kwargs) {
-            return add_gate_method<Bit>(
-                &circ, NotOp(), {std::move(arg_in), std::move(arg_out)}, kwargs);
-          },
-          "See :py:meth:`add_c_not`.", py::arg("arg_in"), py::arg("arg_out"))
-      .def(
           "add_c_range_predicate",
           [](Circuit &circ, _tket_uint_t a, _tket_uint_t b,
-             const py::tket_custom::SequenceVec<unsigned> &args_in, unsigned arg_out,
+             const var_seq_bs_t &args_in, const std::variant<unsigned, Bit> &arg_out,
              const py::kwargs &kwargs) {
-            unsigned n_args_in = args_in.size();
+            unsigned n_args_in = var_seq_len(args_in);
             std::shared_ptr<RangePredicateOp> op =
                 std::make_shared<RangePredicateOp>(n_args_in, a, b);
-            std::vector<unsigned> args = args_in;
-            args.push_back(arg_out);
-            return add_gate_method<unsigned>(&circ, op, args, kwargs);
-          },
-          "Appends a range-predicate operation to the end of the circuit."
-          "\n\n:param minval: lower bound of input in little-endian encoding"
-          "\n:param maxval: upper bound of input in little-endian encoding"
-          "\n:param args_in: input bits"
-          "\n:param arg_out: output bit (distinct from input bits)"
-          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
-          " `condition_value`"
-          "\n:return: the new :py:class:`Circuit`",
-          py::arg("minval"), py::arg("maxval"), py::arg("args_in"),
-          py::arg("arg_out"))
-      .def(
-          "add_c_range_predicate",
-          [](Circuit &circ, _tket_uint_t a, _tket_uint_t b,
-             const py::tket_custom::SequenceVec<Bit> &args_in, const Bit& arg_out,
-             const py::kwargs &kwargs) {
-            unsigned n_args_in = args_in.size();
-            std::shared_ptr<RangePredicateOp> op =
-                std::make_shared<RangePredicateOp>(n_args_in, a, b);
-            std::vector<Bit> args = args_in;
-            args.push_back(arg_out);
-            return add_gate_method<Bit>(&circ, op, args, kwargs);
+            return add_gate_method_any(&circ, op, var_bs_b_to_var_vec(args_in, arg_out, "add_c_range_predicate"), kwargs);
           },
           "Appends a range-predicate operation to the end of the circuit."
           "\n\n:param minval: lower bound of input in little-endian encoding"

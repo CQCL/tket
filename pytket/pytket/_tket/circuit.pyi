@@ -160,379 +160,163 @@ class Circuit:
         """
         Construct Circuit instance from JSON serializable dictionary representation of the Circuit.
         """
-    @typing.overload
-    def AAMS(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, angle2: sympy.Expr | float, qubit0: int, qubit1: int, **kwargs: Any) -> Circuit:
+    def AAMS(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, angle2: sympy.Expr | float, qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends an AAMS gate with possibly symbolic angles (specified in half-turns).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def AAMS(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, angle2: sympy.Expr | float, qubit0: pytket._tket.unit_id.Qubit, qubit1: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends an AAMS gate with possibly symbolic angles (specified in half-turns).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def CCX(self, control_0: int, control_1: int, target: int, **kwargs: Any) -> Circuit:
+    def CCX(self, control_0: int | pytket._tket.unit_id.Qubit, control_1: int | pytket._tket.unit_id.Qubit, target: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a CCX gate on the wires for the specified control and target qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def CCX(self, control_0: pytket._tket.unit_id.Qubit, control_1: pytket._tket.unit_id.Qubit, target: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a CCX gate on the wires for the specified control and target qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def CH(self, control_qubit: int, target_qubit: int, **kwargs: Any) -> Circuit:
+    def CH(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a CH gate on the wires for the specified control and target qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def CH(self, control_qubit: pytket._tket.unit_id.Qubit, target_qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a CH gate on the wires for the specified control and target qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def CRx(self, angle: sympy.Expr | float, control_qubit: int, target_qubit: int, **kwargs: Any) -> Circuit:
+    def CRx(self, angle: sympy.Expr | float, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a CRx gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified control and target qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def CRx(self, angle: sympy.Expr | float, control_qubit: pytket._tket.unit_id.Qubit, target_qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a CRx gate with a symbolic angle (specified in half-turns) on the wires for the specified control and target qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def CRy(self, angle: sympy.Expr | float, control_qubit: int, target_qubit: int, **kwargs: Any) -> Circuit:
+    def CRy(self, angle: sympy.Expr | float, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a CRy gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified control and target qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def CRy(self, angle: sympy.Expr | float, control_qubit: pytket._tket.unit_id.Qubit, target_qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a CRy gate with a symbolic angle (specified in half-turns) on the wires for the specified control and target qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def CRz(self, angle: sympy.Expr | float, control_qubit: int, target_qubit: int, **kwargs: Any) -> Circuit:
+    def CRz(self, angle: sympy.Expr | float, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a CRz gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified control and target qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def CRz(self, angle: sympy.Expr | float, control_qubit: pytket._tket.unit_id.Qubit, target_qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a CRz gate with a symbolic angle (specified in half-turns) on the wires for the specified control and target qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def CS(self, control_qubit: int, target_qubit: int, **kwargs: Any) -> Circuit:
+    def CS(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a CS gate on the wires for the specified control and target qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def CS(self, control_qubit: pytket._tket.unit_id.Qubit, target_qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a CS gate on the wires for the specified control and target qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def CSWAP(self, control: int, target_0: int, target_1: int, **kwargs: Any) -> Circuit:
+    def CSWAP(self, control: int | pytket._tket.unit_id.Qubit, target_0: int | pytket._tket.unit_id.Qubit, target_1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a CSWAP gate on the wires for the specified control and target qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def CSWAP(self, control: pytket._tket.unit_id.Qubit, target_0: pytket._tket.unit_id.Qubit, target_1: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a CSWAP gate on the wires for the specified control and target qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def CSX(self, control_qubit: int, target_qubit: int, **kwargs: Any) -> Circuit:
+    def CSX(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a CSX gate on the wires for the specified control and target qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def CSX(self, control_qubit: pytket._tket.unit_id.Qubit, target_qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a CSX gate on the wires for the specified control and target qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def CSXdg(self, control_qubit: int, target_qubit: int, **kwargs: Any) -> Circuit:
+    def CSXdg(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a CSXdg gate on the wires for the specified control and target qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def CSXdg(self, control_qubit: pytket._tket.unit_id.Qubit, target_qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a CSXdg gate on the wires for the specified control and target qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def CSdg(self, control_qubit: int, target_qubit: int, **kwargs: Any) -> Circuit:
+    def CSdg(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a CSdg gate on the wires for the specified control and target qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def CSdg(self, control_qubit: pytket._tket.unit_id.Qubit, target_qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a CSdg gate on the wires for the specified control and target qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def CU1(self, angle: sympy.Expr | float, control_qubit: int, target_qubit: int, **kwargs: Any) -> Circuit:
+    def CU1(self, angle: sympy.Expr | float, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a CU1 gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified control and target qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def CU1(self, angle: sympy.Expr | float, control_qubit: pytket._tket.unit_id.Qubit, target_qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a CU1 gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified control and target qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def CU3(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, angle2: sympy.Expr | float, control_qubit: int, target_qubit: int, **kwargs: Any) -> Circuit:
+    def CU3(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, angle2: sympy.Expr | float, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a CU3 gate with possibly symbolic angles (specified in half-turns) on the wires for the specified control and target qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def CU3(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, angle2: sympy.Expr | float, control_qubit: pytket._tket.unit_id.Qubit, target_qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a CU3 gate with possibly symbolic angles (specified in half-turns) on the wires for the specified control and target qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def CV(self, control_qubit: int, target_qubit: int, **kwargs: Any) -> Circuit:
+    def CV(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a CV gate on the wires for the specified control and target qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def CV(self, control_qubit: pytket._tket.unit_id.Qubit, target_qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a CV gate on the wires for the specified control and target qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def CVdg(self, control_qubit: int, target_qubit: int, **kwargs: Any) -> Circuit:
+    def CVdg(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a CVdg gate on the wires for the specified control and target qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def CVdg(self, control_qubit: pytket._tket.unit_id.Qubit, target_qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a CVdg gate on the wires for the specified control and target qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def CX(self, control_qubit: int, target_qubit: int, **kwargs: Any) -> Circuit:
+    def CX(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a CX gate on the wires for the specified control and target qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def CX(self, control_qubit: pytket._tket.unit_id.Qubit, target_qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a CX gate on the wires for the specified control and target qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def CY(self, control_qubit: int, target_qubit: int, **kwargs: Any) -> Circuit:
+    def CY(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a CY gate on the wires for the specified control and target qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def CY(self, control_qubit: pytket._tket.unit_id.Qubit, target_qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a CY gate on the wires for the specified control and target qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def CZ(self, control_qubit: int, target_qubit: int, **kwargs: Any) -> Circuit:
+    def CZ(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a CZ gate on the wires for the specified control and target qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def CZ(self, control_qubit: pytket._tket.unit_id.Qubit, target_qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a CZ gate on the wires for the specified control and target qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def ECR(self, qubit_0: int, qubit_1: int, **kwargs: Any) -> Circuit:
+    def ECR(self, qubit_0: int | pytket._tket.unit_id.Qubit, qubit_1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends an ECR gate on the wires for the specified qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def ECR(self, qubit_0: pytket._tket.unit_id.Qubit, qubit_1: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends an ECR gate on the wires for the specified qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def ESWAP(self, angle: sympy.Expr | float, qubit0: int, qubit1: int, **kwargs: Any) -> Circuit:
+    def ESWAP(self, angle: sympy.Expr | float, qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends an ESWAP gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified two qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def ESWAP(self, angle: sympy.Expr | float, qubit0: pytket._tket.unit_id.Qubit, qubit1: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends an ESWAP gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified two qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def FSim(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, qubit0: int, qubit1: int, **kwargs: Any) -> Circuit:
+    def FSim(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends an FSim gate with possibly symbolic angles (specified in half-turns) on the wires for the specified qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def FSim(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, qubit0: pytket._tket.unit_id.Qubit, qubit1: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends an FSim gate with possibly symbolic angles (specified in half-turns) on the wires for the specified qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def GPI(self, angle: sympy.Expr | float, qubit: int, **kwargs: Any) -> Circuit:
+    def GPI(self, angle: sympy.Expr | float, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a GPI gate with a possibly symbolic angle (specified in half-turns).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def GPI(self, angle: sympy.Expr | float, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a GPI gate with a possibly symbolic angle (specified in half-turns).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def GPI2(self, angle: sympy.Expr | float, qubit: int, **kwargs: Any) -> Circuit:
+    def GPI2(self, angle: sympy.Expr | float, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a GPI2 gate with a possibly symbolic angle (specified in half-turns).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def GPI2(self, angle: sympy.Expr | float, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a GPI2 gate with a possibly symbolic angle (specified in half-turns).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def H(self, qubit: int, **kwargs: Any) -> Circuit:
+    def H(self, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a Hadamard gate.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def H(self, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a Hadamard gate.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def ISWAP(self, angle: sympy.Expr | float, qubit0: int, qubit1: int, **kwargs: Any) -> Circuit:
+    def ISWAP(self, angle: sympy.Expr | float, qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends an ISWAP gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def ISWAP(self, angle: sympy.Expr | float, qubit0: pytket._tket.unit_id.Qubit, qubit1: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends an ISWAP gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def ISWAPMax(self, qubit0: int, qubit1: int, **kwargs: Any) -> Circuit:
+    def ISWAPMax(self, qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends an ISWAPMax gate on the wires for the specified qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def ISWAPMax(self, qubit0: pytket._tket.unit_id.Qubit, qubit1: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends an ISWAPMax gate on the wires for the specified qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def Measure(self, qubit: int, bit_index: int, **kwargs: Any) -> Circuit:
-        """
-        Appends a single-qubit measurement in the computational (Z) basis.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def Measure(self, qubit: pytket._tket.unit_id.Qubit, bit: pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
+    def Measure(self, qubit: int | pytket._tket.unit_id.Qubit, bit: int | pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
         """
         Appends a single-qubit measurement in the computational (Z) basis.
         
@@ -540,403 +324,171 @@ class Circuit:
         """
     def Phase(self, arg0: sympy.Expr | float, **kwargs: Any) -> Circuit:
         ...
-    @typing.overload
-    def PhasedISWAP(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, qubit0: int, qubit1: int, **kwargs: Any) -> Circuit:
+    def PhasedISWAP(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a PhasedISWAP gate with possibly symbolic angles (specified in half-turns) on the wires for the specified qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def PhasedISWAP(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, qubit0: pytket._tket.unit_id.Qubit, qubit1: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a PhasedISWAP gate with posisbly symbolic angles (specified in half-turns) on the wires for the specified qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def PhasedX(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, qubit: int, **kwargs: Any) -> Circuit:
+    def PhasedX(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a PhasedX gate with possibly symbolic angles (specified in half-turns) on the wires for the specified qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def PhasedX(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a PhasedX gate with possibly symbolic angles (specified in half-turns) on the wires for the specified qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def Reset(self, qubit: int, **kwargs: Any) -> Circuit:
+    def Reset(self, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a Reset operation. Sets a qubit to the Z-basis 0 state. Non-unitary operation.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def Reset(self, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a Reset operation. Sets a qubit to the Z-basis 0 state. Non-unitary operation.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def Rx(self, angle: sympy.Expr | float, qubit: int, **kwargs: Any) -> Circuit:
+    def Rx(self, angle: sympy.Expr | float, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends an Rx gate with a possibly symbolic angle (specified in half-turns).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def Rx(self, angle: sympy.Expr | float, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends an Rx gate with a possibly symbolic angle (specified in half-turns).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def Ry(self, angle: sympy.Expr | float, qubit: int, **kwargs: Any) -> Circuit:
+    def Ry(self, angle: sympy.Expr | float, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends an Ry gate with a possibly symbolic angle (specified in half-turns).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def Ry(self, angle: sympy.Expr | float, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends an Ry gate with a possibly symbolic angle (specified in half-turns).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def Rz(self, angle: sympy.Expr | float, qubit: int, **kwargs: Any) -> Circuit:
+    def Rz(self, angle: sympy.Expr | float, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends an Rz gate with a possibly symbolic angle (specified in half-turns).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def Rz(self, angle: sympy.Expr | float, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends an Rz gate with a possibly symbolic angle (specified in half-turns).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def S(self, qubit: int, **kwargs: Any) -> Circuit:
+    def S(self, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends an S gate (equivalent to U1(0.5,-)).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def S(self, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends an S gate (equivalent to Rz(0.5,-)).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def SWAP(self, qubit_0: int, qubit_1: int, **kwargs: Any) -> Circuit:
+    def SWAP(self, qubit_0: int | pytket._tket.unit_id.Qubit, qubit_1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a SWAP gate on the wires for the specified qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def SWAP(self, qubit_0: pytket._tket.unit_id.Qubit, qubit_1: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a SWAP gate on the wires for the specified qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def SX(self, qubit: int, **kwargs: Any) -> Circuit:
+    def SX(self, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a SX gate (equivalent to Rx(0.5,-) up to a 0.25 global phase).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def SX(self, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a SX gate (equivalent to Rx(0.5,-) up to a 0.25 global phase).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def SXdg(self, qubit: int, **kwargs: Any) -> Circuit:
+    def SXdg(self, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a SXdg gate (equivalent to Rx(-0.5,-) up to a -0.25 global phase).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def SXdg(self, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a SXdg gate (equivalent to Rx(-0.5,-) up to a -0.25 global phase).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def Sdg(self, qubit: int, **kwargs: Any) -> Circuit:
+    def Sdg(self, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends an S-dagger gate (equivalent to U1(-0.5,-)).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def Sdg(self, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends an S-dagger gate (equivalent to Rz(-0.5,-)).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def Sycamore(self, qubit0: int, qubit1: int, **kwargs: Any) -> Circuit:
+    def Sycamore(self, qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a Sycamore gate on the wires for the specified qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def Sycamore(self, qubit0: pytket._tket.unit_id.Qubit, qubit1: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a Sycamore gate on the wires for the specified qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def T(self, qubit: int, **kwargs: Any) -> Circuit:
+    def T(self, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a T gate (equivalent to U1(0.25,-)).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def T(self, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a T gate (equivalent to Rz(0.25,-)).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def TK1(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, angle2: sympy.Expr | float, qubit: int, **kwargs: Any) -> Circuit:
+    def TK1(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, angle2: sympy.Expr | float, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a TK1 gate with possibly symbolic angles (specified in half-turns).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def TK1(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, angle2: sympy.Expr | float, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a TK1 gate with possibly symbolic angles (specified in half-turns).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def TK2(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, angle2: sympy.Expr | float, qubit0: int, qubit1: int, **kwargs: Any) -> Circuit:
+    def TK2(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, angle2: sympy.Expr | float, qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a TK2 gate with possibly symbolic angles (specified in half-turns).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def TK2(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, angle2: sympy.Expr | float, qubit0: pytket._tket.unit_id.Qubit, qubit1: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a TK2 gate with possibly symbolic angles (specified in half-turns).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def Tdg(self, qubit: int, **kwargs: Any) -> Circuit:
+    def Tdg(self, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a T-dagger gate (equivalent to U1(-0.25,-)).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def Tdg(self, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a T-dagger gate (equivalent to Rz(-0.25,-)).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def U1(self, angle: sympy.Expr | float, qubit: int, **kwargs: Any) -> Circuit:
+    def U1(self, angle: sympy.Expr | float, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a U1 gate with a possibly symbolic angle (specified in half-turns).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def U1(self, angle: sympy.Expr | float, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a U1 gate with a possibly symbolic angle (specified in half-turns).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def U2(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, qubit: int, **kwargs: Any) -> Circuit:
+    def U2(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a U2 gate with possibly symbolic angles (specified in half-turns).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def U2(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a U2 gate with possibly symbolic angles (specified in half-turns).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def U3(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, angle2: sympy.Expr | float, qubit: int, **kwargs: Any) -> Circuit:
+    def U3(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, angle2: sympy.Expr | float, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a U3 gate with possibly symbolic angles (specified in half-turns).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def U3(self, angle0: sympy.Expr | float, angle1: sympy.Expr | float, angle2: sympy.Expr | float, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a U3 gate with possibly symbolic angles (specified in half-turns).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def V(self, qubit: int, **kwargs: Any) -> Circuit:
+    def V(self, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a V gate (equivalent to Rx(0.5,-)).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def V(self, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a V gate (equivalent to Rx(0.5,-)).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def Vdg(self, qubit: int, **kwargs: Any) -> Circuit:
+    def Vdg(self, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a V-dagger gate (equivalent to Rx(-0.5,-)).
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def Vdg(self, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a V-dagger gate (equivalent to Rx(-0.5,-)).
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def X(self, qubit: int, **kwargs: Any) -> Circuit:
+    def X(self, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def X(self, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends an X gate.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def XXPhase(self, angle: sympy.Expr | float, qubit0: int, qubit1: int, **kwargs: Any) -> Circuit:
+    def XXPhase(self, angle: sympy.Expr | float, qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a XX gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified two qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def XXPhase(self, qubit0: sympy.Expr | float, qubit1: pytket._tket.unit_id.Qubit, angle: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a XX gate with a symbolic angle (specified in half-turns) on the wires for the specified two qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def XXPhase3(self, angle: sympy.Expr | float, qubit0: int, qubit1: int, qubit2: int, **kwargs: Any) -> Circuit:
+    def XXPhase3(self, angle: sympy.Expr | float, qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, qubit2: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a 3-qubit XX gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified three qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def XXPhase3(self, angle: sympy.Expr | float, qubit0: pytket._tket.unit_id.Qubit, qubit1: pytket._tket.unit_id.Qubit, qubit2: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a 3-qubit XX gate with a symbolic angle (specified in half-turns) on the wires for the specified three qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def Y(self, qubit: int, **kwargs: Any) -> Circuit:
+    def Y(self, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def Y(self, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a Y gate.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def YYPhase(self, angle: sympy.Expr | float, qubit0: int, qubit1: int, **kwargs: Any) -> Circuit:
+    def YYPhase(self, angle: sympy.Expr | float, qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a YY gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified two qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def YYPhase(self, qubit0: sympy.Expr | float, qubit1: pytket._tket.unit_id.Qubit, angle: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a YY gate with a symbolic angle (specified in half-turns) on the wires for the specified two qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def Z(self, qubit: int, **kwargs: Any) -> Circuit:
+    def Z(self, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def Z(self, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a Z gate.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def ZZMax(self, qubit0: int, qubit1: int, **kwargs: Any) -> Circuit:
+    def ZZMax(self, qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a ZZMax gate on the wires for the specified two qubits.
         
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def ZZMax(self, qubit0: pytket._tket.unit_id.Qubit, qubit1: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a ZZMax gate on the wires for the specified two qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def ZZPhase(self, angle: sympy.Expr | float, qubit0: int, qubit1: int, **kwargs: Any) -> Circuit:
+    def ZZPhase(self, angle: sympy.Expr | float, qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Appends a ZZ gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified two qubits.
-        
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def ZZPhase(self, angle: sympy.Expr | float, qubit0: pytket._tket.unit_id.Qubit, qubit1: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """
-        Appends a ZZ gate with a symbolic angle (specified in half-turns) on the wires for the specified two qubits.
         
         :return: the new :py:class:`Circuit`
         """
@@ -1009,7 +561,7 @@ class Circuit:
         :param size: Number of wasm bits that should be added to the circuit
         """
     @typing.overload
-    def _add_wasm(self, funcname: str, wasm_uid: str, width_i_parameter: typing.Sequence[int], width_o_parameter: typing.Sequence[int], args: typing.Sequence[int], wasm_wire_args: typing.Sequence[int], **kwargs: Any) -> Circuit:
+    def _add_wasm(self, funcname: str, wasm_uid: str, width_i_parameter: typing.Sequence[int], width_o_parameter: typing.Sequence[int], args: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Bit], wasm_wire_args: typing.Sequence[int], **kwargs: Any) -> Circuit:
         """
         Add a classical function call from a wasm file to the circuit. 
         
@@ -1019,19 +571,6 @@ class Circuit:
         :param width_o_parameter: list of the number of bits in the output variables
         :param args: vector of circuit bits the wasm op should be added to
         :param wasm_wire_args: vector of circuit wasmwires the wasm op should be added to
-        :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def _add_wasm(self, funcname: str, wasm_uid: str, width_i_parameter: typing.Sequence[int], width_o_parameter: typing.Sequence[int], args: typing.Sequence[pytket._tket.unit_id.Bit], wasm_wire_args: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Add a classical function call from a wasm file to the circuit. 
-        
-        :param funcname: name of the function that is called
-        :param wasm_uid: unit id to identify the wasm file
-        :param width_i_parameter: list of the number of bits in the input variables
-        :param width_o_parameter: list of the number of bits in the output variables
-        :param args: vector of circuit bits the wasm op should be added to
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`Circuit`
         """
@@ -1058,18 +597,7 @@ class Circuit:
         Saves a visualisation of a circuit's DAG to a ".dot" file
         """
     @typing.overload
-    def add_assertion(self, box: ProjectorAssertionBox, qubits: typing.Sequence[int], ancilla: int | None = None, name: str | None = None) -> Circuit:
-        """
-        Append a :py:class:`ProjectorAssertionBox` to the circuit.
-        
-        :param box: ProjectorAssertionBox to append
-        :param qubits: indices of target qubits
-        :param ancilla: index of ancilla qubit
-        :param name: name used to identify this assertion
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_assertion(self, box: ProjectorAssertionBox, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], ancilla: pytket._tket.unit_id.Qubit | None = None, name: str | None = None) -> Circuit:
+    def add_assertion(self, box: ProjectorAssertionBox, qubits: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], ancilla: int | pytket._tket.unit_id.Qubit | None = None, name: str | None = None) -> Circuit:
         """
         Append a :py:class:`ProjectorAssertionBox` to the circuit.
         
@@ -1080,18 +608,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_assertion(self, box: StabiliserAssertionBox, qubits: typing.Sequence[int], ancilla: int, name: str | None = None) -> Circuit:
-        """
-        Append a :py:class:`StabiliserAssertionBox` to the circuit.
-        
-        :param box: StabiliserAssertionBox to append
-        :param qubits: indices of target qubits
-        :param ancilla: index of ancilla qubit
-        :param name: name used to identify this assertion
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_assertion(self, box: StabiliserAssertionBox, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], ancilla: pytket._tket.unit_id.Qubit, name: str | None = None) -> Circuit:
+    def add_assertion(self, box: StabiliserAssertionBox, qubits: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], ancilla: int | pytket._tket.unit_id.Qubit, name: str | None = None) -> Circuit:
         """
         Append a :py:class:`StabiliserAssertionBox` to the circuit.
         
@@ -1130,8 +647,7 @@ class Circuit:
         
         :param number: Number of qubits to add
         """
-    @typing.overload
-    def add_c_and(self, arg0_in: int, arg1_in: int, arg_out: int, **kwargs: Any) -> Circuit:
+    def add_c_and(self, arg0_in: int | pytket._tket.unit_id.Bit, arg1_in: int | pytket._tket.unit_id.Bit, arg_out: int | pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
         """
         Appends a binary AND operation to the end of the circuit.
         
@@ -1140,11 +656,6 @@ class Circuit:
         :param arg_out: output bit
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_c_and(self, arg0_in: pytket._tket.unit_id.Bit, arg1_in: pytket._tket.unit_id.Bit, arg_out: pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
-        """
-        See :py:meth:`add_c_and`.
         """
     def add_c_and_to_registers(self, reg0_in: pytket._tket.unit_id.BitRegister, reg1_in: pytket._tket.unit_id.BitRegister, reg_out: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
         """
@@ -1158,8 +669,7 @@ class Circuit:
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_c_copybits(self, args_in: typing.Sequence[int], args_out: typing.Sequence[int], **kwargs: Any) -> Circuit:
+    def add_c_copybits(self, args_in: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Bit], args_out: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
         """
         Appends a classical copy operation
         
@@ -1168,29 +678,17 @@ class Circuit:
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_c_copybits(self, args_in: typing.Sequence[pytket._tket.unit_id.Bit], args_out: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
-        """
-        See :py:meth:`add_c_copybits`.
-        """
     def add_c_copyreg(self, input_reg: pytket._tket.unit_id.BitRegister, output_reg: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
         """
         Copy a classical register to another. Copying is truncated to the size of the smaller of the two registers.
         """
-    @typing.overload
-    def add_c_modifier(self, values: typing.Sequence[bool], args_in: typing.Sequence[int], arg_inout: int, name: str = 'ExplicitModifier', **kwargs: Any) -> Circuit:
+    def add_c_modifier(self, values: typing.Sequence[bool], args_in: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Bit], arg_inout: int | pytket._tket.unit_id.Bit, name: str = 'ExplicitModifier', **kwargs: Any) -> Circuit:
         """
         :param name: operation name
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_c_modifier(self, values: typing.Sequence[bool], args_in: typing.Sequence[pytket._tket.unit_id.Bit], arg_inout: pytket._tket.unit_id.Bit, name: str = 'ExplicitModifier', **kwargs: Any) -> Circuit:
-        """
-        See :py:meth:`add_c_modifier`.
-        """
-    @typing.overload
-    def add_c_not(self, arg_in: int, arg_out: int, **kwargs: Any) -> Circuit:
+    def add_c_not(self, arg_in: int | pytket._tket.unit_id.Bit, arg_out: int | pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
         """
         Appends a NOT operation to the end of the circuit.
         
@@ -1198,11 +696,6 @@ class Circuit:
         :param arg_out: output bit
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_c_not(self, arg_in: pytket._tket.unit_id.Bit, arg_out: pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
-        """
-        See :py:meth:`add_c_not`.
         """
     def add_c_not_to_registers(self, reg_in: pytket._tket.unit_id.BitRegister, reg_out: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
         """
@@ -1215,8 +708,7 @@ class Circuit:
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_c_or(self, arg0_in: int, arg1_in: int, arg_out: int, **kwargs: Any) -> Circuit:
+    def add_c_or(self, arg0_in: int | pytket._tket.unit_id.Bit, arg1_in: int | pytket._tket.unit_id.Bit, arg_out: int | pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
         """
         Appends a binary OR operation to the end of the circuit.
         
@@ -1225,11 +717,6 @@ class Circuit:
         :param arg_out: output bit
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_c_or(self, arg0_in: pytket._tket.unit_id.Bit, arg1_in: pytket._tket.unit_id.Bit, arg_out: pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
-        """
-        See :py:meth:`add_c_or`.
         """
     def add_c_or_to_registers(self, reg0_in: pytket._tket.unit_id.BitRegister, reg1_in: pytket._tket.unit_id.BitRegister, reg_out: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
         """
@@ -1243,32 +730,13 @@ class Circuit:
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_c_predicate(self, values: typing.Sequence[bool], args_in: typing.Sequence[int], arg_out: int, name: str = 'ExplicitPredicate', **kwargs: Any) -> Circuit:
+    def add_c_predicate(self, values: typing.Sequence[bool], args_in: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Bit], arg_out: int | pytket._tket.unit_id.Bit, name: str = 'ExplicitPredicate', **kwargs: Any) -> Circuit:
         """
         :param name: operation name
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_c_predicate(self, values: typing.Sequence[bool], args_in: typing.Sequence[pytket._tket.unit_id.Bit], arg_out: pytket._tket.unit_id.Bit, name: str = 'ExplicitPredicate', **kwargs: Any) -> Circuit:
-        """
-        See :py:meth:`add_c_predicate`.
-        """
-    @typing.overload
-    def add_c_range_predicate(self, minval: int, maxval: int, args_in: typing.Sequence[int], arg_out: int, **kwargs: Any) -> Circuit:
-        """
-        Appends a range-predicate operation to the end of the circuit.
-        
-        :param minval: lower bound of input in little-endian encoding
-        :param maxval: upper bound of input in little-endian encoding
-        :param args_in: input bits
-        :param arg_out: output bit (distinct from input bits)
-        :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_c_range_predicate(self, minval: int, maxval: int, args_in: typing.Sequence[pytket._tket.unit_id.Bit], arg_out: pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
+    def add_c_range_predicate(self, minval: int, maxval: int, args_in: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Bit], arg_out: int | pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
         """
         Appends a range-predicate operation to the end of the circuit.
         
@@ -1295,8 +763,7 @@ class Circuit:
         
         :param register: BitRegister 
         """
-    @typing.overload
-    def add_c_setbits(self, values: typing.Sequence[bool], args: typing.Sequence[int], **kwargs: Any) -> Circuit:
+    def add_c_setbits(self, values: typing.Sequence[bool], args: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
         """
         Appends an operation to set some bit values.
         
@@ -1305,17 +772,11 @@ class Circuit:
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_c_setbits(self, values: typing.Sequence[bool], args: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
-        """
-        See :py:meth:`add_c_setbits`.
-        """
     def add_c_setreg(self, value: int, arg: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
         """
         Set a classical register to an unsigned integer value. The little-endian bitwise representation of the integer is truncated to the register size, up to _TKET_REG_WIDTH bit width. It is zero-padded if the width of the register is greater than _TKET_REG_WIDTH.
         """
-    @typing.overload
-    def add_c_transform(self, values: typing.Sequence[int], args: typing.Sequence[int], name: str = 'ClassicalTransform', **kwargs: Any) -> Circuit:
+    def add_c_transform(self, values: typing.Sequence[int], args: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Bit], name: str = 'ClassicalTransform', **kwargs: Any) -> Circuit:
         """
         Appends a purely classical transformation, defined by a table of values, to the end of the circuit.
         
@@ -1325,13 +786,7 @@ class Circuit:
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_c_transform(self, values: typing.Sequence[int], args: typing.Sequence[pytket._tket.unit_id.Bit], name: str = 'ClassicalTransform', **kwargs: Any) -> Circuit:
-        """
-        See :py:meth:`add_c_transform`.
-        """
-    @typing.overload
-    def add_c_xor(self, arg0_in: int, arg1_in: int, arg_out: int, **kwargs: Any) -> Circuit:
+    def add_c_xor(self, arg0_in: int | pytket._tket.unit_id.Bit, arg1_in: int | pytket._tket.unit_id.Bit, arg_out: int | pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
         """
         Appends a binary XOR operation to the end of the circuit.
         
@@ -1340,11 +795,6 @@ class Circuit:
         :param arg_out: output bit
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_c_xor(self, arg0_in: pytket._tket.unit_id.Bit, arg1_in: pytket._tket.unit_id.Bit, arg_out: pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
-        """
-        See :py:meth:`add_c_xor`.
         """
     def add_c_xor_to_registers(self, reg0_in: pytket._tket.unit_id.BitRegister, reg1_in: pytket._tket.unit_id.BitRegister, reg_out: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
         """
@@ -1358,19 +808,7 @@ class Circuit:
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_circbox(self, circbox: CircBox, args: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`CircBox` to the circuit.
-        
-        The qubits and bits of the :py:class:`CircBox` are wired into the circuit in lexicographic order. Bits follow qubits in the order of arguments.
-        
-        :param circbox: The box to append
-        :param args: Indices of the (default-register) qubits/bits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_circbox(self, circbox: CircBox, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_circbox(self, circbox: CircBox, args: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`CircBox` to the circuit.
         
@@ -1474,8 +912,7 @@ class Circuit:
         :param data: Additional data stored in Barrier operation.
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_conjugation_box(self, box: ConjugationBox, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_conjugation_box(self, box: ConjugationBox, args: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`ConjugationBox` to the circuit.
         
@@ -1483,27 +920,7 @@ class Circuit:
         :param args: The qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_conjugation_box(self, box: ConjugationBox, args: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`ConjugationBox` to the circuit.
-        
-        :param box: The box to append
-        :param args: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_custom_gate(self, definition: CustomGateDef, params: typing.Sequence[sympy.Expr | float], qubits: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Append an instance of a :py:class:`CustomGateDef` to the circuit.
-        
-        :param def: The custom gate definition
-        :param params: List of parameters to instantiate the gate with, in halfturns
-        :param qubits: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_custom_gate(self, definition: CustomGateDef, params: typing.Sequence[sympy.Expr | float], qubits: typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_custom_gate(self, definition: CustomGateDef, params: typing.Sequence[sympy.Expr | float], qubits: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append an instance of a :py:class:`CustomGateDef` to the circuit.
         
@@ -1512,8 +929,7 @@ class Circuit:
         :param qubits: The qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_diagonal_box(self, box: DiagonalBox, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_diagonal_box(self, box: DiagonalBox, args: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`DiagonalBox` to the circuit.
         
@@ -1521,27 +937,7 @@ class Circuit:
         :param args: The qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_diagonal_box(self, box: DiagonalBox, args: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`DiagonalBox` to the circuit.
-        
-        :param box: The box to append
-        :param args: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_dummybox(self, dummybox: DummyBox, qubits: typing.Sequence[int], bits: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`DummyBox` to the circuit.
-        
-        :param dummybox: The box to append
-        :param qubits: Indices (in the default register) of the qubits to append the box to
-        :param bits: Indices of the bits (in the default register) to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_dummybox(self, dummybox: DummyBox, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], bits: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
+    def add_dummybox(self, dummybox: DummyBox, qubits: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], bits: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`DummyBox` to the circuit.
         
@@ -1550,20 +946,7 @@ class Circuit:
         :param bits: Bits to append the box to
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_expbox(self, expbox: ExpBox, qubit_0: int, qubit_1: int, **kwargs: Any) -> Circuit:
-        """
-        Append an :py:class:`ExpBox` to the circuit.
-        
-        The matrix representation is ILO-BE.
-        
-        :param expbox: The box to append
-        :param qubit_0: Index of the first target qubit
-        :param qubit_1: Index of the second target qubit
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_expbox(self, expbox: ExpBox, qubit_0: pytket._tket.unit_id.Qubit, qubit_1: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def add_expbox(self, expbox: ExpBox, qubit_0: int | pytket._tket.unit_id.Qubit, qubit_1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Append an :py:class:`ExpBox` to the circuit.
         
@@ -1575,30 +958,12 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_gate(self, Op: Op, args: typing.Sequence[int], **kwargs: Any) -> Circuit:
+    def add_gate(self, Op: Op, args: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
         """
         Appends a single operation to the end of the circuit on some particular qubits/bits. The number of qubits/bits specified must match the arity of the gate.
         """
     @typing.overload
-    def add_gate(self, Op: Op, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
-        """
-        Appends a single operation to the end of the circuit on some particular qubits/bits. The number of qubits/bits specified must match the arity of the gate.
-        """
-    @typing.overload
-    def add_gate(self, type: OpType, args: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Appends a single (non-parameterised) gate to the end of the circuit on some particular qubits from the default register ('q'). The number of qubits specified must match the arity of the gate. For `OpType.Measure` operations the bit from the default register should follow the qubit.
-        
-        >>> c.add_gate(OpType.H, [0]) # equivalent to c.H(0)
-        >>> c.add_gate(OpType.CX, [0,1]) # equivalent to c.CX(0,1)
-        
-        :param type: The type of operation to add
-        :param args: The list of indices for the qubits/bits to which the operation is applied
-        :param kwargs: Additional properties for classical conditions
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_gate(self, type: OpType, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_gate(self, type: OpType, args: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
         """
         Appends a single (non-parameterised) gate to the end of the circuit on some particular qubits from the default register ('q'). The number of qubits specified must match the arity of the gate. For `OpType.Measure` operations the bit from the default register should follow the qubit.
         
@@ -1611,18 +976,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_gate(self, type: OpType, angle: sympy.Expr | float, args: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Appends a single gate, parameterised by an expression, to the end of circuit on some particular qubits from the default register ('q').
-        
-        :param type: The type of gate to add
-        :param angle: The parameter for the gate in halfturns
-        :param args: The list of indices for the qubits to which the operation is applied
-        :param kwargs: Additional properties for classical conditions
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_gate(self, type: OpType, angle: sympy.Expr | float, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_gate(self, type: OpType, angle: sympy.Expr | float, args: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
         """
         Appends a single gate, parameterised by an expression, to the end of circuit on some particular qubits from the default register ('q').
         
@@ -1633,18 +987,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_gate(self, type: OpType, angles: typing.Sequence[sympy.Expr | float], args: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Appends a single gate, parameterised with a vector of expressions corresponding to halfturns, to the end of circuit on some particular qubits from the default register ('q').
-        
-        :param type: The type of gate to add
-        :param angles: The parameters for the gate in halfturns
-        :param args: The list of indices for the qubits to which the operation is applied
-        :param kwargs: Additional properties for classical conditions
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_gate(self, type: OpType, angles: typing.Sequence[sympy.Expr | float], args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_gate(self, type: OpType, angles: typing.Sequence[sympy.Expr | float], args: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
         """
         Appends a single gate to the end of the circuit
         
@@ -1654,8 +997,7 @@ class Circuit:
         :param kwargs: Additional properties for classical conditions
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_multiplexed_tensored_u2(self, box: MultiplexedTensoredU2Box, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_multiplexed_tensored_u2(self, box: MultiplexedTensoredU2Box, args: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`MultiplexedTensoredU2Box` to the circuit.
         
@@ -1663,17 +1005,7 @@ class Circuit:
         :param args: The qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_multiplexed_tensored_u2(self, box: MultiplexedTensoredU2Box, args: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`MultiplexedTensoredU2Box` to the circuit.
-        
-        :param box: The box to append
-        :param args: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_multiplexedrotation(self, box: MultiplexedRotationBox, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_multiplexedrotation(self, box: MultiplexedRotationBox, args: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`MultiplexedRotationBox` to the circuit.
         
@@ -1681,17 +1013,7 @@ class Circuit:
         :param args: The qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_multiplexedrotation(self, box: MultiplexedRotationBox, args: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`MultiplexedRotationBox` to the circuit.
-        
-        :param box: The box to append
-        :param args: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_multiplexedu2(self, box: MultiplexedU2Box, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_multiplexedu2(self, box: MultiplexedU2Box, args: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`MultiplexedU2Box` to the circuit.
         
@@ -1699,17 +1021,7 @@ class Circuit:
         :param args: The qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_multiplexedu2(self, box: MultiplexedU2Box, args: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`MultiplexedU2Box` to the circuit.
-        
-        :param box: The box to append
-        :param args: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_multiplexor(self, box: MultiplexorBox, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_multiplexor(self, box: MultiplexorBox, args: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`MultiplexorBox` to the circuit.
         
@@ -1717,26 +1029,7 @@ class Circuit:
         :param args: The qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_multiplexor(self, box: MultiplexorBox, args: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`MultiplexorBox` to the circuit.
-        
-        :param box: The box to append
-        :param args: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_pauliexpbox(self, pauliexpbox: PauliExpBox, qubits: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`PauliExpBox` to the circuit.
-        
-        :param pauliexpbox: The box to append
-        :param qubits: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_pauliexpbox(self, pauliexpbox: PauliExpBox, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_pauliexpbox(self, pauliexpbox: PauliExpBox, qubits: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`PauliExpBox` to the circuit.
         
@@ -1744,17 +1037,7 @@ class Circuit:
         :param qubits: The qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_pauliexpcommutingsetbox(self, pauliexpcommutingsetbox: PauliExpCommutingSetBox, qubits: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`PauliExpCommutingSetBox` to the circuit.
-        
-        :param pauliexpcommutingsetbox: The box to append
-        :param qubits: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_pauliexpcommutingsetbox(self, pauliexpcommutingsetbox: PauliExpCommutingSetBox, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_pauliexpcommutingsetbox(self, pauliexpcommutingsetbox: PauliExpCommutingSetBox, qubits: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`PauliExpCommutingSetBox` to the circuit.
         
@@ -1762,17 +1045,7 @@ class Circuit:
         :param qubits: The qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_pauliexppairbox(self, pauliexppairbox: PauliExpPairBox, qubits: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`PauliExpPairBox` to the circuit.
-        
-        :param pauliexppairbox: The box to append
-        :param qubits: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_pauliexppairbox(self, pauliexppairbox: PauliExpPairBox, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_pauliexppairbox(self, pauliexppairbox: PauliExpPairBox, qubits: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`PauliExpPairBox` to the circuit.
         
@@ -1788,17 +1061,7 @@ class Circuit:
         
         :return: circuit with added phase
         """
-    @typing.overload
-    def add_phasepolybox(self, phasepolybox: PhasePolyBox, qubits: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`PhasePolyBox` to the circuit.
-        
-        :param phasepolybox: The box to append
-        :param qubits: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_phasepolybox(self, phasepolybox: PhasePolyBox, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_phasepolybox(self, phasepolybox: PhasePolyBox, qubits: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`PhasePolyBox` to the circuit.
         
@@ -1822,22 +1085,12 @@ class Circuit:
         
         :param register: QubitRegister 
         """
-    @typing.overload
-    def add_qcontrolbox(self, qcontrolbox: QControlBox, args: typing.Sequence[int], **kwargs: Any) -> Circuit:
+    def add_qcontrolbox(self, qcontrolbox: QControlBox, qubits: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`QControlBox` to the circuit.
         
         :param qcontrolbox: The box to append
-        :param args: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_qcontrolbox(self, qcontrolbox: QControlBox, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`QControlBox` to the circuit.
-        
-        :param qcontrolbox: The box to append
-        :param args: The qubits to append the box to
+        :param qubits: The qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
     def add_qubit(self, id: pytket._tket.unit_id.Qubit, reject_dups: bool = True) -> None:
@@ -1847,8 +1100,7 @@ class Circuit:
         :param id: Unique id for the qubit
         :param reject_dups: Fail if there is already a qubit in this circuit with the id. Default to True
         """
-    @typing.overload
-    def add_state_preparation_box(self, box: StatePreparationBox, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_state_preparation_box(self, box: StatePreparationBox, args: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`StatePreparationBox` to the circuit.
         
@@ -1856,26 +1108,7 @@ class Circuit:
         :param args: The qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_state_preparation_box(self, box: StatePreparationBox, args: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`StatePreparationBox` to the circuit.
-        
-        :param box: The box to append
-        :param args: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_termsequencebox(self, termsequencebox: TermSequenceBox, qubits: typing.Sequence[int], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`TermSequenceBox` to the circuit.
-        
-        :param termsequencebox: The box to append
-        :param qubits: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_termsequencebox(self, termsequencebox: TermSequenceBox, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_termsequencebox(self, termsequencebox: TermSequenceBox, qubits: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`TermSequenceBox` to the circuit.
         
@@ -1883,8 +1116,7 @@ class Circuit:
         :param qubits: The qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_toffolibox(self, toffolibox: ToffoliBox, qubits: typing.Sequence[int], **kwargs: Any) -> Circuit:
+    def add_toffolibox(self, toffolibox: ToffoliBox, qubits: typing.Sequence[int] | typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`ToffoliBox` to the circuit.
         
@@ -1892,26 +1124,7 @@ class Circuit:
         :param qubits: Indices of the qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_toffolibox(self, toffolibox: ToffoliBox, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`ToffoliBox` to the circuit.
-        
-        :param toffolibox: The box to append
-        :param qubits: Indices of the qubits to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_unitary1qbox(self, unitarybox: Unitary1qBox, qubit_0: int, **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`Unitary1qBox` to the circuit.
-        
-        :param unitarybox: The box to append
-        :param qubit_0: Index of the qubit to append the box to
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_unitary1qbox(self, unitarybox: Unitary1qBox, qubit_0: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def add_unitary1qbox(self, unitarybox: Unitary1qBox, qubit_0: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`Unitary1qBox` to the circuit.
         
@@ -1919,20 +1132,7 @@ class Circuit:
         :param qubit_0: The qubit to append the box to
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_unitary2qbox(self, unitarybox: Unitary2qBox, qubit_0: int, qubit_1: int, **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`Unitary2qBox` to the circuit.
-        
-        The matrix representation is ILO-BE.
-        
-        :param unitarybox: The box to append
-        :param qubit_0: Index of the first target qubit
-        :param qubit_1: Index of the second target qubit
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_unitary2qbox(self, unitarybox: Unitary2qBox, qubit_0: pytket._tket.unit_id.Qubit, qubit_1: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def add_unitary2qbox(self, unitarybox: Unitary2qBox, qubit_0: int | pytket._tket.unit_id.Qubit, qubit_1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`Unitary2qBox` to the circuit.
         
@@ -1943,19 +1143,7 @@ class Circuit:
         :param qubit_1: The second target qubit
         :return: the new :py:class:`Circuit`
         """
-    @typing.overload
-    def add_unitary3qbox(self, unitarybox: Unitary3qBox, qubit_0: int, qubit_1: int, qubit_2: int, **kwargs: Any) -> Circuit:
-        """
-        Append a :py:class:`Unitary3qBox` to the circuit.
-        
-        :param unitarybox: box to append
-        :param qubit_0: index of target qubit 0
-        :param qubit_1: index of target qubit 1
-        :param qubit_2: index of target qubit 2
-        :return: the new :py:class:`Circuit`
-        """
-    @typing.overload
-    def add_unitary3qbox(self, unitarybox: Unitary3qBox, qubit_0: pytket._tket.unit_id.Qubit, qubit_1: pytket._tket.unit_id.Qubit, qubit_2: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def add_unitary3qbox(self, unitarybox: Unitary3qBox, qubit_0: int | pytket._tket.unit_id.Qubit, qubit_1: int | pytket._tket.unit_id.Qubit, qubit_2: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`Unitary3qBox` to the circuit.
         
