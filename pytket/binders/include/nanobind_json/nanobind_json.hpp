@@ -9,6 +9,7 @@
 #pragma once
 
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/string.h>
 
 #include <nlohmann/json.hpp>
 #include <string>
@@ -147,8 +148,8 @@ struct type_caster<nl::json> {
   }
 
   static handle from_cpp(
-      nl::json src, rv_policy /* policy */,
-      cleanup_list* /* parent */) noexcept {
+      nl::json src, rv_policy,
+      cleanup_list*) noexcept {
     object obj = pyjson::from_json(src);
     return obj.release();
   }
