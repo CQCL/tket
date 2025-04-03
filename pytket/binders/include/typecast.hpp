@@ -69,19 +69,6 @@ struct handle_type_name {
 };
 // )))
 
-// ((( Copied from pybind11 (stl.h)
-template <typename C>
-using has_reserve_method =
-    std::is_same<decltype(std::declval<C>().reserve(0)), void>;
-// )))
-
-// ((( Copied from pybind11 (cast.h)
-template <typename Return, typename SFINAE = void>
-struct return_value_policy_override {
-  static rv_policy policy(rv_policy p) { return p; }
-};
-// )))
-
 template <typename T>
 struct handle_type_name<tket_custom::SequenceVec<T>> {
   static constexpr auto name =
