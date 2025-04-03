@@ -15,47 +15,29 @@
 #pragma once
 #include <nanobind/nanobind.h>
 
+#include <typeinfo>
+
 #include "tket/Utils/UnitID.hpp"
 
-namespace nanobind {
-
-// ((( Copied from pybind11 (type_caster_base.h)
-template <typename itype, typename SFINAE = void>
-struct polymorphic_type_hook_base {
-  static const void *get(const itype *src, const std::type_info *&) {
-    return src;
-  }
-};
-template <typename itype>
-struct polymorphic_type_hook_base<
-    itype, detail::enable_if_t<std::is_polymorphic<itype>::value>> {
-  static const void *get(const itype *src, const std::type_info *&type) {
-    type = src ? &typeid(*src) : nullptr;
-    return dynamic_cast<const void *>(src);
-  }
-};
-template <typename itype, typename SFINAE = void>
-struct polymorphic_type_hook : public polymorphic_type_hook_base<itype> {};
-// )))
+namespace nanobind::detail {
 
 /** Enable automatic downcasting of UnitIDs as required for some Circuit methods
  */
 template <>
-struct polymorphic_type_hook<tket::UnitID> {
-  static const void *get(const tket::UnitID *src, const std::type_info *&type) {
+struct type_hook<tket::UnitID> {
+  static const std::type_info *get(tket::UnitID *src) {
     if (src) {
       if (src->type() == tket::UnitType::Qubit) {
         // Node has no additional info but is more specific
         // If Qubit is needed, then subtyping is sufficient
-        type = &typeid(tket::Node);
+        return &typeid(tket::Node);
       } else if (src->type() == tket::UnitType::WasmState) {
-        type = &typeid(tket::WasmState);
+        return &typeid(tket::WasmState);
       } else {
-        type = &typeid(tket::Bit);
+        return &typeid(tket::Bit);
       }
-    } else
-      type = nullptr;
-    return src;
+    }
+    return &typeid(tket::UnitID);
   }
 };
-}  // namespace nanobind
+}  // namespace nanobind::detail
