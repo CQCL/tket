@@ -15,6 +15,7 @@
 #include "tket/Placement/Placement.hpp"
 
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/map.h>
 #include <nanobind/stl/string.h>
 
 #include <memory>

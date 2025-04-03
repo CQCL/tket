@@ -14,6 +14,7 @@
 
 #include <nanobind/nanobind.h>
 #include <nanobind/operators.h>
+#include <nanobind/stl/function.h>
 #include <nanobind/stl/shared_ptr.h>
 
 #include "tket/Circuit/Circuit.hpp"
