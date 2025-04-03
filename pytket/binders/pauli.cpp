@@ -17,6 +17,7 @@
 #include <nanobind/operators.h>
 #include <nanobind/stl/complex.h>
 #include <nanobind/stl/map.h>
+#include <nanobind/stl/pair.h>
 #include <nanobind/stl/string.h>
 
 #include "deleted_hash.hpp"
