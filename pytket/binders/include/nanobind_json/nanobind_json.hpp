@@ -23,8 +23,10 @@ inline nb::object from_json(const nl::json& j) {
     return nb::none();
   } else if (j.is_boolean()) {
     return nb::bool_(j.get<bool>());
+  } else if (j.is_number_unsigned()) {
+    return nb::int_(j.get<nl::json::number_unsigned_t>());
   } else if (j.is_number_integer()) {
-    return nb::int_(j.get<long>());
+    return nb::int_(j.get<nl::json::number_integer_t>());
   } else if (j.is_number_float()) {
     return nb::float_(j.get<double>());
   } else if (j.is_string()) {
@@ -53,7 +55,25 @@ inline nl::json to_json(const nb::handle& obj) {
     return nb::cast<bool>(obj);
   }
   if (nb::isinstance<nb::int_>(obj)) {
-    return nb::cast<long>(obj);
+    try {
+      nl::json::number_integer_t s = nb::cast<nl::json::number_integer_t>(obj);
+      if (nb::int_(s).equal(obj)) {
+        return s;
+      }
+    } catch (...) {
+    }
+    try {
+      nl::json::number_unsigned_t u =
+          nb::cast<nl::json::number_unsigned_t>(obj);
+      if (nb::int_(u).equal(obj)) {
+        return u;
+      }
+    } catch (...) {
+    }
+    throw std::runtime_error(
+        "to_json received an integer out of range for both "
+        "nl::json::number_integer_t and nl::json::number_unsigned_t type: " +
+        nb::cast<std::string>(nb::repr(obj)));
   }
   if (nb::isinstance<nb::float_>(obj)) return nb::cast<double>(obj);
 
