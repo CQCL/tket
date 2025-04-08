@@ -897,7 +897,7 @@ def test_remove_blank_wires_pass() -> None:
     cu = CompilationUnit(c)
     FlattenRelabelRegistersPass("a").apply(cu)
     assert cu.circuit.qubits == [Qubit("a", 0)]
-    assert cu.circuit.bits == [Bit("c", 0), Bit("c", 1)]
+    assert cu.circuit.bits == c.bits
 
 
 def test_round_angles_pass() -> None:
