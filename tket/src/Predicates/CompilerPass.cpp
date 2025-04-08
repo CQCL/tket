@@ -504,6 +504,8 @@ PassPtr deserialise(
       pp = CnXPairwiseDecomposition();
     } else if (passname == "RemoveImplicitQubitPermutation") {
       pp = RemoveImplicitQubitPermutation();
+    } else if (passname == "NormaliseTK2") {
+      pp = NormaliseTK2();
     } else if (passname == "OptimisePhaseGadgets") {
       pp = gen_optimise_phase_gadgets(
           content.at("cx_config").get<CXConfigType>());
