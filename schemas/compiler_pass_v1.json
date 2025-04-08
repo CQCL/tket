@@ -165,6 +165,7 @@
             "DecomposeTK2",
             "CnXPairwiseDecomposition",
             "RemoveImplicitQubitPermutation",
+            "NormaliseTK2",
             "RoundAngles",
             "GreedyPauliSimp"
           ],
