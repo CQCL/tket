@@ -1252,6 +1252,20 @@ c4x q[0],q[1],q[2],q[3],q[4];
     assert c4 == c4a
 
 
+def test_inequality_condition() -> None:
+    # https://github.com/CQCL/tket/issues/1833
+    qasm = """OPENQASM 2.0;
+include "qelib1.inc";
+creg c[2];
+if (c[0] != 1) c[1] = 1;
+"""
+    c = circuit_from_qasm_str(qasm)
+    c1 = Circuit(0, 2).add_c_setbits(
+        values=[True], args=[1], condition_bits=[0], condition_value=0
+    )
+    assert c == c1
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
