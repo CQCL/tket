@@ -13,6 +13,7 @@ Fixes:
 
 * Make `ZXGraphlikeOptimisation` pass preserve the circuit's name.
 * Fix handling of bitwise inequality conditions when parsing QASM.
+* Define transform used in `scratch_reg_resize_pass` as as separate function.
 * Enable deserialization of `NormaliseTK2` pass.
 * Don't remove classical wires in `FlattenRelabelRegistersPass`.
 
