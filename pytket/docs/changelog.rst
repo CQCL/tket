@@ -12,6 +12,7 @@ Features:
 Fixes:
 
 * Make `ZXGraphlikeOptimisation` pass preserve the circuit's name.
+* Fix handling of bitwise inequality conditions when parsing QASM.
 
 2.1.0 (March 2025)
 ------------------
