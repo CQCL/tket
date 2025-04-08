@@ -53,6 +53,7 @@ void place_fully_connected(
 }
 
 NB_MODULE(placement, m) {
+  nb::set_leak_warnings(false);
   nb::class_<Placement>(
             m, "Placement",
             "The base Placement class, contains methods for getting maps "

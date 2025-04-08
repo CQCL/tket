@@ -485,6 +485,7 @@ void ZXDiagramPybind::init_zxdiagram(nb::module_& m) {
 }
 
 NB_MODULE(zx, m) {
+  nb::set_leak_warnings(false);
   nb::enum_<ZXType>(
       m, "ZXType",
       "Enum for available types of generators in :py:class:`ZXDiagram` s.")

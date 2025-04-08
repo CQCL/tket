@@ -33,6 +33,7 @@ using json = nlohmann::json;
 namespace tket {
 
 NB_MODULE(architecture, m) {
+  nb::set_leak_warnings(false);
   nb::module_::import_("pytket._tket.unit_id");
   nb::class_<Architecture>(
       m, "Architecture",

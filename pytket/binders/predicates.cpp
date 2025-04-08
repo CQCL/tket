@@ -42,6 +42,7 @@ static std::map<UnitID, UnitID> unit_bimap_to_map(const unit_bimap_t &bimap) {
 }
 
 NB_MODULE(predicates, m) {
+  nb::set_leak_warnings(false);
   /* Predicates */
 
   class PyPredicate : public Predicate {
