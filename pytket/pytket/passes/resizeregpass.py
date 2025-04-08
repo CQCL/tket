@@ -14,6 +14,7 @@
 
 from pytket.circuit import Bit, Circuit
 from pytket.unit_id import _TEMP_BIT_NAME
+from typing import Callable
 
 from .._tket.passes import BasePass, CustomPass
 
@@ -28,7 +29,7 @@ def _is_scratch(bit: Bit) -> bool:
 def _gen_scratch_transformation(max_size: int) -> Callable[[Circuit], Circuit]:
     def t(circuit: Circuit) -> Circuit:
         # Find all scratch bits
-        scratch_bits = list(filter(_is_scratch, circ.bits))
+        scratch_bits = list(filter(_is_scratch, circuit.bits))
         # If the total number of scratch bits exceeds the max width, rename them
         if len(scratch_bits) > max_size:
             bits_map = {}
