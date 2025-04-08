@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Callable
 from pytket.circuit import Bit, Circuit
 from pytket.unit_id import _TEMP_BIT_NAME
-from typing import Callable
 
 from .._tket.passes import BasePass, CustomPass
 
