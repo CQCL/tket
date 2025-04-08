@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from typing import Callable
+
 from pytket.circuit import Bit, Circuit
 from pytket.unit_id import _TEMP_BIT_NAME
 
