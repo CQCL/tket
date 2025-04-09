@@ -343,19 +343,8 @@ void ZXDiagramPybind::init_zxdiagram(nb::module_& m) {
           "In-place substitution for symbolic expressions; iterated through "
           "each parameterised vertex and performs the substitution. This will "
           "not affect any symbols captured within boxed operations.\n\n"
-          ":param symbol_map: A map from SymPy symbols to SymPy expressions.",
-          nb::arg("symbol_map"))
-      .def(
-          "symbol_substitution",
-          (void (ZXDiagram::*)(
-              const std::map<
-                  Sym, double,
-                  SymEngine::RCPBasicKeyLess>&))&ZXDiagram::symbol_substitution,
-          "In-place substitution for symbolic expressions; iterated through "
-          "each parameterised vertex and performs the substitution. This will "
-          "not affect any symbols captured within boxed operations.\n\n"
-          ":param symbol_map: A map from SymPy symbols to floating-point "
-          "values.",
+          ":param symbol_map: A map from SymPy symbols to SymPy expressions "
+          "or floats.",
           nb::arg("symbol_map"))
       .def(
           "free_symbols", &ZXDiagram::free_symbols,

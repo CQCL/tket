@@ -645,17 +645,7 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
           "In-place substitution for symbolic expressions; iterates "
           "through each parameterised gate/box and performs the "
           "substitution. \n\n:param symbol_map: A map from "
-          "SymPy symbols to SymPy expressions",
-          nb::arg("symbol_map"))
-      .def(
-          "symbol_substitution",
-          (void (Circuit::*)(
-              const std::map<Sym, double, SymEngine::RCPBasicKeyLess>
-                  &))&Circuit::symbol_substitution,
-          "In-place substitution for symbolic expressions; iterates "
-          "through each gate/box and performs the "
-          "substitution. \n\n:param symbol_map: A map from "
-          "SymPy symbols to floating-point values",
+          "SymPy symbols to SymPy expressions or floats",
           nb::arg("symbol_map"))
       .def(
           "free_symbols", &Circuit::free_symbols,
