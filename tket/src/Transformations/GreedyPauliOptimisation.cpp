@@ -152,10 +152,12 @@ static double default_pauliexp_tqe_cost(
   double tab_cost = 0;
   unsigned count = 0;
   for (const std::vector<PauliNode_ptr>& rotation_set : rotation_sets) {
+    int r_cost = 0;
     for (const PauliNode_ptr& node : rotation_set) {
-      exp_cost += weight * node->tqe_cost_increase(tqe);
+      r_cost += node->tqe_cost_increase(tqe);
       if (++count >= max_lookahead) break;
     }
+    exp_cost += weight * r_cost;
     if (count >= max_lookahead) break;
     weight *= discount;
   }
@@ -626,7 +628,7 @@ static void pauli_exps_synthesis(
     if (rotation_sets.empty()) break;
 
     std::vector<PauliNode_ptr>& first_set = rotation_sets[0];
-    // get nodes with min cost
+        // get nodes with min cost
     std::vector<unsigned> min_nodes_indices = {0};
     unsigned min_cost = first_set[0]->tqe_cost();
     for (unsigned i = 1; i < first_set.size(); i++) {
@@ -641,9 +643,9 @@ static void pauli_exps_synthesis(
     std::set<TQE> tqe_candidates;
     for (const unsigned& index : min_nodes_indices) {
       std::vector<TQE> node_reducing_tqes = first_set[index]->reduction_tqes();
-      tqe_candidates.insert(
-          node_reducing_tqes.begin(), node_reducing_tqes.end());
-    }
+        tqe_candidates.insert(
+            node_reducing_tqes.begin(), node_reducing_tqes.end());
+      }
     // sample
     std::vector<TQE> sampled_tqes =
         sample_tqes(tqe_candidates, max_tqe_candidates, seed);

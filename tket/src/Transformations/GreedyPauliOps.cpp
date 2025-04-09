@@ -72,9 +72,7 @@ int SingleNode::tqe_cost_increase(const TQE& tqe) const {
   const unsigned& b = tqe.b;
   Pauli p0 = string_[a];
   Pauli p1 = string_[b];
-  auto [new_p0, new_p1, sign] = TQE_PAULI_MAP::at({g, p0, p1});
-  return (p0 == Pauli::I) + (p1 == Pauli::I) - (new_p0 == Pauli::I) -
-         (new_p1 == Pauli::I);
+  return TQE_PAULI_MAP::cost_increase({g, p0, p1});
 }
 
 void SingleNode::update(const TQE& tqe) {
@@ -90,24 +88,24 @@ void SingleNode::update(const TQE& tqe) {
   const auto [new_p0, new_p1, sign] = TQE_PAULI_MAP::at(key);
   string_[a] = new_p0;
   string_[b] = new_p1;
-  weight_ += (p0 == Pauli::I) + (p1 == Pauli::I) - (new_p0 == Pauli::I) -
-             (new_p1 == Pauli::I);
+  weight_ += TQE_PAULI_MAP::cost_increase(key);
   if (!sign) {
     sign_ = !sign_;
   }
 }
 
 std::vector<TQE> SingleNode::reduction_tqes() const {
-  std::vector<TQE> tqes;
   // qubits with support
   std::vector<unsigned> sqs;
   for (unsigned i = 0; i < string_.size(); i++) {
     if (string_[i] != Pauli::I) sqs.push_back(i);
   }
   TKET_ASSERT(!sqs.empty());
+  std::vector<TQE> tqes;
+  tqes.reserve(sqs.size() * (sqs.size() - 1) * 2);
   for (unsigned i = 0; i < sqs.size() - 1; i++) {
     for (unsigned j = i + 1; j < sqs.size(); j++) {
-      std::vector<TQEType> tqe_types =
+      const auto& tqe_types =
           TQE_REDUCTION_MAP.at({string_[sqs[i]], string_[sqs[j]]});
       for (const TQEType& tt : tqe_types) {
         tqes.push_back({tt, sqs[i], sqs[j]});
@@ -332,9 +330,7 @@ int ConditionalBlock::tqe_cost_increase(const TQE& tqe) const {
     const unsigned& b = tqe.b;
     Pauli p0 = std::get<0>(rot)[a];
     Pauli p1 = std::get<0>(rot)[b];
-    auto [new_p0, new_p1, sign] = TQE_PAULI_MAP::at({g, p0, p1});
-    total_increase += (p0 == Pauli::I) + (p1 == Pauli::I) -
-                      (new_p0 == Pauli::I) - (new_p1 == Pauli::I);
+    total_increase += TQE_PAULI_MAP::cost_increase({g, p0, p1});
   }
   return total_increase;
 }
@@ -346,11 +342,14 @@ void ConditionalBlock::update(const TQE& tqe) {
     const unsigned& b = tqe.b;
     Pauli p0 = std::get<0>(rot)[a];
     Pauli p1 = std::get<0>(rot)[b];
-    auto [new_p0, new_p1, sign] = TQE_PAULI_MAP::at({g, p0, p1});
+    const TQE_PAULI_MAP::Key key{g, p0, p1};
+    if (TQE_PAULI_MAP::tqe_commutes(key)) {
+      continue;
+    }
+    auto [new_p0, new_p1, sign] = TQE_PAULI_MAP::at(key);
     std::get<0>(rot)[a] = new_p0;
     std::get<0>(rot)[b] = new_p1;
-    total_weight_ += (p0 == Pauli::I) + (p1 == Pauli::I) -
-                     (new_p0 == Pauli::I) - (new_p1 == Pauli::I);
+    total_weight_ += TQE_PAULI_MAP::cost_increase(key);
     if (!sign) {
       std::get<1>(rot) = !std::get<1>(rot);
     }

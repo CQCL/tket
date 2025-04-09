@@ -276,6 +276,18 @@ struct TQE_PAULI_MAP {
     return lookupTable;
   }();
 
+  // Pre-compute cost of replacing TQE;P(0);Q(1) with k*P'(0);Q'(1);TQE
+  constexpr static std::array<int, 144> CostTable = []() {
+    std::array<int, 144> costTable;
+    for (const auto& [key, val] : TQEPairs) {
+      const auto [_tqe, p0, p1] = key;
+      const auto [new_p0, new_p1, _sign] = val;
+      costTable[hash_triple(key)] = (p0 == Pauli::I) + (p1 == Pauli::I) -
+                                    (new_p0 == Pauli::I) - (new_p1 == Pauli::I);
+    }
+    return costTable;
+  }();
+
  public:
   static const Value at(const Key& key) {
     return LookupTable[hash_triple(key)];
@@ -283,6 +295,10 @@ struct TQE_PAULI_MAP {
 
   static bool tqe_commutes(const Key& key) {
     return CommuteTable[hash_triple(key)];
+  }
+
+  static int cost_increase(const Key& key) {
+    return CostTable[hash_triple(key)];
   }
 };
 
@@ -370,23 +386,23 @@ const static std::unordered_map<
         {{Pauli::Y, Pauli::I, Pauli::I, Pauli::X}, {}},
         {{Pauli::Y, Pauli::I, Pauli::I, Pauli::Y}, {}},
         {{Pauli::Y, Pauli::I, Pauli::I, Pauli::Z}, {}},
-       {{Pauli::Z, Pauli::X, Pauli::Z, Pauli::X},
+        {{Pauli::Z, Pauli::X, Pauli::Z, Pauli::X},
          {TQEType::XX, TQEType::YX, TQEType::ZY, TQEType::ZZ}},
         {{Pauli::Z, Pauli::X, Pauli::Z, Pauli::I}, {}},
         {{Pauli::Z, Pauli::X, Pauli::I, Pauli::X}, {}},
-       {{Pauli::Z, Pauli::X, Pauli::I, Pauli::I},
+        {{Pauli::Z, Pauli::X, Pauli::I, Pauli::I},
          {TQEType::XX, TQEType::YX, TQEType::ZY, TQEType::ZZ}},
-       {{Pauli::Z, Pauli::Y, Pauli::Z, Pauli::Y},
+        {{Pauli::Z, Pauli::Y, Pauli::Z, Pauli::Y},
          {TQEType::XY, TQEType::YY, TQEType::ZX, TQEType::ZZ}},
         {{Pauli::Z, Pauli::Y, Pauli::Z, Pauli::I}, {}},
         {{Pauli::Z, Pauli::Y, Pauli::I, Pauli::Y}, {}},
-       {{Pauli::Z, Pauli::Y, Pauli::I, Pauli::I},
+        {{Pauli::Z, Pauli::Y, Pauli::I, Pauli::I},
          {TQEType::XY, TQEType::YY, TQEType::ZX, TQEType::ZZ}},
-       {{Pauli::Z, Pauli::Z, Pauli::Z, Pauli::Z},
+        {{Pauli::Z, Pauli::Z, Pauli::Z, Pauli::Z},
          {TQEType::XZ, TQEType::YZ, TQEType::ZX, TQEType::ZY}},
         {{Pauli::Z, Pauli::Z, Pauli::Z, Pauli::I}, {}},
         {{Pauli::Z, Pauli::Z, Pauli::I, Pauli::Z}, {}},
-       {{Pauli::Z, Pauli::Z, Pauli::I, Pauli::I},
+        {{Pauli::Z, Pauli::Z, Pauli::I, Pauli::I},
          {TQEType::XZ, TQEType::YZ, TQEType::ZX, TQEType::ZY}},
         {{Pauli::Z, Pauli::I, Pauli::Z, Pauli::X}, {}},
         {{Pauli::Z, Pauli::I, Pauli::Z, Pauli::Y}, {}},
@@ -412,23 +428,23 @@ const static std::unordered_map<
         {{Pauli::I, Pauli::Z, Pauli::Y, Pauli::I}, {}},
         {{Pauli::I, Pauli::Z, Pauli::Z, Pauli::Z}, {}},
         {{Pauli::I, Pauli::Z, Pauli::Z, Pauli::I}, {}},
-       {{Pauli::I, Pauli::I, Pauli::X, Pauli::X},
+        {{Pauli::I, Pauli::I, Pauli::X, Pauli::X},
          {TQEType::XY, TQEType::XZ, TQEType::YX, TQEType::ZX}},
-       {{Pauli::I, Pauli::I, Pauli::X, Pauli::Y},
+        {{Pauli::I, Pauli::I, Pauli::X, Pauli::Y},
          {TQEType::XX, TQEType::XZ, TQEType::YY, TQEType::ZY}},
-       {{Pauli::I, Pauli::I, Pauli::X, Pauli::Z},
+        {{Pauli::I, Pauli::I, Pauli::X, Pauli::Z},
          {TQEType::XX, TQEType::XY, TQEType::YZ, TQEType::ZZ}},
-       {{Pauli::I, Pauli::I, Pauli::Y, Pauli::X},
+        {{Pauli::I, Pauli::I, Pauli::Y, Pauli::X},
          {TQEType::XX, TQEType::YY, TQEType::YZ, TQEType::ZX}},
-       {{Pauli::I, Pauli::I, Pauli::Y, Pauli::Y},
+        {{Pauli::I, Pauli::I, Pauli::Y, Pauli::Y},
          {TQEType::XY, TQEType::YX, TQEType::YZ, TQEType::ZY}},
-       {{Pauli::I, Pauli::I, Pauli::Y, Pauli::Z},
+        {{Pauli::I, Pauli::I, Pauli::Y, Pauli::Z},
          {TQEType::XZ, TQEType::YX, TQEType::YY, TQEType::ZZ}},
-       {{Pauli::I, Pauli::I, Pauli::Z, Pauli::X},
+        {{Pauli::I, Pauli::I, Pauli::Z, Pauli::X},
          {TQEType::XX, TQEType::YX, TQEType::ZY, TQEType::ZZ}},
-       {{Pauli::I, Pauli::I, Pauli::Z, Pauli::Y},
+        {{Pauli::I, Pauli::I, Pauli::Z, Pauli::Y},
          {TQEType::XY, TQEType::YY, TQEType::ZX, TQEType::ZZ}},
-       {{Pauli::I, Pauli::I, Pauli::Z, Pauli::Z},
+        {{Pauli::I, Pauli::I, Pauli::Z, Pauli::Z},
          {TQEType::XZ, TQEType::YZ, TQEType::ZX, TQEType::ZY}}};
 
 /**
