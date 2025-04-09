@@ -643,9 +643,9 @@ static void pauli_exps_synthesis(
     std::set<TQE> tqe_candidates;
     for (const unsigned& index : min_nodes_indices) {
       std::vector<TQE> node_reducing_tqes = first_set[index]->reduction_tqes();
-      tqe_candidates.insert(
-          node_reducing_tqes.begin(), node_reducing_tqes.end());
-    }
+        tqe_candidates.insert(
+            node_reducing_tqes.begin(), node_reducing_tqes.end());
+      }
     // sample
     std::vector<TQE> sampled_tqes =
         sample_tqes(tqe_candidates, max_tqe_candidates, seed);
@@ -751,7 +751,7 @@ Circuit greedy_pauli_set_synthesis(
 }
 
 Circuit greedy_pauli_graph_synthesis_flag(
-    Circuit circ, std::shared_ptr<std::atomic<bool>> stop_flag,
+    const Circuit& circ, std::shared_ptr<std::atomic<bool>> stop_flag,
     double discount_rate, double depth_weight, unsigned max_lookahead,
     unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase) {
   if (max_lookahead == 0) {
@@ -842,6 +842,7 @@ Transform greedy_pauli_optimisation(
                     trials](Circuit& circ) {
     std::mt19937 seed_gen(seed);
     std::vector<Circuit> circuits;
+    circuits.reserve(trials);
     unsigned threads_started = 0;
 
     while (threads_started < trials) {
@@ -858,9 +859,9 @@ Transform greedy_pauli_optimisation(
 
       if (future.wait_for(std::chrono::seconds(thread_timeout)) ==
           std::future_status::ready) {
-        Circuit c = future.get();
-        c.decompose_boxes_recursively();
-        circuits.push_back(c);
+        circuits.emplace_back();
+        circuits.back() = std::move(future.get());
+        circuits.back().decompose_boxes_recursively();
       } else {
         // If the thread isn't complete within time, prompt cancelling the
         // optimisation and break from while loop
@@ -888,7 +889,7 @@ Transform greedy_pauli_optimisation(
           }
           return a.depth() < b.depth();
         });
-    circ = *min;
+    circ = std::move(*min);
     return true;
   });
 }
