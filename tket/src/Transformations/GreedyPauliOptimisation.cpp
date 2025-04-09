@@ -628,7 +628,7 @@ static void pauli_exps_synthesis(
     if (rotation_sets.empty()) break;
 
     std::vector<PauliNode_ptr>& first_set = rotation_sets[0];
-        // get nodes with min cost
+    // get nodes with min cost
     std::vector<unsigned> min_nodes_indices = {0};
     unsigned min_cost = first_set[0]->tqe_cost();
     for (unsigned i = 1; i < first_set.size(); i++) {
@@ -643,9 +643,9 @@ static void pauli_exps_synthesis(
     std::set<TQE> tqe_candidates;
     for (const unsigned& index : min_nodes_indices) {
       std::vector<TQE> node_reducing_tqes = first_set[index]->reduction_tqes();
-        tqe_candidates.insert(
-            node_reducing_tqes.begin(), node_reducing_tqes.end());
-      }
+      tqe_candidates.insert(
+          node_reducing_tqes.begin(), node_reducing_tqes.end());
+    }
     // sample
     std::vector<TQE> sampled_tqes =
         sample_tqes(tqe_candidates, max_tqe_candidates, seed);
@@ -876,10 +876,17 @@ Transform greedy_pauli_optimisation(
     auto min = std::min_element(
         circuits.begin(), circuits.end(),
         [](const Circuit& a, const Circuit& b) {
-          return std::make_tuple(
-                     a.count_n_qubit_gates(2), a.n_gates(), a.depth()) <
-                 std::make_tuple(
-                     b.count_n_qubit_gates(2), b.n_gates(), b.depth());
+          const auto two_qubit_gates_a = a.count_n_qubit_gates(2);
+          const auto two_qubit_gates_b = b.count_n_qubit_gates(2);
+          if (two_qubit_gates_a != two_qubit_gates_b) {
+            return two_qubit_gates_a < two_qubit_gates_b;
+          }
+          const auto n_gates_a = a.n_gates();
+          const auto n_gates_b = b.n_gates();
+          if (n_gates_a != n_gates_b) {
+            return n_gates_a < n_gates_b;
+          }
+          return a.depth() < b.depth();
         });
     circ = *min;
     return true;
