@@ -285,9 +285,7 @@ NB_MODULE(passes, m) {
       .def("__repr__", &BasePass::to_string)
       .def(
           "to_dict",
-          [](const BasePass &base_pass) {
-            return nb::cast(serialise(base_pass));
-          },
+          [](const BasePass &base_pass) { return serialise(base_pass); },
           ":return: A JSON serializable dictionary representation of the Pass.")
       .def(
           "get_preconditions",
