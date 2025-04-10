@@ -373,8 +373,7 @@ NB_MODULE(passes, m) {
       .def(
           "to_dict",
           [](const SequencePass &seq_pass) {
-            return nb::cast(
-                serialise(std::make_shared<SequencePass>(seq_pass)));
+            return serialise(std::make_shared<SequencePass>(seq_pass));
           },
           ":return: A JSON serializable dictionary representation of the "
           "SequencePass.")
