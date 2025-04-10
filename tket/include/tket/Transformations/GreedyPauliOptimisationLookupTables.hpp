@@ -32,7 +32,8 @@ struct hash_optype_pauli {
     return static_cast<unsigned>(pair.first) * 10 + pair.second;
   }
 };
-// Output in range [0, 144)
+// Specialized hash function for TQE_PAULI_MAP. Output in range [0, 144),
+// constexpr so that we can compute lookup tables at compile time.
 constexpr size_t hash_triple(const std::tuple<TQEType, Pauli, Pauli>& t) {
   return (static_cast<size_t>(std::get<0>(t)) << 4) |
          (static_cast<size_t>(std::get<1>(t)) << 2) |
@@ -109,7 +110,8 @@ struct TQE_PAULI_MAP {
   using Value = std::tuple<Pauli, Pauli, bool>;
 
  private:
-  // Readable array of key-value pairs
+  // Readable array of key-value pairs. This is not used directly; the lambdas
+  // below construct the actual lookup tables.
   constexpr static std::array<std::pair<Key, Value>, 144> TQEPairs = {
       {{{TQEType::XX, Pauli::X, Pauli::X}, {Pauli::X, Pauli::X, true}},
        {{TQEType::XY, Pauli::X, Pauli::X}, {Pauli::I, Pauli::X, true}},
@@ -265,7 +267,9 @@ struct TQE_PAULI_MAP {
     return lookupTable;
   }();
 
-  // Pre-compute cases where the TQE gate commutes with the two Pauli operators
+  // Pre-compute cases where the TQE gate commutes with the two Pauli operators.
+  // This lets us return early from SingleNode::update when the node's Pauli
+  // string doesn't need to be modified.
   constexpr static std::array<bool, 144> CommuteTable = []() {
     std::array<bool, 144> lookupTable;
     for (const auto& [key, val] : TQEPairs) {

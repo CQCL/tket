@@ -171,7 +171,8 @@ static double default_pauliexp_tqe_cost(
 // given a map from TQE to an array of costs, and an optional map
 // specifying the costs for implementing some 2q rotations directly
 // as ZZPhase gates. Select the TQEs and 2q rotations with the minimum
-// weighted sum of minmax-normalised costs.
+// weighted sum of minmax-normalised costs. Cost arrays must all be the same
+// length (enforced by the template parameter).
 template <size_t n_costs>
 static std::pair<std::vector<TQE>, std::vector<Rotation2Q>> minmax_selection(
     const std::vector<std::pair<TQE, std::array<double, n_costs>>>&
