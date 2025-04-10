@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import json
+import pickle
 from pathlib import Path
 
 from jsonschema import Draft7Validator  # type: ignore
@@ -155,6 +156,14 @@ def test_valid_operation() -> None:
     assert not arc.valid_operation([Node(0), Node(4)])
     assert not arc.valid_operation([Node(0), Node(1), Node(2)])
     assert not arc.valid_operation([Node(0), Node(1), Node(4)])
+
+
+def test_pickling() -> None:
+    for arc in [
+        Architecture([(1, 2), (3, 4), (0, 6), (0, 3)]),
+        FullyConnected(5),
+    ]:
+        assert pickle.loads(pickle.dumps(arc)) == arc
 
 
 if __name__ == "__main__":
