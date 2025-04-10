@@ -84,26 +84,38 @@ jobs:
 
       - name: Perform Compilation
         run: |
-          pytket_benchmarking compile QiskitIBMQ pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled
-          pytket_benchmarking compile PytketIBMQ pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled
+          (
+            pytket_benchmarking compile QiskitL3 HeavyHex3x3 benchmarking_circuits/benchmarking_mini_set compilations_hh
+            pytket_benchmarking compile PytketL2 HeavyHex3x3 benchmarking_circuits/benchmarking_mini_set compilations_hh
+            pytket_benchmarking compile PytketL3 HeavyHex3x3 benchmarking_circuits/benchmarking_mini_set compilations_hh
+          ) &
+          
+          (
+              pytket_benchmarking compile QiskitL3 FullyConnected benchmarking_circuits/benchmarking_mini_set compilations_fc
+              pytket_benchmarking compile PytketL2 FullyConnected benchmarking_circuits/benchmarking_mini_set compilations_fc
+              pytket_benchmarking compile PytketL3 FullyConnected benchmarking_circuits/benchmarking_mini_set compilations_fc
+          ) &
+          wait
+
+      - name: Generating Report
+        run: pytket_benchmarking pdf-report -s benchmarking_circuits/benchmarking_mini_set -c compilations_fc -c compilations_hh -x FullyConnected -x HeavyHex3x3 -o report.pdf
 
       - name: Save compiled circuits
         uses: actions/upload-artifact@v4
         with:
           name: automated_benchmarks_compiled
-          path: automated_benchmarks_compiled/
+          path: |
+            compilations_hh
+            compilations_fc
+            report.pdf
 
-      - name: Calculate percentage better
-        run: echo "RETURN_TEST=$(pytket_benchmarking percentage-better pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled PytketIBMQ)" >> $GITHUB_ENV
-
-      - name: Post to a Slack channel
-        id: slack
+      - name: Share Report To tket Slack Channel;
         uses: slackapi/slack-github-action@v2.0.0
         with:
-          method: chat.postMessage
+          method: files.uploadV2
           token: ${{ secrets.PYTKET_BENCHMARKING_SLACK_BOT_TOKEN }}
           payload: |
-            channel: 'G01CP0YFFA7'
-            text: '${{ env.RETURN_TEST }} Release tag: ${{ github.event.release.tag_name }}.'
-        env:
-          RETURN_TEST: ${{ env.RETURN_TEST }}
+            channel: G01CP0YFFA7
+            initial_comment: "the results are in!"
+            file: "./report.pdf"
+            filename: "report.pdf"
