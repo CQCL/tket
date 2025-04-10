@@ -17,7 +17,7 @@
             (import ./nix-support/symengine.nix)
             (import ./nix-support/tket.nix)
             (import ./nix-support/third-party-python-packages.nix)
-            (import ./nix-support/pytket.nix { package_version = "2.0.0"; })
+            (import ./nix-support/pytket.nix { package_version = "2.2.0"; })
           ];
         };
       in {
