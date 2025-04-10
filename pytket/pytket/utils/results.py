@@ -151,7 +151,7 @@ def _compute_probs_from_state(state: np.ndarray, min_p: float = 1e-10) -> np.nda
     ignore = probs < min_p
     probs[ignore] = 0
     probs /= sum(probs)
-    return probs
+    return probs  # type: ignore
 
 
 def probs_from_state(

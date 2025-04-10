@@ -690,7 +690,7 @@ def _check_permuted_sequence(first: Collection[Any], second: Collection[Any]) ->
 
 def _complex_ar_to_dict(ar: np.ndarray) -> dict[str, list]:
     """Dictionary of real, imaginary parts of complex array, each in list form."""
-    return {"real": ar.real.tolist(), "imag": ar.imag.tolist()}
+    return {"real": ar.real.tolist(), "imag": ar.imag.tolist()}  # type: ignore
 
 
 def _complex_ar_from_dict(dic: dict[str, list]) -> np.ndarray:
