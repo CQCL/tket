@@ -660,7 +660,7 @@ class StubGen:
 
         - "NoneType" -> "None"
 
-        - "ndarray[...]" -> "Annotated[NDArray, dict(...)]"
+        - "ndarray[...]" -> "Annotated[ArrayLike, dict(...)]"
 
         - "collections.abc.X" -> "X"
           (with "from collections.abc import X" added at top)
@@ -674,7 +674,7 @@ class StubGen:
         def process_ndarray(m: Match[str]) -> str:
             s = m.group(2)
 
-            ndarray = self.import_object("numpy.typing", "NDArray")
+            ndarray = self.import_object("numpy.typing", "ArrayLike")
             assert ndarray
             s = re.sub(r"dtype=([\w]*)\b", r"dtype='\g<1>'", s)
             s = s.replace("*", "None")
