@@ -850,7 +850,7 @@ Transform greedy_pauli_optimisation(
       if (future.wait_for(std::chrono::seconds(thread_timeout)) ==
           std::future_status::ready) {
         circuits.emplace_back();
-        circuits.back() = std::move(future.get());
+        circuits.back() = future.get();
         circuits.back().decompose_boxes_recursively();
       } else {
         // If the thread isn't complete within time, prompt cancelling the
