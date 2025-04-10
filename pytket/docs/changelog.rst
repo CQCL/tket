@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Features:
+
+* Enabling pickling of `Architecture` objects.
+
 2.2.0 (April 2025)
 ------------------
 

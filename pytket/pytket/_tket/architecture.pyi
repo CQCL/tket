@@ -15,6 +15,8 @@ class Architecture:
         ...
     def __eq__(self, arg0: typing.Any) -> bool:
         ...
+    def __getstate__(self) -> tuple:
+        ...
     def __hash__(self) -> int:
         """
         Hashing is not implemented for this class, attempting to hash an object will raise a type error
@@ -39,6 +41,8 @@ class Architecture:
         :param connections: A list of pairs representing Nodes that can perform two-qubit operations
         """
     def __repr__(self) -> str:
+        ...
+    def __setstate__(self, arg0: tuple) -> None:
         ...
     def get_adjacent_nodes(self, node: pytket._tket.unit_id.Node) -> set[pytket._tket.unit_id.Node]:
         """
@@ -90,6 +94,8 @@ class FullyConnected:
         ...
     def __eq__(self, arg0: typing.Any) -> bool:
         ...
+    def __getstate__(self) -> tuple:
+        ...
     def __hash__(self) -> int:
         """
         Hashing is not implemented for this class, attempting to hash an object will raise a type error
@@ -102,6 +108,8 @@ class FullyConnected:
         :param label: Name for Node in FullyConnected Architecture
         """
     def __repr__(self) -> str:
+        ...
+    def __setstate__(self, arg0: tuple) -> None:
         ...
     def to_dict(self) -> dict:
         """
