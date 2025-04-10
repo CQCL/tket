@@ -168,33 +168,22 @@ static double default_pauliexp_tqe_cost(
   return exp_cost + tab_cost;
 }
 
-// given a map from TQE to a vector of costs, and an optional map
+// given a map from TQE to an array of costs, and an optional map
 // specifying the costs for implementing some 2q rotations directly
 // as ZZPhase gates. Select the TQEs and 2q rotations with the minimum
 // weighted sum of minmax-normalised costs.
+template <size_t n_costs>
 static std::pair<std::vector<TQE>, std::vector<Rotation2Q>> minmax_selection(
-    const std::map<TQE, std::vector<double>>& tqe_candidates_cost,
-    const std::map<Rotation2Q, std::vector<double>>& rot2q_gates_cost,
-    const std::vector<double>& weights) {
-  TKET_ASSERT(tqe_candidates_cost.size() > 0);
-  size_t n_costs = tqe_candidates_cost.begin()->second.size();
-  TKET_ASSERT(n_costs == weights.size());
+    const std::vector<std::pair<TQE, std::array<double, n_costs>>>&
+        tqe_candidates_cost,
+    const std::vector<std::pair<Rotation2Q, std::array<double, n_costs>>>&
+        rot2q_gates_cost,
+    const std::array<double, n_costs>& weights) {
+  static_assert(n_costs > 0, "n_costs must be greater than 0");
   // for each cost type, store its min and max
-  std::vector<double> mins = tqe_candidates_cost.begin()->second;
-  std::vector<double> maxs = tqe_candidates_cost.begin()->second;
+  std::array<double, n_costs> mins = tqe_candidates_cost.begin()->second;
+  std::array<double, n_costs> maxs = tqe_candidates_cost.begin()->second;
   for (const auto& pair : tqe_candidates_cost) {
-    TKET_ASSERT(pair.second.size() == n_costs);
-    for (unsigned cost_index = 0; cost_index < n_costs; cost_index++) {
-      if (pair.second[cost_index] < mins[cost_index]) {
-        mins[cost_index] = pair.second[cost_index];
-      }
-      if (pair.second[cost_index] > maxs[cost_index]) {
-        maxs[cost_index] = pair.second[cost_index];
-      }
-    }
-  }
-  for (const auto& pair : tqe_candidates_cost) {
-    TKET_ASSERT(pair.second.size() == n_costs);
     for (unsigned cost_index = 0; cost_index < n_costs; cost_index++) {
       if (pair.second[cost_index] < mins[cost_index]) {
         mins[cost_index] = pair.second[cost_index];
@@ -371,9 +360,9 @@ static void tableau_row_nodes_synthesis(
     // for each tqe we compute a vector of cost factors which will
     // be combined to make the final decision.
     // we currently only consider tqe_cost and gate_depth.
-    std::map<TQE, std::vector<double>> tqe_candidates_cost;
+    std::vector<std::pair<TQE, std::array<double, 2>>> tqe_candidates_cost;
     for (const TQE& tqe : sampled_tqes) {
-      tqe_candidates_cost.insert(
+      tqe_candidates_cost.push_back(
           {tqe,
            {default_tableau_tqe_cost(
                 rows, remaining_indices, tqe, max_lookahead),
@@ -643,23 +632,23 @@ static void pauli_exps_synthesis(
     std::set<TQE> tqe_candidates;
     for (const unsigned& index : min_nodes_indices) {
       std::vector<TQE> node_reducing_tqes = first_set[index]->reduction_tqes();
-        tqe_candidates.insert(
-            node_reducing_tqes.begin(), node_reducing_tqes.end());
-      }
+      tqe_candidates.insert(
+          node_reducing_tqes.begin(), node_reducing_tqes.end());
+    }
     // sample
     std::vector<TQE> sampled_tqes =
         sample_tqes(tqe_candidates, max_tqe_candidates, seed);
 
     // for each tqe we compute costs which might subject to normalisation
-    std::map<TQE, std::vector<double>> tqe_candidates_cost;
+    std::vector<std::pair<TQE, std::array<double, 2>>> tqe_candidates_cost;
     for (const TQE& tqe : sampled_tqes) {
-      tqe_candidates_cost.insert(
+      tqe_candidates_cost.push_back(
           {tqe,
            {default_pauliexp_tqe_cost(
                 discount_rate, rotation_sets, rows, tqe, max_lookahead),
             static_cast<double>(depth_tracker.gate_depth(tqe.a, tqe.b))}});
     }
-    std::map<Rotation2Q, std::vector<double>> rot2q_gates_cost;
+    std::vector<std::pair<Rotation2Q, std::array<double, 2>>> rot2q_gates_cost;
     if (allow_zzphase) {
       // implementing a 2q rotation directly will result in a
       // -1 tqe cost change in the first rotation set and 0 elsewhere.
@@ -679,7 +668,7 @@ static void pauli_exps_synthesis(
               paulis.push_back(node.string()[j]);
             }
           }
-          rot2q_gates_cost.insert(
+          rot2q_gates_cost.push_back(
               {{paulis[0], paulis[1], supps[0], supps[1], node.angle(), i},
                {-1, static_cast<double>(
                         depth_tracker.gate_depth(supps[0], supps[1]))}});
