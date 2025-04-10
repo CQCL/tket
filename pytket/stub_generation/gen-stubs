@@ -97,19 +97,19 @@ if __name__ == "__main__":
     #     modname = mod.name
     for modname in [
         "architecture",
-        # "circuit", # 206
+        # "circuit",
         "circuit_library",
         "logging",
         "mapping",
         "partition",
-        # "passes", # 48
+        "passes",
         "pauli",
         "placement",
         "predicates",
         "tableau",
         "tailoring",
         "transform",
-        # "unit_id", # 55
+        # "unit_id",
         "utils_serialization",
         "zx",
     ]:
