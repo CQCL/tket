@@ -15,6 +15,7 @@
 #include "tket/Architecture/Architecture.hpp"
 
 #include <pybind11/pybind11.h>
+#include <pybind11/pytypes.h>
 
 #include "binder_json.hpp"
 #include "deleted_hash.hpp"
@@ -108,6 +109,15 @@ PYBIND11_MODULE(architecture, m) {
           },
           "Construct Architecture instance from JSON serializable "
           "dict representation of the Architecture.")
+      .def(
+          py::pickle(
+              [](const py::object &self) {  // __getstate__
+                return py::make_tuple(self.attr("to_dict")());
+              },
+              [](const py::tuple &t) {  // __setstate__
+                const json j = t[0].cast<json>();
+                return j.get<Architecture>();
+              }))
       // as far as Python is concerned, Architectures are immutable
       .def(
           "__deepcopy__", [](const Architecture &arc,
@@ -226,6 +236,15 @@ PYBIND11_MODULE(architecture, m) {
           [](const py::dict &fully_connected_dict) {
             return json(fully_connected_dict).get<FullyConnected>();
           },
-          "Construct FullyConnected instance from dict representation.");
+          "Construct FullyConnected instance from dict representation.")
+      .def(
+          py::pickle(
+              [](const py::object &self) {  // __getstate__
+                return py::make_tuple(self.attr("to_dict")());
+              },
+              [](const py::tuple &t) {  // __setstate__
+                const json j = t[0].cast<json>();
+                return j.get<FullyConnected>();
+              }));
 }
 }  // namespace tket
