@@ -355,6 +355,7 @@ TWO_WAY_NONPARAM_PASSES = [
     "DecomposeBridges",
     "CnXPairwiseDecomposition",
     "RemoveImplicitQubitPermutation",
+    "NormaliseTK2",
 ]
 
 TWO_WAY_PASSES = {name: nonparam_pass_dict(name) for name in TWO_WAY_NONPARAM_PASSES}
