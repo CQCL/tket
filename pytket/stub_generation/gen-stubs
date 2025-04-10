@@ -18,6 +18,11 @@ def replace_in_file_string(
     return modified_text, len(split_text) - 1
 
 
+def handle_ndarray(stub: str) -> str:
+    modified, n = replace_in_file_string(stub, "ArrayLike", "NDArray")
+    return modified
+
+
 def handle_args_kwargs_types(stub: str) -> str:
     modified, n_args = replace_in_file_string(stub, "\\*args(?=[^:])", "*args: Any")
     modified, n_kwargs = replace_in_file_string(
@@ -73,6 +78,7 @@ def gen_module_stubs(modname, output_file):
         sg.put_value(mod_imported._TEMP_REG_SIZE, "_TEMP_REG_SIZE")
     with open(output_file, "w", encoding="utf-8") as f:
         stub: str = sg.get()
+        stub = handle_ndarray(stub)
         stub = handle_args_kwargs_types(stub)
         stub = handle_optype_default(stub)
         stub = handle_to_dict(stub)
