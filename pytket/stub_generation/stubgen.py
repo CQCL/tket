@@ -188,7 +188,6 @@ class StubGen:
         recursive: bool = False,
         include_docstrings: bool = True,
         include_private: bool = False,
-        private_exceptions: set[str] = set(),
         include_internal_imports: bool = True,
         include_external_imports: bool = False,
         max_expr_length: int = 50,
@@ -207,9 +206,6 @@ class StubGen:
 
         # Include private members that start or end with a single underscore?
         self.include_private = include_private
-
-        # Include these even if `include_private` is `False`.
-        self.private_exceptions = private_exceptions
 
         # Include types and functions imported from the same package (but a different module)
         self.include_internal_imports = include_internal_imports
@@ -842,7 +838,6 @@ class StubGen:
                     (name[0] == "_" and name[1] != "_")
                     or (name[-1] == "_" and name[-2] != "_")
                 )
-                and name not in self.private_exceptions
             ):
                 return
 
