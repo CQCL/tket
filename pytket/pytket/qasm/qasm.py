@@ -623,7 +623,11 @@ class CircuitTransformer(Transformer):
 
         if isinstance(var, Bit):
             assert condition.op in (BitWiseOp.EQ, BitWiseOp.NEQ)
+            assert isinstance(val, int)
             assert val in (0, 1)
+            if condition.op == BitWiseOp.NEQ:
+                condition.op = BitWiseOp.EQ
+                val = 1 ^ val
             condition_bits = [var.to_list()]
 
         else:

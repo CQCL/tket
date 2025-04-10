@@ -859,6 +859,12 @@ def test_rz_sx_decomp() -> None:
     assert c == comp
 
 
+def test_iswapmax_autorebase() -> None:
+    c = Circuit(2).H(0).CX(0, 1)
+    assert AutoRebase({OpType.ISWAPMax, OpType.TK1}).apply(c)
+    assert c.n_gates_of_type(OpType.ISWAPMax) <= 2
+
+
 def test_flatten_relabel_pass() -> None:
     c = Circuit(3)
     c.H(1).H(2)
@@ -891,7 +897,7 @@ def test_remove_blank_wires_pass() -> None:
     cu = CompilationUnit(c)
     FlattenRelabelRegistersPass("a").apply(cu)
     assert cu.circuit.qubits == [Qubit("a", 0)]
-    assert cu.circuit.bits == [Bit("c", 0), Bit("c", 1)]
+    assert cu.circuit.bits == c.bits
 
 
 def test_round_angles_pass() -> None:

@@ -433,4 +433,21 @@ PassPtr CustomPass(
     std::function<Circuit(const Circuit&)> transform,
     const std::string& label = "");
 
+/**
+ * Generate a custom pass that tracks map
+ *
+ * @param transform circuit transformation function and modified intial and
+ * final maps
+ * @param label optional user-defined label for the pass
+ *
+ * It is the caller's responsibility to provide a valid transform: there are no
+ * checks on this.
+ *
+ * @return compilation pass that applies the supplied transform
+ */
+PassPtr CustomPassMap(
+    std::function<
+        std::pair<Circuit, std::pair<unit_map_t, unit_map_t>>(const Circuit&)>
+        transform,
+    const std::string& label = "");
 }  // namespace tket

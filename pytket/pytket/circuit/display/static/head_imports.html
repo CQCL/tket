@@ -1,5 +1,48 @@
 <!-- Download Vue 3-->
-<script type="application/javascript" src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+<script type="application/javascript" src="https://unpkg.com/vue@3"></script>
 <!-- Download Circuit Renderer with styles -->
 <script type="application/javascript" src="https://unpkg.com/pytket-circuit-renderer@0.10/dist/pytket-circuit-renderer.umd.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/pytket-circuit-renderer@0.10/dist/pytket-circuit-renderer.css">
+
+<!-- Fallback to jsdelivr in case UNPKG is down -->
+<script type="application/javascript">
+    if (typeof Vue === "undefined") {
+        const loadVue = new Promise(resolve => {
+            const vueFallback = document.createElement("script")
+            vueFallback.type = "application/javascript"
+            vueFallback.src = "https://cdn.jsdelivr.net/npm/vue@3"
+            vueFallback.async = false
+            vueFallback.defer = false
+            vueFallback.addEventListener('load', () => {
+              console.log("vue loaded");
+              resolve(true)
+            })
+            document.head.appendChild(vueFallback)
+        })
+        const loadRenderer = new Promise(resolve => {
+            const rendererFallback = document.createElement("script")
+            rendererFallback.type = "application/javascript"
+            rendererFallback.src = "https://cdn.jsdelivr.net/npm/pytket-circuit-renderer@0.10/dist/pytket-circuit-renderer.umd.min.js"
+            rendererFallback.async = false
+            rendererFallback.defer = false
+            rendererFallback.addEventListener('load', () => {
+              console.log("renderer loaded");
+              resolve(true)
+            })
+            document.head.appendChild(rendererFallback)
+        })
+        const loadCSS = new Promise(resolve => {
+            const cssFallback = document.createElement("link")
+            cssFallback.rel = "stylesheet"
+            cssFallback.href = "https://cdn.jsdelivr.net/npm/pytket-circuit-renderer@0.10/dist/pytket-circuit-renderer.min.css"
+            cssFallback.addEventListener('load', () => {
+              console.log("css loaded");
+              resolve(true)
+            })
+            document.head.appendChild(cssFallback)
+        })
+        window['_circuitRendererLoading'] = Promise.all([loadVue, loadRenderer, loadCSS])
+    } else {
+        window['_circuitRendererLoading'] = new Promise(resolve => resolve("already loaded"))
+    }
+</script>

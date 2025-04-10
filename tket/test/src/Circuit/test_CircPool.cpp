@@ -64,6 +64,36 @@ SCENARIO("Simple CircPool identities") {
     orig.add_op<unsigned>(OpType::TK1, {0.2, 0.3, 0.4}, {0});
     res = CircPool::tk1_to_rxry(0.2, 0.3, 0.4);
   }
+  GIVEN("CX_using_ISWAPMax") {
+    orig = Circuit(2);
+    orig.add_op<unsigned>(OpType::CX, {0, 1});
+    res = CircPool::CX_using_ISWAPMax();
+  }
+  GIVEN("CX_using_ISWAPMax_and_swap") {
+    orig = Circuit(2);
+    orig.add_op<unsigned>(OpType::CX, {0, 1});
+    res = CircPool::CX_using_ISWAPMax_and_swap();
+  }
+  GIVEN("TK2_using_ISWAPMax") {
+    orig = Circuit(2);
+    orig.add_op<unsigned>(OpType::TK2, {0.2, 0.3, 0.4}, {0, 1});
+    res = CircPool::TK2_using_ISWAPMax(0.2, 0.3, 0.4);
+  }
+  GIVEN("TK2_using_ISWAPMax_and_swap") {
+    orig = Circuit(2);
+    orig.add_op<unsigned>(OpType::TK2, {0.2, 0.3, 0.4}, {0, 1});
+    res = CircPool::TK2_using_ISWAPMax_and_swap(0.2, 0.3, 0.4);
+  }
+  GIVEN("ISWAPMax_using_TK2") {
+    orig = Circuit(2);
+    orig.add_op<unsigned>(OpType::ISWAPMax, {0, 1});
+    res = CircPool::ISWAPMax_using_TK2();
+  }
+  GIVEN("ISWAPMax_using_CX") {
+    orig = Circuit(2);
+    orig.add_op<unsigned>(OpType::ISWAPMax, {0, 1});
+    res = CircPool::ISWAPMax_using_CX();
+  }
   auto u_orig = tket_sim::get_unitary(orig);
   auto u_res = tket_sim::get_unitary(res);
   REQUIRE(u_res.isApprox(u_orig));

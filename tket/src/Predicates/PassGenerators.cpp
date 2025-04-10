@@ -163,12 +163,16 @@ find_tk1_replacement(const OpTypeSet& gateset) {
   throw Unsupported("No known decomposition from TK1 to available gateset.");
 }
 
-static Circuit find_cx_replacement(const OpTypeSet& gateset) {
+static Circuit find_cx_replacement(const OpTypeSet& gateset, bool allow_swaps) {
   if (gateset.contains(OpType::CX)) {
     return CircPool::CX();
   }
   if (gateset.contains(OpType::ZZMax)) {
     return CircPool::CX_using_ZZMax();
+  }
+  if (gateset.contains(OpType::ISWAPMax)) {
+    return allow_swaps ? CircPool::CX_using_ISWAPMax_and_swap()
+                       : CircPool::CX_using_ISWAPMax();
   }
   if (gateset.contains(OpType::XXPhase)) {
     return CircPool::CX_using_XXPhase_0();
@@ -187,35 +191,28 @@ static Circuit find_cx_replacement(const OpTypeSet& gateset) {
 
 static std::function<Circuit(const Expr&, const Expr&, const Expr&)>
 find_tk2_replacement(const OpTypeSet& gateset, bool allow_swaps) {
-  if (!allow_swaps) {
-    if (gateset.contains(OpType::TK2)) {
-      return CircPool::TK2_using_TK2;
-    }
-    if (gateset.contains(OpType::ZZPhase)) {
-      return CircPool::TK2_using_ZZPhase;
-    }
-    if (gateset.contains(OpType::CX)) {
-      return CircPool::TK2_using_CX;
-    }
-    if (gateset.contains(OpType::ZZMax)) {
-      return CircPool::TK2_using_ZZMax;
-    }
-    if (gateset.contains(OpType::AAMS)) {
-      return CircPool::TK2_using_AAMS;
-    }
-  } else {
-    if (gateset.contains(OpType::TK2)) {
-      return CircPool::TK2_using_TK2_or_swap;
-    }
-    if (gateset.contains(OpType::ZZPhase)) {
-      return CircPool::TK2_using_ZZPhase_and_swap;
-    }
-    if (gateset.contains(OpType::CX)) {
-      return CircPool::TK2_using_CX_and_swap;
-    }
-    if (gateset.contains(OpType::ZZMax)) {
-      return CircPool::TK2_using_ZZMax_and_swap;
-    }
+  if (gateset.contains(OpType::TK2)) {
+    return allow_swaps ? CircPool::TK2_using_TK2_or_swap
+                       : CircPool::TK2_using_TK2;
+  }
+  if (gateset.contains(OpType::ZZPhase)) {
+    return allow_swaps ? CircPool::TK2_using_ZZPhase_and_swap
+                       : CircPool::TK2_using_ZZPhase;
+  }
+  if (gateset.contains(OpType::CX)) {
+    return allow_swaps ? CircPool::TK2_using_CX_and_swap
+                       : CircPool::TK2_using_CX;
+  }
+  if (gateset.contains(OpType::ZZMax)) {
+    return allow_swaps ? CircPool::TK2_using_ZZMax_and_swap
+                       : CircPool::TK2_using_ZZMax;
+  }
+  if (gateset.contains(OpType::ISWAPMax)) {
+    return allow_swaps ? CircPool::TK2_using_ISWAPMax_and_swap
+                       : CircPool::TK2_using_ISWAPMax;
+  }
+  if (gateset.contains(OpType::AAMS)) {
+    return CircPool::TK2_using_AAMS;
   }
   throw Unsupported("No known decomposition from TK2 to available gateset.");
 }
@@ -236,7 +233,8 @@ PassPtr gen_auto_rebase_pass(const OpTypeSet& allowed_gates, bool allow_swaps) {
     }
     try {
       return Transforms::rebase_factory(
-          allowed_gates, find_cx_replacement(allowed_gates), tk1_replacement);
+          allowed_gates, find_cx_replacement(allowed_gates, allow_swaps),
+          tk1_replacement);
     } catch (const Unsupported&) {
       throw Unsupported(
           "No known decomposition from CX or TK2 to available gateset.");
@@ -359,7 +357,7 @@ PassPtr gen_flatten_relabel_registers_pass(const std::string& label) {
   Transform t =
       Transform([=](Circuit& circuit, std::shared_ptr<unit_bimaps_t> maps) {
         unsigned n_qubits = circuit.n_qubits();
-        circuit.remove_blank_wires(false);
+        circuit.remove_blank_wires(true);
         bool changed = circuit.n_qubits() < n_qubits;
         std::map<Qubit, Qubit> relabelling_map;
         std::vector<Qubit> all_qubits = circuit.all_qubits();
@@ -1179,10 +1177,48 @@ PassPtr CustomPass(
     circ = circ_out;
     return success;
   }};
+
   PredicatePtrMap precons;
   PostConditions postcons;
   nlohmann::json j;
   j["name"] = "CustomPass";
+  j["label"] = label;
+  return std::make_shared<StandardPass>(precons, t, postcons, j);
+}
+
+PassPtr CustomPassMap(
+    std::function<
+        std::pair<Circuit, std::pair<unit_map_t, unit_map_t>>(const Circuit&)>
+        transform,
+    const std::string& label) {
+  Transform t{[=](Circuit& circ, std::shared_ptr<unit_bimaps_t> maps) {
+    // run transformation
+    std::pair<Circuit, std::pair<unit_map_t, unit_map_t>> circ_maps =
+        transform(circ);
+
+    // get circuit
+    Circuit circ_out = circ_maps.first;
+    bool success = circ_out != circ;
+    circ = circ_out;
+
+    // get maps
+    unit_bimap_t init_m, final_m;
+    for (const auto& [key, value] : circ_maps.second.first) {
+      init_m.insert({key, value});
+    }
+    for (const auto& [key, value] : circ_maps.second.second) {
+      final_m.insert({key, value});
+    }
+    maps->initial = init_m;
+    maps->final = final_m;
+
+    return success;
+  }};
+
+  PredicatePtrMap precons;
+  PostConditions postcons;
+  nlohmann::json j;
+  j["name"] = "CustomPassMap";
   j["label"] = label;
   return std::make_shared<StandardPass>(precons, t, postcons, j);
 }
