@@ -89,26 +89,8 @@ def gen_module_stubs(modname, output_file):
 
 if __name__ == "__main__":
     pytket_dir = Path(__file__).parent.parent.resolve()
-    # for mod in pkgutil.iter_modules(pytket._tket.__path__):
-    #     modname = mod.name
-    for modname in [
-        "architecture",
-        "circuit",
-        "circuit_library",
-        "logging",
-        "mapping",
-        "partition",
-        "passes",
-        "pauli",
-        "placement",
-        "predicates",
-        "tableau",
-        "tailoring",
-        "transform",
-        "unit_id",
-        "utils_serialization",
-        "zx",
-    ]:
+    for mod in pkgutil.iter_modules(pytket._tket.__path__):
+        modname = mod.name
         if not modname.startswith("lib"):
             print(f"Generate {modname}.pyi")
             gen_module_stubs(
