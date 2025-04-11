@@ -109,13 +109,55 @@ jobs:
             compilations_fc
             report.pdf
 
-      - name: Share Report To tket Slack Channel;
-        uses: slackapi/slack-github-action@v2.0.0
-        with:
-          method: files.uploadV2
-          token: ${{ secrets.PYTKET_BENCHMARKING_SLACK_BOT_TOKEN }}
-          payload: |
-            channel: G01CP0YFFA7
-            initial_comment: "the results are in!"
-            file: "./report.pdf"
-            filename: "report.pdf"
+      - name: Upload Report
+        run: |
+          # https://stackoverflow.com/a/78933760
+          export FILE_PATH="report.pdf"
+          export CHANNEL_ID="G01CP0YFFA7"
+          export TOKEN="${{ secrets.PYTKET_BENCHMARKING_SLACK_BOT_TOKEN }}"
+          FILENAME=$(basename "$FILE_PATH")
+
+          # Get the file size using macOS compatible stat command. use stat -c%s "$FILE_PATH" otherwise
+          FILE_SIZE=$(stat -f%z "$FILE_PATH")
+
+          # Stage 1: Get an upload URL
+          UPLOAD_URL_RESPONSE=$(curl -s -F files=@"$FILENAME" -F filename="$FILENAME" -F token=$TOKEN -F length=$FILE_SIZE https://slack.com/api/files.getUploadURLExternal)
+
+          UPLOAD_URL=$(echo "$UPLOAD_URL_RESPONSE" | jq -r '.upload_url')
+          FILE_ID=$(echo "$UPLOAD_URL_RESPONSE" | jq -r '.file_id')
+
+          if [ "$UPLOAD_URL" == "null" ]; then
+            echo "Error getting upload URL: $UPLOAD_URL_RESPONSE"
+            exit 1
+          fi
+
+          # Stage 2: Upload the file to the provided URL
+          UPLOAD_RESPONSE=$(curl -s -X POST \
+            -T "$FILE_PATH" \
+            -H "Content-Type: application/octet-stream" \
+            "$UPLOAD_URL")
+
+          if [ $? -ne 0 ]; then
+            echo "Error uploading file: $UPLOAD_RESPONSE"
+            exit 1
+          fi
+
+          # Stage 3: Complete the upload, and post the message and the file
+          COMPLETE_RESPONSE=$(curl -s -X POST \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Content-Type: application/json;charset=utf-8" \
+            -d '{
+                  "files": [
+                    {
+                      "id": "'"$FILE_ID"'"
+                    }
+                  ],
+                  "channel_id": "'"$CHANNEL_ID"'",
+                  "initial_comment": "benchmark"
+                }' \
+            https://slack.com/api/files.completeUploadExternal)
+
+          if [ "$(echo "$COMPLETE_RESPONSE" | jq -r '.ok')" != "true" ]; then
+            echo "Error completing upload: $COMPLETE_RESPONSE"
+            exit 1
+          fi
