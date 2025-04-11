@@ -12,21 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/string.h>
+#include <nanobind/stl/unordered_map.h>
 
-#include "binder_json.hpp"
 #include "binder_utils.hpp"
+#include "nanobind_json/nanobind_json.hpp"
 #include "tket/MeasurementSetup/MeasurementReduction.hpp"
 #include "typecast.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 using json = nlohmann::json;
 
 namespace tket {
 
-PYBIND11_MODULE(partition, m) {
-  py::enum_<PauliPartitionStrat>(
+NB_MODULE(partition, m) {
+  nb::set_leak_warnings(false);
+  nb::enum_<PauliPartitionStrat>(
       m, "PauliPartitionStrat",
       "Enum for available strategies to partition Pauli tensors.")
       .value(
@@ -39,7 +41,7 @@ PYBIND11_MODULE(partition, m) {
           "Build sets of mutually commuting Pauli tensors. Requires "
           "O(n^2) CX gates to diagonalise.");
 
-  py::enum_<GraphColourMethod>(
+  nb::enum_<GraphColourMethod>(
       m, "GraphColourMethod",
       "Enum for available methods to perform graph colouring.")
       .value(
@@ -60,7 +62,7 @@ PYBIND11_MODULE(partition, m) {
           "Exponential time in the worst case, but often runs "
           "much faster.");
 
-  py::class_<MeasurementSetup::MeasurementBitMap>(
+  nb::class_<MeasurementSetup::MeasurementBitMap>(
       m, "MeasurementBitMap",
       "Maps Pauli tensors to Clifford circuit indices and bits required "
       "for measurement. A MeasurementBitMap belongs to a "
@@ -71,66 +73,66 @@ PYBIND11_MODULE(partition, m) {
       "MeasurementBitMap optionally inverts "
       "the result.")
       .def(
-          py::init<unsigned, py::tket_custom::SequenceVec<unsigned> &, bool>(),
+          nb::init<unsigned, nb::tket_custom::SequenceVec<unsigned> &, bool>(),
           "Constructs a MeasurementBitMap for some Clifford circuit "
           "index and bits, with an option to invert the result."
           "\n\n:param circ_index: which measurement circuit the "
           "measurement map refers to"
           "\n:param bits: which bits are included in the measurement"
           "\n:param invert: whether to flip the parity of the result",
-          py::arg("circ_index"), py::arg("bits"), py::arg("invert") = false)
+          nb::arg("circ_index"), nb::arg("bits"), nb::arg("invert") = false)
       .def("__repr__", &MeasurementSetup::MeasurementBitMap::to_str)
-      .def_property_readonly(
+      .def_prop_ro(
           "circ_index", &MeasurementSetup::MeasurementBitMap::get_circ_index,
           "Clifford circuit index")
-      .def_property_readonly(
+      .def_prop_ro(
           "bits", &MeasurementSetup::MeasurementBitMap::get_bits,
           "Bits to measure")
-      .def_property_readonly(
+      .def_prop_ro(
           "invert", &MeasurementSetup::MeasurementBitMap::get_invert,
           "Whether result is inverted or not")
       .def(
           "to_dict",
           [](const MeasurementSetup::MeasurementBitMap &map) {
-            return py::object(json(map)).cast<py::dict>();
+            return nb::cast<nb::dict>(nb::object(json(map)));
           },
           "JSON-serializable dict representation of the MeasurementBitMap."
           "\n\n:return: dict representation of the MeasurementBitMap")
       .def_static(
           "from_dict",
-          [](const py::dict &measurement_bit_map_dict) {
+          [](const nb::dict &measurement_bit_map_dict) {
             return json(measurement_bit_map_dict)
                 .get<MeasurementSetup::MeasurementBitMap>();
           },
           "Construct MeasurementBitMap instance from dict representation.");
 
-  py::class_<MeasurementSetup>(
+  nb::class_<MeasurementSetup>(
       m, "MeasurementSetup",
       "Encapsulates an experiment in which the expectation value of an "
       "operator is to be measured via decomposition into "
       "QubitPauliStrings. Each tensor expectation value can be measured "
       "using shots. These values are then summed together with some "
       "weights to retrieve the desired operator expctation value.")
-      .def(py::init<>(), "Constructs an empty MeasurementSetup object")
+      .def(nb::init<>(), "Constructs an empty MeasurementSetup object")
       .def("__repr__", &MeasurementSetup::to_str)
-      .def_property_readonly(
+      .def_prop_ro(
           "measurement_circs", &MeasurementSetup::get_circs,
           "Clifford measurement circuits.")
-      .def_property_readonly(
+      .def_prop_ro(
           "results", &MeasurementSetup::get_result_map,
           "Map from Pauli strings to MeasurementBitMaps")
       .def(
           "add_measurement_circuit", &MeasurementSetup::add_measurement_circuit,
           "Add a Clifford circuit that rotates into some Pauli basis",
-          py::arg("circ"))
+          nb::arg("circ"))
       .def(
           "add_result_for_term",
           (void (MeasurementSetup::*)(
               const SpPauliString &,
               const MeasurementSetup::MeasurementBitMap
                   &))&MeasurementSetup::add_result_for_term,
-          "Add a new Pauli string with a corresponding BitMap", py::arg("term"),
-          py::arg("result"))
+          "Add a new Pauli string with a corresponding BitMap", nb::arg("term"),
+          nb::arg("result"))
       .def(
           "verify", &MeasurementSetup::verify,
           "Checks that the strings to be measured correspond to the "
@@ -140,20 +142,20 @@ PYBIND11_MODULE(partition, m) {
       .def(
           "to_dict",
           [](const MeasurementSetup &setup) {
-            return py::object(json(setup)).cast<py::dict>();
+            return nb::cast<nb::dict>(nb::object(json(setup)));
           },
           "JSON-serializable dict representation of the MeasurementSetup."
           "\n\n:return: dict representation of the MeasurementSetup")
       .def_static(
           "from_dict",
-          [](const py::dict &measurement_setup_dict) {
+          [](const nb::dict &measurement_setup_dict) {
             return json(measurement_setup_dict).get<MeasurementSetup>();
           },
           "Construct MeasurementSetup instance from dict representation.");
 
   m.def(
       "measurement_reduction",
-      [](const py::tket_custom::SequenceList<SpPauliString> &strings,
+      [](const nb::tket_custom::SequenceList<SpPauliString> &strings,
          PauliPartitionStrat strat, GraphColourMethod method,
          CXConfigType cx_config) {
         return measurement_reduction(strings, strat, method, cx_config);
@@ -167,13 +169,13 @@ PYBIND11_MODULE(partition, m) {
       "\n:param cx_config: Whenever diagonalisation is required, use "
       "this configuration of CX gates"
       "\n:return: a :py:class:`MeasurementSetup` object",
-      py::arg("strings"), py::arg("strat"),
-      py::arg("method") = GraphColourMethod::Lazy,
-      py::arg("cx_config") = CXConfigType::Snake);
+      nb::arg("strings"), nb::arg("strat"),
+      nb::arg("method") = GraphColourMethod::Lazy,
+      nb::arg("cx_config") = CXConfigType::Snake);
 
   m.def(
       "term_sequence",
-      [](const py::tket_custom::SequenceList<SpPauliString> &strings,
+      [](const nb::tket_custom::SequenceList<SpPauliString> &strings,
          PauliPartitionStrat strat, GraphColourMethod method) {
         return term_sequence(strings, strat, method);
       },
@@ -187,8 +189,8 @@ PYBIND11_MODULE(partition, m) {
       "`CommutingSets`."
       "\n:param method: The `GraphColourMethod` to use."
       "\n:return: a list of lists of " CLSOBJS(QubitPauliString),
-      py::arg("strings"), py::arg("strat") = PauliPartitionStrat::CommutingSets,
-      py::arg("method") = GraphColourMethod::Lazy);
+      nb::arg("strings"), nb::arg("strat") = PauliPartitionStrat::CommutingSets,
+      nb::arg("method") = GraphColourMethod::Lazy);
 }
 
 }  // namespace tket

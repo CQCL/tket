@@ -12,36 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <pybind11/eigen.h>
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
+#include <nanobind/eigen/dense.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/string.h>
 
 #include <sstream>
 
+#include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Converters/Converters.hpp"
 #include "tket/Converters/UnitaryTableauBox.hpp"
 #include "typecast.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 namespace tket {
 
-typedef py::tket_custom::SequenceVec<Qubit> py_qubit_vector_t;
-PYBIND11_MODULE(tableau, m) {
-  py::class_<UnitaryTableau>(
+typedef nb::tket_custom::SequenceVec<Qubit> py_qubit_vector_t;
+NB_MODULE(tableau, m) {
+  nb::set_leak_warnings(false);
+  nb::class_<UnitaryTableau>(
       m, "UnitaryTableau",
       "Stabilizer tableau for a unitary in the style of Aaronson&Gottesman "
       "\"Improved Simulation of Stabilizer Circuits\": rows indicate the "
       "action at the output corresponding to either an X or a Z on a single "
       "input.")
       .def(
-          py::init<unsigned>(),
+          nb::init<unsigned>(),
           "Constructs a :py:class:`UnitaryTableau` representing the identity "
           "operation over some number of qubits. Qubits will be indexed "
           "sequentially in the default register."
           "\n\n:param nqb: The number of qubits in the unitary.",
-          py::arg("nqb"))
+          nb::arg("nqb"))
       .def(
-          py::init<
+          nb::init<
               const MatrixXb&, const MatrixXb&, const VectorXb&,
               const MatrixXb&, const MatrixXb&, const VectorXb&>(),
           "Constructs a :py:class:`UnitaryTableau` from the binary tables of "
@@ -52,12 +54,13 @@ PYBIND11_MODULE(tableau, m) {
           "\n:param zx: The X component of the Z rows."
           "\n:param zz: The Z component of the Z rows."
           "\n:param zph: The phases of the Z rows.",
-          py::arg("xx"), py::arg("xz"), py::arg("xph"), py::arg("zx"),
-          py::arg("zz"), py::arg("zph"))
+          nb::arg("xx"), nb::arg("xz"), nb::arg("xph"), nb::arg("zx"),
+          nb::arg("zz"), nb::arg("zph"))
       .def(
-          py::init<>([](const Circuit& circ) {
-            return circuit_to_unitary_tableau(circ);
-          }),
+          "__init__",
+          [](UnitaryTableau* p, const Circuit& circ) {
+            new (p) UnitaryTableau(circuit_to_unitary_tableau(circ));
+          },
           "Constructs a :py:class:`UnitaryTableau` from a unitary "
           ":py:class:`Circuit`. Throws an exception if the input contains "
           "non-unitary operations."
@@ -77,7 +80,7 @@ PYBIND11_MODULE(tableau, m) {
           "Read off an X row as a Pauli string."
           "\n\n:param qb: The qubits whose X row to read off."
           "\n:return: The Pauli string :math:`P` such that :math:`PU=UX_{qb}`.",
-          py::arg("qb"))
+          nb::arg("qb"))
       .def(
           "get_zrow",
           [](const UnitaryTableau& tab, const Qubit& qb) {
@@ -86,7 +89,7 @@ PYBIND11_MODULE(tableau, m) {
           "Read off an Z row as a Pauli string."
           "\n\n:param qb: The qubits whose Z row to read off."
           "\n:return: The Pauli string :math:`P` such that :math:`PU=UZ_{qb}`.",
-          py::arg("qb"))
+          nb::arg("qb"))
       .def(
           "get_row_product",
           [](const UnitaryTableau& tab, const SpCxPauliTensor& paulis) {
@@ -99,7 +102,7 @@ PYBIND11_MODULE(tableau, m) {
           "\n\n:param paulis: The Pauli string :math:`P` to consider at the "
           "input."
           "\n:return: The Pauli string :math:`Q` such that :math:`QU=UP`.",
-          py::arg("paulis"))
+          nb::arg("paulis"))
       .def(
           "apply_gate_at_front",
           [](UnitaryTableau& self, const OpType& type,
@@ -113,7 +116,7 @@ PYBIND11_MODULE(tableau, m) {
           "an unparameterised Clifford gate type."
           "\n:param qbs: The qubits to apply the gate to. Length must match "
           "the arity of the given gate type.",
-          py::arg("type"), py::arg("qbs"))
+          nb::arg("type"), nb::arg("qbs"))
       .def(
           "apply_gate_at_end",
           [](UnitaryTableau& self, const OpType& type,
@@ -127,7 +130,7 @@ PYBIND11_MODULE(tableau, m) {
           "an unparameterised Clifford gate type."
           "\n:param qbs: The qubits to apply the gate to. Length must match "
           "the arity of the given gate type.",
-          py::arg("type"), py::arg("qbs"))
+          nb::arg("type"), nb::arg("qbs"))
       .def(
           "to_circuit", &unitary_tableau_to_circuit,
           "Synthesises a unitary :py:class:`Circuit` realising the same "
@@ -135,21 +138,21 @@ PYBIND11_MODULE(tableau, m) {
           "\"Improved Simulation of Stabilizer Circuits\", Theorem 8. This is "
           "not optimised for gate count, so is not recommended for "
           "performance-sensitive usage.");
-  py::class_<UnitaryRevTableau>(
+  nb::class_<UnitaryRevTableau>(
       m, "UnitaryRevTableau",
       "Equivalent to the UnitaryTableau, except that the rows indicate the "
       "action at the input corresponding to either an X or a Z on a single "
       "output.")
       .def(
-          py::init<unsigned>(),
+          nb::init<unsigned>(),
           "Constructs a :py:class:`UnitaryRevTableau` representing the "
           "identity "
           "operation over some number of qubits. Qubits will be indexed "
           "sequentially in the default register."
           "\n\n:param nqb: The number of qubits in the unitary.",
-          py::arg("nqb"))
+          nb::arg("nqb"))
       .def(
-          py::init<
+          nb::init<
               const MatrixXb&, const MatrixXb&, const VectorXb&,
               const MatrixXb&, const MatrixXb&, const VectorXb&>(),
           "Constructs a :py:class:`UnitaryRevTableau` from the binary tables "
@@ -161,12 +164,13 @@ PYBIND11_MODULE(tableau, m) {
           "\n:param zx: The X component of the Z rows."
           "\n:param zz: The Z component of the Z rows."
           "\n:param zph: The phases of the Z rows.",
-          py::arg("xx"), py::arg("xz"), py::arg("xph"), py::arg("zx"),
-          py::arg("zz"), py::arg("zph"))
+          nb::arg("xx"), nb::arg("xz"), nb::arg("xph"), nb::arg("zx"),
+          nb::arg("zz"), nb::arg("zph"))
       .def(
-          py::init<>([](const Circuit& circ) {
-            return circuit_to_unitary_rev_tableau(circ);
-          }),
+          "__init__",
+          [](UnitaryRevTableau* p, const Circuit& circ) {
+            new (p) UnitaryRevTableau(circuit_to_unitary_rev_tableau(circ));
+          },
           "Constructs a :py:class:`UnitaryRevTableau` from a unitary "
           ":py:class:`Circuit`. Throws an exception if the input contains "
           "non-unitary operations."
@@ -186,7 +190,7 @@ PYBIND11_MODULE(tableau, m) {
           "Read off an X row as a Pauli string."
           "\n\n:param qb: The qubits whose X row to read off."
           "\n:return: The Pauli string :math:`P` such that :math:`UP=X_{qb}U`.",
-          py::arg("qb"))
+          nb::arg("qb"))
       .def(
           "get_zrow",
           [](const UnitaryRevTableau& tab, const Qubit& qb) {
@@ -195,7 +199,7 @@ PYBIND11_MODULE(tableau, m) {
           "Read off an Z row as a Pauli string."
           "\n\n:param qb: The qubits whose Z row to read off."
           "\n:return: The Pauli string :math:`P` such that :math:`UP=Z_{qb}U`.",
-          py::arg("qb"))
+          nb::arg("qb"))
       .def(
           "get_row_product",
           [](const UnitaryRevTableau& tab, const SpCxPauliTensor& paulis) {
@@ -208,7 +212,7 @@ PYBIND11_MODULE(tableau, m) {
           "\n\n:param paulis: The Pauli string :math:`P` to consider at the "
           "output."
           "\n:return: The Pauli string :math:`Q` such that :math:`UQ=PU`.",
-          py::arg("paulis"))
+          nb::arg("paulis"))
       .def(
           "apply_gate_at_front",
           [](UnitaryRevTableau& self, const OpType& type,
@@ -222,7 +226,7 @@ PYBIND11_MODULE(tableau, m) {
           "an unparameterised Clifford gate type."
           "\n:param qbs: The qubits to apply the gate to. Length must match "
           "the arity of the given gate type.",
-          py::arg("type"), py::arg("qbs"))
+          nb::arg("type"), nb::arg("qbs"))
       .def(
           "apply_gate_at_end",
           [](UnitaryRevTableau& self, const OpType& type,
@@ -236,7 +240,7 @@ PYBIND11_MODULE(tableau, m) {
           "an unparameterised Clifford gate type."
           "\n:param qbs: The qubits to apply the gate to. Length must match "
           "the arity of the given gate type.",
-          py::arg("type"), py::arg("qbs"))
+          nb::arg("type"), nb::arg("qbs"))
       .def(
           "to_circuit", &unitary_rev_tableau_to_circuit,
           "Synthesises a unitary :py:class:`Circuit` realising the same "
@@ -244,17 +248,17 @@ PYBIND11_MODULE(tableau, m) {
           "\"Improved Simulation of Stabilizer Circuits\", Theorem 8. This is "
           "not optimised for gate count, so is not recommended for "
           "performance-sensitive usage.");
-  py::class_<UnitaryTableauBox, std::shared_ptr<UnitaryTableauBox>, Op>(
+  nb::class_<UnitaryTableauBox, Op>(
       m, "UnitaryTableauBox",
       "A Clifford unitary specified by its actions on Paulis.")
       .def(
-          py::init<const UnitaryTableau&>(),
+          nb::init<const UnitaryTableau&>(),
           "Construct from a given tableau.\n\n"
           ":param tab: The :py:class:`UnitaryTableau` representing the desired "
           "unitary.",
-          py::arg("tab"))
+          nb::arg("tab"))
       .def(
-          py::init<
+          nb::init<
               const MatrixXb&, const MatrixXb&, const VectorXb&,
               const MatrixXb&, const MatrixXb&, const VectorXb&>(),
           "Construct the tableau from the binary tables of its components."
@@ -264,8 +268,8 @@ PYBIND11_MODULE(tableau, m) {
           "\n:param zx: The X component of the Z rows."
           "\n:param zz: The Z component of the Z rows."
           "\n:param zph: The phases of the Z rows.",
-          py::arg("xx"), py::arg("xz"), py::arg("xph"), py::arg("zx"),
-          py::arg("zz"), py::arg("zph"))
+          nb::arg("xx"), nb::arg("xz"), nb::arg("xph"), nb::arg("zx"),
+          nb::arg("zz"), nb::arg("zph"))
       .def(
           "get_circuit",
           [](UnitaryTableauBox& ubox) { return *ubox.to_circuit(); },

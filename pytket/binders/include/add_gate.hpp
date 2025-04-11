@@ -13,20 +13,22 @@
 // limitations under the License.
 
 #pragma once
-#include <pybind11/pybind11.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/variant.h>
+#include <nanobind/stl/vector.h>
 
 #include <variant>
 #include <vector>
 
 #include "tket/Circuit/Circuit.hpp"
 #include "typecast.hpp"
-namespace py = pybind11;
+namespace nb = nanobind;
 
 namespace tket {
 
 Circuit *add_gate_method_any(
     Circuit *circ, const Op_ptr &op,
     const std::variant<std::vector<unsigned>, std::vector<UnitID>> &args,
-    const py::kwargs &kwargs);
+    const nb::kwargs &kwargs);
 
 }  // namespace tket
