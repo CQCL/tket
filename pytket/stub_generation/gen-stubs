@@ -88,6 +88,15 @@ def gen_module_stubs(modname, private_exceptions, output_file):
 if __name__ == "__main__":
     output_dir = Path(__file__).parent.parent.resolve() / "pytket" / "_tket"
     private_exceptions = {
+        "circuit": set(
+            [
+                "_add_wasm",
+                "_add_w_register",
+                "_classical_eval",
+                "_dag_data",
+                "_n_vertices",
+            ]
+        ),
         "unit_id": set(
             [
                 "_current",
@@ -97,7 +106,7 @@ if __name__ == "__main__":
                 "_TEMP_BIT_REG_BASE",
                 "_TEMP_REG_SIZE",
             ]
-        )
+        ),
     }
     for mod in pkgutil.iter_modules(pytket._tket.__path__):
         modname = mod.name
