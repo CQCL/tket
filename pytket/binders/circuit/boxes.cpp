@@ -62,6 +62,12 @@ PhasePolynomial to_cpp_phase_poly(
   }
   return phase_poly;
 }
+typedef std::map<nb::tket_custom::TupleVec<bool>, Expr> PyPhasePolynomial;
+PhasePolynomial to_cpp_phase_poly(const PyPhasePolynomial &py_phase_poly) {
+  return PhasePolynomial(
+      std::make_move_iterator(py_phase_poly.begin()),
+      std::make_move_iterator(py_phase_poly.end()));
+}
 
 // state_perm_t has the same hashability problem
 typedef nb::tket_custom::SequenceVec<std::pair<
@@ -799,12 +805,12 @@ void init_boxes(nb::module_ &m) {
           "__init__",
           [](PhasePolyBox *p, unsigned n_qb,
              const std::map<Qubit, unsigned> &q_ind,
-             const std::map<std::vector<bool>, Expr> &p_p, const MatrixXb &lin_trans) {
+             const PyPhasePolynomial &p_p, const MatrixXb &lin_trans) {
             boost::bimap<Qubit, unsigned> bmap;
             for (const auto &pair : q_ind) {
               bmap.insert({pair.first, pair.second});
             }
-            new (p) PhasePolyBox(n_qb, bmap, p_p, lin_trans);
+            new (p) PhasePolyBox(n_qb, bmap, to_cpp_phase_poly(p_p), lin_trans);
           },
           "\n\nConstruct from the number of qubits, the mapping from "
           "Qubit to index, the phase polynomial (map from bitstring "
