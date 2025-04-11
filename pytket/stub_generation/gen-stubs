@@ -18,11 +18,6 @@ def replace_in_file_string(
     return modified_text, len(split_text) - 1
 
 
-def handle_ndarray(stub: str) -> str:
-    modified, n = replace_in_file_string(stub, "ArrayLike", "NDArray")
-    return modified
-
-
 def handle_args_kwargs_types(stub: str) -> str:
     modified, n_args = replace_in_file_string(stub, "\\*args(?=[^:])", "*args: Any")
     modified, n_kwargs = replace_in_file_string(
@@ -31,38 +26,6 @@ def handle_args_kwargs_types(stub: str) -> str:
     n_total = n_args + n_kwargs
     if n_total > 0 and not re.search("from typing import .*Any", modified):
         modified = "from typing import Any" + os.linesep + modified
-    return modified
-
-
-def handle_optype_default(stub: str) -> str:
-    modified, n = replace_in_file_string(
-        stub, " = OpType\\.", " = pytket._tket.circuit.OpType."
-    )
-    return modified
-
-
-def handle_to_dict(stub: str) -> str:
-    modified, n = replace_in_file_string(
-        stub, "def to_dict\\(self\\) -> JSON:", "def to_dict(self) -> dict:"
-    )
-    return modified
-
-
-def handle_object_type(stub: str) -> str:
-    modified, n = replace_in_file_string(
-        stub,
-        "Callable\\[\\[pytket\\._tket\\.predicates\\.CompilationUnit, object\\], None\\]",
-        "Callable[[pytket._tket.predicates.CompilationUnit, Any], None]",
-    )
-    return modified
-
-
-def handle_logicexp_type(stub: str) -> str:
-    modified, n = replace_in_file_string(
-        stub,
-        "LogicExpression",
-        "pytket.circuit.logic_exp.LogicExp",
-    )
     return modified
 
 
@@ -76,12 +39,18 @@ def gen_module_stubs(modname, private_exceptions, output_file):
     sg.put(mod_imported)
     with open(output_file, "w", encoding="utf-8") as f:
         stub: str = sg.get()
-        stub = handle_ndarray(stub)
         stub = handle_args_kwargs_types(stub)
-        stub = handle_optype_default(stub)
-        stub = handle_to_dict(stub)
-        stub = handle_object_type(stub)
-        stub = handle_logicexp_type(stub)
+        stub = re.sub("ArrayLike", "NDArray", stub)
+        stub = re.sub(" = OpType\\.", " = pytket._tket.circuit.OpType.", stub)
+        stub = re.sub(
+            "def to_dict\\(self\\) -> JSON:", "def to_dict(self) -> dict:", stub
+        )
+        stub = re.sub(
+            "Callable\\[\\[pytket\\._tket\\.predicates\\.CompilationUnit, object\\], None\\]",
+            "Callable[[pytket._tket.predicates.CompilationUnit, Any], None]",
+            stub,
+        )
+        stub = re.sub("LogicExpression", "pytket.circuit.logic_exp.LogicExp", stub)
         f.write(stub)
 
 
