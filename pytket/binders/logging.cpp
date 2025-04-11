@@ -12,16 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <pybind11/pybind11.h>
+#include <nanobind/nanobind.h>
 
 #include <tklog/TketLog.hpp>
 
-namespace py = pybind11;
+namespace nb = nanobind;
 
 namespace tket {
 
-PYBIND11_MODULE(logging, m) {
-  py::enum_<LogLevel>(m, "level")
+NB_MODULE(logging, m) {
+  nb::set_leak_warnings(false);
+  nb::enum_<LogLevel>(m, "level")
       .value("trace", LogLevel::Trace, "all logs")
       .value("debug", LogLevel::Debug, "debug logs and above")
       .value("info", LogLevel::Info, "informational logs and above")
@@ -34,7 +35,7 @@ PYBIND11_MODULE(logging, m) {
       "set_level", [](LogLevel level) { tket_log()->set_level(level); },
       "Set the global logging level."
       "\n\n:param log_level: Desired logging level",
-      py::arg("log_level"));
+      nb::arg("log_level"));
 }
 
 }  // namespace tket

@@ -12,14 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <pybind11/pybind11.h>
+#include <nanobind/nanobind.h>
 
 #include "tket/Circuit/CircPool.hpp"
 #include "typecast.hpp"
 
 namespace tket {
 
-PYBIND11_MODULE(circuit_library, library_m) {
+NB_MODULE(circuit_library, library_m) {
+  nanobind::set_leak_warnings(false);
   library_m.def(
       "BRIDGE_using_CX_0", &CircPool::BRIDGE_using_CX_0,
       "Equivalent to BRIDGE, using four CX, first CX has control on qubit 0");
@@ -139,7 +140,7 @@ PYBIND11_MODULE(circuit_library, library_m) {
       ":return: Circuit with control qubits at indices :math:`0, \\ldots, "
       "n-1`, target qubit :math:`n`, and ancilla qubits :math:`n+1, \\ldots, n "
       "+ \\lfloor(n-1)/2\\rfloor`.",
-      pybind11::arg("n"), pybind11::arg("zeroed_ancillas") = true);
+      nanobind::arg("n"), nanobind::arg("zeroed_ancillas") = true);
   library_m.def(
       "ladder_down", &CircPool::ladder_down, "CX[0,1]; CX[2,0]; CCX[0,1,2]");
   library_m.def(

@@ -94,27 +94,16 @@ jobs:
         cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
         cmake --build . -j2
         cmake --install .
-    - name: Install pybind11
+    - name: Install nanobind
       run: |
         cd ${TMP_DIR}
-        wget https://github.com/pybind/pybind11/archive/refs/tags/v2.13.6.tar.gz
-        tar xzvf v2.13.6.tar.gz
-        cd pybind11-2.13.6/
+        wget https://github.com/wjakob/nanobind/archive/refs/tags/v2.6.1.tar.gz
+        tar xzvf v2.6.1.tar.gz
+        cd nanobind-2.6.1/
         mkdir build
         cd build
-        cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DPYBIND11_TEST=OFF ..
-        cmake --build .
-        cmake --install .
-    - name: Install pybind11_json
-      run: |
-        cd ${TMP_DIR}
-        wget https://github.com/pybind/pybind11_json/archive/refs/tags/0.2.15.tar.gz
-        tar xzvf 0.2.15.tar.gz
-        cd pybind11_json-0.2.15/
-        mkdir build
-        cd build
-        cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
-        cmake --build .
+        cmake -GNinja -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DNB_TEST=OFF -DNB_USE_SUBMODULE_DEPS=OFF ..
+        cmake --build . -j2
         cmake --install .
     - name: Install tklog
       run: |

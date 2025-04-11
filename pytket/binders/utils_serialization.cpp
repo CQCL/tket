@@ -12,27 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <pybind11/complex.h>
-#include <pybind11/pybind11.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/complex.h>
 
 #include <complex>
 
-#include "binder_json.hpp"
+#include "nanobind_json/nanobind_json.hpp"
 #include "tket/Utils/Json.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 using json = nlohmann::json;
 
 namespace tket {
 
-PYBIND11_MODULE(utils_serialization, m) {
+NB_MODULE(utils_serialization, m) {
+  nb::set_leak_warnings(false);
   m.def(
       "complex_to_list",
-      [](std::complex<double> c) { return py::object(json(c)); },
+      [](std::complex<double> c) { return nb::object(json(c)); },
       "Convert complex number to serializable list [real, imag].");
   m.def(
       "list_to_complex",
-      [](const py::object& py_object) {
+      [](const nb::object& py_object) {
         return json(py_object).get<std::complex<double>>();
       },
       "Convert serializable list as output by `complex_to_list` to complex "
