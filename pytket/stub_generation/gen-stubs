@@ -50,6 +50,7 @@ def gen_module_stubs(modname, private_exceptions, output_file):
             stub,
         )
         stub = re.sub("LogicExpression", "pytket.circuit.logic_exp.LogicExp", stub)
+        stub = re.sub("Mapping\\[Sequence\\[bool\\],", "dict[tuple[bool, ...],", stub)
         f.write(stub)
 
 
