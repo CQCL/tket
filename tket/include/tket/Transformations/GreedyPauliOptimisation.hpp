@@ -37,7 +37,7 @@ class GreedyPauliSimpError : public std::logic_error {
  *
  */
 enum class TQEType : unsigned {
-  XX,
+  XX = 0,
   XY,
   XZ,
   YX,
@@ -620,10 +620,10 @@ gpg_from_unordered_set(const std::vector<SymPauliTensor>& unordered_set);
  * @return Circuit
  */
 Circuit greedy_pauli_graph_synthesis_flag(
-    Circuit circ, std::atomic<bool>& stop_flag, double discount_rate = 0.7,
-    double depth_weight = 0.3, unsigned max_lookahead = 500,
-    unsigned max_tqe_candidates = 500, unsigned seed = 0,
-    bool allow_zzphase = false);
+    const Circuit& circ, std::atomic<bool>& stop_flag,
+    double discount_rate = 0.7, double depth_weight = 0.3,
+    unsigned max_lookahead = 500, unsigned max_tqe_candidates = 500,
+    unsigned seed = 0, bool allow_zzphase = false);
 
 /**
  * @brief Converts the given circuit into a GPGraph and conjugates each node

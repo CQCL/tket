@@ -152,10 +152,12 @@ static double default_pauliexp_tqe_cost(
   double tab_cost = 0;
   unsigned count = 0;
   for (const std::vector<PauliNode_ptr>& rotation_set : rotation_sets) {
+    int r_cost = 0;
     for (const PauliNode_ptr& node : rotation_set) {
-      exp_cost += weight * node->tqe_cost_increase(tqe);
+      r_cost += node->tqe_cost_increase(tqe);
       if (++count >= max_lookahead) break;
     }
+    exp_cost += weight * r_cost;
     if (count >= max_lookahead) break;
     weight *= discount;
   }
@@ -166,33 +168,23 @@ static double default_pauliexp_tqe_cost(
   return exp_cost + tab_cost;
 }
 
-// given a map from TQE to a vector of costs, and an optional map
+// given a map from TQE to an array of costs, and an optional map
 // specifying the costs for implementing some 2q rotations directly
 // as ZZPhase gates. Select the TQEs and 2q rotations with the minimum
-// weighted sum of minmax-normalised costs.
+// weighted sum of minmax-normalised costs. Cost arrays must all be the same
+// length (enforced by the template parameter).
+template <size_t n_costs>
 static std::pair<std::vector<TQE>, std::vector<Rotation2Q>> minmax_selection(
-    const std::map<TQE, std::vector<double>>& tqe_candidates_cost,
-    const std::map<Rotation2Q, std::vector<double>>& rot2q_gates_cost,
-    const std::vector<double>& weights) {
-  TKET_ASSERT(tqe_candidates_cost.size() > 0);
-  size_t n_costs = tqe_candidates_cost.begin()->second.size();
-  TKET_ASSERT(n_costs == weights.size());
+    const std::vector<std::pair<TQE, std::array<double, n_costs>>>&
+        tqe_candidates_cost,
+    const std::vector<std::pair<Rotation2Q, std::array<double, n_costs>>>&
+        rot2q_gates_cost,
+    const std::array<double, n_costs>& weights) {
+  static_assert(n_costs > 0, "n_costs must be greater than 0");
   // for each cost type, store its min and max
-  std::vector<double> mins = tqe_candidates_cost.begin()->second;
-  std::vector<double> maxs = tqe_candidates_cost.begin()->second;
+  std::array<double, n_costs> mins = tqe_candidates_cost.begin()->second;
+  std::array<double, n_costs> maxs = tqe_candidates_cost.begin()->second;
   for (const auto& pair : tqe_candidates_cost) {
-    TKET_ASSERT(pair.second.size() == n_costs);
-    for (unsigned cost_index = 0; cost_index < n_costs; cost_index++) {
-      if (pair.second[cost_index] < mins[cost_index]) {
-        mins[cost_index] = pair.second[cost_index];
-      }
-      if (pair.second[cost_index] > maxs[cost_index]) {
-        maxs[cost_index] = pair.second[cost_index];
-      }
-    }
-  }
-  for (const auto& pair : tqe_candidates_cost) {
-    TKET_ASSERT(pair.second.size() == n_costs);
     for (unsigned cost_index = 0; cost_index < n_costs; cost_index++) {
       if (pair.second[cost_index] < mins[cost_index]) {
         mins[cost_index] = pair.second[cost_index];
@@ -369,9 +361,9 @@ static void tableau_row_nodes_synthesis(
     // for each tqe we compute a vector of cost factors which will
     // be combined to make the final decision.
     // we currently only consider tqe_cost and gate_depth.
-    std::map<TQE, std::vector<double>> tqe_candidates_cost;
+    std::vector<std::pair<TQE, std::array<double, 2>>> tqe_candidates_cost;
     for (const TQE& tqe : sampled_tqes) {
-      tqe_candidates_cost.insert(
+      tqe_candidates_cost.push_back(
           {tqe,
            {default_tableau_tqe_cost(
                 rows, remaining_indices, tqe, max_lookahead),
@@ -649,15 +641,15 @@ static void pauli_exps_synthesis(
         sample_tqes(tqe_candidates, max_tqe_candidates, seed);
 
     // for each tqe we compute costs which might subject to normalisation
-    std::map<TQE, std::vector<double>> tqe_candidates_cost;
+    std::vector<std::pair<TQE, std::array<double, 2>>> tqe_candidates_cost;
     for (const TQE& tqe : sampled_tqes) {
-      tqe_candidates_cost.insert(
+      tqe_candidates_cost.push_back(
           {tqe,
            {default_pauliexp_tqe_cost(
                 discount_rate, rotation_sets, rows, tqe, max_lookahead),
             static_cast<double>(depth_tracker.gate_depth(tqe.a, tqe.b))}});
     }
-    std::map<Rotation2Q, std::vector<double>> rot2q_gates_cost;
+    std::vector<std::pair<Rotation2Q, std::array<double, 2>>> rot2q_gates_cost;
     if (allow_zzphase) {
       // implementing a 2q rotation directly will result in a
       // -1 tqe cost change in the first rotation set and 0 elsewhere.
@@ -677,7 +669,7 @@ static void pauli_exps_synthesis(
               paulis.push_back(node.string()[j]);
             }
           }
-          rot2q_gates_cost.insert(
+          rot2q_gates_cost.push_back(
               {{paulis[0], paulis[1], supps[0], supps[1], node.angle(), i},
                {-1, static_cast<double>(
                         depth_tracker.gate_depth(supps[0], supps[1]))}});
@@ -749,7 +741,7 @@ Circuit greedy_pauli_set_synthesis(
 }
 
 Circuit greedy_pauli_graph_synthesis_flag(
-    Circuit circ, std::shared_ptr<std::atomic<bool>> stop_flag,
+    const Circuit& circ, std::shared_ptr<std::atomic<bool>> stop_flag,
     double discount_rate, double depth_weight, unsigned max_lookahead,
     unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase) {
   if (max_lookahead == 0) {
@@ -840,6 +832,7 @@ Transform greedy_pauli_optimisation(
                     trials](Circuit& circ) {
     std::mt19937 seed_gen(seed);
     std::vector<Circuit> circuits;
+    circuits.reserve(trials);
     unsigned threads_started = 0;
 
     while (threads_started < trials) {
@@ -856,9 +849,9 @@ Transform greedy_pauli_optimisation(
 
       if (future.wait_for(std::chrono::seconds(thread_timeout)) ==
           std::future_status::ready) {
-        Circuit c = future.get();
-        c.decompose_boxes_recursively();
-        circuits.push_back(c);
+        circuits.emplace_back();
+        circuits.back() = future.get();
+        circuits.back().decompose_boxes_recursively();
       } else {
         // If the thread isn't complete within time, prompt cancelling the
         // optimisation and break from while loop
@@ -874,12 +867,19 @@ Transform greedy_pauli_optimisation(
     auto min = std::min_element(
         circuits.begin(), circuits.end(),
         [](const Circuit& a, const Circuit& b) {
-          return std::make_tuple(
-                     a.count_n_qubit_gates(2), a.n_gates(), a.depth()) <
-                 std::make_tuple(
-                     b.count_n_qubit_gates(2), b.n_gates(), b.depth());
+          const auto two_qubit_gates_a = a.count_n_qubit_gates(2);
+          const auto two_qubit_gates_b = b.count_n_qubit_gates(2);
+          if (two_qubit_gates_a != two_qubit_gates_b) {
+            return two_qubit_gates_a < two_qubit_gates_b;
+          }
+          const auto n_gates_a = a.n_gates();
+          const auto n_gates_b = b.n_gates();
+          if (n_gates_a != n_gates_b) {
+            return n_gates_a < n_gates_b;
+          }
+          return a.depth() < b.depth();
         });
-    circ = *min;
+    circ = std::move(*min);
     return true;
   });
 }

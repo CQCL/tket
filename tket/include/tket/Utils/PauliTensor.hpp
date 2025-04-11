@@ -23,7 +23,7 @@
 namespace tket {
 
 /** Symbols for the Pauli operators (and identity) */
-enum Pauli { I, X, Y, Z };
+enum Pauli { I = 0, X, Y, Z };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(
     Pauli, {
