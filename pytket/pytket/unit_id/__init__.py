@@ -40,4 +40,7 @@ def _qubitregister_next(self: QubitRegister) -> Qubit:
 
 
 setattr(BitRegister, "__next__", _bitregister_next)
+BitRegister.__next__.__name__ = "__next__"
+
 setattr(QubitRegister, "__next__", _qubitregister_next)
+QubitRegister.__next__.__name__ = "__next__"
