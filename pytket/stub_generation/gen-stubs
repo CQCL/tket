@@ -34,6 +34,7 @@ def gen_module_stubs(modname, private_exceptions, output_file):
     sg = StubGen(
         module=mod_imported,
         private_exceptions=private_exceptions,
+        private_submodule="_tket",
         output_file=output_file,
     )
     sg.put(mod_imported)
