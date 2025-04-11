@@ -59,7 +59,7 @@ from .logic_exp import (
 )
 
 
-def overload_add_wasm(
+def add_wasm(
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmModuleHandler,
@@ -106,10 +106,10 @@ def overload_add_wasm(
     raise ValueError(f"{funcname} not found, check {repr(filehandler)}")
 
 
-setattr(Circuit, "add_wasm", overload_add_wasm)
+setattr(Circuit, "add_wasm", add_wasm)
 
 
-def overload_add_wasm_to_reg(
+def add_wasm_to_reg(
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmModuleHandler,
@@ -163,7 +163,7 @@ please use only registers of at most 32 bits"""
     raise ValueError(f"{funcname} not found, check {repr(filehandler)}")
 
 
-setattr(Circuit, "add_wasm_to_reg", overload_add_wasm_to_reg)
+setattr(Circuit, "add_wasm_to_reg", add_wasm_to_reg)
 
 
 # overload operators for Bit, BitRegister and expressions over these
