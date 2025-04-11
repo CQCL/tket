@@ -1148,6 +1148,38 @@ SCENARIO("Test compiler pass serializations") {
     loaded->apply(copy);
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
   }
+  GIVEN("DecomposeBoxes with inclusive options") {
+    Circuit circ(2);
+    Eigen::Matrix2cd u1;
+    u1 << -1, 0, 0, 1;
+    Eigen::Matrix4cd u2;
+    u2 << 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1;
+    circ.add_op<unsigned>(std::make_shared<Unitary1qBox>(u1), {0});
+    circ.add_op<unsigned>(std::make_shared<Unitary2qBox>(u2), {0, 1});
+    circ.add_op<unsigned>(
+        std::make_shared<QControlBox>(get_op_ptr(OpType::T), 1), {0, 1});
+    circ.add_op<unsigned>(
+        std::make_shared<Unitary2qBox>(u2), {0, 1}, "opgroup1");
+    circ.add_op<unsigned>(
+        std::make_shared<Unitary2qBox>(u2), {0, 1}, "opgroup2");
+    CompilationUnit cu(circ);
+    CompilationUnit copy(circ);
+    PassPtr pp = DecomposeBoxes(
+        {OpType::Unitary1qBox}, {"opgroup1"},
+        {{OpType::Unitary1qBox, OpType::Unitary2qBox}},
+        {{"opgroup1", "opgroup2"}});
+    nlohmann::json j_pp = serialise(pp);
+    PassPtr loaded = deserialise(j_pp);
+    pp->apply(cu);
+    loaded->apply(copy);
+    CHECK(cu.get_circ_ref() == copy.get_circ_ref());
+    // Only one of the three Unitary2qBoxes should have been decomposed
+    CHECK(cu.get_circ_ref().count_gates(OpType::Unitary1qBox) == 1);
+    CHECK(cu.get_circ_ref().count_gates(OpType::Unitary2qBox) == 2);
+    CHECK(cu.get_circ_ref().count_gates(OpType::QControlBox) == 1);
+    // Cannot check json serialisation of loaded is equal since json may not
+    // preserve orderings of set elements
+  }
 }
 
 SCENARIO("Test compiler pass combinator serializations") {

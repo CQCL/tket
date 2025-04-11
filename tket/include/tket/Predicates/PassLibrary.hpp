@@ -33,10 +33,16 @@ const PassPtr &DecomposeSingleQubitsTK1();
  * Recursively replaces all boxes by their decomposition using Box::to_circuit
  * @param excluded_types box types excluded from decomposition
  * @param excluded_opgroups opgroups excluded from decomposition
+ * @param included_types optional, only decompose these box types
+ * @param included_opgroups optional, only decompose these opgroups
  */
 PassPtr DecomposeBoxes(
     const std::unordered_set<OpType> &excluded_types = {},
-    const std::unordered_set<std::string> &excluded_opgroups = {});
+    const std::unordered_set<std::string> &excluded_opgroups = {},
+    const std::optional<std::unordered_set<OpType>> &included_types =
+        std::nullopt,
+    const std::optional<std::unordered_set<std::string>> &included_opgroups =
+        std::nullopt);
 
 /**
  * converts a circuit containing all possible gates to a circuit containing only

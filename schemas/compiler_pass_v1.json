@@ -351,6 +351,20 @@
           },
           "description": "opgroups excluded in \"DecomposeBoxes\""
         },
+        "included_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "OpTypes included in \"DecomposeBoxes\"; optional field"
+        },
+        "included_opgroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "opgroups included in \"DecomposeBoxes\"; optional field"
+        },
         "discount_rate": {
           "type": "number",
           "definition": "parameter controlling cost discount in \"GreedyPauliSimp\""

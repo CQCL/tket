@@ -1333,9 +1333,12 @@ Transform decompose_PhaseGadgets() {
 
 Transform decomp_boxes(
     const std::unordered_set<OpType> &excluded_types,
-    const std::unordered_set<std::string> &excluded_opgroups) {
+    const std::unordered_set<std::string> &excluded_opgroups,
+    const std::optional<std::unordered_set<OpType>> &included_types,
+    const std::optional<std::unordered_set<std::string>> &included_opgroups) {
   return Transform([=](Circuit &circ) {
-    return circ.decompose_boxes_recursively(excluded_types, excluded_opgroups);
+    return circ.decompose_boxes_recursively(
+        excluded_types, excluded_opgroups, included_types, included_opgroups);
   });
 }
 

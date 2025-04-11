@@ -7,6 +7,8 @@ Unreleased
 Features:
 
 * Enabling pickling of `Architecture` objects.
+* Added optional inclusive filters to the :py:meth:`DecomposeBoxes` pass to 
+  only decompose boxes of given types or opgroups.
 
 2.2.0 (April 2025)
 ------------------

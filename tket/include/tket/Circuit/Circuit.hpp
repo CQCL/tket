@@ -1443,14 +1443,26 @@ class Circuit {
    * Recursively replace each \ref Box operation by applying \ref
    * Box::to_circuit
    *
+   * Arguments specify ways to filter which boxes are decomposed. A box must
+   * satisfy ALL filters in order to be decomposed, e.g. if all are set,
+   * decompose those boxes whose type is in included_types but not in
+   * excluded_types, and also its opgroup is in included_opgroups but not in
+   * excluded_opgroups
+   *
    * @param excluded_types box types excluded from decomposition
    * @param excluded_opgroups opgroups excluded from decomposition
+   * @param included_types optional, only decompose these box types
+   * @param included_opgroups optional, only decompose these opgroups
    *
    * @return whether any replacements were made
    */
   bool decompose_boxes_recursively(
       const std::unordered_set<OpType> &excluded_types = {},
-      const std::unordered_set<std::string> &excluded_opgroups = {});
+      const std::unordered_set<std::string> &excluded_opgroups = {},
+      const std::optional<std::unordered_set<OpType>> &included_types =
+          std::nullopt,
+      const std::optional<std::unordered_set<std::string>> &included_opgroups =
+          std::nullopt);
 
   /////////////////
   // Other Methods//
