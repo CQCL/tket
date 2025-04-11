@@ -72,8 +72,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pytket-*.whl
           pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket_benchmarking
+          pip install pytket-*.whl
           pip list
 
       - name: Checkout pytket-benchmarking-store
