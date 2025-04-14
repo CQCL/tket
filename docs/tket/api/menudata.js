@@ -215,6 +215,7 @@ var menudata={children:[
 {text:"f",url:"functions_type.html#index_f"},
 {text:"i",url:"functions_type.html#index_i"},
 {text:"j",url:"functions_type.html#index_j"},
+{text:"k",url:"functions_type.html#index_k"},
 {text:"l",url:"functions_type.html#index_l"},
 {text:"m",url:"functions_type.html#index_m"},
 {text:"n",url:"functions_type.html#index_n"},

@@ -12,5 +12,6 @@ var searchData=
   ['hash_5fcombine_5fpaulis_9',['hash_combine_paulis',['../namespacetket.html#a148a6c328ae9842691c5f08a7311eb86',1,'tket']]],
   ['hash_5fcombine_5fpaulis_3c_20densepaulimap_20_3e_10',['hash_combine_paulis&lt; densepaulimap &gt;',['../namespacetket.html#a3a9bc457f1634e360e2d1d97b30695a1',1,'tket::hash_combine_paulis&lt; DensePauliMap &gt;(std::size_t &amp;seed, const DensePauliMap &amp;paulis)'],['../namespacetket.html#a3a9bc457f1634e360e2d1d97b30695a1',1,'tket::hash_combine_paulis&lt; DensePauliMap &gt;(std::size_t &amp;seed, const DensePauliMap &amp;paulis)']]],
   ['hash_5fcombine_5fpaulis_3c_20qubitpaulimap_20_3e_11',['hash_combine_paulis&lt; qubitpaulimap &gt;',['../namespacetket.html#a30983b061d2f724f31b5cf1683b76bd4',1,'tket::hash_combine_paulis&lt; QubitPauliMap &gt;(std::size_t &amp;seed, const QubitPauliMap &amp;paulis)'],['../namespacetket.html#a30983b061d2f724f31b5cf1683b76bd4',1,'tket::hash_combine_paulis&lt; QubitPauliMap &gt;(std::size_t &amp;seed, const QubitPauliMap &amp;paulis)']]],
-  ['hash_5fvalue_12',['hash_value',['../classtket_1_1PauliTensor.html#ae15f603b9057939b31de6e46c0020ef4',1,'tket::PauliTensor']]]
+  ['hash_5ftriple_12',['hash_triple',['../namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a8cad1c347547f95e23ffde2d336b479f',1,'tket::Transforms::GreedyPauliSimp']]],
+  ['hash_5fvalue_13',['hash_value',['../classtket_1_1PauliTensor.html#ae15f603b9057939b31de6e46c0020ef4',1,'tket::PauliTensor']]]
 ];

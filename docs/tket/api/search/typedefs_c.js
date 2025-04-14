@@ -1,15 +1,10 @@
 var searchData=
 [
-  ['op_5ferrors_5ft_0',['op_errors_t',['../namespacetket.html#a3086e008655f39df9787385006122999',1,'tket']]],
-  ['op_5flink_5ferrors_5ft_1',['op_link_errors_t',['../namespacetket.html#a77bd68a44ff7052274e29588cc6cb135',1,'tket']]],
-  ['op_5fnode_5ferrors_5ft_2',['op_node_errors_t',['../namespacetket.html#a898c434c90155261b12c45ebb3a944d2',1,'tket']]],
-  ['op_5fptr_3',['Op_ptr',['../namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0',1,'tket']]],
-  ['op_5fsignature_5ft_4',['op_signature_t',['../namespacetket.html#ac9cc41e0b406b456fabc9ae1e4517ebd',1,'tket']]],
-  ['operation_5',['Operation',['../namespacetket_1_1aas.html#abd5a702995ecefda4e636030f64eef50',1,'tket::aas']]],
-  ['operationlist_6',['OperationList',['../namespacetket_1_1aas.html#a5f5d1059ef961691f786cbd77e9af667',1,'tket::aas']]],
-  ['opt_5freg_5finfo_5ft_7',['opt_reg_info_t',['../namespacetket.html#aac8d5583b1b3ff11dd2a4d2f5b249cc4',1,'tket']]],
-  ['optuint_8',['OptUInt',['../namespacetket.html#afb7113bcf1713474bf62cfae5415e5d6',1,'tket']]],
-  ['optypeset_9',['OpTypeSet',['../namespacetket.html#a165b1d270a350af87f1c7a63d68f9276',1,'tket']]],
-  ['optypevector_10',['OpTypeVector',['../namespacetket.html#a01a257c14a99e345adc91eae22db0c06',1,'tket']]],
-  ['outwireiterator_11',['OutWireIterator',['../namespacetket_1_1zx.html#af1a5af8912bdb344127a0a52280659d0',1,'tket::zx']]]
+  ['neighbouriterator_0',['NeighbourIterator',['../namespacetket_1_1zx.html#adc04f5908c5681579e56f5939717cd1f',1,'tket::zx']]],
+  ['node_5fset_5ft_1',['node_set_t',['../namespacetket.html#ae0783a3ad2fcb131346b928d76ad0699',1,'tket']]],
+  ['node_5fvector_5ft_2',['node_vector_t',['../namespacetket.html#aa69b939e387dec2594785178af37f56e',1,'tket']]],
+  ['nodemapping_3',['NodeMapping',['../structtket_1_1BestTsaWithArch.html#a7a2a984b96f19b872162d425ff9e7067',1,'tket::BestTsaWithArch']]],
+  ['nodes_4',['Nodes',['../classtket_1_1graphs_1_1ColouringPriority.html#a0a2875acea0bebc5992d233c5ba9a1c9',1,'tket::graphs::ColouringPriority']]],
+  ['nodeswap_5',['NodeSwap',['../classtket_1_1NeighbourPlacements.html#ad2aa90398636ca341346eae1403695eb',1,'tket::NeighbourPlacements']]],
+  ['nodeswapvec_6',['NodeSwapVec',['../classtket_1_1NeighbourPlacements.html#a279d1967472e45d4a26c3c292c43c3ee',1,'tket::NeighbourPlacements']]]
 ];

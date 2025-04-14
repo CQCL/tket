@@ -1,10 +1,10 @@
 var searchData=
 [
-  ['neighbouriterator_0',['NeighbourIterator',['../namespacetket_1_1zx.html#adc04f5908c5681579e56f5939717cd1f',1,'tket::zx']]],
-  ['node_5fset_5ft_1',['node_set_t',['../namespacetket.html#ae0783a3ad2fcb131346b928d76ad0699',1,'tket']]],
-  ['node_5fvector_5ft_2',['node_vector_t',['../namespacetket.html#aa69b939e387dec2594785178af37f56e',1,'tket']]],
-  ['nodemapping_3',['NodeMapping',['../structtket_1_1BestTsaWithArch.html#a7a2a984b96f19b872162d425ff9e7067',1,'tket::BestTsaWithArch']]],
-  ['nodes_4',['Nodes',['../classtket_1_1graphs_1_1ColouringPriority.html#a0a2875acea0bebc5992d233c5ba9a1c9',1,'tket::graphs::ColouringPriority']]],
-  ['nodeswap_5',['NodeSwap',['../classtket_1_1NeighbourPlacements.html#ad2aa90398636ca341346eae1403695eb',1,'tket::NeighbourPlacements']]],
-  ['nodeswapvec_6',['NodeSwapVec',['../classtket_1_1NeighbourPlacements.html#a279d1967472e45d4a26c3c292c43c3ee',1,'tket::NeighbourPlacements']]]
+  ['mapping_0',['Mapping',['../structtket_1_1SubgraphMonomorphisms.html#ae7b182bcb878b6c8e24c57432d053a10',1,'tket::SubgraphMonomorphisms']]],
+  ['mappingfrontier_5fptr_1',['MappingFrontier_ptr',['../namespacetket.html#a6f41065ab0b4ecd3f4672c64f3afbecc',1,'tket']]],
+  ['matrix8cd_2',['Matrix8cd',['../namespacetket.html#aaa2b97f86243fa7a09b21e1ec946f652',1,'tket']]],
+  ['matrixxb_3',['MatrixXb',['../namespacetket.html#afc6a69cf78c26da6848112274764acc6',1,'tket']]],
+  ['matrixxu_4',['MatrixXu',['../namespacetket_1_1aas.html#aba03001899901461f8726ab4a84b38c8',1,'tket::aas']]],
+  ['measure_5fresult_5fmap_5ft_5',['measure_result_map_t',['../classtket_1_1MeasurementSetup.html#ad4bce37c8857aef0083209e8154bdf61',1,'tket::MeasurementSetup']]],
+  ['metric_6',['metric',['../classtket_1_1Transform.html#aea73566447b188f796422276ba1fc194',1,'tket::Transform::Metric'],['../classtket_1_1zx_1_1Rewrite.html#a57c261f6d93d161d8018771410e63cca',1,'tket::zx::Rewrite::Metric']]]
 ];

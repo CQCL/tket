@@ -114,8 +114,6 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtket_1_1Transforms_1_1GreedyPauliSimp_1_1hash__quadruple.html">hash_quadruple</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtket_1_1Transforms_1_1GreedyPauliSimp_1_1hash__triple.html">hash_triple</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1MidMeasure.html">MidMeasure</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Measurement that has quantum or classical successors.  <a href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1MidMeasure.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -140,6 +138,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtket_1_1Transforms_1_1GreedyPauliSimp_1_1TQE.html">TQE</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct for 2-qubit entangled Clifford gates.  <a href="structtket_1_1Transforms_1_1GreedyPauliSimp_1_1TQE.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtket_1_1Transforms_1_1GreedyPauliSimp_1_1TQE__PAULI__MAP.html">TQE_PAULI_MAP</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given <a class="el" href="structtket_1_1Transforms_1_1GreedyPauliSimp_1_1TQE.html" title="Struct for 2-qubit entangled Clifford gates.">TQE</a>;P(0);Q(1), return P'(0), Q'(0), and sign k such that <a class="el" href="structtket_1_1Transforms_1_1GreedyPauliSimp_1_1TQE.html" title="Struct for 2-qubit entangled Clifford gates.">TQE</a>;P(0);Q(1) = k* P'(0);Q'(1);<a class="el" href="structtket_1_1Transforms_1_1GreedyPauliSimp_1_1TQE.html" title="Struct for 2-qubit entangled Clifford gates.">TQE</a>.  <a href="structtket_1_1Transforms_1_1GreedyPauliSimp_1_1TQE__PAULI__MAP.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -161,7 +162,7 @@ Typedefs</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:a2a9fe2c5337b6f5d3cea567b75512fa3" id="r_a2a9fe2c5337b6f5d3cea567b75512fa3"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a2a9fe2c5337b6f5d3cea567b75512fa3">TQEType</a> : unsigned { <br />
-&#160;&#160;<a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a2a9fe2c5337b6f5d3cea567b75512fa3ac51b57a703ba1c5869228690c93e1701">XX</a>
+&#160;&#160;<a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a2a9fe2c5337b6f5d3cea567b75512fa3ac51b57a703ba1c5869228690c93e1701">XX</a> = 0
 , <a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a2a9fe2c5337b6f5d3cea567b75512fa3a74c53bcd3dcb2bb79993b2fec37d362a">XY</a>
 , <a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a2a9fe2c5337b6f5d3cea567b75512fa3a27db3b98d01e664c17a6620b222c6469">XZ</a>
 , <a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a2a9fe2c5337b6f5d3cea567b75512fa3a923db922542fbe09e7ff87bb31b2f310">YX</a>
@@ -206,14 +207,16 @@ Functions</h2></td></tr>
 <tr class="memitem:a02eb95f095c5e7b204d81efac472f7ce" id="r_a02eb95f095c5e7b204d81efac472f7ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a02eb95f095c5e7b204d81efac472f7ce">greedy_pauli_set_synthesis</a> (const std::vector&lt; <a class="el" href="namespacetket.html#ad5f7b9aaddfa158da0f7b68516b32cc7">SymPauliTensor</a> &gt; &amp;unordered_set, double depth_weight=0.3, unsigned max_lookahead=500, unsigned max_tqe_candidates=500, unsigned seed=0, bool allow_zzphase=false)</td></tr>
 <tr class="memdesc:a02eb95f095c5e7b204d81efac472f7ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesise a set of unordered Pauli exponentials by applying Clifford gates and single qubit rotations in a greedy fashion.  <br /></td></tr>
 <tr class="separator:a02eb95f095c5e7b204d81efac472f7ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7af1b20da752bfc2a24e4b9fff0c2547" id="r_a7af1b20da752bfc2a24e4b9fff0c2547"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a7af1b20da752bfc2a24e4b9fff0c2547">greedy_pauli_graph_synthesis_flag</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> circ, std::shared_ptr&lt; std::atomic&lt; bool &gt; &gt; stop_flag, double discount_rate, double depth_weight, unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase)</td></tr>
-<tr class="separator:a7af1b20da752bfc2a24e4b9fff0c2547"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff48bec510a58497cc59efa47bbf99a7" id="r_aff48bec510a58497cc59efa47bbf99a7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#aff48bec510a58497cc59efa47bbf99a7">greedy_pauli_graph_synthesis_flag</a> (const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, std::shared_ptr&lt; std::atomic&lt; bool &gt; &gt; stop_flag, double discount_rate, double depth_weight, unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase)</td></tr>
+<tr class="separator:aff48bec510a58497cc59efa47bbf99a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a042d7d1967beadd4ec4b06f15cb3c136" id="r_a042d7d1967beadd4ec4b06f15cb3c136"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a042d7d1967beadd4ec4b06f15cb3c136">greedy_pauli_graph_synthesis</a> (const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, double discount_rate=0.7, double depth_weight=0.3, unsigned max_lookahead=500, unsigned max_tqe_candidates=500, unsigned seed=0, bool allow_zzphase=false)</td></tr>
 <tr class="memdesc:a042d7d1967beadd4ec4b06f15cb3c136"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the given circuit into a <a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html" title="Pauli graph structure for GreedyPauliSimp.">GPGraph</a> and conjugates each node by greedily applying 2-qubit Clifford gates until the node can be realised as a single-qubit gate, a measurement, or a reset.  <br /></td></tr>
 <tr class="separator:a042d7d1967beadd4ec4b06f15cb3c136"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abbc1006ff0dc747268083b22a1b5b660" id="r_abbc1006ff0dc747268083b22a1b5b660"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#abbc1006ff0dc747268083b22a1b5b660">greedy_pauli_graph_synthesis_flag</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> circ, std::atomic&lt; bool &gt; &amp;stop_flag, double discount_rate=0.7, double depth_weight=0.3, unsigned max_lookahead=500, unsigned max_tqe_candidates=500, unsigned seed=0, bool allow_zzphase=false)</td></tr>
-<tr class="memdesc:abbc1006ff0dc747268083b22a1b5b660"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the given circuit into a <a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html" title="Pauli graph structure for GreedyPauliSimp.">GPGraph</a> and conjugates each node by greedily applying 2-qubit Clifford gates until the node can be realised as a single-qubit gate, a measurement, or a reset.  <br /></td></tr>
-<tr class="separator:abbc1006ff0dc747268083b22a1b5b660"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98ab7c855b3c7535248e3adaedc13e3a" id="r_a98ab7c855b3c7535248e3adaedc13e3a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a98ab7c855b3c7535248e3adaedc13e3a">greedy_pauli_graph_synthesis_flag</a> (const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, std::atomic&lt; bool &gt; &amp;stop_flag, double discount_rate=0.7, double depth_weight=0.3, unsigned max_lookahead=500, unsigned max_tqe_candidates=500, unsigned seed=0, bool allow_zzphase=false)</td></tr>
+<tr class="memdesc:a98ab7c855b3c7535248e3adaedc13e3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the given circuit into a <a class="el" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html" title="Pauli graph structure for GreedyPauliSimp.">GPGraph</a> and conjugates each node by greedily applying 2-qubit Clifford gates until the node can be realised as a single-qubit gate, a measurement, or a reset.  <br /></td></tr>
+<tr class="separator:a98ab7c855b3c7535248e3adaedc13e3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cad1c347547f95e23ffde2d336b479f" id="r_a8cad1c347547f95e23ffde2d336b479f"><td class="memItemLeft" align="right" valign="top">constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a8cad1c347547f95e23ffde2d336b479f">hash_triple</a> (const std::tuple&lt; <a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a2a9fe2c5337b6f5d3cea567b75512fa3">TQEType</a>, <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a>, <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;t)</td></tr>
+<tr class="separator:a8cad1c347547f95e23ffde2d336b479f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a id="ab6dc7e5dfec857e84702dc1bb247349b" name="ab6dc7e5dfec857e84702dc1bb247349b"></a>
@@ -559,12 +562,12 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8cpp_source.html#l00821">821</a> of file <a class="el" href="GreedyPauliOptimisation_8cpp_source.html">GreedyPauliOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8cpp_source.html#l00813">813</a> of file <a class="el" href="GreedyPauliOptimisation_8cpp_source.html">GreedyPauliOptimisation.cpp</a>.</p>
 
 </div>
 </div>
-<a id="abbc1006ff0dc747268083b22a1b5b660" name="abbc1006ff0dc747268083b22a1b5b660"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abbc1006ff0dc747268083b22a1b5b660">&#9670;&#160;</a></span>greedy_pauli_graph_synthesis_flag() <span class="overload">[1/2]</span></h2>
+<a id="a98ab7c855b3c7535248e3adaedc13e3a" name="a98ab7c855b3c7535248e3adaedc13e3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98ab7c855b3c7535248e3adaedc13e3a">&#9670;&#160;</a></span>greedy_pauli_graph_synthesis_flag() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -572,7 +575,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::Transforms::GreedyPauliSimp::greedy_pauli_graph_synthesis_flag </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;&#160;</td>
           <td class="paramname"><em>circ</em>, </td>
         </tr>
         <tr>
@@ -644,8 +647,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a7af1b20da752bfc2a24e4b9fff0c2547" name="a7af1b20da752bfc2a24e4b9fff0c2547"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7af1b20da752bfc2a24e4b9fff0c2547">&#9670;&#160;</a></span>greedy_pauli_graph_synthesis_flag() <span class="overload">[2/2]</span></h2>
+<a id="aff48bec510a58497cc59efa47bbf99a7" name="aff48bec510a58497cc59efa47bbf99a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff48bec510a58497cc59efa47bbf99a7">&#9670;&#160;</a></span>greedy_pauli_graph_synthesis_flag() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -653,7 +656,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::Transforms::GreedyPauliSimp::greedy_pauli_graph_synthesis_flag </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;&#160;</td>
           <td class="paramname"><em>circ</em>, </td>
         </tr>
         <tr>
@@ -706,7 +709,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8cpp_source.html#l00751">751</a> of file <a class="el" href="GreedyPauliOptimisation_8cpp_source.html">GreedyPauliOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8cpp_source.html#l00743">743</a> of file <a class="el" href="GreedyPauliOptimisation_8cpp_source.html">GreedyPauliOptimisation.cpp</a>.</p>
 
 </div>
 </div>
@@ -775,7 +778,35 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8cpp_source.html#l00718">718</a> of file <a class="el" href="GreedyPauliOptimisation_8cpp_source.html">GreedyPauliOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisation_8cpp_source.html#l00710">710</a> of file <a class="el" href="GreedyPauliOptimisation_8cpp_source.html">GreedyPauliOptimisation.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a8cad1c347547f95e23ffde2d336b479f" name="a8cad1c347547f95e23ffde2d336b479f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cad1c347547f95e23ffde2d336b479f">&#9670;&#160;</a></span>hash_triple()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr size_t tket::Transforms::GreedyPauliSimp::hash_triple </td>
+          <td>(</td>
+          <td class="paramtype">const std::tuple&lt; <a class="el" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a2a9fe2c5337b6f5d3cea567b75512fa3">TQEType</a>, <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a>, <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="GreedyPauliOptimisationLookupTables_8hpp_source.html#l00037">37</a> of file <a class="el" href="GreedyPauliOptimisationLookupTables_8hpp_source.html">GreedyPauliOptimisationLookupTables.hpp</a>.</p>
 
 </div>
 </div>
