@@ -4,19 +4,23 @@ Changelog
 Unreleased
 ----------
 
+API changes:
+
+* Gate construction methods (e.g. :py:meth:`Circuit.X`) have a streamlined API
+  by accepting ``Union`` types in place of overloaded methods, giving better
+  error messages when mixing :py:class:`UnitID` /:py:class:`Qubit` /
+  :py:class:`Bit` and ``int`` for gate arguments.
+
 Features:
 
 * Enabling pickling of `Architecture` objects.
 
+Performance:
+
+* Reduced the wall-clock time of `GreedyPauliSimp` by approximately 40% for large circuits.
+
 2.2.0 (April 2025)
 ------------------
-
-API changes:
-
-* Gate construction methods (e.g. :py:meth:`Circuit.X`) have a streamlined API 
-  by accepting ``Union`` types in place of overloaded methods, giving better 
-  error messages when mixing :py:class:`UnitID` /:py:class:`Qubit` /
-  :py:class:`Bit` and ``int`` for gate arguments.
 
 Features:
 
