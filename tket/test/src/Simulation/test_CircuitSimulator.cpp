@@ -133,11 +133,13 @@ SCENARIO("Simple circuits produce the correct statevectors") {
   GIVEN("A circuit where the only difference is a swapped round CZ") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_barrier({0, 1});
     circ.add_op<unsigned>(OpType::CZ, {0, 1});
     circ.add_op<unsigned>(OpType::H, {0});
 
     Circuit circ2(2);
     circ2.add_op<unsigned>(OpType::H, {0});
+    circ.add_barrier({0, 1});
     circ2.add_op<unsigned>(OpType::CZ, {1, 0});
     circ2.add_op<unsigned>(OpType::H, {0});
     REQUIRE(
@@ -161,6 +163,9 @@ SCENARIO("Simulate circuit with unsupported operations") {
     circ.add_op<unsigned>(OpType::Measure, {0, 0});
     REQUIRE_THROWS_MATCHES(
         tket_sim::get_unitary(circ), Unsupported,
+        MessageContains("Unsupported OpType Measure"));
+    REQUIRE_THROWS_MATCHES(
+        tket_sim::get_statevector(circ), Unsupported,
         MessageContains("Unsupported OpType Measure"));
   }
   GIVEN("Circuit with resets") {
