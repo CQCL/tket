@@ -21,6 +21,7 @@ Features:
 Performance:
 
 * Reduced the wall-clock time of `GreedyPauliSimp` by approximately 40% for large circuits.
+* Improved performance of Python/C++ bindings.
 
 2.2.0 (April 2025)
 ------------------
