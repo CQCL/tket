@@ -293,9 +293,9 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "add_c_setreg",
           [](Circuit &circ, const _tket_uint_t value, const BitRegister &reg,
              const nb::kwargs &kwargs) {
-       if (reg.size() < _TKET_REG_WIDTH && value >> reg.size() != 0) {
-         throw std::runtime_error("Value " + std::to_string(value) + " cannot be held on a " + std::to_string(reg.size()) + "-bit register.");
-      }
+            if (reg.size() < _TKET_REG_WIDTH && value >> reg.size() != 0) {
+              throw std::runtime_error("Value " + std::to_string(value) + " cannot be held on a " + std::to_string(reg.size()) + "-bit register.");
+            }
             auto bs = std::bitset<_TKET_REG_WIDTH>(value);
             std::vector<UnitID> args(reg.size());
             std::vector<bool> vals(reg.size());
