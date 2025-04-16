@@ -14,6 +14,9 @@ API changes:
 Features:
 
 * Enabling pickling of `Architecture` objects.
+* New utility function ``circuit_dict_from_pytket1_dict`` to convert
+  serializations of pytket 1 circuits containing ``ClassicalExpBox``es to
+  serializations of equivalent pytket 2 circuits containing ``ClExprOp``s.
 
 Performance:
 

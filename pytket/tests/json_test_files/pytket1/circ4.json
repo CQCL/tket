@@ -1,0 +1,768 @@
+{
+    "bits":
+    [
+        [
+            "flag",
+            [
+                0
+            ]
+        ],
+        [
+            "flag",
+            [
+                1
+            ]
+        ],
+        [
+            "flag",
+            [
+                2
+            ]
+        ]
+    ],
+    "commands":
+    [
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        0
+                    ]
+                ],
+                [
+                    "flag",
+                    [
+                        1
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "classical":
+                {
+                    "values":
+                    [
+                        true,
+                        true
+                    ]
+                },
+                "type": "SetBits"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "qin",
+                    [
+                        0
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "type": "H"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        0
+                    ]
+                ],
+                [
+                    "flag",
+                    [
+                        1
+                    ]
+                ],
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "box":
+                {
+                    "exp":
+                    {
+                        "args":
+                        [
+                            [
+                                "flag",
+                                [
+                                    0
+                                ]
+                            ],
+                            [
+                                "flag",
+                                [
+                                    1
+                                ]
+                            ]
+                        ],
+                        "op": "BitWiseOp.OR"
+                    },
+                    "id": "1c80624a-0b16-4b97-9fb7-6f9f1f34a62b",
+                    "n_i": 2,
+                    "n_io": 0,
+                    "n_o": 1,
+                    "type": "ClassicalExpBox"
+                },
+                "type": "ClassicalExpBox"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ],
+                [
+                    "aux",
+                    [
+                        0
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "conditional":
+                {
+                    "op":
+                    {
+                        "type": "Reset"
+                    },
+                    "value": 1,
+                    "width": 1
+                },
+                "type": "Conditional"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ],
+                [
+                    "aux",
+                    [
+                        1
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "conditional":
+                {
+                    "op":
+                    {
+                        "type": "Reset"
+                    },
+                    "value": 1,
+                    "width": 1
+                },
+                "type": "Conditional"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ],
+                [
+                    "qin",
+                    [
+                        0
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "conditional":
+                {
+                    "op":
+                    {
+                        "type": "T"
+                    },
+                    "value": 1,
+                    "width": 1
+                },
+                "type": "Conditional"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ],
+                [
+                    "aux",
+                    [
+                        0
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "conditional":
+                {
+                    "op":
+                    {
+                        "type": "H"
+                    },
+                    "value": 1,
+                    "width": 1
+                },
+                "type": "Conditional"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ],
+                [
+                    "aux",
+                    [
+                        1
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "conditional":
+                {
+                    "op":
+                    {
+                        "type": "H"
+                    },
+                    "value": 1,
+                    "width": 1
+                },
+                "type": "Conditional"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ],
+                [
+                    "qin",
+                    [
+                        0
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "conditional":
+                {
+                    "op":
+                    {
+                        "type": "Z"
+                    },
+                    "value": 1,
+                    "width": 1
+                },
+                "type": "Conditional"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ],
+                [
+                    "aux",
+                    [
+                        0
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "conditional":
+                {
+                    "op":
+                    {
+                        "type": "Tdg"
+                    },
+                    "value": 1,
+                    "width": 1
+                },
+                "type": "Conditional"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ],
+                [
+                    "aux",
+                    [
+                        1
+                    ]
+                ],
+                [
+                    "aux",
+                    [
+                        0
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "conditional":
+                {
+                    "op":
+                    {
+                        "type": "CX"
+                    },
+                    "value": 1,
+                    "width": 1
+                },
+                "type": "Conditional"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ],
+                [
+                    "aux",
+                    [
+                        0
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "conditional":
+                {
+                    "op":
+                    {
+                        "type": "T"
+                    },
+                    "value": 1,
+                    "width": 1
+                },
+                "type": "Conditional"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ],
+                [
+                    "qin",
+                    [
+                        0
+                    ]
+                ],
+                [
+                    "aux",
+                    [
+                        1
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "conditional":
+                {
+                    "op":
+                    {
+                        "type": "CX"
+                    },
+                    "value": 1,
+                    "width": 1
+                },
+                "type": "Conditional"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ],
+                [
+                    "aux",
+                    [
+                        0
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "conditional":
+                {
+                    "op":
+                    {
+                        "type": "H"
+                    },
+                    "value": 1,
+                    "width": 1
+                },
+                "type": "Conditional"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ],
+                [
+                    "aux",
+                    [
+                        1
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "conditional":
+                {
+                    "op":
+                    {
+                        "type": "T"
+                    },
+                    "value": 1,
+                    "width": 1
+                },
+                "type": "Conditional"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ],
+                [
+                    "aux",
+                    [
+                        0
+                    ]
+                ],
+                [
+                    "flag",
+                    [
+                        0
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "conditional":
+                {
+                    "op":
+                    {
+                        "type": "Measure"
+                    },
+                    "value": 1,
+                    "width": 1
+                },
+                "type": "Conditional"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ],
+                [
+                    "aux",
+                    [
+                        1
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "conditional":
+                {
+                    "op":
+                    {
+                        "type": "H"
+                    },
+                    "value": 1,
+                    "width": 1
+                },
+                "type": "Conditional"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ],
+                [
+                    "aux",
+                    [
+                        1
+                    ]
+                ],
+                [
+                    "flag",
+                    [
+                        1
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "conditional":
+                {
+                    "op":
+                    {
+                        "type": "Measure"
+                    },
+                    "value": 1,
+                    "width": 1
+                },
+                "type": "Conditional"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        0
+                    ]
+                ],
+                [
+                    "flag",
+                    [
+                        1
+                    ]
+                ],
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "box":
+                {
+                    "exp":
+                    {
+                        "args":
+                        [
+                            [
+                                "flag",
+                                [
+                                    0
+                                ]
+                            ],
+                            [
+                                "flag",
+                                [
+                                    1
+                                ]
+                            ]
+                        ],
+                        "op": "BitWiseOp.XOR"
+                    },
+                    "id": "23bf0e2c-b159-4df5-b38b-8e41efac58e2",
+                    "n_i": 2,
+                    "n_io": 0,
+                    "n_o": 1,
+                    "type": "ClassicalExpBox"
+                },
+                "type": "ClassicalExpBox"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "flag",
+                    [
+                        2
+                    ]
+                ],
+                [
+                    "qin",
+                    [
+                        0
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "conditional":
+                {
+                    "op":
+                    {
+                        "type": "Z"
+                    },
+                    "value": 1,
+                    "width": 1
+                },
+                "type": "Conditional"
+            }
+        },
+        {
+            "args":
+            [
+                [
+                    "qin",
+                    [
+                        0
+                    ]
+                ]
+            ],
+            "op":
+            {
+                "type": "H"
+            }
+        }
+    ],
+    "created_qubits":
+    [],
+    "discarded_qubits":
+    [],
+    "implicit_permutation":
+    [
+        [
+            [
+                "aux",
+                [
+                    0
+                ]
+            ],
+            [
+                "aux",
+                [
+                    0
+                ]
+            ]
+        ],
+        [
+            [
+                "aux",
+                [
+                    1
+                ]
+            ],
+            [
+                "aux",
+                [
+                    1
+                ]
+            ]
+        ],
+        [
+            [
+                "qin",
+                [
+                    0
+                ]
+            ],
+            [
+                "qin",
+                [
+                    0
+                ]
+            ]
+        ]
+    ],
+    "phase": "0.0",
+    "qubits":
+    [
+        [
+            "aux",
+            [
+                0
+            ]
+        ],
+        [
+            "aux",
+            [
+                1
+            ]
+        ],
+        [
+            "qin",
+            [
+                0
+            ]
+        ]
+    ]
+}
