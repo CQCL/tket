@@ -14,8 +14,9 @@ API changes:
 Features:
 
 * Enabling pickling of `Architecture` objects.
-* Added optional inclusive filters to the :py:meth:`DecomposeBoxes` pass to 
-  only decompose boxes of given types or opgroups.
+* Added optional inclusive filters to the 
+  :py:meth:`~pytket.passes.DecomposeBoxes` pass to only decompose boxes of 
+  given types or opgroups.
 
 Performance:
 
