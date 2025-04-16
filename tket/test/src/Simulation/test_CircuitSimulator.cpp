@@ -162,6 +162,9 @@ SCENARIO("Simulate circuit with unsupported operations") {
     REQUIRE_THROWS_MATCHES(
         tket_sim::get_unitary(circ), Unsupported,
         MessageContains("Unsupported OpType Measure"));
+    REQUIRE_THROWS_MATCHES(
+        tket_sim::get_statevector(circ), Unsupported,
+        MessageContains("Unsupported OpType Measure"));
   }
   GIVEN("Circuit with resets") {
     Circuit circ(1, 1);
