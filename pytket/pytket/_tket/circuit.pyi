@@ -3233,7 +3233,7 @@ class WASMOp(ClassicalOp):
     def output_widths(self) -> list[int]:
         """Widths of output integers."""
 
-class ClOp(enum.Enum):
+class ClOp(enum.IntEnum):
     """A classical operation"""
 
     INVALID = 0
