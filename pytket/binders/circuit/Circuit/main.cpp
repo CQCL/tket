@@ -156,14 +156,9 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
       .def(
           "get_statevector",
           [](const Circuit &circ) { return tket_sim::get_statevector(circ); },
-          "Calculate the unitary matrix of the circuit, using ILO-BE "
-          "convention, applied to the column vector (1,0,0...), "
-          "which is thus another column vector. Due to "
-          "nanobind and numpy peculiarities, to treat the "
-          "result as a genuine column vector and perform further "
-          "matrix multiplication, you need to call "
-          ".reshape(rows,1) to get a 2D matrix with "
-          "the correct dimensions."
+          "Calculate the statevector resulting from applying the circuit to "
+          "the all-zero state, using ILO-BE convention. The result is a one-"
+          "dimensional array."
           "\n\n:return: The calculated vector.")
       .def(
           "add_q_register",
