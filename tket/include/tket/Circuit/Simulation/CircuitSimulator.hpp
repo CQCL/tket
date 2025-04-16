@@ -25,8 +25,8 @@ namespace tket_sim {
 
 /** Calculate the unitary matrix of the circuit applied to the state
  *  |00...0>, using ILO-BE convention.
- *  (Note: if any OpType::Measure or OpType::Barrier occur,
- *  they are simply ignored - the same as a noop).
+ *  (Note: if any OpType::Barrier occurs,
+ *  it is simply ignored - the same as a noop).
  *  @param circ The circuit to simulate.
  *  @param abs_epsilon Used to decide if an entry of a sparse matrix is
  *              too small, i.e. if std::abs(z) <= abs_epsilon then we treat
@@ -40,7 +40,6 @@ StateVector get_statevector(
 
 /** Calculates the unitary matrix of the circuit,
  *  using ILO-BE convention.
- *  OpType::Measure is ignored if it occurs.
  *  @param circ The circuit to simulate.
  *  @param abs_epsilon Used to decide if an entry of a sparse matrix is
  *              too small, i.e. if std::abs(z) <= abs_epsilon then we treat
@@ -56,7 +55,6 @@ Eigen::MatrixXcd get_unitary(
 
 /** Let U be the unitary matrix which represents the given circuit
  *  using ILO-BE convention. Replace the given M with UM.
- *  OpType::Measure is ignored if it occurs.
  *  Note that U is not calculated explicitly and sparse matrices are used,
  *  so it is quicker than calling calc_unitary if M is, e.g., a column vector.
  *  @param circ The circuit to simulate.
