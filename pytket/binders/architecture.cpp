@@ -118,12 +118,12 @@ NB_MODULE(architecture, m) {
       .def(
           "__getstate__",
           [](const Architecture &circ) {
-            return nb::cast<nb::dict>(nb::object(json(circ)));
+            return nb::make_tuple(nb::cast<nb::dict>(nb::object(json(circ))));
           })
       .def(
           "__setstate__",
-          [](Architecture &arc, const nb::dict &d) {
-            const json j = d;
+          [](Architecture &arc, const nb::tuple &t) {
+            const json j = nb::cast<nb::dict>(t[0]);
             new (&arc) Architecture(j.get<Architecture>());
           })
       // as far as Python is concerned, Architectures are immutable
@@ -248,10 +248,10 @@ NB_MODULE(architecture, m) {
       .def(
           "__getstate__",
           [](const FullyConnected &arc) {
-            return nb::cast<nb::dict>(nb::object(json(arc)));
+            return nb::make_tuple(nb::cast<nb::dict>(nb::object(json(arc))));
           })
-      .def("__setstate__", [](FullyConnected &arc, const nb::dict &d) {
-        const json j = d;
+      .def("__setstate__", [](FullyConnected &arc, const nb::tuple &t) {
+        const json j = nb::cast<nb::dict>(t[0]);
         new (&arc) FullyConnected(j.get<FullyConnected>());
       });
 }
