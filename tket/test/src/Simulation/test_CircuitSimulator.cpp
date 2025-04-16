@@ -133,11 +133,13 @@ SCENARIO("Simple circuits produce the correct statevectors") {
   GIVEN("A circuit where the only difference is a swapped round CZ") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_barrier({0, 1});
     circ.add_op<unsigned>(OpType::CZ, {0, 1});
     circ.add_op<unsigned>(OpType::H, {0});
 
     Circuit circ2(2);
     circ2.add_op<unsigned>(OpType::H, {0});
+    circ.add_barrier({0, 1});
     circ2.add_op<unsigned>(OpType::CZ, {1, 0});
     circ2.add_op<unsigned>(OpType::H, {0});
     REQUIRE(
