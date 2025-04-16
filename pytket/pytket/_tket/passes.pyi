@@ -338,12 +338,16 @@ def DecomposeArbitrarilyControlledGates() -> BasePass:
     """
     Decomposes CCX, CnX, CnY, CnZ, CnRy, CnRz and CnRx gates into CX and single-qubit gates.
     """
-def DecomposeBoxes(excluded_types: set[pytket._tket.circuit.OpType] = set(), excluded_opgroups: set[str] = set()) -> BasePass:
+def DecomposeBoxes(excluded_types: set[pytket._tket.circuit.OpType] = set(), excluded_opgroups: set[str] = set(), included_types: set[pytket._tket.circuit.OpType] | None = None, included_opgroups: set[str] | None = None) -> BasePass:
     """
-    Recursively replaces all boxes by their decomposition into circuits.
+    Recursively replaces all boxes by their decomposition into circuits. 
+    
+    Arguments specify ways to filter which boxes are decomposed. A box must satisfy ALL filters in order to be decomposed (i.e. be in the inclusive sets and not in the exclusive sets).
     
     :param excluded_types: box :py:class:`OpType` s excluded from decomposition
     :param excluded_opgroups: opgroups excluded from decomposition
+    :param included_types: optional, only decompose these box :py:class:`OpType` s
+    :param included_opgroups: optional, only decompose these opgroups
     """
 def DecomposeClassicalExp() -> BasePass:
     """
