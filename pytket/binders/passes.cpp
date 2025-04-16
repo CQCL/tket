@@ -213,7 +213,7 @@ NB_MODULE(passes, m) {
 
   class PyBasePass : public BasePass {
    public:
-    NB_TRAMPOLINE(BasePass, 2 /*3*/);
+    NB_TRAMPOLINE(BasePass, 3);
 
     /* Trampolines (need one for each virtual function */
     virtual bool apply(
@@ -225,9 +225,7 @@ NB_MODULE(passes, m) {
     virtual std::string to_string() const override {
       NB_OVERRIDE_PURE(to_string);
     }
-    // virtual json get_config() const override {
-    //   NB_OVERRIDE_PURE(get_config);
-    // }
+    virtual json get_config() const override { NB_OVERRIDE_PURE(get_config); }
   };
   nb::class_<BasePass, PyBasePass>(m, "BasePass", "Base class for passes.")
       .def(
