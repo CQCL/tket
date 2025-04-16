@@ -145,19 +145,3 @@ building and testing tket as a standalone C++ library.
 
 See the [README](pytket/README.md) in the `pytket` directory for instructions on
 building and testing pytket.
-
-### Nix Support
-
-Tket and pytket are available as a Nix flake, with support for Linux and Apple Silicon systems.
-See the [README](nix-support/README.md) in the `nix-support` directory for instructions
-on building and testing tket and pytket through Nix, and on how to use it within a Nix project.
-
-To launch into a tket environment, you can use
-
-```
-nix develop github:CQCL/tket
-```
-
-We use Cachix to cache pre-built artifacts, which provides a faster install time for nix users.
-To make use of this cache, enable our cachix substituter with `cachix use tket`, or enter a
-tket nix environment from a trusted user and confirm the use of the tket.cachix.org substituter.
