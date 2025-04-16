@@ -310,7 +310,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "Set a classical register to an unsigned integer value. The "
           "little-endian bitwise representation of the integer is truncated to "
           "the register size, up to " STR(_TKET_REG_WIDTH) " bit width. It is "
-    "zero-padded if the width of the register is greater than " STR(_TKET_REG_WIDTH) ".",
+          "zero-padded if the width of the register is greater than "
+          STR(_TKET_REG_WIDTH) ".",
           nb::arg("value"), nb::arg("arg"), nb::arg("kwargs"))
       .def(
           "add_c_copybits",
