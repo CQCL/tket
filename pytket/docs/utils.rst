@@ -28,6 +28,11 @@ pytket.utils.distribution
 .. automodule:: pytket.utils.distribution
     :members: convex_combination
 
+pytket.utils.serialization.migration
+
+.. automodule:: pytket.utils.serialization.migration
+    :members: circuit_dict_from_pytket1_dict
+
 pytket.utils.spam
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automodule:: pytket.utils.spam
