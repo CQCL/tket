@@ -760,17 +760,20 @@ bool Circuit::substitute_box_vertex(
 
 bool Circuit::decompose_boxes_recursively(
     const std::unordered_set<OpType>& excluded_types,
-    const std::unordered_set<std::string>& excluded_opgroups) {
+    const std::unordered_set<std::string>& excluded_opgroups,
+    const std::optional<std::unordered_set<OpType>>& included_types,
+    const std::optional<std::unordered_set<std::string>>& included_opgroups) {
   bool success = false;
   VertexList bin;
   BGL_FORALL_VERTICES(v, dag, DAG) {
-    if (excluded_types.contains(get_OpType_from_Vertex(v))) {
-      continue;
-    }
+    OpType ot = get_OpType_from_Vertex(v);
+    if (excluded_types.contains(ot)) continue;
+    if (included_types && !included_types->contains(ot)) continue;
     std::optional<std::string> v_opgroup = get_opgroup_from_Vertex(v);
-    if (v_opgroup && excluded_opgroups.contains(v_opgroup.value())) {
+    if (v_opgroup && excluded_opgroups.contains(v_opgroup.value())) continue;
+    if (included_opgroups &&
+        (!v_opgroup || !included_opgroups->contains(v_opgroup.value())))
       continue;
-    }
     if (substitute_box_vertex(
             v, VertexDeletion::No, excluded_types, excluded_opgroups)) {
       bin.push_back(v);
