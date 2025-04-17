@@ -14,21 +14,23 @@
 
 #include "tket/Ops/ClExpr.hpp"
 
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/map.h>
+#include <nanobind/stl/string.h>
+#include <nanobind/stl/variant.h>
+#include <nanobind/stl/vector.h>
 
-#include <memory>
 #include <sstream>
 #include <stdexcept>
 #include <variant>
 #include <vector>
 
 #include "UnitRegister.hpp"
-#include "binder_json.hpp"
 #include "deleted_hash.hpp"
+#include "nanobind_json/nanobind_json.hpp"
 #include "py_operators.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 
 namespace tket {
 
@@ -390,8 +392,8 @@ static std::string qasm_expr_repr(
   return ss.str();
 }
 
-void init_clexpr(py::module &m) {
-  py::enum_<ClOp>(m, "ClOp", "A classical operation", py::arithmetic())
+void init_clexpr(nb::module_ &m) {
+  nb::enum_<ClOp>(m, "ClOp", "A classical operation", nb::is_arithmetic())
       .value("INVALID", ClOp::INVALID, "Invalid")
       .value("BitAnd", ClOp::BitAnd, "Bitwise AND")
       .value("BitOr", ClOp::BitOr, "Bitwise OR")
@@ -422,13 +424,12 @@ void init_clexpr(py::module &m) {
       .value("RegRsh", ClOp::RegRsh, "Right shift")
       .value("RegNeg", ClOp::RegNeg, "Integer negation");
 
-  py::class_<ClBitVar, std::shared_ptr<ClBitVar>>(
-      m, "ClBitVar", "A bit variable within an expression")
+  nb::class_<ClBitVar>(m, "ClBitVar", "A bit variable within an expression")
       .def(
-          py::init<unsigned>(),
+          nb::init<unsigned>(),
           "Construct from an integer identifier.\n\n"
           ":param i: integer identifier for the variable",
-          py::arg("i"))
+          nb::arg("i"))
       .def("__eq__", &py_equals<ClBitVar>)
       .def(
           "__str__",
@@ -445,17 +446,17 @@ void init_clexpr(py::module &m) {
             return ss.str();
           })
       .def("__hash__", [](const ClBitVar &var) { return var.index; })
-      .def_property_readonly(
+      .def_prop_ro(
           "index", [](const ClBitVar &var) { return var.index; },
           "integer identifier for the variable");
 
-  py::class_<ClRegVar, std::shared_ptr<ClRegVar>>(
+  nb::class_<ClRegVar>(
       m, "ClRegVar", "A register variable within an expression")
       .def(
-          py::init<unsigned>(),
+          nb::init<unsigned>(),
           "Construct from an integer identifier.\n\n"
           ":param i: integer identifier for the variable",
-          py::arg("i"))
+          nb::arg("i"))
       .def("__eq__", &py_equals<ClRegVar>)
       .def(
           "__str__",
@@ -472,20 +473,19 @@ void init_clexpr(py::module &m) {
             return ss.str();
           })
       .def("__hash__", [](const ClRegVar &var) { return var.index; })
-      .def_property_readonly(
+      .def_prop_ro(
           "index", [](const ClRegVar &var) { return var.index; },
           "integer identifier for the variable");
 
-  py::class_<ClExpr, std::shared_ptr<ClExpr>>(
-      m, "ClExpr", "A classical expression")
+  nb::class_<ClExpr>(m, "ClExpr", "A classical expression")
       .def(
-          py::init<ClOp, std::vector<ClExprArg>>(),
+          nb::init<ClOp, std::vector<ClExprArg>>(),
           "Construct from an operation type and a list of arguments.\n\n"
           ":param op: the operation type\n"
           ":param args: list of arguments to the expression (which may be "
           "integers, :py:class:`ClBitVar` variables, :py:class:`ClRegVar` "
           "variables, or other :py:class:`ClExpr`)",
-          py::arg("op"), py::arg("args"))
+          nb::arg("op"), nb::arg("args"))
       .def("__eq__", &py_equals<ClExpr>)
       .def(
           "__str__",
@@ -495,8 +495,8 @@ void init_clexpr(py::module &m) {
             return ss.str();
           })
       .def("__hash__", &deletedHash<ClExpr>, deletedHashDocstring)
-      .def_property_readonly("op", &ClExpr::get_op, "main operation")
-      .def_property_readonly("args", &ClExpr::get_args, "arguments")
+      .def_prop_ro("op", &ClExpr::get_op, "main operation")
+      .def_prop_ro("args", &ClExpr::get_args, "arguments")
       .def(
           "as_qasm",
           [](const ClExpr &expr, const std::map<int, Bit> input_bits,
@@ -505,13 +505,13 @@ void init_clexpr(py::module &m) {
           },
           "QASM-style string representation given corresponding bits and "
           "registers",
-          py::arg("input_bits"), py::arg("input_regs"));
+          nb::arg("input_bits"), nb::arg("input_regs"));
 
-  py::class_<WiredClExpr, std::shared_ptr<WiredClExpr>>(
+  nb::class_<WiredClExpr>(
       m, "WiredClExpr",
       "An operation defined by a classical expression over a sequence of bits")
       .def(
-          py::init<
+          nb::init<
               ClExpr, std::map<unsigned, unsigned>,
               std::map<unsigned, std::vector<unsigned>>,
               std::vector<unsigned>>(),
@@ -527,9 +527,9 @@ void init_clexpr(py::module &m) {
           "arguments of the operation\n"
           ":param output_posn: a list giving the positions of the output bits "
           "in the arguments of the operation",
-          py::arg("expr"), py::arg("bit_posn") = std::map<unsigned, unsigned>(),
-          py::arg("reg_posn") = std::map<unsigned, std::vector<unsigned>>(),
-          py::arg("output_posn") = std::vector<unsigned>())
+          nb::arg("expr"), nb::arg("bit_posn") = std::map<unsigned, unsigned>(),
+          nb::arg("reg_posn") = std::map<unsigned, std::vector<unsigned>>(),
+          nb::arg("output_posn") = std::vector<unsigned>())
       .def("__eq__", &py_equals<WiredClExpr>)
       .def(
           "__str__",
@@ -539,34 +539,31 @@ void init_clexpr(py::module &m) {
             return ss.str();
           })
       .def("__hash__", &deletedHash<WiredClExpr>, deletedHashDocstring)
-      .def_property_readonly("expr", &WiredClExpr::get_expr, "expression")
-      .def_property_readonly(
-          "bit_posn", &WiredClExpr::get_bit_posn, "bit positions")
-      .def_property_readonly(
-          "reg_posn", &WiredClExpr::get_reg_posn, "register positions")
-      .def_property_readonly(
+      .def_prop_ro("expr", &WiredClExpr::get_expr, "expression")
+      .def_prop_ro("bit_posn", &WiredClExpr::get_bit_posn, "bit positions")
+      .def_prop_ro("reg_posn", &WiredClExpr::get_reg_posn, "register positions")
+      .def_prop_ro(
           "output_posn", &WiredClExpr::get_output_posn, "output positions")
       .def(
           "to_dict",
           [](const WiredClExpr &wexpr) {
-            return py::object(nlohmann::json(wexpr)).cast<py::dict>();
+            return nb::cast<nb::dict>(nb::object(nlohmann::json(wexpr)));
           },
           ":return: JSON-serializable dict representation")
       .def_static(
           "from_dict",
-          [](const py::dict &wexpr_dict) {
+          [](const nb::dict &wexpr_dict) {
             return nlohmann::json(wexpr_dict).get<WiredClExpr>();
           },
           "Construct from JSON-serializable dict representation");
 
-  py::class_<ClExprOp, std::shared_ptr<ClExprOp>, Op>(
+  nb::class_<ClExprOp, Op>(
       m, "ClExprOp", "An operation defined by a classical expression")
       .def(
-          py::init<WiredClExpr>(),
+          nb::init<WiredClExpr>(),
           "Construct from a wired classical expression")
-      .def_property_readonly("type", &ClExprOp::get_type, "operation type")
-      .def_property_readonly(
-          "expr", &ClExprOp::get_wired_expr, "wired expression");
+      .def_prop_ro("type", &ClExprOp::get_type, "operation type")
+      .def_prop_ro("expr", &ClExprOp::get_wired_expr, "wired expression");
 }
 
 }  // namespace tket

@@ -723,10 +723,10 @@ def test_symbol_squash() -> None:
     for x in np.arange(0.0, 4.0, 0.4):
         smap = {a: x}
         c = circ.copy()
-        c.symbol_substitution(smap)  # type: ignore
+        c.symbol_substitution(smap)
         u = c.get_unitary()
         c1 = circ1.copy()
-        c1.symbol_substitution(smap)  # type: ignore
+        c1.symbol_substitution(smap)
         u1 = c1.get_unitary()
         # PauliSquash does not preserve global phase.
         v = u @ u1.conjugate().transpose()
@@ -757,10 +757,10 @@ def test_symbol_pauli_squash_1() -> None:
     for x in np.arange(0.0, 4.0, 0.4):
         smap = {Symbol("a"): x}
         c = circ.copy()
-        c.symbol_substitution(smap)  # type: ignore
+        c.symbol_substitution(smap)
         u = c.get_unitary()
         c1 = circ1.copy()
-        c1.symbol_substitution(smap)  # type: ignore
+        c1.symbol_substitution(smap)
         u1 = c1.get_unitary()
         # PauliSquash does not preserve global phase.
         v = u @ u1.conjugate().transpose()
@@ -775,10 +775,10 @@ def test_symbol_pauli_squash_2() -> None:
     for x in np.arange(0.0, 4.0, 0.4):
         smap = {Symbol("a"): x}
         c = circ.copy()
-        c.symbol_substitution(smap)  # type: ignore
+        c.symbol_substitution(smap)
         u = c.get_unitary()
         c1 = circ1.copy()
-        c1.symbol_substitution(smap)  # type: ignore
+        c1.symbol_substitution(smap)
         u1 = c1.get_unitary()
         # PauliSquash does not preserve global phase.
         v = u @ u1.conjugate().transpose()

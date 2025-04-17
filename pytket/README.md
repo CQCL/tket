@@ -36,7 +36,7 @@ pytest --hypothesis-seed=1 --cov=../pytket --cov-branch --cov-report=html --cov-
 
 ## Stub generation
 
-Python type stubs are generated from the `pybind11` modules using mypy's `stubgen`. Changes to the
+Python type stubs are generated from the `nanobind` modules using mypy's `stubgen`. Changes to the
 binding code under [binders](binders) (or, in some cases, to `tket` itself) may require stub regeneration.
 See [stub_generation/README.md](stub_generation/README.md) for more information.
 
