@@ -18,6 +18,7 @@
 #include <nanobind/operators.h>
 #include <nanobind/stl/function.h>
 #include <nanobind/stl/map.h>
+#include <nanobind/stl/optional.h>
 #include <nanobind/stl/pair.h>
 #include <nanobind/stl/string.h>
 #include <nanobind/stl/unordered_set.h>
@@ -210,11 +211,21 @@ NB_MODULE(transform, m) {
           nb::arg("arc"))
       .def_static(
           "DecomposeBoxes", &Transforms::decomp_boxes,
-          "Recursively replaces all boxes by their decomposition into circuits."
-          "\n\n:param excluded_types: box `OpType`s excluded from decomposition"
-          "\n:param excluded_opgroups: opgroups excluded from decomposition",
+          "Recursively replaces all boxes by their decomposition into "
+          "circuits. \n\nArguments specify ways to filter which boxes are "
+          "decomposed. A box must satisfy ALL filters in order to be "
+          "decomposed (i.e. be in the inclusive sets and not in the exclusive "
+          "sets)."
+          "\n\n:param excluded_types: box :py:class:`OpType` s excluded from "
+          "decomposition"
+          "\n:param excluded_opgroups: opgroups excluded from decomposition"
+          "\n:param included_types: optional, only decompose these box "
+          ":py:class:`OpType` s"
+          "\n:param included_opgroups: optional, only decompose these opgroups",
           nb::arg("excluded_types") = std::unordered_set<OpType>(),
-          nb::arg("excluded_opgroups") = std::unordered_set<std::string>())
+          nb::arg("excluded_opgroups") = std::unordered_set<std::string>(),
+          nb::arg("included_types") = std::nullopt,
+          nb::arg("included_opgroups") = std::nullopt)
       .def_static(
           "DecomposeTK2",
           [](bool allow_swaps, const nb::kwargs &kwargs) {

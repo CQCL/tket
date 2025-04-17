@@ -214,8 +214,11 @@ PassPtr ComposePhasePolyBoxes(const unsigned min_size) {
 
 PassPtr DecomposeBoxes(
     const std::unordered_set<OpType> &excluded_types,
-    const std::unordered_set<std::string> &excluded_opgroups) {
-  Transform t = Transforms::decomp_boxes(excluded_types, excluded_opgroups);
+    const std::unordered_set<std::string> &excluded_opgroups,
+    const std::optional<std::unordered_set<OpType>> &included_types,
+    const std::optional<std::unordered_set<std::string>> &included_opgroups) {
+  Transform t = Transforms::decomp_boxes(
+      excluded_types, excluded_opgroups, included_types, included_opgroups);
   PredicatePtrMap s_ps;
   /**
    * Preserves Max2QubitGatesPredicate since any box with >2 qubits is
@@ -237,6 +240,8 @@ PassPtr DecomposeBoxes(
   j["name"] = "DecomposeBoxes";
   j["excluded_types"] = excluded_types;
   j["excluded_opgroups"] = excluded_opgroups;
+  if (included_types) j["included_types"] = *included_types;
+  if (included_opgroups) j["included_opgroups"] = *included_opgroups;
   return std::make_shared<StandardPass>(s_ps, t, postcon, j);
 }
 

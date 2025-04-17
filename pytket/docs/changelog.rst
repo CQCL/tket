@@ -14,6 +14,9 @@ API changes:
 Features:
 
 * Enabling pickling of `Architecture` objects.
+* Added optional inclusive filters to the 
+  :py:meth:`~pytket.passes.DecomposeBoxes` pass to only decompose boxes of 
+  given types or opgroups.
 * New utility function ``circuit_dict_from_pytket1_dict`` to convert
   serializations of pytket 1 circuits containing ``ClassicalExpBox``es to
   serializations of equivalent pytket 2 circuits containing ``ClExprOp``s.

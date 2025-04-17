@@ -528,12 +528,20 @@ NB_MODULE(passes, m) {
       "CX and single-qubit gates.");
   m.def(
       "DecomposeBoxes", &DecomposeBoxes,
-      "Recursively replaces all boxes by their decomposition into circuits."
+      "Recursively replaces all boxes by their decomposition into circuits. "
+      "\n\nArguments specify ways to filter which boxes are decomposed. A box "
+      "must satisfy ALL filters in order to be decomposed (i.e. be in the "
+      "inclusive sets and not in the exclusive sets)."
       "\n\n:param excluded_types: box " CLSOBJS(OpType) " excluded from "
       "decomposition"
-      "\n:param excluded_opgroups: opgroups excluded from decomposition",
+      "\n:param excluded_opgroups: opgroups excluded from decomposition"
+      "\n:param included_types: optional, only decompose these box "
+      CLSOBJS(OpType)
+      "\n:param included_opgroups: optional, only decompose these opgroups",
       nb::arg("excluded_types") = std::unordered_set<OpType>(),
-      nb::arg("excluded_opgroups") = std::unordered_set<std::string>());
+      nb::arg("excluded_opgroups") = std::unordered_set<std::string>(),
+      nb::arg("included_types") = std::nullopt,
+      nb::arg("included_opgroups") = std::nullopt);
   m.def(
       "DecomposeClassicalExp", &DecomposeClassicalExp,
       "Replaces each `ClExprOp` by a sequence of classical gates.");

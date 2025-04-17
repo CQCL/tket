@@ -160,12 +160,16 @@ class Transform:
         """
 
     @staticmethod
-    def DecomposeBoxes(excluded_types: Set[pytket._tket.circuit.OpType] = ..., excluded_opgroups: Set[str] = ...) -> Transform:
+    def DecomposeBoxes(excluded_types: Set[pytket._tket.circuit.OpType] = ..., excluded_opgroups: Set[str] = ..., included_types: Set[pytket._tket.circuit.OpType] | None = None, included_opgroups: Set[str] | None = None) -> Transform:
         """
-        Recursively replaces all boxes by their decomposition into circuits.
+        Recursively replaces all boxes by their decomposition into circuits. 
 
-        :param excluded_types: box `OpType`s excluded from decomposition
+        Arguments specify ways to filter which boxes are decomposed. A box must satisfy ALL filters in order to be decomposed (i.e. be in the inclusive sets and not in the exclusive sets).
+
+        :param excluded_types: box :py:class:`OpType` s excluded from decomposition
         :param excluded_opgroups: opgroups excluded from decomposition
+        :param included_types: optional, only decompose these box :py:class:`OpType` s
+        :param included_opgroups: optional, only decompose these opgroups
         """
 
     @staticmethod

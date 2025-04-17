@@ -153,11 +153,17 @@ Transform decompose_PhaseGadgets();
  * Expects: any gateset
  * @param excluded_types box types excluded from decomposition
  * @param excluded_opgroups opgroups excluded from decomposition
+ * @param included_types optional, only decompose these box types
+ * @param included_opgroups optional, only decompose these opgroups
  * returns potentially all gates
  */
 Transform decomp_boxes(
     const std::unordered_set<OpType>& excluded_types = {},
-    const std::unordered_set<std::string>& excluded_opgroups = {});
+    const std::unordered_set<std::string>& excluded_opgroups = {},
+    const std::optional<std::unordered_set<OpType>>& included_types =
+        std::nullopt,
+    const std::optional<std::unordered_set<std::string>>& included_opgroups =
+        std::nullopt);
 
 /**
  * Replaces all CX+Rz sub circuits by PhasePolyBox
