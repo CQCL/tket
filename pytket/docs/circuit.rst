@@ -63,8 +63,6 @@ pytket.circuit
     :members:
 .. autoclass:: pytket.circuit.Conditional
     :members:
-.. autoclass:: pytket.circuit.ClassicalExpBox
-    :members:
 .. autoclass:: pytket.circuit.ClExprOp
     :special-members:
     :members:
