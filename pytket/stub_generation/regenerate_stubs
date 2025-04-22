@@ -45,6 +45,7 @@ def gen_module_stubs(modname, private_exceptions, output_file):
         stub: str = sg.get()
 
         stub = handle_any_insertion(stub)
+        stub = re.sub("ArrayLike", "NDArray", stub)
         stub = re.sub(" = OpType\\.", " = pytket._tket.circuit.OpType.", stub)
         stub = re.sub(
             "def to_dict\\(self\\) -> JSON:", "def to_dict(self) -> dict:", stub
