@@ -6,7 +6,7 @@ from pathlib import Path
 import pkgutil
 import re
 
-from stubgen import StubGen
+from nanobind.stubgen import StubGen
 import pytket
 
 

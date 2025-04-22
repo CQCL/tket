@@ -3,7 +3,6 @@ exclude = [
     "pytket/_tket",
     "pytket/_version.py",
     "pytket/qasm/includes",
-    "stub_generation/stubgen.py",
 ]
 
 target-version = "py310"
