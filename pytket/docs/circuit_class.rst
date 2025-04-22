@@ -52,7 +52,7 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_clexpr_from_logicexp
 
-   .. automethod:: wasm_uid
+   .. autoproperty:: wasm_uid
 
    .. autoproperty:: name
 
