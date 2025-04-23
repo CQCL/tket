@@ -423,21 +423,21 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
           "integer indices.")
       .def_prop_ro(
           "n_gates", &Circuit::n_gates,
-          ":return: the number of gates in the Circuit")
+          "The number of gates in the Circuit")
       .def_prop_ro(
           "wasm_uid",
           [](const Circuit &circ) { return circ.get_wasm_file_uid(); },
-          ":return: the unique WASM UID of the circuit, or `None` if the "
+          "The unique WASM UID of the circuit, or `None` if the "
           "circuit has none")
       .def_prop_ro(
           "n_qubits", &Circuit::n_qubits,
-          ":return: the number of qubits in the circuit")
+          "The number of qubits in the circuit")
       .def_prop_ro(
           "n_bits", &Circuit::n_bits,
-          ":return: the number of classiclal bits in the circuit")
+          "The number of classiclal bits in the circuit")
       .def_prop_ro(
           "phase", &Circuit::get_phase,
-          ":return: the global phase applied to the circuit, in "
+          "The global phase applied to the circuit, in "
           "halfturns (not meaningful for circuits with classical "
           "interactions)")
       .def_prop_rw("name", &Circuit::get_name, &Circuit::set_name)

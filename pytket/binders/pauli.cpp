@@ -74,7 +74,7 @@ NB_MODULE(pauli, m) {
       .def("__setitem__", &SpPauliString::set<QubitPauliMap>)
       .def_prop_ro(
           "map", [](const SpPauliString &qps) { return qps.string; },
-          ":return: the QubitPauliString's underlying dict mapping "
+          "The QubitPauliString's underlying dict mapping "
           ":py:class:`Qubit` to :py:class:`Pauli`")
       .def(
           "to_list",
