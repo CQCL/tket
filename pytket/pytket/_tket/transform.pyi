@@ -9,14 +9,10 @@ import pytket._tket.unit_id
 
 
 class PauliSynthStrat(enum.Enum):
-    """
-    Enum for available strategies to synthesise Pauli gadgets
-    """
+    """Enum for available strategies to synthesise Pauli gadgets"""
 
     Individual = 0
-    """
-    Synthesise gadgets individually
-    """
+    """Synthesise gadgets individually"""
 
     Pairwise = 1
     """
@@ -24,9 +20,7 @@ class PauliSynthStrat(enum.Enum):
     """
 
     Sets = 2
-    """
-    Synthesise gadgets in commuting sets
-    """
+    """Synthesise gadgets in commuting sets"""
 
     Greedy = 3
     """
@@ -34,9 +28,7 @@ class PauliSynthStrat(enum.Enum):
     """
 
 class Transform:
-    """
-    An in-place transformation of a :py:class:`Circuit`.
-    """
+    """An in-place transformation of a :py:class:`Circuit`."""
 
     def __init__(self, arg: Callable[[pytket._tket.circuit.Circuit], bool], /) -> None: ...
 
@@ -89,15 +81,11 @@ class Transform:
 
     @staticmethod
     def RebaseToTket() -> Transform:
-        """
-        Rebase from any gate set into TK1, CX.
-        """
+        """Rebase from any gate set into TK1, CX."""
 
     @staticmethod
     def RebaseToRzRx() -> Transform:
-        """
-        Rebase single qubit gates into Rz, Rx.
-        """
+        """Rebase single qubit gates into Rz, Rx."""
 
     @staticmethod
     def RebaseToCliffordSingles(tk2_to_cx: bool = True) -> Transform:
@@ -109,15 +97,11 @@ class Transform:
 
     @staticmethod
     def RebaseToCirq() -> Transform:
-        """
-        Rebase from any gate set into PhasedX, Rz, CZ.
-        """
+        """Rebase from any gate set into PhasedX, Rz, CZ."""
 
     @staticmethod
     def RebaseToQuil() -> Transform:
-        """
-        Rebase from any gate set into Rx, Rz, CZ.
-        """
+        """Rebase from any gate set into Rx, Rz, CZ."""
 
     @staticmethod
     def RebaseToPyZX() -> Transform:
@@ -139,9 +123,7 @@ class Transform:
 
     @staticmethod
     def DecomposeCCX() -> Transform:
-        """
-        Decomposes all 3-qubit Toffoli (CCX) gates into Clifford+T gates.
-        """
+        """Decomposes all 3-qubit Toffoli (CCX) gates into Clifford+T gates."""
 
     @staticmethod
     def DecomposeControlledRys() -> Transform:
@@ -167,9 +149,7 @@ class Transform:
 
     @staticmethod
     def DecomposeBRIDGE() -> Transform:
-        """
-        Decomposes all BRIDGE gates into CX gates.
-        """
+        """Decomposes all BRIDGE gates into CX gates."""
 
     @staticmethod
     def DecomposeCXDirected(arc: pytket._tket.architecture.Architecture) -> Transform:
@@ -267,9 +247,7 @@ class Transform:
 
     @staticmethod
     def ReduceSingles() -> Transform:
-        """
-        Reduces each sequence of single-qubit rotations into a single TK1.
-        """
+        """Reduces each sequence of single-qubit rotations into a single TK1."""
 
     @staticmethod
     def CommuteThroughMultis() -> Transform:
@@ -328,15 +306,11 @@ class Transform:
 
     @staticmethod
     def DecomposeNPhasedX() -> Transform:
-        """
-        Decompose NPhasedX gates into single-qubit PhasedX gates.
-        """
+        """Decompose NPhasedX gates into single-qubit PhasedX gates."""
 
     @staticmethod
     def SynthesisePauliGraph(synth_strat: PauliSynthStrat = PauliSynthStrat.Sets, cx_config: pytket._tket.circuit.CXConfigType = pytket._tket.circuit.CXConfigType.Snake) -> Transform:
-        """
-        Synthesises Pauli Graphs.
-        """
+        """Synthesises Pauli Graphs."""
 
     @staticmethod
     def UCCSynthesis(synth_strat: PauliSynthStrat = PauliSynthStrat.Sets, cx_config: pytket._tket.circuit.CXConfigType = pytket._tket.circuit.CXConfigType.Snake) -> Transform:
@@ -362,9 +336,7 @@ class Transform:
 
     @staticmethod
     def ZZPhaseToRz() -> Transform:
-        """
-        Fixes all ZZPhase gate angles to [-1, 1) half turns.
-        """
+        """Fixes all ZZPhase gate angles to [-1, 1) half turns."""
 
     @staticmethod
     def CnXPairwiseDecomposition() -> Transform:

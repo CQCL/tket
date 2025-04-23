@@ -44,7 +44,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 import re
-import textwrap
 import types
 import typing
 from inspect import ismodule, signature
@@ -287,17 +286,3 @@ class PytketStubGen(StubGen):
                 self.put_docstr(docstr)
                 self.depth -= 1
             self.write("\n")
-
-    def put_docstr(self, docstr: str) -> None:
-        """Append an indented single or multi-line docstring"""
-        docstr = textwrap.dedent(docstr).strip()
-        raw_str = ""
-        if "''" in docstr or "\\" in docstr:
-            # Escape all double quotes so that no unquoted triple quote can exist
-            docstr = docstr.replace("''", "\\'\\'")
-            raw_str = "r"
-        # Always add newlines, as oneline docstrings can fail to format 
-        # properly with sphinx
-        docstr = "\n" + docstr + "\n"
-        docstr = f'{raw_str}"""{docstr}"""\n'
-        self.write_par(docstr)

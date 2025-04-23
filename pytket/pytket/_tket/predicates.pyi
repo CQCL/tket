@@ -7,19 +7,13 @@ import pytket._tket.unit_id
 
 
 class Predicate:
-    """
-    A predicate that may be satisfied by a circuit.
-    """
+    """A predicate that may be satisfied by a circuit."""
 
     def verify(self, circuit: pytket._tket.circuit.Circuit) -> bool:
-        """
-        :return: True if circuit satisfies predicate, else False
-        """
+        """:return: True if circuit satisfies predicate, else False"""
 
     def implies(self, other: Predicate) -> bool:
-        """
-        :return: True if predicate implies another one, else False
-        """
+        """:return: True if predicate implies another one, else False"""
 
     def __str__(self) -> str: ...
 
@@ -51,52 +45,34 @@ class GateSetPredicate(Predicate):
     """
 
     def __init__(self, allowed_types: Set[pytket._tket.circuit.OpType]) -> None:
-        """
-        Construct from a set of gate types.
-        """
+        """Construct from a set of gate types."""
 
     @property
     def gate_set(self) -> set[pytket._tket.circuit.OpType]: ...
 
 class NoClassicalControlPredicate(Predicate):
-    """
-    Predicate asserting that a circuit has no classical controls.
-    """
+    """Predicate asserting that a circuit has no classical controls."""
 
     def __init__(self) -> None:
-        """
-        Constructor.
-        """
+        """Constructor."""
 
 class NoFastFeedforwardPredicate(Predicate):
-    """
-    Predicate asserting that a circuit has no fast feedforward.
-    """
+    """Predicate asserting that a circuit has no fast feedforward."""
 
     def __init__(self) -> None:
-        """
-        Constructor.
-        """
+        """Constructor."""
 
 class NoClassicalBitsPredicate(Predicate):
-    """
-    Predicate asserting that a circuit has no classical wires.
-    """
+    """Predicate asserting that a circuit has no classical wires."""
 
     def __init__(self) -> None:
-        """
-        Constructor.
-        """
+        """Constructor."""
 
 class NoWireSwapsPredicate(Predicate):
-    """
-    Predicate asserting that a circuit has no wire swaps.
-    """
+    """Predicate asserting that a circuit has no wire swaps."""
 
     def __init__(self) -> None:
-        """
-        Constructor.
-        """
+        """Constructor."""
 
 class MaxTwoQubitGatesPredicate(Predicate):
     """
@@ -104,9 +80,7 @@ class MaxTwoQubitGatesPredicate(Predicate):
     """
 
     def __init__(self) -> None:
-        """
-        Constructor.
-        """
+        """Constructor."""
 
 class ConnectivityPredicate(Predicate):
     """
@@ -114,9 +88,7 @@ class ConnectivityPredicate(Predicate):
     """
 
     def __init__(self, architecture: pytket._tket.architecture.Architecture) -> None:
-        """
-        Construct from an :py:class:`Architecture`.
-        """
+        """Construct from an :py:class:`Architecture`."""
 
 class DirectednessPredicate(Predicate):
     """
@@ -124,9 +96,7 @@ class DirectednessPredicate(Predicate):
     """
 
     def __init__(self, architecture: pytket._tket.architecture.Architecture) -> None:
-        """
-        Construct from an :py:class:`Architecture`.
-        """
+        """Construct from an :py:class:`Architecture`."""
 
 class CliffordCircuitPredicate(Predicate):
     """
@@ -134,14 +104,10 @@ class CliffordCircuitPredicate(Predicate):
     """
 
     def __init__(self) -> None:
-        """
-        Constructor.
-        """
+        """Constructor."""
 
 class UserDefinedPredicate(Predicate):
-    """
-    User-defined predicate.
-    """
+    """User-defined predicate."""
 
     def __init__(self, check_function: Callable[[pytket._tket.circuit.Circuit], bool]) -> None:
         """
@@ -154,29 +120,19 @@ class DefaultRegisterPredicate(Predicate):
     """
 
     def __init__(self) -> None:
-        """
-        Constructor.
-        """
+        """Constructor."""
 
 class MaxNQubitsPredicate(Predicate):
-    """
-    Predicate asserting that a circuit has at most n qubits.
-    """
+    """Predicate asserting that a circuit has at most n qubits."""
 
     def __init__(self, arg: int, /) -> None:
-        """
-        Constructor.
-        """
+        """Constructor."""
 
 class MaxNClRegPredicate(Predicate):
-    """
-    Predicate asserting that a circuit has at most n classical registers.
-    """
+    """Predicate asserting that a circuit has at most n classical registers."""
 
     def __init__(self, arg: int, /) -> None:
-        """
-        Constructor.
-        """
+        """Constructor."""
 
 class PlacementPredicate(Predicate):
     """
@@ -185,25 +141,17 @@ class PlacementPredicate(Predicate):
 
     @overload
     def __init__(self, architecture: pytket._tket.architecture.Architecture) -> None:
-        """
-        Construct from an :py:class:`Architecture`.
-        """
+        """Construct from an :py:class:`Architecture`."""
 
     @overload
     def __init__(self, nodes: Set[pytket._tket.unit_id.Node]) -> None:
-        """
-        Construct from a set of Node.
-        """
+        """Construct from a set of Node."""
 
 class NoBarriersPredicate(Predicate):
-    """
-    Predicate asserting that a circuit contains no Barrier operations.
-    """
+    """Predicate asserting that a circuit contains no Barrier operations."""
 
     def __init__(self) -> None:
-        """
-        Constructor.
-        """
+        """Constructor."""
 
 class CommutableMeasuresPredicate(Predicate):
     """
@@ -211,9 +159,7 @@ class CommutableMeasuresPredicate(Predicate):
     """
 
     def __init__(self) -> None:
-        """
-        Constructor.
-        """
+        """Constructor."""
 
 class NoMidMeasurePredicate(Predicate):
     """
@@ -221,9 +167,7 @@ class NoMidMeasurePredicate(Predicate):
     """
 
     def __init__(self) -> None:
-        """
-        Constructor.
-        """
+        """Constructor."""
 
 class NoSymbolsPredicate(Predicate):
     """
@@ -231,9 +175,7 @@ class NoSymbolsPredicate(Predicate):
     """
 
     def __init__(self) -> None:
-        """
-        Constructor.
-        """
+        """Constructor."""
 
 class NormalisedTK2Predicate(Predicate):
     """
@@ -246,9 +188,7 @@ class NormalisedTK2Predicate(Predicate):
     """
 
     def __init__(self) -> None:
-        """
-        Constructor.
-        """
+        """Constructor."""
 
 class CompilationUnit:
     """
@@ -257,26 +197,18 @@ class CompilationUnit:
 
     @overload
     def __init__(self, circuit: pytket._tket.circuit.Circuit) -> None:
-        """
-        Construct from a circuit, with no predicates.
-        """
+        """Construct from a circuit, with no predicates."""
 
     @overload
     def __init__(self, circuit: pytket._tket.circuit.Circuit, predicates: Sequence[Predicate]) -> None:
-        """
-        Construct from a circuit and some required predicates.
-        """
+        """Construct from a circuit and some required predicates."""
 
     def check_all_predicates(self) -> bool:
-        """
-        :return: True if all predicates are satisfied, else False
-        """
+        """:return: True if all predicates are satisfied, else False"""
 
     @property
     def circuit(self) -> pytket._tket.circuit.Circuit:
-        """
-        Return a copy of the circuit.
-        """
+        """Return a copy of the circuit."""
 
     @property
     def initial_map(self) -> dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]:

@@ -56,9 +56,7 @@ class AASLabellingMethod(RoutingMethod):
     """
 
     def __init__(self) -> None:
-        """
-        AASLabellingMethod constructor.
-        """
+        """AASLabellingMethod constructor."""
 
 class LexiLabellingMethod(RoutingMethod):
     """
@@ -66,9 +64,7 @@ class LexiLabellingMethod(RoutingMethod):
     """
 
     def __init__(self) -> None:
-        """
-        LexiLabellingMethod constructor.
-        """
+        """LexiLabellingMethod constructor."""
 
 class MultiGateReorderRoutingMethod(RoutingMethod):
     """
@@ -84,14 +80,10 @@ class MultiGateReorderRoutingMethod(RoutingMethod):
         """
 
 class BoxDecompositionRoutingMethod(RoutingMethod):
-    """
-    Defines a RoutingMethod object for decomposing boxes.
-    """
+    """Defines a RoutingMethod object for decomposing boxes."""
 
     def __init__(self) -> None:
-        """
-        BoxDecompositionRoutingMethod constructor.
-        """
+        """BoxDecompositionRoutingMethod constructor."""
 
 class MappingManager:
     """

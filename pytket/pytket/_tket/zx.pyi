@@ -9,9 +9,7 @@ import pytket._tket.unit_id
 
 
 class ZXType(enum.Enum):
-    """
-    Enum for available types of generators in :py:class:`ZXDiagram` s.
-    """
+    """Enum for available types of generators in :py:class:`ZXDiagram` s."""
 
     Input = 0
     """
@@ -84,19 +82,13 @@ class ZXType(enum.Enum):
     """
 
 class ZXWireType(enum.Enum):
-    """
-    Enum for available types of wires in :py:class:`ZXDiagram` s.
-    """
+    """Enum for available types of wires in :py:class:`ZXDiagram` s."""
 
     Basic = 0
-    """
-    A basic identity wire.
-    """
+    """A basic identity wire."""
 
     H = 1
-    """
-    A Hadamard edge.
-    """
+    """A Hadamard edge."""
 
 class QuantumType(enum.Enum):
     """
@@ -141,9 +133,7 @@ class ZXGen:
     @overload
     @staticmethod
     def create(type: ZXType, qtype: QuantumType = QuantumType.Quantum) -> ZXGen:
-        """
-        Create a boundary type generator.
-        """
+        """Create a boundary type generator."""
 
     @overload
     @staticmethod
@@ -151,15 +141,11 @@ class ZXGen:
 
     @property
     def type(self) -> ZXType:
-        """
-        The type of generator.
-        """
+        """The type of generator."""
 
     @property
     def qtype(self) -> QuantumType | None:
-        """
-        The :py:class:`QuantumType` of the generator (if applicable).
-        """
+        """The :py:class:`QuantumType` of the generator (if applicable)."""
 
     def __eq__(self, arg: object, /) -> bool: ...
 
@@ -176,15 +162,11 @@ class PhasedGen(ZXGen):
     """
 
     def __init__(self, zxtype: ZXType, param: Union[sympy.Expr, float] = 0.0, qtype: QuantumType = QuantumType.Quantum) -> None:
-        """
-        Construct from a ZX type, parameter and quantum type.
-        """
+        """Construct from a ZX type, parameter and quantum type."""
 
     @property
     def param(self) -> Union[sympy.Expr, float]:
-        """
-        The parameter of the generator.
-        """
+        """The parameter of the generator."""
 
 class CliffordGen(ZXGen):
     """
@@ -192,15 +174,11 @@ class CliffordGen(ZXGen):
     """
 
     def __init__(self, zxtype: ZXType, param: bool = False, qtype: QuantumType = QuantumType.Quantum) -> None:
-        """
-        Construct from a ZX type, parameter and quantum type.
-        """
+        """Construct from a ZX type, parameter and quantum type."""
 
     @property
     def param(self) -> bool:
-        """
-        The parameter of the generator.
-        """
+        """The parameter of the generator."""
 
 class DirectedGen(ZXGen):
     """
@@ -208,15 +186,11 @@ class DirectedGen(ZXGen):
     """
 
     def __init__(self, zxtype: ZXType, qtype: QuantumType) -> None:
-        """
-        Construct from a ZX type and quantum type.
-        """
+        """Construct from a ZX type and quantum type."""
 
     @property
     def n_ports(self) -> int:
-        """
-        The number of ports on the generator.
-        """
+        """The number of ports on the generator."""
 
     @property
     def signature(self) -> list[QuantumType]:
@@ -231,9 +205,7 @@ class ZXDiagram:
 
     @overload
     def __init__(self) -> None:
-        """
-        Constructs an empty ZX diagram.
-        """
+        """Constructs an empty ZX diagram."""
 
     @overload
     def __init__(self, inputs: int, outputs: int, classical_inputs: int, classical_outputs: int) -> None:
@@ -294,9 +266,7 @@ class ZXDiagram:
 
     @property
     def n_wires(self) -> int:
-        """
-        Counts the number of edges in the diagram.
-        """
+        """Counts the number of edges in the diagram."""
 
     def count_vertices(self, type: ZXType) -> int:
         """
@@ -309,9 +279,7 @@ class ZXDiagram:
         """
 
     def degree(self, v: ZXVert) -> int:
-        """
-        Returns the degree of the given vertex.
-        """
+        """Returns the degree of the given vertex."""
 
     def neighbours(self, v: ZXVert) -> list[ZXVert]:
         """
@@ -339,19 +307,13 @@ class ZXDiagram:
         """
 
     def get_vertex_ZXGen(self, v: ZXVert) -> ZXGen:
-        """
-        Returns the content of a given vertex as a :py:class:`ZXGen`.
-        """
+        """Returns the content of a given vertex as a :py:class:`ZXGen`."""
 
     def get_name(self, v: ZXVert) -> str:
-        """
-        Returns the readable string description of a given vertex
-        """
+        """Returns the readable string description of a given vertex"""
 
     def get_zxtype(self, v: ZXVert) -> ZXType:
-        """
-        Returns the :py:class:`ZXType` of the given vertex.
-        """
+        """Returns the :py:class:`ZXType` of the given vertex."""
 
     def get_qtype(self, v: ZXVert) -> QuantumType | None:
         """
@@ -364,24 +326,16 @@ class ZXDiagram:
         """
 
     def get_wire_qtype(self, w: ZXWire) -> QuantumType:
-        """
-        Returns the :py:class:`QuantumType` of the given wire.
-        """
+        """Returns the :py:class:`QuantumType` of the given wire."""
 
     def get_wire_type(self, w: ZXWire) -> ZXWireType:
-        """
-        Returns the :py:class:`ZXWireType` of the given wire.
-        """
+        """Returns the :py:class:`ZXWireType` of the given wire."""
 
     def set_wire_qtype(self, w: ZXWire, qtype: QuantumType) -> None:
-        """
-        Updates the :py:class:`QuantumType` of the given wire.
-        """
+        """Updates the :py:class:`QuantumType` of the given wire."""
 
     def set_wire_type(self, w: ZXWire, type: ZXWireType) -> None:
-        """
-        Updates the :py:class:`ZXWireType` of the given wire.
-        """
+        """Updates the :py:class:`ZXWireType` of the given wire."""
 
     def get_wire_ends(self, w: ZXWire) -> tuple[tuple[ZXVert, int | None], tuple[ZXVert, int | None]]:
         """
@@ -410,9 +364,7 @@ class ZXDiagram:
         """
 
     def free_symbols(self) -> set[sympy.Symbol]:
-        """
-        Returns the set of symbolic parameters in the diagram.
-        """
+        """Returns the set of symbolic parameters in the diagram."""
 
     def is_symbolic(self) -> bool:
         """
@@ -487,9 +439,7 @@ class ZXDiagram:
         """
 
     def remove_wire(self, w: ZXWire) -> None:
-        """
-        Removes the given wire from the diagram.
-        """
+        """Removes the given wire from the diagram."""
 
     def to_circuit(self) -> tuple[pytket._tket.circuit.Circuit, dict[ZXVert, pytket._tket.unit_id.UnitID]]:
         """
@@ -499,14 +449,10 @@ class ZXDiagram:
         """
 
     def to_doubled_diagram(self) -> ZXDiagram:
-        """
-        + classical boundaries only have the unconjugated version
-        """
+        """+ classical boundaries only have the unconjugated version"""
 
     def to_graphviz_str(self) -> str:
-        """
-        Returns a graphviz source string
-        """
+        """Returns a graphviz source string"""
 
 class ZXBox(ZXGen):
     """
@@ -514,15 +460,11 @@ class ZXBox(ZXGen):
     """
 
     def __init__(self, zxdiag: ZXDiagram) -> None:
-        """
-        Construct from a ZX diagram.
-        """
+        """Construct from a ZX diagram."""
 
     @property
     def n_ports(self) -> int:
-        """
-        The number of ports on the generator.
-        """
+        """The number of ports on the generator."""
 
     @property
     def signature(self) -> list[QuantumType]:
@@ -532,9 +474,7 @@ class ZXBox(ZXGen):
 
     @property
     def diagram(self) -> ZXDiagram:
-        """
-        The internal diagram represented by the box.
-        """
+        """The internal diagram represented by the box."""
 
 class Flow:
     """
@@ -542,15 +482,11 @@ class Flow:
     """
 
     def c(self, v: ZXVert) -> list[ZXVert]:
-        """
-        The correction set for the given :py:class:`ZXVert`.
-        """
+        """The correction set for the given :py:class:`ZXVert`."""
 
     @property
     def cmap(self) -> dict[ZXVert, list[ZXVert]]:
-        """
-        The map from a vertex to its correction set
-        """
+        """The map from a vertex to its correction set"""
 
     def odd(self, v: ZXVert, diag: ZXDiagram) -> list[ZXVert]:
         """
@@ -564,26 +500,18 @@ class Flow:
 
     @property
     def dmap(self) -> dict[ZXVert, int]:
-        """
-        The map from a vertex to its depth
-        """
+        """The map from a vertex to its depth"""
 
     def focus(self, diag: ZXDiagram) -> None:
-        """
-        Focusses a flow.
-        """
+        """Focusses a flow."""
 
     @staticmethod
     def identify_causal_flow(diag: ZXDiagram) -> Flow:
-        """
-        Attempts to identify a causal flow for a diagram.
-        """
+        """Attempts to identify a causal flow for a diagram."""
 
     @staticmethod
     def identify_pauli_flow(diag: ZXDiagram) -> Flow:
-        """
-        Attempts to identify a Pauli flow for a diagram.
-        """
+        """Attempts to identify a Pauli flow for a diagram."""
 
     @staticmethod
     def identify_focussed_sets(diag: ZXDiagram) -> list[list[ZXVert]]:
@@ -592,9 +520,7 @@ class Flow:
         """
 
 class Rewrite:
-    """
-    An in-place transformation of a ZXDiagram.
-    """
+    """An in-place transformation of a ZXDiagram."""
 
     def apply(self, diag: ZXDiagram) -> bool:
         """
@@ -630,9 +556,7 @@ class Rewrite:
 
     @staticmethod
     def basic_wires() -> Rewrite:
-        """
-        Replaces every Hadamard wire by an explicit Hbox node.
-        """
+        """Replaces every Hadamard wire by an explicit Hbox node."""
 
     @staticmethod
     def rebase_to_zx() -> Rewrite:
@@ -642,9 +566,7 @@ class Rewrite:
 
     @staticmethod
     def rebase_to_mbqc() -> Rewrite:
-        """
-        Expands every generator into MBQC vertices.
-        """
+        """Expands every generator into MBQC vertices."""
 
     @staticmethod
     def red_to_green() -> Rewrite:

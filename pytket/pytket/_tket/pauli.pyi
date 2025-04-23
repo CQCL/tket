@@ -32,15 +32,11 @@ class QubitPauliString:
 
     @overload
     def __init__(self) -> None:
-        """
-        Constructs an empty QubitPauliString.
-        """
+        """Constructs an empty QubitPauliString."""
 
     @overload
     def __init__(self, qubit: pytket._tket.unit_id.Qubit, pauli: Pauli) -> None:
-        """
-        Constructs a QubitPauliString with a single Pauli term.
-        """
+        """Constructs a QubitPauliString with a single Pauli term."""
 
     @overload
     def __init__(self, qubits: Sequence[pytket._tket.unit_id.Qubit], paulis: Sequence[Pauli]) -> None:
@@ -88,14 +84,10 @@ class QubitPauliString:
         """
 
     def compress(self) -> None:
-        """
-        Removes I terms to compress the sparse representation.
-        """
+        """Removes I terms to compress the sparse representation."""
 
     def commutes_with(self, other: QubitPauliString) -> bool:
-        """
-        :return: True if the two strings commute, else False
-        """
+        """:return: True if the two strings commute, else False"""
 
     @overload
     def to_sparse_matrix(self) -> scipy.sparse.csc_matrix[complex]:
@@ -177,27 +169,19 @@ class PauliStabiliser:
 
     @overload
     def __init__(self) -> None:
-        """
-        Constructs an empty PauliStabiliser.
-        """
+        """Constructs an empty PauliStabiliser."""
 
     @overload
     def __init__(self, string: Sequence[Pauli], coeff: int) -> None:
-        """
-        Constructs a PauliStabiliser with a list of Pauli terms.
-        """
+        """Constructs a PauliStabiliser with a list of Pauli terms."""
 
     @property
     def coeff(self) -> int:
-        """
-        The coefficient of the stabiliser
-        """
+        """The coefficient of the stabiliser"""
 
     @property
     def string(self) -> list[Pauli]:
-        """
-        The list of Pauli terms
-        """
+        """The list of Pauli terms"""
 
     def __eq__(self, arg: object, /) -> bool: ...
 
@@ -215,15 +199,11 @@ class QubitPauliTensor:
 
     @overload
     def __init__(self, coeff: complex = 1.0) -> None:
-        """
-        Constructs an empty QubitPauliTensor, representing the identity.
-        """
+        """Constructs an empty QubitPauliTensor, representing the identity."""
 
     @overload
     def __init__(self, qubit: pytket._tket.unit_id.Qubit, pauli: Pauli, coeff: complex = 1.0) -> None:
-        """
-        Constructs a QubitPauliTensor with a single Pauli term.
-        """
+        """Constructs a QubitPauliTensor with a single Pauli term."""
 
     @overload
     def __init__(self, qubits: Sequence[pytket._tket.unit_id.Qubit], paulis: Sequence[Pauli], coeff: complex = 1.0) -> None:
@@ -239,9 +219,7 @@ class QubitPauliTensor:
 
     @overload
     def __init__(self, string: QubitPauliString, coeff: complex = 1.0) -> None:
-        """
-        Construct a QubitPauliTensor from a QubitPauliString.
-        """
+        """Construct a QubitPauliTensor from a QubitPauliString."""
 
     def __hash__(self) -> int: ...
 
@@ -263,31 +241,23 @@ class QubitPauliTensor:
 
     @property
     def string(self) -> QubitPauliString:
-        """
-        The QubitPauliTensor's underlying :py:class:`QubitPauliString`
-        """
+        """The QubitPauliTensor's underlying :py:class:`QubitPauliString`"""
 
     @string.setter
     def string(self, arg: QubitPauliString, /) -> None: ...
 
     @property
     def coeff(self) -> complex:
-        """
-        The global coefficient of the tensor
-        """
+        """The global coefficient of the tensor"""
 
     @coeff.setter
     def coeff(self, arg: complex, /) -> None: ...
 
     def compress(self) -> None:
-        """
-        Removes I terms to compress the sparse representation.
-        """
+        """Removes I terms to compress the sparse representation."""
 
     def commutes_with(self, other: QubitPauliTensor) -> bool:
-        """
-        :return: True if the two tensors commute, else False
-        """
+        """:return: True if the two tensors commute, else False"""
 
     @overload
     def to_sparse_matrix(self) -> scipy.sparse.csc_matrix[complex]:

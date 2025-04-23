@@ -171,9 +171,7 @@ class UnitaryRevTableau:
         """
 
 class UnitaryTableauBox(pytket._tket.circuit.Op):
-    """
-    A Clifford unitary specified by its actions on Paulis.
-    """
+    """A Clifford unitary specified by its actions on Paulis."""
 
     @overload
     def __init__(self, tab: UnitaryTableau) -> None:
@@ -197,11 +195,7 @@ class UnitaryTableauBox(pytket._tket.circuit.Op):
         """
 
     def get_circuit(self) -> pytket._tket.circuit.Circuit:
-        """
-        :return: The :py:class:`Circuit` described by the box.
-        """
+        """:return: The :py:class:`Circuit` described by the box."""
 
     def get_tableau(self) -> UnitaryTableau:
-        """
-        :return: The tableau representing the unitary operation.
-        """
+        """:return: The tableau representing the unitary operation."""

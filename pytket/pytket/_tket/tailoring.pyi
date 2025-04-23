@@ -43,9 +43,7 @@ class PauliFrameRandomisation:
     """
 
     def __init__(self) -> None:
-        """
-        Constructor for PauliFrameRandomisation.
-        """
+        """Constructor for PauliFrameRandomisation."""
 
     def get_all_circuits(self, circuit: pytket._tket.circuit.Circuit) -> list[pytket._tket.circuit.Circuit]:
         """
@@ -72,9 +70,7 @@ class UniversalFrameRandomisation:
     """
 
     def __init__(self) -> None:
-        """
-        Constructor for UniversalFrameRandomisation.
-        """
+        """Constructor for UniversalFrameRandomisation."""
 
     def get_all_circuits(self, circuit: pytket._tket.circuit.Circuit) -> list[pytket._tket.circuit.Circuit]:
         """

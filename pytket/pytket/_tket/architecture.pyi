@@ -5,15 +5,11 @@ import pytket._tket.unit_id
 
 
 class Architecture:
-    """
-    Class describing the connectivity of qubits on a general device.
-    """
+    """Class describing the connectivity of qubits on a general device."""
 
     @overload
     def __init__(self) -> None:
-        """
-        Produces an empty architecture
-        """
+        """Produces an empty architecture"""
 
     @overload
     def __init__(self, connections: Sequence[tuple[int, int]]) -> None:
@@ -34,9 +30,7 @@ class Architecture:
     def __repr__(self) -> str: ...
 
     def get_distance(self, node_0: pytket._tket.unit_id.Node, node_1: pytket._tket.unit_id.Node) -> int:
-        """
-        given two nodes in Architecture, returns distance between them
-        """
+        """given two nodes in Architecture, returns distance between them"""
 
     def valid_operation(self, uids: Sequence[pytket._tket.unit_id.Node], bidirectional: bool = True) -> bool:
         """
@@ -56,21 +50,15 @@ class Architecture:
         """
 
     def get_adjacent_nodes(self, node: pytket._tket.unit_id.Node) -> set[pytket._tket.unit_id.Node]:
-        """
-        given a node, returns adjacent nodes in Architecture.
-        """
+        """given a node, returns adjacent nodes in Architecture."""
 
     @property
     def nodes(self) -> list[pytket._tket.unit_id.Node]:
-        """
-        Returns all nodes of architecture as Node objects.
-        """
+        """Returns all nodes of architecture as Node objects."""
 
     @property
     def coupling(self) -> list[tuple[pytket._tket.unit_id.Node, pytket._tket.unit_id.Node]]:
-        """
-        Returns the coupling map of the Architecture as UnitIDs.
-        """
+        """Returns the coupling map of the Architecture as UnitIDs."""
 
     def to_dict(self) -> dict:
         """
@@ -152,9 +140,7 @@ class SquareGrid(Architecture):
     def __repr__(self) -> str: ...
 
 class RingArch(Architecture):
-    """
-    Inherited Architecture class for number of qubits arranged in a ring.
-    """
+    """Inherited Architecture class for number of qubits arranged in a ring."""
 
     def __init__(self, nodes: int, label: str = 'ringNode') -> None:
         """
@@ -194,9 +180,7 @@ class FullyConnected:
 
     @property
     def nodes(self) -> list[pytket._tket.unit_id.Node]:
-        """
-        All nodes of the architecture as :py:class:`Node` objects.
-        """
+        """All nodes of the architecture as :py:class:`Node` objects."""
 
     def to_dict(self) -> dict:
         """
@@ -207,9 +191,7 @@ class FullyConnected:
 
     @staticmethod
     def from_dict(arg: dict, /) -> FullyConnected:
-        """
-        Construct FullyConnected instance from dict representation.
-        """
+        """Construct FullyConnected instance from dict representation."""
 
     def __getstate__(self) -> tuple: ...
 
