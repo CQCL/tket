@@ -240,7 +240,7 @@ class CircuitRenderer:
                 display,
             )  # pylint: disable=C0415
 
-            display(HTML(html)) # type: ignore[no-untyped-call]
+            display(HTML(html))
             return None
         return html
 
