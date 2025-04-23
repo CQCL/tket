@@ -20,7 +20,6 @@
 namespace tket {
 
 NB_MODULE(circuit_library, library_m) {
-  nanobind::set_leak_warnings(false);
   library_m.def(
       "BRIDGE_using_CX_0", &CircPool::BRIDGE_using_CX_0,
       "Equivalent to BRIDGE, using four CX, first CX has control on qubit 0");

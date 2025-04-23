@@ -82,7 +82,6 @@ void declare_register(nb::module_ &m, const std::string &typestr) {
 }
 
 NB_MODULE(unit_id, m) {
-  nb::set_leak_warnings(false);
   m.attr("_TEMP_REG_SIZE") = _TKET_REG_WIDTH;
   m.attr("_TEMP_BIT_NAME") = "tk_SCRATCH_BIT";
   m.attr("_TEMP_BIT_REG_BASE") = "tk_SCRATCH_BITREG";

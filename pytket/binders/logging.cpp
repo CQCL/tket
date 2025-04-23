@@ -21,7 +21,6 @@ namespace nb = nanobind;
 namespace tket {
 
 NB_MODULE(logging, m) {
-  nb::set_leak_warnings(false);
   nb::enum_<LogLevel>(m, "level")
       .value("trace", LogLevel::Trace, "all logs")
       .value("debug", LogLevel::Debug, "debug logs and above")

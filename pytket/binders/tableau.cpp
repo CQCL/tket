@@ -28,7 +28,6 @@ namespace tket {
 
 typedef nb::tket_custom::SequenceVec<Qubit> py_qubit_vector_t;
 NB_MODULE(tableau, m) {
-  nb::set_leak_warnings(false);
   nb::class_<UnitaryTableau>(
       m, "UnitaryTableau",
       "Stabilizer tableau for a unitary in the style of Aaronson&Gottesman "
