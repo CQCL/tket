@@ -26,7 +26,6 @@ using json = nlohmann::json;
 namespace tket {
 
 NB_MODULE(partition, m) {
-  nb::set_leak_warnings(false);
   nb::enum_<PauliPartitionStrat>(
       m, "PauliPartitionStrat",
       "Enum for available strategies to partition Pauli tensors.")

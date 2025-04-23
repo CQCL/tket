@@ -26,7 +26,6 @@ using json = nlohmann::json;
 namespace tket {
 
 NB_MODULE(utils_serialization, m) {
-  nb::set_leak_warnings(false);
   m.def(
       "complex_to_list",
       [](std::complex<double> c) { return nb::object(json(c)); },

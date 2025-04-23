@@ -174,7 +174,6 @@ std::optional<OpTypeSet> get_gate_set(const BasePass &base_pass) {
 }
 
 NB_MODULE(passes, m) {
-  nb::set_leak_warnings(false);
   nb::module_::import_("pytket._tket.predicates");
   nb::enum_<SafetyMode>(m, "SafetyMode")
       .value(

@@ -31,7 +31,6 @@ namespace nb = nanobind;
 
 namespace tket {
 NB_MODULE(mapping, m) {
-  nb::set_leak_warnings(false);
   nb::module_::import_("pytket._tket.architecture");
   nb::class_<RoutingMethod>(
       m, "RoutingMethod",

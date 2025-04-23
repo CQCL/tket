@@ -60,7 +60,6 @@ Transforms::TwoQbFidelities get_fidelities(const nb::kwargs &kwargs) {
 }
 
 NB_MODULE(transform, m) {
-  nb::set_leak_warnings(false);
   nb::enum_<Transforms::PauliSynthStrat>(
       m, "PauliSynthStrat",
       "Enum for available strategies to synthesise Pauli gadgets")

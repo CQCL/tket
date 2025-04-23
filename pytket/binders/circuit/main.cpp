@@ -46,7 +46,6 @@ void init_boxes(nb::module_ &m);
 void init_clexpr(nb::module_ &m);
 
 NB_MODULE(circuit, m) {
-  nb::set_leak_warnings(false);
   nb::module_::import_("pytket._tket.unit_id");
   nb::module_::import_("pytket._tket.pauli");
   nb::module_::import_("pytket._tket.architecture");

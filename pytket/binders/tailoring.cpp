@@ -42,7 +42,6 @@ SpPauliString apply_clifford_basis_change_string(
 }
 
 NB_MODULE(tailoring, m) {
-  nb::set_leak_warnings(false);
   m.doc() = "The tailoring module provides access to noise tailoring tools.";
 
   nb::class_<FrameRandomisation>(
