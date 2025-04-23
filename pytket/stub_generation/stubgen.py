@@ -162,13 +162,15 @@ class PytketStubGen(StubGen):
                         else:
                             output_file = self.output_file.parents[0] / (value_name_s[-1] + '.py')
 
-                        sg = StubGen(
+                        sg = PytketStubGen(
                             module=value,
                             recursive=self.recursive,
                             include_docstrings=self.include_docstrings,
                             include_private=self.include_private,
+                            private_exceptions=self.private_exceptions,
                             include_external_imports=self.include_external_imports,
                             include_internal_imports=self.include_internal_imports,
+                            private_submodule=self.private_submodule,
                             max_expr_length=self.max_expr_length,
                             patterns=self.patterns,
                             output_file=output_file,
