@@ -791,7 +791,7 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
       // Methods for contextual optimization
       .def(
           "qubit_create", &Circuit::qubit_create,
-          "Make a quantum input a Create operation (initialized to 0")
+          "Make a quantum input a Create operation (initialized to 0)")
       .def(
           "qubit_discard", &Circuit::qubit_discard,
           "Make a quantum output a Discard operation")

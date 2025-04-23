@@ -16,19 +16,29 @@ _DEBUG_ONE_REG_PREFIX: str = 'tk_DEBUG_ONE_REG'
 _DEBUG_ZERO_REG_PREFIX: str = 'tk_DEBUG_ZERO_REG'
 
 class UnitType(enum.Enum):
-    """Enum for data types of units in circuits (e.g. Qubits vs Bits)."""
+    """
+    Enum for data types of units in circuits (e.g. Qubits vs Bits).
+    """
 
     qubit = 0
-    """A single Qubit"""
+    """
+    A single Qubit
+    """
 
     wasmstate = 2
-    """A single WasmState"""
+    """
+    A single WasmState
+    """
 
     bit = 1
-    """A single classical Bit"""
+    """
+    A single classical Bit
+    """
 
 class UnitID:
-    """A handle to a computational unit (e.g. qubit, bit)"""
+    """
+    A handle to a computational unit (e.g. qubit, bit)
+    """
 
     def __init__(self) -> None: ...
 
@@ -46,7 +56,9 @@ class UnitID:
 
     @property
     def reg_name(self) -> str:
-        """Readable name of register"""
+        """
+        Readable name of register
+        """
 
     @property
     def index(self) -> list[int]:
@@ -61,7 +73,9 @@ class UnitID:
         """
 
 class Qubit(UnitID):
-    """A handle to a qubit"""
+    """
+    A handle to a qubit
+    """
 
     @overload
     def __init__(self, index: int) -> None:
@@ -116,7 +130,9 @@ class Qubit(UnitID):
     def __setstate__(self, arg: tuple, /) -> None: ...
 
     def to_list(self) -> list:
-        """:return: a JSON serializable list representation of the Qubit"""
+        """
+        :return: a JSON serializable list representation of the Qubit
+        """
 
     @staticmethod
     def from_list(arg: list, /) -> Qubit:
@@ -125,7 +141,9 @@ class Qubit(UnitID):
         """
 
 class Bit(UnitID):
-    """A handle to a bit"""
+    """
+    A handle to a bit
+    """
 
     @overload
     def __init__(self, index: int) -> None:
@@ -209,7 +227,9 @@ class Bit(UnitID):
     def __rxor__(self: Union[pytket.circuit.logic_exp.LogicExp, Bit, int], other: Union[pytket.circuit.logic_exp.LogicExp, Bit, int]) -> pytket.circuit.logic_exp.BitLogicExp: ...
 
 class WasmState(UnitID):
-    """A handle to a wasmstate"""
+    """
+    A handle to a wasmstate
+    """
 
     def __init__(self, index: int) -> None:
         """
@@ -244,7 +264,9 @@ class WasmState(UnitID):
         """
 
 class Node(Qubit):
-    """A handle to a device node"""
+    """
+    A handle to a device node
+    """
 
     @overload
     def __init__(self, index: int) -> None:
@@ -298,7 +320,9 @@ class Node(Qubit):
     def __deepcopy__(self, arg: dict, /) -> Node: ...
 
     def to_list(self) -> list:
-        """:return: a JSON serializable list representation of the Node"""
+        """
+        :return: a JSON serializable list representation of the Node
+        """
 
     @staticmethod
     def from_list(arg: list, /) -> Node:
@@ -307,7 +331,9 @@ class Node(Qubit):
         """
 
 class BitRegister:
-    """Linear register of UnitID types."""
+    """
+    Linear register of UnitID types.
+    """
 
     def __init__(self, name: str, size: int) -> None:
         """
@@ -335,21 +361,27 @@ class BitRegister:
 
     @property
     def name(self) -> str:
-        """Name of register."""
+        """
+        Name of register.
+        """
 
     @name.setter
     def name(self, arg: str, /) -> None: ...
 
     @property
     def size(self) -> int:
-        """Size of register."""
+        """
+        Size of register.
+        """
 
     @size.setter
     def size(self, arg: int, /) -> None: ...
 
     @property
     def _current(self) -> int:
-        """Internal property for iteration."""
+        """
+        Internal property for iteration.
+        """
 
     @_current.setter
     def _current(self, arg: int, /) -> None: ...
@@ -391,7 +423,9 @@ class BitRegister:
     def __rshift__(self: Union[pytket.circuit.logic_exp.LogicExp, BitRegister, int], other: Union[pytket.circuit.logic_exp.LogicExp, BitRegister, int]) -> pytket.circuit.logic_exp.RegLogicExp: ...
 
 class QubitRegister:
-    """Linear register of UnitID types."""
+    """
+    Linear register of UnitID types.
+    """
 
     def __init__(self, name: str, size: int) -> None:
         """
@@ -419,21 +453,27 @@ class QubitRegister:
 
     @property
     def name(self) -> str:
-        """Name of register."""
+        """
+        Name of register.
+        """
 
     @name.setter
     def name(self, arg: str, /) -> None: ...
 
     @property
     def size(self) -> int:
-        """Size of register."""
+        """
+        Size of register.
+        """
 
     @size.setter
     def size(self, arg: int, /) -> None: ...
 
     @property
     def _current(self) -> int:
-        """Internal property for iteration."""
+        """
+        Internal property for iteration.
+        """
 
     @_current.setter
     def _current(self, arg: int, /) -> None: ...

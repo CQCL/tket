@@ -330,8 +330,7 @@ class StubGen:
             # Escape all double quotes so that no unquoted triple quote can exist
             docstr = docstr.replace("''", "\\'\\'")
             raw_str = "r"
-        if len(docstr) > 70 or "\n" in docstr:
-            docstr = "\n" + docstr + "\n"
+        docstr = "\n" + docstr + "\n"
         docstr = f'{raw_str}"""{docstr}"""\n'
         self.write_par(docstr)
 

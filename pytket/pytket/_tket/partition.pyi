@@ -6,7 +6,9 @@ import pytket._tket.pauli
 
 
 class PauliPartitionStrat(enum.Enum):
-    """Enum for available strategies to partition Pauli tensors."""
+    """
+    Enum for available strategies to partition Pauli tensors.
+    """
 
     NonConflictingSets = 0
     """
@@ -19,7 +21,9 @@ class PauliPartitionStrat(enum.Enum):
     """
 
 class GraphColourMethod(enum.Enum):
-    """Enum for available methods to perform graph colouring."""
+    """
+    Enum for available methods to perform graph colouring.
+    """
 
     Lazy = 0
     """
@@ -54,15 +58,21 @@ class MeasurementBitMap:
 
     @property
     def circ_index(self) -> int:
-        """Clifford circuit index"""
+        """
+        Clifford circuit index
+        """
 
     @property
     def bits(self) -> list[int]:
-        """Bits to measure"""
+        """
+        Bits to measure
+        """
 
     @property
     def invert(self) -> bool:
-        """Whether result is inverted or not"""
+        """
+        Whether result is inverted or not
+        """
 
     def to_dict(self) -> dict:
         """
@@ -73,7 +83,9 @@ class MeasurementBitMap:
 
     @staticmethod
     def from_dict(arg: dict, /) -> MeasurementBitMap:
-        """Construct MeasurementBitMap instance from dict representation."""
+        """
+        Construct MeasurementBitMap instance from dict representation.
+        """
 
 class MeasurementSetup:
     """
@@ -81,23 +93,33 @@ class MeasurementSetup:
     """
 
     def __init__(self) -> None:
-        """Constructs an empty MeasurementSetup object"""
+        """
+        Constructs an empty MeasurementSetup object
+        """
 
     def __repr__(self) -> str: ...
 
     @property
     def measurement_circs(self) -> list[pytket._tket.circuit.Circuit]:
-        """Clifford measurement circuits."""
+        """
+        Clifford measurement circuits.
+        """
 
     @property
     def results(self) -> dict[pytket._tket.pauli.QubitPauliString, list[MeasurementBitMap]]:
-        """Map from Pauli strings to MeasurementBitMaps"""
+        """
+        Map from Pauli strings to MeasurementBitMaps
+        """
 
     def add_measurement_circuit(self, circ: pytket._tket.circuit.Circuit) -> None:
-        """Add a Clifford circuit that rotates into some Pauli basis"""
+        """
+        Add a Clifford circuit that rotates into some Pauli basis
+        """
 
     def add_result_for_term(self, term: pytket._tket.pauli.QubitPauliString, result: MeasurementBitMap) -> None:
-        """Add a new Pauli string with a corresponding BitMap"""
+        """
+        Add a new Pauli string with a corresponding BitMap
+        """
 
     def verify(self) -> bool:
         """
@@ -115,7 +137,9 @@ class MeasurementSetup:
 
     @staticmethod
     def from_dict(arg: dict, /) -> MeasurementSetup:
-        """Construct MeasurementSetup instance from dict representation."""
+        """
+        Construct MeasurementSetup instance from dict representation.
+        """
 
 def measurement_reduction(strings: Sequence[pytket._tket.pauli.QubitPauliString], strat: PauliPartitionStrat, method: GraphColourMethod = GraphColourMethod.Lazy, cx_config: pytket._tket.circuit.CXConfigType = pytket._tket.circuit.CXConfigType.Snake) -> MeasurementSetup:
     """

@@ -31,7 +31,9 @@ Default: SafetyMode = SafetyMode.Default
 
 class CNotSynthType(enum.Enum):
     SWAP = 0
-    """swap-based algorithm for CNOT synthesis"""
+    """
+    swap-based algorithm for CNOT synthesis
+    """
 
     HamPath = 1
     """
@@ -39,7 +41,9 @@ class CNotSynthType(enum.Enum):
     """
 
     Rec = 2
-    """recursive Steiner--Gauss method for CNOT synthesis"""
+    """
+    recursive Steiner--Gauss method for CNOT synthesis
+    """
 
 SWAP: CNotSynthType = CNotSynthType.SWAP
 
@@ -48,7 +52,9 @@ HamPath: CNotSynthType = CNotSynthType.HamPath
 Rec: CNotSynthType = CNotSynthType.Rec
 
 class BasePass:
-    """Base class for passes."""
+    """
+    Base class for passes.
+    """
 
     @overload
     def apply(self, compilation_unit: pytket._tket.predicates.CompilationUnit, safety_mode: SafetyMode = SafetyMode.Default) -> bool:
@@ -82,7 +88,9 @@ class BasePass:
     def __repr__(self) -> str: ...
 
     def to_dict(self) -> dict:
-        """:return: A JSON serializable dictionary representation of the Pass."""
+        """
+        :return: A JSON serializable dictionary representation of the Pass.
+        """
 
     def get_preconditions(self) -> list[pytket._tket.predicates.Predicate]:
         """
@@ -98,7 +106,9 @@ class BasePass:
         """
 
     def get_gate_set(self) -> set[pytket._tket.circuit.OpType] | None:
-        """:return: A set of allowed OpType"""
+        """
+        :return: A set of allowed OpType
+        """
 
     @staticmethod
     def from_dict(base_pass_dict: dict, custom_deserialisation: Mapping[str, Callable[[pytket._tket.circuit.Circuit], pytket._tket.circuit.Circuit]] = {}, custom_map_deserialisation: Mapping[str, Callable[[pytket._tket.circuit.Circuit], tuple[pytket._tket.circuit.Circuit, tuple[Mapping[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID], Mapping[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]]]]] = {}) -> BasePass:
@@ -111,7 +121,9 @@ class BasePass:
     def __setstate__(self, arg: tuple, /) -> None: ...
 
 class SequencePass(BasePass):
-    """A sequence of compilation passes."""
+    """
+    A sequence of compilation passes.
+    """
 
     def __init__(self, pass_list: Sequence[BasePass], strict: bool = True) -> None:
         """
@@ -130,7 +142,9 @@ class SequencePass(BasePass):
         """
 
     def get_sequence(self) -> list[BasePass]:
-        """:return: The underlying sequence of passes."""
+        """
+        :return: The underlying sequence of passes.
+        """
 
 class RepeatPass(BasePass):
     """
@@ -138,26 +152,38 @@ class RepeatPass(BasePass):
     """
 
     def __init__(self, compilation_pass: BasePass, strict_check: bool = False) -> None:
-        """Construct from a compilation pass."""
+        """
+        Construct from a compilation pass.
+        """
 
     def __str__(self) -> str: ...
 
     def get_pass(self) -> BasePass:
-        """:return: The underlying compilation pass."""
+        """
+        :return: The underlying compilation pass.
+        """
 
 class RepeatWithMetricPass(BasePass):
-    """Repeat a compilation pass until the given metric stops decreasing."""
+    """
+    Repeat a compilation pass until the given metric stops decreasing.
+    """
 
     def __init__(self, compilation_pass: BasePass, metric: Callable[[pytket._tket.circuit.Circuit], int]) -> None:
-        """Construct from a compilation pass and a metric function."""
+        """
+        Construct from a compilation pass and a metric function.
+        """
 
     def __str__(self) -> str: ...
 
     def get_pass(self) -> BasePass:
-        """:return: The underlying compilation pass."""
+        """
+        :return: The underlying compilation pass.
+        """
 
     def get_metric(self) -> Callable[[pytket._tket.circuit.Circuit], int]:
-        """:return: The underlying metric."""
+        """
+        :return: The underlying metric.
+        """
 
 class RepeatUntilSatisfiedPass(BasePass):
     """
@@ -166,7 +192,9 @@ class RepeatUntilSatisfiedPass(BasePass):
 
     @overload
     def __init__(self, compilation_pass: BasePass, predicate: pytket._tket.predicates.Predicate) -> None:
-        """Construct from a compilation pass and a predicate."""
+        """
+        Construct from a compilation pass and a predicate.
+        """
 
     @overload
     def __init__(self, compilation_pass: BasePass, check_function: Callable[[pytket._tket.circuit.Circuit], bool]) -> None:
@@ -177,10 +205,14 @@ class RepeatUntilSatisfiedPass(BasePass):
     def __str__(self) -> str: ...
 
     def get_pass(self) -> BasePass:
-        """:return: The underlying compilation pass."""
+        """
+        :return: The underlying compilation pass.
+        """
 
     def get_predicate(self) -> pytket._tket.predicates.Predicate:
-        """:return: The underlying predicate."""
+        """
+        :return: The underlying predicate.
+        """
 
 @overload
 def KAKDecomposition(target_2qb_gate: pytket._tket.circuit.OpType = pytket._tket.circuit.OpType.CX, cx_fidelity: float = 1.0, allow_swaps: bool = True) -> BasePass:
@@ -271,13 +303,19 @@ def DecomposeBoxes(excluded_types: Set[pytket._tket.circuit.OpType] = ..., exclu
     """
 
 def DecomposeClassicalExp() -> BasePass:
-    """Replaces each `ClExprOp` by a sequence of classical gates."""
+    """
+    Replaces each `ClExprOp` by a sequence of classical gates.
+    """
 
 def DecomposeMultiQubitsCX() -> BasePass:
-    """Converts all multi-qubit gates into CX and single-qubit gates."""
+    """
+    Converts all multi-qubit gates into CX and single-qubit gates.
+    """
 
 def DecomposeSingleQubitsTK1() -> BasePass:
-    """Converts all single-qubit gates into TK1 gates."""
+    """
+    Converts all single-qubit gates into TK1 gates.
+    """
 
 def PeepholeOptimise2Q(allow_swaps: bool = True) -> BasePass:
     """
@@ -306,13 +344,19 @@ def RemoveRedundancies() -> BasePass:
     """
 
 def SynthesiseTK() -> BasePass:
-    """Optimises and converts all gates to TK2, TK1 and Phase gates."""
+    """
+    Optimises and converts all gates to TK2, TK1 and Phase gates.
+    """
 
 def SynthesiseTket() -> BasePass:
-    """Optimises and converts all gates to CX, TK1 and Phase gates."""
+    """
+    Optimises and converts all gates to CX, TK1 and Phase gates.
+    """
 
 def SquashTK1() -> BasePass:
-    """Squash sequences of single-qubit gates to TK1 gates."""
+    """
+    Squash sequences of single-qubit gates to TK1 gates.
+    """
 
 def SquashRzPhasedX() -> BasePass:
     """
@@ -359,7 +403,9 @@ def SimplifyMeasured() -> BasePass:
     """
 
 def RemoveBarriers() -> BasePass:
-    """A pass to remove all barrier instructions from the circuit."""
+    """
+    A pass to remove all barrier instructions from the circuit.
+    """
 
 def RemovePhaseOps() -> BasePass:
     """

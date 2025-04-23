@@ -1,7 +1,9 @@
 
 
 def complex_to_list(arg: complex, /) -> object:
-    """Convert complex number to serializable list [real, imag]."""
+    """
+    Convert complex number to serializable list [real, imag].
+    """
 
 def list_to_complex(arg: object, /) -> complex:
     """

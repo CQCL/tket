@@ -14,16 +14,24 @@ import pytket.wasm.wasm
 
 
 class CXConfigType(enum.Enum):
-    """Enum for available configurations for CXs upon decompose phase gadgets"""
+    """
+    Enum for available configurations for CXs upon decompose phase gadgets
+    """
 
     Snake = 0
-    """linear nearest neighbour CX sequence. Linear depth."""
+    """
+    linear nearest neighbour CX sequence. Linear depth.
+    """
 
     Star = 2
-    """Every CX has same target, linear depth, good for gate cancellation."""
+    """
+    Every CX has same target, linear depth, good for gate cancellation.
+    """
 
     Tree = 1
-    """Balanced tree: logarithmic depth, harder to route."""
+    """
+    Balanced tree: logarithmic depth, harder to route.
+    """
 
     MultiQGate = 3
     """
@@ -31,7 +39,9 @@ class CXConfigType(enum.Enum):
     """
 
 class EdgeType(enum.Enum):
-    """Type of a wire in a circuit or input to an op"""
+    """
+    Type of a wire in a circuit or input to an op
+    """
 
     Boolean = 2
 
@@ -167,43 +177,69 @@ class OpType(enum.IntEnum):
     """
 
     CX = 45
-    r"""Controlled :math:`\mathrm{X}` gate"""
+    r"""
+    Controlled :math:`\mathrm{X}` gate
+    """
 
     CY = 46
-    r"""Controlled :math:`\mathrm{Y}` gate"""
+    r"""
+    Controlled :math:`\mathrm{Y}` gate
+    """
 
     CZ = 47
-    r"""Controlled :math:`\mathrm{Z}` gate"""
+    r"""
+    Controlled :math:`\mathrm{Z}` gate
+    """
 
     CH = 48
-    r"""Controlled :math:`\mathrm{H}` gate"""
+    r"""
+    Controlled :math:`\mathrm{H}` gate
+    """
 
     CV = 49
-    r"""Controlled :math:`\mathrm{V}` gate"""
+    r"""
+    Controlled :math:`\mathrm{V}` gate
+    """
 
     CVdg = 50
-    r"""Controlled :math:`\mathrm{V}^{\dagger}` gate"""
+    r"""
+    Controlled :math:`\mathrm{V}^{\dagger}` gate
+    """
 
     CSX = 51
-    r"""Controlled :math:`\mathrm{SX}` gate"""
+    r"""
+    Controlled :math:`\mathrm{SX}` gate
+    """
 
     CSXdg = 52
-    r"""Controlled :math:`\mathrm{SX}^{\dagger}` gate"""
+    r"""
+    Controlled :math:`\mathrm{SX}^{\dagger}` gate
+    """
 
     CS = 53
-    r"""Controlled :math:`\mathrm{S}` gate"""
+    r"""
+    Controlled :math:`\mathrm{S}` gate
+    """
 
     CSdg = 54
-    r"""Controlled :math:`\mathrm{S}^{\dagger}` gate"""
+    r"""
+    Controlled :math:`\mathrm{S}^{\dagger}` gate
+    """
 
     CRz = 55
-    r""":math:`(\alpha) \mapsto` Controlled :math:`\mathrm{Rz}(\alpha)` gate"""
+    r"""
+    :math:`(\alpha) \mapsto` Controlled :math:`\mathrm{Rz}(\alpha)` gate
+    """
 
     CRx = 56
-    r""":math:`(\alpha) \mapsto` Controlled :math:`\mathrm{Rx}(\alpha)` gate"""
+    r"""
+    :math:`(\alpha) \mapsto` Controlled :math:`\mathrm{Rx}(\alpha)` gate
+    """
 
     CRy = 57
-    r""":math:`(\alpha) \mapsto` Controlled :math:`\mathrm{Ry}(\alpha)` gate"""
+    r"""
+    :math:`(\alpha) \mapsto` Controlled :math:`\mathrm{Ry}(\alpha)` gate
+    """
 
     CU1 = 58
     r"""
@@ -216,10 +252,14 @@ class OpType(enum.IntEnum):
     """
 
     PhaseGadget = 60
-    r""":math:`\alpha \mapsto e^{-\frac12 i \pilpha Z^{\otimes n}}`"""
+    r"""
+    :math:`\alpha \mapsto e^{-\frac12 i \pilpha Z^{\otimes n}}`
+    """
 
     CCX = 61
-    """Toffoli gate"""
+    """
+    Toffoli gate
+    """
 
     ECR = 69
     r"""
@@ -227,10 +267,14 @@ class OpType(enum.IntEnum):
     """
 
     SWAP = 62
-    """Swap gate"""
+    """
+    Swap gate
+    """
 
     CSWAP = 63
-    """Controlled swap gate"""
+    """
+    Controlled swap gate
+    """
 
     noop = 65
     """
@@ -243,7 +287,9 @@ class OpType(enum.IntEnum):
     """
 
     Label = 9
-    """Label for control flow jumps. Does not appear within a circuit"""
+    """
+    Label for control flow jumps. Does not appear within a circuit
+    """
 
     Branch = 10
     """
@@ -271,10 +317,14 @@ class OpType(enum.IntEnum):
     """
 
     Reset = 68
-    r"""Resets the qubit to :math:`\left|0\right>`"""
+    r"""
+    Resets the qubit to :math:`\left|0\right>`
+    """
 
     CircBox = 89
-    """Represents an arbitrary subcircuit"""
+    """
+    Represents an arbitrary subcircuit
+    """
 
     PhasePolyBox = 100
     """
@@ -282,13 +332,19 @@ class OpType(enum.IntEnum):
     """
 
     Unitary1qBox = 90
-    """Represents an arbitrary one-qubit unitary operation by its matrix"""
+    """
+    Represents an arbitrary one-qubit unitary operation by its matrix
+    """
 
     Unitary2qBox = 91
-    """Represents an arbitrary two-qubit unitary operation by its matrix"""
+    """
+    Represents an arbitrary two-qubit unitary operation by its matrix
+    """
 
     Unitary3qBox = 92
-    """Represents an arbitrary three-qubit unitary operation by its matrix"""
+    """
+    Represents an arbitrary three-qubit unitary operation by its matrix
+    """
 
     ExpBox = 93
     """
@@ -316,16 +372,24 @@ class OpType(enum.IntEnum):
     """
 
     QControlBox = 101
-    """An arbitrary n-controlled operation"""
+    """
+    An arbitrary n-controlled operation
+    """
 
     ToffoliBox = 112
-    """A permutation of classical basis states"""
+    """
+    A permutation of classical basis states
+    """
 
     ConjugationBox = 108
-    """An operation composed of 'action', 'compute' and 'uncompute' circuits"""
+    """
+    An operation composed of 'action', 'compute' and 'uncompute' circuits
+    """
 
     DummyBox = 114
-    """A placeholder operation that holds resource data"""
+    """
+    A placeholder operation that holds resource data
+    """
 
     CustomGate = 99
     r"""
@@ -378,22 +442,34 @@ class OpType(enum.IntEnum):
     """
 
     CnRx = 84
-    r""":math:`(\alpha)` := n-controlled :math:`\mathrm{Rx}(\alpha)` gate."""
+    r"""
+    :math:`(\alpha)` := n-controlled :math:`\mathrm{Rx}(\alpha)` gate.
+    """
 
     CnRy = 83
-    r""":math:`(\alpha)` := n-controlled :math:`\mathrm{Ry}(\alpha)` gate."""
+    r"""
+    :math:`(\alpha)` := n-controlled :math:`\mathrm{Ry}(\alpha)` gate.
+    """
 
     CnRz = 85
-    r""":math:`(\alpha)` := n-controlled :math:`\mathrm{Rz}(\alpha)` gate."""
+    r"""
+    :math:`(\alpha)` := n-controlled :math:`\mathrm{Rz}(\alpha)` gate.
+    """
 
     CnX = 86
-    """n-controlled X gate."""
+    """
+    n-controlled X gate.
+    """
 
     CnY = 88
-    """n-controlled Y gate."""
+    """
+    n-controlled Y gate.
+    """
 
     CnZ = 87
-    """n-controlled Z gate."""
+    """
+    n-controlled Z gate.
+    """
 
     ZZMax = 73
     r"""
@@ -411,7 +487,9 @@ class OpType(enum.IntEnum):
     """
 
     Sycamore = 80
-    r""":math:`\mathrm{FSim}(\frac12, \frac16)`"""
+    r"""
+    :math:`\mathrm{FSim}(\frac12, \frac16)`
+    """
 
     ISWAPMax = 81
     r"""
@@ -419,31 +497,49 @@ class OpType(enum.IntEnum):
     """
 
     ClassicalTransform = 13
-    """A general classical operation where all inputs are also outputs"""
+    """
+    A general classical operation where all inputs are also outputs
+    """
 
     WASM = 14
-    """Op containing a classical wasm function call"""
+    """
+    Op containing a classical wasm function call
+    """
 
     SetBits = 15
-    """An operation to set some bits to specified values"""
+    """
+    An operation to set some bits to specified values
+    """
 
     CopyBits = 16
-    """An operation to copy some bit values"""
+    """
+    An operation to copy some bit values
+    """
 
     RangePredicate = 17
-    """A classical predicate defined by a range of values in binary encoding"""
+    """
+    A classical predicate defined by a range of values in binary encoding
+    """
 
     ExplicitPredicate = 18
-    """A classical predicate defined by a truth table"""
+    """
+    A classical predicate defined by a truth table
+    """
 
     ExplicitModifier = 19
-    """An operation defined by a truth table that modifies one bit"""
+    """
+    An operation defined by a truth table that modifies one bit
+    """
 
     MultiBit = 20
-    """A classical operation applied to multiple bits simultaneously"""
+    """
+    A classical operation applied to multiple bits simultaneously
+    """
 
     MultiplexorBox = 102
-    """A multiplexor (i.e. uniformly controlled operations)"""
+    """
+    A multiplexor (i.e. uniformly controlled operations)
+    """
 
     MultiplexedRotationBox = 103
     """
@@ -451,10 +547,14 @@ class OpType(enum.IntEnum):
     """
 
     MultiplexedU2Box = 104
-    """A multiplexed U2 gate (i.e. uniformly controlled U2 gate)"""
+    """
+    A multiplexed U2 gate (i.e. uniformly controlled U2 gate)
+    """
 
     MultiplexedTensoredU2Box = 105
-    """A multiplexed tensored-U2 gate"""
+    """
+    A multiplexed tensored-U2 gate
+    """
 
     StatePreparationBox = 106
     """
@@ -467,33 +567,47 @@ class OpType(enum.IntEnum):
     """
 
     ClExpr = 115
-    """A classical expression"""
+    """
+    A classical expression
+    """
 
     @staticmethod
     def from_name(arg: str, /) -> OpType:
-        """Construct from name"""
+        """
+        Construct from name
+        """
 
 class Op:
-    """Encapsulates operation information"""
+    """
+    Encapsulates operation information
+    """
 
     @overload
     @staticmethod
     def create(arg: OpType, /) -> Op:
-        """Create an :py:class:`Op` with given type"""
+        """
+        Create an :py:class:`Op` with given type
+        """
 
     @overload
     @staticmethod
     def create(arg0: OpType, arg1: Union[sympy.Expr, float], /) -> Op:
-        """Create an :py:class:`Op` with given type and parameter"""
+        """
+        Create an :py:class:`Op` with given type and parameter
+        """
 
     @overload
     @staticmethod
     def create(arg0: OpType, arg1: Sequence[Union[sympy.Expr, float]], /) -> Op:
-        """Create an :py:class:`Op` with given type and parameters"""
+        """
+        Create an :py:class:`Op` with given type and parameters
+        """
 
     @property
     def type(self) -> OpType:
-        """Type of op being performed"""
+        """
+        Type of op being performed
+        """
 
     @property
     def params(self) -> list[Union[sympy.Expr, float]]:
@@ -503,18 +617,26 @@ class Op:
 
     @property
     def n_qubits(self) -> int:
-        """Number of qubits of op"""
+        """
+        Number of qubits of op
+        """
 
     @property
     def dagger(self) -> Op:
-        """Dagger of op"""
+        """
+        Dagger of op
+        """
 
     @property
     def transpose(self) -> Op:
-        """Transpose of op"""
+        """
+        Transpose of op
+        """
 
     def get_name(self, latex: bool = False) -> str:
-        """String representation of op"""
+        """
+        String representation of op
+        """
 
     def __eq__(self, arg: object, /) -> bool: ...
 
@@ -530,7 +652,9 @@ class Op:
     def get_unitary(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')]: ...
 
     def is_clifford_type(self) -> bool:
-        """Check if the operation is one of the Clifford :py:class:`OpType` s."""
+        """
+        Check if the operation is one of the Clifford :py:class:`OpType` s.
+        """
 
     def is_clifford(self) -> bool:
         """
@@ -549,10 +673,14 @@ class BasisOrder(enum.Enum):
     """
 
     ilo = 0
-    """Increasing Lexicographic Order of UnitID, big-endian"""
+    """
+    Increasing Lexicographic Order of UnitID, big-endian
+    """
 
     dlo = 1
-    """Decreasing Lexicographic Order of UnitID, big-endian"""
+    """
+    Decreasing Lexicographic Order of UnitID, big-endian
+    """
 
 class Command:
     """
@@ -560,7 +688,9 @@ class Command:
     """
 
     def __init__(self, op: Op, args: Sequence[pytket._tket.unit_id.UnitID]) -> None:
-        """Construct from an operation and a vector of unit IDs"""
+        """
+        Construct from an operation and a vector of unit IDs
+        """
 
     def __eq__(self, arg: object, /) -> bool: ...
 
@@ -573,19 +703,27 @@ class Command:
 
     @property
     def op(self) -> Op:
-        """Operation for this command."""
+        """
+        Operation for this command.
+        """
 
     @property
     def args(self) -> list[pytket._tket.unit_id.UnitID]:
-        """The qubits/bits the command acts on."""
+        """
+        The qubits/bits the command acts on.
+        """
 
     @property
     def qubits(self) -> list[pytket._tket.unit_id.Qubit]:
-        """The qubits the command acts on."""
+        """
+        The qubits the command acts on.
+        """
 
     @property
     def bits(self) -> list[pytket._tket.unit_id.Bit]:
-        """The bits the command could write to (does not include read-only bits)."""
+        """
+        The bits the command could write to (does not include read-only bits).
+        """
 
     @property
     def opgroup(self) -> str | None:
@@ -594,10 +732,14 @@ class Command:
         """
 
     def free_symbols(self) -> set[sympy.Symbol]:
-        """:return: set of symbolic parameters for the command"""
+        """
+        :return: set of symbolic parameters for the command
+        """
 
 class MetaOp(Op):
-    """Meta operation, such as input or output vertices."""
+    """
+    Meta operation, such as input or output vertices.
+    """
 
     def __init__(self, type: OpType, signature: Sequence[EdgeType], data: str) -> None:
         """
@@ -610,10 +752,14 @@ class MetaOp(Op):
 
     @property
     def data(self) -> str:
-        """Get data from MetaOp"""
+        """
+        Get data from MetaOp
+        """
 
 class BarrierOp(Op):
-    """Barrier operations."""
+    """
+    Barrier operations.
+    """
 
     def __init__(self, signature: Sequence[EdgeType], data: str) -> None:
         """
@@ -624,7 +770,9 @@ class BarrierOp(Op):
 
     @property
     def data(self) -> str:
-        """Get data from BarrierOp"""
+        """
+        Get data from BarrierOp
+        """
 
 class Circuit:
     """
@@ -639,7 +787,9 @@ class Circuit:
 
     @overload
     def __init__(self) -> None:
-        """Constructs a circuit with a completely empty DAG."""
+        """
+        Constructs a circuit with a completely empty DAG.
+        """
 
     @overload
     def __init__(self, name: str) -> None:
@@ -1037,13 +1187,19 @@ class Circuit:
         """
 
     def X(self, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """:return: the new :py:class:`Circuit`"""
+        """
+        :return: the new :py:class:`Circuit`
+        """
 
     def Y(self, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """:return: the new :py:class:`Circuit`"""
+        """
+        :return: the new :py:class:`Circuit`
+        """
 
     def Z(self, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
-        """:return: the new :py:class:`Circuit`"""
+        """
+        :return: the new :py:class:`Circuit`
+        """
 
     def T(self, qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
         """
@@ -1628,10 +1784,14 @@ class Circuit:
     def __repr__(self) -> str: ...
 
     def __iter__(self) -> Iterator[Command]:
-        """Iterate through the circuit, a Command at a time."""
+        """
+        Iterate through the circuit, a Command at a time.
+        """
 
     def get_commands(self) -> list[Command]:
-        """:return: a list of all the Commands in the circuit"""
+        """
+        :return: a list of all the Commands in the circuit
+        """
 
     def get_unitary(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')]:
         """
@@ -1750,19 +1910,27 @@ class Circuit:
 
     @property
     def qubits(self) -> list[pytket._tket.unit_id.Qubit]:
-        """A list of all qubit ids in the circuit"""
+        """
+        A list of all qubit ids in the circuit
+        """
 
     @property
     def created_qubits(self) -> list[pytket._tket.unit_id.Qubit]:
-        """A list of qubits whose input is a Create operation"""
+        """
+        A list of qubits whose input is a Create operation
+        """
 
     @property
     def discarded_qubits(self) -> list[pytket._tket.unit_id.Qubit]:
-        """A list of qubits whose output is a Discard operation"""
+        """
+        A list of qubits whose output is a Discard operation
+        """
 
     @property
     def bits(self) -> list[pytket._tket.unit_id.Bit]:
-        """A list of all classical bit ids in the circuit"""
+        """
+        A list of all classical bit ids in the circuit
+        """
 
     @property
     def bit_readout(self) -> dict[pytket._tket.unit_id.Bit, int]:
@@ -1784,7 +1952,9 @@ class Circuit:
 
     @property
     def opgroups(self) -> set[str]:
-        """A set of all opgroup names in the circuit"""
+        """
+        A set of all opgroup names in the circuit
+        """
 
     def flatten_registers(self) -> dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]:
         """
@@ -1850,7 +2020,9 @@ class Circuit:
 
     @property
     def n_gates(self) -> int:
-        """:return: the number of gates in the Circuit"""
+        """
+        :return: the number of gates in the Circuit
+        """
 
     @property
     def wasm_uid(self) -> str | None:
@@ -1860,11 +2032,15 @@ class Circuit:
 
     @property
     def n_qubits(self) -> int:
-        """:return: the number of qubits in the circuit"""
+        """
+        :return: the number of qubits in the circuit
+        """
 
     @property
     def n_bits(self) -> int:
-        """:return: the number of classiclal bits in the circuit"""
+        """
+        :return: the number of classiclal bits in the circuit
+        """
 
     @property
     def phase(self) -> Union[sympy.Expr, float]:
@@ -1995,7 +2171,9 @@ class Circuit:
         """
 
     def to_dict(self) -> dict:
-        """:return: a JSON serializable dictionary representation of the Circuit"""
+        """
+        :return: a JSON serializable dictionary representation of the Circuit
+        """
 
     @staticmethod
     def from_dict(arg: dict, /) -> Circuit:
@@ -2039,7 +2217,9 @@ class Circuit:
         """
 
     def copy(self) -> Circuit:
-        """:return: an identical copy of the circuit"""
+        """
+        :return: an identical copy of the circuit
+        """
 
     def symbol_substitution(self, symbol_map: Mapping[sympy.Symbol, Union[sympy.Expr, float]]) -> None:
         """
@@ -2049,7 +2229,9 @@ class Circuit:
         """
 
     def free_symbols(self) -> set[sympy.Symbol]:
-        """:return: set of symbolic parameters in the circuit"""
+        """
+        :return: set of symbolic parameters in the circuit
+        """
 
     def is_symbolic(self) -> bool:
         """
@@ -2177,22 +2359,34 @@ class Circuit:
         """
 
     def qubit_create(self, arg: pytket._tket.unit_id.Qubit, /) -> None:
-        """Make a quantum input a Create operation (initialized to 0"""
+        """
+        Make a quantum input a Create operation (initialized to 0)
+        """
 
     def qubit_discard(self, arg: pytket._tket.unit_id.Qubit, /) -> None:
-        """Make a quantum output a Discard operation"""
+        """
+        Make a quantum output a Discard operation
+        """
 
     def qubit_create_all(self) -> None:
-        """Make all quantum inputs Create operations (initialized to 0)"""
+        """
+        Make all quantum inputs Create operations (initialized to 0)
+        """
 
     def qubit_discard_all(self) -> None:
-        """Make all quantum outputs Discard operations"""
+        """
+        Make all quantum outputs Discard operations
+        """
 
     def qubit_is_created(self, arg: pytket._tket.unit_id.Qubit, /) -> bool:
-        """Query whether a qubit has its initial state set to zero"""
+        """
+        Query whether a qubit has its initial state set to zero
+        """
 
     def qubit_is_discarded(self, arg: pytket._tket.unit_id.Qubit, /) -> bool:
-        """Query whether a qubit has its final state discarded"""
+        """
+        Query whether a qubit has its final state discarded
+        """
 
     def _classical_eval(self, arg: Mapping[pytket._tket.unit_id.Bit, bool], /) -> dict[pytket._tket.unit_id.Bit, bool]: ...
 
@@ -2219,10 +2413,14 @@ class Circuit:
         """
 
     def replace_SWAPs(self) -> None:
-        """Replace all SWAP gates with implicit wire swaps."""
+        """
+        Replace all SWAP gates with implicit wire swaps.
+        """
 
     def replace_implicit_wire_swaps(self) -> None:
-        """Replace all implicit wire swaps with SWAP gates."""
+        """
+        Replace all implicit wire swaps with SWAP gates.
+        """
 
     def ops_of_type(self, optype: OpType) -> list[Op]:
         """
@@ -2307,7 +2505,9 @@ class Circuit:
 
     @property
     def _dag_data(self) -> tuple[set[int], set[int], set[int], set[int], set[int], set[int], dict[int, str], dict[int, str], dict[int, str], set[tuple[int, int, int, int, str]]]:
-        """DAG data for circuit"""
+        """
+        DAG data for circuit
+        """
 
     def add_wasm(self: Circuit, funcname: str, filehandler: pytket.wasm.wasm.WasmModuleHandler, list_i: Sequence[int], list_o: Sequence[int], args: Union[Sequence[int], Sequence[pytket._tket.unit_id.Bit]], args_wasm: Union[Sequence[int], None] = None, **kwargs: Any) -> Circuit:
         """
@@ -2358,13 +2558,19 @@ class Circuit:
         """
 
 class CircBox(Op):
-    """A user-defined operation specified by a :py:class:`Circuit`."""
+    """
+    A user-defined operation specified by a :py:class:`Circuit`.
+    """
 
     def __init__(self, circ: Circuit) -> None:
-        """Construct from a :py:class:`Circuit`."""
+        """
+        Construct from a :py:class:`Circuit`.
+        """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def symbol_substitution(self, symbol_map: Mapping[sympy.Symbol, Union[sympy.Expr, float]]) -> None:
         """
@@ -2387,19 +2593,29 @@ class CircBox(Op):
     def circuit_name(self, arg: str, /) -> None: ...
 
 class Unitary1qBox(Op):
-    """A user-defined one-qubit operation specified by a unitary matrix."""
+    """
+    A user-defined one-qubit operation specified by a unitary matrix.
+    """
 
     def __init__(self, m: Annotated[NDArray, dict(dtype='complex128', shape=(2, 2), order='F')]) -> None:
-        """Construct from a unitary matrix."""
+        """
+        Construct from a unitary matrix.
+        """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_matrix(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(2, 2), order='F')]:
-        """:return: the unitary matrix as a numpy array"""
+        """
+        :return: the unitary matrix as a numpy array
+        """
 
 class Unitary2qBox(Op):
-    """A user-defined two-qubit operation specified by a unitary matrix."""
+    """
+    A user-defined two-qubit operation specified by a unitary matrix.
+    """
 
     def __init__(self, m: Annotated[NDArray, dict(dtype='complex128', shape=(4, 4), order='F')], basis: BasisOrder = BasisOrder.ilo) -> None:
         """
@@ -2410,13 +2626,19 @@ class Unitary2qBox(Op):
         """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_matrix(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(4, 4), order='F')]:
-        """:return: the unitary matrix (in ILO-BE format) as a numpy array"""
+        """
+        :return: the unitary matrix (in ILO-BE format) as a numpy array
+        """
 
 class Unitary3qBox(Op):
-    """A user-defined three-qubit operation specified by a unitary matrix."""
+    """
+    A user-defined three-qubit operation specified by a unitary matrix.
+    """
 
     def __init__(self, m: Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')], basis: BasisOrder = BasisOrder.ilo) -> None:
         """
@@ -2427,10 +2649,14 @@ class Unitary3qBox(Op):
         """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_matrix(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(8, 8), order='F')]:
-        """:return: the unitary matrix (in ILO-BE format) as a numpy array"""
+        """
+        :return: the unitary matrix (in ILO-BE format) as a numpy array
+        """
 
 class ExpBox(Op):
     """
@@ -2447,7 +2673,9 @@ class ExpBox(Op):
         """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
 class PauliExpBox(Op):
     """
@@ -2460,16 +2688,24 @@ class PauliExpBox(Op):
         """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_paulis(self) -> list[pytket._tket.pauli.Pauli]:
-        """:return: the corresponding list of :py:class:`Pauli` s"""
+        """
+        :return: the corresponding list of :py:class:`Pauli` s
+        """
 
     def get_phase(self) -> Union[sympy.Expr, float]:
-        """:return: the corresponding phase parameter"""
+        """
+        :return: the corresponding phase parameter
+        """
 
     def get_cx_config(self) -> CXConfigType:
-        """:return: decomposition method"""
+        """
+        :return: decomposition method
+        """
 
 class PauliExpPairBox(Op):
     """
@@ -2484,7 +2720,9 @@ class PauliExpPairBox(Op):
         """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_paulis_pair(self) -> tuple[list[pytket._tket.pauli.Pauli], list[pytket._tket.pauli.Pauli]]:
         """
@@ -2492,10 +2730,14 @@ class PauliExpPairBox(Op):
         """
 
     def get_phase_pair(self) -> tuple[Union[sympy.Expr, float], Union[sympy.Expr, float]]:
-        """:return: A tuple containing the two phase parameters"""
+        """
+        :return: A tuple containing the two phase parameters
+        """
 
     def get_cx_config(self) -> CXConfigType:
-        """:return: decomposition method"""
+        """
+        :return: decomposition method
+        """
 
 class PauliExpCommutingSetBox(Op):
     """
@@ -2508,13 +2750,19 @@ class PauliExpCommutingSetBox(Op):
         """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_paulis(self) -> list[tuple[list[pytket._tket.pauli.Pauli], Union[sympy.Expr, float]]]:
-        """:return: the corresponding list of Pauli gadgets"""
+        """
+        :return: the corresponding list of Pauli gadgets
+        """
 
     def get_cx_config(self) -> CXConfigType:
-        """:return: decomposition method"""
+        """
+        :return: decomposition method
+        """
 
 class TermSequenceBox(Op):
     """
@@ -2528,34 +2776,54 @@ class TermSequenceBox(Op):
         """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_paulis(self) -> list[tuple[list[pytket._tket.pauli.Pauli], Union[sympy.Expr, float]]]:
-        """:return: the corresponding list of Pauli gadgets"""
+        """
+        :return: the corresponding list of Pauli gadgets
+        """
 
     def get_synthesis_strategy(self) -> pytket._tket.transform.PauliSynthStrat:
-        """:return: synthesis strategy"""
+        """
+        :return: synthesis strategy
+        """
 
     def get_partition_strategy(self) -> pytket._tket.partition.PauliPartitionStrat:
-        """:return: partitioning strategy"""
+        """
+        :return: partitioning strategy
+        """
 
     def get_graph_colouring_method(self) -> pytket._tket.partition.GraphColourMethod:
-        """:return: graph colouring method"""
+        """
+        :return: graph colouring method
+        """
 
     def get_cx_config(self) -> CXConfigType:
-        """:return: cx decomposition method"""
+        """
+        :return: cx decomposition method
+        """
 
     def get_depth_weight(self) -> float:
-        """:return: depth tuning parameter"""
+        """
+        :return: depth tuning parameter
+        """
 
 class ToffoliBoxSynthStrat(enum.Enum):
-    """Enum strategies for synthesising ToffoliBoxes"""
+    """
+    Enum strategies for synthesising ToffoliBoxes
+    """
 
     Matching = 0
-    """Use multiplexors to perform parallel swaps on hypercubes"""
+    """
+    Use multiplexors to perform parallel swaps on hypercubes
+    """
 
     Cycle = 1
-    """Use CnX gates to perform transpositions"""
+    """
+    Use CnX gates to perform transpositions
+    """
 
 class ToffoliBox(Op):
     """
@@ -2583,7 +2851,9 @@ class ToffoliBox(Op):
 
     @overload
     def __init__(self, n_qubits: int, permutation: Sequence[tuple[Sequence[bool], Sequence[bool]]], rotation_axis: OpType = pytket._tket.circuit.OpType.Ry) -> None:
-        """Constructor for backward compatibility. Subject to deprecation."""
+        """
+        Constructor for backward compatibility. Subject to deprecation.
+        """
 
     @overload
     def __init__(self, permutation: dict[tuple[bool, ...], Sequence[bool]], strat: ToffoliBoxSynthStrat, rotation_axis: OpType = pytket._tket.circuit.OpType.Ry) -> None:
@@ -2606,19 +2876,29 @@ class ToffoliBox(Op):
 
     @overload
     def __init__(self, n_qubits: int, permutation: dict[tuple[bool, ...], Sequence[bool]], rotation_axis: OpType = pytket._tket.circuit.OpType.Ry) -> None:
-        """Constructor for backward compatibility. Subject to deprecation."""
+        """
+        Constructor for backward compatibility. Subject to deprecation.
+        """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_permutation(self) -> dict[tuple, tuple]:
-        """:return: the permutation"""
+        """
+        :return: the permutation
+        """
 
     def get_strat(self) -> ToffoliBoxSynthStrat:
-        """:return: the synthesis strategy"""
+        """
+        :return: the synthesis strategy
+        """
 
     def get_rotation_axis(self) -> OpType:
-        """:return: the rotation axis"""
+        """
+        :return: the rotation axis
+        """
 
 class ResourceBounds:
     """
@@ -2634,10 +2914,14 @@ class ResourceBounds:
         """
 
     def get_min(self) -> int:
-        """:return: the minimum value"""
+        """
+        :return: the minimum value
+        """
 
     def get_max(self) -> int:
-        """:return: the maximum value"""
+        """
+        :return: the maximum value
+        """
 
 class ResourceData:
     """
@@ -2659,16 +2943,24 @@ class ResourceData:
         """
 
     def get_op_type_count(self) -> dict[OpType, ResourceBounds]:
-        """:return: bounds on the op type count"""
+        """
+        :return: bounds on the op type count
+        """
 
     def get_gate_depth(self) -> ResourceBounds:
-        """:return: bounds on the gate depth"""
+        """
+        :return: bounds on the gate depth
+        """
 
     def get_op_type_depth(self) -> dict[OpType, ResourceBounds]:
-        """:return: bounds on the op type depth"""
+        """
+        :return: bounds on the op type depth
+        """
 
     def get_two_qubit_gate_depth(self) -> ResourceBounds:
-        """:return: bounds on the two-qubit-gate depth"""
+        """
+        :return: bounds on the two-qubit-gate depth
+        """
 
     def __repr__(self) -> str: ...
 
@@ -2678,16 +2970,24 @@ class DummyBox(Op):
     """
 
     def __init__(self, n_qubits: int, n_bits: int, resource_data: ResourceData) -> None:
-        """Construct a new instance from some resource data."""
+        """
+        Construct a new instance from some resource data.
+        """
 
     def get_n_qubits(self) -> int:
-        """:return: the number of qubits covered by the box"""
+        """
+        :return: the number of qubits covered by the box
+        """
 
     def get_n_bits(self) -> int:
-        """:return: the number of bits covered by the box"""
+        """
+        :return: the number of bits covered by the box
+        """
 
     def get_resource_data(self) -> ResourceData:
-        """:return: the associated resource data"""
+        """
+        :return: the associated resource data
+        """
 
 class QControlBox(Op):
     """
@@ -2721,13 +3021,19 @@ class QControlBox(Op):
         """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_op(self) -> Op:
-        """:return: the underlying operator"""
+        """
+        :return: the underlying operator
+        """
 
     def get_n_controls(self) -> int:
-        """:return: the number of control qubits"""
+        """
+        :return: the number of control qubits
+        """
 
     def get_control_state(self) -> int:
         """
@@ -2735,7 +3041,9 @@ class QControlBox(Op):
         """
 
     def get_control_state_bits(self) -> list[bool]:
-        """:return: the control state as a bit vector"""
+        """
+        :return: the control state as a bit vector
+        """
 
 class CustomGateDef:
     """
@@ -2756,19 +3064,27 @@ class CustomGateDef:
 
     @property
     def name(self) -> str:
-        """The readable name of the gate"""
+        """
+        The readable name of the gate
+        """
 
     @property
     def definition(self) -> Circuit:
-        """Return definition as a circuit."""
+        """
+        Return definition as a circuit.
+        """
 
     @property
     def args(self) -> list[sympy.Symbol]:
-        """Return symbolic arguments of gate."""
+        """
+        Return symbolic arguments of gate.
+        """
 
     @property
     def arity(self) -> int:
-        """The number of real parameters for the gate"""
+        """
+        The number of real parameters for the gate
+        """
 
     def to_dict(self) -> dict:
         """
@@ -2782,25 +3098,37 @@ class CustomGateDef:
         """
 
 class CustomGate(Op):
-    """A user-defined gate defined by a parametrised :py:class:`Circuit`."""
+    """
+    A user-defined gate defined by a parametrised :py:class:`Circuit`.
+    """
 
     def __init__(self, gatedef: CustomGateDef, params: Sequence[Union[sympy.Expr, float]]) -> None:
-        """Instantiate a custom gate."""
+        """
+        Instantiate a custom gate.
+        """
 
     @property
     def name(self) -> str:
-        """The readable name of the gate."""
+        """
+        The readable name of the gate.
+        """
 
     @property
     def params(self) -> list[Union[sympy.Expr, float]]:
-        """The parameters of the gate."""
+        """
+        The parameters of the gate.
+        """
 
     @property
     def gate(self) -> CustomGateDef:
-        """Underlying gate object."""
+        """
+        Underlying gate object.
+        """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the gate."""
+        """
+        :return: the :py:class:`Circuit` described by the gate.
+        """
 
 class PhasePolyBox(Op):
     """
@@ -2829,26 +3157,38 @@ class PhasePolyBox(Op):
 
     @property
     def n_qubits(self) -> int:
-        """Number of gates the polynomial acts on."""
+        """
+        Number of gates the polynomial acts on.
+        """
 
     @property
     def phase_polynomial_as_list(self) -> list[tuple[list[bool], Union[sympy.Expr, float]]]:
-        """List of bitstring(basis state)-phase pairs."""
+        """
+        List of bitstring(basis state)-phase pairs.
+        """
 
     @property
     def phase_polynomial(self) -> dict[tuple, Union[sympy.Expr, float]]:
-        """Map from bitstring (basis state) to phase."""
+        """
+        Map from bitstring (basis state) to phase.
+        """
 
     @property
     def linear_transformation(self) -> Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')]:
-        """Boolean matrix corresponding to linear transformation."""
+        """
+        Boolean matrix corresponding to linear transformation.
+        """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box."""
+        """
+        :return: the :py:class:`Circuit` described by the box.
+        """
 
     @property
     def qubit_indices(self) -> dict[pytket._tket.unit_id.Qubit, int]:
-        """Map from Qubit to index in polynomial."""
+        """
+        Map from Qubit to index in polynomial.
+        """
 
 class ProjectorAssertionBox(Op):
     """
@@ -2864,13 +3204,19 @@ class ProjectorAssertionBox(Op):
         """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_matrix(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')]:
-        """:return: the unitary matrix (in ILO-BE format) as a numpy array"""
+        """
+        :return: the unitary matrix (in ILO-BE format) as a numpy array
+        """
 
 class StabiliserAssertionBox(Op):
-    """A user-defined assertion specified by a list of Pauli stabilisers."""
+    """
+    A user-defined assertion specified by a list of Pauli stabilisers.
+    """
 
     @overload
     def __init__(self, stabilisers: Sequence[pytket._tket.pauli.PauliStabiliser]) -> None:
@@ -2889,10 +3235,14 @@ class StabiliserAssertionBox(Op):
         """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_stabilisers(self) -> list[pytket._tket.pauli.PauliStabiliser]:
-        """:return: the list of Pauli stabilisers"""
+        """
+        :return: the list of Pauli stabilisers
+        """
 
 class MultiplexorBox(Op):
     """
@@ -2916,13 +3266,19 @@ class MultiplexorBox(Op):
         """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_op_map(self) -> dict[tuple, Op]:
-        """:return: the underlying op map"""
+        """
+        :return: the underlying op map
+        """
 
     def get_bitstring_op_pair_list(self) -> list[tuple[list[bool], Op]]:
-        """:return: the underlying bistring-op pairs"""
+        """
+        :return: the underlying bistring-op pairs
+        """
 
 class MultiplexedRotationBox(Op):
     """
@@ -2957,13 +3313,19 @@ class MultiplexedRotationBox(Op):
         """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_bitstring_op_pair_list(self) -> list[tuple[list[bool], Op]]:
-        """:return: the underlying bistring-op pairs"""
+        """
+        :return: the underlying bistring-op pairs
+        """
 
     def get_op_map(self) -> dict[tuple, Op]:
-        """:return: the underlying op map"""
+        """
+        :return: the underlying op map
+        """
 
 class MultiplexedU2Box(Op):
     """
@@ -2991,16 +3353,24 @@ class MultiplexedU2Box(Op):
         """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_bitstring_op_pair_list(self) -> list[tuple[list[bool], Op]]:
-        """:return: the underlying bistring-op pairs"""
+        """
+        :return: the underlying bistring-op pairs
+        """
 
     def get_op_map(self) -> dict[tuple, Op]:
-        """:return: the underlying op map"""
+        """
+        :return: the underlying op map
+        """
 
     def get_impl_diag(self) -> bool:
-        """:return: flag indicating whether to implement the final diagonal gate."""
+        """
+        :return: flag indicating whether to implement the final diagonal gate.
+        """
 
 class MultiplexedTensoredU2Box(Op):
     """
@@ -3026,13 +3396,19 @@ class MultiplexedTensoredU2Box(Op):
         """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_bitstring_op_pair_list(self) -> list[tuple[list[bool], list[Op]]]:
-        """:return: the underlying bistring-op pairs"""
+        """
+        :return: the underlying bistring-op pairs
+        """
 
     def get_op_map(self) -> dict[tuple, list[Op]]:
-        """:return: the underlying op map"""
+        """
+        :return: the underlying op map
+        """
 
 class StatePreparationBox(Op):
     """
@@ -3049,10 +3425,14 @@ class StatePreparationBox(Op):
         """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_statevector(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')]:
-        """:return: the statevector"""
+        """
+        :return: the statevector
+        """
 
     def is_inverse(self) -> bool:
         """
@@ -3078,13 +3458,19 @@ class DiagonalBox(Op):
         """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_diagonal(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')]:
-        """:return: the statevector"""
+        """
+        :return: the statevector
+        """
 
     def is_upper_triangle(self) -> bool:
-        """:return: the upper_triangle flag"""
+        """
+        :return: the upper_triangle flag
+        """
 
 class ConjugationBox(Op):
     """
@@ -3101,13 +3487,19 @@ class ConjugationBox(Op):
         """
 
     def get_circuit(self) -> Circuit:
-        """:return: the :py:class:`Circuit` described by the box"""
+        """
+        :return: the :py:class:`Circuit` described by the box
+        """
 
     def get_compute(self) -> Op:
-        """:return: the compute operation"""
+        """
+        :return: the compute operation
+        """
 
     def get_action(self) -> Op:
-        """:return: the action operation"""
+        """
+        :return: the action operation
+        """
 
     def get_uncompute(self) -> Op | None:
         """
@@ -3120,15 +3512,21 @@ class Conditional(Op):
     """
 
     def __init__(self, op: Op, width: int, value: int) -> None:
-        """Construct from operation, bit width and (little-endian) value"""
+        """
+        Construct from operation, bit width and (little-endian) value
+        """
 
     @property
     def op(self) -> Op:
-        """The operation to be applied conditionally"""
+        """
+        The operation to be applied conditionally
+        """
 
     @property
     def width(self) -> int:
-        """The number of bits in the condition register"""
+        """
+        The number of bits in the condition register
+        """
 
     @property
     def value(self) -> int:
@@ -3137,63 +3535,97 @@ class Conditional(Op):
         """
 
 class ClassicalOp(Op):
-    """Classical operation."""
+    """
+    Classical operation.
+    """
 
     @property
     def n_inputs(self) -> int:
-        """Number of pure inputs."""
+        """
+        Number of pure inputs.
+        """
 
     @property
     def n_input_outputs(self) -> int:
-        """Number of pure input/output arguments."""
+        """
+        Number of pure input/output arguments.
+        """
 
     @property
     def n_outputs(self) -> int:
-        """Number of pure outputs."""
+        """
+        Number of pure outputs.
+        """
 
 class ClassicalEvalOp(ClassicalOp):
-    """Evaluatable classical operation."""
+    """
+    Evaluatable classical operation.
+    """
 
 class SetBitsOp(ClassicalEvalOp):
-    """An operation to set the values of Bits to some constants."""
+    """
+    An operation to set the values of Bits to some constants.
+    """
 
     def __init__(self, values: Sequence[bool]) -> None:
-        """Construct from a table of values."""
+        """
+        Construct from a table of values.
+        """
 
     @property
     def values(self) -> list[bool]:
-        """The values to set bits to."""
+        """
+        The values to set bits to.
+        """
 
 class CopyBitsOp(ClassicalEvalOp):
-    """An operation to copy the values of Bits to other Bits."""
+    """
+    An operation to copy the values of Bits to other Bits.
+    """
 
 class MultiBitOp(ClassicalEvalOp):
-    """An operation to apply a classical op multiple times in parallel."""
+    """
+    An operation to apply a classical op multiple times in parallel.
+    """
 
     def __init__(self, op: ClassicalEvalOp, multiplier: int) -> None:
-        """Construct from a basic operation and a multiplier."""
+        """
+        Construct from a basic operation and a multiplier.
+        """
 
     @property
     def basic_op(self) -> ClassicalEvalOp:
-        """Underlying bitwise op."""
+        """
+        Underlying bitwise op.
+        """
 
     @property
     def multiplier(self) -> int:
-        """Multiplier."""
+        """
+        Multiplier.
+        """
 
 class RangePredicateOp(ClassicalEvalOp):
-    """A predicate defined by a range of values in binary encoding."""
+    """
+    A predicate defined by a range of values in binary encoding.
+    """
 
     def __init__(self, width: int, lower: int, upper: int) -> None:
-        """Construct from a bit width, a lower bound and an upper bound."""
+        """
+        Construct from a bit width, a lower bound and an upper bound.
+        """
 
     @property
     def lower(self) -> int:
-        """Inclusive lower bound."""
+        """
+        Inclusive lower bound.
+        """
 
     @property
     def upper(self) -> int:
-        """Inclusive upper bound."""
+        """
+        Inclusive upper bound.
+        """
 
 class WASMOp(ClassicalOp):
     """
@@ -3207,124 +3639,200 @@ class WASMOp(ClassicalOp):
 
     @property
     def wasm_uid(self) -> str:
-        """Wasm module id."""
+        """
+        Wasm module id.
+        """
 
     @property
     def num_w(self) -> int:
-        """Number of wasm wire in the op"""
+        """
+        Number of wasm wire in the op
+        """
 
     @property
     def func_name(self) -> str:
-        """Name of function."""
+        """
+        Name of function.
+        """
 
     @property
     def num_bits(self) -> int:
-        """Number of bits interacted with."""
+        """
+        Number of bits interacted with.
+        """
 
     @property
     def n_i32(self) -> int:
-        """Number of integers acted on."""
+        """
+        Number of integers acted on.
+        """
 
     @property
     def input_widths(self) -> list[int]:
-        """Widths of input integers."""
+        """
+        Widths of input integers.
+        """
 
     @property
     def output_widths(self) -> list[int]:
-        """Widths of output integers."""
+        """
+        Widths of output integers.
+        """
 
 class ClOp(enum.IntEnum):
-    """A classical operation"""
+    """
+    A classical operation
+    """
 
     INVALID = 0
-    """Invalid"""
+    """
+    Invalid
+    """
 
     BitAnd = 1
-    """Bitwise AND"""
+    """
+    Bitwise AND
+    """
 
     BitOr = 2
-    """Bitwise OR"""
+    """
+    Bitwise OR
+    """
 
     BitXor = 3
-    """Bitwise XOR"""
+    """
+    Bitwise XOR
+    """
 
     BitEq = 4
-    """Bitwise equality"""
+    """
+    Bitwise equality
+    """
 
     BitNeq = 5
-    """Bitwise inequality"""
+    """
+    Bitwise inequality
+    """
 
     BitNot = 6
-    """Bitwise NOT"""
+    """
+    Bitwise NOT
+    """
 
     BitZero = 7
-    """Constant zero bit"""
+    """
+    Constant zero bit
+    """
 
     BitOne = 8
-    """Constant one bit"""
+    """
+    Constant one bit
+    """
 
     RegAnd = 9
-    """Registerwise AND"""
+    """
+    Registerwise AND
+    """
 
     RegOr = 10
-    """Registerwise OR"""
+    """
+    Registerwise OR
+    """
 
     RegXor = 11
-    """Registerwise XOR"""
+    """
+    Registerwise XOR
+    """
 
     RegEq = 12
-    """Registerwise equality"""
+    """
+    Registerwise equality
+    """
 
     RegNeq = 13
-    """Registerwise inequality"""
+    """
+    Registerwise inequality
+    """
 
     RegNot = 14
-    """Registerwise NOT"""
+    """
+    Registerwise NOT
+    """
 
     RegZero = 15
-    """Constant all-zeros register"""
+    """
+    Constant all-zeros register
+    """
 
     RegOne = 16
-    """Constant all-ones register"""
+    """
+    Constant all-ones register
+    """
 
     RegLt = 17
-    """Integer less-than comparison"""
+    """
+    Integer less-than comparison
+    """
 
     RegGt = 18
-    """Integer greater-than comparison"""
+    """
+    Integer greater-than comparison
+    """
 
     RegLeq = 19
-    """Integer less-than-or-equal comparison"""
+    """
+    Integer less-than-or-equal comparison
+    """
 
     RegGeq = 20
-    """Integer greater-than-or-equal comparison"""
+    """
+    Integer greater-than-or-equal comparison
+    """
 
     RegAdd = 21
-    """Integer addition"""
+    """
+    Integer addition
+    """
 
     RegSub = 22
-    """Integer subtraction"""
+    """
+    Integer subtraction
+    """
 
     RegMul = 23
-    """Integer multiplication"""
+    """
+    Integer multiplication
+    """
 
     RegDiv = 24
-    """Integer division"""
+    """
+    Integer division
+    """
 
     RegPow = 25
-    """Integer exponentiation"""
+    """
+    Integer exponentiation
+    """
 
     RegLsh = 26
-    """Left shift"""
+    """
+    Left shift
+    """
 
     RegRsh = 27
-    """Right shift"""
+    """
+    Right shift
+    """
 
     RegNeg = 28
-    """Integer negation"""
+    """
+    Integer negation
+    """
 
 class ClBitVar:
-    """A bit variable within an expression"""
+    """
+    A bit variable within an expression
+    """
 
     def __init__(self, i: int) -> None:
         """
@@ -3343,10 +3851,14 @@ class ClBitVar:
 
     @property
     def index(self) -> int:
-        """integer identifier for the variable"""
+        """
+        integer identifier for the variable
+        """
 
 class ClRegVar:
-    """A register variable within an expression"""
+    """
+    A register variable within an expression
+    """
 
     def __init__(self, i: int) -> None:
         """
@@ -3365,10 +3877,14 @@ class ClRegVar:
 
     @property
     def index(self) -> int:
-        """integer identifier for the variable"""
+        """
+        integer identifier for the variable
+        """
 
 class ClExpr:
-    """A classical expression"""
+    """
+    A classical expression
+    """
 
     def __init__(self, op: ClOp, args: Sequence[int | ClBitVar | ClRegVar | ClExpr]) -> None:
         """
@@ -3389,11 +3905,15 @@ class ClExpr:
 
     @property
     def op(self) -> ClOp:
-        """main operation"""
+        """
+        main operation
+        """
 
     @property
     def args(self) -> list[int | ClBitVar | ClRegVar | ClExpr]:
-        """arguments"""
+        """
+        arguments
+        """
 
     def as_qasm(self, input_bits: Mapping[int, pytket._tket.unit_id.Bit], input_regs: Mapping[int, pytket._tket.unit_id.BitRegister]) -> str:
         """
@@ -3401,7 +3921,9 @@ class ClExpr:
         """
 
 class WiredClExpr:
-    """An operation defined by a classical expression over a sequence of bits"""
+    """
+    An operation defined by a classical expression over a sequence of bits
+    """
 
     def __init__(self, expr: ClExpr, bit_posn: Mapping[int, int] = {}, reg_posn: Mapping[int, Sequence[int]] = {}, output_posn: Sequence[int] = []) -> None:
         """
@@ -3424,40 +3946,60 @@ class WiredClExpr:
 
     @property
     def expr(self) -> ClExpr:
-        """expression"""
+        """
+        expression
+        """
 
     @property
     def bit_posn(self) -> dict[int, int]:
-        """bit positions"""
+        """
+        bit positions
+        """
 
     @property
     def reg_posn(self) -> dict[int, list[int]]:
-        """register positions"""
+        """
+        register positions
+        """
 
     @property
     def output_posn(self) -> list[int]:
-        """output positions"""
+        """
+        output positions
+        """
 
     def to_dict(self) -> dict:
-        """:return: JSON-serializable dict representation"""
+        """
+        :return: JSON-serializable dict representation
+        """
 
     @staticmethod
     def from_dict(arg: dict, /) -> WiredClExpr:
-        """Construct from JSON-serializable dict representation"""
+        """
+        Construct from JSON-serializable dict representation
+        """
 
 class ClExprOp(Op):
-    """An operation defined by a classical expression"""
+    """
+    An operation defined by a classical expression
+    """
 
     def __init__(self, arg: WiredClExpr, /) -> None:
-        """Construct from a wired classical expression"""
+        """
+        Construct from a wired classical expression
+        """
 
     @property
     def type(self) -> OpType:
-        """operation type"""
+        """
+        operation type
+        """
 
     @property
     def expr(self) -> WiredClExpr:
-        """wired expression"""
+        """
+        wired expression
+        """
 
 def fresh_symbol(preferred: str = 'a') -> sympy.Symbol:
     """
