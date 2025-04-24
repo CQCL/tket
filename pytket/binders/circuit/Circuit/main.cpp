@@ -422,16 +422,14 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
           "means it is suitable to refer to qubits simply by their "
           "integer indices.")
       .def_prop_ro(
-          "n_gates", &Circuit::n_gates,
-          "The number of gates in the Circuit")
+          "n_gates", &Circuit::n_gates, "The number of gates in the Circuit")
       .def_prop_ro(
           "wasm_uid",
           [](const Circuit &circ) { return circ.get_wasm_file_uid(); },
           "The unique WASM UID of the circuit, or `None` if the "
           "circuit has none")
       .def_prop_ro(
-          "n_qubits", &Circuit::n_qubits,
-          "The number of qubits in the circuit")
+          "n_qubits", &Circuit::n_qubits, "The number of qubits in the circuit")
       .def_prop_ro(
           "n_bits", &Circuit::n_bits,
           "The number of classiclal bits in the circuit")
