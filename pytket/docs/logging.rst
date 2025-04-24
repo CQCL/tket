@@ -1,4 +1,5 @@
 pytket.logging
 ==================================
-.. automodule:: pytket._tket.logging
-    :members: level, set_level
+.. currentmodule:: pytket._tket.logging
+.. autoenum:: pytket._tket.logging.level
+.. automethod:: pytket._tket.logging.set_level

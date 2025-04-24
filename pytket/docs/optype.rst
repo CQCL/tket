@@ -8,5 +8,6 @@ Enum for available operations compatible with the tket :py:class:`Circuit` class
     Therefore, for instance `circuit.add_gate(OpType.Rx, 1, [0])` is equivalent in terms of the unitary to `circuit.add_gate(OpType.X, [0])`
 
 .. currentmodule:: pytket._tket.circuit.OpType
-.. autoclass:: pytket._tket.circuit.OpType
-    :members:
+.. autoenum:: pytket._tket.circuit.OpType
+
+   .. automethod:: from_name

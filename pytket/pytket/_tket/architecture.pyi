@@ -36,10 +36,13 @@ class Architecture:
         """
         Checks if a given operation on the given nodes can be executed on the Architecture's connectivity graph.
         The operation is considered valid if:
-         - The operation acts on a single node that belongs to the Architecture.
-         - The operation acts on two nodes, and either:
-           - `bidirectional` is True and an edge exists between the two nodes in either direction.
-           - `bidirectional` is False and an edge exists from uids[0] to uids[1].
+
+        - The operation acts on a single node that belongs to the Architecture.
+        - The operation acts on two nodes, and either:
+
+          - `bidirectional` is True and an edge exists between the two nodes in either direction.
+          - `bidirectional` is False and an edge exists from uids[0] to uids[1].
+
         The function always returns False if the number of nodes exceeds 2.
 
         :param uids: list of UnitIDs validity is being checked for.

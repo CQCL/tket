@@ -216,7 +216,7 @@ class OpType(enum.IntEnum):
     """
 
     PhaseGadget = 60
-    r""":math:`\alpha \mapsto e^{-\frac12 i \pilpha Z^{\otimes n}}`"""
+    r""":math:`\alpha \mapsto e^{-\frac12 i \pi\alpha Z^{\otimes n}}`"""
 
     CCX = 61
     """Toffoli gate"""
@@ -1850,26 +1850,24 @@ class Circuit:
 
     @property
     def n_gates(self) -> int:
-        """:return: the number of gates in the Circuit"""
+        """The number of gates in the Circuit"""
 
     @property
     def wasm_uid(self) -> str | None:
-        """
-        :return: the unique WASM UID of the circuit, or `None` if the circuit has none
-        """
+        """The unique WASM UID of the circuit, or `None` if the circuit has none"""
 
     @property
     def n_qubits(self) -> int:
-        """:return: the number of qubits in the circuit"""
+        """The number of qubits in the circuit"""
 
     @property
     def n_bits(self) -> int:
-        """:return: the number of classiclal bits in the circuit"""
+        """The number of classiclal bits in the circuit"""
 
     @property
     def phase(self) -> Union[sympy.Expr, float]:
         """
-        :return: the global phase applied to the circuit, in halfturns (not meaningful for circuits with classical interactions)
+        The global phase applied to the circuit, in halfturns (not meaningful for circuits with classical interactions)
         """
 
     @property
@@ -2177,7 +2175,7 @@ class Circuit:
         """
 
     def qubit_create(self, arg: pytket._tket.unit_id.Qubit, /) -> None:
-        """Make a quantum input a Create operation (initialized to 0"""
+        """Make a quantum input a Create operation (initialized to 0)"""
 
     def qubit_discard(self, arg: pytket._tket.unit_id.Qubit, /) -> None:
         """Make a quantum output a Discard operation"""

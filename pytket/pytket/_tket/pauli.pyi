@@ -67,7 +67,7 @@ class QubitPauliString:
     @property
     def map(self) -> dict[pytket._tket.unit_id.Qubit, Pauli]:
         """
-        :return: the QubitPauliString's underlying dict mapping :py:class:`Qubit` to :py:class:`Pauli`
+        The QubitPauliString's underlying dict mapping :py:class:`Qubit` to :py:class:`Pauli`
         """
 
     def to_list(self) -> list:
