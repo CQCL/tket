@@ -265,7 +265,7 @@ NB_MODULE(circuit, m) {
           "Similar rules apply.")
       .value(
           "PhaseGadget", OpType::PhaseGadget,
-          ":math:`\\alpha \\mapsto e^{-\\frac12 i \\pi\alpha Z^{\\otimes n}}`")
+          ":math:`\\alpha \\mapsto e^{-\\frac12 i \\pi\\alpha Z^{\\otimes n}}`")
       .value("CCX", OpType::CCX, "Toffoli gate")
       .value(
           "ECR", OpType::ECR,
