@@ -216,7 +216,7 @@ class OpType(enum.IntEnum):
     """
 
     PhaseGadget = 60
-    r""":math:`\alpha \mapsto e^{-\frac12 i \pilpha Z^{\otimes n}}`"""
+    r""":math:`\alpha \mapsto e^{-\frac12 i \pi\alpha Z^{\otimes n}}`"""
 
     CCX = 61
     """Toffoli gate"""
