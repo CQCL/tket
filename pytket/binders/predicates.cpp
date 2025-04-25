@@ -15,17 +15,11 @@
 #include "tket/Predicates/Predicates.hpp"
 
 #include <nanobind/nanobind.h>
-#include <nanobind/stl/function.h>
-#include <nanobind/stl/map.h>
-#include <nanobind/stl/set.h>
-#include <nanobind/stl/shared_ptr.h>
-#include <nanobind/stl/string.h>
-#include <nanobind/stl/unordered_set.h>
-#include <nanobind/stl/vector.h>
 #include <nanobind/trampoline.h>
 
 #include <vector>
 
+#include "nanobind-stl.hpp"
 #include "nanobind_json/nanobind_json.hpp"
 #include "tket/Predicates/CompilationUnit.hpp"
 #include "tket/Utils/UnitID.hpp"

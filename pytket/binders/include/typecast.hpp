@@ -15,9 +15,8 @@
 #pragma once
 
 #include <nanobind/nanobind.h>
-#include <nanobind/stl/list.h>
-#include <nanobind/stl/vector.h>
 
+#include "nanobind-stl.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "unit_downcast.hpp"
 

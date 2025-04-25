@@ -15,6 +15,9 @@
 #pragma once
 
 #include <nanobind/nanobind.h>
+
+#include "nanobind-stl.hpp"
+
 namespace nb = nanobind;
 
 template <class T>

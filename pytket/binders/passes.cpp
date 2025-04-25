@@ -13,15 +13,6 @@
 // limitations under the License.
 
 #include <nanobind/nanobind.h>
-#include <nanobind/stl/function.h>
-#include <nanobind/stl/map.h>
-#include <nanobind/stl/optional.h>
-#include <nanobind/stl/pair.h>
-#include <nanobind/stl/shared_ptr.h>
-#include <nanobind/stl/string.h>
-#include <nanobind/stl/unordered_set.h>
-#include <nanobind/stl/variant.h>
-#include <nanobind/stl/vector.h>
 #include <nanobind/trampoline.h>
 
 #include <optional>
@@ -29,6 +20,7 @@
 #include <tklog/TketLog.hpp>
 
 #include "binder_utils.hpp"
+#include "nanobind-stl.hpp"
 #include "nanobind_json/nanobind_json.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
 #include "tket/Mapping/LexiRouteRoutingMethod.hpp"
