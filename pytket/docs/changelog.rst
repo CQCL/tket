@@ -1,6 +1,16 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+API changes:
+
+* A number of utility methods and classes pertaining to classical expressions, 
+  pass scripting, QASM and Quipper parsing, SPAM mitigation, and symbolic 
+  evaluation of circuits have been renamed to indicate they are not intended 
+  for external usage.
+
 2.3.1 (April 2025)
 ------------------
 
@@ -8,7 +18,6 @@ Fixes:
 
 * Fix C++/Python binding of fidelities information passed to `DecomposeTK2`
   constructor.
-
 
 2.3.0 (April 2025)
 ------------------
@@ -19,10 +28,6 @@ API changes:
   by accepting ``Union`` types in place of overloaded methods, giving better
   error messages when mixing :py:class:`UnitID` /:py:class:`Qubit` /
   :py:class:`Bit` and ``int`` for gate arguments.
-* A number of utility methods and classes pertaining to classical expressions, 
-  pass scripting, QASM and Quipper parsing, SPAM mitigation, and symbolic 
-  evaluation of circuits have been renamed to indicate they are not intended 
-  for external usage.
 
 Features:
 
