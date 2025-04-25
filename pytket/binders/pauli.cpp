@@ -16,12 +16,9 @@
 #include <nanobind/eigen/sparse.h>
 #include <nanobind/nanobind.h>
 #include <nanobind/operators.h>
-#include <nanobind/stl/complex.h>
-#include <nanobind/stl/map.h>
-#include <nanobind/stl/pair.h>
-#include <nanobind/stl/string.h>
 
 #include "deleted_hash.hpp"
+#include "nanobind-stl.hpp"
 #include "nanobind_json/nanobind_json.hpp"
 #include "py_operators.hpp"
 #include "tket/Utils/PauliTensor.hpp"

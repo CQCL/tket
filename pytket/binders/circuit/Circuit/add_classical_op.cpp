@@ -15,9 +15,6 @@
 #define STR(x) #x
 
 #include <nanobind/nanobind.h>
-#include <nanobind/stl/string.h>
-#include <nanobind/stl/variant.h>
-#include <nanobind/stl/vector.h>
 
 #include <bitset>
 #include <string>
@@ -26,6 +23,7 @@
 
 #include "UnitRegister.hpp"
 #include "add_gate.hpp"
+#include "nanobind-stl.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
 #include "typecast.hpp"

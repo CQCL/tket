@@ -14,12 +14,11 @@
 
 #pragma once
 #include <nanobind/nanobind.h>
-#include <nanobind/stl/variant.h>
-#include <nanobind/stl/vector.h>
 
 #include <variant>
 #include <vector>
 
+#include "nanobind-stl.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "typecast.hpp"
 namespace nb = nanobind;
