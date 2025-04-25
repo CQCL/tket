@@ -96,6 +96,8 @@ set(HEADER_FILES
         binders/include/binder_utils.hpp
         binders/include/circuit_registers.hpp
         binders/include/deleted_hash.hpp
+        binders/include/nanobind_json/nanobind_json.hpp
+        binders/include/nanobind-stl.hpp
         binders/include/py_operators.hpp
         binders/include/typecast.hpp
         binders/include/unit_downcast.hpp

@@ -16,17 +16,11 @@
 
 #include <nanobind/nanobind.h>
 #include <nanobind/operators.h>
-#include <nanobind/stl/function.h>
-#include <nanobind/stl/map.h>
-#include <nanobind/stl/optional.h>
-#include <nanobind/stl/pair.h>
-#include <nanobind/stl/string.h>
-#include <nanobind/stl/unordered_set.h>
-#include <nanobind/stl/variant.h>
 
 #include <functional>
 #include <string>
 
+#include "nanobind-stl.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Transformations/CliffordOptimisation.hpp"

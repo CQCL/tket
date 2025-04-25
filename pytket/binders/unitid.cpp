@@ -16,9 +16,9 @@
 
 #include <nanobind/nanobind.h>
 #include <nanobind/operators.h>
-#include <nanobind/stl/string.h>
 
 #include "UnitRegister.hpp"
+#include "nanobind-stl.hpp"
 #include "nanobind_json/nanobind_json.hpp"
 #include "py_operators.hpp"
 #include "typecast.hpp"

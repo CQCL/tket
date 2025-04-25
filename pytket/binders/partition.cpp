@@ -13,10 +13,9 @@
 // limitations under the License.
 
 #include <nanobind/nanobind.h>
-#include <nanobind/stl/string.h>
-#include <nanobind/stl/unordered_map.h>
 
 #include "binder_utils.hpp"
+#include "nanobind-stl.hpp"
 #include "nanobind_json/nanobind_json.hpp"
 #include "tket/MeasurementSetup/MeasurementReduction.hpp"
 #include "typecast.hpp"

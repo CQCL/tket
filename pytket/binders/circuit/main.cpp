@@ -14,15 +14,12 @@
 
 #include <nanobind/eigen/dense.h>
 #include <nanobind/nanobind.h>
-#include <nanobind/stl/optional.h>
-#include <nanobind/stl/set.h>
-#include <nanobind/stl/shared_ptr.h>
-#include <nanobind/stl/string.h>
 
 #include <tket/Circuit/Circuit.hpp>
 
 #include "binder_utils.hpp"
 #include "deleted_hash.hpp"
+#include "nanobind-stl.hpp"
 #include "nanobind_json/nanobind_json.hpp"
 #include "py_operators.hpp"
 #include "tket/Circuit/Command.hpp"

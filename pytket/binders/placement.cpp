@@ -15,15 +15,11 @@
 #include "tket/Placement/Placement.hpp"
 
 #include <nanobind/nanobind.h>
-#include <nanobind/stl/map.h>
-#include <nanobind/stl/pair.h>
-#include <nanobind/stl/shared_ptr.h>
-#include <nanobind/stl/string.h>
-#include <nanobind/stl/vector.h>
 
 #include <memory>
 
 #include "binder_utils.hpp"
+#include "nanobind-stl.hpp"
 #include "nanobind_json/nanobind_json.hpp"
 
 namespace nb = nanobind;
