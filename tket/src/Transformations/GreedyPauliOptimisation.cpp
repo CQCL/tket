@@ -864,7 +864,7 @@ Transform greedy_pauli_optimisation(
     // thread_timeout
     // If none are found then return false
     if (circuits.empty()) return false;
-    auto min = std::min_element(
+    circ = *std::min_element(
         circuits.begin(), circuits.end(),
         [](const Circuit& a, const Circuit& b) {
           const auto two_qubit_gates_a = a.count_n_qubit_gates(2);
@@ -879,7 +879,6 @@ Transform greedy_pauli_optimisation(
           }
           return a.depth() < b.depth();
         });
-    circ = std::move(*min);
     return true;
   });
 }
