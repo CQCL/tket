@@ -322,9 +322,6 @@ class Circuit {
   // copy assignment. Moves boundary pointers.
   Circuit &operator=(const Circuit &other);
 
-  // move assigment
-  Circuit &operator=(Circuit &&circ);
-
   /**
    * Run a suite of checks for internal circuit validity.
    *

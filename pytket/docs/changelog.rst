@@ -1,8 +1,17 @@
 Changelog
 =========
 
-Unreleased
-----------
+2.3.1 (April 2025)
+------------------
+
+Fixes:
+
+* Fix C++/Python binding of fidelities information passed to `DecomposeTK2`
+  constructor.
+
+
+2.3.0 (April 2025)
+------------------
 
 API changes:
 
