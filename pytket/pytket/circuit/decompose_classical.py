@@ -36,7 +36,7 @@ from pytket._tket.unit_id import (
     Bit,
     BitRegister,
 )
-from pytket.circuit.clexpr import check_register_alignments, has_reg_output
+from pytket.circuit.clexpr import check_register_alignments, _has_reg_output
 from pytket.circuit.logic_exp import Constant, Variable
 
 T = TypeVar("T")
@@ -140,12 +140,12 @@ def temp_reg_in_args(args: list[Bit]) -> BitRegister | None:
 VarType = TypeVar("VarType", type[Bit], type[BitRegister])
 
 
-def int_to_bools(val: Constant, width: int) -> list[bool]:
+def _int_to_bools(val: Constant, width: int) -> list[bool]:
     # map int to bools via litle endian encoding
     return list(map(bool, map(int, reversed(f"{val:0{width}b}"[-width:]))))
 
 
-def get_bit_width(x: int) -> int:
+def _get_bit_width(x: int) -> int:
     assert x >= 0
     c = 0
     while x:
@@ -154,7 +154,7 @@ def get_bit_width(x: int) -> int:
     return c
 
 
-class ClExprDecomposer:
+class _ClExprDecomposer:
     def __init__(
         self,
         circ: Circuit,
@@ -207,7 +207,7 @@ class ClExprDecomposer:
         :param out_var: where to put the output (if None, create a new scratch location)
         """
         op: ClOp = expr.op
-        heap: VarHeap = self.reg_heap if has_reg_output(op) else self.bit_heap
+        heap: VarHeap = self.reg_heap if _has_reg_output(op) else self.bit_heap
 
         # Eliminate (recursively) subsidiary expressions from the arguments, and convert
         # all terms to Bit or BitRegister:
@@ -355,10 +355,10 @@ def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:
             assert isinstance(output0, Bit)
             out_var: Variable = (
                 BitRegister(output0.reg_name, len(output_posn))
-                if has_reg_output(expr.op)
+                if _has_reg_output(expr.op)
                 else output0
             )
-            decomposer = ClExprDecomposer(
+            decomposer = _ClExprDecomposer(
                 newcirc, bit_posn, reg_posn, args, bit_heap, reg_heap, kwargs  # type: ignore
             )
             comp_var = decomposer.decompose_expr(expr, out_var)

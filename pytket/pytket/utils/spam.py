@@ -245,7 +245,7 @@ def _bayesian_iterative_correct(
     return true_states
 
 
-def reduce_matrix(indices_to_remove: list[int], matrix: np.ndarray) -> np.ndarray:
+def _reduce_matrix(indices_to_remove: list[int], matrix: np.ndarray) -> np.ndarray:
     """Removes indices from indices_to_remove from binary associated to indexing of
     matrix, producing a new transition matrix. To do so, it assigns all transition
     probabilities as the given state in the remaining indices binary, with the removed
@@ -284,7 +284,7 @@ def reduce_matrix(indices_to_remove: list[int], matrix: np.ndarray) -> np.ndarra
     return new_mat
 
 
-def reduce_matrices(
+def _reduce_matrices(
     entries_to_remove: list[tuple[int, int]], matrices: list[np.ndarray]
 ) -> list[np.ndarray]:
     """Removes some dimensions from some matrices.
@@ -302,7 +302,7 @@ def reduce_matrices(
         # unused[0] is index in matrices
         # unused[1] is qubit index in matrix
         organise[unused[0]].append(unused[1])
-    output_matrices = [reduce_matrix(organise[m], matrices[m]) for m in organise]
+    output_matrices = [_reduce_matrix(organise[m], matrices[m]) for m in organise]
     return [
         mat / np.sum(mat, axis=0) for mat in [x for x in output_matrices if len(x) != 0]
     ]
@@ -517,7 +517,7 @@ class SpamCorrecter:
         correction_matrices = []
 
         for mapping in parallel_measures:
-            # reduce_matrices removes given qubits corresponding entries from
+            # _reduce_matrices removes given qubits corresponding entries from
             # characterisation matrices
             unused_qbs = set(self.all_qbs.copy())
             for q in mapping:
@@ -529,7 +529,7 @@ class SpamCorrecter:
                 unused_qbs.remove(q)  # type:ignore[arg-type]
                 char_bits_order.append(mapping[q])
             correction_matrices.extend(
-                reduce_matrices(
+                _reduce_matrices(
                     [self.node_index_dict[q] for q in unused_qbs],
                     self.characterisation_matrices,
                 )

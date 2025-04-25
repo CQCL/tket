@@ -645,6 +645,9 @@ def if_not_bit(bit: Bit | BitLogicExp) -> PredicateExp:
 
 
 def create_bit_logic_exp(op: BitWiseOp, args: Sequence[BitArgType]) -> BitLogicExp:
+    """
+    Builds the :py:class:`LogicExp` corresponding to applying the given :py:class:`BitWiseOp` to some sequence of bits.
+    """
     if op == BitWiseOp.AND:
         assert len(args) == 2
         return BitAnd(args[0], args[1])
@@ -672,6 +675,9 @@ def create_bit_logic_exp(op: BitWiseOp, args: Sequence[BitArgType]) -> BitLogicE
 
 
 def create_reg_logic_exp(op: RegWiseOp, args: Sequence[RegArgType]) -> RegLogicExp:
+    """
+    Builds the :py:class:`LogicExp` corresponding to applying the given :py:class:`RegWiseOp` to some sequence of registers.
+    """
     if op == RegWiseOp.AND:
         assert len(args) == 2
         return RegAnd(args[0], args[1])
@@ -732,6 +738,9 @@ def create_reg_logic_exp(op: RegWiseOp, args: Sequence[RegArgType]) -> RegLogicE
 
 
 def create_logic_exp(op: Ops, args: Sequence[ArgType]) -> LogicExp:
+    """
+    Builds the :py:class:`LogicExp` corresponding to applying the given :py:class:`BitWiseOp` or :py:class:`RegWiseOp` to some sequence of arguments.
+    """
     if isinstance(op, BitWiseOp):
         bit_args = []
         for arg in args:
@@ -747,6 +756,9 @@ def create_logic_exp(op: Ops, args: Sequence[ArgType]) -> LogicExp:
 
 
 def create_predicate_exp(op: Ops, args: Sequence[ArgType]) -> PredicateExp:
+    """
+    Builds the :py:class:`LogicExp` corresponding to applying a given comparison predicate to some sequence of arguments.
+    """
     if op == BitWiseOp.EQ:
         assert len(args) == 2
         assert isinstance(args[0], (BitLogicExp, Bit, int))

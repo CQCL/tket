@@ -3,6 +3,9 @@ pytket.tailoring
 
 .. currentmodule:: pytket._tket.tailoring
 
+.. automodule:: pytket.tailoring
+.. automodule:: pytket._tket.tailoring
+
 .. autoclass:: pytket.tailoring.FrameRandomisation
 
    .. automethod:: __init__

@@ -17,7 +17,7 @@ pip install pytket-offline-display
 
 ```{eval-rst}
 .. automodule:: pytket.circuit.display
-    :members: get_circuit_renderer, CircuitRenderer
+    :members:
 ```
 
 ## Example usage:

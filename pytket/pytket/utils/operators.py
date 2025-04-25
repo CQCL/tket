@@ -77,6 +77,9 @@ class QubitPauliOperator:
         return self._dict[key]
 
     def get(self, key: QubitPauliString, default: CoeffTypeAccepted) -> Expr:
+        """
+        Get the coefficient of a particular string present in the operator.
+        """
         return self._dict.get(key, _coeff_convert(default))
 
     def __setitem__(self, key: QubitPauliString, value: CoeffTypeAccepted) -> None:

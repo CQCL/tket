@@ -207,16 +207,21 @@ def _tensor_from_basic_diagram(diag: ZXDiagram) -> np.ndarray:
 
 
 def tensor_from_quantum_diagram(diag: ZXDiagram) -> np.ndarray:
+    """
+    Evaluates a purely quantum :py:class:`ZXDiagram` as a tensor. Indices of the resulting tensor match the order of the boundary vertices from :py:meth:`ZXDiagram.get_boundary`.
+
+    Throws an exception if the diagram contains any non-quantum vertex or wire, or if it contains any symbolic parameters.
+    """
     for v in diag.vertices:
         if diag.get_qtype(v) != QuantumType.Quantum:
             raise ValueError(
-                "Non-quantum vertex found. evaluate_quantum_diagram only "
+                "Non-quantum vertex found. tensor_from_quantum_diagram only "
                 "supports diagrams consisting of only quantum components"
             )
     for w in diag.wires:
         if diag.get_wire_qtype(w) != QuantumType.Quantum:
             raise ValueError(
-                "Non-quantum wire found. evaluate_quantum_diagram only "
+                "Non-quantum wire found. tensor_from_quantum_diagram only "
                 "supports diagrams consisting of only quantum components"
             )
     diag_copy = ZXDiagram(diag)
@@ -226,6 +231,13 @@ def tensor_from_quantum_diagram(diag: ZXDiagram) -> np.ndarray:
 
 
 def tensor_from_mixed_diagram(diag: ZXDiagram) -> np.ndarray:
+    """
+    Evaluates an arbitrary :py:class:`ZXDiagram` as a tensor in the doubled picture - that is, each quantum generator is treated as a pair of conjugate generators, whereas a classical generator is just itself.
+
+    The indices of the resulting tensor match the order of the boundary vertices from :py:meth:`ZXDiagram.get_boundary`, with quantum boundaries split into two. For example, if the boundary is ``[qb1, cb1, qb2]``, the indices will match ``[qb1, qb1_conj, cb1, qb2, qb2_conj]``.
+
+    Throws an exception if the diagram contains any symbolic parameters.
+    """
     expanded = diag.to_doubled_diagram()
     Rewrite.basic_wires().apply(expanded)
     return _tensor_from_basic_diagram(expanded)
@@ -247,11 +259,21 @@ def _format_tensor_as_unitary(diag: ZXDiagram, tensor: np.ndarray) -> np.ndarray
 
 
 def unitary_from_quantum_diagram(diag: ZXDiagram) -> np.ndarray:
+    """
+    Evaluates a purely quantum :py:class:`ZXDiagram` as a matrix describing the linear map from inputs to outputs. Qubits are indexed according to ILO-BE convention based on relative position amongst inputs/outputs in :py:meth`ZXDiagram.get_boundary`.
+
+    Throws an exception if the diagram contains any non-quantum vertex or wire, or if it contains any symbolic parameters.
+    """
     tensor = tensor_from_quantum_diagram(diag)
     return _format_tensor_as_unitary(diag, tensor)
 
 
 def unitary_from_classical_diagram(diag: ZXDiagram) -> np.ndarray:
+    """
+    Evaluates a purely classical :py:class:`ZXDiagram` as a matrix describing the linear map from inputs to outputs. Bits are indexed according to the ILO-BE convention based on relative position amongst inputs/outputs in :py:meth:`ZXDiagram.get_boundary`. Each quantum generator is treated as a pair of conjugate generators.
+
+    Throws an exception if the diagram contains any non-classical boundary, or if it contains any symbolic parameters.
+    """
     for b in diag.get_boundary():
         if diag.get_qtype(b) != QuantumType.Classical:
             raise ValueError(
@@ -264,6 +286,11 @@ def unitary_from_classical_diagram(diag: ZXDiagram) -> np.ndarray:
 
 
 def density_matrix_from_cptp_diagram(diag: ZXDiagram) -> np.ndarray:
+    """
+    Evaluates a :py:class:`ZXDiagram` with quantum boundaries but possibly mixed quantum and classical generators as a density matrix. Inputs are treated identically to outputs, i.e. the result is the Choi-state of the diagram. Qubits are indexed according to the ILO-BE convention based on the ordering of boundary vertices in :py:meth:`ZXDiagram.get_boundary`.
+
+    Throws an exception if the diagram contains any non-quantum boundary, or if it contains any symbolic parameters.
+    """
     for b in diag.get_boundary():
         if diag.get_qtype(b) != QuantumType.Quantum:
             raise ValueError(
@@ -284,6 +311,9 @@ def density_matrix_from_cptp_diagram(diag: ZXDiagram) -> np.ndarray:
 def fix_boundaries_to_binary_states(
     diag: ZXDiagram, vals: dict[ZXVert, int]
 ) -> ZXDiagram:
+    """
+    Fixes (a subset of) the boundary vertices of a :py:class:`ZXDiagram` to computational basis states/post-selection.
+    """
     new_diag = ZXDiagram(diag)
     b_lookup = dict(zip(diag.get_boundary(), new_diag.get_boundary()))
     for b, val in vals.items():
@@ -307,6 +337,9 @@ def fix_boundaries_to_binary_states(
 
 
 def fix_inputs_to_binary_state(diag: ZXDiagram, vals: list[int]) -> ZXDiagram:
+    """
+    Fixes all input vertices of a :py:class:`ZXDiagram` to computational basis states.
+    """
     inputs = diag.get_boundary(type=ZXType.Input)
     if len(inputs) != len(vals):
         raise ValueError(
@@ -317,6 +350,9 @@ def fix_inputs_to_binary_state(diag: ZXDiagram, vals: list[int]) -> ZXDiagram:
 
 
 def fix_outputs_to_binary_state(diag: ZXDiagram, vals: list[int]) -> ZXDiagram:
+    """
+    Fixes all output vertices of a :py:class:`ZXDiagram` to computational basis states/post-selection.
+    """
     outputs = diag.get_boundary(type=ZXType.Output)
     if len(outputs) != len(vals):
         raise ValueError(

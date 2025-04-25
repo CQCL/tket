@@ -13,6 +13,6 @@
 # limitations under the License.
 
 """The `architecture` module provides an API to interact with the
-::py:class:`Architecture` class."""
+:py:class:`Architecture` class."""
 
 from pytket._tket.architecture import *

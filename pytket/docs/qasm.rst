@@ -19,4 +19,7 @@ We can set the ``header`` argument in the qasm conversion functions as follows.
 .. note:: Unlike pytket backends, the qasm converters do not handle `implicit qubit permutations <https://docs.quantinuum.com/tket/user-guide/manual/manual_circuit.html#implicit-qubit-permutations>`_. In other words if a circuit containing an implicit qubit permutation is converted to a qasm file the implicit permutation will not be accounted for and the circuit will be missing this permutation when reimported.
 
 .. automodule:: pytket.qasm
-    :members: circuit_from_qasm, circuit_from_qasm_wasm, circuit_to_qasm, circuit_from_qasm_str, circuit_to_qasm_str, circuit_from_qasm_io, circuit_to_qasm_io
+.. automodule:: pytket.qasm.qasm
+    :members: circuit_from_qasm, circuit_from_qasm_wasm, circuit_to_qasm, circuit_from_qasm_str, circuit_to_qasm_str, circuit_from_qasm_io, circuit_to_qasm_io, QASMParseError, QASMUnsupportedError
+
+.. automodule:: pytket.qasm.grammar

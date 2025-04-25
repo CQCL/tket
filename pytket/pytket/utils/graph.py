@@ -23,18 +23,16 @@ from pytket.circuit import Circuit
 
 
 class Graph:
+    """
+    A class for visualising a circuit as a directed acyclic graph (DAG).
+
+    Note: in order to use graph-rendering methods, such as
+    :py:meth:`Graph.save_DAG`, it is necessary to have the Graphviz tools installed
+    and on your path. See the `Graphviz website <https://graphviz.org/download/>`_
+    for instructions on how to install them.
+    """
+
     def __init__(self, c: Circuit):
-        """
-        A class for visualising a circuit as a directed acyclic graph (DAG).
-
-        Note: in order to use graph-rendering methods, such as
-        :py:meth:`Graph.save_DAG`, it is necessary to have the Graphviz tools installed
-        and on your path. See the `Graphviz website <https://graphviz.org/download/>`_
-        for instructions on how to install them.
-
-        :param      c:    Circuit
-        :type       c:    pytket.Circuit
-        """
         (
             q_inputs,
             c_inputs,

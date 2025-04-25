@@ -91,6 +91,7 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
 
     backends.rst
     circuit.rst
+    circuit_library.rst
     unit_id.rst
     pauli.rst
     passes.rst
@@ -116,3 +117,7 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. py:module:: pytket
+.. py:module:: pytket._version
+.. py:module:: pytket._tket

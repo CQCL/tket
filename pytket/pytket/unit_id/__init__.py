@@ -64,7 +64,7 @@ BitArgType = Union[LogicExp, Bit, Constant]
 RegArgType = Union[LogicExp, BitRegister, Constant]
 
 
-def gen_binary_method_bit(
+def _gen_bindary_method_bit(
     op: BitWiseOp, name: str
 ) -> Callable[[BitArgType, BitArgType], BitLogicExp]:
     def logic_operation(self: BitArgType, other: BitArgType) -> BitLogicExp:
@@ -74,7 +74,7 @@ def gen_binary_method_bit(
     return logic_operation
 
 
-def gen_binary_method_reg(
+def _gen_bindary_method_reg(
     op: RegWiseOp, name: str
 ) -> Callable[[RegArgType, RegArgType], RegLogicExp]:
     def logic_operation(self: RegArgType, other: RegArgType) -> RegLogicExp:
@@ -84,24 +84,24 @@ def gen_binary_method_reg(
     return logic_operation
 
 
-setattr(Bit, "__and__", gen_binary_method_bit(BitWiseOp.AND, "__and__"))
-setattr(Bit, "__rand__", gen_binary_method_bit(BitWiseOp.AND, "__rand__"))
-setattr(Bit, "__or__", gen_binary_method_bit(BitWiseOp.OR, "__or__"))
-setattr(Bit, "__ror__", gen_binary_method_bit(BitWiseOp.OR, "__ror__"))
-setattr(Bit, "__xor__", gen_binary_method_bit(BitWiseOp.XOR, "__xor__"))
-setattr(Bit, "__rxor__", gen_binary_method_bit(BitWiseOp.XOR, "__rxor__"))
-setattr(BitRegister, "__and__", gen_binary_method_reg(RegWiseOp.AND, "__and__"))
-setattr(BitRegister, "__rand__", gen_binary_method_reg(RegWiseOp.AND, "__rand__"))
-setattr(BitRegister, "__or__", gen_binary_method_reg(RegWiseOp.OR, "__or__"))
-setattr(BitRegister, "__ror__", gen_binary_method_reg(RegWiseOp.OR, "__ror__"))
-setattr(BitRegister, "__xor__", gen_binary_method_reg(RegWiseOp.XOR, "__xor__"))
-setattr(BitRegister, "__rxor__", gen_binary_method_reg(RegWiseOp.XOR, "__rxor__"))
-setattr(BitRegister, "__add__", gen_binary_method_reg(RegWiseOp.ADD, "__add__"))
-setattr(BitRegister, "__sub__", gen_binary_method_reg(RegWiseOp.SUB, "__sub__"))
-setattr(BitRegister, "__mul__", gen_binary_method_reg(RegWiseOp.MUL, "__mul__"))
+setattr(Bit, "__and__", _gen_bindary_method_bit(BitWiseOp.AND, "__and__"))
+setattr(Bit, "__rand__", _gen_bindary_method_bit(BitWiseOp.AND, "__rand__"))
+setattr(Bit, "__or__", _gen_bindary_method_bit(BitWiseOp.OR, "__or__"))
+setattr(Bit, "__ror__", _gen_bindary_method_bit(BitWiseOp.OR, "__ror__"))
+setattr(Bit, "__xor__", _gen_bindary_method_bit(BitWiseOp.XOR, "__xor__"))
+setattr(Bit, "__rxor__", _gen_bindary_method_bit(BitWiseOp.XOR, "__rxor__"))
+setattr(BitRegister, "__and__", _gen_bindary_method_reg(RegWiseOp.AND, "__and__"))
+setattr(BitRegister, "__rand__", _gen_bindary_method_reg(RegWiseOp.AND, "__rand__"))
+setattr(BitRegister, "__or__", _gen_bindary_method_reg(RegWiseOp.OR, "__or__"))
+setattr(BitRegister, "__ror__", _gen_bindary_method_reg(RegWiseOp.OR, "__ror__"))
+setattr(BitRegister, "__xor__", _gen_bindary_method_reg(RegWiseOp.XOR, "__xor__"))
+setattr(BitRegister, "__rxor__", _gen_bindary_method_reg(RegWiseOp.XOR, "__rxor__"))
+setattr(BitRegister, "__add__", _gen_bindary_method_reg(RegWiseOp.ADD, "__add__"))
+setattr(BitRegister, "__sub__", _gen_bindary_method_reg(RegWiseOp.SUB, "__sub__"))
+setattr(BitRegister, "__mul__", _gen_bindary_method_reg(RegWiseOp.MUL, "__mul__"))
 setattr(
-    BitRegister, "__floordiv__", gen_binary_method_reg(RegWiseOp.DIV, "__floordiv__")
+    BitRegister, "__floordiv__", _gen_bindary_method_reg(RegWiseOp.DIV, "__floordiv__")
 )
-setattr(BitRegister, "__pow__", gen_binary_method_reg(RegWiseOp.POW, "__pow__"))
-setattr(BitRegister, "__lshift__", gen_binary_method_reg(RegWiseOp.LSH, "__lshift__"))
-setattr(BitRegister, "__rshift__", gen_binary_method_reg(RegWiseOp.RSH, "__rshift__"))
+setattr(BitRegister, "__pow__", _gen_bindary_method_reg(RegWiseOp.POW, "__pow__"))
+setattr(BitRegister, "__lshift__", _gen_bindary_method_reg(RegWiseOp.LSH, "__lshift__"))
+setattr(BitRegister, "__rshift__", _gen_bindary_method_reg(RegWiseOp.RSH, "__rshift__"))

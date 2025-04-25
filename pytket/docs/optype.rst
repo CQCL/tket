@@ -10,4 +10,4 @@ Enum for available operations compatible with the tket :py:class:`Circuit` class
 .. currentmodule:: pytket._tket.circuit.OpType
 .. autoenum:: pytket._tket.circuit.OpType
 
-   .. automethod:: from_name
+.. automethod:: pytket._tket.circuit.OpType.from_name

@@ -3,15 +3,20 @@ pytket.utils
 .. automodule:: pytket.utils
     :members: expectation_from_shots, expectation_from_counts, get_pauli_expectation_value, get_operator_expectation_value, append_pauli_measurement, counts_from_shot_table, probs_from_counts, probs_from_state, permute_qubits_in_statevector, permute_rows_cols_in_unitary, permute_basis_indexing, gen_term_sequence_circuit, readout_counts, compare_statevectors, compare_unitaries, prepare_circuit
 
-.. autoclass:: pytket.utils.OutcomeArray
+.. automodule:: pytket.utils.outcomearray
+.. autoclass:: pytket.utils.outcomearray.OutcomeArray
     :special-members: __init__
     :members:
 
-.. autoclass:: pytket.utils.QubitPauliOperator
+.. autofunction:: pytket.utils.outcomearray.readout_counts
+
+.. automodule:: pytket.utils.operators
+.. autoclass:: pytket.utils.operators.QubitPauliOperator
     :special-members: __init__
     :members:
 
-.. autoclass:: pytket.utils.Graph
+.. automodule:: pytket.utils.graph
+.. autoclass:: pytket.utils.graph.Graph
     :special-members: __init__
     :members:
 
@@ -28,8 +33,30 @@ pytket.utils.distribution
 .. automodule:: pytket.utils.distribution
     :members: convex_combination
 
-pytket.utils.serialization.migration
+pytket.utils.expectations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automodule:: pytket.utils.expectations
+    :members:
 
+pytket.utils.measurements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automodule:: pytket.utils.measurements
+    :members:
+
+pytket.utils.prepare
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automodule:: pytket.utils.prepare
+    :members:
+
+pytket.utils.results
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automodule:: pytket.utils.results
+    :members:
+
+pytket.utils.serialization.migration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automodule:: pytket._tket.utils_serialization
+.. automodule:: pytket.utils.serialization
 .. automodule:: pytket.utils.serialization.migration
     :members: circuit_dict_from_pytket1_dict
 
@@ -52,3 +79,8 @@ pytket.utils.symbolic
 .. automodule:: pytket.utils.symbolic
     :members:
     :special-members: SymGateFunc
+
+pytket.utils.term_sequence
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automodule:: pytket.utils.term_sequence
+    :members:

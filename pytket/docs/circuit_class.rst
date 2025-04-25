@@ -28,7 +28,7 @@ condition on a specified set of bit values.)
    Since the Circuit class is so big we use the check_circuit_class_docs.py script to check that we haven't missed anything. 
 
 .. currentmodule:: pytket.circuit.Circuit
-.. autoclass:: pytket.circuit.Circuit
+.. autoclass:: pytket._tket.circuit.Circuit
 
    .. automethod:: __init__
    

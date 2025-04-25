@@ -14,6 +14,9 @@ For more on pytket passes see the `compilation <https://docs.quantinuum.com/tket
 
 .. currentmodule:: pytket._tket.passes
 
+.. automodule:: pytket.passes
+.. automodule:: pytket._tket.passes
+
 .. autoclass:: pytket.passes.BasePass
 
    .. automethod:: __init__
@@ -112,9 +115,19 @@ For more on pytket passes see the `compilation <https://docs.quantinuum.com/tket
 .. automethod:: pytket.passes.ZXGraphlikeOptimisation
 .. automethod:: pytket.passes.ZZPhaseToRz
 
-.. autofunction:: pytket.passes.scratch_reg_resize_pass
+pytket.passes.resizeregpass
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: pytket.passes.PassSelector
+.. automodule:: pytket.passes.resizeregpass
+
+.. autofunction:: pytket.passes.resizeregpass.scratch_reg_resize_pass
+
+pytket.passes.passselector
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: pytket.passes.passselector
+
+.. autoclass:: pytket.passes.passselector.PassSelector
 
    .. automethod:: __init__
    .. automethod:: apply

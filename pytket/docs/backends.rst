@@ -14,9 +14,12 @@ See also the `Running on backends <https://docs.quantinuum.com/tket/user-guide/m
 
 pytket.backends.backend
 ~~~~~~~~~~~~~~~~~~~~~~~
+.. automodule:: pytket.backends.backend
 .. autoclass:: Backend
    :special-members: __init__
    :members:
+
+.. autoclass:: ResultHandleTypeError
 
 pytket.backends.resulthandle
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,4 +39,9 @@ pytket.backends.status
 pytket.backends.backendinfo
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automodule:: pytket.backends.backendinfo
-    :members: BackendInfo
+    :members: BackendInfo, fully_connected_backendinfo
+
+pytket.backends.backend_exceptions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automodule:: pytket.backends.backend_exceptions
+    :members:
