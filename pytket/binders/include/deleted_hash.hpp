@@ -15,6 +15,8 @@
 #pragma once
 
 #include <nanobind/nanobind.h>
+#include <string.h>
+
 namespace nb = nanobind;
 
 template <class T>
