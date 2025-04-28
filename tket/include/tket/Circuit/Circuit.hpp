@@ -46,6 +46,7 @@
 #include "DAGDefs.hpp"
 #include "ResourceData.hpp"
 #include "Slices.hpp"
+#include "tket/Gate/GatePtr.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
 #include "tket/Utils/Json.hpp"
 #include "tket/Utils/SequencedContainers.hpp"
@@ -1739,7 +1740,26 @@ Vertex Circuit::add_op(
     preds.push_back(pred_out_e);
   }
 
-  Vertex new_v = add_vertex(op, opgroup);
+  Vertex new_v;
+  OpType optype = op->get_type();
+  if (optype == OpType::CnRy && args.size() == 1) {
+    new_v = add_vertex(
+        get_op_ptr(OpType::Ry, as_gate_ptr(op)->get_params()), opgroup);
+  } else if (optype == OpType::CnRx && args.size() == 1) {
+    new_v = add_vertex(
+        get_op_ptr(OpType::Rx, as_gate_ptr(op)->get_params()), opgroup);
+  } else if (optype == OpType::CnRz && args.size() == 1) {
+    new_v = add_vertex(
+        get_op_ptr(OpType::Rz, as_gate_ptr(op)->get_params()), opgroup);
+  } else if (optype == OpType::CnX && args.size() == 1) {
+    new_v = add_vertex(get_op_ptr(OpType::X), opgroup);
+  } else if (optype == OpType::CnZ && args.size() == 1) {
+    new_v = add_vertex(get_op_ptr(OpType::Z), opgroup);
+  } else if (optype == OpType::CnY && args.size() == 1) {
+    new_v = add_vertex(get_op_ptr(OpType::Y), opgroup);
+  } else {
+    new_v = add_vertex(op, opgroup);
+  }
   rewire(new_v, preds, sig);
   return new_v;
 }
