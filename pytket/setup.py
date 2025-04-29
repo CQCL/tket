@@ -17,6 +17,7 @@ import multiprocessing
 import os
 import shutil
 import subprocess
+import sys
 from sysconfig import get_config_var
 
 import setuptools  # type: ignore
@@ -80,7 +81,9 @@ class CMakeBuild(build_ext):
         subprocess.run(["cmake", "--install", os.curdir], cwd=build_dir, check=True)
         lib_folder = os.path.join(install_dir, "lib")
         lib_names = ["libtklog.so", "libtket.so"]
-        ext_suffix = get_config_var("EXT_SUFFIX")
+        ext_suffix = (
+            get_config_var("EXT_SUFFIX") if sys.version_info.minor < 12 else ".abi3.so"
+        )
         lib_names.extend(f"{binder}{ext_suffix}" for binder in binders)
         # TODO make the above generic
         os.makedirs(extdir, exist_ok=True)
