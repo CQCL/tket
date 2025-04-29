@@ -84,8 +84,8 @@ jobs:
 
       - name: Perform Compilation
         run: |
-          pytket_benchmarking compile QiskitIBMQ pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled
-          pytket_benchmarking compile PytketIBMQ pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled
+          pytket_benchmarking compile QiskitL3 pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled
+          pytket_benchmarking compile PytketL3 pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled
 
       - name: Save compiled circuits
         uses: actions/upload-artifact@v4
