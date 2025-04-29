@@ -117,6 +117,20 @@ cmake --build .
 cmake --install .
 ```
 
+### `tsl-robin-map` (needed for nanobind)
+
+```
+cd ${TMP_DIR}
+wget https://github.com/Tessil/robin-map/archive/v1.4.0.tar.gz
+tar xzvf v1.4.0.tar.gz
+cd robin-map-1.4.0/
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}
+cmake --build . -j2
+cmake --install .
+```
+
 ### `nanobind` (needed for pytket)
 
 ```
