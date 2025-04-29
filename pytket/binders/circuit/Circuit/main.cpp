@@ -440,10 +440,14 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
           "identity, or when routing adds wires to \"fill out\" the "
           "architecture. This operation will only remove empty classical wires "
           "if there are no used bits with a higher index in the same register. "
-          "\n\n:param "
-          "keep_blank_classical_wires: select if "
-          "empty classical wires should not be removed",
-          nb::arg("keep_blank_classical_wires") = false)
+          "\n\n:param keep_blank_classical_wires: if true, empty classical "
+          "wires are not removed"
+          "\n:param remove_classical_only_at_end_of_register: if true, empty "
+          "classical wires are not removed if they don't belong to a register "
+          "or there are any non-empty wires with a higher index in the same "
+          "register",
+          nb::arg("keep_blank_classical_wires") = false,
+          nb::arg("remove_classical_only_at_end_of_register") = true)
       .def(
           "add_blank_wires", &Circuit::add_blank_wires,
           "Adds a number of new qubits to the circuit. These will be "
