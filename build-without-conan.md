@@ -109,10 +109,25 @@ cd ${TMP_DIR}
 wget https://github.com/emil-e/rapidcheck/archive/1c91f40e64d87869250cfb610376c629307bf77d.zip
 unzip 1c91f40e64d87869250cfb610376c629307bf77d.zip
 cd rapidcheck-1c91f40e64d87869250cfb610376c629307bf77d/
+sed -i -e 's/cmake_minimum_required(VERSION 3.0)/cmake_minimum_required(VERSION 3.5)/g' CMakeLists.txt
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
 cmake --build .
+cmake --install .
+```
+
+### `tsl-robin-map` (needed for nanobind)
+
+```
+cd ${TMP_DIR}
+wget https://github.com/Tessil/robin-map/archive/v1.4.0.tar.gz
+tar xzvf v1.4.0.tar.gz
+cd robin-map-1.4.0/
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
+cmake --build . -j2
 cmake --install .
 ```
 
