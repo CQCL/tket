@@ -1876,11 +1876,12 @@ class Circuit:
     @name.setter
     def name(self, arg: str, /) -> None: ...
 
-    def remove_blank_wires(self, keep_blank_classical_wires: bool = False) -> None:
+    def remove_blank_wires(self, keep_blank_classical_wires: bool = False, remove_classical_only_at_end_of_register: bool = True) -> None:
         """
         Removes any Input-Output pairs in the DAG with no intervening operations, i.e. removes untouched qubits/bits from the circuit. This may occur when optimisations recognise that the operations on a qubit reduce to the identity, or when routing adds wires to "fill out" the architecture. This operation will only remove empty classical wires if there are no used bits with a higher index in the same register. 
 
-        :param keep_blank_classical_wires: select if empty classical wires should not be removed
+        :param keep_blank_classical_wires: if true, empty classical wires are not removed
+        :param remove_classical_only_at_end_of_register: if true, empty classical wires are not removed if they don't belong to a register or there are any non-empty wires with a higher index in the same register
         """
 
     def add_blank_wires(self, number: int) -> None:

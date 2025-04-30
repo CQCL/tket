@@ -899,6 +899,23 @@ def test_remove_blank_wires_pass() -> None:
     assert cu.circuit.qubits == [Qubit("a", 0)]
     assert cu.circuit.bits == c.bits
 
+    c = Circuit()
+    c.add_bit(Bit(1))
+    c1 = c.copy()
+    c1.remove_blank_wires()
+    assert len(c1.bits) == 1  # the empty wire is not in a register
+    c1 = c.copy()
+    c1.remove_blank_wires(remove_classical_only_at_end_of_register=False)
+    assert len(c1.bits) == 0
+
+    c = Circuit(1, 2).H(0).Measure(0, 1)
+    c1 = c.copy()
+    c1.remove_blank_wires()
+    assert len(c1.bits) == 2  # the empty wire is not at the end of a register
+    c1 = c.copy()
+    c1.remove_blank_wires(remove_classical_only_at_end_of_register=False)
+    assert len(c1.bits) == 1
+
 
 def test_round_angles_pass() -> None:
     c0 = Circuit(2).H(0).TK2(0.001, -0.001, 0.001, 0, 1).Rz(0.50001, 0)
