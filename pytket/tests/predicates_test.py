@@ -1174,6 +1174,21 @@ def test_zx_optimisation_wireswaps() -> None:
     assert not c.has_implicit_wireswaps
 
 
+@pytest.mark.xfail(reason="https://github.com/CQCL/tket/issues/1880")
+def test_initial_and_final_map_types() -> None:
+    c = Circuit(1).H(0)
+    cu = CompilationUnit(c)
+    CliffordSimp().apply(cu)
+    im = cu.initial_map
+    fm = cu.final_map
+    im0, im1 = next(iter(im.items()))
+    fm0, fm1 = next(iter(fm.items()))
+    assert isinstance(im0, Qubit)
+    assert isinstance(im1, Qubit)
+    assert isinstance(fm0, Qubit)
+    assert isinstance(fm1, Qubit)
+
+
 if __name__ == "__main__":
     test_predicate_generation()
     test_compilation_unit_generation()

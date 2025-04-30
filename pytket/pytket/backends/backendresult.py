@@ -31,6 +31,7 @@ from pytket.circuit import (
     Qubit,
     UnitID,
 )
+from pytket.unit_id import UnitType
 from pytket.utils.distribution import EmpiricalDistribution, ProbabilityDistribution
 from pytket.utils.outcomearray import OutcomeArray, readout_counts
 from pytket.utils.results import (
@@ -358,10 +359,10 @@ class BackendResult:
             else:
                 raise InvalidResultType("No results stored.")
 
-        if all(isinstance(i, Bit) for i in request_ids):
+        if all(i.type == UnitType.bit for i in request_ids):
             return self._get_measured_res(request_ids, ppcirc)  # type: ignore
 
-        if all(isinstance(i, Qubit) for i in request_ids):
+        if all(i.type == UnitType.qubit for i in request_ids):
             return self._get_state_res(request_ids)  # type: ignore
 
         raise ValueError(

@@ -1634,6 +1634,15 @@ def test_cnx_vchain_arbitrary_ancillas() -> None:
         assert np.allclose(m, m_cnx_with_ancillas)
 
 
+def test_c0z() -> None:
+    # https://github.com/CQCL/tket/issues/1873
+    circ = Circuit(1).add_gate(OpType.CnZ, [0])
+    cmds = circ.get_commands()
+    assert len(cmds) == 1
+    cmd = cmds[0]
+    assert cmd.op.type == OpType.Z
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()

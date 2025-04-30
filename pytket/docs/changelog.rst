@@ -11,6 +11,11 @@ API changes:
   evaluation of circuits have been renamed to indicate they are not intended 
   for external usage.
 
+Fixes:
+
+* Apply special handling of multi-controlled gates with 0 or 1 controls when
+  adding operations using `UnitID` arguments.
+
 2.3.1 (April 2025)
 ------------------
 
