@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+2.3.2 (April 2025)
+------------------
 
 Features:
 
