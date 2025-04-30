@@ -4,6 +4,11 @@ Changelog
 Unreleased
 ----------
 
+Features:
+
+* Add option to `Circuit.remove_blank_wires` to force removal of all blank
+  classical wires.
+
 Fixes:
 
 * Apply special handling of multi-controlled gates with 0 or 1 controls when
