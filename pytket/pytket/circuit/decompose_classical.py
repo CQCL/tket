@@ -359,7 +359,13 @@ def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:  # noqa: PLR0
                 else output0
             )
             decomposer = ClExprDecomposer(
-                newcirc, bit_posn, reg_posn, args, bit_heap, reg_heap, kwargs  # type: ignore
+                newcirc,
+                bit_posn,
+                reg_posn,
+                args,
+                bit_heap,
+                reg_heap,
+                kwargs,  # type: ignore
             )
             comp_var = decomposer.decompose_expr(expr, out_var)
             if comp_var != out_var:

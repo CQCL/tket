@@ -200,9 +200,7 @@ _tk_to_qasm_params[OpType.Rz] = "rz"  # prefer "rz" to "Rz"
 _tk_to_qasm_extra_noparams = {
     item[1]: item[0] for item in NOPARAM_EXTRA_COMMANDS.items()
 }
-_tk_to_qasm_extra_params = {
-    item[1]: item[0] for item in PARAM_EXTRA_COMMANDS.items()
-}
+_tk_to_qasm_extra_params = {item[1]: item[0] for item in PARAM_EXTRA_COMMANDS.items()}
 
 _classical_gatestr_map = {"AND": "&", "OR": "|", "XOR": "^"}
 
@@ -527,10 +525,8 @@ class CircuitTransformer(Transformer):
         openum: type[BitWiseOp] | type[RegWiseOp]
         if opstr in _BITOPS and opstr not in _REGOPS:
             openum = BitWiseOp
-        elif (
-            (opstr in _REGOPS
-            and opstr not in _BITOPS)
-            or all(isinstance(arg, int) for arg in args)
+        elif (opstr in _REGOPS and opstr not in _BITOPS) or all(
+            isinstance(arg, int) for arg in args
         ):
             openum = RegWiseOp
         elif all(isinstance(arg, Bit | BitLogicExp | int) for arg in args):
@@ -900,7 +896,9 @@ class CircuitTransformer(Transformer):
                 existing_op = all(
                     str(g) == str(c)
                     for g, c in zip(
-                        gate_circ.get_commands(), comparison_circ.get_commands(), strict=False
+                        gate_circ.get_commands(),
+                        comparison_circ.get_commands(),
+                        strict=False,
                     )
                 )
         if not existing_op:
@@ -1397,7 +1395,9 @@ class QasmWriter:
             self.include_gate_defs.update(NOPARAM_EXTRA_COMMANDS.keys())
             self.include_gate_defs.update(PARAM_EXTRA_COMMANDS.keys())
             self.prefix = f'OPENQASM 2.0;\ninclude "{header}.inc";\n\n'
-            self.qregs = _retrieve_registers(cast("list[UnitID]", qubits), QubitRegister)
+            self.qregs = _retrieve_registers(
+                cast("list[UnitID]", qubits), QubitRegister
+            )
             self.cregs = _retrieve_registers(cast("list[UnitID]", bits), BitRegister)
             for reg in self.qregs.values():
                 if regname_regex.match(reg.name) is None:
@@ -1595,10 +1595,9 @@ class QasmWriter:
             string = self.strings.get_string(label)
             if string is None:
                 continue
-            if (
-                _var_appears(pred.dest, string)
-                or (label in self.strings.conditions
-                and _vars_overlap(pred.dest, self.strings.conditions[label].variable))
+            if _var_appears(pred.dest, string) or (
+                label in self.strings.conditions
+                and _vars_overlap(pred.dest, self.strings.conditions[label].variable)
             ):
                 return False
         self.range_preds.pop(pred_label)

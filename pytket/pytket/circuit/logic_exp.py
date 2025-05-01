@@ -14,6 +14,7 @@
 
 """Classes and functions for constructing logical
 expressions over Bit and BitRegister."""
+
 import contextlib
 from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import dataclass

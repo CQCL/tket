@@ -13,6 +13,7 @@
 # limitations under the License.
 
 """Status classes for circuits submitted to backends."""
+
 from datetime import datetime
 from enum import Enum
 from typing import TYPE_CHECKING, Any, NamedTuple

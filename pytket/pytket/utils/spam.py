@@ -394,7 +394,9 @@ class SpamCorrecter:
             new_state_dicts = {}
             # parallelise circuits, run uncorrelated subsets
             # characterisation in parallel
-            for dim, qubits in zip(self.subset_dimensions, self.subsets_matrix_map, strict=False):
+            for dim, qubits in zip(
+                self.subset_dimensions, self.subsets_matrix_map, strict=False
+            ):
                 # add state to prepared states
                 new_state_dicts[qubits] = major_state[:dim]
                 # find only qubits that are expected to be in 1 state,
@@ -429,7 +431,9 @@ class SpamCorrecter:
         counter = 0
         self.node_index_dict: dict[Node, tuple[int, int]] = {}
 
-        for qbs, dim in zip(self.subsets_matrix_map, self.subset_dimensions, strict=False):
+        for qbs, dim in zip(
+            self.subsets_matrix_map, self.subset_dimensions, strict=False
+        ):
             # for a subset with n qubits, create a 2^n by 2^n matrix
             self.subsets_matrix_map[qbs] = np.zeros((1 << dim,) * 2, dtype=float)
             for i in range(len(qbs)):
@@ -634,7 +638,7 @@ class SpamCorrecter:
         )
         new_inst.node_index_dict = {
             Node(*pair[0]): (int(pair[1][0]), int(pair[1][1]))
-                for pair in d["node_index_dict"]
+            for pair in d["node_index_dict"]
         }
         new_inst.characterisation_matrices = [
             np.array(m) for m in d["characterisation_matrices"]

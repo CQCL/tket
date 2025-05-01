@@ -13,6 +13,7 @@
 # limitations under the License.
 
 """Named types for convenience"""
+
 from collections.abc import Sequence
 from typing import Union
 

@@ -15,6 +15,7 @@
 """The circuit module provides an API to interact with the
 tket :py:class:`Circuit` data structure.
  This module is provided in binary form during the PyPI installation."""
+
 from collections.abc import Callable, Sequence
 from typing import (
     Any,

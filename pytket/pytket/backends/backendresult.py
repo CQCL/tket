@@ -13,6 +13,7 @@
 # limitations under the License.
 
 """`BackendResult` class and associated methods."""
+
 import operator
 import warnings
 from collections import Counter
@@ -176,7 +177,8 @@ class BackendResult:
             and self.c_bits == other.c_bits
             and (
                 (self._shots is None and other._shots is None)
-                or cast("OutcomeArray", self._shots) == cast("OutcomeArray", other._shots)
+                or cast("OutcomeArray", self._shots)
+                == cast("OutcomeArray", other._shots)
             )
             and self._counts == other._counts
             and np.array_equal(self._state, other._state)
@@ -522,7 +524,8 @@ class BackendResult:
             "The `BackendResult.get_distribution()` method is deprecated: "
             "please use `get_empirical_distribution()` or "
             "`get_probability_distribution()` instead.",
-            DeprecationWarning, stacklevel=2,
+            DeprecationWarning,
+            stacklevel=2,
         )
         try:
             state = self.get_state(units)  # type: ignore

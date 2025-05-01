@@ -1182,7 +1182,8 @@ def test_custom_pass() -> None:
         for cmd in c.get_commands():
             op = cmd.op
             params = [
-                param if abs_float_param(param) >= 0.01 else 0.0 for param in op.params  # noqa: PLR2004
+                param if abs_float_param(param) >= 0.01 else 0.0
+                for param in op.params  # noqa: PLR2004
             ]
             c1.add_gate(op.type, params, cmd.args)
         return c1

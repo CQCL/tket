@@ -13,6 +13,7 @@
 # limitations under the License.
 
 """`OutcomeArray` class and associated methods."""
+
 import operator
 from collections import Counter
 from collections.abc import Sequence

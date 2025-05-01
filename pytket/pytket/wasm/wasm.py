@@ -217,8 +217,7 @@ class WasmModuleHandler:
 
         for x in self.unsupported_functions:
             result += (
-                f"unsupported function with invalid "
-                f"parameter or result type: '{x}' \n"
+                f"unsupported function with invalid parameter or result type: '{x}' \n"
             )
 
         return result

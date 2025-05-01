@@ -283,7 +283,7 @@ def test_resize_scratch_registers() -> None:
 
         for i in range(n_scratch_bits):
             args_map[original_scratch_reg[i]] = c_compiled.get_c_register(
-                f"{_TEMP_BIT_NAME}_{i//max_c_reg_width}"
+                f"{_TEMP_BIT_NAME}_{i // max_c_reg_width}"
             )[i % max_c_reg_width]
 
         # Check the compiled circuit is equivalent to the original one up to renaming

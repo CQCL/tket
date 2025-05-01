@@ -543,9 +543,7 @@ def test_postprocess_2() -> None:
         h = b.process_circuit(c, n_shots=100, postprocess=True)
         r = b.get_result(h)
         counts = r.get_counts()
-        assert all(
-            readout[0] == 1 and readout[1] == readout[2] for readout in counts
-        )
+        assert all(readout[0] == 1 and readout[1] == readout[2] for readout in counts)
         counts1 = r.get_counts(cbits=[Bit(1), Bit(0)])
         assert counts1 == Counter(
             {(readout[1], readout[0]): count for readout, count in counts.items()}
@@ -565,9 +563,7 @@ def test_postprocess_3() -> None:
     h = b.process_circuit(b.get_compiled_circuit(c), n_shots=n_shots, postprocess=True)
     r = b.get_result(h)
     counts = r.get_counts()
-    assert all(
-        readout[1] == 0 and readout[0] == readout[2] for readout in counts
-    )
+    assert all(readout[1] == 0 and readout[0] == readout[2] for readout in counts)
 
 
 def test_postprocess_4() -> None:

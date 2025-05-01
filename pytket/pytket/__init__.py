@@ -13,6 +13,7 @@
 # limitations under the License.
 
 """Python Interface to tket"""
+
 import pytket.architecture  # noqa: I001
 from pytket.circuit import (
     Circuit,

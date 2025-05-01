@@ -14,6 +14,7 @@
 
 """Collection of methods to evaluate a ZXDiagram to a tensor. This uses the
 numpy tensor features, in particular the einsum evaluation and optimisations."""
+
 import warnings
 from math import cos, floor, pi, sin, sqrt
 from typing import Any
@@ -39,7 +40,8 @@ try:
 except ModuleNotFoundError:
     warnings.warn(
         'Missing package for tensor evaluation of ZX diagrams. Run "pip '
-        "install 'pytket[ZX]'\" to install the optional dependencies.", stacklevel=2
+        "install 'pytket[ZX]'\" to install the optional dependencies.",
+        stacklevel=2,
     )
 
 

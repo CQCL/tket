@@ -13,6 +13,7 @@
 # limitations under the License.
 
 """Abstract base class for all Backend encapsulations."""
+
 import warnings
 from abc import ABC, abstractmethod
 from collections.abc import Iterable, Sequence
@@ -116,7 +117,8 @@ class Backend(ABC):
             if nomeasure_warn and circ.n_gates_of_type(OpType.Measure) < 1:
                 warnings.warn(
                     f"Circuit with index {i} in submitted does not contain a "
-                    "measure operation.", stacklevel=2
+                    "measure operation.",
+                    stacklevel=2,
                 )
         return True
 
@@ -222,7 +224,8 @@ class Backend(ABC):
         :raises TypeError: Types of handle identifiers don't match those of backend.
         """
         if (len(reshandle) != len(self._result_id_type)) or not all(
-            isinstance(idval, ty) for idval, ty in zip(reshandle, self._result_id_type, strict=False)
+            isinstance(idval, ty)
+            for idval, ty in zip(reshandle, self._result_id_type, strict=False)
         ):
             raise ResultHandleTypeError(
                 f"{reshandle!r} does not match expected "

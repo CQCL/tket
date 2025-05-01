@@ -540,7 +540,23 @@ def unitary_circuits(draw: Callable[[SearchStrategy[Any]], Any]) -> Circuit:
     syms = symbols("a b c d e")
     c = Circuit(n_qb)
 
-    optype_dict = dict.fromkeys((OpType.Z, OpType.X, OpType.Y, OpType.S, OpType.Sdg, OpType.T, OpType.Tdg, OpType.V, OpType.Vdg, OpType.SX, OpType.SXdg, OpType.H), (1, 0))
+    optype_dict = dict.fromkeys(
+        (
+            OpType.Z,
+            OpType.X,
+            OpType.Y,
+            OpType.S,
+            OpType.Sdg,
+            OpType.T,
+            OpType.Tdg,
+            OpType.V,
+            OpType.Vdg,
+            OpType.SX,
+            OpType.SXdg,
+            OpType.H,
+        ),
+        (1, 0),
+    )
     optype_dict.update(
         dict.fromkeys((OpType.Rx, OpType.Rz, OpType.Ry, OpType.U1), (1, 1))
     )
@@ -548,17 +564,46 @@ def unitary_circuits(draw: Callable[[SearchStrategy[Any]], Any]) -> Circuit:
     optype_dict.update(dict.fromkeys((OpType.U3, OpType.TK1), (1, 3)))
 
     optype_dict.update(
-        dict.fromkeys((OpType.CX, OpType.CY, OpType.CZ, OpType.CH, OpType.CV, OpType.CVdg, OpType.CSX, OpType.CSXdg, OpType.CS, OpType.CSdg, OpType.SWAP, OpType.ISWAPMax, OpType.Sycamore, OpType.ZZMax), (2, 0))
+        dict.fromkeys(
+            (
+                OpType.CX,
+                OpType.CY,
+                OpType.CZ,
+                OpType.CH,
+                OpType.CV,
+                OpType.CVdg,
+                OpType.CSX,
+                OpType.CSXdg,
+                OpType.CS,
+                OpType.CSdg,
+                OpType.SWAP,
+                OpType.ISWAPMax,
+                OpType.Sycamore,
+                OpType.ZZMax,
+            ),
+            (2, 0),
+        )
     )
     optype_dict.update(
-        dict.fromkeys((OpType.CRz, OpType.CRx, OpType.CRy, OpType.CU1, OpType.ISWAP, OpType.XXPhase, OpType.YYPhase, OpType.ZZPhase, OpType.ESWAP), (2, 1))
+        dict.fromkeys(
+            (
+                OpType.CRz,
+                OpType.CRx,
+                OpType.CRy,
+                OpType.CU1,
+                OpType.ISWAP,
+                OpType.XXPhase,
+                OpType.YYPhase,
+                OpType.ZZPhase,
+                OpType.ESWAP,
+            ),
+            (2, 1),
+        )
     )
     optype_dict.update(dict.fromkeys((OpType.PhasedISWAP, OpType.FSim), (2, 2)))
     optype_dict.update(dict.fromkeys((OpType.CU3, OpType.TK2), (2, 3)))
 
-    optype_dict.update(
-        dict.fromkeys((OpType.CCX, OpType.CSWAP, OpType.BRIDGE), (3, 0))
-    )
+    optype_dict.update(dict.fromkeys((OpType.CCX, OpType.CSWAP, OpType.BRIDGE), (3, 0)))
 
     optype_dict.update({OpType.XXPhase3: (3, 1)})
 
@@ -609,7 +654,9 @@ def test_symbolic_conversion(circ: Circuit) -> None:
     # bind random values to symbolic variables to test numeric equality
     bind_vals = np.random.rand(len(free_symbs))  # noqa: NPY002
 
-    substitutions = [(sym, val) for sym, val in zip(free_symbs, bind_vals, strict=False)]
+    substitutions = [
+        (sym, val) for sym, val in zip(free_symbs, bind_vals, strict=False)
+    ]
     circ.symbol_substitution(dict(substitutions))
     sym_unitary = sym_unitary.subs(substitutions)
     sym_state = sym_state.subs(substitutions)
