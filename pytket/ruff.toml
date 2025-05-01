@@ -6,7 +6,7 @@ exclude = [
     "stub_generation/stubgen.py",
 ]
 
-target-version = "py310"
+target-version = "py312"
 
 lint.select = [
     "A",
@@ -14,12 +14,12 @@ lint.select = [
     # "ANN",
     # "ARG", # TODO
     "ASYNC",
-    # "B",
+    "B",
     "BLE",
     # "C",
-    # "C4", # TODO
+    "C4",
     # "C90",
-    # "COM",
+    "COM",
     # "CPY",
     # "D",
     "DJ",
@@ -44,12 +44,12 @@ lint.select = [
     "ISC",
     "LOG",
     # "N",
-    # "NPY", # TODO
+    "NPY",
     # "PD",
-    # "PERF", # TODO
+    "PERF",
     # "PGH",
     "PIE",
-    # "PL",
+    "PL",
     # "PT",
     # "PTH", # TODO
     # "PYI", # TODO
@@ -57,18 +57,18 @@ lint.select = [
     "R",
     "RET",
     "RSE",
-    # "RUF",
+    "RUF",
     # "S",
-    # "SIM", # TODO
-    # "SLF",
+    "SIM",
+    "SLF",
     "SLOT",
     "T10",
-    # "T20",
-    # "TCH", # TODO
+    "T20",
+    "TCH",
     # "TD",
     # "TID",
     # "TRY",
-    # "UP", # TODO
+    "UP",
     "W",
     "YTT",
 ]
@@ -78,6 +78,7 @@ lint.ignore = [
     "E731", # OK to assign to lambdas
     "E741", # Allow variable names like "l"
     "F403", # Allow wildcard imports in init files
+    "COM812", # flake8-commas "Trailing comma missing"
 ]
 
 [lint.per-file-ignores]
