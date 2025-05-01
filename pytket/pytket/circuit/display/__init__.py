@@ -133,7 +133,7 @@ class CircuitDisplayConfig(PytketExtConfig):
             min_width=str(min_w) if min_w is not None else "500px",
             orient=ext_dict.get("orient"),
             render_options=RenderOptions(
-                **(ext_dict["render_options"] if "render_options" in ext_dict else {})
+                **(ext_dict.get("render_options", {}))
             ),
         )
 

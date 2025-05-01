@@ -29,8 +29,7 @@ from pytket.circuit import (
 )
 from pytket.circuit.logic_exp import BitWiseOp, LogicExp, Ops, RegWiseOp
 
-_reg_output_clops = set(
-    [
+_reg_output_clops = {
         ClOp.RegAnd,
         ClOp.RegOr,
         ClOp.RegXor,
@@ -45,8 +44,7 @@ _reg_output_clops = set(
         ClOp.RegLsh,
         ClOp.RegRsh,
         ClOp.RegNeg,
-    ]
-)
+    }
 
 
 def has_reg_output(op: ClOp) -> bool:
@@ -177,9 +175,9 @@ def check_register_alignments(circ: Circuit) -> bool:
     :param circ: circuit to check
     :return: True iff all `ClExprOp` operations are register-aligned
     """
-    cregs: set[tuple[Bit, ...]] = set(
+    cregs: set[tuple[Bit, ...]] = {
         tuple(creg.to_list()) for creg in circ.c_registers
-    )
+    }
     for cmd in circ:
         op = cmd.op
         if op.type == OpType.ClExpr:

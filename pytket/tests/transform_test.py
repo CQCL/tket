@@ -830,7 +830,7 @@ def test_decompose_swap_to_cx() -> None:
     circ.CX(1, 4)
     circ.CX(0, 4)
 
-    init_map = dict()
+    init_map = {}
     init_map[Qubit(0)] = Node(0)
     init_map[Qubit(1)] = Node(1)
     init_map[Qubit(2)] = Node(2)
@@ -1080,7 +1080,7 @@ def test_auto_rebase() -> None:
 
     circ = get_test_circuit()
 
-    for gateset, cx_circ, TK1_func in pass_params:
+    for gateset, _cx_circ, _TK1_func in pass_params:
         rebase = AutoRebase(gateset)
         c2 = circ.copy()
         assert rebase.apply(c2)
@@ -1139,7 +1139,7 @@ def test_auto_squash() -> None:
         ),
     ]
 
-    for gateset, TK1_func in pass_params:
+    for gateset, _TK1_func in pass_params:
         circ = Circuit(1)
         for gate in itertools.islice(itertools.cycle(gateset), 5):
             # make a sequence of 5 gates from gateset to make sure squash does

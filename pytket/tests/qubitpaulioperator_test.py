@@ -130,7 +130,7 @@ def test_QubitPauliOperator_matrices() -> None:
 
     assert np.array_equal(
         np.kron(op_mat, np.eye(2)),
-        named_op.to_sparse_matrix(named_qbs + [Qubit("a", 1)]).toarray(),
+        named_op.to_sparse_matrix([*named_qbs, Qubit("a", 1)]).toarray(),
     )
 
     # https://github.com/CQCL/tket/issues/294

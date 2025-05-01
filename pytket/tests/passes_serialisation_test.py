@@ -485,7 +485,6 @@ def test_passes_roundtrip_serialisation() -> None:
         try:
             check_pass_serialisation(p)
         except ValidationError as e:
-            print(p)
             raise ValueError(f"Pass {k} failed serialisation test.") from e
 
 

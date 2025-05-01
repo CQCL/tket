@@ -158,7 +158,7 @@ class ProbabilityDistribution(Generic[T0]):
         if not np.isclose(s0, 1):
             warnings.warn(
                 "Probabilities used to initialize ProbabilityDistribution do "
-                "not sum to 1: renormalizing."
+                "not sum to 1: renormalizing.", stacklevel=2
             )
         newP = {x: p for x, p in P.items() if p > min_p}
         s = sum(newP.values())

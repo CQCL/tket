@@ -366,7 +366,7 @@ def test_rename_qubits_pass() -> None:
     cu = CompilationUnit(circ)
     p.apply(cu)
     newcirc = cu.circuit
-    assert set(newcirc.qubits) == set([Qubit("b", i) for i in range(2)])
+    assert set(newcirc.qubits) == {Qubit("b", i) for i in range(2)}
 
 
 def gate_count_metric(circ: Circuit) -> int:
@@ -763,12 +763,12 @@ def test_pauli_squash() -> None:
     c = Circuit(3)
     c.add_pauliexpbox(PauliExpBox([Pauli.Z, Pauli.X, Pauli.Z], 0.8), [0, 1, 2])
     c.add_pauliexpbox(PauliExpBox([Pauli.Y, Pauli.X, Pauli.X], 0.2), [0, 1, 2])
-    for strat in [
+    for _strat in [
         PauliSynthStrat.Individual,
         PauliSynthStrat.Pairwise,
         PauliSynthStrat.Sets,
     ]:
-        for cx_config in [CXConfigType.Snake, CXConfigType.Star, CXConfigType.Tree]:
+        for _cx_config in [CXConfigType.Snake, CXConfigType.Star, CXConfigType.Tree]:
             c1 = c.copy()
             assert PauliSquash().apply(c1)
             assert c1.n_gates_of_type(OpType.CX) <= 4
@@ -868,7 +868,7 @@ def test_iswapmax_autorebase() -> None:
 def test_flatten_relabel_pass() -> None:
     c = Circuit(3)
     c.H(1).H(2)
-    rename_map: RenameUnitsMap = dict()
+    rename_map: RenameUnitsMap = {}
     rename_map[Qubit(0)] = Qubit("a", 4)
     rename_map[Qubit(1)] = Qubit("b", 7)
     rename_map[Qubit(2)] = Qubit("a", 2)

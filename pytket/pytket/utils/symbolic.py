@@ -115,11 +115,11 @@ def symb_u3(params: ParamsType) -> ImmutableMatrix:
 
 
 def symb_u2(params: ParamsType) -> ImmutableMatrix:
-    return symb_u3([0.5] + params)
+    return symb_u3([0.5, *params])
 
 
 def symb_u1(params: ParamsType) -> ImmutableMatrix:
-    return symb_u3([0.0, 0.0] + params)
+    return symb_u3([0.0, 0.0, *params])
 
 
 def symb_tk1(params: ParamsType) -> ImmutableMatrix:

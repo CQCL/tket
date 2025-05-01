@@ -113,12 +113,11 @@ class Backend(ABC):
             )
             for error in errors:
                 raise error
-            if nomeasure_warn:
-                if circ.n_gates_of_type(OpType.Measure) < 1:
-                    warnings.warn(
-                        f"Circuit with index {i} in submitted does not contain a "
-                        "measure operation."
-                    )
+            if nomeasure_warn and circ.n_gates_of_type(OpType.Measure) < 1:
+                warnings.warn(
+                    f"Circuit with index {i} in submitted does not contain a "
+                    "measure operation.", stacklevel=2
+                )
         return True
 
     @abstractmethod
@@ -603,7 +602,7 @@ class Backend(ABC):
             return optional or (n is not None and n > 0)
 
         if set_zero and not optional:
-            ValueError("set_zero cannot be true when optional is false")
+            raise ValueError("set_zero cannot be true when optional is false")
 
         if hasattr(n_shots, "__iter__"):
             assert not isinstance(n_shots, int)
@@ -627,7 +626,7 @@ class Backend(ABC):
 
         if set_zero:
             # replace None with 0
-            n_shots_list = list(map(lambda n: n or 0, n_shots_list))
+            n_shots_list = [n or 0 for n in n_shots_list]
 
         return n_shots_list
 

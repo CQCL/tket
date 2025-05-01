@@ -64,7 +64,7 @@ class QubitPauliOperator:
         self,
         dictionary: dict[QubitPauliString, CoeffTypeAccepted] | None = None,
     ) -> None:
-        self._dict: dict[QubitPauliString, Expr] = dict()
+        self._dict: dict[QubitPauliString, Expr] = {}
         if dictionary:
             for key, value in dictionary.items():
                 self._dict[key] = _coeff_convert(value)
@@ -147,7 +147,7 @@ class QubitPauliOperator:
 
         # Handle operator of the same type
         if isinstance(multiplier, QubitPauliOperator):
-            result_terms: dict = dict()
+            result_terms: dict = {}
             for left_key, left_value in self._dict.items():
                 for right_key, right_value in multiplier._dict.items():
                     new_term, bonus_coeff = pauli_string_mult(left_key, right_key)
@@ -163,7 +163,7 @@ class QubitPauliOperator:
             return self
 
         # Handle scalars.
-        if isinstance(multiplier, (float, Expr)):
+        if isinstance(multiplier, float | Expr):
             for key in self._dict:
                 self[key] *= multiplier
             return self
@@ -291,7 +291,7 @@ class QubitPauliOperator:
         :rtype: csc_matrix
         """
         if qubits is None:
-            qubits_ = sorted(list(self._all_qubits))
+            qubits_ = sorted(self._all_qubits)
             return sum(
                 complex(coeff) * pauli.to_sparse_matrix(qubits_)
                 for pauli, coeff in self._dict.items()
@@ -397,6 +397,6 @@ class QubitPauliOperator:
 
     def _collect_qubits(self) -> None:
         self._all_qubits: set[Qubit] = set()
-        for key in self._dict.keys():
-            for q in key.map.keys():
+        for key in self._dict:
+            for q in key.map:
                 self._all_qubits.add(q)

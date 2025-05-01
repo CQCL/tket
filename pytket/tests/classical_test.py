@@ -78,7 +78,7 @@ with open(curr_file_path.parent.parent / "schemas/circuit_v1.json") as f:
 
 
 def print_commands(c: Circuit) -> None:
-    print("\n".join(map(str, c)))
+    pass
 
 
 def test_c_ops() -> None:
@@ -1019,14 +1019,7 @@ def primitive_reg_logic_exps(
     if issubclass(exp_type, BinaryOp):
         if issubclass(
             exp_type,
-            (
-                RegEq,
-                RegNeq,
-                RegLt,
-                RegGt,
-                RegLeq,
-                RegGeq,
-            ),
+            RegEq | RegNeq | RegLt | RegGt | RegLeq | RegGeq,
         ):
             const_compare = draw(uint64)
             args.append(const_compare)
@@ -1205,7 +1198,6 @@ def test_regpredicate(condition: PredicateExp) -> None:
         check_range = commands[-2].op.type == OpType.RangePredicate
         if not check_range:
             print_commands(newcirc)
-            print(condition.args[0])
         assert check_range
 
 
@@ -1220,7 +1212,7 @@ def compare_commands_box(
     commands_equal = True
     for c1, c2 in zip(circ1, circ2, strict=False):
         if print_com:
-            print(c1, c2)
+            pass
         if c1.op.type == OpType.Conditional:
             assert isinstance(c1.op, Conditional)
             assert isinstance(c2.op, Conditional)

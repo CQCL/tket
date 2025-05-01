@@ -145,7 +145,6 @@ class bdist_wheel(_bdist_wheel):
     def finalize_options(self):
         _bdist_wheel.finalize_options(self)
         if plat_name is not None:
-            print(f"Overriding plat_name to {plat_name}")
             self.plat_name = plat_name
             self.plat_name_supplied = True
 
@@ -164,7 +163,7 @@ setup(
     long_description=open("package.md").read(),
     long_description_content_type="text/markdown",
     license="Apache 2",
-    packages=setuptools.find_packages() + ["pytket.qasm.includes"],
+    packages=[*setuptools.find_packages(), "pytket.qasm.includes"],
     install_requires=[
         "sympy >= 1.12.1",
         "numpy >= 1.26.4",

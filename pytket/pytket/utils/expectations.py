@@ -162,10 +162,7 @@ def get_operator_expectation_value(
         return operator.state_expectation(state)
     energy: complex
     id_string = QubitPauliString()
-    if id_string in operator._dict:
-        energy = complex(operator[id_string])
-    else:
-        energy = 0
+    energy = complex(operator[id_string]) if id_string in operator._dict else 0
     if not partition_strat:
         operator_without_id = QubitPauliOperator(
             {p: c for p, c in operator._dict.items() if (p != id_string)}
@@ -197,7 +194,7 @@ def get_operator_expectation_value(
                 backend.pop_result(handle)
             return energy
         raise ValueError("Backend does not support counts or shots")
-    qubit_pauli_string_list = [p for p in operator._dict.keys() if (p != id_string)]
+    qubit_pauli_string_list = [p for p in operator._dict if (p != id_string)]
     measurement_expectation = measurement_reduction(
         qubit_pauli_string_list, partition_strat, colour_method
     )

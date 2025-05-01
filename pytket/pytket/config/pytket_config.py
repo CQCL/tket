@@ -62,7 +62,7 @@ class PytketConfig:
         with config_file_path.open("r", encoding="utf-8") as config_file:
             config = json.load(config_file)
             return PytketConfig(
-                config.get("extensions", dict()),
+                config.get("extensions", {}),
             )
 
     def write_file(self, config_file_path: Path) -> None:

@@ -228,7 +228,7 @@ class QuipperTransformer(Transformer):
     def qgate(self, t: list) -> QGate:
         ops = QGate_Op
         n = t[0]
-        if n == "not" or n == "x" or n == "X":
+        if n in {"not", "x", "X"}:
             op = ops.Not
         elif n == "H":
             op = ops.H
@@ -312,11 +312,11 @@ class QuipperTransformer(Transformer):
 
     def control_app(self, t: list) -> Control:
         if not t:
-            return Control(controlled=list(), no_control=False)
+            return Control(controlled=[], no_control=False)
         if len(t) == 2:
             return Control(controlled=t[0], no_control=True)
         if t[0] == "with nocontrol":
-            return Control(controlled=list(), no_control=True)
+            return Control(controlled=[], no_control=True)
         return Control(controlled=t[0], no_control=False)
 
     def circuit(self, t: list) -> Program:
@@ -351,7 +351,7 @@ def allowed(op: str, arity: int) -> bool:
 # Class for constructing a pytket Circuit from a parsed Quipper program
 class CircuitMaker:
     def __init__(self, subr: list[Subroutine]) -> None:
-        self.subrd = dict((s.name, s) for s in subr)
+        self.subrd = {s.name: s for s in subr}
         if len(self.subrd) != len(subr):
             raise TypeError("Repeated subroutine names")
 
@@ -364,8 +364,8 @@ class CircuitMaker:
         n_qbits = len(qbits)
         n_cbits = len(cbits)
         # Construct mappings from wire labels to tket indices.
-        tkqbits = dict((qbits[i], i) for i in range(n_qbits))
-        tkcbits = dict((cbits[i], i) for i in range(n_cbits))
+        tkqbits = {qbits[i]: i for i in range(n_qbits)}
+        tkcbits = {cbits[i]: i for i in range(n_cbits)}
         # Construct circuit in tket.
         c = Circuit(n_qbits, n_cbits)
         for gate in gates:
@@ -438,7 +438,7 @@ class CircuitMaker:
                         elif n_ctrls == 2:
                             c.CCX(qctrls[0], qctrls[1], wire)
                         else:
-                            c.add_gate(OpType.CnX, qctrls + [wire])
+                            c.add_gate(OpType.CnX, [*qctrls, wire])
                 elif op == "H":
                     if n_ctrls == 0:
                         c.H(wires[0])
@@ -541,7 +541,7 @@ class CircuitMaker:
                     else:
                         raise NotImplementedError("Controlled W")
                 else:
-                    raise TypeError("Unknown op type: %s" % op)
+                    raise TypeError(f"Unknown op type: {op}")
                 # Apply the NOT gates again for the negative controls.
                 for ctrl in neg_qctrls:
                     c.X(ctrl)
@@ -561,7 +561,7 @@ class CircuitMaker:
                     else:
                         c.Rz(2 / t, wire)
                 else:
-                    raise TypeError("Unknown op type: %s" % op)
+                    raise TypeError(f"Unknown op type: {op}")
             # QInit, QTerm, CInit, CTerm represent 'temporary' wires that
             # only occupy part of a circuit (and can be initialized with 0/1).
             # Not supported in pytket.
@@ -595,7 +595,7 @@ class CircuitMaker:
             elif isinstance(gate, Comment):
                 pass
             else:
-                raise TypeError("Unknown gate type: %s" % type(gate))
+                raise TypeError(f"Unknown gate type: {type(gate)}")
         return c
 
 

@@ -21,8 +21,8 @@ class CircuitNotValidError(Exception):
     def __init__(self, message: str | int, failed_pred: str | None = None):
         if isinstance(message, int):
             message = (
-                "Circuit with index {0} in submitted does not satisfy "
-                "{1} (try compiling with backend.get_compiled_circuits first)."
+                "Circuit with index {} in submitted does not satisfy "
+                "{} (try compiling with backend.get_compiled_circuits first)."
             ).format(message, failed_pred or "all predicates")
         super().__init__(message)
 

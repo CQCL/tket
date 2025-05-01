@@ -74,7 +74,7 @@ class WasmModuleHandler:
 
         # stores the names of the functions mapped
         #  to the number of parameters and the number of return values
-        self._functions = dict()
+        self._functions = {}
 
         # contains the list of functions that are not allowed
         # to use in pytket (because of types that are not integers

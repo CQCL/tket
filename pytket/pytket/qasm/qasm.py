@@ -100,9 +100,9 @@ class QASMUnsupportedError(Exception):
 Value = Union[int, float, str]
 T = TypeVar("T")
 
-_BITOPS = set(op.value for op in BitWiseOp)
+_BITOPS = {op.value for op in BitWiseOp}
 _BITOPS.update(("+", "-"))  # both are parsed to XOR
-_REGOPS = set(op.value for op in RegWiseOp)
+_REGOPS = {op.value for op in RegWiseOp}
 
 Arg = Union[list, str]
 
@@ -192,17 +192,17 @@ N_PARAMS_EXTRA_COMMANDS = {
     OpType.FSim: 2,
 }
 
-_tk_to_qasm_noparams = dict((item[1], item[0]) for item in NOPARAM_COMMANDS.items())
+_tk_to_qasm_noparams = {item[1]: item[0] for item in NOPARAM_COMMANDS.items()}
 _tk_to_qasm_noparams[OpType.CX] = "cx"  # prefer "cx" to "CX"
-_tk_to_qasm_params = dict((item[1], item[0]) for item in PARAM_COMMANDS.items())
+_tk_to_qasm_params = {item[1]: item[0] for item in PARAM_COMMANDS.items()}
 _tk_to_qasm_params[OpType.U3] = "u3"  # prefer "u3" to "U"
 _tk_to_qasm_params[OpType.Rz] = "rz"  # prefer "rz" to "Rz"
-_tk_to_qasm_extra_noparams = dict(
-    (item[1], item[0]) for item in NOPARAM_EXTRA_COMMANDS.items()
-)
-_tk_to_qasm_extra_params = dict(
-    (item[1], item[0]) for item in PARAM_EXTRA_COMMANDS.items()
-)
+_tk_to_qasm_extra_noparams = {
+    item[1]: item[0] for item in NOPARAM_EXTRA_COMMANDS.items()
+}
+_tk_to_qasm_extra_params = {
+    item[1]: item[0] for item in PARAM_EXTRA_COMMANDS.items()
+}
 
 _classical_gatestr_map = {"AND": "&", "OR": "|", "XOR": "^"}
 
@@ -533,7 +533,7 @@ class CircuitTransformer(Transformer):
             or all(isinstance(arg, int) for arg in args)
         ):
             openum = RegWiseOp
-        elif all(isinstance(arg, (Bit, BitLogicExp, int)) for arg in args):
+        elif all(isinstance(arg, Bit | BitLogicExp | int) for arg in args):
             if all(arg in (0, 1) for arg in args if isinstance(arg, int)):
                 openum = BitWiseOp
             else:
@@ -600,7 +600,7 @@ class CircuitTransformer(Transformer):
 
     def neg(self, tree: list[Token | LogicExp]) -> RegNeg:
         arg = self._get_logic_args(tree)[0][0]
-        assert isinstance(arg, (RegLogicExp, BitRegister, int))
+        assert isinstance(arg, RegLogicExp | BitRegister | int)
         return RegNeg(arg)
 
     def cond(self, tree: list[Token]) -> PredicateExp:
@@ -651,7 +651,7 @@ class CircuitTransformer(Transformer):
 
                 condition_bit = self._fresh_temp_bit()
                 yield {
-                    "args": reg_bits + [condition_bit],
+                    "args": [*reg_bits, condition_bit],
                     "op": {
                         "classical": {
                             "lower": minval,
@@ -701,9 +701,7 @@ class CircuitTransformer(Transformer):
             else:
                 o.append(out)
 
-        exp_args = list(
-            map(lambda x: [x[0], [x[1]]], chain.from_iterable((all_inps, io, o)))
-        )
+        exp_args = [[x[0], [x[1]]] for x in chain.from_iterable((all_inps, io, o))]
         numbers_dict = {
             "n_i": len(all_inps),
             "n_io": len(io),
@@ -763,7 +761,7 @@ class CircuitTransformer(Transformer):
         if isinstance(out_arg, list):
             if isinstance(exp, LogicExp):
                 yield self._clexpr_dict(exp, args)
-            elif isinstance(exp, (int, bool)):
+            elif isinstance(exp, int | bool):
                 assert exp in (0, 1, True, False)
                 yield {
                     "args": args,
@@ -771,7 +769,7 @@ class CircuitTransformer(Transformer):
                 }
             elif isinstance(exp, list):
                 yield {
-                    "args": [exp] + args,
+                    "args": [exp, *args],
                     "op": {"classical": {"n_i": 1}, "type": "CopyBits"},
                 }
             else:
@@ -1061,7 +1059,7 @@ def _filtered_qasm_str(qasm: str) -> str:
     lines = qasm.split("\n")
     def_matcher = re.compile(rf"creg ({_TEMP_BIT_NAME}\_*\d*)\[\d+\]")
     arg_matcher = re.compile(rf"({_TEMP_BIT_NAME}\_*\d*)\[\d+\]")
-    unused_regs = dict()
+    unused_regs = {}
     for i, line in enumerate(lines):
         if reg := def_matcher.match(line):
             # Mark a reg temporarily as unused
@@ -1104,7 +1102,7 @@ def check_can_convert_circuit(circ: Circuit, header: str, maxwidth: int) -> None
             f"Circuit contains a classical register larger than {maxwidth}: try "
             "setting the `maxwidth` parameter to a higher value."
         )
-    set_circ_register = set([creg.name for creg in circ.c_registers])
+    set_circ_register = {creg.name for creg in circ.c_registers}
     for b in circ.bits:
         if b.reg_name not in set_circ_register:
             raise QASMUnsupportedError(
@@ -1162,7 +1160,7 @@ def _retrieve_registers(
 ) -> dict[str, TypeReg]:
     if any(len(unit.index) != 1 for unit in units):
         raise NotImplementedError("OPENQASM registers must use a single index")
-    maxunits = map(lambda x: max(x[1]), groupby(units, key=lambda un: un.reg_name))
+    maxunits = (max(x[1]) for x in groupby(units, key=lambda un: un.reg_name))
     return {
         maxunit.reg_name: reg_type(maxunit.reg_name, maxunit.index[0] + 1)
         for maxunit in maxunits
@@ -1263,7 +1261,7 @@ class LabelledStringList:
 
     def __init__(self) -> None:
         self.strings: OrderedDict[int, str] = OrderedDict()
-        self.conditions: dict[int, ConditionString] = dict()
+        self.conditions: dict[int, ConditionString] = {}
         self.label = 0
 
     def add_string(self, string: str) -> int:
@@ -1392,7 +1390,7 @@ class QasmWriter:
         # depending on the value of the predicate. This map is consulted when we
         # encounter a `Conditional` operation to see if the condition bit is one of
         # these scratch bits, which we can then replace with the original.
-        self.range_preds: dict[int, ScratchPredicate] = dict()
+        self.range_preds: dict[int, ScratchPredicate] = {}
 
         if include_gate_defs is None:
             self.include_gate_defs = self.include_module_gates
@@ -1423,7 +1421,7 @@ class QasmWriter:
             self.cregs = {}
             self.qregs = {}
 
-        self.cregs_as_bitseqs = set(tuple(creg) for creg in self.cregs.values())
+        self.cregs_as_bitseqs = {tuple(creg) for creg in self.cregs.values()}
 
         # for holding condition values when writing Conditional blocks
         # the size changes when adding and removing scratch bits
@@ -1437,7 +1435,7 @@ class QasmWriter:
         )
         # if a string writes to some classical variables, the string label and
         # the affected variables will be recorded.
-        self.variable_writes: dict[int, list[str]] = dict()
+        self.variable_writes: dict[int, list[str]] = {}
 
     def fresh_scratch_bit(self) -> Bit:
         self.scratch_reg = BitRegister(self.scratch_reg.name, self.scratch_reg.size + 1)
@@ -1860,10 +1858,7 @@ class QasmWriter:
         self.write_args(args)
 
     def add_data(self, op: BarrierOp, args: Sequence[UnitID]) -> None:
-        if op.data == "":
-            opstr = _tk_to_qasm_noparams[OpType.Barrier]
-        else:
-            opstr = op.data
+        opstr = _tk_to_qasm_noparams[OpType.Barrier] if op.data == "" else op.data
         self.strings.add_string(opstr)
         self.strings.add_string(" ")
         self.write_args(args)

@@ -301,13 +301,13 @@ def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:
             newcirc.add_bit(cb)
 
     # targets of predicates that need to be relabelled
-    replace_targets: dict[Variable, Variable] = dict()
+    replace_targets: dict[Variable, Variable] = {}
     modified = False
     for command in circ:
         op = command.op
         optype = op.type
         args = command.args
-        kwargs = dict()
+        kwargs = {}
         if optype == OpType.Conditional:
             assert isinstance(op, Conditional)
             bits = args[: op.width]

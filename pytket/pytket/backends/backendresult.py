@@ -102,21 +102,21 @@ class BackendResult:
 
         self._ppcirc = ppcirc
 
-        self.c_bits: dict[Bit, int] = dict()
-        self.q_bits: dict[Qubit, int] = dict()
+        self.c_bits: dict[Bit, int] = {}
+        self.q_bits: dict[Qubit, int] = {}
 
         def _process_unitids(
             var: Sequence[UnitID], attr: str, lent: int, uid: type[UnitID]
         ) -> None:
             if var:
-                setattr(self, attr, dict((unit, i) for i, unit in enumerate(var)))
+                setattr(self, attr, {unit: i for i, unit in enumerate(var)})
                 if lent != len(var):
                     raise ValueError(
                         f"Length of {attr} ({len(var)}) does not"
                         f" match input data dimensions ({lent})."
                     )
             else:
-                setattr(self, attr, dict((uid(i), i) for i in range(lent)))  # type: ignore
+                setattr(self, attr, {uid(i): i for i in range(lent)})  # type: ignore
 
         if self.contains_measured_results:
             _bitlength = 0
@@ -522,7 +522,7 @@ class BackendResult:
             "The `BackendResult.get_distribution()` method is deprecated: "
             "please use `get_empirical_distribution()` or "
             "`get_probability_distribution()` instead.",
-            DeprecationWarning,
+            DeprecationWarning, stacklevel=2,
         )
         try:
             state = self.get_state(units)  # type: ignore
@@ -610,7 +610,7 @@ class BackendResult:
         :return: JSON serializable dictionary.
         :rtype: Dict[str, Any]
         """
-        outdict: dict[str, Any] = dict()
+        outdict: dict[str, Any] = {}
         outdict["qubits"] = [q.to_list() for q in self.get_qbitlist()]
         outdict["bits"] = [c.to_list() for c in self.get_bitlist()]
         if self._shots is not None:

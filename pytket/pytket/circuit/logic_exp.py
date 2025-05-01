@@ -14,6 +14,7 @@
 
 """Classes and functions for constructing logical
 expressions over Bit and BitRegister."""
+import contextlib
 from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import dataclass
 from enum import Enum
@@ -81,7 +82,7 @@ class LogicExp:
     op: Ops  # enum for operation encoded by this node
     args: list[ArgType]  # arguments of operation
     # class level dictionary mapping enum to class
-    op_cls_dict: ClassVar[dict[Ops, type["LogicExp"]]] = dict()
+    op_cls_dict: ClassVar[dict[Ops, type["LogicExp"]]] = {}
 
     @classmethod
     def factory(cls, op: Ops) -> type["LogicExp"]:
@@ -142,7 +143,7 @@ class LogicExp:
     def set_value(self, var: Variable, val: Constant) -> None:
         """Set value of var to val recursively."""
         for i, arg in enumerate(self.args):
-            if isinstance(arg, (Bit, BitRegister)):
+            if isinstance(arg, Bit | BitRegister):
                 if arg == var:
                     self.args[i] = val
             elif isinstance(arg, LogicExp):
@@ -159,10 +160,8 @@ class LogicExp:
         for i, arg in filter_by_type(self.args, LogicExp):
             self.args[i] = arg.eval_vals()
         if all(isinstance(a, Constant) for a in self.args):
-            try:
+            with contextlib.suppress(NotImplementedError):
                 rval = self._const_eval(cast("list[Constant]", self.args))
-            except NotImplementedError:
-                pass
         return rval
 
     def all_inputs(self) -> set[Variable]:
@@ -270,7 +269,7 @@ class LogicExp:
         """
         if all(old_bit == new_bit for old_bit, new_bit in cmap.items()):
             return False
-        renamed_regs = set([key.reg_name for key in cmap])
+        renamed_regs = {key.reg_name for key in cmap}
         return self._rename_args_recursive(cmap, renamed_regs)
 
 
@@ -735,13 +734,13 @@ def create_logic_exp(op: Ops, args: Sequence[ArgType]) -> LogicExp:
     if isinstance(op, BitWiseOp):
         bit_args = []
         for arg in args:
-            assert isinstance(arg, (BitLogicExp, Bit, Constant))
+            assert isinstance(arg, BitLogicExp | Bit | Constant)
             bit_args.append(arg)
         return create_bit_logic_exp(op, bit_args)
     assert isinstance(op, RegWiseOp)
     reg_args = []
     for arg in args:
-        assert isinstance(arg, (RegLogicExp, BitRegister, Constant))
+        assert isinstance(arg, RegLogicExp | BitRegister | Constant)
         reg_args.append(arg)
     return create_reg_logic_exp(op, reg_args)
 
@@ -749,42 +748,42 @@ def create_logic_exp(op: Ops, args: Sequence[ArgType]) -> LogicExp:
 def create_predicate_exp(op: Ops, args: Sequence[ArgType]) -> PredicateExp:
     if op == BitWiseOp.EQ:
         assert len(args) == 2
-        assert isinstance(args[0], (BitLogicExp, Bit, int))
-        assert isinstance(args[1], (BitLogicExp, Bit, int))
+        assert isinstance(args[0], BitLogicExp | Bit | int)
+        assert isinstance(args[1], BitLogicExp | Bit | int)
         return BitEq(args[0], args[1])
     if op == BitWiseOp.NEQ:
         assert len(args) == 2
-        assert isinstance(args[0], (BitLogicExp, Bit, int))
-        assert isinstance(args[1], (BitLogicExp, Bit, int))
+        assert isinstance(args[0], BitLogicExp | Bit | int)
+        assert isinstance(args[1], BitLogicExp | Bit | int)
         return BitNeq(args[0], args[1])
     if op == RegWiseOp.EQ:
         assert len(args) == 2
-        assert isinstance(args[0], (RegLogicExp, BitRegister, int))
-        assert isinstance(args[1], (RegLogicExp, BitRegister, int))
+        assert isinstance(args[0], RegLogicExp | BitRegister | int)
+        assert isinstance(args[1], RegLogicExp | BitRegister | int)
         return RegEq(args[0], args[1])
     if op == RegWiseOp.NEQ:
         assert len(args) == 2
-        assert isinstance(args[0], (RegLogicExp, BitRegister, int))
-        assert isinstance(args[1], (RegLogicExp, BitRegister, int))
+        assert isinstance(args[0], RegLogicExp | BitRegister | int)
+        assert isinstance(args[1], RegLogicExp | BitRegister | int)
         return RegNeq(args[0], args[1])
     if op == RegWiseOp.LT:
         assert len(args) == 2
-        assert isinstance(args[0], (RegLogicExp, BitRegister, int))
-        assert isinstance(args[1], (RegLogicExp, BitRegister, int))
+        assert isinstance(args[0], RegLogicExp | BitRegister | int)
+        assert isinstance(args[1], RegLogicExp | BitRegister | int)
         return RegLt(args[0], args[1])
     if op == RegWiseOp.GT:
         assert len(args) == 2
-        assert isinstance(args[0], (RegLogicExp, BitRegister, int))
-        assert isinstance(args[1], (RegLogicExp, BitRegister, int))
+        assert isinstance(args[0], RegLogicExp | BitRegister | int)
+        assert isinstance(args[1], RegLogicExp | BitRegister | int)
         return RegGt(args[0], args[1])
     if op == RegWiseOp.LEQ:
         assert len(args) == 2
-        assert isinstance(args[0], (RegLogicExp, BitRegister, int))
-        assert isinstance(args[1], (RegLogicExp, BitRegister, int))
+        assert isinstance(args[0], RegLogicExp | BitRegister | int)
+        assert isinstance(args[1], RegLogicExp | BitRegister | int)
         return RegLeq(args[0], args[1])
     if op == RegWiseOp.GEQ:
         assert len(args) == 2
-        assert isinstance(args[0], (RegLogicExp, BitRegister, int))
-        assert isinstance(args[1], (RegLogicExp, BitRegister, int))
+        assert isinstance(args[0], RegLogicExp | BitRegister | int)
+        assert isinstance(args[1], RegLogicExp | BitRegister | int)
         return RegGeq(args[0], args[1])
     raise ValueError("op type not supported")

@@ -39,7 +39,7 @@ try:
 except ModuleNotFoundError:
     warnings.warn(
         'Missing package for tensor evaluation of ZX diagrams. Run "pip '
-        "install 'pytket[ZX]'\" to install the optional dependencies."
+        "install 'pytket[ZX]'\" to install the optional dependencies.", stacklevel=2
     )
 
 

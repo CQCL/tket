@@ -275,7 +275,7 @@ def test_resize_scratch_registers() -> None:
         assert scratch_reg1.size == max_c_reg_width
         assert scratch_reg2.size == max_c_reg_width
         assert scratch_reg3.size == 2
-        args_map = dict()
+        args_map = {}
         original_cmds = circ.get_commands()
         for cmd in original_cmds:
             for arg in cmd.args:
