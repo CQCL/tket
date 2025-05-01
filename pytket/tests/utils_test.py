@@ -61,7 +61,7 @@ def test_append_measurements() -> None:
     )
     append_pauli_measurement(qps, c)
     coms = c.get_commands()
-    assert len(coms) == 5
+    assert len(coms) == 5  # noqa: PLR2004
     assert str(coms[0]) == "Measure q[3] --> c[2];"
     assert str(coms[1]) == "Rx(0.5) q[0];"
     assert str(coms[2]) == "H q[2];"
@@ -87,7 +87,7 @@ def test_all_paulis() -> None:
     op = QubitPauliOperator({qps1: 1, qps2: 1, qps3: 2, qps4: -1.0j})
     circs = _all_pauli_measurements(op, c)
     assert isinstance(circs, types.GeneratorType)
-    assert len(list(circs)) == 3
+    assert len(list(circs)) == 3  # noqa: PLR2004
 
 
 def test_dict_export() -> None:
@@ -101,24 +101,24 @@ def test_dict_export() -> None:
 def test_shots_to_counts() -> None:
     shot_table = np.asarray([[0, 0], [0, 1], [0, 0]])
     counts = counts_from_shot_table(shot_table)
-    assert len(counts) == 2
-    assert counts[(0, 0)] == 2
+    assert len(counts) == 2  # noqa: PLR2004
+    assert counts[(0, 0)] == 2  # noqa: PLR2004
     assert counts[(0, 1)] == 1
 
 
 def test_counts_to_probs() -> None:
     counts: dict[tuple[int, ...], int] = {(0, 0): 4, (0, 1): 1, (1, 1): 3}
     probs = probs_from_counts(counts)
-    assert len(probs) == 3
-    assert probs[(0, 0)] == 0.5
-    assert probs[(0, 1)] == 0.125
-    assert probs[(1, 1)] == 0.375
+    assert len(probs) == 3  # noqa: PLR2004
+    assert probs[(0, 0)] == 0.5  # noqa: PLR2004
+    assert probs[(0, 1)] == 0.125  # noqa: PLR2004
+    assert probs[(1, 1)] == 0.375  # noqa: PLR2004
 
 
 def test_state_to_probs() -> None:
     state = np.asarray([0.5 - 0.5j, 0.5 + 0.5j, 1e-5, 0.999e-5])
     probs = probs_from_state(state)
-    assert len(probs) == 2
+    assert len(probs) == 2  # noqa: PLR2004
     assert np.isclose(probs[(0, 0)], 0.5)
     assert np.isclose(probs[(0, 1)], 0.5)
 
@@ -126,20 +126,20 @@ def test_state_to_probs() -> None:
 def test_state_to_int_dist() -> None:
     state = np.asarray([0.5 - 0.5j, 0.5 + 0.5j, 1e-5, 0.999e-5])
     probs = int_dist_from_state(state)
-    assert len(probs) == 2
+    assert len(probs) == 2  # noqa: PLR2004
     assert np.isclose(probs[0], 0.5)
     assert np.isclose(probs[1], 0.5)
 
 
 def test_n_qb_from_statevector() -> None:
     state = np.asarray([0.5, 0.5, 0.5, 0.5])
-    assert get_n_qb_from_statevector(state) == 2
+    assert get_n_qb_from_statevector(state) == 2  # noqa: PLR2004
     state = np.asarray([1.0, 0.0])
     assert get_n_qb_from_statevector(state) == 1
     state = np.asarray([1.0])
     assert get_n_qb_from_statevector(state) == 0
     state = np.zeros(128)
-    assert get_n_qb_from_statevector(state) == 7
+    assert get_n_qb_from_statevector(state) == 7  # noqa: PLR2004
 
 
 def test_n_qb_from_statevector_err() -> None:
@@ -206,7 +206,7 @@ def test_count_expectation() -> None:
     counts = {(0, 0, 0): 4, (0, 1, 1): 7, (1, 0, 1): 1, (1, 1, 0): 8}
     assert expectation_from_counts(counts) == 1.0
     counts = {(0, 0, 0): 4, (0, 0, 1): 7, (1, 1, 0): 1, (1, 1, 1): 8}
-    assert expectation_from_counts(counts) == -0.5
+    assert expectation_from_counts(counts) == -0.5  # noqa: PLR2004
 
 
 def test_outcomearray() -> None:
@@ -228,7 +228,7 @@ def test_outcomearray() -> None:
 
     outcomeB = OutcomeArray.from_readouts([in_listB])
     outcome2D = OutcomeArray(np.array([outcomeA[0], outcomeB[0]]), outcomeA.width)
-    assert outcome2D.n_outcomes == 2
+    assert outcome2D.n_outcomes == 2  # noqa: PLR2004
     assert outcome2D.to_intlist() == [list2int(in_listA), list2int(in_listB)]  # type: ignore
     assert outcome2D.to_intlist(False) == [
         list2int(in_listA, False),  # type: ignore
@@ -249,8 +249,8 @@ def test_outcomearray() -> None:
     outcomeRepeats = OutcomeArray.from_readouts([in_listA, in_listA, in_listB])
 
     counts = outcomeRepeats.counts()
-    assert len(counts) == 2
-    assert counts[outcomeA] == 2
+    assert len(counts) == 2  # noqa: PLR2004
+    assert counts[outcomeA] == 2  # noqa: PLR2004
     assert counts[outcomeB] == 1
 
     counts1D = outcomeA.counts()
@@ -315,15 +315,15 @@ def test_medium_pauli_partition_expectation() -> None:
         TketSimShotBackend(ignore_measures=True),
         TketSimBackend(ignore_measures=True),
     ]
-    backends[0]._supports_shots = False
-    backends[1]._supports_counts = False
+    backends[0]._supports_shots = False  # noqa: SLF001
+    backends[1]._supports_counts = False  # noqa: SLF001
     n_shots_list = [10000, 10000, None]
     strats = [
         None,
         PauliPartitionStrat.NonConflictingSets,
         PauliPartitionStrat.CommutingSets,
     ]
-    for backend, n_shots in zip(backends, n_shots_list):
+    for backend, n_shots in zip(backends, n_shots_list, strict=False):
         for strat in strats:
             energy = get_operator_expectation_value(
                 c, op, backend, n_shots, strat, GraphColourMethod.LargestFirst, seed=456
@@ -357,7 +357,7 @@ def test_large_pauli_partition_expectation() -> None:
         PauliPartitionStrat.NonConflictingSets,
         PauliPartitionStrat.CommutingSets,
     ]
-    for backend, n_shots in zip(backends, n_shots_list):
+    for backend, n_shots in zip(backends, n_shots_list, strict=False):
         energy = [
             get_operator_expectation_value(
                 c,
@@ -540,9 +540,8 @@ def unitary_circuits(draw: Callable[[SearchStrategy[Any]], Any]) -> Circuit:
     syms = symbols("a b c d e")
     c = Circuit(n_qb)
 
-    optype_dict = {
-        typ: (1, 0)
-        for typ in (
+    optype_dict = dict.fromkeys(
+        (
             OpType.Z,
             OpType.X,
             OpType.Y,
@@ -555,18 +554,18 @@ def unitary_circuits(draw: Callable[[SearchStrategy[Any]], Any]) -> Circuit:
             OpType.SX,
             OpType.SXdg,
             OpType.H,
-        )
-    }
-    optype_dict.update(
-        {typ: (1, 1) for typ in (OpType.Rx, OpType.Rz, OpType.Ry, OpType.U1)}
+        ),
+        (1, 0),
     )
-    optype_dict.update({typ: (1, 2) for typ in (OpType.U2, OpType.PhasedX)})
-    optype_dict.update({typ: (1, 3) for typ in (OpType.U3, OpType.TK1)})
+    optype_dict.update(
+        dict.fromkeys((OpType.Rx, OpType.Rz, OpType.Ry, OpType.U1), (1, 1))
+    )
+    optype_dict.update(dict.fromkeys((OpType.U2, OpType.PhasedX), (1, 2)))
+    optype_dict.update(dict.fromkeys((OpType.U3, OpType.TK1), (1, 3)))
 
     optype_dict.update(
-        {
-            typ: (2, 0)
-            for typ in (
+        dict.fromkeys(
+            (
                 OpType.CX,
                 OpType.CY,
                 OpType.CZ,
@@ -581,13 +580,13 @@ def unitary_circuits(draw: Callable[[SearchStrategy[Any]], Any]) -> Circuit:
                 OpType.ISWAPMax,
                 OpType.Sycamore,
                 OpType.ZZMax,
-            )
-        }
+            ),
+            (2, 0),
+        )
     )
     optype_dict.update(
-        {
-            typ: (2, 1)
-            for typ in (
+        dict.fromkeys(
+            (
                 OpType.CRz,
                 OpType.CRx,
                 OpType.CRy,
@@ -597,15 +596,14 @@ def unitary_circuits(draw: Callable[[SearchStrategy[Any]], Any]) -> Circuit:
                 OpType.YYPhase,
                 OpType.ZZPhase,
                 OpType.ESWAP,
-            )
-        }
+            ),
+            (2, 1),
+        )
     )
-    optype_dict.update({typ: (2, 2) for typ in (OpType.PhasedISWAP, OpType.FSim)})
-    optype_dict.update({typ: (2, 3) for typ in (OpType.CU3, OpType.TK2)})
+    optype_dict.update(dict.fromkeys((OpType.PhasedISWAP, OpType.FSim), (2, 2)))
+    optype_dict.update(dict.fromkeys((OpType.CU3, OpType.TK2), (2, 3)))
 
-    optype_dict.update(
-        {typ: (3, 0) for typ in (OpType.CCX, OpType.CSWAP, OpType.BRIDGE)}
-    )
+    optype_dict.update(dict.fromkeys((OpType.CCX, OpType.CSWAP, OpType.BRIDGE), (3, 0)))
 
     optype_dict.update({OpType.XXPhase3: (3, 1)})
 
@@ -617,7 +615,7 @@ def unitary_circuits(draw: Callable[[SearchStrategy[Any]], Any]) -> Circuit:
         ]
         qbs = [draw(qb_strat)]
         for _ in range(1, optype_dict[typ][0]):
-            qbs.append(draw(qb_strat.filter(lambda x: x not in qbs)))
+            qbs.append(draw(qb_strat.filter(lambda x: x not in qbs)))  # noqa: B023
 
         c.add_gate(typ, params, qbs)
     return c
@@ -654,9 +652,11 @@ def test_symbolic_conversion(circ: Circuit) -> None:
 
     free_symbs = circ.free_symbols()
     # bind random values to symbolic variables to test numeric equality
-    bind_vals = np.random.rand(len(free_symbs))
+    bind_vals = np.random.rand(len(free_symbs))  # noqa: NPY002
 
-    substitutions = [(sym, val) for sym, val in zip(free_symbs, bind_vals)]
+    substitutions = [
+        (sym, val) for sym, val in zip(free_symbs, bind_vals, strict=False)
+    ]
     circ.symbol_substitution(dict(substitutions))
     sym_unitary = sym_unitary.subs(substitutions)
     sym_state = sym_state.subs(substitutions)

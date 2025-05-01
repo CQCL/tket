@@ -114,7 +114,7 @@ def test_AAS_9() -> None:
     assert pass1.apply(cu)
     out_circ = cu.circuit
     assert out_circ.valid_connectivity(arc, False, True)
-    assert out_circ.depth() < 56
+    assert out_circ.depth() < 56  # noqa: PLR2004
 
 
 def test_AAS_10() -> None:
@@ -127,7 +127,7 @@ def test_AAS_10() -> None:
     assert pass1.apply(cu)
     out_circ = cu.circuit
     assert out_circ.valid_connectivity(arc, False, True)
-    assert out_circ.depth() < 33
+    assert out_circ.depth() < 33  # noqa: PLR2004
 
 
 def test_AAS_11() -> None:
@@ -140,7 +140,7 @@ def test_AAS_11() -> None:
     assert pass1.apply(cu)
     out_circ = cu.circuit
     assert out_circ.valid_connectivity(arc, False, True)
-    assert out_circ.depth() == 119
+    assert out_circ.depth() == 119  # noqa: PLR2004
 
 
 def test_AAS_12() -> None:
@@ -153,7 +153,7 @@ def test_AAS_12() -> None:
     assert pass1.apply(cu)
     out_circ = cu.circuit
     assert out_circ.valid_connectivity(arc, False, True)
-    assert out_circ.depth() == 28
+    assert out_circ.depth() == 28  # noqa: PLR2004
 
 
 def test_AAS_13() -> None:
@@ -166,7 +166,7 @@ def test_AAS_13() -> None:
     assert pass1.apply(cu)
     out_circ = cu.circuit
     assert out_circ.valid_connectivity(arc, False, True)
-    assert out_circ.depth() == 28
+    assert out_circ.depth() == 28  # noqa: PLR2004
 
 
 def test_AAS_14() -> None:
@@ -177,7 +177,7 @@ def test_AAS_14() -> None:
     assert pass1.apply(cu)
     out_circ = cu.circuit
     assert out_circ.valid_connectivity(arc, False, True)
-    assert out_circ.depth() == 3
+    assert out_circ.depth() == 3  # noqa: PLR2004
 
 
 def test_AAS_15() -> None:
@@ -188,7 +188,7 @@ def test_AAS_15() -> None:
     assert pass1.apply(cu)
     out_circ = cu.circuit
     assert out_circ.valid_connectivity(arc, False, True)
-    assert out_circ.depth() == 3
+    assert out_circ.depth() == 3  # noqa: PLR2004
 
 
 def test_noncontiguous_arc_phase_poly() -> None:
@@ -197,7 +197,7 @@ def test_noncontiguous_arc_phase_poly() -> None:
     pass1 = AASRouting(arc, lookahead=1)
     c = Circuit(2).H(0).H(1)
     pass1.apply(c)
-    assert c.n_gates_of_type(OpType.H) == 2
+    assert c.n_gates_of_type(OpType.H) == 2  # noqa: PLR2004
     assert c.n_gates_of_type(OpType.CX) == 0
     assert c.n_gates_of_type(OpType.CX) == 0
 
@@ -208,7 +208,7 @@ def test_compose_ppb() -> None:
     cu = CompilationUnit(circ)
     assert pass1.apply(cu)
     out_circ = cu.circuit
-    assert out_circ.depth() == 6
+    assert out_circ.depth() == 6  # noqa: PLR2004
 
 
 if __name__ == "__main__":

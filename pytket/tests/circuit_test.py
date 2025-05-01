@@ -64,12 +64,12 @@ from pytket.circuit import (
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
 from pytket.circuit.named_types import (
-    BitstringToOpList,
-    BitstringToOpMap,
-    BitstringToTensoredOpList,
-    BitstringToTensoredOpMap,
-    ParamType,
-    PermutationMap,
+    BitstringToOpList,  # noqa: TC001
+    BitstringToOpMap,  # noqa: TC001
+    BitstringToTensoredOpList,  # noqa: TC001
+    BitstringToTensoredOpMap,  # noqa: TC001
+    ParamType,  # noqa: TC001
+    PermutationMap,  # noqa: TC001
 )
 from pytket.circuit_library import CnX_vchain_decomp
 from pytket.passes import (
@@ -182,7 +182,7 @@ def test_circuit_name() -> None:
     assert c.name == name
 
 
-def test_circuit_gen() -> None:
+def test_circuit_gen() -> None:  # noqa: PLR0915
     c = Circuit(4, 4)
     c.X(0)
     c.H(1)
@@ -216,12 +216,12 @@ def test_circuit_gen() -> None:
     c.CS(0, 2)
     c.CSdg(1, 2)
 
-    assert c.n_qubits == 4
-    assert c._n_vertices() == 47
-    assert c.n_gates == 31
+    assert c.n_qubits == 4  # noqa: PLR2004
+    assert c._n_vertices() == 47  # noqa: SLF001, PLR2004
+    assert c.n_gates == 31  # noqa: PLR2004
 
     commands = c.get_commands()
-    assert len(commands) == 31
+    assert len(commands) == 31  # noqa: PLR2004
     assert str(commands[0]) == "X q[0];"
     assert str(commands[2]) == "CX q[2], q[0];"
     assert str(commands[4]) == "CRz(0.5) q[0], q[3];"
@@ -254,7 +254,7 @@ def test_circuit_gen() -> None:
 
     assert commands[14].qubits == [Qubit(3)]
     assert commands[14].bits == [Bit(3)]
-    assert c.depth_by_type({OpType.CX, OpType.CRz}) == 2
+    assert c.depth_by_type({OpType.CX, OpType.CRz}) == 2  # noqa: PLR2004
     assert commands[0] == Command(Op.create(OpType.X), [Qubit(0)])
 
 
@@ -274,12 +274,12 @@ def test_circuit_gen_ids() -> None:
     c.Measure(a[3], b[3])
     c.Measure(a[1], b[1])
 
-    assert c.n_qubits == 4
-    assert c._n_vertices() == 23
-    assert c.n_gates == 7
+    assert c.n_qubits == 4  # noqa: PLR2004
+    assert c._n_vertices() == 23  # noqa: SLF001, PLR2004
+    assert c.n_gates == 7  # noqa: PLR2004
 
     commands = c.get_commands()
-    assert len(commands) == 7
+    assert len(commands) == 7  # noqa: PLR2004
     assert str(commands[0]) == "X a[0];"
     assert str(commands[2]) == "CX a[2], a[0];"
     assert str(commands[3]) == "Rz(0.5) a[1];"
@@ -409,7 +409,7 @@ def test_8x8_matrix_to_circ() -> None:
     Transform.OptimiseCliffords().apply(c)
     mat = c.get_unitary()
     assert np.allclose(mat, u)
-    assert c.n_gates_of_type(OpType.CX) <= 10
+    assert c.n_gates_of_type(OpType.CX) <= 10  # noqa: PLR2004
 
 
 def test_exp_to_circ() -> None:
@@ -444,7 +444,7 @@ def test_implicit_swaps() -> None:
     assert all(a != b for (a, b) in perm1.items())
 
 
-def test_boxes() -> None:
+def test_boxes() -> None:  # noqa: PLR0915
     c = Circuit(4, 4)
     c.X(0)
     c.H(1)
@@ -456,7 +456,7 @@ def test_boxes() -> None:
     cbox = CircBox(c)
     assert cbox.type == OpType.CircBox
     c1 = cbox.get_circuit()
-    assert len(c1.get_commands()) == 7
+    assert len(c1.get_commands()) == 7  # noqa: PLR2004
     d = Circuit(4, 4)
     d.add_circbox(cbox, [0, 2, 1, 3, 3, 2, 1, 0])
 
@@ -536,9 +536,9 @@ def test_boxes() -> None:
     qcbox = QControlBox(Op.create(OpType.S), 2)
     assert qcbox.type == OpType.QControlBox
     assert qcbox.get_op().type == OpType.S
-    assert qcbox.get_n_controls() == 2
+    assert qcbox.get_n_controls() == 2  # noqa: PLR2004
     d.add_qcontrolbox(qcbox, [1, 2, 3])
-    assert d.n_gates == 10
+    assert d.n_gates == 10  # noqa: PLR2004
 
     pauli_exps = [cmd.op for cmd in d if cmd.op.type == OpType.PauliExpBox]
     assert len(pauli_exps) == 1
@@ -548,7 +548,7 @@ def test_boxes() -> None:
     assert pauli_exp.get_phase() == Symbol("alpha")
 
     boxes = (cbox, mbox, u2qbox, u3qbox, ebox, pbox, qcbox)
-    assert all(box == box for box in boxes)
+    assert all(box == box for box in boxes)  # noqa: PLR0124
     assert all(isinstance(box, Op) for box in boxes)
     permutation: PermutationMap = {(_0, _0): (_1, _1), (_1, _1): (_0, _0)}
     tb = ToffoliBox(permutation)
@@ -557,7 +557,7 @@ def test_boxes() -> None:
     comparison = np.asarray([[0, 0, 0, 1], [0, 1, 0, 0], [0, 0, 1, 0], [1, 0, 0, 0]])
     assert np.allclose(unitary, comparison)
     d.add_toffolibox(tb, [0, 1])
-    assert d.n_gates == 11
+    assert d.n_gates == 11  # noqa: PLR2004
 
     # MultiplexorBox, MultiplexedU2Box
     op_map: BitstringToOpMap = {
@@ -600,7 +600,7 @@ def test_boxes() -> None:
     # constructor taking qubit indices
     d.add_multiplexor(multiplexor, [0, 1, 2])
     d.add_multiplexedu2(ucu2_box, [0, 1, 2])
-    assert d.n_gates == 15
+    assert d.n_gates == 15  # noqa: PLR2004
     # MultiplexedRotationBox
     op_map = {
         (_0, _0): Op.create(OpType.Rz, 0.3),
@@ -627,12 +627,12 @@ def test_boxes() -> None:
     assert np.allclose(unitary, comparison)
     d.add_multiplexedrotation(multiplexed_rot, [Qubit(0), Qubit(1), Qubit(2)])
     d.add_multiplexedrotation(multiplexed_rot, [1, 2, 0])
-    assert d.n_gates == 17
+    assert d.n_gates == 17  # noqa: PLR2004
     multiplexed_rot = MultiplexedRotationBox([0.3, 0, 0, 1.7], OpType.Rz)
     unitary = multiplexed_rot.get_circuit().get_unitary()
     assert np.allclose(unitary, comparison)
     d.add_multiplexedrotation(multiplexed_rot, [Qubit(0), Qubit(1), Qubit(2)])
-    assert d.n_gates == 18
+    assert d.n_gates == 18  # noqa: PLR2004
     # StatePreparationBox
     state = np.array([np.sqrt(0.125)] * 8)
     prep_box = StatePreparationBox(state)
@@ -645,7 +645,7 @@ def test_boxes() -> None:
     assert np.allclose(prep_u.dot(state), zero_state)
     d.add_state_preparation_box(prep_box, [Qubit(0), Qubit(1), Qubit(2)])
     d.add_state_preparation_box(prep_box, [2, 1, 0])
-    assert d.n_gates == 20
+    assert d.n_gates == 20  # noqa: PLR2004
     # DiagonalBox
     diag_vect = np.array([1j] * 8)
     diag_box = DiagonalBox(diag_vect)
@@ -653,7 +653,7 @@ def test_boxes() -> None:
     assert np.allclose(np.diag(diag_vect), u)
     d.add_diagonal_box(diag_box, [Qubit(0), Qubit(1), Qubit(2)])
     d.add_diagonal_box(diag_box, [0, 1, 2])
-    assert d.n_gates == 22
+    assert d.n_gates == 22  # noqa: PLR2004
     # MultiplexedTensoredU2Box
     rz_op = Op.create(OpType.Rz, 0.3)
     pauli_x_op = Op.create(OpType.X)
@@ -683,7 +683,7 @@ def test_boxes() -> None:
     d.add_multiplexed_tensored_u2(multiplexU2, [Qubit(0), Qubit(1), Qubit(2), Qubit(3)])
     d.add_multiplexed_tensored_u2(multiplexU2, [3, 2, 1, 0])
     assert np.allclose(unitary, comparison)
-    assert d.n_gates == 24
+    assert d.n_gates == 24  # noqa: PLR2004
     # ConjugationBox
     compute = CircBox(Circuit(3).CX(0, 1).CX(1, 2))
     action = CircBox(Circuit(3).H(2))
@@ -696,7 +696,7 @@ def test_boxes() -> None:
     assert conj_box2.get_uncompute() == uncompute
     d.add_conjugation_box(conj_box1, [0, 1, 2])
     d.add_conjugation_box(conj_box2, [Qubit(0), Qubit(1), Qubit(2)])
-    assert d.n_gates == 26
+    assert d.n_gates == 26  # noqa: PLR2004
     assert json_validate(d)
     # test op.get_unitary doesn't throw
     for command in d.get_commands():
@@ -736,9 +736,9 @@ def test_state_prep_mid_circuit() -> None:
     state = np.array([np.sqrt(0.125)] * 8)
     prep_box = StatePreparationBox(state, with_initial_reset=True)
     c.add_state_preparation_box(prep_box, [0, 1, 2])
-    assert c.n_gates == 4
+    assert c.n_gates == 4  # noqa: PLR2004
     Transform.DecomposeBoxes().apply(c)
-    assert c.n_gates_of_type(OpType.Reset) == 3
+    assert c.n_gates_of_type(OpType.Reset) == 3  # noqa: PLR2004
 
 
 def test_u1q_stability() -> None:
@@ -811,7 +811,7 @@ def test_errors() -> None:
     c.Rz(0, 0)
     with pytest.raises(TypeError):
         c.Rz(0, "a")  # type: ignore
-    assert c.get_commands()[0].free_symbols() == set([a])
+    assert c.get_commands()[0].free_symbols() == set([a])  # noqa: C405
 
 
 def test_str() -> None:
@@ -877,7 +877,7 @@ def test_qubit_to_bit_map() -> None:
     c.Measure(a[1], b[1])
 
     qbmap = c.qubit_to_bit_map
-    assert len(qbmap) == 2
+    assert len(qbmap) == 2  # noqa: PLR2004
     assert qbmap[a[3]] == b[3]
     assert qbmap[a[1]] == b[1]
 
@@ -894,7 +894,7 @@ def test_phase() -> None:
     c = Circuit(2).H(0).CX(0, 1)
     c1 = c.copy()
     c1.add_phase(0.125)
-    assert c1.phase - c.phase == 0.125
+    assert c1.phase - c.phase == 0.125  # noqa: PLR2004
     c1.add_phase(1.875)
     assert c == c1
 
@@ -903,7 +903,7 @@ def test_phase_return_circ() -> None:
     c = Circuit(2).H(0).CX(0, 1)
     c1 = c.copy()
     c1.add_phase(0.125).H(0)
-    assert c1.phase - c.phase == 0.125
+    assert c1.phase - c.phase == 0.125  # noqa: PLR2004
     c1.add_phase(1.875)
     c.H(0)
     assert c == c1
@@ -981,7 +981,7 @@ def test_ops_of_type() -> None:
     assert ops_H[0].type == OpType.H
     assert len(ops_CX) == 1
     assert ops_CX[0].type == OpType.CX
-    assert len(ops_Rz) == 3
+    assert len(ops_Rz) == 3  # noqa: PLR2004
     assert all(op.type == OpType.Rz for op in ops_Rz)
     assert len(ops_Rx) == 0
     assert len(ops_CRy) == 1
@@ -1000,7 +1000,7 @@ def test_commands_of_type() -> None:
     assert len(cmds_CX) == 1
     assert cmds_CX[0].op.type == OpType.CX
     assert cmds_CX[0].qubits == c.qubits
-    assert len(cmds_Rz) == 3
+    assert len(cmds_Rz) == 3  # noqa: PLR2004
     assert all(cmd.op.type == OpType.Rz for cmd in cmds_Rz)
     assert [cmd.qubits[0] for cmd in cmds_Rz] == [c.qubits[i] for i in [1, 1, 0]]
     assert len(cmds_Rx) == 0
@@ -1099,8 +1099,8 @@ def test_opgroups() -> None:
     c.CX(0, 1, opgroup="cx3")
     assert c.opgroups == {"cx0", "cx1", "cx2", "cx3"}
     c.substitute_named(Circuit(2), "cx3")
-    assert c.n_gates == 4
-    assert c.n_gates_of_type(OpType.CX) == 3
+    assert c.n_gates == 4  # noqa: PLR2004
+    assert c.n_gates_of_type(OpType.CX) == 3  # noqa: PLR2004
     assert c.opgroups == {"cx0", "cx1", "cx2"}
 
 
@@ -1109,15 +1109,15 @@ def test_depth() -> None:
     c.H(0).H(1).CX(1, 2).CZ(0, 1).H(1).CZ(1, 2)
     c.add_barrier([0, 1, 2])
     c.CX(1, 2).CZ(0, 1).H(1).CX(1, 2)
-    assert c.depth() == 9
-    assert c.depth_by_type(OpType.H) == 3
-    assert c.depth_by_type(OpType.CX) == 3
-    assert c.depth_by_type(OpType.CZ) == 3
-    assert c.depth_by_type({OpType.CX, OpType.CZ}) == 6
-    assert c.depth_by_type({OpType.CX, OpType.H}) == 6
-    assert c.depth_by_type({OpType.CZ, OpType.H}) == 6
+    assert c.depth() == 9  # noqa: PLR2004
+    assert c.depth_by_type(OpType.H) == 3  # noqa: PLR2004
+    assert c.depth_by_type(OpType.CX) == 3  # noqa: PLR2004
+    assert c.depth_by_type(OpType.CZ) == 3  # noqa: PLR2004
+    assert c.depth_by_type({OpType.CX, OpType.CZ}) == 6  # noqa: PLR2004
+    assert c.depth_by_type({OpType.CX, OpType.H}) == 6  # noqa: PLR2004
+    assert c.depth_by_type({OpType.CZ, OpType.H}) == 6  # noqa: PLR2004
     assert c.depth_by_type(set()) == 0
-    assert c.depth_2q() == 6
+    assert c.depth_2q() == 6  # noqa: PLR2004
 
 
 def test_op_dagger_transpose() -> None:
@@ -1179,22 +1179,22 @@ def test_getting_registers() -> None:
     assert c.get_c_register("c").name == "c"
     assert c.get_c_register("c").size == 1
     assert c.get_q_register("q").name == "q"
-    assert c.get_q_register("q").size == 2
+    assert c.get_q_register("q").size == 2  # noqa: PLR2004
     c.add_q_register("test_qr", 10)
     c.add_c_register("test_cr", 8)
     assert c.get_c_register("test_cr").name == "test_cr"
-    assert c.get_c_register("test_cr").size == 8
+    assert c.get_c_register("test_cr").size == 8  # noqa: PLR2004
     assert c.get_q_register("test_qr").name == "test_qr"
-    assert c.get_q_register("test_qr").size == 10
+    assert c.get_q_register("test_qr").size == 10  # noqa: PLR2004
 
     c_regs = c.c_registers
     c_regs.sort()
-    assert len(c_regs) == 2
+    assert len(c_regs) == 2  # noqa: PLR2004
     assert c_regs[0] == BitRegister("c", 1)
     assert c_regs[1] == BitRegister("test_cr", 8)
     q_regs = c.q_registers
     q_regs.sort()
-    assert len(q_regs) == 2
+    assert len(q_regs) == 2  # noqa: PLR2004
     assert q_regs[0] == QubitRegister("q", 2)
     assert q_regs[1] == QubitRegister("test_qr", 10)
 
@@ -1241,10 +1241,10 @@ def test_measuring_registers() -> None:
     qreg2 = c.add_q_register("qr2", 2)
     c.measure_register(qreg2, "cr")
 
-    assert len(c.bits) == 2
-    assert c.n_qubits == 4
+    assert len(c.bits) == 2  # noqa: PLR2004
+    assert c.n_qubits == 4  # noqa: PLR2004
     commands = c.get_commands()
-    assert len(commands) == 4
+    assert len(commands) == 4  # noqa: PLR2004
     assert str(commands[0]) == "Measure qr[0] --> cr[0];"
     assert str(commands[1]) == "Measure qr[1] --> cr[1];"
     assert str(commands[2]) == "Measure qr2[0] --> cr[0];"
@@ -1266,7 +1266,7 @@ def test_multi_controlled_gates() -> None:
     c.add_gate(OpType.CnX, [0, 1, 2])
     c.add_gate(OpType.CnY, [0, 1, 2])
     c.add_gate(OpType.CnZ, [0, 1, 2])
-    assert c.depth() == 3
+    assert c.depth() == 3  # noqa: PLR2004
 
 
 def test_counting_n_qubit_gates() -> None:
@@ -1275,10 +1275,10 @@ def test_counting_n_qubit_gates() -> None:
     c.add_gate(OpType.CnX, [0, 1, 2, 3])
     c.add_gate(OpType.CnX, [0, 1, 2, 3, 4])
     c.add_barrier([0, 1, 2, 3, 4])
-    assert c.n_1qb_gates() == 5
-    assert c.n_nqb_gates(1) == 5
-    assert c.n_2qb_gates() == 4
-    assert c.n_nqb_gates(2) == 4
+    assert c.n_1qb_gates() == 5  # noqa: PLR2004
+    assert c.n_nqb_gates(1) == 5  # noqa: PLR2004
+    assert c.n_2qb_gates() == 4  # noqa: PLR2004
+    assert c.n_nqb_gates(2) == 4  # noqa: PLR2004
     assert c.n_nqb_gates(3) == 1
     assert c.n_nqb_gates(4) == 1
     assert c.n_nqb_gates(5) == 1
@@ -1289,15 +1289,15 @@ def test_counting_conditional_gates() -> None:
     c.add_gate(OpType.H, [Qubit(0)], condition=Bit(0))
     c.add_gate(OpType.H, [Qubit(1)], condition=(Bit(0) & Bit(1)))
     c.add_gate(OpType.CX, [Qubit(0), Qubit(1)], condition=Bit(1))
-    assert c.n_gates_of_type(OpType.H, include_conditional=True) == 3
+    assert c.n_gates_of_type(OpType.H, include_conditional=True) == 3  # noqa: PLR2004
     assert c.n_gates_of_type(OpType.H, include_conditional=False) == 1
     assert c.n_gates_of_type(OpType.H) == 1
     assert c.n_gates_of_type(OpType.X, include_conditional=True) == 1
     assert c.n_gates_of_type(OpType.X, include_conditional=False) == 1
     assert c.n_gates_of_type(OpType.X) == 1
-    assert c.n_gates_of_type(OpType.CX, include_conditional=True) == 5
-    assert c.n_gates_of_type(OpType.CX, include_conditional=False) == 4
-    assert c.n_gates_of_type(OpType.CX) == 4
+    assert c.n_gates_of_type(OpType.CX, include_conditional=True) == 5  # noqa: PLR2004
+    assert c.n_gates_of_type(OpType.CX, include_conditional=False) == 4  # noqa: PLR2004
+    assert c.n_gates_of_type(OpType.CX) == 4  # noqa: PLR2004
 
 
 def test_qcontrol_box_constructors() -> None:
@@ -1372,8 +1372,8 @@ def test_dummy_box() -> None:
     assert type(op) is DummyBox
     resource_data1 = op.get_resource_data()
     op_type_count = resource_data1.get_op_type_count()
-    assert op_type_count[OpType.T].get_min() == 10
-    assert op_type_count[OpType.T].get_max() == 20
+    assert op_type_count[OpType.T].get_min() == 10  # noqa: PLR2004
+    assert op_type_count[OpType.T].get_max() == 20  # noqa: PLR2004
     assert json_validate(c)
 
 
@@ -1424,29 +1424,29 @@ def test_resources() -> None:
     c.H(2)
     resource_data = c.get_resources()
     op_type_count = resource_data.get_op_type_count()
-    assert op_type_count[OpType.T].get_min() == 4
-    assert op_type_count[OpType.T].get_max() == 5
-    assert op_type_count[OpType.H].get_min() == 4
-    assert op_type_count[OpType.H].get_max() == 5
-    assert op_type_count[OpType.CX].get_min() == 5
-    assert op_type_count[OpType.CX].get_max() == 7
-    assert op_type_count[OpType.CZ].get_min() == 7
-    assert op_type_count[OpType.CZ].get_max() == 9
+    assert op_type_count[OpType.T].get_min() == 4  # noqa: PLR2004
+    assert op_type_count[OpType.T].get_max() == 5  # noqa: PLR2004
+    assert op_type_count[OpType.H].get_min() == 4  # noqa: PLR2004
+    assert op_type_count[OpType.H].get_max() == 5  # noqa: PLR2004
+    assert op_type_count[OpType.CX].get_min() == 5  # noqa: PLR2004
+    assert op_type_count[OpType.CX].get_max() == 7  # noqa: PLR2004
+    assert op_type_count[OpType.CZ].get_min() == 7  # noqa: PLR2004
+    assert op_type_count[OpType.CZ].get_max() == 9  # noqa: PLR2004
     gate_depth = resource_data.get_gate_depth()
-    assert gate_depth.get_min() == 15
-    assert gate_depth.get_max() == 23
+    assert gate_depth.get_min() == 15  # noqa: PLR2004
+    assert gate_depth.get_max() == 23  # noqa: PLR2004
     op_type_depth = resource_data.get_op_type_depth()
-    assert op_type_depth[OpType.T].get_min() == 2
-    assert op_type_depth[OpType.T].get_max() == 12
-    assert op_type_depth[OpType.H].get_min() == 5
-    assert op_type_depth[OpType.H].get_max() == 17
-    assert op_type_depth[OpType.CX].get_min() == 4
-    assert op_type_depth[OpType.CX].get_max() == 5
-    assert op_type_depth[OpType.CZ].get_min() == 7
-    assert op_type_depth[OpType.CZ].get_max() == 8
+    assert op_type_depth[OpType.T].get_min() == 2  # noqa: PLR2004
+    assert op_type_depth[OpType.T].get_max() == 12  # noqa: PLR2004
+    assert op_type_depth[OpType.H].get_min() == 5  # noqa: PLR2004
+    assert op_type_depth[OpType.H].get_max() == 17  # noqa: PLR2004
+    assert op_type_depth[OpType.CX].get_min() == 4  # noqa: PLR2004
+    assert op_type_depth[OpType.CX].get_max() == 5  # noqa: PLR2004
+    assert op_type_depth[OpType.CZ].get_min() == 7  # noqa: PLR2004
+    assert op_type_depth[OpType.CZ].get_max() == 8  # noqa: PLR2004
     two_qubit_gate_depth = resource_data.get_two_qubit_gate_depth()
-    assert two_qubit_gate_depth.get_min() == 10
-    assert two_qubit_gate_depth.get_max() == 13
+    assert two_qubit_gate_depth.get_min() == 10  # noqa: PLR2004
+    assert two_qubit_gate_depth.get_max() == 13  # noqa: PLR2004
 
 
 def test_add_circbox_with_registers() -> None:
@@ -1466,9 +1466,9 @@ def test_add_circbox_with_registers() -> None:
         c.H(qb)
     c1 = c.copy()
     c1.add_circbox_regwise(cbox, [wreg, zreg], [])
-    assert c1.n_gates == 11
+    assert c1.n_gates == 11  # noqa: PLR2004
     DecomposeBoxes().apply(c1)
-    assert c1.n_gates == 13
+    assert c1.n_gates == 13  # noqa: PLR2004
     c2 = c.copy()
     c2.add_circbox_with_regmap(cbox, {"a": "w", "b": "z"}, {})
     DecomposeBoxes().apply(c2)
@@ -1550,7 +1550,7 @@ def test_deserialization_from_junk() -> None:
 
 def test_wasm_serialization() -> None:
     c = Circuit(2, 2).H(0).H(1).measure_all()
-    c._add_wasm("some_name", "some_uid", [1, 1], [], [Bit(0), Bit(1)], [0])
+    c._add_wasm("some_name", "some_uid", [1, 1], [], [Bit(0), Bit(1)], [0])  # noqa: SLF001
     c.CZ(0, 1).measure_all()
     assert json_validate(c)
 
@@ -1592,7 +1592,7 @@ def greedy_TermSequenceBox() -> None:
     assert cmds[0].op.type == OpType.TK1
     assert cmds[1].op.type == OpType.TK1
     assert cmds[2].op.type == OpType.TK1
-    assert c.n_2qb_gates() <= 2
+    assert c.n_2qb_gates() <= 2  # noqa: PLR2004
 
 
 def test_cnx_vchain_zeroed_ancillas() -> None:

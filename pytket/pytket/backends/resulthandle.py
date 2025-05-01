@@ -19,7 +19,7 @@ from collections.abc import Iterator, Sequence
 from typing import Union, overload
 
 # mypy doesn't think you can pass the tuple to Union
-BasicHashType = Union[int, float, complex, str, bool, bytes]
+BasicHashType = Union[int, float, complex, str, bool, bytes]  # noqa: UP007
 _ResultIdTuple = tuple[
     type[int] | type[float] | type[complex] | type[str] | type[bool] | type[bytes],
     ...,
@@ -52,14 +52,14 @@ class ResultHandle(Sequence):
             evaltuple = literal_eval(string)  # will raise ValueError if failed
             if (not isinstance(evaltuple, tuple)) or (
                 not all(
-                    isinstance(arg, (int, float, complex, str, bool, bytes))
+                    isinstance(arg, (int, float, complex, str, bool, bytes))  # noqa: UP038
                     for arg in evaltuple
                 )
             ):
                 raise ValueError  # type check failed
             return cls(*evaltuple)
         except ValueError:
-            raise ValueError("ResultHandle string format invalid.")
+            raise ValueError("ResultHandle string format invalid.")  # noqa: B904
 
     def __hash__(self) -> int:
         return hash(self._identifiers)

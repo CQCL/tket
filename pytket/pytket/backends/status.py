@@ -13,7 +13,8 @@
 # limitations under the License.
 
 """Status classes for circuits submitted to backends."""
-from collections.abc import Callable
+
+from collections.abc import Callable  # noqa: TC003
 from datetime import datetime
 from enum import Enum
 from typing import Any, NamedTuple

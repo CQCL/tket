@@ -98,7 +98,7 @@ def test_spam_integration() -> None:
     spam = SpamCorrecter(subs)
     calib_circs = spam.calibration_circuits()
 
-    assert len(calib_circs) == 4
+    assert len(calib_circs) == 4  # noqa: PLR2004
 
     calib_counters = [
         Counter({OutcomeArray.from_readouts([key]): val for key, val in r.items()})
@@ -119,7 +119,7 @@ def test_spam_integration() -> None:
     def check_correction(
         counts0: dict[tuple[int, ...], int], counts1: dict[tuple[int, ...], int]
     ) -> bool:
-        if (
+        if (  # noqa: SIM103
             counts0[(0, 0, 0)] > counts1[(0, 0, 0)]
             and counts0[(1, 0, 1)] > counts1[(1, 0, 1)]
         ):
@@ -518,11 +518,11 @@ def test_spam_routing() -> None:
     mm.route_circuit(routed, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
     DelayMeasures().apply(routed)
     readout = routed.qubit_readout
-    nodes = cast(list[Node], list(readout.keys()))
+    nodes = cast("list[Node]", list(readout.keys()))
     spam = SpamCorrecter([nodes])
     calib_circs = spam.calibration_circuits()
 
-    assert len(calib_circs) == 16
+    assert len(calib_circs) == 16  # noqa: PLR2004
 
     calib_counters = [
         Counter({OutcomeArray.from_readouts([key]): val for key, val in r.items()})

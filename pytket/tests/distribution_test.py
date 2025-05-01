@@ -31,7 +31,7 @@ def test_probability_distribution() -> None:
     pd1 = ProbabilityDistribution(
         {"a": 1 / 3, "b": 2 / 3 - 1e-15, "c": 1e-15}, min_p=1e-10
     )
-    assert pd1.support == set(["a", "b"])
+    assert pd1.support == set(["a", "b"])  # noqa: C405
     assert isclose(pd1["a"], 1 / 3)
     assert pd1["c"] == 0.0
     assert pd == pd1
@@ -45,7 +45,7 @@ def test_probability_distribution() -> None:
 def test_empirical_distribution() -> None:
     ed1 = EmpiricalDistribution(Counter({"a": 1, "b": 2}))
     ed2 = EmpiricalDistribution(Counter({"b": 1, "c": 3, "d": 0}))
-    assert ed2.support == set(["b", "c"])
+    assert ed2.support == set(["b", "c"])  # noqa: C405
     assert ed2["b"] == 1
     assert ed2["d"] == 0
     ed3 = EmpiricalDistribution(Counter({"a": 2, "c": 0, "e": 4}))
@@ -69,15 +69,15 @@ def test_marginalization() -> None:
     ed1_ = ed.condition(lambda x: x[0] == 1)
     ed_0 = ed.condition(lambda x: x[1] == 0)
     ed_1 = ed.condition(lambda x: x[1] == 1)
-    assert ed0_.total == 5
-    assert ed1_.total == 4
-    assert ed_0.total == 7
-    assert ed_1.total == 2
+    assert ed0_.total == 5  # noqa: PLR2004
+    assert ed1_.total == 4  # noqa: PLR2004
+    assert ed_0.total == 7  # noqa: PLR2004
+    assert ed_1.total == 2  # noqa: PLR2004
 
     pd = ProbabilityDistribution.from_empirical_distribution(ed)
     pd0 = pd.condition(lambda x: x[0] == x[1])
     pd1 = pd.condition(lambda x: x[0] != x[1])
-    assert pd0.support == set([(0, 0)])
+    assert pd0.support == set([(0, 0)])  # noqa: C405
     assert isclose(pd1[(0, 1)], 1 / 3)
 
 

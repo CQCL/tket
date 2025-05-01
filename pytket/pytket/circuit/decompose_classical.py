@@ -155,7 +155,7 @@ def get_bit_width(x: int) -> int:
 
 
 class ClExprDecomposer:
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         circ: Circuit,
         bit_posn: dict[int, int],
@@ -199,7 +199,7 @@ class ClExprDecomposer:
             assert val >> var.size == 0
             self.circ.add_c_setreg(val, var, **self.kwargs)
 
-    def decompose_expr(self, expr: ClExpr, out_var: Variable | None) -> Variable:
+    def decompose_expr(self, expr: ClExpr, out_var: Variable | None) -> Variable:  # noqa: PLR0912, PLR0915
         """Add the decomposed expression to the circuit and return the Bit or
         BitRegister that contains the result.
 
@@ -275,7 +275,7 @@ class ClExprDecomposer:
         return out_var
 
 
-def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:
+def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:  # noqa: PLR0912, PLR0915
     """Rewrite a circuit command-wise, decomposing ClExprOp."""
     if not check_register_alignments(circ):
         raise DecomposeClassicalError("Circuit contains non-register-aligned ClExprOp.")
@@ -284,9 +284,9 @@ def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:
     # add already used heap variables to heaps
     for b in circ.bits:
         if b.reg_name == _TEMP_BIT_NAME:
-            bit_heap._heap_vars.add(b)
+            bit_heap._heap_vars.add(b)  # noqa: SLF001
         elif b.reg_name.startswith(_TEMP_BIT_REG_BASE):
-            reg_heap._heap_vars.add(BitRegister(b.reg_name, _TEMP_REG_SIZE))
+            reg_heap._heap_vars.add(BitRegister(b.reg_name, _TEMP_REG_SIZE))  # noqa: SLF001
 
     newcirc = Circuit(0, name=circ.name)
 
@@ -301,13 +301,13 @@ def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:
             newcirc.add_bit(cb)
 
     # targets of predicates that need to be relabelled
-    replace_targets: dict[Variable, Variable] = dict()
+    replace_targets: dict[Variable, Variable] = dict()  # noqa: C408
     modified = False
     for command in circ:
         op = command.op
         optype = op.type
         args = command.args
-        kwargs = dict()
+        kwargs = dict()  # noqa: C408
         if optype == OpType.Conditional:
             assert isinstance(op, Conditional)
             bits = args[: op.width]
@@ -359,7 +359,13 @@ def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:
                 else output0
             )
             decomposer = ClExprDecomposer(
-                newcirc, bit_posn, reg_posn, args, bit_heap, reg_heap, kwargs  # type: ignore
+                newcirc,
+                bit_posn,
+                reg_posn,
+                args,
+                bit_heap,
+                reg_heap,
+                kwargs,  # type: ignore
             )
             comp_var = decomposer.decompose_expr(expr, out_var)
             if comp_var != out_var:

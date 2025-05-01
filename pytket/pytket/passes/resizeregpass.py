@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Callable
+from collections.abc import Callable
 
 from pytket.circuit import Bit, Circuit
 from pytket.unit_id import _TEMP_BIT_NAME
@@ -35,7 +35,7 @@ def _gen_scratch_transformation(max_size: int) -> Callable[[Circuit], Circuit]:
         if len(scratch_bits) > max_size:
             bits_map = {}
             for i, bit in enumerate(scratch_bits):
-                bits_map[bit] = Bit(f"{_TEMP_BIT_NAME}_{i//max_size}", i % max_size)
+                bits_map[bit] = Bit(f"{_TEMP_BIT_NAME}_{i // max_size}", i % max_size)
             circuit.rename_units(bits_map)  # type: ignore
         return circuit
 

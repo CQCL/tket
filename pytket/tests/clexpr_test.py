@@ -46,11 +46,11 @@ def test_op() -> None:
 
 def test_vars() -> None:
     bvar3 = ClBitVar(3)
-    assert bvar3.index == 3
+    assert bvar3.index == 3  # noqa: PLR2004
     assert str(bvar3) == "b3"
     bvar4 = ClBitVar(4)
     rvar3 = ClRegVar(3)
-    assert rvar3.index == 3
+    assert rvar3.index == 3  # noqa: PLR2004
     assert str(rvar3) == "r3"
     rvar3a = ClRegVar(3)
     assert bvar3 != bvar4
@@ -67,7 +67,7 @@ def test_expr() -> None:
     assert str(expr) == "xor(add(r0, 3), b0)"
     assert expr.op == ClOp.BitXor
     args = expr.args
-    assert len(args) == 2
+    assert len(args) == 2  # noqa: PLR2004
     assert args[0] == expr0
     assert args[1] == b0
 
@@ -137,7 +137,7 @@ def test_adding_to_circuit() -> None:
     c.add_clexpr(wexpr0, c.bits)
     c.add_clexpr(wexpr1, c.bits)
     cmds = c.get_commands()
-    assert len(cmds) == 2
+    assert len(cmds) == 2  # noqa: PLR2004
     op = cmds[0].op
     assert isinstance(op, ClExprOp)
     assert op.expr == wexpr0
