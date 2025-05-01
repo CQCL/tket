@@ -208,7 +208,7 @@ class QuipperTransformer(Transformer):
     def wire_string_list(self, t: list) -> list[tuple[Wire, str]]:
         wires = (el for i, el in enumerate(t) if i % 2 == 0)
         labels = (el for i, el in enumerate(t) if i % 2 == 1)
-        return list(zip(wires, labels))
+        return list(zip(wires, labels, strict=False))
 
     def pos_control_wire(self, t: list) -> ControlWire:
         return ControlWire(t[0], False)

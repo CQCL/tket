@@ -119,7 +119,7 @@ def outcome_counts(
     countstrat = st.integers(min_value=1, max_value=100)
     count_vals = [draw(countstrat) for i in range(len(drawn_arrays))]
 
-    return Counter(dict(zip(outcomes, count_vals)))
+    return Counter(dict(zip(outcomes, count_vals, strict=False)))
 
 
 def _gen_unitid(uidtype, index):  # type: ignore

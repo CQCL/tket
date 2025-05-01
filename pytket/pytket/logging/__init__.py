@@ -1,4 +1,3 @@
-# noqa: A005
 
 # Copyright Quantinuum
 #

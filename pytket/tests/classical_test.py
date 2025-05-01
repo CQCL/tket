@@ -1218,7 +1218,7 @@ def compare_commands_box(
     assert circ1.name == circ2.name
 
     commands_equal = True
-    for c1, c2 in zip(circ1, circ2):
+    for c1, c2 in zip(circ1, circ2, strict=False):
         if print_com:
             print(c1, c2)
         if c1.op.type == OpType.Conditional:

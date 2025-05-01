@@ -160,7 +160,7 @@ class LogicExp:
             self.args[i] = arg.eval_vals()
         if all(isinstance(a, Constant) for a in self.args):
             try:
-                rval = self._const_eval(cast(list[Constant], self.args))
+                rval = self._const_eval(cast("list[Constant]", self.args))
             except NotImplementedError:
                 pass
         return rval

@@ -90,7 +90,7 @@ def counts_from_shot_table(shot_table: np.ndarray) -> dict[tuple[int, ...], int]
     :rtype: Dict[Tuple[int, ...], int]
     """
     shot_values, counts = np.unique(shot_table, axis=0, return_counts=True)
-    return {tuple(s): c for s, c in zip(shot_values, counts)}
+    return {tuple(s): c for s, c in zip(shot_values, counts, strict=False)}
 
 
 def probs_from_counts(

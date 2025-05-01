@@ -176,7 +176,7 @@ class BackendResult:
             and self.c_bits == other.c_bits
             and (
                 (self._shots is None and other._shots is None)
-                or cast(OutcomeArray, self._shots) == cast(OutcomeArray, other._shots)
+                or cast("OutcomeArray", self._shots) == cast("OutcomeArray", other._shots)
             )
             and self._counts == other._counts
             and np.array_equal(self._state, other._state)
@@ -681,8 +681,8 @@ T = TypeVar("T")
 def _sort_keys_by_val(dic: dict[T, int]) -> list[T]:
     if not dic:
         return []
-    vals, _ = zip(*sorted(dic.items(), key=lambda x: x[1]))
-    return list(cast(Iterable[T], vals))
+    vals, _ = zip(*sorted(dic.items(), key=lambda x: x[1]), strict=False)
+    return list(cast("Iterable[T]", vals))
 
 
 def _check_permuted_sequence(first: Collection[Any], second: Collection[Any]) -> bool:

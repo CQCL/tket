@@ -277,7 +277,7 @@ class CircuitRenderer:
             mode="w", suffix=".html", delete=False, dir=os.getcwd()
         )
         try:
-            fp.write(cast(str, self.render_circuit_as_html(circuit)))
+            fp.write(cast("str", self.render_circuit_as_html(circuit)))
             fp.close()
 
             webbrowser.open("file://" + os.path.realpath(fp.name), new=browser_new)

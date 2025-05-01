@@ -223,7 +223,7 @@ class Backend(ABC):
         :raises TypeError: Types of handle identifiers don't match those of backend.
         """
         if (len(reshandle) != len(self._result_id_type)) or not all(
-            isinstance(idval, ty) for idval, ty in zip(reshandle, self._result_id_type)
+            isinstance(idval, ty) for idval, ty in zip(reshandle, self._result_id_type, strict=False)
         ):
             raise ResultHandleTypeError(
                 f"{reshandle!r} does not match expected "
@@ -331,7 +331,7 @@ class Backend(ABC):
         """
         self._check_handle_type(handle)
         if handle in self._cache and "result" in self._cache[handle]:
-            return cast(BackendResult, self._cache[handle]["result"])
+            return cast("BackendResult", self._cache[handle]["result"])
         raise CircuitNotRunError(handle)
 
     def get_results(
@@ -348,7 +348,7 @@ class Backend(ABC):
             return [self.get_result(handle, **kwargs) for handle in handles]
         except ResultHandleTypeError as e:
             try:
-                self._check_handle_type(cast(ResultHandle, handles))
+                self._check_handle_type(cast("ResultHandle", handles))
             except ResultHandleTypeError:
                 raise e
 

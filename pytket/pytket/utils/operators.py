@@ -383,7 +383,7 @@ class QubitPauliOperator:
 
         to_delete = []
         for key, value in self._dict.items():
-            placeholder = value.subs({s: 1 for s in value.free_symbols})
+            placeholder = value.subs(dict.fromkeys(value.free_symbols, 1))
             if abs(re(placeholder)) <= abs_tol:
                 if abs(im(placeholder)) <= abs_tol:
                     to_delete.append(key)

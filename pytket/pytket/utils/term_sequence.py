@@ -77,6 +77,6 @@ def gen_term_sequence_circuit(
             else:
                 circ_to_box.add_phase(-coeff / 2)
         cbox = CircBox(circ_to_box)
-        unit_ids = cast(list[UnitID], qbs)
+        unit_ids = cast("list[UnitID]", qbs)
         circ.add_circbox(cbox, unit_ids)
     return circ

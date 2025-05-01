@@ -158,7 +158,7 @@ def _tensor_from_basic_diagram(diag: ZXDiagram) -> np.ndarray:
             f"{diag.scalar}"
         ) from e
     all_wires = diag.wires
-    indices = dict(zip(all_wires, range(len(all_wires))))
+    indices = dict(zip(all_wires, range(len(all_wires)), strict=False))
     next_index = len(all_wires)
     tensor_list: list[Any]
     tensor_list = []
@@ -285,7 +285,7 @@ def fix_boundaries_to_binary_states(
     diag: ZXDiagram, vals: dict[ZXVert, int]
 ) -> ZXDiagram:
     new_diag = ZXDiagram(diag)
-    b_lookup = dict(zip(diag.get_boundary(), new_diag.get_boundary()))
+    b_lookup = dict(zip(diag.get_boundary(), new_diag.get_boundary(), strict=False))
     for b, val in vals.items():
         if diag.get_zxtype(b) not in _boundary_types:
             raise ValueError("Can only set states of boundary vertices")
@@ -312,7 +312,7 @@ def fix_inputs_to_binary_state(diag: ZXDiagram, vals: list[int]) -> ZXDiagram:
         raise ValueError(
             f"Gave {len(vals)} values for {len(inputs)} inputs of ZXDiagram"
         )
-    val_dict = dict(zip(inputs, vals))
+    val_dict = dict(zip(inputs, vals, strict=False))
     return fix_boundaries_to_binary_states(diag, val_dict)
 
 
@@ -322,5 +322,5 @@ def fix_outputs_to_binary_state(diag: ZXDiagram, vals: list[int]) -> ZXDiagram:
         raise ValueError(
             f"Gave {len(vals)} values for {len(outputs)} outputs of ZXDiagram"
         )
-    val_dict = dict(zip(outputs, vals))
+    val_dict = dict(zip(outputs, vals, strict=False))
     return fix_boundaries_to_binary_states(diag, val_dict)

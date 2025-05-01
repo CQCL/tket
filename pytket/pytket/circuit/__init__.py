@@ -15,11 +15,10 @@
 """The circuit module provides an API to interact with the
 tket :py:class:`Circuit` data structure.
  This module is provided in binary form during the PyPI installation."""
+from collections.abc import Callable, Sequence
 from typing import (
     Any,
-    Callable,
     Optional,
-    Sequence,
     Union,
 )
 
@@ -57,8 +56,8 @@ def add_wasm(
     filehandler: wasm.WasmModuleHandler,
     list_i: Sequence[int],
     list_o: Sequence[int],
-    args: Union[Sequence[int], Sequence[Bit]],
-    args_wasm: Optional[Sequence[int]] = None,
+    args: Sequence[int] | Sequence[Bit],
+    args_wasm: Sequence[int] | None = None,
     **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
@@ -95,10 +94,10 @@ def add_wasm(
             funcname, str(filehandler), list_i, list_o, args, args_wasm, **kwargs
         )
 
-    raise ValueError(f"{funcname} not found, check {repr(filehandler)}")
+    raise ValueError(f"{funcname} not found, check {filehandler!r}")
 
 
-setattr(Circuit, "add_wasm", add_wasm)
+Circuit.add_wasm = add_wasm
 
 
 def add_wasm_to_reg(
@@ -107,7 +106,7 @@ def add_wasm_to_reg(
     filehandler: wasm.WasmModuleHandler,
     list_i: Sequence[BitRegister],
     list_o: Sequence[BitRegister],
-    args_wasm: Optional[Sequence[int]] = None,
+    args_wasm: Sequence[int] | None = None,
     **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
@@ -152,7 +151,7 @@ please use only registers of at most 32 bits"""
             funcname, str(filehandler), list_i, list_o, args_wasm, **kwargs
         )
 
-    raise ValueError(f"{funcname} not found, check {repr(filehandler)}")
+    raise ValueError(f"{funcname} not found, check {filehandler!r}")
 
 
-setattr(Circuit, "add_wasm_to_reg", add_wasm_to_reg)
+Circuit.add_wasm_to_reg = add_wasm_to_reg

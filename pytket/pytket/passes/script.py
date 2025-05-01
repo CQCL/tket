@@ -386,7 +386,7 @@ def compilation_pass_from_script(script: str) -> BasePass:
     :param script: specification of pass
     """
     tree = parser.parse(script)
-    return cast(BasePass, transformer.transform(tree))
+    return cast("BasePass", transformer.transform(tree))
 
 
 def compilation_pass_grammar() -> str:

@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Callable, Union
+from collections.abc import Callable
+from typing import Union
 
 from pytket._tket.unit_id import *
 from pytket._tket.unit_id import (
@@ -51,10 +52,10 @@ def _qubitregister_next(self: QubitRegister) -> Qubit:
     raise StopIteration
 
 
-setattr(BitRegister, "__next__", _bitregister_next)
+BitRegister.__next__ = _bitregister_next
 BitRegister.__next__.__name__ = "__next__"
 
-setattr(QubitRegister, "__next__", _qubitregister_next)
+QubitRegister.__next__ = _qubitregister_next
 QubitRegister.__next__.__name__ = "__next__"
 
 # overload operators for Bit, BitRegister and expressions over these
@@ -84,24 +85,22 @@ def gen_binary_method_reg(
     return logic_operation
 
 
-setattr(Bit, "__and__", gen_binary_method_bit(BitWiseOp.AND, "__and__"))
-setattr(Bit, "__rand__", gen_binary_method_bit(BitWiseOp.AND, "__rand__"))
-setattr(Bit, "__or__", gen_binary_method_bit(BitWiseOp.OR, "__or__"))
-setattr(Bit, "__ror__", gen_binary_method_bit(BitWiseOp.OR, "__ror__"))
-setattr(Bit, "__xor__", gen_binary_method_bit(BitWiseOp.XOR, "__xor__"))
-setattr(Bit, "__rxor__", gen_binary_method_bit(BitWiseOp.XOR, "__rxor__"))
-setattr(BitRegister, "__and__", gen_binary_method_reg(RegWiseOp.AND, "__and__"))
-setattr(BitRegister, "__rand__", gen_binary_method_reg(RegWiseOp.AND, "__rand__"))
-setattr(BitRegister, "__or__", gen_binary_method_reg(RegWiseOp.OR, "__or__"))
-setattr(BitRegister, "__ror__", gen_binary_method_reg(RegWiseOp.OR, "__ror__"))
-setattr(BitRegister, "__xor__", gen_binary_method_reg(RegWiseOp.XOR, "__xor__"))
-setattr(BitRegister, "__rxor__", gen_binary_method_reg(RegWiseOp.XOR, "__rxor__"))
-setattr(BitRegister, "__add__", gen_binary_method_reg(RegWiseOp.ADD, "__add__"))
-setattr(BitRegister, "__sub__", gen_binary_method_reg(RegWiseOp.SUB, "__sub__"))
-setattr(BitRegister, "__mul__", gen_binary_method_reg(RegWiseOp.MUL, "__mul__"))
-setattr(
-    BitRegister, "__floordiv__", gen_binary_method_reg(RegWiseOp.DIV, "__floordiv__")
-)
-setattr(BitRegister, "__pow__", gen_binary_method_reg(RegWiseOp.POW, "__pow__"))
-setattr(BitRegister, "__lshift__", gen_binary_method_reg(RegWiseOp.LSH, "__lshift__"))
-setattr(BitRegister, "__rshift__", gen_binary_method_reg(RegWiseOp.RSH, "__rshift__"))
+Bit.__and__ = gen_binary_method_bit(BitWiseOp.AND, "__and__")
+Bit.__rand__ = gen_binary_method_bit(BitWiseOp.AND, "__rand__")
+Bit.__or__ = gen_binary_method_bit(BitWiseOp.OR, "__or__")
+Bit.__ror__ = gen_binary_method_bit(BitWiseOp.OR, "__ror__")
+Bit.__xor__ = gen_binary_method_bit(BitWiseOp.XOR, "__xor__")
+Bit.__rxor__ = gen_binary_method_bit(BitWiseOp.XOR, "__rxor__")
+BitRegister.__and__ = gen_binary_method_reg(RegWiseOp.AND, "__and__")
+BitRegister.__rand__ = gen_binary_method_reg(RegWiseOp.AND, "__rand__")
+BitRegister.__or__ = gen_binary_method_reg(RegWiseOp.OR, "__or__")
+BitRegister.__ror__ = gen_binary_method_reg(RegWiseOp.OR, "__ror__")
+BitRegister.__xor__ = gen_binary_method_reg(RegWiseOp.XOR, "__xor__")
+BitRegister.__rxor__ = gen_binary_method_reg(RegWiseOp.XOR, "__rxor__")
+BitRegister.__add__ = gen_binary_method_reg(RegWiseOp.ADD, "__add__")
+BitRegister.__sub__ = gen_binary_method_reg(RegWiseOp.SUB, "__sub__")
+BitRegister.__mul__ = gen_binary_method_reg(RegWiseOp.MUL, "__mul__")
+BitRegister.__floordiv__ = gen_binary_method_reg(RegWiseOp.DIV, "__floordiv__")
+BitRegister.__pow__ = gen_binary_method_reg(RegWiseOp.POW, "__pow__")
+BitRegister.__lshift__ = gen_binary_method_reg(RegWiseOp.LSH, "__lshift__")
+BitRegister.__rshift__ = gen_binary_method_reg(RegWiseOp.RSH, "__rshift__")

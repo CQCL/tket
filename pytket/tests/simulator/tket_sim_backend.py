@@ -184,12 +184,12 @@ class TketSimShotBackend(TketSimBackend):
         circuits = list(circuits)
         n_shots_list: list[int] = []
         if hasattr(n_shots, "__iter__"):
-            if any(n is None or n < 1 for n in cast(Sequence[int | None], n_shots)):
+            if any(n is None or n < 1 for n in cast("Sequence[int | None]", n_shots)):
                 raise ValueError(
                     "Shots are artificially generated, specify a positive value "
                     "for all list entries of n_shots."
                 )
-            n_shots_list = cast(list[int], n_shots)
+            n_shots_list = cast("list[int]", n_shots)
             if len(n_shots_list) != len(circuits):
                 raise ValueError("The length of n_shots and circuits must match")
         else:
@@ -204,7 +204,7 @@ class TketSimShotBackend(TketSimBackend):
         postprocess = kwargs.get("postprocess", False)
 
         handle_list = []
-        for circuit, n_shots_circ in zip(circuits, n_shots_list):
+        for circuit, n_shots_circ in zip(circuits, n_shots_list, strict=False):
             qubits = sorted(circuit.qubits, reverse=True)
             bits = circuit.bits
             if postprocess:
@@ -215,8 +215,8 @@ class TketSimShotBackend(TketSimBackend):
                 c0 = _remove_measurements(c0)
             sim = TketSimWrapper(c0)
             state = sim.get_state(basis=BasisOrder.dlo)
-            choices, probs = zip(*probs_from_state(state).items())
-            np.random.seed(cast(int, kwargs.get("seed")))
+            choices, probs = zip(*probs_from_state(state).items(), strict=False)
+            np.random.seed(cast("int", kwargs.get("seed")))
             sample_indices = np.random.choice(len(choices), p=probs, size=n_shots_circ)
             q_to_b = circuit.qubit_to_bit_map
             readouts = []

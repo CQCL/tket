@@ -518,7 +518,7 @@ def test_spam_routing() -> None:
     mm.route_circuit(routed, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
     DelayMeasures().apply(routed)
     readout = routed.qubit_readout
-    nodes = cast(list[Node], list(readout.keys()))
+    nodes = cast("list[Node]", list(readout.keys()))
     spam = SpamCorrecter([nodes])
     calib_circs = spam.calibration_circuits()
 

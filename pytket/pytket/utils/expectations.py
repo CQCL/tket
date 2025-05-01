@@ -183,14 +183,14 @@ def get_operator_expectation_value(
         )
         results = backend.get_results(handles)
         if backend.supports_counts:
-            for result, coeff in zip(results, coeffs):
+            for result, coeff in zip(results, coeffs, strict=False):
                 counts = result.get_counts()
                 energy += coeff * expectation_from_counts(counts)
             for handle in handles:
                 backend.pop_result(handle)
             return energy
         if backend.supports_shots:
-            for result, coeff in zip(results, coeffs):
+            for result, coeff in zip(results, coeffs, strict=False):
                 shots = result.get_shots()
                 energy += coeff * expectation_from_shots(shots)
             for handle in handles:

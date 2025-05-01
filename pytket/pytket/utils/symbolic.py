@@ -431,7 +431,7 @@ def circuit_to_symbolic_unitary(circ: Circuit) -> ImmutableMatrix:
     gates = circuit_to_symbolic_gates(circ)
     nqb = circ.n_qubits
     try:
-        return cast(ImmutableMatrix, represent(gates, nqubits=circ.n_qubits))
+        return cast("ImmutableMatrix", represent(gates, nqubits=circ.n_qubits))
     except NotImplementedError:
         # sympy can't represent n>1 qubit unitaries very well
         # so if it fails we will just calculate columns using the statevectors
@@ -457,7 +457,7 @@ def circuit_apply_symbolic_qubit(circ: Circuit, input_qb: Expr) -> Qubit:
     """
     gates = circuit_to_symbolic_gates(circ)
 
-    return cast(Qubit, qapply(gates * input_qb))
+    return cast("Qubit", qapply(gates * input_qb))
 
 
 def circuit_apply_symbolic_statevector(
@@ -480,6 +480,6 @@ def circuit_apply_symbolic_statevector(
     else:
         input_qb = Qubit("0" * circ.n_qubits)
     return cast(
-        ImmutableMatrix,
-        represent(circuit_apply_symbolic_qubit(circ, cast(Qubit, input_qb))),
+        "ImmutableMatrix",
+        represent(circuit_apply_symbolic_qubit(circ, cast("Qubit", input_qb))),
     )

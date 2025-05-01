@@ -195,7 +195,7 @@ def _bayesian_iteration(
     if np.isclose(z, 0).any():
         raise ZeroDivisionError
     return cast(
-        np.ndarray, t * _compute_dot([A.transpose() for A in As], measurements / z)
+        "np.ndarray", t * _compute_dot([A.transpose() for A in As], measurements / z)
     )
 
 
@@ -394,7 +394,7 @@ class SpamCorrecter:
             new_state_dicts = {}
             # parallelise circuits, run uncorrelated subsets
             # characterisation in parallel
-            for dim, qubits in zip(self.subset_dimensions, self.subsets_matrix_map):
+            for dim, qubits in zip(self.subset_dimensions, self.subsets_matrix_map, strict=False):
                 # add state to prepared states
                 new_state_dicts[qubits] = major_state[:dim]
                 # find only qubits that are expected to be in 1 state,
@@ -403,7 +403,7 @@ class SpamCorrecter:
                     state_circuit.add_circbox(self.xbox, [flipped_qb])
             # Decompose boxes, add barriers to preserve circuit, add measures
             DecomposeBoxes().apply(state_circuit)
-            for qb, cb in zip(self.all_qbs, c_reg):
+            for qb, cb in zip(self.all_qbs, c_reg, strict=False):
                 state_circuit.Measure(qb, cb)
 
             # add to returned types
@@ -429,7 +429,7 @@ class SpamCorrecter:
         counter = 0
         self.node_index_dict: dict[Node, tuple[int, int]] = dict()
 
-        for qbs, dim in zip(self.subsets_matrix_map, self.subset_dimensions):
+        for qbs, dim in zip(self.subsets_matrix_map, self.subset_dimensions, strict=False):
             # for a subset with n qubits, create a 2^n by 2^n matrix
             self.subsets_matrix_map[qbs] = np.zeros((1 << dim,) * 2, dtype=float)
             for i in range(len(qbs)):
@@ -437,7 +437,7 @@ class SpamCorrecter:
                 self.node_index_dict[qb] = (counter, i)
             counter += 1
 
-        for result, state_info in zip(results_list, self.state_infos):
+        for result, state_info in zip(results_list, self.state_infos, strict=False):
             state_dict = state_info[0]
             qb_bit_map = state_info[1]
             for qb_sub in self.subsets_matrix_map:
@@ -456,7 +456,7 @@ class SpamCorrecter:
 
         # normalise everything
         self.characterisation_matrices = [
-            mat / np.sum(cast(np.ndarray, mat), axis=0)
+            mat / np.sum(cast("np.ndarray", mat), axis=0)
             for mat in self.subsets_matrix_map.values()
         ]
 

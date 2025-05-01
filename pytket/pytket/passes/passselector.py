@@ -54,7 +54,7 @@ class PassSelector:
 
         self._scores: list[int | None] = []
 
-        for p, c in zip(self._passlist, circ_list):
+        for p, c in zip(self._passlist, circ_list, strict=False):
             try:
                 p.apply(c)
                 self._scores.append(self._score_func(c))
