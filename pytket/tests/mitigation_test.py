@@ -98,7 +98,7 @@ def test_spam_integration() -> None:
     spam = SpamCorrecter(subs)
     calib_circs = spam.calibration_circuits()
 
-    assert len(calib_circs) == 4
+    assert len(calib_circs) == 4  # noqa: PLR2004
 
     calib_counters = [
         Counter({OutcomeArray.from_readouts([key]): val for key, val in r.items()})
@@ -517,7 +517,7 @@ def test_spam_routing() -> None:
     spam = SpamCorrecter([nodes])
     calib_circs = spam.calibration_circuits()
 
-    assert len(calib_circs) == 16
+    assert len(calib_circs) == 16  # noqa: PLR2004
 
     calib_counters = [
         Counter({OutcomeArray.from_readouts([key]): val for key, val in r.items()})

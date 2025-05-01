@@ -51,7 +51,7 @@ def has_reg_output(op: ClOp) -> bool:
     return op in _reg_output_clops
 
 
-def clop_from_ops(op: Ops) -> ClOp:
+def clop_from_ops(op: Ops) -> ClOp:  # noqa: PLR0911, PLR0912
     match op:
         case BitWiseOp.AND:
             return ClOp.BitAnd

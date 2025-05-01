@@ -68,7 +68,7 @@ def test_generator_creation() -> None:
     assert repr(tri_gen) == "C-Tri"
 
 
-def test_diagram_creation() -> None:
+def test_diagram_creation() -> None:  # noqa: PLR0915
     diag = ZXDiagram(1, 1, 0, 0)
     z_spid = diag.add_vertex(ZXType.ZSpider, 0.1)
     x_spid = diag.add_vertex(ZXType.XSpider, 3.4)
@@ -142,7 +142,7 @@ def test_diagram_creation() -> None:
 
 
 @pytest.mark.skipif(not have_quimb, reason="quimb not installed")
-def test_known_tensors() -> None:
+def test_known_tensors() -> None:  # noqa: PLR0915
     # A single basic edge
     diag = ZXDiagram(1, 1, 0, 0)
     w = diag.add_wire(diag.get_boundary()[0], diag.get_boundary()[1])
@@ -375,7 +375,7 @@ def test_known_tensors() -> None:
 
 
 @pytest.mark.skipif(not have_quimb, reason="quimb not installed")
-def test_classical_and_cptp() -> None:
+def test_classical_and_cptp() -> None:  # noqa: PLR0915
     # A single classical spider in a classical diagram
     diag = ZXDiagram(0, 0, 1, 2)
     ins = diag.get_boundary(ZXType.Input)
@@ -577,23 +577,23 @@ def test_graph_like_reduction() -> None:
     # Replace X with Z spiders
     assert Rewrite.red_to_green().apply(diag)
     assert diag.count_vertices(ZXType.XSpider) == 0
-    assert diag.count_vertices(ZXType.ZSpider) == 8
+    assert diag.count_vertices(ZXType.ZSpider) == 8  # noqa: PLR2004
 
     # Spider fusion
     assert Rewrite.spider_fusion().apply(diag)
-    assert diag.count_vertices(ZXType.ZSpider) == 6
+    assert diag.count_vertices(ZXType.ZSpider) == 6  # noqa: PLR2004
 
     # Parallel edge pair removal
     assert not Rewrite.parallel_h_removal().apply(diag)
 
     # Remove hadamard edges connected directly to the boundaries
     assert Rewrite.io_extension().apply(diag)
-    assert diag.count_vertices(ZXType.ZSpider) == 10
+    assert diag.count_vertices(ZXType.ZSpider) == 10  # noqa: PLR2004
 
     # Boundary vertices sharing spiders
     # Deal with directly connected in/outputs
     assert Rewrite.separate_boundaries().apply(diag)
-    assert diag.count_vertices(ZXType.ZSpider) == 13
+    assert diag.count_vertices(ZXType.ZSpider) == 13  # noqa: PLR2004
 
     diag.check_validity()
     final = unitary_from_quantum_diagram(diag)
@@ -602,7 +602,7 @@ def test_graph_like_reduction() -> None:
 
 
 @pytest.mark.skipif(not have_quimb, reason="quimb not installed")
-def test_spider_fusion() -> None:
+def test_spider_fusion() -> None:  # noqa: PLR0915
     diag = ZXDiagram(2, 1, 0, 0)
     ins = diag.get_boundary(ZXType.Input)
     outs = diag.get_boundary(ZXType.Output)
@@ -626,7 +626,7 @@ def test_spider_fusion() -> None:
     original = unitary_from_quantum_diagram(diag)
     assert Rewrite.self_loop_removal().apply(diag)
     assert Rewrite.spider_fusion().apply(diag)
-    assert diag.count_vertices(ZXType.ZSpider) == 2
+    assert diag.count_vertices(ZXType.ZSpider) == 2  # noqa: PLR2004
     assert Rewrite.self_loop_removal().apply(diag)
     assert Rewrite.parallel_h_removal().apply(diag)
     assert Rewrite.io_extension().apply(diag)
@@ -653,19 +653,19 @@ def test_spider_fusion() -> None:
     diag.check_validity()
     assert not Rewrite.self_loop_removal().apply(diag)
     assert Rewrite.spider_fusion().apply(diag)
-    assert diag.count_vertices(ZXType.ZSpider) == 2
+    assert diag.count_vertices(ZXType.ZSpider) == 2  # noqa: PLR2004
     assert Rewrite.self_loop_removal().apply(diag)
     assert Rewrite.parallel_h_removal().apply(diag)
     assert not Rewrite.io_extension().apply(diag)
     assert not Rewrite.separate_boundaries().apply(diag)
-    assert diag.count_vertices(ZXType.ZSpider) == 2
+    assert diag.count_vertices(ZXType.ZSpider) == 2  # noqa: PLR2004
     diag.check_validity()
 
 
 @pytest.mark.skipif(not have_quimb, reason="quimb not installed")(
     not have_quimb, reason="quimb not installed"
 )
-def test_simplification() -> None:
+def test_simplification() -> None:  # noqa: PLR0915
     # This diagram follows from section A of https://arxiv.org/pdf/1902.03178.pdf
     diag = ZXDiagram(4, 4, 0, 0)
     ins = diag.get_boundary(ZXType.Input)
@@ -767,7 +767,7 @@ def test_converting_from_circuit() -> None:
 
 def test_constructors() -> None:
     phased_gen = PhasedGen(ZXType.ZSpider, 0.5, QuantumType.Quantum)
-    assert phased_gen.param == 0.5
+    assert phased_gen.param == 0.5  # noqa: PLR2004
     clifford_gen = CliffordGen(ZXType.PX, True, QuantumType.Quantum)
     assert clifford_gen.param
     directed_gen = DirectedGen(ZXType.Triangle, QuantumType.Quantum)
@@ -828,14 +828,14 @@ def test_XY_extraction() -> None:
     diag.add_wire(o2, outs[2])
     diag.check_validity()
     circ, _ = diag.to_circuit()
-    assert circ.n_qubits == 3
+    assert circ.n_qubits == 3  # noqa: PLR2004
     diag_u = unitary_from_quantum_diagram(diag)
     circ_u = circ.get_unitary()
     assert compare_unitaries(diag_u, circ_u)
 
 
 @pytest.mark.skipif(not have_quimb, reason="quimb not installed")
-def test_XY_YZ_extraction() -> None:
+def test_XY_YZ_extraction() -> None:  # noqa: PLR0915
     # Almost identical to the diagram in test_ZXExtraction.cpp
     # Gadgets g3 and g8 removed as they made tensor evaluation real slow
     diag = ZXDiagram(5, 5, 0, 0)
@@ -918,14 +918,14 @@ def test_XY_YZ_extraction() -> None:
     diag.add_wire(o4ext, outs[4])
     diag.check_validity()
     circ, _ = diag.to_circuit()
-    assert circ.n_qubits == 5
+    assert circ.n_qubits == 5  # noqa: PLR2004
     diag_u = unitary_from_quantum_diagram(diag)
     circ_u = circ.get_unitary()
     assert compare_unitaries(diag_u, circ_u)
 
 
 @pytest.mark.skipif(not have_quimb, reason="quimb not installed")
-def test_ZX_rebase() -> None:
+def test_ZX_rebase() -> None:  # noqa: PLR0915
     diag = ZXDiagram(2, 1, 0, 1)
     ins = diag.get_boundary(ZXType.Input)
     outs = diag.get_boundary(ZXType.Output)
@@ -1018,9 +1018,9 @@ def test_internalise_gadgets() -> None:
             t = tensor_from_quantum_diagram(diag)
             Rewrite.internalise_gadgets().apply(diag)
             if (axis_basis == ZXType.XY) and (gadget_basis in [ZXType.XY, ZXType.XZ]):
-                assert diag.n_vertices == 6
+                assert diag.n_vertices == 6  # noqa: PLR2004
             else:
-                assert diag.n_vertices == 5
+                assert diag.n_vertices == 5  # noqa: PLR2004
             t2 = tensor_from_quantum_diagram(diag)
             (t, t2) = joint_normalise_tensor(t, t2)
             assert np.allclose(t, t2)

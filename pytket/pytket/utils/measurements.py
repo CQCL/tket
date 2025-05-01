@@ -57,7 +57,7 @@ def _all_pauli_measurements(
     :return: List of circuits in order of term from the operator
     :rtype: Iterable[Circuit]
     """
-    for pauli_string in operator._dict:
+    for pauli_string in operator._dict:  # noqa: SLF001
         if not pauli_string.map:
             continue
         copy = circ.copy()

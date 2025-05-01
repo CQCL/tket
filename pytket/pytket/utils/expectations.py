@@ -115,7 +115,7 @@ def get_pauli_expectation_value(
     raise ValueError("Backend does not support counts or shots")
 
 
-def get_operator_expectation_value(
+def get_operator_expectation_value(  # noqa: PLR0912, PLR0913, PLR0915
     state_circuit: Circuit,
     operator: QubitPauliOperator,
     backend: "Backend",
@@ -150,9 +150,9 @@ def get_operator_expectation_value(
         if not backend.valid_circuit(state_circuit):
             state_circuit = backend.get_compiled_circuit(state_circuit)
         try:
-            coeffs: list[complex] = [complex(v) for v in operator._dict.values()]
+            coeffs: list[complex] = [complex(v) for v in operator._dict.values()]  # noqa: SLF001
         except TypeError:
-            raise ValueError("QubitPauliOperator contains unevaluated symbols.")
+            raise ValueError("QubitPauliOperator contains unevaluated symbols.")  # noqa: B904
         if backend.supports_expectation and (
             backend.expectation_allows_nonhermitian or all(z.imag == 0 for z in coeffs)
         ):
@@ -162,12 +162,12 @@ def get_operator_expectation_value(
         return operator.state_expectation(state)
     energy: complex
     id_string = QubitPauliString()
-    energy = complex(operator[id_string]) if id_string in operator._dict else 0
+    energy = complex(operator[id_string]) if id_string in operator._dict else 0  # noqa: SLF001
     if not partition_strat:
         operator_without_id = QubitPauliOperator(
-            {p: c for p, c in operator._dict.items() if (p != id_string)}
+            {p: c for p, c in operator._dict.items() if (p != id_string)}  # noqa: SLF001
         )
-        coeffs = [complex(c) for c in operator_without_id._dict.values()]
+        coeffs = [complex(c) for c in operator_without_id._dict.values()]  # noqa: SLF001
         pauli_circuits = list(
             _all_pauli_measurements(operator_without_id, state_circuit)
         )
@@ -194,7 +194,7 @@ def get_operator_expectation_value(
                 backend.pop_result(handle)
             return energy
         raise ValueError("Backend does not support counts or shots")
-    qubit_pauli_string_list = [p for p in operator._dict if (p != id_string)]
+    qubit_pauli_string_list = [p for p in operator._dict if (p != id_string)]  # noqa: SLF001
     measurement_expectation = measurement_reduction(
         qubit_pauli_string_list, partition_strat, colour_method
     )

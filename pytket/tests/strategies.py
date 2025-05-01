@@ -40,7 +40,7 @@ reg_name_regex = re.compile("[a-z][a-zA-Z0-9_]*")
 @st.composite
 def qubits(
     draw: Callable,
-    name: SearchStrategy[str] = st.from_regex(reg_name_regex, fullmatch=True),
+    name: SearchStrategy[str] = st.from_regex(reg_name_regex, fullmatch=True),  # noqa: B008
     index: SearchStrategy[int] = uint32,
 ) -> Qubit:
     return Qubit(draw(name), draw(index))
@@ -49,20 +49,20 @@ def qubits(
 @st.composite
 def nodes(
     draw: Callable,
-    name: SearchStrategy[str] = st.from_regex(reg_name_regex, fullmatch=True),
+    name: SearchStrategy[str] = st.from_regex(reg_name_regex, fullmatch=True),  # noqa: B008
     index: SearchStrategy[int] = uint32,
 ) -> Node:
     return Node(draw(name), draw(index))
 
 
 @st.composite
-def circuits(
+def circuits(  # noqa: PLR0913
     draw: Callable[[SearchStrategy[Any]], Any],
-    n_qubits: SearchStrategy[int] = st.integers(min_value=0, max_value=4),
-    n_bits: SearchStrategy[int] = st.integers(min_value=0, max_value=4),
-    depth: SearchStrategy[int] = st.integers(min_value=1, max_value=8),
-    name: SearchStrategy[str] = st.text(min_size=0, max_size=6),
-    phase: SearchStrategy[float] = st.floats(min_value=-2.0, max_value=2.0),
+    n_qubits: SearchStrategy[int] = st.integers(min_value=0, max_value=4),  # noqa: B008
+    n_bits: SearchStrategy[int] = st.integers(min_value=0, max_value=4),  # noqa: B008
+    depth: SearchStrategy[int] = st.integers(min_value=1, max_value=8),  # noqa: B008
+    name: SearchStrategy[str] = st.text(min_size=0, max_size=6),  # noqa: B008
+    phase: SearchStrategy[float] = st.floats(min_value=-2.0, max_value=2.0),  # noqa: B008
 ) -> Circuit:
     total_qubits = draw(n_qubits)
     total_bits = draw(n_bits)
@@ -79,7 +79,7 @@ def circuits(
         if gate in (circuit.CH, circuit.CX):
             target = draw(
                 st.integers(min_value=0, max_value=total_qubits - 1).filter(
-                    lambda x: x != control
+                    lambda x: x != control  # noqa: B023
                 )
             )
             gate(control, target)
@@ -95,8 +95,8 @@ def circuits(
 @st.composite
 def outcomearrays(
     draw: Callable[[SearchStrategy[Any]], Any],
-    rows: SearchStrategy[int] = st.integers(min_value=1, max_value=100),
-    cols: SearchStrategy[int] = st.integers(min_value=0, max_value=10),
+    rows: SearchStrategy[int] = st.integers(min_value=1, max_value=100),  # noqa: B008
+    cols: SearchStrategy[int] = st.integers(min_value=0, max_value=10),  # noqa: B008
 ) -> OutcomeArray:
     row = draw(rows)
     col = draw(cols)

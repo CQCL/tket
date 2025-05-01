@@ -69,10 +69,10 @@ def test_marginalization() -> None:
     ed1_ = ed.condition(lambda x: x[0] == 1)
     ed_0 = ed.condition(lambda x: x[1] == 0)
     ed_1 = ed.condition(lambda x: x[1] == 1)
-    assert ed0_.total == 5
-    assert ed1_.total == 4
-    assert ed_0.total == 7
-    assert ed_1.total == 2
+    assert ed0_.total == 5  # noqa: PLR2004
+    assert ed1_.total == 4  # noqa: PLR2004
+    assert ed_0.total == 7  # noqa: PLR2004
+    assert ed_1.total == 2  # noqa: PLR2004
 
     pd = ProbabilityDistribution.from_empirical_distribution(ed)
     pd0 = pd.condition(lambda x: x[0] == x[1])

@@ -34,7 +34,7 @@ from pytket.config import PytketExtConfig
 
 # js scripts to be loaded must not be parsed as template files.
 class IncludeRawExtension(Extension):
-    tags = {"include_raw"}
+    tags = {"include_raw"}  # noqa: RUF012
 
     def parse(self, parser: Parser) -> nodes.Output:
         lineno = parser.stream.expect("name:include_raw").lineno
@@ -273,7 +273,7 @@ class CircuitRenderer:
 
         """
 
-        fp = tempfile.NamedTemporaryFile(
+        fp = tempfile.NamedTemporaryFile(  # noqa: SIM115
             mode="w", suffix=".html", delete=False, dir=os.getcwd()
         )
         try:

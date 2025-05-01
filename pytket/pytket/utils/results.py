@@ -62,7 +62,7 @@ class BitPermuter:
         res = 0
         for source_index, target_index in enumerate(self.perm):
             if inverse:
-                target_index, source_index = source_index, target_index
+                target_index, source_index = source_index, target_index  # noqa: PLW2901
             # if source bit set
             if val & (1 << (self.n_bits - 1 - source_index)):
                 # set target bit

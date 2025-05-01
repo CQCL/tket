@@ -40,7 +40,7 @@ class WasmModuleHandler:
     _functions: dict[str, tuple[int, int]]
     _unsupported_functions: list[str]
 
-    type_lookup = {
+    type_lookup = {  # noqa: RUF012
         LANG_TYPE_I32: "i32",
         LANG_TYPE_I64: "i64",
         LANG_TYPE_F32: "f32",
@@ -63,9 +63,9 @@ class WasmModuleHandler:
         :type int_size: int
         """
         self._int_size = int_size
-        if int_size == 32:
+        if int_size == 32:  # noqa: PLR2004
             self._int_type = self.type_lookup[LANG_TYPE_I32]
-        elif int_size == 64:
+        elif int_size == 64:  # noqa: PLR2004
             self._int_type = self.type_lookup[LANG_TYPE_I64]
         else:
             raise ValueError(
@@ -87,7 +87,7 @@ class WasmModuleHandler:
         if check:
             self.check()
 
-    def check(self) -> None:
+    def check(self) -> None:  # noqa: PLR0912, PLR0915
         """Collect functions from the module that can be used with pytket.
 
         Populates the internal list of supported and unsupported functions

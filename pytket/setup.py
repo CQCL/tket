@@ -160,7 +160,7 @@ setup(
         "Tracker": "https://github.com/CQCL/tket/issues",
     },
     description="Quantum computing toolkit and interface to the TKET compiler",
-    long_description=open("package.md").read(),
+    long_description=open("package.md").read(),  # noqa: SIM115
     long_description_content_type="text/markdown",
     license="Apache 2",
     packages=[*setuptools.find_packages(), "pytket.qasm.includes"],

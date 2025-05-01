@@ -53,7 +53,7 @@ def test_multi_cycle_multi_frame_randomisation() -> None:
     )
     circ = Circuit(2).CX(0, 1).X(0).S(0).S(1).CX(0, 1)
     fr_circs = test_fr.get_all_circuits(circ)
-    assert len(fr_circs) == 16
+    assert len(fr_circs) == 16  # noqa: PLR2004
     coms_0 = fr_circs[0].get_commands()
     assert coms_0[0].op.type == OpType.Y
     assert coms_0[1].op.type == OpType.Y
@@ -69,7 +69,7 @@ def test_pauli_frame_randomisation() -> None:
     test_pfr = PauliFrameRandomisation()
     circ = Circuit(2).CX(0, 1)
     pfr_circs = test_pfr.get_all_circuits(circ)
-    assert len(pfr_circs) == 16
+    assert len(pfr_circs) == 16  # noqa: PLR2004
     coms_0 = pfr_circs[0].get_commands()
     coms_15 = pfr_circs[15].get_commands()
     assert coms_0[0].op.type == OpType.Z
@@ -86,26 +86,26 @@ def test_universal_frame_randomisation() -> None:
     test_pfr = UniversalFrameRandomisation()
     circ = Circuit(2).Rz(0.2, 0).CX(0, 1)
     pfr_circs = test_pfr.get_all_circuits(circ)
-    assert len(pfr_circs) == 16
+    assert len(pfr_circs) == 16  # noqa: PLR2004
     coms_0 = pfr_circs[0].get_commands()
     coms_5 = pfr_circs[5].get_commands()
     coms_15 = pfr_circs[15].get_commands()
 
     assert coms_0[0].op.type == OpType.Z
     assert coms_0[1].op.type == OpType.Z
-    assert coms_0[3].op.params[0] == 0.2
+    assert coms_0[3].op.params[0] == 0.2  # noqa: PLR2004
     assert coms_0[6].op.type == OpType.noop
     assert coms_0[7].op.type == OpType.Z
 
     assert coms_5[0].op.type == OpType.X
     assert coms_5[1].op.type == OpType.X
-    assert coms_5[3].op.params[0] == 3.8
+    assert coms_5[3].op.params[0] == 3.8  # noqa: PLR2004
     assert coms_5[6].op.type == OpType.X
     assert coms_5[7].op.type == OpType.noop
 
     assert coms_15[0].op.type == OpType.noop
     assert coms_15[1].op.type == OpType.noop
-    assert coms_15[3].op.params[0] == 0.2
+    assert coms_15[3].op.params[0] == 0.2  # noqa: PLR2004
     assert coms_15[6].op.type == OpType.noop
     assert coms_15[7].op.type == OpType.noop
 

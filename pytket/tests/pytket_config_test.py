@@ -89,4 +89,4 @@ def test_sample_extconfig(pytket_config: PytketConfig) -> None:
     ext_config.update_default_config_file()
 
     new_ext_config = SampleExtConfig.from_default_config_file()
-    assert new_ext_config.field1 == "bar" and new_ext_config.field2 == 2
+    assert new_ext_config.field1 == "bar" and new_ext_config.field2 == 2  # noqa: PLR2004

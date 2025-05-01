@@ -58,7 +58,7 @@ def gen_term_sequence_circuit(
     :param colour_method: a graph colouring method
     :type colour_method: GraphColourMethod, Optional
     """
-    qps_list = list(operator._dict.keys())
+    qps_list = list(operator._dict.keys())  # noqa: SLF001
     qps_list_list = term_sequence(qps_list, partition_strat, colour_method)
     n_qbs = reference_state.n_qubits
     circ = reference_state.copy()

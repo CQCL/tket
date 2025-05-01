@@ -43,7 +43,7 @@ class OutcomeArray(np.ndarray):
         # We first cast to be our class type
         obj = np.asarray(input_array).view(cls)
         # add the new attribute to the created instance
-        if len(obj.shape) != 2 or obj.dtype != np.uint8:
+        if len(obj.shape) != 2 or obj.dtype != np.uint8:  # noqa: PLR2004
             raise ValueError(
                 "OutcomeArray must be a two dimensional array of dtype uint8."
             )
@@ -53,7 +53,7 @@ class OutcomeArray(np.ndarray):
                 f"Width {width} is larger than maxium bitlength of "
                 f"array: {bitcapacity}."
             )
-        obj._width = width
+        obj._width = width  # noqa: SLF001
         # Finally, we must return the newly created object:
         return obj
 

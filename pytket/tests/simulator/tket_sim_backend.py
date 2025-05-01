@@ -128,7 +128,7 @@ class TketSimBackend(Backend):
         handle_list = []
         for circuit in circuits:
             if self._ignore_measures:
-                circuit = _remove_measurements(circuit)
+                circuit = _remove_measurements(circuit)  # noqa: PLW2901
             state = circuit.get_statevector()
             handle = ResultHandle(str(uuid4()))
             res = BackendResult(q_bits=sorted(circuit.qubits), state=state)
@@ -174,7 +174,7 @@ class TketSimShotBackend(TketSimBackend):
             ]
         )
 
-    def process_circuits(
+    def process_circuits(  # noqa: PLR0912
         self,
         circuits: Sequence[Circuit],
         n_shots: int | Sequence[int] | None = None,
@@ -216,8 +216,8 @@ class TketSimShotBackend(TketSimBackend):
             sim = TketSimWrapper(c0)
             state = sim.get_state(basis=BasisOrder.dlo)
             choices, probs = zip(*probs_from_state(state).items(), strict=False)
-            np.random.seed(cast("int", kwargs.get("seed")))
-            sample_indices = np.random.choice(len(choices), p=probs, size=n_shots_circ)
+            np.random.seed(cast("int", kwargs.get("seed")))  # noqa: NPY002
+            sample_indices = np.random.choice(len(choices), p=probs, size=n_shots_circ)  # noqa: NPY002
             q_to_b = circuit.qubit_to_bit_map
             readouts = []
             for i in sample_indices:

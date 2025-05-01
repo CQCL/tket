@@ -301,7 +301,7 @@ class SymGateRegister:
     """Static class holding mapping from OpType to callable generating symbolic matrix.
     Allows users to add their own definitions, or override existing definitions."""
 
-    _g_map: SymGateMap = {
+    _g_map: SymGateMap = {  # noqa: RUF012
         OpType.Rx: symb_rx,
         OpType.Ry: symb_ry,
         OpType.Rz: symb_rz,

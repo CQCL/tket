@@ -50,7 +50,7 @@ from .logic_exp import (
 )
 
 
-def add_wasm(
+def add_wasm(  # noqa: PLR0913
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmModuleHandler,
@@ -76,15 +76,15 @@ def add_wasm(
         args_wasm = [0]
 
     for x in list_i:
-        if x > filehandler._int_size:
+        if x > filehandler._int_size:  # noqa: SLF001
             raise ValueError(
-                f"only functions with i{filehandler._int_size} type are allowed"
+                f"only functions with i{filehandler._int_size} type are allowed"  # noqa: SLF001
             )
 
     for x in list_o:
-        if x > filehandler._int_size:
+        if x > filehandler._int_size:  # noqa: SLF001
             raise ValueError(
-                f"only functions with i{filehandler._int_size} type are allowed"
+                f"only functions with i{filehandler._int_size} type are allowed"  # noqa: SLF001
             )
 
     if filehandler.check_function(funcname, len(list_i), len(list_o)):
@@ -100,7 +100,7 @@ def add_wasm(
 Circuit.add_wasm = add_wasm
 
 
-def add_wasm_to_reg(
+def add_wasm_to_reg(  # noqa: PLR0913
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmModuleHandler,
@@ -127,14 +127,14 @@ def add_wasm_to_reg(
 
     if filehandler.checked:
         for reg in list_i:
-            if reg.size > 32:
+            if reg.size > 32:  # noqa: PLR2004
                 raise ValueError(
                     """wasm is only supporting 32 bit size registers,
 please use only registers of at most 32 bits"""
                 )
 
         for reg in list_o:
-            if reg.size > 32:
+            if reg.size > 32:  # noqa: PLR2004
                 raise ValueError(
                     """wasm is only supporting 32 bit size registers,
 please use only registers of at most 32 bits"""

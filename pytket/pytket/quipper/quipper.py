@@ -90,7 +90,7 @@ class QGate(
 
 @unique
 class QRot_Op(Enum):
-    ExpZt = 1  # exp(−i Z t)
+    ExpZt = 1  # exp(−i Z t)  # noqa: RUF003
     R = 2  # R(2 / 2^t) (notation is confusing but see Monad.hs)
 
 
@@ -225,7 +225,7 @@ class QuipperTransformer(Transformer):
     def arity(self, t: list) -> list[Tree]:
         return list(t)
 
-    def qgate(self, t: list) -> QGate:
+    def qgate(self, t: list) -> QGate:  # noqa: PLR0912
         ops = QGate_Op
         n = t[0]
         if n in {"not", "x", "X"}:
@@ -305,7 +305,7 @@ class QuipperTransformer(Transformer):
         )
 
     def comment(self, t: list) -> Comment:
-        wire_comments = t[2] if len(t) > 2 else []
+        wire_comments = t[2] if len(t) > 2 else []  # noqa: PLR2004
         return Comment(
             comment=t[0], inverted=len(t[1].children) > 0, wire_comments=wire_comments
         )
@@ -313,7 +313,7 @@ class QuipperTransformer(Transformer):
     def control_app(self, t: list) -> Control:
         if not t:
             return Control(controlled=[], no_control=False)
-        if len(t) == 2:
+        if len(t) == 2:  # noqa: PLR2004
             return Control(controlled=t[0], no_control=True)
         if t[0] == "with nocontrol":
             return Control(controlled=[], no_control=True)
@@ -343,7 +343,7 @@ def allowed(op: str, arity: int) -> bool:
     if op in ["Not", "IX", "H", "Y", "Z", "S", "T", "E", "Omega", "V"]:
         return arity == 1
     if op in ["Swap", "W"]:
-        return arity == 2
+        return arity == 2  # noqa: PLR2004
     # MultiNot
     return True
 
@@ -355,7 +355,7 @@ class CircuitMaker:
         if len(self.subrd) != len(subr):
             raise TypeError("Repeated subroutine names")
 
-    def make_circuit(self, circ: Program) -> Circuit:
+    def make_circuit(self, circ: Program) -> Circuit:  # noqa: PLR0912, PLR0915
         inps, outs, gates = circ.inputs, circ.outputs, circ.gates
         if inps != outs:
             raise TypeError("Inputs don't match outputs")
@@ -405,7 +405,7 @@ class CircuitMaker:
                 wires = [tkqbits[wire.i] for wire in gate.wires]  # all must be qubits
                 n_wires = len(wires)
                 if not allowed(op, n_wires):
-                    raise TypeError("'%s' gate with %d wires" % (op, n_wires))
+                    raise TypeError("'%s' gate with %d wires" % (op, n_wires))  # noqa: UP031
                 n_ctrls = len(qctrls)
                 # Negative control values must be handled using NOT gates
                 # either side.
@@ -416,7 +416,7 @@ class CircuitMaker:
                         c.X(wires[0])
                     elif n_ctrls == 1:
                         c.CX(qctrls[0], wires[0])
-                    elif n_ctrls == 2:
+                    elif n_ctrls == 2:  # noqa: PLR2004
                         c.CCX(qctrls[0], qctrls[1], wires[0])
                     else:
                         c.add_gate(OpType.CnX, qctrls + wires)
@@ -435,7 +435,7 @@ class CircuitMaker:
                             c.X(wire)
                         elif n_ctrls == 1:
                             c.CX(qctrls[0], wire)
-                        elif n_ctrls == 2:
+                        elif n_ctrls == 2:  # noqa: PLR2004
                             c.CCX(qctrls[0], qctrls[1], wire)
                         else:
                             c.add_gate(OpType.CnX, [*qctrls, wire])

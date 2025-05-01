@@ -435,7 +435,7 @@ class SpamCorrecter:
             for i in range(len(qbs)):
                 qb = qbs[i]
                 self.node_index_dict[qb] = (counter, i)
-            counter += 1
+            counter += 1  # noqa: SIM113
 
         for result, state_info in zip(results_list, self.state_infos, strict=False):
             state_dict = state_info[0]
@@ -552,7 +552,7 @@ class SpamCorrecter:
                     np.linalg.inv(submatrix) for submatrix in correction_matrices
                 ]
             except np.linalg.LinAlgError:
-                raise ValueError(
+                raise ValueError(  # noqa: B904
                     "Unable to invert calibration matrix: please re-run "
                     "calibration experiments or use an alternative correction method."
                 )
@@ -604,7 +604,7 @@ class SpamCorrecter:
         """
         correlations = []
         for subset in self.correlations:
-            correlations.append([(uid.reg_name, uid.index) for uid in subset])
+            correlations.append([(uid.reg_name, uid.index) for uid in subset])  # noqa: PERF401
 
         node_index_hashable = [
             ((uid.reg_name, uid.index), self.node_index_dict[uid])

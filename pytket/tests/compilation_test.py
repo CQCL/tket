@@ -197,7 +197,7 @@ def test_PassSelector_wrong_pass() -> None:
     # this circuit has one more qubits than the given arc
     circ = Circuit(3).H(1).H(0).H(1).H(0).X(1).CX(1, 0).CX(0, 1).CX(1, 2)
 
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa: B017
         _ = sp.apply(circ)
 
 
@@ -205,7 +205,7 @@ def test_PassSelector_empty_pass() -> None:
     def circ_depth(circ: Circuit) -> int:
         return circ.depth()
 
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa: B017
         _ = PassSelector([], circ_depth)
 
 
@@ -274,12 +274,12 @@ def test_resize_scratch_registers() -> None:
         scratch_reg3 = c_compiled.get_c_register(f"{_TEMP_BIT_NAME}_2")
         assert scratch_reg1.size == max_c_reg_width
         assert scratch_reg2.size == max_c_reg_width
-        assert scratch_reg3.size == 2
+        assert scratch_reg3.size == 2  # noqa: PLR2004
         args_map = {}
         original_cmds = circ.get_commands()
         for cmd in original_cmds:
             for arg in cmd.args:
-                args_map[arg] = arg
+                args_map[arg] = arg  # noqa: PERF403
 
         for i in range(n_scratch_bits):
             args_map[original_scratch_reg[i]] = c_compiled.get_c_register(

@@ -61,8 +61,8 @@ QubitRegister.__next__.__name__ = "__next__"
 # overload operators for Bit, BitRegister and expressions over these
 # such that the operation returns a LogicExp describing the operation
 
-BitArgType = Union[LogicExp, Bit, Constant]
-RegArgType = Union[LogicExp, BitRegister, Constant]
+BitArgType = Union[LogicExp, Bit, Constant]  # noqa: UP007
+RegArgType = Union[LogicExp, BitRegister, Constant]  # noqa: UP007
 
 
 def gen_binary_method_bit(

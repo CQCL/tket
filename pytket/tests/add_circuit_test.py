@@ -29,9 +29,9 @@ def test_direct_add() -> None:
     b = Circuit(1)
     b.add_gate(OpType.X, [0])
     a.add_circuit(b, [0])
-    assert a.n_gates == 5
-    assert a.n_qubits == 2
-    assert a.depth() == 4
+    assert a.n_gates == 5  # noqa: PLR2004
+    assert a.n_qubits == 2  # noqa: PLR2004
+    assert a.depth() == 4  # noqa: PLR2004
 
 
 def test_swap_add() -> None:
@@ -39,24 +39,24 @@ def test_swap_add() -> None:
     c = a.dagger()
     b = gen_bell_state()
     c.add_circuit(b, [1, 0])
-    assert c.depth() == 3
-    assert c.n_qubits == 2
-    assert c.n_gates == 4
+    assert c.depth() == 3  # noqa: PLR2004
+    assert c.n_qubits == 2  # noqa: PLR2004
+    assert c.n_gates == 4  # noqa: PLR2004
 
 
 def test_append() -> None:
     a = gen_bell_state()
     b = gen_bell_state()
     a.append(b)
-    assert a.n_gates == 4
-    assert a.n_qubits == 2
-    assert a.depth() == 4
+    assert a.n_gates == 4  # noqa: PLR2004
+    assert a.n_qubits == 2  # noqa: PLR2004
+    assert a.depth() == 4  # noqa: PLR2004
 
 
 def test_sequencing() -> None:
     c = Circuit(5, 5)
     c.H(0).Z(2).CX(0, 1).Rz(0.1, 2).CZ(2, 4).measure_all().get_commands()
-    assert len(c.get_commands()) == 10
+    assert len(c.get_commands()) == 10  # noqa: PLR2004
 
 
 def test_add_with_map() -> None:

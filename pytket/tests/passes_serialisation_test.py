@@ -595,7 +595,7 @@ def check_arc_dict(arc: Architecture, d: dict) -> bool:
     return set(nodes) == set(arc.nodes)
 
 
-def test_pass_deserialisation_only() -> None:
+def test_pass_deserialisation_only() -> None:  # noqa: PLR0915
     # SquashCustom
     def sq(a: ParamType, b: ParamType, c: ParamType) -> Circuit:
         circ = Circuit(1)
@@ -709,7 +709,7 @@ def test_pass_deserialisation_only() -> None:
     dm_pass = DefaultMappingPass(arc, False)
     assert dm_pass.to_dict()["pass_class"] == "SequencePass"
     assert isinstance(dm_pass, SequencePass)
-    assert len(dm_pass.get_sequence()) == 3
+    assert len(dm_pass.get_sequence()) == 3  # noqa: PLR2004
     p_pass = dm_pass.get_sequence()[0]
     r_pass = dm_pass.get_sequence()[1]
     np_pass = dm_pass.get_sequence()[2]

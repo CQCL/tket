@@ -198,7 +198,7 @@ def _tensor_from_basic_diagram(diag: ZXDiagram) -> np.ndarray:
     net.full_simplify_(seq="ADCR")
     res_ten = net.contract(output_inds=res_indices, optimize="greedy")
     result: np.ndarray
-    if isinstance(res_ten, qtn.Tensor):
+    if isinstance(res_ten, qtn.Tensor):  # noqa: SIM108
         result = res_ten.data
     else:
         # Scalar

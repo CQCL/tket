@@ -23,7 +23,7 @@ from pytket.circuit import Qubit
 from pytket.pauli import QubitPauliString, pauli_string_mult
 from pytket.utils.serialization import complex_to_list, list_to_complex
 
-CoeffTypeAccepted = Union[int, float, complex, Expr]
+CoeffTypeAccepted = Union[int, float, complex, Expr]  # noqa: UP007
 
 if TYPE_CHECKING:
     from scipy.sparse import csc_matrix

@@ -97,14 +97,14 @@ class QASMUnsupportedError(Exception):
     pass
 
 
-Value = Union[int, float, str]
+Value = Union[int, float, str]  # noqa: UP007
 T = TypeVar("T")
 
 _BITOPS = {op.value for op in BitWiseOp}
 _BITOPS.update(("+", "-"))  # both are parsed to XOR
 _REGOPS = {op.value for op in RegWiseOp}
 
-Arg = Union[list, str]
+Arg = Union[list, str]  # noqa: UP007
 
 
 NOPARAM_COMMANDS = {
@@ -245,11 +245,11 @@ def _load_include_module(
 ) -> dict[str, dict]:
     try:
         if decls_only:
-            include_def: dict[str, dict] = import_module(
+            include_def: dict[str, dict] = import_module(  # noqa: SLF001
                 f"pytket.qasm.includes._{header_name}_decls"
             )._INCLUDE_DECLS
         else:
-            include_def = import_module(
+            include_def = import_module(  # noqa: SLF001
                 f"pytket.qasm.includes._{header_name}_defs"
             )._INCLUDE_DEFS
     except ModuleNotFoundError as e:
@@ -690,7 +690,7 @@ class CircuitTransformer(Transformer):
             else:
                 assert isinstance(inp, BitRegister)
                 for bit in inp:
-                    all_inps.append((bit.reg_name, bit.index[0]))
+                    all_inps.append((bit.reg_name, bit.index[0]))  # noqa: PERF401
         outs = (_hashable_uid(arg) for arg in out_args)
         o = []
         io = []
@@ -723,7 +723,7 @@ class CircuitTransformer(Transformer):
             "args": [arg.to_list() for arg in args],
         }
 
-    def assign(self, tree: list) -> Iterable[CommandDict]:
+    def assign(self, tree: list) -> Iterable[CommandDict]:  # noqa: PLR0912
         child_iter = iter(tree)
         out_args = list(next(child_iter))
         args_uids = list(self.unroll_all_args(out_args))
@@ -959,7 +959,7 @@ g_maxwidth = 32
 
 
 def set_parser(maxwidth: int) -> None:
-    global g_parser, g_maxwidth
+    global g_parser, g_maxwidth  # noqa: PLW0603
     if (g_parser is None) or (g_maxwidth != maxwidth):  # type: ignore
         g_parser = parser(maxwidth=maxwidth)
         g_maxwidth = maxwidth
@@ -984,7 +984,7 @@ def circuit_from_qasm(
         try:
             circ = circuit_from_qasm_io(f, maxwidth=maxwidth)
         except QASMParseError as e:
-            raise QASMParseError(e.msg, e.line, str(input_file))
+            raise QASMParseError(e.msg, e.line, str(input_file))  # noqa: B904
     return circ
 
 
@@ -995,10 +995,10 @@ def circuit_from_qasm_str(qasm_str: str, maxwidth: int = 32) -> Circuit:
     :param maxwidth: maximum allowed width of classical registers (default 32)
     :return: pytket circuit
     """
-    global g_parser
+    global g_parser  # noqa: PLW0602
     set_parser(maxwidth=maxwidth)
     assert g_parser is not None
-    cast("CircuitTransformer", g_parser.options.transformer)._reset_context(
+    cast("CircuitTransformer", g_parser.options.transformer)._reset_context(  # noqa: SLF001
         reset_wasm=False
     )
 
@@ -1027,7 +1027,7 @@ def circuit_from_qasm_wasm(
     :param maxwidth: maximum allowed width of classical registers (default 32)
     :return: pytket circuit
     """
-    global g_parser
+    global g_parser  # noqa: PLW0602
     wasm_module = WasmFileHandler(str(wasm_file))
     set_parser(maxwidth=maxwidth)
     assert g_parser is not None
@@ -1168,7 +1168,7 @@ def _retrieve_registers(
 
 
 def _parse_range(minval: int, maxval: int, maxwidth: int) -> tuple[str, int]:
-    if maxwidth > 64:
+    if maxwidth > 64:  # noqa: PLR2004
         raise NotImplementedError("Register width exceeds maximum of 64.")
 
     REGMAX = (1 << maxwidth) - 1
@@ -1897,7 +1897,7 @@ class QasmWriter:
         mainstr = opstr + make_params_str(params) + make_args_str(args)
         return gatedefstr, mainstr
 
-    def add_op(self, op: Op, args: Sequence[UnitID]) -> None:
+    def add_op(self, op: Op, args: Sequence[UnitID]) -> None:  # noqa: PLR0912
         optype, _params = _get_optype_and_params(op)
         if optype == OpType.RangePredicate:
             assert isinstance(op, RangePredicateOp)

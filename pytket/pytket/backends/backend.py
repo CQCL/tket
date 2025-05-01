@@ -349,7 +349,7 @@ class Backend(ABC):
             try:
                 self._check_handle_type(cast("ResultHandle", handles))
             except ResultHandleTypeError:
-                raise e
+                raise e  # noqa: B904
 
             raise ResultHandleTypeError(
                 "Possible use of single ResultHandle"

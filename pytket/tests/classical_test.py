@@ -113,13 +113,13 @@ def test_c_ops() -> None:
     c.add_c_copyreg(c1, c0)
 
     cmds = c.get_commands()
-    assert len(cmds) == 21
-    assert len([cmd for cmd in cmds if cmd.op.get_name() == "AND"]) == 2
+    assert len(cmds) == 21  # noqa: PLR2004
+    assert len([cmd for cmd in cmds if cmd.op.get_name() == "AND"]) == 2  # noqa: PLR2004
     rp_cmds = [cmd for cmd in cmds if cmd.op.type == OpType.RangePredicate]
-    assert len(rp_cmds) == 2
+    assert len(rp_cmds) == 2  # noqa: PLR2004
     assert rp_cmds[0].op == rp_cmds[1].op
     mb_cmds = [cmd for cmd in cmds if cmd.op.type == OpType.MultiBit]
-    assert len(mb_cmds) == 3
+    assert len(mb_cmds) == 3  # noqa: PLR2004
     assert (
         mb_cmds[0] != mb_cmds[1]
         and mb_cmds[0] != mb_cmds[2]
@@ -137,7 +137,7 @@ def test_add_c_setreg_with_size_gt_32bits() -> None:
     expected_reg = [False] * 64
     expected_reg[2] = expected_reg[5] = expected_reg[6] = True
     com = c.get_commands()[0]
-    assert len(com.bits) == 64
+    assert len(com.bits) == 64  # noqa: PLR2004
     op = com.op
     assert isinstance(op, SetBitsOp)
     assert op.values == expected_reg
@@ -152,14 +152,14 @@ def test_add_c_setreg_raises_runtime_error() -> None:
 
 def test_wasm() -> None:
     c = Circuit(0, 6)
-    c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0])
-    c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(2)], [0])
-    c._add_wasm("funcname", "wasmfileuid", [1, 1], [2], [0, 1, 2, 3], [0])
-    c._add_wasm("funcname", "wasmfileuid", [1, 1], [2], [0, 1, 2, 4], [0])
-    c._add_wasm("funcname", "wasmfileuid", [1], [1, 2], [0, 1, 2, 3], [0])
-    c._add_wasm("funcname", "wasmfileuid", [2, 1], [3], [0, 1, 2, 3, 4, 5], [0])
+    c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0])  # noqa: SLF001
+    c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(2)], [0])  # noqa: SLF001
+    c._add_wasm("funcname", "wasmfileuid", [1, 1], [2], [0, 1, 2, 3], [0])  # noqa: SLF001
+    c._add_wasm("funcname", "wasmfileuid", [1, 1], [2], [0, 1, 2, 4], [0])  # noqa: SLF001
+    c._add_wasm("funcname", "wasmfileuid", [1], [1, 2], [0, 1, 2, 3], [0])  # noqa: SLF001
+    c._add_wasm("funcname", "wasmfileuid", [2, 1], [3], [0, 1, 2, 3, 4, 5], [0])  # noqa: SLF001
 
-    assert c.depth() == 6
+    assert c.depth() == 6  # noqa: PLR2004
 
 
 def test_wasm_2() -> None:
@@ -168,7 +168,7 @@ def test_wasm_2() -> None:
     c1 = c.add_c_register("c1", 4)
     c2 = c.add_c_register("c2", 5)
 
-    c._add_wasm("funcname", "wasmfileuid", [c0, c1], [c2], [0])
+    c._add_wasm("funcname", "wasmfileuid", [c0, c1], [c2], [0])  # noqa: SLF001
 
     assert c.depth() == 1
 
@@ -477,7 +477,7 @@ def test_add_wasm_to_reg() -> None:
     c.add_wasm_to_reg("no_return", w, [c2], [])
     c.add_wasm_to_reg("no_parameters", w, [], [c2])
 
-    assert c.depth() == 4
+    assert c.depth() == 4  # noqa: PLR2004
 
 
 def test_wasm_argtypes() -> None:
@@ -598,7 +598,7 @@ def test_wasm_append() -> None:
         d.add_c_setbits([False], [bit])
 
     d.append(c)
-    assert d.depth() == 2
+    assert d.depth() == 2  # noqa: PLR2004
 
 
 def test_wasm_append_2() -> None:
@@ -615,7 +615,7 @@ def test_wasm_append_2() -> None:
     d.add_wasm_to_reg("no_return", wasmfile, [a], [])
 
     d.append(c)
-    assert d.depth() == 3
+    assert d.depth() == 3  # noqa: PLR2004
 
 
 def test_wasm_append_3() -> None:
@@ -654,7 +654,7 @@ def test_wasmfilehandler_without_init_no_check() -> None:
     c.add_wasm_to_reg("no_return", w, [c2], [])
     c.add_wasm_to_reg("no_parameters", w, [], [c2])
 
-    assert c.depth() == 4
+    assert c.depth() == 4  # noqa: PLR2004
 
 
 def test_wasmfilehandler_invalid_file_1_c_32() -> None:
@@ -907,8 +907,8 @@ DrawType = Callable[[SearchStrategy[T]], T]
 @strategies.composite
 def bit_register(
     draw: DrawType,
-    name: SearchStrategy[str] = strategies.from_regex(reg_name_regex, fullmatch=True),
-    size: SearchStrategy[int] = strategies.integers(min_value=2, max_value=32),
+    name: SearchStrategy[str] = strategies.from_regex(reg_name_regex, fullmatch=True),  # noqa: B008
+    size: SearchStrategy[int] = strategies.integers(min_value=2, max_value=32),  # noqa: B008
 ) -> BitRegister:
     return BitRegister(draw(name.filter(lambda nm: not nm.startswith("q"))), draw(size))
 
@@ -916,8 +916,8 @@ def bit_register(
 @strategies.composite
 def qubit_register(
     draw: DrawType,
-    name: SearchStrategy[str] = strategies.from_regex(reg_name_regex, fullmatch=True),
-    size: SearchStrategy[int] = strategies.integers(min_value=0, max_value=32),
+    name: SearchStrategy[str] = strategies.from_regex(reg_name_regex, fullmatch=True),  # noqa: B008
+    size: SearchStrategy[int] = strategies.integers(min_value=0, max_value=32),  # noqa: B008
 ) -> QubitRegister:
     return QubitRegister(draw(name), draw(size))
 
@@ -939,7 +939,7 @@ def test_registers(reg: BitRegister | QubitRegister, index: int) -> None:
 @strategies.composite
 def bits(
     draw: DrawType,
-    name: SearchStrategy[str] = strategies.from_regex(reg_name_regex, fullmatch=True),
+    name: SearchStrategy[str] = strategies.from_regex(reg_name_regex, fullmatch=True),  # noqa: B008
     index: SearchStrategy[int] = uint32,
 ) -> Bit:
     return Bit(draw(name.filter(lambda nm: not nm.startswith("q"))), draw(index))
@@ -948,8 +948,8 @@ def bits(
 @strategies.composite
 def primitive_bit_logic_exps(
     draw: DrawType,
-    ops: SearchStrategy[BitWiseOp] = strategies.sampled_from(BitWiseOp),
-    bits: SearchStrategy[Bit] = bits(),
+    ops: SearchStrategy[BitWiseOp] = strategies.sampled_from(BitWiseOp),  # noqa: B008
+    bits: SearchStrategy[Bit] = bits(),  # noqa: B008
 ) -> BitLogicExp:
     op = draw(ops)
     args = []
@@ -1009,8 +1009,8 @@ def test_bit_exp(bit_exp: BitLogicExp, constants: tuple[int, int]) -> None:
 @strategies.composite
 def primitive_reg_logic_exps(
     draw: Callable,
-    ops: SearchStrategy[RegWiseOp] = strategies.sampled_from(RegWiseOp),
-    bit_regs: SearchStrategy[BitRegister] = bit_register(),
+    ops: SearchStrategy[RegWiseOp] = strategies.sampled_from(RegWiseOp),  # noqa: B008
+    bit_regs: SearchStrategy[BitRegister] = bit_register(),  # noqa: B008
 ) -> RegLogicExp:
     op = draw(ops)
 
@@ -1083,16 +1083,16 @@ def test_reg_exp(reg_exp: RegLogicExp, constants: tuple[int, int]) -> None:
 @strategies.composite
 def composite_bit_logic_exps(
     draw: Callable,
-    bits: SearchStrategy[Bit] = bits(),
+    bits: SearchStrategy[Bit] = bits(),  # noqa: B008
     constants: SearchStrategy[int] = binary_digits,
-    operators: SearchStrategy[Callable] = strategies.sampled_from(
+    operators: SearchStrategy[Callable] = strategies.sampled_from(  # noqa: B008
         [
             operator.and_,
             operator.or_,
             operator.xor,
         ]
     ),
-    n_terms: SearchStrategy[int] = strategies.integers(min_value=2, max_value=7),
+    n_terms: SearchStrategy[int] = strategies.integers(min_value=2, max_value=7),  # noqa: B008
 ) -> BitLogicExp:
     terms = draw(n_terms)
     exp: BitLogicExp
@@ -1109,16 +1109,16 @@ def composite_bit_logic_exps(
 @strategies.composite
 def composite_reg_logic_exps(
     draw: DrawType,
-    regs: SearchStrategy[BitRegister] = bit_register(),
+    regs: SearchStrategy[BitRegister] = bit_register(),  # noqa: B008
     constants: SearchStrategy[int] = uint64,
-    operators: SearchStrategy[Callable] = strategies.sampled_from(
+    operators: SearchStrategy[Callable] = strategies.sampled_from(  # noqa: B008
         [
             operator.and_,
             operator.or_,
             operator.xor,
         ]
     ),
-    n_terms: SearchStrategy[int] = strategies.integers(min_value=1, max_value=7),
+    n_terms: SearchStrategy[int] = strategies.integers(min_value=1, max_value=7),  # noqa: B008
 ) -> RegLogicExp:
     terms = draw(n_terms)
     exp = draw(regs)
@@ -1143,10 +1143,10 @@ def composite_reg_logic_exps(
 @strategies.composite
 def bit_const_predicates(
     draw: DrawType,
-    exp: SearchStrategy[BitLogicExp] = composite_bit_logic_exps(),
+    exp: SearchStrategy[BitLogicExp] = composite_bit_logic_exps(),  # noqa: B008
     operators: SearchStrategy[
         Callable[[Bit | BitLogicExp], PredicateExp]
-    ] = strategies.sampled_from([if_bit, if_not_bit]),
+    ] = strategies.sampled_from([if_bit, if_not_bit]),  # noqa: B008
 ) -> PredicateExp:
     func = draw(operators)
     arg = draw(exp)
@@ -1156,10 +1156,10 @@ def bit_const_predicates(
 @strategies.composite
 def reg_const_predicates(
     draw: DrawType,
-    exp: SearchStrategy[RegLogicExp] = composite_reg_logic_exps(),
+    exp: SearchStrategy[RegLogicExp] = composite_reg_logic_exps(),  # noqa: B008
     operators: SearchStrategy[
         Callable[[RegLogicExp | BitRegister, int], PredicateExp]
-    ] = strategies.sampled_from([reg_eq, reg_neq, reg_lt, reg_gt, reg_leq, reg_geq]),
+    ] = strategies.sampled_from([reg_eq, reg_neq, reg_lt, reg_gt, reg_leq, reg_geq]),  # noqa: B008
     constants: SearchStrategy[int] = uint64,
 ) -> PredicateExp:
     return draw(operators)(draw(exp), draw(constants))  # type: ignore
@@ -1263,8 +1263,8 @@ def test_conditional() -> None:
 
 def test_range_predicate_properties() -> None:
     range_predicate = RangePredicateOp(width=8, lower=3, upper=5)
-    assert range_predicate.lower == 3
-    assert range_predicate.upper == 5
+    assert range_predicate.lower == 3  # noqa: PLR2004
+    assert range_predicate.upper == 5  # noqa: PLR2004
 
 
 def test_conditional_classicals() -> None:
@@ -1277,7 +1277,7 @@ def test_conditional_classicals() -> None:
 def test_conditional_wasm() -> None:
     c = Circuit(0, 6)
     b = c.add_c_register("b", 2)
-    c._add_wasm(
+    c._add_wasm(  # noqa: SLF001
         "funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0], condition=b[0]
     )
 
@@ -1288,7 +1288,7 @@ def test_conditional_wasm() -> None:
 def test_conditional_wasm_ii() -> None:
     c = Circuit(0, 6)
     b = c.add_c_register("b", 2)
-    c._add_wasm("funcname", "wasmfileuid", [b], [], [0], condition=b[0])
+    c._add_wasm("funcname", "wasmfileuid", [b], [], [0], condition=b[0])  # noqa: SLF001
 
     assert c.depth() == 1
     assert str(c.get_commands()[0]) == "IF ([b[0]] == 1) THEN WASM b[0], b[1], _w[0];"
@@ -1307,7 +1307,7 @@ def test_conditional_wasm_iii() -> None:
     c.add_wasm_to_reg("multi", w, [c0, c1], [c2], condition=b[0])
     c.add_wasm_to_reg("add_one", w, [c2], [c2], condition=b[1])
 
-    assert c.depth() == 2
+    assert c.depth() == 2  # noqa: PLR2004
     assert (
         str(c.get_commands()[0])
         == "IF ([b[0]] == 1) THEN WASM c0[0], c0[1], c0[2], c1[0], c1[1], c1[2], c1[3], c2[0], c2[1], c2[2], c2[3], c2[4], _w[0];"
@@ -1344,7 +1344,7 @@ def test_depth_classical_only() -> None:
     # https://github.com/CQCL/tket/issues/1673
     set_bits = SetBitsOp([True, True])
     multi_bit = MultiBitOp(set_bits, 2)
-    assert multi_bit.multiplier == 2
+    assert multi_bit.multiplier == 2  # noqa: PLR2004
     eq_pred_values = [True, False, False, True]
     and_values = [bool(i) for i in [0, 0, 0, 1]]
     circ = Circuit(4, 4, name="test")
@@ -1352,7 +1352,7 @@ def test_depth_classical_only() -> None:
     circ.add_c_predicate(eq_pred_values, [0, 1], 2, "EQ")
     circ.add_c_modifier(and_values, [1], 2)
     circ.measure_all()
-    assert circ.depth() == 4
+    assert circ.depth() == 4  # noqa: PLR2004
 
 
 if __name__ == "__main__":

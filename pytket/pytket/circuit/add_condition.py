@@ -35,7 +35,7 @@ class NonConstError(Exception):
     """A custom exception class for non constant predicate argument."""
 
 
-def _add_condition(
+def _add_condition(  # noqa: PLR0912
     circ: Circuit, condition: PredicateExp | Bit | BitLogicExp
 ) -> tuple[Bit, bool]:
     """Add a condition expression to a circuit using classical expression boxes,
