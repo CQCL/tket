@@ -20,7 +20,7 @@ from typing import Any, Generic, TypeVar, Union
 import numpy as np
 from scipy.stats import rv_discrete
 
-Number = Union[float, complex]  # noqa: UP007
+Number = Union[float, complex]
 T0 = TypeVar("T0")
 T1 = TypeVar("T1")
 
@@ -121,7 +121,7 @@ class EmpiricalDistribution(Generic[T0]):
 
         :return: Estimate of the variance of the functional based on the
             observations."""
-        if self.total < 2:  # noqa: PLR2004
+        if self.total < 2:
             raise RuntimeError(
                 "At least two samples are required in order to compute the sample "
                 "variance."
@@ -156,7 +156,7 @@ class ProbabilityDistribution(Generic[T0]):
         if np.isclose(s0, 0):
             raise ValueError("Distribution has zero weight")
         if not np.isclose(s0, 1):
-            warnings.warn(  # noqa: B028
+            warnings.warn(
                 "Probabilities used to initialize ProbabilityDistribution do "
                 "not sum to 1: renormalizing."
             )
@@ -191,7 +191,7 @@ class ProbabilityDistribution(Generic[T0]):
         keys1 = frozenset(other._P.keys())
         if keys0 != keys1:
             return False
-        return all(np.isclose(self._P[x], other._P[x]) for x in keys0)  # noqa: SLF001
+        return all(np.isclose(self._P[x], other._P[x]) for x in keys0)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self._P!r})"
@@ -281,7 +281,7 @@ def convex_combination(
     for pd, a in dists:
         if a < 0:
             raise ValueError("Weights must be non-negative.")
-        for x, p in pd._P.items():  # noqa: SLF001
+        for x, p in pd._P.items():
             P[x] += a * p
         S += a
     if not np.isclose(S, 1):

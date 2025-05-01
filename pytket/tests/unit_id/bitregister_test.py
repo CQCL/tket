@@ -22,4 +22,4 @@ def test_iteration() -> None:
         assert isinstance(bit, Bit)
         assert bit.reg_name == "test"
         assert bit.index[0] == test_current
-        test_current += 1  # noqa: SIM113
+        test_current += 1

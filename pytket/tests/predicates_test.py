@@ -202,7 +202,7 @@ def test_rebase_pass_generation_via_TK2() -> None:
 
     circ = Circuit(3).H(0).CX(0, 1).H(1).CX(1, 2)
     rebase_pass.apply(circ)
-    assert circ.n_gates_of_type(OpType.XXPhase) == 2  # noqa: PLR2004
+    assert circ.n_gates_of_type(OpType.XXPhase) == 2
     assert circ.n_gates_of_type(OpType.YYPhase) == 0
     assert circ.n_gates_of_type(OpType.ZZPhase) == 0
 
@@ -366,7 +366,7 @@ def test_rename_qubits_pass() -> None:
     cu = CompilationUnit(circ)
     p.apply(cu)
     newcirc = cu.circuit
-    assert set(newcirc.qubits) == set([Qubit("b", i) for i in range(2)])  # noqa: C403
+    assert set(newcirc.qubits) == set([Qubit("b", i) for i in range(2)])
 
 
 def gate_count_metric(circ: Circuit) -> int:
@@ -391,13 +391,13 @@ def test_SynthesiseTket_creation() -> None:
     cu1 = CompilationUnit(circ1)
     my_synthesise_tket.apply(cu1)
     circ2 = cu1.circuit
-    assert circ2.n_gates == 2  # noqa: PLR2004
+    assert circ2.n_gates == 2
 
     cu2 = CompilationUnit(circ1)
     # Blue Peter voice: here's one I made earlier
     SynthesiseTket().apply(cu2)
     circ3 = cu2.circuit
-    assert circ3.n_gates == 2  # noqa: PLR2004
+    assert circ3.n_gates == 2
     assert circ2 == circ3
 
     # now let's run with routing
@@ -536,7 +536,7 @@ def test_pauligraph_synth() -> None:
     pss = PauliSimp(PauliSynthStrat.Sets, CXConfigType.Tree)
     assert pss.apply(cu)
     circ1 = cu.circuit
-    assert circ1.depth_by_type(OpType.CX) == 4  # noqa: PLR2004
+    assert circ1.depth_by_type(OpType.CX) == 4
     assert circ1.name == "test"
 
 
@@ -639,7 +639,7 @@ def test_apply_pass_with_callbacks() -> None:
     apply_pass(circ, handler)
 
     assert circ.n_gates_of_type(OpType.CX) == 1
-    assert len(handler.pass_names) == 3  # noqa: PLR2004
+    assert len(handler.pass_names) == 3
     assert handler.pass_names[0] == "SequencePass"
     assert handler.pass_names[1] == "CommuteThroughMultis"
     assert handler.pass_names[2] == "RemoveRedundancies"
@@ -653,9 +653,9 @@ def test_remove_discarded() -> None:
     assert not c.qubit_is_discarded(Qubit(1))
     assert c.qubit_is_discarded(Qubit(2))
     assert RemoveDiscarded().apply(c)
-    assert c.n_gates_of_type(OpType.H) == 3  # noqa: PLR2004
+    assert c.n_gates_of_type(OpType.H) == 3
     assert c.n_gates_of_type(OpType.CX) == 1
-    assert c.n_gates_of_type(OpType.Measure) == 2  # noqa: PLR2004
+    assert c.n_gates_of_type(OpType.Measure) == 2
 
 
 def test_simplify_measured() -> None:
@@ -676,10 +676,10 @@ def test_simplify_measured() -> None:
     c.qubit_discard(Qubit(0))
     c.qubit_discard(Qubit(1))
     assert SimplifyMeasured().apply(c)
-    assert c.n_gates_of_type(OpType.H) == 2  # noqa: PLR2004
+    assert c.n_gates_of_type(OpType.H) == 2
     assert c.n_gates_of_type(OpType.Z) == 1
     assert c.n_gates_of_type(OpType.Unitary2qBox) == 0
-    assert c.n_gates_of_type(OpType.Measure) == 3  # noqa: PLR2004
+    assert c.n_gates_of_type(OpType.Measure) == 3
     assert c.n_gates_of_type(OpType.ClassicalTransform) == 1
 
 
@@ -693,7 +693,7 @@ def test_simplify_initial_1() -> None:
     c.qubit_create(Qubit(2))
     assert SimplifyInitial().apply(c)
     assert c.n_gates_of_type(OpType.CY) == 0
-    assert c.n_gates_of_type(OpType.CX) == 2  # noqa: PLR2004
+    assert c.n_gates_of_type(OpType.CX) == 2
 
 
 def test_simplify_initial_2() -> None:
@@ -763,15 +763,15 @@ def test_pauli_squash() -> None:
     c = Circuit(3)
     c.add_pauliexpbox(PauliExpBox([Pauli.Z, Pauli.X, Pauli.Z], 0.8), [0, 1, 2])
     c.add_pauliexpbox(PauliExpBox([Pauli.Y, Pauli.X, Pauli.X], 0.2), [0, 1, 2])
-    for strat in [  # noqa: B007
+    for strat in [
         PauliSynthStrat.Individual,
         PauliSynthStrat.Pairwise,
         PauliSynthStrat.Sets,
     ]:
-        for cx_config in [CXConfigType.Snake, CXConfigType.Star, CXConfigType.Tree]:  # noqa: B007
+        for cx_config in [CXConfigType.Snake, CXConfigType.Star, CXConfigType.Tree]:
             c1 = c.copy()
             assert PauliSquash().apply(c1)
-            assert c1.n_gates_of_type(OpType.CX) <= 4  # noqa: PLR2004
+            assert c1.n_gates_of_type(OpType.CX) <= 4
 
 
 def test_three_qubit_squash() -> None:
@@ -781,7 +781,7 @@ def test_three_qubit_squash() -> None:
         c.CX(i % 3, (i + 1) % 3)
     c.measure_all()
     assert ThreeQubitSquash().apply(c)
-    assert c.n_gates_of_type(OpType.CX) <= 18  # noqa: PLR2004
+    assert c.n_gates_of_type(OpType.CX) <= 18
 
 
 def test_cnx_pairwise_decomp() -> None:
@@ -790,7 +790,7 @@ def test_cnx_pairwise_decomp() -> None:
     c.add_gate(OpType.CnX, [], [3, 1, 4, 5, 0, 2])
     CnXPairwiseDecomposition().apply(c)
     DecomposeMultiQubitsCX().apply(c)
-    assert c.n_gates_of_type(OpType.CX) < 217  # noqa: PLR2004
+    assert c.n_gates_of_type(OpType.CX) < 217
 
 
 def test_remove_implicit_qubit_permutation() -> None:
@@ -804,7 +804,7 @@ def test_remove_implicit_qubit_permutation() -> None:
     }
     assert c.has_implicit_wireswaps
     assert RemoveImplicitQubitPermutation().apply(c)
-    assert c.n_gates_of_type(OpType.SWAP) == 2  # noqa: PLR2004
+    assert c.n_gates_of_type(OpType.SWAP) == 2
     assert c.implicit_qubit_permutation() == {
         Qubit(0): Qubit(0),
         Qubit(1): Qubit(1),
@@ -825,7 +825,7 @@ def test_rz_phasedX_squash() -> None:
     c.ZZMax(1, 0)
 
     assert SquashRzPhasedX().apply(c)
-    assert c.n_gates_of_type(OpType.Rz) == 2  # noqa: PLR2004
+    assert c.n_gates_of_type(OpType.Rz) == 2
     cmds = c.get_commands()
     assert cmds[-1].op.type == OpType.Rz
     assert cmds[-2].op.type == OpType.Rz
@@ -862,13 +862,13 @@ def test_rz_sx_decomp() -> None:
 def test_iswapmax_autorebase() -> None:
     c = Circuit(2).H(0).CX(0, 1)
     assert AutoRebase({OpType.ISWAPMax, OpType.TK1}).apply(c)
-    assert c.n_gates_of_type(OpType.ISWAPMax) <= 2  # noqa: PLR2004
+    assert c.n_gates_of_type(OpType.ISWAPMax) <= 2
 
 
 def test_flatten_relabel_pass() -> None:
     c = Circuit(3)
     c.H(1).H(2)
-    rename_map: RenameUnitsMap = dict()  # noqa: C408
+    rename_map: RenameUnitsMap = dict()
     rename_map[Qubit(0)] = Qubit("a", 4)
     rename_map[Qubit(1)] = Qubit("b", 7)
     rename_map[Qubit(2)] = Qubit("a", 2)
@@ -932,7 +932,7 @@ def test_rebase_custom_tk2() -> None:
     tk2_c = Circuit(2).TK2(0.123, 0.5634, 0.2345, 0, 1)
     assert to_phase_gates.apply(tk2_c)
     coms = tk2_c.get_commands()
-    assert len(coms) == 11  # noqa: PLR2004
+    assert len(coms) == 11
     assert coms[0].op.type == OpType.Rz
     assert coms[1].op.type == OpType.Rz
     assert coms[2].op.type == OpType.Rx
@@ -969,7 +969,7 @@ def test_selectively_decompose_boxes() -> None:
     circ.add_circbox(cbox2, [0], opgroup="group1")
     assert DecomposeBoxes({OpType.Unitary1qBox}, {"group1"}).apply(circ)
     cmds = circ.get_commands()
-    assert len(cmds) == 3  # noqa: PLR2004
+    assert len(cmds) == 3
     assert cmds[0].op.type == OpType.Unitary1qBox
     assert cmds[1].op.type == OpType.Unitary1qBox
     assert cmds[2].op.type == OpType.CircBox
@@ -999,12 +999,12 @@ def test_clifford_resynthesis() -> None:
     )
     circ0 = circ.copy()
     CliffordResynthesis().apply(circ0)
-    assert circ0.depth() <= 9  # noqa: PLR2004
-    assert circ0.n_2qb_gates() <= 4  # noqa: PLR2004
+    assert circ0.depth() <= 9
+    assert circ0.n_2qb_gates() <= 4
     circ1 = circ.copy()
     CliffordResynthesis(allow_swaps=False).apply(circ1)
-    assert circ1.depth() <= 16  # noqa: PLR2004
-    assert circ1.n_2qb_gates() <= 9  # noqa: PLR2004
+    assert circ1.depth() <= 16
+    assert circ1.n_2qb_gates() <= 9
     circ2 = circ.copy()
     CliffordResynthesis(transform=lambda c: c.copy()).apply(circ2)
     assert circ2 == circ
@@ -1031,7 +1031,7 @@ def test_clifford_push_through_measures() -> None:
     assert c_cx_x.n_1qb_gates() == 0
     assert c_cx_x.n_2qb_gates() == 0
     coms = c_cx_x.get_commands()
-    assert len(coms) == 8  # noqa: PLR2004
+    assert len(coms) == 8
     assert coms[2].op.type == OpType.SetBits
     assert coms[3].op.type == OpType.ExplicitModifier
     assert coms[4].op.type == OpType.ExplicitModifier
@@ -1040,7 +1040,7 @@ def test_clifford_push_through_measures() -> None:
     assert coms[7].op.type == OpType.CopyBits
 
 
-def test_greedy_pauli_synth() -> None:  # noqa: PLR0915
+def test_greedy_pauli_synth() -> None:
     circ = Circuit(name="test")
     rega = circ.add_q_register("a", 2)
     regb = circ.add_q_register("b", 2)
@@ -1065,7 +1065,7 @@ def test_greedy_pauli_synth() -> None:  # noqa: PLR0915
     circ.add_gate(range_predicate, [0, 1, 2, 3])
     circ.add_c_predicate(eq_pred_values, [0, 1], 2, "EQ")
     circ.add_c_modifier(and_values, [1], 2)
-    circ._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0])  # noqa: SLF001
+    circ._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0])
     circ.measure_all()
     circ.Reset(0)
     circ.add_pauliexpbox(pg1, [2, 3])
@@ -1079,7 +1079,7 @@ def test_greedy_pauli_synth() -> None:  # noqa: PLR0915
     d.add_gate(range_predicate, [0, 1, 2, 3])
     d.add_c_predicate(eq_pred_values, [0, 1], 2, "EQ")
     d.add_c_modifier(and_values, [1], 2)
-    d._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0])  # noqa: SLF001
+    d._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0])
     d.measure_all()
     d.Reset(0)
     d.H(2)

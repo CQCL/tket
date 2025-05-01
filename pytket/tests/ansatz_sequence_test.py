@@ -39,11 +39,11 @@ def test_basic_sequence() -> None:
     assert circ1.n_gates_of_type(OpType.CircBox) == 1
     circ2 = circ1.copy()
     Transform.DecomposeBoxes().apply(circ2)
-    assert circ2.n_gates_of_type(OpType.X) == 2  # noqa: PLR2004
-    assert circ2.n_gates_of_type(OpType.CX) == 2  # noqa: PLR2004
-    assert circ2.n_gates_of_type(OpType.Rz) == 3  # noqa: PLR2004
+    assert circ2.n_gates_of_type(OpType.X) == 2
+    assert circ2.n_gates_of_type(OpType.CX) == 2
+    assert circ2.n_gates_of_type(OpType.Rz) == 3
     Transform.UCCSynthesis().apply(circ1)
-    assert circ1.n_gates_of_type(OpType.CX) == 2  # noqa: PLR2004
+    assert circ1.n_gates_of_type(OpType.CX) == 2
     circ1.symbol_substitution({a: 3.2})
     circ2.symbol_substitution({a: 3.2})
     assert np.allclose(circ1.get_statevector(), circ2.get_statevector())

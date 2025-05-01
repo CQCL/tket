@@ -31,7 +31,7 @@ from pytket.circuit import Node, OpType
 def test_nodes() -> None:
     arch = SquareGrid(3, 4)
     bi = BackendInfo("name", "device_name", "version", arch, {OpType.CX, OpType.Rx})
-    assert bi.n_nodes == 12  # noqa: PLR2004
+    assert bi.n_nodes == 12
 
     bi_nodes = set(bi.nodes)
     arch_nodes = set(arch.nodes)
@@ -175,7 +175,7 @@ def test_fullyconnected() -> None:
     bi = fully_connected_backendinfo(
         "name", "device_name", "version", 10, {OpType.CX, OpType.Rx}
     )
-    assert bi.n_nodes == 10  # noqa: PLR2004
+    assert bi.n_nodes == 10
     assert isinstance(bi.architecture, FullyConnected)
 
     # https://github.com/CQCL/tket/issues/390

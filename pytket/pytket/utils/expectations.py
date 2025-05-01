@@ -115,7 +115,7 @@ def get_pauli_expectation_value(
     raise ValueError("Backend does not support counts or shots")
 
 
-def get_operator_expectation_value(  # noqa: PLR0912, PLR0913, PLR0915
+def get_operator_expectation_value(
     state_circuit: Circuit,
     operator: QubitPauliOperator,
     backend: "Backend",
@@ -150,9 +150,9 @@ def get_operator_expectation_value(  # noqa: PLR0912, PLR0913, PLR0915
         if not backend.valid_circuit(state_circuit):
             state_circuit = backend.get_compiled_circuit(state_circuit)
         try:
-            coeffs: list[complex] = [complex(v) for v in operator._dict.values()]  # noqa: SLF001
+            coeffs: list[complex] = [complex(v) for v in operator._dict.values()]
         except TypeError:
-            raise ValueError("QubitPauliOperator contains unevaluated symbols.")  # noqa: B904
+            raise ValueError("QubitPauliOperator contains unevaluated symbols.")
         if backend.supports_expectation and (
             backend.expectation_allows_nonhermitian or all(z.imag == 0 for z in coeffs)
         ):
@@ -162,15 +162,15 @@ def get_operator_expectation_value(  # noqa: PLR0912, PLR0913, PLR0915
         return operator.state_expectation(state)
     energy: complex
     id_string = QubitPauliString()
-    if id_string in operator._dict:  # noqa: SLF001, SIM108
+    if id_string in operator._dict:
         energy = complex(operator[id_string])
     else:
         energy = 0
     if not partition_strat:
         operator_without_id = QubitPauliOperator(
-            {p: c for p, c in operator._dict.items() if (p != id_string)}  # noqa: SLF001
+            {p: c for p, c in operator._dict.items() if (p != id_string)}
         )
-        coeffs = [complex(c) for c in operator_without_id._dict.values()]  # noqa: SLF001
+        coeffs = [complex(c) for c in operator_without_id._dict.values()]
         pauli_circuits = list(
             _all_pauli_measurements(operator_without_id, state_circuit)
         )
@@ -183,21 +183,21 @@ def get_operator_expectation_value(  # noqa: PLR0912, PLR0913, PLR0915
         )
         results = backend.get_results(handles)
         if backend.supports_counts:
-            for result, coeff in zip(results, coeffs, strict=False):
+            for result, coeff in zip(results, coeffs):
                 counts = result.get_counts()
                 energy += coeff * expectation_from_counts(counts)
             for handle in handles:
                 backend.pop_result(handle)
             return energy
         if backend.supports_shots:
-            for result, coeff in zip(results, coeffs, strict=False):
+            for result, coeff in zip(results, coeffs):
                 shots = result.get_shots()
                 energy += coeff * expectation_from_shots(shots)
             for handle in handles:
                 backend.pop_result(handle)
             return energy
         raise ValueError("Backend does not support counts or shots")
-    qubit_pauli_string_list = [p for p in operator._dict.keys() if (p != id_string)]  # noqa: SLF001, SIM118
+    qubit_pauli_string_list = [p for p in operator._dict.keys() if (p != id_string)]
     measurement_expectation = measurement_reduction(
         qubit_pauli_string_list, partition_strat, colour_method
     )

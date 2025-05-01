@@ -21,7 +21,7 @@ from pytket.partition import (
     term_sequence,
 )
 
-from .._tket.unit_id import UnitID  # noqa: TC001
+from .._tket.unit_id import UnitID
 from .operators import QubitPauliOperator
 
 
@@ -56,7 +56,7 @@ def gen_term_sequence_circuit(
     :param colour_method: a graph colouring method
     :type colour_method: GraphColourMethod, Optional
     """
-    qps_list = list(operator._dict.keys())  # noqa: SLF001
+    qps_list = list(operator._dict.keys())
     qps_list_list = term_sequence(qps_list, partition_strat, colour_method)
     n_qbs = reference_state.n_qubits
     circ = reference_state.copy()
@@ -67,8 +67,8 @@ def gen_term_sequence_circuit(
             coeff = operator[qps]
             qps_map = qps.map
             if qps_map:
-                qubits = list()  # noqa: C408
-                paulis = list()  # noqa: C408
+                qubits = list()
+                paulis = list()
                 for qb, pauli in qps_map.items():
                     qubits.append(qb)
                     paulis.append(pauli)
@@ -77,6 +77,6 @@ def gen_term_sequence_circuit(
             else:
                 circ_to_box.add_phase(-coeff / 2)
         cbox = CircBox(circ_to_box)
-        unit_ids = cast("list[UnitID]", qbs)
+        unit_ids = cast(list[UnitID], qbs)
         circ.add_circbox(cbox, unit_ids)
     return circ

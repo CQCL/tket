@@ -13,7 +13,6 @@
 # limitations under the License.
 
 """`BackendResult` class and associated methods."""
-
 import operator
 import warnings
 from collections import Counter
@@ -76,7 +75,7 @@ class BackendResult:
         results (i.e. shots and counts).
     """
 
-    def __init__(  # noqa: PLR0913
+    def __init__(
         self,
         *,
         q_bits: Sequence[Qubit] | None = None,
@@ -103,21 +102,21 @@ class BackendResult:
 
         self._ppcirc = ppcirc
 
-        self.c_bits: dict[Bit, int] = dict()  # noqa: C408
-        self.q_bits: dict[Qubit, int] = dict()  # noqa: C408
+        self.c_bits: dict[Bit, int] = dict()
+        self.q_bits: dict[Qubit, int] = dict()
 
         def _process_unitids(
             var: Sequence[UnitID], attr: str, lent: int, uid: type[UnitID]
         ) -> None:
             if var:
-                setattr(self, attr, dict((unit, i) for i, unit in enumerate(var)))  # noqa: C402
+                setattr(self, attr, dict((unit, i) for i, unit in enumerate(var)))
                 if lent != len(var):
                     raise ValueError(
                         f"Length of {attr} ({len(var)}) does not"
                         f" match input data dimensions ({lent})."
                     )
             else:
-                setattr(self, attr, dict((uid(i), i) for i in range(lent)))  # type: ignore  # noqa: C402
+                setattr(self, attr, dict((uid(i), i) for i in range(lent)))  # type: ignore
 
         if self.contains_measured_results:
             _bitlength = 0
@@ -177,8 +176,7 @@ class BackendResult:
             and self.c_bits == other.c_bits
             and (
                 (self._shots is None and other._shots is None)
-                or cast("OutcomeArray", self._shots)
-                == cast("OutcomeArray", other._shots)
+                or cast(OutcomeArray, self._shots) == cast(OutcomeArray, other._shots)
             )
             and self._counts == other._counts
             and np.array_equal(self._state, other._state)
@@ -205,7 +203,7 @@ class BackendResult:
 
         return _sort_keys_by_val(self.q_bits)
 
-    def _get_measured_res(  # noqa: PLR0912
+    def _get_measured_res(
         self, bits: Sequence[Bit], ppcirc: Circuit | None = None
     ) -> StoredResult:
         vals: dict[str, Any] = {}
@@ -222,7 +220,7 @@ class BackendResult:
         try:
             chosen_readouts = [self.c_bits[bit] for bit in bits]
         except KeyError:
-            raise ValueError("Requested Bit not in result.")  # noqa: B904
+            raise ValueError("Requested Bit not in result.")
 
         if self._counts is not None:
             if ppcirc is not None:
@@ -231,7 +229,7 @@ class BackendResult:
                 for oa, n in self._counts.items():
                     readout = oa.to_readout()
                     values = {bit: bool(readout[i]) for bit, i in self.c_bits.items()}
-                    new_values = ppcirc._classical_eval(values)  # noqa: SLF001
+                    new_values = ppcirc._classical_eval(values)
                     new_oa = OutcomeArray.from_readouts(
                         [[int(new_values[bit]) for bit in bits]]
                     )
@@ -254,9 +252,9 @@ class BackendResult:
                 for i in range(self._shots.n_outcomes):
                     readout = readouts[i, :]
                     values = {bit: bool(readout[i]) for bit, i in self.c_bits.items()}
-                    new_values = ppcirc._classical_eval(values)  # noqa: SLF001
+                    new_values = ppcirc._classical_eval(values)
                     new_readout = [0] * self._shots.width
-                    for bit, i in self.c_bits.items():  # noqa: PLW2901
+                    for bit, i in self.c_bits.items():
                         if new_values[bit]:
                             new_readout[i] = 1
                     new_readouts.append(new_readout)
@@ -520,7 +518,7 @@ class BackendResult:
         :return: A distribution as a map from bitstring to probability.
         :rtype: Dict[Tuple[int, ...], float]
         """
-        warnings.warn(  # noqa: B028
+        warnings.warn(
             "The `BackendResult.get_distribution()` method is deprecated: "
             "please use `get_empirical_distribution()` or "
             "`get_probability_distribution()` instead.",
@@ -543,7 +541,7 @@ class BackendResult:
         :param bits: Optionally provide the :py:class:`Bit` s over which to
             marginalize the distribution.
         :return: A distribution where the observations are sequences of 0s and 1s.
-        """  # noqa: RUF002
+        """
         if not self.contains_measured_results:
             raise InvalidResultType(
                 "Empirical distribution only available for measured result types."
@@ -562,7 +560,7 @@ class BackendResult:
             example to avoid spurious values due to rounding errors in
             statevector computations). Default 0.
         :return: A distribution where the possible outcomes are tuples of 0s and 1s.
-        """  # noqa: RUF002
+        """
         if not self.contains_state_results:
             raise InvalidResultType(
                 "Probability distribution only available for statevector result types."
@@ -612,7 +610,7 @@ class BackendResult:
         :return: JSON serializable dictionary.
         :rtype: Dict[str, Any]
         """
-        outdict: dict[str, Any] = dict()  # noqa: C408
+        outdict: dict[str, Any] = dict()
         outdict["qubits"] = [q.to_list() for q in self.get_qbitlist()]
         outdict["bits"] = [c.to_list() for c in self.get_bitlist()]
         if self._shots is not None:
@@ -683,8 +681,8 @@ T = TypeVar("T")
 def _sort_keys_by_val(dic: dict[T, int]) -> list[T]:
     if not dic:
         return []
-    vals, _ = zip(*sorted(dic.items(), key=lambda x: x[1]), strict=False)
-    return list(cast("Iterable[T]", vals))
+    vals, _ = zip(*sorted(dic.items(), key=lambda x: x[1]))
+    return list(cast(Iterable[T], vals))
 
 
 def _check_permuted_sequence(first: Collection[Any], second: Collection[Any]) -> bool:

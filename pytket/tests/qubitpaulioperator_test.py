@@ -64,9 +64,9 @@ def test_QubitPauliOperator_opmult() -> None:
     x = Symbol("x")
     qpo2 = QubitPauliOperator({QubitPauliString(Qubit(0), Pauli.X): x})
     qpo3 = qpo * qpo2  # order matters!
-    assert qpo3._dict[QubitPauliString(Qubit(0), Pauli.Y)] == 1j * x * y  # noqa: SLF001
+    assert qpo3._dict[QubitPauliString(Qubit(0), Pauli.Y)] == 1j * x * y
     qpo4 = qpo2 * qpo
-    assert qpo4._dict[QubitPauliString(Qubit(0), Pauli.Y)] == -1j * x * y  # noqa: SLF001
+    assert qpo4._dict[QubitPauliString(Qubit(0), Pauli.Y)] == -1j * x * y
 
 
 def test_QubitPauliOperator_substitution() -> None:
@@ -75,7 +75,7 @@ def test_QubitPauliOperator_substitution() -> None:
     exp = e + 5
     qpo = QubitPauliOperator({qps: exp})
     qpo.subs({e: 1})
-    assert qpo[QubitPauliString(Qubit(0), Pauli.X)] == 6  # noqa: PLR2004
+    assert qpo[QubitPauliString(Qubit(0), Pauli.X)] == 6
 
 
 def test_QubitPauliOperator_io() -> None:
@@ -117,7 +117,7 @@ def test_QubitPauliOperator_matrices() -> None:
     state = 0.5 * np.array([1, 1j, 1, 1j])
     final_state = np.array([1 + 1j / 2, -1 / 2 + 1j, 1 - 1j / 2, 1 / 2 + 1j])
     assert np.array_equal(op.dot_state(state), final_state)
-    assert op.state_expectation(state) == 2  # noqa: PLR2004
+    assert op.state_expectation(state) == 2
 
     named_qbs = [Qubit("a", 0), Qubit("b")]
     aXbY = QubitPauliString(named_qbs, [Pauli.X, Pauli.Y])
@@ -126,11 +126,11 @@ def test_QubitPauliOperator_matrices() -> None:
 
     assert np.array_equal(op_mat, named_op.to_sparse_matrix().toarray())
     assert np.array_equal(named_op.dot_state(state, named_qbs), final_state)
-    assert named_op.state_expectation(state, named_qbs) == 2  # noqa: PLR2004
+    assert named_op.state_expectation(state, named_qbs) == 2
 
     assert np.array_equal(
         np.kron(op_mat, np.eye(2)),
-        named_op.to_sparse_matrix(named_qbs + [Qubit("a", 1)]).toarray(),  # noqa: RUF005
+        named_op.to_sparse_matrix(named_qbs + [Qubit("a", 1)]).toarray(),
     )
 
     # https://github.com/CQCL/tket/issues/294
@@ -150,7 +150,7 @@ def test_QubitPauliOperator_compression() -> None:
     with pytest.raises(KeyError) as errorinfo:
         _ = op[qpsZI]
     assert "(Zq[0], Iq[1])" in str(errorinfo.value)
-    assert op[qpsXY] == 2  # noqa: PLR2004
+    assert op[qpsXY] == 2
     assert re(op[qpsYY]) == 0
     assert im(op[qpsYY])
     assert op[qpsYY].subs({x: 0.001}).equals(1.0j)

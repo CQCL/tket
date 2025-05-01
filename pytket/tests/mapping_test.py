@@ -33,7 +33,7 @@ from pytket.placement import Placement
 
 
 # simple deterministic heuristic used for testing purposes
-def route_subcircuit_func(  # noqa: PLR0912
+def route_subcircuit_func(
     circuit: Circuit, architecture: Architecture
 ) -> tuple[bool, Circuit, UnitIdMap, UnitIdMap]:
     #     make a replacement circuit with identical unitds
@@ -45,11 +45,11 @@ def route_subcircuit_func(  # noqa: PLR0912
 
     # "place" unassigned logical qubits to physical qubits
     unused_nodes: list[Node] = []
-    relabelling_map: UnitIdMap = dict()  # noqa: C408
+    relabelling_map: UnitIdMap = dict()
 
     for node in architecture.nodes:
         if node not in circuit.qubits:
-            unused_nodes.append(node)  # noqa: PERF401
+            unused_nodes.append(node)
 
     for qb in circuit.qubits:
         if qb not in architecture.nodes:
@@ -60,7 +60,7 @@ def route_subcircuit_func(  # noqa: PLR0912
             relabelling_map[qb] = qb
 
     replacement_circuit.rename_units(relabelling_map)
-    permutation_map: UnitIdMap = dict()  # noqa: C408
+    permutation_map: UnitIdMap = dict()
     for qb in replacement_circuit.qubits:
         permutation_map[qb] = qb
 
@@ -71,11 +71,11 @@ def route_subcircuit_func(  # noqa: PLR0912
     swaps_added = 0
     for com in circuit.get_commands():
         rp_qubits = tuple(permutation_map[relabelling_map[q]] for q in com.qubits)
-        if len(com.qubits) > 2:  # noqa: PLR2004
+        if len(com.qubits) > 2:
             return (False, Circuit(), {}, {})
         if len(com.qubits) == 1:
             replacement_circuit.add_gate(com.op.type, rp_qubits)
-        if len(com.qubits) == 2:  # noqa: PLR2004
+        if len(com.qubits) == 2:
             if swaps_added < max_swaps:
                 for n in architecture.nodes:
                     if n == rp_qubits[0]:
@@ -222,7 +222,7 @@ def test_AASRouteRoutingMethod_3() -> None:
     assert routed_commands[1].qubits == [nodes[1]]
     assert routed_commands[2].op.type == OpType.CX
     assert routed_commands[2].qubits == [nodes[0], nodes[1]]
-    assert len(routed_commands) == 3  # noqa: PLR2004
+    assert len(routed_commands) == 3
 
 
 def test_AASRouteRoutingMethod_4() -> None:
@@ -260,7 +260,7 @@ def test_AASRouteRoutingMethod_4() -> None:
     assert routed_commands[2].qubits == [nodes[0], nodes[1]]
     assert routed_commands[3].op.type == OpType.CX
     assert routed_commands[3].qubits == [nodes[0], nodes[1]]
-    assert len(routed_commands) == 4  # noqa: PLR2004
+    assert len(routed_commands) == 4
 
 
 def test_RoutingMethodCircuit_custom() -> None:
@@ -342,7 +342,7 @@ def test_basic_mapping() -> None:
     circ.CX(1, 4)
     circ.CX(0, 4)
 
-    init_map = dict()  # noqa: C408
+    init_map = dict()
     init_map[Qubit(0)] = Node(0)
     init_map[Qubit(1)] = Node(1)
     init_map[Qubit(2)] = Node(2)
@@ -352,7 +352,7 @@ def test_basic_mapping() -> None:
     pl.place_with_map(circ, init_map)
     MappingManager(arc).route_circuit(circ, [LexiRouteRoutingMethod(50)])
     assert circ.valid_connectivity(arc, directed=False)
-    assert len(circ.get_commands()) == 10  # noqa: PLR2004
+    assert len(circ.get_commands()) == 10
 
 
 def test_MultiGateReorderRoutingMethod() -> None:
@@ -366,7 +366,7 @@ def test_MultiGateReorderRoutingMethod() -> None:
     circ.CZ(3, 2)
     circ.CX(3, 4)
 
-    init_map = dict()  # noqa: C408
+    init_map = dict()
     init_map[Qubit(0)] = Node(0)
     init_map[Qubit(1)] = Node(1)
     init_map[Qubit(2)] = Node(2)
@@ -379,7 +379,7 @@ def test_MultiGateReorderRoutingMethod() -> None:
         circ, [MultiGateReorderRoutingMethod(10, 10), LexiRouteRoutingMethod(50)]
     )
     assert circ.valid_connectivity(arc, directed=False)
-    assert len(circ.get_commands()) == 6  # noqa: PLR2004
+    assert len(circ.get_commands()) == 6
 
 
 def test_MultiGateReorderRoutingMethod_with_LexiLabelling() -> None:
@@ -409,7 +409,7 @@ def test_MultiGateReorderRoutingMethod_with_LexiLabelling() -> None:
     )
     assert circ.valid_connectivity(arc, directed=False)
     commands = circ.get_commands()
-    assert len(commands) == 7  # noqa: PLR2004
+    assert len(commands) == 7
     assert commands[4].op.type == OpType.CZ
     assert commands[5].op.type == OpType.SWAP
 
@@ -425,7 +425,7 @@ def test_BoxDecompositionRoutingMethod() -> None:
     circ.add_circbox(circ_box, [0, 1, 2, 3, 4])
     circ.CZ(1, 3)
 
-    init_map = dict()  # noqa: C408
+    init_map = dict()
     init_map[Qubit(0)] = Node(0)
     init_map[Qubit(1)] = Node(1)
     init_map[Qubit(2)] = Node(2)
@@ -438,7 +438,7 @@ def test_BoxDecompositionRoutingMethod() -> None:
         circ, [BoxDecompositionRoutingMethod(), LexiRouteRoutingMethod(50)]
     )
     assert circ.valid_connectivity(arc, directed=False)
-    assert len(circ.get_commands()) == 4  # noqa: PLR2004
+    assert len(circ.get_commands()) == 4
 
 
 if __name__ == "__main__":

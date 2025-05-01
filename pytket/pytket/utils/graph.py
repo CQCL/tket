@@ -46,7 +46,7 @@ class Graph:
             output_names,
             node_data,
             edge_data,
-        ) = c._dag_data  # noqa: SLF001
+        ) = c._dag_data
         self.q_inputs = q_inputs
         self.c_inputs = c_inputs
         self.w_inputs = w_inputs
@@ -122,7 +122,7 @@ class Graph:
         self.Gnx = Gnx
         return Gnx
 
-    def get_DAG(self) -> gv.Digraph:  # noqa: PLR0912, PLR0915
+    def get_DAG(self) -> gv.Digraph:
         """
         Return a visual representation of the DAG as a graphviz object.
 
@@ -273,7 +273,7 @@ class Graph:
         :returns: filename of temporary created file
         """
         G = self.get_DAG()
-        filename = NamedTemporaryFile(delete=False).name  # noqa: SIM115
+        filename = NamedTemporaryFile(delete=False).name
         G.view(filename, quiet=True)
         return filename
 
@@ -323,7 +323,7 @@ class Graph:
         :returns: filename of temporary created file
         """
         G = self.get_qubit_graph()
-        filename = NamedTemporaryFile(delete=False).name  # noqa: SIM115
+        filename = NamedTemporaryFile(delete=False).name
         G.view(filename, quiet=True)
         return filename
 

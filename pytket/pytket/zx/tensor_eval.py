@@ -14,7 +14,6 @@
 
 """Collection of methods to evaluate a ZXDiagram to a tensor. This uses the
 numpy tensor features, in particular the einsum evaluation and optimisations."""
-
 import warnings
 from math import cos, floor, pi, sin, sqrt
 from typing import Any
@@ -38,7 +37,7 @@ from pytket.zx import (
 try:
     import quimb.tensor as qtn  # type: ignore
 except ModuleNotFoundError:
-    warnings.warn(  # noqa: B028
+    warnings.warn(
         'Missing package for tensor evaluation of ZX diagrams. Run "pip '
         "install 'pytket[ZX]'\" to install the optional dependencies."
     )
@@ -159,7 +158,7 @@ def _tensor_from_basic_diagram(diag: ZXDiagram) -> np.ndarray:
             f"{diag.scalar}"
         ) from e
     all_wires = diag.wires
-    indices = dict(zip(all_wires, range(len(all_wires)), strict=False))
+    indices = dict(zip(all_wires, range(len(all_wires))))
     next_index = len(all_wires)
     tensor_list: list[Any]
     tensor_list = []
@@ -199,7 +198,7 @@ def _tensor_from_basic_diagram(diag: ZXDiagram) -> np.ndarray:
     net.full_simplify_(seq="ADCR")
     res_ten = net.contract(output_inds=res_indices, optimize="greedy")
     result: np.ndarray
-    if isinstance(res_ten, qtn.Tensor):  # noqa: SIM108
+    if isinstance(res_ten, qtn.Tensor):
         result = res_ten.data
     else:
         # Scalar
@@ -286,7 +285,7 @@ def fix_boundaries_to_binary_states(
     diag: ZXDiagram, vals: dict[ZXVert, int]
 ) -> ZXDiagram:
     new_diag = ZXDiagram(diag)
-    b_lookup = dict(zip(diag.get_boundary(), new_diag.get_boundary(), strict=False))
+    b_lookup = dict(zip(diag.get_boundary(), new_diag.get_boundary()))
     for b, val in vals.items():
         if diag.get_zxtype(b) not in _boundary_types:
             raise ValueError("Can only set states of boundary vertices")
@@ -313,7 +312,7 @@ def fix_inputs_to_binary_state(diag: ZXDiagram, vals: list[int]) -> ZXDiagram:
         raise ValueError(
             f"Gave {len(vals)} values for {len(inputs)} inputs of ZXDiagram"
         )
-    val_dict = dict(zip(inputs, vals, strict=False))
+    val_dict = dict(zip(inputs, vals))
     return fix_boundaries_to_binary_states(diag, val_dict)
 
 
@@ -323,5 +322,5 @@ def fix_outputs_to_binary_state(diag: ZXDiagram, vals: list[int]) -> ZXDiagram:
         raise ValueError(
             f"Gave {len(vals)} values for {len(outputs)} outputs of ZXDiagram"
         )
-    val_dict = dict(zip(outputs, vals, strict=False))
+    val_dict = dict(zip(outputs, vals))
     return fix_boundaries_to_binary_states(diag, val_dict)

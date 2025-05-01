@@ -13,7 +13,6 @@
 # limitations under the License.
 
 """`OutcomeArray` class and associated methods."""
-
 import operator
 from collections import Counter
 from collections.abc import Sequence
@@ -44,7 +43,7 @@ class OutcomeArray(np.ndarray):
         # We first cast to be our class type
         obj = np.asarray(input_array).view(cls)
         # add the new attribute to the created instance
-        if len(obj.shape) != 2 or obj.dtype != np.uint8:  # noqa: PLR2004
+        if len(obj.shape) != 2 or obj.dtype != np.uint8:
             raise ValueError(
                 "OutcomeArray must be a two dimensional array of dtype uint8."
             )
@@ -54,7 +53,7 @@ class OutcomeArray(np.ndarray):
                 f"Width {width} is larger than maxium bitlength of "
                 f"array: {bitcapacity}."
             )
-        obj._width = width  # noqa: SLF001
+        obj._width = width
         # Finally, we must return the newly created object:
         return obj
 
@@ -97,14 +96,14 @@ class OutcomeArray(np.ndarray):
         """Convert OutcomeArray to a 2D array of readouts, each row a separate outcome
         and each column a bit value."""
         return cast(
-            "np.ndarray", np.asarray(np.unpackbits(self, axis=-1))[..., : self.width]
+            np.ndarray, np.asarray(np.unpackbits(self, axis=-1))[..., : self.width]
         )
 
     def to_readout(self) -> np.ndarray:
         """Convert a singleton to a single readout (1D array)"""
         if self.n_outcomes > 1:
             raise ValueError(f"Not a singleton: {self.n_outcomes} readouts")
-        return cast("np.ndarray", self.to_readouts()[0])
+        return cast(np.ndarray, self.to_readouts()[0])
 
     def to_intlist(self, big_endian: bool = True) -> list[int]:
         """Express each outcome as an integer corresponding to the bit values.
@@ -163,7 +162,7 @@ class OutcomeArray(np.ndarray):
         ars, count_vals = np.unique(self, axis=0, return_counts=True)
         width = self.width
         oalist = [OutcomeArray(x[None, :], width) for x in ars]
-        return Counter(dict(zip(oalist, count_vals, strict=False)))
+        return Counter(dict(zip(oalist, count_vals)))
 
     def choose_indices(self, indices: list[int]) -> "OutcomeArray":
         """Permute ordering of bits in outcomes or choose subset of bits.

@@ -315,7 +315,7 @@ def fully_connected_backendinfo(  # type: ignore
     version: str,
     n_nodes: int,
     gate_set: set[OpType],
-    **kwargs,
+    **kwargs
 ) -> BackendInfo:
     """
     Construct a BackendInfo with a FullyConnected architecture.

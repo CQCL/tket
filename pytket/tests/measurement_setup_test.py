@@ -37,7 +37,7 @@ def test_parity_flip() -> None:
     circ.Measure(0, 0)
     ms.add_measurement_circuit(circ)
 
-    tensor = dict()  # noqa: C408
+    tensor = dict()
     tensor[Qubit(0)] = Pauli.Z
 
     mbm = MeasurementBitMap(0, [0], True)
@@ -57,7 +57,7 @@ def test_reduction() -> None:
     strats = [PauliPartitionStrat.NonConflictingSets, PauliPartitionStrat.CommutingSets]
     for s in strats:
         measurements = measurement_reduction(strings, s)
-        assert len(measurements.measurement_circs) == 2  # noqa: PLR2004
+        assert len(measurements.measurement_circs) == 2
         assert measurements.verify()
 
 
@@ -118,10 +118,10 @@ def test_serialization() -> None:
     ms.add_result_for_term(xx, mbm3)
 
     j_ms = ms.to_dict()
-    assert len(j_ms["circs"]) == 2  # noqa: PLR2004
+    assert len(j_ms["circs"]) == 2
     assert j_ms["circs"][0] == circ.to_dict()
     assert j_ms["circs"][1] == circ2.to_dict()
-    assert len(j_ms["result_map"]) == 3  # noqa: PLR2004
+    assert len(j_ms["result_map"]) == 3
     assert j_ms["result_map"][0] == [iz.to_list(), [mbm.to_dict()]]
     assert j_ms["result_map"][1] == [xx.to_list(), [mbm3.to_dict()]]
     assert j_ms["result_map"][2] == [zi.to_list(), [mbm.to_dict(), mbm2.to_dict()]]

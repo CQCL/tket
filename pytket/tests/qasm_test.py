@@ -67,28 +67,28 @@ def register_to_list(br: BitRegister) -> list[Bit]:
 def test_qasm_correct() -> None:
     fname = str(curr_file_path / "qasm_test_files/test1.qasm")
     c = circuit_from_qasm(fname)
-    assert c.n_qubits == 4  # noqa: PLR2004
-    assert c.depth() == 8  # noqa: PLR2004
+    assert c.n_qubits == 4
+    assert c.depth() == 8
     coms = c.get_commands()
-    assert len(coms) == 13  # noqa: PLR2004
+    assert len(coms) == 13
     correct_str = "[XXPhase(0.0375) q[0], q[1];, Rz(1.5) q[3];, ZZPhase(0.0375) q[0], q[1];, Rx(0.0375) q[3];, Rz(0.5) q[3];, CX q[0], q[3];, CZ q[0], q[1];, Rz(1.5) q[3];, Rx(1.9625) q[3];, CCX q[3], q[1], q[2];, Barrier q[0], q[3], q[2];, CU1(0.8) q[0], q[1];, U3(1, 0.5, 0.3) q[2];]"
     assert str(coms) == correct_str
     # TKET-871
     fname2 = str(curr_file_path / "qasm_test_files/test9.qasm")
     c2 = circuit_from_qasm(fname2)
-    assert c2.n_qubits == 4  # noqa: PLR2004
-    assert c2.depth() == 2  # noqa: PLR2004
+    assert c2.n_qubits == 4
+    assert c2.depth() == 2
     coms2 = c2.get_commands()
-    assert len(coms2) == 3  # noqa: PLR2004
+    assert len(coms2) == 3
     correct_str2 = "[CRz(0.3) q[0], q[1];, CRy(0.5) q[3], q[0];, CRx(0.5) q[2], q[1];]"
     assert str(coms2) == correct_str2
     # TKET-957
     fname3 = str(curr_file_path / "qasm_test_files/test10.qasm")
     c3 = circuit_from_qasm(fname3)
-    assert c3.n_qubits == 2  # noqa: PLR2004
-    assert c3.depth() == 3  # noqa: PLR2004
+    assert c3.n_qubits == 2
+    assert c3.depth() == 3
     coms3 = c3.get_commands()
-    assert len(coms3) == 4  # noqa: PLR2004
+    assert len(coms3) == 4
     correct_str3 = "[SX q[0];, X q[1];, SXdg q[1];, CSX q[0], q[1];]"
     assert str(coms3) == correct_str3
 
@@ -97,20 +97,20 @@ def test_long_registers() -> None:
     fname = str(curr_file_path / "qasm_test_files/longreg.qasm")
     c = circuit_from_qasm(fname, maxwidth=64)
     assert c.n_qubits == 0
-    assert c.n_bits == 79  # noqa: PLR2004
-    assert len(c.c_registers) == 5  # noqa: PLR2004
+    assert c.n_bits == 79
+    assert len(c.c_registers) == 5
     for creg in c.c_registers:
-        assert creg.size <= 64  # noqa: PLR2004
+        assert creg.size <= 64
 
 
 def test_long_registers_2() -> None:
     fname = str(curr_file_path / "qasm_test_files/longreg.qasm")
     c = circuit_from_qasm(fname, maxwidth=100)
     assert c.n_qubits == 0
-    assert c.n_bits == 79  # noqa: PLR2004
-    assert len(c.c_registers) == 4  # noqa: PLR2004
+    assert c.n_bits == 79
+    assert len(c.c_registers) == 4
     for creg in c.c_registers:
-        assert creg.size <= 100  # noqa: PLR2004
+        assert creg.size <= 100
 
 
 def test_incompete_registers() -> None:
@@ -133,7 +133,7 @@ def test_qasm_qubit() -> None:
 def test_qasm_whitespace() -> None:
     fname = str(curr_file_path / "qasm_test_files/test3.qasm")
     c = circuit_from_qasm(fname)
-    assert c.n_qubits == 10  # noqa: PLR2004
+    assert c.n_qubits == 10
     coms = c.get_commands()
     correct_str = "[Rz(0.5) q[3];, Rz(1.5) q[4];, Rx(0.085) q[7];, CX q[0], q[3];, CZ q[0], q[5];, Rz(1.5) q[3];, Rx(2.25) q[3];]"
     assert str(coms) == correct_str
@@ -191,8 +191,8 @@ def test_readout() -> None:
     circ.H(2)
     circuit_to_qasm(circ, fname)
     circ2 = circuit_from_qasm(fname)
-    assert circ2.depth() == 2  # noqa: PLR2004
-    assert circ2.n_gates == 3  # noqa: PLR2004
+    assert circ2.depth() == 2
+    assert circ2.n_gates == 3
     assert str(circ2.get_commands()) == "[X q[0];, CX q[1], q[2];, H q[2];]"
 
 
@@ -495,10 +495,10 @@ def test_alternate_encoding() -> None:
         "utf-32": str(curr_file_path / "qasm_test_files/utf32.qasm"),
     }
     for enc, fil in encoded_files.items():
-        with pytest.raises(Exception):  # noqa: B017
+        with pytest.raises(Exception):
             circuit_from_qasm(fil)
         c = circuit_from_qasm(fil, encoding=enc)
-        assert c.n_gates == 6  # noqa: PLR2004
+        assert c.n_gates == 6
 
 
 def test_opaque_gates() -> None:
@@ -861,7 +861,7 @@ measure q[0] -> c[32];"""
     with pytest.raises(QASMUnsupportedError):
         circuit_from_qasm_str(qasm_in)
     circ_out = circuit_from_qasm_str(qasm_in, maxwidth=64)
-    assert len(circ_out.bits) == 33  # noqa: PLR2004
+    assert len(circ_out.bits) == 33
 
 
 def test_classical_expbox_arg_order() -> None:

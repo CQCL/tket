@@ -23,7 +23,7 @@ from pytket.circuit import Qubit
 from pytket.pauli import QubitPauliString, pauli_string_mult
 from pytket.utils.serialization import complex_to_list, list_to_complex
 
-CoeffTypeAccepted = Union[int, float, complex, Expr]  # noqa: UP007
+CoeffTypeAccepted = Union[int, float, complex, Expr]
 
 if TYPE_CHECKING:
     from scipy.sparse import csc_matrix
@@ -64,7 +64,7 @@ class QubitPauliOperator:
         self,
         dictionary: dict[QubitPauliString, CoeffTypeAccepted] | None = None,
     ) -> None:
-        self._dict: dict[QubitPauliString, Expr] = dict()  # noqa: C408
+        self._dict: dict[QubitPauliString, Expr] = dict()
         if dictionary:
             for key, value in dictionary.items():
                 self._dict[key] = _coeff_convert(value)
@@ -147,7 +147,7 @@ class QubitPauliOperator:
 
         # Handle operator of the same type
         if isinstance(multiplier, QubitPauliOperator):
-            result_terms: dict = dict()  # noqa: C408
+            result_terms: dict = dict()
             for left_key, left_value in self._dict.items():
                 for right_key, right_value in multiplier._dict.items():
                     new_term, bonus_coeff = pauli_string_mult(left_key, right_key)
@@ -163,7 +163,7 @@ class QubitPauliOperator:
             return self
 
         # Handle scalars.
-        if isinstance(multiplier, (float, Expr)):  # noqa: UP038
+        if isinstance(multiplier, (float, Expr)):
             for key in self._dict:
                 self[key] *= multiplier
             return self
@@ -291,7 +291,7 @@ class QubitPauliOperator:
         :rtype: csc_matrix
         """
         if qubits is None:
-            qubits_ = sorted(list(self._all_qubits))  # noqa: C414
+            qubits_ = sorted(list(self._all_qubits))
             return sum(
                 complex(coeff) * pauli.to_sparse_matrix(qubits_)
                 for pauli, coeff in self._dict.items()
@@ -383,7 +383,7 @@ class QubitPauliOperator:
 
         to_delete = []
         for key, value in self._dict.items():
-            placeholder = value.subs(dict.fromkeys(value.free_symbols, 1))
+            placeholder = value.subs({s: 1 for s in value.free_symbols})
             if abs(re(placeholder)) <= abs_tol:
                 if abs(im(placeholder)) <= abs_tol:
                     to_delete.append(key)
@@ -397,6 +397,6 @@ class QubitPauliOperator:
 
     def _collect_qubits(self) -> None:
         self._all_qubits: set[Qubit] = set()
-        for key in self._dict.keys():  # noqa: SIM118
-            for q in key.map.keys():  # noqa: SIM118
+        for key in self._dict.keys():
+            for q in key.map.keys():
                 self._all_qubits.add(q)

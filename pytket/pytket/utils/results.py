@@ -62,7 +62,7 @@ class BitPermuter:
         res = 0
         for source_index, target_index in enumerate(self.perm):
             if inverse:
-                target_index, source_index = source_index, target_index  # noqa: PLW2901
+                target_index, source_index = source_index, target_index
             # if source bit set
             if val & (1 << (self.n_bits - 1 - source_index)):
                 # set target bit
@@ -90,7 +90,7 @@ def counts_from_shot_table(shot_table: np.ndarray) -> dict[tuple[int, ...], int]
     :rtype: Dict[Tuple[int, ...], int]
     """
     shot_values, counts = np.unique(shot_table, axis=0, return_counts=True)
-    return {tuple(s): c for s, c in zip(shot_values, counts, strict=False)}
+    return {tuple(s): c for s, c in zip(shot_values, counts)}
 
 
 def probs_from_counts(
