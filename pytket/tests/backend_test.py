@@ -531,12 +531,12 @@ def test_postprocess_2() -> None:
         # c0 should act trivially on qubits 0 and 2
         assert (
             len(
-                set(  # noqa: C401
+                {
                     arg
                     for cmd in c0.get_commands()
                     for arg in cmd.args
                     if cmd.op.type != OpType.Measure
-                )
+                }
             )
             == 1
         )

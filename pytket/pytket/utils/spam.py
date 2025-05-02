@@ -49,7 +49,7 @@ def compress_counts(
     :rtype: CountsDict
     """
     valprocess: Callable[[float], int | float] = lambda x: (
-        int(round(x)) if round_to_int else x  # noqa: RUF046
+        round(x) if round_to_int else x
     )
     processed_pairs = (
         (key, valprocess(val)) for key, val in counts.items() if val > tol
@@ -264,7 +264,7 @@ def reduce_matrix(indices_to_remove: list[int], matrix: np.ndarray) -> np.ndarra
     new_n_qubits = int(log2(matrix.shape[0])) - len(indices_to_remove)
     if new_n_qubits == 0:
         return np.array([])
-    bin_map = dict()  # noqa: C408
+    bin_map = {}
     mat_dim = 1 << new_n_qubits
     for index in range(mat_dim):
         # get current binary
@@ -297,7 +297,7 @@ def reduce_matrices(
     :return: Matrices with some dimensions removed.
     :rtype: List[np.ndarray]
     """
-    organise: dict[int, list] = dict({k: [] for k in range(len(matrices))})  # noqa: C418
+    organise: dict[int, list] = {k: [] for k in range(len(matrices))}
     for unused in entries_to_remove:
         # unused[0] is index in matrices
         # unused[1] is qubit index in matrix
@@ -429,7 +429,7 @@ class SpamCorrecter:
             )
 
         counter = 0
-        self.node_index_dict: dict[Node, tuple[int, int]] = dict()  # noqa: C408
+        self.node_index_dict: dict[Node, tuple[int, int]] = {}
 
         for qbs, dim in zip(
             self.subsets_matrix_map, self.subset_dimensions, strict=False
@@ -636,12 +636,10 @@ class SpamCorrecter:
                 for pair in subset_tuple
             ]
         )
-        new_inst.node_index_dict = dict(  # noqa: C404
-            [
-                (Node(*pair[0]), (int(pair[1][0]), int(pair[1][1])))
-                for pair in d["node_index_dict"]
-            ]
-        )
+        new_inst.node_index_dict = {
+            Node(*pair[0]): (int(pair[1][0]), int(pair[1][1]))
+            for pair in d["node_index_dict"]
+        }
         new_inst.characterisation_matrices = [
             np.array(m) for m in d["characterisation_matrices"]
         ]

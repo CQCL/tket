@@ -14,10 +14,12 @@
 
 """Status classes for circuits submitted to backends."""
 
-from collections.abc import Callable  # noqa: TC003
 from datetime import datetime
 from enum import Enum
-from typing import Any, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 class StatusEnum(Enum):

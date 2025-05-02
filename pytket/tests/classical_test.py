@@ -1017,16 +1017,9 @@ def primitive_reg_logic_exps(
     exp_type = LogicExp.factory(op)
     args: list[BitRegister] = [draw(bit_regs)]
     if issubclass(exp_type, BinaryOp):
-        if issubclass(  # noqa: UP038
+        if issubclass(
             exp_type,
-            (
-                RegEq,
-                RegNeq,
-                RegLt,
-                RegGt,
-                RegLeq,
-                RegGeq,
-            ),
+            RegEq | RegNeq | RegLt | RegGt | RegLeq | RegGeq,
         ):
             const_compare = draw(uint64)
             args.append(const_compare)

@@ -45,7 +45,7 @@ def route_subcircuit_func(  # noqa: PLR0912
 
     # "place" unassigned logical qubits to physical qubits
     unused_nodes: list[Node] = []
-    relabelling_map: UnitIdMap = dict()  # noqa: C408
+    relabelling_map: UnitIdMap = {}
 
     for node in architecture.nodes:
         if node not in circuit.qubits:
@@ -60,7 +60,7 @@ def route_subcircuit_func(  # noqa: PLR0912
             relabelling_map[qb] = qb
 
     replacement_circuit.rename_units(relabelling_map)
-    permutation_map: UnitIdMap = dict()  # noqa: C408
+    permutation_map: UnitIdMap = {}
     for qb in replacement_circuit.qubits:
         permutation_map[qb] = qb
 
@@ -342,7 +342,7 @@ def test_basic_mapping() -> None:
     circ.CX(1, 4)
     circ.CX(0, 4)
 
-    init_map = dict()  # noqa: C408
+    init_map = {}
     init_map[Qubit(0)] = Node(0)
     init_map[Qubit(1)] = Node(1)
     init_map[Qubit(2)] = Node(2)
@@ -366,7 +366,7 @@ def test_MultiGateReorderRoutingMethod() -> None:
     circ.CZ(3, 2)
     circ.CX(3, 4)
 
-    init_map = dict()  # noqa: C408
+    init_map = {}
     init_map[Qubit(0)] = Node(0)
     init_map[Qubit(1)] = Node(1)
     init_map[Qubit(2)] = Node(2)
@@ -425,7 +425,7 @@ def test_BoxDecompositionRoutingMethod() -> None:
     circ.add_circbox(circ_box, [0, 1, 2, 3, 4])
     circ.CZ(1, 3)
 
-    init_map = dict()  # noqa: C408
+    init_map = {}
     init_map[Qubit(0)] = Node(0)
     init_map[Qubit(1)] = Node(1)
     init_map[Qubit(2)] = Node(2)

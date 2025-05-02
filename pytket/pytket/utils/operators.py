@@ -64,7 +64,7 @@ class QubitPauliOperator:
         self,
         dictionary: dict[QubitPauliString, CoeffTypeAccepted] | None = None,
     ) -> None:
-        self._dict: dict[QubitPauliString, Expr] = dict()  # noqa: C408
+        self._dict: dict[QubitPauliString, Expr] = {}
         if dictionary:
             for key, value in dictionary.items():
                 self._dict[key] = _coeff_convert(value)
@@ -147,7 +147,7 @@ class QubitPauliOperator:
 
         # Handle operator of the same type
         if isinstance(multiplier, QubitPauliOperator):
-            result_terms: dict = dict()  # noqa: C408
+            result_terms: dict = {}
             for left_key, left_value in self._dict.items():
                 for right_key, right_value in multiplier._dict.items():
                     new_term, bonus_coeff = pauli_string_mult(left_key, right_key)
@@ -163,7 +163,7 @@ class QubitPauliOperator:
             return self
 
         # Handle scalars.
-        if isinstance(multiplier, (float, Expr)):  # noqa: UP038
+        if isinstance(multiplier, float | Expr):
             for key in self._dict:
                 self[key] *= multiplier
             return self

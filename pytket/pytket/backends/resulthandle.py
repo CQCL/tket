@@ -52,7 +52,7 @@ class ResultHandle(Sequence):
             evaltuple = literal_eval(string)  # will raise ValueError if failed
             if (not isinstance(evaltuple, tuple)) or (
                 not all(
-                    isinstance(arg, (int, float, complex, str, bool, bytes))  # noqa: UP038
+                    isinstance(arg, int | float | complex | str | bool | bytes)
                     for arg in evaltuple
                 )
             ):

@@ -830,7 +830,7 @@ def test_decompose_swap_to_cx() -> None:
     circ.CX(1, 4)
     circ.CX(0, 4)
 
-    init_map = dict()  # noqa: C408
+    init_map = {}
     init_map[Qubit(0)] = Node(0)
     init_map[Qubit(1)] = Node(1)
     init_map[Qubit(2)] = Node(2)
@@ -1182,8 +1182,8 @@ def test_custom_pass() -> None:
         for cmd in c.get_commands():
             op = cmd.op
             params = [
-                param if abs_float_param(param) >= 0.01 else 0.0
-                for param in op.params  # noqa: PLR2004
+                param if abs_float_param(param) >= 0.01 else 0.0  # noqa: PLR2004
+                for param in op.params
             ]
             c1.add_gate(op.type, params, cmd.args)
         return c1

@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from pytket import Circuit
 from pytket.circuit import CircBox, PauliExpBox
@@ -21,8 +21,11 @@ from pytket.partition import (
     term_sequence,
 )
 
-from .._tket.unit_id import UnitID  # noqa: TC001
+from .._tket.unit_id import UnitID
 from .operators import QubitPauliOperator
+
+if TYPE_CHECKING:
+    from .._tket.unit_id import UnitID
 
 
 def gen_term_sequence_circuit(
@@ -67,8 +70,8 @@ def gen_term_sequence_circuit(
             coeff = operator[qps]
             qps_map = qps.map
             if qps_map:
-                qubits = list()  # noqa: C408
-                paulis = list()  # noqa: C408
+                qubits = []
+                paulis = []
                 for qb, pauli in qps_map.items():
                     qubits.append(qb)
                     paulis.append(pauli)

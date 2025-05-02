@@ -164,7 +164,7 @@ setup(
     long_description=open("package.md").read(),  # noqa: SIM115
     long_description_content_type="text/markdown",
     license="Apache 2",
-    packages=setuptools.find_packages() + ["pytket.qasm.includes"],  # noqa: RUF005
+    packages=[*setuptools.find_packages(), "pytket.qasm.includes"],
     install_requires=[
         "sympy >= 1.12.1",
         "numpy >= 1.26.4",

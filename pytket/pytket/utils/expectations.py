@@ -162,10 +162,7 @@ def get_operator_expectation_value(  # noqa: PLR0912, PLR0913, PLR0915
         return operator.state_expectation(state)
     energy: complex
     id_string = QubitPauliString()
-    if id_string in operator._dict:  # noqa: SLF001, SIM108
-        energy = complex(operator[id_string])
-    else:
-        energy = 0
+    energy = complex(operator[id_string]) if id_string in operator._dict else 0  # noqa: SLF001
     if not partition_strat:
         operator_without_id = QubitPauliOperator(
             {p: c for p, c in operator._dict.items() if (p != id_string)}  # noqa: SLF001

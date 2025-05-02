@@ -38,9 +38,10 @@ from pytket.zx import (
 try:
     import quimb.tensor as qtn  # type: ignore
 except ModuleNotFoundError:
-    warnings.warn(  # noqa: B028
+    warnings.warn(
         'Missing package for tensor evaluation of ZX diagrams. Run "pip '
-        "install 'pytket[ZX]'\" to install the optional dependencies."
+        "install 'pytket[ZX]'\" to install the optional dependencies.",
+        stacklevel=2,
     )
 
 

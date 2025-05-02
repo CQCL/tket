@@ -366,7 +366,7 @@ def test_rename_qubits_pass() -> None:
     cu = CompilationUnit(circ)
     p.apply(cu)
     newcirc = cu.circuit
-    assert set(newcirc.qubits) == set([Qubit("b", i) for i in range(2)])  # noqa: C403
+    assert set(newcirc.qubits) == {Qubit("b", i) for i in range(2)}
 
 
 def gate_count_metric(circ: Circuit) -> int:
@@ -868,7 +868,7 @@ def test_iswapmax_autorebase() -> None:
 def test_flatten_relabel_pass() -> None:
     c = Circuit(3)
     c.H(1).H(2)
-    rename_map: RenameUnitsMap = dict()  # noqa: C408
+    rename_map: RenameUnitsMap = {}
     rename_map[Qubit(0)] = Qubit("a", 4)
     rename_map[Qubit(1)] = Qubit("b", 7)
     rename_map[Qubit(2)] = Qubit("a", 2)

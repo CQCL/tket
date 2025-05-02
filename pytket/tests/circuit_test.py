@@ -17,6 +17,7 @@ import math
 import pickle
 from math import sqrt
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pytest
@@ -64,12 +65,12 @@ from pytket.circuit import (
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
 from pytket.circuit.named_types import (
-    BitstringToOpList,  # noqa: TC001
-    BitstringToOpMap,  # noqa: TC001
-    BitstringToTensoredOpList,  # noqa: TC001
-    BitstringToTensoredOpMap,  # noqa: TC001
-    ParamType,  # noqa: TC001
-    PermutationMap,  # noqa: TC001
+    BitstringToOpList,
+    BitstringToOpMap,
+    BitstringToTensoredOpList,
+    BitstringToTensoredOpMap,
+    ParamType,
+    PermutationMap,
 )
 from pytket.circuit_library import CnX_vchain_decomp
 from pytket.passes import (
@@ -80,6 +81,16 @@ from pytket.passes import (
 )
 from pytket.pauli import Pauli
 from pytket.transform import PauliSynthStrat, Transform
+
+if TYPE_CHECKING:
+    from pytket.circuit.named_types import (
+        BitstringToOpList,
+        BitstringToOpMap,
+        BitstringToTensoredOpList,
+        BitstringToTensoredOpMap,
+        ParamType,
+        PermutationMap,
+    )
 
 curr_file_path = Path(__file__).resolve().parent
 
@@ -811,7 +822,7 @@ def test_errors() -> None:
     c.Rz(0, 0)
     with pytest.raises(TypeError):
         c.Rz(0, "a")  # type: ignore
-    assert c.get_commands()[0].free_symbols() == set([a])  # noqa: C405
+    assert c.get_commands()[0].free_symbols() == {a}
 
 
 def test_str() -> None:

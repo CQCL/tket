@@ -156,9 +156,10 @@ class ProbabilityDistribution(Generic[T0]):
         if np.isclose(s0, 0):
             raise ValueError("Distribution has zero weight")
         if not np.isclose(s0, 1):
-            warnings.warn(  # noqa: B028
+            warnings.warn(
                 "Probabilities used to initialize ProbabilityDistribution do "
-                "not sum to 1: renormalizing."
+                "not sum to 1: renormalizing.",
+                stacklevel=2,
             )
         newP = {x: p for x, p in P.items() if p > min_p}
         s = sum(newP.values())

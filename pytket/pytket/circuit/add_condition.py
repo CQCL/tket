@@ -79,7 +79,7 @@ def _add_condition(  # noqa: PLR0912
         circ.add_clexpr(wexpr, args)
         return condition_bit, bool(pred_val)
 
-    assert isinstance(pred_exp, (RegLogicExp, BitRegister))  # noqa: UP038
+    assert isinstance(pred_exp, RegLogicExp | BitRegister)
     if isinstance(pred_exp, RegLogicExp):
         inps = pred_exp.all_inputs_ordered()
         reg_sizes: list[int] = []
@@ -87,11 +87,11 @@ def _add_condition(  # noqa: PLR0912
             assert isinstance(reg, BitRegister)
             reg_sizes.append(reg.size)
         min_reg_size = min(reg_sizes)
-        existing_reg_names = set(  # noqa: C401
+        existing_reg_names = {
             bit.reg_name
             for bit in circ.bits
             if bit.reg_name.startswith(_TEMP_BIT_REG_BASE)
-        )
+        }
         existing_reg_indices = (
             int(r_name.split("_")[-1]) for r_name in existing_reg_names
         )
@@ -110,9 +110,9 @@ def _add_condition(  # noqa: PLR0912
         maxval = pred_val - 1
     elif isinstance(condition, RegGt):
         minval = pred_val + 1
-    if isinstance(condition, (RegLeq, RegEq, RegNeq)):  # noqa: UP038
+    if isinstance(condition, RegLeq | RegEq | RegNeq):
         maxval = pred_val
-    if isinstance(condition, (RegGeq, RegEq, RegNeq)):  # noqa: UP038
+    if isinstance(condition, RegGeq | RegEq | RegNeq):
         minval = pred_val
 
     circ.add_c_range_predicate(minval, maxval, target_bits, condition_bit)

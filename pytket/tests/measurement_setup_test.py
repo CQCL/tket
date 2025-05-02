@@ -37,7 +37,7 @@ def test_parity_flip() -> None:
     circ.Measure(0, 0)
     ms.add_measurement_circuit(circ)
 
-    tensor = dict()  # noqa: C408
+    tensor = {}
     tensor[Qubit(0)] = Pauli.Z
 
     mbm = MeasurementBitMap(0, [0], True)
