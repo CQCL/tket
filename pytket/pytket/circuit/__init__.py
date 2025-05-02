@@ -57,8 +57,8 @@ def add_wasm(  # noqa: PLR0913
     filehandler: wasm.WasmModuleHandler,
     list_i: Sequence[int],
     list_o: Sequence[int],
-    args: Sequence[int] | Sequence[Bit],
-    args_wasm: Sequence[int] | None = None,
+    args: Union[Sequence[int], Sequence[Bit]],  # noqa: UP007
+    args_wasm: Optional[Sequence[int]] = None,  # noqa: UP007
     **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
@@ -98,7 +98,7 @@ def add_wasm(  # noqa: PLR0913
     raise ValueError(f"{funcname} not found, check {filehandler!r}")
 
 
-Circuit.add_wasm = add_wasm
+setattr(Circuit, "add_wasm", add_wasm)  # noqa: B010
 
 
 def add_wasm_to_reg(  # noqa: PLR0913
@@ -107,7 +107,7 @@ def add_wasm_to_reg(  # noqa: PLR0913
     filehandler: wasm.WasmModuleHandler,
     list_i: Sequence[BitRegister],
     list_o: Sequence[BitRegister],
-    args_wasm: Sequence[int] | None = None,
+    args_wasm: Optional[Sequence[int]] = None,  # noqa: UP007
     **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
@@ -155,4 +155,4 @@ please use only registers of at most 32 bits"""
     raise ValueError(f"{funcname} not found, check {filehandler!r}")
 
 
-Circuit.add_wasm_to_reg = add_wasm_to_reg
+setattr(Circuit, "add_wasm_to_reg", add_wasm_to_reg)  # noqa: B010

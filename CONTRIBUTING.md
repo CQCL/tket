@@ -52,8 +52,8 @@ checker will ignore it when calculating line and branch coverage statistics.
 
 #### Formatting
 
-All Python code should be formatted using
-[black](https://black.readthedocs.io/en/stable/), with default options. This is
+All code should be formatted using
+[ruff](https://docs.astral.sh/ruff/formatter/), with default options. This is
 checked on the CI.
 
 #### Type annotation
@@ -70,9 +70,11 @@ mypy --config-file=mypy.ini -p pytket -p tests
 
 #### Linting
 
-We use [pylint](https://pypi.org/project/pylint/) on the CI to check compliance
-with a set of style requirements (listed in `pytket/.pylintrc`). You should run
-`pylint` over any changed files before submitting a PR, to catch any issues.
+We use [ruff](https://github.com/astral-sh/ruff) on the CI to check compliance with a set of style requirements (listed in `ruff.toml`).
+You should run `ruff` over any changed files before submitting a PR, to catch any issues.
+
+An easy way to meet all formatting and linting requirements is to issue `pre-commit run --all-files`
+or `make lint` before sending a PR.
 
 ## Version numbers
 

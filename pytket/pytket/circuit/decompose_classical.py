@@ -362,10 +362,10 @@ def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:  # noqa: PLR0
                 newcirc,
                 bit_posn,
                 reg_posn,
-                args,
+                args,  # type: ignore
                 bit_heap,
                 reg_heap,
-                kwargs,  # type: ignore
+                kwargs,
             )
             comp_var = decomposer.decompose_expr(expr, out_var)
             if comp_var != out_var:

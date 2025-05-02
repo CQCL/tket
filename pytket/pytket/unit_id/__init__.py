@@ -52,10 +52,10 @@ def _qubitregister_next(self: QubitRegister) -> Qubit:
     raise StopIteration
 
 
-BitRegister.__next__ = _bitregister_next
+setattr(BitRegister, "__next__", _bitregister_next)  # noqa: B010
 BitRegister.__next__.__name__ = "__next__"
 
-QubitRegister.__next__ = _qubitregister_next
+setattr(QubitRegister, "__next__", _qubitregister_next)  # noqa: B010
 QubitRegister.__next__.__name__ = "__next__"
 
 # overload operators for Bit, BitRegister and expressions over these
@@ -85,22 +85,24 @@ def gen_binary_method_reg(
     return logic_operation
 
 
-Bit.__and__ = gen_binary_method_bit(BitWiseOp.AND, "__and__")
-Bit.__rand__ = gen_binary_method_bit(BitWiseOp.AND, "__rand__")
-Bit.__or__ = gen_binary_method_bit(BitWiseOp.OR, "__or__")
-Bit.__ror__ = gen_binary_method_bit(BitWiseOp.OR, "__ror__")
-Bit.__xor__ = gen_binary_method_bit(BitWiseOp.XOR, "__xor__")
-Bit.__rxor__ = gen_binary_method_bit(BitWiseOp.XOR, "__rxor__")
-BitRegister.__and__ = gen_binary_method_reg(RegWiseOp.AND, "__and__")
-BitRegister.__rand__ = gen_binary_method_reg(RegWiseOp.AND, "__rand__")
-BitRegister.__or__ = gen_binary_method_reg(RegWiseOp.OR, "__or__")
-BitRegister.__ror__ = gen_binary_method_reg(RegWiseOp.OR, "__ror__")
-BitRegister.__xor__ = gen_binary_method_reg(RegWiseOp.XOR, "__xor__")
-BitRegister.__rxor__ = gen_binary_method_reg(RegWiseOp.XOR, "__rxor__")
-BitRegister.__add__ = gen_binary_method_reg(RegWiseOp.ADD, "__add__")
-BitRegister.__sub__ = gen_binary_method_reg(RegWiseOp.SUB, "__sub__")
-BitRegister.__mul__ = gen_binary_method_reg(RegWiseOp.MUL, "__mul__")
-BitRegister.__floordiv__ = gen_binary_method_reg(RegWiseOp.DIV, "__floordiv__")
-BitRegister.__pow__ = gen_binary_method_reg(RegWiseOp.POW, "__pow__")
-BitRegister.__lshift__ = gen_binary_method_reg(RegWiseOp.LSH, "__lshift__")
-BitRegister.__rshift__ = gen_binary_method_reg(RegWiseOp.RSH, "__rshift__")
+setattr(Bit, "__and__", gen_binary_method_bit(BitWiseOp.AND, "__and__"))  # noqa: B010
+setattr(Bit, "__rand__", gen_binary_method_bit(BitWiseOp.AND, "__rand__"))  # noqa: B010
+setattr(Bit, "__or__", gen_binary_method_bit(BitWiseOp.OR, "__or__"))  # noqa: B010
+setattr(Bit, "__ror__", gen_binary_method_bit(BitWiseOp.OR, "__ror__"))  # noqa: B010
+setattr(Bit, "__xor__", gen_binary_method_bit(BitWiseOp.XOR, "__xor__"))  # noqa: B010
+setattr(Bit, "__rxor__", gen_binary_method_bit(BitWiseOp.XOR, "__rxor__"))  # noqa: B010
+setattr(BitRegister, "__and__", gen_binary_method_reg(RegWiseOp.AND, "__and__"))  # noqa: B010
+setattr(BitRegister, "__rand__", gen_binary_method_reg(RegWiseOp.AND, "__rand__"))  # noqa: B010
+setattr(BitRegister, "__or__", gen_binary_method_reg(RegWiseOp.OR, "__or__"))  # noqa: B010
+setattr(BitRegister, "__ror__", gen_binary_method_reg(RegWiseOp.OR, "__ror__"))  # noqa: B010
+setattr(BitRegister, "__xor__", gen_binary_method_reg(RegWiseOp.XOR, "__xor__"))  # noqa: B010
+setattr(BitRegister, "__rxor__", gen_binary_method_reg(RegWiseOp.XOR, "__rxor__"))  # noqa: B010
+setattr(BitRegister, "__add__", gen_binary_method_reg(RegWiseOp.ADD, "__add__"))  # noqa: B010
+setattr(BitRegister, "__sub__", gen_binary_method_reg(RegWiseOp.SUB, "__sub__"))  # noqa: B010
+setattr(BitRegister, "__mul__", gen_binary_method_reg(RegWiseOp.MUL, "__mul__"))  # noqa: B010
+setattr(  # noqa: B010
+    BitRegister, "__floordiv__", gen_binary_method_reg(RegWiseOp.DIV, "__floordiv__")
+)
+setattr(BitRegister, "__pow__", gen_binary_method_reg(RegWiseOp.POW, "__pow__"))  # noqa: B010
+setattr(BitRegister, "__lshift__", gen_binary_method_reg(RegWiseOp.LSH, "__lshift__"))  # noqa: B010
+setattr(BitRegister, "__rshift__", gen_binary_method_reg(RegWiseOp.RSH, "__rshift__"))  # noqa: B010

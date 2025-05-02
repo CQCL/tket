@@ -17,6 +17,7 @@ import multiprocessing
 import os
 import shutil
 import subprocess
+import sys
 from sysconfig import get_config_var
 
 import setuptools  # type: ignore
@@ -50,6 +51,8 @@ binders = [
     "architecture",
 ]
 
+stable_abi = sys.version_info >= (3, 12)
+
 
 class CMakeBuild(build_ext):
     def run(self):
@@ -80,7 +83,7 @@ class CMakeBuild(build_ext):
         subprocess.run(["cmake", "--install", os.curdir], cwd=build_dir, check=True)
         lib_folder = os.path.join(install_dir, "lib")
         lib_names = ["libtklog.so", "libtket.so"]
-        ext_suffix = get_config_var("EXT_SUFFIX")
+        ext_suffix = ".abi3.so" if stable_abi else get_config_var("EXT_SUFFIX")
         lib_names.extend(f"{binder}{ext_suffix}" for binder in binders)
         # TODO make the above generic
         os.makedirs(extdir, exist_ok=True)
@@ -205,4 +208,5 @@ setup(
     include_package_data=True,
     package_data={"pytket": ["py.typed"]},
     zip_safe=False,
+    options={"bdist_wheel": {"py_limited_api": "cp312"}} if stable_abi else None,
 )
