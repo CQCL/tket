@@ -911,9 +911,7 @@ def test_remove_blank_wires_pass() -> None:
     c = Circuit(1, 2).H(0).Measure(0, 1)
     c1 = c.copy()
     c1.remove_blank_wires()
-    assert (
-        len(c1.bits) == 2
-    )  # the empty wire is not at the end of a register
+    assert len(c1.bits) == 2  # the empty wire is not at the end of a register
     c1 = c.copy()
     c1.remove_blank_wires(remove_classical_only_at_end_of_register=False)
     assert len(c1.bits) == 1

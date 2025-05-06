@@ -119,7 +119,7 @@ def test_spam_integration() -> None:
     def check_correction(
         counts0: dict[tuple[int, ...], int], counts1: dict[tuple[int, ...], int]
     ) -> bool:
-        return bool(
+        return (
             counts0[0, 0, 0] > counts1[0, 0, 0] and counts0[1, 0, 1] > counts1[1, 0, 1]
         )
 

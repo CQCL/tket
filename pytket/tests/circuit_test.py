@@ -64,14 +64,6 @@ from pytket.circuit import (
     fresh_symbol,
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
-from pytket.circuit.named_types import (
-    BitstringToOpList,
-    BitstringToOpMap,
-    BitstringToTensoredOpList,
-    BitstringToTensoredOpMap,
-    ParamType,
-    PermutationMap,
-)
 from pytket.circuit_library import CnX_vchain_decomp
 from pytket.passes import (
     CliffordSimp,
