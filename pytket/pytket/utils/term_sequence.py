@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import TYPE_CHECKING, cast
+from typing import cast
 
 from pytket import Circuit
 from pytket.circuit import CircBox, PauliExpBox
@@ -23,9 +23,6 @@ from pytket.partition import (
 
 from .._tket.unit_id import UnitID
 from .operators import QubitPauliOperator
-
-if TYPE_CHECKING:
-    from .._tket.unit_id import UnitID
 
 
 def gen_term_sequence_circuit(

@@ -274,7 +274,7 @@ def test_resize_scratch_registers() -> None:
         scratch_reg3 = c_compiled.get_c_register(f"{_TEMP_BIT_NAME}_2")
         assert scratch_reg1.size == max_c_reg_width
         assert scratch_reg2.size == max_c_reg_width
-        assert scratch_reg3.size == 2  # noqa: PLR2004
+        assert scratch_reg3.size == 2
         args_map = {}
         original_cmds = circ.get_commands()
         for cmd in original_cmds:

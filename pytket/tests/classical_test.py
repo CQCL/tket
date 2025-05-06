@@ -113,13 +113,13 @@ def test_c_ops() -> None:
     c.add_c_copyreg(c1, c0)
 
     cmds = c.get_commands()
-    assert len(cmds) == 21  # noqa: PLR2004
-    assert len([cmd for cmd in cmds if cmd.op.get_name() == "AND"]) == 2  # noqa: PLR2004
+    assert len(cmds) == 21
+    assert len([cmd for cmd in cmds if cmd.op.get_name() == "AND"]) == 2
     rp_cmds = [cmd for cmd in cmds if cmd.op.type == OpType.RangePredicate]
-    assert len(rp_cmds) == 2  # noqa: PLR2004
+    assert len(rp_cmds) == 2
     assert rp_cmds[0].op == rp_cmds[1].op
     mb_cmds = [cmd for cmd in cmds if cmd.op.type == OpType.MultiBit]
-    assert len(mb_cmds) == 3  # noqa: PLR2004
+    assert len(mb_cmds) == 3
     assert (
         mb_cmds[0] != mb_cmds[1]
         and mb_cmds[0] != mb_cmds[2]
@@ -137,7 +137,7 @@ def test_add_c_setreg_with_size_gt_32bits() -> None:
     expected_reg = [False] * 64
     expected_reg[2] = expected_reg[5] = expected_reg[6] = True
     com = c.get_commands()[0]
-    assert len(com.bits) == 64  # noqa: PLR2004
+    assert len(com.bits) == 64
     op = com.op
     assert isinstance(op, SetBitsOp)
     assert op.values == expected_reg
@@ -159,7 +159,7 @@ def test_wasm() -> None:
     c._add_wasm("funcname", "wasmfileuid", [1], [1, 2], [0, 1, 2, 3], [0])  # noqa: SLF001
     c._add_wasm("funcname", "wasmfileuid", [2, 1], [3], [0, 1, 2, 3, 4, 5], [0])  # noqa: SLF001
 
-    assert c.depth() == 6  # noqa: PLR2004
+    assert c.depth() == 6
 
 
 def test_wasm_2() -> None:
@@ -477,7 +477,7 @@ def test_add_wasm_to_reg() -> None:
     c.add_wasm_to_reg("no_return", w, [c2], [])
     c.add_wasm_to_reg("no_parameters", w, [], [c2])
 
-    assert c.depth() == 4  # noqa: PLR2004
+    assert c.depth() == 4
 
 
 def test_wasm_argtypes() -> None:
@@ -598,7 +598,7 @@ def test_wasm_append() -> None:
         d.add_c_setbits([False], [bit])
 
     d.append(c)
-    assert d.depth() == 2  # noqa: PLR2004
+    assert d.depth() == 2
 
 
 def test_wasm_append_2() -> None:
@@ -615,7 +615,7 @@ def test_wasm_append_2() -> None:
     d.add_wasm_to_reg("no_return", wasmfile, [a], [])
 
     d.append(c)
-    assert d.depth() == 3  # noqa: PLR2004
+    assert d.depth() == 3
 
 
 def test_wasm_append_3() -> None:
@@ -654,7 +654,7 @@ def test_wasmfilehandler_without_init_no_check() -> None:
     c.add_wasm_to_reg("no_return", w, [c2], [])
     c.add_wasm_to_reg("no_parameters", w, [], [c2])
 
-    assert c.depth() == 4  # noqa: PLR2004
+    assert c.depth() == 4
 
 
 def test_wasmfilehandler_invalid_file_1_c_32() -> None:
@@ -1264,8 +1264,8 @@ def test_conditional() -> None:
 
 def test_range_predicate_properties() -> None:
     range_predicate = RangePredicateOp(width=8, lower=3, upper=5)
-    assert range_predicate.lower == 3  # noqa: PLR2004
-    assert range_predicate.upper == 5  # noqa: PLR2004
+    assert range_predicate.lower == 3
+    assert range_predicate.upper == 5
 
 
 def test_conditional_classicals() -> None:
@@ -1308,7 +1308,7 @@ def test_conditional_wasm_iii() -> None:
     c.add_wasm_to_reg("multi", w, [c0, c1], [c2], condition=b[0])
     c.add_wasm_to_reg("add_one", w, [c2], [c2], condition=b[1])
 
-    assert c.depth() == 2  # noqa: PLR2004
+    assert c.depth() == 2
     assert (
         str(c.get_commands()[0])
         == "IF ([b[0]] == 1) THEN WASM c0[0], c0[1], c0[2], c1[0], c1[1], c1[2], c1[3], c2[0], c2[1], c2[2], c2[3], c2[4], _w[0];"
@@ -1345,7 +1345,7 @@ def test_depth_classical_only() -> None:
     # https://github.com/CQCL/tket/issues/1673
     set_bits = SetBitsOp([True, True])
     multi_bit = MultiBitOp(set_bits, 2)
-    assert multi_bit.multiplier == 2  # noqa: PLR2004
+    assert multi_bit.multiplier == 2
     eq_pred_values = [True, False, False, True]
     and_values = [bool(i) for i in [0, 0, 0, 1]]
     circ = Circuit(4, 4, name="test")
@@ -1353,7 +1353,7 @@ def test_depth_classical_only() -> None:
     circ.add_c_predicate(eq_pred_values, [0, 1], 2, "EQ")
     circ.add_c_modifier(and_values, [1], 2)
     circ.measure_all()
-    assert circ.depth() == 4  # noqa: PLR2004
+    assert circ.depth() == 4
 
 
 if __name__ == "__main__":

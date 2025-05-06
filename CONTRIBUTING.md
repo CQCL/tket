@@ -73,8 +73,7 @@ mypy --config-file=mypy.ini -p pytket -p tests
 We use [ruff](https://github.com/astral-sh/ruff) on the CI to check compliance with a set of style requirements (listed in `ruff.toml`).
 You should run `ruff` over any changed files before submitting a PR, to catch any issues.
 
-An easy way to meet all formatting and linting requirements is to issue `pre-commit run --all-files`
-or `make lint` before sending a PR.
+An easy way to meet all formatting and linting requirements is to issue `pre-commit run --all-files`.
 
 ## Version numbers
 

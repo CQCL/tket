@@ -710,7 +710,7 @@ def test_pass_deserialisation_only() -> None:  # noqa: PLR0915
     dm_pass = DefaultMappingPass(arc, False)
     assert dm_pass.to_dict()["pass_class"] == "SequencePass"
     assert isinstance(dm_pass, SequencePass)
-    assert len(dm_pass.get_sequence()) == 3  # noqa: PLR2004
+    assert len(dm_pass.get_sequence()) == 3
     p_pass = dm_pass.get_sequence()[0]
     r_pass = dm_pass.get_sequence()[1]
     np_pass = dm_pass.get_sequence()[2]

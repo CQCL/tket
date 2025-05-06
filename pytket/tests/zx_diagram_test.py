@@ -577,23 +577,23 @@ def test_graph_like_reduction() -> None:
     # Replace X with Z spiders
     assert Rewrite.red_to_green().apply(diag)
     assert diag.count_vertices(ZXType.XSpider) == 0
-    assert diag.count_vertices(ZXType.ZSpider) == 8  # noqa: PLR2004
+    assert diag.count_vertices(ZXType.ZSpider) == 8
 
     # Spider fusion
     assert Rewrite.spider_fusion().apply(diag)
-    assert diag.count_vertices(ZXType.ZSpider) == 6  # noqa: PLR2004
+    assert diag.count_vertices(ZXType.ZSpider) == 6
 
     # Parallel edge pair removal
     assert not Rewrite.parallel_h_removal().apply(diag)
 
     # Remove hadamard edges connected directly to the boundaries
     assert Rewrite.io_extension().apply(diag)
-    assert diag.count_vertices(ZXType.ZSpider) == 10  # noqa: PLR2004
+    assert diag.count_vertices(ZXType.ZSpider) == 10
 
     # Boundary vertices sharing spiders
     # Deal with directly connected in/outputs
     assert Rewrite.separate_boundaries().apply(diag)
-    assert diag.count_vertices(ZXType.ZSpider) == 13  # noqa: PLR2004
+    assert diag.count_vertices(ZXType.ZSpider) == 13
 
     diag.check_validity()
     final = unitary_from_quantum_diagram(diag)
@@ -626,7 +626,7 @@ def test_spider_fusion() -> None:  # noqa: PLR0915
     original = unitary_from_quantum_diagram(diag)
     assert Rewrite.self_loop_removal().apply(diag)
     assert Rewrite.spider_fusion().apply(diag)
-    assert diag.count_vertices(ZXType.ZSpider) == 2  # noqa: PLR2004
+    assert diag.count_vertices(ZXType.ZSpider) == 2
     assert Rewrite.self_loop_removal().apply(diag)
     assert Rewrite.parallel_h_removal().apply(diag)
     assert Rewrite.io_extension().apply(diag)
@@ -653,12 +653,12 @@ def test_spider_fusion() -> None:  # noqa: PLR0915
     diag.check_validity()
     assert not Rewrite.self_loop_removal().apply(diag)
     assert Rewrite.spider_fusion().apply(diag)
-    assert diag.count_vertices(ZXType.ZSpider) == 2  # noqa: PLR2004
+    assert diag.count_vertices(ZXType.ZSpider) == 2
     assert Rewrite.self_loop_removal().apply(diag)
     assert Rewrite.parallel_h_removal().apply(diag)
     assert not Rewrite.io_extension().apply(diag)
     assert not Rewrite.separate_boundaries().apply(diag)
-    assert diag.count_vertices(ZXType.ZSpider) == 2  # noqa: PLR2004
+    assert diag.count_vertices(ZXType.ZSpider) == 2
     diag.check_validity()
 
 
@@ -767,7 +767,7 @@ def test_converting_from_circuit() -> None:
 
 def test_constructors() -> None:
     phased_gen = PhasedGen(ZXType.ZSpider, 0.5, QuantumType.Quantum)
-    assert phased_gen.param == 0.5  # noqa: PLR2004
+    assert phased_gen.param == 0.5
     clifford_gen = CliffordGen(ZXType.PX, True, QuantumType.Quantum)
     assert clifford_gen.param
     directed_gen = DirectedGen(ZXType.Triangle, QuantumType.Quantum)
@@ -828,7 +828,7 @@ def test_XY_extraction() -> None:
     diag.add_wire(o2, outs[2])
     diag.check_validity()
     circ, _ = diag.to_circuit()
-    assert circ.n_qubits == 3  # noqa: PLR2004
+    assert circ.n_qubits == 3
     diag_u = unitary_from_quantum_diagram(diag)
     circ_u = circ.get_unitary()
     assert compare_unitaries(diag_u, circ_u)
@@ -918,7 +918,7 @@ def test_XY_YZ_extraction() -> None:  # noqa: PLR0915
     diag.add_wire(o4ext, outs[4])
     diag.check_validity()
     circ, _ = diag.to_circuit()
-    assert circ.n_qubits == 5  # noqa: PLR2004
+    assert circ.n_qubits == 5
     diag_u = unitary_from_quantum_diagram(diag)
     circ_u = circ.get_unitary()
     assert compare_unitaries(diag_u, circ_u)
@@ -1018,9 +1018,9 @@ def test_internalise_gadgets() -> None:
             t = tensor_from_quantum_diagram(diag)
             Rewrite.internalise_gadgets().apply(diag)
             if (axis_basis == ZXType.XY) and (gadget_basis in [ZXType.XY, ZXType.XZ]):
-                assert diag.n_vertices == 6  # noqa: PLR2004
+                assert diag.n_vertices == 6
             else:
-                assert diag.n_vertices == 5  # noqa: PLR2004
+                assert diag.n_vertices == 5
             t2 = tensor_from_quantum_diagram(diag)
             (t, t2) = joint_normalise_tensor(t, t2)
             assert np.allclose(t, t2)

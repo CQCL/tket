@@ -144,12 +144,12 @@ def test_premultiplication() -> None:
                 continue
             product = unitary @ matr
             product_again = circ.get_unitary_times_other(matr)
-            assert len(product_again.shape) == 2  # noqa: PLR2004
-            assert product_again.shape[0] == 4  # noqa: PLR2004
+            assert len(product_again.shape) == 2
+            assert product_again.shape[0] == 4
             if expected_behaviour == Behaviour.RESULT_NEEDS_RESHAPING:
                 # Should only occur with row/column vectors
                 assert product.shape == (4,)
-                assert len(product) == 4  # noqa: PLR2004
+                assert len(product) == 4
                 product = np.asarray(product)
                 product = product.reshape(4, 1)
             assert np.allclose(product, product_again)
@@ -161,7 +161,7 @@ def test_circuit_unitaries_homomorphism_property() -> None:
     so extra transposes caused by C++/Python conversion
     should cause this to fail."""
     circuits = get_circuit_triple()
-    assert len(circuits) == 3  # noqa: PLR2004
+    assert len(circuits) == 3
     unitaries = [get_checked_unitary_matrix(c) for c in circuits]
     assert all(u.shape == (4, 4) for u in unitaries)
     # This checks that at least one matrix is changed by transposing,

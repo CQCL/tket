@@ -66,14 +66,14 @@ def test_quipper_1() -> None:
     circ = circuit_from_quipper(
         str(curr_file_path / "quipper_test_files" / "test1.quip")
     )
-    assert circ.n_qubits == 16  # noqa: PLR2004
+    assert circ.n_qubits == 16
 
 
 def test_quipper_2() -> None:
     circ = circuit_from_quipper(
         str(curr_file_path / "quipper_test_files" / "test2.quip")
     )
-    assert circ.n_qubits == 4  # noqa: PLR2004
+    assert circ.n_qubits == 4
 
 
 def test_quipper_3() -> None:
@@ -81,7 +81,7 @@ def test_quipper_3() -> None:
     circ = circuit_from_quipper(
         str(curr_file_path / "quipper_test_files" / "test3.quip")
     )
-    assert circ.n_qubits == 4  # noqa: PLR2004
+    assert circ.n_qubits == 4
     Transform.OptimisePostRouting().apply(circ)
     circ0 = Circuit(4, 0)
     s = circ.get_statevector()

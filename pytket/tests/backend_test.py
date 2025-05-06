@@ -166,7 +166,7 @@ def test_swaps_basisorder() -> None:
     cu = CompilationUnit(c)
     CliffordSimp(True).apply(cu)
     c1 = cu.circuit
-    assert c1.n_gates_of_type(OpType.CX) == 2  # noqa: PLR2004
+    assert c1.n_gates_of_type(OpType.CX) == 2
 
     s_ilo_direct = c1.get_statevector()
     correct_ilo_direct = c.get_statevector()
@@ -274,7 +274,7 @@ def test_backendresult() -> None:  # noqa: PLR0915
     assert backres_counts.get_result().counts == outcomeA.counts()
     counter = backres_counts.get_result([cbits[4], cbits[7]]).counts
     assert counter is not None
-    assert counter[OutcomeArray.from_readouts([[1, 1]])] == 2  # noqa: PLR2004
+    assert counter[OutcomeArray.from_readouts([[1, 1]])] == 2
     testvec = [1 + 1j, 3 + 4j, 1 + 1j, 3 + 4j]
     teststate = np.array(testvec)
     teststate /= np.sqrt(teststate.conjugate().dot(teststate))
@@ -325,16 +325,16 @@ def test_backendresult() -> None:  # noqa: PLR0915
 
     with pytest.deprecated_call():
         shots_dist0 = backres_shots.get_distribution()
-        assert len(shots_dist0) == 2  # noqa: PLR2004
-        assert shots_dist0[tuple(shots_list[0])] == 0.5  # noqa: PLR2004
-        assert shots_dist0[tuple(shots_list[1])] == 0.5  # noqa: PLR2004
+        assert len(shots_dist0) == 2
+        assert shots_dist0[tuple(shots_list[0])] == 0.5
+        assert shots_dist0[tuple(shots_list[1])] == 0.5
 
         state_dist0 = backres_state.get_distribution([qbits[1], qbits[0]])
         assert np.isclose(state_dist0[(0, 1)], abs(teststate[2]) ** 2)
         assert np.isclose(state_dist0[(1, 0)], abs(teststate[1]) ** 2)
 
     shots_dist = backres_shots.get_empirical_distribution()
-    assert len(shots_dist.support) == 2  # noqa: PLR2004
+    assert len(shots_dist.support) == 2
     assert shots_dist[tuple(shots_list[0])] == 1
     assert shots_dist[tuple(shots_list[1])] == 1
 
