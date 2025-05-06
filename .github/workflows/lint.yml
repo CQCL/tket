@@ -22,7 +22,7 @@ jobs:
     - name: Run ruff lint
       run: |
         ruff check .
-    - name: Run ruff
+    - name: Check formatting
       run: |      
         ruff format --check .
 
