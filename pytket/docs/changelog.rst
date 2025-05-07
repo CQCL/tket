@@ -1,13 +1,8 @@
 Changelog
 =========
 
-2.3.2 (April 2025)
-------------------
-
-Features:
-
-* Add option to `Circuit.remove_blank_wires` to force removal of all blank
-  classical wires.
+Unreleased
+----------
 
 API changes:
 
@@ -15,6 +10,14 @@ API changes:
   pass scripting, QASM and Quipper parsing, SPAM mitigation, and symbolic 
   evaluation of circuits have been renamed to indicate they are not intended 
   for external usage.
+
+2.3.2 (April 2025)
+------------------
+
+Features:
+
+* Add option to `Circuit.remove_blank_wires` to force removal of all blank
+  classical wires.
 
 Fixes:
 
