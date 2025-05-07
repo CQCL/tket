@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Fixes: Ensure downcasting of `UnitID` to `Qubit` in initial and final maps.
+
 2.3.2 (April 2025)
 ------------------
 
