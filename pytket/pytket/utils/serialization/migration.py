@@ -75,7 +75,7 @@ def _convert_bitwise_terms(args: list, bits: list[tuple[str, tuple[int]]]) -> li
         else:
             # It's a bit.
             assert isinstance(arg, list)
-            assert len(arg) == 2
+            assert len(arg) == 2  # noqa: PLR2004
             name, index = arg
             i = bits.index((name, tuple(index)))
             terms.append(

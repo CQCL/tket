@@ -38,7 +38,7 @@ def unitary_from_simulate_output(simout: Any, n: int) -> np.ndarray:
     The encoding is little-endian.
     """
     N = pow(2, n)
-    fmt = "{0:0%db}" % n
+    fmt = "{0:0%db}" % n  # noqa: UP031
     reps = ["|" + fmt.format(i) + ">" for i in range(N)]
     lines = simout.split("\n")
     pos = 0
@@ -92,7 +92,7 @@ def test_quipper_3() -> None:
 def test_quipper_4() -> None:
     # Check some test circuits against simulator output.
     for i in range(11):
-        fname = "test4-%d.quip" % i
+        fname = "test4-%d.quip" % i  # noqa: UP031
         fpath = str(curr_file_path / "quipper_test_files" / fname)
         circ = circuit_from_quipper(fpath)
         n_qubits = circ.n_qubits

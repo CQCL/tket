@@ -13,6 +13,7 @@
 # limitations under the License.
 
 """Abstract base class for all Backend encapsulations."""
+
 import warnings
 from abc import ABC, abstractmethod
 from collections.abc import Iterable, Sequence
@@ -117,12 +118,11 @@ class Backend(ABC):
             )
             for error in errors:
                 raise error
-            if nomeasure_warn:
-                if circ.n_gates_of_type(OpType.Measure) < 1:
-                    warnings.warn(
-                        f"Circuit with index {i} in submitted does not contain a "
-                        "measure operation."
-                    )
+            if nomeasure_warn and circ.n_gates_of_type(OpType.Measure) < 1:
+                warnings.warn(  # noqa: B028
+                    f"Circuit with index {i} in submitted does not contain a "
+                    "measure operation."
+                )
         return True
 
     @abstractmethod
@@ -227,7 +227,8 @@ class Backend(ABC):
         :raises TypeError: Types of handle identifiers don't match those of backend.
         """
         if (len(reshandle) != len(self._result_id_type)) or not all(
-            isinstance(idval, ty) for idval, ty in zip(reshandle, self._result_id_type)
+            isinstance(idval, ty)
+            for idval, ty in zip(reshandle, self._result_id_type, strict=False)
         ):
             raise ResultHandleTypeError(
                 f"{reshandle!r} does not match expected "
@@ -335,7 +336,7 @@ class Backend(ABC):
         """
         self._check_handle_type(handle)
         if handle in self._cache and "result" in self._cache[handle]:
-            return cast(BackendResult, self._cache[handle]["result"])
+            return cast("BackendResult", self._cache[handle]["result"])
         raise CircuitNotRunError(handle)
 
     def get_results(
@@ -352,9 +353,9 @@ class Backend(ABC):
             return [self.get_result(handle, **kwargs) for handle in handles]
         except ResultHandleTypeError as e:
             try:
-                self._check_handle_type(cast(ResultHandle, handles))
+                self._check_handle_type(cast("ResultHandle", handles))
             except ResultHandleTypeError:
-                raise e
+                raise e  # noqa: B904
 
             raise ResultHandleTypeError(
                 "Possible use of single ResultHandle"
@@ -607,7 +608,7 @@ class Backend(ABC):
             return optional or (n is not None and n > 0)
 
         if set_zero and not optional:
-            ValueError("set_zero cannot be true when optional is false")
+            raise ValueError("set_zero cannot be true when optional is false")
 
         if hasattr(n_shots, "__iter__"):
             assert not isinstance(n_shots, int)
@@ -631,7 +632,7 @@ class Backend(ABC):
 
         if set_zero:
             # replace None with 0
-            n_shots_list = list(map(lambda n: n or 0, n_shots_list))
+            n_shots_list = [n or 0 for n in n_shots_list]
 
         return n_shots_list
 

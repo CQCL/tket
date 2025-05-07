@@ -15,17 +15,14 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.x'
-    - name: Install black, pylint and ruff
-      run: pip install black pylint ruff
-    - name: Check files are formatted with black
+    - name: Update pip
+      run: pip install --upgrade pip
+    - name: Install formatters and linters
+      run: pip install ruff
+    - name: Run ruff lint
       run: |
-        # Paths specified to avoid formatting submodules
-        black --check .
-    - name: pylint check
-      run: |
-        cd pytket
-        pylint --ignore-paths=pytket/_tket pytket/
-    - name: ruff check
-      run: |
-        cd pytket
         ruff check .
+    - name: Check formatting
+      run: |      
+        ruff format --check .
+

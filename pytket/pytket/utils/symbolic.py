@@ -16,6 +16,7 @@
 for symbolic circuits. This uses the sympy.physics.quantum module and produces
 sympy objects. The implementations are slow and scale poorly, so this is
 only suitable for very small (up to 5 qubit) circuits."""
+
 from collections.abc import Callable
 from typing import cast
 
@@ -115,11 +116,11 @@ def _symb_u3(params: ParamsType) -> ImmutableMatrix:
 
 
 def _symb_u2(params: ParamsType) -> ImmutableMatrix:
-    return _symb_u3([0.5] + params)
+    return _symb_u3([0.5, *params])
 
 
 def _symb_u1(params: ParamsType) -> ImmutableMatrix:
-    return _symb_u3([0.0, 0.0] + params)
+    return _symb_u3([0.0, 0.0, *params])
 
 
 def _symb_tk1(params: ParamsType) -> ImmutableMatrix:
@@ -301,7 +302,7 @@ class SymGateRegister:
     """Static class holding mapping from OpType to callable generating symbolic matrix.
     Allows users to add their own definitions, or override existing definitions."""
 
-    _g_map: SymGateMap = {
+    _g_map: SymGateMap = {  # noqa: RUF012
         OpType.Rx: _symb_rx,
         OpType.Ry: _symb_ry,
         OpType.Rz: _symb_rz,
@@ -431,7 +432,7 @@ def circuit_to_symbolic_unitary(circ: Circuit) -> ImmutableMatrix:
     gates = circuit_to_symbolic_gates(circ)
     nqb = circ.n_qubits
     try:
-        return cast(ImmutableMatrix, represent(gates, nqubits=circ.n_qubits))
+        return cast("ImmutableMatrix", represent(gates, nqubits=circ.n_qubits))
     except NotImplementedError:
         # sympy can't represent n>1 qubit unitaries very well
         # so if it fails we will just calculate columns using the statevectors
@@ -457,7 +458,7 @@ def circuit_apply_symbolic_qubit(circ: Circuit, input_qb: Expr) -> Qubit:
     """
     gates = circuit_to_symbolic_gates(circ)
 
-    return cast(Qubit, qapply(gates * input_qb))
+    return cast("Qubit", qapply(gates * input_qb))
 
 
 def circuit_apply_symbolic_statevector(
@@ -480,6 +481,6 @@ def circuit_apply_symbolic_statevector(
     else:
         input_qb = Qubit("0" * circ.n_qubits)
     return cast(
-        ImmutableMatrix,
-        represent(circuit_apply_symbolic_qubit(circ, cast(Qubit, input_qb))),
+        "ImmutableMatrix",
+        represent(circuit_apply_symbolic_qubit(circ, cast("Qubit", input_qb))),
     )

@@ -17,6 +17,7 @@ import math
 import pickle
 from math import sqrt
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pytest
@@ -63,14 +64,6 @@ from pytket.circuit import (
     fresh_symbol,
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
-from pytket.circuit.named_types import (
-    BitstringToOpList,
-    BitstringToOpMap,
-    BitstringToTensoredOpList,
-    BitstringToTensoredOpMap,
-    ParamType,
-    PermutationMap,
-)
 from pytket.circuit_library import CnX_vchain_decomp
 from pytket.passes import (
     CliffordSimp,
@@ -80,6 +73,16 @@ from pytket.passes import (
 )
 from pytket.pauli import Pauli
 from pytket.transform import PauliSynthStrat, Transform
+
+if TYPE_CHECKING:
+    from pytket.circuit.named_types import (
+        BitstringToOpList,
+        BitstringToOpMap,
+        BitstringToTensoredOpList,
+        BitstringToTensoredOpMap,
+        ParamType,
+        PermutationMap,
+    )
 
 curr_file_path = Path(__file__).resolve().parent
 
@@ -182,7 +185,7 @@ def test_circuit_name() -> None:
     assert c.name == name
 
 
-def test_circuit_gen() -> None:
+def test_circuit_gen() -> None:  # noqa: PLR0915
     c = Circuit(4, 4)
     c.X(0)
     c.H(1)
@@ -217,7 +220,7 @@ def test_circuit_gen() -> None:
     c.CSdg(1, 2)
 
     assert c.n_qubits == 4
-    assert c._n_vertices() == 47
+    assert c._n_vertices() == 47  # noqa: SLF001
     assert c.n_gates == 31
 
     commands = c.get_commands()
@@ -275,7 +278,7 @@ def test_circuit_gen_ids() -> None:
     c.Measure(a[1], b[1])
 
     assert c.n_qubits == 4
-    assert c._n_vertices() == 23
+    assert c._n_vertices() == 23  # noqa: SLF001
     assert c.n_gates == 7
 
     commands = c.get_commands()
@@ -444,7 +447,7 @@ def test_implicit_swaps() -> None:
     assert all(a != b for (a, b) in perm1.items())
 
 
-def test_boxes() -> None:
+def test_boxes() -> None:  # noqa: PLR0915
     c = Circuit(4, 4)
     c.X(0)
     c.H(1)
@@ -548,7 +551,7 @@ def test_boxes() -> None:
     assert pauli_exp.get_phase() == Symbol("alpha")
 
     boxes = (cbox, mbox, u2qbox, u3qbox, ebox, pbox, qcbox)
-    assert all(box == box for box in boxes)
+    assert all(box == box for box in boxes)  # noqa: PLR0124
     assert all(isinstance(box, Op) for box in boxes)
     permutation: PermutationMap = {(_0, _0): (_1, _1), (_1, _1): (_0, _0)}
     tb = ToffoliBox(permutation)
@@ -811,7 +814,7 @@ def test_errors() -> None:
     c.Rz(0, 0)
     with pytest.raises(TypeError):
         c.Rz(0, "a")  # type: ignore
-    assert c.get_commands()[0].free_symbols() == set([a])
+    assert c.get_commands()[0].free_symbols() == {a}
 
 
 def test_str() -> None:
@@ -1550,7 +1553,7 @@ def test_deserialization_from_junk() -> None:
 
 def test_wasm_serialization() -> None:
     c = Circuit(2, 2).H(0).H(1).measure_all()
-    c._add_wasm("some_name", "some_uid", [1, 1], [], [Bit(0), Bit(1)], [0])
+    c._add_wasm("some_name", "some_uid", [1, 1], [], [Bit(0), Bit(1)], [0])  # noqa: SLF001
     c.CZ(0, 1).measure_all()
     assert json_validate(c)
 
