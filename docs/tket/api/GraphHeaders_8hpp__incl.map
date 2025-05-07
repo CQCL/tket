@@ -1,0 +1,17 @@
+<map id="include/tket/Utils/GraphHeaders.hpp" name="include/tket/Utils/GraphHeaders.hpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="650,5,797,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,93,175,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="650,37,446,60,189,96,188,90,445,55,649,32"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="199,101,408,126"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="650,44,373,101,372,95,649,39"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="433,101,619,126"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="681,48,566,98,564,93,679,43"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="644,93,803,133"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="726,46,726,79,721,79,721,46"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="827,101,1025,126"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="769,43,887,93,885,98,767,48"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="1049,93,1219,133"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="797,39,1036,89,1034,94,796,45"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="1244,93,1419,133"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="797,32,989,56,1231,91,1230,96,988,61,796,38"/>
+</map>

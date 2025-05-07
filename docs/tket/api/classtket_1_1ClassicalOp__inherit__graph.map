@@ -1,0 +1,29 @@
+<map id="tket::ClassicalOp" name="tket::ClassicalOp">
+<area shape="rect" id="Node000001" title="A purely classical operation." alt="" coords="320,155,451,180"/>
+<area shape="rect" id="Node000004" href="$classtket_1_1ClassicalEvalOp.html" title=" " alt="" coords="499,129,657,155"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="464,154,498,150,499,155,465,160"/>
+<area shape="rect" id="Node000014" href="$classtket_1_1WASMOp.html" title="Op containing a classical wasm function call." alt="" coords="521,179,635,204"/>
+<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="465,175,520,182,520,187,464,180"/>
+<area shape="rect" id="Node000002" href="$classtket_1_1Op.html" title="Abstract class representing an operation type." alt="" coords="199,155,272,180"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="286,165,320,165,320,170,286,170"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,147,151,187"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="164,165,199,165,199,170,164,170"/>
+<area shape="rect" id="Node000005" href="$classtket_1_1ClassicalTransformOp.html" title="A general classical operation where all inputs are also outputs." alt="" coords="705,5,901,31"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="600,118,645,78,704,40,734,28,736,33,707,44,649,82,603,122"/>
+<area shape="rect" id="Node000006" href="$classtket_1_1CopyBitsOp.html" title="An operation to copy some bit values." alt="" coords="738,55,869,80"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="619,121,704,89,744,78,746,83,706,94,621,126"/>
+<area shape="rect" id="Node000007" href="$classtket_1_1ModifyingOp.html" title="A classical operation with one output bit which is also an input bit." alt="" coords="735,104,872,129"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="671,129,734,122,735,127,672,134"/>
+<area shape="rect" id="Node000009" href="$classtket_1_1MultiBitOp.html" title="A classical operation applied simultaneously to multiple bits." alt="" coords="741,153,865,179"/>
+<area shape="poly" id="edge8_Node000004_Node000009" title=" " alt="" coords="672,149,741,157,741,162,671,155"/>
+<area shape="rect" id="Node000010" href="$classtket_1_1PredicateOp.html" title="A classical operation with single output bit." alt="" coords="736,203,871,228"/>
+<area shape="poly" id="edge9_Node000004_Node000010" title=" " alt="" coords="640,156,658,164,682,177,706,189,742,200,740,205,704,194,680,181,656,168,638,161"/>
+<area shape="rect" id="Node000013" href="$classtket_1_1SetBitsOp.html" title="An operation to set some bits to specified values." alt="" coords="744,252,863,277"/>
+<area shape="poly" id="edge12_Node000004_Node000013" title=" " alt="" coords="651,159,659,164,676,183,684,203,691,221,707,239,725,248,745,255,743,260,723,253,704,243,686,224,679,205,671,186,656,168,648,163"/>
+<area shape="rect" id="Node000008" href="$classtket_1_1ExplicitModifierOp.html" title="A modifying operation defined explicitly by a truth table." alt="" coords="953,104,1128,129"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="886,114,953,114,953,119,886,119"/>
+<area shape="rect" id="Node000011" href="$classtket_1_1ExplicitPredicateOp.html" title="A predicate defined explicitly by a truth table." alt="" coords="949,177,1132,203"/>
+<area shape="poly" id="edge10_Node000010_Node000011" title=" " alt="" coords="884,204,949,197,950,202,885,209"/>
+<area shape="rect" id="Node000012" href="$classtket_1_1RangePredicateOp.html" title="A predicate defined by a range of values in binary encoding." alt="" coords="953,227,1128,252"/>
+<area shape="poly" id="edge11_Node000010_Node000012" title=" " alt="" coords="885,221,953,228,953,233,884,226"/>
+</map>

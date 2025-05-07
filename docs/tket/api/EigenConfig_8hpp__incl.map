@@ -1,0 +1,13 @@
+<map id="include/tket/Utils/EigenConfig.hpp" name="include/tket/Utils/EigenConfig.hpp">
+<area shape="rect" id="Node000001" title="Include this file rather than including the Eigen headers directly." alt="" coords="306,5,438,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,101,152,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="308,48,132,99,130,94,307,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="177,101,279,126"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="342,48,260,96,257,91,339,43"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="304,101,440,126"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="375,46,375,87,369,87,369,46"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="465,93,677,133"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="417,43,516,85,514,90,415,48"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="701,93,891,133"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="439,37,690,88,689,93,438,43"/>
+</map>

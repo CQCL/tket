@@ -1,0 +1,25 @@
+<map id="include/tket/Predicates" name="include/tket/Predicates">
+<area shape="rect" id="node1" href="dir_31faeae75877c1e51238ac0f002e7d66.html" title="ArchAwareSynth" alt="" coords="26,125,155,151"/>
+<area shape="rect" id="node2" href="dir_3aae3de30bb768cfc8ec223ba5137c72.html" title="Circuit" alt="" coords="180,125,244,151"/>
+<area shape="rect" id="node3" href="dir_5203c0d6d890d782c111076a610aa9e3.html" title="Placement" alt="" coords="268,125,359,151"/>
+<area shape="rect" id="node4" href="dir_759b4cf8789b41309cb92109f4c73e0a.html" title="Architecture" alt="" coords="383,125,484,151"/>
+<area shape="rect" id="node5" href="dir_c841b5efcc984abdbed030c4c9202c93.html" title="Utils" alt="" coords="509,125,561,151"/>
+<area shape="rect" id="node6" href="dir_cff4e635eecb78419a7b5ba58709376a.html" title="Mapping" alt="" coords="585,125,663,151"/>
+<area shape="rect" id="node7" href="dir_df6c34f9f65afdd4c74849530d8a110d.html" title="Transformations" alt="" coords="687,125,814,151"/>
+<area shape="rect" id="node8" href="dir_f9eb88734db598dae1c4a036145c62e7.html" title="Predicates" alt="" coords="388,52,479,77"/>
+<area shape="poly" id="edge1" href="dir_000031_000000.html" alt="" coords="388,78,160,125,159,120,387,73"/>
+<area shape="rect" id="edge1-headlabel" href="dir_000031_000000.html" title="1" alt="" coords="161,123,170,137"/>
+<area shape="poly" id="edge2" href="dir_000031_000006.html" alt="" coords="399,80,258,125,256,120,397,75"/>
+<area shape="rect" id="edge2-headlabel" href="dir_000031_000006.html" title="2" alt="" coords="259,122,269,136"/>
+<area shape="poly" id="edge3" href="dir_000031_000029.html" alt="" coords="415,80,346,120,344,116,413,75"/>
+<area shape="rect" id="edge3-headlabel" href="dir_000031_000029.html" title="1" alt="" coords="348,116,358,131"/>
+<area shape="poly" id="edge4" href="dir_000031_000002.html" alt="" coords="436,78,436,112,431,112,431,78"/>
+<area shape="rect" id="edge4-headlabel" href="dir_000031_000002.html" title="1" alt="" coords="437,100,446,114"/>
+<area shape="poly" id="edge5" href="dir_000031_000039.html" alt="" coords="451,75,508,115,505,119,448,80"/>
+<area shape="rect" id="edge5-headlabel" href="dir_000031_000039.html" title="1" alt="" coords="503,100,513,115"/>
+<area shape="poly" id="edge6" href="dir_000031_000019.html" alt="" coords="465,75,581,118,579,123,463,80"/>
+<area shape="rect" id="edge6-headlabel" href="dir_000031_000019.html" title="1" alt="" coords="574,104,583,118"/>
+<area shape="poly" id="edge7" href="dir_000031_000037.html" alt="" coords="479,74,687,120,686,125,478,79"/>
+<area shape="rect" id="edge7-headlabel" href="dir_000031_000037.html" title="3" alt="" coords="679,106,688,120"/>
+<area shape="rect" id="clust1" href="dir_154db623cdae00eafb0308d7c4021b5c.html" title="tket" alt="" coords="16,16,825,161"/>
+</map>

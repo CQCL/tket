@@ -1,0 +1,15 @@
+<map id="include/tket/Utils/CosSinDecomposition.hpp" name="include/tket/Utils/CosSinDecomposition.hpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="274,5,470,45"/>
+<area shape="rect" id="Node000002" href="$EigenConfig_8hpp.html" title="Include this file rather than including the Eigen headers directly." alt="" coords="309,93,435,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="375,46,375,79,369,79,369,46"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,174,152,199"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="330,121,135,173,134,168,329,116"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="177,174,279,199"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="352,121,262,170,260,165,349,116"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="304,174,440,199"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="375,119,375,160,369,160,369,119"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="465,167,677,207"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="402,116,511,159,509,164,400,121"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="701,167,891,207"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="434,116,688,163,687,168,433,121"/>
+</map>

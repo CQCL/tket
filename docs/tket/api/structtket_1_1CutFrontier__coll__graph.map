@@ -1,0 +1,13 @@
+<map id="tket::CutFrontier" name="tket::CutFrontier">
+<area shape="rect" id="Node000001" title=" " alt="" coords="653,65,780,90"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="357,7,537,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="526,33,630,55,662,62,661,67,629,60,525,38"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="157,7,287,33"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="301,17,357,17,357,23,301,23"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,7,44,33"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="58,17,157,17,157,23,58,23"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="368,57,527,97"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="540,75,653,75,653,80,540,80"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="376,121,519,161"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="532,119,662,88,663,93,533,124"/>
+</map>

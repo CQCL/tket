@@ -1,0 +1,13 @@
+<map id="tket::graphs::detail::TreeSearch&lt; Graph, void, true &gt;" name="tket::graphs::detail::TreeSearch&lt; Graph, void, true &gt;">
+<area shape="rect" id="Node000001" title=" " alt="" coords="735,42,893,97"/>
+<area shape="rect" id="Node000002" href="$classtket_1_1graphs_1_1detail_1_1TreeSearchBase.html" title=" " alt="" coords="487,27,685,111"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="699,67,734,67,734,72,699,72"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="179,7,365,33"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="368,32,487,51,486,56,367,37"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,7,65,33"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="79,17,178,17,178,23,79,23"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="191,57,353,82"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="367,67,486,67,486,72,367,72"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="189,107,355,147"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="369,106,486,85,487,90,369,112"/>
+</map>

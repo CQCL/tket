@@ -1,0 +1,31 @@
+<map id="include/tket/Transformations/BasicOptimisation.hpp" name="include/tket/Transformations/BasicOptimisation.hpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="1381,5,1587,45"/>
+<area shape="rect" id="Node000002" href="$CircPool_8cpp.html" title=" " alt="" coords="5,101,176,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1367,30,1147,34,854,44,523,64,354,78,188,96,143,103,143,98,188,91,353,73,522,59,854,39,1147,29,1367,25"/>
+<area shape="rect" id="Node000003" href="$PassGenerators_8cpp.html" title=" " alt="" coords="200,101,445,126"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="1367,34,964,56,712,73,458,96,398,103,397,98,457,91,711,68,964,50,1367,29"/>
+<area shape="rect" id="Node000004" href="$PassLibrary_8cpp.html" title=" " alt="" coords="469,101,685,126"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="1367,37,1063,60,698,96,645,103,645,98,697,91,1063,54,1366,31"/>
+<area shape="rect" id="Node000005" href="$BasicOptimisation_8cpp.html" title=" " alt="" coords="710,93,882,133"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="1367,40,1148,63,895,96,882,98,882,93,894,91,1147,58,1367,35"/>
+<area shape="rect" id="Node000006" href="$CliffordOptimisation_8cpp.html" title=" " alt="" coords="907,93,1091,133"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="1368,50,1103,96,1092,98,1091,93,1102,91,1367,44"/>
+<area shape="rect" id="Node000007" href="$CliffordResynthesis_8cpp.html" title=" " alt="" coords="1115,93,1293,133"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="1410,52,1266,96,1265,91,1409,47"/>
+<area shape="rect" id="Node000008" href="$Decomposition_8cpp.html" title=" " alt="" coords="1318,93,1469,133"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="1456,57,1415,95,1412,91,1452,53"/>
+<area shape="rect" id="Node000009" href="$OptimisationPass_8cpp.html" title=" " alt="" coords="1493,93,1659,133"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="1516,53,1557,91,1554,95,1512,57"/>
+<area shape="rect" id="Node000010" href="$PQPSquash_8cpp.html" title=" " alt="" coords="1683,93,1834,133"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="1558,47,1699,91,1698,96,1557,52"/>
+<area shape="rect" id="Node000011" href="$Rebase_8cpp.html" title=" " alt="" coords="1858,93,2009,133"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="1602,45,1847,91,1858,93,1857,98,1846,96,1601,50"/>
+<area shape="rect" id="Node000012" href="$RedundancyRemoval_8cpp.html" title=" " alt="" coords="2033,93,2223,133"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="1601,37,1798,60,2022,91,2033,92,2032,98,2021,96,1798,66,1601,42"/>
+<area shape="rect" id="Node000013" href="$RzPhasedXSquash_8cpp.html" title=" " alt="" coords="2247,93,2419,133"/>
+<area shape="poly" id="edge12_Node000001_Node000013" title=" " alt="" coords="1602,31,1891,52,2064,69,2236,91,2247,92,2247,98,2236,96,2063,75,1890,58,1601,36"/>
+<area shape="rect" id="Node000014" href="$StandardSquash_8cpp.html" title=" " alt="" coords="2443,93,2602,133"/>
+<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="1601,27,1973,46,2202,64,2432,91,2444,92,2443,98,2432,96,2202,70,1972,51,1601,33"/>
+<area shape="rect" id="Node000015" href="$ThreeQubitSquash_8cpp.html" title=" " alt="" coords="2626,93,2798,133"/>
+<area shape="poly" id="edge14_Node000001_Node000015" title=" " alt="" coords="1602,26,1795,31,2048,43,2330,62,2615,91,2626,92,2625,97,2614,96,2330,67,2047,48,1795,37,1601,31"/>
+</map>

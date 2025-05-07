@@ -1,0 +1,21 @@
+<map id="tket::CycleHistory" name="tket::CycleHistory">
+<area shape="rect" id="Node000001" title=" " alt="" coords="1404,77,1543,102"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="1092,5,1267,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1280,45,1415,74,1414,79,1279,50"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="1093,69,1265,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="1279,87,1404,87,1404,92,1279,92"/>
+<area shape="rect" id="Node000004" href="$classtket_1_1UnitID.html" title="Location holding a bit or qubit of information." alt="" coords="883,77,979,102"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="992,87,1093,87,1093,92,992,92"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="1101,133,1258,173"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="1271,131,1413,99,1414,105,1272,136"/>
+<area shape="rect" id="Node000006" href="$classtket_1_1Cycle.html" title=" " alt="" coords="885,141,976,166"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="990,151,1100,151,1100,156,990,156"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="519,113,716,138"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="730,133,885,147,885,152,729,138"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="548,163,687,203"/>
+<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="700,176,858,163,885,159,886,164,859,168,701,181"/>
+<area shape="rect" id="Node000009" href="$structtket_1_1CycleCom.html" title=" " alt="" coords="284,170,405,195"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="419,180,548,180,548,185,419,185"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="5,170,185,195"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="199,180,284,180,284,185,199,185"/>
+</map>

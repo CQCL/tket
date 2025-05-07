@@ -1,0 +1,7 @@
+<map id="include/tket/OpType/EdgeType.hpp" name="include/tket/OpType/EdgeType.hpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="67,5,218,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,93,152,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="129,47,99,84,95,81,125,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="177,93,239,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="161,44,192,81,188,84,156,47"/>
+</map>

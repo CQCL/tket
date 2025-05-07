@@ -1,0 +1,11 @@
+<map id="tket::Cycle" name="tket::Cycle">
+<area shape="rect" id="Node000001" title=" " alt="" coords="144,284,235,309"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,189,203,214"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="112,227,119,243,129,258,144,271,161,281,158,286,141,276,125,262,114,246,107,229"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="227,181,365,221"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="275,234,247,262,212,286,209,282,244,258,271,230"/>
+<area shape="rect" id="Node000004" href="$structtket_1_1CycleCom.html" title=" " alt="" coords="235,93,357,119"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="299,132,299,181,293,181,293,132"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="206,5,386,31"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="299,45,299,93,293,93,293,45"/>
+</map>
