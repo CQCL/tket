@@ -67,7 +67,7 @@ class Backend(ABC):
     @staticmethod
     def empty_result(circuit: Circuit, n_shots: int) -> BackendResult:
         """
-        Creates a :py:class:`BackendResult` mimicking the outcome where every 
+        Creates a :py:class:`BackendResult` mimicking the outcome where every
         bit is 0 for every shot.
         """
         n_bits = len(circuit.bits)
@@ -639,10 +639,10 @@ class Backend(ABC):
         self, state_circuit: Circuit, pauli: QubitPauliString
     ) -> complex:
         """
-        Calculates the expectation value of the given circuit using 
+        Calculates the expectation value of the given circuit using
         functionality built into the backend.
 
-        Raises an exception if the backend does not provide custom expectation 
+        Raises an exception if the backend does not provide custom expectation
         value features.
         """
         raise NotImplementedError
@@ -651,10 +651,10 @@ class Backend(ABC):
         self, state_circuit: Circuit, operator: QubitPauliOperator
     ) -> complex:
         """
-        Calculates the expectation value of the given circuit with respect to 
+        Calculates the expectation value of the given circuit with respect to
         the operator using functionality built into the backend.
 
-        Raises an exception if the backend does not provide custom expectation 
+        Raises an exception if the backend does not provide custom expectation
         value features.
         """
         raise NotImplementedError
