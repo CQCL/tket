@@ -98,8 +98,6 @@ class QASMUnsupportedError(Exception):
     Error due to QASM input being incompatible with the supported fragment.
     """
 
-    pass
-
 
 Value = Union[int, float, str]
 T = TypeVar("T")
