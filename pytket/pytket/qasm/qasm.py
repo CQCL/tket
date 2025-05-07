@@ -52,8 +52,8 @@ from pytket.circuit import (
     UnitID,
 )
 from pytket.circuit.clexpr import (
-    check_register_alignments,
     _has_reg_output,
+    check_register_alignments,
     wired_clexpr_from_logic_exp,
 )
 from pytket.circuit.decompose_classical import _int_to_bools

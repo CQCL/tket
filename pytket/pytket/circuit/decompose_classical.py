@@ -36,7 +36,7 @@ from pytket._tket.unit_id import (
     Bit,
     BitRegister,
 )
-from pytket.circuit.clexpr import check_register_alignments, _has_reg_output
+from pytket.circuit.clexpr import _has_reg_output, check_register_alignments
 from pytket.circuit.logic_exp import Constant, Variable
 
 T = TypeVar("T")
