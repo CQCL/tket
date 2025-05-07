@@ -1,19 +1,24 @@
-pytket.circuit_library
-==================================
+# pytket.circuit_library
 
+```{eval-rst}
 .. currentmodule:: pytket._tket.circuit_library
+```
 
-The :py:mod:`~pytket.circuit_library` module is a collection of methods for generating small circuits, mostly of the form of representing one gate in terms of others (as used, for example, within the :py:meth:`~.passes.AutoRebase` pass).
+The {py:mod}`~pytket.circuit_library` module is a collection of methods for generating small circuits, mostly of the form of representing one gate in terms of others (as used, for example, within the {py:meth}`~.passes.AutoRebase` pass).
 
 They can be split into a few rough categories:
 
-* Decompositions of multi-qubit gates into other multi-qubit gates (permitting any single-qubit gates), some of which may trade approximation error in the decomposition for reduced gate costs;
-* Decompositions of single-qubit gates into universal gatesets, intended to be run after decomposing all multi-qubit gates;
-* Constant circuits of 1-3 gates.
+- Decompositions of multi-qubit gates into other multi-qubit gates (permitting any single-qubit gates), some of which may trade approximation error in the decomposition for reduced gate costs;
+- Decompositions of single-qubit gates into universal gatesets, intended to be run after decomposing all multi-qubit gates;
+- Constant circuits of 1-3 gates.
 
 Parameters of the gate to be decomposed are passed as method arguments.
 
+```{eval-rst}
 .. automodule:: pytket.circuit_library
+```
+
+```{eval-rst}
 .. automodule:: pytket._tket.circuit_library
 
    Exact multi-qubit gate decompositions
@@ -138,3 +143,4 @@ Parameters of the gate to be decomposed are passed as method arguments.
    .. autofunction:: pytket.circuit_library.CX_V_S_XC_reduced
    .. autofunction:: pytket.circuit_library.CX_S_V_XC_reduced
    .. autofunction:: pytket.circuit_library.CX_XC_reduced
+```

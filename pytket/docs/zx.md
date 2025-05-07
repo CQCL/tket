@@ -1,22 +1,33 @@
-pytket.zx
-=========
+# pytket.zx
 
+```{eval-rst}
 .. currentmodule:: pytket._tket.zx
+```
 
+```{eval-rst}
 .. automodule:: pytket.zx
-.. automodule:: pytket._tket.zx
+```
 
+```{eval-rst}
+.. automodule:: pytket._tket.zx
+```
+
+```{eval-rst}
 .. autoclass:: pytket.zx.CliffordGen
 
    .. automethod:: __init__
    .. autoproperty:: param
+```
 
+```{eval-rst}
 .. autoclass:: pytket.zx.DirectedGen
 
    .. automethod:: __init__
    .. autoproperty:: n_ports
    .. autoproperty:: signature
+```
 
+```{eval-rst}
 .. autoclass:: pytket.zx.Flow
 
    .. automethod:: __init__
@@ -29,14 +40,20 @@ pytket.zx
    .. automethod:: odd
    .. autoproperty:: cmap
    .. autoproperty:: dmap
+```
 
+```{eval-rst}
 .. autoclass:: pytket.zx.PhasedGen
 
    .. automethod:: __init__
    .. autoproperty:: param
+```
 
+```{eval-rst}
 .. autoenum:: pytket.zx.QuantumType
+```
 
+```{eval-rst}
 .. autoclass:: pytket.zx.Rewrite
 
    .. automethod:: __init__
@@ -63,14 +80,18 @@ pytket.zx
    .. automethod:: spider_fusion
    .. automethod:: to_MBQC_diag
    .. automethod:: to_graphlike_form
+```
 
+```{eval-rst}
 .. autoclass:: pytket.zx.ZXBox
 
    .. automethod:: __init__
    .. autoproperty:: diagram
    .. autoproperty:: n_ports
    .. autoproperty:: signature
+```
 
+```{eval-rst}
 .. autoclass:: pytket.zx.ZXDiagram
 
    .. automethod:: __init__
@@ -112,26 +133,40 @@ pytket.zx
    .. autoproperty:: scalar
    .. autoproperty:: vertices
    .. autoproperty:: wires
+```
 
+```{eval-rst}
 .. autoclass:: pytket.zx.ZXGen
 
    .. automethod:: __init__
    .. automethod:: create
    .. autoproperty:: qtype
    .. autoproperty:: type
+```
 
+```{eval-rst}
 .. autoenum:: pytket.zx.ZXType
+```
 
+```{eval-rst}
 .. autoclass:: pytket.zx.ZXVert
+```
 
+```{eval-rst}
 .. autoclass:: pytket.zx.ZXWire
+```
 
+```{eval-rst}
 .. autoenum:: pytket.zx.ZXWireType
+```
 
+```{eval-rst}
 .. automethod:: pytket.zx.circuit_to_zx
+```
 
-pytket.zx.tensor_eval
-~~~~~~~~~~~~~~~~~~~~~
+## pytket.zx.tensor_eval
 
+```{eval-rst}
 .. automodule:: pytket.zx.tensor_eval
     :members:
+```

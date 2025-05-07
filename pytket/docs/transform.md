@@ -1,12 +1,22 @@
-pytket.transform
-==================================
+# pytket.transform
+
+```{eval-rst}
 .. currentmodule:: pytket._tket.transform
+```
 
+```{eval-rst}
 .. automodule:: pytket.transform
+```
+
+```{eval-rst}
 .. automodule:: pytket._tket.transform
+```
 
+```{eval-rst}
 .. autoenum:: pytket.transform.PauliSynthStrat
+```
 
+```{eval-rst}
 .. autoclass:: pytket.transform.Transform
 
    .. automethod:: __init__
@@ -82,7 +92,7 @@ pytket.transform
    .. automethod:: ReduceSingles
 
    .. automethod:: RemoveRedundancies
-    
+
    .. automethod:: SynthesisePauliGraph
 
    .. automethod:: ThreeQubitSquash
@@ -90,5 +100,8 @@ pytket.transform
    .. automethod:: UCCSynthesis
 
    .. automethod:: ZZPhaseToRz
+```
 
+```{eval-rst}
 .. automethod:: pytket.transform.separate_classical
+```
