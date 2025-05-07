@@ -23,6 +23,7 @@
 #include "nanobind_json/nanobind_json.hpp"
 #include "tket/Predicates/CompilationUnit.hpp"
 #include "tket/Utils/UnitID.hpp"
+#include "typecast.hpp"
 
 namespace nb = nanobind;
 using json = nlohmann::json;
