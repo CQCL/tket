@@ -49,7 +49,7 @@ def compress_counts(
     :rtype: CountsDict
     """
     valprocess: Callable[[float], int | float] = lambda x: (
-        int(round(x)) if round_to_int else x
+        round(x) if round_to_int else x
     )
     processed_pairs = (
         (key, valprocess(val)) for key, val in counts.items() if val > tol
@@ -195,7 +195,7 @@ def _bayesian_iteration(
     if np.isclose(z, 0).any():
         raise ZeroDivisionError
     return cast(
-        np.ndarray, t * _compute_dot([A.transpose() for A in As], measurements / z)
+        "np.ndarray", t * _compute_dot([A.transpose() for A in As], measurements / z)
     )
 
 
@@ -264,7 +264,7 @@ def reduce_matrix(indices_to_remove: list[int], matrix: np.ndarray) -> np.ndarra
     new_n_qubits = int(log2(matrix.shape[0])) - len(indices_to_remove)
     if new_n_qubits == 0:
         return np.array([])
-    bin_map = dict()
+    bin_map = {}
     mat_dim = 1 << new_n_qubits
     for index in range(mat_dim):
         # get current binary
@@ -297,7 +297,7 @@ def reduce_matrices(
     :return: Matrices with some dimensions removed.
     :rtype: List[np.ndarray]
     """
-    organise: dict[int, list] = dict({k: [] for k in range(len(matrices))})
+    organise: dict[int, list] = {k: [] for k in range(len(matrices))}
     for unused in entries_to_remove:
         # unused[0] is index in matrices
         # unused[1] is qubit index in matrix
@@ -394,7 +394,9 @@ class SpamCorrecter:
             new_state_dicts = {}
             # parallelise circuits, run uncorrelated subsets
             # characterisation in parallel
-            for dim, qubits in zip(self.subset_dimensions, self.subsets_matrix_map):
+            for dim, qubits in zip(
+                self.subset_dimensions, self.subsets_matrix_map, strict=False
+            ):
                 # add state to prepared states
                 new_state_dicts[qubits] = major_state[:dim]
                 # find only qubits that are expected to be in 1 state,
@@ -403,7 +405,7 @@ class SpamCorrecter:
                     state_circuit.add_circbox(self.xbox, [flipped_qb])
             # Decompose boxes, add barriers to preserve circuit, add measures
             DecomposeBoxes().apply(state_circuit)
-            for qb, cb in zip(self.all_qbs, c_reg):
+            for qb, cb in zip(self.all_qbs, c_reg, strict=False):
                 state_circuit.Measure(qb, cb)
 
             # add to returned types
@@ -427,17 +429,19 @@ class SpamCorrecter:
             )
 
         counter = 0
-        self.node_index_dict: dict[Node, tuple[int, int]] = dict()
+        self.node_index_dict: dict[Node, tuple[int, int]] = {}
 
-        for qbs, dim in zip(self.subsets_matrix_map, self.subset_dimensions):
+        for qbs, dim in zip(
+            self.subsets_matrix_map, self.subset_dimensions, strict=False
+        ):
             # for a subset with n qubits, create a 2^n by 2^n matrix
             self.subsets_matrix_map[qbs] = np.zeros((1 << dim,) * 2, dtype=float)
             for i in range(len(qbs)):
                 qb = qbs[i]
                 self.node_index_dict[qb] = (counter, i)
-            counter += 1
+            counter += 1  # noqa: SIM113
 
-        for result, state_info in zip(results_list, self.state_infos):
+        for result, state_info in zip(results_list, self.state_infos, strict=False):
             state_dict = state_info[0]
             qb_bit_map = state_info[1]
             for qb_sub in self.subsets_matrix_map:
@@ -456,7 +460,7 @@ class SpamCorrecter:
 
         # normalise everything
         self.characterisation_matrices = [
-            mat / np.sum(cast(np.ndarray, mat), axis=0)
+            mat / np.sum(cast("np.ndarray", mat), axis=0)
             for mat in self.subsets_matrix_map.values()
         ]
 
@@ -552,7 +556,7 @@ class SpamCorrecter:
                     np.linalg.inv(submatrix) for submatrix in correction_matrices
                 ]
             except np.linalg.LinAlgError:
-                raise ValueError(
+                raise ValueError(  # noqa: B904
                     "Unable to invert calibration matrix: please re-run "
                     "calibration experiments or use an alternative correction method."
                 )
@@ -604,7 +608,7 @@ class SpamCorrecter:
         """
         correlations = []
         for subset in self.correlations:
-            correlations.append([(uid.reg_name, uid.index) for uid in subset])
+            correlations.append([(uid.reg_name, uid.index) for uid in subset])  # noqa: PERF401
 
         node_index_hashable = [
             ((uid.reg_name, uid.index), self.node_index_dict[uid])
@@ -632,12 +636,10 @@ class SpamCorrecter:
                 for pair in subset_tuple
             ]
         )
-        new_inst.node_index_dict = dict(
-            [
-                (Node(*pair[0]), (int(pair[1][0]), int(pair[1][1])))
-                for pair in d["node_index_dict"]
-            ]
-        )
+        new_inst.node_index_dict = {
+            Node(*pair[0]): (int(pair[1][0]), int(pair[1][1]))
+            for pair in d["node_index_dict"]
+        }
         new_inst.characterisation_matrices = [
             np.array(m) for m in d["characterisation_matrices"]
         ]

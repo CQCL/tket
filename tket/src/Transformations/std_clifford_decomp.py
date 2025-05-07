@@ -24,20 +24,20 @@ def phase_diff(A, B):
     return angle(u00) / pi
 
 
-I = eye(2, dtype=complex)
+I = eye(2, dtype=complex)  # noqa: E741
 X = array([[0, 1], [1, 0]], dtype=complex)
 Z = array([[1, 0], [0, -1]], dtype=complex)
 S = array([[1, 0], [0, 1j]], dtype=complex)
 V = array([[1, -1j], [-1j, 1]], dtype=complex) / sqrt(2)
 
-Rx = lambda a: array(
+Rx = lambda a: array(  # noqa: E731
     [
         [cos(pi * a / 2), -1j * sin(pi * a / 2)],
         [-1j * sin(pi * a / 2), cos(pi * a / 2)],
     ],
     dtype=complex,
 )
-Rz = lambda a: array([[exp(-0.5j * pi * a), 0], [0, exp(0.5j * pi * a)]], dtype=complex)
+Rz = lambda a: array([[exp(-0.5j * pi * a), 0], [0, exp(0.5j * pi * a)]], dtype=complex)  # noqa: E731
 
 
 def std_cliff():

@@ -202,7 +202,7 @@ def test_swaps_basisorder() -> None:
 
 
 def test_get_n_shots_as_list() -> None:
-    convert = Backend._get_n_shots_as_list
+    convert = Backend._get_n_shots_as_list  # noqa: SLF001
 
     assert convert(1, 3) == [1, 1, 1]
     assert convert([1, 2, 3], 3) == [1, 2, 3]
@@ -227,7 +227,7 @@ def test_get_n_shots_as_list() -> None:
     assert err_msg in str(e.value)
 
 
-def test_backendresult() -> None:
+def test_backendresult() -> None:  # noqa: PLR0915
     shots_list = [[1, 0, 1, 1] * 3, [1, 1, 0, 1] * 3]
     cbits = [Bit(i) for i in range(12)]
     qbits = [Qubit(i) for i in range(12)]
@@ -514,7 +514,7 @@ def test_postprocess_1() -> None:
 
     assert (shots == orig_shots).all()
 
-    assert all(readout[0] == readout[1] for readout in counts.keys())
+    assert all(readout[0] == readout[1] for readout in counts.keys())  # noqa: SIM118
     assert all(
         counts[(j, j)] == len([i for i in range(n_shots) if shots[i, 0] == j])
         for j in range(2)
@@ -531,12 +531,12 @@ def test_postprocess_2() -> None:
         # c0 should act trivially on qubits 0 and 2
         assert (
             len(
-                set(
+                {
                     arg
                     for cmd in c0.get_commands()
                     for arg in cmd.args
                     if cmd.op.type != OpType.Measure
-                )
+                }
             )
             == 1
         )
@@ -544,7 +544,8 @@ def test_postprocess_2() -> None:
         r = b.get_result(h)
         counts = r.get_counts()
         assert all(
-            readout[0] == 1 and readout[1] == readout[2] for readout in counts.keys()
+            readout[0] == 1 and readout[1] == readout[2]
+            for readout in counts.keys()  # noqa: SIM118
         )
         counts1 = r.get_counts(cbits=[Bit(1), Bit(0)])
         assert counts1 == Counter(
@@ -566,7 +567,8 @@ def test_postprocess_3() -> None:
     r = b.get_result(h)
     counts = r.get_counts()
     assert all(
-        readout[1] == 0 and readout[0] == readout[2] for readout in counts.keys()
+        readout[1] == 0 and readout[0] == readout[2]
+        for readout in counts.keys()  # noqa: SIM118
     )
 
 
@@ -580,7 +582,7 @@ def test_postprocess_4() -> None:
     h = b.process_circuit(b.get_compiled_circuit(c), n_shots=n_shots, postprocess=True)
     r = b.get_result(h)
     counts = r.get_counts()
-    assert all(readout[0] == 1 for readout in counts.keys())
+    assert all(readout[0] == 1 for readout in counts.keys())  # noqa: SIM118
 
 
 def test_empty_backenresult() -> None:

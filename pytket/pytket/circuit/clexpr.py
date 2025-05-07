@@ -29,31 +29,29 @@ from pytket.circuit import (
 )
 from pytket.circuit.logic_exp import BitWiseOp, LogicExp, Ops, RegWiseOp
 
-_reg_output_clops = set(
-    [
-        ClOp.RegAnd,
-        ClOp.RegOr,
-        ClOp.RegXor,
-        ClOp.RegNot,
-        ClOp.RegZero,
-        ClOp.RegOne,
-        ClOp.RegAdd,
-        ClOp.RegSub,
-        ClOp.RegMul,
-        ClOp.RegDiv,
-        ClOp.RegPow,
-        ClOp.RegLsh,
-        ClOp.RegRsh,
-        ClOp.RegNeg,
-    ]
-)
+_reg_output_clops = {
+    ClOp.RegAnd,
+    ClOp.RegOr,
+    ClOp.RegXor,
+    ClOp.RegNot,
+    ClOp.RegZero,
+    ClOp.RegOne,
+    ClOp.RegAdd,
+    ClOp.RegSub,
+    ClOp.RegMul,
+    ClOp.RegDiv,
+    ClOp.RegPow,
+    ClOp.RegLsh,
+    ClOp.RegRsh,
+    ClOp.RegNeg,
+}
 
 
 def has_reg_output(op: ClOp) -> bool:
     return op in _reg_output_clops
 
 
-def clop_from_ops(op: Ops) -> ClOp:
+def clop_from_ops(op: Ops) -> ClOp:  # noqa: PLR0911, PLR0912
     match op:
         case BitWiseOp.AND:
             return ClOp.BitAnd
@@ -177,9 +175,7 @@ def check_register_alignments(circ: Circuit) -> bool:
     :param circ: circuit to check
     :return: True iff all `ClExprOp` operations are register-aligned
     """
-    cregs: set[tuple[Bit, ...]] = set(
-        tuple(creg.to_list()) for creg in circ.c_registers
-    )
+    cregs: set[tuple[Bit, ...]] = {tuple(creg.to_list()) for creg in circ.c_registers}
     for cmd in circ:
         op = cmd.op
         if op.type == OpType.ClExpr:

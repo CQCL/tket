@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import os
-import subprocess
 
 from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
@@ -23,7 +22,7 @@ from conan.errors import ConanInvalidConfiguration
 
 class TketConan(ConanFile):
     name = "tket"
-    version = "2.1.14"
+    version = "2.1.15"
     package_type = "library"
     license = "Apache 2"
     homepage = "https://github.com/CQCL/tket"

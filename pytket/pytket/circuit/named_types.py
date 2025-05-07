@@ -13,6 +13,7 @@
 # limitations under the License.
 
 """Named types for convenience"""
+
 from collections.abc import Sequence
 from typing import Union
 
@@ -21,7 +22,7 @@ from sympy import Expr
 from pytket._tket.circuit import Op
 from pytket._tket.unit_id import Bit, Qubit, UnitID
 
-ParamType = Union[float, Expr]
+ParamType = Union[float, Expr]  # noqa: UP007
 """Type used for circuit parameters that can either
  be a floating point number or symbolic"""
 PhasePolynomialDict = dict[tuple[bool, ...], ParamType]
@@ -36,6 +37,6 @@ BitstringToTensoredOpMap = dict[tuple[bool, ...], Sequence[Op]]
 BitstringToTensoredOpList = Sequence[tuple[Sequence[bool], Sequence[Op]]]
 PermutationMap = dict[tuple[bool, ...], Sequence[bool]]
 PermutationList = Sequence[tuple[Sequence[bool], Sequence[bool]]]
-UnitIdType = Union[UnitID, Qubit, Bit]
+UnitIdType = Union[UnitID, Qubit, Bit]  # noqa: UP007
 UnitIdMap = dict[UnitIdType, UnitIdType]
 RenameUnitsMap = UnitIdMap
