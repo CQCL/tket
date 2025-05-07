@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="z_6d3d068c692f6e93_measurements_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
-            created at 2025-05-07 12:19 +0000
+            created at 2025-05-07 14:23 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -130,7 +130,7 @@
     <p class="pln"><span class="n"><a id="t46" href="#t46">46</a></span><span class="t">            <span class="nam">output_names</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t47" href="#t47">47</a></span><span class="t">            <span class="nam">node_data</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t48" href="#t48">48</a></span><span class="t">            <span class="nam">edge_data</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t49" href="#t49">49</a></span><span class="t">        <span class="op">)</span> <span class="op">=</span> <span class="nam">c</span><span class="op">.</span><span class="nam">_dag_data</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t49" href="#t49">49</a></span><span class="t">        <span class="op">)</span> <span class="op">=</span> <span class="nam">c</span><span class="op">.</span><span class="nam">_dag_data</span>  <span class="com"># noqa: SLF001</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t50" href="#t50">50</a></span><span class="t">        <span class="nam">self</span><span class="op">.</span><span class="nam">q_inputs</span> <span class="op">=</span> <span class="nam">q_inputs</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t51" href="#t51">51</a></span><span class="t">        <span class="nam">self</span><span class="op">.</span><span class="nam">c_inputs</span> <span class="op">=</span> <span class="nam">c_inputs</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t52" href="#t52">52</a></span><span class="t">        <span class="nam">self</span><span class="op">.</span><span class="nam">w_inputs</span> <span class="op">=</span> <span class="nam">w_inputs</span>&nbsp;</span><span class="r"></span></p>
@@ -206,7 +206,7 @@
     <p class="run"><span class="n"><a id="t122" href="#t122">122</a></span><span class="t">        <span class="nam">self</span><span class="op">.</span><span class="nam">Gnx</span> <span class="op">=</span> <span class="nam">Gnx</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t123" href="#t123">123</a></span><span class="t">        <span class="key">return</span> <span class="nam">Gnx</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t124" href="#t124">124</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t125" href="#t125">125</a></span><span class="t">    <span class="key">def</span> <span class="nam">get_DAG</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span> <span class="op">-></span> <span class="nam">gv</span><span class="op">.</span><span class="nam">Digraph</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t125" href="#t125">125</a></span><span class="t">    <span class="key">def</span> <span class="nam">get_DAG</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span> <span class="op">-></span> <span class="nam">gv</span><span class="op">.</span><span class="nam">Digraph</span><span class="op">:</span>  <span class="com"># noqa: PLR0912, PLR0915</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t126" href="#t126">126</a></span><span class="t">        <span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t127" href="#t127">127</a></span><span class="t"><span class="str">        Return a visual representation of the DAG as a graphviz object.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t128" href="#t128">128</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -357,7 +357,7 @@
     <p class="pln"><span class="n"><a id="t273" href="#t273">273</a></span><span class="t"><span class="str">        :returns: filename of temporary created file</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t274" href="#t274">274</a></span><span class="t"><span class="str">        """</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t275" href="#t275">275</a></span><span class="t">        <span class="nam">G</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">get_DAG</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t276" href="#t276">276</a></span><span class="t">        <span class="nam">filename</span> <span class="op">=</span> <span class="nam">NamedTemporaryFile</span><span class="op">(</span><span class="nam">delete</span><span class="op">=</span><span class="key">False</span><span class="op">)</span><span class="op">.</span><span class="nam">name</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t276" href="#t276">276</a></span><span class="t">        <span class="nam">filename</span> <span class="op">=</span> <span class="nam">NamedTemporaryFile</span><span class="op">(</span><span class="nam">delete</span><span class="op">=</span><span class="key">False</span><span class="op">)</span><span class="op">.</span><span class="nam">name</span>  <span class="com"># noqa: SIM115</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t277" href="#t277">277</a></span><span class="t">        <span class="nam">G</span><span class="op">.</span><span class="nam">view</span><span class="op">(</span><span class="nam">filename</span><span class="op">,</span> <span class="nam">quiet</span><span class="op">=</span><span class="key">True</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t278" href="#t278">278</a></span><span class="t">        <span class="key">return</span> <span class="nam">filename</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t279" href="#t279">279</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -407,7 +407,7 @@
     <p class="pln"><span class="n"><a id="t323" href="#t323">323</a></span><span class="t"><span class="str">        :returns: filename of temporary created file</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t324" href="#t324">324</a></span><span class="t"><span class="str">        """</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t325" href="#t325">325</a></span><span class="t">        <span class="nam">G</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">get_qubit_graph</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t326" href="#t326">326</a></span><span class="t">        <span class="nam">filename</span> <span class="op">=</span> <span class="nam">NamedTemporaryFile</span><span class="op">(</span><span class="nam">delete</span><span class="op">=</span><span class="key">False</span><span class="op">)</span><span class="op">.</span><span class="nam">name</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t326" href="#t326">326</a></span><span class="t">        <span class="nam">filename</span> <span class="op">=</span> <span class="nam">NamedTemporaryFile</span><span class="op">(</span><span class="nam">delete</span><span class="op">=</span><span class="key">False</span><span class="op">)</span><span class="op">.</span><span class="nam">name</span>  <span class="com"># noqa: SIM115</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t327" href="#t327">327</a></span><span class="t">        <span class="nam">G</span><span class="op">.</span><span class="nam">view</span><span class="op">(</span><span class="nam">filename</span><span class="op">,</span> <span class="nam">quiet</span><span class="op">=</span><span class="key">True</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t328" href="#t328">328</a></span><span class="t">        <span class="key">return</span> <span class="nam">filename</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t329" href="#t329">329</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -434,7 +434,7 @@
             <a class="nav" href="z_6d3d068c692f6e93_measurements_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
-            created at 2025-05-07 12:19 +0000
+            created at 2025-05-07 14:23 +0000
         </p>
     </div>
 </footer>

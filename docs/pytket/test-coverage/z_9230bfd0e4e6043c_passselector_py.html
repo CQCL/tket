@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="z_9230bfd0e4e6043c_resizeregpass_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
-            created at 2025-05-07 12:19 +0000
+            created at 2025-05-07 14:23 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -138,7 +138,7 @@
     <p class="pln"><span class="n"><a id="t54" href="#t54">54</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t55" href="#t55">55</a></span><span class="t">        <span class="nam">self</span><span class="op">.</span><span class="nam">_scores</span><span class="op">:</span> <span class="nam">list</span><span class="op">[</span><span class="nam">int</span> <span class="op">|</span> <span class="key">None</span><span class="op">]</span> <span class="op">=</span> <span class="op">[</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t56" href="#t56">56</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t57" href="#t57">57</a></span><span class="t">        <span class="key">for</span> <span class="nam">p</span><span class="op">,</span> <span class="nam">c</span> <span class="key">in</span> <span class="nam">zip</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">_passlist</span><span class="op">,</span> <span class="nam">circ_list</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t57" href="#t57">57</a></span><span class="t">        <span class="key">for</span> <span class="nam">p</span><span class="op">,</span> <span class="nam">c</span> <span class="key">in</span> <span class="nam">zip</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">_passlist</span><span class="op">,</span> <span class="nam">circ_list</span><span class="op">,</span> <span class="nam">strict</span><span class="op">=</span><span class="key">False</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t58" href="#t58">58</a></span><span class="t">            <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t59" href="#t59">59</a></span><span class="t">                <span class="nam">p</span><span class="op">.</span><span class="nam">apply</span><span class="op">(</span><span class="nam">c</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t60" href="#t60">60</a></span><span class="t">                <span class="nam">self</span><span class="op">.</span><span class="nam">_scores</span><span class="op">.</span><span class="nam">append</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">_score_func</span><span class="op">(</span><span class="nam">c</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -151,7 +151,7 @@
     <p class="pln"><span class="n"><a id="t67" href="#t67">67</a></span><span class="t">                <span class="nam">self</span><span class="op">.</span><span class="nam">_scores</span><span class="op">.</span><span class="nam">index</span><span class="op">(</span><span class="nam">min</span><span class="op">(</span><span class="nam">x</span> <span class="key">for</span> <span class="nam">x</span> <span class="key">in</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_scores</span> <span class="key">if</span> <span class="nam">x</span> <span class="key">is</span> <span class="key">not</span> <span class="key">None</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t68" href="#t68">68</a></span><span class="t">            <span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t69" href="#t69">69</a></span><span class="t">        <span class="key">except</span> <span class="nam">ValueError</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t70" href="#t70">70</a></span><span class="t">            <span class="key">raise</span> <span class="nam">RuntimeError</span><span class="op">(</span><span class="str">"No passes have successfully run on this circuit"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t70" href="#t70">70</a></span><span class="t">            <span class="key">raise</span> <span class="nam">RuntimeError</span><span class="op">(</span><span class="str">"No passes have successfully run on this circuit"</span><span class="op">)</span>  <span class="com"># noqa: B904</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t71" href="#t71">71</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t72" href="#t72">72</a></span><span class="t">    <span class="key">def</span> <span class="nam">get_scores</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span> <span class="op">-></span> <span class="nam">list</span><span class="op">[</span><span class="nam">int</span> <span class="op">|</span> <span class="key">None</span><span class="op">]</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t73" href="#t73">73</a></span><span class="t">        <span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
@@ -168,7 +168,7 @@
             <a class="nav" href="z_9230bfd0e4e6043c_resizeregpass_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
-            created at 2025-05-07 12:19 +0000
+            created at 2025-05-07 14:23 +0000
         </p>
     </div>
 </footer>

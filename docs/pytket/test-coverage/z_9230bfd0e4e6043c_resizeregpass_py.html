@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="z_9230bfd0e4e6043c_script_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
-            created at 2025-05-07 12:19 +0000
+            created at 2025-05-07 14:23 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -96,7 +96,7 @@
     <p class="pln"><span class="n"><a id="t12" href="#t12">12</a></span><span class="t"><span class="com"># See the License for the specific language governing permissions and</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t13" href="#t13">13</a></span><span class="t"><span class="com"># limitations under the License.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t14" href="#t14">14</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t15" href="#t15">15</a></span><span class="t"><span class="key">from</span> <span class="nam">typing</span> <span class="key">import</span> <span class="nam">Callable</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t15" href="#t15">15</a></span><span class="t"><span class="key">from</span> <span class="nam">collections</span><span class="op">.</span><span class="nam">abc</span> <span class="key">import</span> <span class="nam">Callable</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t16" href="#t16">16</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t17" href="#t17">17</a></span><span class="t"><span class="key">from</span> <span class="nam">pytket</span><span class="op">.</span><span class="nam">circuit</span> <span class="key">import</span> <span class="nam">Bit</span><span class="op">,</span> <span class="nam">Circuit</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t18" href="#t18">18</a></span><span class="t"><span class="key">from</span> <span class="nam">pytket</span><span class="op">.</span><span class="nam">unit_id</span> <span class="key">import</span> <span class="nam">_TEMP_BIT_NAME</span>&nbsp;</span><span class="r"></span></p>
@@ -119,7 +119,7 @@
     <p class="run"><span class="n"><a id="t35" href="#t35">35</a></span><span class="t">        <span class="key">if</span> <span class="nam">len</span><span class="op">(</span><span class="nam">scratch_bits</span><span class="op">)</span> <span class="op">></span> <span class="nam">max_size</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t36" href="#t36">36</a></span><span class="t">            <span class="nam">bits_map</span> <span class="op">=</span> <span class="op">{</span><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t37" href="#t37">37</a></span><span class="t">            <span class="key">for</span> <span class="nam">i</span><span class="op">,</span> <span class="nam">bit</span> <span class="key">in</span> <span class="nam">enumerate</span><span class="op">(</span><span class="nam">scratch_bits</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t38" href="#t38">38</a></span><span class="t">                <span class="nam">bits_map</span><span class="op">[</span><span class="nam">bit</span><span class="op">]</span> <span class="op">=</span> <span class="nam">Bit</span><span class="op">(</span><span class="str">f"{_TEMP_BIT_NAME}_{i//max_size}"</span><span class="op">,</span> <span class="nam">i</span> <span class="op">%</span> <span class="nam">max_size</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t38" href="#t38">38</a></span><span class="t">                <span class="nam">bits_map</span><span class="op">[</span><span class="nam">bit</span><span class="op">]</span> <span class="op">=</span> <span class="nam">Bit</span><span class="op">(</span><span class="str">f"{_TEMP_BIT_NAME}_{i // max_size}"</span><span class="op">,</span> <span class="nam">i</span> <span class="op">%</span> <span class="nam">max_size</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t39" href="#t39">39</a></span><span class="t">            <span class="nam">circuit</span><span class="op">.</span><span class="nam">rename_units</span><span class="op">(</span><span class="nam">bits_map</span><span class="op">)</span>  <span class="com"># type: ignore</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t40" href="#t40">40</a></span><span class="t">        <span class="key">return</span> <span class="nam">circuit</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t41" href="#t41">41</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -145,7 +145,7 @@
             <a class="nav" href="z_9230bfd0e4e6043c_script_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
-            created at 2025-05-07 12:19 +0000
+            created at 2025-05-07 14:23 +0000
         </p>
     </div>
 </footer>
