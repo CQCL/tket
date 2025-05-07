@@ -1191,7 +1191,6 @@ def test_zx_optimisation_wireswaps() -> None:
     assert not c.has_implicit_wireswaps
 
 
-@pytest.mark.xfail(reason="https://github.com/CQCL/tket/issues/1880")
 def test_initial_and_final_map_types() -> None:
     c = Circuit(1).H(0)
     cu = CompilationUnit(c)
