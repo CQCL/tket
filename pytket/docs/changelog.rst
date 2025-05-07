@@ -1,8 +1,13 @@
 Changelog
 =========
 
-Unreleased
-----------
+2.3.2 (April 2025)
+------------------
+
+Features:
+
+* Add option to `Circuit.remove_blank_wires` to force removal of all blank
+  classical wires.
 
 API changes:
 

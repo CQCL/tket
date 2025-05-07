@@ -666,10 +666,15 @@ class Circuit {
   /**
    * O(V), `V` the number of vertices
    * removes all blank wires
-   * @param keep_blank_classical_wires option to choose if empty classical wire
-   * should be removed as well
+   * @param keep_blank_classical_wires if true, empty classical wires are not
+   * removed
+   * @param remove_classical_only_at_end_of_register if true, empty classical
+   * wires are not removed if they don't belong to a register or there are any
+   * non-empty wires with a higher index in the same register
    */
-  void remove_blank_wires(bool keep_blank_classical_wires = false);
+  void remove_blank_wires(
+      bool keep_blank_classical_wires = false,
+      bool remove_classical_only_at_end_of_register = true);
 
   /**
    * Remove all gates in the circuits that are identities

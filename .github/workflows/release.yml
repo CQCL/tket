@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        python3-version: ['10', '11', '12', '13']
+        python3-version: ['10', '11', '12']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -41,7 +41,7 @@ jobs:
     runs-on: 'buildjet-8vcpu-ubuntu-2204-arm'
     strategy:
       matrix:
-        python3-version: ['10', '11', '12', '13']
+        python3-version: ['10', '11', '12']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -67,7 +67,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.10', '3.11', '3.12']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -109,7 +109,7 @@ jobs:
         MACOSX_DEPLOYMENT_TARGET: '13.0'
     strategy:
       matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.10', '3.11', '3.12']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -149,7 +149,7 @@ jobs:
     runs-on: windows-2025
     strategy:
       matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.10', '3.11', '3.12']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -194,10 +194,17 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.${{ matrix.python3-version }}"
-      - name: Download wheels
+      - name: Download wheel (non-stable-ABI)
+        if: matrix.python3-version == '10' || matrix.python3-version == '11'
         uses: actions/download-artifact@v4
         with:
           name: Linux_3.${{ matrix.python3-version }}_wheel
+          path: wheelhouse/
+      - name: Download wheel (stable-ABI)
+        if: matrix.python3-version == '12' || matrix.python3-version == '13'
+        uses: actions/download-artifact@v4
+        with:
+          name: Linux_3.12_wheel
           path: wheelhouse/
       - name: Install wheel
         run: pip install wheelhouse/pytket-*.whl
@@ -226,10 +233,17 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: "3.${{ matrix.python3-version }}"
-    - name: Download wheel
+    - name: Download wheel (non-stable-ABI)
+      if: matrix.python3-version == '10' || matrix.python3-version == '11'
       uses: actions/download-artifact@v4
       with:
         name: Linux_aarch64_3.${{ matrix.python3-version }}_wheel
+        path: wheelhouse/
+    - name: Download wheel (stable-ABI)
+      if: matrix.python3-version == '12' || matrix.python3-version == '13'
+      uses: actions/download-artifact@v4
+      with:
+        name: Linux_aarch64_3.12_wheel
         path: wheelhouse/
     - name: Install wheel
       run: pip install wheelhouse/pytket-*.whl
@@ -256,10 +270,17 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Download wheels
+    - name: Download wheel (non-stable-ABI)
+      if: matrix.python-version == '3.10' || matrix.python-version == '3.11'
       uses: actions/download-artifact@v4
       with:
         name: MacOS_x86_${{ matrix.python-version }}_wheel
+        path: wheelhouse/
+    - name: Download wheel (stable-ABI)
+      if: matrix.python-version == '3.12' || matrix.python-version == '3.13'
+      uses: actions/download-artifact@v4
+      with:
+        name: MacOS_x86_3.12_wheel
         path: wheelhouse/
     - uses: actions/checkout@v4
       with:
@@ -286,10 +307,17 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Download wheels
+    - name: Download wheel (non-stable-ABI)
+      if: matrix.python-version == '3.10' || matrix.python-version == '3.11'
       uses: actions/download-artifact@v4
       with:
         name: MacOS_arm64_${{ matrix.python-version }}_wheel
+        path: wheelhouse/
+    - name: Download wheel (stable-ABI)
+      if: matrix.python-version == '3.12' || matrix.python-version == '3.13'
+      uses: actions/download-artifact@v4
+      with:
+        name: MacOS_arm64_3.12_wheel
         path: wheelhouse/
     - uses: actions/checkout@v4
       with:
@@ -315,10 +343,17 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Download wheel
+    - name: Download wheel (non-stable-ABI)
+      if: matrix.python-version == '3.10' || matrix.python-version == '3.11'
       uses: actions/download-artifact@v4
       with:
         name: Windows_${{ matrix.python-version }}_wheel
+        path: wheelhouse/
+    - name: Download wheel (stable-ABI)
+      if: matrix.python-version == '3.12' || matrix.python-version == '3.13'
+      uses: actions/download-artifact@v4
+      with:
+        name: Windows_3.12_wheel
         path: wheelhouse/
     - name: Install wheel
       shell: bash
