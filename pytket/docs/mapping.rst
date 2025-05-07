@@ -2,6 +2,9 @@ pytket.mapping
 ==================================
 .. currentmodule:: pytket._tket.mapping
 
+.. automodule:: pytket.mapping
+.. automodule:: pytket._tket.mapping
+
 .. autoclass:: pytket.mapping.AASLabellingMethod
 
    .. automethod:: __init__

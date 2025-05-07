@@ -47,11 +47,11 @@ _reg_output_clops = {
 }
 
 
-def has_reg_output(op: ClOp) -> bool:
+def _has_reg_output(op: ClOp) -> bool:
     return op in _reg_output_clops
 
 
-def clop_from_ops(op: Ops) -> ClOp:  # noqa: PLR0911, PLR0912
+def _clop_from_ops(op: Ops) -> ClOp:  # noqa: PLR0911, PLR0912
     match op:
         case BitWiseOp.AND:
             return ClOp.BitAnd
@@ -108,12 +108,12 @@ def clop_from_ops(op: Ops) -> ClOp:  # noqa: PLR0911, PLR0912
 
 
 @dataclass
-class ExpressionConverter:
+class _ExpressionConverter:
     bit_indices: dict[Bit, int]
     reg_indices: dict[BitRegister, int]
 
     def convert(self, exp: LogicExp) -> ClExpr:
-        op: ClOp = clop_from_ops(exp.op)
+        op: ClOp = _clop_from_ops(exp.op)
         args: list[int | ClBitVar | ClRegVar | ClExpr] = []
         for arg in exp.args:
             if isinstance(arg, LogicExp):
@@ -154,7 +154,7 @@ def wired_clexpr_from_logic_exp(
     # 3. Construct the WiredClExpr and return it with the argument list:
     return (
         WiredClExpr(
-            ExpressionConverter(
+            _ExpressionConverter(
                 {b: i for i, b in enumerate(input_bits)},
                 {r: i for i, r in enumerate(input_regs)},
             ).convert(exp),
@@ -186,7 +186,7 @@ def check_register_alignments(circ: Circuit) -> bool:
                 tuple(args[i] for i in poslist) not in cregs
                 for poslist in wexpr.reg_posn.values()
             ) or (
-                has_reg_output(wexpr.expr.op)
+                _has_reg_output(wexpr.expr.op)
                 and tuple(args[i] for i in wexpr.output_posn) not in cregs
             ):
                 return False

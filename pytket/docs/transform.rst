@@ -2,6 +2,9 @@ pytket.transform
 ==================================
 .. currentmodule:: pytket._tket.transform
 
+.. automodule:: pytket.transform
+.. automodule:: pytket._tket.transform
+
 .. autoenum:: pytket.transform.PauliSynthStrat
 
 .. autoclass:: pytket.transform.Transform

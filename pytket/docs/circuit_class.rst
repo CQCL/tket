@@ -25,10 +25,9 @@ condition on a specified set of bit values.)
    We list the methods and properties manually (for now) to ensure that the most important methods (e.g. Circuit.add_gate) 
    are closer to the top of the page. Some less important methods like Circuit.YYPhase
    and Circuit.add_multiplexed_tensored_u2 are near the bottom.
-   Since the Circuit class is so big we use the check_circuit_class_docs.py script to check that we haven't missed anything. 
 
 .. currentmodule:: pytket.circuit.Circuit
-.. autoclass:: pytket.circuit.Circuit
+.. autoclass:: pytket._tket.circuit.Circuit
 
    .. automethod:: __init__
    

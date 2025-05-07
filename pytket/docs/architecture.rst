@@ -2,6 +2,9 @@ pytket.architecture
 ==================================
 .. currentmodule:: pytket._tket.architecture
 
+.. automodule:: pytket.architecture
+.. automodule:: pytket._tket.architecture
+
 .. autoclass:: pytket.architecture.Architecture
 
    .. automethod:: __init__

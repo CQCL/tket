@@ -99,6 +99,7 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     qasm.rst
     quipper.rst
     architecture.rst
+    circuit_library.rst
     placement.rst
     mapping.rst
     tableau.rst
@@ -116,3 +117,7 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. py:module:: pytket
+.. py:module:: pytket._version
+.. py:module:: pytket._tket

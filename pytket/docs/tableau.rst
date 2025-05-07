@@ -3,6 +3,9 @@ pytket.tableau
 
 .. currentmodule:: pytket._tket.tableau
 
+.. automodule:: pytket.tableau
+.. automodule:: pytket._tket.tableau
+
 .. autoclass:: pytket.tableau.UnitaryRevTableau
 
    .. automethod:: __init__

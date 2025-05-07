@@ -3,6 +3,9 @@ pytket.zx
 
 .. currentmodule:: pytket._tket.zx
 
+.. automodule:: pytket.zx
+.. automodule:: pytket._tket.zx
+
 .. autoclass:: pytket.zx.CliffordGen
 
    .. automethod:: __init__
@@ -126,3 +129,9 @@ pytket.zx
 .. autoenum:: pytket.zx.ZXWireType
 
 .. automethod:: pytket.zx.circuit_to_zx
+
+pytket.zx.tensor_eval
+~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: pytket.zx.tensor_eval
+    :members:

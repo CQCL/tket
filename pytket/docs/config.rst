@@ -1,8 +1,9 @@
 pytket.config
 ==================================
 .. automodule:: pytket.config
-    :members:  get_config_file_path, load_config_file, write_config_file
 
+.. automodule:: pytket.config.pytket_config
+    :members:  get_config_file_path, load_config_file, write_config_file
 
 .. autoclass:: pytket.config.pytket_config.PytketConfig
     :special-members: __init__

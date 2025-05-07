@@ -52,7 +52,7 @@ class TypeAssignment(NamedTuple):
     type: TypeAssignment_Type
 
 
-class Gate:
+class _Gate:
     pass
 
 
@@ -74,7 +74,7 @@ class QGate_Op(Enum):
 
 
 class QGate(
-    Gate,
+    _Gate,
     NamedTuple(
         "QGate",
         [
@@ -95,7 +95,7 @@ class QRot_Op(Enum):
 
 
 class QRot(
-    Gate,
+    _Gate,
     NamedTuple(
         "QRot",
         [("op", QRot_Op), ("inverted", bool), ("timestep", float), ("wire", Wire)],
@@ -104,36 +104,36 @@ class QRot(
     pass
 
 
-class QInit(Gate, NamedTuple("QInit", [("value", bool), ("wire", Wire)])):
+class QInit(_Gate, NamedTuple("QInit", [("value", bool), ("wire", Wire)])):
     pass
 
 
-class CInit(Gate, NamedTuple("CInit", [("value", bool), ("wire", Wire)])):
+class CInit(_Gate, NamedTuple("CInit", [("value", bool), ("wire", Wire)])):
     pass
 
 
-class QTerm(Gate, NamedTuple("QTerm", [("value", bool), ("wire", Wire)])):
+class QTerm(_Gate, NamedTuple("QTerm", [("value", bool), ("wire", Wire)])):
     pass
 
 
-class CTerm(Gate, NamedTuple("CTerm", [("value", bool), ("wire", Wire)])):
+class CTerm(_Gate, NamedTuple("CTerm", [("value", bool), ("wire", Wire)])):
     pass
 
 
-class QMeas(Gate, NamedTuple("QMeas", [("wire", Wire)])):
+class QMeas(_Gate, NamedTuple("QMeas", [("wire", Wire)])):
     pass
 
 
-class QDiscard(Gate, NamedTuple("QDiscard", [("wire", Wire)])):
+class QDiscard(_Gate, NamedTuple("QDiscard", [("wire", Wire)])):
     pass
 
 
-class CDiscard(Gate, NamedTuple("CDiscard", [("wire", Wire)])):
+class CDiscard(_Gate, NamedTuple("CDiscard", [("wire", Wire)])):
     pass
 
 
 class SubroutineCall(
-    Gate,
+    _Gate,
     NamedTuple(
         "SubroutineCall",
         [
@@ -151,7 +151,7 @@ class SubroutineCall(
 
 
 class Comment(
-    Gate,
+    _Gate,
     NamedTuple(
         "Comment",
         [
@@ -166,7 +166,7 @@ class Comment(
 
 class Program(NamedTuple):
     inputs: list[TypeAssignment]
-    gates: list[Gate]
+    gates: list[_Gate]
     outputs: list[TypeAssignment]
 
 
@@ -190,7 +190,7 @@ class Start(NamedTuple):
 
 
 # Transformer
-class QuipperTransformer(Transformer):
+class _QuipperTransformer(Transformer):
     def int(self, t: list) -> int:
         return int(t[0])
 
@@ -339,7 +339,7 @@ class QuipperTransformer(Transformer):
 
 
 # Utility function
-def allowed(op: str, arity: int) -> bool:
+def _allowed(op: str, arity: int) -> bool:
     if op in ["Not", "IX", "H", "Y", "Z", "S", "T", "E", "Omega", "V"]:
         return arity == 1
     if op in ["Swap", "W"]:
@@ -349,7 +349,7 @@ def allowed(op: str, arity: int) -> bool:
 
 
 # Class for constructing a pytket Circuit from a parsed Quipper program
-class CircuitMaker:
+class _CircuitMaker:
     def __init__(self, subr: list[Subroutine]) -> None:
         self.subrd = {s.name: s for s in subr}
         if len(self.subrd) != len(subr):
@@ -404,7 +404,7 @@ class CircuitMaker:
                 inv = gate.inverted
                 wires = [tkqbits[wire.i] for wire in gate.wires]  # all must be qubits
                 n_wires = len(wires)
-                if not allowed(op, n_wires):
+                if not _allowed(op, n_wires):
                     raise TypeError("'%s' gate with %d wires" % (op, n_wires))  # noqa: UP031
                 n_ctrls = len(qctrls)
                 # Negative control values must be handled using NOT gates
@@ -631,7 +631,7 @@ def circuit_from_quipper(input_file: str) -> Circuit:
     with open(input_file) as f:
         quip = f.read()
 
-    # Parse the circuit using the QuipperTransformer.
+    # Parse the circuit using the _QuipperTransformer.
     x = Lark(
         """
         start : circuit subroutine* _NEWLINE*
@@ -711,11 +711,11 @@ def circuit_from_quipper(input_file: str) -> Circuit:
         int : INT
         """,
         parser="lalr",
-        transformer=QuipperTransformer(),
+        transformer=_QuipperTransformer(),
     ).parse(quip)
 
     # Load the subroutine list.
-    maker = CircuitMaker(x.subroutines)  # type: ignore
+    maker = _CircuitMaker(x.subroutines)  # type: ignore
 
     # Make the tket circuit.
     return maker.make_circuit(x.circuit)  # type: ignore

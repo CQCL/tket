@@ -2,6 +2,9 @@ pytket.partition
 ==================================
 .. currentmodule:: pytket._tket.partition
 
+.. automodule:: pytket.partition
+.. automodule:: pytket._tket.partition
+
 .. autoenum:: pytket.partition.GraphColourMethod
 
 .. autoclass:: pytket.partition.MeasurementBitMap

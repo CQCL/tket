@@ -65,11 +65,11 @@ SymGateMap = dict[OpType, SymGateFunc]
 # see OpType documentation
 
 
-def symb_controlled(target: SymGateFunc) -> SymGateFunc:
+def _symb_controlled(target: SymGateFunc) -> SymGateFunc:
     return lambda x: ImmutableMatrix(BlockDiagMatrix(Identity(2), target(x)))
 
 
-def symb_rz(params: ParamsType) -> ImmutableMatrix:
+def _symb_rz(params: ParamsType) -> ImmutableMatrix:
     return ImmutableMatrix(
         [
             [sympy.exp(-I * (sympy.pi / 2) * params[0]), 0],
@@ -78,7 +78,7 @@ def symb_rz(params: ParamsType) -> ImmutableMatrix:
     )
 
 
-def symb_rx(params: ParamsType) -> ImmutableMatrix:
+def _symb_rx(params: ParamsType) -> ImmutableMatrix:
     costerm = sympy.cos((sympy.pi / 2) * params[0])
     sinterm = -I * sympy.sin((sympy.pi / 2) * params[0])
     return ImmutableMatrix(
@@ -89,7 +89,7 @@ def symb_rx(params: ParamsType) -> ImmutableMatrix:
     )
 
 
-def symb_ry(params: ParamsType) -> ImmutableMatrix:
+def _symb_ry(params: ParamsType) -> ImmutableMatrix:
     costerm = sympy.cos((sympy.pi / 2) * params[0])
     sinterm = sympy.sin((sympy.pi / 2) * params[0])
     return ImmutableMatrix(
@@ -100,7 +100,7 @@ def symb_ry(params: ParamsType) -> ImmutableMatrix:
     )
 
 
-def symb_u3(params: ParamsType) -> ImmutableMatrix:
+def _symb_u3(params: ParamsType) -> ImmutableMatrix:
     theta, phi, lam = params
     costerm = sympy.cos((sympy.pi / 2) * theta)
     sinterm = sympy.sin((sympy.pi / 2) * theta)
@@ -115,27 +115,27 @@ def symb_u3(params: ParamsType) -> ImmutableMatrix:
     )
 
 
-def symb_u2(params: ParamsType) -> ImmutableMatrix:
-    return symb_u3([0.5, *params])
+def _symb_u2(params: ParamsType) -> ImmutableMatrix:
+    return _symb_u3([0.5, *params])
 
 
-def symb_u1(params: ParamsType) -> ImmutableMatrix:
-    return symb_u3([0.0, 0.0, *params])
+def _symb_u1(params: ParamsType) -> ImmutableMatrix:
+    return _symb_u3([0.0, 0.0, *params])
 
 
-def symb_tk1(params: ParamsType) -> ImmutableMatrix:
-    return symb_rz([params[0]]) * symb_rx([params[1]]) * symb_rz([params[2]])
+def _symb_tk1(params: ParamsType) -> ImmutableMatrix:
+    return _symb_rz([params[0]]) * _symb_rx([params[1]]) * _symb_rz([params[2]])
 
 
-def symb_tk2(params: ParamsType) -> ImmutableMatrix:
+def _symb_tk2(params: ParamsType) -> ImmutableMatrix:
     return (
-        symb_xxphase([params[0]])
-        * symb_yyphase([params[1]])
-        * symb_zzphase([params[2]])
+        _symb_xxphase([params[0]])
+        * _symb_yyphase([params[1]])
+        * _symb_zzphase([params[2]])
     )
 
 
-def symb_iswap(params: ParamsType) -> ImmutableMatrix:
+def _symb_iswap(params: ParamsType) -> ImmutableMatrix:
     alpha = params[0]
     costerm = sympy.cos((sympy.pi / 2) * alpha)
     sinterm = sympy.sin((sympy.pi / 2) * alpha)
@@ -149,7 +149,7 @@ def symb_iswap(params: ParamsType) -> ImmutableMatrix:
     )
 
 
-def symb_phasediswap(params: ParamsType) -> ImmutableMatrix:
+def _symb_phasediswap(params: ParamsType) -> ImmutableMatrix:
     p, alpha = params
     costerm = sympy.cos((sympy.pi / 2) * alpha)
     sinterm = I * sympy.sin((sympy.pi / 2) * alpha)
@@ -164,7 +164,7 @@ def symb_phasediswap(params: ParamsType) -> ImmutableMatrix:
     )
 
 
-def symb_xxphase(params: ParamsType) -> ImmutableMatrix:
+def _symb_xxphase(params: ParamsType) -> ImmutableMatrix:
     alpha = params[0]
     c = sympy.cos((sympy.pi / 2) * alpha)
     s = -I * sympy.sin((sympy.pi / 2) * alpha)
@@ -178,7 +178,7 @@ def symb_xxphase(params: ParamsType) -> ImmutableMatrix:
     )
 
 
-def symb_yyphase(params: ParamsType) -> ImmutableMatrix:
+def _symb_yyphase(params: ParamsType) -> ImmutableMatrix:
     alpha = params[0]
     c = sympy.cos((sympy.pi / 2) * alpha)
     s = I * sympy.sin((sympy.pi / 2) * alpha)
@@ -192,14 +192,14 @@ def symb_yyphase(params: ParamsType) -> ImmutableMatrix:
     )
 
 
-def symb_zzphase(params: ParamsType) -> ImmutableMatrix:
+def _symb_zzphase(params: ParamsType) -> ImmutableMatrix:
     alpha = params[0]
     t = sympy.exp(I * (sympy.pi / 2) * alpha)
     return ImmutableMatrix(diag(1 / t, t, t, 1 / t))
 
 
-def symb_xxphase3(params: ParamsType) -> ImmutableMatrix:
-    xxphase2 = symb_xxphase(params)
+def _symb_xxphase3(params: ParamsType) -> ImmutableMatrix:
+    xxphase2 = _symb_xxphase(params)
     res1 = matrix_tensor_product(xxphase2, eye(2))
     res2 = Matrix(
         BlockMatrix(
@@ -215,13 +215,13 @@ def symb_xxphase3(params: ParamsType) -> ImmutableMatrix:
     return ImmutableMatrix(res1 * res2 * res3)
 
 
-def symb_phasedx(params: ParamsType) -> ImmutableMatrix:
+def _symb_phasedx(params: ParamsType) -> ImmutableMatrix:
     alpha, beta = params
 
-    return symb_rz([beta]) * symb_rx([alpha]) * symb_rz([-beta])
+    return _symb_rz([beta]) * _symb_rx([alpha]) * _symb_rz([-beta])
 
 
-def symb_eswap(params: ParamsType) -> ImmutableMatrix:
+def _symb_eswap(params: ParamsType) -> ImmutableMatrix:
     alpha = params[0]
     c = sympy.cos((sympy.pi / 2) * alpha)
     s = -I * sympy.sin((sympy.pi / 2) * alpha)
@@ -237,7 +237,7 @@ def symb_eswap(params: ParamsType) -> ImmutableMatrix:
     )
 
 
-def symb_fsim(params: ParamsType) -> ImmutableMatrix:
+def _symb_fsim(params: ParamsType) -> ImmutableMatrix:
     alpha, beta = params
     c = sympy.cos(sympy.pi * alpha)
     s = -I * sympy.sin(sympy.pi * alpha)
@@ -253,7 +253,7 @@ def symb_fsim(params: ParamsType) -> ImmutableMatrix:
     )
 
 
-def symb_gpi(params: ParamsType) -> ImmutableMatrix:
+def _symb_gpi(params: ParamsType) -> ImmutableMatrix:
     t = sympy.exp(I * sympy.pi * params[0])
 
     return ImmutableMatrix(
@@ -264,7 +264,7 @@ def symb_gpi(params: ParamsType) -> ImmutableMatrix:
     )
 
 
-def symb_gpi2(params: ParamsType) -> ImmutableMatrix:
+def _symb_gpi2(params: ParamsType) -> ImmutableMatrix:
     t = sympy.exp(I * sympy.pi * params[0])
     c = 1 / sympy.sqrt(2)
 
@@ -276,7 +276,7 @@ def symb_gpi2(params: ParamsType) -> ImmutableMatrix:
     )
 
 
-def symb_aams(params: ParamsType) -> ImmutableMatrix:
+def _symb_aams(params: ParamsType) -> ImmutableMatrix:
     alpha, beta, gamma = params
     c = sympy.cos(sympy.pi / 2 * alpha)
     s = sympy.sin(sympy.pi / 2 * alpha)
@@ -303,31 +303,31 @@ class SymGateRegister:
     Allows users to add their own definitions, or override existing definitions."""
 
     _g_map: SymGateMap = {  # noqa: RUF012
-        OpType.Rx: symb_rx,
-        OpType.Ry: symb_ry,
-        OpType.Rz: symb_rz,
-        OpType.TK1: symb_tk1,
-        OpType.TK2: symb_tk2,
-        OpType.U1: symb_u1,
-        OpType.U2: symb_u2,
-        OpType.U3: symb_u3,
-        OpType.CRx: symb_controlled(symb_rx),
-        OpType.CRy: symb_controlled(symb_ry),
-        OpType.CRz: symb_controlled(symb_rz),
-        OpType.CU1: symb_controlled(symb_u1),
-        OpType.CU3: symb_controlled(symb_u3),
-        OpType.ISWAP: symb_iswap,
-        OpType.PhasedISWAP: symb_phasediswap,
-        OpType.XXPhase: symb_xxphase,
-        OpType.YYPhase: symb_yyphase,
-        OpType.ZZPhase: symb_zzphase,
-        OpType.XXPhase3: symb_xxphase3,
-        OpType.PhasedX: symb_phasedx,
-        OpType.ESWAP: symb_eswap,
-        OpType.FSim: symb_fsim,
-        OpType.GPI: symb_gpi,
-        OpType.GPI2: symb_gpi2,
-        OpType.AAMS: symb_aams,
+        OpType.Rx: _symb_rx,
+        OpType.Ry: _symb_ry,
+        OpType.Rz: _symb_rz,
+        OpType.TK1: _symb_tk1,
+        OpType.TK2: _symb_tk2,
+        OpType.U1: _symb_u1,
+        OpType.U2: _symb_u2,
+        OpType.U3: _symb_u3,
+        OpType.CRx: _symb_controlled(_symb_rx),
+        OpType.CRy: _symb_controlled(_symb_ry),
+        OpType.CRz: _symb_controlled(_symb_rz),
+        OpType.CU1: _symb_controlled(_symb_u1),
+        OpType.CU3: _symb_controlled(_symb_u3),
+        OpType.ISWAP: _symb_iswap,
+        OpType.PhasedISWAP: _symb_phasediswap,
+        OpType.XXPhase: _symb_xxphase,
+        OpType.YYPhase: _symb_yyphase,
+        OpType.ZZPhase: _symb_zzphase,
+        OpType.XXPhase3: _symb_xxphase3,
+        OpType.PhasedX: _symb_phasedx,
+        OpType.ESWAP: _symb_eswap,
+        OpType.FSim: _symb_fsim,
+        OpType.GPI: _symb_gpi,
+        OpType.GPI2: _symb_gpi2,
+        OpType.AAMS: _symb_aams,
     }
 
     @classmethod
