@@ -91,7 +91,6 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
 
     backends.rst
     circuit.rst
-    circuit_library.rst
     unit_id.rst
     pauli.rst
     passes.rst
@@ -100,6 +99,7 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     qasm.rst
     quipper.rst
     architecture.rst
+    circuit_library.rst
     placement.rst
     mapping.rst
     tableau.rst
