@@ -80,9 +80,7 @@ jobs:
 
   check_format_tket:
     name: Check C++ code formatting
-    needs: check_changes
-    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
-    runs-on: 'macos-15'
+    runs-on: 'macos-latest'
     steps:
       - uses: actions/checkout@v4
       - name: Check C++ code formatting
