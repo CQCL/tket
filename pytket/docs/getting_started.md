@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # Getting Started
 
 The tket compiler is a powerful tool for optimizing and manipulating
@@ -20,7 +25,7 @@ those using an older version of pytket, keep up to date by installing with the
 There are separate packages for managing the interoperability between pytket and
 other quantum software packages which can also be installed via PyPI. For
 details of these, see the
-[pytket extensions](extensions.html) documentation.
+[pytket extensions](extensions.md) documentation.
 
 The quantum circuit is an abstraction of computation using quantum resources,
 designed by initializing a system into a fixed state, then mutating it via
@@ -29,7 +34,7 @@ sequences of instructions (gates).
 The native circuit interface built into pytket allows us to build circuits and
 use them directly.
 
-```
+```{code-cell} ipython3
 from pytket import Circuit
 
 c = Circuit(2, 2) # define a circuit with 2 qubits and 2 bits
@@ -47,7 +52,10 @@ On the other hand, pytket's flexible interface allows you to take circuits
 defined in a number of languages, including raw source code languages such as
 OpenQASM and Quipper, or embedded python frameworks such as Qiskit and Cirq.
 
-```
+```{code-cell} ipython3
+---
+tags: [skip-execution]
+---
 from pytket.qasm import circuit_from_qasm
 
 c = circuit_from_qasm("my_qasm_file.qasm")
@@ -55,7 +63,10 @@ c = circuit_from_qasm("my_qasm_file.qasm")
 
 Or, if an extension module like `pytket-qiskit` is installed:
 
-```
+```{code-cell} ipython3
+---
+tags: [skip-execution]
+---
 from qiskit import QuantumCircuit
 from pytket.extensions.qiskit import qiskit_to_tk
 
@@ -72,7 +83,10 @@ features and how to run circuits on backend devices, with worked examples.
 In pytket there is also a generic {py:class}`Backend` interface. This represents a connection to a quantum device or simulator.
 It's possible to run circuits on platforms from different providers through the [extension modules](https://docs.quantinuum.com/tket/api-docs/extensions).
 
-```
+```{code-cell} ipython3
+---
+tags: [skip-execution]
+---
 from pytket import Circuit
 from pytket.extensions.qiskit import AerBackend
 
@@ -92,7 +106,10 @@ Each pytket {py:class}`Backend` comes with its own default compilation method. T
 
 The following code snippet will show how to compile a circuit to run on an IBM device. This requires setting up IBM credentials (see the [credentials guide](https://docs.quantinuum.com/tket/extensions/pytket-qiskit/#access-and-credentials)).
 
-```
+```{code-cell} ipython3
+---
+tags: [skip-execution]
+---
 from pytket.extensions.qiskit import IBMQBackend
 
 circ = Circuit(3).X(0).CCX(0, 1, 2)

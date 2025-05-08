@@ -11,11 +11,11 @@ and Windows. To install, run
 pip install pytket
 ```
 
-If you have issues installing `pytket` please visit the [installation troubleshooting](https://docs.quantinuum.com/tket/api-docs/install.html) page.
+If you have issues installing `pytket` please visit the [installation troubleshooting](install.md) page.
 
 To use `pytket`, you can simply import the appropriate modules into your python code or in an interactive Python notebook. We can build circuits directly using the `pytket` interface by creating a blank circuit and adding gates in the order we want to apply them.
 
-See the [Getting Started](getting_started.html) page for a basic tutorial on using
+See the [Getting Started](getting_started.md) page for a basic tutorial on using
 `pytket`. To get more in depth on features, see the [pytket user guide](https://docs.quantinuum.com/tket/user-guide/) for an extensive introduction to `pytket` functionality and how to use it.
 
 ## Extensions
@@ -35,7 +35,7 @@ pip install pytket-quantinuum
 ```
 
 The extensions supported by tket are described
-[here](extensions.html).
+[here](extensions.md).
 
 ## How to cite
 

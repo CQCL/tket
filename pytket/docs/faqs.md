@@ -1,6 +1,6 @@
 # TKET FAQs
 
-These are frequently asked questions that relate to the use of pytket. For installation FAQs see the [installation troubleshooting](https://docs.quantinuum.com/tket/api-docs/install.html) page.
+These are frequently asked questions that relate to the use of pytket. For installation FAQs see the [installation troubleshooting](install.md) page.
 
 ## Rebases
 

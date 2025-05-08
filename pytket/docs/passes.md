@@ -1,12 +1,12 @@
 # pytket.passes
 
-In pytket, compilation passes perform in-place transformations of circuits. From a user's point of view, passes are similar to [transforms](https://docs.quantinuum.com/tket/api-docs/transform.html); however passes allow for additional predicate checking and compositionality.
+In pytket, compilation passes perform in-place transformations of circuits. From a user's point of view, passes are similar to {py:class}`~.Transform` s; however passes allow for additional predicate checking and compositionality.
 
-There are passes such as [FullPeepholeOptimise](https://docs.quantinuum.com/tket/api-docs/passes.html#pytket.passes.FullPeepholeOptimise) and [KAKDecomposition](https://docs.quantinuum.com/tket/api-docs/passes.html#pytket.passes.KAKDecomposition) which are designed for general purpose circuit optimisation.
+There are passes such as {py:meth}`~.passes.FullPeepholeOptimise` and {py:meth}`~.passes.KAKDecomposition` which are designed for general purpose circuit optimisation.
 
-Also there are special purpose passes such as [OptimisePhaseGadgets](https://docs.quantinuum.com/tket/api-docs/passes.html#pytket.passes.OptimisePhaseGadgets) and [PauliSimp](https://docs.quantinuum.com/tket/api-docs/passes.html#pytket.passes.PauliSimp) which perform optimisation by targeting phase gadget and Pauli gadget structures within circuits. For more on these optimisation techniques see the [corresponding publication](https://arxiv.org/abs/1906.01734).
+Also there are special purpose passes such as {py:meth}`~.passes.OptimisePhaseGadgets` and {py:meth}`~.passes.PauliSimp` which perform optimisation by targeting phase gadget and Pauli gadget structures within circuits. For more on these optimisation techniques see the [corresponding publication](https://arxiv.org/abs/1906.01734).
 
-Rebase passes can be used to convert a circuit to a desired gateset. See [RebaseCustom](https://docs.quantinuum.com/tket/api-docs/passes.html#pytket.passes.RebaseCustom) and [AutoRebase](https://docs.quantinuum.com/tket/api-docs/passes.html#pytket._tket.passes.AutoRebase).
+Rebase passes can be used to convert a circuit to a desired gateset. See {py:meth}`~.passes.RebaseCustom` and {py:meth}`~.passes.AutoRebase`.
 
 For more on pytket passes see the [compilation](https://docs.quantinuum.com/tket/user-guide/manual/manual_compiler.html) section of the user manual or the [notebook tutorials](https://docs.quantinuum.com/tket/examples)
 
