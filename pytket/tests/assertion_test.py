@@ -108,8 +108,3 @@ def test_assertion() -> None:
     # TketSimShotBackend doesn't support RESET hence we can't
     # process circuits with stabiliser assertions and some
     # of the projector based assertions
-
-
-if __name__ == "__main__":
-    test_assertion_init()
-    test_assertion()

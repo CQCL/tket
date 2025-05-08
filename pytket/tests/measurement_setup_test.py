@@ -126,11 +126,3 @@ def test_serialization() -> None:
     assert j_ms["result_map"][1] == [xx.to_list(), [mbm3.to_dict()]]
     assert j_ms["result_map"][2] == [zi.to_list(), [mbm.to_dict(), mbm2.to_dict()]]
     assert MeasurementSetup.from_dict(j_ms).to_dict() == j_ms
-
-
-if __name__ == "__main__":
-    test_empty_setup()
-    test_parity_flip()
-    test_reduction()
-    test_serialization()
-    # test_error_logging()

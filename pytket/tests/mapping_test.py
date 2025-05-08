@@ -439,12 +439,3 @@ def test_BoxDecompositionRoutingMethod() -> None:
     )
     assert circ.valid_connectivity(arc, directed=False)
     assert len(circ.get_commands()) == 4
-
-
-if __name__ == "__main__":
-    test_LexiRouteRoutingMethod()
-    test_RoutingMethodCircuit_custom()
-    test_RoutingMethodCircuit_custom_list()
-    test_basic_mapping()
-    test_MultiGateReorderRoutingMethod()
-    test_BoxDecompositionRoutingMethod()
