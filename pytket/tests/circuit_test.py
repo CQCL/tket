@@ -1644,21 +1644,3 @@ def test_c0z() -> None:
     assert len(cmds) == 1
     cmd = cmds[0]
     assert cmd.op.type == OpType.Z
-
-
-if __name__ == "__main__":
-    test_circuit_gen()
-    test_symbolic_ops()
-    test_4x4_matrix_to_circ()
-    test_exp_to_circ()
-    test_boxes()
-    test_errors()
-    test_str()
-    test_phase()
-    test_clifford_checking()
-    test_clifford_evaluation()
-    test_measuring_registers()
-    test_multi_controlled_gates()
-    test_counting_n_qubit_gates()
-    test_pauliexp_pair_box_serialisation()
-    test_cnrx_cnrz()

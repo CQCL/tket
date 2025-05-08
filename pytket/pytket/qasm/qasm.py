@@ -58,6 +58,7 @@ from pytket.circuit.clexpr import (
 )
 from pytket.circuit.decompose_classical import _int_to_bools
 from pytket.circuit.logic_exp import (
+    ArgType,
     BitLogicExp,
     BitWiseOp,
     LogicExp,
@@ -286,6 +287,16 @@ def _un_call_exp(op: "str") -> Callable[["_CircuitTransformer", list[str]], str]
 
 def _hashable_uid(arg: list) -> tuple[str, int]:
     return arg[0], arg[1][0]
+
+
+def _can_treat_as_bit(arg: ArgType) -> bool:
+    if isinstance(arg, Bit | BitLogicExp):
+        return True
+    if isinstance(arg, int):
+        return arg in (0, 1)
+    if isinstance(arg, BitRegister):
+        return arg.size == 1
+    return False
 
 
 Reg = NewType("Reg", str)
@@ -531,15 +542,8 @@ class _CircuitTransformer(Transformer):
             isinstance(arg, int) for arg in args
         ):
             openum = RegWiseOp
-        elif all(isinstance(arg, Bit | BitLogicExp | int) for arg in args):
-            if all(arg in (0, 1) for arg in args if isinstance(arg, int)):
-                openum = BitWiseOp
-            else:
-                raise QASMParseError(
-                    "Bits can only be operated with (0, 1) literals."
-                    f" Incomaptible arguments {args}",
-                    line,
-                )
+        elif all(_can_treat_as_bit(arg) for arg in args):
+            openum = BitWiseOp
         else:
             openum = RegWiseOp
         if openum is BitWiseOp and opstr in ("+", "-"):

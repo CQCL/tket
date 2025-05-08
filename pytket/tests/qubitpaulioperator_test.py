@@ -157,16 +157,6 @@ def test_QubitPauliOperator_compression() -> None:
     assert op[qpsYY].subs({x: 10}).equals(1.0j)
 
 
-if __name__ == "__main__":
-    test_QubitPauliOperator_addition()
-    test_QubitPauliOperator_scalarmult()
-    test_QubitPauliOperator_opmult()
-    test_QubitPauliOperator_substitution()
-    test_QubitPauliOperator_io()
-    test_QubitPauliOperator_matrices()
-    test_QubitPauliOperator_compression()
-
-
 def test_QubitPauliString_serialization() -> None:
     qps0 = QubitPauliString()
     qps1 = QubitPauliString(

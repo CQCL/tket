@@ -148,11 +148,3 @@ def test_apply_clifford_basis_change() -> None:
 
     assert t.string == yxyi_op
     assert t.coeff == 1
-
-
-if __name__ == "__main__":
-    test_single_cycle_single_frame_randomisation()
-    test_multi_cycle_multi_frame_randomisation()
-    test_pauli_frame_randomisation()
-    test_universal_frame_randomisation()
-    test_apply_clifford_basis_change()

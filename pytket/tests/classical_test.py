@@ -1354,7 +1354,3 @@ def test_depth_classical_only() -> None:
     circ.add_c_modifier(and_values, [1], 2)
     circ.measure_all()
     assert circ.depth() == 4
-
-
-if __name__ == "__main__":
-    test_wasm()

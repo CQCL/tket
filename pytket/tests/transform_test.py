@@ -1480,36 +1480,3 @@ def test_clifford_push() -> None:
     assert coms[5].op.type == OpType.ExplicitModifier
     assert coms[6].op.type == OpType.ExplicitModifier
     assert coms[7].op.type == OpType.CopyBits
-
-
-if __name__ == "__main__":
-    test_remove_redundancies()
-    test_reduce_singles()
-    test_commute()
-    test_KAK()
-    test_basic_rebases()
-    test_post_routing()
-    test_phase_gadget()
-    test_Cliffords()
-    test_Pauli_gadget()
-    test_cons_sequencing()
-    test_list_sequencing()
-    test_basic_repeat()
-    test_while_repeat()
-    test_implicit_swaps_1()
-    test_implicit_swaps_2()
-    test_implicit_swaps_3()
-    test_decompose_swap_to_cx()
-    test_noncontiguous_DefaultMappingPass_arc()
-    test_RoutingPass()
-    test_DefaultMappingPass()
-    test_CXMappingPass()
-    test_CXMappingPass_correctness()
-    test_CXMappingPass_terminates()
-    test_FullMappingPass()
-    test_auto_rebase_with_swap_cx()
-    test_auto_rebase_with_swap_zzmax()
-    test_auto_rebase_with_swap_zzphase()
-    test_auto_rebase_with_swap_tk2()
-    test_selectively_decompose_boxes()
-    test_clifford_push()
