@@ -540,8 +540,3 @@ def test_spam_routing() -> None:
     raw_br = BackendResult(counts=raw_counter)
     corrected_counts = spam.correct_counts(raw_br, spam.get_parallel_measure(routed))
     assert check_correction(compress_counts(corrected_counts.get_counts()))  # type: ignore
-
-
-if __name__ == "__main__":
-    test_spam_integration()
-    test_spam_routing()

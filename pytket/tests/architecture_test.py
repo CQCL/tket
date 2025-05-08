@@ -164,12 +164,3 @@ def test_pickling() -> None:
         FullyConnected(5),
     ]:
         assert pickle.loads(pickle.dumps(arc)) == arc
-
-
-if __name__ == "__main__":
-    test_architectures()
-    test_architecture_eq()
-    test_fully_connected()
-    test_arch_types()
-    test_valid_operation()
-    test_arch_names()
