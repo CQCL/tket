@@ -11,6 +11,11 @@ API changes:
   evaluation of circuits have been renamed to indicate they are not intended 
   for external usage.
 
+Features:
+
+* Additional `circuit_from_qasm_str_wasm` and `circuit_from_qasm_str_wasmfh`
+  for parsing qasm with wasm.
+
 Fixes:
 
 * Ensure downcasting of `UnitID` to `Qubit` in initial and final maps.
