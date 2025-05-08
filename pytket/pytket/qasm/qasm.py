@@ -321,7 +321,7 @@ class _CircuitTransformer(Transformer):
         self.q_registers: dict[str, int] = {}
         self.c_registers: dict[str, int] = {}
         self.gate_dict: dict[str, dict] = {}
-        self.wasm: WasmFileHandler | None = None
+        self.wasm: WasmModuleHandler | None = None
         self.include = ""
         self.return_gate_dict = return_gate_dict
         self.maxwidth = maxwidth
