@@ -1046,7 +1046,7 @@ def circuit_from_qasm_str_wasm(
 ) -> Circuit:
     """A method to generate a tket Circuit from a qasm string and external WASM module.
 
-    :param qasm_str: wasm string
+    :param qasm_str: qasm string
     :param wasm: base64 encoded wasm file as a string
     :param maxwidth: maximum allowed width of classical registers (default 32)
     :return: pytket circuit
