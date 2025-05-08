@@ -1266,6 +1266,33 @@ if (c[0] != 1) c[1] = 1;
     assert c == c1
 
 
+def test_bitreg_as_bit() -> None:
+    # https://github.com/CQCL/tket/issues/1896
+    qasm = """OPENQASM 2.0;
+include "hqslib1.inc";
+creg a[1];
+creg b[2];
+a = a ^ b[0];
+"""
+    c = circuit_from_qasm_str(qasm)
+    qasm1 = """OPENQASM 2.0;
+include "hqslib1.inc";
+creg a[1];
+creg b[2];
+a = a[0] ^ b[0];
+"""
+    c1 = circuit_from_qasm_str(qasm1)
+    assert c == c1
+    qasm2 = """OPENQASM 2.0;
+include "hqslib1.inc";
+creg a[1];
+creg b[2];
+a[0] = a[0] ^ b[0];
+"""
+    c2 = circuit_from_qasm_str(qasm2)
+    assert c == c2
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
