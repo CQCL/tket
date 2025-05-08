@@ -65,10 +65,3 @@ def test_add_with_map() -> None:
     unit_map: dict[UnitID, UnitID] = {Qubit(0): Qubit(1), Qubit(1): Qubit(0)}
     c.add_circuit_with_map(c1, unit_map)
     assert c == Circuit(3, 2).X(0).Y(1).Z(2).CX(1, 0).Measure(0, 1).Measure(1, 0)
-
-
-if __name__ == "__main__":
-    test_direct_add()
-    test_swap_add()
-    test_append()
-    test_sequencing()
