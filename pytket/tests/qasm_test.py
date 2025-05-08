@@ -1332,7 +1332,6 @@ a[0] = a + b[0];
     assert c4 == c7
 
 
-
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
