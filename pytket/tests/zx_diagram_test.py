@@ -1042,21 +1042,3 @@ def test_round_trip() -> None:
 
     c, _ = diag.to_circuit()
     assert compare_unitaries(circ.get_unitary(), c.get_unitary())
-
-
-if __name__ == "__main__":
-    test_generator_creation()
-    test_diagram_creation()
-    test_known_tensors()
-    test_classical_and_cptp()
-    test_tensor_errors()
-    test_graph_like_reduction()
-    test_spider_fusion()
-    test_simplification()
-    test_converting_from_circuit()
-    test_constructors()
-    test_XY_extraction()
-    test_XY_YZ_extraction()
-    test_ZX_rebase()
-    test_internalise_gadgets()
-    test_round_trip()

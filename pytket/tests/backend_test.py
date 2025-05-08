@@ -602,15 +602,3 @@ def test_int_type() -> None:
     for k, v in counts.items():
         assert all(isinstance(i, int) for i in k)
         assert isinstance(v, int)
-
-
-if __name__ == "__main__":
-    # test_resulthandle()
-    # test_bell()
-    # test_basisorder()
-    # test_swaps()
-    # test_swaps_basisorder()
-    # test_outcomearray()
-    test_backendresult()
-    # test_outcomearray_serialization()
-    # test_backendresult_serialization()

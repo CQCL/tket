@@ -270,14 +270,3 @@ def test_large_error_rate_noise_aware() -> None:
     placement_map = nap.get_placement_map(c)
     assert placement_map[Qubit(0)] == Node(0)
     assert placement_map[Qubit(1)] == Node(1)
-
-
-if __name__ == "__main__":
-    test_placements()
-    test_placements_serialization()
-    test_convert_index_mapping()
-    test_place_with_map_twice()
-    test_big_placement()
-    test_place_fully_connected()
-    test_placement_config()
-    test_large_error_rate_noise_aware()
