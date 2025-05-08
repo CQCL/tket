@@ -44,7 +44,7 @@ from pytket.qasm import (
     circuit_from_qasm,
     circuit_from_qasm_str,
     circuit_from_qasm_str_wasm,
-    circuit_from_qasm_str_wasmfh,
+    circuit_from_qasm_str_wasmmh,
     circuit_from_qasm_wasm,
     circuit_to_qasm,
     circuit_to_qasm_str,
@@ -492,7 +492,7 @@ def test_qasm_wasm_2() -> None:
         )
     )
 
-    circ = circuit_from_qasm_str_wasmfh(qasm, wasmfh)
+    circ = circuit_from_qasm_str_wasmmh(qasm, wasmfh)
 
     assert circ.n_gates == 15
     assert circ.n_qubits == 2
@@ -505,7 +505,7 @@ def test_qasm_wasm_3() -> None:
         check=False,
     )
 
-    circ = circuit_from_qasm_str_wasmfh(qasm, wasmfh)
+    circ = circuit_from_qasm_str_wasmmh(qasm, wasmfh)
 
     assert circ.n_gates == 15
     assert circ.n_qubits == 2

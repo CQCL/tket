@@ -21,7 +21,7 @@ from .qasm import (
     circuit_from_qasm_io,
     circuit_from_qasm_str,
     circuit_from_qasm_str_wasm,
-    circuit_from_qasm_str_wasmfh,
+    circuit_from_qasm_str_wasmmh,
     circuit_from_qasm_wasm,
     circuit_to_qasm,
     circuit_to_qasm_io,

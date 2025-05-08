@@ -1047,7 +1047,7 @@ def circuit_from_qasm_str_wasm(
     """A method to generate a tket Circuit from a qasm string and external WASM module.
 
     :param qasm_str: qasm string
-    :param wasm: base64 encoded wasm file as a string
+    :param wasm: bytes of the corresponding wasm file
     :param maxwidth: maximum allowed width of classical registers (default 32)
     :return: pytket circuit
     """
@@ -1059,22 +1059,22 @@ def circuit_from_qasm_str_wasm(
     return circuit_from_qasm_str(qasm_str, maxwidth=maxwidth)
 
 
-def circuit_from_qasm_str_wasmfh(
+def circuit_from_qasm_str_wasmmh(
     qasm_str: str,
-    wasmfh: WasmModuleHandler,
+    wasmmh: WasmModuleHandler,
     maxwidth: int = 32,
 ) -> Circuit:
     """A method to generate a tket Circuit from a qasm string and external WASM module.
 
     :param qasm_str: qasm string
-    :param wasm: WasmModuleHandler
+    :param wasm: WasmModuleHandler, module contianing a wasm file
     :param maxwidth: maximum allowed width of classical registers (default 32)
     :return: pytket circuit
     """
     global g_parser  # noqa: PLW0602
     _set_parser(maxwidth=maxwidth)
     assert g_parser is not None
-    cast("_CircuitTransformer", g_parser.options.transformer).wasm = wasmfh
+    cast("_CircuitTransformer", g_parser.options.transformer).wasm = wasmmh
     return circuit_from_qasm_str(qasm_str, maxwidth=maxwidth)
 
 
