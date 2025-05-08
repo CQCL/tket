@@ -980,6 +980,8 @@ NB_MODULE(passes, m) {
       "arxiv.org/abs/2103.08602. The method for synthesising the "
       "final Clifford operator is adapted from "
       "arxiv.org/abs/2305.10966."
+      "\n\nWARNING: this pass will not preserve the global phase of the "
+      "circuit."
       "\n\n:param discount_rate: Rate used to discount the cost impact from "
       "gadgets that are further away. Default to 0.7."
       "\n:param depth_weight:  Degree of depth optimisation. Default to 0.3."
