@@ -9,6 +9,11 @@ API changes:
   evaluation of circuits have been renamed to indicate they are not intended
   for external usage.
 
+Features:
+
+- Allow length-1 bit registers to be interpreted as bits in extended-QASM
+  expressions.
+
 Fixes:
 
 - Ensure downcasting of `UnitID` to `Qubit` in initial and final maps.
