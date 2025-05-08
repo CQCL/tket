@@ -394,6 +394,15 @@ TermSequenceBox::TermSequenceBox(
             "the Pauli strings within TermSequenceBox must all be the "
             "same length - add Pauli.I to pad strings to required length.");
       }
+      if (synth_strategy == Transforms::PauliSynthStrat::Greedy &&
+          gadget.size() ==
+              std::count(
+                  gadget.string.begin(), gadget.string.end(), Pauli::I)) {
+        throw PauliExpBoxInvalidity(
+            "A TermSequenceBox using the Greedy strategy does not support "
+            "rotations with an identity Pauli string. "
+            "Note: global phase is not preserved with the Greedy synthesis.");
+      }
     }
     signature_ = op_signature_t(n_qubits, EdgeType::Quantum);
   }
