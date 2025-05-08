@@ -1266,42 +1266,67 @@ if (c[0] != 1) c[1] = 1;
     assert c == c1
 
 
-if __name__ == "__main__":
-    test_qasm_correct()
-    test_qasm_qubit()
-    test_qasm_whitespace()
-    test_qasm_gate()
-    test_qasm_measure()
-    test_qasm_roundtrip()
-    test_qasm_str_roundtrip()
-    test_readout()
-    test_symbolic_write()
-    test_custom_gate()
-    test_custom_gate_with_barrier()
-    test_input_error_modes()
-    test_output_error_modes()
-    test_builtin_gates()
-    test_new_qelib1_aliases()
-    test_h1_rzz()
-    test_opaque()
-    test_opaque_gates()
-    test_non_lib_gates()
-    test_scratch_bits_filtering()
-    test_extended_qasm()
-    test_register_commands()
-    test_conditional_gates()
-    test_named_conditional_barrier()
-    test_hqs_conditional()
-    test_hqs_conditional_params()
-    test_barrier()
-    test_barrier_2()
-    test_decomposable_extended()
-    test_decomposable_extended()
-    test_alternate_encoding()
-    test_header_stops_gate_definition()
-    test_tk2_definition()
-    test_rxxyyzz_conversion()
-    test_classical_expbox_arg_order()
-    test_classical_expbox_arg_order()
-    test_register_name_check()
-    test_existing_name_conversion()
+def test_bitreg_as_bit() -> None:
+    # https://github.com/CQCL/tket/issues/1896
+    qasm = """OPENQASM 2.0;
+include "hqslib1.inc";
+creg a[1];
+creg b[2];
+a = a ^ b[0];
+"""
+    c = circuit_from_qasm_str(qasm)
+    qasm1 = """OPENQASM 2.0;
+include "hqslib1.inc";
+creg a[1];
+creg b[2];
+a = a[0] ^ b[0];
+"""
+    c1 = circuit_from_qasm_str(qasm1)
+    assert c == c1
+    qasm2 = """OPENQASM 2.0;
+include "hqslib1.inc";
+creg a[1];
+creg b[2];
+a[0] = a[0] ^ b[0];
+"""
+    c2 = circuit_from_qasm_str(qasm2)
+    assert c == c2
+    qasm3 = """OPENQASM 2.0;
+include "hqslib1.inc";
+creg a[1];
+creg b[2];
+a[0] = a ^ b[0];
+"""
+    c3 = circuit_from_qasm_str(qasm3)
+    assert c == c3
+    qasm4 = """OPENQASM 2.0;
+include "hqslib1.inc";
+creg a[1];
+creg b[2];
+a = a + b[0];
+"""
+    c4 = circuit_from_qasm_str(qasm4)
+    qasm5 = """OPENQASM 2.0;
+include "hqslib1.inc";
+creg a[1];
+creg b[2];
+a = a[0] + b[0];
+"""
+    c5 = circuit_from_qasm_str(qasm5)
+    assert c4 == c5
+    qasm6 = """OPENQASM 2.0;
+include "hqslib1.inc";
+creg a[1];
+creg b[2];
+a[0] = a[0] + b[0];
+"""
+    c6 = circuit_from_qasm_str(qasm6)
+    assert c4 == c6
+    qasm7 = """OPENQASM 2.0;
+include "hqslib1.inc";
+creg a[1];
+creg b[2];
+a[0] = a + b[0];
+"""
+    c7 = circuit_from_qasm_str(qasm7)
+    assert c4 == c7

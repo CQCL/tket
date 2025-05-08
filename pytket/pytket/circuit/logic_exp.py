@@ -747,6 +747,10 @@ def create_logic_exp(op: Ops, args: Sequence[ArgType]) -> LogicExp:
     """
     if isinstance(op, BitWiseOp):
         bit_args = []
+        args = [
+            arg[0] if isinstance(arg, BitRegister) and arg.size == 1 else arg
+            for arg in args
+        ]
         for arg in args:
             assert isinstance(arg, BitLogicExp | Bit | Constant)
             bit_args.append(arg)
