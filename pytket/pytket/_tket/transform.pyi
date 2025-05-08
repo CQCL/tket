@@ -25,6 +25,8 @@ class PauliSynthStrat(enum.Enum):
     Greedy = 3
     """
     Synthesise gadgets using a greedy algorithm adapted from arxiv.org/abs/2103.08602. This strategy is currently only accepted by `TermSequenceBox`. For synthesising general circuits try using `GreedyPauliSimp`.
+
+    WARNING: This strategy will not preserve the global phase of the circuit.
     """
 
 class Transform:
@@ -322,6 +324,8 @@ class Transform:
     def GreedyPauliSimp(discount_rate: float = 0.7, depth_weight: float = 0.3, max_tqe_candidates: int = 500, max_lookahead: int = 500, seed: int = 0, allow_zzphase: bool = False, thread_timeout: int = 100, trials: int = 1) -> Transform:
         """
         Convert a circuit into a graph of Pauli gadgets to account for commutation and phase folding, and resynthesises them using a greedy algorithm adapted from arxiv.org/abs/2103.08602. The method for synthesising the final Clifford operator is adapted from arxiv.org/abs/2305.10966.
+
+        WARNING: This transformation will not preserve the global phase of the circuit.
 
         :param discount_rate: Rate used to discount the cost impact from gadgets that are further away. Default to 0.7.
         :param depth_weight:  Degree of depth optimisation. Default to 0.3.

@@ -1188,6 +1188,20 @@ SCENARIO("TermSequenceBox", "[boxes]") {
     d.add_box(pbox1, {0, 1, 2});
     REQUIRE(test_unitary_comparison(c, d, true));
   }
+  GIVEN("Greedy strategy with idenity strings throws") {
+    auto paulis = std::vector<Pauli>{Pauli::I, Pauli::I, Pauli::I};
+    auto phase = Expr(0.25);
+    auto synth_strat = Transforms::PauliSynthStrat::Greedy;
+    // The following has no effect
+    auto partition_strat = PauliPartitionStrat::CommutingSets;
+    auto colouring_method = GraphColourMethod::Lazy;
+    auto cx_config = CXConfigType::Snake;
+    REQUIRE_THROWS_AS(
+        TermSequenceBox(
+            {{paulis, phase}}, synth_strat, partition_strat, colouring_method,
+            cx_config, 0.2),
+        PauliExpBoxInvalidity);
+  }
 }
 }  // namespace test_PauliExpBoxes
 }  // namespace tket
