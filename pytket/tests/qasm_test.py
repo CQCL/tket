@@ -1291,6 +1291,46 @@ a[0] = a[0] ^ b[0];
 """
     c2 = circuit_from_qasm_str(qasm2)
     assert c == c2
+    qasm3 = """OPENQASM 2.0;
+include "hqslib1.inc";
+creg a[1];
+creg b[2];
+a[0] = a ^ b[0];
+"""
+    c3 = circuit_from_qasm_str(qasm3)
+    assert c == c3
+    qasm4 = """OPENQASM 2.0;
+include "hqslib1.inc";
+creg a[1];
+creg b[2];
+a = a + b[0];
+"""
+    c4 = circuit_from_qasm_str(qasm4)
+    qasm5 = """OPENQASM 2.0;
+include "hqslib1.inc";
+creg a[1];
+creg b[2];
+a = a[0] + b[0];
+"""
+    c5 = circuit_from_qasm_str(qasm5)
+    assert c4 == c5
+    qasm6 = """OPENQASM 2.0;
+include "hqslib1.inc";
+creg a[1];
+creg b[2];
+a[0] = a[0] + b[0];
+"""
+    c6 = circuit_from_qasm_str(qasm6)
+    assert c4 == c6
+    qasm7 = """OPENQASM 2.0;
+include "hqslib1.inc";
+creg a[1];
+creg b[2];
+a[0] = a + b[0];
+"""
+    c7 = circuit_from_qasm_str(qasm7)
+    assert c4 == c7
+
 
 
 if __name__ == "__main__":
