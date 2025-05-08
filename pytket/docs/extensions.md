@@ -15,99 +15,99 @@ The types of `Backend` available in pytket are the following
 
 ## Types of Backend
 
-- **QPUs** - These are real quantum computers that return shots based results. E.g the [QuantinuumBackend](inv:#*.QuantinuumBackend).
-- **Cloud Access** - Cloud backends allow pytket to interface with cloud platforms to access additional QPUs and simulators. E.g [BraketBackend](inv:#*.BraketBackend).
-- **Emulators** - These classically simulate a circuit and produce shots based results. Sometimes emulators use a noise model and have connectivity constraints to emulate real QPUs. E.g. [IBMQEmulatorBackend](inv:#*.IBMQEmulatorBackend)
-- **Statevector Simulators** - Calculates the pure quantum state prepared by a circuit returning a vector/ndarray. Examples of statevector simulators are the [ForestStateBackend](inv:#*.ForestStateBackend) and the [AerStateBackend](inv:#*.AerStateBackend).
-- **Unitary Simulators** - Unitary simulators calculate the unitary operator that is applied by a circuit. A unitary matrix/ndarray is returned [AerUnitaryBackend](inv:#*.AerUnitaryBackend) is an example of such a simulator.
-- **Density Matrix Simulators** - These simulators compute the density matrix prepared by a circuit. The result can be a statistical mixture of states in contrast to statevector simulation. E.g. [CirqDensityMatrixSampleBackend](inv:#*.CirqDensityMatrixSampleBackend)
-- **Other specialised simulators** - There are extensions for simulating specific types of circuit. For instance the [SimplexBackend](inv:#*.SimplexBackend) is designed to simulate Clifford circuits.
+- **QPUs** - These are real quantum computers that return shots based results. E.g the [QuantinuumBackend](inv:#*extensions.quantinuum.QuantinuumBackend).
+- **Cloud Access** - Cloud backends allow pytket to interface with cloud platforms to access additional QPUs and simulators. E.g [BraketBackend](inv:#*extensions.braket.BraketBackend).
+- **Emulators** - These classically simulate a circuit and produce shots based results. Sometimes emulators use a noise model and have connectivity constraints to emulate real QPUs. E.g. [IBMQEmulatorBackend](inv:#*extensions.qiskit.IBMQEmulatorBackend)
+- **Statevector Simulators** - Calculates the pure quantum state prepared by a circuit returning a vector/ndarray. Examples of statevector simulators are the [ForestStateBackend](inv:#*extensions.pyquil.ForestStateBackend) and the [AerStateBackend](inv:#*extensions.qiskit.AerStateBackend).
+- **Unitary Simulators** - Unitary simulators calculate the unitary operator that is applied by a circuit. A unitary matrix/ndarray is returned [AerUnitaryBackend](inv:#*extensions.qiskit.AerUnitaryBackend) is an example of such a simulator.
+- **Density Matrix Simulators** - These simulators compute the density matrix prepared by a circuit. The result can be a statistical mixture of states in contrast to statevector simulation. E.g. [CirqDensityMatrixSampleBackend](inv:#*extensions.cirq.CirqDensityMatrixSampleBackend)
+- **Other specialised simulators** - There are extensions for simulating specific types of circuit. For instance the [SimplexBackend](inv:#*extensions.pysimplex.SimplexBackend) is designed to simulate Clifford circuits.
 
 A full list of available pytket backends is shown below.
 
 ## QPUs
 
-[QuantinuumBackend](inv:#*.QuantinuumBackend)
+[QuantinuumBackend](inv:#*extensions.quantinuum.QuantinuumBackend)
 \- Interface to a remote Quantinuum device or simulator. There are currently two Quantinuum devices offered (H1-1 and H2-1).
 
-[IBMQBackend](inv:#*.IBMQBackend)
+[IBMQBackend](inv:#*extensions.qiskit.IBMQBackend)
 \- A backend for running circuits on remote IBMQ devices.
 
-[ForestBackend](inv:#*.ForestBackend)
+[ForestBackend](inv:#*extensions.pyquil.ForestBackend)
 \- A backend for running circuits on remote Rigetti devices.
 
 [AQTBackend](https://cqcl.github.io/pytket-aqt/api/api.html#pytket.extensions.aqt.AQTBackend)
 \- Interface to an AQT device or simulator.
 
-[IQMBackend](inv:#*.IQMBackend)
+[IQMBackend](inv:#*extensions.iqm.IQMBackend)
 \- Interface to an IQM device or simulator.
 
 ## Cloud Access
 
-[BraketBackend](inv:#*.BraketBackend)
+[BraketBackend](inv:#*extensions.braket.BraketBackend)
 \- Interface to Amazon Braket service.
 
 ## Emulators
 
-[IBMQEmulatorBackend](inv:#*.IBMQEmulatorBackend) - A backend which uses the [AerBackend](inv:#*.AerBackend) to emulate the behavior of IBMQBackend.
+[IBMQEmulatorBackend](inv:#*extensions.qiskit.IBMQEmulatorBackend) - A backend which uses the [AerBackend](inv:#*extensions.qiskit.AerBackend) to emulate the behavior of IBMQBackend.
 
-[QuantinuumBackend](inv:#*.QuantinuumBackend)
+[QuantinuumBackend](inv:#*extensions.quantinuum.QuantinuumBackend)
 \- The QuantinuumBackend has two available emulators namely H1-1E and H2-1E. These are device specific emulators for the H1-1 and H2-1 devices. These emulators run remotely on a server.
 
 ## Statevector Simulators
 
-[CirqStateSampleBackend](inv:#*.CirqStateSampleBackend)
+[CirqStateSampleBackend](inv:#*extensions.cirq.CirqStateSampleBackend)
 \- Backend for Cirq statevector simulator sampling.
 
-[CirqStateSimBackend](inv:#*.CirqStateSimBackend)
+[CirqStateSimBackend](inv:#*extensions.cirq.CirqStateSimBackend)
 \- Backend for Cirq statevector simulator state return.
 
-[AerStateBackend](inv:#*.AerStateBackend) - Backend for running simulations on the Qiskit Aer Statevector simulator.
+[AerStateBackend](inv:#*extensions.qiskit.AerStateBackend) - Backend for running simulations on the Qiskit Aer Statevector simulator.
 
-[ForestStateBackend](inv:#*.ForestStateBackend) - State-based interface to a Rigetti device.
+[ForestStateBackend](inv:#*extensions.pyquil.ForestStateBackend) - State-based interface to a Rigetti device.
 
-[ProjectQBackend](inv:#*.ProjectQBackend)
+[ProjectQBackend](inv:#*extensions.projectq.ProjectQBackend)
 \- Backend for running statevector simulations on the ProjectQ simulator.
 
 [QuESTBackend](https://docs.quantinuum.com/tket/extensions/pytket-quest/api.html#pytket.extensions.quest.QuESTBackend) Interface to the [QUEST simulator](https://quest.qtechtheory.org/docs/).
 
 ## Unitary Simulators
 
-[AerUnitaryBackend](inv:#*.AerUnitaryBackend) - Backend for running simulations on the Qiskit Aer unitary simulator.
+[AerUnitaryBackend](inv:#*extensions.qiskit.AerUnitaryBackend) - Backend for running simulations on the Qiskit Aer unitary simulator.
 
 ## Density Matrix Simulators
 
-[AerDensityMatrixBackend](inv:#*qiskit.AerDensityMatrixBackend) - Backend for density matrix simulation using qiskit Aer. Can take a `NoiseModel` as an optional argument.
+[AerDensityMatrixBackend](inv:#*extensions.qiskit.AerDensityMatrixBackend) - Backend for density matrix simulation using qiskit Aer. Can take a `NoiseModel` as an optional argument.
 
-[CirqDensityMatrixSampleBackend](inv:#*.CirqDensityMatrixSampleBackend)
+[CirqDensityMatrixSampleBackend](inv:#*extensions.cirq.CirqDensityMatrixSampleBackend)
 \- Backend for Cirq density matrix simulator sampling.
 
-[CirqDensityMatrixSimBackend](inv:#*.CirqDensityMatrixSimBackend)
+[CirqDensityMatrixSimBackend](inv:#*extensions.cirq.CirqDensityMatrixSimBackend)
 \- Backend for Cirq density matrix simulator density_matrix return.
 
-[QulacsBackend](inv:#*.QulacsBackend) - This has a configurable density matrix simulation option.
+[QulacsBackend](inv:#*extensions.qulacs.QulacsBackend) - This has a configurable density matrix simulation option.
 
 Use `QulacsBackend(result_type="density_matrix")`.
 
 ## Clifford Simulators
 
-[CirqCliffordSampleBackend](inv:#*.CirqCliffordSampleBackend)
+[CirqCliffordSampleBackend](inv:#*extensions.cirq.CirqCliffordSampleBackend)
 \- Backend for Cirq Clifford simulator sampling.
 
-[CirqCliffordSimBackend](inv:#*.CirqCliffordSimBackend)
+[CirqCliffordSimBackend](inv:#*extensions.cirq.CirqCliffordSimBackend)
 \- Backend for Cirq Clifford simulator state return.
 
-[SimplexBackend](inv:#*.SimplexBackend)- Backend for simulating Clifford circuits using pysimplex.
+[SimplexBackend](inv:#*extensions.pysimplex.SimplexBackend)- Backend for simulating Clifford circuits using pysimplex.
 
-[StimBackend](inv:#*.StimBackend)
+[StimBackend](inv:#*extensions.stim.StimBackend)
 \- Backend for simulating Clifford circuits using Stim.
 
 ## Other
 
-[AerBackend](inv:#*.AerBackend)
+[AerBackend](inv:#*extensions.qiskit.AerBackend)
 \- Backend for running simulations on the Qiskit Aer QASM simulator. This simulator is noiseless by default but can take a user defined `NoiseModel`.
 
-[QulacsBackend](inv:#*.QulacsBackend)
+[QulacsBackend](inv:#*extensions.qulacs.QulacsBackend)
 \- Backend for running simulations of variational quantum circuits on the Qulacs simulator.
 
 ```{toctree}

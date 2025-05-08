@@ -23,18 +23,16 @@ from pytket.circuit import Circuit
 
 
 class Graph:
+    """
+    A class for visualising a circuit as a directed acyclic graph (DAG).
+
+    Note: in order to use graph-rendering methods, such as
+    :py:meth:`Graph.save_DAG`, it is necessary to have the Graphviz tools installed
+    and on your path. See the `Graphviz website <https://graphviz.org/download/>`_
+    for instructions on how to install them.
+    """
+
     def __init__(self, c: Circuit):
-        """
-        A class for visualising a circuit as a directed acyclic graph (DAG).
-
-        Note: in order to use graph-rendering methods, such as
-        :py:meth:`Graph.save_DAG`, it is necessary to have the Graphviz tools installed
-        and on your path. See the `Graphviz website <https://graphviz.org/download/>`_
-        for instructions on how to install them.
-
-        :param      c:    Circuit
-        :type       c:    pytket.Circuit
-        """
         (
             q_inputs,
             c_inputs,
@@ -46,7 +44,7 @@ class Graph:
             output_names,
             node_data,
             edge_data,
-        ) = c._dag_data
+        ) = c._dag_data  # noqa: SLF001
         self.q_inputs = q_inputs
         self.c_inputs = c_inputs
         self.w_inputs = w_inputs
@@ -122,7 +120,7 @@ class Graph:
         self.Gnx = Gnx
         return Gnx
 
-    def get_DAG(self) -> gv.Digraph:
+    def get_DAG(self) -> gv.Digraph:  # noqa: PLR0912, PLR0915
         """
         Return a visual representation of the DAG as a graphviz object.
 
@@ -273,7 +271,7 @@ class Graph:
         :returns: filename of temporary created file
         """
         G = self.get_DAG()
-        filename = NamedTemporaryFile(delete=False).name
+        filename = NamedTemporaryFile(delete=False).name  # noqa: SIM115
         G.view(filename, quiet=True)
         return filename
 
@@ -323,7 +321,7 @@ class Graph:
         :returns: filename of temporary created file
         """
         G = self.get_qubit_graph()
-        filename = NamedTemporaryFile(delete=False).name
+        filename = NamedTemporaryFile(delete=False).name  # noqa: SIM115
         G.view(filename, quiet=True)
         return filename
 

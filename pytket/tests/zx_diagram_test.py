@@ -68,7 +68,7 @@ def test_generator_creation() -> None:
     assert repr(tri_gen) == "C-Tri"
 
 
-def test_diagram_creation() -> None:
+def test_diagram_creation() -> None:  # noqa: PLR0915
     diag = ZXDiagram(1, 1, 0, 0)
     z_spid = diag.add_vertex(ZXType.ZSpider, 0.1)
     x_spid = diag.add_vertex(ZXType.XSpider, 3.4)
@@ -142,7 +142,7 @@ def test_diagram_creation() -> None:
 
 
 @pytest.mark.skipif(not have_quimb, reason="quimb not installed")
-def test_known_tensors() -> None:
+def test_known_tensors() -> None:  # noqa: PLR0915
     # A single basic edge
     diag = ZXDiagram(1, 1, 0, 0)
     w = diag.add_wire(diag.get_boundary()[0], diag.get_boundary()[1])
@@ -375,7 +375,7 @@ def test_known_tensors() -> None:
 
 
 @pytest.mark.skipif(not have_quimb, reason="quimb not installed")
-def test_classical_and_cptp() -> None:
+def test_classical_and_cptp() -> None:  # noqa: PLR0915
     # A single classical spider in a classical diagram
     diag = ZXDiagram(0, 0, 1, 2)
     ins = diag.get_boundary(ZXType.Input)
@@ -602,7 +602,7 @@ def test_graph_like_reduction() -> None:
 
 
 @pytest.mark.skipif(not have_quimb, reason="quimb not installed")
-def test_spider_fusion() -> None:
+def test_spider_fusion() -> None:  # noqa: PLR0915
     diag = ZXDiagram(2, 1, 0, 0)
     ins = diag.get_boundary(ZXType.Input)
     outs = diag.get_boundary(ZXType.Output)
@@ -665,7 +665,7 @@ def test_spider_fusion() -> None:
 @pytest.mark.skipif(not have_quimb, reason="quimb not installed")(
     not have_quimb, reason="quimb not installed"
 )
-def test_simplification() -> None:
+def test_simplification() -> None:  # noqa: PLR0915
     # This diagram follows from section A of https://arxiv.org/pdf/1902.03178.pdf
     diag = ZXDiagram(4, 4, 0, 0)
     ins = diag.get_boundary(ZXType.Input)
@@ -835,7 +835,7 @@ def test_XY_extraction() -> None:
 
 
 @pytest.mark.skipif(not have_quimb, reason="quimb not installed")
-def test_XY_YZ_extraction() -> None:
+def test_XY_YZ_extraction() -> None:  # noqa: PLR0915
     # Almost identical to the diagram in test_ZXExtraction.cpp
     # Gadgets g3 and g8 removed as they made tensor evaluation real slow
     diag = ZXDiagram(5, 5, 0, 0)
@@ -925,7 +925,7 @@ def test_XY_YZ_extraction() -> None:
 
 
 @pytest.mark.skipif(not have_quimb, reason="quimb not installed")
-def test_ZX_rebase() -> None:
+def test_ZX_rebase() -> None:  # noqa: PLR0915
     diag = ZXDiagram(2, 1, 0, 1)
     ins = diag.get_boundary(ZXType.Input)
     outs = diag.get_boundary(ZXType.Output)

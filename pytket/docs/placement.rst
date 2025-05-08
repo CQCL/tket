@@ -7,6 +7,9 @@ For more on qubit placement (and routing in general) see the `qubit mapping and 
 
 .. currentmodule:: pytket._tket.placement
 
+.. automodule:: pytket.placement
+.. automodule:: pytket._tket.placement
+
 .. autoclass:: pytket.placement.GraphPlacement
 
    .. automethod:: __init__

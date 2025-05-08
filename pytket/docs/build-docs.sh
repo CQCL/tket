@@ -8,7 +8,9 @@ PYTKET_VERSION="$(pip show pytket| grep Version | awk '{print $2}')"
 PACKAGE="pytket $PYTKET_VERSION"
 
 # Build the docs setting the html title to show the correct pytket version.
-sphinx-build -b html . build -D html_title="$PACKAGE API documentation"
+sphinx-build -W -b html . build -D html_title="$PACKAGE API documentation"
+
+sphinx-build -W -b coverage . build/coverage
 
 # Replace unnecessary _tket for all classes and functions in the built html
 # Apple MACOSX and Linux have differing sed replace syntax

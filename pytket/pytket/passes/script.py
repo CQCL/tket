@@ -165,7 +165,7 @@ _NEWLINE: CR? LF
 """
 
 
-class PassTransformer(Transformer):
+class _PassTransformer(Transformer):
     def start(self, t: list[BasePass]) -> BasePass:
         return t[0]
 
@@ -348,7 +348,7 @@ class PassTransformer(Transformer):
 
 
 parser = Lark(pass_grammar)
-transformer = PassTransformer()
+transformer = _PassTransformer()
 
 
 def compilation_pass_from_script(script: str) -> BasePass:
@@ -386,7 +386,7 @@ def compilation_pass_from_script(script: str) -> BasePass:
     :param script: specification of pass
     """
     tree = parser.parse(script)
-    return cast(BasePass, transformer.transform(tree))
+    return cast("BasePass", transformer.transform(tree))
 
 
 def compilation_pass_grammar() -> str:

@@ -2,6 +2,9 @@ pytket.pauli
 ==================================
 .. currentmodule:: pytket._tket.pauli
 
+.. automodule:: pytket.pauli
+.. automodule:: pytket._tket.pauli
+
 .. autoenum:: pytket.pauli.Pauli
 
 .. autoclass:: pytket.pauli.PauliStabiliser

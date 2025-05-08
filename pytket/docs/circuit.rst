@@ -11,6 +11,8 @@ pytket.circuit
 
 .. currentmodule:: pytket._tket.circuit
 
+.. automodule:: pytket.circuit
+.. automodule:: pytket._tket.circuit
 
 .. automethod:: pytket.circuit.fresh_symbol
 
@@ -41,6 +43,8 @@ pytket.circuit
 .. autoenum:: pytket.circuit.BasisOrder
 
 .. autoenum:: pytket.circuit.CXConfigType
+
+.. autoenum:: pytket.circuit.EdgeType
 
 .. autoclass:: pytket.circuit.CircBox
 
@@ -321,3 +325,16 @@ pytket.circuit
    .. automethod:: get_n_bits
    .. automethod:: get_n_qubits
    .. automethod:: get_resource_data
+  
+.. autoclass:: pytket.circuit.BarrierOp
+
+   .. automethod:: __init__
+   .. autoproperty:: data
+
+.. autoclass:: pytket.circuit.MetaOp
+
+   .. automethod:: __init__
+   .. autoproperty:: data
+
+.. automodule:: pytket.circuit.named_types
+    :members:

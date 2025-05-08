@@ -7,6 +7,9 @@ For more on predicates read the corresponding section of the `user manual <https
 
 .. currentmodule:: pytket._tket.predicates
 
+.. automodule:: pytket.predicates
+.. automodule:: pytket._tket.predicates
+
 .. autoclass:: pytket.predicates.CliffordCircuitPredicate
 
    .. automethod:: __init__

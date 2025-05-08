@@ -830,7 +830,7 @@ def test_decompose_swap_to_cx() -> None:
     circ.CX(1, 4)
     circ.CX(0, 4)
 
-    init_map = dict()
+    init_map = {}
     init_map[Qubit(0)] = Node(0)
     init_map[Qubit(1)] = Node(1)
     init_map[Qubit(2)] = Node(2)
@@ -1080,7 +1080,7 @@ def test_auto_rebase() -> None:
 
     circ = get_test_circuit()
 
-    for gateset, cx_circ, TK1_func in pass_params:
+    for gateset, cx_circ, TK1_func in pass_params:  # noqa: B007
         rebase = AutoRebase(gateset)
         c2 = circ.copy()
         assert rebase.apply(c2)
@@ -1139,7 +1139,7 @@ def test_auto_squash() -> None:
         ),
     ]
 
-    for gateset, TK1_func in pass_params:
+    for gateset, TK1_func in pass_params:  # noqa: B007
         circ = Circuit(1)
         for gate in itertools.islice(itertools.cycle(gateset), 5):
             # make a sequence of 5 gates from gateset to make sure squash does
@@ -1230,7 +1230,7 @@ def test_round_angles() -> None:
     assert circ0 == circ1
 
 
-def test_auto_rebase_with_swap_cx() -> None:
+def test_auto_rebase_with_swap_cx() -> None:  # noqa: PLR0915
     swap_pass = AutoRebase({OpType.CX, OpType.PhasedX, OpType.Rz}, True)
     no_swap_pass = AutoRebase({OpType.CX, OpType.PhasedX, OpType.Rz}, False)
 
@@ -1293,7 +1293,7 @@ def test_auto_rebase_with_swap_cx() -> None:
     assert c_swap.n_gates == 1
 
 
-def test_auto_rebase_with_swap_zzmax() -> None:
+def test_auto_rebase_with_swap_zzmax() -> None:  # noqa: PLR0915
     swap_pass = AutoRebase({OpType.ZZMax, OpType.PhasedX, OpType.Rz}, True)
     no_swap_pass = AutoRebase({OpType.ZZMax, OpType.PhasedX, OpType.Rz}, False)
 
@@ -1363,7 +1363,7 @@ def test_auto_rebase_with_swap_zzmax() -> None:
     assert c_swap.n_gates == 1
 
 
-def test_auto_rebase_with_swap_zzphase() -> None:
+def test_auto_rebase_with_swap_zzphase() -> None:  # noqa: PLR0915
     swap_pass = AutoRebase({OpType.ZZPhase, OpType.PhasedX, OpType.Rz}, True)
     no_swap_pass = AutoRebase({OpType.ZZPhase, OpType.PhasedX, OpType.Rz}, False)
 

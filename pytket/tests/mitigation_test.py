@@ -119,12 +119,9 @@ def test_spam_integration() -> None:
     def check_correction(
         counts0: dict[tuple[int, ...], int], counts1: dict[tuple[int, ...], int]
     ) -> bool:
-        if (
-            counts0[(0, 0, 0)] > counts1[(0, 0, 0)]
-            and counts0[(1, 0, 1)] > counts1[(1, 0, 1)]
-        ):
-            return True
-        return False
+        return (
+            counts0[0, 0, 0] > counts1[0, 0, 0] and counts0[1, 0, 1] > counts1[1, 0, 1]
+        )
 
     rbell_parallel_measures = spam.get_parallel_measure(rbell)
     default_correct = spam.correct_counts(bellres, rbell_parallel_measures).get_counts()
@@ -518,7 +515,7 @@ def test_spam_routing() -> None:
     mm.route_circuit(routed, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
     DelayMeasures().apply(routed)
     readout = routed.qubit_readout
-    nodes = cast(list[Node], list(readout.keys()))
+    nodes = cast("list[Node]", list(readout.keys()))
     spam = SpamCorrecter([nodes])
     calib_circs = spam.calibration_circuits()
 

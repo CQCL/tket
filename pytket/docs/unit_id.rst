@@ -2,6 +2,9 @@ pytket.unit_id
 ==============
 .. currentmodule:: pytket._tket.unit_id
 
+.. automodule:: pytket.unit_id
+.. automodule:: pytket._tket.unit_id
+
 .. autoclass:: pytket.unit_id.Bit
 
    .. automethod:: __init__
