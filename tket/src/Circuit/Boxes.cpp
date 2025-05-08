@@ -24,11 +24,13 @@
 #include "tket/Circuit/AssertionSynthesis.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Command.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/ThreeQubitConversion.hpp"
 #include "tket/Gate/Rotation.hpp"
 #include "tket/OpType/OpTypeInfo.hpp"
 #include "tket/Ops/OpJsonFactory.hpp"
 #include "tket/Ops/OpPtr.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/HelperFunctions.hpp"
 #include "tket/Utils/PauliTensor.hpp"
@@ -397,6 +399,17 @@ QControlBox::QControlBox(
       control_state_(
           control_state.empty() ? std::vector<bool>(n_controls, true)
                                 : control_state) {
+  // Send warnings for inner ops that do not preserve global phase.
+  if (op_->get_type() == OpType::TermSequenceBox) {
+    const auto &inner_box = static_cast<const TermSequenceBox &>(*op_);
+    if (inner_box.get_synth_strategy() == Transforms::PauliSynthStrat::Greedy) {
+      tket_log()->error(
+          "Wrapping a TermSequenceBox with the Greedy synthesis strategy in a "
+          "QControlBox may result in an incorrect circuit, as the "
+          "TermSequenceBox decomposition "
+          "does not preserve global phase.");
+    }
+  }
   if (n_controls != control_state_.size()) {
     throw CircuitInvalidity(
         "The size of control_state doesn't match the argument n_controls");

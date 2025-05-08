@@ -17,7 +17,7 @@ import math
 import pickle
 from math import sqrt
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import pytest
@@ -1579,7 +1579,7 @@ def test_cnrx_cnrz() -> None:
     assert np.allclose(c1rx.get_unitary(), crx.get_unitary())
 
 
-def greedy_TermSequenceBox() -> None:
+def test_greedy_TermSequenceBox() -> None:
     tseqbox = TermSequenceBox(
         [
             ([Pauli.X, Pauli.I, Pauli.I], 0.3),
@@ -1596,6 +1596,22 @@ def greedy_TermSequenceBox() -> None:
     assert cmds[1].op.type == OpType.TK1
     assert cmds[2].op.type == OpType.TK1
     assert c.n_2qb_gates() <= 2
+
+
+def test_controlled_TermSequenceBox_logging(capfd: Any) -> None:
+    tseqbox = TermSequenceBox(
+        [
+            ([Pauli.X, Pauli.I, Pauli.I], 0.3),
+            ([Pauli.I, Pauli.Y, Pauli.I], 0.2),
+            ([Pauli.I, Pauli.I, Pauli.Z], 1.1),
+            ([Pauli.X, Pauli.Z, Pauli.I], 1.8),
+        ],
+        synthesis_strategy=PauliSynthStrat.Greedy,
+        depth_weight=0.28,
+    )
+    QControlBox(tseqbox)
+    out = capfd.readouterr().out
+    assert "does not preserve global phase" in out
 
 
 def test_cnx_vchain_zeroed_ancillas() -> None:
