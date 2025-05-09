@@ -77,7 +77,7 @@ from pytket.passes import (
     scratch_reg_resize_pass,
 )
 from pytket.qasm.grammar import grammar
-from pytket.wasm import WasmFileHandler
+from pytket.wasm import WasmFileHandler, WasmModuleHandler
 
 
 class QASMParseError(Exception):
@@ -321,7 +321,7 @@ class _CircuitTransformer(Transformer):
         self.q_registers: dict[str, int] = {}
         self.c_registers: dict[str, int] = {}
         self.gate_dict: dict[str, dict] = {}
-        self.wasm: WasmFileHandler | None = None
+        self.wasm: WasmModuleHandler | None = None
         self.include = ""
         self.return_gate_dict = return_gate_dict
         self.maxwidth = maxwidth
@@ -1037,6 +1037,45 @@ def circuit_from_qasm_wasm(
     assert g_parser is not None
     cast("_CircuitTransformer", g_parser.options.transformer).wasm = wasm_module
     return circuit_from_qasm(input_file, encoding=encoding, maxwidth=maxwidth)
+
+
+def circuit_from_qasm_str_wasm(
+    qasm_str: str,
+    wasm: bytes,
+    maxwidth: int = 32,
+) -> Circuit:
+    """A method to generate a tket Circuit from a qasm string and external WASM module.
+
+    :param qasm_str: qasm string
+    :param wasm: bytes of the corresponding wasm module
+    :param maxwidth: maximum allowed width of classical registers (default 32)
+    :return: pytket circuit
+    """
+    global g_parser  # noqa: PLW0602
+    wasm_module = WasmModuleHandler(wasm)
+    _set_parser(maxwidth=maxwidth)
+    assert g_parser is not None
+    cast("_CircuitTransformer", g_parser.options.transformer).wasm = wasm_module
+    return circuit_from_qasm_str(qasm_str, maxwidth=maxwidth)
+
+
+def circuit_from_qasm_str_wasmmh(
+    qasm_str: str,
+    wasmmh: WasmModuleHandler,
+    maxwidth: int = 32,
+) -> Circuit:
+    """A method to generate a tket Circuit from a qasm string and external WASM module.
+
+    :param qasm_str: qasm string
+    :param wasm: handler corresponding to the wasm module
+    :param maxwidth: maximum allowed width of classical registers (default 32)
+    :return: pytket circuit
+    """
+    global g_parser  # noqa: PLW0602
+    _set_parser(maxwidth=maxwidth)
+    assert g_parser is not None
+    cast("_CircuitTransformer", g_parser.options.transformer).wasm = wasmmh
+    return circuit_from_qasm_str(qasm_str, maxwidth=maxwidth)
 
 
 def circuit_to_qasm(

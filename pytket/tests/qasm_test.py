@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import base64
 import re
 from io import StringIO
 from pathlib import Path
@@ -42,6 +43,8 @@ from pytket.passes import DecomposeBoxes, DecomposeClassicalExp
 from pytket.qasm import (
     circuit_from_qasm,
     circuit_from_qasm_str,
+    circuit_from_qasm_str_wasm,
+    circuit_from_qasm_str_wasmmh,
     circuit_from_qasm_wasm,
     circuit_to_qasm,
     circuit_to_qasm_str,
@@ -56,6 +59,7 @@ from pytket.qasm.includes.load_includes import (
 )
 from pytket.qasm.qasm import QASMParseError, QASMUnsupportedError
 from pytket.transform import Transform
+from pytket.wasm import WasmModuleHandler
 
 curr_file_path = Path(__file__).resolve().parent
 
@@ -466,6 +470,45 @@ def test_extended_qasm() -> None:
 
     with pytest.raises(DecomposeClassicalError):
         DecomposeClassicalExp().apply(c)
+
+
+def test_qasm_wasm() -> None:
+    qasm = 'OPENQASM 2.0; include "qelib1.inc"; qreg q[2]; h q; ZZ q[1],q[0]; creg cr[3]; creg cs[3]; creg co[3]; measure q[0]->cr[0]; measure q[1]->cr[1]; cs = cr; co = add(cr, cs);'
+    wasm = base64.b64decode(
+        "AGFzbQEAAAABCgJgAABgAn9/AX8DAwIAAQUDAQAQBhkDfwFBgIDAAAt/AEGAgMAAC38AQYCAwAALBzIFBm1lbW9yeQIABGluaXQAAANhZGQAAQpfX2RhdGFfZW5kAwELX19oZWFwX2Jhc2UDAgoMAgIACwcAIAEgAGoL"
+    )
+
+    circ = circuit_from_qasm_str_wasm(qasm, wasm)
+
+    assert circ.n_gates == 15
+    assert circ.n_qubits == 2
+
+
+def test_qasm_wasm_2() -> None:
+    qasm = 'OPENQASM 2.0; include "qelib1.inc"; qreg q[2]; h q; ZZ q[1],q[0]; creg cr[3]; creg cs[3]; creg co[3]; measure q[0]->cr[0]; measure q[1]->cr[1]; cs = cr; co = add(cr, cs);'
+    wasmfh = WasmModuleHandler(
+        base64.b64decode(
+            "AGFzbQEAAAABCgJgAABgAn9/AX8DAwIAAQUDAQAQBhkDfwFBgIDAAAt/AEGAgMAAC38AQYCAwAALBzIFBm1lbW9yeQIABGluaXQAAANhZGQAAQpfX2RhdGFfZW5kAwELX19oZWFwX2Jhc2UDAgoMAgIACwcAIAEgAGoL"
+        )
+    )
+
+    circ = circuit_from_qasm_str_wasmmh(qasm, wasmfh)
+
+    assert circ.n_gates == 15
+    assert circ.n_qubits == 2
+
+
+def test_qasm_wasm_3() -> None:
+    qasm = 'OPENQASM 2.0; include "qelib1.inc"; qreg q[2]; h q; ZZ q[1],q[0]; creg cr[3]; creg cs[3]; creg co[3]; measure q[0]->cr[0]; measure q[1]->cr[1]; cs = cr; co = add(cr, cs);'
+    wasmfh = WasmModuleHandler(
+        b"YXNkYXNoamthc2Roams=",
+        check=False,
+    )
+
+    circ = circuit_from_qasm_str_wasmmh(qasm, wasmfh)
+
+    assert circ.n_gates == 15
+    assert circ.n_qubits == 2
 
 
 def test_decomposable_extended() -> None:
