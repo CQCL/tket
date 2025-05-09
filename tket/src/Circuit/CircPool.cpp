@@ -1088,16 +1088,24 @@ Circuit approx_TK2_using_2xZZPhase(const Expr &alpha, const Expr &beta) {
 Circuit TK2_using_ZZPhase(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
   Circuit c(2);
-  c.append(XXPhase_using_ZZPhase(alpha));
-  c.append(YYPhase_using_ZZPhase(beta));
-  c.add_op<unsigned>(OpType::ZZPhase, gamma, {0, 1});
+  if (!equiv_0(alpha, 4)) {
+    c.append(XXPhase_using_ZZPhase(alpha));
+  }
+  if (!equiv_0(beta, 4)) {
+    c.append(YYPhase_using_ZZPhase(beta));
+  }
+  if (!equiv_0(gamma, 4)) {
+    c.add_op<unsigned>(OpType::ZZPhase, gamma, {0, 1});
+  }
   return c;
 }
 
 Circuit TK2_using_ZZPhase_and_swap(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
   Circuit c = TK2_using_CX_and_swap(alpha, beta, gamma);
-  if (c.count_gates(OpType::CX) < 3) {
+  unsigned n_zz_phase =
+      !equiv_0(alpha, 4) + !equiv_0(beta, 4) + !equiv_0(gamma, 4);
+  if (c.count_gates(OpType::CX) < n_zz_phase) {
     // Find the CX gates and replace them with ZZMax.
     VertexSet bin;
     BGL_FORALL_VERTICES(v, c.dag, DAG) {
