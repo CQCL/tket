@@ -91,12 +91,24 @@ from pytket.passes import (
 from pytket.pauli import Pauli
 from pytket.placement import GraphPlacement, Placement
 from pytket.predicates import (
+    CliffordCircuitPredicate,
+    CommutableMeasuresPredicate,
     CompilationUnit,
+    ConnectivityPredicate,
     DirectednessPredicate,
     GateSetPredicate,
     MaxNClRegPredicate,
+    MaxNQubitsPredicate,
+    MaxTwoQubitGatesPredicate,
     NoBarriersPredicate,
+    NoClassicalBitsPredicate,
     NoClassicalControlPredicate,
+    NoFastFeedforwardPredicate,
+    NoMidMeasurePredicate,
+    NormalisedTK2Predicate,
+    NoSymbolsPredicate,
+    NoWireSwapsPredicate,
+    PlacementPredicate,
 )
 from pytket.transform import CXConfigType, PauliSynthStrat, Transform
 
@@ -1207,6 +1219,25 @@ def test_initial_and_final_map_types() -> None:
 
 
 def test_pickling() -> None:
-    pred = GateSetPredicate({OpType.CX, OpType.TK1})
-    pred1 = pickle.loads(pickle.dumps(pred))
-    assert pred.to_dict() == pred1.to_dict()
+    for pred in [
+        GateSetPredicate({OpType.CX, OpType.TK1}),
+        NoClassicalControlPredicate(),
+        NoFastFeedforwardPredicate(),
+        NoClassicalBitsPredicate(),
+        NoWireSwapsPredicate(),
+        MaxTwoQubitGatesPredicate(),
+        ConnectivityPredicate(Architecture([(0, 1), (1, 2), (2, 3), (3, 0)])),
+        DirectednessPredicate(Architecture([(0, 1)])),
+        CliffordCircuitPredicate(),
+        MaxNQubitsPredicate(6),
+        MaxNClRegPredicate(50),
+        PlacementPredicate({Node(1), Node(3)}),
+        NoBarriersPredicate(),
+        CommutableMeasuresPredicate(),
+        NoMidMeasurePredicate(),
+        NoSymbolsPredicate(),
+        NormalisedTK2Predicate(),
+    ]:
+        s = pickle.dumps(pred)
+        pred1 = pickle.loads(s)
+        assert pred.to_dict() == pred1.to_dict()
