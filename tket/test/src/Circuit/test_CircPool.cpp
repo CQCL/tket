@@ -243,6 +243,30 @@ SCENARIO("TK2_using_ZZPhase(_and_SWAP)") {
     b = c = 0.;
     n_zzphase = n_zzphase_w_swap = 1;
   }
+  GIVEN("a = 2") {
+    a = 2.;
+    b = 1.3;
+    c = 0.15;
+    n_zzphase = n_zzphase_w_swap = 2;
+  }
+  GIVEN("b = 2") {
+    a = 1.5;
+    b = 2.;
+    c = 0.15;
+    n_zzphase = n_zzphase_w_swap = 2;
+  }
+  GIVEN("c = 2") {
+    a = 1.5;
+    b = 2.3;
+    c = 2.;
+    n_zzphase = n_zzphase_w_swap = 2;
+  }
+  GIVEN("a = c = 2") {
+    a = 2.;
+    b = 2.3;
+    c = 2.;
+    n_zzphase = n_zzphase_w_swap = 1;
+  }
   GIVEN("swap") {
     a = b = c = 0.5;
     n_zzphase = 3;

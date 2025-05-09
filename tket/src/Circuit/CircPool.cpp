@@ -1089,13 +1089,25 @@ Circuit TK2_using_ZZPhase(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
   Circuit c(2);
   if (!equiv_0(alpha, 4)) {
-    c.append(XXPhase_using_ZZPhase(alpha));
+    if (equiv_0(alpha)) {
+      c.add_phase(1);
+    } else {
+      c.append(XXPhase_using_ZZPhase(alpha));
+    }
   }
   if (!equiv_0(beta, 4)) {
-    c.append(YYPhase_using_ZZPhase(beta));
+    if (equiv_0(beta)) {
+      c.add_phase(1);
+    } else {
+      c.append(YYPhase_using_ZZPhase(beta));
+    }
   }
   if (!equiv_0(gamma, 4)) {
-    c.add_op<unsigned>(OpType::ZZPhase, gamma, {0, 1});
+    if (equiv_0(gamma)) {
+      c.add_phase(1);
+    } else {
+      c.add_op<unsigned>(OpType::ZZPhase, gamma, {0, 1});
+    }
   }
   return c;
 }
@@ -1103,8 +1115,7 @@ Circuit TK2_using_ZZPhase(
 Circuit TK2_using_ZZPhase_and_swap(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
   Circuit c = TK2_using_CX_and_swap(alpha, beta, gamma);
-  unsigned n_zz_phase =
-      !equiv_0(alpha, 4) + !equiv_0(beta, 4) + !equiv_0(gamma, 4);
+  unsigned n_zz_phase = !equiv_0(alpha) + !equiv_0(beta) + !equiv_0(gamma);
   if (c.count_gates(OpType::CX) < n_zz_phase) {
     // Find the CX gates and replace them with ZZMax.
     VertexSet bin;
