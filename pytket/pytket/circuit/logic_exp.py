@@ -72,7 +72,7 @@ Ops = Union[BitWiseOp, RegWiseOp]  # all op enum types  # noqa: UP007
 
 Constant = int  # constants in expression
 Variable = Union[Bit, BitRegister]  # variables in expression  # noqa: UP007
-ArgType = Union["LogicExp", Variable, Constant]  # all possible arguments in expression
+ArgType = Union["LogicExp", Union[Bit, BitRegister], Constant]  # all possible arguments in expression
 
 
 @dataclass(init=False)
@@ -141,7 +141,7 @@ class LogicExp:
             return RegNot
         raise ValueError("op type not supported")
 
-    def set_value(self, var: Variable, val: Constant) -> None:
+    def set_value(self, var: Union[Bit, BitRegister], val: Constant) -> None:
         """Set value of var to val recursively."""
         for i, arg in enumerate(self.args):
             if isinstance(arg, Bit | BitRegister):
@@ -165,12 +165,12 @@ class LogicExp:
                 rval = self._const_eval(cast("list[Constant]", self.args))
         return rval
 
-    def all_inputs(self) -> set[Variable]:
+    def all_inputs(self) -> set[Union[Bit, BitRegister]]:
         """
         :return: All variables involved in expression.
-        :rtype: Set[Variable]
+        :rtype: Set[Union[Bit, BitRegister]]
         """
-        outset: set[Variable] = set()
+        outset: set[Union[Bit, BitRegister]] = set()
 
         for arg in self.args:
             if isinstance(arg, LogicExp):
@@ -183,13 +183,13 @@ class LogicExp:
                 outset.add(arg)
         return outset
 
-    def all_inputs_ordered(self) -> list[Variable]:
+    def all_inputs_ordered(self) -> list[Union[Bit, BitRegister]]:
         """
         :return: All variables involved in expression, in order of first appearance.
-        :rtype: list[Variable]
+        :rtype: list[Union[Bit, BitRegister]]
         """
-        # use dict[Variable, None] instead of set[Variable] to preserve order
-        outset: dict[Variable, None] = {}
+        # use dict[Union[Bit, BitRegister], None] instead of set[Union[Bit, BitRegister]] to preserve order
+        outset: dict[Union[Bit, BitRegister], None] = {}
 
         for arg in self.args:
             if isinstance(arg, LogicExp):

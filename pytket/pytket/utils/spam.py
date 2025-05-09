@@ -41,9 +41,9 @@ def compress_counts(
     :param counts: Input counts
     :type counts: Dict[StateTuple, float]
     :param tol: Value below which counts are pruned. Defaults to 1e-6.
-    :type tol: float, optional
+    :type tol: float
     :param round_to_int: Whether to round each count to an integer. Defaults to False.
-    :type round_to_int: bool, optional
+    :type round_to_int: bool
 
     :return: Filtered counts
     :rtype: CountsDict
@@ -103,14 +103,14 @@ def _unfold(tens: np.ndarray, mode: int, dims: list[int]) -> np.ndarray:
     """Unfolds tensor into matrix.
 
     :param tens: Tensor with shape equivalent to dimensions
-    :type tens: np.ndarray
+    :type tens: numpy.ndarray
     :param mode: Specifies axis move to front of matrix in unfolding of tensor
     :type mode: int
     :param dims: Gives shape of tensor passed
     :type dims: List[int]
 
     :return: Matrix with shape (dims[mode], prod(dims[/mode]))
-    :rtype: np.ndarray
+    :rtype: numpy.ndarray
     """
     if mode == 0:
         return tens.reshape(dims[0], -1)
@@ -122,14 +122,14 @@ def _refold(vec: np.ndarray, mode: int, dims: list[int]) -> np.ndarray:
 
     :param vec: Tensor with length equivalent to the product of dimensions given in
         dims
-    :type vec: np.ndarray
+    :type vec: numpy.ndarray
     :param mode: Axis tensor was unfolded along
     :type mode: int
     :param dims: Shape of tensor
     :type dims: List[int]
 
     :return: Tensor folded from vector with shape equivalent to given dimensions
-    :rtype: np.ndarray
+    :rtype: numpy.ndarray
     """
     if mode == 0:
         return vec.reshape(dims)
@@ -143,12 +143,12 @@ def _compute_dot(submatrices: Iterable[np.ndarray], vector: np.ndarray) -> np.nd
     """Multiplies the kronecker product of the given submatrices with given vector.
 
     :param submatrices: Submatrices multiplied
-    :type submatrices: Iterable[np.ndarray]
+    :type submatrices: Iterable[numpy.ndarray]
     :param vector: Vector multplied
-    :type vector: np.ndarray
+    :type vector: numpy.ndarray
 
     :return: Kronecker product of arguments
-    :rtype: np.ndarray
+    :rtype: numpy.ndarray
     """
     dims = [A.shape[0] for A in submatrices]
     vt = vector.reshape(dims)
@@ -167,17 +167,17 @@ def _bayesian_iteration(
     measurements.
 
     :param submatrices: submatrices to be inverted and applied to measurements.
-    :type submatrices: Iterable[np.ndarray]
+    :type submatrices: Iterable[numpy.ndarray]
     :param measurements: Probability distribution over set of states to be amended.
-    :type measurements: np.ndarray
+    :type measurements: numpy.ndarray
     :param t: Some transform to act on measurements.
-    :type t: np.ndarray
+    :type t: numpy.ndarray
     :param epsilon: A stabilization parameter to define an affine transformation for
         application to submatrices, eliminating zero probabilities.
     :type epsilon: float
 
     :return: Transformed distribution vector.
-    :rtype: np.ndarray
+    :rtype: numpy.ndarray
     """
     # Transform t according to the Bayesian iteration
     # The parameter epsilon is a stabilization parameter which defines an affine
@@ -210,9 +210,9 @@ def _bayesian_iterative_correct(
     tested states.
 
     :param submatrices: Matrices comprising the pure noise characterisation.
-    :type submatrices: Iterable[np.ndarray]
+    :type submatrices: Iterable[numpy.ndarray]
     :param input_vector: Vector corresponding to some counts distribution.
-    :type input_vector: np.ndarray
+    :type input_vector: numpy.ndarray
     :param tol: tolerance of closeness of found results
     :type tol: float
     :param max_it: Maximum number of inversions attempted to correct results.
@@ -255,10 +255,10 @@ def _reduce_matrix(indices_to_remove: list[int], matrix: np.ndarray) -> np.ndarr
     :param indices_to_remove: Binary index of state matrix is mapping to be removed.
     :type indices_to_remove: List[int]
     :param matrix: Transition matrix where indices correspond to some binary state.
-    :type matrix: np.ndarray
+    :type matrix: numpy.ndarray
 
     :return: Transition matrix with removed entries.
-    :rtype: np.ndarray
+    :rtype: numpy.ndarray
     """
 
     new_n_qubits = int(log2(matrix.shape[0])) - len(indices_to_remove)
@@ -292,10 +292,10 @@ def _reduce_matrices(
     :param entries_to_remove: Via indexing, details dimensions to be removed.
     :type entries_to_remove: List[Tuple[int, int]]
     :param matrices: All matrices to have dimensions removed.
-    :type matrices: List[np.ndarray]
+    :type matrices: List[numpy.ndarray]
 
     :return: Matrices with some dimensions removed.
-    :rtype: List[np.ndarray]
+    :rtype: List[numpy.ndarray]
     """
     organise: dict[int, list] = {k: [] for k in range(len(matrices))}
     for unused in entries_to_remove:

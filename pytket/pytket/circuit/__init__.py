@@ -38,6 +38,7 @@ from pytket._tket.unit_id import (
 )
 
 from .logic_exp import (
+    LogicExp,
     BinaryOp,
     Ops,
     if_bit,
@@ -49,6 +50,8 @@ from .logic_exp import (
     reg_lt,
     reg_neq,
 )
+
+from .clexpr import wired_clexpr_from_logic_exp
 
 
 def add_wasm(  # noqa: PLR0913
@@ -156,3 +159,25 @@ please use only registers of at most 32 bits"""
 
 
 setattr(Circuit, "add_wasm_to_reg", add_wasm_to_reg)  # noqa: B010
+
+def add_clexpr_from_logicexp(
+    circ: Circuit, exp: LogicExp, output_bits: list[Bit], **kwargs: Any
+) -> None:
+    """Append a :py:class:`~.ClExprOp` defined in terms of a logical expression.
+
+    Example:
+    >>> c = Circuit()
+    >>> x_reg = c.add_c_register('x', 3)
+    >>> y_reg = c.add_c_register('y', 3)
+    >>> z_reg = c.add_c_register('z', 3)
+    >>> c.add_clexpr_from_logicexp(x_reg | y_reg, z_reg.to_list())
+    >>> [ClExpr x[0], x[1], x[2], y[0], y[1], y[2], z[0], z[1], z[2]; ]
+
+    :param exp: logical expression
+    :param output_bits: list of bits in output
+    :return: the updated circuit
+    """
+    wexpr, args = wired_clexpr_from_logic_exp(exp, output_bits)
+    circ.add_clexpr(wexpr, args, **kwargs)
+
+setattr(Circuit, "add_clexpr_from_logicexp", add_clexpr_from_logicexp)

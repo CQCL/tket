@@ -289,7 +289,7 @@ class QubitPauliOperator:
         :param qubits: Sequencing of qubits in the matrix, either as an explicit
             list, number of qubits to pad to, or infer from the operator.
             Defaults to None
-        :type qubits: Union[List[Qubit], int, None], optional
+        :type qubits: Union[List[Qubit], int, None]
         :return: A sparse matrix representation of the operator.
         :rtype: csc_matrix
         """
@@ -319,7 +319,7 @@ class QubitPauliOperator:
         :type state: numpy.ndarray
         :param qubits: Sequencing of qubits in ``state``, if not mapped to the
             default register. Defaults to None
-        :type qubits: Union[List[Qubit], None], optional
+        :type qubits: Union[List[Qubit], None]
         :return: The dot product of the operator with the statevector
         :rtype: numpy.ndarray
         """
@@ -350,7 +350,7 @@ class QubitPauliOperator:
         :type state: numpy.ndarray
         :param qubits: Sequencing of qubits in ``state``, if not mapped to the
             default register. Defaults to None
-        :type qubits: Union[List[Qubit], None], optional
+        :type qubits: Union[List[Qubit], None]
         :return: The expectation value of the statevector and operator
         :rtype: complex
         """

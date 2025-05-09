@@ -1,6 +1,6 @@
 # pytket.circuit.Circuit
 
-{py:class}`Circuit` objects provide an abstraction of quantum circuits. They consist of a set of qubits/quantum wires and a collection of operations applied to them in a given order. These wires have open inputs and outputs, rather than assuming any fixed input state.
+{py:class}`~.Circuit` objects provide an abstraction of quantum circuits. They consist of a set of qubits/quantum wires and a collection of operations applied to them in a given order. These wires have open inputs and outputs, rather than assuming any fixed input state.
 
 See the [pytket User Manual](https://docs.quantinuum.com/tket/user-guide/manual/manual_circuit.html) for a step-by-step tutorial on constructing circuits.
 
@@ -11,8 +11,8 @@ the end of the circuit. Where `kwargs` are indicated in these methods, the
 following keyword arguments are supported:
 
 - `opgroup` ({py:class}`str`): name of the associated operation group, if any
-- `condition` ({py:class}`Bit`, {py:class}`BitLogicExp` or {py:class}`Predicate`): classical condition for applying operation
-- `condition_bits` (list of {py:class}`Bit`): classical bits on which to condition operation
+- `condition` ({py:class}`~.Bit`, {py:class}`~.BitLogicExp` or {py:class}`~.Predicate`): classical condition for applying operation
+- `condition_bits` (list of {py:class}`~.Bit`): classical bits on which to condition operation
 - `condition_value` ({py:class}`int`): required value of condition bits (little-endian), defaulting to all-1s if not specified
 
 (Thus there are two ways to express classical conditions: either using a general

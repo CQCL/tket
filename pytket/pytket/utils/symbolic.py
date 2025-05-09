@@ -339,7 +339,7 @@ class SymGateRegister:
         :param f: Callable for generating symbolic matrix.
         :type f: SymGateFunc
         :param replace: Whether to replace existing entry, defaults to False
-        :type replace: bool, optional
+        :type replace: bool
         """
         if typ not in cls._g_map or replace:
             cls._g_map[typ] = f
@@ -472,7 +472,7 @@ def circuit_apply_symbolic_statevector(
     :param circ: Input Circuit.
     :type circ: Circuit
     :param input_state: Input statevector as a column vector, defaults to None.
-    :type input_state: Optional[Union[np.ndarray, ImmutableMatrix]], optional
+    :type input_state: Optional[Union[numpy.ndarray, ImmutableMatrix]]
     :return: Symbolic state after circ acts on input_state.
     :rtype: ImmutableMatrix
     """

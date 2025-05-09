@@ -132,7 +132,7 @@ NB_MODULE(predicates, m) {
       "graph. The graph is always considered to be undirected.")
       .def(
           nb::init<const Architecture &>(),
-          "Construct from an :py:class:`Architecture`.",
+          "Construct from an :py:class:`~.Architecture`.",
           nb::arg("architecture"));
   nb::class_<DirectednessPredicate, Predicate>(
       m, "DirectednessPredicate",
@@ -140,7 +140,7 @@ NB_MODULE(predicates, m) {
       "graph. The graph is always considered to be directed.")
       .def(
           nb::init<const Architecture &>(),
-          "Construct from an :py:class:`Architecture`.",
+          "Construct from an :py:class:`~.Architecture`.",
           nb::arg("architecture"));
   nb::class_<CliffordCircuitPredicate, Predicate>(
       m, "CliffordCircuitPredicate",
@@ -152,7 +152,7 @@ NB_MODULE(predicates, m) {
       .def(
           nb::init<const std::function<bool(const Circuit &)> &>(),
           "Construct from a user-defined function from "
-          ":py:class:`Circuit` to `bool`.",
+          ":py:class:`~.Circuit` to `bool`.",
           nb::arg("check_function"));
   nb::class_<DefaultRegisterPredicate, Predicate>(
       m, "DefaultRegisterPredicate",
@@ -173,7 +173,7 @@ NB_MODULE(predicates, m) {
       "Placement object.")
       .def(
           nb::init<const Architecture &>(),
-          "Construct from an :py:class:`Architecture`.",
+          "Construct from an :py:class:`~.Architecture`.",
           nb::arg("architecture"))
       .def(
           nb::init<const node_set_t &>(), "Construct from a set of Node.",

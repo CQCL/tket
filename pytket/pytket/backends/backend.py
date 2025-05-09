@@ -38,9 +38,6 @@ from .backendresult import BackendResult
 from .resulthandle import ResultHandle, _ResultIdTuple
 from .status import CircuitStatus
 
-ResultCache = dict[str, Any]
-
-
 class ResultHandleTypeError(Exception):
     """Wrong result handle type."""
 
@@ -63,12 +60,12 @@ class Backend(ABC):
     _persistent_handles = False
 
     def __init__(self) -> None:
-        self._cache: dict[ResultHandle, ResultCache] = {}
+        self._cache: dict[ResultHandle, dict[str, Any]] = {}
 
     @staticmethod
     def empty_result(circuit: Circuit, n_shots: int) -> BackendResult:
         """
-        Creates a :py:class:`BackendResult` mimicking the outcome where every
+        Creates a :py:class:`~.BackendResult` mimicking the outcome where every
         bit is 0 for every shot.
         """
         n_bits = len(circuit.bits)
@@ -159,7 +156,7 @@ class Backend(ABC):
             - Level 2 (the default) adds more computationally intensive optimisations
               that should give the best results from execution.
 
-        :type optimisation_level: int, optional
+        :type optimisation_level: int
         :return: Compilation pass guaranteeing required predicates.
         :rtype: BasePass
         """
@@ -195,7 +192,7 @@ class Backend(ABC):
 
         If the validity check fails, you can obtain more information about the failure
         by iterating through the predicates in the `required_predicates` property of the
-        backend, and running the :py:meth:`verify` method on each in turn with your
+        backend, and running the :py:meth:`~.Predicate.verify` method on each in turn with your
         circuit.
 
         :param circuits: The circuits to compile.
@@ -203,7 +200,7 @@ class Backend(ABC):
         :param optimisation_level: The level of optimisation to perform during
             compilation. See :py:meth:`default_compilation_pass` for a description of
             the different levels (0, 1 or 2). Defaults to 2.
-        :type optimisation_level: int, optional
+        :type optimisation_level: int
         :return: Compiled circuits.
         :rtype: List[Circuit]
         """
@@ -287,10 +284,10 @@ class Backend(ABC):
         :param n_shots: Number of shots to run per circuit. Optionally, this can be
             a list of shots specifying the number of shots for each circuit separately.
             None is to be used for state/unitary simulators. Defaults to None.
-        :type n_shots: Optional[Union[int, Iterable[int]], optional
+        :type n_shots: Optional[Union[int, Iterable[int]]
         :param valid_check: Explicitly check that all circuits satisfy all required
             predicates to run on the backend. Defaults to True
-        :type valid_check: bool, optional
+        :type valid_check: bool
         :return: Handles to results for each input circuit, as an interable in
             the same order as the circuits.
         :rtype: List[ResultHandle]
@@ -309,13 +306,13 @@ class Backend(ABC):
         """Manually empty the result cache on the backend."""
         self._cache = {}
 
-    def pop_result(self, handle: ResultHandle) -> ResultCache | None:
+    def pop_result(self, handle: ResultHandle) -> dict[str, Any] | None:
         """Remove cache entry corresponding to handle from the cache and return.
 
         :param handle: ResultHandle object
         :type handle: ResultHandle
         :return: Cache entry corresponding to handle, if it was present
-        :rtype: Optional[ResultCache]
+        :rtype: Optional[dict[str, Any]]
         """
         return self._cache.pop(handle, None)
 
@@ -458,7 +455,7 @@ class Backend(ABC):
     def supports_shots(self) -> bool:
         """
         Does this backend support shot result retrieval via
-        :py:meth:`backendresult.BackendResult.get_shots`.
+        :py:meth:`~.BackendResult.get_shots`.
         """
         return self._supports_shots
 
@@ -466,7 +463,7 @@ class Backend(ABC):
     def supports_counts(self) -> bool:
         """
         Does this backend support counts result retrieval via
-        :py:meth:`backendresult.BackendResult.get_counts`.
+        :py:meth:`~.BackendResult.get_counts`.
         """
         return self._supports_counts
 
@@ -474,7 +471,7 @@ class Backend(ABC):
     def supports_state(self) -> bool:
         """
         Does this backend support statevector retrieval via
-        :py:meth:`backendresult.BackendResult.get_state`.
+        :py:meth:`~.BackendResult.get_state`.
         """
         return self._supports_state
 
@@ -482,7 +479,7 @@ class Backend(ABC):
     def supports_unitary(self) -> bool:
         """
         Does this backend support unitary retrieval via
-        :py:meth:`backendresult.BackendResult.get_unitary`.
+        :py:meth:`~.BackendResult.get_unitary`.
         """
         return self._supports_unitary
 

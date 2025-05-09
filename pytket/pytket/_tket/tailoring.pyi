@@ -23,7 +23,7 @@ class FrameRandomisation:
         For given circuit, finds all Cycles, finds all frames for each Cycle, and returns every combination of frame and cycle in a vector of Circuit.
 
         :param circuit: The circuit to find frames for.
-        :return: list of :py:class:`Circuit` s
+        :return: list of :py:class:`~.Circuit` s
         """
 
     def sample_circuits(self, circuit: pytket._tket.circuit.Circuit, samples: int) -> list[pytket._tket.circuit.Circuit]:
@@ -32,7 +32,7 @@ class FrameRandomisation:
 
         :param circuit: The circuit to perform frame randomisation with Pauli gates on
         :param samples: the number of frame randomised circuits to return.
-        :return: list of :py:class:`Circuit` s
+        :return: list of :py:class:`~.Circuit` s
         """
 
     def __repr__(self) -> str: ...
@@ -50,7 +50,7 @@ class PauliFrameRandomisation:
         For given circuit, finds all Cycles, finds all frames for each Cycle, and returns every combination of frame and cycle in a vector of Circuit.
 
         :param circuit: The circuit to find frames for.
-        :return: list of :py:class:`Circuit` s
+        :return: list of :py:class:`~.Circuit` s
         """
 
     def sample_circuits(self, circuit: pytket._tket.circuit.Circuit, samples: int) -> list[pytket._tket.circuit.Circuit]:
@@ -59,7 +59,7 @@ class PauliFrameRandomisation:
 
         :param circuit: The circuit to perform frame randomisation with Pauli gates on
         :param samples: the number of frame randomised circuits to return.
-        :return: list of :py:class:`Circuit` s
+        :return: list of :py:class:`~.Circuit` s
         """
 
     def __repr__(self) -> str: ...
@@ -77,7 +77,7 @@ class UniversalFrameRandomisation:
         For given circuit, finds all Cycles, finds all frames for each Cycle, and returns every combination of frame and cycle in a vector of Circuit.
 
         :param circuit: The circuit to find frames for.
-        :return: list of :py:class:`Circuit` s
+        :return: list of :py:class:`~.Circuit` s
         """
 
     def sample_circuits(self, circuit: pytket._tket.circuit.Circuit, samples: int) -> list[pytket._tket.circuit.Circuit]:
@@ -86,7 +86,7 @@ class UniversalFrameRandomisation:
 
         :param circuit: The circuit to perform frame randomisation with Pauli gates on
         :param samples: the number of frame randomised circuits to return.
-        :return: list of :py:class:`Circuit` s
+        :return: list of :py:class:`~.Circuit` s
         """
 
     def __repr__(self) -> str: ...
@@ -97,7 +97,7 @@ def apply_clifford_basis_change(pauli: pytket._tket.pauli.QubitPauliString, circ
 
     :param pauli: Pauli operator being transformed. 
     :param circuit: Clifford circuit acting on Pauli operator. 
-    :return: :py:class:`QubitPauliString` for new operator
+    :return: :py:class:`~.QubitPauliString` for new operator
     """
 
 def apply_clifford_basis_change_tensor(pauli: pytket._tket.pauli.QubitPauliTensor, circuit: pytket._tket.circuit.Circuit) -> pytket._tket.pauli.QubitPauliTensor:
@@ -106,5 +106,5 @@ def apply_clifford_basis_change_tensor(pauli: pytket._tket.pauli.QubitPauliTenso
 
     :param pauli: Pauli operator being transformed.
     :param circuit: Clifford circuit acting on Pauli operator. 
-    :return: :py:class:`QubitPauliTensor` for new operator
+    :return: :py:class:`~.QubitPauliTensor` for new operator
     """

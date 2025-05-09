@@ -77,8 +77,8 @@ NB_MODULE(circuit, m) {
   // NOTE: Sphinx does not automatically pick up the docstring for OpType
   nb::enum_<OpType>(
       m, "OpType",
-      "Enum for available operations compatible with tket " CLSOBJS(
-          Circuit) ".",
+      "Enum for available operations compatible with tket " CLSOBJS(~.Circuit) 
+      ".",
       nb::is_arithmetic())
       .value(
           "Phase", OpType::Phase,
@@ -369,10 +369,10 @@ NB_MODULE(circuit, m) {
       .value(
           "CustomGate", OpType::CustomGate,
           ":math:`(\\alpha, \\beta, \\ldots) \\mapsto` A user-defined "
-          "operation, based on a :py:class:`Circuit` :math:`C` with "
+          "operation, based on a :py:class:`~.Circuit` :math:`C` with "
           "parameters :math:`\\alpha, \\beta, \\ldots` substituted in "
           "place of bound symbolic variables in :math:`C`, as defined "
-          "by the :py:class:`CustomGateDef`.")
+          "by the :py:class:`~.CustomGateDef`.")
       .value(
           "Conditional", OpType::Conditional,
           "An operation to be applied conditionally on the value of "
@@ -557,19 +557,19 @@ NB_MODULE(circuit, m) {
       .def_static(
           "create",
           [](OpType optype) { return get_op_ptr(optype, std::vector<Expr>()); },
-          "Create an :py:class:`Op` with given type")
+          "Create an :py:class:`~.Op` with given type")
       .def_static(
           "create",
           [](OpType optype, const Expr &param) {
             return get_op_ptr(optype, param);
           },
-          "Create an :py:class:`Op` with given type and parameter")
+          "Create an :py:class:`~.Op` with given type and parameter")
       .def_static(
           "create",
           [](OpType optype, const nb::tket_custom::SequenceVec<Expr> &params) {
             return get_op_ptr(optype, params);
           },
-          "Create an :py:class:`Op` with given type and parameters")
+          "Create an :py:class:`~.Op` with given type and parameters")
       .def_prop_ro("type", &Op::get_type, "Type of op being performed")
       .def_prop_ro(
           "params", &Op::get_params_reduced,
@@ -592,7 +592,7 @@ NB_MODULE(circuit, m) {
       .def(
           "is_clifford_type",
           [](const Op &op) { return op.get_desc().is_clifford_gate(); },
-          "Check if the operation is one of the Clifford " CLSOBJS(OpType) ".")
+          "Check if the operation is one of the Clifford " CLSOBJS(~.OpType) ".")
       .def(
           "is_clifford", [](const Op &op) { return op.is_clifford(); },
           "Test whether the operation is in the Clifford group. A return value "

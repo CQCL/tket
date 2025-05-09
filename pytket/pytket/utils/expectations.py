@@ -38,7 +38,7 @@ def expectation_from_shots(shot_table: np.ndarray) -> float:
     from each row, and returns the average.
 
     :param shot_table: The table of shots to interpret.
-    :type shot_table: np.ndarray
+    :type shot_table: numpy.ndarray
     :return: The expectation value in the range [-1, 1].
     :rtype: float
     """
@@ -91,7 +91,7 @@ def get_pauli_expectation_value(
     :type backend: Backend
     :param n_shots: Number of shots to run if backend supports shots/counts. Set to None
         to calculate using statevector if supported by the backend. Defaults to None
-    :type n_shots: Optional[int], optional
+    :type n_shots: Optional[int]
     :return: :math:`\\left<\\psi | P | \\psi \\right>`
     :rtype: float
     """
@@ -139,10 +139,10 @@ def get_operator_expectation_value(  # noqa: PLR0912, PLR0913, PLR0915
     :type backend: Backend
     :param n_shots: Number of shots to run if backend supports shots/counts. None will
         force the backend to give the full state if available. Defaults to None
-    :type n_shots: Optional[int], optional
+    :type n_shots: Optional[int]
     :param partition_strat: If retrieving shots, can perform measurement reduction using
         a chosen strategy
-    :type partition_strat: Optional[PauliPartitionStrat], optional
+    :type partition_strat: Optional[PauliPartitionStrat]
     :return: :math:`\\left<\\psi | H | \\psi \\right>`
     :rtype: complex
     """

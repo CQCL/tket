@@ -30,7 +30,7 @@ class PauliSynthStrat(enum.Enum):
     """
 
 class Transform:
-    """An in-place transformation of a :py:class:`Circuit`."""
+    """An in-place transformation of a :py:class:`~.Circuit`."""
 
     def __init__(self, arg: Callable[[pytket._tket.circuit.Circuit], bool], /) -> None: ...
 
@@ -144,7 +144,7 @@ class Transform:
     @staticmethod
     def DecomposeSWAPtoCX(arc: pytket._tket.architecture.Architecture) -> Transform:
         """
-        Decomposes all SWAP gates into triples of CX gates. If the SWAP is adjacent to a CX, it will prefer to insert in the direction that allows for gate cancellation. If an :py:class:`Architecture` is provided, this will prefer to insert the CXs such that fewer need redirecting.
+        Decomposes all SWAP gates into triples of CX gates. If the SWAP is adjacent to a CX, it will prefer to insert in the direction that allows for gate cancellation. If an :py:class:`~.Architecture` is provided, this will prefer to insert the CXs such that fewer need redirecting.
 
         :param arc: Device architecture used to specify a preference for CX direction
         """
@@ -156,7 +156,7 @@ class Transform:
     @staticmethod
     def DecomposeCXDirected(arc: pytket._tket.architecture.Architecture) -> Transform:
         """
-        Decompose CX gates to H+CX to match the direction of the CXs to edges of the :py:class:`Architecture` `arc`. Assumes the circuit already satisfies the connectivity of `arc`.
+        Decompose CX gates to H+CX to match the direction of the CXs to edges of the :py:class:`~.Architecture` `arc`. Assumes the circuit already satisfies the connectivity of `arc`.
 
         :param arc: The architecture for which CXs should be redirected
         """
@@ -168,9 +168,9 @@ class Transform:
 
         Arguments specify ways to filter which boxes are decomposed. A box must satisfy ALL filters in order to be decomposed (i.e. be in the inclusive sets and not in the exclusive sets).
 
-        :param excluded_types: box :py:class:`OpType` s excluded from decomposition
+        :param excluded_types: box :py:class:`~.OpType` s excluded from decomposition
         :param excluded_opgroups: opgroups excluded from decomposition
-        :param included_types: optional, only decompose these box :py:class:`OpType` s
+        :param included_types: optional, only decompose these box :py:class:`~.OpType` s
         :param included_opgroups: optional, only decompose these opgroups
         """
 

@@ -80,7 +80,7 @@ See the
 for an extensive tutorial on pytket, providing a gentle introduction to its
 features and how to run circuits on backend devices, with worked examples.
 
-In pytket there is also a generic {py:class}`Backend` interface. This represents a connection to a quantum device or simulator.
+In pytket there is also a generic {py:class}`~.Backend` interface. This represents a connection to a quantum device or simulator.
 It's possible to run circuits on platforms from different providers through the [extension modules](https://docs.quantinuum.com/tket/api-docs/extensions).
 
 ```{code-cell} ipython3
@@ -102,7 +102,7 @@ print(result.get_counts())
 
 This prints out a summary of readouts (the final values of the classical bits) and their frequencies.
 
-Each pytket {py:class}`Backend` comes with its own default compilation method. This is a recommended sequence of optimisation passes to meet the requirements of the specific {py:class}`Backend`.
+Each pytket {py:class}`~.Backend` comes with its own default compilation method. This is a recommended sequence of optimisation passes to meet the requirements of the specific {py:class}`~.Backend`.
 
 The following code snippet will show how to compile a circuit to run on an IBM device. This requires setting up IBM credentials (see the [credentials guide](https://docs.quantinuum.com/tket/extensions/pytket-qiskit/#access-and-credentials)).
 
@@ -120,7 +120,7 @@ compiled_circ = nairobi_device.get_compiled_circuit(circ)
 result = backend.run_circuit(compiled_circ, n_shots=100)
 ```
 
-Here the default compilation pass is applied by {py:meth}`IBMQBackend.get_compiled_circuit`. See [this page](https://docs.quantinuum.com/tket/extensions/pytket-qiskit/#default-compilation) for more details.
+Here the default compilation pass is applied by {external+pytket-qiskit:py:meth}`pytket.extensions.qiskit.IBMQBackend.get_compiled_circuit`. See [this page](https://docs.quantinuum.com/tket/extensions/pytket-qiskit/#default-compilation) for more details.
 
 As an alternative, We can experiment with constructing our own circuit compilation routines in pytket. Passes from the {py:mod}`pytket.passes` module can be applied individually or composed in sequence.
 See the section of the user manual on [circuit compilation](https://docs.quantinuum.com/tket/user-guide/manual/manual_compiler.html) and the corresponding [notebook example](https://docs.quantinuum.com/tket/user-guide/examples/circuit_compilation/compilation_example.html) for more.

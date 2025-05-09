@@ -167,7 +167,7 @@ NB_MODULE(partition, m) {
       "\n:param method: The `GraphColourMethod` to use."
       "\n:param cx_config: Whenever diagonalisation is required, use "
       "this configuration of CX gates"
-      "\n:return: a :py:class:`MeasurementSetup` object",
+      "\n:return: a :py:class:`~.MeasurementSetup` object",
       nb::arg("strings"), nb::arg("strat"),
       nb::arg("method") = GraphColourMethod::Lazy,
       nb::arg("cx_config") = CXConfigType::Snake);
@@ -187,7 +187,7 @@ NB_MODULE(partition, m) {
       "\n:param strat: The `PauliPartitionStrat` to use. Defaults to "
       "`CommutingSets`."
       "\n:param method: The `GraphColourMethod` to use."
-      "\n:return: a list of lists of " CLSOBJS(QubitPauliString),
+      "\n:return: a list of lists of " CLSOBJS(~.QubitPauliString),
       nb::arg("strings"), nb::arg("strat") = PauliPartitionStrat::CommutingSets,
       nb::arg("method") = GraphColourMethod::Lazy);
 }

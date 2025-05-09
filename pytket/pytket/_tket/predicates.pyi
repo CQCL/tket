@@ -88,7 +88,7 @@ class ConnectivityPredicate(Predicate):
     """
 
     def __init__(self, architecture: pytket._tket.architecture.Architecture) -> None:
-        """Construct from an :py:class:`Architecture`."""
+        """Construct from an :py:class:`~.Architecture`."""
 
 class DirectednessPredicate(Predicate):
     """
@@ -96,7 +96,7 @@ class DirectednessPredicate(Predicate):
     """
 
     def __init__(self, architecture: pytket._tket.architecture.Architecture) -> None:
-        """Construct from an :py:class:`Architecture`."""
+        """Construct from an :py:class:`~.Architecture`."""
 
 class CliffordCircuitPredicate(Predicate):
     """
@@ -111,7 +111,7 @@ class UserDefinedPredicate(Predicate):
 
     def __init__(self, check_function: Callable[[pytket._tket.circuit.Circuit], bool]) -> None:
         """
-        Construct from a user-defined function from :py:class:`Circuit` to `bool`.
+        Construct from a user-defined function from :py:class:`~.Circuit` to `bool`.
         """
 
 class DefaultRegisterPredicate(Predicate):
@@ -141,7 +141,7 @@ class PlacementPredicate(Predicate):
 
     @overload
     def __init__(self, architecture: pytket._tket.architecture.Architecture) -> None:
-        """Construct from an :py:class:`Architecture`."""
+        """Construct from an :py:class:`~.Architecture`."""
 
     @overload
     def __init__(self, nodes: Set[pytket._tket.unit_id.Node]) -> None:

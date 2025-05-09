@@ -27,7 +27,7 @@ from numpy.typing import ArrayLike
 
 class OutcomeArray(np.ndarray):
     """
-    Array of measured outcomes from qubits. Derived class of `numpy.ndarray`.
+    Array of measured outcomes from qubits. Derived class of :py:class:`numpy.ndarray`.
 
     Bitwise outcomes are compressed into unsigned 8-bit integers, each
     representing up to 8 qubit measurements. Each row is a repeat measurement.
@@ -111,7 +111,7 @@ class OutcomeArray(np.ndarray):
 
         :param big_endian: whether to use big endian encoding (or little endian
             if False), defaults to True
-        :type big_endian: bool, optional
+        :type big_endian: bool
         :return: List of integers, each corresponding to an outcome.
         :rtype: List[int]
         """
@@ -139,7 +139,7 @@ class OutcomeArray(np.ndarray):
         :type width: int
         :param big_endian: whether to use big endian encoding (or little endian
             if False), defaults to True
-        :type big_endian: bool, optional
+        :type big_endian: bool
         :return: OutcomeArray instance
         :rtype: OutcomeArray
         """

@@ -483,8 +483,8 @@ void init_clexpr(nb::module_ &m) {
           "Construct from an operation type and a list of arguments.\n\n"
           ":param op: the operation type\n"
           ":param args: list of arguments to the expression (which may be "
-          "integers, :py:class:`ClBitVar` variables, :py:class:`ClRegVar` "
-          "variables, or other :py:class:`ClExpr`)",
+          "integers, :py:class:`~.ClBitVar` variables, :py:class:`~.ClRegVar` "
+          "variables, or other :py:class:`~.ClExpr`)",
           nb::arg("op"), nb::arg("args"))
       .def("__eq__", &py_equals<ClExpr>)
       .def(
@@ -518,11 +518,11 @@ void init_clexpr(nb::module_ &m) {
           "Construct from an expression with bit and register positions.\n\n"
           ":param expr: an abstract classical expression\n"
           ":param bit_posn: a map whose keys are the indices of the "
-          ":py:class:`ClBitVar` occurring in the expression, and whose values "
+          ":py:class:`~.ClBitVar` occurring in the expression, and whose values "
           "are the positions of the corresponding bits in the arguments of the "
           "operation\n"
           ":param reg_posn: a map whose keys are the indices of the "
-          ":py:class:`ClRegVar` occurring in the expression, and whose values "
+          ":py:class:`~.ClRegVar` occurring in the expression, and whose values "
           "are the sequences of positions of the corresponding bits in the "
           "arguments of the operation\n"
           ":param output_posn: a list giving the positions of the output bits "

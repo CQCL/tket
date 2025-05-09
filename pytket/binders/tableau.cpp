@@ -37,7 +37,7 @@ NB_MODULE(tableau, m) {
       "input.")
       .def(
           nb::init<unsigned>(),
-          "Constructs a :py:class:`UnitaryTableau` representing the identity "
+          "Constructs a :py:class:`~.UnitaryTableau` representing the identity "
           "operation over some number of qubits. Qubits will be indexed "
           "sequentially in the default register."
           "\n\n:param nqb: The number of qubits in the unitary.",
@@ -46,7 +46,7 @@ NB_MODULE(tableau, m) {
           nb::init<
               const MatrixXb&, const MatrixXb&, const VectorXb&,
               const MatrixXb&, const MatrixXb&, const VectorXb&>(),
-          "Constructs a :py:class:`UnitaryTableau` from the binary tables of "
+          "Constructs a :py:class:`~.UnitaryTableau` from the binary tables of "
           "its components."
           "\n\n:param xx: The X component of the X rows."
           "\n:param xz: The Z component of the X rows."
@@ -61,8 +61,8 @@ NB_MODULE(tableau, m) {
           [](UnitaryTableau* p, const Circuit& circ) {
             new (p) UnitaryTableau(circuit_to_unitary_tableau(circ));
           },
-          "Constructs a :py:class:`UnitaryTableau` from a unitary "
-          ":py:class:`Circuit`. Throws an exception if the input contains "
+          "Constructs a :py:class:`~.UnitaryTableau` from a unitary "
+          ":py:class:`~.Circuit`. Throws an exception if the input contains "
           "non-unitary operations."
           "\n\n:param circ: The unitary circuit to convert to a tableau.")
       .def(
@@ -112,7 +112,7 @@ NB_MODULE(tableau, m) {
           "Update the tableau according to adding a Clifford gate before the "
           "current unitary, i.e. updates :math:`U` to :math:`UG` for a gate "
           ":math:`G`."
-          "\n\n:param type: The :py:class:`OpType` of the gate to add. Must be "
+          "\n\n:param type: The :py:class:`~.OpType` of the gate to add. Must be "
           "an unparameterised Clifford gate type."
           "\n:param qbs: The qubits to apply the gate to. Length must match "
           "the arity of the given gate type.",
@@ -126,14 +126,14 @@ NB_MODULE(tableau, m) {
           "Update the tableau according to adding a Clifford gate after the "
           "current unitary, i.e. updates :math:`U` to :math:`GU` for a gate "
           ":math:`G`."
-          "\n\n:param type: The :py:class:`OpType` of the gate to add. Must be "
+          "\n\n:param type: The :py:class:`~.OpType` of the gate to add. Must be "
           "an unparameterised Clifford gate type."
           "\n:param qbs: The qubits to apply the gate to. Length must match "
           "the arity of the given gate type.",
           nb::arg("type"), nb::arg("qbs"))
       .def(
           "to_circuit", &unitary_tableau_to_circuit,
-          "Synthesises a unitary :py:class:`Circuit` realising the same "
+          "Synthesises a unitary :py:class:`~.Circuit` realising the same "
           "unitary as the tableau. Uses the method from Aaronson & Gottesman: "
           "\"Improved Simulation of Stabilizer Circuits\", Theorem 8. This is "
           "not optimised for gate count, so is not recommended for "
@@ -145,7 +145,7 @@ NB_MODULE(tableau, m) {
       "output.")
       .def(
           nb::init<unsigned>(),
-          "Constructs a :py:class:`UnitaryRevTableau` representing the "
+          "Constructs a :py:class:`~.UnitaryRevTableau` representing the "
           "identity "
           "operation over some number of qubits. Qubits will be indexed "
           "sequentially in the default register."
@@ -155,7 +155,7 @@ NB_MODULE(tableau, m) {
           nb::init<
               const MatrixXb&, const MatrixXb&, const VectorXb&,
               const MatrixXb&, const MatrixXb&, const VectorXb&>(),
-          "Constructs a :py:class:`UnitaryRevTableau` from the binary tables "
+          "Constructs a :py:class:`~.UnitaryRevTableau` from the binary tables "
           "of "
           "its components."
           "\n\n:param xx: The X component of the X rows."
@@ -171,8 +171,8 @@ NB_MODULE(tableau, m) {
           [](UnitaryRevTableau* p, const Circuit& circ) {
             new (p) UnitaryRevTableau(circuit_to_unitary_rev_tableau(circ));
           },
-          "Constructs a :py:class:`UnitaryRevTableau` from a unitary "
-          ":py:class:`Circuit`. Throws an exception if the input contains "
+          "Constructs a :py:class:`~.UnitaryRevTableau` from a unitary "
+          ":py:class:`~.Circuit`. Throws an exception if the input contains "
           "non-unitary operations."
           "\n\n:param circ: The unitary circuit to convert to a tableau.")
       .def(
@@ -222,7 +222,7 @@ NB_MODULE(tableau, m) {
           "Update the tableau according to adding a Clifford gate before the "
           "current unitary, i.e. updates :math:`U` to :math:`UG` for a gate "
           ":math:`G`."
-          "\n\n:param type: The :py:class:`OpType` of the gate to add. Must be "
+          "\n\n:param type: The :py:class:`~.OpType` of the gate to add. Must be "
           "an unparameterised Clifford gate type."
           "\n:param qbs: The qubits to apply the gate to. Length must match "
           "the arity of the given gate type.",
@@ -236,14 +236,14 @@ NB_MODULE(tableau, m) {
           "Update the tableau according to adding a Clifford gate after the "
           "current unitary, i.e. updates :math:`U` to :math:`GU` for a gate "
           ":math:`G`."
-          "\n\n:param type: The :py:class:`OpType` of the gate to add. Must be "
+          "\n\n:param type: The :py:class:`~.OpType` of the gate to add. Must be "
           "an unparameterised Clifford gate type."
           "\n:param qbs: The qubits to apply the gate to. Length must match "
           "the arity of the given gate type.",
           nb::arg("type"), nb::arg("qbs"))
       .def(
           "to_circuit", &unitary_rev_tableau_to_circuit,
-          "Synthesises a unitary :py:class:`Circuit` realising the same "
+          "Synthesises a unitary :py:class:`~.Circuit` realising the same "
           "unitary as the tableau. Uses the method from Aaronson & Gottesman: "
           "\"Improved Simulation of Stabilizer Circuits\", Theorem 8. This is "
           "not optimised for gate count, so is not recommended for "
@@ -254,7 +254,7 @@ NB_MODULE(tableau, m) {
       .def(
           nb::init<const UnitaryTableau&>(),
           "Construct from a given tableau.\n\n"
-          ":param tab: The :py:class:`UnitaryTableau` representing the desired "
+          ":param tab: The :py:class:`~.UnitaryTableau` representing the desired "
           "unitary.",
           nb::arg("tab"))
       .def(
@@ -273,7 +273,7 @@ NB_MODULE(tableau, m) {
       .def(
           "get_circuit",
           [](UnitaryTableauBox& ubox) { return *ubox.to_circuit(); },
-          ":return: The :py:class:`Circuit` described by the box.")
+          ":return: The :py:class:`~.Circuit` described by the box.")
       .def(
           "get_tableau", &UnitaryTableauBox::get_tableau,
           ":return: The tableau representing the unitary operation.");

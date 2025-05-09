@@ -41,16 +41,16 @@ Fixes:
 
 API changes:
 
-- Gate construction methods (e.g. {py:meth}`Circuit.X`) have a streamlined API
+- Gate construction methods (e.g. {py:meth}`~.Circuit.X`) have a streamlined API
   by accepting `Union` types in place of overloaded methods, giving better
-  error messages when mixing {py:class}`UnitID` /{py:class}`Qubit` /
-  {py:class}`Bit` and `int` for gate arguments.
+  error messages when mixing {py:class}`~.UnitID` /{py:class}`~.Qubit` /
+  {py:class}`~.Bit` and `int` for gate arguments.
 
 Features:
 
 - Enabling pickling of `Architecture` objects.
 - Added optional inclusive filters to the
-  {py:meth}`~pytket.passes.DecomposeBoxes` pass to only decompose boxes of
+  {py:meth}`~.passes.DecomposeBoxes` pass to only decompose boxes of
   given types or opgroups.
 - New utility function `circuit_dict_from_pytket1_dict` to convert
   serializations of pytket 1 circuits containing `ClassicalExpBox` es to
@@ -97,7 +97,7 @@ Fixes:
 
 Features:
 
-- Add optional `allow_swaps` argument to {py:meth}`ZXGraphlikeOptimisation`.
+- Add optional `allow_swaps` argument to {py:meth}`~.passes.ZXGraphlikeOptimisation`.
 - Allow GreedyPauliSimp to accept circuits containing Phase gates.
 
 ## 2.0.0 (February 2025)
@@ -118,16 +118,16 @@ Fixes:
 
 Features:
 
-- Add {py:attr}`Circuit.has_implicit_wireswaps` property.
-- Make {py:meth}`PauliSimp` accept circuits with SX and SXdg gates.
+- Add {py:attr}`~.Circuit.has_implicit_wireswaps` property.
+- Make {py:meth}`~.passes.PauliSimp` accept circuits with SX and SXdg gates.
 
 ## 1.40.0 (February 2025)
 
 Features:
 
 - Add Python 3.13 support to the ZX module.
-- Add {py:meth}`QubitPauliOperator.get_dict` method.
-- Add {py:meth}`Circuit.add_circuit_with_map` method.
+- Add {py:meth}`~.QubitPauliOperator.get_dict` method.
+- Add {py:meth}`~.Circuit.add_circuit_with_map` method.
 
 Fixes:
 
@@ -1132,8 +1132,8 @@ Major new features:
 
 Minor new features:
 
-- New properties: :py:meth:`circuit.Op.dagger` and :py:meth:`circuit.Op.transpose`.
-- New methods: :py:meth:`routing.Placement.to_dict` and :py:meth:`routing.Placement.from_dict`.
+- New properties: :py:meth:`~.Op.dagger` and :py:meth:`~.Op.transpose`.
+- New methods: :py:meth:`~.Placement.to_dict` and :py:meth:`~.Placement.from_dict`.
 - New `NPhasedX` OpType.
 - New `GlobalPhasedXPredicate` and `GlobalisePhasedX` (transform and pass).
 
@@ -1146,8 +1146,8 @@ Fixes:
 
 Minor new features:
 
-- New :py:meth:`backends.Backend.run_circuit` and
-  \:py:meth:`backends.Backend.run_circuits` methods.
+- New :py:meth:`~.Backend.run_circuit` and
+  \:py:meth:`~.Backend.run_circuits` methods.
 - New `allow_swaps` parameter to `FullPeepholeOptimise` pass controlling
   whether to allow introduction of implicit wire swaps (defaulting to `True`
   to match existing behaviour).
@@ -1162,7 +1162,7 @@ API changes:
 
 - The deprecated `get_shots`, `get_counts` and `get_state` methods of the
   `Backend` class are removed. Use `run_circuits` and the homonym methods of
-  the {py:class}`backends.backendresult.BackendResult` class instead.
+  the {py:class}`~.BackendResult` class instead.
 
 ## 0.15.0 (September 2021)
 
@@ -1234,9 +1234,9 @@ Fixes:
 
 API changes:
 
-- {py:meth}`Backend.compile_circuit` is deprecated,
-  {py:meth}`Backend.get_compiled_circuit` and
-  {py:meth}`Backend.get_compiled_circuits` (for a sequence of circuits) replace
+- `Backend.compile_circuit` is deprecated,
+  {py:meth}`~.Backend.get_compiled_circuit` and
+  {py:meth}`~.Backend.get_compiled_circuits` (for a sequence of circuits) replace
   it, do not act in place, returning the compiled circuit(s). In place
   compilation can still be achieved with `backend.default_compilation_pass().apply(circ)`
 
@@ -1251,7 +1251,7 @@ Minor new features:
 
 - add_phase now returns the circuit
 - Option for `process_circuits` to take a list of `n_shots`.
-- `Device` class removed, replaced with {py:class}`BackendInfo`.
+- `Device` class removed, replaced with {py:class}`~.BackendInfo`.
 - `QubitErrorContainer` removed.
 - `RoutingMethod` removed.
 
@@ -1294,7 +1294,7 @@ Minor new features:
 
 API changes:
 
-- Remove architecture classes {py:class}`TriangularGrid`, {py:class}`HexagonalGrid` and {py:class}`CyclicButterfly`
+- Remove architecture classes `TriangularGrid`, `HexagonalGrid` and `CyclicButterfly`
 
 Fixes:
 
@@ -1553,28 +1553,28 @@ Major New Features:
 - Measurement reduction via Pauli term diagonalisation
 - Inspection of the status of circuit execution on asynchronous backends
 - Error mitigation facilities via the SPAM method
-- Introduction of the {py:class}`Program` class for specifying routines with classical control flow
+- Introduction of the `Program` class for specifying routines with classical control flow
 
 Minor New Features:
 
 - Improved error messages when circuits cannot be run on a backend
-- Generalised {py:meth}`Circuit.depth_by_type` to allow sets of gate types
+- Generalised {py:meth}`~.Circuit.depth_by_type` to allow sets of gate types
 - A selection of optimisation passes are parameterised by pattern for decomposing into CXs
-- New {py:class}`Architecture` subclass, {py:class}`FullyConnected`, added
+- New {py:class}`~.Architecture` subclass, {py:class}`~.FullyConnected`, added
 - New gates added: `OpType.ESWAP` and `OpType.FSim`
 - Additional utility methods for permuting qubits of statevectors
-- Inspection of any implicit permutations within the {py:class}`Circuit` dag structure
+- Inspection of any implicit permutations within the {py:class}`~.Circuit` dag structure
 - Inspection of free symbols in a circuit
-- Inspection of detailed gate errors from a {py:class}`Device`
+- Inspection of detailed gate errors from a `Device`
 - Additional methods for parsing/producing QASM through strings and streams
 - Ability to enable internal logs
 
 Updates:
 
 - Cleaner addition of conditions to gates via kwargs
-- {py:class}`UnitID` objects are specialised into either {py:class}`Qubit` or {py:class}`Bit` objects, with more natural constructors
+- {py:class}`~.UnitID` objects are specialised into either {py:class}`~.Qubit` or {py:class}`~.Bit` objects, with more natural constructors
 - Renamed many passes to give a uniform naming convention
-- Getters on {py:class}`Architecture`, {py:class}`Device`, {py:class}`GateError`, and {py:class}`QubitErrorContainer` made into readonly properties
+- Getters on {py:class}`~.Architecture`, `Device`, `GateError`, and `QubitErrorContainer` made into readonly properties
 - Backend-specific runtime arguments (e.g. simulator seeds) are now passed in via kwargs
 - Stability improvements and bug fixes
 - Updated documentation and additional examples
@@ -1583,7 +1583,7 @@ Updates:
 
 Deprecations:
 
-- Calling {py:meth}`get_counts`, {py:meth}`get_shots` or {py:meth}`get_state` on a {py:class}`Backend` object with a {py:class}`Circuit` argument is deprecated in favour of {py:class}`ResultHandle`.
+- Calling `get_counts`, `get_shots` or `get_state` on a {py:class}`~.Backend` object with a {py:class}`~.Circuit` argument is deprecated in favour of {py:class}`~.ResultHandle`.
 
 New supported backends:
 
@@ -1595,15 +1595,15 @@ New supported backends:
 
 New Features:
 
-- New classes for placement of logical qubits from {py:class}`Circuit` to physical qubits from {py:class}`Device` or {py:class}`Architecture`
-- Data from backends can be returned in either increasing lexicographical order of (qu)bit identifiers (the familiar ordering used in most textbooks) or decreasing order (popular with other quantum software platforms) using the {py:class}`BasisOrder` enum
+- New classes for placement of logical qubits from {py:class}`~.Circuit` to physical qubits from `Device` or {py:class}`~.Architecture`
+- Data from backends can be returned in either increasing lexicographical order of (qu)bit identifiers (the familiar ordering used in most textbooks) or decreasing order (popular with other quantum software platforms) using the {py:class}`~.BasisOrder` enum
 
 Updates:
 
 - Updated documentation and additional examples
 - OptimiseCliffordsZX pass removed, FullPeepholeOptimise pass added
-- New architectures added, including {py:class}`SquareGrid`, {py:class}`HexagonalGrid`, {py:class}`RingArch`, {py:class}`TriangularGrid` and {py:class}`CyclicButterfly`
-- Device information from {py:class}`Device` can now be returned
+- New architectures added, including {py:class}`~.SquareGrid`, `HexagonalGrid`, {py:class}`~.RingArch`, `TriangularGrid` and `CyclicButterfly`
+- Device information from `Device` can now be returned
 - Stability improvements and bug fixes
 
 ## 0.4.0 (November 2019)
@@ -1614,8 +1614,8 @@ New Features:
 - New "Box" gate types for encapsulating high-level structures (arbitrary subcircuits, parameterised composite gate definitions, unitaries, Pauli operators)
 - Simpler and more flexible structure for registers and names of qubits/bits, allowing for non-contiguous and multi-dimensional indices (referring to individual units, linear registers, grids, etc.)
 - Latex diagram output using Quantikz
-- The {py:class}`Device` class to build on top of {py:class}`Architecture` with error and timing information
-- Initial and final maps tracked throughout the entire compilation procedure using the {py:class}`CompilationUnit` wrapper
+- The `Device` class to build on top of {py:class}`~.Architecture` with error and timing information
+- Initial and final maps tracked throughout the entire compilation procedure using the {py:class}`~.CompilationUnit` wrapper
 - Import circuits from Quipper source files
 - Utility methods for processing data from Backends
 
@@ -1624,8 +1624,8 @@ Updates:
 - All Backends refactored for more consistent interfaces, separation of data processing, and introducing batch circuit processing when possible
 - Routing improved to use distributed CX (BRIDGE) gates in addition to SWAP insertion
 - Cost function for noise-aware allocation of qubits improved to consider more sources of noise
-- {py:class}`Architecture` objects can be specified with arbitrary node names, using the same {py:class}`UnitID` objects and qubits/bits
-- Removed the {py:class}`PhysicalCircuit` class in preference of just using {py:class}`Circuit` objects
+- {py:class}`~.Architecture` objects can be specified with arbitrary node names, using the same {py:class}`~.UnitID` objects and qubits/bits
+- Removed the `PhysicalCircuit` class in preference of just using {py:class}`~.Circuit` objects
 - Generalised and sped up the gate commutation pass
 - Optimisation for redundant gate removal now removes diagonal gates before measurements
 - Support for custom gate definitions in QASM input

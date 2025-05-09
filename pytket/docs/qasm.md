@@ -1,11 +1,11 @@
 # pytket.qasm
 
-{py:class}`Circuit` objects can be converted to and from OpenQASM, although we do not support all operations.
+{py:class}`~.Circuit` objects can be converted to and from OpenQASM, although we do not support all operations.
 
 However, we do support symbolic parameters of gates, both on import and export.
 
-Any pytket {py:class}`Circuit` that is exported to OpenQASM format with `pytket.qasm` should be valid for importing again as a {py:class}`Circuit`, making this a convenient file format
-to save your {py:class}`Circuit` objects.
+Any pytket {py:class}`~.Circuit` that is exported to OpenQASM format with `pytket.qasm` should be valid for importing again as a {py:class}`~.Circuit`, making this a convenient file format
+to save your {py:class}`~.Circuit` objects.
 
 In addition to the default `qelib1` qasm header, the `hqslib1` header is also supported.
 We can set the `header` argument in the qasm conversion functions as follows.

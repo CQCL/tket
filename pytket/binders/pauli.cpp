@@ -59,7 +59,7 @@ NB_MODULE(pauli, m) {
       .def(
           nb::init<QubitPauliMap>(),
           "Construct a QubitPauliString from a dictionary mapping "
-          ":py:class:`Qubit` to :py:class:`Pauli`.",
+          ":py:class:`~.Qubit` to :py:class:`~.Pauli`.",
           nb::arg("map"))
       .def(
           "__hash__", [](const SpPauliString &qps) { return qps.hash_value(); })
@@ -72,7 +72,7 @@ NB_MODULE(pauli, m) {
       .def_prop_ro(
           "map", [](const SpPauliString &qps) { return qps.string; },
           "The QubitPauliString's underlying dict mapping "
-          ":py:class:`Qubit` to :py:class:`Pauli`")
+          ":py:class:`~.Qubit` to :py:class:`~.Pauli`")
       .def(
           "to_list",
           [](const SpPauliString &qps) {
@@ -81,7 +81,7 @@ NB_MODULE(pauli, m) {
             return nb::cast<nb::list>(nb::object(json(qps.string)));
           },
           "A JSON-serializable representation of the QubitPauliString.\n\n"
-          ":return: a list of :py:class:`Qubit`-to-:py:class:`Pauli` "
+          ":return: a list of :py:class:`~.Qubit`-to-:py:class:`~.Pauli` "
           "entries, "
           "represented as dicts.")
       .def_static(
@@ -260,8 +260,8 @@ NB_MODULE(pauli, m) {
   nb::class_<SpCxPauliTensor>(
       m, "QubitPauliTensor",
       "A tensor formed by Pauli terms, consisting of a sparse map from "
-      ":py:class:`Qubit` to :py:class:`Pauli` (implemented as a "
-      ":py:class:`QubitPauliString`) and a complex coefficient.")
+      ":py:class:`~.Qubit` to :py:class:`~.Pauli` (implemented as a "
+      ":py:class:`~.QubitPauliString`) and a complex coefficient.")
       .def(
           "__init__",
           [](SpCxPauliTensor *p, const Complex &coeff) {
@@ -283,7 +283,7 @@ NB_MODULE(pauli, m) {
       .def(
           nb::init<QubitPauliMap, Complex>(),
           "Construct a QubitPauliTensor from a dictionary mapping "
-          ":py:class:`Qubit` to :py:class:`Pauli`.",
+          ":py:class:`~.Qubit` to :py:class:`~.Pauli`.",
           nb::arg("map"), nb::arg("coeff") = 1.)
       .def(
           "__init__",
@@ -318,7 +318,7 @@ NB_MODULE(pauli, m) {
           [](SpCxPauliTensor &qpt, const SpPauliString &qps) {
             qpt.string = qps.string;
           },
-          "The QubitPauliTensor's underlying :py:class:`QubitPauliString`")
+          "The QubitPauliTensor's underlying :py:class:`~.QubitPauliString`")
       .def_rw(
           "coeff", &SpCxPauliTensor::coeff,
           "The global coefficient of the tensor")

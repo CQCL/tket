@@ -279,7 +279,6 @@ class BackendResult:
         :param relabling_map: Map from original Qubits to new.
         :type relabling_map: Dict[Qubit, Qubit]
         :return: Permuted array.
-        :rtype: np.ndarray
         """
         original_labeling: Sequence[Qubit] = self.get_qbitlist()
         n_labels = len(original_labeling)
@@ -334,7 +333,7 @@ class BackendResult:
             qubits must be requested.
             For measured results (shots/counts), some subset of the relevant bits must
             be requested.
-        :type request_ids: Optional[Sequence[UnitID]], optional
+        :type request_ids: Optional[Sequence[UnitID]]
         :param basis: Toggle between ILO (increasing lexicographic order of bit ids) and
             DLO (decreasing lexicographic order) for column ordering if request_ids is
             None. Defaults to BasisOrder.ilo.
@@ -381,7 +380,7 @@ class BackendResult:
 
         :param cbits: ordered subset of Bits, returns all results by default, defaults
          to None
-        :type cbits: Optional[Sequence[Bit]], optional
+        :type cbits: Optional[Sequence[Bit]]
         :param basis: Toggle between ILO (increasing lexicographic order of bit ids) and
             DLO (decreasing lexicographic order) for column ordering if cbits is None.
             Defaults to BasisOrder.ilo.
@@ -389,7 +388,7 @@ class BackendResult:
         :raises InvalidResultType: Shot results are not available
         :return: 2D array of readouts, each row a separate outcome and each column a
          bit value.
-        :rtype: np.ndarray
+        :rtype: numpy.ndarray
 
         The order of the columns follows the order of `cbits`, if provided.
         """
@@ -410,7 +409,7 @@ class BackendResult:
 
         :param cbits: ordered subset of Bits, returns all results by default, defaults
          to None
-        :type cbits: Optional[Sequence[Bit]], optional
+        :type cbits: Optional[Sequence[Bit]]
         :param basis: Toggle between ILO (increasing lexicographic order of bit ids) and
             DLO (decreasing lexicographic order) for column ordering if cbits is None.
             Defaults to BasisOrder.ilo.
@@ -436,13 +435,13 @@ class BackendResult:
         """Return statevector if available.
 
         :param qbits: permutation of Qubits, defaults to None
-        :type qbits: Optional[Sequence[Qubit]], optional
+        :type qbits: Optional[Sequence[Qubit]]
         :param basis: Toggle between ILO (increasing lexicographic order of qubit ids)
             and DLO (decreasing lexicographic order) for column ordering if qbits is
             None. Defaults to BasisOrder.ilo.
         :raises InvalidResultType: Statevector not available
         :return: Statevector, (complex 1-D numpy array)
-        :rtype: np.ndarray
+        :rtype: numpy.ndarray
         """
         if qbits is None:
             qbits = sorted(self.q_bits.keys(), reverse=(basis == BasisOrder.dlo))
@@ -462,13 +461,13 @@ class BackendResult:
         """Return unitary if available.
 
         :param qbits: permutation of Qubits, defaults to None
-        :type qbits: Optional[Sequence[Qubit]], optional
+        :type qbits: Optional[Sequence[Qubit]]
         :param basis: Toggle between ILO (increasing lexicographic order of qubit ids)
             and DLO (decreasing lexicographic order) for column ordering if qbits is
             None. Defaults to BasisOrder.ilo.
         :raises InvalidResultType: Statevector not available
         :return: Unitary, (complex 2-D numpy array)
-        :rtype: np.ndarray
+        :rtype: numpy.ndarray
         """
         if qbits is None:
             qbits = sorted(self.q_bits.keys(), reverse=(basis == BasisOrder.dlo))
@@ -485,13 +484,13 @@ class BackendResult:
         """Return density_matrix if available.
 
         :param qbits: permutation of Qubits, defaults to None
-        :type qbits: Optional[Sequence[Qubit]], optional
+        :type qbits: Optional[Sequence[Qubit]]
         :param basis: Toggle between ILO (increasing lexicographic order of qubit ids)
             and DLO (decreasing lexicographic order) for column ordering if qbits is
             None. Defaults to BasisOrder.ilo.
         :raises InvalidResultType: Statevector not available
         :return: density_matrix, (complex 2-D numpy array)
-        :rtype: np.ndarray
+        :rtype: numpy.ndarray
         """
         if qbits is None:
             qbits = sorted(self.q_bits.keys(), reverse=(basis == BasisOrder.dlo))
@@ -516,7 +515,7 @@ class BackendResult:
 
         :param units: Optionally provide the Qubits or Bits
             to marginalise the distribution over, defaults to None
-        :type units: Optional[Sequence[UnitID]], optional
+        :type units: Optional[Sequence[UnitID]]
         :return: A distribution as a map from bitstring to probability.
         :rtype: Dict[Tuple[int, ...], float]
         """
@@ -541,7 +540,7 @@ class BackendResult:
         """Convert to a :py:class:`pytket.utils.distribution.EmpiricalDistribution`
         where the observations are sequences of 0s and 1s.
 
-        :param bits: Optionally provide the :py:class:`Bit` s over which to
+        :param bits: Optionally provide the :py:class:`~.Bit` s over which to
             marginalize the distribution.
         :return: A distribution where the observations are sequences of 0s and 1s.
         """  # noqa: RUF002
@@ -557,7 +556,7 @@ class BackendResult:
         """Convert to a :py:class:`pytket.utils.distribution.ProbabilityDistribution`
         where the possible outcomes are sequences of 0s and 1s.
 
-        :param qubits: Optionally provide the :py:class:`Qubit` s over which to
+        :param qubits: Optionally provide the :py:class:`~.Qubit` s over which to
             marginalize the distribution.
         :param min_p: Optional probability below which to ignore values (for
             example to avoid spurious values due to rounding errors in

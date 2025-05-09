@@ -392,7 +392,7 @@ def compilation_pass_from_script(script: str) -> BasePass:
 def compilation_pass_grammar() -> str:
     """Formal grammar for specifying compilation passes.
 
-    This is the grammar assumed by :py:meth:`complilation_pass_from_script`.
+    This is the grammar assumed by :py:meth:`compilation_pass_from_script`.
 
     :return: grammar in extended Backus--Naur form"""
     return pass_grammar

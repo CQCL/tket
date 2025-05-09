@@ -16,7 +16,7 @@ class UnitaryTableau:
     @overload
     def __init__(self, nqb: int) -> None:
         """
-        Constructs a :py:class:`UnitaryTableau` representing the identity operation over some number of qubits. Qubits will be indexed sequentially in the default register.
+        Constructs a :py:class:`~.UnitaryTableau` representing the identity operation over some number of qubits. Qubits will be indexed sequentially in the default register.
 
         :param nqb: The number of qubits in the unitary.
         """
@@ -24,7 +24,7 @@ class UnitaryTableau:
     @overload
     def __init__(self, xx: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], xz: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], xph: Annotated[NDArray, dict(dtype='bool', shape=(None), order='C')], zx: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], zz: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], zph: Annotated[NDArray, dict(dtype='bool', shape=(None), order='C')]) -> None:
         """
-        Constructs a :py:class:`UnitaryTableau` from the binary tables of its components.
+        Constructs a :py:class:`~.UnitaryTableau` from the binary tables of its components.
 
         :param xx: The X component of the X rows.
         :param xz: The Z component of the X rows.
@@ -37,7 +37,7 @@ class UnitaryTableau:
     @overload
     def __init__(self, arg: pytket._tket.circuit.Circuit, /) -> None:
         """
-        Constructs a :py:class:`UnitaryTableau` from a unitary :py:class:`Circuit`. Throws an exception if the input contains non-unitary operations.
+        Constructs a :py:class:`~.UnitaryTableau` from a unitary :py:class:`~.Circuit`. Throws an exception if the input contains non-unitary operations.
 
         :param circ: The unitary circuit to convert to a tableau.
         """
@@ -72,7 +72,7 @@ class UnitaryTableau:
         """
         Update the tableau according to adding a Clifford gate before the current unitary, i.e. updates :math:`U` to :math:`UG` for a gate :math:`G`.
 
-        :param type: The :py:class:`OpType` of the gate to add. Must be an unparameterised Clifford gate type.
+        :param type: The :py:class:`~.OpType` of the gate to add. Must be an unparameterised Clifford gate type.
         :param qbs: The qubits to apply the gate to. Length must match the arity of the given gate type.
         """
 
@@ -80,13 +80,13 @@ class UnitaryTableau:
         """
         Update the tableau according to adding a Clifford gate after the current unitary, i.e. updates :math:`U` to :math:`GU` for a gate :math:`G`.
 
-        :param type: The :py:class:`OpType` of the gate to add. Must be an unparameterised Clifford gate type.
+        :param type: The :py:class:`~.OpType` of the gate to add. Must be an unparameterised Clifford gate type.
         :param qbs: The qubits to apply the gate to. Length must match the arity of the given gate type.
         """
 
     def to_circuit(self) -> pytket._tket.circuit.Circuit:
         """
-        Synthesises a unitary :py:class:`Circuit` realising the same unitary as the tableau. Uses the method from Aaronson & Gottesman: "Improved Simulation of Stabilizer Circuits", Theorem 8. This is not optimised for gate count, so is not recommended for performance-sensitive usage.
+        Synthesises a unitary :py:class:`~.Circuit` realising the same unitary as the tableau. Uses the method from Aaronson & Gottesman: "Improved Simulation of Stabilizer Circuits", Theorem 8. This is not optimised for gate count, so is not recommended for performance-sensitive usage.
         """
 
 class UnitaryRevTableau:
@@ -97,7 +97,7 @@ class UnitaryRevTableau:
     @overload
     def __init__(self, nqb: int) -> None:
         """
-        Constructs a :py:class:`UnitaryRevTableau` representing the identity operation over some number of qubits. Qubits will be indexed sequentially in the default register.
+        Constructs a :py:class:`~.UnitaryRevTableau` representing the identity operation over some number of qubits. Qubits will be indexed sequentially in the default register.
 
         :param nqb: The number of qubits in the unitary.
         """
@@ -105,7 +105,7 @@ class UnitaryRevTableau:
     @overload
     def __init__(self, xx: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], xz: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], xph: Annotated[NDArray, dict(dtype='bool', shape=(None), order='C')], zx: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], zz: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], zph: Annotated[NDArray, dict(dtype='bool', shape=(None), order='C')]) -> None:
         """
-        Constructs a :py:class:`UnitaryRevTableau` from the binary tables of its components.
+        Constructs a :py:class:`~.UnitaryRevTableau` from the binary tables of its components.
 
         :param xx: The X component of the X rows.
         :param xz: The Z component of the X rows.
@@ -118,7 +118,7 @@ class UnitaryRevTableau:
     @overload
     def __init__(self, arg: pytket._tket.circuit.Circuit, /) -> None:
         """
-        Constructs a :py:class:`UnitaryRevTableau` from a unitary :py:class:`Circuit`. Throws an exception if the input contains non-unitary operations.
+        Constructs a :py:class:`~.UnitaryRevTableau` from a unitary :py:class:`~.Circuit`. Throws an exception if the input contains non-unitary operations.
 
         :param circ: The unitary circuit to convert to a tableau.
         """
@@ -153,7 +153,7 @@ class UnitaryRevTableau:
         """
         Update the tableau according to adding a Clifford gate before the current unitary, i.e. updates :math:`U` to :math:`UG` for a gate :math:`G`.
 
-        :param type: The :py:class:`OpType` of the gate to add. Must be an unparameterised Clifford gate type.
+        :param type: The :py:class:`~.OpType` of the gate to add. Must be an unparameterised Clifford gate type.
         :param qbs: The qubits to apply the gate to. Length must match the arity of the given gate type.
         """
 
@@ -161,13 +161,13 @@ class UnitaryRevTableau:
         """
         Update the tableau according to adding a Clifford gate after the current unitary, i.e. updates :math:`U` to :math:`GU` for a gate :math:`G`.
 
-        :param type: The :py:class:`OpType` of the gate to add. Must be an unparameterised Clifford gate type.
+        :param type: The :py:class:`~.OpType` of the gate to add. Must be an unparameterised Clifford gate type.
         :param qbs: The qubits to apply the gate to. Length must match the arity of the given gate type.
         """
 
     def to_circuit(self) -> pytket._tket.circuit.Circuit:
         """
-        Synthesises a unitary :py:class:`Circuit` realising the same unitary as the tableau. Uses the method from Aaronson & Gottesman: "Improved Simulation of Stabilizer Circuits", Theorem 8. This is not optimised for gate count, so is not recommended for performance-sensitive usage.
+        Synthesises a unitary :py:class:`~.Circuit` realising the same unitary as the tableau. Uses the method from Aaronson & Gottesman: "Improved Simulation of Stabilizer Circuits", Theorem 8. This is not optimised for gate count, so is not recommended for performance-sensitive usage.
         """
 
 class UnitaryTableauBox(pytket._tket.circuit.Op):
@@ -178,7 +178,7 @@ class UnitaryTableauBox(pytket._tket.circuit.Op):
         """
         Construct from a given tableau.
 
-        :param tab: The :py:class:`UnitaryTableau` representing the desired unitary.
+        :param tab: The :py:class:`~.UnitaryTableau` representing the desired unitary.
         """
 
     @overload
@@ -195,7 +195,7 @@ class UnitaryTableauBox(pytket._tket.circuit.Op):
         """
 
     def get_circuit(self) -> pytket._tket.circuit.Circuit:
-        """:return: The :py:class:`Circuit` described by the box."""
+        """:return: The :py:class:`~.Circuit` described by the box."""
 
     def get_tableau(self) -> UnitaryTableau:
         """:return: The tableau representing the unitary operation."""
