@@ -13,6 +13,8 @@ Features:
 
 - Allow length-1 bit registers to be interpreted as bits in extended-QASM
   expressions.
+- Additional `circuit_from_qasm_str_wasm` and `circuit_from_qasm_str_wasmmh`
+  for parsing qasm with wasm.
 
 Fixes:
 
