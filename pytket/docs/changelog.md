@@ -17,6 +17,7 @@ Features:
 Fixes:
 
 - Ensure downcasting of `UnitID` to `Qubit` in initial and final maps.
+- Fix performance issue in `TK2` to `ZZPhase` conversion.
 
 ## 2.3.2 (April 2025)
 
