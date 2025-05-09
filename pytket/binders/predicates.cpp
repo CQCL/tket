@@ -87,7 +87,10 @@ NB_MODULE(predicates, m) {
             return json(predicate_dict).get<PredicatePtr>();
           },
           "Construct Predicate instance from JSON serializable "
-          "dict representation of the Predicate.");
+          "dict representation of the Predicate.")
+      .def("__getstate__", [](const PredicatePtr &predicate) {
+        return nb::make_tuple(nb::cast<nb::dict>(nb::object(json(predicate))));
+      });
   nb::class_<GateSetPredicate, Predicate>(
       m, "GateSetPredicate",
       "Predicate asserting that all operations are in the specified set of "
@@ -104,7 +107,14 @@ NB_MODULE(predicates, m) {
       .def(
           nb::init<const OpTypeSet &>(), "Construct from a set of gate types.",
           nb::arg("allowed_types"))
-      .def_prop_ro("gate_set", &GateSetPredicate::get_allowed_types);
+      .def_prop_ro("gate_set", &GateSetPredicate::get_allowed_types)
+      .def("__setstate__", [](GateSetPredicate &predicate, const nb::tuple &t) {
+        const json j = nb::cast<nb::dict>(t[0]);
+        PredicatePtr pp = j.get<PredicatePtr>();
+        new (&predicate) GateSetPredicate(
+            std::dynamic_pointer_cast<GateSetPredicate>(pp)
+                ->get_allowed_types());
+      });
   nb::class_<NoClassicalControlPredicate, Predicate>(
       m, "NoClassicalControlPredicate",
       "Predicate asserting that a circuit has no classical controls.")

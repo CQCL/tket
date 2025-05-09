@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import pickle
 from typing import Any
 
 import numpy as np
@@ -1203,3 +1204,9 @@ def test_initial_and_final_map_types() -> None:
     assert isinstance(im1, Qubit)
     assert isinstance(fm0, Qubit)
     assert isinstance(fm1, Qubit)
+
+
+def test_pickling() -> None:
+    pred = GateSetPredicate({OpType.CX, OpType.TK1})
+    pred1 = pickle.loads(pickle.dumps(pred))
+    assert pred.to_dict() == pred1.to_dict()
