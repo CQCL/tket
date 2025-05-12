@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="z_9310eb0fd0d5d219_decompose_classical_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
-            created at 2025-05-12 08:34 +0000
+            created at 2025-05-12 11:01 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -131,7 +131,7 @@
     <p class="pln"><span class="n"><a id="t47" href="#t47">47</a></span><span class="t"><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t48" href="#t48">48</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t49" href="#t49">49</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t50" href="#t50">50</a></span><span class="t"><span class="key">def</span> <span class="nam">_has_reg_output</span><span class="op">(</span><span class="nam">op</span><span class="op">:</span> <span class="nam">ClOp</span><span class="op">)</span> <span class="op">-></span> <span class="nam">bool</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t50" href="#t50">50</a></span><span class="t"><span class="key">def</span> <span class="nam">has_reg_output</span><span class="op">(</span><span class="nam">op</span><span class="op">:</span> <span class="nam">ClOp</span><span class="op">)</span> <span class="op">-></span> <span class="nam">bool</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t51" href="#t51">51</a></span><span class="t">    <span class="key">return</span> <span class="nam">op</span> <span class="key">in</span> <span class="nam">_reg_output_clops</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t52" href="#t52">52</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t53" href="#t53">53</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -270,7 +270,7 @@
     <p class="pln"><span class="n"><a id="t186" href="#t186">186</a></span><span class="t">                <span class="nam">tuple</span><span class="op">(</span><span class="nam">args</span><span class="op">[</span><span class="nam">i</span><span class="op">]</span> <span class="key">for</span> <span class="nam">i</span> <span class="key">in</span> <span class="nam">poslist</span><span class="op">)</span> <span class="key">not</span> <span class="key">in</span> <span class="nam">cregs</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t187" href="#t187">187</a></span><span class="t">                <span class="key">for</span> <span class="nam">poslist</span> <span class="key">in</span> <span class="nam">wexpr</span><span class="op">.</span><span class="nam">reg_posn</span><span class="op">.</span><span class="nam">values</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t188" href="#t188">188</a></span><span class="t">            <span class="op">)</span> <span class="key">or</span> <span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t189" href="#t189">189</a></span><span class="t">                <span class="nam">_has_reg_output</span><span class="op">(</span><span class="nam">wexpr</span><span class="op">.</span><span class="nam">expr</span><span class="op">.</span><span class="nam">op</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t189" href="#t189">189</a></span><span class="t">                <span class="nam">has_reg_output</span><span class="op">(</span><span class="nam">wexpr</span><span class="op">.</span><span class="nam">expr</span><span class="op">.</span><span class="nam">op</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t190" href="#t190">190</a></span><span class="t">                <span class="key">and</span> <span class="nam">tuple</span><span class="op">(</span><span class="nam">args</span><span class="op">[</span><span class="nam">i</span><span class="op">]</span> <span class="key">for</span> <span class="nam">i</span> <span class="key">in</span> <span class="nam">wexpr</span><span class="op">.</span><span class="nam">output_posn</span><span class="op">)</span> <span class="key">not</span> <span class="key">in</span> <span class="nam">cregs</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t191" href="#t191">191</a></span><span class="t">            <span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t192" href="#t192">192</a></span><span class="t">                <span class="key">return</span> <span class="key">False</span>&nbsp;</span><span class="r"></span></p>
@@ -291,7 +291,7 @@
             <a class="nav" href="z_9310eb0fd0d5d219_decompose_classical_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
-            created at 2025-05-12 08:34 +0000
+            created at 2025-05-12 11:01 +0000
         </p>
     </div>
 </footer>
