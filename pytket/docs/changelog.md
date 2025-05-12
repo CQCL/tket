@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2.4.0 (May 2025)
 
 API changes:
 
