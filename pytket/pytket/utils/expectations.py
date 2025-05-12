@@ -135,13 +135,9 @@ def get_operator_expectation_value(  # noqa: PLR0912, PLR0913, PLR0915
         if not backend.valid_circuit(state_circuit):
             state_circuit = backend.get_compiled_circuit(state_circuit)
         try:
-            coeffs: list[complex] = [
-                complex(v) for v in operator._dict.values()
-            ]
+            coeffs: list[complex] = [complex(v) for v in operator.get_dict().values()]
         except TypeError:
-            raise ValueError(
-                "QubitPauliOperator contains unevaluated symbols."
-            )
+            raise ValueError("QubitPauliOperator contains unevaluated symbols.")
         if backend.supports_expectation and (
             backend.expectation_allows_nonhermitian or all(z.imag == 0 for z in coeffs)
         ):
@@ -151,18 +147,12 @@ def get_operator_expectation_value(  # noqa: PLR0912, PLR0913, PLR0915
         return operator.state_expectation(state)
     energy: complex
     id_string = QubitPauliString()
-    energy = (
-        complex(operator[id_string]) if id_string in operator._dict else 0
-    )
+    energy = complex(operator[id_string]) if id_string in operator.get_dict() else 0
     if not partition_strat:
         operator_without_id = QubitPauliOperator(
-            {
-                p: c for p, c in operator._dict.items() if (p != id_string)
-            }
+            {p: c for p, c in operator.get_dict().items() if (p != id_string)}
         )
-        coeffs = [
-            complex(c) for c in operator_without_id._dict.values()
-        ]
+        coeffs = [complex(c) for c in operator_without_id.get_dict().values()]
         pauli_circuits = list(
             _all_pauli_measurements(operator_without_id, state_circuit)
         )
@@ -189,9 +179,7 @@ def get_operator_expectation_value(  # noqa: PLR0912, PLR0913, PLR0915
                 backend.pop_result(handle)
             return energy
         raise ValueError("Backend does not support counts or shots")
-    qubit_pauli_string_list = [
-        p for p in operator._dict.keys() if (p != id_string)
-    ]
+    qubit_pauli_string_list = [p for p in operator.get_dict() if (p != id_string)]
     measurement_expectation = measurement_reduction(
         qubit_pauli_string_list, partition_strat, colour_method
     )
