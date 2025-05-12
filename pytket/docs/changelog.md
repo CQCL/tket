@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.1 (May 2025)
+
+Fixes:
+
+- Revert renaming of `has_reg_output` to `_has_reg_output`.
+
 ## 2.4.0 (May 2025)
 
 API changes:
