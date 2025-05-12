@@ -103,7 +103,19 @@ NB_MODULE(partition, m) {
             return json(measurement_bit_map_dict)
                 .get<MeasurementSetup::MeasurementBitMap>();
           },
-          "Construct MeasurementBitMap instance from dict representation.");
+          "Construct MeasurementBitMap instance from dict representation.")
+      .def(
+          "__getstate__",
+          [](const MeasurementSetup::MeasurementBitMap &mbm) {
+            return nb::make_tuple(nb::cast<nb::dict>(nb::object(json(mbm))));
+          })
+      .def(
+          "__setstate__",
+          [](MeasurementSetup::MeasurementBitMap &mbm, const nb::tuple &t) {
+            const json j = nb::cast<nb::dict>(t[0]);
+            new (&mbm) MeasurementSetup::MeasurementBitMap(
+                j.get<MeasurementSetup::MeasurementBitMap>());
+          });
 
   nb::class_<MeasurementSetup>(
       m, "MeasurementSetup",
@@ -150,7 +162,16 @@ NB_MODULE(partition, m) {
           [](const nb::dict &measurement_setup_dict) {
             return json(measurement_setup_dict).get<MeasurementSetup>();
           },
-          "Construct MeasurementSetup instance from dict representation.");
+          "Construct MeasurementSetup instance from dict representation.")
+      .def(
+          "__getstate__",
+          [](const MeasurementSetup &ms) {
+            return nb::make_tuple(nb::cast<nb::dict>(nb::object(json(ms))));
+          })
+      .def("__setstate__", [](MeasurementSetup &ms, const nb::tuple &t) {
+        const json j = nb::cast<nb::dict>(t[0]);
+        new (&ms) MeasurementSetup(j.get<MeasurementSetup>());
+      });
 
   m.def(
       "measurement_reduction",

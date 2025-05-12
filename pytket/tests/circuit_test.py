@@ -44,6 +44,7 @@ from pytket.circuit import (
     MultiplexedTensoredU2Box,
     MultiplexedU2Box,
     MultiplexorBox,
+    Node,
     Op,
     OpType,
     PauliExpBox,
@@ -1660,3 +1661,10 @@ def test_c0z() -> None:
     assert len(cmds) == 1
     cmd = cmds[0]
     assert cmd.op.type == OpType.Z
+
+
+def test_pickle() -> None:
+    n = Node("abc", [1, 2, 3])
+    s = pickle.dumps(n)
+    n1 = pickle.loads(s)
+    assert n == n1

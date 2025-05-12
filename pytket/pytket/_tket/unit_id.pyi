@@ -297,6 +297,10 @@ class Node(Qubit):
 
     def __deepcopy__(self, arg: dict, /) -> Node: ...
 
+    def __getstate__(self) -> tuple: ...
+
+    def __setstate__(self, arg: tuple, /) -> None: ...
+
     def to_list(self) -> list:
         """:return: a JSON serializable list representation of the Node"""
 
