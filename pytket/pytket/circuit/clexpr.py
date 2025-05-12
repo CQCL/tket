@@ -47,7 +47,7 @@ _reg_output_clops = {
 }
 
 
-def _has_reg_output(op: ClOp) -> bool:
+def has_reg_output(op: ClOp) -> bool:
     return op in _reg_output_clops
 
 
@@ -186,7 +186,7 @@ def check_register_alignments(circ: Circuit) -> bool:
                 tuple(args[i] for i in poslist) not in cregs
                 for poslist in wexpr.reg_posn.values()
             ) or (
-                _has_reg_output(wexpr.expr.op)
+                has_reg_output(wexpr.expr.op)
                 and tuple(args[i] for i in wexpr.output_posn) not in cregs
             ):
                 return False

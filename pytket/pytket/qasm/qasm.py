@@ -52,8 +52,8 @@ from pytket.circuit import (
     UnitID,
 )
 from pytket.circuit.clexpr import (
-    _has_reg_output,
     check_register_alignments,
+    has_reg_output,
     wired_clexpr_from_logic_exp,
 )
 from pytket.circuit.decompose_classical import _int_to_bools
@@ -1826,7 +1826,7 @@ class _QasmWriter:
         output_repr: str | None = None
         output_args: list[Bit] = [args[j] for j in output_posn]
         n_output_args = len(output_args)
-        expect_reg_output = _has_reg_output(expr.op)
+        expect_reg_output = has_reg_output(expr.op)
         if n_output_args == 0:
             raise QASMUnsupportedError("Expression has no output.")
         if n_output_args == 1:

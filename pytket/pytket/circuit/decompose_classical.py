@@ -36,7 +36,7 @@ from pytket._tket.unit_id import (
     Bit,
     BitRegister,
 )
-from pytket.circuit.clexpr import _has_reg_output, check_register_alignments
+from pytket.circuit.clexpr import check_register_alignments, has_reg_output
 from pytket.circuit.logic_exp import Constant, Variable
 
 T = TypeVar("T")
@@ -207,7 +207,7 @@ class _ClExprDecomposer:
         :param out_var: where to put the output (if None, create a new scratch location)
         """
         op: ClOp = expr.op
-        heap: VarHeap = self.reg_heap if _has_reg_output(op) else self.bit_heap
+        heap: VarHeap = self.reg_heap if has_reg_output(op) else self.bit_heap
 
         # Eliminate (recursively) subsidiary expressions from the arguments, and convert
         # all terms to Bit or BitRegister:
@@ -355,7 +355,7 @@ def _decompose_expressions(circ: Circuit) -> tuple[Circuit, bool]:  # noqa: PLR0
             assert isinstance(output0, Bit)
             out_var: Variable = (
                 BitRegister(output0.reg_name, len(output_posn))
-                if _has_reg_output(expr.op)
+                if has_reg_output(expr.op)
                 else output0
             )
             decomposer = _ClExprDecomposer(
