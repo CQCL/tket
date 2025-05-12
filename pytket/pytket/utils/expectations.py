@@ -137,11 +137,11 @@ def get_operator_expectation_value(  # noqa: PLR0912, PLR0913, PLR0915
         try:
             coeffs: list[complex] = [
                 complex(v) for v in operator._dict.values()
-            ]  # noqa: SLF001
+            ]
         except TypeError:
             raise ValueError(
                 "QubitPauliOperator contains unevaluated symbols."
-            )  # noqa: B904
+            )
         if backend.supports_expectation and (
             backend.expectation_allows_nonhermitian or all(z.imag == 0 for z in coeffs)
         ):
@@ -153,16 +153,16 @@ def get_operator_expectation_value(  # noqa: PLR0912, PLR0913, PLR0915
     id_string = QubitPauliString()
     energy = (
         complex(operator[id_string]) if id_string in operator._dict else 0
-    )  # noqa: SLF001
+    )
     if not partition_strat:
         operator_without_id = QubitPauliOperator(
             {
                 p: c for p, c in operator._dict.items() if (p != id_string)
-            }  # noqa: SLF001
+            }
         )
         coeffs = [
             complex(c) for c in operator_without_id._dict.values()
-        ]  # noqa: SLF001
+        ]
         pauli_circuits = list(
             _all_pauli_measurements(operator_without_id, state_circuit)
         )
@@ -191,7 +191,7 @@ def get_operator_expectation_value(  # noqa: PLR0912, PLR0913, PLR0915
         raise ValueError("Backend does not support counts or shots")
     qubit_pauli_string_list = [
         p for p in operator._dict.keys() if (p != id_string)
-    ]  # noqa: SLF001, SIM118
+    ]
     measurement_expectation = measurement_reduction(
         qubit_pauli_string_list, partition_strat, colour_method
     )

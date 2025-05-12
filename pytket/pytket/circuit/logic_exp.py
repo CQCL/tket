@@ -261,7 +261,7 @@ class LogicExp:
             elif isinstance(arg, LogicExp):
                 success |= arg._rename_args_recursive(
                     cmap, renamed_regs
-                )  # noqa: SLF001
+                )
         return success
 
     def rename_args(self, cmap: dict[Bit, Bit]) -> bool:
@@ -646,7 +646,7 @@ def if_not_bit(bit: Bit | BitLogicExp) -> PredicateExp:
 
 def create_bit_logic_exp(
     op: BitWiseOp, args: Sequence[BitArgType]
-) -> BitLogicExp:  # noqa: PLR0911
+) -> BitLogicExp:
     """
     Builds the :py:class:`LogicExp` corresponding to applying the given
     :py:class:`BitWiseOp` to some sequence of bits.
@@ -679,7 +679,7 @@ def create_bit_logic_exp(
 
 def create_reg_logic_exp(
     op: RegWiseOp, args: Sequence[RegArgType]
-) -> RegLogicExp:  # noqa: PLR0911, PLR0912
+) -> RegLogicExp:
     """
     Builds the :py:class:`LogicExp` corresponding to applying the given
     :py:class:`RegWiseOp` to some sequence of registers.
@@ -769,7 +769,7 @@ def create_logic_exp(op: Ops, args: Sequence[ArgType]) -> LogicExp:
 
 def create_predicate_exp(
     op: Ops, args: Sequence[ArgType]
-) -> PredicateExp:  # noqa: PLR0911
+) -> PredicateExp:
     """
     Builds the :py:class:`LogicExp` corresponding to applying a given
     comparison predicate to some sequence of arguments.
