@@ -111,9 +111,7 @@ class QubitPauliOperator:
         """In-place addition (+=) of QubitPauliOperators.
 
         :param addend: The operator to add
-        :type addend: QubitPauliOperator
         :return: Updated operator (self)
-        :rtype: QubitPauliOperator
         """
         if isinstance(addend, QubitPauliOperator):
             for key, value in addend._dict.items():
@@ -128,9 +126,7 @@ class QubitPauliOperator:
         """Addition (+) of QubitPauliOperators.
 
         :param addend: The operator to add
-        :type addend: QubitPauliOperator
         :return: Sum operator
-        :rtype: QubitPauliOperator
         """
         summand = copy.deepcopy(self)
         summand += addend
@@ -143,9 +139,7 @@ class QubitPauliOperator:
         Multiply coefficients and terms.
 
         :param multiplier: The operator or scalar to multiply
-        :type multiplier: Union[QubitPauliOperator, int, float, complex, Expr]
         :return: Updated operator (self)
-        :rtype: QubitPauliOperator
         """
 
         # Handle operator of the same type
@@ -182,7 +176,6 @@ class QubitPauliOperator:
         :param multiplier: The scalar to multiply by
         :type multiplier: Union[int, float, complex, Expr, QubitPauliOperator]
         :return: Product operator
-        :rtype: QubitPauliOperator
         """
         product = copy.deepcopy(self)
         product *= multiplier
@@ -195,9 +188,7 @@ class QubitPauliOperator:
         QubitPauliOperator*QubitPauliOperator.
 
         :param multiplier: The scalar to multiply by
-        :type multiplier: Union[int, float, complex, Expr]
         :return: Product operator
-        :rtype: QubitPauliOperator
         """
         return self.__mul__(_coeff_convert(multiplier))
 
@@ -207,7 +198,6 @@ class QubitPauliOperator:
         :return: The set of all qubits the operator ranges over (including qubits
             that were provided explicitly as identities)
 
-        :rtype: Set[Qubit]
         """
         return self._all_qubits
 
@@ -235,7 +225,6 @@ class QubitPauliOperator:
          suitable for writing to JSON.
 
         :return: JSON serializable list of dictionaries.
-        :rtype: List[Dict[str, Any]]
         """
         ret: list[dict[str, Any]] = []
         for k, v in self._dict.items():
@@ -258,7 +247,6 @@ class QubitPauliOperator:
         as returned by QubitPauliOperator.to_list()
 
         :return: New QubitPauliOperator instance.
-        :rtype: QubitPauliOperator
         """
 
         def get_qps(obj: dict[str, Any]) -> QubitPauliString:
@@ -289,9 +277,7 @@ class QubitPauliOperator:
         :param qubits: Sequencing of qubits in the matrix, either as an explicit
             list, number of qubits to pad to, or infer from the operator.
             Defaults to None
-        :type qubits: Union[List[Qubit], int, None], optional
         :return: A sparse matrix representation of the operator.
-        :rtype: csc_matrix
         """
         if qubits is None:
             qubits_ = sorted(list(self._all_qubits))  # noqa: C414
@@ -316,12 +302,9 @@ class QubitPauliOperator:
           and ordered by ILO-BE so ``Qubit(0)`` is the most significant.
 
         :param state: The initial statevector
-        :type state: numpy.ndarray
         :param qubits: Sequencing of qubits in ``state``, if not mapped to the
             default register. Defaults to None
-        :type qubits: Union[List[Qubit], None], optional
         :return: The dot product of the operator with the statevector
-        :rtype: numpy.ndarray
         """
         if qubits:
             product_sum = sum(
@@ -347,12 +330,9 @@ class QubitPauliOperator:
           and ordered by ILO-BE so ``Qubit(0)`` is the most significant.
 
         :param state: The initial statevector
-        :type state: numpy.ndarray
         :param qubits: Sequencing of qubits in ``state``, if not mapped to the
             default register. Defaults to None
-        :type qubits: Union[List[Qubit], None], optional
         :return: The expectation value of the statevector and operator
-        :rtype: complex
         """
         if qubits:
             return sum(

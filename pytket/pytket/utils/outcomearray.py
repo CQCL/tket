@@ -111,9 +111,7 @@ class OutcomeArray(np.ndarray):
 
         :param big_endian: whether to use big endian encoding (or little endian
             if False), defaults to True
-        :type big_endian: bool, optional
         :return: List of integers, each corresponding to an outcome.
-        :rtype: List[int]
         """
         if big_endian:
             array = self
@@ -134,14 +132,11 @@ class OutcomeArray(np.ndarray):
          where the bitwise representation of the integer corresponds to the readouts.
 
         :param ints: Iterable of outcome integers
-        :type ints: Iterable[int]
         :param width: Number of qubit measurements
-        :type width: int
         :param big_endian: whether to use big endian encoding (or little endian
             if False), defaults to True
         :type big_endian: bool, optional
         :return: OutcomeArray instance
-        :rtype: OutcomeArray
         """
         n_ints = len(ints)
         bitstrings = (
@@ -158,7 +153,6 @@ class OutcomeArray(np.ndarray):
         """Calculate counts of outcomes in OutcomeArray
 
         :return: Counter of outcome, number of instances
-        :rtype: Counter[OutcomeArray]
         """
         ars, count_vals = np.unique(self, axis=0, return_counts=True)
         width = self.width
@@ -171,9 +165,7 @@ class OutcomeArray(np.ndarray):
         leaves 2 in the same place and deletes location 3.
 
         :param indices: New locations for readout bits.
-        :type indices: List[int]
         :return: New array corresponding to given permutation.
-        :rtype: OutcomeArray
         """
         return OutcomeArray.from_readouts(self.to_readouts()[..., indices])
 
@@ -181,7 +173,6 @@ class OutcomeArray(np.ndarray):
         """Return a JSON serializable dictionary representation of the OutcomeArray.
 
         :return: JSON serializable dictionary
-        :rtype: Dict[str, Any]
         """
         return {"width": self.width, "array": self.tolist()}
 
@@ -191,9 +182,7 @@ class OutcomeArray(np.ndarray):
         `to_dict`).
 
         :param dict: Dictionary representation of OutcomeArray.
-        :type indices: Dict[str, Any]
         :return: Instance of OutcomeArray
-        :rtype: OutcomeArray
         """
         return OutcomeArray(
             np.array(ar_dict["array"], dtype=np.uint8), width=ar_dict["width"]

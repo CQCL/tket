@@ -168,7 +168,6 @@ class LogicExp:
     def all_inputs(self) -> set[Variable]:
         """
         :return: All variables involved in expression.
-        :rtype: Set[Variable]
         """
         outset: set[Variable] = set()
 
@@ -186,7 +185,6 @@ class LogicExp:
     def all_inputs_ordered(self) -> list[Variable]:
         """
         :return: All variables involved in expression, in order of first appearance.
-        :rtype: list[Variable]
         """
         # use dict[Variable, None] instead of set[Variable] to preserve order
         outset: dict[Variable, None] = {}
@@ -261,7 +259,9 @@ class LogicExp:
                         """in a register-wise logic expression."""
                     )
             elif isinstance(arg, LogicExp):
-                success |= arg._rename_args_recursive(cmap, renamed_regs)  # noqa: SLF001
+                success |= arg._rename_args_recursive(
+                    cmap, renamed_regs
+                )  # noqa: SLF001
         return success
 
     def rename_args(self, cmap: dict[Bit, Bit]) -> bool:
@@ -644,7 +644,9 @@ def if_not_bit(bit: Bit | BitLogicExp) -> PredicateExp:
     return BitEq(bit, 0)
 
 
-def create_bit_logic_exp(op: BitWiseOp, args: Sequence[BitArgType]) -> BitLogicExp:  # noqa: PLR0911
+def create_bit_logic_exp(
+    op: BitWiseOp, args: Sequence[BitArgType]
+) -> BitLogicExp:  # noqa: PLR0911
     """
     Builds the :py:class:`LogicExp` corresponding to applying the given
     :py:class:`BitWiseOp` to some sequence of bits.
@@ -675,7 +677,9 @@ def create_bit_logic_exp(op: BitWiseOp, args: Sequence[BitArgType]) -> BitLogicE
         return BitOne()
 
 
-def create_reg_logic_exp(op: RegWiseOp, args: Sequence[RegArgType]) -> RegLogicExp:  # noqa: PLR0911, PLR0912
+def create_reg_logic_exp(
+    op: RegWiseOp, args: Sequence[RegArgType]
+) -> RegLogicExp:  # noqa: PLR0911, PLR0912
     """
     Builds the :py:class:`LogicExp` corresponding to applying the given
     :py:class:`RegWiseOp` to some sequence of registers.
@@ -763,7 +767,9 @@ def create_logic_exp(op: Ops, args: Sequence[ArgType]) -> LogicExp:
     return create_reg_logic_exp(op, reg_args)
 
 
-def create_predicate_exp(op: Ops, args: Sequence[ArgType]) -> PredicateExp:  # noqa: PLR0911
+def create_predicate_exp(
+    op: Ops, args: Sequence[ArgType]
+) -> PredicateExp:  # noqa: PLR0911
     """
     Builds the :py:class:`LogicExp` corresponding to applying a given
     comparison predicate to some sequence of arguments.

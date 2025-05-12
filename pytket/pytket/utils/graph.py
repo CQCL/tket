@@ -70,7 +70,6 @@ class Graph:
         Return a logical representation of the circuit as a DAG.
 
         :returns:   Representation of the DAG
-        :rtype:     networkx.MultiDiGraph
         """
         if self.Gnx is not None:
             return self.Gnx
@@ -125,7 +124,6 @@ class Graph:
         Return a visual representation of the DAG as a graphviz object.
 
         :returns:   Representation of the DAG
-        :rtype:     graphviz.DiGraph
         """
         if self.G is not None:
             return self.G
@@ -281,7 +279,6 @@ class Graph:
         object.
 
         :returns:   Representation of the qubit connectivity graph of the circuit
-        :rtype:     graphviz.Graph
         """
         if self.Gqc is not None:
             return self.Gqc

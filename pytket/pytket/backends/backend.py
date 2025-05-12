@@ -85,7 +85,6 @@ class Backend(ABC):
         be successfully run on this backend.
 
         :return: Required predicates.
-        :rtype: List[Predicate]
         """
         ...
 
@@ -94,9 +93,7 @@ class Backend(ABC):
         Checks that the circuit satisfies all of required_predicates.
 
         :param circuit: The circuit to check.
-        :type circuit: Circuit
         :return: Whether or not all of required_predicates are satisfied.
-        :rtype: bool
         """
         return all(pred.verify(circuit) for pred in self.required_predicates)
 
@@ -133,7 +130,6 @@ class Backend(ABC):
 
         :return: Compilation pass that converts gates to primitives supported by
             Backend.
-        :rtype: BasePass
         """
         ...
 
@@ -159,9 +155,7 @@ class Backend(ABC):
             - Level 2 (the default) adds more computationally intensive optimisations
               that should give the best results from execution.
 
-        :type optimisation_level: int, optional
         :return: Compilation pass guaranteeing required predicates.
-        :rtype: BasePass
         """
         ...
 
@@ -203,9 +197,7 @@ class Backend(ABC):
         :param optimisation_level: The level of optimisation to perform during
             compilation. See :py:meth:`default_compilation_pass` for a description of
             the different levels (0, 1 or 2). Defaults to 2.
-        :type optimisation_level: int, optional
         :return: Compiled circuits.
-        :rtype: List[Circuit]
         """
         return [self.get_compiled_circuit(c, optimisation_level) for c in circuits]
 
@@ -215,7 +207,6 @@ class Backend(ABC):
         """Identifier type signature for ResultHandle for this backend.
 
         :return: Type signature (tuple of hashable types)
-        :rtype: _ResultIdTuple
         """
         ...
 
@@ -223,7 +214,6 @@ class Backend(ABC):
         """Check a result handle is valid for this backend, raises TypeError if not.
 
         :param reshandle: Handle to check
-        :type reshandle: ResultHandle
         :raises TypeError: Types of handle identifiers don't match those of backend.
         """
         if (len(reshandle) != len(self._result_id_type)) or not all(
@@ -293,7 +283,6 @@ class Backend(ABC):
         :type valid_check: bool, optional
         :return: Handles to results for each input circuit, as an interable in
             the same order as the circuits.
-        :rtype: List[ResultHandle]
         """
         ...
 
@@ -315,7 +304,6 @@ class Backend(ABC):
         :param handle: ResultHandle object
         :type handle: ResultHandle
         :return: Cache entry corresponding to handle, if it was present
-        :rtype: Optional[ResultCache]
         """
         return self._cache.pop(handle, None)
 
@@ -332,7 +320,6 @@ class Backend(ABC):
         :param handle: handle to results
         :type handle: ResultHandle
         :return: Results corresponding to handle.
-        :rtype: BackendResult
         """
         self._check_handle_type(handle)
         if handle in self._cache and "result" in self._cache[handle]:
@@ -429,7 +416,6 @@ class Backend(ABC):
         information.
 
         :return: The BackendInfo describing this backend if it exists.
-        :rtype: Optional[BackendInfo]
         """
         raise NotImplementedError("Backend does not provide any device properties.")
 
@@ -440,7 +426,6 @@ class Backend(ABC):
         and other hardware-specific information.
 
         :return: A list of BackendInfo objects describing available devices.
-        :rtype: List[BackendInfo]
         """
         raise NotImplementedError(
             "Backend does not provide information about available devices."
@@ -515,7 +500,6 @@ class Backend(ABC):
 
         :return: The extension module of the backend if it belongs to a pytket-extension
             package.
-        :rtype: Optional[ModuleType]
         """
         mod_parts = self.__class__.__module__.split(".")[:3]
         if not (mod_parts[0] == "pytket" and mod_parts[1] == "extensions"):
@@ -529,7 +513,6 @@ class Backend(ABC):
 
         :return: The extension name of the backend if it belongs to a pytket-extension
             package.
-        :rtype: Optional[str]
         """
         try:
             return self._get_extension_module().__extension_name__  # type: ignore
@@ -543,7 +526,6 @@ class Backend(ABC):
 
         :return: The extension version of the backend if it belongs to a
             pytket-extension package.
-        :rtype: Optional[str]
         """
         try:
             return self._get_extension_module().__extension_version__  # type: ignore

@@ -51,11 +51,8 @@ def _all_pauli_measurements(
     appropriate measurements on each qubit. The trivial term is omitted.
 
     :param operator: The operator
-    :type operator: QubitPauliOperator
     :param circ: The circuit generating the desired state
-    :type circ: Circuit
     :return: List of circuits in order of term from the operator
-    :rtype: Iterable[Circuit]
     """
     for pauli_string in operator._dict.keys():  # noqa: SLF001, SIM118
         if not pauli_string.map:
