@@ -32,6 +32,8 @@ class Predicate:
         Construct Predicate instance from JSON serializable dict representation of the Predicate.
         """
 
+    def __getstate__(self) -> tuple: ...
+
 class GateSetPredicate(Predicate):
     """
     Predicate asserting that all operations are in the specified set of types.
@@ -50,11 +52,15 @@ class GateSetPredicate(Predicate):
     @property
     def gate_set(self) -> set[pytket._tket.circuit.OpType]: ...
 
+    def __setstate__(self, arg: tuple, /) -> None: ...
+
 class NoClassicalControlPredicate(Predicate):
     """Predicate asserting that a circuit has no classical controls."""
 
     def __init__(self) -> None:
         """Constructor."""
+
+    def __setstate__(self, arg: tuple, /) -> None: ...
 
 class NoFastFeedforwardPredicate(Predicate):
     """Predicate asserting that a circuit has no fast feedforward."""
@@ -62,17 +68,23 @@ class NoFastFeedforwardPredicate(Predicate):
     def __init__(self) -> None:
         """Constructor."""
 
+    def __setstate__(self, arg: tuple, /) -> None: ...
+
 class NoClassicalBitsPredicate(Predicate):
     """Predicate asserting that a circuit has no classical wires."""
 
     def __init__(self) -> None:
         """Constructor."""
 
+    def __setstate__(self, arg: tuple, /) -> None: ...
+
 class NoWireSwapsPredicate(Predicate):
     """Predicate asserting that a circuit has no wire swaps."""
 
     def __init__(self) -> None:
         """Constructor."""
+
+    def __setstate__(self, arg: tuple, /) -> None: ...
 
 class MaxTwoQubitGatesPredicate(Predicate):
     """
@@ -82,6 +94,8 @@ class MaxTwoQubitGatesPredicate(Predicate):
     def __init__(self) -> None:
         """Constructor."""
 
+    def __setstate__(self, arg: tuple, /) -> None: ...
+
 class ConnectivityPredicate(Predicate):
     """
     Predicate asserting that a circuit satisfies a given connectivity graph. The graph is always considered to be undirected.
@@ -89,6 +103,8 @@ class ConnectivityPredicate(Predicate):
 
     def __init__(self, architecture: pytket._tket.architecture.Architecture) -> None:
         """Construct from an :py:class:`Architecture`."""
+
+    def __setstate__(self, arg: tuple, /) -> None: ...
 
 class DirectednessPredicate(Predicate):
     """
@@ -98,6 +114,8 @@ class DirectednessPredicate(Predicate):
     def __init__(self, architecture: pytket._tket.architecture.Architecture) -> None:
         """Construct from an :py:class:`Architecture`."""
 
+    def __setstate__(self, arg: tuple, /) -> None: ...
+
 class CliffordCircuitPredicate(Predicate):
     """
     Predicate asserting that a circuit has only Clifford gates and measurements.
@@ -105,6 +123,8 @@ class CliffordCircuitPredicate(Predicate):
 
     def __init__(self) -> None:
         """Constructor."""
+
+    def __setstate__(self, arg: tuple, /) -> None: ...
 
 class UserDefinedPredicate(Predicate):
     """User-defined predicate."""
@@ -122,17 +142,23 @@ class DefaultRegisterPredicate(Predicate):
     def __init__(self) -> None:
         """Constructor."""
 
+    def __setstate__(self, arg: tuple, /) -> None: ...
+
 class MaxNQubitsPredicate(Predicate):
     """Predicate asserting that a circuit has at most n qubits."""
 
-    def __init__(self, arg: int, /) -> None:
+    def __init__(self, n_qubits: int) -> None:
         """Constructor."""
+
+    def __setstate__(self, arg: tuple, /) -> None: ...
 
 class MaxNClRegPredicate(Predicate):
     """Predicate asserting that a circuit has at most n classical registers."""
 
-    def __init__(self, arg: int, /) -> None:
+    def __init__(self, n_cl_reg: int) -> None:
         """Constructor."""
+
+    def __setstate__(self, arg: tuple, /) -> None: ...
 
 class PlacementPredicate(Predicate):
     """
@@ -147,11 +173,15 @@ class PlacementPredicate(Predicate):
     def __init__(self, nodes: Set[pytket._tket.unit_id.Node]) -> None:
         """Construct from a set of Node."""
 
+    def __setstate__(self, arg: tuple, /) -> None: ...
+
 class NoBarriersPredicate(Predicate):
     """Predicate asserting that a circuit contains no Barrier operations."""
 
     def __init__(self) -> None:
         """Constructor."""
+
+    def __setstate__(self, arg: tuple, /) -> None: ...
 
 class CommutableMeasuresPredicate(Predicate):
     """
@@ -161,6 +191,8 @@ class CommutableMeasuresPredicate(Predicate):
     def __init__(self) -> None:
         """Constructor."""
 
+    def __setstate__(self, arg: tuple, /) -> None: ...
+
 class NoMidMeasurePredicate(Predicate):
     """
     Predicate asserting that all measurements occur at the end of the circuit.
@@ -169,6 +201,8 @@ class NoMidMeasurePredicate(Predicate):
     def __init__(self) -> None:
         """Constructor."""
 
+    def __setstate__(self, arg: tuple, /) -> None: ...
+
 class NoSymbolsPredicate(Predicate):
     """
     Predicate asserting that no gates in the circuit have symbolic parameters.
@@ -176,6 +210,8 @@ class NoSymbolsPredicate(Predicate):
 
     def __init__(self) -> None:
         """Constructor."""
+
+    def __setstate__(self, arg: tuple, /) -> None: ...
 
 class NormalisedTK2Predicate(Predicate):
     """
@@ -189,6 +225,8 @@ class NormalisedTK2Predicate(Predicate):
 
     def __init__(self) -> None:
         """Constructor."""
+
+    def __setstate__(self, arg: tuple, /) -> None: ...
 
 class CompilationUnit:
     """
