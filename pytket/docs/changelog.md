@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+Features:
+
+- Enable pickling of more pytket objects (`MeasurementBitMap`,
+  `MeasurementSetup`, `Node`, `WiredClExpr`, and all types of
+  `Predicate` except `UserDefinedPredicate`).
+
 ## 2.4.1 (May 2025)
 
 Fixes:
