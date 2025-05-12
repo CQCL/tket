@@ -335,11 +335,8 @@ class SymGateRegister:
         """Register a callable for an optype.
 
         :param typ: OpType to register
-        :type typ: OpType
         :param f: Callable for generating symbolic matrix.
-        :type f: SymGateFunc
         :param replace: Whether to replace existing entry, defaults to False
-        :type replace: bool, optional
         """
         if typ not in cls._g_map or replace:
             cls._g_map[typ] = f

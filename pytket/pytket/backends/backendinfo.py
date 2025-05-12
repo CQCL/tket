@@ -216,7 +216,6 @@ class BackendInfo:
         Add a new entry in BackendInfo's dictionary of additional information.
 
         :param key: Key to store and retrieve value.
-        :type key: str
         :param val: Value to be stored.
         """
         if key in self.misc:
@@ -228,7 +227,6 @@ class BackendInfo:
         Retrieve information stored in Backend's additional information store
 
         :param key: Key to retrieve value.
-        :type key: str
 
         :raises KeyError: There is no value stored with the given key.
 

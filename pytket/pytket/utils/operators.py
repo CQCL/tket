@@ -87,9 +87,7 @@ class QubitPauliOperator:
         Expr.
 
         :param key: String to use as key
-        :type key: QubitPauliString
         :param value: Associated coefficient
-        :type value: Union[int, float, complex, Expr]
         """
         self._dict[key] = _coeff_convert(value)
         self._all_qubits.update(key.map.keys())
@@ -174,7 +172,6 @@ class QubitPauliOperator:
         """Multiplication (*) by QubitPauliOperator or scalar.
 
         :param multiplier: The scalar to multiply by
-        :type multiplier: Union[int, float, complex, Expr, QubitPauliOperator]
         :return: Product operator
         """
         product = copy.deepcopy(self)
@@ -205,7 +202,6 @@ class QubitPauliOperator:
         """Substitutes any matching symbols in the QubitPauliOperator.
 
         :param symbol_dict: A dictionary of symbols to fixed values.
-        :type symbol_dict: Dict[Symbol, complex]
         """
         for key, value in self._dict.items():
             self._dict[key] = value.subs(symbol_dict)
@@ -361,7 +357,6 @@ class QubitPauliOperator:
         for all :math:`a_i \\in [0, 1]`.
 
         :param abs_tol: The threshold below which to remove values.
-        :type abs_tol: float
         """
 
         to_delete = []

@@ -274,7 +274,6 @@ class BackendResult:
 
         :param array: The statevector or unitary
         :param relabling_map: Map from original Qubits to new.
-        :type relabling_map: Dict[Qubit, Qubit]
         :return: Permuted array.
         """
         original_labeling: Sequence[Qubit] = self.get_qbitlist()
@@ -330,7 +329,6 @@ class BackendResult:
             qubits must be requested.
             For measured results (shots/counts), some subset of the relevant bits must
             be requested.
-        :type request_ids: Optional[Sequence[UnitID]], optional
         :param basis: Toggle between ILO (increasing lexicographic order of bit ids) and
             DLO (decreasing lexicographic order) for column ordering if request_ids is
             None. Defaults to BasisOrder.ilo.
@@ -376,7 +374,6 @@ class BackendResult:
 
         :param cbits: ordered subset of Bits, returns all results by default, defaults
          to None
-        :type cbits: Optional[Sequence[Bit]], optional
         :param basis: Toggle between ILO (increasing lexicographic order of bit ids) and
             DLO (decreasing lexicographic order) for column ordering if cbits is None.
             Defaults to BasisOrder.ilo.
@@ -404,7 +401,6 @@ class BackendResult:
 
         :param cbits: ordered subset of Bits, returns all results by default, defaults
          to None
-        :type cbits: Optional[Sequence[Bit]], optional
         :param basis: Toggle between ILO (increasing lexicographic order of bit ids) and
             DLO (decreasing lexicographic order) for column ordering if cbits is None.
             Defaults to BasisOrder.ilo.
@@ -429,7 +425,6 @@ class BackendResult:
         """Return statevector if available.
 
         :param qbits: permutation of Qubits, defaults to None
-        :type qbits: Optional[Sequence[Qubit]], optional
         :param basis: Toggle between ILO (increasing lexicographic order of qubit ids)
             and DLO (decreasing lexicographic order) for column ordering if qbits is
             None. Defaults to BasisOrder.ilo.
@@ -504,7 +499,6 @@ class BackendResult:
 
         :param units: Optionally provide the Qubits or Bits
             to marginalise the distribution over, defaults to None
-        :type units: Optional[Sequence[UnitID]], optional
         :return: A distribution as a map from bitstring to probability.
         """
         warnings.warn(

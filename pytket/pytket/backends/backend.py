@@ -193,7 +193,6 @@ class Backend(ABC):
         circuit.
 
         :param circuits: The circuits to compile.
-        :type circuit: Sequence[Circuit]
         :param optimisation_level: The level of optimisation to perform during
             compilation. See :py:meth:`default_compilation_pass` for a description of
             the different levels (0, 1 or 2). Defaults to 2.
@@ -273,14 +272,11 @@ class Backend(ABC):
         advisable to run :py:meth:`Backend.empty_cache` after each result is retrieved.
 
         :param circuits: Circuits to process on the backend.
-        :type circuits: Sequence[Circuit]
         :param n_shots: Number of shots to run per circuit. Optionally, this can be
             a list of shots specifying the number of shots for each circuit separately.
             None is to be used for state/unitary simulators. Defaults to None.
-        :type n_shots: Optional[Union[int, Iterable[int]], optional
         :param valid_check: Explicitly check that all circuits satisfy all required
             predicates to run on the backend. Defaults to True
-        :type valid_check: bool, optional
         :return: Handles to results for each input circuit, as an interable in
             the same order as the circuits.
         """
@@ -302,7 +298,6 @@ class Backend(ABC):
         """Remove cache entry corresponding to handle from the cache and return.
 
         :param handle: ResultHandle object
-        :type handle: ResultHandle
         :return: Cache entry corresponding to handle, if it was present
         """
         return self._cache.pop(handle, None)
@@ -318,7 +313,6 @@ class Backend(ABC):
         * `wait`: polling interval between remote calls to check job status
 
         :param handle: handle to results
-        :type handle: ResultHandle
         :return: Results corresponding to handle.
         """
         self._check_handle_type(handle)
@@ -404,7 +398,6 @@ class Backend(ABC):
         Cancel a job.
 
         :param handle: handle to job
-        :type handle: ResultHandle
         :raises NotImplementedError: If backend does not support job cancellation
         """
         raise NotImplementedError("Backend does not support job cancellation.")
@@ -574,13 +567,9 @@ class Backend(ABC):
         Raises an exception if n_shots is in an invalid format.
 
         :param n_shots: The argument to be validated.
-        :type n_shots: Union[None, int, Sequence[Optional[int]]]
         :param n_circuits: Length of the converted argument returned.
-        :type n_circuits: int
         :param optional: Whether n_shots can be None (default: True).
-        :type optional: bool
         :param set_zero: Whether None values should be set to 0 (default: False).
-        :type set_zero: bool
         :return: a list of length `n_circuits`, the converted argument
         """
 

@@ -252,9 +252,7 @@ class Graph:
         supported. See https://graphviz.org/doc/info/output.html.
 
         :param      name:   Prefix of file name
-        :type       name:   str
         :param      fmt:    File format, e.g. "pdf", "png", ...
-        :type       fmt:    str
         """
         G = self.get_DAG()
         G.render(name, cleanup=True, format=fmt, quiet=True)
@@ -330,9 +328,7 @@ class Graph:
         supported. See https://graphviz.org/doc/info/output.html.
 
         :param      name:   Prefix of file name
-        :type       name:   str
         :param      fmt:    File format, e.g. "pdf", "png", ...
-        :type       fmt:    str
         """
         G = self.get_qubit_graph()
         G.render(name, cleanup=True, format=fmt, quiet=True)

@@ -35,7 +35,6 @@ class BitPermuter:
 
         :param permutation: Map from current bit index (big-endian) to its new position,
             encoded as a list.
-        :type permutation: Tuple[int, ...]
         :raises ValueError: Input permutation is not valid complete permutation
         of all bits
         """
@@ -189,9 +188,7 @@ def _assert_compatible_state_permutation(
     of qubits
 
     :param state: Statevector
-    :type state: np.ndarray
     :param permutation: Permutation of qubit indices, encoded as a list.
-    :type permutation: Tuple[int, ...]
     :raises ValueError: [description]
     """
     n_qb = len(permutation)
@@ -250,7 +247,6 @@ def permute_rows_cols_in_unitary(
     :param matrix: Original unitary matrix
     :param permutation: Map from current qubit index (big-endian) to its new position,
         encoded as a list
-    :type permutation: Tuple[int, ...]
     :return: Updated unitary matrix
     """
     _assert_compatible_state_permutation(matrix, permutation)

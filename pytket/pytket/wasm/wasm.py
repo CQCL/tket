@@ -55,12 +55,9 @@ class WasmModuleHandler:
         Construct a wasm module handler
 
         :param wasm_module: A wasm module in binary format.
-        :type wasm_module: bytes
         :param check: If ``True`` checks file for compatibility with wasm
           standards. If ``False`` checks are skipped.
-        :type check: bool
         :param int_size: length of the integer that is used in the wasm file
-        :type int_size: int
         """
         self._int_size = int_size
         if int_size == 32:  # noqa: PLR2004
@@ -257,11 +254,8 @@ class WasmModuleHandler:
         ValueError.
 
         :param function_name: name of the function that is checked
-        :type function_name: str
         :param number_of_parameters: number of integer parameters of the function
-        :type number_of_parameters: int
         :param number_of_returns: number of integer return values of the function
-        :type number_of_returns: int
         :return: true if the signature and the name of the function is correct"""
         if not self.checked:
             raise ValueError(
@@ -313,12 +307,9 @@ class WasmFileHandler(WasmModuleHandler):
         memory.
 
         :param filepath: Path to the wasm file
-        :type filepath: str
         :param check_file: If ``True`` checks file for compatibility with wasm
           standards. If ``False`` checks are skipped.
-        :type check_file: bool
         :param int_size: length of the integer that is used in the wasm file
-        :type int_size: int
         """
         if not exists(filepath):
             raise ValueError("wasm file not found at given path")

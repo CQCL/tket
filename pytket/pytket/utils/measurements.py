@@ -25,9 +25,7 @@ def append_pauli_measurement(pauli_string: QubitPauliString, circ: Circuit) -> N
     given basis.
 
     :param pauli_string: The pauli string to measure
-    :type pauli_string: QubitPauliString
     :param circ: Circuit to add measurement to.
-    :type circ: Circuit
     """
     measured_qbs = []
     for qb, p in pauli_string.map.items():

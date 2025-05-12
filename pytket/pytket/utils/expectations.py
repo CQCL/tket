@@ -38,7 +38,6 @@ def expectation_from_shots(shot_table: np.ndarray) -> float:
     from each row, and returns the average.
 
     :param shot_table: The table of shots to interpret.
-    :type shot_table: np.ndarray
     :return: The expectation value in the range [-1, 1].
     """
     aritysum = 0.0
@@ -53,7 +52,6 @@ def expectation_from_counts(counts: dict[tuple[int, ...], int]) -> float:
     from each readout, and returns the weighted average.
 
     :param counts: Counts of each measurement outcome observed.
-    :type counts: Dict[Tuple[int, ...], int]
     :return: The expectation value in the range [-1, 1].
     """
     aritysum = 0.0
@@ -82,14 +80,10 @@ def get_pauli_expectation_value(
 
     :param state_circuit: Circuit that generates the desired state
         :math:`\\left|\\psi\\right>`.
-    :type state_circuit: Circuit
     :param pauli: Pauli operator
-    :type pauli: QubitPauliString
     :param backend: pytket backend to run circuit on.
-    :type backend: Backend
     :param n_shots: Number of shots to run if backend supports shots/counts. Set to None
         to calculate using statevector if supported by the backend. Defaults to None
-    :type n_shots: Optional[int], optional
     :return: :math:`\\left<\\psi | P | \\psi \\right>`
     """
     if not n_shots:
@@ -128,18 +122,13 @@ def get_operator_expectation_value(  # noqa: PLR0912, PLR0913, PLR0915
 
     :param state_circuit: Circuit that generates the desired state
         :math:`\\left|\\psi\\right>`
-    :type state_circuit: Circuit
     :param operator: Operator :math:`H`. Currently does not support free symbols for the
         purpose of obtaining expectation values.
-    :type operator: QubitPauliOperator
     :param backend: pytket backend to run circuit on.
-    :type backend: Backend
     :param n_shots: Number of shots to run if backend supports shots/counts. None will
         force the backend to give the full state if available. Defaults to None
-    :type n_shots: Optional[int], optional
     :param partition_strat: If retrieving shots, can perform measurement reduction using
         a chosen strategy
-    :type partition_strat: Optional[PauliPartitionStrat], optional
     :return: :math:`\\left<\\psi | H | \\psi \\right>`
     """
     if not n_shots:

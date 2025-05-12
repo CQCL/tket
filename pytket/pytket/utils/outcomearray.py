@@ -34,9 +34,7 @@ class OutcomeArray(np.ndarray):
 
     :param width: Number of bit entries stored, less than or equal to the bit
         capacity of the array.
-    :type width: int
     :param n_outcomes: Number of outcomes stored.
-    :type n_outcomes: int
     """
 
     def __new__(cls, input_array: npt.ArrayLike, width: int) -> "OutcomeArray":
@@ -135,7 +133,6 @@ class OutcomeArray(np.ndarray):
         :param width: Number of qubit measurements
         :param big_endian: whether to use big endian encoding (or little endian
             if False), defaults to True
-        :type big_endian: bool, optional
         :return: OutcomeArray instance
         """
         n_ints = len(ints)
