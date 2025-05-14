@@ -165,12 +165,7 @@ def add_clexpr_from_logicexp(
 ) -> Circuit:
     """Append a :py:class:`~.ClExprOp` defined in terms of a logical expression.
     \n\nExample:
-    \n>>> c = Circuit()
-    \n>>> x_reg = c.add_c_register('x', 3)
-    \n>>> y_reg = c.add_c_register('y', 3)
-    \n>>> z_reg = c.add_c_register('z', 3)
-    \n>>> c.add_clexpr_from_logicexp(x_reg | y_reg, z_reg.to_list())
-    \n[ClExpr x[0], x[1], x[2], y[0], y[1], y[2], z[0], z[1], z[2]; ]
+    \n>>> c = Circuit()\n>>> x_reg = c.add_c_register('x', 3)\n>>> y_reg = c.add_c_register('y', 3)\n>>> z_reg = c.add_c_register('z', 3)\n>>> c.add_clexpr_from_logicexp(x_reg | y_reg, z_reg.to_list())\n[ClExpr x[0], x[1], x[2], y[0], y[1], y[2], z[0], z[1], z[2]; ]
     \n:param exp: logical expression
     \n:param output_bits: list of bits in output
     \n:return: the updated circuit"""
