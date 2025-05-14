@@ -181,4 +181,4 @@ def add_clexpr_from_logicexp(
     circ.add_clexpr(wexpr, args, **kwargs)
 
 
-Circuit.add_clexpr_from_logicexp = add_clexpr_from_logicexp
+setattr(Circuit, "add_clexpr_from_logicexp", add_clexpr_from_logicexp)  # noqa: B010
