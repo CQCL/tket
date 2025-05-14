@@ -26,7 +26,7 @@ Unlike pytket backends, the qasm converters do not handle [implicit qubit permut
 
 ```{eval-rst}
 .. automodule:: pytket.qasm.qasm
-    :members: circuit_from_qasm, circuit_from_qasm_wasm, circuit_to_qasm, circuit_from_qasm_str, circuit_to_qasm_str, circuit_from_qasm_io, circuit_to_qasm_io, QASMParseError, QASMUnsupportedError
+    :members: circuit_from_qasm, circuit_from_qasm_wasm, circuit_to_qasm, circuit_from_qasm_str, circuit_to_qasm_str, circuit_from_qasm_io, circuit_to_qasm_io, circuit_from_qasm_str_wasm, circuit_from_qasm_str_wasmmh, QASMParseError, QASMUnsupportedError
 ```
 
 ```{eval-rst}

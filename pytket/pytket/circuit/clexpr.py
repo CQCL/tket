@@ -47,6 +47,7 @@ _reg_output_clops = {
 
 
 def has_reg_output(op: ClOp) -> bool:
+    """Checks if the :py:class:`~.ClOp` is of a type whose output is a register as opposed to a single bit."""
     return op in _reg_output_clops
 
 
