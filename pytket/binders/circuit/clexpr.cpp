@@ -31,6 +31,7 @@
 #include "py_operators.hpp"
 
 namespace nb = nanobind;
+using json = nlohmann::json;
 
 namespace tket {
 
@@ -547,15 +548,24 @@ void init_clexpr(nb::module_ &m) {
       .def(
           "to_dict",
           [](const WiredClExpr &wexpr) {
-            return nb::cast<nb::dict>(nb::object(nlohmann::json(wexpr)));
+            return nb::cast<nb::dict>(nb::object(json(wexpr)));
           },
           ":return: JSON-serializable dict representation")
       .def_static(
           "from_dict",
           [](const nb::dict &wexpr_dict) {
-            return nlohmann::json(wexpr_dict).get<WiredClExpr>();
+            return json(wexpr_dict).get<WiredClExpr>();
           },
-          "Construct from JSON-serializable dict representation");
+          "Construct from JSON-serializable dict representation")
+      .def(
+          "__getstate__",
+          [](const WiredClExpr &wexpr) {
+            return nb::make_tuple(nb::cast<nb::dict>(nb::object(json(wexpr))));
+          })
+      .def("__setstate__", [](WiredClExpr &wexpr, const nb::tuple &t) {
+        const json j = nb::cast<nb::dict>(t[0]);
+        new (&wexpr) WiredClExpr(j.get<WiredClExpr>());
+      });
 
   nb::class_<ClExprOp, Op>(
       m, "ClExprOp", "An operation defined by a classical expression")

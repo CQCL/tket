@@ -3450,6 +3450,10 @@ class WiredClExpr:
     def from_dict(arg: dict, /) -> WiredClExpr:
         """Construct from JSON-serializable dict representation"""
 
+    def __getstate__(self) -> tuple: ...
+
+    def __setstate__(self, arg: tuple, /) -> None: ...
+
 class ClExprOp(Op):
     """An operation defined by a classical expression"""
 

@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+Features:
+
+- Enable pickling of more pytket objects (`MeasurementBitMap`,
+  `MeasurementSetup`, `Node`, `WiredClExpr`, and all types of
+  `Predicate` except `UserDefinedPredicate`).
+
+## 2.4.1 (May 2025)
+
+Fixes:
+
+- Revert renaming of `has_reg_output` to `_has_reg_output`.
+
+## 2.4.0 (May 2025)
+
 API changes:
 
 - A number of utility methods and classes pertaining to classical expressions,
@@ -13,10 +27,13 @@ Features:
 
 - Allow length-1 bit registers to be interpreted as bits in extended-QASM
   expressions.
+- Additional `circuit_from_qasm_str_wasm` and `circuit_from_qasm_str_wasmmh`
+  for parsing qasm with wasm.
 
 Fixes:
 
 - Ensure downcasting of `UnitID` to `Qubit` in initial and final maps.
+- Fix performance issue in `TK2` to `ZZPhase` conversion.
 
 ## 2.3.2 (April 2025)
 

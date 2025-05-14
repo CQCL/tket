@@ -87,7 +87,10 @@ NB_MODULE(predicates, m) {
             return json(predicate_dict).get<PredicatePtr>();
           },
           "Construct Predicate instance from JSON serializable "
-          "dict representation of the Predicate.");
+          "dict representation of the Predicate.")
+      .def("__getstate__", [](const PredicatePtr &predicate) {
+        return nb::make_tuple(nb::cast<nb::dict>(nb::object(json(predicate))));
+      });
   nb::class_<GateSetPredicate, Predicate>(
       m, "GateSetPredicate",
       "Predicate asserting that all operations are in the specified set of "
@@ -104,28 +107,60 @@ NB_MODULE(predicates, m) {
       .def(
           nb::init<const OpTypeSet &>(), "Construct from a set of gate types.",
           nb::arg("allowed_types"))
-      .def_prop_ro("gate_set", &GateSetPredicate::get_allowed_types);
+      .def_prop_ro("gate_set", &GateSetPredicate::get_allowed_types)
+      .def("__setstate__", [](GateSetPredicate &predicate, const nb::tuple &t) {
+        const json j = nb::cast<nb::dict>(t[0]);
+        PredicatePtr pp = j.get<PredicatePtr>();
+        new (&predicate) GateSetPredicate(
+            std::dynamic_pointer_cast<GateSetPredicate>(pp)
+                ->get_allowed_types());
+      });
   nb::class_<NoClassicalControlPredicate, Predicate>(
       m, "NoClassicalControlPredicate",
       "Predicate asserting that a circuit has no classical controls.")
-      .def(nb::init<>(), "Constructor.");
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](NoClassicalControlPredicate &predicate, const nb::tuple &) {
+            new (&predicate) NoClassicalControlPredicate();
+          });
   nb::class_<NoFastFeedforwardPredicate, Predicate>(
       m, "NoFastFeedforwardPredicate",
       "Predicate asserting that a circuit has no fast feedforward.")
-      .def(nb::init<>(), "Constructor.");
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](NoFastFeedforwardPredicate &predicate, const nb::tuple &) {
+            new (&predicate) NoFastFeedforwardPredicate();
+          });
   nb::class_<NoClassicalBitsPredicate, Predicate>(
       m, "NoClassicalBitsPredicate",
       "Predicate asserting that a circuit has no classical wires.")
-      .def(nb::init<>(), "Constructor.");
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](NoClassicalBitsPredicate &predicate, const nb::tuple &) {
+            new (&predicate) NoClassicalBitsPredicate();
+          });
   nb::class_<NoWireSwapsPredicate, Predicate>(
       m, "NoWireSwapsPredicate",
       "Predicate asserting that a circuit has no wire swaps.")
-      .def(nb::init<>(), "Constructor.");
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](NoWireSwapsPredicate &predicate, const nb::tuple &) {
+            new (&predicate) NoWireSwapsPredicate();
+          });
   nb::class_<MaxTwoQubitGatesPredicate, Predicate>(
       m, "MaxTwoQubitGatesPredicate",
       "Predicate asserting that a circuit has no gates with more than "
       "two input wires.")
-      .def(nb::init<>(), "Constructor.");
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](MaxTwoQubitGatesPredicate &predicate, const nb::tuple &) {
+            new (&predicate) MaxTwoQubitGatesPredicate();
+          });
   nb::class_<ConnectivityPredicate, Predicate>(
       m, "ConnectivityPredicate",
       "Predicate asserting that a circuit satisfies a given connectivity "
@@ -133,7 +168,16 @@ NB_MODULE(predicates, m) {
       .def(
           nb::init<const Architecture &>(),
           "Construct from an :py:class:`~.Architecture`.",
-          nb::arg("architecture"));
+          nb::arg("architecture"))
+      .def(
+          "__setstate__",
+          [](ConnectivityPredicate &predicate, const nb::tuple &t) {
+            const json j = nb::cast<nb::dict>(t[0]);
+            PredicatePtr pp = j.get<PredicatePtr>();
+            new (&predicate) ConnectivityPredicate(
+                std::dynamic_pointer_cast<ConnectivityPredicate>(pp)
+                    ->get_arch());
+          });
   nb::class_<DirectednessPredicate, Predicate>(
       m, "DirectednessPredicate",
       "Predicate asserting that a circuit satisfies a given connectivity "
@@ -141,12 +185,26 @@ NB_MODULE(predicates, m) {
       .def(
           nb::init<const Architecture &>(),
           "Construct from an :py:class:`~.Architecture`.",
-          nb::arg("architecture"));
+          nb::arg("architecture"))
+      .def(
+          "__setstate__",
+          [](DirectednessPredicate &predicate, const nb::tuple &t) {
+            const json j = nb::cast<nb::dict>(t[0]);
+            PredicatePtr pp = j.get<PredicatePtr>();
+            new (&predicate) DirectednessPredicate(
+                std::dynamic_pointer_cast<DirectednessPredicate>(pp)
+                    ->get_arch());
+          });
   nb::class_<CliffordCircuitPredicate, Predicate>(
       m, "CliffordCircuitPredicate",
       "Predicate asserting that a circuit has only Clifford gates and "
       "measurements.")
-      .def(nb::init<>(), "Constructor.");
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](CliffordCircuitPredicate &predicate, const nb::tuple &) {
+            new (&predicate) CliffordCircuitPredicate();
+          });
   nb::class_<UserDefinedPredicate, Predicate>(
       m, "UserDefinedPredicate", "User-defined predicate.")
       .def(
@@ -158,15 +216,39 @@ NB_MODULE(predicates, m) {
       m, "DefaultRegisterPredicate",
       "Predicate asserting that a circuit only uses the default quantum "
       "and classical registers.")
-      .def(nb::init<>(), "Constructor.");
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](DefaultRegisterPredicate &predicate, const nb::tuple &) {
+            new (&predicate) DefaultRegisterPredicate();
+          });
   nb::class_<MaxNQubitsPredicate, Predicate>(
       m, "MaxNQubitsPredicate",
       "Predicate asserting that a circuit has at most n qubits.")
-      .def(nb::init<unsigned>(), "Constructor.");
+      .def(nb::init<unsigned>(), "Constructor.", nb::arg("n_qubits"))
+      .def(
+          "__setstate__",
+          [](MaxNQubitsPredicate &predicate, const nb::tuple &t) {
+            const json j = nb::cast<nb::dict>(t[0]);
+            PredicatePtr pp = j.get<PredicatePtr>();
+            new (&predicate) MaxNQubitsPredicate(
+                std::dynamic_pointer_cast<MaxNQubitsPredicate>(pp)
+                    ->get_n_qubits());
+          });
   nb::class_<MaxNClRegPredicate, Predicate>(
       m, "MaxNClRegPredicate",
       "Predicate asserting that a circuit has at most n classical registers.")
-      .def(nb::init<unsigned>(), "Constructor.");
+      .def(nb::init<unsigned>(), "Constructor.", nb::arg("n_cl_reg"))
+      .def(
+          "__setstate__",
+          [](MaxNClRegPredicate &predicate, const nb::tuple &t) {
+            const json j = nb::cast<nb::dict>(t[0]);
+            PredicatePtr pp = j.get<PredicatePtr>();
+            new (&predicate) MaxNClRegPredicate(
+                std::dynamic_pointer_cast<MaxNClRegPredicate>(pp)
+                    ->get_n_cl_reg());
+          });
+  ;
   nb::class_<PlacementPredicate, Predicate>(
       m, "PlacementPredicate",
       "Predicate asserting that a circuit has been acted on by some "
@@ -177,26 +259,53 @@ NB_MODULE(predicates, m) {
           nb::arg("architecture"))
       .def(
           nb::init<const node_set_t &>(), "Construct from a set of Node.",
-          nb::arg("nodes"));
+          nb::arg("nodes"))
+      .def(
+          "__setstate__",
+          [](PlacementPredicate &predicate, const nb::tuple &t) {
+            const json j = nb::cast<nb::dict>(t[0]);
+            PredicatePtr pp = j.get<PredicatePtr>();
+            new (&predicate) PlacementPredicate(
+                std::dynamic_pointer_cast<PlacementPredicate>(pp)->get_nodes());
+          });
   nb::class_<NoBarriersPredicate, Predicate>(
       m, "NoBarriersPredicate",
       "Predicate asserting that a circuit contains no Barrier operations.")
-      .def(nb::init<>(), "Constructor.");
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](NoBarriersPredicate &predicate, const nb::tuple &) {
+            new (&predicate) NoBarriersPredicate();
+          });
   nb::class_<CommutableMeasuresPredicate, Predicate>(
       m, "CommutableMeasuresPredicate",
       "Predicate asserting that all measurements can be delayed to the end of "
       "the circuit.")
-      .def(nb::init<>(), "Constructor.");
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](CommutableMeasuresPredicate &predicate, const nb::tuple &) {
+            new (&predicate) CommutableMeasuresPredicate();
+          });
   nb::class_<NoMidMeasurePredicate, Predicate>(
       m, "NoMidMeasurePredicate",
       "Predicate asserting that all measurements occur at the end of the "
       "circuit.")
-      .def(nb::init<>(), "Constructor.");
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](NoMidMeasurePredicate &predicate, const nb::tuple &) {
+            new (&predicate) NoMidMeasurePredicate();
+          });
   nb::class_<NoSymbolsPredicate, Predicate>(
       m, "NoSymbolsPredicate",
       "Predicate asserting that no gates in the circuit have symbolic "
       "parameters.")
-      .def(nb::init<>(), "Constructor.");
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__", [](NoSymbolsPredicate &predicate, const nb::tuple &) {
+            new (&predicate) NoSymbolsPredicate();
+          });
   nb::class_<NormalisedTK2Predicate, Predicate>(
       m, "NormalisedTK2Predicate",
       "Asserts that all TK2 gates are normalised\n\n"
@@ -208,7 +317,12 @@ NB_MODULE(predicates, m) {
       "still be ordered in non-increasing order and must be in the interval "
       "[0, 1/2], with the exception of the last one that may be in "
       "[-1/2, 1/2].\n")
-      .def(nb::init<>(), "Constructor.");
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](NormalisedTK2Predicate &predicate, const nb::tuple &) {
+            new (&predicate) NormalisedTK2Predicate();
+          });
 
   /* Compilation units */
 

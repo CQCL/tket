@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import pickle
 from typing import Any
 
 from pytket import logging
@@ -126,3 +127,11 @@ def test_serialization() -> None:
     assert j_ms["result_map"][1] == [xx.to_list(), [mbm3.to_dict()]]
     assert j_ms["result_map"][2] == [zi.to_list(), [mbm.to_dict(), mbm2.to_dict()]]
     assert MeasurementSetup.from_dict(j_ms).to_dict() == j_ms
+
+    s = pickle.dumps(ms)
+    ms1 = pickle.loads(s)
+    assert ms.to_dict() == ms1.to_dict()
+
+    s = pickle.dumps(mbm)
+    mbm1 = pickle.loads(s)
+    assert mbm.to_dict() == mbm1.to_dict()

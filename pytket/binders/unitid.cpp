@@ -324,6 +324,19 @@ NB_MODULE(unit_id, m) {
           "register\n:param index: The index vector",
           nb::arg("name"), nb::arg("index"))
       .def(
+          "__getstate__",
+          [](const Node &n) { return nb::make_tuple(n.reg_name(), n.index()); })
+      .def(
+          "__setstate__",
+          [](Node &n, const nb::tuple &t) {
+            if (t.size() != 2)
+              throw std::runtime_error(
+                  "Invalid state: tuple size: " + std::to_string(t.size()));
+            new (&n)
+                Bit(nb::cast<std::string>(t[0]),
+                    nb::cast<std::vector<unsigned>>(t[1]));
+          })
+      .def(
           "to_list",
           [](const Node &n) { return nb::cast<nb::list>(nb::object(json(n))); },
           ":return: a JSON serializable list representation of "
