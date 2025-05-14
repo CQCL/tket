@@ -45,5 +45,4 @@
 
    .. automethod:: __init__
    .. automethod:: qind_to_squind
-   .. automethod:: squind_to_qind
 ```

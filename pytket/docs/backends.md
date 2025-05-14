@@ -54,7 +54,7 @@ See also the [Running on backends](https://docs.quantinuum.com/tket/user-guide/m
 
 ```{eval-rst}
 .. automodule:: pytket.backends.backendinfo
-    :members: BackendInfo, fully_connected_backendinfo
+    :members: BackendInfo
 ```
 
 ## pytket.backends.backend_exceptions
