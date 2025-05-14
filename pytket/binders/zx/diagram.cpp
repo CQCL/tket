@@ -115,7 +115,8 @@ void ZXDiagramPybind::init_zxdiagram(nb::module_& m) {
       "Triangle), the QuantumType for single/doubled versions of typical "
       "generators, and any parameters such as phase. Wires are undirected and "
       "have a :py:class:`~.ZXWireType` (e.g. Basic, Hadamard) and "
-      ":py:class:`~.QuantumType` (a single wire or a doubled pair for a quantum "
+      ":py:class:`~.QuantumType` (a single wire or a doubled pair for a "
+      "quantum "
       "system).")
       .def(nb::init<>(), "Constructs an empty ZX diagram.")
       .def(
@@ -186,12 +187,14 @@ void ZXDiagramPybind::init_zxdiagram(nb::module_& m) {
       .def(
           "count_vertices",
           (unsigned (ZXDiagram::*)(ZXType) const) & ZXDiagram::count_vertices,
-          "Counts the number of vertices of a given :py:class:`~.ZXType` in the "
+          "Counts the number of vertices of a given :py:class:`~.ZXType` in "
+          "the "
           "diagram.",
           nb::arg("type"))
       .def(
           "count_wires", &ZXDiagram::count_wires,
-          "Counts the number of wired of a given :py:class:`~.ZXWireType` in the "
+          "Counts the number of wired of a given :py:class:`~.ZXWireType` in "
+          "the "
           "diagram.",
           nb::arg("type"))
       .def(
@@ -267,7 +270,8 @@ void ZXDiagramPybind::init_zxdiagram(nb::module_& m) {
           [](const ZXDiagram& diag, const ZXVertWrapper& v) {
             return diag.get_qtype(v);
           },
-          "Returns the :py:class:`~.QuantumType` of the given vertex if defined, "
+          "Returns the :py:class:`~.QuantumType` of the given vertex if "
+          "defined, "
           "None otherwise.",
           nb::arg("v"))
       .def(
@@ -286,15 +290,16 @@ void ZXDiagramPybind::init_zxdiagram(nb::module_& m) {
           nb::arg("w"))
       .def(
           "get_wire_type", &ZXDiagram::get_wire_type,
-          "Returns the :py:class:`~.ZXWireType` of the given wire.", nb::arg("w"))
+          "Returns the :py:class:`~.ZXWireType` of the given wire.",
+          nb::arg("w"))
       .def(
           "set_wire_qtype", &ZXDiagram::set_wire_qtype,
           "Updates the :py:class:`~.QuantumType` of the given wire.",
           nb::arg("w"), nb::arg("qtype"))
       .def(
           "set_wire_type", &ZXDiagram::set_wire_type,
-          "Updates the :py:class:`~.ZXWireType` of the given wire.", nb::arg("w"),
-          nb::arg("type"))
+          "Updates the :py:class:`~.ZXWireType` of the given wire.",
+          nb::arg("w"), nb::arg("type"))
       .def(
           "get_wire_ends",
           [](const ZXDiagram& diag, const Wire& w) {
@@ -535,7 +540,8 @@ NB_MODULE(zx, m) {
           "ZXBox", ZXType::ZXBox,
           "A box encapsulating another :py:class:`~.ZXDiagram`. Inherits ports "
           "from the boundary of the internal diagram, with port numbers "
-          "matching the boundary order and :py:class:`~.QuantumType` admitted at "
+          "matching the boundary order and :py:class:`~.QuantumType` admitted "
+          "at "
           "each port matching that of the boundary vertex.");
   nb::enum_<ZXWireType>(
       m, "ZXWireType",
@@ -631,7 +637,8 @@ NB_MODULE(zx, m) {
           "param", &CliffordGen::get_param, "The parameter of the generator.");
   nb::class_<DirectedGen, ZXGen>(
       m, "DirectedGen",
-      "Specialisation of :py:class:`~.ZXGen` for asymmetric ZX generators which "
+      "Specialisation of :py:class:`~.ZXGen` for asymmetric ZX generators "
+      "which "
       "can be doubled to form a Quantum variant. Asymmetric effects handled by "
       "ports to distinguish operands.")
       .def(
@@ -648,7 +655,8 @@ NB_MODULE(zx, m) {
   ZXDiagramPybind::init_zxdiagram(m);
   nb::class_<ZXBox, ZXGen>(
       m, "ZXBox",
-      "Specialisation of :py:class:`~.ZXGen` for encapsulations of some other ZX "
+      "Specialisation of :py:class:`~.ZXGen` for encapsulations of some other "
+      "ZX "
       "diagrams. In general, arbitrary diagrams may be asymmetric tensors with "
       "both Quantum and Classical boundaries, so ports are used to distinguish "
       "each boundary.")
@@ -678,7 +686,8 @@ NB_MODULE(zx, m) {
               clist.push_back(ZXVertWrapper(c));
             return clist;
           },
-          "The correction set for the given :py:class:`~.ZXVert`.", nb::arg("v"))
+          "The correction set for the given :py:class:`~.ZXVert`.",
+          nb::arg("v"))
       .def_prop_ro(
           "cmap",
           [](const Flow& fl) {

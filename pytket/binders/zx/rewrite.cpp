@@ -37,7 +37,8 @@ void init_rewrite(nb::module_ &m) {
           [](const nb::tket_custom::SequenceVec<Rewrite> &rvec) {
             return Rewrite::sequence(rvec);
           },
-          "Composes a list of :py:class:`~.Rewrite` s together in sequence. The "
+          "Composes a list of :py:class:`~.Rewrite` s together in sequence. "
+          "The "
           "apply method will return True if ANY of the individual Rewrites "
           "returned True.\n\n:param sequence: The list of "
           ":py:class:`~.Rewrite` s to be composed.\n:return: The combined "

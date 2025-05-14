@@ -112,7 +112,8 @@ NB_MODULE(tableau, m) {
           "Update the tableau according to adding a Clifford gate before the "
           "current unitary, i.e. updates :math:`U` to :math:`UG` for a gate "
           ":math:`G`."
-          "\n\n:param type: The :py:class:`~.OpType` of the gate to add. Must be "
+          "\n\n:param type: The :py:class:`~.OpType` of the gate to add. Must "
+          "be "
           "an unparameterised Clifford gate type."
           "\n:param qbs: The qubits to apply the gate to. Length must match "
           "the arity of the given gate type.",
@@ -126,7 +127,8 @@ NB_MODULE(tableau, m) {
           "Update the tableau according to adding a Clifford gate after the "
           "current unitary, i.e. updates :math:`U` to :math:`GU` for a gate "
           ":math:`G`."
-          "\n\n:param type: The :py:class:`~.OpType` of the gate to add. Must be "
+          "\n\n:param type: The :py:class:`~.OpType` of the gate to add. Must "
+          "be "
           "an unparameterised Clifford gate type."
           "\n:param qbs: The qubits to apply the gate to. Length must match "
           "the arity of the given gate type.",
@@ -222,7 +224,8 @@ NB_MODULE(tableau, m) {
           "Update the tableau according to adding a Clifford gate before the "
           "current unitary, i.e. updates :math:`U` to :math:`UG` for a gate "
           ":math:`G`."
-          "\n\n:param type: The :py:class:`~.OpType` of the gate to add. Must be "
+          "\n\n:param type: The :py:class:`~.OpType` of the gate to add. Must "
+          "be "
           "an unparameterised Clifford gate type."
           "\n:param qbs: The qubits to apply the gate to. Length must match "
           "the arity of the given gate type.",
@@ -236,7 +239,8 @@ NB_MODULE(tableau, m) {
           "Update the tableau according to adding a Clifford gate after the "
           "current unitary, i.e. updates :math:`U` to :math:`GU` for a gate "
           ":math:`G`."
-          "\n\n:param type: The :py:class:`~.OpType` of the gate to add. Must be "
+          "\n\n:param type: The :py:class:`~.OpType` of the gate to add. Must "
+          "be "
           "an unparameterised Clifford gate type."
           "\n:param qbs: The qubits to apply the gate to. Length must match "
           "the arity of the given gate type.",
@@ -254,7 +258,8 @@ NB_MODULE(tableau, m) {
       .def(
           nb::init<const UnitaryTableau&>(),
           "Construct from a given tableau.\n\n"
-          ":param tab: The :py:class:`~.UnitaryTableau` representing the desired "
+          ":param tab: The :py:class:`~.UnitaryTableau` representing the "
+          "desired "
           "unitary.",
           nb::arg("tab"))
       .def(

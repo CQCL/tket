@@ -576,7 +576,8 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
             return add_gate_method_any(
                 circ, std::make_shared<CircBox>(box), args, kwargs);
           },
-          "Append a :py:class:`~.CircBox` to the circuit, wiring whole registers "
+          "Append a :py:class:`~.CircBox` to the circuit, wiring whole "
+          "registers "
           "together."
           "\n\n:param circbox: The box to append"
           "\n:param qregs: Sequence of :py:class:`~.QubitRegister` from the "
@@ -675,7 +676,8 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
             return add_gate_method_any(
                 circ, std::make_shared<CircBox>(box), args, kwargs);
           },
-          "Append a :py:class:`~.CircBox` to the circuit, wiring whole registers "
+          "Append a :py:class:`~.CircBox` to the circuit, wiring whole "
+          "registers "
           "together."
           "\n\nThis method expects two maps (one for qubit registers and one "
           "for bit registers), which must have keys corresponding to all "
@@ -684,10 +686,12 @@ void init_circuit_add_op(nb::class_<Circuit> &c) {
           "indexed contiguously from zero."
           "\n\n:param circbox: The box to append"
           "\n:param qregmap: Map specifying which qubit register in the "
-          ":py:class:`~.CircBox` (the map's keys) matches which register in the "
+          ":py:class:`~.CircBox` (the map's keys) matches which register in "
+          "the "
           "outer circuit (the map's values)"
           "\n:param cregmap: Map specifying which bit register in the "
-          ":py:class:`~.CircBox` (the map's keys) matches which register in the "
+          ":py:class:`~.CircBox` (the map's keys) matches which register in "
+          "the "
           "outer circuit (the map's values)"
           "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("circbox"), nb::arg("qregmap"), nb::arg("cregmap"),

@@ -77,8 +77,8 @@ NB_MODULE(circuit, m) {
   // NOTE: Sphinx does not automatically pick up the docstring for OpType
   nb::enum_<OpType>(
       m, "OpType",
-      "Enum for available operations compatible with tket " CLSOBJS(~.Circuit) 
-      ".",
+      "Enum for available operations compatible with tket " CLSOBJS(
+          ~.Circuit) ".",
       nb::is_arithmetic())
       .value(
           "Phase", OpType::Phase,
@@ -592,7 +592,8 @@ NB_MODULE(circuit, m) {
       .def(
           "is_clifford_type",
           [](const Op &op) { return op.get_desc().is_clifford_gate(); },
-          "Check if the operation is one of the Clifford " CLSOBJS(~.OpType) ".")
+          "Check if the operation is one of the Clifford " CLSOBJS(
+              ~.OpType) ".")
       .def(
           "is_clifford", [](const Op &op) { return op.is_clifford(); },
           "Test whether the operation is in the Clifford group. A return value "

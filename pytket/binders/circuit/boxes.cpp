@@ -149,8 +149,8 @@ void init_boxes(nb::module_ &m) {
       m, "CircBox",
       "A user-defined operation specified by a :py:class:`~.Circuit`.")
       .def(
-          nb::init<const Circuit &>(), "Construct from a :py:class:`~.Circuit`.",
-          nb::arg("circ"))
+          nb::init<const Circuit &>(),
+          "Construct from a :py:class:`~.Circuit`.", nb::arg("circ"))
       .def(
           "get_circuit", [](CircBox &cbox) { return *cbox.to_circuit(); },
           ":return: the :py:class:`~.Circuit` described by the box")
@@ -304,7 +304,8 @@ void init_boxes(nb::module_ &m) {
           ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_paulis_pair", &PauliExpPairBox::get_paulis_pair,
-          ":return: A tuple containing the two corresponding lists of " CLSOBJS(~.Pauli))
+          ":return: A tuple containing the two corresponding lists of " CLSOBJS(
+              ~.Pauli))
       .def(
           "get_phase_pair", &PauliExpPairBox::get_phase_pair,
           ":return: A tuple containing the two phase parameters")

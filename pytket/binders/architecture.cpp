@@ -51,7 +51,8 @@ NB_MODULE(architecture, m) {
               const nb::tket_custom::SequenceVec<std::pair<Node, Node>> &>(),
           "The constructor for an architecture with connectivity "
           "between qubits.\n\n:param connections: A list of pairs "
-          "representing :py:class:`~.Node` s that can perform two-qubit operations",
+          "representing :py:class:`~.Node` s that can perform two-qubit "
+          "operations",
           nb::arg("connections"))
       .def(
           "__repr__",
