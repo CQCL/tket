@@ -125,7 +125,7 @@ class Graph:
         Return a visual representation of the DAG as a graphviz object.
 
         :returns:   Representation of the DAG
-        :rtype:     graphviz.DiGraph
+        :rtype:     graphviz.Digraph
         """
         if self.G is not None:
             return self.G

@@ -137,7 +137,7 @@ class ProbabilityDistribution(Generic[T0]):
     """Represents an exact probability distribution.
 
     Supports methods for combination, marginalization, expectation value, etc. May be
-    derived from an :py:class:`EmpriricalDistribution`.
+    derived from an :py:class:`EmpiricalDistribution`.
     """
 
     def __init__(self, P: dict[T0, float], min_p: float = 0.0):

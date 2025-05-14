@@ -34,7 +34,7 @@ def gen_term_sequence_circuit(
     colour_method: GraphColourMethod = GraphColourMethod.Lazy,
 ) -> Circuit:
     """
-    Sequences the terms of a :py:class:`QubitPauliOperator` :math:`P` to generate
+    Sequences the terms of a :py:class:`~.QubitPauliOperator` :math:`P` to generate
     a circuit approximating :math:`e^{-i \\frac{\\pi}{2} P}`. This method
     performs Trotterisation on :math:`P` with a single Trotter step.
 

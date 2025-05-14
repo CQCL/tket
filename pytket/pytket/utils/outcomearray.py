@@ -14,6 +14,9 @@
 
 """`OutcomeArray` class and associated methods."""
 
+# Needed for sphinx to set up type alias for ArrayLike
+from __future__ import annotations
+
 import operator
 from collections import Counter
 from collections.abc import Sequence
@@ -203,5 +206,5 @@ class OutcomeArray(np.ndarray):
 def readout_counts(
     ctr: Counter[OutcomeArray],
 ) -> Counter[tuple[int, ...]]:
-    """Convert counts from :py:class:`OutcomeArray` types to tuples of ints."""
+    """Convert counts from :py:class:`~.OutcomeArray` types to tuples of ints."""
     return Counter({tuple(map(int, oa.to_readout())): int(n) for oa, n in ctr.items()})

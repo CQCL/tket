@@ -26,27 +26,24 @@ from pytket.backends.backendresult import BackendResult
 from pytket.circuit import Bit, CircBox, Circuit, Node, OpType, Qubit
 from pytket.passes import DecomposeBoxes, FlattenRegisters
 from pytket.utils.outcomearray import OutcomeArray
-from pytket.utils.results import CountsDict, StateTuple
-
-ParallelMeasures = list[dict[Qubit, Bit]]
 
 
 def compress_counts(
-    counts: dict[StateTuple, float], tol: float = 1e-6, round_to_int: bool = False
-) -> CountsDict:
+    counts: dict[tuple[int, ...], float], tol: float = 1e-6, round_to_int: bool = False
+) -> dict[tuple[int, ...], int | float]:
     """Filter counts to remove states that have a count value (which can be a
     floating-point number) below a tolerance, and optionally round to an
     integer.
 
     :param counts: Input counts
-    :type counts: Dict[StateTuple, float]
+    :type counts: dict[tuple[int, ...], float]
     :param tol: Value below which counts are pruned. Defaults to 1e-6.
     :type tol: float
     :param round_to_int: Whether to round each count to an integer. Defaults to False.
     :type round_to_int: bool
 
     :return: Filtered counts
-    :rtype: CountsDict
+    :rtype: dict[tuple[int, ...], int | float]
     """
     valprocess: Callable[[float], int | float] = lambda x: (
         round(x) if round_to_int else x
@@ -464,8 +461,8 @@ class SpamCorrecter:
             for mat in self.subsets_matrix_map.values()
         ]
 
-    def get_parallel_measure(self, circuit: Circuit) -> ParallelMeasures:
-        """For a given circuit, produces and returns a ParallelMeasures object required
+    def get_parallel_measure(self, circuit: Circuit) -> list[dict[Qubit, Bit]]:
+        """For a given circuit, produces and returns a `list[dict[Qubit, Bit]]` object required
          for correcting counts results.
 
         :param circuit: Circuit with some Measure operations.
@@ -473,7 +470,7 @@ class SpamCorrecter:
 
         :return: A list of dictionaries mapping Qubit to Bit where each separate
             dictionary details some set of Measurement operations run in parallel.
-        :rtype: ParallelMeasures
+        :rtype: list[dict[Qubit, Bit]]
         """
         parallel_measure = [circuit.qubit_to_bit_map]
         # implies mid-circuit measurements, or that at least missing
@@ -490,7 +487,7 @@ class SpamCorrecter:
     def correct_counts(
         self,
         result: BackendResult,
-        parallel_measures: ParallelMeasures,
+        parallel_measures: list[dict[Qubit, Bit]],
         method: str = "bayesian",
         options: dict | None = None,
     ) -> BackendResult:
@@ -503,7 +500,7 @@ class SpamCorrecter:
              counts order matches noise characterisation and to amend characterisation
              matrices to correct the right bits. SpamCorrecter.get_parallel_measure
              returns the required object for a given circuit.
-        :type parallel_measures: ParallelMeasures
+        :type parallel_measures: list[dict[Qubit, Bit]]
 
         :raises ValueError: Measured qubit in result not characterised.
 

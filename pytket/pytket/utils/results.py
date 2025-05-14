@@ -18,8 +18,6 @@ import numpy as np
 
 from pytket.circuit import BasisOrder
 
-StateTuple = tuple[int, ...]
-CountsDict = dict[StateTuple, int | float]
 KwargTypes = Any
 
 
@@ -51,7 +49,7 @@ class BitPermuter:
         :param val: input integer
         :type val: int
         :param inverse: whether to use the inverse permutation, defaults to False
-        :type inverse: bool, optional
+        :type inverse: bool
         :return: permuted integer
         :rtype: int
         """

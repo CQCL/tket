@@ -6,7 +6,7 @@ See the [pytket User Manual](https://docs.quantinuum.com/tket/user-guide/manual/
 
 See also the notebook tutorials on [circuit generation](https://docs.quantinuum.com/tket/user-guide/examples/circuit_construction/circuit_generation_example.html) and [circuit analysis](https://docs.quantinuum.com/tket/user-guide/examples/circuit_construction/circuit_analysis_example.html).
 
-Many of the {py:class}`~pytket.circuit.Circuit` methods described below append a gate or box to
+Many of the {py:class}`~.Circuit` methods described below append a gate or box to
 the end of the circuit. Where `kwargs` are indicated in these methods, the
 following keyword arguments are supported:
 
@@ -25,7 +25,7 @@ condition on a specified set of bit values.)
 % and Circuit.add_multiplexed_tensored_u2 are near the bottom.
 
 ```{eval-rst}
-.. currentmodule:: pytket.circuit.Circuit
+.. currentmodule:: pytket.circuit
 ```
 
 ```{eval-rst}

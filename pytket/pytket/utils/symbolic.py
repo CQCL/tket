@@ -337,7 +337,7 @@ class SymGateRegister:
         :param typ: OpType to register
         :type typ: OpType
         :param f: Callable for generating symbolic matrix.
-        :type f: SymGateFunc
+        :type f: Callable[[list[sympy.core.expr.Expr | float]], sympy.matrices.immutable.ImmutableDenseMatrix]
         :param replace: Whether to replace existing entry, defaults to False
         :type replace: bool
         """
@@ -393,7 +393,7 @@ def circuit_to_symbolic_gates(circ: Circuit) -> Mul:
     :type circ: Circuit
     :raises ValueError: If circ does not match a unitary operation.
     :return: Symbolic gate multiplication expression.
-    :rtype: Mul
+    :rtype: sympy.core.mul.Mul
     """
     outmat = symgate.IdentityGate(0)
     nqb = circ.n_qubits
@@ -427,7 +427,7 @@ def circuit_to_symbolic_unitary(circ: Circuit) -> ImmutableMatrix:
     :param circ: Input circuit
     :type circ: Circuit
     :return: Symbolic unitary.
-    :rtype: ImmutableMatrix
+    :rtype: sympy.matrices.immutable.ImmutableDenseMatrix
     """
     gates = circuit_to_symbolic_gates(circ)
     nqb = circ.n_qubits
@@ -452,7 +452,7 @@ def circuit_apply_symbolic_qubit(circ: Circuit, input_qb: Expr) -> Qubit:
     :param circ: Input Circuit.
     :type circ: Circuit
     :param input_qb: Sympy Qubit expression corresponding to a state.
-    :type input_qb: Expr
+    :type input_qb: sympy.core.expr.Expr
     :return: Output state after circuit acts on input_qb.
     :rtype: Qubit
     """
@@ -472,9 +472,9 @@ def circuit_apply_symbolic_statevector(
     :param circ: Input Circuit.
     :type circ: Circuit
     :param input_state: Input statevector as a column vector, defaults to None.
-    :type input_state: Optional[Union[numpy.ndarray, ImmutableMatrix]]
+    :type input_state: Optional[Union[numpy.ndarray, sympy.matrices.immutable.ImmutableDenseMatrix]]
     :return: Symbolic state after circ acts on input_state.
-    :rtype: ImmutableMatrix
+    :rtype: sympy.matrices.immutable.ImmutableDenseMatrix
     """
     if input_state:
         input_qb = matrix_to_qubit(input_state)

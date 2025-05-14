@@ -89,7 +89,7 @@ class QubitPauliOperator:
         :param key: String to use as key
         :type key: QubitPauliString
         :param value: Associated coefficient
-        :type value: Union[int, float, complex, Expr]
+        :type value: Union[int, float, complex, sympy.Expr]
         """
         self._dict[key] = _coeff_convert(value)
         self._all_qubits.update(key.map.keys())
@@ -143,7 +143,7 @@ class QubitPauliOperator:
         Multiply coefficients and terms.
 
         :param multiplier: The operator or scalar to multiply
-        :type multiplier: Union[QubitPauliOperator, int, float, complex, Expr]
+        :type multiplier: Union[QubitPauliOperator, int, float, complex, sympy.Expr]
         :return: Updated operator (self)
         :rtype: QubitPauliOperator
         """
@@ -180,7 +180,7 @@ class QubitPauliOperator:
         """Multiplication (*) by QubitPauliOperator or scalar.
 
         :param multiplier: The scalar to multiply by
-        :type multiplier: Union[int, float, complex, Expr, QubitPauliOperator]
+        :type multiplier: Union[int, float, complex, sympy.Expr, QubitPauliOperator]
         :return: Product operator
         :rtype: QubitPauliOperator
         """
@@ -195,7 +195,7 @@ class QubitPauliOperator:
         QubitPauliOperator*QubitPauliOperator.
 
         :param multiplier: The scalar to multiply by
-        :type multiplier: Union[int, float, complex, Expr]
+        :type multiplier: Union[int, float, complex, sympy.Expr]
         :return: Product operator
         :rtype: QubitPauliOperator
         """
@@ -204,10 +204,8 @@ class QubitPauliOperator:
     @property
     def all_qubits(self) -> set[Qubit]:
         """
-        :return: The set of all qubits the operator ranges over (including qubits
+        The set of all qubits the operator ranges over (including qubits
             that were provided explicitly as identities)
-
-        :rtype: Set[Qubit]
         """
         return self._all_qubits
 
@@ -215,14 +213,14 @@ class QubitPauliOperator:
         """Substitutes any matching symbols in the QubitPauliOperator.
 
         :param symbol_dict: A dictionary of symbols to fixed values.
-        :type symbol_dict: Dict[Symbol, complex]
+        :type symbol_dict: Dict[sympy.core.symbol.Symbol, complex]
         """
         for key, value in self._dict.items():
             self._dict[key] = value.subs(symbol_dict)
 
     def get_dict(self) -> dict[QubitPauliString, Expr]:
         """Generate a dict representation of QubitPauliOperator,
-        mapping each :py:class:`QubitPauliString` in the support
+        mapping each :py:class:`~.QubitPauliString` in the support
         to its corresponding value.
 
         :return: A dict of Pauli strings and their coefficients
@@ -291,7 +289,7 @@ class QubitPauliOperator:
             Defaults to None
         :type qubits: Union[List[Qubit], int, None]
         :return: A sparse matrix representation of the operator.
-        :rtype: csc_matrix
+        :rtype: scipy.sparse.csc_matrix
         """
         if qubits is None:
             qubits_ = sorted(list(self._all_qubits))  # noqa: C414
