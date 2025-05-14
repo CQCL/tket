@@ -36,14 +36,10 @@ def compress_counts(
     integer.
 
     :param counts: Input counts
-    :type counts: dict[tuple[int, ...], float]
     :param tol: Value below which counts are pruned. Defaults to 1e-6.
-    :type tol: float
     :param round_to_int: Whether to round each count to an integer. Defaults to False.
-    :type round_to_int: bool
 
     :return: Filtered counts
-    :rtype: dict[tuple[int, ...], int | float]
     """
     valprocess: Callable[[float], int | float] = lambda x: (
         round(x) if round_to_int else x
@@ -60,10 +56,8 @@ def binary_to_int(bintuple: tuple[int]) -> int:
     the first element of tuple.
 
     :param bintuple: Binary tuple
-    :type bintuple: Tuple[int]
 
-    :return:
-    Integer :rtype: int
+    :return: Integer
     """
     integer = 0
     for index, bitset in enumerate(reversed(bintuple)):
@@ -78,12 +72,9 @@ def int_to_binary(val: int, dim: int) -> tuple[int, ...]:
      the first element of tuple.
 
     :param val: input integer
-    :type val: int
     :param dim: Bit width
-    :type dim: int
 
     :return: Binary tuple of width dim
-    :rtype: Tuple[int, ...]
     """
     return tuple(map(int, format(val, f"0{dim}b")))
 
@@ -100,14 +91,10 @@ def _unfold(tens: np.ndarray, mode: int, dims: list[int]) -> np.ndarray:
     """Unfolds tensor into matrix.
 
     :param tens: Tensor with shape equivalent to dimensions
-    :type tens: numpy.ndarray
     :param mode: Specifies axis move to front of matrix in unfolding of tensor
-    :type mode: int
     :param dims: Gives shape of tensor passed
-    :type dims: List[int]
 
     :return: Matrix with shape (dims[mode], prod(dims[/mode]))
-    :rtype: numpy.ndarray
     """
     if mode == 0:
         return tens.reshape(dims[0], -1)
@@ -119,14 +106,10 @@ def _refold(vec: np.ndarray, mode: int, dims: list[int]) -> np.ndarray:
 
     :param vec: Tensor with length equivalent to the product of dimensions given in
         dims
-    :type vec: numpy.ndarray
     :param mode: Axis tensor was unfolded along
-    :type mode: int
     :param dims: Shape of tensor
-    :type dims: List[int]
 
     :return: Tensor folded from vector with shape equivalent to given dimensions
-    :rtype: numpy.ndarray
     """
     if mode == 0:
         return vec.reshape(dims)
@@ -140,12 +123,9 @@ def _compute_dot(submatrices: Iterable[np.ndarray], vector: np.ndarray) -> np.nd
     """Multiplies the kronecker product of the given submatrices with given vector.
 
     :param submatrices: Submatrices multiplied
-    :type submatrices: Iterable[numpy.ndarray]
     :param vector: Vector multplied
-    :type vector: numpy.ndarray
 
     :return: Kronecker product of arguments
-    :rtype: numpy.ndarray
     """
     dims = [A.shape[0] for A in submatrices]
     vt = vector.reshape(dims)
@@ -164,17 +144,12 @@ def _bayesian_iteration(
     measurements.
 
     :param submatrices: submatrices to be inverted and applied to measurements.
-    :type submatrices: Iterable[numpy.ndarray]
     :param measurements: Probability distribution over set of states to be amended.
-    :type measurements: numpy.ndarray
     :param t: Some transform to act on measurements.
-    :type t: numpy.ndarray
     :param epsilon: A stabilization parameter to define an affine transformation for
         application to submatrices, eliminating zero probabilities.
-    :type epsilon: float
 
     :return: Transformed distribution vector.
-    :rtype: numpy.ndarray
     """
     # Transform t according to the Bayesian iteration
     # The parameter epsilon is a stabilization parameter which defines an affine
@@ -207,13 +182,9 @@ def _bayesian_iterative_correct(
     tested states.
 
     :param submatrices: Matrices comprising the pure noise characterisation.
-    :type submatrices: Iterable[numpy.ndarray]
     :param input_vector: Vector corresponding to some counts distribution.
-    :type input_vector: numpy.ndarray
     :param tol: tolerance of closeness of found results
-    :type tol: float
     :param max_it: Maximum number of inversions attempted to correct results.
-    :type max_it: int
     """
     # based on method found in https://arxiv.org/abs/1910.00129
 
@@ -250,12 +221,9 @@ def _reduce_matrix(indices_to_remove: list[int], matrix: np.ndarray) -> np.ndarr
     that unmeasured qubits will be in that state.
 
     :param indices_to_remove: Binary index of state matrix is mapping to be removed.
-    :type indices_to_remove: List[int]
     :param matrix: Transition matrix where indices correspond to some binary state.
-    :type matrix: numpy.ndarray
 
     :return: Transition matrix with removed entries.
-    :rtype: numpy.ndarray
     """
 
     new_n_qubits = int(log2(matrix.shape[0])) - len(indices_to_remove)
@@ -287,12 +255,9 @@ def _reduce_matrices(
     """Removes some dimensions from some matrices.
 
     :param entries_to_remove: Via indexing, details dimensions to be removed.
-    :type entries_to_remove: List[Tuple[int, int]]
     :param matrices: All matrices to have dimensions removed.
-    :type matrices: List[numpy.ndarray]
 
     :return: Matrices with some dimensions removed.
-    :rtype: List[numpy.ndarray]
     """
     organise: dict[int, list] = {k: [] for k in range(len(matrices))}
     for unused in entries_to_remove:
@@ -320,7 +285,6 @@ class SpamCorrecter:
             Qubits within the same list are assumed to only have SPAM errors correlated
             with each other. Thus to allow SPAM errors between all qubits you should
             provide a single list.
-        :type qubit_subsets: List[List[Node]]
         :param backend: Backend on which the experiments are intended to be run
             (optional). If provided, the qubits in `qubit_subsets` must be nodes in the
             backend's associated `Architecture`. If not provided, it is assumed that the
@@ -365,7 +329,6 @@ class SpamCorrecter:
             should be processed without compilation. Results from these circuits must
             be given back to this class (via the `calculate_matrices` method) in the
             same order.
-        :rtype: List[Circuit]
         """
 
         major_state_dimensions = self.subset_dimensions[0]
@@ -416,7 +379,6 @@ class SpamCorrecter:
 
         :param results_list: List of results from Backend. Must be in the same order as
              the corresponding circuits generated by `calibration_circuits`.
-        :type counts_list: List[BackendResult]
 
         :raises RuntimeError: Calibration circuits have not been generated yet.
         """
@@ -466,11 +428,9 @@ class SpamCorrecter:
          for correcting counts results.
 
         :param circuit: Circuit with some Measure operations.
-        :type circuit: Circuit
 
         :return: A list of dictionaries mapping Qubit to Bit where each separate
             dictionary details some set of Measurement operations run in parallel.
-        :rtype: list[dict[Qubit, Bit]]
         """
         parallel_measure = [circuit.qubit_to_bit_map]
         # implies mid-circuit measurements, or that at least missing
@@ -495,17 +455,14 @@ class SpamCorrecter:
         noise map represented by characterisation matrices is applied to it.
 
         :param result: BackendResult object to be negated by pure noise object.
-        :type result: BackendResult
         :param parallel_measures: Used to permute corresponding BackendResult object so
              counts order matches noise characterisation and to amend characterisation
              matrices to correct the right bits. SpamCorrecter.get_parallel_measure
              returns the required object for a given circuit.
-        :type parallel_measures: list[dict[Qubit, Bit]]
 
         :raises ValueError: Measured qubit in result not characterised.
 
         :return: A new result object with counts modified to reflect SPAM correction.
-        :rtype: BackendResult
         """
         # the correction process assumes that when passed a list of matrices
         #  and a distribution to correct, that the j rows of matrix i
@@ -601,11 +558,12 @@ class SpamCorrecter:
         """Get calibration information as a dictionary.
 
         :return: Dictionary output
-        :rtype: Dict
         """
         correlations = []
         for subset in self.correlations:
-            correlations.append([(uid.reg_name, uid.index) for uid in subset])  # noqa: PERF401
+            correlations.append(  # noqa: PERF401
+                [(uid.reg_name, uid.index) for uid in subset]
+            )
 
         node_index_hashable = [
             ((uid.reg_name, uid.index), self.node_index_dict[uid])
@@ -624,7 +582,6 @@ class SpamCorrecter:
         by `to_dict`.
 
         :return: Dictionary of calibration information.
-        :rtype: SpamCorrecter
         """
         new_inst = class_obj(
             [

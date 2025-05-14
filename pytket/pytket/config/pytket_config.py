@@ -46,7 +46,6 @@ class PytketConfig:
 
         :param extensions: Dictionary holding parameter values for extension packages,
             defaults to None
-        :type extensions: Optional[Dict[str, Any]]
         """
 
         self.extensions = {} if extensions is None else extensions

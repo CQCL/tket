@@ -50,13 +50,9 @@ def gen_term_sequence_circuit(
     than minimising the trotter error.
 
     :param operator: The operator terms to sequence
-    :type operator: QubitPauliOperator
     :param reference_state: reference state to add sequenced terms to.
-    :type reference_state: Circuit
     :param partition_strat: a Partition strategy
-    :type partition_strat: PauliPartitionStrat, Optional
     :param colour_method: a graph colouring method
-    :type colour_method: GraphColourMethod, Optional
     """
     qps_list = list(operator._dict.keys())  # noqa: SLF001
     qps_list_list = term_sequence(qps_list, partition_strat, colour_method)

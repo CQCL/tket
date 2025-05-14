@@ -170,7 +170,6 @@ class LogicExp:
     def all_inputs(self) -> set[Bit | BitRegister]:
         """
         :return: All variables involved in expression.
-        :rtype: Set[Union[Bit, BitRegister]]
         """
         outset: set[Bit | BitRegister] = set()
 
@@ -188,7 +187,6 @@ class LogicExp:
     def all_inputs_ordered(self) -> list[Bit | BitRegister]:
         """
         :return: All variables involved in expression, in order of first appearance.
-        :rtype: list[Union[Bit, BitRegister]]
         """
         # use dict[Union[Bit, BitRegister], None] instead of set[Union[Bit, BitRegister]] to preserve order
         outset: dict[Bit | BitRegister, None] = {}
@@ -263,7 +261,9 @@ class LogicExp:
                         """in a register-wise logic expression."""
                     )
             elif isinstance(arg, LogicExp):
-                success |= arg._rename_args_recursive(cmap, renamed_regs)  # noqa: SLF001
+                success |= arg._rename_args_recursive(  # noqa: SLF001
+                    cmap, renamed_regs
+                )
         return success
 
     def rename_args(self, cmap: dict[Bit, Bit]) -> bool:
@@ -646,7 +646,9 @@ def if_not_bit(bit: Bit | BitLogicExp) -> PredicateExp:
     return BitEq(bit, 0)
 
 
-def create_bit_logic_exp(op: BitWiseOp, args: Sequence[BitArgType]) -> BitLogicExp:  # noqa: PLR0911
+def create_bit_logic_exp(  # noqa: PLR0911
+    op: BitWiseOp, args: Sequence[BitArgType]
+) -> BitLogicExp:
     """
     Builds the :py:class:`LogicExp` corresponding to applying the given
     :py:class:`BitWiseOp` to some sequence of bits.
@@ -677,7 +679,9 @@ def create_bit_logic_exp(op: BitWiseOp, args: Sequence[BitArgType]) -> BitLogicE
         return BitOne()
 
 
-def create_reg_logic_exp(op: RegWiseOp, args: Sequence[RegArgType]) -> RegLogicExp:  # noqa: PLR0911, PLR0912
+def create_reg_logic_exp(  # noqa: PLR0911, PLR0912
+    op: RegWiseOp, args: Sequence[RegArgType]
+) -> RegLogicExp:
     """
     Builds the :py:class:`LogicExp` corresponding to applying the given
     :py:class:`RegWiseOp` to some sequence of registers.
@@ -765,7 +769,9 @@ def create_logic_exp(op: Ops, args: Sequence[ArgType]) -> LogicExp:
     return create_reg_logic_exp(op, reg_args)
 
 
-def create_predicate_exp(op: Ops, args: Sequence[ArgType]) -> PredicateExp:  # noqa: PLR0911
+def create_predicate_exp(  # noqa: PLR0911
+    op: Ops, args: Sequence[ArgType]
+) -> PredicateExp:
     """
     Builds the :py:class:`LogicExp` corresponding to applying a given
     comparison predicate to some sequence of arguments.

@@ -46,7 +46,6 @@ class ResultHandle(Sequence):
 
         :raises ValueError: If string format is invalid
         :return: Instance of ResultHandle
-        :rtype: ResultHandle
         """
         try:
             evaltuple = literal_eval(string)  # will raise ValueError if failed
