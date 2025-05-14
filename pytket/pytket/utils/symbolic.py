@@ -335,11 +335,8 @@ class SymGateRegister:
         """Register a callable for an optype.
 
         :param typ: OpType to register
-        :type typ: OpType
         :param f: Callable for generating symbolic matrix.
-        :type f: SymGateFunc
         :param replace: Whether to replace existing entry, defaults to False
-        :type replace: bool, optional
         """
         if typ not in cls._g_map or replace:
             cls._g_map[typ] = f
@@ -390,10 +387,8 @@ def circuit_to_symbolic_gates(circ: Circuit) -> Mul:
     """Generate a multiplication expression of sympy gates from Circuit
 
     :param circ: Input circuit
-    :type circ: Circuit
     :raises ValueError: If circ does not match a unitary operation.
     :return: Symbolic gate multiplication expression.
-    :rtype: Mul
     """
     outmat = symgate.IdentityGate(0)
     nqb = circ.n_qubits
@@ -425,9 +420,7 @@ def circuit_to_symbolic_unitary(circ: Circuit) -> ImmutableMatrix:
     Unitary matches pytket default ILO BasisOrder.
 
     :param circ: Input circuit
-    :type circ: Circuit
     :return: Symbolic unitary.
-    :rtype: ImmutableMatrix
     """
     gates = circuit_to_symbolic_gates(circ)
     nqb = circ.n_qubits
@@ -450,11 +443,8 @@ def circuit_apply_symbolic_qubit(circ: Circuit, input_qb: Expr) -> Qubit:
     """Apply circuit to an input state to calculate output symbolic state.
 
     :param circ: Input Circuit.
-    :type circ: Circuit
     :param input_qb: Sympy Qubit expression corresponding to a state.
-    :type input_qb: Expr
     :return: Output state after circuit acts on input_qb.
-    :rtype: Qubit
     """
     gates = circuit_to_symbolic_gates(circ)
 
@@ -470,11 +460,8 @@ def circuit_apply_symbolic_statevector(
     Statevector follows pytket default ILO BasisOrder.
 
     :param circ: Input Circuit.
-    :type circ: Circuit
     :param input_state: Input statevector as a column vector, defaults to None.
-    :type input_state: Optional[Union[np.ndarray, ImmutableMatrix]], optional
     :return: Symbolic state after circ acts on input_state.
-    :rtype: ImmutableMatrix
     """
     if input_state:
         input_qb = matrix_to_qubit(input_state)

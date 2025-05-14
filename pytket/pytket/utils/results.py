@@ -35,7 +35,6 @@ class BitPermuter:
 
         :param permutation: Map from current bit index (big-endian) to its new position,
             encoded as a list.
-        :type permutation: Tuple[int, ...]
         :raises ValueError: Input permutation is not valid complete permutation
         of all bits
         """
@@ -49,11 +48,8 @@ class BitPermuter:
         """Return input with bit values permuted.
 
         :param val: input integer
-        :type val: int
         :param inverse: whether to use the inverse permutation, defaults to False
-        :type inverse: bool, optional
         :return: permuted integer
-        :rtype: int
         """
         perm_map, other_map = self.int_maps[:: (-1) ** inverse]
         if val in perm_map:
@@ -76,7 +72,6 @@ class BitPermuter:
         """Permute all integers within bit-width specified by permutation.
 
         :return: List of permuted outputs.
-        :rtype: List
         """
         return list(map(self.permute, range(1 << self.n_bits)))
 
@@ -85,9 +80,7 @@ def counts_from_shot_table(shot_table: np.ndarray) -> dict[tuple[int, ...], int]
     """Summarises a shot table into a dictionary of counts for each observed outcome.
 
     :param shot_table: Table of shots from a pytket backend.
-    :type shot_table: np.ndarray
     :return: Dictionary mapping observed readouts to the number of times observed.
-    :rtype: Dict[Tuple[int, ...], int]
     """
     shot_values, counts = np.unique(shot_table, axis=0, return_counts=True)
     return {tuple(s): c for s, c in zip(shot_values, counts, strict=False)}
@@ -100,9 +93,7 @@ def probs_from_counts(
     distribution.
 
     :param counts: Dictionary mapping observed readouts to the number of times observed.
-    :type counts: Dict[Tuple[int, ...], int]
     :return: Probability distribution over observed readouts.
-    :rtype: Dict[Tuple[int, ...], float]
     """
     total = sum(counts.values())
     return {outcome: c / total for outcome, c in counts.items()}
@@ -124,11 +115,8 @@ def _reverse_bits_of_index(index: int, width: int) -> int:
     be seen as changing the endianness of the value.
 
     :param n: Value to reverse
-    :type n: int
     :param width: Number of bits in bitstring
-    :type width: int
     :return: Integer value of reverse bitstring
-    :rtype: int
     """
     permuter = BitPermuter(tuple(range(width - 1, -1, -1)))
     return permuter.permute(index)
@@ -140,11 +128,8 @@ def _compute_probs_from_state(state: np.ndarray, min_p: float = 1e-10) -> np.nda
     Set probabilities lower than `min_p` to 0.
 
     :param state: A statevector.
-    :type state: np.ndarray
     :param min_p: Minimum probability to include in result
-    :type min_p: float
     :return: Probability vector.
-    :rtype: np.ndarray
     """
     probs = state.real**2 + state.imag**2
     probs /= sum(probs)
@@ -162,11 +147,8 @@ def probs_from_state(
     computational basis. Ignores probabilities lower than `min_p`.
 
     :param state: Full statevector with big-endian encoding.
-    :type state: np.ndarray
     :param min_p: Minimum probability to include in result
-    :type min_p: float
     :return: Probability distribution over readouts.
-    :rtype: Dict[Tuple[int], float]
     """
     width = get_n_qb_from_statevector(state)
     probs = _compute_probs_from_state(state, min_p)
@@ -179,11 +161,8 @@ def int_dist_from_state(state: np.ndarray, min_p: float = 1e-10) -> dict[int, fl
     its indices. Ignores probabilities lower than `min_p`.
 
     :param state: A statevector.
-    :type state: np.ndarray
     :param min_p: Minimum probability to include in result
-    :type min_p: float
     :return: Probability distribution over the vector's indices.
-    :rtype: Dict[int, float]
     """
     probs = _compute_probs_from_state(state, min_p)
     return {i: p for i, p in enumerate(probs) if p != 0}
@@ -193,10 +172,8 @@ def get_n_qb_from_statevector(state: np.ndarray) -> int:
     """Given a statevector, returns the number of qubits described
 
     :param state: Statevector to inspect
-    :type state: np.ndarray
     :raises ValueError: If the dimension of the statevector is not a power of 2
     :return: `n` such that `len(state) == 2 ** n`
-    :rtype: int
     """
     n_qb = int(np.log2(state.shape[0]))
     if 2**n_qb != state.shape[0]:
@@ -211,9 +188,7 @@ def _assert_compatible_state_permutation(
     of qubits
 
     :param state: Statevector
-    :type state: np.ndarray
     :param permutation: Permutation of qubit indices, encoded as a list.
-    :type permutation: Tuple[int, ...]
     :raises ValueError: [description]
     """
     n_qb = len(permutation)
@@ -235,12 +210,9 @@ def permute_qubits_in_statevector(
     array([0.    , 0.0625, 0.375 , 0.4375, 0.1875, 0.25  , 0.5   , 0.5625])
 
     :param state: Original statevector.
-    :type state: np.ndarray
     :param permutation: Map from current qubit index (big-endian) to its new position,
         encoded as a list.
-    :type permutation: Tuple[int, ...]
     :return: Updated statevector.
-    :rtype: np.ndarray
     """
     _assert_compatible_state_permutation(state, permutation)
     permuter = BitPermuter(permutation)
@@ -255,12 +227,9 @@ def permute_basis_indexing(
      of row indices.
 
     :param matrix: Original unitary matrix
-    :type matrix: np.ndarray
     :param permutation: Map from current qubit index (big-endian) to its new position,
         encoded as a list
-    :type permutation: Tuple[int, ...]
     :return: Updated unitary matrix
-    :rtype: np.ndarray
     """
     _assert_compatible_state_permutation(matrix, permutation)
     permuter = BitPermuter(permutation)
@@ -276,12 +245,9 @@ def permute_rows_cols_in_unitary(
     indices.
 
     :param matrix: Original unitary matrix
-    :type matrix: np.ndarray
     :param permutation: Map from current qubit index (big-endian) to its new position,
         encoded as a list
-    :type permutation: Tuple[int, ...]
     :return: Updated unitary matrix
-    :rtype: np.ndarray
     """
     _assert_compatible_state_permutation(matrix, permutation)
     permuter = BitPermuter(permutation)
@@ -294,11 +260,8 @@ def compare_statevectors(first: np.ndarray, second: np.ndarray) -> bool:
     """Check approximate equality up to global phase for statevectors.
 
     :param first: First statevector.
-    :type first: np.ndarray
     :param second: Second statevector.
-    :type second: np.ndarray
     :return: Approximate equality.
-    :rtype: bool
     """
     return bool(np.isclose(np.abs(np.vdot(first, second)), 1))
 
@@ -307,11 +270,8 @@ def compare_unitaries(first: np.ndarray, second: np.ndarray) -> bool:
     """Check approximate equality up to global phase for unitaries.
 
     :param first: First unitary.
-    :type first: np.ndarray
     :param second: Second unitary.
-    :type second: np.ndarray
     :return: Approximate equality.
-    :rtype: bool
     """
     conjug_prod = first @ second.conjugate().transpose()
     identity = np.identity(conjug_prod.shape[0], dtype=complex)

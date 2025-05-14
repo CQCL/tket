@@ -78,7 +78,6 @@ class BitHeap(VarHeap[Bit]):
         """Initialise new BitHeap.
 
         :param _reg_name: Name for register of Bits, defaults to _TEMP_BIT_NAME
-        :type _reg_name: str, optional
         """
 
         self.reg_name = _reg_name
@@ -106,7 +105,6 @@ class RegHeap(VarHeap[BitRegister]):
 
         :param _reg_name_base: base string for register names, defaults to
             _TEMP_BIT_REG_BASE
-        :type _reg_name_base: str, optional
         """
         self._reg_name_base = _reg_name_base
         super().__init__()

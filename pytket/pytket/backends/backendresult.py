@@ -191,7 +191,6 @@ class BackendResult:
 
         :raises AttributeError: BackendResult does not include a Bits list.
         :return: Sorted list of Bits.
-        :rtype: List[Bit]
         """
         return _sort_keys_by_val(self.c_bits)
 
@@ -200,7 +199,6 @@ class BackendResult:
 
         :raises AttributeError: BackendResult does not include a Qubits list.
         :return: Sorted list of Qubits.
-        :rtype: List[Qubit]
         """
 
         return _sort_keys_by_val(self.q_bits)
@@ -275,11 +273,8 @@ class BackendResult:
         """Permute statevector/unitary according to a relabelling of Qubits.
 
         :param array: The statevector or unitary
-        :type array: np.ndarray
         :param relabling_map: Map from original Qubits to new.
-        :type relabling_map: Dict[Qubit, Qubit]
         :return: Permuted array.
-        :rtype: np.ndarray
         """
         original_labeling: Sequence[Qubit] = self.get_qbitlist()
         n_labels = len(original_labeling)
@@ -334,7 +329,6 @@ class BackendResult:
             qubits must be requested.
             For measured results (shots/counts), some subset of the relevant bits must
             be requested.
-        :type request_ids: Optional[Sequence[UnitID]], optional
         :param basis: Toggle between ILO (increasing lexicographic order of bit ids) and
             DLO (decreasing lexicographic order) for column ordering if request_ids is
             None. Defaults to BasisOrder.ilo.
@@ -347,7 +341,6 @@ class BackendResult:
         :raises ValueError: For state/unitary/density_matrix results only a permutation
             of all qubits can be requested.
         :return: All stored results corresponding to requested IDs.
-        :rtype: StoredResult
         """
         if request_ids is None:
             if self.contains_measured_results:
@@ -381,7 +374,6 @@ class BackendResult:
 
         :param cbits: ordered subset of Bits, returns all results by default, defaults
          to None
-        :type cbits: Optional[Sequence[Bit]], optional
         :param basis: Toggle between ILO (increasing lexicographic order of bit ids) and
             DLO (decreasing lexicographic order) for column ordering if cbits is None.
             Defaults to BasisOrder.ilo.
@@ -389,7 +381,6 @@ class BackendResult:
         :raises InvalidResultType: Shot results are not available
         :return: 2D array of readouts, each row a separate outcome and each column a
          bit value.
-        :rtype: np.ndarray
 
         The order of the columns follows the order of `cbits`, if provided.
         """
@@ -410,14 +401,12 @@ class BackendResult:
 
         :param cbits: ordered subset of Bits, returns all results by default, defaults
          to None
-        :type cbits: Optional[Sequence[Bit]], optional
         :param basis: Toggle between ILO (increasing lexicographic order of bit ids) and
             DLO (decreasing lexicographic order) for column ordering if cbits is None.
             Defaults to BasisOrder.ilo.
         :param ppcirc: Classical post-processing circuit to apply to measured results
         :raises InvalidResultType: Counts are not available
         :return: Counts of outcomes
-        :rtype: Counter[Tuple(int)]
         """
         if cbits is None:
             cbits = sorted(self.c_bits.keys(), reverse=(basis == BasisOrder.dlo))
@@ -436,13 +425,11 @@ class BackendResult:
         """Return statevector if available.
 
         :param qbits: permutation of Qubits, defaults to None
-        :type qbits: Optional[Sequence[Qubit]], optional
         :param basis: Toggle between ILO (increasing lexicographic order of qubit ids)
             and DLO (decreasing lexicographic order) for column ordering if qbits is
             None. Defaults to BasisOrder.ilo.
         :raises InvalidResultType: Statevector not available
         :return: Statevector, (complex 1-D numpy array)
-        :rtype: np.ndarray
         """
         if qbits is None:
             qbits = sorted(self.q_bits.keys(), reverse=(basis == BasisOrder.dlo))
@@ -462,13 +449,11 @@ class BackendResult:
         """Return unitary if available.
 
         :param qbits: permutation of Qubits, defaults to None
-        :type qbits: Optional[Sequence[Qubit]], optional
         :param basis: Toggle between ILO (increasing lexicographic order of qubit ids)
             and DLO (decreasing lexicographic order) for column ordering if qbits is
             None. Defaults to BasisOrder.ilo.
         :raises InvalidResultType: Statevector not available
         :return: Unitary, (complex 2-D numpy array)
-        :rtype: np.ndarray
         """
         if qbits is None:
             qbits = sorted(self.q_bits.keys(), reverse=(basis == BasisOrder.dlo))
@@ -485,13 +470,11 @@ class BackendResult:
         """Return density_matrix if available.
 
         :param qbits: permutation of Qubits, defaults to None
-        :type qbits: Optional[Sequence[Qubit]], optional
         :param basis: Toggle between ILO (increasing lexicographic order of qubit ids)
             and DLO (decreasing lexicographic order) for column ordering if qbits is
             None. Defaults to BasisOrder.ilo.
         :raises InvalidResultType: Statevector not available
         :return: density_matrix, (complex 2-D numpy array)
-        :rtype: np.ndarray
         """
         if qbits is None:
             qbits = sorted(self.q_bits.keys(), reverse=(basis == BasisOrder.dlo))
@@ -516,9 +499,7 @@ class BackendResult:
 
         :param units: Optionally provide the Qubits or Bits
             to marginalise the distribution over, defaults to None
-        :type units: Optional[Sequence[UnitID]], optional
         :return: A distribution as a map from bitstring to probability.
-        :rtype: Dict[Tuple[int, ...], float]
         """
         warnings.warn(
             "The `BackendResult.get_distribution()` method is deprecated: "
@@ -579,7 +560,6 @@ class BackendResult:
         measurements yield the correct results.
 
         :return: The debug results as a map from assertion to average success rate.
-        :rtype: Dict[str, float]
         """
         _tket_debug_zero_prefix = _DEBUG_ZERO_REG_PREFIX + "_"
         _tket_debug_one_prefix = _DEBUG_ONE_REG_PREFIX + "_"
@@ -611,7 +591,6 @@ class BackendResult:
          suitable for writing to JSON.
 
         :return: JSON serializable dictionary.
-        :rtype: Dict[str, Any]
         """
         outdict: dict[str, Any] = {}
         outdict["qubits"] = [q.to_list() for q in self.get_qbitlist()]
@@ -639,7 +618,6 @@ class BackendResult:
          representation, as generated by BackendResult.to_dict.
 
         :return: Instance of BackendResult constructed from dictionary.
-        :rtype: BackendResult
         """
         init_dict = dict.fromkeys(
             (
