@@ -566,7 +566,7 @@ class SpamCorrecter:
         for subset in self.correlations:
             correlations.append(
                 [(uid.reg_name, uid.index) for uid in subset]
-            )
+            )  # noqa: PERF401
 
         node_index_hashable = [
             ((uid.reg_name, uid.index), self.node_index_dict[uid])

@@ -137,7 +137,9 @@ def get_operator_expectation_value(  # noqa: PLR0912, PLR0913, PLR0915
         try:
             coeffs: list[complex] = [complex(v) for v in operator.get_dict().values()]
         except TypeError:
-            raise ValueError("QubitPauliOperator contains unevaluated symbols.")
+            raise ValueError(  # noqa: B904
+                "QubitPauliOperator contains unevaluated symbols."
+            )
         if backend.supports_expectation and (
             backend.expectation_allows_nonhermitian or all(z.imag == 0 for z in coeffs)
         ):
