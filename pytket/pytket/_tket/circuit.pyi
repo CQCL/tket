@@ -2345,16 +2345,25 @@ class Circuit:
         """
         Append a :py:class:`~.ClExprOp` defined in terms of a logical expression.
 
+
         Example:
+
         >>> c = Circuit()
+
         >>> x_reg = c.add_c_register('x', 3)
+
         >>> y_reg = c.add_c_register('y', 3)
+
         >>> z_reg = c.add_c_register('z', 3)
+
         >>> c.add_clexpr_from_logicexp(x_reg | y_reg, z_reg.to_list())
+
         [ClExpr x[0], x[1], x[2], y[0], y[1], y[2], z[0], z[1], z[2]; ]
 
         :param exp: logical expression
+
         :param output_bits: list of bits in output
+
         :return: the updated circuit
         """
 
