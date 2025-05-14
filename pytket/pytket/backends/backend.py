@@ -38,6 +38,7 @@ from .backendresult import BackendResult
 from .resulthandle import ResultHandle, _ResultIdTuple
 from .status import CircuitStatus
 
+
 class ResultHandleTypeError(Exception):
     """Wrong result handle type."""
 

@@ -37,9 +37,10 @@ from pytket._tket.unit_id import (
     BitRegister,
 )
 
+from .clexpr import wired_clexpr_from_logic_exp
 from .logic_exp import (
-    LogicExp,
     BinaryOp,
+    LogicExp,
     Ops,
     if_bit,
     if_not_bit,
@@ -50,8 +51,6 @@ from .logic_exp import (
     reg_lt,
     reg_neq,
 )
-
-from .clexpr import wired_clexpr_from_logic_exp
 
 
 def add_wasm(  # noqa: PLR0913
@@ -160,6 +159,7 @@ please use only registers of at most 32 bits"""
 
 setattr(Circuit, "add_wasm_to_reg", add_wasm_to_reg)  # noqa: B010
 
+
 def add_clexpr_from_logicexp(
     circ: Circuit, exp: LogicExp, output_bits: list[Bit], **kwargs: Any
 ) -> None:
@@ -180,4 +180,5 @@ def add_clexpr_from_logicexp(
     wexpr, args = wired_clexpr_from_logic_exp(exp, output_bits)
     circ.add_clexpr(wexpr, args, **kwargs)
 
-setattr(Circuit, "add_clexpr_from_logicexp", add_clexpr_from_logicexp)
+
+Circuit.add_clexpr_from_logicexp = add_clexpr_from_logicexp
