@@ -162,7 +162,7 @@ setattr(Circuit, "add_wasm_to_reg", add_wasm_to_reg)  # noqa: B010
 
 def add_clexpr_from_logicexp(
     circ: Circuit, exp: LogicExp, output_bits: list[Bit], **kwargs: Any
-) -> None:
+) -> Circuit:
     """Append a :py:class:`~.ClExprOp` defined in terms of a logical expression.
 
     Example:
@@ -179,6 +179,7 @@ def add_clexpr_from_logicexp(
     """
     wexpr, args = wired_clexpr_from_logic_exp(exp, output_bits)
     circ.add_clexpr(wexpr, args, **kwargs)
+    return circ
 
 
 setattr(Circuit, "add_clexpr_from_logicexp", add_clexpr_from_logicexp)  # noqa: B010
