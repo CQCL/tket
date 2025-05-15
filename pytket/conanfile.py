@@ -37,7 +37,7 @@ class pytketRecipe(ConanFile):
         self.requires("nanobind/tci-2.7.0@tket/stable")
         self.requires("symengine/tci-0.14.0@tket/stable")
         self.requires("tkassert/0.3.4@tket/stable")
-        self.requires("tket/2.1.17@tket/stable")
+        self.requires("tket/2.1.18@tket/stable")
         self.requires("tklog/0.3.3@tket/stable")
         self.requires("tkrng/0.3.3@tket/stable")
         self.requires("tktokenswap/0.3.11@tket/stable")
