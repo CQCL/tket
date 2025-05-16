@@ -27,29 +27,29 @@ from pytket.circuit import CircBox, Circuit, OpType
 
 
 # Types
-class Wire(NamedTuple):
+class _Wire(NamedTuple):
     i: int
 
 
-class ControlWire(NamedTuple):
-    wire: Wire
+class _ControlWire(NamedTuple):
+    wire: _Wire
     negative: bool
 
 
-class Control(NamedTuple):
-    controlled: list[ControlWire]
+class _Control(NamedTuple):
+    controlled: list[_ControlWire]
     no_control: bool
 
 
 @unique
-class TypeAssignment_Type(Enum):
+class _TypeAssignment_Type(Enum):
     Qbit = 1
     Cbit = 2
 
 
-class TypeAssignment(NamedTuple):
-    wire: Wire
-    type: TypeAssignment_Type
+class _TypeAssignment(NamedTuple):
+    wire: _Wire
+    type: _TypeAssignment_Type
 
 
 class _Gate:
@@ -57,7 +57,7 @@ class _Gate:
 
 
 @unique
-class QGate_Op(Enum):
+class _QGate_Op(Enum):
     Not = 1  # Pauli X
     H = 2  # Hadamard
     MultiNot = 3  # Multi-target not
@@ -73,15 +73,15 @@ class QGate_Op(Enum):
     IX = 13  # i X
 
 
-class QGate(
+class _QGate(
     _Gate,
     NamedTuple(
         "QGate",
         [
-            ("op", QGate_Op),
+            ("op", _QGate_Op),
             ("inverted", bool),
-            ("wires", list[Wire]),
-            ("control", Control),
+            ("wires", list[_Wire]),
+            ("control", _Control),
         ],
     ),
 ):
@@ -89,50 +89,50 @@ class QGate(
 
 
 @unique
-class QRot_Op(Enum):
+class _QRot_Op(Enum):
     ExpZt = 1  # exp(−i Z t)  # noqa: RUF003
     R = 2  # R(2 / 2^t) (notation is confusing but see Monad.hs)
 
 
-class QRot(
+class _QRot(
     _Gate,
     NamedTuple(
         "QRot",
-        [("op", QRot_Op), ("inverted", bool), ("timestep", float), ("wire", Wire)],
+        [("op", _QRot_Op), ("inverted", bool), ("timestep", float), ("wire", _Wire)],
     ),
 ):
     pass
 
 
-class QInit(_Gate, NamedTuple("QInit", [("value", bool), ("wire", Wire)])):
+class _QInit(_Gate, NamedTuple("QInit", [("value", bool), ("wire", _Wire)])):
     pass
 
 
-class CInit(_Gate, NamedTuple("CInit", [("value", bool), ("wire", Wire)])):
+class _CInit(_Gate, NamedTuple("CInit", [("value", bool), ("wire", _Wire)])):
     pass
 
 
-class QTerm(_Gate, NamedTuple("QTerm", [("value", bool), ("wire", Wire)])):
+class _QTerm(_Gate, NamedTuple("QTerm", [("value", bool), ("wire", _Wire)])):
     pass
 
 
-class CTerm(_Gate, NamedTuple("CTerm", [("value", bool), ("wire", Wire)])):
+class _CTerm(_Gate, NamedTuple("CTerm", [("value", bool), ("wire", _Wire)])):
     pass
 
 
-class QMeas(_Gate, NamedTuple("QMeas", [("wire", Wire)])):
+class _QMeas(_Gate, NamedTuple("QMeas", [("wire", _Wire)])):
     pass
 
 
-class QDiscard(_Gate, NamedTuple("QDiscard", [("wire", Wire)])):
+class _QDiscard(_Gate, NamedTuple("QDiscard", [("wire", _Wire)])):
     pass
 
 
-class CDiscard(_Gate, NamedTuple("CDiscard", [("wire", Wire)])):
+class _CDiscard(_Gate, NamedTuple("CDiscard", [("wire", _Wire)])):
     pass
 
 
-class SubroutineCall(
+class _SubroutineCall(
     _Gate,
     NamedTuple(
         "SubroutineCall",
@@ -141,52 +141,52 @@ class SubroutineCall(
             ("name", str),
             ("shape", str),
             ("inverted", bool),
-            ("inputs", list[Wire]),
-            ("outputs", list[Wire]),
-            ("control", Control),
+            ("inputs", list[_Wire]),
+            ("outputs", list[_Wire]),
+            ("control", _Control),
         ],
     ),
 ):
     pass
 
 
-class Comment(
+class _Comment(
     _Gate,
     NamedTuple(
         "Comment",
         [
             ("comment", str),
             ("inverted", bool),
-            ("wire_comments", list[tuple[Wire, str]]),
+            ("wire_comments", list[tuple[_Wire, str]]),
         ],
     ),
 ):
     pass
 
 
-class Program(NamedTuple):
-    inputs: list[TypeAssignment]
+class _Program(NamedTuple):
+    inputs: list[_TypeAssignment]
     gates: list[_Gate]
-    outputs: list[TypeAssignment]
+    outputs: list[_TypeAssignment]
 
 
 @unique
-class Subroutine_Control(Enum):
+class _Subroutine_Control(Enum):
     yes = 1
     no = 2
     classically = 3
 
 
-class Subroutine(NamedTuple):
+class _Subroutine(NamedTuple):
     name: str
     shape: str
-    controllable: Subroutine_Control
-    circuit: Program
+    controllable: _Subroutine_Control
+    circuit: _Program
 
 
-class Start(NamedTuple):
-    circuit: Program
-    subroutines: list[Subroutine]
+class _Start(NamedTuple):
+    circuit: _Program
+    subroutines: list[_Subroutine]
 
 
 # Transformer
@@ -200,33 +200,33 @@ class _QuipperTransformer(Transformer):
     def string(self, t: list) -> str:
         return str(t[0][1:-1])
 
-    def wire(self, t: list) -> Wire:
-        return Wire(t[0])
+    def wire(self, t: list) -> _Wire:
+        return _Wire(t[0])
 
     wire_list = list
 
-    def wire_string_list(self, t: list) -> list[tuple[Wire, str]]:
+    def wire_string_list(self, t: list) -> list[tuple[_Wire, str]]:
         wires = (el for i, el in enumerate(t) if i % 2 == 0)
         labels = (el for i, el in enumerate(t) if i % 2 == 1)
         return list(zip(wires, labels, strict=False))
 
-    def pos_control_wire(self, t: list) -> ControlWire:
-        return ControlWire(t[0], False)
+    def pos_control_wire(self, t: list) -> _ControlWire:
+        return _ControlWire(t[0], False)
 
     control_wire_list = list
 
-    def neg_control_wire(self, t: list) -> ControlWire:
-        return ControlWire(t[0], True)
+    def neg_control_wire(self, t: list) -> _ControlWire:
+        return _ControlWire(t[0], True)
 
-    def type_assignment(self, t: list) -> TypeAssignment:
-        ty = TypeAssignment_Type.Qbit if t[1] == "Qbit" else TypeAssignment_Type.Cbit
-        return TypeAssignment(t[0], ty)
+    def type_assignment(self, t: list) -> _TypeAssignment:
+        ty = _TypeAssignment_Type.Qbit if t[1] == "Qbit" else _TypeAssignment_Type.Cbit
+        return _TypeAssignment(t[0], ty)
 
     def arity(self, t: list) -> list[Tree]:
         return list(t)
 
-    def qgate(self, t: list) -> QGate:  # noqa: PLR0912
-        ops = QGate_Op
+    def qgate(self, t: list) -> _QGate:  # noqa: PLR0912
+        ops = _QGate_Op
         n = t[0]
         if n in {"not", "x", "X"}:
             op = ops.Not
@@ -256,45 +256,45 @@ class _QuipperTransformer(Transformer):
             op = ops.W
         else:
             raise RuntimeError(f"Unknown QGate operation: {n}")
-        return QGate(op=op, inverted=len(t[1].children) > 0, wires=t[2], control=t[3])
+        return _QGate(op=op, inverted=len(t[1].children) > 0, wires=t[2], control=t[3])
 
-    def qrot1(self, t: list) -> QRot:
-        return QRot(
-            op=QRot_Op.ExpZt, timestep=t[0], inverted=len(t[1].children) > 0, wire=t[2]
+    def qrot1(self, t: list) -> _QRot:
+        return _QRot(
+            op=_QRot_Op.ExpZt, timestep=t[0], inverted=len(t[1].children) > 0, wire=t[2]
         )
 
-    def qrot2(self, t: list) -> QRot:
-        return QRot(
-            op=QRot_Op.R, timestep=t[0], inverted=len(t[1].children) > 0, wire=t[2]
+    def qrot2(self, t: list) -> _QRot:
+        return _QRot(
+            op=_QRot_Op.R, timestep=t[0], inverted=len(t[1].children) > 0, wire=t[2]
         )
 
-    def qinit(self, t: list) -> QInit:
-        return QInit(value=(t[0] == "QInit1"), wire=t[1])
+    def qinit(self, t: list) -> _QInit:
+        return _QInit(value=(t[0] == "QInit1"), wire=t[1])
 
-    def cinit(self, t: list) -> CInit:
-        return CInit(value=(t[0] == "CInit1"), wire=t[1])
+    def cinit(self, t: list) -> _CInit:
+        return _CInit(value=(t[0] == "CInit1"), wire=t[1])
 
-    def qterm(self, t: list) -> QTerm:
-        return QTerm(value=(t[0] == "QTerm1"), wire=t[1])
+    def qterm(self, t: list) -> _QTerm:
+        return _QTerm(value=(t[0] == "QTerm1"), wire=t[1])
 
-    def cterm(self, t: list) -> CTerm:
-        return CTerm(value=(t[0] == "CTerm1"), wire=t[1])
+    def cterm(self, t: list) -> _CTerm:
+        return _CTerm(value=(t[0] == "CTerm1"), wire=t[1])
 
-    def qmeas(self, t: list) -> QMeas:
-        return QMeas(wire=t[0])
+    def qmeas(self, t: list) -> _QMeas:
+        return _QMeas(wire=t[0])
 
-    def qdiscard(self, t: list) -> QDiscard:
-        return QDiscard(wire=t[0])
+    def qdiscard(self, t: list) -> _QDiscard:
+        return _QDiscard(wire=t[0])
 
-    def cdiscard(self, t: list) -> CDiscard:
-        return CDiscard(wire=t[0])
+    def cdiscard(self, t: list) -> _CDiscard:
+        return _CDiscard(wire=t[0])
 
-    def subroutine_call(self, t: list) -> SubroutineCall:
+    def subroutine_call(self, t: list) -> _SubroutineCall:
         repetitions = 1
         if t[0] is not None:
             assert isinstance(t[0], int)
             repetitions = t[0]
-        return SubroutineCall(
+        return _SubroutineCall(
             repetitions=repetitions,
             name=t[1],
             shape=t[2],
@@ -304,38 +304,38 @@ class _QuipperTransformer(Transformer):
             control=t[6],
         )
 
-    def comment(self, t: list) -> Comment:
+    def comment(self, t: list) -> _Comment:
         wire_comments = t[2] if len(t) > 2 else []  # noqa: PLR2004
-        return Comment(
+        return _Comment(
             comment=t[0], inverted=len(t[1].children) > 0, wire_comments=wire_comments
         )
 
-    def control_app(self, t: list) -> Control:
+    def control_app(self, t: list) -> _Control:
         if not t:
-            return Control(controlled=[], no_control=False)
+            return _Control(controlled=[], no_control=False)
         if len(t) == 2:  # noqa: PLR2004
-            return Control(controlled=t[0], no_control=True)
+            return _Control(controlled=t[0], no_control=True)
         if t[0] == "with nocontrol":
-            return Control(controlled=[], no_control=True)
-        return Control(controlled=t[0], no_control=False)
+            return _Control(controlled=[], no_control=True)
+        return _Control(controlled=t[0], no_control=False)
 
-    def circuit(self, t: list) -> Program:
-        return Program(inputs=t[0], gates=t[1:-1], outputs=t[-1])
+    def circuit(self, t: list) -> _Program:
+        return _Program(inputs=t[0], gates=t[1:-1], outputs=t[-1])
 
-    def subroutine(self, t: list) -> Subroutine:
+    def subroutine(self, t: list) -> _Subroutine:
         if t[2] == "yes":
-            controllable = Subroutine_Control.yes
+            controllable = _Subroutine_Control.yes
         elif t[2] == "no":
-            controllable = Subroutine_Control.no
+            controllable = _Subroutine_Control.no
         else:
-            controllable = Subroutine_Control.classically
-        return Subroutine(
+            controllable = _Subroutine_Control.classically
+        return _Subroutine(
             name=t[0], shape=t[1], controllable=controllable, circuit=t[3]
         )
 
-    def start(self, t: list) -> Start:
+    def start(self, t: list) -> _Start:
         circuit = t.pop(0)
-        return Start(circuit, list(t))
+        return _Start(circuit, list(t))
 
 
 # Utility function
@@ -350,12 +350,12 @@ def _allowed(op: str, arity: int) -> bool:
 
 # Class for constructing a pytket Circuit from a parsed Quipper program
 class _CircuitMaker:
-    def __init__(self, subr: list[Subroutine]) -> None:
+    def __init__(self, subr: list[_Subroutine]) -> None:
         self.subrd = {s.name: s for s in subr}
         if len(self.subrd) != len(subr):
             raise TypeError("Repeated subroutine names")
 
-    def make_circuit(self, circ: Program) -> Circuit:  # noqa: PLR0912, PLR0915
+    def make_circuit(self, circ: _Program) -> Circuit:  # noqa: PLR0912, PLR0915
         inps, outs, gates = circ.inputs, circ.outputs, circ.gates
         if inps != outs:
             raise TypeError("Inputs don't match outputs")
@@ -369,7 +369,7 @@ class _CircuitMaker:
         # Construct circuit in tket.
         c = Circuit(n_qbits, n_cbits)
         for gate in gates:
-            if isinstance(gate, SubroutineCall):
+            if isinstance(gate, _SubroutineCall):
                 s = self.subrd[gate.name]
                 if gate.shape != s.shape:
                     # Just a sanity check, otherwise we assume 'shape' OK.
@@ -384,7 +384,7 @@ class _CircuitMaker:
                 cbox = CircBox(subcirc)
                 for _ in range(gate.repetitions):
                     c.add_circbox(cbox, [wire.i for wire in gate.inputs])
-            elif isinstance(gate, QGate):
+            elif isinstance(gate, _QGate):
                 # The `nocontrol' flag is irrelevant here.
                 op = gate.op.name
                 qctrls, neg_qctrls, cctrls = [], [], []
@@ -545,7 +545,7 @@ class _CircuitMaker:
                 # Apply the NOT gates again for the negative controls.
                 for ctrl in neg_qctrls:
                     c.X(ctrl)
-            elif isinstance(gate, QRot):
+            elif isinstance(gate, _QRot):
                 op = gate.op.name
                 inv = gate.inverted
                 t = gate.timestep
@@ -565,34 +565,34 @@ class _CircuitMaker:
             # QInit, QTerm, CInit, CTerm represent 'temporary' wires that
             # only occupy part of a circuit (and can be initialized with 0/1).
             # Not supported in pytket.
-            elif isinstance(gate, QInit):
+            elif isinstance(gate, _QInit):
                 wire = tkqbits[gate.wire.i]  # must be quantum
                 raise NotImplementedError("QInit")
-            elif isinstance(gate, CInit):
+            elif isinstance(gate, _CInit):
                 wire = tkcbits[gate.wire.i]  # must be clasical
                 raise NotImplementedError("CInit")
-            elif isinstance(gate, QTerm):
+            elif isinstance(gate, _QTerm):
                 wire = tkqbits[gate.wire.i]  # must be quantum
                 raise NotImplementedError("QTerm")
-            elif isinstance(gate, CTerm):
+            elif isinstance(gate, _CTerm):
                 wire = tkcbits[gate.wire.i]  # must be clasical
                 raise NotImplementedError("CTerm")
-            elif isinstance(gate, QMeas):
+            elif isinstance(gate, _QMeas):
                 # QMeas turns a qubit into a bit.
                 # Not supported in pytket.
                 wire = tkqbits[gate.wire.i]  # must be quantum
                 raise NotImplementedError("QMeas")
-            elif isinstance(gate, QDiscard):
+            elif isinstance(gate, _QDiscard):
                 # QDiscard discards a qubit.
                 # Not supported in pytket.
                 wire = tkqbits[gate.wire.i]  # must be quantum
                 raise NotImplementedError("QDiscard")
-            elif isinstance(gate, CDiscard):
+            elif isinstance(gate, _CDiscard):
                 # CDiscard discards a bit.
                 # Not supported in pytket.
                 wire = tkcbits[gate.wire.i]  # must be classical
                 raise NotImplementedError("CDiscard")
-            elif isinstance(gate, Comment):
+            elif isinstance(gate, _Comment):
                 pass
             else:
                 raise TypeError(f"Unknown gate type: {type(gate)}")
@@ -601,7 +601,7 @@ class _CircuitMaker:
 
 def circuit_from_quipper(input_file: str) -> Circuit:
     # pylint: disable=C0301
-    """Generate a pytket :py:class:`Circuit` given a program in Quipper ASCII format.
+    """Generate a pytket :py:class:`~.Circuit` given a program in Quipper ASCII format.
     Limitations (due to current limitations of `pytket`):
 
     * Subroutines must be defined over the full set of qubits.

@@ -51,7 +51,8 @@ NB_MODULE(architecture, m) {
               const nb::tket_custom::SequenceVec<std::pair<Node, Node>> &>(),
           "The constructor for an architecture with connectivity "
           "between qubits.\n\n:param connections: A list of pairs "
-          "representing Nodes that can perform two-qubit operations",
+          "representing :py:class:`~.Node` s that can perform two-qubit "
+          "operations",
           nb::arg("connections"))
       .def(
           "__repr__",
@@ -194,7 +195,7 @@ NB_MODULE(architecture, m) {
       .def(
           nb::init<const unsigned, const std::string>(),
           "The constructor for a RingArchitecture with some undirected "
-          "connectivity between qubits.\n\n:param number of qubits:"
+          "connectivity between qubits.\n\n:param nodes: number of qubits"
           "\n:param label: Name for Node in RingArch Architecture",
           nb::arg("nodes"), nb::arg("label") = "ringNode")
       .def(
@@ -228,7 +229,7 @@ NB_MODULE(architecture, m) {
       .def("__hash__", &deletedHash<FullyConnected>, deletedHashDocstring)
       .def_prop_ro(
           "nodes", &FullyConnected::get_all_nodes_vec,
-          "All nodes of the architecture as :py:class:`Node` objects.")
+          "All nodes of the architecture as :py:class:`~.Node` objects.")
       .def(
           "to_dict",
           [](const FullyConnected &arch) {

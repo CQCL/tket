@@ -89,7 +89,7 @@ NB_MODULE(tailoring, m) {
           "each Cycle, and returns every combination of frame and cycle "
           "in a vector of Circuit.\n\n:param circuit: The circuit to "
           "find frames for.\n"
-          ":return: list of " CLSOBJS(Circuit),
+          ":return: list of " CLSOBJS(~.Circuit),
           nb::arg("circuit"))
       .def(
           "sample_circuits", &FrameRandomisation::sample_randomisation_circuits,
@@ -99,7 +99,7 @@ NB_MODULE(tailoring, m) {
           "circuit: The circuit to perform frame randomisation with "
           "Pauli gates on\n:param samples: the number of frame "
           "randomised circuits to return.\n"
-          ":return: list of " CLSOBJS(Circuit),
+          ":return: list of " CLSOBJS(~.Circuit),
           nb::arg("circuit"), nb::arg("samples"))
       .def("__repr__", &FrameRandomisation::to_string);
 
@@ -121,7 +121,7 @@ NB_MODULE(tailoring, m) {
           "each Cycle, and returns every combination of frame and cycle "
           "in a vector of Circuit.\n\n:param circuit: The circuit to "
           "find frames for.\n"
-          ":return: list of " CLSOBJS(Circuit),
+          ":return: list of " CLSOBJS(~.Circuit),
           nb::arg("circuit"))
       .def(
           "sample_circuits",
@@ -132,7 +132,7 @@ NB_MODULE(tailoring, m) {
           "circuit: The circuit to perform frame randomisation with "
           "Pauli gates on\n:param samples: the number of frame "
           "randomised circuits to return.\n"
-          ":return: list of " CLSOBJS(Circuit),
+          ":return: list of " CLSOBJS(~.Circuit),
           nb::arg("circuit"), nb::arg("samples"))
       .def("__repr__", &PauliFrameRandomisation::to_string);
 
@@ -157,7 +157,7 @@ NB_MODULE(tailoring, m) {
           "each Cycle, and returns every combination of frame and cycle "
           "in a vector of Circuit.\n\n:param circuit: The circuit to "
           "find frames for.\n"
-          ":return: list of " CLSOBJS(Circuit),
+          ":return: list of " CLSOBJS(~.Circuit),
           nb::arg("circuit"))
       .def(
           "sample_circuits",
@@ -168,7 +168,7 @@ NB_MODULE(tailoring, m) {
           "circuit: The circuit to perform frame randomisation with "
           "Pauli gates on\n:param samples: the number of frame "
           "randomised circuits to return.\n"
-          ":return: list of " CLSOBJS(Circuit),
+          ":return: list of " CLSOBJS(~.Circuit),
           nb::arg("circuit"), nb::arg("samples"))
       .def("__repr__", &UniversalFrameRandomisation::to_string);
   m.def(
@@ -178,7 +178,7 @@ NB_MODULE(tailoring, m) {
       "phase that could be introduced. "
       "\n\n:param pauli: Pauli operator being transformed. "
       "\n:param circuit: Clifford circuit acting on Pauli operator. "
-      "\n:return: :py:class:`QubitPauliString` for new operator",
+      "\n:return: :py:class:`~.QubitPauliString` for new operator",
       nb::arg("pauli"), nb::arg("circuit"));
   m.def(
       "apply_clifford_basis_change_tensor", &apply_clifford_basis_change_tensor,
@@ -186,7 +186,7 @@ NB_MODULE(tailoring, m) {
       "returns C_dagger.P.C in multiplication order"
       "\n\n:param pauli: Pauli operator being transformed."
       "\n:param circuit: Clifford circuit acting on Pauli operator. "
-      "\n:return: :py:class:`QubitPauliTensor` for new operator",
+      "\n:return: :py:class:`~.QubitPauliTensor` for new operator",
       nb::arg("pauli"), nb::arg("circuit"));
 }
 }  // namespace tket

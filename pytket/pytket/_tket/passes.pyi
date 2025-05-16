@@ -3,7 +3,7 @@ from collections.abc import Callable, Mapping, Sequence, Set
 import enum
 from typing import Union, overload
 
-import sympy
+import sympy.core.expr
 
 import pytket._tket.architecture
 import pytket._tket.circuit
@@ -53,7 +53,7 @@ class BasePass:
     @overload
     def apply(self, compilation_unit: pytket._tket.predicates.CompilationUnit, safety_mode: SafetyMode = SafetyMode.Default) -> bool:
         """
-        Apply to a :py:class:`CompilationUnit`.
+        Apply to a :py:class:`~.CompilationUnit`.
 
         :return: True if the pass modified the circuit. Note that in some cases the method may return True even when the circuit is unmodified (but a return value of False definitely implies no modification).
         """
@@ -61,7 +61,7 @@ class BasePass:
     @overload
     def apply(self, circuit: pytket._tket.circuit.Circuit) -> bool:
         """
-        Apply to a :py:class:`Circuit` in-place.
+        Apply to a :py:class:`~.Circuit` in-place.
 
         :return: True if pass modified the circuit, else False
         """
@@ -69,7 +69,7 @@ class BasePass:
     @overload
     def apply(self, circuit: pytket._tket.circuit.Circuit, before_apply: Callable[[pytket._tket.predicates.CompilationUnit, Any], None], after_apply: Callable[[pytket._tket.predicates.CompilationUnit, Any], None]) -> bool:
         """
-        Apply to a :py:class:`Circuit` in-place and invoke callbacks for all nested passes.
+        Apply to a :py:class:`~.Circuit` in-place and invoke callbacks for all nested passes.
 
 
         :param before_apply: Invoked before a pass is applied. The CompilationUnit and a summary of the pass configuration are passed into the callback.
@@ -94,7 +94,7 @@ class BasePass:
         """
         Returns the postcondition Predicates for the given pass.
 
-        :return: A list of :py:class:`Predicate`
+        :return: A list of :py:class:`~.Predicate`
         """
 
     def get_gate_set(self) -> set[pytket._tket.circuit.OpType] | None:
@@ -171,7 +171,7 @@ class RepeatUntilSatisfiedPass(BasePass):
     @overload
     def __init__(self, compilation_pass: BasePass, check_function: Callable[[pytket._tket.circuit.Circuit], bool]) -> None:
         """
-        Construct from a compilation pass and a user-defined function from :py:class:`Circuit` to `bool`.
+        Construct from a compilation pass and a user-defined function from :py:class:`~.Circuit` to `bool`.
         """
 
     def __str__(self) -> str: ...
@@ -264,9 +264,9 @@ def DecomposeBoxes(excluded_types: Set[pytket._tket.circuit.OpType] = ..., exclu
 
     Arguments specify ways to filter which boxes are decomposed. A box must satisfy ALL filters in order to be decomposed (i.e. be in the inclusive sets and not in the exclusive sets).
 
-    :param excluded_types: box :py:class:`OpType` s excluded from decomposition
+    :param excluded_types: box :py:class:`~.OpType` s excluded from decomposition
     :param excluded_opgroups: opgroups excluded from decomposition
-    :param included_types: optional, only decompose these box :py:class:`OpType` s
+    :param included_types: optional, only decompose these box :py:class:`~.OpType` s
     :param included_opgroups: optional, only decompose these opgroups
     """
 
@@ -324,7 +324,7 @@ def FlattenRegisters() -> BasePass:
     Merges all quantum and classical registers into their respective default registers with contiguous indexing.
     """
 
-def SquashCustom(singleqs: Set[pytket._tket.circuit.OpType], tk1_replacement: Callable[[Union[sympy.Expr, float], Union[sympy.Expr, float], Union[sympy.Expr, float]], pytket._tket.circuit.Circuit], always_squash_symbols: bool = False) -> BasePass:
+def SquashCustom(singleqs: Set[pytket._tket.circuit.OpType], tk1_replacement: Callable[[Union[sympy.core.expr.Expr, float], Union[sympy.core.expr.Expr, float], Union[sympy.core.expr.Expr, float]], pytket._tket.circuit.Circuit], always_squash_symbols: bool = False) -> BasePass:
     """
     Squash sequences of single qubit gates from the target gate set into an optimal form given by `tk1_replacement`.
 
@@ -336,7 +336,7 @@ def SquashCustom(singleqs: Set[pytket._tket.circuit.OpType], tk1_replacement: Ca
 def AutoSquash(singleqs: Set[pytket._tket.circuit.OpType]) -> BasePass:
     """
     Attempt to generate a squash pass automatically for the given target single qubit gateset.
-    Raises an error if no known TK1 decomposition can be found based on the given gateset, in which case try using :py:class:`SquashCustom` with your own decomposition.
+    Raises an error if no known TK1 decomposition can be found based on the given gateset, in which case try using :py:meth:`~.SquashCustom` with your own decomposition.
 
     :param singleqs: The types of single qubit gates in the target gate set. This pass will only affect sequences of gates that are already in this set.
     """
@@ -345,7 +345,7 @@ def DelayMeasures(allow_partial: bool = True) -> BasePass:
     """
     Commutes Measure operations to the end of the circuit. Throws an exception when this is not possible because of gates following the measure which are dependent on either the resulting quantum state or classical values.
 
-    :param allow_partial: Whether to allow measurements that cannot be commuted to the end, and delay them as much as possible instead. If false, the pass includes a :py:class:`CommutableMeasuresPredicate` precondition.
+    :param allow_partial: Whether to allow measurements that cannot be commuted to the end, and delay them as much as possible instead. If false, the pass includes a :py:class:`~.CommutableMeasuresPredicate` precondition.
     """
 
 def RemoveDiscarded() -> BasePass:
@@ -374,7 +374,7 @@ def ZXGraphlikeOptimisation(allow_swaps: bool = True) -> BasePass:
     """
 
 @overload
-def RebaseCustom(gateset: Set[pytket._tket.circuit.OpType], cx_replacement: pytket._tket.circuit.Circuit, tk1_replacement: Callable[[Union[sympy.Expr, float], Union[sympy.Expr, float], Union[sympy.Expr, float]], pytket._tket.circuit.Circuit]) -> BasePass:
+def RebaseCustom(gateset: Set[pytket._tket.circuit.OpType], cx_replacement: pytket._tket.circuit.Circuit, tk1_replacement: Callable[[Union[sympy.core.expr.Expr, float], Union[sympy.core.expr.Expr, float], Union[sympy.core.expr.Expr, float]], pytket._tket.circuit.Circuit]) -> BasePass:
     r"""
     Construct a custom rebase pass, given user-defined rebases for TK1 and CX. This pass:
 
@@ -390,7 +390,7 @@ def RebaseCustom(gateset: Set[pytket._tket.circuit.OpType], cx_replacement: pytk
     """
 
 @overload
-def RebaseCustom(gateset: Set[pytket._tket.circuit.OpType], tk2_replacement: Callable[[Union[sympy.Expr, float], Union[sympy.Expr, float], Union[sympy.Expr, float]], pytket._tket.circuit.Circuit], tk1_replacement: Callable[[Union[sympy.Expr, float], Union[sympy.Expr, float], Union[sympy.Expr, float]], pytket._tket.circuit.Circuit]) -> BasePass:
+def RebaseCustom(gateset: Set[pytket._tket.circuit.OpType], tk2_replacement: Callable[[Union[sympy.core.expr.Expr, float], Union[sympy.core.expr.Expr, float], Union[sympy.core.expr.Expr, float]], pytket._tket.circuit.Circuit], tk1_replacement: Callable[[Union[sympy.core.expr.Expr, float], Union[sympy.core.expr.Expr, float], Union[sympy.core.expr.Expr, float]], pytket._tket.circuit.Circuit]) -> BasePass:
     """
     Construct a custom rebase pass, given user-defined rebases for TK1 and TK2. This pass:
 
@@ -408,7 +408,7 @@ def RebaseCustom(gateset: Set[pytket._tket.circuit.OpType], tk2_replacement: Cal
 def AutoRebase(gateset: Set[pytket._tket.circuit.OpType], allow_swaps: bool = False) -> BasePass:
     """
     Attempt to generate a rebase pass automatically for the given target gateset. Checks if there are known existing decompositions to target gateset and TK1 to target gateset and uses those to construct a custom rebase.
-    Raises an error if no known decompositions can be found, in which case try using :py:class:`RebaseCustom` with your own decompositions.
+    Raises an error if no known decompositions can be found, in which case try using :py:meth:`~.RebaseCustom` with your own decompositions.
 
     :param gateset: Set of supported OpTypes, target gate set. (in addition, Measure and Reset operations are always allowed and are left alone; conditional operations may be present; and Phase gates may also be introduced by the rebase)
     :param allow_swaps: Whether to allow implicit wire swaps. Default to False.
@@ -426,14 +426,14 @@ def EulerAngleReduction(q: pytket._tket.circuit.OpType, p: pytket._tket.circuit.
 
 def CustomRoutingPass(arc: pytket._tket.architecture.Architecture, config: Sequence[pytket._tket.mapping.RoutingMethod]) -> BasePass:
     """
-    Construct a pass to route to the connectivity graph of an :py:class:`Architecture`. Edge direction is ignored. 
+    Construct a pass to route to the connectivity graph of an :py:class:`~.Architecture`. Edge direction is ignored. 
 
     :return: a pass that routes to the given device architecture
     """
 
 def RoutingPass(arc: pytket._tket.architecture.Architecture) -> BasePass:
     """
-    Construct a pass to route to the connectivity graph of an :py:class:`Architecture`. Edge direction is ignored. Uses :py:class:`LexiLabellingMethod` and :py:class:`LexiRouteRoutingMethod`.
+    Construct a pass to route to the connectivity graph of an :py:class:`~.Architecture`. Edge direction is ignored. Uses :py:class:`~.LexiLabellingMethod` and :py:class:`~.LexiRouteRoutingMethod`.
 
     :return: a pass that routes to the given device architecture
     """
@@ -441,13 +441,13 @@ def RoutingPass(arc: pytket._tket.architecture.Architecture) -> BasePass:
 def PlacementPass(placer: pytket._tket.placement.Placement) -> BasePass:
     """
     :param placer: The Placement used for relabelling.
-    :return: a pass to relabel :py:class:`Circuit` Qubits to :py:class:`Architecture` Nodes
+    :return: a pass to relabel :py:class:`~.Circuit` Qubits to :py:class:`~.Architecture` Nodes
     """
 
 def NaivePlacementPass(architecture: pytket._tket.architecture.Architecture) -> BasePass:
     """
     :param architecture: The Architecture used for relabelling.
-    :return: a pass to relabel :py:class:`Circuit` Qubits to :py:class:`Architecture` Nodes
+    :return: a pass to relabel :py:class:`~.Circuit` Qubits to :py:class:`~.Architecture` Nodes
     """
 
 def FlattenRelabelRegistersPass(label: str = 'q') -> BasePass:
@@ -467,7 +467,7 @@ def RenameQubitsPass(qubit_map: Mapping[pytket._tket.unit_id.Qubit, pytket._tket
 
 def FullMappingPass(arc: pytket._tket.architecture.Architecture, placer: pytket._tket.placement.Placement, config: Sequence[pytket._tket.mapping.RoutingMethod]) -> BasePass:
     """
-    Construct a pass to relabel :py:class:`Circuit` Qubits to :py:class:`Architecture` Nodes, and then route to the connectivity graph of an :py:class:`Architecture`. Edge direction is ignored.
+    Construct a pass to relabel :py:class:`~.Circuit` Qubits to :py:class:`~.Architecture` Nodes, and then route to the connectivity graph of an :py:class:`~.Architecture`. Edge direction is ignored.
 
     :param arc: The architecture to use for connectivity information. 
     :param placer: The Placement used for relabelling.
@@ -477,7 +477,7 @@ def FullMappingPass(arc: pytket._tket.architecture.Architecture, placer: pytket.
 
 def DefaultMappingPass(arc: pytket._tket.architecture.Architecture, delay_measures: bool = True) -> BasePass:
     """
-    Construct a pass to relabel :py:class:`Circuit` Qubits to :py:class:`Architecture` Nodes, and then route to the connectivity graph of the given :py:class:`Architecture`. Edge direction is ignored. Placement used is GraphPlacement.
+    Construct a pass to relabel :py:class:`~.Circuit` Qubits to :py:class:`~.Architecture` Nodes, and then route to the connectivity graph of the given :py:class:`~.Architecture`. Edge direction is ignored. Placement used is GraphPlacement.
 
     :param arc: The Architecture used for connectivity information.
     :param delay_measures: Whether to commute measurements to the end of the circuit, defaulting to true.
@@ -486,7 +486,7 @@ def DefaultMappingPass(arc: pytket._tket.architecture.Architecture, delay_measur
 
 def AASRouting(arc: pytket._tket.architecture.Architecture, **kwargs: Any) -> BasePass:
     r"""
-    Construct a pass to relabel :py:class:`Circuit` Qubits to :py:class:`Device` Nodes, and then use architecture-aware synthesis to route the circuit. In the steps of the pass the circuit will be converted to CX, Rz, H gateset. The limited connectivity of the :py:class:`Architecture` is used for the routing. The direction of the edges is ignored. The placement used is GraphPlacement. This pass can take a few parameters for the routing, described below:
+    Construct a pass to relabel :py:class:`~.Circuit` Qubits to :py:class:`~.Architecture` Nodes, and then use architecture-aware synthesis to route the circuit. In the steps of the pass the circuit will be converted to CX, Rz, H gateset. The limited connectivity of the :py:class:`~.Architecture` is used for the routing. The direction of the edges is ignored. The placement used is GraphPlacement. This pass can take a few parameters for the routing, described below:
 
     - (unsigned) lookahead=1: parameter for the recursive iteration
     - (CNotSynthType) cnotsynthtype=CNotSynthType.Rec: CNOT synthesis type
@@ -500,7 +500,7 @@ def AASRouting(arc: pytket._tket.architecture.Architecture, **kwargs: Any) -> Ba
 
 def ComposePhasePolyBoxes(min_size: int = 0) -> BasePass:
     """
-    Pass to convert a given :py:class:`Circuit` to the CX, Rz, H gateset and compose phase polynomial boxes from the groups of the CX+Rz gates.
+    Pass to convert a given :py:class:`~.Circuit` to the CX, Rz, H gateset and compose phase polynomial boxes from the groups of the CX+Rz gates.
 
     - (unsigned) min_size=0: minimal number of CX gates in each phase polynominal box: groups with a smaller number of CX gates are not affected by this transformation
 
@@ -509,7 +509,7 @@ def ComposePhasePolyBoxes(min_size: int = 0) -> BasePass:
 
 def CXMappingPass(arc: pytket._tket.architecture.Architecture, placer: pytket._tket.placement.Placement, **kwargs: Any) -> BasePass:
     r"""
-    Construct a pass to convert all gates to CX, relabel :py:class:`Circuit` Qubits to :py:class:`Architecture` Nodes, route to the connectivty graph of a :py:class:`Architecture` and decompose additional routing gates (SWAP and BRIDGE) to CX gates.
+    Construct a pass to convert all gates to CX, relabel :py:class:`~.Circuit` Qubits to :py:class:`~.Architecture` Nodes, route to the connectivty graph of a :py:class:`~.Architecture` and decompose additional routing gates (SWAP and BRIDGE) to CX gates.
 
     :param arc: The Architecture used for connectivity information.
     :param placer: The placement used for relabelling.
@@ -543,7 +543,7 @@ def CliffordPushThroughMeasures() -> BasePass:
 
 def DecomposeSwapsToCXs(arc: pytket._tket.architecture.Architecture, respect_direction: bool = False) -> BasePass:
     """
-    Construct a pass to decompose SWAP and BRIDGE gates to CX gates, constraining connectivity to an :py:class:`Architecture`, optionally taking the directedness of the connectivity graph into account.
+    Construct a pass to decompose SWAP and BRIDGE gates to CX gates, constraining connectivity to an :py:class:`~.Architecture`, optionally taking the directedness of the connectivity graph into account.
 
     :param arc: The architecture to use for connectivity information.
     :param respect_direction: Optionally takes the directedness of the connectivity graph into account.
@@ -586,7 +586,7 @@ def PauliSimp(strat: pytket._tket.transform.PauliSynthStrat = pytket._tket.trans
 
 def GuidedPauliSimp(strat: pytket._tket.transform.PauliSynthStrat = pytket._tket.transform.PauliSynthStrat.Sets, cx_config: pytket._tket.circuit.CXConfigType = pytket._tket.circuit.CXConfigType.Snake) -> BasePass:
     """
-    Applies the ``PauliSimp`` optimisation pass to any region of the circuit contained within a :py:class:`CircBox`. This can be useful to focus the synthesis to target specific sets of commuting operations, rather than the default greedy approach.
+    Applies the ``PauliSimp`` optimisation pass to any region of the circuit contained within a :py:class:`~.CircBox`. This can be useful to focus the synthesis to target specific sets of commuting operations, rather than the default greedy approach.
 
     :param strat: A synthesis strategy for the Pauli graph.
     :param cx_config: A configuration of CXs to convert Pauli gadgets into.
@@ -673,7 +673,7 @@ def CustomPass(transform: Callable[[pytket._tket.circuit.Circuit], pytket._tket.
 
     It is the caller's responsibility to provide a valid transform.
 
-    :param transform: function taking a :py:class:`Circuit` as an argument and returning a new transformed circuit
+    :param transform: function taking a :py:class:`~.Circuit` as an argument and returning a new transformed circuit
     :param label: optional label for the pass
     :return: a pass to perform the transformation
     """
@@ -684,7 +684,7 @@ def CustomPassMap(transform: Callable[[pytket._tket.circuit.Circuit], tuple[pytk
 
     It is the caller's responsibility to provide a valid transform.
 
-    :param transform: function taking a :py:class:`Circuit` as an argument and returning a pair of a new transformed circuit and a pair of maps corresponding to the initial and final maps that the transformation makes.
+    :param transform: function taking a :py:class:`~.Circuit` as an argument and returning a pair of a new transformed circuit and a pair of maps corresponding to the initial and final maps that the transformation makes.
     :param label: optional label for the pass
     :return: a pass to perform the transformation
     """

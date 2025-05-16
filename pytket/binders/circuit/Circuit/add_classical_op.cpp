@@ -152,7 +152,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
        "\n:param kwargs: additional arguments passed to `add_gate_method` ."
        " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
        " `condition_value`"
-       "\n:return: the new :py:class:`Circuit`",
+       "\n:return: the new :py:class:`~.Circuit`",
        nb::arg("values"), nb::arg("args"),
        nb::arg("name") = "ClassicalTransform", nb::arg("kwargs"))
       .def(
@@ -195,7 +195,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
-          "\n:return: the new :py:class:`Circuit`",
+          "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("funcname"), nb::arg("wasm_uid"), nb::arg("width_i_parameter"),
           nb::arg("width_o_parameter"), nb::arg("args"), nb::arg("wasm_wire_args"), nb::arg("kwargs"))
       .def(
@@ -269,7 +269,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
-          "\n:return: the new :py:class:`Circuit`",
+          "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("funcname"), nb::arg("wasm_uid"), nb::arg("list_reg_in"),
           nb::arg("list_reg_out"), nb::arg("wasm_wire_args"), nb::arg("kwargs"))
       .def(
@@ -285,7 +285,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
-          "\n:return: the new :py:class:`Circuit`",
+          "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("values"), nb::arg("args"), nb::arg("kwargs"))
       .def(
           "add_c_setreg",
@@ -326,7 +326,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
-          "\n:return: the new :py:class:`Circuit`",
+          "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("args_in"), nb::arg("args_out"), nb::arg("kwargs"))
       .def(
           "add_c_copyreg",
@@ -369,7 +369,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
-          "\n:return: the new :py:class:`Circuit`",
+          "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("values"), nb::arg("args_in"), nb::arg("arg_out"),
           nb::arg("name") = "ExplicitPredicate", nb::arg("kwargs"))
       .def(
@@ -396,7 +396,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
-          "\n:return: the new :py:class:`Circuit`",
+          "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("values"), nb::arg("args_in"), nb::arg("arg_inout"),
           nb::arg("name") = "ExplicitModifier", nb::arg("kwargs"))
       .def(
@@ -431,7 +431,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
-          "\n:return: the new :py:class:`Circuit`",
+          "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("arg0_in"), nb::arg("arg1_in"), nb::arg("arg_out"), nb::arg("kwargs"))
           .def(
             "add_c_or",
@@ -465,7 +465,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
-          "\n:return: the new :py:class:`Circuit`",
+          "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("arg0_in"), nb::arg("arg1_in"), nb::arg("arg_out"), nb::arg("kwargs"))
       .def(
           "add_c_xor",
@@ -499,7 +499,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
-          "\n:return: the new :py:class:`Circuit`",
+          "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("arg0_in"), nb::arg("arg1_in"), nb::arg("arg_out"), nb::arg("kwargs"))
       .def(
           "add_c_not",
@@ -526,7 +526,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
-          "\n:return: the new :py:class:`Circuit`",
+          "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("arg_in"), nb::arg("arg_out"), nb::arg("kwargs"))
       .def(
           "add_c_range_predicate",
@@ -546,7 +546,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
-          "\n:return: the new :py:class:`Circuit`",
+          "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("minval"), nb::arg("maxval"), nb::arg("args_in"),
           nb::arg("arg_out"), nb::arg("kwargs"))
       .def(
@@ -576,7 +576,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
-          "\n:return: the new :py:class:`Circuit`",
+          "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("reg0_in"), nb::arg("reg1_in"), nb::arg("reg_out"), nb::arg("kwargs"))
       .def(
           "add_c_or_to_registers",
@@ -605,7 +605,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
-          "\n:return: the new :py:class:`Circuit`",
+          "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("reg0_in"), nb::arg("reg1_in"), nb::arg("reg_out"), nb::arg("kwargs"))
       .def(
           "add_c_xor_to_registers",
@@ -634,7 +634,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
-          "\n:return: the new :py:class:`Circuit`",
+          "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("reg0_in"), nb::arg("reg1_in"), nb::arg("reg_out"), nb::arg("kwargs"))
       .def(
           "add_c_not_to_registers",
@@ -653,7 +653,7 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
-          "\n:return: the new :py:class:`Circuit`",
+          "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("reg_in"), nb::arg("reg_out"), nb::arg("kwargs"));
 }
 

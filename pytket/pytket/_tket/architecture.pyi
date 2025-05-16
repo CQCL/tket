@@ -24,7 +24,7 @@ class Architecture:
         """
         The constructor for an architecture with connectivity between qubits.
 
-        :param connections: A list of pairs representing Nodes that can perform two-qubit operations
+        :param connections: A list of pairs representing :py:class:`~.Node` s that can perform two-qubit operations
         """
 
     def __repr__(self) -> str: ...
@@ -146,7 +146,7 @@ class RingArch(Architecture):
         """
         The constructor for a RingArchitecture with some undirected connectivity between qubits.
 
-        :param number of qubits:
+        :param nodes: number of qubits
         :param label: Name for Node in RingArch Architecture
         """
 
@@ -180,7 +180,7 @@ class FullyConnected:
 
     @property
     def nodes(self) -> list[pytket._tket.unit_id.Node]:
-        """All nodes of the architecture as :py:class:`Node` objects."""
+        """All nodes of the architecture as :py:class:`~.Node` objects."""
 
     def to_dict(self) -> dict:
         """

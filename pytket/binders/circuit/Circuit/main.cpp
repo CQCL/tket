@@ -242,14 +242,14 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
           },
           "Get the classical register with the given name.\n\n:param name: "
           "name for the register\n:return: the retrieved "
-          ":py:class:`BitRegister`",
+          ":py:class:`~.BitRegister`",
           nb::arg("name"))
       .def_prop_ro(
           "c_registers", &get_unit_registers<BitRegister>,
           "Get all classical registers.\n\n"
           "The list only includes registers that are singly-indexed "
           "contiguously from zero.\n\n"
-          ":return: List of :py:class:`BitRegister`")
+          ":return: List of :py:class:`~.BitRegister`")
       .def(
           "get_q_register",
           [](Circuit &circ, const std::string &name) {
@@ -262,14 +262,14 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
           },
           "Get the quantum register with the given name.\n\n:param name: "
           "name for the register\n:return: the retrieved "
-          ":py:class:`QubitRegister`",
+          ":py:class:`~.QubitRegister`",
           nb::arg("name"))
       .def_prop_ro(
           "q_registers", &get_unit_registers<QubitRegister>,
           "Get all quantum registers.\n\n"
           "The list only includes registers that are singly-indexed "
           "contiguously from zero.\n\n"
-          ":return: List of :py:class:`QubitRegister`")
+          ":return: List of :py:class:`~.QubitRegister`")
       .def(
           "add_qubit", &Circuit::add_qubit,
           "Constructs a single qubit with the given id.\n\n:param id: "
@@ -350,7 +350,7 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
           "qubits of `circuit` to the qubits of `self`"
           "\n:param bits: List mapping the (default register) bits "
           "of `circuit` to the bits of `self`"
-          "\n:return: the new :py:class:`Circuit`",
+          "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("circuit"), nb::arg("qubits"), nb::arg("bits") = no_bits)
       .def(
           "add_circuit",
@@ -371,7 +371,7 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
           "`self`"
           "\n:param bits: List mapping the (default register) bits "
           "of `circuit` to the (default register) bits of `self`"
-          "\n:return: the new :py:class:`Circuit`",
+          "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("circuit"), nb::arg("qubits"), nb::arg("bits") = no_bits)
       .def(
           "add_circuit_with_map",
@@ -617,13 +617,13 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
           "Given a pure circuit (i.e. without any measurements or "
           "conditional gates), produces a new circuit for the "
           "inverse/adjoint operation.\n\n:return: a new "
-          ":py:class:`Circuit` corresponding to the inverse operation")
+          ":py:class:`~.Circuit` corresponding to the inverse operation")
       .def(
           "transpose", &Circuit::transpose,
           "Given a pure circuit (i.e. without any measurements or "
           "conditional gates), produces a new circuit for the "
           "transpose operation.\n\n:return: a new "
-          ":py:class:`Circuit` corresponding to the transpose operation")
+          ":py:class:`~.Circuit` corresponding to the transpose operation")
       .def(
           "copy", [](Circuit &circ) { return Circuit(circ); },
           ":return: an identical copy of the circuit")
@@ -843,7 +843,7 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
           "Get all operations in the circuit of a given type."
           "\n\nThe order is not guaranteed."
           "\n\n:param optype: operation type"
-          "\n\n:return: list of :py:class:`Op`",
+          "\n\n:return: list of :py:class:`~.Op`",
           nb::arg("optype"))
       .def(
           "commands_of_type", &Circuit::get_commands_of_type,
@@ -851,7 +851,7 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
           "\n\nThe order is consistent with the causal order of the "
           "operations in the circuit."
           "\n\n:param optype: operation type"
-          "\n\n:return: list of :py:class:`Command`",
+          "\n\n:return: list of :py:class:`~.Command`",
           nb::arg("optype"))
       .def(
           "get_resources", &Circuit::get_resources,

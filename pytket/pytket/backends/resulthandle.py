@@ -33,7 +33,7 @@ class ResultHandle(Sequence):
     Initialisation arguments must be hashable basic types.
 
     Note that a `ResultHandle` may be either persistent or transient, depending on the
-    backend: consult the :py:attr:`pytket.backends.Backend.persistent_handles` property
+    backend: consult the :py:attr:`~.Backend.persistent_handles` property
     to determine this.
     """
 

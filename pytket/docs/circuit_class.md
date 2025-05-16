@@ -1,18 +1,18 @@
 # pytket.circuit.Circuit
 
-{py:class}`Circuit` objects provide an abstraction of quantum circuits. They consist of a set of qubits/quantum wires and a collection of operations applied to them in a given order. These wires have open inputs and outputs, rather than assuming any fixed input state.
+{py:class}`~.Circuit` objects provide an abstraction of quantum circuits. They consist of a set of qubits/quantum wires and a collection of operations applied to them in a given order. These wires have open inputs and outputs, rather than assuming any fixed input state.
 
 See the [pytket User Manual](https://docs.quantinuum.com/tket/user-guide/manual/manual_circuit.html) for a step-by-step tutorial on constructing circuits.
 
 See also the notebook tutorials on [circuit generation](https://docs.quantinuum.com/tket/user-guide/examples/circuit_construction/circuit_generation_example.html) and [circuit analysis](https://docs.quantinuum.com/tket/user-guide/examples/circuit_construction/circuit_analysis_example.html).
 
-Many of the {py:class}`~pytket.circuit.Circuit` methods described below append a gate or box to
+Many of the {py:class}`~.Circuit` methods described below append a gate or box to
 the end of the circuit. Where `kwargs` are indicated in these methods, the
 following keyword arguments are supported:
 
 - `opgroup` ({py:class}`str`): name of the associated operation group, if any
-- `condition` ({py:class}`Bit`, {py:class}`BitLogicExp` or {py:class}`Predicate`): classical condition for applying operation
-- `condition_bits` (list of {py:class}`Bit`): classical bits on which to condition operation
+- `condition` ({py:class}`~.Bit`, {py:class}`~.BitLogicExp` or {py:class}`~.Predicate`): classical condition for applying operation
+- `condition_bits` (list of {py:class}`~.Bit`): classical bits on which to condition operation
 - `condition_value` ({py:class}`int`): required value of condition bits (little-endian), defaulting to all-1s if not specified
 
 (Thus there are two ways to express classical conditions: either using a general
@@ -25,7 +25,7 @@ condition on a specified set of bit values.)
 % and Circuit.add_multiplexed_tensored_u2 are near the bottom.
 
 ```{eval-rst}
-.. currentmodule:: pytket.circuit.Circuit
+.. currentmodule:: pytket.circuit
 ```
 
 ```{eval-rst}

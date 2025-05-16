@@ -91,8 +91,8 @@ render_circuit_jupyter(circ) # Render using default options
 
 .. autoclass:: pytket.circuit.display.IncludeRawExtension
 
-   .. automethod:: parse
-   .. autoproperty:: tags
+   .. automethod:: pytket.circuit.display.IncludeRawExtension.parse
+   .. autoattribute:: pytket.circuit.display.IncludeRawExtension.tags
 
 .. autoclass:: pytket.circuit.display.RenderOptions
 

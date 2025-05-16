@@ -85,8 +85,8 @@ NB_MODULE(placement, m) {
                  "Returns a map from logical to physical qubits that is Architecture "
                  "appropriate for the given Circuit. "
                  "\n\n:param circuit: The circuit a map is designed for."
-                 "\n:return: dictionary mapping " CLSOBJS(Qubit) " to "
-                 CLSOBJS(Node),
+                 "\n:return: dictionary mapping " CLSOBJS(~.Qubit) " to "
+                 CLSOBJS(~.Node),
                  nb::arg("circuit"))
             .def("get_placement_maps", &Placement::get_all_placement_maps,
                  "Returns a list of maps from logical to physical qubits that "
@@ -94,8 +94,8 @@ NB_MODULE(placement, m) {
                  "estimated to given a similar SWAP overheard after routing. "
                  "\n\n:param circuit: The circuit the maps are designed for."
                  "\n:param matches: The maximum number of maps returned by the method."
-                 "\n:return: list of dictionaries mapping " CLSOBJS(Qubit) " "
-                 "to " CLSOBJS(Node),
+                 "\n:return: list of dictionaries mapping " CLSOBJS(~.Qubit) " "
+                 "to " CLSOBJS(~.Node),
                  nb::arg("circuit"), nb::arg("matches")=100)
             .def(
                 "to_dict", [](const Placement &placement) {

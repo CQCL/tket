@@ -225,7 +225,7 @@ NB_MODULE(passes, m) {
           "apply",
           [](const BasePass &pass, CompilationUnit &cu,
              SafetyMode safety_mode) { return pass.apply(cu, safety_mode); },
-          "Apply to a :py:class:`CompilationUnit`.\n\n"
+          "Apply to a :py:class:`~.CompilationUnit`.\n\n"
           ":return: True if the pass modified the circuit. Note that in some "
           "cases the method may return True even when the circuit is "
           "unmodified (but a return value of False definitely implies no "
@@ -240,7 +240,7 @@ NB_MODULE(passes, m) {
             circ = cu.get_circ_ref();
             return applied;
           },
-          "Apply to a :py:class:`Circuit` in-place.\n\n"
+          "Apply to a :py:class:`~.Circuit` in-place.\n\n"
           ":return: True if pass modified the circuit, else False",
           nb::arg("circuit"))
       .def(
@@ -255,7 +255,7 @@ NB_MODULE(passes, m) {
             circ = cu.get_circ_ref();
             return applied;
           },
-          "Apply to a :py:class:`Circuit` in-place and invoke "
+          "Apply to a :py:class:`~.Circuit` in-place and invoke "
           "callbacks "
           "for all nested passes.\n\n"
           "\n:param before_apply: Invoked before a pass is applied. "
@@ -297,7 +297,7 @@ NB_MODULE(passes, m) {
             return post_conditions;
           },
           "Returns the postcondition Predicates for the given pass."
-          "\n\n:return: A list of :py:class:`Predicate`")
+          "\n\n:return: A list of :py:class:`~.Predicate`")
       .def(
           "get_gate_set", &get_gate_set,
           "Returns the intersection of all set of OpType for all "
@@ -409,7 +409,7 @@ NB_MODULE(passes, m) {
           nb::init<
               const PassPtr &, const std::function<bool(const Circuit &)> &>(),
           "Construct from a compilation pass and a user-defined "
-          "function from :py:class:`Circuit` to `bool`.",
+          "function from :py:class:`~.Circuit` to `bool`.",
           nb::arg("compilation_pass"), nb::arg("check_function"))
       .def(
           "__str__",
@@ -525,11 +525,11 @@ NB_MODULE(passes, m) {
       "\n\nArguments specify ways to filter which boxes are decomposed. A box "
       "must satisfy ALL filters in order to be decomposed (i.e. be in the "
       "inclusive sets and not in the exclusive sets)."
-      "\n\n:param excluded_types: box " CLSOBJS(OpType) " excluded from "
+      "\n\n:param excluded_types: box " CLSOBJS(~.OpType) " excluded from "
       "decomposition"
       "\n:param excluded_opgroups: opgroups excluded from decomposition"
       "\n:param included_types: optional, only decompose these box "
-      CLSOBJS(OpType)
+      CLSOBJS(~.OpType)
       "\n:param included_opgroups: optional, only decompose these opgroups",
       nb::arg("excluded_types") = std::unordered_set<OpType>(),
       nb::arg("excluded_opgroups") = std::unordered_set<std::string>(),
@@ -609,7 +609,7 @@ NB_MODULE(passes, m) {
       "Attempt to generate a squash pass automatically for the given target "
       "single qubit gateset.\n"
       "Raises an error if no known TK1 decomposition can be found based on the "
-      "given gateset, in which case try using :py:class:`SquashCustom` with "
+      "given gateset, in which case try using :py:meth:`~.SquashCustom` with "
       "your own decomposition."
       "\n\n:param singleqs: The types of single qubit gates in the target "
       "gate set. This pass will only affect sequences of gates that are "
@@ -624,7 +624,7 @@ NB_MODULE(passes, m) {
       "\n\n:param allow_partial: Whether to allow measurements that cannot be "
       "commuted to "
       "the end, and delay them as much as possible instead. If false, the pass "
-      "includes a :py:class:`CommutableMeasuresPredicate` precondition.",
+      "includes a :py:class:`~.CommutableMeasuresPredicate` precondition.",
       nb::arg("allow_partial") = true);
   m.def(
       "RemoveDiscarded", &RemoveDiscarded,
@@ -723,7 +723,7 @@ NB_MODULE(passes, m) {
       "to target gateset and TK1 to target gateset and uses those to construct "
       "a custom rebase.\n"
       "Raises an error if no known decompositions can be found, in which case "
-      "try using :py:class:`RebaseCustom` with your own decompositions.\n\n"
+      "try using :py:meth:`~.RebaseCustom` with your own decompositions.\n\n"
       ":param gateset: Set of supported OpTypes, target gate set. "
       "(in addition, Measure and Reset operations are always allowed "
       "and are left alone; conditional operations may be present; and Phase "
@@ -754,7 +754,7 @@ NB_MODULE(passes, m) {
         return gen_routing_pass(arc, config);
       },
       "Construct a pass to route to the connectivity graph of an "
-      ":py:class:`Architecture`. Edge direction is ignored. "
+      ":py:class:`~.Architecture`. Edge direction is ignored. "
       "\n\n"
       ":return: a pass that routes to the given device architecture ",
       nb::arg("arc"), nb::arg("config"));
@@ -762,9 +762,9 @@ NB_MODULE(passes, m) {
   m.def(
       "RoutingPass", &gen_default_routing_pass,
       "Construct a pass to route to the connectivity graph of an "
-      ":py:class:`Architecture`. Edge direction is ignored. "
-      "Uses :py:class:`LexiLabellingMethod` and "
-      ":py:class:`LexiRouteRoutingMethod`."
+      ":py:class:`~.Architecture`. Edge direction is ignored. "
+      "Uses :py:class:`~.LexiLabellingMethod` and "
+      ":py:class:`~.LexiRouteRoutingMethod`."
       "\n\n"
       ":return: a pass that routes to the given device architecture",
       nb::arg("arc"));
@@ -772,15 +772,15 @@ NB_MODULE(passes, m) {
   m.def(
       "PlacementPass", &gen_placement_pass,
       ":param placer: The Placement used for relabelling."
-      "\n:return: a pass to relabel :py:class:`Circuit` Qubits to "
-      ":py:class:`Architecture` Nodes",
+      "\n:return: a pass to relabel :py:class:`~.Circuit` Qubits to "
+      ":py:class:`~.Architecture` Nodes",
       nb::arg("placer"));
 
   m.def(
       "NaivePlacementPass", &gen_naive_placement_pass,
       ":param architecture: The Architecture used for relabelling."
-      "\n:return: a pass to relabel :py:class:`Circuit` Qubits to "
-      ":py:class:`Architecture` Nodes",
+      "\n:return: a pass to relabel :py:class:`~.Circuit` Qubits to "
+      ":py:class:`~.Architecture` Nodes",
       nb::arg("architecture"));
 
   m.def(
@@ -805,10 +805,10 @@ NB_MODULE(passes, m) {
          const nb::tket_custom::SequenceVec<RoutingMethodPtr> &config) {
         return gen_full_mapping_pass(arc, placement_ptr, config);
       },
-      "Construct a pass to relabel :py:class:`Circuit` Qubits to "
-      ":py:class:`Architecture` Nodes, and then route to the connectivity "
+      "Construct a pass to relabel :py:class:`~.Circuit` Qubits to "
+      ":py:class:`~.Architecture` Nodes, and then route to the connectivity "
       "graph "
-      "of an :py:class:`Architecture`. Edge direction is ignored."
+      "of an :py:class:`~.Architecture`. Edge direction is ignored."
       "\n\n:param arc: The architecture to use for connectivity information. "
       "\n:param placer: The Placement used for relabelling."
       "\n:param config: Parameters for routing, a list of RoutingMethod, each "
@@ -818,10 +818,10 @@ NB_MODULE(passes, m) {
 
   m.def(
       "DefaultMappingPass", &gen_default_mapping_pass,
-      "Construct a pass to relabel :py:class:`Circuit` Qubits to "
-      ":py:class:`Architecture` Nodes, and then route to the connectivity "
+      "Construct a pass to relabel :py:class:`~.Circuit` Qubits to "
+      ":py:class:`~.Architecture` Nodes, and then route to the connectivity "
       "graph "
-      "of the given :py:class:`Architecture`. Edge direction is ignored. "
+      "of the given :py:class:`~.Architecture`. Edge direction is ignored. "
       "Placement used "
       "is GraphPlacement."
       "\n\n:param arc: The Architecture used for connectivity information."
@@ -832,11 +832,11 @@ NB_MODULE(passes, m) {
 
   m.def(
       "AASRouting", &gen_default_aas_routing_pass,
-      "Construct a pass to relabel :py:class:`Circuit` Qubits to "
-      ":py:class:`Device` Nodes, and then use architecture-aware "
+      "Construct a pass to relabel :py:class:`~.Circuit` Qubits to "
+      ":py:class:`~.Architecture` Nodes, and then use architecture-aware "
       "synthesis to route the circuit. In the steps of the pass the circuit "
       "will be converted to CX, Rz, H gateset. The limited connectivity of the "
-      ":py:class:`Architecture` is used for the routing. "
+      ":py:class:`~.Architecture` is used for the routing. "
       "The direction of the edges is ignored. The placement used "
       "is GraphPlacement. This pass can take a few parameters for the "
       "routing, described below:"
@@ -853,7 +853,7 @@ NB_MODULE(passes, m) {
 
   m.def(
       "ComposePhasePolyBoxes", &ComposePhasePolyBoxes,
-      "Pass to convert a given :py:class:`Circuit` to the CX, Rz, H gateset "
+      "Pass to convert a given :py:class:`~.Circuit` to the CX, Rz, H gateset "
       "and compose "
       "phase polynomial boxes from the groups of the CX+Rz gates."
       "\n\n- (unsigned) min_size=0: minimal number of CX gates in each phase "
@@ -865,9 +865,10 @@ NB_MODULE(passes, m) {
   m.def(
       "CXMappingPass", &gen_cx_mapping_pass_kwargs,
       "Construct a pass to convert all gates to CX, relabel "
-      ":py:class:`Circuit` Qubits to :py:class:`Architecture` Nodes, route to "
+      ":py:class:`~.Circuit` Qubits to :py:class:`~.Architecture` Nodes, route "
+      "to "
       "the "
-      "connectivty graph of a :py:class:`Architecture` and decompose "
+      "connectivty graph of a :py:class:`~.Architecture` and decompose "
       "additional "
       "routing gates (SWAP and BRIDGE) to CX gates."
       "\n\n:param arc: The Architecture used for connectivity information."
@@ -915,7 +916,7 @@ NB_MODULE(passes, m) {
   m.def(
       "DecomposeSwapsToCXs", &gen_decompose_routing_gates_to_cxs_pass,
       "Construct a pass to decompose SWAP and BRIDGE gates to CX gates, "
-      "constraining connectivity to an :py:class:`Architecture`, optionally "
+      "constraining connectivity to an :py:class:`~.Architecture`, optionally "
       "taking the directedness of the connectivity graph into account."
       "\n\n:param arc: The architecture to use for connectivity information."
       "\n:param respect_direction: Optionally takes the directedness of "
@@ -963,7 +964,7 @@ NB_MODULE(passes, m) {
   m.def(
       "GuidedPauliSimp", &gen_special_UCC_synthesis,
       "Applies the ``PauliSimp`` optimisation pass to any region of the "
-      "circuit contained within a :py:class:`CircBox`. This can be useful "
+      "circuit contained within a :py:class:`~.CircBox`. This can be useful "
       "to focus the synthesis to target specific sets of commuting "
       "operations, rather than the default greedy approach."
       "\n\n:param strat: A synthesis strategy for the Pauli graph."
@@ -1106,7 +1107,8 @@ NB_MODULE(passes, m) {
       "\n\n"
       "It is the caller's responsibility to provide a valid transform."
       "\n\n"
-      ":param transform: function taking a :py:class:`Circuit` as an argument "
+      ":param transform: function taking a :py:class:`~.Circuit` as an "
+      "argument "
       "and returning a new transformed circuit"
       "\n"
       ":param label: optional label for the pass"
@@ -1120,7 +1122,8 @@ NB_MODULE(passes, m) {
       "\n\n"
       "It is the caller's responsibility to provide a valid transform."
       "\n\n"
-      ":param transform: function taking a :py:class:`Circuit` as an argument "
+      ":param transform: function taking a :py:class:`~.Circuit` as an "
+      "argument "
       "and returning a pair of a new transformed circuit and a pair of maps "
       "corresponding to the initial and final maps that the "
       "transformation makes."

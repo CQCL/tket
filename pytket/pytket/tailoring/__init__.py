@@ -14,7 +14,7 @@
 
 """
 The circuit module provides an API to interact with the tket
-:py:class:`Characterisation` suite, with methods for noise shaping, characterisation and
+characterisation suite, with methods for noise shaping, characterisation and
 mitigation. This module is provided in binary form during the PyPI installation.
 """
 

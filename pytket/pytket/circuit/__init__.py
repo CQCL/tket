@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """The circuit module provides an API to interact with the
-tket :py:class:`Circuit` data structure.
+tket :py:class:`~.Circuit` data structure.
 This module is provided in binary form during the PyPI installation."""
 
 from collections.abc import Callable, Sequence
@@ -37,8 +37,10 @@ from pytket._tket.unit_id import (
     BitRegister,
 )
 
+from .clexpr import wired_clexpr_from_logic_exp
 from .logic_exp import (
     BinaryOp,
+    LogicExp,
     Ops,
     if_bit,
     if_not_bit,
@@ -156,3 +158,20 @@ please use only registers of at most 32 bits"""
 
 
 setattr(Circuit, "add_wasm_to_reg", add_wasm_to_reg)  # noqa: B010
+
+
+def add_clexpr_from_logicexp(
+    circ: Circuit, exp: LogicExp, output_bits: list[Bit], **kwargs: Any
+) -> Circuit:
+    """Append a :py:class:`~.ClExprOp` defined in terms of a logical expression.
+    \n\nExample:
+    \n>>> c = Circuit()\n>>> x_reg = c.add_c_register('x', 3)\n>>> y_reg = c.add_c_register('y', 3)\n>>> z_reg = c.add_c_register('z', 3)\n>>> c.add_clexpr_from_logicexp(x_reg | y_reg, z_reg.to_list())\n[ClExpr x[0], x[1], x[2], y[0], y[1], y[2], z[0], z[1], z[2]; ]
+    \n:param exp: logical expression
+    \n:param output_bits: list of bits in output
+    \n:return: the updated circuit"""
+    wexpr, args = wired_clexpr_from_logic_exp(exp, output_bits)
+    circ.add_clexpr(wexpr, args, **kwargs)
+    return circ
+
+
+setattr(Circuit, "add_clexpr_from_logicexp", add_clexpr_from_logicexp)  # noqa: B010

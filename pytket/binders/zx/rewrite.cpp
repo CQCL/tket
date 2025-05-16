@@ -37,25 +37,26 @@ void init_rewrite(nb::module_ &m) {
           [](const nb::tket_custom::SequenceVec<Rewrite> &rvec) {
             return Rewrite::sequence(rvec);
           },
-          "Composes a list of :py:class:`Rewrite` s together in sequence. The "
+          "Composes a list of :py:class:`~.Rewrite` s together in sequence. "
+          "The "
           "apply method will return True if ANY of the individual Rewrites "
           "returned True.\n\n:param sequence: The list of "
-          ":py:class:`Rewrite` s to be composed.\n:return: The combined "
-          ":py:class:`Rewrite`.",
+          ":py:class:`~.Rewrite` s to be composed.\n:return: The combined "
+          ":py:class:`~.Rewrite`.",
           nb::arg("sequence"))
       .def_static(
           "repeat", &Rewrite::repeat,
-          "Applies a given :py:class:`Rewrite` repeatedly to a diagram until "
+          "Applies a given :py:class:`~.Rewrite` repeatedly to a diagram until "
           "no further changes are made (i.e. it no longer returns True). apply "
           "will return True if at least one run returned True.\n\n:param "
-          "rewrite: The :py:class:`Rewrite` to be applied "
-          "repeatedly.\n:return: A new :py:class:`Rewrite` representing the "
+          "rewrite: The :py:class:`~.Rewrite` to be applied "
+          "repeatedly.\n:return: A new :py:class:`~.Rewrite` representing the "
           "iteration.",
           nb::arg("rewrite"))
       .def_static(
           "decompose_boxes", &Rewrite::decompose_boxes,
-          "Replaces every :py:class:`ZXBox` by its internal diagram "
-          "recursively until no :py:class:`ZXBox` es remain.")
+          "Replaces every :py:class:`~.ZXBox` by its internal diagram "
+          "recursively until no :py:class:`~.ZXBox` es remain.")
       .def_static(
           "basic_wires", &Rewrite::basic_wires,
           "Replaces every Hadamard wire by an explicit Hbox node.")
