@@ -17,6 +17,7 @@ import math
 import pickle
 from math import sqrt
 from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import pytest
@@ -43,6 +44,7 @@ from pytket.circuit import (
     MultiplexedTensoredU2Box,
     MultiplexedU2Box,
     MultiplexorBox,
+    Node,
     Op,
     OpType,
     PauliExpBox,
@@ -63,14 +65,6 @@ from pytket.circuit import (
     fresh_symbol,
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
-from pytket.circuit.named_types import (
-    BitstringToOpList,
-    BitstringToOpMap,
-    BitstringToTensoredOpList,
-    BitstringToTensoredOpMap,
-    ParamType,
-    PermutationMap,
-)
 from pytket.circuit_library import CnX_vchain_decomp
 from pytket.passes import (
     CliffordSimp,
@@ -80,6 +74,16 @@ from pytket.passes import (
 )
 from pytket.pauli import Pauli
 from pytket.transform import PauliSynthStrat, Transform
+
+if TYPE_CHECKING:
+    from pytket.circuit.named_types import (
+        BitstringToOpList,
+        BitstringToOpMap,
+        BitstringToTensoredOpList,
+        BitstringToTensoredOpMap,
+        ParamType,
+        PermutationMap,
+    )
 
 curr_file_path = Path(__file__).resolve().parent
 
@@ -182,7 +186,7 @@ def test_circuit_name() -> None:
     assert c.name == name
 
 
-def test_circuit_gen() -> None:
+def test_circuit_gen() -> None:  # noqa: PLR0915
     c = Circuit(4, 4)
     c.X(0)
     c.H(1)
@@ -217,7 +221,7 @@ def test_circuit_gen() -> None:
     c.CSdg(1, 2)
 
     assert c.n_qubits == 4
-    assert c._n_vertices() == 47
+    assert c._n_vertices() == 47  # noqa: SLF001
     assert c.n_gates == 31
 
     commands = c.get_commands()
@@ -275,7 +279,7 @@ def test_circuit_gen_ids() -> None:
     c.Measure(a[1], b[1])
 
     assert c.n_qubits == 4
-    assert c._n_vertices() == 23
+    assert c._n_vertices() == 23  # noqa: SLF001
     assert c.n_gates == 7
 
     commands = c.get_commands()
@@ -444,7 +448,7 @@ def test_implicit_swaps() -> None:
     assert all(a != b for (a, b) in perm1.items())
 
 
-def test_boxes() -> None:
+def test_boxes() -> None:  # noqa: PLR0915
     c = Circuit(4, 4)
     c.X(0)
     c.H(1)
@@ -548,7 +552,7 @@ def test_boxes() -> None:
     assert pauli_exp.get_phase() == Symbol("alpha")
 
     boxes = (cbox, mbox, u2qbox, u3qbox, ebox, pbox, qcbox)
-    assert all(box == box for box in boxes)
+    assert all(box == box for box in boxes)  # noqa: PLR0124
     assert all(isinstance(box, Op) for box in boxes)
     permutation: PermutationMap = {(_0, _0): (_1, _1), (_1, _1): (_0, _0)}
     tb = ToffoliBox(permutation)
@@ -811,7 +815,7 @@ def test_errors() -> None:
     c.Rz(0, 0)
     with pytest.raises(TypeError):
         c.Rz(0, "a")  # type: ignore
-    assert c.get_commands()[0].free_symbols() == set([a])
+    assert c.get_commands()[0].free_symbols() == {a}
 
 
 def test_str() -> None:
@@ -1550,7 +1554,7 @@ def test_deserialization_from_junk() -> None:
 
 def test_wasm_serialization() -> None:
     c = Circuit(2, 2).H(0).H(1).measure_all()
-    c._add_wasm("some_name", "some_uid", [1, 1], [], [Bit(0), Bit(1)], [0])
+    c._add_wasm("some_name", "some_uid", [1, 1], [], [Bit(0), Bit(1)], [0])  # noqa: SLF001
     c.CZ(0, 1).measure_all()
     assert json_validate(c)
 
@@ -1576,7 +1580,7 @@ def test_cnrx_cnrz() -> None:
     assert np.allclose(c1rx.get_unitary(), crx.get_unitary())
 
 
-def greedy_TermSequenceBox() -> None:
+def test_greedy_TermSequenceBox() -> None:
     tseqbox = TermSequenceBox(
         [
             ([Pauli.X, Pauli.I, Pauli.I], 0.3),
@@ -1593,6 +1597,22 @@ def greedy_TermSequenceBox() -> None:
     assert cmds[1].op.type == OpType.TK1
     assert cmds[2].op.type == OpType.TK1
     assert c.n_2qb_gates() <= 2
+
+
+def test_controlled_TermSequenceBox_logging(capfd: Any) -> None:
+    tseqbox = TermSequenceBox(
+        [
+            ([Pauli.X, Pauli.I, Pauli.I], 0.3),
+            ([Pauli.I, Pauli.Y, Pauli.I], 0.2),
+            ([Pauli.I, Pauli.I, Pauli.Z], 1.1),
+            ([Pauli.X, Pauli.Z, Pauli.I], 1.8),
+        ],
+        synthesis_strategy=PauliSynthStrat.Greedy,
+        depth_weight=0.28,
+    )
+    QControlBox(tseqbox)
+    out = capfd.readouterr().out
+    assert "does not preserve global phase" in out
 
 
 def test_cnx_vchain_zeroed_ancillas() -> None:
@@ -1634,19 +1654,17 @@ def test_cnx_vchain_arbitrary_ancillas() -> None:
         assert np.allclose(m, m_cnx_with_ancillas)
 
 
-if __name__ == "__main__":
-    test_circuit_gen()
-    test_symbolic_ops()
-    test_4x4_matrix_to_circ()
-    test_exp_to_circ()
-    test_boxes()
-    test_errors()
-    test_str()
-    test_phase()
-    test_clifford_checking()
-    test_clifford_evaluation()
-    test_measuring_registers()
-    test_multi_controlled_gates()
-    test_counting_n_qubit_gates()
-    test_pauliexp_pair_box_serialisation()
-    test_cnrx_cnrz()
+def test_c0z() -> None:
+    # https://github.com/CQCL/tket/issues/1873
+    circ = Circuit(1).add_gate(OpType.CnZ, [0])
+    cmds = circ.get_commands()
+    assert len(cmds) == 1
+    cmd = cmds[0]
+    assert cmd.op.type == OpType.Z
+
+
+def test_pickle() -> None:
+    n = Node("abc", [1, 2, 3])
+    s = pickle.dumps(n)
+    n1 = pickle.loads(s)
+    assert n == n1

@@ -389,6 +389,9 @@ PassPtr deserialise(
     } else if (passname == "DecomposeBoxes") {
       std::unordered_set<OpType> excluded_types;
       std::unordered_set<std::string> excluded_opgroups;
+      std::optional<std::unordered_set<OpType>> included_types = std::nullopt;
+      std::optional<std::unordered_set<std::string>> included_opgroups =
+          std::nullopt;
       if (content.contains("excluded_types")) {
         excluded_types =
             content.at("excluded_types").get<std::unordered_set<OpType>>();
@@ -397,7 +400,16 @@ PassPtr deserialise(
         excluded_opgroups = content.at("excluded_opgroups")
                                 .get<std::unordered_set<std::string>>();
       }
-      pp = DecomposeBoxes(excluded_types, excluded_opgroups);
+      if (content.contains("included_types")) {
+        included_types =
+            content.at("included_types").get<std::unordered_set<OpType>>();
+      }
+      if (content.contains("included_opgroups")) {
+        included_opgroups = content.at("included_opgroups")
+                                .get<std::unordered_set<std::string>>();
+      }
+      pp = DecomposeBoxes(
+          excluded_types, excluded_opgroups, included_types, included_opgroups);
     } else if (passname == "DecomposeClassicalExp") {
       throw PassNotSerializable(passname);
     } else if (passname == "DecomposeMultiQubitsCX") {

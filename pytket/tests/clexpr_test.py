@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import json
+import pickle
 from pathlib import Path
 
 from jsonschema import validate  # type: ignore
@@ -29,6 +30,7 @@ from pytket.circuit import (
     WiredClExpr,
 )
 from pytket.qasm import circuit_from_qasm_str, circuit_to_qasm_str
+from pytket.utils.serialization.migration import circuit_dict_from_pytket1_dict
 
 with open(
     Path(__file__).resolve().parent.parent.parent / "schemas/circuit_v1.json"
@@ -284,3 +286,53 @@ creg c[3];
 c[2] = ((~(c[0] ^ 0)) & (c[1] ^ 1));
 """
     )
+
+
+def test_deserialization_from_pytket1_json() -> None:
+    # https://github.com/CQCL/tket/issues/1848
+    for i in range(5):
+        with open(
+            Path(__file__).resolve().parent
+            / "json_test_files"
+            / "pytket1"
+            / f"circ{i}.json"
+        ) as f:
+            olddata = json.load(f)
+        newdata = circuit_dict_from_pytket1_dict(olddata)
+        newcirc = Circuit.from_dict(newdata)
+        assert newcirc.to_dict() == newdata
+        with open(
+            Path(__file__).resolve().parent
+            / "json_test_files"
+            / "pytket1"
+            / f"newdata{i}.json",
+            "w",
+        ) as f:
+            json.dump(newdata, f)
+        with open(
+            Path(__file__).resolve().parent
+            / "json_test_files"
+            / "pytket1"
+            / f"newdata{i}.json"
+        ) as f:
+            expected_newdata = json.load(f)
+        assert newdata == expected_newdata
+        newcirc = Circuit.from_dict(newdata)
+        assert newdata == newcirc.to_dict()
+
+
+def test_pickle() -> None:
+    wexpr = WiredClExpr(
+        expr=ClExpr(
+            op=ClOp.BitAnd,
+            args=[
+                ClExpr(op=ClOp.BitEq, args=[ClBitVar(0), 0]),
+                ClExpr(op=ClOp.BitNeq, args=[ClBitVar(1), 1]),
+            ],
+        ),
+        bit_posn={0: 0, 1: 1},
+        output_posn=[2],
+    )
+    s = pickle.dumps(wexpr)
+    wexpr1 = pickle.loads(s)
+    assert wexpr == wexpr1

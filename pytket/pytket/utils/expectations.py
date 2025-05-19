@@ -38,9 +38,7 @@ def expectation_from_shots(shot_table: np.ndarray) -> float:
     from each row, and returns the average.
 
     :param shot_table: The table of shots to interpret.
-    :type shot_table: np.ndarray
     :return: The expectation value in the range [-1, 1].
-    :rtype: float
     """
     aritysum = 0.0
     for row in shot_table:
@@ -54,9 +52,7 @@ def expectation_from_counts(counts: dict[tuple[int, ...], int]) -> float:
     from each readout, and returns the weighted average.
 
     :param counts: Counts of each measurement outcome observed.
-    :type counts: Dict[Tuple[int, ...], int]
     :return: The expectation value in the range [-1, 1].
-    :rtype: float
     """
     aritysum = 0.0
     total_shots = 0
@@ -84,16 +80,11 @@ def get_pauli_expectation_value(
 
     :param state_circuit: Circuit that generates the desired state
         :math:`\\left|\\psi\\right>`.
-    :type state_circuit: Circuit
     :param pauli: Pauli operator
-    :type pauli: QubitPauliString
     :param backend: pytket backend to run circuit on.
-    :type backend: Backend
     :param n_shots: Number of shots to run if backend supports shots/counts. Set to None
         to calculate using statevector if supported by the backend. Defaults to None
-    :type n_shots: Optional[int], optional
     :return: :math:`\\left<\\psi | P | \\psi \\right>`
-    :rtype: float
     """
     if not n_shots:
         if not backend.valid_circuit(state_circuit):
@@ -115,7 +106,7 @@ def get_pauli_expectation_value(
     raise ValueError("Backend does not support counts or shots")
 
 
-def get_operator_expectation_value(
+def get_operator_expectation_value(  # noqa: PLR0912, PLR0913, PLR0915
     state_circuit: Circuit,
     operator: QubitPauliOperator,
     backend: "Backend",
@@ -131,28 +122,24 @@ def get_operator_expectation_value(
 
     :param state_circuit: Circuit that generates the desired state
         :math:`\\left|\\psi\\right>`
-    :type state_circuit: Circuit
     :param operator: Operator :math:`H`. Currently does not support free symbols for the
         purpose of obtaining expectation values.
-    :type operator: QubitPauliOperator
     :param backend: pytket backend to run circuit on.
-    :type backend: Backend
     :param n_shots: Number of shots to run if backend supports shots/counts. None will
         force the backend to give the full state if available. Defaults to None
-    :type n_shots: Optional[int], optional
     :param partition_strat: If retrieving shots, can perform measurement reduction using
         a chosen strategy
-    :type partition_strat: Optional[PauliPartitionStrat], optional
     :return: :math:`\\left<\\psi | H | \\psi \\right>`
-    :rtype: complex
     """
     if not n_shots:
         if not backend.valid_circuit(state_circuit):
             state_circuit = backend.get_compiled_circuit(state_circuit)
         try:
-            coeffs: list[complex] = [complex(v) for v in operator._dict.values()]
+            coeffs: list[complex] = [complex(v) for v in operator.get_dict().values()]
         except TypeError:
-            raise ValueError("QubitPauliOperator contains unevaluated symbols.")
+            raise ValueError(  # noqa: B904
+                "QubitPauliOperator contains unevaluated symbols."
+            )
         if backend.supports_expectation and (
             backend.expectation_allows_nonhermitian or all(z.imag == 0 for z in coeffs)
         ):
@@ -162,15 +149,12 @@ def get_operator_expectation_value(
         return operator.state_expectation(state)
     energy: complex
     id_string = QubitPauliString()
-    if id_string in operator._dict:
-        energy = complex(operator[id_string])
-    else:
-        energy = 0
+    energy = complex(operator[id_string]) if id_string in operator.get_dict() else 0
     if not partition_strat:
         operator_without_id = QubitPauliOperator(
-            {p: c for p, c in operator._dict.items() if (p != id_string)}
+            {p: c for p, c in operator.get_dict().items() if (p != id_string)}
         )
-        coeffs = [complex(c) for c in operator_without_id._dict.values()]
+        coeffs = [complex(c) for c in operator_without_id.get_dict().values()]
         pauli_circuits = list(
             _all_pauli_measurements(operator_without_id, state_circuit)
         )
@@ -183,21 +167,21 @@ def get_operator_expectation_value(
         )
         results = backend.get_results(handles)
         if backend.supports_counts:
-            for result, coeff in zip(results, coeffs):
+            for result, coeff in zip(results, coeffs, strict=False):
                 counts = result.get_counts()
                 energy += coeff * expectation_from_counts(counts)
             for handle in handles:
                 backend.pop_result(handle)
             return energy
         if backend.supports_shots:
-            for result, coeff in zip(results, coeffs):
+            for result, coeff in zip(results, coeffs, strict=False):
                 shots = result.get_shots()
                 energy += coeff * expectation_from_shots(shots)
             for handle in handles:
                 backend.pop_result(handle)
             return energy
         raise ValueError("Backend does not support counts or shots")
-    qubit_pauli_string_list = [p for p in operator._dict.keys() if (p != id_string)]
+    qubit_pauli_string_list = [p for p in operator.get_dict() if (p != id_string)]
     measurement_expectation = measurement_reduction(
         qubit_pauli_string_list, partition_strat, colour_method
     )

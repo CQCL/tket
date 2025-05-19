@@ -25,9 +25,7 @@ def append_pauli_measurement(pauli_string: QubitPauliString, circ: Circuit) -> N
     given basis.
 
     :param pauli_string: The pauli string to measure
-    :type pauli_string: QubitPauliString
     :param circ: Circuit to add measurement to.
-    :type circ: Circuit
     """
     measured_qbs = []
     for qb, p in pauli_string.map.items():
@@ -51,13 +49,10 @@ def _all_pauli_measurements(
     appropriate measurements on each qubit. The trivial term is omitted.
 
     :param operator: The operator
-    :type operator: QubitPauliOperator
     :param circ: The circuit generating the desired state
-    :type circ: Circuit
     :return: List of circuits in order of term from the operator
-    :rtype: Iterable[Circuit]
     """
-    for pauli_string in operator._dict.keys():
+    for pauli_string in operator._dict.keys():  # noqa: SLF001, SIM118
         if not pauli_string.map:
             continue
         copy = circ.copy()

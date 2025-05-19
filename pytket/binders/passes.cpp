@@ -12,13 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <pybind11/functional.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/trampoline.h>
 
 #include <optional>
+#include <string>
 #include <tklog/TketLog.hpp>
 
-#include "binder_json.hpp"
 #include "binder_utils.hpp"
+#include "nanobind-stl.hpp"
+#include "nanobind_json/nanobind_json.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
 #include "tket/Mapping/LexiRouteRoutingMethod.hpp"
 #include "tket/Mapping/RoutingMethod.hpp"
@@ -30,57 +33,57 @@
 #include "tket/Transformations/Transform.hpp"
 #include "typecast.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 using json = nlohmann::json;
 
 namespace tket {
 
-// using py::object and converting internally to json creates better stubs,
+// using nb::object and converting internally to json creates better stubs,
 // hence this wrapper
-typedef std::function<void(const CompilationUnit &, const py::object &)>
+typedef std::function<void(const CompilationUnit &, const nb::object &)>
     PyPassCallback;
 PassCallback from_py_pass_callback(const PyPassCallback &py_pass_callback) {
   return [py_pass_callback](
              const CompilationUnit &compilationUnit, const json &j) {
-    return py_pass_callback(compilationUnit, py::object(j));
+    return py_pass_callback(compilationUnit, nb::object(j));
   };
 }
 
 // given keyword arguments for DecomposeTK2, return a TwoQbFidelities struct
-Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
+Transforms::TwoQbFidelities get_fidelities(const nb::kwargs &kwargs) {
   Transforms::TwoQbFidelities fid;
   for (const auto &kwarg : kwargs) {
-    const std::string kwargstr = py::cast<std::string>(kwarg.first);
+    const std::string kwargstr = nb::cast<std::string>(kwarg.first);
     using Func = std::function<double(double)>;
     if (kwargstr == "CX_fidelity") {
-      fid.CX_fidelity = py::cast<double>(kwarg.second);
+      fid.CX_fidelity = nb::cast<double>(kwarg.second);
     } else if (kwargstr == "ZZMax_fidelity") {
-      fid.ZZMax_fidelity = py::cast<double>(kwarg.second);
+      fid.ZZMax_fidelity = nb::cast<double>(kwarg.second);
     } else if (kwargstr == "ZZPhase_fidelity") {
-      fid.ZZPhase_fidelity = py::cast<std::variant<double, Func>>(kwarg.second);
+      fid.ZZPhase_fidelity = nb::cast<std::variant<double, Func>>(kwarg.second);
     } else {
-      throw py::type_error(
-          "got an unexpected keyword argument '" + kwargstr + "'");
+      std::string msg = "got an unexpected keyword argument '" + kwargstr + "'";
+      throw nb::type_error(msg.c_str());
     }
   }
   return fid;
 }
 
 static PassPtr gen_cx_mapping_pass_kwargs(
-    const Architecture &arc, const Placement::Ptr &placer, py::kwargs kwargs) {
+    const Architecture &arc, const Placement::Ptr &placer, nb::kwargs kwargs) {
   std::vector<RoutingMethodPtr> config = {
       std::make_shared<LexiLabellingMethod>(),
       std::make_shared<LexiRouteRoutingMethod>()};
   if (kwargs.contains("config")) {
-    config = py::cast<std::vector<RoutingMethodPtr>>(kwargs["config"]);
+    config = nb::cast<std::vector<RoutingMethodPtr>>(kwargs["config"]);
   }
   bool directed_cx = false;
   if (kwargs.contains("directed_cx")) {
-    directed_cx = py::cast<bool>(kwargs["directed_cx"]);
+    directed_cx = nb::cast<bool>(kwargs["directed_cx"]);
   }
   bool delay_measures = true;
   if (kwargs.contains("delay_measures")) {
-    delay_measures = py::cast<bool>(kwargs["delay_measures"]);
+    delay_measures = nb::cast<bool>(kwargs["delay_measures"]);
   }
   return gen_cx_mapping_pass(arc, placer, config, directed_cx, delay_measures);
 }
@@ -92,15 +95,15 @@ static PassPtr gen_default_routing_pass(const Architecture &arc) {
 }
 
 static PassPtr gen_default_aas_routing_pass(
-    const Architecture &arc, py::kwargs kwargs) {
+    const Architecture &arc, nb::kwargs kwargs) {
   unsigned lookahead = 1;
   aas::CNotSynthType cnotsynthtype = aas::CNotSynthType::Rec;
 
   if (kwargs.contains("lookahead"))
-    lookahead = py::cast<unsigned>(kwargs["lookahead"]);
+    lookahead = nb::cast<unsigned>(kwargs["lookahead"]);
 
   if (kwargs.contains("cnotsynthtype"))
-    cnotsynthtype = py::cast<aas::CNotSynthType>(kwargs["cnotsynthtype"]);
+    cnotsynthtype = nb::cast<aas::CNotSynthType>(kwargs["cnotsynthtype"]);
 
   if (lookahead == 0) {
     throw std::invalid_argument(
@@ -114,12 +117,13 @@ const PassPtr &DecomposeClassicalExp() {
   // a special box decomposer for Circuits containing ClExprOp
   static const PassPtr pp([]() {
     Transform t = Transform([](Circuit &circ) {
-      py::module decomposer =
-          py::module::import("pytket.circuit.decompose_classical");
-      const py::tuple result = decomposer.attr("_decompose_expressions")(circ);
-      const bool success = result[1].cast<bool>();
+      nb::module_ decomposer =
+          nb::module_::import_("pytket.circuit.decompose_classical");
+      const nb::tuple result =
+          nb::cast<nb::tuple>(decomposer.attr("_decompose_expressions")(circ));
+      const bool success = nb::cast<bool>(result[1]);
       if (success) {
-        circ = result[0].cast<Circuit>();
+        circ = nb::cast<Circuit>(result[0]);
       }
       return success;
     });
@@ -169,15 +173,10 @@ std::optional<OpTypeSet> get_gate_set(const BasePass &base_pass) {
   return allowed_ops;
 }
 
-PYBIND11_MODULE(passes, m) {
-  py::module_::import("pytket._tket.predicates");
-  m.def(
-      "_sympy_import", []() { return Expr(); },
-      "This function only exists so that sympy gets imported in the resulting "
-      ".pyi file. "
-      "It's needed due to a bug in pybind11-stubgen's translation for "
-      "Callables most likely.");
-  py::enum_<SafetyMode>(m, "SafetyMode")
+NB_MODULE(passes, m) {
+  nb::set_leak_warnings(false);
+  nb::module_::import_("pytket._tket.predicates");
+  nb::enum_<SafetyMode>(m, "SafetyMode")
       .value(
           "Audit", SafetyMode::Audit,
           "Checks which predicates a circuit satisfies after the "
@@ -190,7 +189,7 @@ PYBIND11_MODULE(passes, m) {
       // .value("Off", SafetyMode::Off) // not currently supported
       .export_values();
 
-  py::enum_<aas::CNotSynthType>(m, "CNotSynthType")
+  nb::enum_<aas::CNotSynthType>(m, "CNotSynthType")
       .value(
           "SWAP", aas::CNotSynthType::SWAP,
           "swap-based algorithm for CNOT synthesis")
@@ -207,37 +206,21 @@ PYBIND11_MODULE(passes, m) {
 
   class PyBasePass : public BasePass {
    public:
-    using BasePass::BasePass;
+    NB_TRAMPOLINE(BasePass, 3);
 
     /* Trampolines (need one for each virtual function */
     virtual bool apply(
         CompilationUnit &c_unit, SafetyMode safe_mode = SafetyMode::Default,
         const PassCallback &before_apply = trivial_callback,
         const PassCallback &after_apply = trivial_callback) const override {
-      PYBIND11_OVERLOAD_PURE(
-          bool,     /* Return type */
-          BasePass, /* Parent class */
-          apply,    /* Name of function in C++ (must match Python name) */
-          c_unit, before_apply, after_apply, safe_mode /* Argument(s) */
-      );
+      NB_OVERRIDE_PURE(apply, c_unit, safe_mode, before_apply, after_apply);
     }
     virtual std::string to_string() const override {
-      PYBIND11_OVERLOAD_PURE(
-          std::string, /* Return type */
-          BasePass,    /* Parent class */
-          to_string    /* Name of function in C++ (must match Python name) */
-      );
+      NB_OVERRIDE_PURE(to_string);
     }
-    virtual json get_config() const override {
-      PYBIND11_OVERLOAD_PURE(
-          json,      /* Return type */
-          BasePass,  /* Parent class */
-          get_config /* Name of function in C++ (must match Python name) */
-      );
-    }
+    virtual json get_config() const override { NB_OVERRIDE_PURE(get_config); }
   };
-  py::class_<BasePass, PassPtr, PyBasePass>(
-      m, "BasePass", "Base class for passes.")
+  nb::class_<BasePass, PyBasePass>(m, "BasePass", "Base class for passes.")
       .def(
           "apply",
           [](const BasePass &pass, CompilationUnit &cu,
@@ -247,8 +230,8 @@ PYBIND11_MODULE(passes, m) {
           "cases the method may return True even when the circuit is "
           "unmodified (but a return value of False definitely implies no "
           "modification).",
-          py::arg("compilation_unit"),
-          py::arg("safety_mode") = SafetyMode::Default)
+          nb::arg("compilation_unit"),
+          nb::arg("safety_mode") = SafetyMode::Default)
       .def(
           "apply",
           [](const BasePass &pass, Circuit &circ) {
@@ -259,7 +242,7 @@ PYBIND11_MODULE(passes, m) {
           },
           "Apply to a :py:class:`Circuit` in-place.\n\n"
           ":return: True if pass modified the circuit, else False",
-          py::arg("circuit"))
+          nb::arg("circuit"))
       .def(
           "apply",
           [](const BasePass &pass, Circuit &circ,
@@ -282,14 +265,12 @@ PYBIND11_MODULE(passes, m) {
           "The CompilationUnit and a summary of the pass "
           "configuration are passed into the callback."
           "\n:return: True if pass modified the circuit, else False",
-          py::arg("circuit"), py::arg("before_apply"), py::arg("after_apply"))
+          nb::arg("circuit"), nb::arg("before_apply"), nb::arg("after_apply"))
       .def("__str__", [](const BasePass &) { return "<tket::BasePass>"; })
       .def("__repr__", &BasePass::to_string)
       .def(
           "to_dict",
-          [](const BasePass &base_pass) {
-            return py::cast(serialise(base_pass));
-          },
+          [](const BasePass &base_pass) { return serialise(base_pass); },
           ":return: A JSON serializable dictionary representation of the Pass.")
       .def(
           "get_preconditions",
@@ -325,7 +306,7 @@ PYBIND11_MODULE(passes, m) {
           "\n\n:return: A set of allowed OpType")
       .def_static(
           "from_dict",
-          [](const py::dict &base_pass_dict,
+          [](const nb::dict &base_pass_dict,
              const std::map<
                  std::string, std::function<Circuit(const Circuit &)>>
                  &custom_deserialisation,
@@ -346,26 +327,27 @@ PYBIND11_MODULE(passes, m) {
           "some `CustomPass` from JSON. `CustomPass` without a matching entry "
           "in "
           "`custom_deserialisation` will be rejected.",
-          py::arg("base_pass_dict"),
-          py::arg("custom_deserialisation") =
+          nb::arg("base_pass_dict"),
+          nb::arg("custom_deserialisation") =
               std::map<std::string, std::function<Circuit(const Circuit &)>>{},
-          py::arg("custom_map_deserialisation") = std::map<
+          nb::arg("custom_map_deserialisation") = std::map<
               std::string, std::function<std::pair<
                                Circuit, std::pair<unit_map_t, unit_map_t>>(
                                const Circuit &)>>{})
       .def(
-          py::pickle(
-              [](py::object self) {  // __getstate__
-                return py::make_tuple(self.attr("to_dict")());
-              },
-              [](const py::tuple &t) {  // __setstate__
-                const json j = t[0].cast<json>();
-                return deserialise(j);
-              }));
-  py::class_<SequencePass, std::shared_ptr<SequencePass>, BasePass>(
+          "__getstate__",
+          [](const BasePass &pass) {
+            return nb::make_tuple(nb::cast(serialise(pass)));
+          })
+      .def("__setstate__", [](PassPtr &pass, const nb::tuple &t) {
+        const json j = nb::cast<json>(t[0]);
+        PassPtr pp = deserialise(j);
+        new (&pass) PassPtr(pp);
+      });
+  nb::class_<SequencePass, BasePass>(
       m, "SequencePass", "A sequence of compilation passes.")
       .def(
-          py::init<const py::tket_custom::SequenceVec<PassPtr> &, bool>(),
+          nb::init<const nb::tket_custom::SequenceVec<PassPtr> &, bool>(),
           "Construct from a list of compilation passes arranged in order of "
           "application."
           "\n\n:param pass_list: sequence of passes"
@@ -373,13 +355,12 @@ PYBIND11_MODULE(passes, m) {
           "postconditions and preconditions of the passes in the sequence are "
           "compatible and raise an exception if not."
           "\n:return: a pass that applies the sequence",
-          py::arg("pass_list"), py::arg("strict") = true)
+          nb::arg("pass_list"), nb::arg("strict") = true)
       .def("__str__", [](const BasePass &) { return "<tket::SequencePass>"; })
       .def(
           "to_dict",
           [](const SequencePass &seq_pass) {
-            return py::cast(
-                serialise(std::make_shared<SequencePass>(seq_pass)));
+            return serialise(std::make_shared<SequencePass>(seq_pass));
           },
           ":return: A JSON serializable dictionary representation of the "
           "SequencePass.")
@@ -387,27 +368,26 @@ PYBIND11_MODULE(passes, m) {
           "get_sequence", &SequencePass::get_sequence,
           ":return: The underlying sequence of passes.");
 
-  py::class_<RepeatPass, std::shared_ptr<RepeatPass>, BasePass>(
+  nb::class_<RepeatPass, BasePass>(
       m, "RepeatPass",
       "Repeat a pass until its `apply()` method returns False, or if "
       "`strict_check` is True until it stops modifying the circuit.")
       .def(
-          py::init<const PassPtr &, bool>(),
-          "Construct from a compilation pass.", py::arg("compilation_pass"),
-          py::arg("strict_check") = false)
+          nb::init<const PassPtr &, bool>(),
+          "Construct from a compilation pass.", nb::arg("compilation_pass"),
+          nb::arg("strict_check") = false)
       .def("__str__", [](const RepeatPass &) { return "<tket::BasePass>"; })
       .def(
           "get_pass", &RepeatPass::get_pass,
           ":return: The underlying compilation pass.");
-  py::class_<
-      RepeatWithMetricPass, std::shared_ptr<RepeatWithMetricPass>, BasePass>(
+  nb::class_<RepeatWithMetricPass, BasePass>(
       m, "RepeatWithMetricPass",
       "Repeat a compilation pass until the given metric stops "
       "decreasing.")
       .def(
-          py::init<const PassPtr &, const Transform::Metric &>(),
+          nb::init<const PassPtr &, const Transform::Metric &>(),
           "Construct from a compilation pass and a metric function.",
-          py::arg("compilation_pass"), py::arg("metric"))
+          nb::arg("compilation_pass"), nb::arg("metric"))
       .def(
           "__str__",
           [](const BasePass &) { return "<tket::RepeatWithMetricPass>"; })
@@ -417,22 +397,20 @@ PYBIND11_MODULE(passes, m) {
       .def(
           "get_metric", &RepeatWithMetricPass::get_metric,
           ":return: The underlying metric.");
-  py::class_<
-      RepeatUntilSatisfiedPass, std::shared_ptr<RepeatUntilSatisfiedPass>,
-      BasePass>(
+  nb::class_<RepeatUntilSatisfiedPass, BasePass>(
       m, "RepeatUntilSatisfiedPass",
       "Repeat a compilation pass until a predicate on the circuit is "
       "satisfied.")
       .def(
-          py::init<const PassPtr &, const PredicatePtr &>(),
+          nb::init<const PassPtr &, const PredicatePtr &>(),
           "Construct from a compilation pass and a predicate.",
-          py::arg("compilation_pass"), py::arg("predicate"))
+          nb::arg("compilation_pass"), nb::arg("predicate"))
       .def(
-          py::init<
+          nb::init<
               const PassPtr &, const std::function<bool(const Circuit &)> &>(),
           "Construct from a compilation pass and a user-defined "
           "function from :py:class:`Circuit` to `bool`.",
-          py::arg("compilation_pass"), py::arg("check_function"))
+          nb::arg("compilation_pass"), nb::arg("check_function"))
       .def(
           "__str__",
           [](const BasePass &) { return "<tket::RepeatUntilSatisfiedPass>"; })
@@ -470,17 +448,17 @@ PYBIND11_MODULE(passes, m) {
       ":param cx_fidelity: Estimated CX gate fidelity, used when "
       "target_2qb_gate=CX.\n"
       ":param allow_swaps: Whether to allow implicit wire swaps.",
-      py::arg("target_2qb_gate") = OpType::CX, py::arg("cx_fidelity") = 1.,
-      py::arg("allow_swaps") = true);
+      nb::arg("target_2qb_gate") = OpType::CX, nb::arg("cx_fidelity") = 1.,
+      nb::arg("allow_swaps") = true);
   m.def(
       "KAKDecomposition",
       [](double cx_fidelity) {
         return KAKDecomposition(OpType::CX, cx_fidelity);
       },
-      py::arg("cx_fidelity"));
+      nb::arg("cx_fidelity"));
   m.def(
       "DecomposeTK2",
-      [](bool allow_swaps, const py::kwargs &kwargs) {
+      [](bool allow_swaps, const nb::kwargs &kwargs) {
         return DecomposeTK2(get_fidelities(kwargs), allow_swaps);
       },
       "Decompose each TK2 gate into two-qubit gates."
@@ -509,7 +487,7 @@ PYBIND11_MODULE(passes, m) {
       "to obtain optimal decompositions for arbitrary symbolic parameters, "
       "so consider substituting for concrete values if possible."
       "\n\n:param allow_swaps: Whether to allow implicit wire swaps.",
-      py::arg("allow_swaps") = true);
+      nb::arg("allow_swaps") = true, nb::arg("kwargs"));
   m.def(
       "NormaliseTK2", &NormaliseTK2,
       "Normalises all TK2 gates.\n\n"
@@ -531,7 +509,7 @@ PYBIND11_MODULE(passes, m) {
       "pure-classical and CX gates, and Measure, Collapse, Reset, Phase and "
       "conditional gates."
       "\n\n:param allow_swaps: whether to allow implicit wire swaps",
-      py::arg("allow_swaps") = true);
+      nb::arg("allow_swaps") = true);
   m.def(
       "CommuteThroughMultis", &CommuteThroughMultis,
       "Moves single-qubit operations past multi-qubit operations that they "
@@ -543,12 +521,20 @@ PYBIND11_MODULE(passes, m) {
       "CX and single-qubit gates.");
   m.def(
       "DecomposeBoxes", &DecomposeBoxes,
-      "Recursively replaces all boxes by their decomposition into circuits."
+      "Recursively replaces all boxes by their decomposition into circuits. "
+      "\n\nArguments specify ways to filter which boxes are decomposed. A box "
+      "must satisfy ALL filters in order to be decomposed (i.e. be in the "
+      "inclusive sets and not in the exclusive sets)."
       "\n\n:param excluded_types: box " CLSOBJS(OpType) " excluded from "
       "decomposition"
-      "\n:param excluded_opgroups: opgroups excluded from decomposition",
-      py::arg("excluded_types") = std::unordered_set<OpType>(),
-      py::arg("excluded_opgroups") = std::unordered_set<std::string>());
+      "\n:param excluded_opgroups: opgroups excluded from decomposition"
+      "\n:param included_types: optional, only decompose these box "
+      CLSOBJS(OpType)
+      "\n:param included_opgroups: optional, only decompose these opgroups",
+      nb::arg("excluded_types") = std::unordered_set<OpType>(),
+      nb::arg("excluded_opgroups") = std::unordered_set<std::string>(),
+      nb::arg("included_types") = std::nullopt,
+      nb::arg("included_opgroups") = std::nullopt);
   m.def(
       "DecomposeClassicalExp", &DecomposeClassicalExp,
       "Replaces each `ClExprOp` by a sequence of classical gates.");
@@ -564,14 +550,14 @@ PYBIND11_MODULE(passes, m) {
       "gate sequences, and converts to a circuit containing only CX and TK1 "
       "gates."
       "\n\n:param allow_swaps: whether to allow implicit wire swaps",
-      py::arg("allow_swaps") = true);
+      nb::arg("allow_swaps") = true);
   m.def(
       "FullPeepholeOptimise", &FullPeepholeOptimise,
       "Performs peephole optimisation including resynthesis of 2- and 3-qubit "
       "gate sequences, and converts to a circuit containing only the given "
       "2-qubit gate (which may be CX or TK2) and TK1 gates."
       "\n\n:param allow_swaps: whether to allow implicit wire swaps",
-      py::arg("allow_swaps") = true, py::arg("target_2qb_gate") = OpType::CX);
+      nb::arg("allow_swaps") = true, nb::arg("target_2qb_gate") = OpType::CX);
   m.def(
       "RebaseTket", &RebaseTket,
       "Converts all gates to CX, TK1 and Phase. "
@@ -616,8 +602,8 @@ PYBIND11_MODULE(passes, m) {
       "regardless of the blow-up in complexity. Default is false, meaning that "
       "symbolic gates are only squashed if doing so reduces the overall "
       "symbolic complexity.",
-      py::arg("singleqs"), py::arg("tk1_replacement"),
-      py::arg("always_squash_symbols") = false);
+      nb::arg("singleqs"), nb::arg("tk1_replacement"),
+      nb::arg("always_squash_symbols") = false);
   m.def(
       "AutoSquash", &gen_auto_squash_pass,
       "Attempt to generate a squash pass automatically for the given target "
@@ -628,7 +614,7 @@ PYBIND11_MODULE(passes, m) {
       "\n\n:param singleqs: The types of single qubit gates in the target "
       "gate set. This pass will only affect sequences of gates that are "
       "already in this set.",
-      py::arg("singleqs"));
+      nb::arg("singleqs"));
   m.def(
       "DelayMeasures", &DelayMeasures,
       "Commutes Measure operations to the end of the circuit. Throws an "
@@ -639,7 +625,7 @@ PYBIND11_MODULE(passes, m) {
       "commuted to "
       "the end, and delay them as much as possible instead. If false, the pass "
       "includes a :py:class:`CommutableMeasuresPredicate` precondition.",
-      py::arg("allow_partial") = true);
+      nb::arg("allow_partial") = true);
   m.def(
       "RemoveDiscarded", &RemoveDiscarded,
       "A pass to remove all operations that have no ``OpType.Output`` or "
@@ -669,7 +655,7 @@ PYBIND11_MODULE(passes, m) {
       "beforehand and may increase the cost of the circuit."
       "\n\n:param allow_swaps: Whether to allow implicit wire swaps (default "
       "True).",
-      py::arg("allow_swaps") = true);
+      nb::arg("allow_swaps") = true);
 
   /* Pass generators */
 
@@ -700,8 +686,8 @@ PYBIND11_MODULE(passes, m) {
       "basis"
       "\n:return: a pass that rebases to the given gate set (possibly "
       "including conditional and phase operations, and Measure and Reset",
-      py::arg("gateset"), py::arg("cx_replacement"),
-      py::arg("tk1_replacement"));
+      nb::arg("gateset"), nb::arg("cx_replacement"),
+      nb::arg("tk1_replacement"));
 
   m.def(
       "RebaseCustom", &gen_rebase_pass_via_tk2,
@@ -728,8 +714,8 @@ PYBIND11_MODULE(passes, m) {
       "desired basis\n"
       ":return: a pass that rebases to the given gate set (possibly including "
       "conditional and phase operations, and Measure and Reset)",
-      py::arg("gateset"), py::arg("tk2_replacement"),
-      py::arg("tk1_replacement"));
+      nb::arg("gateset"), nb::arg("tk2_replacement"),
+      nb::arg("tk1_replacement"));
   m.def(
       "AutoRebase", &gen_auto_rebase_pass,
       "Attempt to generate a rebase pass automatically for the given target "
@@ -744,7 +730,7 @@ PYBIND11_MODULE(passes, m) {
       "gates may also be introduced by the rebase)\n"
       ":param allow_swaps: Whether to allow implicit wire swaps. Default to "
       "False.",
-      py::arg("gateset"), py::arg("allow_swaps") = false);
+      nb::arg("gateset"), nb::arg("allow_swaps") = false);
   m.def(
       "EulerAngleReduction", &gen_euler_pass,
       "Uses Euler angle decompositions to squash all chains of P and Q "
@@ -759,19 +745,19 @@ PYBIND11_MODULE(passes, m) {
       "\n:param p: The type of the P rotation (P ∈ {Rx,Ry,Rz}, P ≠ Q)."
       "\n:param strict: Optionally performs strict P-Q-P Euler decomposition"
       "\n:return: a pass that squashes chains of P and Q rotations",
-      py::arg("q"), py::arg("p"), py::arg("strict") = false);
+      nb::arg("q"), nb::arg("p"), nb::arg("strict") = false);
 
   m.def(
       "CustomRoutingPass",
       [](const Architecture &arc,
-         const py::tket_custom::SequenceVec<RoutingMethodPtr> &config) {
+         const nb::tket_custom::SequenceVec<RoutingMethodPtr> &config) {
         return gen_routing_pass(arc, config);
       },
       "Construct a pass to route to the connectivity graph of an "
       ":py:class:`Architecture`. Edge direction is ignored. "
       "\n\n"
       ":return: a pass that routes to the given device architecture ",
-      py::arg("arc"), py::arg("config"));
+      nb::arg("arc"), nb::arg("config"));
 
   m.def(
       "RoutingPass", &gen_default_routing_pass,
@@ -781,21 +767,21 @@ PYBIND11_MODULE(passes, m) {
       ":py:class:`LexiRouteRoutingMethod`."
       "\n\n"
       ":return: a pass that routes to the given device architecture",
-      py::arg("arc"));
+      nb::arg("arc"));
 
   m.def(
       "PlacementPass", &gen_placement_pass,
       ":param placer: The Placement used for relabelling."
       "\n:return: a pass to relabel :py:class:`Circuit` Qubits to "
       ":py:class:`Architecture` Nodes",
-      py::arg("placer"));
+      nb::arg("placer"));
 
   m.def(
       "NaivePlacementPass", &gen_naive_placement_pass,
       ":param architecture: The Architecture used for relabelling."
       "\n:return: a pass to relabel :py:class:`Circuit` Qubits to "
       ":py:class:`Architecture` Nodes",
-      py::arg("architecture"));
+      nb::arg("architecture"));
 
   m.def(
       "FlattenRelabelRegistersPass", &gen_flatten_relabel_registers_pass,
@@ -804,19 +790,19 @@ PYBIND11_MODULE(passes, m) {
       "remaining Qubit to, default 'q'."
       "\n:return: A pass that removes empty "
       "wires and relabels.",
-      py::arg("label") = q_default_reg());
+      nb::arg("label") = q_default_reg());
 
   m.def(
       "RenameQubitsPass", &gen_rename_qubits_pass,
       "Rename some or all qubits. "
       "\n\n"
       ":param qubit_map: map from old to new qubit names",
-      py::arg("qubit_map"));
+      nb::arg("qubit_map"));
 
   m.def(
       "FullMappingPass",
       [](const Architecture &arc, const Placement::Ptr &placement_ptr,
-         const py::tket_custom::SequenceVec<RoutingMethodPtr> &config) {
+         const nb::tket_custom::SequenceVec<RoutingMethodPtr> &config) {
         return gen_full_mapping_pass(arc, placement_ptr, config);
       },
       "Construct a pass to relabel :py:class:`Circuit` Qubits to "
@@ -828,7 +814,7 @@ PYBIND11_MODULE(passes, m) {
       "\n:param config: Parameters for routing, a list of RoutingMethod, each "
       "method is checked and run if applicable in turn."
       "\n:return: a pass to perform the remapping",
-      py::arg("arc"), py::arg("placer"), py::arg("config"));
+      nb::arg("arc"), nb::arg("placer"), nb::arg("config"));
 
   m.def(
       "DefaultMappingPass", &gen_default_mapping_pass,
@@ -842,7 +828,7 @@ PYBIND11_MODULE(passes, m) {
       "\n:param delay_measures: Whether to commute measurements to the end "
       "of the circuit, defaulting to true."
       "\n:return: a pass to perform the remapping",
-      py::arg("arc"), py::arg("delay_measures") = true);
+      nb::arg("arc"), nb::arg("delay_measures") = true);
 
   m.def(
       "AASRouting", &gen_default_aas_routing_pass,
@@ -863,7 +849,7 @@ PYBIND11_MODULE(passes, m) {
       "\n\n:param arc: target architecture"
       "\n:param \\**kwargs: parameters for routing (described above)"
       "\n:return: a pass to perform the remapping",
-      py::arg("arc"));
+      nb::arg("arc"), nb::arg("kwargs"));
 
   m.def(
       "ComposePhasePolyBoxes", &ComposePhasePolyBoxes,
@@ -873,9 +859,8 @@ PYBIND11_MODULE(passes, m) {
       "\n\n- (unsigned) min_size=0: minimal number of CX gates in each phase "
       "polynominal box: groups with a smaller number of CX gates are not "
       "affected by this transformation\n"
-      "\n:param \\**kwargs: parameters for composition (described above)"
       "\n:return: a pass to perform the composition",
-      py::arg("min_size") = 0);
+      nb::arg("min_size") = 0);
 
   m.def(
       "CXMappingPass", &gen_cx_mapping_pass_kwargs,
@@ -890,7 +875,7 @@ PYBIND11_MODULE(passes, m) {
       "\n:param \\**kwargs: Parameters for routing: "
       "(bool)directed_cx=false, (bool)delay_measures=true"
       "\n:return: a pass to perform the remapping",
-      py::arg("arc"), py::arg("placer"));
+      nb::arg("arc"), nb::arg("placer"), nb::arg("kwargs"));
 
   m.def(
       "CliffordSimp", &gen_clifford_simp_pass,
@@ -902,7 +887,7 @@ PYBIND11_MODULE(passes, m) {
       "wire swaps"
       "\n:param target_2qb_gate: target two-qubit gate (either CX or TK2)"
       "\n:return: a pass to perform the rewriting",
-      py::arg("allow_swaps") = true, py::arg("target_2qb_gate") = OpType::CX);
+      nb::arg("allow_swaps") = true, nb::arg("target_2qb_gate") = OpType::CX);
 
   m.def(
       "CliffordResynthesis", &gen_clifford_resynthesis_pass,
@@ -916,7 +901,7 @@ PYBIND11_MODULE(passes, m) {
       "(only relevant to the default resynthesis method used when the "
       "`transform` argument is not provided)"
       "\n:return: a pass to perform the rewriting",
-      py::arg("transform") = std::nullopt, py::arg("allow_swaps") = true);
+      nb::arg("transform") = std::nullopt, nb::arg("allow_swaps") = true);
 
   m.def(
       "CliffordPushThroughMeasures", &gen_clifford_push_through_pass,
@@ -936,14 +921,14 @@ PYBIND11_MODULE(passes, m) {
       "\n:param respect_direction: Optionally takes the directedness of "
       "the connectivity graph into account."
       "\n:return: a pass to perform the decomposition",
-      py::arg("arc"), py::arg("respect_direction") = false);
+      nb::arg("arc"), nb::arg("respect_direction") = false);
 
   m.def(
       "DecomposeSwapsToCircuit", &gen_user_defined_swap_decomp_pass,
       ":param replacement_circuit: An equivalent circuit to replace a "
       "SWAP gate with in the desired basis."
       "\n:return: a pass to replace all SWAP gates with the given circuit",
-      py::arg("replacement_circuit"));
+      nb::arg("replacement_circuit"));
   m.def(
       "OptimisePhaseGadgets", &gen_optimise_phase_gadgets,
       "Construct a pass that synthesises phase gadgets and converts to a "
@@ -951,7 +936,7 @@ PYBIND11_MODULE(passes, m) {
       "\n\n:param cx_config: A configuration of CXs to convert phase "
       "gadgets into."
       "\n:return: a pass to perform the synthesis",
-      py::arg("cx_config") = CXConfigType::Snake);
+      nb::arg("cx_config") = CXConfigType::Snake);
   m.def(
       "PauliExponentials", &gen_pauli_exponentials,
       "Construct a pass that converts a circuit into a graph of Pauli "
@@ -960,8 +945,8 @@ PYBIND11_MODULE(passes, m) {
       "\n:param cx_config: A configuration of CXs to convert Pauli gadgets "
       "into."
       "\n:return: a pass to perform the simplification",
-      py::arg("strat") = Transforms::PauliSynthStrat::Sets,
-      py::arg("cx_config") = CXConfigType::Snake);
+      nb::arg("strat") = Transforms::PauliSynthStrat::Sets,
+      nb::arg("cx_config") = CXConfigType::Snake);
   m.def(
       "PauliSimp", &gen_synthesise_pauli_graph,
       "Construct a pass that converts a circuit into a graph of Pauli "
@@ -973,8 +958,8 @@ PYBIND11_MODULE(passes, m) {
       "\n:param cx_config: A configuration of CXs to convert Pauli gadgets "
       "into."
       "\n:return: a pass to perform the simplification",
-      py::arg("strat") = Transforms::PauliSynthStrat::Sets,
-      py::arg("cx_config") = CXConfigType::Snake);
+      nb::arg("strat") = Transforms::PauliSynthStrat::Sets,
+      nb::arg("cx_config") = CXConfigType::Snake);
   m.def(
       "GuidedPauliSimp", &gen_special_UCC_synthesis,
       "Applies the ``PauliSimp`` optimisation pass to any region of the "
@@ -985,8 +970,8 @@ PYBIND11_MODULE(passes, m) {
       "\n:param cx_config: A configuration of CXs to convert Pauli gadgets "
       "into."
       "\n:return: a pass to perform the simplification",
-      py::arg("strat") = Transforms::PauliSynthStrat::Sets,
-      py::arg("cx_config") = CXConfigType::Snake);
+      nb::arg("strat") = Transforms::PauliSynthStrat::Sets,
+      nb::arg("cx_config") = CXConfigType::Snake);
   m.def(
       "GreedyPauliSimp", &gen_greedy_pauli_simp,
       "Construct a pass that converts a circuit into a graph of Pauli "
@@ -995,6 +980,8 @@ PYBIND11_MODULE(passes, m) {
       "arxiv.org/abs/2103.08602. The method for synthesising the "
       "final Clifford operator is adapted from "
       "arxiv.org/abs/2305.10966."
+      "\n\nWARNING: this pass will not preserve the global phase of the "
+      "circuit."
       "\n\n:param discount_rate: Rate used to discount the cost impact from "
       "gadgets that are further away. Default to 0.7."
       "\n:param depth_weight:  Degree of depth optimisation. Default to 0.3."
@@ -1015,11 +1002,11 @@ PYBIND11_MODULE(passes, m) {
       "smallest circuit is returned, prioritising the number of 2qb-gates, "
       "then the number of gates, then the depth."
       "\n:return: a pass to perform the simplification",
-      py::arg("discount_rate") = 0.7, py::arg("depth_weight") = 0.3,
-      py::arg("max_lookahead") = 500, py::arg("max_tqe_candidates") = 500,
-      py::arg("seed") = 0, py::arg("allow_zzphase") = false,
-      py::arg("thread_timeout") = 100, py::arg("only_reduce") = false,
-      py::arg("trials") = 1);
+      nb::arg("discount_rate") = 0.7, nb::arg("depth_weight") = 0.3,
+      nb::arg("max_lookahead") = 500, nb::arg("max_tqe_candidates") = 500,
+      nb::arg("seed") = 0, nb::arg("allow_zzphase") = false,
+      nb::arg("thread_timeout") = 100, nb::arg("only_reduce") = false,
+      nb::arg("trials") = 1);
   m.def(
       "PauliSquash", &PauliSquash,
       "Applies :py:meth:`PauliSimp` followed by "
@@ -1027,8 +1014,8 @@ PYBIND11_MODULE(passes, m) {
       "\n\n:param strat: a synthesis strategy for the Pauli graph"
       "\n:param cx_config: a configuration of CXs to convert Pauli gadgets into"
       "\n:return: a pass to perform the simplification",
-      py::arg("strat") = Transforms::PauliSynthStrat::Sets,
-      py::arg("cx_config") = CXConfigType::Snake);
+      nb::arg("strat") = Transforms::PauliSynthStrat::Sets,
+      nb::arg("cx_config") = CXConfigType::Snake);
   m.def(
       "SimplifyInitial",
       [](bool allow_classical, bool create_all_qubits, bool remove_redundancies,
@@ -1056,8 +1043,8 @@ PYBIND11_MODULE(passes, m) {
       "\n:param xcirc: 1-qubit circuit implementing an X gate in the "
       "transformed circuit (if omitted, an X gate is used)"
       "\n:return: a pass to perform the simplification",
-      py::arg("allow_classical") = true, py::arg("create_all_qubits") = false,
-      py::arg("remove_redundancies") = true, py::arg("xcirc") = py::none());
+      nb::arg("allow_classical") = true, nb::arg("create_all_qubits") = false,
+      nb::arg("remove_redundancies") = true, nb::arg("xcirc") = nb::none());
   m.def(
       "ContextSimp",
       [](bool allow_classical,
@@ -1079,7 +1066,7 @@ PYBIND11_MODULE(passes, m) {
       "\n:param xcirc: 1-qubit circuit implementing an X gate in the "
       "transformed circuit (if omitted, an X gate is used)"
       "\n:return: a pass to perform the simplification",
-      py::arg("allow_classical") = true, py::arg("xcirc") = nullptr);
+      nb::arg("allow_classical") = true, nb::arg("xcirc") = nullptr);
 
   m.def(
       "ZZPhaseToRz", &ZZPhaseToRz,
@@ -1103,7 +1090,7 @@ PYBIND11_MODULE(passes, m) {
       "\n:param only_zeros: if True, only round angles less than "
       ":math:`\\pi / 2^{n+1}` to zero, leave other angles alone (default "
       "False)",
-      py::arg("n"), py::arg("only_zeros") = false);
+      nb::arg("n"), nb::arg("only_zeros") = false);
 
   m.def(
       "RemoveImplicitQubitPermutation", &RemoveImplicitQubitPermutation,
@@ -1124,7 +1111,7 @@ PYBIND11_MODULE(passes, m) {
       "\n"
       ":param label: optional label for the pass"
       "\n:return: a pass to perform the transformation",
-      py::arg("transform"), py::arg("label") = "");
+      nb::arg("transform"), nb::arg("label") = "");
 
   m.def(
       "CustomPassMap", &CustomPassMap,
@@ -1140,7 +1127,7 @@ PYBIND11_MODULE(passes, m) {
       "\n"
       ":param label: optional label for the pass"
       "\n:return: a pass to perform the transformation",
-      py::arg("transform"), py::arg("label") = "");
+      nb::arg("transform"), nb::arg("label") = "");
 }
 
 }  // namespace tket

@@ -14,42 +14,45 @@
 
 #include "tket/Architecture/Architecture.hpp"
 
-#include <pybind11/pybind11.h>
-#include <pybind11/pytypes.h>
+#include <nanobind/nanobind.h>
 
-#include "binder_json.hpp"
+#include <vector>
+
 #include "deleted_hash.hpp"
+#include "nanobind-stl.hpp"
+#include "nanobind_json/nanobind_json.hpp"
 #include "py_operators.hpp"
 #include "typecast.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 using json = nlohmann::json;
 
 namespace tket {
 
-PYBIND11_MODULE(architecture, m) {
-  py::module::import("pytket._tket.unit_id");
-  py::class_<Architecture, std::shared_ptr<Architecture>>(
+NB_MODULE(architecture, m) {
+  nb::set_leak_warnings(false);
+  nb::module_::import_("pytket._tket.unit_id");
+  nb::class_<Architecture>(
       m, "Architecture",
       "Class describing the connectivity of qubits on a general device.")
-      .def(py::init<>(), "Produces an empty architecture")
+      .def(nb::init<>(), "Produces an empty architecture")
       .def(
-          py::init([](const py::tket_custom::SequenceVec<
-                       std::pair<unsigned, unsigned>> &connections) {
-            return Architecture(connections);
-          }),
+          "__init__",
+          [](Architecture *p,
+             const nb::tket_custom::SequenceVec<std::pair<unsigned, unsigned>>
+                 &connections) { new (p) Architecture(connections); },
           "The constructor for an architecture with connectivity "
           "between qubits.\n\n:param connections: A list of pairs "
           "representing qubit indices that can perform two-qubit "
           "operations",
-          py::arg("connections"))
+          nb::arg("connections"))
       .def(
-          py::init<
-              const py::tket_custom::SequenceVec<std::pair<Node, Node>> &>(),
+          nb::init<
+              const nb::tket_custom::SequenceVec<std::pair<Node, Node>> &>(),
           "The constructor for an architecture with connectivity "
           "between qubits.\n\n:param connections: A list of pairs "
           "representing Nodes that can perform two-qubit operations",
-          py::arg("connections"))
+          nb::arg("connections"))
       .def(
           "__repr__",
           [](const Architecture &arc) {
@@ -60,90 +63,93 @@ PYBIND11_MODULE(architecture, m) {
           "get_distance", &Architecture::get_distance,
           "given two nodes in Architecture, "
           "returns distance between them",
-          py::arg("node_0"), py::arg("node_1"))
+          nb::arg("node_0"), nb::arg("node_1"))
       .def(
           "valid_operation",
           [](const Architecture &arch,
-             const py::tket_custom::SequenceVec<Node> &ids,
+             const nb::tket_custom::SequenceVec<Node> &ids,
              bool bidirectional) {
             return arch.valid_operation(ids, bidirectional);
           },
           "Checks if a given operation on the given nodes can be executed on "
           "the Architecture's connectivity graph.\n"
-          "The operation is considered valid if:\n"
-          " - The operation acts on a single node that belongs to the "
+          "The operation is considered valid if:\n\n"
+          "- The operation acts on a single node that belongs to the "
           "Architecture.\n"
-          " - The operation acts on two nodes, and either:\n"
-          "   - `bidirectional` is True and an edge exists between the two "
+          "- The operation acts on two nodes, and either:\n\n"
+          "  - `bidirectional` is True and an edge exists between the two "
           "nodes in either direction.\n"
-          "   - `bidirectional` is False and an edge exists from uids[0] to "
-          "uids[1].\nThe function always returns False if the number of nodes "
+          "  - `bidirectional` is False and an edge exists from uids[0] to "
+          "uids[1]."
+          "\n\nThe function always returns False if the number of nodes "
           "exceeds 2."
           "\n\n:param uids: list of UnitIDs validity is being checked for."
           "\n:param bidirectional: If True, treats edges in the coupling graph "
           "as bidirectional. Defaults to True.",
-          py::arg("uids"), py::arg("bidirectional") = true)
+          nb::arg("uids"), nb::arg("bidirectional") = true)
       .def(
           "get_adjacent_nodes", &Architecture::get_neighbour_nodes,
           "given a node, returns adjacent nodes in Architecture.",
-          py::arg("node"))
-      .def_property_readonly(
+          nb::arg("node"))
+      .def_prop_ro(
           "nodes", &Architecture::get_all_nodes_vec,
           "Returns all nodes of architecture as Node objects.")
-      .def_property_readonly(
+      .def_prop_ro(
           "coupling", &Architecture::get_all_edges_vec,
           "Returns the coupling map of the Architecture as "
           "UnitIDs. ")
       .def(
           "to_dict",
           [](const Architecture &arch) {
-            return py::object(json(arch)).cast<py::dict>();
+            return nb::cast<nb::dict>(nb::object(json(arch)));
           },
           "Return a JSON serializable dict representation of "
           "the Architecture."
           "\n\n:return: dict containing nodes and links.")
       .def_static(
           "from_dict",
-          [](const py::dict &architecture_dict) {
+          [](const nb::dict &architecture_dict) {
             return json(architecture_dict).get<Architecture>();
           },
           "Construct Architecture instance from JSON serializable "
           "dict representation of the Architecture.")
       .def(
-          py::pickle(
-              [](const py::object &self) {  // __getstate__
-                return py::make_tuple(self.attr("to_dict")());
-              },
-              [](const py::tuple &t) {  // __setstate__
-                const json j = t[0].cast<json>();
-                return j.get<Architecture>();
-              }))
+          "__getstate__",
+          [](const Architecture &circ) {
+            return nb::make_tuple(nb::cast<nb::dict>(nb::object(json(circ))));
+          })
+      .def(
+          "__setstate__",
+          [](Architecture &arc, const nb::tuple &t) {
+            const json j = nb::cast<nb::dict>(t[0]);
+            new (&arc) Architecture(j.get<Architecture>());
+          })
       // as far as Python is concerned, Architectures are immutable
       .def(
           "__deepcopy__", [](const Architecture &arc,
-                             const py::dict & = py::dict()) { return arc; })
+                             const nb::dict & = nb::dict()) { return arc; })
       .def("__eq__", &py_equals<Architecture>)
       .def("__hash__", &deletedHash<Architecture>, deletedHashDocstring);
-  py::class_<SquareGrid, std::shared_ptr<SquareGrid>, Architecture>(
+  nb::class_<SquareGrid, Architecture>(
       m, "SquareGrid",
       "Inherited Architecture class for qubits arranged in a square lattice of "
       "given number of rows and columns. Qubits are arranged with qubits "
       "values increasing first along rows then along columns i.e. for a "
       "3 x 3 grid:\n\n 0 1 2\n\n 3 4 5\n\n 6 7 8")
       .def(
-          py::init([](const unsigned &x, const unsigned &y,
-                      const std::string &label) {
-            return SquareGrid(x, y, 1, label);
-          }),
+          "__init__",
+          [](SquareGrid *p, unsigned x, unsigned y, const std::string &label) {
+            new (p) SquareGrid(x, y, 1, label);
+          },
           "The constructor for a Square Grid architecture with some "
           "undirected connectivity between qubits.\n\n:param n_rows: "
           "The number of rows in the grid\n:param n_columns: The number "
           "of columns in the grid\n:param label: Name for Node in SquareGrid "
           "Architecture",
-          py::arg("n_rows"), py::arg("n_columns"),
-          py::arg("label") = "gridNode")
+          nb::arg("n_rows"), nb::arg("n_columns"),
+          nb::arg("label") = "gridNode")
       .def(
-          py::init<
+          nb::init<
               const unsigned, const unsigned, const unsigned,
               const std::string>(),
           "The constructor for  a Square Grid architecture with some "
@@ -152,8 +158,8 @@ PYBIND11_MODULE(architecture, m) {
           "of columns in the grid\n:param n_layers: The number of "
           "layers of grids\n:param label: Name for Node in SquareGrid "
           "Architecture",
-          py::arg("n_rows"), py::arg("n_columns"), py::arg("n_layers") = 1,
-          py::arg("label") = "gridNode")
+          nb::arg("n_rows"), nb::arg("n_columns"), nb::arg("n_layers") = 1,
+          nb::arg("label") = "gridNode")
       .def(
           "squind_to_qind",
           [](const SquareGrid &self, const unsigned row, const unsigned col) {
@@ -165,53 +171,53 @@ PYBIND11_MODULE(architecture, m) {
           "column: The given column index\n:return: the "
           "corresponding "
           "global qubit index",
-          py::arg("row"), py::arg("column"))
+          nb::arg("row"), nb::arg("column"))
       .def(
           "qind_to_squind", &SquareGrid::qind_to_squind,
           "Converts a single qubit index to a (row,column) index for a "
           "square grid.\n\n:param index: The global qubit "
           "index\n:return: the corresponding grid index as a pair "
           "(row,column)",
-          py::arg("index"))
+          nb::arg("index"))
       // as far as Python is concerned, Architectures are immutable
       .def(
           "__deepcopy__",
-          [](const SquareGrid &arc, py::dict = py::dict()) { return arc; })
+          [](const SquareGrid &arc, nb::dict = nb::dict()) { return arc; })
       .def("__repr__", [](const SquareGrid &arc) {
         return "<tket::SquareGrid, rows=" + std::to_string(arc.get_rows()) +
                ", columns=" + std::to_string(arc.get_columns()) +
                ", layers=" + std::to_string(arc.get_layers()) + ">";
       });
-  py::class_<RingArch, std::shared_ptr<RingArch>, Architecture>(
+  nb::class_<RingArch, Architecture>(
       m, "RingArch",
       "Inherited Architecture class for number of qubits arranged in a ring.")
       .def(
-          py::init<const unsigned, const std::string>(),
+          nb::init<const unsigned, const std::string>(),
           "The constructor for a RingArchitecture with some undirected "
           "connectivity between qubits.\n\n:param number of qubits:"
           "\n:param label: Name for Node in RingArch Architecture",
-          py::arg("nodes"), py::arg("label") = "ringNode")
+          nb::arg("nodes"), nb::arg("label") = "ringNode")
       .def(
           "__deepcopy__",
-          [](const RingArch &arc, py::dict = py::dict()) { return arc; })
+          [](const RingArch &arc, nb::dict = nb::dict()) { return arc; })
       .def("__repr__", [](const RingArch &arc) {
         return "<tket::RingArch, nodes=" + std::to_string(arc.n_nodes()) + ">";
       });
-  py::class_<FullyConnected>(
+  nb::class_<FullyConnected>(
       m, "FullyConnected",
       "A specialised non-Architecture object emulating an architecture with "
       "all qubits connected. "
       "Not compatible with Routing or Placement methods.")
       .def(
-          py::init<unsigned, const std::string>(),
+          nb::init<unsigned, const std::string>(),
           "Construct a fully-connected architecture."
           "\n\n:param n: number of qubits"
           "\n:param label: Name for Node in "
           "FullyConnected Architecture",
-          py::arg("n"), py::arg("label") = "fcNode")
+          nb::arg("n"), nb::arg("label") = "fcNode")
       .def(
           "__deepcopy__", [](const FullyConnected &arc,
-                             const py::dict & = py::dict()) { return arc; })
+                             const nb::dict & = nb::dict()) { return arc; })
       .def(
           "__repr__",
           [](const FullyConnected &arc) {
@@ -220,31 +226,31 @@ PYBIND11_MODULE(architecture, m) {
           })
       .def("__eq__", &py_equals<FullyConnected>)
       .def("__hash__", &deletedHash<FullyConnected>, deletedHashDocstring)
-      .def_property_readonly(
+      .def_prop_ro(
           "nodes", &FullyConnected::get_all_nodes_vec,
           "All nodes of the architecture as :py:class:`Node` objects.")
       .def(
           "to_dict",
           [](const FullyConnected &arch) {
-            return py::object(json(arch)).cast<py::dict>();
+            return nb::cast<nb::dict>(nb::object(json(arch)));
           },
           "JSON-serializable dict representation of the architecture."
           "\n\n"
           ":return: dict containing nodes")
       .def_static(
           "from_dict",
-          [](const py::dict &fully_connected_dict) {
+          [](const nb::dict &fully_connected_dict) {
             return json(fully_connected_dict).get<FullyConnected>();
           },
           "Construct FullyConnected instance from dict representation.")
       .def(
-          py::pickle(
-              [](const py::object &self) {  // __getstate__
-                return py::make_tuple(self.attr("to_dict")());
-              },
-              [](const py::tuple &t) {  // __setstate__
-                const json j = t[0].cast<json>();
-                return j.get<FullyConnected>();
-              }));
+          "__getstate__",
+          [](const FullyConnected &arc) {
+            return nb::make_tuple(nb::cast<nb::dict>(nb::object(json(arc))));
+          })
+      .def("__setstate__", [](FullyConnected &arc, const nb::tuple &t) {
+        const json j = nb::cast<nb::dict>(t[0]);
+        new (&arc) FullyConnected(j.get<FullyConnected>());
+      });
 }
 }  // namespace tket

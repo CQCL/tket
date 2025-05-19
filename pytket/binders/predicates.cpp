@@ -14,12 +14,18 @@
 
 #include "tket/Predicates/Predicates.hpp"
 
-#include "binder_json.hpp"
+#include <nanobind/nanobind.h>
+#include <nanobind/trampoline.h>
+
+#include <vector>
+
+#include "nanobind-stl.hpp"
+#include "nanobind_json/nanobind_json.hpp"
 #include "tket/Predicates/CompilationUnit.hpp"
 #include "tket/Utils/UnitID.hpp"
 #include "typecast.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 using json = nlohmann::json;
 
 namespace tket {
@@ -32,75 +38,60 @@ static std::map<UnitID, UnitID> unit_bimap_to_map(const unit_bimap_t &bimap) {
   return res;
 }
 
-PYBIND11_MODULE(predicates, m) {
+NB_MODULE(predicates, m) {
+  nb::set_leak_warnings(false);
   /* Predicates */
 
   class PyPredicate : public Predicate {
    public:
-    using Predicate::Predicate;
+    NB_TRAMPOLINE(Predicate, 4);
 
     /* Trampolines (need one for each virtual function */
     virtual bool verify(const Circuit &circ) const override {
-      PYBIND11_OVERLOAD_PURE(
-          bool,      /* Return type */
-          Predicate, /* Parent class */
-          verify,    /* Name of function in C++ (must match Python name) */
-          circ       /* Argument(s) */
-      );
+      NB_OVERRIDE_PURE(verify, circ);
     }
     virtual bool implies(const Predicate &other) const override {
-      PYBIND11_OVERLOAD_PURE(
-          bool,      /* Return type */
-          Predicate, /* Parent class */
-          implies,   /* Name of function in C++ (must match Python name) */
-          other      /* Argument(s) */
-      );
+      NB_OVERRIDE_PURE(implies, other);
     }
     virtual PredicatePtr meet(const Predicate &other) const override {
-      PYBIND11_OVERLOAD_PURE(
-          PredicatePtr, /* Return type */
-          Predicate,    /* Parent class */
-          meet,         /* Name of function in C++ (must match Python name) */
-          other         /* Argument(s) */
-      );
+      NB_OVERRIDE_PURE(meet, other);
     }
     virtual std::string to_string() const override {
-      PYBIND11_OVERLOAD_PURE(
-          std::string, /* Return type */
-          Predicate,   /* Parent class */
-          to_string    /* Name of function in C++ (must match Python name) */
-      );
+      NB_OVERRIDE_PURE(to_string);
     }
   };
 
-  py::class_<Predicate, PredicatePtr, PyPredicate>(
+  nb::class_<Predicate, PyPredicate>(
       m, "Predicate", "A predicate that may be satisfied by a circuit.")
       .def(
           "verify", &Predicate::verify,
           ":return: True if circuit satisfies predicate, else False",
-          py::arg("circuit"))
+          nb::arg("circuit"))
       .def(
           "implies", &Predicate::implies,
           ":return: True if predicate implies another one, else False",
-          py::arg("other"))
+          nb::arg("other"))
       .def("__str__", &Predicate::to_string)
       .def("__repr__", &Predicate::to_string)
       .def(
           "to_dict",
           [](const PredicatePtr &predicate) {
-            return py::object(json(predicate)).cast<py::dict>();
+            return nb::cast<nb::dict>(nb::object(json(predicate)));
           },
           "Return a JSON serializable dict representation of "
           "the Predicate.\n\n"
           ":return: dict representation of the Predicate.")
       .def_static(
           "from_dict",
-          [](const py::dict &predicate_dict) {
+          [](const nb::dict &predicate_dict) {
             return json(predicate_dict).get<PredicatePtr>();
           },
           "Construct Predicate instance from JSON serializable "
-          "dict representation of the Predicate.");
-  py::class_<GateSetPredicate, std::shared_ptr<GateSetPredicate>, Predicate>(
+          "dict representation of the Predicate.")
+      .def("__getstate__", [](const PredicatePtr &predicate) {
+        return nb::make_tuple(nb::cast<nb::dict>(nb::object(json(predicate))));
+      });
+  nb::class_<GateSetPredicate, Predicate>(
       m, "GateSetPredicate",
       "Predicate asserting that all operations are in the specified set of "
       "types."
@@ -114,128 +105,208 @@ PYBIND11_MODULE(predicates, m) {
       "Classically conditioned operations are permitted provided that the "
       "conditioned operation is of a permitted type.")
       .def(
-          py::init<const OpTypeSet &>(), "Construct from a set of gate types.",
-          py::arg("allowed_types"))
-      .def_property_readonly("gate_set", &GateSetPredicate::get_allowed_types);
-  py::class_<
-      NoClassicalControlPredicate, std::shared_ptr<NoClassicalControlPredicate>,
-      Predicate>(
+          nb::init<const OpTypeSet &>(), "Construct from a set of gate types.",
+          nb::arg("allowed_types"))
+      .def_prop_ro("gate_set", &GateSetPredicate::get_allowed_types)
+      .def("__setstate__", [](GateSetPredicate &predicate, const nb::tuple &t) {
+        const json j = nb::cast<nb::dict>(t[0]);
+        PredicatePtr pp = j.get<PredicatePtr>();
+        new (&predicate) GateSetPredicate(
+            std::dynamic_pointer_cast<GateSetPredicate>(pp)
+                ->get_allowed_types());
+      });
+  nb::class_<NoClassicalControlPredicate, Predicate>(
       m, "NoClassicalControlPredicate",
       "Predicate asserting that a circuit has no classical controls.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
-      NoFastFeedforwardPredicate, std::shared_ptr<NoFastFeedforwardPredicate>,
-      Predicate>(
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](NoClassicalControlPredicate &predicate, const nb::tuple &) {
+            new (&predicate) NoClassicalControlPredicate();
+          });
+  nb::class_<NoFastFeedforwardPredicate, Predicate>(
       m, "NoFastFeedforwardPredicate",
       "Predicate asserting that a circuit has no fast feedforward.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
-      NoClassicalBitsPredicate, std::shared_ptr<NoClassicalBitsPredicate>,
-      Predicate>(
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](NoFastFeedforwardPredicate &predicate, const nb::tuple &) {
+            new (&predicate) NoFastFeedforwardPredicate();
+          });
+  nb::class_<NoClassicalBitsPredicate, Predicate>(
       m, "NoClassicalBitsPredicate",
       "Predicate asserting that a circuit has no classical wires.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
-      NoWireSwapsPredicate, std::shared_ptr<NoWireSwapsPredicate>, Predicate>(
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](NoClassicalBitsPredicate &predicate, const nb::tuple &) {
+            new (&predicate) NoClassicalBitsPredicate();
+          });
+  nb::class_<NoWireSwapsPredicate, Predicate>(
       m, "NoWireSwapsPredicate",
       "Predicate asserting that a circuit has no wire swaps.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
-      MaxTwoQubitGatesPredicate, std::shared_ptr<MaxTwoQubitGatesPredicate>,
-      Predicate>(
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](NoWireSwapsPredicate &predicate, const nb::tuple &) {
+            new (&predicate) NoWireSwapsPredicate();
+          });
+  nb::class_<MaxTwoQubitGatesPredicate, Predicate>(
       m, "MaxTwoQubitGatesPredicate",
       "Predicate asserting that a circuit has no gates with more than "
       "two input wires.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
-      ConnectivityPredicate, std::shared_ptr<ConnectivityPredicate>, Predicate>(
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](MaxTwoQubitGatesPredicate &predicate, const nb::tuple &) {
+            new (&predicate) MaxTwoQubitGatesPredicate();
+          });
+  nb::class_<ConnectivityPredicate, Predicate>(
       m, "ConnectivityPredicate",
       "Predicate asserting that a circuit satisfies a given connectivity "
       "graph. The graph is always considered to be undirected.")
       .def(
-          py::init<const Architecture &>(),
+          nb::init<const Architecture &>(),
           "Construct from an :py:class:`Architecture`.",
-          py::arg("architecture"));
-  py::class_<
-      DirectednessPredicate, std::shared_ptr<DirectednessPredicate>, Predicate>(
+          nb::arg("architecture"))
+      .def(
+          "__setstate__",
+          [](ConnectivityPredicate &predicate, const nb::tuple &t) {
+            const json j = nb::cast<nb::dict>(t[0]);
+            PredicatePtr pp = j.get<PredicatePtr>();
+            new (&predicate) ConnectivityPredicate(
+                std::dynamic_pointer_cast<ConnectivityPredicate>(pp)
+                    ->get_arch());
+          });
+  nb::class_<DirectednessPredicate, Predicate>(
       m, "DirectednessPredicate",
       "Predicate asserting that a circuit satisfies a given connectivity "
       "graph. The graph is always considered to be directed.")
       .def(
-          py::init<const Architecture &>(),
+          nb::init<const Architecture &>(),
           "Construct from an :py:class:`Architecture`.",
-          py::arg("architecture"));
-  py::class_<
-      CliffordCircuitPredicate, std::shared_ptr<CliffordCircuitPredicate>,
-      Predicate>(
+          nb::arg("architecture"))
+      .def(
+          "__setstate__",
+          [](DirectednessPredicate &predicate, const nb::tuple &t) {
+            const json j = nb::cast<nb::dict>(t[0]);
+            PredicatePtr pp = j.get<PredicatePtr>();
+            new (&predicate) DirectednessPredicate(
+                std::dynamic_pointer_cast<DirectednessPredicate>(pp)
+                    ->get_arch());
+          });
+  nb::class_<CliffordCircuitPredicate, Predicate>(
       m, "CliffordCircuitPredicate",
       "Predicate asserting that a circuit has only Clifford gates and "
       "measurements.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
-      UserDefinedPredicate, std::shared_ptr<UserDefinedPredicate>, Predicate>(
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](CliffordCircuitPredicate &predicate, const nb::tuple &) {
+            new (&predicate) CliffordCircuitPredicate();
+          });
+  nb::class_<UserDefinedPredicate, Predicate>(
       m, "UserDefinedPredicate", "User-defined predicate.")
       .def(
-          py::init<const std::function<bool(const Circuit &)> &>(),
+          nb::init<const std::function<bool(const Circuit &)> &>(),
           "Construct from a user-defined function from "
           ":py:class:`Circuit` to `bool`.",
-          py::arg("check_function"));
-  py::class_<
-      DefaultRegisterPredicate, std::shared_ptr<DefaultRegisterPredicate>,
-      Predicate>(
+          nb::arg("check_function"));
+  nb::class_<DefaultRegisterPredicate, Predicate>(
       m, "DefaultRegisterPredicate",
       "Predicate asserting that a circuit only uses the default quantum "
       "and classical registers.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
-      MaxNQubitsPredicate, std::shared_ptr<MaxNQubitsPredicate>, Predicate>(
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](DefaultRegisterPredicate &predicate, const nb::tuple &) {
+            new (&predicate) DefaultRegisterPredicate();
+          });
+  nb::class_<MaxNQubitsPredicate, Predicate>(
       m, "MaxNQubitsPredicate",
       "Predicate asserting that a circuit has at most n qubits.")
-      .def(py::init<unsigned>(), "Constructor.");
-  py::class_<
-      MaxNClRegPredicate, std::shared_ptr<MaxNClRegPredicate>, Predicate>(
+      .def(nb::init<unsigned>(), "Constructor.", nb::arg("n_qubits"))
+      .def(
+          "__setstate__",
+          [](MaxNQubitsPredicate &predicate, const nb::tuple &t) {
+            const json j = nb::cast<nb::dict>(t[0]);
+            PredicatePtr pp = j.get<PredicatePtr>();
+            new (&predicate) MaxNQubitsPredicate(
+                std::dynamic_pointer_cast<MaxNQubitsPredicate>(pp)
+                    ->get_n_qubits());
+          });
+  nb::class_<MaxNClRegPredicate, Predicate>(
       m, "MaxNClRegPredicate",
       "Predicate asserting that a circuit has at most n classical registers.")
-      .def(py::init<unsigned>(), "Constructor.");
-  py::class_<
-      PlacementPredicate, std::shared_ptr<PlacementPredicate>, Predicate>(
+      .def(nb::init<unsigned>(), "Constructor.", nb::arg("n_cl_reg"))
+      .def(
+          "__setstate__",
+          [](MaxNClRegPredicate &predicate, const nb::tuple &t) {
+            const json j = nb::cast<nb::dict>(t[0]);
+            PredicatePtr pp = j.get<PredicatePtr>();
+            new (&predicate) MaxNClRegPredicate(
+                std::dynamic_pointer_cast<MaxNClRegPredicate>(pp)
+                    ->get_n_cl_reg());
+          });
+  ;
+  nb::class_<PlacementPredicate, Predicate>(
       m, "PlacementPredicate",
       "Predicate asserting that a circuit has been acted on by some "
       "Placement object.")
       .def(
-          py::init<const Architecture &>(),
+          nb::init<const Architecture &>(),
           "Construct from an :py:class:`Architecture`.",
-          py::arg("architecture"))
+          nb::arg("architecture"))
       .def(
-          py::init<const node_set_t &>(), "Construct from a set of Node.",
-          py::arg("nodes"));
-  py::class_<
-      NoBarriersPredicate, std::shared_ptr<NoBarriersPredicate>, Predicate>(
+          nb::init<const node_set_t &>(), "Construct from a set of Node.",
+          nb::arg("nodes"))
+      .def(
+          "__setstate__",
+          [](PlacementPredicate &predicate, const nb::tuple &t) {
+            const json j = nb::cast<nb::dict>(t[0]);
+            PredicatePtr pp = j.get<PredicatePtr>();
+            new (&predicate) PlacementPredicate(
+                std::dynamic_pointer_cast<PlacementPredicate>(pp)->get_nodes());
+          });
+  nb::class_<NoBarriersPredicate, Predicate>(
       m, "NoBarriersPredicate",
       "Predicate asserting that a circuit contains no Barrier operations.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
-      CommutableMeasuresPredicate, std::shared_ptr<CommutableMeasuresPredicate>,
-      Predicate>(
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](NoBarriersPredicate &predicate, const nb::tuple &) {
+            new (&predicate) NoBarriersPredicate();
+          });
+  nb::class_<CommutableMeasuresPredicate, Predicate>(
       m, "CommutableMeasuresPredicate",
       "Predicate asserting that all measurements can be delayed to the end of "
       "the circuit.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
-      NoMidMeasurePredicate, std::shared_ptr<NoMidMeasurePredicate>, Predicate>(
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](CommutableMeasuresPredicate &predicate, const nb::tuple &) {
+            new (&predicate) CommutableMeasuresPredicate();
+          });
+  nb::class_<NoMidMeasurePredicate, Predicate>(
       m, "NoMidMeasurePredicate",
       "Predicate asserting that all measurements occur at the end of the "
       "circuit.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
-      NoSymbolsPredicate, std::shared_ptr<NoSymbolsPredicate>, Predicate>(
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](NoMidMeasurePredicate &predicate, const nb::tuple &) {
+            new (&predicate) NoMidMeasurePredicate();
+          });
+  nb::class_<NoSymbolsPredicate, Predicate>(
       m, "NoSymbolsPredicate",
       "Predicate asserting that no gates in the circuit have symbolic "
       "parameters.")
-      .def(py::init<>(), "Constructor.");
-  py::class_<
-      NormalisedTK2Predicate, std::shared_ptr<NormalisedTK2Predicate>,
-      Predicate>(
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__", [](NoSymbolsPredicate &predicate, const nb::tuple &) {
+            new (&predicate) NoSymbolsPredicate();
+          });
+  nb::class_<NormalisedTK2Predicate, Predicate>(
       m, "NormalisedTK2Predicate",
       "Asserts that all TK2 gates are normalised\n\n"
       "A gate TK2(a, b, c) is considered normalised if\n\n"
@@ -246,38 +317,41 @@ PYBIND11_MODULE(predicates, m) {
       "still be ordered in non-increasing order and must be in the interval "
       "[0, 1/2], with the exception of the last one that may be in "
       "[-1/2, 1/2].\n")
-      .def(py::init<>(), "Constructor.");
+      .def(nb::init<>(), "Constructor.")
+      .def(
+          "__setstate__",
+          [](NormalisedTK2Predicate &predicate, const nb::tuple &) {
+            new (&predicate) NormalisedTK2Predicate();
+          });
 
   /* Compilation units */
 
-  py::class_<CompilationUnit>(
+  nb::class_<CompilationUnit>(
       m, "CompilationUnit",
       "This class comprises a circuit and the predicates that the "
       "circuit is required to satisfy, for example to run on a backend.")
       .def(
-          py::init<const Circuit &>(),
-          "Construct from a circuit, with no predicates.", py::arg("circuit"))
+          nb::init<const Circuit &>(),
+          "Construct from a circuit, with no predicates.", nb::arg("circuit"))
       .def(
-          py::init<
-              const Circuit &,
-              const py::tket_custom::SequenceVec<PredicatePtr> &>(),
+          nb::init<const Circuit &, const std::vector<PredicatePtr> &>(),
           "Construct from a circuit and some required predicates.",
-          py::arg("circuit"), py::arg("predicates"))
+          nb::arg("circuit"), nb::arg("predicates"))
       .def(
           "check_all_predicates", &CompilationUnit::check_all_predicates,
           ":return: True if all predicates are satisfied, else False")
-      .def_property_readonly(
+      .def_prop_ro(
           "circuit",
           [](const CompilationUnit &cu) { return Circuit(cu.get_circ_ref()); },
           "Return a copy of the circuit.")
-      .def_property_readonly(
+      .def_prop_ro(
           "initial_map",
           [](const CompilationUnit &cu) {
             return unit_bimap_to_map(cu.get_initial_map_ref());
           },
           "Returns the map from the original qubits to the "
           "corresponding qubits at the start of the current circuit.")
-      .def_property_readonly(
+      .def_prop_ro(
           "final_map",
           [](const CompilationUnit &cu) {
             return unit_bimap_to_map(cu.get_final_map_ref());

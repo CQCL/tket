@@ -29,31 +29,29 @@ from pytket.circuit import (
 )
 from pytket.circuit.logic_exp import BitWiseOp, LogicExp, Ops, RegWiseOp
 
-_reg_output_clops = set(
-    [
-        ClOp.RegAnd,
-        ClOp.RegOr,
-        ClOp.RegXor,
-        ClOp.RegNot,
-        ClOp.RegZero,
-        ClOp.RegOne,
-        ClOp.RegAdd,
-        ClOp.RegSub,
-        ClOp.RegMul,
-        ClOp.RegDiv,
-        ClOp.RegPow,
-        ClOp.RegLsh,
-        ClOp.RegRsh,
-        ClOp.RegNeg,
-    ]
-)
+_reg_output_clops = {
+    ClOp.RegAnd,
+    ClOp.RegOr,
+    ClOp.RegXor,
+    ClOp.RegNot,
+    ClOp.RegZero,
+    ClOp.RegOne,
+    ClOp.RegAdd,
+    ClOp.RegSub,
+    ClOp.RegMul,
+    ClOp.RegDiv,
+    ClOp.RegPow,
+    ClOp.RegLsh,
+    ClOp.RegRsh,
+    ClOp.RegNeg,
+}
 
 
 def has_reg_output(op: ClOp) -> bool:
     return op in _reg_output_clops
 
 
-def clop_from_ops(op: Ops) -> ClOp:
+def _clop_from_ops(op: Ops) -> ClOp:  # noqa: PLR0911, PLR0912
     match op:
         case BitWiseOp.AND:
             return ClOp.BitAnd
@@ -110,12 +108,12 @@ def clop_from_ops(op: Ops) -> ClOp:
 
 
 @dataclass
-class ExpressionConverter:
+class _ExpressionConverter:
     bit_indices: dict[Bit, int]
     reg_indices: dict[BitRegister, int]
 
     def convert(self, exp: LogicExp) -> ClExpr:
-        op: ClOp = clop_from_ops(exp.op)
+        op: ClOp = _clop_from_ops(exp.op)
         args: list[int | ClBitVar | ClRegVar | ClExpr] = []
         for arg in exp.args:
             if isinstance(arg, LogicExp):
@@ -156,7 +154,7 @@ def wired_clexpr_from_logic_exp(
     # 3. Construct the WiredClExpr and return it with the argument list:
     return (
         WiredClExpr(
-            ExpressionConverter(
+            _ExpressionConverter(
                 {b: i for i, b in enumerate(input_bits)},
                 {r: i for i, r in enumerate(input_regs)},
             ).convert(exp),
@@ -177,9 +175,7 @@ def check_register_alignments(circ: Circuit) -> bool:
     :param circ: circuit to check
     :return: True iff all `ClExprOp` operations are register-aligned
     """
-    cregs: set[tuple[Bit, ...]] = set(
-        tuple(creg.to_list()) for creg in circ.c_registers
-    )
+    cregs: set[tuple[Bit, ...]] = {tuple(creg.to_list()) for creg in circ.c_registers}
     for cmd in circ:
         op = cmd.op
         if op.type == OpType.ClExpr:

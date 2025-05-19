@@ -23,7 +23,7 @@ from pytket.circuit import Qubit
 from pytket.pauli import QubitPauliString, pauli_string_mult
 from pytket.utils.serialization import complex_to_list, list_to_complex
 
-CoeffTypeAccepted = Union[int, float, complex, Expr]
+CoeffTypeAccepted = Union[int, float, complex, Expr]  # noqa: UP007
 
 if TYPE_CHECKING:
     from scipy.sparse import csc_matrix
@@ -64,7 +64,7 @@ class QubitPauliOperator:
         self,
         dictionary: dict[QubitPauliString, CoeffTypeAccepted] | None = None,
     ) -> None:
-        self._dict: dict[QubitPauliString, Expr] = dict()
+        self._dict: dict[QubitPauliString, Expr] = {}
         if dictionary:
             for key, value in dictionary.items():
                 self._dict[key] = _coeff_convert(value)
@@ -77,6 +77,9 @@ class QubitPauliOperator:
         return self._dict[key]
 
     def get(self, key: QubitPauliString, default: CoeffTypeAccepted) -> Expr:
+        """
+        Get the coefficient of a particular string present in the operator.
+        """
         return self._dict.get(key, _coeff_convert(default))
 
     def __setitem__(self, key: QubitPauliString, value: CoeffTypeAccepted) -> None:
@@ -84,9 +87,7 @@ class QubitPauliOperator:
         Expr.
 
         :param key: String to use as key
-        :type key: QubitPauliString
         :param value: Associated coefficient
-        :type value: Union[int, float, complex, Expr]
         """
         self._dict[key] = _coeff_convert(value)
         self._all_qubits.update(key.map.keys())
@@ -108,9 +109,7 @@ class QubitPauliOperator:
         """In-place addition (+=) of QubitPauliOperators.
 
         :param addend: The operator to add
-        :type addend: QubitPauliOperator
         :return: Updated operator (self)
-        :rtype: QubitPauliOperator
         """
         if isinstance(addend, QubitPauliOperator):
             for key, value in addend._dict.items():
@@ -125,9 +124,7 @@ class QubitPauliOperator:
         """Addition (+) of QubitPauliOperators.
 
         :param addend: The operator to add
-        :type addend: QubitPauliOperator
         :return: Sum operator
-        :rtype: QubitPauliOperator
         """
         summand = copy.deepcopy(self)
         summand += addend
@@ -140,14 +137,12 @@ class QubitPauliOperator:
         Multiply coefficients and terms.
 
         :param multiplier: The operator or scalar to multiply
-        :type multiplier: Union[QubitPauliOperator, int, float, complex, Expr]
         :return: Updated operator (self)
-        :rtype: QubitPauliOperator
         """
 
         # Handle operator of the same type
         if isinstance(multiplier, QubitPauliOperator):
-            result_terms: dict = dict()
+            result_terms: dict = {}
             for left_key, left_value in self._dict.items():
                 for right_key, right_value in multiplier._dict.items():
                     new_term, bonus_coeff = pauli_string_mult(left_key, right_key)
@@ -163,7 +158,7 @@ class QubitPauliOperator:
             return self
 
         # Handle scalars.
-        if isinstance(multiplier, (float, Expr)):
+        if isinstance(multiplier, float | Expr):
             for key in self._dict:
                 self[key] *= multiplier
             return self
@@ -177,9 +172,7 @@ class QubitPauliOperator:
         """Multiplication (*) by QubitPauliOperator or scalar.
 
         :param multiplier: The scalar to multiply by
-        :type multiplier: Union[int, float, complex, Expr, QubitPauliOperator]
         :return: Product operator
-        :rtype: QubitPauliOperator
         """
         product = copy.deepcopy(self)
         product *= multiplier
@@ -192,9 +185,7 @@ class QubitPauliOperator:
         QubitPauliOperator*QubitPauliOperator.
 
         :param multiplier: The scalar to multiply by
-        :type multiplier: Union[int, float, complex, Expr]
         :return: Product operator
-        :rtype: QubitPauliOperator
         """
         return self.__mul__(_coeff_convert(multiplier))
 
@@ -204,7 +195,6 @@ class QubitPauliOperator:
         :return: The set of all qubits the operator ranges over (including qubits
             that were provided explicitly as identities)
 
-        :rtype: Set[Qubit]
         """
         return self._all_qubits
 
@@ -212,7 +202,6 @@ class QubitPauliOperator:
         """Substitutes any matching symbols in the QubitPauliOperator.
 
         :param symbol_dict: A dictionary of symbols to fixed values.
-        :type symbol_dict: Dict[Symbol, complex]
         """
         for key, value in self._dict.items():
             self._dict[key] = value.subs(symbol_dict)
@@ -232,7 +221,6 @@ class QubitPauliOperator:
          suitable for writing to JSON.
 
         :return: JSON serializable list of dictionaries.
-        :rtype: List[Dict[str, Any]]
         """
         ret: list[dict[str, Any]] = []
         for k, v in self._dict.items():
@@ -255,7 +243,6 @@ class QubitPauliOperator:
         as returned by QubitPauliOperator.to_list()
 
         :return: New QubitPauliOperator instance.
-        :rtype: QubitPauliOperator
         """
 
         def get_qps(obj: dict[str, Any]) -> QubitPauliString:
@@ -286,12 +273,10 @@ class QubitPauliOperator:
         :param qubits: Sequencing of qubits in the matrix, either as an explicit
             list, number of qubits to pad to, or infer from the operator.
             Defaults to None
-        :type qubits: Union[List[Qubit], int, None], optional
         :return: A sparse matrix representation of the operator.
-        :rtype: csc_matrix
         """
         if qubits is None:
-            qubits_ = sorted(list(self._all_qubits))
+            qubits_ = sorted(list(self._all_qubits))  # noqa: C414
             return sum(
                 complex(coeff) * pauli.to_sparse_matrix(qubits_)
                 for pauli, coeff in self._dict.items()
@@ -313,12 +298,9 @@ class QubitPauliOperator:
           and ordered by ILO-BE so ``Qubit(0)`` is the most significant.
 
         :param state: The initial statevector
-        :type state: numpy.ndarray
         :param qubits: Sequencing of qubits in ``state``, if not mapped to the
             default register. Defaults to None
-        :type qubits: Union[List[Qubit], None], optional
         :return: The dot product of the operator with the statevector
-        :rtype: numpy.ndarray
         """
         if qubits:
             product_sum = sum(
@@ -344,12 +326,9 @@ class QubitPauliOperator:
           and ordered by ILO-BE so ``Qubit(0)`` is the most significant.
 
         :param state: The initial statevector
-        :type state: numpy.ndarray
         :param qubits: Sequencing of qubits in ``state``, if not mapped to the
             default register. Defaults to None
-        :type qubits: Union[List[Qubit], None], optional
         :return: The expectation value of the statevector and operator
-        :rtype: complex
         """
         if qubits:
             return sum(
@@ -378,12 +357,11 @@ class QubitPauliOperator:
         for all :math:`a_i \\in [0, 1]`.
 
         :param abs_tol: The threshold below which to remove values.
-        :type abs_tol: float
         """
 
         to_delete = []
         for key, value in self._dict.items():
-            placeholder = value.subs({s: 1 for s in value.free_symbols})
+            placeholder = value.subs(dict.fromkeys(value.free_symbols, 1))
             if abs(re(placeholder)) <= abs_tol:
                 if abs(im(placeholder)) <= abs_tol:
                     to_delete.append(key)
@@ -397,6 +375,6 @@ class QubitPauliOperator:
 
     def _collect_qubits(self) -> None:
         self._all_qubits: set[Qubit] = set()
-        for key in self._dict.keys():
-            for q in key.map.keys():
+        for key in self._dict.keys():  # noqa: SIM118
+            for q in key.map.keys():  # noqa: SIM118
                 self._all_qubits.add(q)

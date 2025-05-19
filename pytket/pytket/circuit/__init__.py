@@ -14,12 +14,12 @@
 
 """The circuit module provides an API to interact with the
 tket :py:class:`Circuit` data structure.
- This module is provided in binary form during the PyPI installation."""
+This module is provided in binary form during the PyPI installation."""
+
+from collections.abc import Callable, Sequence
 from typing import (
     Any,
-    Callable,
     Optional,
-    Sequence,
     Union,
 )
 
@@ -39,15 +39,7 @@ from pytket._tket.unit_id import (
 
 from .logic_exp import (
     BinaryOp,
-    BitLogicExp,
-    BitWiseOp,
-    Constant,
-    LogicExp,
     Ops,
-    RegLogicExp,
-    RegWiseOp,
-    create_bit_logic_exp,
-    create_reg_logic_exp,
     if_bit,
     if_not_bit,
     reg_eq,
@@ -59,14 +51,14 @@ from .logic_exp import (
 )
 
 
-def overload_add_wasm(
+def add_wasm(  # noqa: PLR0913
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmModuleHandler,
     list_i: Sequence[int],
     list_o: Sequence[int],
-    args: Union[Sequence[int], Sequence[Bit]],
-    args_wasm: Optional[Sequence[int]] = None,
+    args: Union[Sequence[int], Sequence[Bit]],  # noqa: UP007
+    args_wasm: Optional[Sequence[int]] = None,  # noqa: UP007
     **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
@@ -85,15 +77,15 @@ def overload_add_wasm(
         args_wasm = [0]
 
     for x in list_i:
-        if x > filehandler._int_size:
+        if x > filehandler._int_size:  # noqa: SLF001
             raise ValueError(
-                f"only functions with i{filehandler._int_size} type are allowed"
+                f"only functions with i{filehandler._int_size} type are allowed"  # noqa: SLF001
             )
 
     for x in list_o:
-        if x > filehandler._int_size:
+        if x > filehandler._int_size:  # noqa: SLF001
             raise ValueError(
-                f"only functions with i{filehandler._int_size} type are allowed"
+                f"only functions with i{filehandler._int_size} type are allowed"  # noqa: SLF001
             )
 
     if filehandler.check_function(funcname, len(list_i), len(list_o)):
@@ -103,19 +95,19 @@ def overload_add_wasm(
             funcname, str(filehandler), list_i, list_o, args, args_wasm, **kwargs
         )
 
-    raise ValueError(f"{funcname} not found, check {repr(filehandler)}")
+    raise ValueError(f"{funcname} not found, check {filehandler!r}")
 
 
-setattr(Circuit, "add_wasm", overload_add_wasm)
+setattr(Circuit, "add_wasm", add_wasm)  # noqa: B010
 
 
-def overload_add_wasm_to_reg(
+def add_wasm_to_reg(  # noqa: PLR0913
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmModuleHandler,
     list_i: Sequence[BitRegister],
     list_o: Sequence[BitRegister],
-    args_wasm: Optional[Sequence[int]] = None,
+    args_wasm: Optional[Sequence[int]] = None,  # noqa: UP007
     **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
@@ -136,14 +128,14 @@ def overload_add_wasm_to_reg(
 
     if filehandler.checked:
         for reg in list_i:
-            if reg.size > 32:
+            if reg.size > 32:  # noqa: PLR2004
                 raise ValueError(
                     """wasm is only supporting 32 bit size registers,
 please use only registers of at most 32 bits"""
                 )
 
         for reg in list_o:
-            if reg.size > 32:
+            if reg.size > 32:  # noqa: PLR2004
                 raise ValueError(
                     """wasm is only supporting 32 bit size registers,
 please use only registers of at most 32 bits"""
@@ -160,53 +152,7 @@ please use only registers of at most 32 bits"""
             funcname, str(filehandler), list_i, list_o, args_wasm, **kwargs
         )
 
-    raise ValueError(f"{funcname} not found, check {repr(filehandler)}")
+    raise ValueError(f"{funcname} not found, check {filehandler!r}")
 
 
-setattr(Circuit, "add_wasm_to_reg", overload_add_wasm_to_reg)
-
-
-# overload operators for Bit, BitRegister and expressions over these
-# such that the operation returns a LogicExp describing the operation
-
-BitArgType = Union[LogicExp, Bit, Constant]
-RegArgType = Union[LogicExp, BitRegister, Constant]
-
-
-def gen_binary_method_bit(
-    op: BitWiseOp,
-) -> Callable[[BitArgType, BitArgType], BitLogicExp]:
-    def logic_operation(self: BitArgType, other: BitArgType) -> BitLogicExp:
-        return create_bit_logic_exp(op, [self, other])
-
-    return logic_operation
-
-
-def gen_binary_method_reg(
-    op: RegWiseOp,
-) -> Callable[[RegArgType, RegArgType], RegLogicExp]:
-    def logic_operation(self: RegArgType, other: RegArgType) -> RegLogicExp:
-        return create_reg_logic_exp(op, [self, other])
-
-    return logic_operation
-
-
-setattr(Bit, "__and__", gen_binary_method_bit(BitWiseOp.AND))
-setattr(Bit, "__rand__", gen_binary_method_bit(BitWiseOp.AND))
-setattr(Bit, "__or__", gen_binary_method_bit(BitWiseOp.OR))
-setattr(Bit, "__ror__", gen_binary_method_bit(BitWiseOp.OR))
-setattr(Bit, "__xor__", gen_binary_method_bit(BitWiseOp.XOR))
-setattr(Bit, "__rxor__", gen_binary_method_bit(BitWiseOp.XOR))
-setattr(BitRegister, "__and__", gen_binary_method_reg(RegWiseOp.AND))
-setattr(BitRegister, "__rand__", gen_binary_method_reg(RegWiseOp.AND))
-setattr(BitRegister, "__or__", gen_binary_method_reg(RegWiseOp.OR))
-setattr(BitRegister, "__ror__", gen_binary_method_reg(RegWiseOp.OR))
-setattr(BitRegister, "__xor__", gen_binary_method_reg(RegWiseOp.XOR))
-setattr(BitRegister, "__rxor__", gen_binary_method_reg(RegWiseOp.XOR))
-setattr(BitRegister, "__add__", gen_binary_method_reg(RegWiseOp.ADD))
-setattr(BitRegister, "__sub__", gen_binary_method_reg(RegWiseOp.SUB))
-setattr(BitRegister, "__mul__", gen_binary_method_reg(RegWiseOp.MUL))
-setattr(BitRegister, "__floordiv__", gen_binary_method_reg(RegWiseOp.DIV))
-setattr(BitRegister, "__pow__", gen_binary_method_reg(RegWiseOp.POW))
-setattr(BitRegister, "__lshift__", gen_binary_method_reg(RegWiseOp.LSH))
-setattr(BitRegister, "__rshift__", gen_binary_method_reg(RegWiseOp.RSH))
+setattr(Circuit, "add_wasm_to_reg", add_wasm_to_reg)  # noqa: B010

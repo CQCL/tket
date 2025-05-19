@@ -12,17 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <pybind11/eigen.h>
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-#include <pybind11/stl_bind.h>
+#include <nanobind/nanobind.h>
 
 #include "binder_utils.hpp"
+#include "nanobind-stl.hpp"
 #include "tket/Characterisation/FrameRandomisation.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Converters/Converters.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 
 namespace tket {
 
@@ -43,10 +41,11 @@ SpPauliString apply_clifford_basis_change_string(
   return SpPauliString(new_operator.string);
 }
 
-PYBIND11_MODULE(tailoring, m) {
+NB_MODULE(tailoring, m) {
+  nb::set_leak_warnings(false);
   m.doc() = "The tailoring module provides access to noise tailoring tools.";
 
-  py::class_<FrameRandomisation>(
+  nb::class_<FrameRandomisation>(
       m, "FrameRandomisation",
       "The base FrameRandomisation class. FrameRandomisation finds "
       "subcircuits (cycles) of a given circuit comprised of gates with "
@@ -56,23 +55,24 @@ PYBIND11_MODULE(tailoring, m) {
       "deduced such that the circuit unitary doesn't change, achieved by "
       "computing the action of cycle gates on frame gates.")
       .def(
-          py::init([](const OpTypeSet &_cycle_types,
-                      const OpTypeSet &_frame_types,
-                      const std::map<OpType, std::map<py::tuple, py::tuple>>
-                          &cycle_frame_actions) {
+          "__init__",
+          [](FrameRandomisation *p, const OpTypeSet &_cycle_types,
+             const OpTypeSet &_frame_types,
+             const std::map<OpType, std::map<nb::tuple, nb::tuple>>
+                 &cycle_frame_actions) {
             std::map<OpType, std::map<OpTypeVector, OpTypeVector>>
                 real_cycle_frame_actions;
             for (const auto &actions : cycle_frame_actions) {
               std::map<OpTypeVector, OpTypeVector> otv_map;
               for (const auto &tups : actions.second) {
-                otv_map[tups.first.cast<OpTypeVector>()] =
-                    tups.second.cast<OpTypeVector>();
+                otv_map[nb::cast<OpTypeVector>(tups.first)] =
+                    nb::cast<OpTypeVector>(tups.second);
               }
               real_cycle_frame_actions[actions.first] = otv_map;
             }
-            return FrameRandomisation(
+            new (p) FrameRandomisation(
                 _cycle_types, _frame_types, real_cycle_frame_actions);
-          }),
+          },
           "Constructor for FrameRandomisation."
           "\n\n:param cycletypes: "
           "A set of OpType corresponding to the gates cycles found are "
@@ -90,7 +90,7 @@ PYBIND11_MODULE(tailoring, m) {
           "in a vector of Circuit.\n\n:param circuit: The circuit to "
           "find frames for.\n"
           ":return: list of " CLSOBJS(Circuit),
-          py::arg("circuit"))
+          nb::arg("circuit"))
       .def(
           "sample_circuits", &FrameRandomisation::sample_randomisation_circuits,
           "Returns a number of instances equal to sample of frame "
@@ -100,10 +100,10 @@ PYBIND11_MODULE(tailoring, m) {
           "Pauli gates on\n:param samples: the number of frame "
           "randomised circuits to return.\n"
           ":return: list of " CLSOBJS(Circuit),
-          py::arg("circuit"), py::arg("samples"))
+          nb::arg("circuit"), nb::arg("samples"))
       .def("__repr__", &FrameRandomisation::to_string);
 
-  py::class_<PauliFrameRandomisation>(
+  nb::class_<PauliFrameRandomisation>(
       m, "PauliFrameRandomisation",
       "The PauliFrameRandomisation class. PauliFrameRandomisation finds "
       "subcircuits (cycles) of a given circuit comprised of gates with "
@@ -114,7 +114,7 @@ PYBIND11_MODULE(tailoring, m) {
       "and output frame gates "
       "deduced such that the circuit unitary doesn't change, achieved by "
       "computing the action of cycle gates on frame gates.")
-      .def(py::init<>(), "Constructor for PauliFrameRandomisation.")
+      .def(nb::init<>(), "Constructor for PauliFrameRandomisation.")
       .def(
           "get_all_circuits", &PauliFrameRandomisation::get_all_circuits,
           "For given circuit, finds all Cycles, finds all frames for "
@@ -122,7 +122,7 @@ PYBIND11_MODULE(tailoring, m) {
           "in a vector of Circuit.\n\n:param circuit: The circuit to "
           "find frames for.\n"
           ":return: list of " CLSOBJS(Circuit),
-          py::arg("circuit"))
+          nb::arg("circuit"))
       .def(
           "sample_circuits",
           &PauliFrameRandomisation::sample_randomisation_circuits,
@@ -133,10 +133,10 @@ PYBIND11_MODULE(tailoring, m) {
           "Pauli gates on\n:param samples: the number of frame "
           "randomised circuits to return.\n"
           ":return: list of " CLSOBJS(Circuit),
-          py::arg("circuit"), py::arg("samples"))
+          nb::arg("circuit"), nb::arg("samples"))
       .def("__repr__", &PauliFrameRandomisation::to_string);
 
-  py::class_<UniversalFrameRandomisation>(
+  nb::class_<UniversalFrameRandomisation>(
       m, "UniversalFrameRandomisation",
       "The UniversalFrameRandomisation class. "
       "UniversalFrameRandomisation finds "
@@ -150,7 +150,7 @@ PYBIND11_MODULE(tailoring, m) {
       "computing the action of cycle gates on frame gates. Some gates "
       "with OpType::Rz may be substituted for their dagger to achieve "
       "this.")
-      .def(py::init<>(), "Constructor for UniversalFrameRandomisation.")
+      .def(nb::init<>(), "Constructor for UniversalFrameRandomisation.")
       .def(
           "get_all_circuits", &UniversalFrameRandomisation::get_all_circuits,
           "For given circuit, finds all Cycles, finds all frames for "
@@ -158,7 +158,7 @@ PYBIND11_MODULE(tailoring, m) {
           "in a vector of Circuit.\n\n:param circuit: The circuit to "
           "find frames for.\n"
           ":return: list of " CLSOBJS(Circuit),
-          py::arg("circuit"))
+          nb::arg("circuit"))
       .def(
           "sample_circuits",
           &UniversalFrameRandomisation::sample_randomisation_circuits,
@@ -169,7 +169,7 @@ PYBIND11_MODULE(tailoring, m) {
           "Pauli gates on\n:param samples: the number of frame "
           "randomised circuits to return.\n"
           ":return: list of " CLSOBJS(Circuit),
-          py::arg("circuit"), py::arg("samples"))
+          nb::arg("circuit"), nb::arg("samples"))
       .def("__repr__", &UniversalFrameRandomisation::to_string);
   m.def(
       "apply_clifford_basis_change", &apply_clifford_basis_change_string,
@@ -179,7 +179,7 @@ PYBIND11_MODULE(tailoring, m) {
       "\n\n:param pauli: Pauli operator being transformed. "
       "\n:param circuit: Clifford circuit acting on Pauli operator. "
       "\n:return: :py:class:`QubitPauliString` for new operator",
-      py::arg("pauli"), py::arg("circuit"));
+      nb::arg("pauli"), nb::arg("circuit"));
   m.def(
       "apply_clifford_basis_change_tensor", &apply_clifford_basis_change_tensor,
       "Given Pauli operator P and Clifford circuit C, "
@@ -187,6 +187,6 @@ PYBIND11_MODULE(tailoring, m) {
       "\n\n:param pauli: Pauli operator being transformed."
       "\n:param circuit: Clifford circuit acting on Pauli operator. "
       "\n:return: :py:class:`QubitPauliTensor` for new operator",
-      py::arg("pauli"), py::arg("circuit"));
+      nb::arg("pauli"), nb::arg("circuit"));
 }
 }  // namespace tket

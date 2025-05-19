@@ -29,19 +29,18 @@
 
 namespace tket {
 
-// if there are any blank wires in the circuit,
-// this method removes them and removes the vertices
-// from boundaries, if they are quantum wires, or if
-// they are empty classical wires if there are no
-// used bits with a higher index in the same register.
-void Circuit::remove_blank_wires(bool keep_blank_classical_wires) {
+void Circuit::remove_blank_wires(
+    bool keep_blank_classical_wires,
+    bool remove_classical_only_at_end_of_register) {
   VertexList bin;
   unit_vector_t unused_units;
   const Op_ptr noop = get_op_ptr(OpType::noop);
   std::set<std::string> bit_names;
 
   for (const BoundaryElement& el : boundary.get<TagID>()) {
-    if (el.type() == UnitType::Qubit) {
+    if ((!keep_blank_classical_wires &&
+         !remove_classical_only_at_end_of_register) ||
+        el.type() == UnitType::Qubit) {
       Vertex in = el.in_;
       Vertex out = el.out_;
       VertexVec succs = get_successors(in);
@@ -53,29 +52,32 @@ void Circuit::remove_blank_wires(bool keep_blank_classical_wires) {
         unused_units.push_back(el.id_);
       }
     } else if (
-        !keep_blank_classical_wires && el.type() == UnitType::Bit &&
-        el.id_.reg_dim() == 1) {
+        !keep_blank_classical_wires &&
+        remove_classical_only_at_end_of_register &&
+        el.type() == UnitType::Bit && el.id_.reg_dim() == 1) {
       bit_names.insert(el.id_.reg_name());
     }
   }
 
-  for (auto bit_name : bit_names) {
-    for (unsigned reg_size = get_reg(bit_name).size(); reg_size > 0;
-         --reg_size) {
-      boundary_t::iterator unit_found =
-          boundary.get<TagID>().find(Bit(bit_name, reg_size - 1));
-      if (unit_found != boundary.get<TagID>().end()) {
-        Vertex in = unit_found->in_;
-        Vertex out = unit_found->out_;
-        VertexVec succs = get_successors(in);
-        if (succs.front() == out && succs.size() == 1) {
-          dag[in].op = noop;
-          bin.push_back(in);
-          dag[out].op = noop;
-          bin.push_back(out);
-          unused_units.push_back(unit_found->id_);
-        } else {
-          break;
+  if (keep_blank_classical_wires || remove_classical_only_at_end_of_register) {
+    for (auto bit_name : bit_names) {
+      for (unsigned reg_size = get_reg(bit_name).size(); reg_size > 0;
+           --reg_size) {
+        boundary_t::iterator unit_found =
+            boundary.get<TagID>().find(Bit(bit_name, reg_size - 1));
+        if (unit_found != boundary.get<TagID>().end()) {
+          Vertex in = unit_found->in_;
+          Vertex out = unit_found->out_;
+          VertexVec succs = get_successors(in);
+          if (succs.front() == out && succs.size() == 1) {
+            dag[in].op = noop;
+            bin.push_back(in);
+            dag[out].op = noop;
+            bin.push_back(out);
+            unused_units.push_back(unit_found->id_);
+          } else {
+            break;
+          }
         }
       }
     }
@@ -121,7 +123,6 @@ Vertex Circuit::add_op<unsigned>(
         gate->get_name() + " requires " + std::to_string(sig.size()));
   }
 
-  OpType optype = gate->get_type();
   unit_vector_t arg_ids;
   for (unsigned i = 0; i < args.size(); ++i) {
     switch (sig.at(i)) {
@@ -138,19 +139,6 @@ Vertex Circuit::add_op<unsigned>(
         TKET_ASSERT(!"add_op found invalid edge type in signature");
       }
     }
-  }
-  if (optype == OpType::CnRy && args.size() == 1) {
-    return add_op(get_op_ptr(OpType::Ry, gate->get_params()), arg_ids);
-  } else if (optype == OpType::CnRx && args.size() == 1) {
-    return add_op(get_op_ptr(OpType::Rx, gate->get_params()), arg_ids);
-  } else if (optype == OpType::CnRz && args.size() == 1) {
-    return add_op(get_op_ptr(OpType::Rz, gate->get_params()), arg_ids);
-  } else if (optype == OpType::CnX && args.size() == 1) {
-    return add_op(get_op_ptr(OpType::X), arg_ids);
-  } else if (optype == OpType::CnZ && args.size() == 1) {
-    return add_op(get_op_ptr(OpType::Z), arg_ids);
-  } else if (optype == OpType::CnY && args.size() == 1) {
-    return add_op(get_op_ptr(OpType::Y), arg_ids);
   }
   return add_op(gate, arg_ids, opgroup);
 }

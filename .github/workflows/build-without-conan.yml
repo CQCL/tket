@@ -64,7 +64,7 @@ jobs:
     - name: Install nlohmann_json
       run: |
         cd ${TMP_DIR}
-        wget https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
+        wget https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz
         tar xvf json.tar.xz
         cd json/
         mkdir build
@@ -75,9 +75,9 @@ jobs:
     - name: Install catch2
       run: |
         cd ${TMP_DIR}
-        wget https://github.com/catchorg/Catch2/archive/refs/tags/v3.8.0.tar.gz
-        tar xzvf v3.8.0.tar.gz
-        cd Catch2-3.8.0/
+        wget https://github.com/catchorg/Catch2/archive/refs/tags/v3.8.1.tar.gz
+        tar xzvf v3.8.1.tar.gz
+        cd Catch2-3.8.1/
         mkdir build
         cd build
         cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
@@ -89,32 +89,33 @@ jobs:
         wget https://github.com/emil-e/rapidcheck/archive/1c91f40e64d87869250cfb610376c629307bf77d.zip
         unzip 1c91f40e64d87869250cfb610376c629307bf77d.zip
         cd rapidcheck-1c91f40e64d87869250cfb610376c629307bf77d/
+        sed -i -e 's/cmake_minimum_required(VERSION 3.0)/cmake_minimum_required(VERSION 3.5)/g' CMakeLists.txt
         mkdir build
         cd build
         cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
         cmake --build . -j2
         cmake --install .
-    - name: Install pybind11
+    - name: install tsl-robin-map
       run: |
         cd ${TMP_DIR}
-        wget https://github.com/pybind/pybind11/archive/refs/tags/v2.13.6.tar.gz
-        tar xzvf v2.13.6.tar.gz
-        cd pybind11-2.13.6/
+        wget https://github.com/Tessil/robin-map/archive/v1.4.0.tar.gz
+        tar xzvf v1.4.0.tar.gz
+        cd robin-map-1.4.0/
         mkdir build
         cd build
-        cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DPYBIND11_TEST=OFF ..
-        cmake --build .
+        cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
+        cmake --build . -j2
         cmake --install .
-    - name: Install pybind11_json
+    - name: Install nanobind
       run: |
         cd ${TMP_DIR}
-        wget https://github.com/pybind/pybind11_json/archive/refs/tags/0.2.15.tar.gz
-        tar xzvf 0.2.15.tar.gz
-        cd pybind11_json-0.2.15/
+        wget https://github.com/wjakob/nanobind/archive/refs/tags/v2.7.0.tar.gz
+        tar xzvf v2.7.0.tar.gz
+        cd nanobind-2.7.0/
         mkdir build
         cd build
-        cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
-        cmake --build .
+        cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DNB_TEST=OFF -DNB_USE_SUBMODULE_DEPS=OFF ..
+        cmake --build . -j2
         cmake --install .
     - name: Install tklog
       run: |

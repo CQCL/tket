@@ -209,23 +209,3 @@ def test_compose_ppb() -> None:
     assert pass1.apply(cu)
     out_circ = cu.circuit
     assert out_circ.depth() == 6
-
-
-if __name__ == "__main__":
-    test_AAS()
-    test_AAS_2()
-    test_AAS_3()
-    test_AAS_4()
-    test_AAS_5()
-    test_AAS_6()
-    test_AAS_7()
-    test_AAS_8()
-    test_AAS_9()
-    test_AAS_10()
-    test_AAS_11()
-    test_AAS_12()
-    test_AAS_13()
-    test_AAS_14()
-    test_AAS_15()
-    test_noncontiguous_arc_phase_poly()
-    test_compose_ppb()

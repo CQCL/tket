@@ -54,7 +54,7 @@ class PassSelector:
 
         self._scores: list[int | None] = []
 
-        for p, c in zip(self._passlist, circ_list):
+        for p, c in zip(self._passlist, circ_list, strict=False):
             try:
                 p.apply(c)
                 self._scores.append(self._score_func(c))
@@ -67,7 +67,7 @@ class PassSelector:
                 self._scores.index(min(x for x in self._scores if x is not None))
             ]
         except ValueError:
-            raise RuntimeError("No passes have successfully run on this circuit")
+            raise RuntimeError("No passes have successfully run on this circuit")  # noqa: B904
 
     def get_scores(self) -> list[int | None]:
         """

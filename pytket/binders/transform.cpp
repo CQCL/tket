@@ -14,12 +14,13 @@
 
 #include "tket/Transformations/Transform.hpp"
 
-#include <pybind11/operators.h>
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/operators.h>
 
 #include <functional>
+#include <string>
 
+#include "nanobind-stl.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Transformations/CliffordOptimisation.hpp"
@@ -33,32 +34,34 @@
 #include "tket/Transformations/ThreeQubitSquash.hpp"
 #include "typecast.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 
 namespace tket {
 
 // given keyword arguments for DecomposeTK2, return a TwoQbFidelities struct
-Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
+Transforms::TwoQbFidelities get_fidelities(const nb::kwargs &kwargs) {
   Transforms::TwoQbFidelities fid;
   for (const auto &kwarg : kwargs) {
-    const std::string kwargstr = py::cast<std::string>(kwarg.first);
+    const std::string kwargstr = nb::cast<std::string>(kwarg.first);
     using Func = std::function<double(double)>;
     if (kwargstr == "CX_fidelity") {
-      fid.CX_fidelity = py::cast<double>(kwarg.second);
+      fid.CX_fidelity = nb::cast<double>(kwarg.second);
     } else if (kwargstr == "ZZMax_fidelity") {
-      fid.ZZMax_fidelity = py::cast<double>(kwarg.second);
+      fid.ZZMax_fidelity = nb::cast<double>(kwarg.second);
     } else if (kwargstr == "ZZPhase_fidelity") {
-      fid.ZZPhase_fidelity = py::cast<std::variant<double, Func>>(kwarg.second);
+      fid.ZZPhase_fidelity = nb::cast<std::variant<double, Func>>(kwarg.second);
     } else {
-      throw py::type_error(
-          "got an unexpected keyword argument '" + kwargstr + "'");
+      const std::string msg =
+          "got an unexpected keyword argument '" + kwargstr + "'";
+      throw nb::type_error(msg.c_str());
     }
   }
   return fid;
 }
 
-PYBIND11_MODULE(transform, m) {
-  py::enum_<Transforms::PauliSynthStrat>(
+NB_MODULE(transform, m) {
+  nb::set_leak_warnings(false);
+  nb::enum_<Transforms::PauliSynthStrat>(
       m, "PauliSynthStrat",
       "Enum for available strategies to synthesise Pauli gadgets")
       .value(
@@ -76,11 +79,13 @@ PYBIND11_MODULE(transform, m) {
           "Synthesise gadgets using a greedy algorithm adapted from "
           "arxiv.org/abs/2103.08602. This strategy is currently only accepted "
           "by `TermSequenceBox`. For synthesising general circuits try using "
-          "`GreedyPauliSimp`.");
+          "`GreedyPauliSimp`."
+          "\n\nWARNING: This strategy will not preserve the global phase of "
+          "the circuit.");
 
-  py::class_<Transform>(
+  nb::class_<Transform>(
       m, "Transform", "An in-place transformation of a :py:class:`Circuit`.")
-      .def(py::init<const Transform::SimpleTransformation &>())
+      .def(nb::init<const Transform::SimpleTransformation &>())
       .def(
           "apply",
           [](const Transform &tr, Circuit &circ) { return tr.apply(circ); },
@@ -88,16 +93,16 @@ PYBIND11_MODULE(transform, m) {
           "place.\n\n:param circuit: The circuit to be "
           "transformed\n"
           ":return: True if any changes were made, else False",
-          py::arg("circuit"))
+          nb::arg("circuit"))
 
       /* COMBINATORS */
       .def(
-          py::self >> py::self,
+          nb::self >> nb::self,
           "Composes two Transforms together in sequence.\n\n>>> a >> "
           "b\n\nis equivalent to\n\n>>> sequence([a,b])")
       .def_static(
           "sequence",
-          [](py::tket_custom::SequenceVec<Transform> &tvec) {
+          [](nb::tket_custom::SequenceVec<Transform> &tvec) {
             return Transforms::sequence(tvec);
           },
           "Composes a list of Transforms together in sequence. The "
@@ -105,7 +110,7 @@ PYBIND11_MODULE(transform, m) {
           "the individual Transforms returned ``True``."
           "\n\n:param sequence: The list of Transforms to be "
           "composed\n:return: the combined Transform",
-          py::arg("sequence"))
+          nb::arg("sequence"))
       .def_static(
           "repeat", &Transforms::repeat,
           "Applies a given Transform repeatedly to a circuit until "
@@ -116,7 +121,7 @@ PYBIND11_MODULE(transform, m) {
           "\n\n:param transform: The Transform to be applied "
           "repeatedly\n:return: a new Transform representing the "
           "iteration",
-          py::arg("transform"))
+          nb::arg("transform"))
       .def_static(
           "while_repeat", &Transforms::repeat_while,
           "Repeatedly applies the `condition` Transform until it "
@@ -129,7 +134,7 @@ PYBIND11_MODULE(transform, m) {
           "\n:param body: The Transform to be applied after each "
           "successful test of the condition"
           "\n:return: a new Transform representing the iteration",
-          py::arg("condition"), py::arg("body"))
+          nb::arg("condition"), nb::arg("body"))
 
       /* REBASE TRANSFORMS */
       .def_static(
@@ -145,7 +150,7 @@ PYBIND11_MODULE(transform, m) {
           "sequence of gates from that set."
           "\n\n:param tk2_to_cx: whether to rebase TK2 gates to CX and "
           "standard Cliffords",
-          py::arg("tk2_to_cx") = true)
+          nb::arg("tk2_to_cx") = true)
       .def_static(
           "RebaseToCirq", &Transforms::rebase_cirq,
           "Rebase from any gate set into PhasedX, Rz, CZ.")
@@ -178,7 +183,7 @@ PYBIND11_MODULE(transform, m) {
           "Decomposes all SWAP gates to provided replacement "
           "circuit.\n\n:param circuit: A circuit that is logically "
           "equivalent to a SWAP operation",
-          py::arg("circuit"))
+          nb::arg("circuit"))
       .def_static(
           "DecomposeSWAPtoCX", &Transforms::decompose_SWAP_to_CX,
           "Decomposes all SWAP gates into triples of CX gates. "
@@ -188,7 +193,7 @@ PYBIND11_MODULE(transform, m) {
           "prefer to insert the CXs such that fewer need redirecting."
           "\n\n:param arc: Device architecture used to specify a "
           "preference for CX direction",
-          py::arg("arc"))
+          nb::arg("arc"))
       .def_static(
           "DecomposeBRIDGE", &Transforms::decompose_BRIDGE_to_CX,
           "Decomposes all BRIDGE gates into CX gates.")
@@ -199,17 +204,27 @@ PYBIND11_MODULE(transform, m) {
           "Assumes the circuit already satisfies the connectivity of "
           "`arc`.\n\n:param arc: The architecture for which CXs "
           "should be redirected",
-          py::arg("arc"))
+          nb::arg("arc"))
       .def_static(
           "DecomposeBoxes", &Transforms::decomp_boxes,
-          "Recursively replaces all boxes by their decomposition into circuits."
-          "\n\n:param excluded_types: box `OpType`s excluded from decomposition"
-          "\n:param excluded_opgroups: opgroups excluded from decomposition",
-          py::arg("excluded_types") = std::unordered_set<OpType>(),
-          py::arg("excluded_opgroups") = std::unordered_set<std::string>())
+          "Recursively replaces all boxes by their decomposition into "
+          "circuits. \n\nArguments specify ways to filter which boxes are "
+          "decomposed. A box must satisfy ALL filters in order to be "
+          "decomposed (i.e. be in the inclusive sets and not in the exclusive "
+          "sets)."
+          "\n\n:param excluded_types: box :py:class:`OpType` s excluded from "
+          "decomposition"
+          "\n:param excluded_opgroups: opgroups excluded from decomposition"
+          "\n:param included_types: optional, only decompose these box "
+          ":py:class:`OpType` s"
+          "\n:param included_opgroups: optional, only decompose these opgroups",
+          nb::arg("excluded_types") = std::unordered_set<OpType>(),
+          nb::arg("excluded_opgroups") = std::unordered_set<std::string>(),
+          nb::arg("included_types") = std::nullopt,
+          nb::arg("included_opgroups") = std::nullopt)
       .def_static(
           "DecomposeTK2",
-          [](bool allow_swaps, const py::kwargs &kwargs) {
+          [](bool allow_swaps, const nb::kwargs &kwargs) {
             return Transforms::decompose_TK2(
                 get_fidelities(kwargs), allow_swaps);
           },
@@ -242,7 +257,7 @@ PYBIND11_MODULE(transform, m) {
           "to obtain optimal decompositions for arbitrary symbolic parameters, "
           "so consider substituting for concrete values if possible."
           "\n\n:param allow_swaps: Whether to allow implicit wire swaps.",
-          py::arg("allow_swaps") = true)
+          nb::arg("allow_swaps") = true, nb::arg("kwargs"))
       .def_static(
           "NormaliseTK2", &Transforms::normalise_TK2,
           "Normalises all TK2 gates.\n\n"
@@ -281,7 +296,7 @@ PYBIND11_MODULE(transform, m) {
           "OptimisePostRouting. "
           "Results use TK1 and CX gates. This will not preserve "
           "CX placement or orientation.",
-          py::arg("cx_config") = CXConfigType::Snake)
+          nb::arg("cx_config") = CXConfigType::Snake)
       .def_static(
           "OptimiseCliffords", &Transforms::clifford_simp,
           "An optimisation pass that applies a number of rewrite rules for "
@@ -291,8 +306,8 @@ PYBIND11_MODULE(transform, m) {
           "\n\n:param allow_swaps: whether the rewriting may introduce "
           "implicit wire swaps"
           "\n:param target_2qb_gate: target two-qubit gate (either CX or TK2)",
-          py::arg("allow_swaps") = true,
-          py::arg("target_2qb_gate") = OpType::CX)
+          nb::arg("allow_swaps") = true,
+          nb::arg("target_2qb_gate") = OpType::CX)
       .def_static(
           "OptimisePauliGadgets", &Transforms::pairwise_pauli_gadgets,
           "An optimisation pass that identifies the Pauli gadgets "
@@ -300,7 +315,7 @@ PYBIND11_MODULE(transform, m) {
           "synthesises them pairwise (see Cowtan, Duncan, Dilkes, "
           "Simmons, & Sivarajah https://arxiv.org/abs/1906.01734). "
           "Results use TK1, CX gates.",
-          py::arg("cx_config") = CXConfigType::Snake)
+          nb::arg("cx_config") = CXConfigType::Snake)
       .def_static(
           "RemoveRedundancies", &Transforms::remove_redundancies,
           "Applies a collection of simple optimisations, such as "
@@ -318,7 +333,7 @@ PYBIND11_MODULE(transform, m) {
           "with, towards the front of the circuit.")
       .def_static(
           "KAKDecomposition",
-          py::overload_cast<OpType, double, bool>(
+          nb::overload_cast<OpType, double, bool>(
               &Transforms::two_qubit_squash),
           "Squash sequences of two-qubit operations into minimal form.\n\n"
           "Squash together sequences of single- and two-qubit gates "
@@ -343,20 +358,20 @@ PYBIND11_MODULE(transform, m) {
           ":param cx_fidelity: Estimated CX gate fidelity, used when "
           "target_2qb_gate=CX.\n"
           ":param allow_swaps: Whether to allow implicit wire swaps.",
-          py::arg("target_2qb_gate") = OpType::CX, py::arg("cx_fidelity") = 1.,
-          py::arg("allow_swaps") = true)
+          nb::arg("target_2qb_gate") = OpType::CX, nb::arg("cx_fidelity") = 1.,
+          nb::arg("allow_swaps") = true)
       .def_static(
           "KAKDecomposition",
           [](double cx_fidelity) {
             return Transforms::two_qubit_squash(OpType::CX, cx_fidelity);
           },
-          py::arg("cx_fidelity"))
+          nb::arg("cx_fidelity"))
       .def_static(
           "ThreeQubitSquash", &Transforms::three_qubit_squash,
           "Squash three-qubit subcircuits into subcircuits having fewer "
           "2-qubit gates of the target type, when possible. The supported "
           "target types are CX (default) and TK2.",
-          py::arg("target_2qb_gate") = OpType::CX)
+          nb::arg("target_2qb_gate") = OpType::CX)
       .def_static(
           "CommuteSQThroughSWAP",
           [](const avg_node_errors_t &avg_node_errors) {
@@ -369,7 +384,7 @@ PYBIND11_MODULE(transform, m) {
           "architecture."
           "\n\n:param avg_node_errors: a dict mapping Nodes to average "
           "single-qubit gate errors",
-          py::arg("avg_node_errors"))
+          nb::arg("avg_node_errors"))
       .def_static(
           "CommuteSQThroughSWAP",
           [](const op_node_errors_t &op_node_errors) {
@@ -382,21 +397,21 @@ PYBIND11_MODULE(transform, m) {
           "architecture."
           "\n\n:param avg_node_errors: a dict of dicts, mapping Nodes to dicts "
           "of OpType to single-qubit gate error maps",
-          py::arg("op_node_errors"))
+          nb::arg("op_node_errors"))
       .def_static(
           "DecomposeNPhasedX", &Transforms::decompose_NPhasedX,
           "Decompose NPhasedX gates into single-qubit PhasedX gates.")
       .def_static(
           "SynthesisePauliGraph", &Transforms::synthesise_pauli_graph,
           "Synthesises Pauli Graphs.",
-          py::arg("synth_strat") = Transforms::PauliSynthStrat::Sets,
-          py::arg("cx_config") = CXConfigType::Snake)
+          nb::arg("synth_strat") = Transforms::PauliSynthStrat::Sets,
+          nb::arg("cx_config") = CXConfigType::Snake)
       .def_static(
           "UCCSynthesis", &Transforms::special_UCC_synthesis,
           "Synthesises UCC circuits in the form that Term Sequencing "
           "provides them.",
-          py::arg("synth_strat") = Transforms::PauliSynthStrat::Sets,
-          py::arg("cx_config") = CXConfigType::Snake)
+          nb::arg("synth_strat") = Transforms::PauliSynthStrat::Sets,
+          nb::arg("cx_config") = CXConfigType::Snake)
       .def_static(
           "GreedyPauliSimp", &Transforms::greedy_pauli_optimisation,
           "Convert a circuit into a graph of Pauli "
@@ -405,6 +420,8 @@ PYBIND11_MODULE(transform, m) {
           "arxiv.org/abs/2103.08602. The method for synthesising the "
           "final Clifford operator is adapted from "
           "arxiv.org/abs/2305.10966."
+          "\n\nWARNING: This transformation will not preserve the "
+          "global phase of the circuit."
           "\n\n:param discount_rate: Rate used to discount the cost impact "
           "from "
           "gadgets that are further away. Default to 0.7."
@@ -425,10 +442,10 @@ PYBIND11_MODULE(transform, m) {
           "smallest circuit is returned, prioritising the number of 2qb-gates, "
           "then the number of gates, then the depth."
           "\n:return: a pass to perform the simplification",
-          py::arg("discount_rate") = 0.7, py::arg("depth_weight") = 0.3,
-          py::arg("max_tqe_candidates") = 500, py::arg("max_lookahead") = 500,
-          py::arg("seed") = 0, py::arg("allow_zzphase") = false,
-          py::arg("thread_timeout") = 100, py::arg("trials") = 1)
+          nb::arg("discount_rate") = 0.7, nb::arg("depth_weight") = 0.3,
+          nb::arg("max_tqe_candidates") = 500, nb::arg("max_lookahead") = 500,
+          nb::arg("seed") = 0, nb::arg("allow_zzphase") = false,
+          nb::arg("thread_timeout") = 100, nb::arg("trials") = 1)
       .def_static(
           "ZZPhaseToRz", &Transforms::ZZPhase_to_Rz,
           "Fixes all ZZPhase gate angles to [-1, 1) half turns.")
@@ -454,14 +471,14 @@ PYBIND11_MODULE(transform, m) {
           "\n\n:param only_zeros: if True, only round angles less than "
           ":math:`\\pi / 2^{n+1}` to zero, leave other angles alone (default "
           "False)",
-          py::arg("n"), py::arg("only_zeros") = false);
+          nb::arg("n"), nb::arg("only_zeros") = false);
   m.def(
       "separate_classical", &Transforms::separate_classical,
       "Separate the input circuit into a 'main' circuit and a classical "
       "'post-processing' circuit, which are equivalent to the original "
       "when composed."
       "\n\n:param circ: circuit to be separated",
-      py::arg("circ"));
+      nb::arg("circ"));
 }
 
 }  // namespace tket

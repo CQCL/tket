@@ -64,9 +64,9 @@ def test_QubitPauliOperator_opmult() -> None:
     x = Symbol("x")
     qpo2 = QubitPauliOperator({QubitPauliString(Qubit(0), Pauli.X): x})
     qpo3 = qpo * qpo2  # order matters!
-    assert qpo3._dict[QubitPauliString(Qubit(0), Pauli.Y)] == 1j * x * y
+    assert qpo3._dict[QubitPauliString(Qubit(0), Pauli.Y)] == 1j * x * y  # noqa: SLF001
     qpo4 = qpo2 * qpo
-    assert qpo4._dict[QubitPauliString(Qubit(0), Pauli.Y)] == -1j * x * y
+    assert qpo4._dict[QubitPauliString(Qubit(0), Pauli.Y)] == -1j * x * y  # noqa: SLF001
 
 
 def test_QubitPauliOperator_substitution() -> None:
@@ -130,7 +130,7 @@ def test_QubitPauliOperator_matrices() -> None:
 
     assert np.array_equal(
         np.kron(op_mat, np.eye(2)),
-        named_op.to_sparse_matrix(named_qbs + [Qubit("a", 1)]).toarray(),
+        named_op.to_sparse_matrix([*named_qbs, Qubit("a", 1)]).toarray(),
     )
 
     # https://github.com/CQCL/tket/issues/294
@@ -155,16 +155,6 @@ def test_QubitPauliOperator_compression() -> None:
     assert im(op[qpsYY])
     assert op[qpsYY].subs({x: 0.001}).equals(1.0j)
     assert op[qpsYY].subs({x: 10}).equals(1.0j)
-
-
-if __name__ == "__main__":
-    test_QubitPauliOperator_addition()
-    test_QubitPauliOperator_scalarmult()
-    test_QubitPauliOperator_opmult()
-    test_QubitPauliOperator_substitution()
-    test_QubitPauliOperator_io()
-    test_QubitPauliOperator_matrices()
-    test_QubitPauliOperator_compression()
 
 
 def test_QubitPauliString_serialization() -> None:

@@ -1393,10 +1393,8 @@ std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
     post.add_op<unsigned>(OpType::Z, {1});
     pre.add_phase(-0.5);
   }
-  // Cheeky way of reversing order of ops.
-  post = post.dagger();
-
-  return {pre, {a, b, c}, post};
+  // Calling post.dagger() is a cheeky way of reversing order of ops.
+  return {pre, {a, b, c}, post.dagger()};
 }
 
 }  // namespace tket
