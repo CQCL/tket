@@ -112,9 +112,11 @@ jobs:
       - name: Upload Report
         run: |
           # https://stackoverflow.com/a/78933760
-          export FILE_PATH="report.pdf"
-          export CHANNEL_ID="G01CP0YFFA7"
-          export TOKEN="${{ secrets.PYTKET_BENCHMARKING_SLACK_BOT_TOKEN }}"
+
+          PYTKET_VERSION=$(python -c "import pytket; print(pytket.__version__)")
+          FILE_PATH="report.pdf"
+          CHANNEL_ID="G01CP0YFFA7"
+          TOKEN="${{ secrets.PYTKET_BENCHMARKING_SLACK_BOT_TOKEN }}"
           FILENAME=$(basename "$FILE_PATH")
 
           # Get the file size using macOS compatible stat command. use stat -c%s "$FILE_PATH" otherwise
@@ -153,7 +155,7 @@ jobs:
                     }
                   ],
                   "channel_id": "'"$CHANNEL_ID"'",
-                  "initial_comment": "benchmark"
+                  "initial_comment": "Benchmarking results with pytket version '"$PYTKET_VERSION"'"
                 }' \
             https://slack.com/api/files.completeUploadExternal)
 
