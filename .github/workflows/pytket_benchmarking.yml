@@ -115,7 +115,7 @@ jobs:
 
           PYTKET_VERSION=$(python -c "import pytket; print(pytket.__version__)")
           FILE_PATH="report.pdf"
-          CHANNEL_ID="G01CP0YFFA7"
+          CHANNEL_ID="C08L3TM0QBV"
           TOKEN="${{ secrets.PYTKET_BENCHMARKING_SLACK_BOT_TOKEN }}"
           FILENAME=$(basename "$FILE_PATH")
 
