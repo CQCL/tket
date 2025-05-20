@@ -228,6 +228,20 @@ SCENARIO("Test MappingFrontier get_default_to_linear_boundary_unit_map") {
   REQUIRE(d_2_q[Qubit(3)] == qubits[3]);
 }
 
+SCENARIO(
+    "Test MappingFrontier get_default_to_linear_boundary_unit_map with Bit") {
+  Circuit circ;
+  circ.add_q_register("test_nodes", 4);
+  circ.add_c_register("test_nodes_classical", 4);
+  std::vector<Qubit> qubits = circ.all_qubits();
+  MappingFrontier mf(circ);
+  unit_map_t d_2_q = mf.get_default_to_linear_boundary_unit_map();
+  REQUIRE(d_2_q[Qubit(0)] == qubits[0]);
+  REQUIRE(d_2_q[Qubit(1)] == qubits[1]);
+  REQUIRE(d_2_q[Qubit(2)] == qubits[2]);
+  REQUIRE(d_2_q[Qubit(3)] == qubits[3]);
+}
+
 SCENARIO("Test MappingFrontier get_frontier_subcircuit.") {
   GIVEN(
       "A typical circuit, MappingFrontier with depth 1 and depth 3 "

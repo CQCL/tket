@@ -627,8 +627,10 @@ unit_map_t MappingFrontier::get_default_to_linear_boundary_unit_map() const {
   unit_map_t default_to_u_frontier_map;
   for (const std::pair<UnitID, VertPort>& pair :
        this->linear_boundary->get<TagKey>()) {
-    default_to_u_frontier_map.insert({Qubit(i), pair.first});
-    i++;
+    if (pair.first.type() == UnitType::Qubit) {
+      default_to_u_frontier_map.insert({Qubit(i), pair.first});
+      i++;
+    }
   }
   return default_to_u_frontier_map;
 }
