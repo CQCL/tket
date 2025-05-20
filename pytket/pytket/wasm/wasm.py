@@ -40,7 +40,7 @@ class WasmModuleHandler:
     _functions: dict[str, tuple[int, int]]
     _unsupported_functions: list[str]
 
-    type_lookup = {
+    type_lookup = {  # noqa: RUF012
         LANG_TYPE_I32: "i32",
         LANG_TYPE_I64: "i64",
         LANG_TYPE_F32: "f32",
@@ -55,17 +55,14 @@ class WasmModuleHandler:
         Construct a wasm module handler
 
         :param wasm_module: A wasm module in binary format.
-        :type wasm_module: bytes
         :param check: If ``True`` checks file for compatibility with wasm
           standards. If ``False`` checks are skipped.
-        :type check: bool
         :param int_size: length of the integer that is used in the wasm file
-        :type int_size: int
         """
         self._int_size = int_size
-        if int_size == 32:
+        if int_size == 32:  # noqa: PLR2004
             self._int_type = self.type_lookup[LANG_TYPE_I32]
-        elif int_size == 64:
+        elif int_size == 64:  # noqa: PLR2004
             self._int_type = self.type_lookup[LANG_TYPE_I64]
         else:
             raise ValueError(
@@ -74,7 +71,7 @@ class WasmModuleHandler:
 
         # stores the names of the functions mapped
         #  to the number of parameters and the number of return values
-        self._functions = dict()
+        self._functions = {}
 
         # contains the list of functions that are not allowed
         # to use in pytket (because of types that are not integers
@@ -87,7 +84,7 @@ class WasmModuleHandler:
         if check:
             self.check()
 
-    def check(self) -> None:
+    def check(self) -> None:  # noqa: PLR0912, PLR0915
         """Collect functions from the module that can be used with pytket.
 
         Populates the internal list of supported and unsupported functions
@@ -217,8 +214,7 @@ class WasmModuleHandler:
 
         for x in self.unsupported_functions:
             result += (
-                f"unsupported function with invalid "
-                f"parameter or result type: '{x}' \n"
+                f"unsupported function with invalid parameter or result type: '{x}' \n"
             )
 
         return result
@@ -258,11 +254,8 @@ class WasmModuleHandler:
         ValueError.
 
         :param function_name: name of the function that is checked
-        :type function_name: str
         :param number_of_parameters: number of integer parameters of the function
-        :type number_of_parameters: int
         :param number_of_returns: number of integer return values of the function
-        :type number_of_returns: int
         :return: true if the signature and the name of the function is correct"""
         if not self.checked:
             raise ValueError(
@@ -314,12 +307,9 @@ class WasmFileHandler(WasmModuleHandler):
         memory.
 
         :param filepath: Path to the wasm file
-        :type filepath: str
         :param check_file: If ``True`` checks file for compatibility with wasm
           standards. If ``False`` checks are skipped.
-        :type check_file: bool
         :param int_size: length of the integer that is used in the wasm file
-        :type int_size: int
         """
         if not exists(filepath):
             raise ValueError("wasm file not found at given path")

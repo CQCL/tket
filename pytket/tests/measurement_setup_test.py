@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import pickle
 from typing import Any
 
 from pytket import logging
@@ -37,7 +38,7 @@ def test_parity_flip() -> None:
     circ.Measure(0, 0)
     ms.add_measurement_circuit(circ)
 
-    tensor = dict()
+    tensor = {}
     tensor[Qubit(0)] = Pauli.Z
 
     mbm = MeasurementBitMap(0, [0], True)
@@ -127,10 +128,10 @@ def test_serialization() -> None:
     assert j_ms["result_map"][2] == [zi.to_list(), [mbm.to_dict(), mbm2.to_dict()]]
     assert MeasurementSetup.from_dict(j_ms).to_dict() == j_ms
 
+    s = pickle.dumps(ms)
+    ms1 = pickle.loads(s)
+    assert ms.to_dict() == ms1.to_dict()
 
-if __name__ == "__main__":
-    test_empty_setup()
-    test_parity_flip()
-    test_reduction()
-    test_serialization()
-    # test_error_logging()
+    s = pickle.dumps(mbm)
+    mbm1 = pickle.loads(s)
+    assert mbm.to_dict() == mbm1.to_dict()

@@ -13,13 +13,6 @@
 // limitations under the License.
 
 #include <nanobind/nanobind.h>
-#include <nanobind/stl/map.h>
-#include <nanobind/stl/optional.h>
-#include <nanobind/stl/pair.h>
-#include <nanobind/stl/shared_ptr.h>
-#include <nanobind/stl/string.h>
-#include <nanobind/stl/variant.h>
-#include <nanobind/stl/vector.h>
 
 #include <memory>
 #include <optional>
@@ -28,6 +21,7 @@
 #include "UnitRegister.hpp"
 #include "add_gate.hpp"
 #include "circuit_registers.hpp"
+#include "nanobind-stl.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/ConjugationBox.hpp"

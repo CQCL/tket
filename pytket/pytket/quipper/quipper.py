@@ -52,7 +52,7 @@ class TypeAssignment(NamedTuple):
     type: TypeAssignment_Type
 
 
-class Gate:
+class _Gate:
     pass
 
 
@@ -74,7 +74,7 @@ class QGate_Op(Enum):
 
 
 class QGate(
-    Gate,
+    _Gate,
     NamedTuple(
         "QGate",
         [
@@ -90,12 +90,12 @@ class QGate(
 
 @unique
 class QRot_Op(Enum):
-    ExpZt = 1  # exp(−i Z t)
+    ExpZt = 1  # exp(−i Z t)  # noqa: RUF003
     R = 2  # R(2 / 2^t) (notation is confusing but see Monad.hs)
 
 
 class QRot(
-    Gate,
+    _Gate,
     NamedTuple(
         "QRot",
         [("op", QRot_Op), ("inverted", bool), ("timestep", float), ("wire", Wire)],
@@ -104,36 +104,36 @@ class QRot(
     pass
 
 
-class QInit(Gate, NamedTuple("QInit", [("value", bool), ("wire", Wire)])):
+class QInit(_Gate, NamedTuple("QInit", [("value", bool), ("wire", Wire)])):
     pass
 
 
-class CInit(Gate, NamedTuple("CInit", [("value", bool), ("wire", Wire)])):
+class CInit(_Gate, NamedTuple("CInit", [("value", bool), ("wire", Wire)])):
     pass
 
 
-class QTerm(Gate, NamedTuple("QTerm", [("value", bool), ("wire", Wire)])):
+class QTerm(_Gate, NamedTuple("QTerm", [("value", bool), ("wire", Wire)])):
     pass
 
 
-class CTerm(Gate, NamedTuple("CTerm", [("value", bool), ("wire", Wire)])):
+class CTerm(_Gate, NamedTuple("CTerm", [("value", bool), ("wire", Wire)])):
     pass
 
 
-class QMeas(Gate, NamedTuple("QMeas", [("wire", Wire)])):
+class QMeas(_Gate, NamedTuple("QMeas", [("wire", Wire)])):
     pass
 
 
-class QDiscard(Gate, NamedTuple("QDiscard", [("wire", Wire)])):
+class QDiscard(_Gate, NamedTuple("QDiscard", [("wire", Wire)])):
     pass
 
 
-class CDiscard(Gate, NamedTuple("CDiscard", [("wire", Wire)])):
+class CDiscard(_Gate, NamedTuple("CDiscard", [("wire", Wire)])):
     pass
 
 
 class SubroutineCall(
-    Gate,
+    _Gate,
     NamedTuple(
         "SubroutineCall",
         [
@@ -151,7 +151,7 @@ class SubroutineCall(
 
 
 class Comment(
-    Gate,
+    _Gate,
     NamedTuple(
         "Comment",
         [
@@ -166,7 +166,7 @@ class Comment(
 
 class Program(NamedTuple):
     inputs: list[TypeAssignment]
-    gates: list[Gate]
+    gates: list[_Gate]
     outputs: list[TypeAssignment]
 
 
@@ -190,7 +190,7 @@ class Start(NamedTuple):
 
 
 # Transformer
-class QuipperTransformer(Transformer):
+class _QuipperTransformer(Transformer):
     def int(self, t: list) -> int:
         return int(t[0])
 
@@ -208,7 +208,7 @@ class QuipperTransformer(Transformer):
     def wire_string_list(self, t: list) -> list[tuple[Wire, str]]:
         wires = (el for i, el in enumerate(t) if i % 2 == 0)
         labels = (el for i, el in enumerate(t) if i % 2 == 1)
-        return list(zip(wires, labels))
+        return list(zip(wires, labels, strict=False))
 
     def pos_control_wire(self, t: list) -> ControlWire:
         return ControlWire(t[0], False)
@@ -225,10 +225,10 @@ class QuipperTransformer(Transformer):
     def arity(self, t: list) -> list[Tree]:
         return list(t)
 
-    def qgate(self, t: list) -> QGate:
+    def qgate(self, t: list) -> QGate:  # noqa: PLR0912
         ops = QGate_Op
         n = t[0]
-        if n == "not" or n == "x" or n == "X":
+        if n in {"not", "x", "X"}:
             op = ops.Not
         elif n == "H":
             op = ops.H
@@ -305,18 +305,18 @@ class QuipperTransformer(Transformer):
         )
 
     def comment(self, t: list) -> Comment:
-        wire_comments = t[2] if len(t) > 2 else []
+        wire_comments = t[2] if len(t) > 2 else []  # noqa: PLR2004
         return Comment(
             comment=t[0], inverted=len(t[1].children) > 0, wire_comments=wire_comments
         )
 
     def control_app(self, t: list) -> Control:
         if not t:
-            return Control(controlled=list(), no_control=False)
-        if len(t) == 2:
+            return Control(controlled=[], no_control=False)
+        if len(t) == 2:  # noqa: PLR2004
             return Control(controlled=t[0], no_control=True)
         if t[0] == "with nocontrol":
-            return Control(controlled=list(), no_control=True)
+            return Control(controlled=[], no_control=True)
         return Control(controlled=t[0], no_control=False)
 
     def circuit(self, t: list) -> Program:
@@ -339,23 +339,23 @@ class QuipperTransformer(Transformer):
 
 
 # Utility function
-def allowed(op: str, arity: int) -> bool:
+def _allowed(op: str, arity: int) -> bool:
     if op in ["Not", "IX", "H", "Y", "Z", "S", "T", "E", "Omega", "V"]:
         return arity == 1
     if op in ["Swap", "W"]:
-        return arity == 2
+        return arity == 2  # noqa: PLR2004
     # MultiNot
     return True
 
 
 # Class for constructing a pytket Circuit from a parsed Quipper program
-class CircuitMaker:
+class _CircuitMaker:
     def __init__(self, subr: list[Subroutine]) -> None:
-        self.subrd = dict((s.name, s) for s in subr)
+        self.subrd = {s.name: s for s in subr}
         if len(self.subrd) != len(subr):
             raise TypeError("Repeated subroutine names")
 
-    def make_circuit(self, circ: Program) -> Circuit:
+    def make_circuit(self, circ: Program) -> Circuit:  # noqa: PLR0912, PLR0915
         inps, outs, gates = circ.inputs, circ.outputs, circ.gates
         if inps != outs:
             raise TypeError("Inputs don't match outputs")
@@ -364,8 +364,8 @@ class CircuitMaker:
         n_qbits = len(qbits)
         n_cbits = len(cbits)
         # Construct mappings from wire labels to tket indices.
-        tkqbits = dict((qbits[i], i) for i in range(n_qbits))
-        tkcbits = dict((cbits[i], i) for i in range(n_cbits))
+        tkqbits = {qbits[i]: i for i in range(n_qbits)}
+        tkcbits = {cbits[i]: i for i in range(n_cbits)}
         # Construct circuit in tket.
         c = Circuit(n_qbits, n_cbits)
         for gate in gates:
@@ -404,8 +404,8 @@ class CircuitMaker:
                 inv = gate.inverted
                 wires = [tkqbits[wire.i] for wire in gate.wires]  # all must be qubits
                 n_wires = len(wires)
-                if not allowed(op, n_wires):
-                    raise TypeError("'%s' gate with %d wires" % (op, n_wires))
+                if not _allowed(op, n_wires):
+                    raise TypeError("'%s' gate with %d wires" % (op, n_wires))  # noqa: UP031
                 n_ctrls = len(qctrls)
                 # Negative control values must be handled using NOT gates
                 # either side.
@@ -416,7 +416,7 @@ class CircuitMaker:
                         c.X(wires[0])
                     elif n_ctrls == 1:
                         c.CX(qctrls[0], wires[0])
-                    elif n_ctrls == 2:
+                    elif n_ctrls == 2:  # noqa: PLR2004
                         c.CCX(qctrls[0], qctrls[1], wires[0])
                     else:
                         c.add_gate(OpType.CnX, qctrls + wires)
@@ -435,10 +435,10 @@ class CircuitMaker:
                             c.X(wire)
                         elif n_ctrls == 1:
                             c.CX(qctrls[0], wire)
-                        elif n_ctrls == 2:
+                        elif n_ctrls == 2:  # noqa: PLR2004
                             c.CCX(qctrls[0], qctrls[1], wire)
                         else:
-                            c.add_gate(OpType.CnX, qctrls + [wire])
+                            c.add_gate(OpType.CnX, [*qctrls, wire])
                 elif op == "H":
                     if n_ctrls == 0:
                         c.H(wires[0])
@@ -541,7 +541,7 @@ class CircuitMaker:
                     else:
                         raise NotImplementedError("Controlled W")
                 else:
-                    raise TypeError("Unknown op type: %s" % op)
+                    raise TypeError(f"Unknown op type: {op}")
                 # Apply the NOT gates again for the negative controls.
                 for ctrl in neg_qctrls:
                     c.X(ctrl)
@@ -561,7 +561,7 @@ class CircuitMaker:
                     else:
                         c.Rz(2 / t, wire)
                 else:
-                    raise TypeError("Unknown op type: %s" % op)
+                    raise TypeError(f"Unknown op type: {op}")
             # QInit, QTerm, CInit, CTerm represent 'temporary' wires that
             # only occupy part of a circuit (and can be initialized with 0/1).
             # Not supported in pytket.
@@ -595,7 +595,7 @@ class CircuitMaker:
             elif isinstance(gate, Comment):
                 pass
             else:
-                raise TypeError("Unknown gate type: %s" % type(gate))
+                raise TypeError(f"Unknown gate type: {type(gate)}")
         return c
 
 
@@ -631,7 +631,7 @@ def circuit_from_quipper(input_file: str) -> Circuit:
     with open(input_file) as f:
         quip = f.read()
 
-    # Parse the circuit using the QuipperTransformer.
+    # Parse the circuit using the _QuipperTransformer.
     x = Lark(
         """
         start : circuit subroutine* _NEWLINE*
@@ -711,11 +711,11 @@ def circuit_from_quipper(input_file: str) -> Circuit:
         int : INT
         """,
         parser="lalr",
-        transformer=QuipperTransformer(),
+        transformer=_QuipperTransformer(),
     ).parse(quip)
 
     # Load the subroutine list.
-    maker = CircuitMaker(x.subroutines)  # type: ignore
+    maker = _CircuitMaker(x.subroutines)  # type: ignore
 
     # Make the tket circuit.
     return maker.make_circuit(x.circuit)  # type: ignore

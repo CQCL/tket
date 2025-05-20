@@ -75,6 +75,10 @@ class MeasurementBitMap:
     def from_dict(arg: dict, /) -> MeasurementBitMap:
         """Construct MeasurementBitMap instance from dict representation."""
 
+    def __getstate__(self) -> tuple: ...
+
+    def __setstate__(self, arg: tuple, /) -> None: ...
+
 class MeasurementSetup:
     """
     Encapsulates an experiment in which the expectation value of an operator is to be measured via decomposition into QubitPauliStrings. Each tensor expectation value can be measured using shots. These values are then summed together with some weights to retrieve the desired operator expctation value.
@@ -116,6 +120,10 @@ class MeasurementSetup:
     @staticmethod
     def from_dict(arg: dict, /) -> MeasurementSetup:
         """Construct MeasurementSetup instance from dict representation."""
+
+    def __getstate__(self) -> tuple: ...
+
+    def __setstate__(self, arg: tuple, /) -> None: ...
 
 def measurement_reduction(strings: Sequence[pytket._tket.pauli.QubitPauliString], strat: PauliPartitionStrat, method: GraphColourMethod = GraphColourMethod.Lazy, cx_config: pytket._tket.circuit.CXConfigType = pytket._tket.circuit.CXConfigType.Snake) -> MeasurementSetup:
     """

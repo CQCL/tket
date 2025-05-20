@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import pickle
 from typing import Any
 
 import numpy as np
@@ -90,12 +91,24 @@ from pytket.passes import (
 from pytket.pauli import Pauli
 from pytket.placement import GraphPlacement, Placement
 from pytket.predicates import (
+    CliffordCircuitPredicate,
+    CommutableMeasuresPredicate,
     CompilationUnit,
+    ConnectivityPredicate,
     DirectednessPredicate,
     GateSetPredicate,
     MaxNClRegPredicate,
+    MaxNQubitsPredicate,
+    MaxTwoQubitGatesPredicate,
     NoBarriersPredicate,
+    NoClassicalBitsPredicate,
     NoClassicalControlPredicate,
+    NoFastFeedforwardPredicate,
+    NoMidMeasurePredicate,
+    NormalisedTK2Predicate,
+    NoSymbolsPredicate,
+    NoWireSwapsPredicate,
+    PlacementPredicate,
 )
 from pytket.transform import CXConfigType, PauliSynthStrat, Transform
 
@@ -366,7 +379,7 @@ def test_rename_qubits_pass() -> None:
     cu = CompilationUnit(circ)
     p.apply(cu)
     newcirc = cu.circuit
-    assert set(newcirc.qubits) == set([Qubit("b", i) for i in range(2)])
+    assert set(newcirc.qubits) == {Qubit("b", i) for i in range(2)}
 
 
 def gate_count_metric(circ: Circuit) -> int:
@@ -763,12 +776,12 @@ def test_pauli_squash() -> None:
     c = Circuit(3)
     c.add_pauliexpbox(PauliExpBox([Pauli.Z, Pauli.X, Pauli.Z], 0.8), [0, 1, 2])
     c.add_pauliexpbox(PauliExpBox([Pauli.Y, Pauli.X, Pauli.X], 0.2), [0, 1, 2])
-    for strat in [
+    for strat in [  # noqa: B007
         PauliSynthStrat.Individual,
         PauliSynthStrat.Pairwise,
         PauliSynthStrat.Sets,
     ]:
-        for cx_config in [CXConfigType.Snake, CXConfigType.Star, CXConfigType.Tree]:
+        for cx_config in [CXConfigType.Snake, CXConfigType.Star, CXConfigType.Tree]:  # noqa: B007
             c1 = c.copy()
             assert PauliSquash().apply(c1)
             assert c1.n_gates_of_type(OpType.CX) <= 4
@@ -868,7 +881,7 @@ def test_iswapmax_autorebase() -> None:
 def test_flatten_relabel_pass() -> None:
     c = Circuit(3)
     c.H(1).H(2)
-    rename_map: RenameUnitsMap = dict()
+    rename_map: RenameUnitsMap = {}
     rename_map[Qubit(0)] = Qubit("a", 4)
     rename_map[Qubit(1)] = Qubit("b", 7)
     rename_map[Qubit(2)] = Qubit("a", 2)
@@ -898,6 +911,23 @@ def test_remove_blank_wires_pass() -> None:
     FlattenRelabelRegistersPass("a").apply(cu)
     assert cu.circuit.qubits == [Qubit("a", 0)]
     assert cu.circuit.bits == c.bits
+
+    c = Circuit()
+    c.add_bit(Bit(1))
+    c1 = c.copy()
+    c1.remove_blank_wires()
+    assert len(c1.bits) == 1  # the empty wire is not in a register
+    c1 = c.copy()
+    c1.remove_blank_wires(remove_classical_only_at_end_of_register=False)
+    assert len(c1.bits) == 0
+
+    c = Circuit(1, 2).H(0).Measure(0, 1)
+    c1 = c.copy()
+    c1.remove_blank_wires()
+    assert len(c1.bits) == 2  # the empty wire is not at the end of a register
+    c1 = c.copy()
+    c1.remove_blank_wires(remove_classical_only_at_end_of_register=False)
+    assert len(c1.bits) == 1
 
 
 def test_round_angles_pass() -> None:
@@ -1040,7 +1070,7 @@ def test_clifford_push_through_measures() -> None:
     assert coms[7].op.type == OpType.CopyBits
 
 
-def test_greedy_pauli_synth() -> None:
+def test_greedy_pauli_synth() -> None:  # noqa: PLR0915
     circ = Circuit(name="test")
     rega = circ.add_q_register("a", 2)
     regb = circ.add_q_register("b", 2)
@@ -1065,7 +1095,7 @@ def test_greedy_pauli_synth() -> None:
     circ.add_gate(range_predicate, [0, 1, 2, 3])
     circ.add_c_predicate(eq_pred_values, [0, 1], 2, "EQ")
     circ.add_c_modifier(and_values, [1], 2)
-    circ._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0])
+    circ._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0])  # noqa: SLF001
     circ.measure_all()
     circ.Reset(0)
     circ.add_pauliexpbox(pg1, [2, 3])
@@ -1079,7 +1109,7 @@ def test_greedy_pauli_synth() -> None:
     d.add_gate(range_predicate, [0, 1, 2, 3])
     d.add_c_predicate(eq_pred_values, [0, 1], 2, "EQ")
     d.add_c_modifier(and_values, [1], 2)
-    d._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0])
+    d._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0])  # noqa: SLF001
     d.measure_all()
     d.Reset(0)
     d.H(2)
@@ -1174,23 +1204,40 @@ def test_zx_optimisation_wireswaps() -> None:
     assert not c.has_implicit_wireswaps
 
 
-if __name__ == "__main__":
-    test_predicate_generation()
-    test_compilation_unit_generation()
-    test_compilerpass_seq()
-    test_rebase_pass_generation()
-    test_routing_and_placement_pass()
-    test_default_mapping_pass()
-    test_SynthesiseTket_creation()
-    test_directed_cx_pass()
-    test_decompose_routing_gates_to_cxs()
-    test_user_defined_swap_decomp()
-    test_squash_chains()
-    test_apply_pass_with_callbacks()
-    test_remove_barriers()
-    test_ZZPhaseToRz()
-    test_flatten_relabel_pass()
-    test_rebase_custom_tk2()
-    test_selectively_decompose_boxes()
-    test_clifford_push_through_measures()
-    test_rz_sx_decomp()
+def test_initial_and_final_map_types() -> None:
+    c = Circuit(1).H(0)
+    cu = CompilationUnit(c)
+    CliffordSimp().apply(cu)
+    im = cu.initial_map
+    fm = cu.final_map
+    im0, im1 = next(iter(im.items()))
+    fm0, fm1 = next(iter(fm.items()))
+    assert isinstance(im0, Qubit)
+    assert isinstance(im1, Qubit)
+    assert isinstance(fm0, Qubit)
+    assert isinstance(fm1, Qubit)
+
+
+def test_pickling() -> None:
+    for pred in [
+        GateSetPredicate({OpType.CX, OpType.TK1}),
+        NoClassicalControlPredicate(),
+        NoFastFeedforwardPredicate(),
+        NoClassicalBitsPredicate(),
+        NoWireSwapsPredicate(),
+        MaxTwoQubitGatesPredicate(),
+        ConnectivityPredicate(Architecture([(0, 1), (1, 2), (2, 3), (3, 0)])),
+        DirectednessPredicate(Architecture([(0, 1)])),
+        CliffordCircuitPredicate(),
+        MaxNQubitsPredicate(6),
+        MaxNClRegPredicate(50),
+        PlacementPredicate({Node(1), Node(3)}),
+        NoBarriersPredicate(),
+        CommutableMeasuresPredicate(),
+        NoMidMeasurePredicate(),
+        NoSymbolsPredicate(),
+        NormalisedTK2Predicate(),
+    ]:
+        s = pickle.dumps(pred)
+        pred1 = pickle.loads(s)
+        assert pred.to_dict() == pred1.to_dict()

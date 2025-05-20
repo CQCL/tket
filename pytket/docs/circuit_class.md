@@ -1,37 +1,38 @@
-pytket.circuit.Circuit
-======================
-:py:class:`Circuit` objects provide an abstraction of quantum circuits. They consist of a set of qubits/quantum wires and a collection of operations applied to them in a given order. These wires have open inputs and outputs, rather than assuming any fixed input state.
+# pytket.circuit.Circuit
 
-See the `pytket User Manual <https://docs.quantinuum.com/tket/user-guide/manual/manual_circuit.html>`_ for a step-by-step tutorial on constructing circuits.
+{py:class}`Circuit` objects provide an abstraction of quantum circuits. They consist of a set of qubits/quantum wires and a collection of operations applied to them in a given order. These wires have open inputs and outputs, rather than assuming any fixed input state.
 
-See also the notebook tutorials on `circuit generation <https://docs.quantinuum.com/tket/user-guide/examples/circuit_construction/circuit_generation_example.html>`_ and `circuit analysis <https://docs.quantinuum.com/tket/user-guide/examples/circuit_construction/circuit_analysis_example.html>`_.
+See the [pytket User Manual](https://docs.quantinuum.com/tket/user-guide/manual/manual_circuit.html) for a step-by-step tutorial on constructing circuits.
 
+See also the notebook tutorials on [circuit generation](https://docs.quantinuum.com/tket/user-guide/examples/circuit_construction/circuit_generation_example.html) and [circuit analysis](https://docs.quantinuum.com/tket/user-guide/examples/circuit_construction/circuit_analysis_example.html).
 
-Many of the :py:class:`~pytket.circuit.Circuit` methods described below append a gate or box to
-the end of the circuit. Where ``kwargs`` are indicated in these methods, the
+Many of the {py:class}`~pytket.circuit.Circuit` methods described below append a gate or box to
+the end of the circuit. Where `kwargs` are indicated in these methods, the
 following keyword arguments are supported:
 
-- ``opgroup`` (:py:class:`str`): name of the associated operation group, if any
-- ``condition`` (:py:class:`Bit`, :py:class:`BitLogicExp` or :py:class:`Predicate`): classical condition for applying operation
-- ``condition_bits`` (list of :py:class:`Bit`): classical bits on which to condition operation
-- ``condition_value`` (:py:class:`int`): required value of condition bits (little-endian), defaulting to all-1s if not specified
+- `opgroup` ({py:class}`str`): name of the associated operation group, if any
+- `condition` ({py:class}`Bit`, {py:class}`BitLogicExp` or {py:class}`Predicate`): classical condition for applying operation
+- `condition_bits` (list of {py:class}`Bit`): classical bits on which to condition operation
+- `condition_value` ({py:class}`int`): required value of condition bits (little-endian), defaulting to all-1s if not specified
 
 (Thus there are two ways to express classical conditions: either using a general
-``condition``, or using the pair ``condition_bits`` and ``condition_value`` to
+`condition`, or using the pair `condition_bits` and `condition_value` to
 condition on a specified set of bit values.)
 
-..
-   Sphinx doesn't seem to offer much control over how the methods and properties are ordered in the docs
-   We list the methods and properties manually (for now) to ensure that the most important methods (e.g. Circuit.add_gate) 
-   are closer to the top of the page. Some less important methods like Circuit.YYPhase
-   and Circuit.add_multiplexed_tensored_u2 are near the bottom.
-   Since the Circuit class is so big we use the check_circuit_class_docs.py script to check that we haven't missed anything. 
+% Sphinx doesn't seem to offer much control over how the methods and properties are ordered in the docs
+% We list the methods and properties manually (for now) to ensure that the most important methods (e.g. Circuit.add_gate)
+% are closer to the top of the page. Some less important methods like Circuit.YYPhase
+% and Circuit.add_multiplexed_tensored_u2 are near the bottom.
 
+```{eval-rst}
 .. currentmodule:: pytket.circuit.Circuit
-.. autoclass:: pytket.circuit.Circuit
+```
+
+```{eval-rst}
+.. autoclass:: pytket._tket.circuit.Circuit
 
    .. automethod:: __init__
-   
+
    .. automethod:: __iter__
 
    .. automethod:: __rshift__
@@ -161,7 +162,7 @@ condition on a specified set of bit values.)
    .. automethod:: add_c_or
 
    .. automethod:: add_c_xor
-   
+
    .. automethod:: add_c_range_predicate
 
    .. automethod:: add_c_and_to_registers
@@ -183,7 +184,7 @@ condition on a specified set of bit values.)
    .. automethod:: add_c_transform
 
    .. automethod:: add_c_modifier
-      
+
    .. automethod:: add_c_predicate
 
    .. automethod:: add_clexpr
@@ -197,7 +198,7 @@ condition on a specified set of bit values.)
    .. automethod:: qubit_discard_all
 
    .. automethod:: qubit_is_created
-   
+
    .. automethod:: qubit_is_discarded
 
    .. autoproperty:: created_qubits
@@ -205,7 +206,7 @@ condition on a specified set of bit values.)
    .. autoproperty:: discarded_qubits
 
    .. autoproperty:: valid_connectivity
-   
+
    .. automethod:: replace_SWAPs
 
    .. automethod:: replace_implicit_wire_swaps
@@ -218,7 +219,7 @@ condition on a specified set of bit values.)
    Convenience methods for appending gates
    ---------------------------------------
 
-   .. Note:: For adding gates to a circuit the :py:meth:`Circuit.add_gate` method is sufficient to append any :py:class:`OpType` to a :py:class:`Circuit`. 
+   .. Note:: For adding gates to a circuit the :py:meth:`Circuit.add_gate` method is sufficient to append any :py:class:`OpType` to a :py:class:`Circuit`.
       Some gates can only be added with :py:meth:`Circuit.add_gate`. For other more commonly used operations these can be added to a :py:class:`Circuit` directly using the convenience methods below.
 
    .. automethod:: H
@@ -260,7 +261,7 @@ condition on a specified set of bit values.)
    .. automethod:: U1
 
    .. automethod:: U2
-   
+
    .. automethod:: U3
 
    .. automethod:: CX
@@ -304,7 +305,7 @@ condition on a specified set of bit values.)
    .. automethod:: Reset
 
    .. automethod:: Phase
-   
+
    .. automethod:: SWAP
 
    .. automethod:: CCX
@@ -316,13 +317,13 @@ condition on a specified set of bit values.)
    .. automethod:: ISWAP
 
    .. automethod:: ISWAPMax
-   
+
    .. automethod:: PhasedISWAP
 
    .. automethod:: FSim
 
    .. automethod:: Sycamore
-   
+
    .. automethod:: XXPhase
 
    .. automethod:: XXPhase3
@@ -347,7 +348,7 @@ condition on a specified set of bit values.)
    ::
 
       from pytket.circuit import Circuit, CircBox
-     
+
       sub_circ = Circuit(2).CX(0, 1).Rz(0.25, 1).CX(0, 1)
 
       box = CircBox(sub_circ)
@@ -364,9 +365,9 @@ condition on a specified set of bit values.)
    .. automethod:: add_circbox_with_regmap
 
    .. automethod:: add_unitary1qbox
-   
+
    .. automethod:: add_unitary2qbox
-   
+
    .. automethod:: add_unitary3qbox
 
    .. automethod:: add_expbox
@@ -382,11 +383,11 @@ condition on a specified set of bit values.)
    .. automethod:: add_phasepolybox
 
    .. automethod:: add_toffolibox
-   
+
    .. automethod:: add_dummybox
 
    .. automethod:: add_qcontrolbox
-   
+
    .. automethod:: add_custom_gate
 
    .. automethod:: add_assertion
@@ -394,15 +395,15 @@ condition on a specified set of bit values.)
    .. automethod:: add_multiplexor
 
    .. automethod:: add_multiplexedrotation
-   
+
    .. automethod:: add_multiplexedu2
 
    .. automethod:: add_multiplexed_tensored_u2
-      
+
    .. automethod:: add_state_preparation_box
 
    .. automethod:: add_diagonal_box
 
    .. automethod:: add_conjugation_box
-   
 
+```

@@ -15,6 +15,7 @@
 #include "tket/Predicates/Predicates.hpp"
 
 #include "tket/Mapping/Verification.hpp"
+#include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeFunctions.hpp"
 #include "tket/Placement/Placement.hpp"
 #include "tket/Transformations/MeasurePass.hpp"
@@ -449,7 +450,8 @@ bool CliffordCircuitPredicate::verify(const Circuit& circ) const {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     if (op->get_desc().is_meta()) continue;
-    if (op->get_type() == OpType::Measure) continue;
+    OpType optype = op->get_type();
+    if (optype == OpType::Measure || optype == OpType::Reset) continue;
     if (!op->is_clifford()) return false;
   }
   return true;

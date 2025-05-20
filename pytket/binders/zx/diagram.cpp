@@ -13,19 +13,11 @@
 // limitations under the License.
 
 #include <nanobind/nanobind.h>
-#include <nanobind/stl/list.h>
-#include <nanobind/stl/map.h>
-#include <nanobind/stl/optional.h>
-#include <nanobind/stl/pair.h>
-#include <nanobind/stl/set.h>
-#include <nanobind/stl/shared_ptr.h>
-#include <nanobind/stl/string.h>
-#include <nanobind/stl/tuple.h>
-#include <nanobind/stl/vector.h>
 
 #include <memory>
 
 #include "deleted_hash.hpp"
+#include "nanobind-stl.hpp"
 #include "py_operators.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Converters/Converters.hpp"

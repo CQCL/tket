@@ -33,7 +33,7 @@ from pytket.placement import Placement
 
 
 # simple deterministic heuristic used for testing purposes
-def route_subcircuit_func(
+def route_subcircuit_func(  # noqa: PLR0912
     circuit: Circuit, architecture: Architecture
 ) -> tuple[bool, Circuit, UnitIdMap, UnitIdMap]:
     #     make a replacement circuit with identical unitds
@@ -45,11 +45,11 @@ def route_subcircuit_func(
 
     # "place" unassigned logical qubits to physical qubits
     unused_nodes: list[Node] = []
-    relabelling_map: UnitIdMap = dict()
+    relabelling_map: UnitIdMap = {}
 
     for node in architecture.nodes:
         if node not in circuit.qubits:
-            unused_nodes.append(node)
+            unused_nodes.append(node)  # noqa: PERF401
 
     for qb in circuit.qubits:
         if qb not in architecture.nodes:
@@ -60,7 +60,7 @@ def route_subcircuit_func(
             relabelling_map[qb] = qb
 
     replacement_circuit.rename_units(relabelling_map)
-    permutation_map: UnitIdMap = dict()
+    permutation_map: UnitIdMap = {}
     for qb in replacement_circuit.qubits:
         permutation_map[qb] = qb
 
@@ -342,7 +342,7 @@ def test_basic_mapping() -> None:
     circ.CX(1, 4)
     circ.CX(0, 4)
 
-    init_map = dict()
+    init_map = {}
     init_map[Qubit(0)] = Node(0)
     init_map[Qubit(1)] = Node(1)
     init_map[Qubit(2)] = Node(2)
@@ -366,7 +366,7 @@ def test_MultiGateReorderRoutingMethod() -> None:
     circ.CZ(3, 2)
     circ.CX(3, 4)
 
-    init_map = dict()
+    init_map = {}
     init_map[Qubit(0)] = Node(0)
     init_map[Qubit(1)] = Node(1)
     init_map[Qubit(2)] = Node(2)
@@ -425,7 +425,7 @@ def test_BoxDecompositionRoutingMethod() -> None:
     circ.add_circbox(circ_box, [0, 1, 2, 3, 4])
     circ.CZ(1, 3)
 
-    init_map = dict()
+    init_map = {}
     init_map[Qubit(0)] = Node(0)
     init_map[Qubit(1)] = Node(1)
     init_map[Qubit(2)] = Node(2)
@@ -439,12 +439,3 @@ def test_BoxDecompositionRoutingMethod() -> None:
     )
     assert circ.valid_connectivity(arc, directed=False)
     assert len(circ.get_commands()) == 4
-
-
-if __name__ == "__main__":
-    test_LexiRouteRoutingMethod()
-    test_RoutingMethodCircuit_custom()
-    test_RoutingMethodCircuit_custom_list()
-    test_basic_mapping()
-    test_MultiGateReorderRoutingMethod()
-    test_BoxDecompositionRoutingMethod()

@@ -181,15 +181,3 @@ def test_fullyconnected() -> None:
     # https://github.com/CQCL/tket/issues/390
     d = bi.to_dict()
     assert BackendInfo.from_dict(d) == bi
-
-
-if __name__ == "__main__":
-    test_nodes()
-    test_default_no_fast_feedforward()
-    test_default_no_reset()
-    test_default_no_midcircuit_meas()
-    test_misc()
-    test_serialization_squaregrid()
-    test_serialization_ringarch()
-    test_fullyconnected()
-    test_gate_errors_options()

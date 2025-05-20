@@ -46,6 +46,7 @@
 #include "DAGDefs.hpp"
 #include "ResourceData.hpp"
 #include "Slices.hpp"
+#include "tket/Gate/GatePtr.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
 #include "tket/Utils/Json.hpp"
 #include "tket/Utils/SequencedContainers.hpp"
@@ -321,9 +322,6 @@ class Circuit {
 
   // copy assignment. Moves boundary pointers.
   Circuit &operator=(const Circuit &other);
-
-  // move assigment
-  Circuit &operator=(Circuit &&circ);
 
   /**
    * Run a suite of checks for internal circuit validity.
@@ -668,10 +666,15 @@ class Circuit {
   /**
    * O(V), `V` the number of vertices
    * removes all blank wires
-   * @param keep_blank_classical_wires option to choose if empty classical wire
-   * should be removed as well
+   * @param keep_blank_classical_wires if true, empty classical wires are not
+   * removed
+   * @param remove_classical_only_at_end_of_register if true, empty classical
+   * wires are not removed if they don't belong to a register or there are any
+   * non-empty wires with a higher index in the same register
    */
-  void remove_blank_wires(bool keep_blank_classical_wires = false);
+  void remove_blank_wires(
+      bool keep_blank_classical_wires = false,
+      bool remove_classical_only_at_end_of_register = true);
 
   /**
    * Remove all gates in the circuits that are identities
@@ -1742,7 +1745,26 @@ Vertex Circuit::add_op(
     preds.push_back(pred_out_e);
   }
 
-  Vertex new_v = add_vertex(op, opgroup);
+  Vertex new_v;
+  OpType optype = op->get_type();
+  if (optype == OpType::CnRy && args.size() == 1) {
+    new_v = add_vertex(
+        get_op_ptr(OpType::Ry, as_gate_ptr(op)->get_params()), opgroup);
+  } else if (optype == OpType::CnRx && args.size() == 1) {
+    new_v = add_vertex(
+        get_op_ptr(OpType::Rx, as_gate_ptr(op)->get_params()), opgroup);
+  } else if (optype == OpType::CnRz && args.size() == 1) {
+    new_v = add_vertex(
+        get_op_ptr(OpType::Rz, as_gate_ptr(op)->get_params()), opgroup);
+  } else if (optype == OpType::CnX && args.size() == 1) {
+    new_v = add_vertex(get_op_ptr(OpType::X), opgroup);
+  } else if (optype == OpType::CnZ && args.size() == 1) {
+    new_v = add_vertex(get_op_ptr(OpType::Z), opgroup);
+  } else if (optype == OpType::CnY && args.size() == 1) {
+    new_v = add_vertex(get_op_ptr(OpType::Y), opgroup);
+  } else {
+    new_v = add_vertex(op, opgroup);
+  }
   rewire(new_v, preds, sig);
   return new_v;
 }

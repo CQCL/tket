@@ -830,7 +830,7 @@ def test_decompose_swap_to_cx() -> None:
     circ.CX(1, 4)
     circ.CX(0, 4)
 
-    init_map = dict()
+    init_map = {}
     init_map[Qubit(0)] = Node(0)
     init_map[Qubit(1)] = Node(1)
     init_map[Qubit(2)] = Node(2)
@@ -1080,7 +1080,7 @@ def test_auto_rebase() -> None:
 
     circ = get_test_circuit()
 
-    for gateset, cx_circ, TK1_func in pass_params:
+    for gateset, cx_circ, TK1_func in pass_params:  # noqa: B007
         rebase = AutoRebase(gateset)
         c2 = circ.copy()
         assert rebase.apply(c2)
@@ -1139,7 +1139,7 @@ def test_auto_squash() -> None:
         ),
     ]
 
-    for gateset, TK1_func in pass_params:
+    for gateset, TK1_func in pass_params:  # noqa: B007
         circ = Circuit(1)
         for gate in itertools.islice(itertools.cycle(gateset), 5):
             # make a sequence of 5 gates from gateset to make sure squash does
@@ -1230,7 +1230,7 @@ def test_round_angles() -> None:
     assert circ0 == circ1
 
 
-def test_auto_rebase_with_swap_cx() -> None:
+def test_auto_rebase_with_swap_cx() -> None:  # noqa: PLR0915
     swap_pass = AutoRebase({OpType.CX, OpType.PhasedX, OpType.Rz}, True)
     no_swap_pass = AutoRebase({OpType.CX, OpType.PhasedX, OpType.Rz}, False)
 
@@ -1293,7 +1293,7 @@ def test_auto_rebase_with_swap_cx() -> None:
     assert c_swap.n_gates == 1
 
 
-def test_auto_rebase_with_swap_zzmax() -> None:
+def test_auto_rebase_with_swap_zzmax() -> None:  # noqa: PLR0915
     swap_pass = AutoRebase({OpType.ZZMax, OpType.PhasedX, OpType.Rz}, True)
     no_swap_pass = AutoRebase({OpType.ZZMax, OpType.PhasedX, OpType.Rz}, False)
 
@@ -1363,7 +1363,7 @@ def test_auto_rebase_with_swap_zzmax() -> None:
     assert c_swap.n_gates == 1
 
 
-def test_auto_rebase_with_swap_zzphase() -> None:
+def test_auto_rebase_with_swap_zzphase() -> None:  # noqa: PLR0915
     swap_pass = AutoRebase({OpType.ZZPhase, OpType.PhasedX, OpType.Rz}, True)
     no_swap_pass = AutoRebase({OpType.ZZPhase, OpType.PhasedX, OpType.Rz}, False)
 
@@ -1395,7 +1395,7 @@ def test_auto_rebase_with_swap_zzphase() -> None:
     c_swap = Circuit(2).ISWAP(0.3, 0, 1)
     swap_pass.apply(c_swap)
     assert c_swap.n_gates_of_type(OpType.ZZPhase) == 2
-    assert c_swap.n_gates == 13
+    assert c_swap.n_gates == 14
     iqp = c_swap.implicit_qubit_permutation()
     assert iqp[Qubit(0)] == Qubit(0)
     assert iqp[Qubit(1)] == Qubit(1)
@@ -1435,6 +1435,28 @@ def test_auto_rebase_with_swap_zzphase() -> None:
     c_swap = Circuit(2).ZZMax(0, 1)
     swap_pass.apply(c_swap)
     assert c_swap.n_gates_of_type(OpType.ZZPhase) == 1
+
+
+def test_zzphse_rebase_special_cases() -> None:
+    # https://github.com/CQCL/tket/issues/1902
+    zzphase_rebase_no_swap = AutoRebase(
+        {OpType.Rz, OpType.PhasedX, OpType.ZZPhase}, allow_swaps=False
+    )
+    zzphase_rebase_and_swap = AutoRebase(
+        {OpType.Rz, OpType.PhasedX, OpType.ZZPhase}, allow_swaps=True
+    )
+
+    xxphase = Circuit(2).XXPhase(0.13, 0, 1)
+    yyphase = Circuit(2).YYPhase(0.27, 0, 1)
+    for rebase in [zzphase_rebase_no_swap, zzphase_rebase_and_swap]:
+        xxphase_copy = xxphase.copy()
+        yyphase_copy = yyphase.copy()
+        rebase.apply(xxphase_copy)
+        rebase.apply(yyphase_copy)
+        assert xxphase_copy.n_gates_of_type(OpType.ZZPhase) == 1
+        assert xxphase_copy.n_2qb_gates() == 1
+        assert yyphase_copy.n_gates_of_type(OpType.ZZPhase) == 1
+        assert yyphase_copy.n_2qb_gates() == 1
 
 
 def test_auto_rebase_with_swap_tk2() -> None:
@@ -1480,36 +1502,3 @@ def test_clifford_push() -> None:
     assert coms[5].op.type == OpType.ExplicitModifier
     assert coms[6].op.type == OpType.ExplicitModifier
     assert coms[7].op.type == OpType.CopyBits
-
-
-if __name__ == "__main__":
-    test_remove_redundancies()
-    test_reduce_singles()
-    test_commute()
-    test_KAK()
-    test_basic_rebases()
-    test_post_routing()
-    test_phase_gadget()
-    test_Cliffords()
-    test_Pauli_gadget()
-    test_cons_sequencing()
-    test_list_sequencing()
-    test_basic_repeat()
-    test_while_repeat()
-    test_implicit_swaps_1()
-    test_implicit_swaps_2()
-    test_implicit_swaps_3()
-    test_decompose_swap_to_cx()
-    test_noncontiguous_DefaultMappingPass_arc()
-    test_RoutingPass()
-    test_DefaultMappingPass()
-    test_CXMappingPass()
-    test_CXMappingPass_correctness()
-    test_CXMappingPass_terminates()
-    test_FullMappingPass()
-    test_auto_rebase_with_swap_cx()
-    test_auto_rebase_with_swap_zzmax()
-    test_auto_rebase_with_swap_zzphase()
-    test_auto_rebase_with_swap_tk2()
-    test_selectively_decompose_boxes()
-    test_clifford_push()

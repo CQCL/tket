@@ -16,17 +16,11 @@
 
 #include <nanobind/nanobind.h>
 #include <nanobind/operators.h>
-#include <nanobind/stl/function.h>
-#include <nanobind/stl/map.h>
-#include <nanobind/stl/optional.h>
-#include <nanobind/stl/pair.h>
-#include <nanobind/stl/string.h>
-#include <nanobind/stl/unordered_set.h>
-#include <nanobind/stl/variant.h>
 
 #include <functional>
 #include <string>
 
+#include "nanobind-stl.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Transformations/CliffordOptimisation.hpp"
@@ -85,7 +79,9 @@ NB_MODULE(transform, m) {
           "Synthesise gadgets using a greedy algorithm adapted from "
           "arxiv.org/abs/2103.08602. This strategy is currently only accepted "
           "by `TermSequenceBox`. For synthesising general circuits try using "
-          "`GreedyPauliSimp`.");
+          "`GreedyPauliSimp`."
+          "\n\nWARNING: This strategy will not preserve the global phase of "
+          "the circuit.");
 
   nb::class_<Transform>(
       m, "Transform", "An in-place transformation of a :py:class:`Circuit`.")
@@ -424,6 +420,8 @@ NB_MODULE(transform, m) {
           "arxiv.org/abs/2103.08602. The method for synthesising the "
           "final Clifford operator is adapted from "
           "arxiv.org/abs/2305.10966."
+          "\n\nWARNING: This transformation will not preserve the "
+          "global phase of the circuit."
           "\n\n:param discount_rate: Rate used to discount the cost impact "
           "from "
           "gadgets that are further away. Default to 0.7."

@@ -65,22 +65,6 @@ Circuit &Circuit::operator=(const Circuit &other)  // (1)
   return *this;
 }
 
-// Move assignment
-Circuit &Circuit::operator=(Circuit &&other) {
-  if (this == &other) {
-    return *this;
-  }
-
-  boundary = std::move(other.boundary);
-  dag.m_vertices = std::move(other.dag.m_vertices);
-  dag.m_edges = std::move(other.dag.m_edges);
-  _number_of_wasm_wires = other._number_of_wasm_wires;
-  name = std::move(other.name);
-  phase = other.get_phase();
-  opgroupsigs = std::move(other.opgroupsigs);
-  return *this;
-}
-
 void Circuit::assert_valid() const {  //
   TKET_ASSERT(is_valid(dag));
 }

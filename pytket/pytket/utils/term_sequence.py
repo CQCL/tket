@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from pytket import Circuit
 from pytket.circuit import CircBox, PauliExpBox
@@ -21,7 +21,9 @@ from pytket.partition import (
     term_sequence,
 )
 
-from .._tket.unit_id import UnitID
+if TYPE_CHECKING:
+    from .._tket.unit_id import UnitID
+
 from .operators import QubitPauliOperator
 
 
@@ -48,15 +50,11 @@ def gen_term_sequence_circuit(
     than minimising the trotter error.
 
     :param operator: The operator terms to sequence
-    :type operator: QubitPauliOperator
     :param reference_state: reference state to add sequenced terms to.
-    :type reference_state: Circuit
     :param partition_strat: a Partition strategy
-    :type partition_strat: PauliPartitionStrat, Optional
     :param colour_method: a graph colouring method
-    :type colour_method: GraphColourMethod, Optional
     """
-    qps_list = list(operator._dict.keys())
+    qps_list = list(operator._dict.keys())  # noqa: SLF001
     qps_list_list = term_sequence(qps_list, partition_strat, colour_method)
     n_qbs = reference_state.n_qubits
     circ = reference_state.copy()
@@ -67,8 +65,8 @@ def gen_term_sequence_circuit(
             coeff = operator[qps]
             qps_map = qps.map
             if qps_map:
-                qubits = list()
-                paulis = list()
+                qubits = []
+                paulis = []
                 for qb, pauli in qps_map.items():
                     qubits.append(qb)
                     paulis.append(pauli)
@@ -77,6 +75,6 @@ def gen_term_sequence_circuit(
             else:
                 circ_to_box.add_phase(-coeff / 2)
         cbox = CircBox(circ_to_box)
-        unit_ids = cast(list[UnitID], qbs)
+        unit_ids = cast("list[UnitID]", qbs)
         circ.add_circbox(cbox, unit_ids)
     return circ

@@ -267,10 +267,3 @@ def test_boxes() -> None:
     assert np.allclose(u, np.eye(4, dtype=complex))
     s = c.get_statevector()
     assert np.isclose(s[0], 1.0)
-
-
-if __name__ == "__main__":
-    test_premultiplication()
-    test_circuit_unitaries_homomorphism_property()
-    test_ry_matrix()
-    test_statevector()

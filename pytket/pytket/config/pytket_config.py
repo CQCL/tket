@@ -46,7 +46,6 @@ class PytketConfig:
 
         :param extensions: Dictionary holding parameter values for extension packages,
             defaults to None
-        :type extensions: Optional[Dict[str, Any]], optional
         """
 
         self.extensions = {} if extensions is None else extensions
@@ -62,7 +61,7 @@ class PytketConfig:
         with config_file_path.open("r", encoding="utf-8") as config_file:
             config = json.load(config_file)
             return PytketConfig(
-                config.get("extensions", dict()),
+                config.get("extensions", {}),
             )
 
     def write_file(self, config_file_path: Path) -> None:

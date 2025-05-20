@@ -13,6 +13,7 @@
 # limitations under the License.
 
 """Abstract base class for all Backend encapsulations."""
+
 import warnings
 from abc import ABC, abstractmethod
 from collections.abc import Iterable, Sequence
@@ -66,6 +67,10 @@ class Backend(ABC):
 
     @staticmethod
     def empty_result(circuit: Circuit, n_shots: int) -> BackendResult:
+        """
+        Creates a :py:class:`BackendResult` mimicking the outcome where every
+        bit is 0 for every shot.
+        """
         n_bits = len(circuit.bits)
         empty_readouts = [[0] * n_bits for _ in range(n_shots)]
         shots = OutcomeArray.from_readouts(empty_readouts)
@@ -80,7 +85,6 @@ class Backend(ABC):
         be successfully run on this backend.
 
         :return: Required predicates.
-        :rtype: List[Predicate]
         """
         ...
 
@@ -89,9 +93,7 @@ class Backend(ABC):
         Checks that the circuit satisfies all of required_predicates.
 
         :param circuit: The circuit to check.
-        :type circuit: Circuit
         :return: Whether or not all of required_predicates are satisfied.
-        :rtype: bool
         """
         return all(pred.verify(circuit) for pred in self.required_predicates)
 
@@ -113,12 +115,11 @@ class Backend(ABC):
             )
             for error in errors:
                 raise error
-            if nomeasure_warn:
-                if circ.n_gates_of_type(OpType.Measure) < 1:
-                    warnings.warn(
-                        f"Circuit with index {i} in submitted does not contain a "
-                        "measure operation."
-                    )
+            if nomeasure_warn and circ.n_gates_of_type(OpType.Measure) < 1:
+                warnings.warn(  # noqa: B028
+                    f"Circuit with index {i} in submitted does not contain a "
+                    "measure operation."
+                )
         return True
 
     @abstractmethod
@@ -129,7 +130,6 @@ class Backend(ABC):
 
         :return: Compilation pass that converts gates to primitives supported by
             Backend.
-        :rtype: BasePass
         """
         ...
 
@@ -155,9 +155,7 @@ class Backend(ABC):
             - Level 2 (the default) adds more computationally intensive optimisations
               that should give the best results from execution.
 
-        :type optimisation_level: int, optional
         :return: Compilation pass guaranteeing required predicates.
-        :rtype: BasePass
         """
         ...
 
@@ -195,13 +193,10 @@ class Backend(ABC):
         circuit.
 
         :param circuits: The circuits to compile.
-        :type circuit: Sequence[Circuit]
         :param optimisation_level: The level of optimisation to perform during
             compilation. See :py:meth:`default_compilation_pass` for a description of
             the different levels (0, 1 or 2). Defaults to 2.
-        :type optimisation_level: int, optional
         :return: Compiled circuits.
-        :rtype: List[Circuit]
         """
         return [self.get_compiled_circuit(c, optimisation_level) for c in circuits]
 
@@ -211,7 +206,6 @@ class Backend(ABC):
         """Identifier type signature for ResultHandle for this backend.
 
         :return: Type signature (tuple of hashable types)
-        :rtype: _ResultIdTuple
         """
         ...
 
@@ -219,11 +213,11 @@ class Backend(ABC):
         """Check a result handle is valid for this backend, raises TypeError if not.
 
         :param reshandle: Handle to check
-        :type reshandle: ResultHandle
         :raises TypeError: Types of handle identifiers don't match those of backend.
         """
         if (len(reshandle) != len(self._result_id_type)) or not all(
-            isinstance(idval, ty) for idval, ty in zip(reshandle, self._result_id_type)
+            isinstance(idval, ty)
+            for idval, ty in zip(reshandle, self._result_id_type, strict=False)
         ):
             raise ResultHandleTypeError(
                 f"{reshandle!r} does not match expected "
@@ -278,17 +272,13 @@ class Backend(ABC):
         advisable to run :py:meth:`Backend.empty_cache` after each result is retrieved.
 
         :param circuits: Circuits to process on the backend.
-        :type circuits: Sequence[Circuit]
         :param n_shots: Number of shots to run per circuit. Optionally, this can be
             a list of shots specifying the number of shots for each circuit separately.
             None is to be used for state/unitary simulators. Defaults to None.
-        :type n_shots: Optional[Union[int, Iterable[int]], optional
         :param valid_check: Explicitly check that all circuits satisfy all required
             predicates to run on the backend. Defaults to True
-        :type valid_check: bool, optional
         :return: Handles to results for each input circuit, as an interable in
             the same order as the circuits.
-        :rtype: List[ResultHandle]
         """
         ...
 
@@ -308,9 +298,7 @@ class Backend(ABC):
         """Remove cache entry corresponding to handle from the cache and return.
 
         :param handle: ResultHandle object
-        :type handle: ResultHandle
         :return: Cache entry corresponding to handle, if it was present
-        :rtype: Optional[ResultCache]
         """
         return self._cache.pop(handle, None)
 
@@ -325,13 +313,11 @@ class Backend(ABC):
         * `wait`: polling interval between remote calls to check job status
 
         :param handle: handle to results
-        :type handle: ResultHandle
         :return: Results corresponding to handle.
-        :rtype: BackendResult
         """
         self._check_handle_type(handle)
         if handle in self._cache and "result" in self._cache[handle]:
-            return cast(BackendResult, self._cache[handle]["result"])
+            return cast("BackendResult", self._cache[handle]["result"])
         raise CircuitNotRunError(handle)
 
     def get_results(
@@ -348,9 +334,9 @@ class Backend(ABC):
             return [self.get_result(handle, **kwargs) for handle in handles]
         except ResultHandleTypeError as e:
             try:
-                self._check_handle_type(cast(ResultHandle, handles))
+                self._check_handle_type(cast("ResultHandle", handles))
             except ResultHandleTypeError:
-                raise e
+                raise e  # noqa: B904
 
             raise ResultHandleTypeError(
                 "Possible use of single ResultHandle"
@@ -412,7 +398,6 @@ class Backend(ABC):
         Cancel a job.
 
         :param handle: handle to job
-        :type handle: ResultHandle
         :raises NotImplementedError: If backend does not support job cancellation
         """
         raise NotImplementedError("Backend does not support job cancellation.")
@@ -424,7 +409,6 @@ class Backend(ABC):
         information.
 
         :return: The BackendInfo describing this backend if it exists.
-        :rtype: Optional[BackendInfo]
         """
         raise NotImplementedError("Backend does not provide any device properties.")
 
@@ -435,7 +419,6 @@ class Backend(ABC):
         and other hardware-specific information.
 
         :return: A list of BackendInfo objects describing available devices.
-        :rtype: List[BackendInfo]
         """
         raise NotImplementedError(
             "Backend does not provide information about available devices."
@@ -510,7 +493,6 @@ class Backend(ABC):
 
         :return: The extension module of the backend if it belongs to a pytket-extension
             package.
-        :rtype: Optional[ModuleType]
         """
         mod_parts = self.__class__.__module__.split(".")[:3]
         if not (mod_parts[0] == "pytket" and mod_parts[1] == "extensions"):
@@ -524,7 +506,6 @@ class Backend(ABC):
 
         :return: The extension name of the backend if it belongs to a pytket-extension
             package.
-        :rtype: Optional[str]
         """
         try:
             return self._get_extension_module().__extension_name__  # type: ignore
@@ -538,7 +519,6 @@ class Backend(ABC):
 
         :return: The extension version of the backend if it belongs to a
             pytket-extension package.
-        :rtype: Optional[str]
         """
         try:
             return self._get_extension_module().__extension_version__  # type: ignore
@@ -587,13 +567,9 @@ class Backend(ABC):
         Raises an exception if n_shots is in an invalid format.
 
         :param n_shots: The argument to be validated.
-        :type n_shots: Union[None, int, Sequence[Optional[int]]]
         :param n_circuits: Length of the converted argument returned.
-        :type n_circuits: int
         :param optional: Whether n_shots can be None (default: True).
-        :type optional: bool
         :param set_zero: Whether None values should be set to 0 (default: False).
-        :type set_zero: bool
         :return: a list of length `n_circuits`, the converted argument
         """
 
@@ -603,7 +579,7 @@ class Backend(ABC):
             return optional or (n is not None and n > 0)
 
         if set_zero and not optional:
-            ValueError("set_zero cannot be true when optional is false")
+            raise ValueError("set_zero cannot be true when optional is false")
 
         if hasattr(n_shots, "__iter__"):
             assert not isinstance(n_shots, int)
@@ -627,16 +603,30 @@ class Backend(ABC):
 
         if set_zero:
             # replace None with 0
-            n_shots_list = list(map(lambda n: n or 0, n_shots_list))
+            n_shots_list = [n or 0 for n in n_shots_list]
 
         return n_shots_list
 
     def get_pauli_expectation_value(
         self, state_circuit: Circuit, pauli: QubitPauliString
     ) -> complex:
+        """
+        Calculates the expectation value of the given circuit using
+        functionality built into the backend.
+
+        Raises an exception if the backend does not provide custom expectation
+        value features.
+        """
         raise NotImplementedError
 
     def get_operator_expectation_value(
         self, state_circuit: Circuit, operator: QubitPauliOperator
     ) -> complex:
+        """
+        Calculates the expectation value of the given circuit with respect to
+        the operator using functionality built into the backend.
+
+        Raises an exception if the backend does not provide custom expectation
+        value features.
+        """
         raise NotImplementedError

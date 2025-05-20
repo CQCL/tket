@@ -16,15 +16,6 @@
 #include <nanobind/make_iterator.h>
 #include <nanobind/nanobind.h>
 #include <nanobind/operators.h>
-#include <nanobind/stl/map.h>
-#include <nanobind/stl/optional.h>
-#include <nanobind/stl/set.h>
-#include <nanobind/stl/shared_ptr.h>
-#include <nanobind/stl/string.h>
-#include <nanobind/stl/tuple.h>
-#include <nanobind/stl/unordered_set.h>
-#include <nanobind/stl/variant.h>
-#include <nanobind/stl/vector.h>
 
 #include <optional>
 #include <sstream>
@@ -34,6 +25,7 @@
 #include "boost/graph/iteration_macros.hpp"
 #include "circuit_registers.hpp"
 #include "deleted_hash.hpp"
+#include "nanobind-stl.hpp"
 #include "nanobind_json/nanobind_json.hpp"
 #include "py_operators.hpp"
 #include "tket/Circuit/Boxes.hpp"
@@ -448,10 +440,14 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
           "identity, or when routing adds wires to \"fill out\" the "
           "architecture. This operation will only remove empty classical wires "
           "if there are no used bits with a higher index in the same register. "
-          "\n\n:param "
-          "keep_blank_classical_wires: select if "
-          "empty classical wires should not be removed",
-          nb::arg("keep_blank_classical_wires") = false)
+          "\n\n:param keep_blank_classical_wires: if true, empty classical "
+          "wires are not removed"
+          "\n:param remove_classical_only_at_end_of_register: if true, empty "
+          "classical wires are not removed if they don't belong to a register "
+          "or there are any non-empty wires with a higher index in the same "
+          "register",
+          nb::arg("keep_blank_classical_wires") = false,
+          nb::arg("remove_classical_only_at_end_of_register") = true)
       .def(
           "add_blank_wires", &Circuit::add_blank_wires,
           "Adds a number of new qubits to the circuit. These will be "

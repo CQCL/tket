@@ -80,9 +80,7 @@ jobs:
 
   check_format_tket:
     name: Check C++ code formatting
-    needs: check_changes
-    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
-    runs-on: 'macos-15'
+    runs-on: 'macos-latest'
     steps:
       - uses: actions/checkout@v4
       - name: Check C++ code formatting
@@ -308,7 +306,6 @@ jobs:
         poetry config virtualenvs.create false
         cd pytket/docs
         poetry install
-        poetry run python check_circuit_class_docs.py
         bash ./build-docs.sh
     - name: Upload artifact
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'

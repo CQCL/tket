@@ -119,8 +119,3 @@ def test_nontrivial_sequence() -> None:
             assert np.allclose(circ.get_statevector(), circ_other.get_statevector())
 
     assert calculated_results == expected_results
-
-
-if __name__ == "__main__":
-    test_basic_sequence()
-    test_nontrivial_sequence()

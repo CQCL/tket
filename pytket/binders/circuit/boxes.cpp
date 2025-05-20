@@ -17,18 +17,13 @@
 #include <nanobind/eigen/dense.h>
 #include <nanobind/nanobind.h>
 #include <nanobind/ndarray.h>
-#include <nanobind/stl/map.h>
-#include <nanobind/stl/optional.h>
-#include <nanobind/stl/pair.h>
-#include <nanobind/stl/shared_ptr.h>
-#include <nanobind/stl/string.h>
-#include <nanobind/stl/vector.h>
 
 #include <memory>
 #include <sstream>
 #include <vector>
 
 #include "binder_utils.hpp"
+#include "nanobind-stl.hpp"
 #include "nanobind_json/nanobind_json.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/ConjugationBox.hpp"
@@ -367,7 +362,8 @@ void init_boxes(nb::module_ &m) {
       "An unordered collection of Pauli exponentials "
       "that can be synthesised in any order, causing a "
       "change in the unitary operation. Synthesis order "
-      "depends on the synthesis strategy chosen only.")
+      "depends on the synthesis strategy chosen only.\n\n WARNING: "
+      "Global phase is not preserved when using PauliSynthStrat.Greedy.")
       .def(
           "__init__",
           [](TermSequenceBox *p,
@@ -394,7 +390,8 @@ void init_boxes(nb::module_ &m) {
           "`depth_weight` controls the degree of depth optimisation and only "
           "applies to synthesis_strategy `PauliSynthStrat:Greedy`. "
           "`partitioning_strategy`, `graph_colouring`, and `cx_config_type` "
-          "have no effect if `PauliSynthStrat:Greedy` is used.",
+          "have no effect if `PauliSynthStrat.Greedy` is used.\n\n WARNING: "
+          "Global phase is not preserved when using PauliSynthStrat.Greedy.",
           nb::arg("pauli_gadgets"),
           nb::arg("synthesis_strategy") = Transforms::PauliSynthStrat::Sets,
           nb::arg("partitioning_strategy") = PauliPartitionStrat::CommutingSets,

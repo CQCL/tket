@@ -223,6 +223,75 @@ SCENARIO("TK2_using_normalised_TK2") {
   }
 }
 
+SCENARIO("TK2_using_ZZPhase(_and_SWAP)") {
+  double a, b, c;
+  unsigned n_zzphase, n_zzphase_w_swap;
+  GIVEN("General angles") {
+    a = 1.2;
+    b = 2.3;
+    c = 3.4;
+    n_zzphase = n_zzphase_w_swap = 3;
+  }
+  GIVEN("c = 0") {
+    a = 0.3;
+    b = 1.2;
+    c = 0.;
+    n_zzphase = n_zzphase_w_swap = 2;
+  }
+  GIVEN("b = c = 0") {
+    a = -1.9;
+    b = c = 0.;
+    n_zzphase = n_zzphase_w_swap = 1;
+  }
+  GIVEN("a = 2") {
+    a = 2.;
+    b = 1.3;
+    c = 0.15;
+    n_zzphase = n_zzphase_w_swap = 2;
+  }
+  GIVEN("b = 2") {
+    a = 1.5;
+    b = 2.;
+    c = 0.15;
+    n_zzphase = n_zzphase_w_swap = 2;
+  }
+  GIVEN("c = 2") {
+    a = 1.5;
+    b = 2.3;
+    c = 2.;
+    n_zzphase = n_zzphase_w_swap = 2;
+  }
+  GIVEN("a = c = 2") {
+    a = 2.;
+    b = 2.3;
+    c = 2.;
+    n_zzphase = n_zzphase_w_swap = 1;
+  }
+  GIVEN("swap") {
+    a = b = c = 0.5;
+    n_zzphase = 3;
+    n_zzphase_w_swap = 0;
+  }
+  GIVEN("a = b = c = 0") {
+    a = b = c = 0.;
+    n_zzphase = n_zzphase_w_swap = 0;
+  }
+  Circuit circ(2);
+  Circuit orig(2);
+  orig.add_op<unsigned>(OpType::TK2, {a, b, c}, {0, 1});
+  Circuit res1 = CircPool::TK2_using_ZZPhase(a, b, c);
+  Circuit res2 = CircPool::TK2_using_ZZPhase_and_swap(a, b, c);
+  Eigen::Matrix4cd u_orig = tket_sim::get_unitary(orig);
+  Eigen::Matrix4cd u_res1 = tket_sim::get_unitary(res1);
+  Eigen::Matrix4cd u_res2 = tket_sim::get_unitary(res2);
+  CHECK(u_res1.isApprox(u_orig));
+  CHECK(u_res2.isApprox(u_orig));
+  CHECK(res1.count_gates(OpType::ZZPhase) == n_zzphase);
+  CHECK(res1.count_n_qubit_gates(2) == n_zzphase);
+  CHECK(res2.count_gates(OpType::ZZPhase) == n_zzphase_w_swap);
+  CHECK(res2.count_n_qubit_gates(2) == n_zzphase_w_swap);
+}
+
 SCENARIO("TK2_using_ZZMax") {
   double a, b, c;
   GIVEN("General angles") {
