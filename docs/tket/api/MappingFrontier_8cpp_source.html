@@ -654,399 +654,401 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span>  <a class="code hl_typedef" href="namespacetket.html#aa08fc2d553413efa43b68fa1269fba77">unit_map_t</a> default_to_u_frontier_map;</div>
 <div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span>  <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;UnitID, VertPort&gt;&amp; pair :</div>
 <div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span>       this-&gt;linear_boundary-&gt;get&lt;<a class="code hl_struct" href="structtket_1_1TagKey.html">TagKey</a>&gt;()) {</div>
-<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span>    default_to_u_frontier_map.insert({<a class="code hl_class" href="classtket_1_1Qubit.html">Qubit</a>(i), pair.first});</div>
-<div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span>    i++;</div>
-<div class="line"><a id="l00632" name="l00632"></a><span class="lineno">  632</span>  }</div>
-<div class="line"><a id="l00633" name="l00633"></a><span class="lineno">  633</span>  <span class="keywordflow">return</span> default_to_u_frontier_map;</div>
-<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span>}</div>
+<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span>    <span class="keywordflow">if</span> (pair.first.type() == UnitType::Qubit) {</div>
+<div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span>      default_to_u_frontier_map.insert({<a class="code hl_class" href="classtket_1_1Qubit.html">Qubit</a>(i), pair.first});</div>
+<div class="line"><a id="l00632" name="l00632"></a><span class="lineno">  632</span>      i++;</div>
+<div class="line"><a id="l00633" name="l00633"></a><span class="lineno">  633</span>    }</div>
+<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span>  }</div>
+<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span>  <span class="keywordflow">return</span> default_to_u_frontier_map;</div>
+<div class="line"><a id="l00636" name="l00636"></a><span class="lineno">  636</span>}</div>
 </div>
-<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span> </div>
-<div class="foldopen" id="foldopen00636" data-start="{" data-end="}">
-<div class="line"><a id="l00636" name="l00636"></a><span class="lineno"><a class="line" href="structtket_1_1MappingFrontier.html#a74b7181dfdcd96e7d45374d3f3324466">  636</a></span><span class="keywordtype">void</span> MappingFrontier::set_linear_boundary(</div>
-<div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span>    <span class="keyword">const</span> <a class="code hl_typedef" href="namespacetket.html#a1d2b39b141fc098257835665b8d5830f">unit_vertport_frontier_t</a>&amp; new_boundary) {</div>
-<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span>  this-&gt;linear_boundary = std::make_shared&lt;unit_vertport_frontier_t&gt;();</div>
-<div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span>  <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;UnitID, VertPort&gt;&amp; pair : new_boundary.get&lt;<a class="code hl_struct" href="structtket_1_1TagKey.html">TagKey</a>&gt;()) {</div>
-<div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span>    this-&gt;linear_boundary-&gt;insert(pair);</div>
-<div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span>  }</div>
-<div class="line"><a id="l00642" name="l00642"></a><span class="lineno">  642</span>}</div>
+<div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span> </div>
+<div class="foldopen" id="foldopen00638" data-start="{" data-end="}">
+<div class="line"><a id="l00638" name="l00638"></a><span class="lineno"><a class="line" href="structtket_1_1MappingFrontier.html#a74b7181dfdcd96e7d45374d3f3324466">  638</a></span><span class="keywordtype">void</span> MappingFrontier::set_linear_boundary(</div>
+<div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span>    <span class="keyword">const</span> <a class="code hl_typedef" href="namespacetket.html#a1d2b39b141fc098257835665b8d5830f">unit_vertport_frontier_t</a>&amp; new_boundary) {</div>
+<div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span>  this-&gt;linear_boundary = std::make_shared&lt;unit_vertport_frontier_t&gt;();</div>
+<div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span>  <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;UnitID, VertPort&gt;&amp; pair : new_boundary.get&lt;<a class="code hl_struct" href="structtket_1_1TagKey.html">TagKey</a>&gt;()) {</div>
+<div class="line"><a id="l00642" name="l00642"></a><span class="lineno">  642</span>    this-&gt;linear_boundary-&gt;insert(pair);</div>
+<div class="line"><a id="l00643" name="l00643"></a><span class="lineno">  643</span>  }</div>
+<div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span>}</div>
 </div>
-<div class="line"><a id="l00643" name="l00643"></a><span class="lineno">  643</span> </div>
-<div class="foldopen" id="foldopen00650" data-start="{" data-end="}">
-<div class="line"><a id="l00650" name="l00650"></a><span class="lineno"><a class="line" href="structtket_1_1MappingFrontier.html#a17078bd5fdb3f6b370db5f0d59361351">  650</a></span><span class="keywordtype">bool</span> MappingFrontier::add_swap(<span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; uid_0, <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; uid_1) {</div>
-<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span>  <span class="comment">// get iterators to linear_boundary uids</span></div>
-<div class="line"><a id="l00652" name="l00652"></a><span class="lineno">  652</span>  <span class="keyword">auto</span> uid0_in_it = this-&gt;linear_boundary-&gt;find(uid_0);</div>
-<div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span>  <span class="keyword">auto</span> uid1_in_it = this-&gt;linear_boundary-&gt;find(uid_1);</div>
-<div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span>  <span class="comment">// Add Qubit if not in MappingFrontier boundary (i.e. not in circuit)</span></div>
-<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span>  <span class="keywordflow">if</span> (uid0_in_it == this-&gt;linear_boundary-&gt;end()) {</div>
-<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span>    this-&gt;add_ancilla(uid_0);</div>
-<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span>    uid0_in_it = this-&gt;linear_boundary-&gt;find(uid_0);</div>
-<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span>  }</div>
-<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span>  <span class="keywordflow">if</span> (uid1_in_it == this-&gt;linear_boundary-&gt;end()) {</div>
-<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span>    this-&gt;add_ancilla(uid_1);</div>
-<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span>    uid1_in_it = this-&gt;linear_boundary-&gt;find(uid_1);</div>
-<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span>  }</div>
-<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span>  this-&gt;reassignable_nodes_.erase(<a class="code hl_class" href="classtket_1_1Node.html">Node</a>(uid_0));</div>
-<div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span>  this-&gt;reassignable_nodes_.erase(<a class="code hl_class" href="classtket_1_1Node.html">Node</a>(uid_1));</div>
-<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span> </div>
-<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span>  <span class="comment">// Get predecessor edges to SWAP insert location</span></div>
-<div class="line"><a id="l00667" name="l00667"></a><span class="lineno">  667</span>  <a class="code hl_typedef" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a> vp0 = uid0_in_it-&gt;second;</div>
-<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span>  <a class="code hl_typedef" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a> vp1 = uid1_in_it-&gt;second;</div>
-<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span>  <a class="code hl_typedef" href="namespacetket.html#a814cee1be1a70fcc4a804f93212b5013">EdgeVec</a> predecessors = {</div>
-<div class="line"><a id="l00670" name="l00670"></a><span class="lineno">  670</span>      this-&gt;circuit_.get_nth_out_edge(vp0.first, vp0.second),</div>
-<div class="line"><a id="l00671" name="l00671"></a><span class="lineno">  671</span>      this-&gt;circuit_.get_nth_out_edge(vp1.first, vp1.second)};</div>
-<div class="line"><a id="l00672" name="l00672"></a><span class="lineno">  672</span> </div>
-<div class="line"><a id="l00680" name="l00680"></a><span class="lineno">  680</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> source0 = this-&gt;circuit_.source(predecessors[0]);</div>
-<div class="line"><a id="l00681" name="l00681"></a><span class="lineno">  681</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> source1 = this-&gt;circuit_.source(predecessors[1]);</div>
-<div class="line"><a id="l00682" name="l00682"></a><span class="lineno">  682</span>  <span class="keywordflow">if</span> (source0 == source1) {</div>
-<div class="line"><a id="l00683" name="l00683"></a><span class="lineno">  683</span>    <span class="keywordflow">if</span> (this-&gt;circuit_.get_OpType_from_Vertex(source0) == OpType::SWAP) {</div>
-<div class="line"><a id="l00684" name="l00684"></a><span class="lineno">  684</span>      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00685" name="l00685"></a><span class="lineno">  685</span>    }</div>
-<div class="line"><a id="l00686" name="l00686"></a><span class="lineno">  686</span>  }</div>
-<div class="line"><a id="l00687" name="l00687"></a><span class="lineno">  687</span> </div>
-<div class="line"><a id="l00688" name="l00688"></a><span class="lineno">  688</span>  <span class="comment">// update held ancillas</span></div>
-<div class="line"><a id="l00689" name="l00689"></a><span class="lineno">  689</span>  <span class="comment">// the location/id of the &quot;ancilla node&quot; changes when a SWAP occurs</span></div>
-<div class="line"><a id="l00690" name="l00690"></a><span class="lineno">  690</span>  <a class="code hl_class" href="classtket_1_1Node.html">Node</a> n0 = <a class="code hl_class" href="classtket_1_1Node.html">Node</a>(uid_0);</div>
-<div class="line"><a id="l00691" name="l00691"></a><span class="lineno">  691</span>  <a class="code hl_class" href="classtket_1_1Node.html">Node</a> n1 = <a class="code hl_class" href="classtket_1_1Node.html">Node</a>(uid_1);</div>
-<div class="line"><a id="l00692" name="l00692"></a><span class="lineno">  692</span>  <span class="keywordtype">bool</span> uid0_ancilla =</div>
-<div class="line"><a id="l00693" name="l00693"></a><span class="lineno">  693</span>      this-&gt;ancilla_nodes_.find(n0) != this-&gt;ancilla_nodes_.end();</div>
-<div class="line"><a id="l00694" name="l00694"></a><span class="lineno">  694</span>  <span class="keywordtype">bool</span> uid1_ancilla =</div>
-<div class="line"><a id="l00695" name="l00695"></a><span class="lineno">  695</span>      this-&gt;ancilla_nodes_.find(n1) != this-&gt;ancilla_nodes_.end();</div>
-<div class="line"><a id="l00696" name="l00696"></a><span class="lineno">  696</span> </div>
-<div class="line"><a id="l00697" name="l00697"></a><span class="lineno">  697</span>  <span class="comment">// In this case we can still use the node, but we need to make sure that</span></div>
-<div class="line"><a id="l00698" name="l00698"></a><span class="lineno">  698</span>  <span class="comment">// the wire it&#39;s on won&#39;t be reassigned</span></div>
-<div class="line"><a id="l00699" name="l00699"></a><span class="lineno">  699</span>  <span class="comment">// This could reduce performance, but the &quot;reassignable_nodes_&quot; case</span></div>
-<div class="line"><a id="l00700" name="l00700"></a><span class="lineno">  700</span>  <span class="comment">// deals with Qubit wires that have no multi-qubit quantum operations,</span></div>
-<div class="line"><a id="l00701" name="l00701"></a><span class="lineno">  701</span>  <span class="comment">// so in practice this won&#39;t change the results for a meaningful circuit</span></div>
-<div class="line"><a id="l00702" name="l00702"></a><span class="lineno">  702</span>  <span class="keywordflow">if</span> (this-&gt;reassignable_nodes_.find(n0) != this-&gt;reassignable_nodes_.end()) {</div>
-<div class="line"><a id="l00703" name="l00703"></a><span class="lineno">  703</span>    this-&gt;reassignable_nodes_.erase(n0);</div>
-<div class="line"><a id="l00704" name="l00704"></a><span class="lineno">  704</span>  }</div>
-<div class="line"><a id="l00705" name="l00705"></a><span class="lineno">  705</span>  <span class="keywordflow">if</span> (this-&gt;reassignable_nodes_.find(n1) != this-&gt;reassignable_nodes_.end()) {</div>
-<div class="line"><a id="l00706" name="l00706"></a><span class="lineno">  706</span>    this-&gt;reassignable_nodes_.erase(n1);</div>
-<div class="line"><a id="l00707" name="l00707"></a><span class="lineno">  707</span>  }</div>
-<div class="line"><a id="l00708" name="l00708"></a><span class="lineno">  708</span> </div>
-<div class="line"><a id="l00709" name="l00709"></a><span class="lineno">  709</span>  <span class="keywordflow">if</span> (uid0_ancilla &amp;&amp; !uid1_ancilla) {</div>
-<div class="line"><a id="l00710" name="l00710"></a><span class="lineno">  710</span>    this-&gt;ancilla_nodes_.erase(n0);</div>
-<div class="line"><a id="l00711" name="l00711"></a><span class="lineno">  711</span>    this-&gt;ancilla_nodes_.insert(n1);</div>
-<div class="line"><a id="l00712" name="l00712"></a><span class="lineno">  712</span>  }</div>
-<div class="line"><a id="l00713" name="l00713"></a><span class="lineno">  713</span>  <span class="keywordflow">if</span> (!uid0_ancilla &amp;&amp; uid1_ancilla) {</div>
-<div class="line"><a id="l00714" name="l00714"></a><span class="lineno">  714</span>    this-&gt;ancilla_nodes_.erase(n1);</div>
-<div class="line"><a id="l00715" name="l00715"></a><span class="lineno">  715</span>    this-&gt;ancilla_nodes_.insert(n0);</div>
-<div class="line"><a id="l00716" name="l00716"></a><span class="lineno">  716</span>  }</div>
-<div class="line"><a id="l00717" name="l00717"></a><span class="lineno">  717</span> </div>
-<div class="line"><a id="l00718" name="l00718"></a><span class="lineno">  718</span>  <span class="comment">// add SWAP vertex to circuit_ and rewire into predecessor</span></div>
-<div class="line"><a id="l00719" name="l00719"></a><span class="lineno">  719</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> swap_v = this-&gt;circuit_.add_vertex(OpType::SWAP);</div>
-<div class="line"><a id="l00720" name="l00720"></a><span class="lineno">  720</span>  this-&gt;circuit_.rewire(</div>
-<div class="line"><a id="l00721" name="l00721"></a><span class="lineno">  721</span>      swap_v, predecessors, {EdgeType::Quantum, EdgeType::Quantum});</div>
-<div class="line"><a id="l00722" name="l00722"></a><span class="lineno">  722</span> </div>
-<div class="line"><a id="l00723" name="l00723"></a><span class="lineno">  723</span>  <span class="comment">// Update boundary to reflect new edges</span></div>
-<div class="line"><a id="l00724" name="l00724"></a><span class="lineno">  724</span>  <a class="code hl_typedef" href="namespacetket.html#a814cee1be1a70fcc4a804f93212b5013">EdgeVec</a> successors = this-&gt;circuit_.get_all_out_edges(swap_v);</div>
-<div class="line"><a id="l00725" name="l00725"></a><span class="lineno">  725</span>  this-&gt;circuit_.dag[successors[0]].ports.first = 1;</div>
-<div class="line"><a id="l00726" name="l00726"></a><span class="lineno">  726</span>  this-&gt;circuit_.dag[successors[1]].ports.first = 0;</div>
-<div class="line"><a id="l00727" name="l00727"></a><span class="lineno">  727</span> </div>
-<div class="line"><a id="l00728" name="l00728"></a><span class="lineno">  728</span>  this-&gt;linear_boundary-&gt;replace(</div>
-<div class="line"><a id="l00729" name="l00729"></a><span class="lineno">  729</span>      uid0_in_it, {uid_0, {this-&gt;circuit_.source(successors[1]), 0}});</div>
+<div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span> </div>
+<div class="foldopen" id="foldopen00652" data-start="{" data-end="}">
+<div class="line"><a id="l00652" name="l00652"></a><span class="lineno"><a class="line" href="structtket_1_1MappingFrontier.html#a17078bd5fdb3f6b370db5f0d59361351">  652</a></span><span class="keywordtype">bool</span> MappingFrontier::add_swap(<span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; uid_0, <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; uid_1) {</div>
+<div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span>  <span class="comment">// get iterators to linear_boundary uids</span></div>
+<div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span>  <span class="keyword">auto</span> uid0_in_it = this-&gt;linear_boundary-&gt;find(uid_0);</div>
+<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span>  <span class="keyword">auto</span> uid1_in_it = this-&gt;linear_boundary-&gt;find(uid_1);</div>
+<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span>  <span class="comment">// Add Qubit if not in MappingFrontier boundary (i.e. not in circuit)</span></div>
+<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span>  <span class="keywordflow">if</span> (uid0_in_it == this-&gt;linear_boundary-&gt;end()) {</div>
+<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span>    this-&gt;add_ancilla(uid_0);</div>
+<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span>    uid0_in_it = this-&gt;linear_boundary-&gt;find(uid_0);</div>
+<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span>  }</div>
+<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span>  <span class="keywordflow">if</span> (uid1_in_it == this-&gt;linear_boundary-&gt;end()) {</div>
+<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span>    this-&gt;add_ancilla(uid_1);</div>
+<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span>    uid1_in_it = this-&gt;linear_boundary-&gt;find(uid_1);</div>
+<div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span>  }</div>
+<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span>  this-&gt;reassignable_nodes_.erase(<a class="code hl_class" href="classtket_1_1Node.html">Node</a>(uid_0));</div>
+<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span>  this-&gt;reassignable_nodes_.erase(<a class="code hl_class" href="classtket_1_1Node.html">Node</a>(uid_1));</div>
+<div class="line"><a id="l00667" name="l00667"></a><span class="lineno">  667</span> </div>
+<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span>  <span class="comment">// Get predecessor edges to SWAP insert location</span></div>
+<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span>  <a class="code hl_typedef" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a> vp0 = uid0_in_it-&gt;second;</div>
+<div class="line"><a id="l00670" name="l00670"></a><span class="lineno">  670</span>  <a class="code hl_typedef" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a> vp1 = uid1_in_it-&gt;second;</div>
+<div class="line"><a id="l00671" name="l00671"></a><span class="lineno">  671</span>  <a class="code hl_typedef" href="namespacetket.html#a814cee1be1a70fcc4a804f93212b5013">EdgeVec</a> predecessors = {</div>
+<div class="line"><a id="l00672" name="l00672"></a><span class="lineno">  672</span>      this-&gt;circuit_.get_nth_out_edge(vp0.first, vp0.second),</div>
+<div class="line"><a id="l00673" name="l00673"></a><span class="lineno">  673</span>      this-&gt;circuit_.get_nth_out_edge(vp1.first, vp1.second)};</div>
+<div class="line"><a id="l00674" name="l00674"></a><span class="lineno">  674</span> </div>
+<div class="line"><a id="l00682" name="l00682"></a><span class="lineno">  682</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> source0 = this-&gt;circuit_.source(predecessors[0]);</div>
+<div class="line"><a id="l00683" name="l00683"></a><span class="lineno">  683</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> source1 = this-&gt;circuit_.source(predecessors[1]);</div>
+<div class="line"><a id="l00684" name="l00684"></a><span class="lineno">  684</span>  <span class="keywordflow">if</span> (source0 == source1) {</div>
+<div class="line"><a id="l00685" name="l00685"></a><span class="lineno">  685</span>    <span class="keywordflow">if</span> (this-&gt;circuit_.get_OpType_from_Vertex(source0) == OpType::SWAP) {</div>
+<div class="line"><a id="l00686" name="l00686"></a><span class="lineno">  686</span>      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00687" name="l00687"></a><span class="lineno">  687</span>    }</div>
+<div class="line"><a id="l00688" name="l00688"></a><span class="lineno">  688</span>  }</div>
+<div class="line"><a id="l00689" name="l00689"></a><span class="lineno">  689</span> </div>
+<div class="line"><a id="l00690" name="l00690"></a><span class="lineno">  690</span>  <span class="comment">// update held ancillas</span></div>
+<div class="line"><a id="l00691" name="l00691"></a><span class="lineno">  691</span>  <span class="comment">// the location/id of the &quot;ancilla node&quot; changes when a SWAP occurs</span></div>
+<div class="line"><a id="l00692" name="l00692"></a><span class="lineno">  692</span>  <a class="code hl_class" href="classtket_1_1Node.html">Node</a> n0 = <a class="code hl_class" href="classtket_1_1Node.html">Node</a>(uid_0);</div>
+<div class="line"><a id="l00693" name="l00693"></a><span class="lineno">  693</span>  <a class="code hl_class" href="classtket_1_1Node.html">Node</a> n1 = <a class="code hl_class" href="classtket_1_1Node.html">Node</a>(uid_1);</div>
+<div class="line"><a id="l00694" name="l00694"></a><span class="lineno">  694</span>  <span class="keywordtype">bool</span> uid0_ancilla =</div>
+<div class="line"><a id="l00695" name="l00695"></a><span class="lineno">  695</span>      this-&gt;ancilla_nodes_.find(n0) != this-&gt;ancilla_nodes_.end();</div>
+<div class="line"><a id="l00696" name="l00696"></a><span class="lineno">  696</span>  <span class="keywordtype">bool</span> uid1_ancilla =</div>
+<div class="line"><a id="l00697" name="l00697"></a><span class="lineno">  697</span>      this-&gt;ancilla_nodes_.find(n1) != this-&gt;ancilla_nodes_.end();</div>
+<div class="line"><a id="l00698" name="l00698"></a><span class="lineno">  698</span> </div>
+<div class="line"><a id="l00699" name="l00699"></a><span class="lineno">  699</span>  <span class="comment">// In this case we can still use the node, but we need to make sure that</span></div>
+<div class="line"><a id="l00700" name="l00700"></a><span class="lineno">  700</span>  <span class="comment">// the wire it&#39;s on won&#39;t be reassigned</span></div>
+<div class="line"><a id="l00701" name="l00701"></a><span class="lineno">  701</span>  <span class="comment">// This could reduce performance, but the &quot;reassignable_nodes_&quot; case</span></div>
+<div class="line"><a id="l00702" name="l00702"></a><span class="lineno">  702</span>  <span class="comment">// deals with Qubit wires that have no multi-qubit quantum operations,</span></div>
+<div class="line"><a id="l00703" name="l00703"></a><span class="lineno">  703</span>  <span class="comment">// so in practice this won&#39;t change the results for a meaningful circuit</span></div>
+<div class="line"><a id="l00704" name="l00704"></a><span class="lineno">  704</span>  <span class="keywordflow">if</span> (this-&gt;reassignable_nodes_.find(n0) != this-&gt;reassignable_nodes_.end()) {</div>
+<div class="line"><a id="l00705" name="l00705"></a><span class="lineno">  705</span>    this-&gt;reassignable_nodes_.erase(n0);</div>
+<div class="line"><a id="l00706" name="l00706"></a><span class="lineno">  706</span>  }</div>
+<div class="line"><a id="l00707" name="l00707"></a><span class="lineno">  707</span>  <span class="keywordflow">if</span> (this-&gt;reassignable_nodes_.find(n1) != this-&gt;reassignable_nodes_.end()) {</div>
+<div class="line"><a id="l00708" name="l00708"></a><span class="lineno">  708</span>    this-&gt;reassignable_nodes_.erase(n1);</div>
+<div class="line"><a id="l00709" name="l00709"></a><span class="lineno">  709</span>  }</div>
+<div class="line"><a id="l00710" name="l00710"></a><span class="lineno">  710</span> </div>
+<div class="line"><a id="l00711" name="l00711"></a><span class="lineno">  711</span>  <span class="keywordflow">if</span> (uid0_ancilla &amp;&amp; !uid1_ancilla) {</div>
+<div class="line"><a id="l00712" name="l00712"></a><span class="lineno">  712</span>    this-&gt;ancilla_nodes_.erase(n0);</div>
+<div class="line"><a id="l00713" name="l00713"></a><span class="lineno">  713</span>    this-&gt;ancilla_nodes_.insert(n1);</div>
+<div class="line"><a id="l00714" name="l00714"></a><span class="lineno">  714</span>  }</div>
+<div class="line"><a id="l00715" name="l00715"></a><span class="lineno">  715</span>  <span class="keywordflow">if</span> (!uid0_ancilla &amp;&amp; uid1_ancilla) {</div>
+<div class="line"><a id="l00716" name="l00716"></a><span class="lineno">  716</span>    this-&gt;ancilla_nodes_.erase(n1);</div>
+<div class="line"><a id="l00717" name="l00717"></a><span class="lineno">  717</span>    this-&gt;ancilla_nodes_.insert(n0);</div>
+<div class="line"><a id="l00718" name="l00718"></a><span class="lineno">  718</span>  }</div>
+<div class="line"><a id="l00719" name="l00719"></a><span class="lineno">  719</span> </div>
+<div class="line"><a id="l00720" name="l00720"></a><span class="lineno">  720</span>  <span class="comment">// add SWAP vertex to circuit_ and rewire into predecessor</span></div>
+<div class="line"><a id="l00721" name="l00721"></a><span class="lineno">  721</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> swap_v = this-&gt;circuit_.add_vertex(OpType::SWAP);</div>
+<div class="line"><a id="l00722" name="l00722"></a><span class="lineno">  722</span>  this-&gt;circuit_.rewire(</div>
+<div class="line"><a id="l00723" name="l00723"></a><span class="lineno">  723</span>      swap_v, predecessors, {EdgeType::Quantum, EdgeType::Quantum});</div>
+<div class="line"><a id="l00724" name="l00724"></a><span class="lineno">  724</span> </div>
+<div class="line"><a id="l00725" name="l00725"></a><span class="lineno">  725</span>  <span class="comment">// Update boundary to reflect new edges</span></div>
+<div class="line"><a id="l00726" name="l00726"></a><span class="lineno">  726</span>  <a class="code hl_typedef" href="namespacetket.html#a814cee1be1a70fcc4a804f93212b5013">EdgeVec</a> successors = this-&gt;circuit_.get_all_out_edges(swap_v);</div>
+<div class="line"><a id="l00727" name="l00727"></a><span class="lineno">  727</span>  this-&gt;circuit_.dag[successors[0]].ports.first = 1;</div>
+<div class="line"><a id="l00728" name="l00728"></a><span class="lineno">  728</span>  this-&gt;circuit_.dag[successors[1]].ports.first = 0;</div>
+<div class="line"><a id="l00729" name="l00729"></a><span class="lineno">  729</span> </div>
 <div class="line"><a id="l00730" name="l00730"></a><span class="lineno">  730</span>  this-&gt;linear_boundary-&gt;replace(</div>
-<div class="line"><a id="l00731" name="l00731"></a><span class="lineno">  731</span>      uid1_in_it, {uid_1, {this-&gt;circuit_.source(successors[0]), 1}});</div>
-<div class="line"><a id="l00732" name="l00732"></a><span class="lineno">  732</span> </div>
-<div class="line"><a id="l00733" name="l00733"></a><span class="lineno">  733</span>  <span class="comment">// update output vertices of quantum boundary of circuit to reflect changing</span></div>
-<div class="line"><a id="l00734" name="l00734"></a><span class="lineno">  734</span>  <span class="comment">// qubit paths</span></div>
-<div class="line"><a id="l00735" name="l00735"></a><span class="lineno">  735</span>  <span class="keyword">auto</span> uid0_circuit_boundary_it =</div>
-<div class="line"><a id="l00736" name="l00736"></a><span class="lineno">  736</span>      this-&gt;circuit_.boundary.get&lt;<a class="code hl_struct" href="structtket_1_1TagID.html">TagID</a>&gt;().find(uid_0);</div>
-<div class="line"><a id="l00737" name="l00737"></a><span class="lineno">  737</span>  <span class="keyword">auto</span> uid1_circuit_boundary_it =</div>
-<div class="line"><a id="l00738" name="l00738"></a><span class="lineno">  738</span>      this-&gt;circuit_.boundary.get&lt;<a class="code hl_struct" href="structtket_1_1TagID.html">TagID</a>&gt;().find(uid_1);</div>
-<div class="line"><a id="l00739" name="l00739"></a><span class="lineno">  739</span> </div>
-<div class="line"><a id="l00740" name="l00740"></a><span class="lineno">  740</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> uid0_out = uid0_circuit_boundary_it-&gt;out_;</div>
-<div class="line"><a id="l00741" name="l00741"></a><span class="lineno">  741</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> uid1_out = uid1_circuit_boundary_it-&gt;out_;</div>
-<div class="line"><a id="l00742" name="l00742"></a><span class="lineno">  742</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> uid0_in = uid0_circuit_boundary_it-&gt;in_;</div>
-<div class="line"><a id="l00743" name="l00743"></a><span class="lineno">  743</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> uid1_in = uid1_circuit_boundary_it-&gt;in_;</div>
-<div class="line"><a id="l00744" name="l00744"></a><span class="lineno">  744</span> </div>
-<div class="line"><a id="l00745" name="l00745"></a><span class="lineno">  745</span>  this-&gt;circuit_.boundary.get&lt;<a class="code hl_struct" href="structtket_1_1TagID.html">TagID</a>&gt;().erase(uid_0);</div>
-<div class="line"><a id="l00746" name="l00746"></a><span class="lineno">  746</span>  this-&gt;circuit_.boundary.get&lt;<a class="code hl_struct" href="structtket_1_1TagID.html">TagID</a>&gt;().erase(uid_1);</div>
-<div class="line"><a id="l00747" name="l00747"></a><span class="lineno">  747</span> </div>
-<div class="line"><a id="l00748" name="l00748"></a><span class="lineno">  748</span>  this-&gt;circuit_.boundary.get&lt;<a class="code hl_struct" href="structtket_1_1TagID.html">TagID</a>&gt;().insert({uid_0, uid0_in, uid1_out});</div>
-<div class="line"><a id="l00749" name="l00749"></a><span class="lineno">  749</span>  this-&gt;circuit_.boundary.get&lt;<a class="code hl_struct" href="structtket_1_1TagID.html">TagID</a>&gt;().insert({uid_1, uid1_in, uid0_out});</div>
-<div class="line"><a id="l00750" name="l00750"></a><span class="lineno">  750</span> </div>
-<div class="line"><a id="l00751" name="l00751"></a><span class="lineno">  751</span>  std::map&lt;Node, Node&gt; final_map = {{n0, n1}, {n1, n0}};</div>
-<div class="line"><a id="l00752" name="l00752"></a><span class="lineno">  752</span>  <a class="code hl_function" href="namespacetket.html#af6b6d4ca75b55551099c004341092d38">update_maps</a>(this-&gt;bimaps_, {}, final_map);</div>
-<div class="line"><a id="l00753" name="l00753"></a><span class="lineno">  753</span>  assert_valid_maps();</div>
-<div class="line"><a id="l00754" name="l00754"></a><span class="lineno">  754</span>  <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00755" name="l00755"></a><span class="lineno">  755</span>}</div>
+<div class="line"><a id="l00731" name="l00731"></a><span class="lineno">  731</span>      uid0_in_it, {uid_0, {this-&gt;circuit_.source(successors[1]), 0}});</div>
+<div class="line"><a id="l00732" name="l00732"></a><span class="lineno">  732</span>  this-&gt;linear_boundary-&gt;replace(</div>
+<div class="line"><a id="l00733" name="l00733"></a><span class="lineno">  733</span>      uid1_in_it, {uid_1, {this-&gt;circuit_.source(successors[0]), 1}});</div>
+<div class="line"><a id="l00734" name="l00734"></a><span class="lineno">  734</span> </div>
+<div class="line"><a id="l00735" name="l00735"></a><span class="lineno">  735</span>  <span class="comment">// update output vertices of quantum boundary of circuit to reflect changing</span></div>
+<div class="line"><a id="l00736" name="l00736"></a><span class="lineno">  736</span>  <span class="comment">// qubit paths</span></div>
+<div class="line"><a id="l00737" name="l00737"></a><span class="lineno">  737</span>  <span class="keyword">auto</span> uid0_circuit_boundary_it =</div>
+<div class="line"><a id="l00738" name="l00738"></a><span class="lineno">  738</span>      this-&gt;circuit_.boundary.get&lt;<a class="code hl_struct" href="structtket_1_1TagID.html">TagID</a>&gt;().find(uid_0);</div>
+<div class="line"><a id="l00739" name="l00739"></a><span class="lineno">  739</span>  <span class="keyword">auto</span> uid1_circuit_boundary_it =</div>
+<div class="line"><a id="l00740" name="l00740"></a><span class="lineno">  740</span>      this-&gt;circuit_.boundary.get&lt;<a class="code hl_struct" href="structtket_1_1TagID.html">TagID</a>&gt;().find(uid_1);</div>
+<div class="line"><a id="l00741" name="l00741"></a><span class="lineno">  741</span> </div>
+<div class="line"><a id="l00742" name="l00742"></a><span class="lineno">  742</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> uid0_out = uid0_circuit_boundary_it-&gt;out_;</div>
+<div class="line"><a id="l00743" name="l00743"></a><span class="lineno">  743</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> uid1_out = uid1_circuit_boundary_it-&gt;out_;</div>
+<div class="line"><a id="l00744" name="l00744"></a><span class="lineno">  744</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> uid0_in = uid0_circuit_boundary_it-&gt;in_;</div>
+<div class="line"><a id="l00745" name="l00745"></a><span class="lineno">  745</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> uid1_in = uid1_circuit_boundary_it-&gt;in_;</div>
+<div class="line"><a id="l00746" name="l00746"></a><span class="lineno">  746</span> </div>
+<div class="line"><a id="l00747" name="l00747"></a><span class="lineno">  747</span>  this-&gt;circuit_.boundary.get&lt;<a class="code hl_struct" href="structtket_1_1TagID.html">TagID</a>&gt;().erase(uid_0);</div>
+<div class="line"><a id="l00748" name="l00748"></a><span class="lineno">  748</span>  this-&gt;circuit_.boundary.get&lt;<a class="code hl_struct" href="structtket_1_1TagID.html">TagID</a>&gt;().erase(uid_1);</div>
+<div class="line"><a id="l00749" name="l00749"></a><span class="lineno">  749</span> </div>
+<div class="line"><a id="l00750" name="l00750"></a><span class="lineno">  750</span>  this-&gt;circuit_.boundary.get&lt;<a class="code hl_struct" href="structtket_1_1TagID.html">TagID</a>&gt;().insert({uid_0, uid0_in, uid1_out});</div>
+<div class="line"><a id="l00751" name="l00751"></a><span class="lineno">  751</span>  this-&gt;circuit_.boundary.get&lt;<a class="code hl_struct" href="structtket_1_1TagID.html">TagID</a>&gt;().insert({uid_1, uid1_in, uid0_out});</div>
+<div class="line"><a id="l00752" name="l00752"></a><span class="lineno">  752</span> </div>
+<div class="line"><a id="l00753" name="l00753"></a><span class="lineno">  753</span>  std::map&lt;Node, Node&gt; final_map = {{n0, n1}, {n1, n0}};</div>
+<div class="line"><a id="l00754" name="l00754"></a><span class="lineno">  754</span>  <a class="code hl_function" href="namespacetket.html#af6b6d4ca75b55551099c004341092d38">update_maps</a>(this-&gt;bimaps_, {}, final_map);</div>
+<div class="line"><a id="l00755" name="l00755"></a><span class="lineno">  755</span>  assert_valid_maps();</div>
+<div class="line"><a id="l00756" name="l00756"></a><span class="lineno">  756</span>  <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00757" name="l00757"></a><span class="lineno">  757</span>}</div>
 </div>
-<div class="line"><a id="l00756" name="l00756"></a><span class="lineno">  756</span> </div>
-<div class="foldopen" id="foldopen00757" data-start="{" data-end="}">
-<div class="line"><a id="l00757" name="l00757"></a><span class="lineno"><a class="line" href="structtket_1_1MappingFrontier.html#a79935f5f467750f240b5adc29cc63a23">  757</a></span><span class="keywordtype">void</span> MappingFrontier::add_bridge(</div>
-<div class="line"><a id="l00758" name="l00758"></a><span class="lineno">  758</span>    <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; control, <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; central, <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; target) {</div>
-<div class="line"><a id="l00759" name="l00759"></a><span class="lineno">  759</span>  <span class="comment">// get predecessors</span></div>
-<div class="line"><a id="l00760" name="l00760"></a><span class="lineno">  760</span>  <span class="keyword">auto</span> control_in_it = this-&gt;linear_boundary-&gt;find(control);</div>
-<div class="line"><a id="l00761" name="l00761"></a><span class="lineno">  761</span>  <span class="keyword">auto</span> central_in_it = this-&gt;linear_boundary-&gt;find(central);</div>
-<div class="line"><a id="l00762" name="l00762"></a><span class="lineno">  762</span>  <span class="keyword">auto</span> target_in_it = this-&gt;linear_boundary-&gt;find(target);</div>
-<div class="line"><a id="l00763" name="l00763"></a><span class="lineno">  763</span> </div>
-<div class="line"><a id="l00764" name="l00764"></a><span class="lineno">  764</span>  <span class="comment">// by virtue of method, control and target qubit will always be in BRIDGE.</span></div>
-<div class="line"><a id="l00765" name="l00765"></a><span class="lineno">  765</span>  <span class="comment">// However, distances used to check BRIDGE and find PATH may use</span></div>
-<div class="line"><a id="l00766" name="l00766"></a><span class="lineno">  766</span>  <span class="comment">// central qubit that is unallocated, in which add it.</span></div>
-<div class="line"><a id="l00767" name="l00767"></a><span class="lineno">  767</span>  <span class="keywordflow">if</span> (central_in_it == this-&gt;linear_boundary-&gt;end()) {</div>
-<div class="line"><a id="l00768" name="l00768"></a><span class="lineno">  768</span>    this-&gt;add_ancilla(central);</div>
-<div class="line"><a id="l00769" name="l00769"></a><span class="lineno">  769</span>    central_in_it = this-&gt;linear_boundary-&gt;find(central);</div>
-<div class="line"><a id="l00770" name="l00770"></a><span class="lineno">  770</span>  }</div>
-<div class="line"><a id="l00771" name="l00771"></a><span class="lineno">  771</span> </div>
-<div class="line"><a id="l00772" name="l00772"></a><span class="lineno">  772</span>  <a class="code hl_class" href="classtket_1_1Node.html">Node</a> central_node = <a class="code hl_class" href="classtket_1_1Node.html">Node</a>(central);</div>
-<div class="line"><a id="l00773" name="l00773"></a><span class="lineno">  773</span>  <span class="comment">// In this case we can still use the node, but we need to make sure that</span></div>
-<div class="line"><a id="l00774" name="l00774"></a><span class="lineno">  774</span>  <span class="comment">// the wire it&#39;s on won&#39;t be reassigned</span></div>
-<div class="line"><a id="l00775" name="l00775"></a><span class="lineno">  775</span>  <span class="comment">// This could reduce performance, but the &quot;reassignable_nodes_&quot; case</span></div>
-<div class="line"><a id="l00776" name="l00776"></a><span class="lineno">  776</span>  <span class="comment">// deals with Qubit wires that have no multi-qubit quantum operations,</span></div>
-<div class="line"><a id="l00777" name="l00777"></a><span class="lineno">  777</span>  <span class="comment">// so in practice this won&#39;t change the results for a meaningful circuit</span></div>
-<div class="line"><a id="l00778" name="l00778"></a><span class="lineno">  778</span>  <span class="keywordflow">if</span> (this-&gt;reassignable_nodes_.find(central_node) !=</div>
-<div class="line"><a id="l00779" name="l00779"></a><span class="lineno">  779</span>      this-&gt;reassignable_nodes_.end()) {</div>
-<div class="line"><a id="l00780" name="l00780"></a><span class="lineno">  780</span>    this-&gt;reassignable_nodes_.erase(central_node);</div>
-<div class="line"><a id="l00781" name="l00781"></a><span class="lineno">  781</span>  }</div>
-<div class="line"><a id="l00782" name="l00782"></a><span class="lineno">  782</span>  <a class="code hl_typedef" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a> vp_control = control_in_it-&gt;second;</div>
-<div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span>  <a class="code hl_typedef" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a> vp_central = central_in_it-&gt;second;</div>
-<div class="line"><a id="l00784" name="l00784"></a><span class="lineno">  784</span>  <a class="code hl_typedef" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a> vp_target = target_in_it-&gt;second;</div>
-<div class="line"><a id="l00785" name="l00785"></a><span class="lineno">  785</span> </div>
-<div class="line"><a id="l00786" name="l00786"></a><span class="lineno">  786</span>  <a class="code hl_typedef" href="namespacetket.html#a814cee1be1a70fcc4a804f93212b5013">EdgeVec</a> predecessors = {</div>
-<div class="line"><a id="l00787" name="l00787"></a><span class="lineno">  787</span>      this-&gt;circuit_.get_nth_out_edge(vp_control.first, vp_control.second),</div>
-<div class="line"><a id="l00788" name="l00788"></a><span class="lineno">  788</span>      this-&gt;circuit_.get_nth_out_edge(vp_central.first, vp_central.second),</div>
-<div class="line"><a id="l00789" name="l00789"></a><span class="lineno">  789</span>      this-&gt;circuit_.get_nth_out_edge(vp_target.first, vp_target.second),</div>
-<div class="line"><a id="l00790" name="l00790"></a><span class="lineno">  790</span>  };  <span class="comment">// get cx vertex</span></div>
-<div class="line"><a id="l00791" name="l00791"></a><span class="lineno">  791</span>      <span class="comment">// this should be guaranteeds by pre-checks</span></div>
-<div class="line"><a id="l00792" name="l00792"></a><span class="lineno">  792</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> cx_v = this-&gt;circuit_.target(predecessors[0]);</div>
-<div class="line"><a id="l00793" name="l00793"></a><span class="lineno">  793</span>  <span class="comment">// add bridge</span></div>
-<div class="line"><a id="l00794" name="l00794"></a><span class="lineno">  794</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> bridge_v = this-&gt;circuit_.add_vertex(OpType::BRIDGE);</div>
-<div class="line"><a id="l00795" name="l00795"></a><span class="lineno">  795</span>  <span class="comment">// add bridge vertex to circuit</span></div>
-<div class="line"><a id="l00796" name="l00796"></a><span class="lineno">  796</span>  this-&gt;circuit_.rewire(</div>
-<div class="line"><a id="l00797" name="l00797"></a><span class="lineno">  797</span>      bridge_v, predecessors,</div>
-<div class="line"><a id="l00798" name="l00798"></a><span class="lineno">  798</span>      {EdgeType::Quantum, EdgeType::Quantum, EdgeType::Quantum});</div>
-<div class="line"><a id="l00799" name="l00799"></a><span class="lineno">  799</span>  <span class="comment">// remove old cx vertex</span></div>
-<div class="line"><a id="l00800" name="l00800"></a><span class="lineno">  800</span>  this-&gt;circuit_.remove_vertex(</div>
-<div class="line"><a id="l00801" name="l00801"></a><span class="lineno">  801</span>      cx_v, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::Yes);</div>
-<div class="line"><a id="l00802" name="l00802"></a><span class="lineno">  802</span>  assert_valid_maps();</div>
-<div class="line"><a id="l00803" name="l00803"></a><span class="lineno">  803</span>}</div>
+<div class="line"><a id="l00758" name="l00758"></a><span class="lineno">  758</span> </div>
+<div class="foldopen" id="foldopen00759" data-start="{" data-end="}">
+<div class="line"><a id="l00759" name="l00759"></a><span class="lineno"><a class="line" href="structtket_1_1MappingFrontier.html#a79935f5f467750f240b5adc29cc63a23">  759</a></span><span class="keywordtype">void</span> MappingFrontier::add_bridge(</div>
+<div class="line"><a id="l00760" name="l00760"></a><span class="lineno">  760</span>    <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; control, <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; central, <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; target) {</div>
+<div class="line"><a id="l00761" name="l00761"></a><span class="lineno">  761</span>  <span class="comment">// get predecessors</span></div>
+<div class="line"><a id="l00762" name="l00762"></a><span class="lineno">  762</span>  <span class="keyword">auto</span> control_in_it = this-&gt;linear_boundary-&gt;find(control);</div>
+<div class="line"><a id="l00763" name="l00763"></a><span class="lineno">  763</span>  <span class="keyword">auto</span> central_in_it = this-&gt;linear_boundary-&gt;find(central);</div>
+<div class="line"><a id="l00764" name="l00764"></a><span class="lineno">  764</span>  <span class="keyword">auto</span> target_in_it = this-&gt;linear_boundary-&gt;find(target);</div>
+<div class="line"><a id="l00765" name="l00765"></a><span class="lineno">  765</span> </div>
+<div class="line"><a id="l00766" name="l00766"></a><span class="lineno">  766</span>  <span class="comment">// by virtue of method, control and target qubit will always be in BRIDGE.</span></div>
+<div class="line"><a id="l00767" name="l00767"></a><span class="lineno">  767</span>  <span class="comment">// However, distances used to check BRIDGE and find PATH may use</span></div>
+<div class="line"><a id="l00768" name="l00768"></a><span class="lineno">  768</span>  <span class="comment">// central qubit that is unallocated, in which add it.</span></div>
+<div class="line"><a id="l00769" name="l00769"></a><span class="lineno">  769</span>  <span class="keywordflow">if</span> (central_in_it == this-&gt;linear_boundary-&gt;end()) {</div>
+<div class="line"><a id="l00770" name="l00770"></a><span class="lineno">  770</span>    this-&gt;add_ancilla(central);</div>
+<div class="line"><a id="l00771" name="l00771"></a><span class="lineno">  771</span>    central_in_it = this-&gt;linear_boundary-&gt;find(central);</div>
+<div class="line"><a id="l00772" name="l00772"></a><span class="lineno">  772</span>  }</div>
+<div class="line"><a id="l00773" name="l00773"></a><span class="lineno">  773</span> </div>
+<div class="line"><a id="l00774" name="l00774"></a><span class="lineno">  774</span>  <a class="code hl_class" href="classtket_1_1Node.html">Node</a> central_node = <a class="code hl_class" href="classtket_1_1Node.html">Node</a>(central);</div>
+<div class="line"><a id="l00775" name="l00775"></a><span class="lineno">  775</span>  <span class="comment">// In this case we can still use the node, but we need to make sure that</span></div>
+<div class="line"><a id="l00776" name="l00776"></a><span class="lineno">  776</span>  <span class="comment">// the wire it&#39;s on won&#39;t be reassigned</span></div>
+<div class="line"><a id="l00777" name="l00777"></a><span class="lineno">  777</span>  <span class="comment">// This could reduce performance, but the &quot;reassignable_nodes_&quot; case</span></div>
+<div class="line"><a id="l00778" name="l00778"></a><span class="lineno">  778</span>  <span class="comment">// deals with Qubit wires that have no multi-qubit quantum operations,</span></div>
+<div class="line"><a id="l00779" name="l00779"></a><span class="lineno">  779</span>  <span class="comment">// so in practice this won&#39;t change the results for a meaningful circuit</span></div>
+<div class="line"><a id="l00780" name="l00780"></a><span class="lineno">  780</span>  <span class="keywordflow">if</span> (this-&gt;reassignable_nodes_.find(central_node) !=</div>
+<div class="line"><a id="l00781" name="l00781"></a><span class="lineno">  781</span>      this-&gt;reassignable_nodes_.end()) {</div>
+<div class="line"><a id="l00782" name="l00782"></a><span class="lineno">  782</span>    this-&gt;reassignable_nodes_.erase(central_node);</div>
+<div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span>  }</div>
+<div class="line"><a id="l00784" name="l00784"></a><span class="lineno">  784</span>  <a class="code hl_typedef" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a> vp_control = control_in_it-&gt;second;</div>
+<div class="line"><a id="l00785" name="l00785"></a><span class="lineno">  785</span>  <a class="code hl_typedef" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a> vp_central = central_in_it-&gt;second;</div>
+<div class="line"><a id="l00786" name="l00786"></a><span class="lineno">  786</span>  <a class="code hl_typedef" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a> vp_target = target_in_it-&gt;second;</div>
+<div class="line"><a id="l00787" name="l00787"></a><span class="lineno">  787</span> </div>
+<div class="line"><a id="l00788" name="l00788"></a><span class="lineno">  788</span>  <a class="code hl_typedef" href="namespacetket.html#a814cee1be1a70fcc4a804f93212b5013">EdgeVec</a> predecessors = {</div>
+<div class="line"><a id="l00789" name="l00789"></a><span class="lineno">  789</span>      this-&gt;circuit_.get_nth_out_edge(vp_control.first, vp_control.second),</div>
+<div class="line"><a id="l00790" name="l00790"></a><span class="lineno">  790</span>      this-&gt;circuit_.get_nth_out_edge(vp_central.first, vp_central.second),</div>
+<div class="line"><a id="l00791" name="l00791"></a><span class="lineno">  791</span>      this-&gt;circuit_.get_nth_out_edge(vp_target.first, vp_target.second),</div>
+<div class="line"><a id="l00792" name="l00792"></a><span class="lineno">  792</span>  };  <span class="comment">// get cx vertex</span></div>
+<div class="line"><a id="l00793" name="l00793"></a><span class="lineno">  793</span>      <span class="comment">// this should be guaranteeds by pre-checks</span></div>
+<div class="line"><a id="l00794" name="l00794"></a><span class="lineno">  794</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> cx_v = this-&gt;circuit_.target(predecessors[0]);</div>
+<div class="line"><a id="l00795" name="l00795"></a><span class="lineno">  795</span>  <span class="comment">// add bridge</span></div>
+<div class="line"><a id="l00796" name="l00796"></a><span class="lineno">  796</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> bridge_v = this-&gt;circuit_.add_vertex(OpType::BRIDGE);</div>
+<div class="line"><a id="l00797" name="l00797"></a><span class="lineno">  797</span>  <span class="comment">// add bridge vertex to circuit</span></div>
+<div class="line"><a id="l00798" name="l00798"></a><span class="lineno">  798</span>  this-&gt;circuit_.rewire(</div>
+<div class="line"><a id="l00799" name="l00799"></a><span class="lineno">  799</span>      bridge_v, predecessors,</div>
+<div class="line"><a id="l00800" name="l00800"></a><span class="lineno">  800</span>      {EdgeType::Quantum, EdgeType::Quantum, EdgeType::Quantum});</div>
+<div class="line"><a id="l00801" name="l00801"></a><span class="lineno">  801</span>  <span class="comment">// remove old cx vertex</span></div>
+<div class="line"><a id="l00802" name="l00802"></a><span class="lineno">  802</span>  this-&gt;circuit_.remove_vertex(</div>
+<div class="line"><a id="l00803" name="l00803"></a><span class="lineno">  803</span>      cx_v, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::Yes);</div>
+<div class="line"><a id="l00804" name="l00804"></a><span class="lineno">  804</span>  assert_valid_maps();</div>
+<div class="line"><a id="l00805" name="l00805"></a><span class="lineno">  805</span>}</div>
 </div>
-<div class="line"><a id="l00804" name="l00804"></a><span class="lineno">  804</span> </div>
-<div class="foldopen" id="foldopen00805" data-start="{" data-end="}">
-<div class="line"><a id="l00805" name="l00805"></a><span class="lineno"><a class="line" href="structtket_1_1MappingFrontier.html#a2eb8a882bb8e3ea5da1e57c937498b54">  805</a></span><span class="keywordtype">void</span> MappingFrontier::add_ancilla(<span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; ancilla) {</div>
-<div class="line"><a id="l00806" name="l00806"></a><span class="lineno">  806</span>  <span class="comment">// Given the ancilla node, we 1. add ancilla to the circuit.</span></div>
-<div class="line"><a id="l00807" name="l00807"></a><span class="lineno">  807</span>  <span class="comment">// 2. map ancilla to placeholder_q, which will be a qubit from the routing</span></div>
-<div class="line"><a id="l00808" name="l00808"></a><span class="lineno">  808</span>  <span class="comment">// ancilla register that is not present anywhere in the circuit and bimaps.</span></div>
-<div class="line"><a id="l00809" name="l00809"></a><span class="lineno">  809</span>  <span class="comment">// Add {placeholder_q, ancilla} to the bimaps.</span></div>
-<div class="line"><a id="l00810" name="l00810"></a><span class="lineno">  810</span>  <a class="code hl_typedef" href="namespacetket.html#a0c364318363e43cfb441df48c8a6bb10">register_t</a> ancilla_reg = this-&gt;circuit_.get_reg(<a class="code hl_function" href="namespacetket.html#a0dde2f744cf0077c412db7fa682755ab">q_routing_ancilla_reg</a>());</div>
-<div class="line"><a id="l00811" name="l00811"></a><span class="lineno">  811</span>  <span class="keywordtype">unsigned</span> available_ancilla_idx = 0;</div>
-<div class="line"><a id="l00812" name="l00812"></a><span class="lineno">  812</span>  <span class="keyword">auto</span> it = ancilla_reg.rbegin();</div>
-<div class="line"><a id="l00813" name="l00813"></a><span class="lineno">  813</span>  <span class="keywordflow">if</span> (it != ancilla_reg.rend()) {</div>
-<div class="line"><a id="l00814" name="l00814"></a><span class="lineno">  814</span>    available_ancilla_idx = it-&gt;first + 1;</div>
-<div class="line"><a id="l00815" name="l00815"></a><span class="lineno">  815</span>  }</div>
-<div class="line"><a id="l00816" name="l00816"></a><span class="lineno">  816</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; it : this-&gt;bimaps_-&gt;initial.left) {</div>
-<div class="line"><a id="l00817" name="l00817"></a><span class="lineno">  817</span>    <span class="keywordflow">if</span> (it.first.reg_name() == <a class="code hl_function" href="namespacetket.html#a0dde2f744cf0077c412db7fa682755ab">q_routing_ancilla_reg</a>() &amp;&amp;</div>
-<div class="line"><a id="l00818" name="l00818"></a><span class="lineno">  818</span>        it.first.index()[0] &gt;= available_ancilla_idx) {</div>
-<div class="line"><a id="l00819" name="l00819"></a><span class="lineno">  819</span>      available_ancilla_idx = it.first.index()[0] + 1;</div>
-<div class="line"><a id="l00820" name="l00820"></a><span class="lineno">  820</span>    }</div>
-<div class="line"><a id="l00821" name="l00821"></a><span class="lineno">  821</span>    <span class="keywordflow">if</span> (it.second.reg_name() == <a class="code hl_function" href="namespacetket.html#a0dde2f744cf0077c412db7fa682755ab">q_routing_ancilla_reg</a>() &amp;&amp;</div>
-<div class="line"><a id="l00822" name="l00822"></a><span class="lineno">  822</span>        it.second.index()[0] &gt;= available_ancilla_idx) {</div>
-<div class="line"><a id="l00823" name="l00823"></a><span class="lineno">  823</span>      available_ancilla_idx = it.second.index()[0] + 1;</div>
-<div class="line"><a id="l00824" name="l00824"></a><span class="lineno">  824</span>    }</div>
-<div class="line"><a id="l00825" name="l00825"></a><span class="lineno">  825</span>  }</div>
-<div class="line"><a id="l00826" name="l00826"></a><span class="lineno">  826</span>  <a class="code hl_class" href="classtket_1_1Qubit.html">Qubit</a> placeholder_q(<a class="code hl_function" href="namespacetket.html#a0dde2f744cf0077c412db7fa682755ab">q_routing_ancilla_reg</a>(), available_ancilla_idx);</div>
-<div class="line"><a id="l00827" name="l00827"></a><span class="lineno">  827</span>  <a class="code hl_class" href="classtket_1_1Qubit.html">Qubit</a> ancilla_q(ancilla);</div>
-<div class="line"><a id="l00828" name="l00828"></a><span class="lineno">  828</span>  this-&gt;circuit_.add_qubit(ancilla_q);</div>
-<div class="line"><a id="l00829" name="l00829"></a><span class="lineno">  829</span>  this-&gt;linear_boundary-&gt;insert(</div>
-<div class="line"><a id="l00830" name="l00830"></a><span class="lineno">  830</span>      {ancilla_q, {this-&gt;circuit_.get_in(ancilla_q), 0}});</div>
-<div class="line"><a id="l00831" name="l00831"></a><span class="lineno">  831</span> </div>
-<div class="line"><a id="l00832" name="l00832"></a><span class="lineno">  832</span>  this-&gt;bimaps_-&gt;initial.insert({placeholder_q, ancilla});</div>
-<div class="line"><a id="l00833" name="l00833"></a><span class="lineno">  833</span>  this-&gt;bimaps_-&gt;final.insert({placeholder_q, ancilla});</div>
-<div class="line"><a id="l00834" name="l00834"></a><span class="lineno">  834</span>  this-&gt;ancilla_nodes_.insert(<a class="code hl_class" href="classtket_1_1Node.html">Node</a>(ancilla));</div>
-<div class="line"><a id="l00835" name="l00835"></a><span class="lineno">  835</span>}</div>
+<div class="line"><a id="l00806" name="l00806"></a><span class="lineno">  806</span> </div>
+<div class="foldopen" id="foldopen00807" data-start="{" data-end="}">
+<div class="line"><a id="l00807" name="l00807"></a><span class="lineno"><a class="line" href="structtket_1_1MappingFrontier.html#a2eb8a882bb8e3ea5da1e57c937498b54">  807</a></span><span class="keywordtype">void</span> MappingFrontier::add_ancilla(<span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; ancilla) {</div>
+<div class="line"><a id="l00808" name="l00808"></a><span class="lineno">  808</span>  <span class="comment">// Given the ancilla node, we 1. add ancilla to the circuit.</span></div>
+<div class="line"><a id="l00809" name="l00809"></a><span class="lineno">  809</span>  <span class="comment">// 2. map ancilla to placeholder_q, which will be a qubit from the routing</span></div>
+<div class="line"><a id="l00810" name="l00810"></a><span class="lineno">  810</span>  <span class="comment">// ancilla register that is not present anywhere in the circuit and bimaps.</span></div>
+<div class="line"><a id="l00811" name="l00811"></a><span class="lineno">  811</span>  <span class="comment">// Add {placeholder_q, ancilla} to the bimaps.</span></div>
+<div class="line"><a id="l00812" name="l00812"></a><span class="lineno">  812</span>  <a class="code hl_typedef" href="namespacetket.html#a0c364318363e43cfb441df48c8a6bb10">register_t</a> ancilla_reg = this-&gt;circuit_.get_reg(<a class="code hl_function" href="namespacetket.html#a0dde2f744cf0077c412db7fa682755ab">q_routing_ancilla_reg</a>());</div>
+<div class="line"><a id="l00813" name="l00813"></a><span class="lineno">  813</span>  <span class="keywordtype">unsigned</span> available_ancilla_idx = 0;</div>
+<div class="line"><a id="l00814" name="l00814"></a><span class="lineno">  814</span>  <span class="keyword">auto</span> it = ancilla_reg.rbegin();</div>
+<div class="line"><a id="l00815" name="l00815"></a><span class="lineno">  815</span>  <span class="keywordflow">if</span> (it != ancilla_reg.rend()) {</div>
+<div class="line"><a id="l00816" name="l00816"></a><span class="lineno">  816</span>    available_ancilla_idx = it-&gt;first + 1;</div>
+<div class="line"><a id="l00817" name="l00817"></a><span class="lineno">  817</span>  }</div>
+<div class="line"><a id="l00818" name="l00818"></a><span class="lineno">  818</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; it : this-&gt;bimaps_-&gt;initial.left) {</div>
+<div class="line"><a id="l00819" name="l00819"></a><span class="lineno">  819</span>    <span class="keywordflow">if</span> (it.first.reg_name() == <a class="code hl_function" href="namespacetket.html#a0dde2f744cf0077c412db7fa682755ab">q_routing_ancilla_reg</a>() &amp;&amp;</div>
+<div class="line"><a id="l00820" name="l00820"></a><span class="lineno">  820</span>        it.first.index()[0] &gt;= available_ancilla_idx) {</div>
+<div class="line"><a id="l00821" name="l00821"></a><span class="lineno">  821</span>      available_ancilla_idx = it.first.index()[0] + 1;</div>
+<div class="line"><a id="l00822" name="l00822"></a><span class="lineno">  822</span>    }</div>
+<div class="line"><a id="l00823" name="l00823"></a><span class="lineno">  823</span>    <span class="keywordflow">if</span> (it.second.reg_name() == <a class="code hl_function" href="namespacetket.html#a0dde2f744cf0077c412db7fa682755ab">q_routing_ancilla_reg</a>() &amp;&amp;</div>
+<div class="line"><a id="l00824" name="l00824"></a><span class="lineno">  824</span>        it.second.index()[0] &gt;= available_ancilla_idx) {</div>
+<div class="line"><a id="l00825" name="l00825"></a><span class="lineno">  825</span>      available_ancilla_idx = it.second.index()[0] + 1;</div>
+<div class="line"><a id="l00826" name="l00826"></a><span class="lineno">  826</span>    }</div>
+<div class="line"><a id="l00827" name="l00827"></a><span class="lineno">  827</span>  }</div>
+<div class="line"><a id="l00828" name="l00828"></a><span class="lineno">  828</span>  <a class="code hl_class" href="classtket_1_1Qubit.html">Qubit</a> placeholder_q(<a class="code hl_function" href="namespacetket.html#a0dde2f744cf0077c412db7fa682755ab">q_routing_ancilla_reg</a>(), available_ancilla_idx);</div>
+<div class="line"><a id="l00829" name="l00829"></a><span class="lineno">  829</span>  <a class="code hl_class" href="classtket_1_1Qubit.html">Qubit</a> ancilla_q(ancilla);</div>
+<div class="line"><a id="l00830" name="l00830"></a><span class="lineno">  830</span>  this-&gt;circuit_.add_qubit(ancilla_q);</div>
+<div class="line"><a id="l00831" name="l00831"></a><span class="lineno">  831</span>  this-&gt;linear_boundary-&gt;insert(</div>
+<div class="line"><a id="l00832" name="l00832"></a><span class="lineno">  832</span>      {ancilla_q, {this-&gt;circuit_.get_in(ancilla_q), 0}});</div>
+<div class="line"><a id="l00833" name="l00833"></a><span class="lineno">  833</span> </div>
+<div class="line"><a id="l00834" name="l00834"></a><span class="lineno">  834</span>  this-&gt;bimaps_-&gt;initial.insert({placeholder_q, ancilla});</div>
+<div class="line"><a id="l00835" name="l00835"></a><span class="lineno">  835</span>  this-&gt;bimaps_-&gt;final.insert({placeholder_q, ancilla});</div>
+<div class="line"><a id="l00836" name="l00836"></a><span class="lineno">  836</span>  this-&gt;ancilla_nodes_.insert(<a class="code hl_class" href="classtket_1_1Node.html">Node</a>(ancilla));</div>
+<div class="line"><a id="l00837" name="l00837"></a><span class="lineno">  837</span>}</div>
 </div>
-<div class="line"><a id="l00836" name="l00836"></a><span class="lineno">  836</span> </div>
-<div class="foldopen" id="foldopen00837" data-start="{" data-end="}">
-<div class="line"><a id="l00837" name="l00837"></a><span class="lineno"><a class="line" href="structtket_1_1MappingFrontier.html#a830c080ba3e2a78f8c710d9a773ff8ac">  837</a></span><span class="keywordtype">void</span> MappingFrontier::merge_ancilla(</div>
-<div class="line"><a id="l00838" name="l00838"></a><span class="lineno">  838</span>    <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; merge, <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; ancilla) {</div>
-<div class="line"><a id="l00839" name="l00839"></a><span class="lineno">  839</span>  <span class="comment">// &quot;front&quot; meaning causally ahead</span></div>
-<div class="line"><a id="l00840" name="l00840"></a><span class="lineno">  840</span>  <span class="comment">// ancilla front, merge back</span></div>
-<div class="line"><a id="l00841" name="l00841"></a><span class="lineno">  841</span> </div>
-<div class="line"><a id="l00842" name="l00842"></a><span class="lineno">  842</span>  <span class="keyword">auto</span> rewire = [&amp;](<span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; front, <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; back) {</div>
-<div class="line"><a id="l00843" name="l00843"></a><span class="lineno">  843</span>    <span class="comment">// get output and input vertices</span></div>
-<div class="line"><a id="l00844" name="l00844"></a><span class="lineno">  844</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> back_v_in = this-&gt;circuit_.get_in(back);</div>
-<div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> back_v_out = this-&gt;circuit_.get_out(back);</div>
-<div class="line"><a id="l00846" name="l00846"></a><span class="lineno">  846</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> front_v_out = this-&gt;circuit_.get_out(front);</div>
-<div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span> </div>
-<div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span>    <span class="comment">// find source vertex &amp; port of merge_v_out</span></div>
-<div class="line"><a id="l00849" name="l00849"></a><span class="lineno">  849</span>    <span class="comment">// output vertex, so can assume single edge</span></div>
-<div class="line"><a id="l00850" name="l00850"></a><span class="lineno">  850</span>    <a class="code hl_typedef" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> back_out_edge = this-&gt;circuit_.get_nth_out_edge(back_v_in, 0);</div>
-<div class="line"><a id="l00851" name="l00851"></a><span class="lineno">  851</span>    <a class="code hl_typedef" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> front_in_edge = this-&gt;circuit_.get_nth_in_edge(front_v_out, 0);</div>
-<div class="line"><a id="l00852" name="l00852"></a><span class="lineno">  852</span>    <span class="comment">// Find port number</span></div>
-<div class="line"><a id="l00853" name="l00853"></a><span class="lineno">  853</span>    <a class="code hl_typedef" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> back_target_port = this-&gt;circuit_.get_target_port(back_out_edge);</div>
-<div class="line"><a id="l00854" name="l00854"></a><span class="lineno">  854</span>    <a class="code hl_typedef" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> front_source_port = this-&gt;circuit_.get_source_port(front_in_edge);</div>
-<div class="line"><a id="l00855" name="l00855"></a><span class="lineno">  855</span>    <span class="comment">// Find vertices</span></div>
-<div class="line"><a id="l00856" name="l00856"></a><span class="lineno">  856</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> back_v_target = this-&gt;circuit_.target(back_out_edge);</div>
-<div class="line"><a id="l00857" name="l00857"></a><span class="lineno">  857</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> front_v_source = this-&gt;circuit_.source(front_in_edge);</div>
-<div class="line"><a id="l00858" name="l00858"></a><span class="lineno">  858</span> </div>
-<div class="line"><a id="l00864" name="l00864"></a><span class="lineno">  864</span>    <span class="comment">// remove and replace edges</span></div>
-<div class="line"><a id="l00865" name="l00865"></a><span class="lineno">  865</span>    this-&gt;circuit_.remove_edge(back_out_edge);</div>
-<div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span>    this-&gt;circuit_.remove_edge(front_in_edge);</div>
-<div class="line"><a id="l00872" name="l00872"></a><span class="lineno">  872</span>    this-&gt;circuit_.add_edge(</div>
-<div class="line"><a id="l00873" name="l00873"></a><span class="lineno">  873</span>        {front_v_source, front_source_port}, {back_v_target, back_target_port},</div>
-<div class="line"><a id="l00874" name="l00874"></a><span class="lineno">  874</span>        EdgeType::Quantum);</div>
-<div class="line"><a id="l00882" name="l00882"></a><span class="lineno">  882</span>    <span class="comment">// instead of manually updating all boundaries, we change which output</span></div>
-<div class="line"><a id="l00883" name="l00883"></a><span class="lineno">  883</span>    <span class="comment">// vertex the qubit paths to</span></div>
-<div class="line"><a id="l00884" name="l00884"></a><span class="lineno">  884</span>    <a class="code hl_typedef" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> back_in_edge = this-&gt;circuit_.get_nth_in_edge(back_v_out, 0);</div>
-<div class="line"><a id="l00885" name="l00885"></a><span class="lineno">  885</span>    <a class="code hl_typedef" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> back_source_port = this-&gt;circuit_.get_source_port(back_in_edge);</div>
-<div class="line"><a id="l00886" name="l00886"></a><span class="lineno">  886</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> back_v_source = this-&gt;circuit_.source(back_in_edge);</div>
-<div class="line"><a id="l00887" name="l00887"></a><span class="lineno">  887</span> </div>
-<div class="line"><a id="l00888" name="l00888"></a><span class="lineno">  888</span>    this-&gt;circuit_.remove_edge(back_in_edge);</div>
+<div class="line"><a id="l00838" name="l00838"></a><span class="lineno">  838</span> </div>
+<div class="foldopen" id="foldopen00839" data-start="{" data-end="}">
+<div class="line"><a id="l00839" name="l00839"></a><span class="lineno"><a class="line" href="structtket_1_1MappingFrontier.html#a830c080ba3e2a78f8c710d9a773ff8ac">  839</a></span><span class="keywordtype">void</span> MappingFrontier::merge_ancilla(</div>
+<div class="line"><a id="l00840" name="l00840"></a><span class="lineno">  840</span>    <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; merge, <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; ancilla) {</div>
+<div class="line"><a id="l00841" name="l00841"></a><span class="lineno">  841</span>  <span class="comment">// &quot;front&quot; meaning causally ahead</span></div>
+<div class="line"><a id="l00842" name="l00842"></a><span class="lineno">  842</span>  <span class="comment">// ancilla front, merge back</span></div>
+<div class="line"><a id="l00843" name="l00843"></a><span class="lineno">  843</span> </div>
+<div class="line"><a id="l00844" name="l00844"></a><span class="lineno">  844</span>  <span class="keyword">auto</span> rewire = [&amp;](<span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; front, <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a>&amp; back) {</div>
+<div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span>    <span class="comment">// get output and input vertices</span></div>
+<div class="line"><a id="l00846" name="l00846"></a><span class="lineno">  846</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> back_v_in = this-&gt;circuit_.get_in(back);</div>
+<div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> back_v_out = this-&gt;circuit_.get_out(back);</div>
+<div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> front_v_out = this-&gt;circuit_.get_out(front);</div>
+<div class="line"><a id="l00849" name="l00849"></a><span class="lineno">  849</span> </div>
+<div class="line"><a id="l00850" name="l00850"></a><span class="lineno">  850</span>    <span class="comment">// find source vertex &amp; port of merge_v_out</span></div>
+<div class="line"><a id="l00851" name="l00851"></a><span class="lineno">  851</span>    <span class="comment">// output vertex, so can assume single edge</span></div>
+<div class="line"><a id="l00852" name="l00852"></a><span class="lineno">  852</span>    <a class="code hl_typedef" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> back_out_edge = this-&gt;circuit_.get_nth_out_edge(back_v_in, 0);</div>
+<div class="line"><a id="l00853" name="l00853"></a><span class="lineno">  853</span>    <a class="code hl_typedef" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> front_in_edge = this-&gt;circuit_.get_nth_in_edge(front_v_out, 0);</div>
+<div class="line"><a id="l00854" name="l00854"></a><span class="lineno">  854</span>    <span class="comment">// Find port number</span></div>
+<div class="line"><a id="l00855" name="l00855"></a><span class="lineno">  855</span>    <a class="code hl_typedef" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> back_target_port = this-&gt;circuit_.get_target_port(back_out_edge);</div>
+<div class="line"><a id="l00856" name="l00856"></a><span class="lineno">  856</span>    <a class="code hl_typedef" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> front_source_port = this-&gt;circuit_.get_source_port(front_in_edge);</div>
+<div class="line"><a id="l00857" name="l00857"></a><span class="lineno">  857</span>    <span class="comment">// Find vertices</span></div>
+<div class="line"><a id="l00858" name="l00858"></a><span class="lineno">  858</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> back_v_target = this-&gt;circuit_.target(back_out_edge);</div>
+<div class="line"><a id="l00859" name="l00859"></a><span class="lineno">  859</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> front_v_source = this-&gt;circuit_.source(front_in_edge);</div>
+<div class="line"><a id="l00860" name="l00860"></a><span class="lineno">  860</span> </div>
+<div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span>    <span class="comment">// remove and replace edges</span></div>
+<div class="line"><a id="l00867" name="l00867"></a><span class="lineno">  867</span>    this-&gt;circuit_.remove_edge(back_out_edge);</div>
+<div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span>    this-&gt;circuit_.remove_edge(front_in_edge);</div>
+<div class="line"><a id="l00874" name="l00874"></a><span class="lineno">  874</span>    this-&gt;circuit_.add_edge(</div>
+<div class="line"><a id="l00875" name="l00875"></a><span class="lineno">  875</span>        {front_v_source, front_source_port}, {back_v_target, back_target_port},</div>
+<div class="line"><a id="l00876" name="l00876"></a><span class="lineno">  876</span>        EdgeType::Quantum);</div>
+<div class="line"><a id="l00884" name="l00884"></a><span class="lineno">  884</span>    <span class="comment">// instead of manually updating all boundaries, we change which output</span></div>
+<div class="line"><a id="l00885" name="l00885"></a><span class="lineno">  885</span>    <span class="comment">// vertex the qubit paths to</span></div>
+<div class="line"><a id="l00886" name="l00886"></a><span class="lineno">  886</span>    <a class="code hl_typedef" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> back_in_edge = this-&gt;circuit_.get_nth_in_edge(back_v_out, 0);</div>
+<div class="line"><a id="l00887" name="l00887"></a><span class="lineno">  887</span>    <a class="code hl_typedef" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> back_source_port = this-&gt;circuit_.get_source_port(back_in_edge);</div>
+<div class="line"><a id="l00888" name="l00888"></a><span class="lineno">  888</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> back_v_source = this-&gt;circuit_.source(back_in_edge);</div>
 <div class="line"><a id="l00889" name="l00889"></a><span class="lineno">  889</span> </div>
-<div class="line"><a id="l00896" name="l00896"></a><span class="lineno">  896</span>    this-&gt;circuit_.add_edge(</div>
-<div class="line"><a id="l00897" name="l00897"></a><span class="lineno">  897</span>        {back_v_source, back_source_port}, {front_v_out, 0}, EdgeType::Quantum);</div>
-<div class="line"><a id="l00905" name="l00905"></a><span class="lineno">  905</span>    <span class="comment">// remove empty vertex wire, relabel dag vertices</span></div>
-<div class="line"><a id="l00906" name="l00906"></a><span class="lineno">  906</span>    this-&gt;circuit_.dag[back_v_in].op = <a class="code hl_function" href="namespacetket.html#a218e50abe75d86161d9b5ef3e556877f">get_op_ptr</a>(OpType::noop);</div>
-<div class="line"><a id="l00907" name="l00907"></a><span class="lineno">  907</span>    this-&gt;circuit_.dag[back_v_out].op = <a class="code hl_function" href="namespacetket.html#a218e50abe75d86161d9b5ef3e556877f">get_op_ptr</a>(OpType::noop);</div>
-<div class="line"><a id="l00908" name="l00908"></a><span class="lineno">  908</span> </div>
-<div class="line"><a id="l00909" name="l00909"></a><span class="lineno">  909</span>    TKET_ASSERT(this-&gt;circuit_.n_in_edges(back_v_out) == 0);</div>
-<div class="line"><a id="l00910" name="l00910"></a><span class="lineno">  910</span>    TKET_ASSERT(this-&gt;circuit_.n_out_edges(back_v_in) == 0);</div>
-<div class="line"><a id="l00911" name="l00911"></a><span class="lineno">  911</span>    TKET_ASSERT(this-&gt;circuit_.n_in_edges(front_v_out) == 1);</div>
-<div class="line"><a id="l00912" name="l00912"></a><span class="lineno">  912</span>    this-&gt;circuit_.remove_vertex(</div>
-<div class="line"><a id="l00913" name="l00913"></a><span class="lineno">  913</span>        back_v_in, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);</div>
+<div class="line"><a id="l00890" name="l00890"></a><span class="lineno">  890</span>    this-&gt;circuit_.remove_edge(back_in_edge);</div>
+<div class="line"><a id="l00891" name="l00891"></a><span class="lineno">  891</span> </div>
+<div class="line"><a id="l00898" name="l00898"></a><span class="lineno">  898</span>    this-&gt;circuit_.add_edge(</div>
+<div class="line"><a id="l00899" name="l00899"></a><span class="lineno">  899</span>        {back_v_source, back_source_port}, {front_v_out, 0}, EdgeType::Quantum);</div>
+<div class="line"><a id="l00907" name="l00907"></a><span class="lineno">  907</span>    <span class="comment">// remove empty vertex wire, relabel dag vertices</span></div>
+<div class="line"><a id="l00908" name="l00908"></a><span class="lineno">  908</span>    this-&gt;circuit_.dag[back_v_in].op = <a class="code hl_function" href="namespacetket.html#a218e50abe75d86161d9b5ef3e556877f">get_op_ptr</a>(OpType::noop);</div>
+<div class="line"><a id="l00909" name="l00909"></a><span class="lineno">  909</span>    this-&gt;circuit_.dag[back_v_out].op = <a class="code hl_function" href="namespacetket.html#a218e50abe75d86161d9b5ef3e556877f">get_op_ptr</a>(OpType::noop);</div>
+<div class="line"><a id="l00910" name="l00910"></a><span class="lineno">  910</span> </div>
+<div class="line"><a id="l00911" name="l00911"></a><span class="lineno">  911</span>    TKET_ASSERT(this-&gt;circuit_.n_in_edges(back_v_out) == 0);</div>
+<div class="line"><a id="l00912" name="l00912"></a><span class="lineno">  912</span>    TKET_ASSERT(this-&gt;circuit_.n_out_edges(back_v_in) == 0);</div>
+<div class="line"><a id="l00913" name="l00913"></a><span class="lineno">  913</span>    TKET_ASSERT(this-&gt;circuit_.n_in_edges(front_v_out) == 1);</div>
 <div class="line"><a id="l00914" name="l00914"></a><span class="lineno">  914</span>    this-&gt;circuit_.remove_vertex(</div>
-<div class="line"><a id="l00915" name="l00915"></a><span class="lineno">  915</span>        back_v_out, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);</div>
-<div class="line"><a id="l00920" name="l00920"></a><span class="lineno">  920</span>    this-&gt;circuit_.boundary.get&lt;<a class="code hl_struct" href="structtket_1_1TagID.html">TagID</a>&gt;().erase(back);</div>
-<div class="line"><a id="l00921" name="l00921"></a><span class="lineno">  921</span>  };</div>
-<div class="line"><a id="l00922" name="l00922"></a><span class="lineno">  922</span> </div>
-<div class="line"><a id="l00929" name="l00929"></a><span class="lineno">  929</span>  <span class="keyword">auto</span> merge_boundary_it = this-&gt;linear_boundary-&gt;get&lt;<a class="code hl_struct" href="structtket_1_1TagKey.html">TagKey</a>&gt;().find(merge);</div>
-<div class="line"><a id="l00930" name="l00930"></a><span class="lineno">  930</span>  <span class="keyword">auto</span> ancilla_boundary_it = this-&gt;linear_boundary-&gt;get&lt;<a class="code hl_struct" href="structtket_1_1TagKey.html">TagKey</a>&gt;().find(ancilla);</div>
-<div class="line"><a id="l00931" name="l00931"></a><span class="lineno">  931</span>  TKET_ASSERT(</div>
-<div class="line"><a id="l00932" name="l00932"></a><span class="lineno">  932</span>      ancilla_boundary_it != this-&gt;linear_boundary-&gt;get&lt;<a class="code hl_struct" href="structtket_1_1TagKey.html">TagKey</a>&gt;().end());</div>
-<div class="line"><a id="l00933" name="l00933"></a><span class="lineno">  933</span>  TKET_ASSERT(merge_boundary_it != this-&gt;linear_boundary-&gt;get&lt;<a class="code hl_struct" href="structtket_1_1TagKey.html">TagKey</a>&gt;().end());</div>
-<div class="line"><a id="l00934" name="l00934"></a><span class="lineno">  934</span> </div>
-<div class="line"><a id="l00935" name="l00935"></a><span class="lineno">  935</span>  <span class="comment">// If a valid ancilla, this should always be true</span></div>
-<div class="line"><a id="l00936" name="l00936"></a><span class="lineno">  936</span>  <a class="code hl_typedef" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a> ancilla_vp = ancilla_boundary_it-&gt;second;</div>
-<div class="line"><a id="l00937" name="l00937"></a><span class="lineno">  937</span>  TKET_ASSERT(</div>
-<div class="line"><a id="l00938" name="l00938"></a><span class="lineno">  938</span>      this-&gt;circuit_</div>
-<div class="line"><a id="l00939" name="l00939"></a><span class="lineno">  939</span>          .dag[this-&gt;circuit_.target(this-&gt;circuit_.get_nth_out_edge(</div>
-<div class="line"><a id="l00940" name="l00940"></a><span class="lineno">  940</span>              ancilla_vp.first, ancilla_vp.second))]</div>
-<div class="line"><a id="l00941" name="l00941"></a><span class="lineno">  941</span>          .op-&gt;get_type() == OpType::Output);</div>
-<div class="line"><a id="l00942" name="l00942"></a><span class="lineno">  942</span> </div>
-<div class="line"><a id="l00943" name="l00943"></a><span class="lineno">  943</span>  <a class="code hl_typedef" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a> merge_vp = merge_boundary_it-&gt;second;</div>
-<div class="line"><a id="l00944" name="l00944"></a><span class="lineno">  944</span>  <a class="code hl_typedef" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> merge_edge =</div>
-<div class="line"><a id="l00945" name="l00945"></a><span class="lineno">  945</span>      this-&gt;circuit_.get_nth_out_edge(merge_vp.first, merge_vp.second);</div>
-<div class="line"><a id="l00946" name="l00946"></a><span class="lineno">  946</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> merge_target = this-&gt;circuit_.target(merge_edge);</div>
-<div class="line"><a id="l00947" name="l00947"></a><span class="lineno">  947</span>  <a class="code hl_typedef" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> merge_target_port = this-&gt;circuit_.get_target_port(merge_edge);</div>
-<div class="line"><a id="l00948" name="l00948"></a><span class="lineno">  948</span> </div>
-<div class="line"><a id="l00949" name="l00949"></a><span class="lineno">  949</span>  this-&gt;linear_boundary-&gt;erase(merge_boundary_it);</div>
-<div class="line"><a id="l00950" name="l00950"></a><span class="lineno">  950</span>  <a class="code hl_enumeration" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> merge_target_optype = this-&gt;circuit_.dag[merge_target].op-&gt;get_type();</div>
-<div class="line"><a id="l00954" name="l00954"></a><span class="lineno">  954</span>  rewire(ancilla, merge);</div>
-<div class="line"><a id="l00955" name="l00955"></a><span class="lineno">  955</span> </div>
-<div class="line"><a id="l00964" name="l00964"></a><span class="lineno">  964</span>  <span class="keywordflow">if</span> (merge_target_optype != OpType::Output) {</div>
-<div class="line"><a id="l00965" name="l00965"></a><span class="lineno">  965</span>    <a class="code hl_typedef" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> merge_source_edge =</div>
-<div class="line"><a id="l00966" name="l00966"></a><span class="lineno">  966</span>        this-&gt;circuit_.get_nth_in_edge(merge_target, merge_target_port);</div>
-<div class="line"><a id="l00967" name="l00967"></a><span class="lineno">  967</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> merge_source = this-&gt;circuit_.source(merge_source_edge);</div>
-<div class="line"><a id="l00968" name="l00968"></a><span class="lineno">  968</span>    <a class="code hl_typedef" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> merge_source_port =</div>
-<div class="line"><a id="l00969" name="l00969"></a><span class="lineno">  969</span>        this-&gt;circuit_.get_source_port(merge_source_edge);</div>
-<div class="line"><a id="l00970" name="l00970"></a><span class="lineno">  970</span>    this-&gt;linear_boundary-&gt;replace(</div>
-<div class="line"><a id="l00971" name="l00971"></a><span class="lineno">  971</span>        ancilla_boundary_it, {ancilla, {merge_source, merge_source_port}});</div>
-<div class="line"><a id="l00972" name="l00972"></a><span class="lineno">  972</span>  } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00973" name="l00973"></a><span class="lineno">  973</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> ancilla_out_vertex = this-&gt;circuit_.get_out(ancilla);</div>
-<div class="line"><a id="l00974" name="l00974"></a><span class="lineno">  974</span>    <a class="code hl_typedef" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> ancilla_out_in_edge =</div>
-<div class="line"><a id="l00975" name="l00975"></a><span class="lineno">  975</span>        this-&gt;circuit_.get_nth_in_edge(ancilla_out_vertex, 0);</div>
-<div class="line"><a id="l00976" name="l00976"></a><span class="lineno">  976</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> ancilla_out_source = this-&gt;circuit_.source(ancilla_out_in_edge);</div>
-<div class="line"><a id="l00977" name="l00977"></a><span class="lineno">  977</span>    <a class="code hl_typedef" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> ancilla_out_source_port =</div>
-<div class="line"><a id="l00978" name="l00978"></a><span class="lineno">  978</span>        this-&gt;circuit_.get_source_port(ancilla_out_in_edge);</div>
-<div class="line"><a id="l00979" name="l00979"></a><span class="lineno">  979</span>    this-&gt;linear_boundary-&gt;replace(</div>
-<div class="line"><a id="l00980" name="l00980"></a><span class="lineno">  980</span>        ancilla_boundary_it,</div>
-<div class="line"><a id="l00981" name="l00981"></a><span class="lineno">  981</span>        {ancilla, {ancilla_out_source, ancilla_out_source_port}});</div>
-<div class="line"><a id="l00982" name="l00982"></a><span class="lineno">  982</span>  }</div>
-<div class="line"><a id="l00983" name="l00983"></a><span class="lineno">  983</span> </div>
-<div class="line"><a id="l00984" name="l00984"></a><span class="lineno">  984</span>  <span class="comment">// Update the qubit mappings</span></div>
-<div class="line"><a id="l00985" name="l00985"></a><span class="lineno">  985</span>  <span class="comment">// let&#39;s call the arguments ancilla_node and merge_node</span></div>
-<div class="line"><a id="l00986" name="l00986"></a><span class="lineno">  986</span>  <span class="comment">// e.g. before merge:</span></div>
-<div class="line"><a id="l00987" name="l00987"></a><span class="lineno">  987</span>  <span class="comment">//  initial := {ancilla_q:node_x, merge_q:some_uid}</span></div>
-<div class="line"><a id="l00988" name="l00988"></a><span class="lineno">  988</span>  <span class="comment">//  final := {ancilla_q:ancilla_node, merge_q:merge_node}</span></div>
-<div class="line"><a id="l00989" name="l00989"></a><span class="lineno">  989</span>  <span class="comment">// e.g. after merge:</span></div>
-<div class="line"><a id="l00990" name="l00990"></a><span class="lineno">  990</span>  <span class="comment">//  initial := {merge_q:node_x}</span></div>
-<div class="line"><a id="l00991" name="l00991"></a><span class="lineno">  991</span>  <span class="comment">//  final := {merge_q:ancilla_node}</span></div>
-<div class="line"><a id="l00992" name="l00992"></a><span class="lineno">  992</span>  <span class="comment">// Basically, in both qubit maps, erase the entry with qubit merge_q</span></div>
-<div class="line"><a id="l00993" name="l00993"></a><span class="lineno">  993</span>  <span class="comment">// then replace the entry ancilla_q -&gt; x with the merge_q -&gt; x</span></div>
-<div class="line"><a id="l00994" name="l00994"></a><span class="lineno">  994</span> </div>
-<div class="line"><a id="l00995" name="l00995"></a><span class="lineno">  995</span>  <span class="keyword">auto</span> merge_it = this-&gt;bimaps_-&gt;initial.right.find(merge);</div>
-<div class="line"><a id="l00996" name="l00996"></a><span class="lineno">  996</span>  TKET_ASSERT(merge_it != this-&gt;bimaps_-&gt;initial.right.end());</div>
-<div class="line"><a id="l00997" name="l00997"></a><span class="lineno">  997</span>  <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a> merge_q = merge_it-&gt;second;</div>
-<div class="line"><a id="l00998" name="l00998"></a><span class="lineno">  998</span>  this-&gt;bimaps_-&gt;initial.right.erase(merge_it);</div>
-<div class="line"><a id="l00999" name="l00999"></a><span class="lineno">  999</span>  this-&gt;bimaps_-&gt;final.left.erase(merge_q);</div>
-<div class="line"><a id="l01000" name="l01000"></a><span class="lineno"> 1000</span>  <span class="comment">// Find ancilla_q</span></div>
-<div class="line"><a id="l01001" name="l01001"></a><span class="lineno"> 1001</span>  <span class="keyword">auto</span> final_it = this-&gt;bimaps_-&gt;final.right.find(ancilla);</div>
-<div class="line"><a id="l01002" name="l01002"></a><span class="lineno"> 1002</span>  TKET_ASSERT(final_it != this-&gt;bimaps_-&gt;final.right.end());</div>
-<div class="line"><a id="l01003" name="l01003"></a><span class="lineno"> 1003</span>  <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a> ancilla_q = final_it-&gt;second;</div>
-<div class="line"><a id="l01004" name="l01004"></a><span class="lineno"> 1004</span>  <span class="comment">// Replace in final map</span></div>
-<div class="line"><a id="l01005" name="l01005"></a><span class="lineno"> 1005</span>  this-&gt;bimaps_-&gt;final.right.erase(final_it);</div>
-<div class="line"><a id="l01006" name="l01006"></a><span class="lineno"> 1006</span>  this-&gt;bimaps_-&gt;final.left.insert({merge_q, ancilla});</div>
-<div class="line"><a id="l01007" name="l01007"></a><span class="lineno"> 1007</span>  <span class="comment">// Replace in initial map</span></div>
-<div class="line"><a id="l01008" name="l01008"></a><span class="lineno"> 1008</span>  <span class="keyword">auto</span> init_it = this-&gt;bimaps_-&gt;initial.left.find(ancilla_q);</div>
-<div class="line"><a id="l01009" name="l01009"></a><span class="lineno"> 1009</span>  <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a> init_ancilla_node = init_it-&gt;second;</div>
-<div class="line"><a id="l01010" name="l01010"></a><span class="lineno"> 1010</span>  this-&gt;bimaps_-&gt;initial.left.erase(init_it);</div>
-<div class="line"><a id="l01011" name="l01011"></a><span class="lineno"> 1011</span>  this-&gt;bimaps_-&gt;initial.left.insert({merge_q, init_ancilla_node});</div>
-<div class="line"><a id="l01012" name="l01012"></a><span class="lineno"> 1012</span> </div>
-<div class="line"><a id="l01016" name="l01016"></a><span class="lineno"> 1016</span>  this-&gt;ancilla_nodes_.erase(<a class="code hl_class" href="classtket_1_1Node.html">Node</a>(ancilla));</div>
-<div class="line"><a id="l01017" name="l01017"></a><span class="lineno"> 1017</span>  this-&gt;reassignable_nodes_.erase(<a class="code hl_class" href="classtket_1_1Node.html">Node</a>(ancilla));</div>
-<div class="line"><a id="l01018" name="l01018"></a><span class="lineno"> 1018</span>  assert_valid_maps();</div>
-<div class="line"><a id="l01019" name="l01019"></a><span class="lineno"> 1019</span>  <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l01020" name="l01020"></a><span class="lineno"> 1020</span>}</div>
+<div class="line"><a id="l00915" name="l00915"></a><span class="lineno">  915</span>        back_v_in, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);</div>
+<div class="line"><a id="l00916" name="l00916"></a><span class="lineno">  916</span>    this-&gt;circuit_.remove_vertex(</div>
+<div class="line"><a id="l00917" name="l00917"></a><span class="lineno">  917</span>        back_v_out, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);</div>
+<div class="line"><a id="l00922" name="l00922"></a><span class="lineno">  922</span>    this-&gt;circuit_.boundary.get&lt;<a class="code hl_struct" href="structtket_1_1TagID.html">TagID</a>&gt;().erase(back);</div>
+<div class="line"><a id="l00923" name="l00923"></a><span class="lineno">  923</span>  };</div>
+<div class="line"><a id="l00924" name="l00924"></a><span class="lineno">  924</span> </div>
+<div class="line"><a id="l00931" name="l00931"></a><span class="lineno">  931</span>  <span class="keyword">auto</span> merge_boundary_it = this-&gt;linear_boundary-&gt;get&lt;<a class="code hl_struct" href="structtket_1_1TagKey.html">TagKey</a>&gt;().find(merge);</div>
+<div class="line"><a id="l00932" name="l00932"></a><span class="lineno">  932</span>  <span class="keyword">auto</span> ancilla_boundary_it = this-&gt;linear_boundary-&gt;get&lt;<a class="code hl_struct" href="structtket_1_1TagKey.html">TagKey</a>&gt;().find(ancilla);</div>
+<div class="line"><a id="l00933" name="l00933"></a><span class="lineno">  933</span>  TKET_ASSERT(</div>
+<div class="line"><a id="l00934" name="l00934"></a><span class="lineno">  934</span>      ancilla_boundary_it != this-&gt;linear_boundary-&gt;get&lt;<a class="code hl_struct" href="structtket_1_1TagKey.html">TagKey</a>&gt;().end());</div>
+<div class="line"><a id="l00935" name="l00935"></a><span class="lineno">  935</span>  TKET_ASSERT(merge_boundary_it != this-&gt;linear_boundary-&gt;get&lt;<a class="code hl_struct" href="structtket_1_1TagKey.html">TagKey</a>&gt;().end());</div>
+<div class="line"><a id="l00936" name="l00936"></a><span class="lineno">  936</span> </div>
+<div class="line"><a id="l00937" name="l00937"></a><span class="lineno">  937</span>  <span class="comment">// If a valid ancilla, this should always be true</span></div>
+<div class="line"><a id="l00938" name="l00938"></a><span class="lineno">  938</span>  <a class="code hl_typedef" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a> ancilla_vp = ancilla_boundary_it-&gt;second;</div>
+<div class="line"><a id="l00939" name="l00939"></a><span class="lineno">  939</span>  TKET_ASSERT(</div>
+<div class="line"><a id="l00940" name="l00940"></a><span class="lineno">  940</span>      this-&gt;circuit_</div>
+<div class="line"><a id="l00941" name="l00941"></a><span class="lineno">  941</span>          .dag[this-&gt;circuit_.target(this-&gt;circuit_.get_nth_out_edge(</div>
+<div class="line"><a id="l00942" name="l00942"></a><span class="lineno">  942</span>              ancilla_vp.first, ancilla_vp.second))]</div>
+<div class="line"><a id="l00943" name="l00943"></a><span class="lineno">  943</span>          .op-&gt;get_type() == OpType::Output);</div>
+<div class="line"><a id="l00944" name="l00944"></a><span class="lineno">  944</span> </div>
+<div class="line"><a id="l00945" name="l00945"></a><span class="lineno">  945</span>  <a class="code hl_typedef" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a> merge_vp = merge_boundary_it-&gt;second;</div>
+<div class="line"><a id="l00946" name="l00946"></a><span class="lineno">  946</span>  <a class="code hl_typedef" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> merge_edge =</div>
+<div class="line"><a id="l00947" name="l00947"></a><span class="lineno">  947</span>      this-&gt;circuit_.get_nth_out_edge(merge_vp.first, merge_vp.second);</div>
+<div class="line"><a id="l00948" name="l00948"></a><span class="lineno">  948</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> merge_target = this-&gt;circuit_.target(merge_edge);</div>
+<div class="line"><a id="l00949" name="l00949"></a><span class="lineno">  949</span>  <a class="code hl_typedef" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> merge_target_port = this-&gt;circuit_.get_target_port(merge_edge);</div>
+<div class="line"><a id="l00950" name="l00950"></a><span class="lineno">  950</span> </div>
+<div class="line"><a id="l00951" name="l00951"></a><span class="lineno">  951</span>  this-&gt;linear_boundary-&gt;erase(merge_boundary_it);</div>
+<div class="line"><a id="l00952" name="l00952"></a><span class="lineno">  952</span>  <a class="code hl_enumeration" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> merge_target_optype = this-&gt;circuit_.dag[merge_target].op-&gt;get_type();</div>
+<div class="line"><a id="l00956" name="l00956"></a><span class="lineno">  956</span>  rewire(ancilla, merge);</div>
+<div class="line"><a id="l00957" name="l00957"></a><span class="lineno">  957</span> </div>
+<div class="line"><a id="l00966" name="l00966"></a><span class="lineno">  966</span>  <span class="keywordflow">if</span> (merge_target_optype != OpType::Output) {</div>
+<div class="line"><a id="l00967" name="l00967"></a><span class="lineno">  967</span>    <a class="code hl_typedef" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> merge_source_edge =</div>
+<div class="line"><a id="l00968" name="l00968"></a><span class="lineno">  968</span>        this-&gt;circuit_.get_nth_in_edge(merge_target, merge_target_port);</div>
+<div class="line"><a id="l00969" name="l00969"></a><span class="lineno">  969</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> merge_source = this-&gt;circuit_.source(merge_source_edge);</div>
+<div class="line"><a id="l00970" name="l00970"></a><span class="lineno">  970</span>    <a class="code hl_typedef" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> merge_source_port =</div>
+<div class="line"><a id="l00971" name="l00971"></a><span class="lineno">  971</span>        this-&gt;circuit_.get_source_port(merge_source_edge);</div>
+<div class="line"><a id="l00972" name="l00972"></a><span class="lineno">  972</span>    this-&gt;linear_boundary-&gt;replace(</div>
+<div class="line"><a id="l00973" name="l00973"></a><span class="lineno">  973</span>        ancilla_boundary_it, {ancilla, {merge_source, merge_source_port}});</div>
+<div class="line"><a id="l00974" name="l00974"></a><span class="lineno">  974</span>  } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00975" name="l00975"></a><span class="lineno">  975</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> ancilla_out_vertex = this-&gt;circuit_.get_out(ancilla);</div>
+<div class="line"><a id="l00976" name="l00976"></a><span class="lineno">  976</span>    <a class="code hl_typedef" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> ancilla_out_in_edge =</div>
+<div class="line"><a id="l00977" name="l00977"></a><span class="lineno">  977</span>        this-&gt;circuit_.get_nth_in_edge(ancilla_out_vertex, 0);</div>
+<div class="line"><a id="l00978" name="l00978"></a><span class="lineno">  978</span>    <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> ancilla_out_source = this-&gt;circuit_.source(ancilla_out_in_edge);</div>
+<div class="line"><a id="l00979" name="l00979"></a><span class="lineno">  979</span>    <a class="code hl_typedef" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> ancilla_out_source_port =</div>
+<div class="line"><a id="l00980" name="l00980"></a><span class="lineno">  980</span>        this-&gt;circuit_.get_source_port(ancilla_out_in_edge);</div>
+<div class="line"><a id="l00981" name="l00981"></a><span class="lineno">  981</span>    this-&gt;linear_boundary-&gt;replace(</div>
+<div class="line"><a id="l00982" name="l00982"></a><span class="lineno">  982</span>        ancilla_boundary_it,</div>
+<div class="line"><a id="l00983" name="l00983"></a><span class="lineno">  983</span>        {ancilla, {ancilla_out_source, ancilla_out_source_port}});</div>
+<div class="line"><a id="l00984" name="l00984"></a><span class="lineno">  984</span>  }</div>
+<div class="line"><a id="l00985" name="l00985"></a><span class="lineno">  985</span> </div>
+<div class="line"><a id="l00986" name="l00986"></a><span class="lineno">  986</span>  <span class="comment">// Update the qubit mappings</span></div>
+<div class="line"><a id="l00987" name="l00987"></a><span class="lineno">  987</span>  <span class="comment">// let&#39;s call the arguments ancilla_node and merge_node</span></div>
+<div class="line"><a id="l00988" name="l00988"></a><span class="lineno">  988</span>  <span class="comment">// e.g. before merge:</span></div>
+<div class="line"><a id="l00989" name="l00989"></a><span class="lineno">  989</span>  <span class="comment">//  initial := {ancilla_q:node_x, merge_q:some_uid}</span></div>
+<div class="line"><a id="l00990" name="l00990"></a><span class="lineno">  990</span>  <span class="comment">//  final := {ancilla_q:ancilla_node, merge_q:merge_node}</span></div>
+<div class="line"><a id="l00991" name="l00991"></a><span class="lineno">  991</span>  <span class="comment">// e.g. after merge:</span></div>
+<div class="line"><a id="l00992" name="l00992"></a><span class="lineno">  992</span>  <span class="comment">//  initial := {merge_q:node_x}</span></div>
+<div class="line"><a id="l00993" name="l00993"></a><span class="lineno">  993</span>  <span class="comment">//  final := {merge_q:ancilla_node}</span></div>
+<div class="line"><a id="l00994" name="l00994"></a><span class="lineno">  994</span>  <span class="comment">// Basically, in both qubit maps, erase the entry with qubit merge_q</span></div>
+<div class="line"><a id="l00995" name="l00995"></a><span class="lineno">  995</span>  <span class="comment">// then replace the entry ancilla_q -&gt; x with the merge_q -&gt; x</span></div>
+<div class="line"><a id="l00996" name="l00996"></a><span class="lineno">  996</span> </div>
+<div class="line"><a id="l00997" name="l00997"></a><span class="lineno">  997</span>  <span class="keyword">auto</span> merge_it = this-&gt;bimaps_-&gt;initial.right.find(merge);</div>
+<div class="line"><a id="l00998" name="l00998"></a><span class="lineno">  998</span>  TKET_ASSERT(merge_it != this-&gt;bimaps_-&gt;initial.right.end());</div>
+<div class="line"><a id="l00999" name="l00999"></a><span class="lineno">  999</span>  <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a> merge_q = merge_it-&gt;second;</div>
+<div class="line"><a id="l01000" name="l01000"></a><span class="lineno"> 1000</span>  this-&gt;bimaps_-&gt;initial.right.erase(merge_it);</div>
+<div class="line"><a id="l01001" name="l01001"></a><span class="lineno"> 1001</span>  this-&gt;bimaps_-&gt;final.left.erase(merge_q);</div>
+<div class="line"><a id="l01002" name="l01002"></a><span class="lineno"> 1002</span>  <span class="comment">// Find ancilla_q</span></div>
+<div class="line"><a id="l01003" name="l01003"></a><span class="lineno"> 1003</span>  <span class="keyword">auto</span> final_it = this-&gt;bimaps_-&gt;final.right.find(ancilla);</div>
+<div class="line"><a id="l01004" name="l01004"></a><span class="lineno"> 1004</span>  TKET_ASSERT(final_it != this-&gt;bimaps_-&gt;final.right.end());</div>
+<div class="line"><a id="l01005" name="l01005"></a><span class="lineno"> 1005</span>  <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a> ancilla_q = final_it-&gt;second;</div>
+<div class="line"><a id="l01006" name="l01006"></a><span class="lineno"> 1006</span>  <span class="comment">// Replace in final map</span></div>
+<div class="line"><a id="l01007" name="l01007"></a><span class="lineno"> 1007</span>  this-&gt;bimaps_-&gt;final.right.erase(final_it);</div>
+<div class="line"><a id="l01008" name="l01008"></a><span class="lineno"> 1008</span>  this-&gt;bimaps_-&gt;final.left.insert({merge_q, ancilla});</div>
+<div class="line"><a id="l01009" name="l01009"></a><span class="lineno"> 1009</span>  <span class="comment">// Replace in initial map</span></div>
+<div class="line"><a id="l01010" name="l01010"></a><span class="lineno"> 1010</span>  <span class="keyword">auto</span> init_it = this-&gt;bimaps_-&gt;initial.left.find(ancilla_q);</div>
+<div class="line"><a id="l01011" name="l01011"></a><span class="lineno"> 1011</span>  <a class="code hl_class" href="classtket_1_1UnitID.html">UnitID</a> init_ancilla_node = init_it-&gt;second;</div>
+<div class="line"><a id="l01012" name="l01012"></a><span class="lineno"> 1012</span>  this-&gt;bimaps_-&gt;initial.left.erase(init_it);</div>
+<div class="line"><a id="l01013" name="l01013"></a><span class="lineno"> 1013</span>  this-&gt;bimaps_-&gt;initial.left.insert({merge_q, init_ancilla_node});</div>
+<div class="line"><a id="l01014" name="l01014"></a><span class="lineno"> 1014</span> </div>
+<div class="line"><a id="l01018" name="l01018"></a><span class="lineno"> 1018</span>  this-&gt;ancilla_nodes_.erase(<a class="code hl_class" href="classtket_1_1Node.html">Node</a>(ancilla));</div>
+<div class="line"><a id="l01019" name="l01019"></a><span class="lineno"> 1019</span>  this-&gt;reassignable_nodes_.erase(<a class="code hl_class" href="classtket_1_1Node.html">Node</a>(ancilla));</div>
+<div class="line"><a id="l01020" name="l01020"></a><span class="lineno"> 1020</span>  assert_valid_maps();</div>
+<div class="line"><a id="l01021" name="l01021"></a><span class="lineno"> 1021</span>  <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l01022" name="l01022"></a><span class="lineno"> 1022</span>}</div>
 </div>
-<div class="line"><a id="l01021" name="l01021"></a><span class="lineno"> 1021</span> </div>
-<div class="foldopen" id="foldopen01022" data-start="{" data-end="}">
-<div class="line"><a id="l01022" name="l01022"></a><span class="lineno"><a class="line" href="structtket_1_1MappingFrontier.html#afd560ec03de0540191f837921516856e"> 1022</a></span><span class="keywordtype">bool</span> MappingFrontier::valid_boundary_operation(</div>
-<div class="line"><a id="l01023" name="l01023"></a><span class="lineno"> 1023</span>    <span class="keyword">const</span> <a class="code hl_typedef" href="namespacetket.html#aa48f675e04cadd3b47c165f6b033e887">ArchitecturePtr</a>&amp; architecture, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a>&amp; op,</div>
-<div class="line"><a id="l01024" name="l01024"></a><span class="lineno"> 1024</span>    <span class="keyword">const</span> std::vector&lt;Node&gt;&amp; uids)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l01025" name="l01025"></a><span class="lineno"> 1025</span>  <a class="code hl_enumeration" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> ot = op-&gt;get_type();</div>
-<div class="line"><a id="l01026" name="l01026"></a><span class="lineno"> 1026</span> </div>
-<div class="line"><a id="l01027" name="l01027"></a><span class="lineno"> 1027</span>  <span class="keywordflow">if</span> (ot == OpType::Conditional) {</div>
-<div class="line"><a id="l01028" name="l01028"></a><span class="lineno"> 1028</span>    <a class="code hl_typedef" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> cond_op_ptr = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code hl_class" href="classtket_1_1Conditional.html">Conditional</a>&amp;<span class="keyword">&gt;</span>(*op).<a class="code hl_function" href="classtket_1_1Conditional.html#ab7608e854d63f262895583b328c75424">get_op</a>();</div>
-<div class="line"><a id="l01029" name="l01029"></a><span class="lineno"> 1029</span>    <span class="comment">// conditional boxes are never allowed, too</span></div>
-<div class="line"><a id="l01030" name="l01030"></a><span class="lineno"> 1030</span>    ot = cond_op_ptr-&gt;get_type();</div>
-<div class="line"><a id="l01031" name="l01031"></a><span class="lineno"> 1031</span>    <span class="keywordflow">while</span> (ot == OpType::Conditional) {</div>
-<div class="line"><a id="l01032" name="l01032"></a><span class="lineno"> 1032</span>      cond_op_ptr = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code hl_class" href="classtket_1_1Conditional.html">Conditional</a>&amp;<span class="keyword">&gt;</span>(*op).<a class="code hl_function" href="classtket_1_1Conditional.html#ab7608e854d63f262895583b328c75424">get_op</a>();</div>
-<div class="line"><a id="l01033" name="l01033"></a><span class="lineno"> 1033</span>      ot = cond_op_ptr-&gt;get_type();</div>
-<div class="line"><a id="l01034" name="l01034"></a><span class="lineno"> 1034</span>    }</div>
-<div class="line"><a id="l01035" name="l01035"></a><span class="lineno"> 1035</span>  }</div>
-<div class="line"><a id="l01036" name="l01036"></a><span class="lineno"> 1036</span>  <span class="comment">// Barriers are always allowed</span></div>
-<div class="line"><a id="l01037" name="l01037"></a><span class="lineno"> 1037</span>  <span class="keywordflow">if</span> (<a class="code hl_function" href="namespacetket.html#a8834bebb75e446292e413923ee48f3d4">is_barrier_type</a>(ot)) {</div>
-<div class="line"><a id="l01038" name="l01038"></a><span class="lineno"> 1038</span>    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a id="l01039" name="l01039"></a><span class="lineno"> 1039</span>  }</div>
-<div class="line"><a id="l01040" name="l01040"></a><span class="lineno"> 1040</span>  <span class="comment">// boxes are never allowed</span></div>
-<div class="line"><a id="l01041" name="l01041"></a><span class="lineno"> 1041</span>  <span class="keywordflow">if</span> (<a class="code hl_function" href="namespacetket.html#acaac66164a90d5e397b5abe8ae80d92d">is_box_type</a>(ot)) {</div>
-<div class="line"><a id="l01042" name="l01042"></a><span class="lineno"> 1042</span>    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l01043" name="l01043"></a><span class="lineno"> 1043</span>  }</div>
-<div class="line"><a id="l01044" name="l01044"></a><span class="lineno"> 1044</span> </div>
-<div class="line"><a id="l01045" name="l01045"></a><span class="lineno"> 1045</span>  <span class="comment">// this currently allows unplaced single qubits gates</span></div>
-<div class="line"><a id="l01046" name="l01046"></a><span class="lineno"> 1046</span>  <span class="comment">// this should be changes in the future</span></div>
-<div class="line"><a id="l01047" name="l01047"></a><span class="lineno"> 1047</span>  <span class="keywordflow">if</span> (uids.size() == 1) {</div>
-<div class="line"><a id="l01048" name="l01048"></a><span class="lineno"> 1048</span>    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a id="l01049" name="l01049"></a><span class="lineno"> 1049</span>  }</div>
-<div class="line"><a id="l01050" name="l01050"></a><span class="lineno"> 1050</span> </div>
-<div class="line"><a id="l01051" name="l01051"></a><span class="lineno"> 1051</span>  <span class="comment">// allow two qubit gates only for placed and connected nodes</span></div>
-<div class="line"><a id="l01052" name="l01052"></a><span class="lineno"> 1052</span>  <span class="keywordflow">if</span> (uids.size() == 2) {</div>
-<div class="line"><a id="l01053" name="l01053"></a><span class="lineno"> 1053</span>    <span class="keywordtype">bool</span> n0 = architecture-&gt;node_exists(uids[0]);</div>
-<div class="line"><a id="l01054" name="l01054"></a><span class="lineno"> 1054</span>    <span class="keywordtype">bool</span> n1 = architecture-&gt;node_exists(uids[1]);</div>
-<div class="line"><a id="l01055" name="l01055"></a><span class="lineno"> 1055</span>    <span class="keywordflow">if</span> (n0 &amp;&amp; n1) {</div>
-<div class="line"><a id="l01056" name="l01056"></a><span class="lineno"> 1056</span>      <span class="keywordtype">bool</span> bde = architecture-&gt;bidirectional_edge_exists(uids[0], uids[1]);</div>
-<div class="line"><a id="l01057" name="l01057"></a><span class="lineno"> 1057</span>      <span class="keywordflow">if</span> (bde) {</div>
-<div class="line"><a id="l01058" name="l01058"></a><span class="lineno"> 1058</span>        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a id="l01059" name="l01059"></a><span class="lineno"> 1059</span>      }</div>
-<div class="line"><a id="l01060" name="l01060"></a><span class="lineno"> 1060</span>    }</div>
-<div class="line"><a id="l01061" name="l01061"></a><span class="lineno"> 1061</span>  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (uids.size() == 3 &amp;&amp; ot == OpType::BRIDGE) {</div>
-<div class="line"><a id="l01062" name="l01062"></a><span class="lineno"> 1062</span>    <span class="keywordtype">bool</span> con_0_exists =</div>
-<div class="line"><a id="l01063" name="l01063"></a><span class="lineno"> 1063</span>        architecture-&gt;bidirectional_edge_exists(uids[0], uids[1]);</div>
-<div class="line"><a id="l01064" name="l01064"></a><span class="lineno"> 1064</span>    <span class="keywordtype">bool</span> con_1_exists =</div>
-<div class="line"><a id="l01065" name="l01065"></a><span class="lineno"> 1065</span>        architecture-&gt;bidirectional_edge_exists(uids[2], uids[1]);</div>
-<div class="line"><a id="l01066" name="l01066"></a><span class="lineno"> 1066</span>    <span class="keywordflow">if</span> (architecture-&gt;node_exists(uids[0]) &amp;&amp;</div>
-<div class="line"><a id="l01067" name="l01067"></a><span class="lineno"> 1067</span>        architecture-&gt;node_exists(uids[1]) &amp;&amp;</div>
-<div class="line"><a id="l01068" name="l01068"></a><span class="lineno"> 1068</span>        architecture-&gt;node_exists(uids[2]) &amp;&amp; con_0_exists &amp;&amp; con_1_exists) {</div>
-<div class="line"><a id="l01069" name="l01069"></a><span class="lineno"> 1069</span>      <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a id="l01070" name="l01070"></a><span class="lineno"> 1070</span>    }</div>
-<div class="line"><a id="l01071" name="l01071"></a><span class="lineno"> 1071</span>  }</div>
-<div class="line"><a id="l01072" name="l01072"></a><span class="lineno"> 1072</span> </div>
-<div class="line"><a id="l01073" name="l01073"></a><span class="lineno"> 1073</span>  <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l01074" name="l01074"></a><span class="lineno"> 1074</span>}</div>
+<div class="line"><a id="l01023" name="l01023"></a><span class="lineno"> 1023</span> </div>
+<div class="foldopen" id="foldopen01024" data-start="{" data-end="}">
+<div class="line"><a id="l01024" name="l01024"></a><span class="lineno"><a class="line" href="structtket_1_1MappingFrontier.html#afd560ec03de0540191f837921516856e"> 1024</a></span><span class="keywordtype">bool</span> MappingFrontier::valid_boundary_operation(</div>
+<div class="line"><a id="l01025" name="l01025"></a><span class="lineno"> 1025</span>    <span class="keyword">const</span> <a class="code hl_typedef" href="namespacetket.html#aa48f675e04cadd3b47c165f6b033e887">ArchitecturePtr</a>&amp; architecture, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a>&amp; op,</div>
+<div class="line"><a id="l01026" name="l01026"></a><span class="lineno"> 1026</span>    <span class="keyword">const</span> std::vector&lt;Node&gt;&amp; uids)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l01027" name="l01027"></a><span class="lineno"> 1027</span>  <a class="code hl_enumeration" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> ot = op-&gt;get_type();</div>
+<div class="line"><a id="l01028" name="l01028"></a><span class="lineno"> 1028</span> </div>
+<div class="line"><a id="l01029" name="l01029"></a><span class="lineno"> 1029</span>  <span class="keywordflow">if</span> (ot == OpType::Conditional) {</div>
+<div class="line"><a id="l01030" name="l01030"></a><span class="lineno"> 1030</span>    <a class="code hl_typedef" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> cond_op_ptr = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code hl_class" href="classtket_1_1Conditional.html">Conditional</a>&amp;<span class="keyword">&gt;</span>(*op).<a class="code hl_function" href="classtket_1_1Conditional.html#ab7608e854d63f262895583b328c75424">get_op</a>();</div>
+<div class="line"><a id="l01031" name="l01031"></a><span class="lineno"> 1031</span>    <span class="comment">// conditional boxes are never allowed, too</span></div>
+<div class="line"><a id="l01032" name="l01032"></a><span class="lineno"> 1032</span>    ot = cond_op_ptr-&gt;get_type();</div>
+<div class="line"><a id="l01033" name="l01033"></a><span class="lineno"> 1033</span>    <span class="keywordflow">while</span> (ot == OpType::Conditional) {</div>
+<div class="line"><a id="l01034" name="l01034"></a><span class="lineno"> 1034</span>      cond_op_ptr = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code hl_class" href="classtket_1_1Conditional.html">Conditional</a>&amp;<span class="keyword">&gt;</span>(*op).<a class="code hl_function" href="classtket_1_1Conditional.html#ab7608e854d63f262895583b328c75424">get_op</a>();</div>
+<div class="line"><a id="l01035" name="l01035"></a><span class="lineno"> 1035</span>      ot = cond_op_ptr-&gt;get_type();</div>
+<div class="line"><a id="l01036" name="l01036"></a><span class="lineno"> 1036</span>    }</div>
+<div class="line"><a id="l01037" name="l01037"></a><span class="lineno"> 1037</span>  }</div>
+<div class="line"><a id="l01038" name="l01038"></a><span class="lineno"> 1038</span>  <span class="comment">// Barriers are always allowed</span></div>
+<div class="line"><a id="l01039" name="l01039"></a><span class="lineno"> 1039</span>  <span class="keywordflow">if</span> (<a class="code hl_function" href="namespacetket.html#a8834bebb75e446292e413923ee48f3d4">is_barrier_type</a>(ot)) {</div>
+<div class="line"><a id="l01040" name="l01040"></a><span class="lineno"> 1040</span>    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l01041" name="l01041"></a><span class="lineno"> 1041</span>  }</div>
+<div class="line"><a id="l01042" name="l01042"></a><span class="lineno"> 1042</span>  <span class="comment">// boxes are never allowed</span></div>
+<div class="line"><a id="l01043" name="l01043"></a><span class="lineno"> 1043</span>  <span class="keywordflow">if</span> (<a class="code hl_function" href="namespacetket.html#acaac66164a90d5e397b5abe8ae80d92d">is_box_type</a>(ot)) {</div>
+<div class="line"><a id="l01044" name="l01044"></a><span class="lineno"> 1044</span>    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l01045" name="l01045"></a><span class="lineno"> 1045</span>  }</div>
+<div class="line"><a id="l01046" name="l01046"></a><span class="lineno"> 1046</span> </div>
+<div class="line"><a id="l01047" name="l01047"></a><span class="lineno"> 1047</span>  <span class="comment">// this currently allows unplaced single qubits gates</span></div>
+<div class="line"><a id="l01048" name="l01048"></a><span class="lineno"> 1048</span>  <span class="comment">// this should be changes in the future</span></div>
+<div class="line"><a id="l01049" name="l01049"></a><span class="lineno"> 1049</span>  <span class="keywordflow">if</span> (uids.size() == 1) {</div>
+<div class="line"><a id="l01050" name="l01050"></a><span class="lineno"> 1050</span>    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l01051" name="l01051"></a><span class="lineno"> 1051</span>  }</div>
+<div class="line"><a id="l01052" name="l01052"></a><span class="lineno"> 1052</span> </div>
+<div class="line"><a id="l01053" name="l01053"></a><span class="lineno"> 1053</span>  <span class="comment">// allow two qubit gates only for placed and connected nodes</span></div>
+<div class="line"><a id="l01054" name="l01054"></a><span class="lineno"> 1054</span>  <span class="keywordflow">if</span> (uids.size() == 2) {</div>
+<div class="line"><a id="l01055" name="l01055"></a><span class="lineno"> 1055</span>    <span class="keywordtype">bool</span> n0 = architecture-&gt;node_exists(uids[0]);</div>
+<div class="line"><a id="l01056" name="l01056"></a><span class="lineno"> 1056</span>    <span class="keywordtype">bool</span> n1 = architecture-&gt;node_exists(uids[1]);</div>
+<div class="line"><a id="l01057" name="l01057"></a><span class="lineno"> 1057</span>    <span class="keywordflow">if</span> (n0 &amp;&amp; n1) {</div>
+<div class="line"><a id="l01058" name="l01058"></a><span class="lineno"> 1058</span>      <span class="keywordtype">bool</span> bde = architecture-&gt;bidirectional_edge_exists(uids[0], uids[1]);</div>
+<div class="line"><a id="l01059" name="l01059"></a><span class="lineno"> 1059</span>      <span class="keywordflow">if</span> (bde) {</div>
+<div class="line"><a id="l01060" name="l01060"></a><span class="lineno"> 1060</span>        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l01061" name="l01061"></a><span class="lineno"> 1061</span>      }</div>
+<div class="line"><a id="l01062" name="l01062"></a><span class="lineno"> 1062</span>    }</div>
+<div class="line"><a id="l01063" name="l01063"></a><span class="lineno"> 1063</span>  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (uids.size() == 3 &amp;&amp; ot == OpType::BRIDGE) {</div>
+<div class="line"><a id="l01064" name="l01064"></a><span class="lineno"> 1064</span>    <span class="keywordtype">bool</span> con_0_exists =</div>
+<div class="line"><a id="l01065" name="l01065"></a><span class="lineno"> 1065</span>        architecture-&gt;bidirectional_edge_exists(uids[0], uids[1]);</div>
+<div class="line"><a id="l01066" name="l01066"></a><span class="lineno"> 1066</span>    <span class="keywordtype">bool</span> con_1_exists =</div>
+<div class="line"><a id="l01067" name="l01067"></a><span class="lineno"> 1067</span>        architecture-&gt;bidirectional_edge_exists(uids[2], uids[1]);</div>
+<div class="line"><a id="l01068" name="l01068"></a><span class="lineno"> 1068</span>    <span class="keywordflow">if</span> (architecture-&gt;node_exists(uids[0]) &amp;&amp;</div>
+<div class="line"><a id="l01069" name="l01069"></a><span class="lineno"> 1069</span>        architecture-&gt;node_exists(uids[1]) &amp;&amp;</div>
+<div class="line"><a id="l01070" name="l01070"></a><span class="lineno"> 1070</span>        architecture-&gt;node_exists(uids[2]) &amp;&amp; con_0_exists &amp;&amp; con_1_exists) {</div>
+<div class="line"><a id="l01071" name="l01071"></a><span class="lineno"> 1071</span>      <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l01072" name="l01072"></a><span class="lineno"> 1072</span>    }</div>
+<div class="line"><a id="l01073" name="l01073"></a><span class="lineno"> 1073</span>  }</div>
+<div class="line"><a id="l01074" name="l01074"></a><span class="lineno"> 1074</span> </div>
+<div class="line"><a id="l01075" name="l01075"></a><span class="lineno"> 1075</span>  <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l01076" name="l01076"></a><span class="lineno"> 1076</span>}</div>
 </div>
-<div class="line"><a id="l01075" name="l01075"></a><span class="lineno"> 1075</span> </div>
-<div class="line"><a id="l01076" name="l01076"></a><span class="lineno"> 1076</span>}  <span class="comment">// namespace tket</span></div>
+<div class="line"><a id="l01077" name="l01077"></a><span class="lineno"> 1077</span> </div>
+<div class="line"><a id="l01078" name="l01078"></a><span class="lineno"> 1078</span>}  <span class="comment">// namespace tket</span></div>
 <div class="ttc" id="aCircuit_8hpp_html"><div class="ttname"><a href="Circuit_8hpp.html">Circuit.hpp</a></div></div>
 <div class="ttc" id="aMappingFrontier_8hpp_html"><div class="ttname"><a href="MappingFrontier_8hpp.html">MappingFrontier.hpp</a></div></div>
 <div class="ttc" id="aUnitID_8hpp_html"><div class="ttname"><a href="UnitID_8hpp.html">UnitID.hpp</a></div><div class="ttdoc">Named registers of arrays of (quantum or classical) nodes.</div></div>
