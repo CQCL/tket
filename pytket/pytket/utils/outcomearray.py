@@ -14,20 +14,26 @@
 
 """`OutcomeArray` class and associated methods."""
 
+# Needed for sphinx to set up type alias for ArrayLike
+from __future__ import annotations
+
 import operator
 from collections import Counter
-from collections.abc import Sequence
 from functools import reduce
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import numpy as np
 import numpy.typing as npt
-from numpy.typing import ArrayLike
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from numpy.typing import ArrayLike
 
 
 class OutcomeArray(np.ndarray):
     """
-    Array of measured outcomes from qubits. Derived class of `numpy.ndarray`.
+    Array of measured outcomes from qubits. Derived class of :py:class:`numpy.ndarray`.
 
     Bitwise outcomes are compressed into unsigned 8-bit integers, each
     representing up to 8 qubit measurements. Each row is a repeat measurement.
@@ -37,7 +43,7 @@ class OutcomeArray(np.ndarray):
     :param n_outcomes: Number of outcomes stored.
     """
 
-    def __new__(cls, input_array: npt.ArrayLike, width: int) -> "OutcomeArray":
+    def __new__(cls, input_array: npt.ArrayLike, width: int) -> OutcomeArray:
         # Input array is an already formed ndarray instance
         # We first cast to be our class type
         obj = np.asarray(input_array).view(cls)
@@ -85,7 +91,7 @@ class OutcomeArray(np.ndarray):
         return False
 
     @classmethod
-    def from_readouts(cls, readouts: ArrayLike) -> "OutcomeArray":
+    def from_readouts(cls, readouts: ArrayLike) -> OutcomeArray:
         """Create OutcomeArray from a 2D array like object of read-out integers,
         e.g. [[1, 1, 0], [0, 1, 1]]"""
         readouts_ar = np.array(readouts, dtype=int)
@@ -125,7 +131,7 @@ class OutcomeArray(np.ndarray):
     @classmethod
     def from_ints(
         cls, ints: Sequence[int], width: int, big_endian: bool = True
-    ) -> "OutcomeArray":
+    ) -> OutcomeArray:
         """Create OutcomeArray from iterator of integers corresponding to outcomes
          where the bitwise representation of the integer corresponds to the readouts.
 
@@ -146,7 +152,7 @@ class OutcomeArray(np.ndarray):
         bitar.resize((n_ints, width))
         return cls.from_readouts(bitar)
 
-    def counts(self) -> Counter["OutcomeArray"]:
+    def counts(self) -> Counter[OutcomeArray]:
         """Calculate counts of outcomes in OutcomeArray
 
         :return: Counter of outcome, number of instances
@@ -156,7 +162,7 @@ class OutcomeArray(np.ndarray):
         oalist = [OutcomeArray(x[None, :], width) for x in ars]
         return Counter(dict(zip(oalist, count_vals, strict=False)))
 
-    def choose_indices(self, indices: list[int]) -> "OutcomeArray":
+    def choose_indices(self, indices: list[int]) -> OutcomeArray:
         """Permute ordering of bits in outcomes or choose subset of bits.
         e.g. [1, 0, 2] acting on a bitstring of length 4 swaps bit locations 0 & 1,
         leaves 2 in the same place and deletes location 3.
@@ -174,7 +180,7 @@ class OutcomeArray(np.ndarray):
         return {"width": self.width, "array": self.tolist()}
 
     @classmethod
-    def from_dict(cls, ar_dict: dict[str, Any]) -> "OutcomeArray":
+    def from_dict(cls, ar_dict: dict[str, Any]) -> OutcomeArray:
         """Create an OutcomeArray from JSON serializable dictionary (as created by
         `to_dict`).
 
@@ -189,5 +195,5 @@ class OutcomeArray(np.ndarray):
 def readout_counts(
     ctr: Counter[OutcomeArray],
 ) -> Counter[tuple[int, ...]]:
-    """Convert counts from :py:class:`OutcomeArray` types to tuples of ints."""
+    """Convert counts from :py:class:`~.OutcomeArray` types to tuples of ints."""
     return Counter({tuple(map(int, oa.to_readout())): int(n) for oa, n in ctr.items()})

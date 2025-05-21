@@ -192,9 +192,8 @@ class QubitPauliOperator:
     @property
     def all_qubits(self) -> set[Qubit]:
         """
-        :return: The set of all qubits the operator ranges over (including qubits
+        The set of all qubits the operator ranges over (including qubits
             that were provided explicitly as identities)
-
         """
         return self._all_qubits
 
@@ -208,7 +207,7 @@ class QubitPauliOperator:
 
     def get_dict(self) -> dict[QubitPauliString, Expr]:
         """Generate a dict representation of QubitPauliOperator,
-        mapping each :py:class:`QubitPauliString` in the support
+        mapping each :py:class:`~.QubitPauliString` in the support
         to its corresponding value.
 
         :return: A dict of Pauli strings and their coefficients

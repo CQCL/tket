@@ -18,8 +18,6 @@ import numpy as np
 
 from pytket.circuit import BasisOrder
 
-StateTuple = tuple[int, ...]
-CountsDict = dict[StateTuple, int | float]
 KwargTypes = Any
 
 

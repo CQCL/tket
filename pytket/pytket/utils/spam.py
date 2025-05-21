@@ -26,14 +26,11 @@ from pytket.backends.backendresult import BackendResult
 from pytket.circuit import Bit, CircBox, Circuit, Node, OpType, Qubit
 from pytket.passes import DecomposeBoxes, FlattenRegisters
 from pytket.utils.outcomearray import OutcomeArray
-from pytket.utils.results import CountsDict, StateTuple
-
-ParallelMeasures = list[dict[Qubit, Bit]]
 
 
 def compress_counts(
-    counts: dict[StateTuple, float], tol: float = 1e-6, round_to_int: bool = False
-) -> CountsDict:
+    counts: dict[tuple[int, ...], float], tol: float = 1e-6, round_to_int: bool = False
+) -> dict[tuple[int, ...], int | float]:
     """Filter counts to remove states that have a count value (which can be a
     floating-point number) below a tolerance, and optionally round to an
     integer.
@@ -426,8 +423,8 @@ class SpamCorrecter:
             for mat in self.subsets_matrix_map.values()
         ]
 
-    def get_parallel_measure(self, circuit: Circuit) -> ParallelMeasures:
-        """For a given circuit, produces and returns a ParallelMeasures object required
+    def get_parallel_measure(self, circuit: Circuit) -> list[dict[Qubit, Bit]]:
+        """For a given circuit, produces and returns a `list[dict[Qubit, Bit]]` object required
          for correcting counts results.
 
         :param circuit: Circuit with some Measure operations.
@@ -450,7 +447,7 @@ class SpamCorrecter:
     def correct_counts(
         self,
         result: BackendResult,
-        parallel_measures: ParallelMeasures,
+        parallel_measures: list[dict[Qubit, Bit]],
         method: str = "bayesian",
         options: dict | None = None,
     ) -> BackendResult:

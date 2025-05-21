@@ -133,7 +133,7 @@ def measurement_reduction(strings: Sequence[pytket._tket.pauli.QubitPauliString]
     :param strat: The `PauliPartitionStrat` to use.
     :param method: The `GraphColourMethod` to use.
     :param cx_config: Whenever diagonalisation is required, use this configuration of CX gates
-    :return: a :py:class:`MeasurementSetup` object
+    :return: a :py:class:`~.MeasurementSetup` object
     """
 
 def term_sequence(strings: Sequence[pytket._tket.pauli.QubitPauliString], strat: PauliPartitionStrat = PauliPartitionStrat.CommutingSets, method: GraphColourMethod = GraphColourMethod.Lazy) -> list[list[pytket._tket.pauli.QubitPauliString]]:
@@ -143,5 +143,5 @@ def term_sequence(strings: Sequence[pytket._tket.pauli.QubitPauliString], strat:
     :param tensors: A list of `QubitPauliString` objects to be sequenced. Assumes that each Pauli tensor is unique, and does not combine equivalent tensors.
     :param strat: The `PauliPartitionStrat` to use. Defaults to `CommutingSets`.
     :param method: The `GraphColourMethod` to use.
-    :return: a list of lists of :py:class:`QubitPauliString` s
+    :return: a list of lists of :py:class:`~.QubitPauliString` s
     """

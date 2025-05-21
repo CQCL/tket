@@ -108,7 +108,8 @@ template <>
 struct type_caster<SymEngine::Expression> {
  public:
   NB_TYPE_CASTER(
-      SymEngine::Expression, const_name("typing.Union[sympy.Expr, float]"));
+      SymEngine::Expression,
+      const_name("typing.Union[sympy.core.expr.Expr, float]"));
 
   static void assert_tuple_length(nanobind::tuple t, unsigned len) {
     if (t.size() != len)
@@ -394,7 +395,8 @@ template <>
 struct type_caster<SymEngine::RCP<const SymEngine::Symbol>> {
  public:
   NB_TYPE_CASTER(
-      SymEngine::RCP<const SymEngine::Symbol>, const_name("sympy.Symbol"));
+      SymEngine::RCP<const SymEngine::Symbol>,
+      const_name("sympy.core.symbol.Symbol"));
   bool from_python(handle src, uint8_t, cleanup_list*) noexcept {
     nanobind::module_ sympy = nanobind::module_::import_("sympy");
     if (!isinstance(src, sympy.attr("Symbol"))) return false;

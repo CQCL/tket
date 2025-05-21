@@ -13,7 +13,6 @@
 # limitations under the License.
 
 from dataclasses import dataclass
-from typing import Any
 
 from pytket.circuit import (
     Bit,
@@ -48,6 +47,7 @@ _reg_output_clops = {
 
 
 def has_reg_output(op: ClOp) -> bool:
+    """Checks if the :py:class:`~.ClOp` is of a type whose output is a register as opposed to a single bit."""
     return op in _reg_output_clops
 
 
@@ -131,7 +131,7 @@ class _ExpressionConverter:
 def wired_clexpr_from_logic_exp(
     exp: LogicExp, output_bits: list[Bit]
 ) -> tuple[WiredClExpr, list[Bit]]:
-    """Convert a :py:class:`LogicExp` to a :py:class:`WiredClExpr`
+    """Convert a :py:class:`~.LogicExp` to a :py:class:`~.WiredClExpr`
 
     :param exp: the LogicExp
     :param output_bits: list of output bits of the LogicExp
@@ -191,10 +191,3 @@ def check_register_alignments(circ: Circuit) -> bool:
             ):
                 return False
     return True
-
-
-def _add_clexpr_to_circuit_from_logicexp(
-    circ: Circuit, exp: LogicExp, output_bits: list[Bit], **kwargs: Any
-) -> None:
-    wexpr, args = wired_clexpr_from_logic_exp(exp, output_bits)
-    circ.add_clexpr(wexpr, args, **kwargs)

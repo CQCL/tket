@@ -84,7 +84,7 @@ NB_MODULE(transform, m) {
           "the circuit.");
 
   nb::class_<Transform>(
-      m, "Transform", "An in-place transformation of a :py:class:`Circuit`.")
+      m, "Transform", "An in-place transformation of a :py:class:`~.Circuit`.")
       .def(nb::init<const Transform::SimpleTransformation &>())
       .def(
           "apply",
@@ -189,7 +189,7 @@ NB_MODULE(transform, m) {
           "Decomposes all SWAP gates into triples of CX gates. "
           "If the SWAP is adjacent to a CX, it will prefer to insert "
           "in the direction that allows for gate cancellation. "
-          "If an :py:class:`Architecture` is provided, this will "
+          "If an :py:class:`~.Architecture` is provided, this will "
           "prefer to insert the CXs such that fewer need redirecting."
           "\n\n:param arc: Device architecture used to specify a "
           "preference for CX direction",
@@ -200,7 +200,7 @@ NB_MODULE(transform, m) {
       .def_static(
           "DecomposeCXDirected", &Transforms::decompose_CX_directed,
           "Decompose CX gates to H+CX to match the direction of the "
-          "CXs to edges of the :py:class:`Architecture` `arc`. "
+          "CXs to edges of the :py:class:`~.Architecture` `arc`. "
           "Assumes the circuit already satisfies the connectivity of "
           "`arc`.\n\n:param arc: The architecture for which CXs "
           "should be redirected",
@@ -212,11 +212,11 @@ NB_MODULE(transform, m) {
           "decomposed. A box must satisfy ALL filters in order to be "
           "decomposed (i.e. be in the inclusive sets and not in the exclusive "
           "sets)."
-          "\n\n:param excluded_types: box :py:class:`OpType` s excluded from "
+          "\n\n:param excluded_types: box :py:class:`~.OpType` s excluded from "
           "decomposition"
           "\n:param excluded_opgroups: opgroups excluded from decomposition"
           "\n:param included_types: optional, only decompose these box "
-          ":py:class:`OpType` s"
+          ":py:class:`~.OpType` s"
           "\n:param included_opgroups: optional, only decompose these opgroups",
           nb::arg("excluded_types") = std::unordered_set<OpType>(),
           nb::arg("excluded_opgroups") = std::unordered_set<std::string>(),

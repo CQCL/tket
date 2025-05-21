@@ -40,7 +40,7 @@ class Placement:
         Returns a map from logical to physical qubits that is Architecture appropriate for the given Circuit. 
 
         :param circuit: The circuit a map is designed for.
-        :return: dictionary mapping :py:class:`Qubit` s to :py:class:`Node` s
+        :return: dictionary mapping :py:class:`~.Qubit` s to :py:class:`~.Node` s
         """
 
     def get_placement_maps(self, circuit: pytket._tket.circuit.Circuit, matches: int = 100) -> list[dict[pytket._tket.unit_id.Qubit, pytket._tket.unit_id.Node]]:
@@ -49,7 +49,7 @@ class Placement:
 
         :param circuit: The circuit the maps are designed for.
         :param matches: The maximum number of maps returned by the method.
-        :return: list of dictionaries mapping :py:class:`Qubit` s to :py:class:`Node` s
+        :return: list of dictionaries mapping :py:class:`~.Qubit` s to :py:class:`~.Node` s
         """
 
     def to_dict(self) -> object:

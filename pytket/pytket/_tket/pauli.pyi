@@ -47,7 +47,7 @@ class QubitPauliString:
     @overload
     def __init__(self, map: Mapping[pytket._tket.unit_id.Qubit, Pauli]) -> None:
         """
-        Construct a QubitPauliString from a dictionary mapping :py:class:`Qubit` to :py:class:`Pauli`.
+        Construct a QubitPauliString from a dictionary mapping :py:class:`~.Qubit` to :py:class:`~.Pauli`.
         """
 
     def __hash__(self) -> int: ...
@@ -67,14 +67,14 @@ class QubitPauliString:
     @property
     def map(self) -> dict[pytket._tket.unit_id.Qubit, Pauli]:
         """
-        The QubitPauliString's underlying dict mapping :py:class:`Qubit` to :py:class:`Pauli`
+        The QubitPauliString's underlying dict mapping :py:class:`~.Qubit` to :py:class:`~.Pauli`
         """
 
     def to_list(self) -> list:
         """
         A JSON-serializable representation of the QubitPauliString.
 
-        :return: a list of :py:class:`Qubit`-to-:py:class:`Pauli` entries, represented as dicts.
+        :return: a list of :py:class:`~.Qubit`-to-:py:class:`~.Pauli` entries, represented as dicts.
         """
 
     @staticmethod
@@ -194,7 +194,7 @@ class PauliStabiliser:
 
 class QubitPauliTensor:
     """
-    A tensor formed by Pauli terms, consisting of a sparse map from :py:class:`Qubit` to :py:class:`Pauli` (implemented as a :py:class:`QubitPauliString`) and a complex coefficient.
+    A tensor formed by Pauli terms, consisting of a sparse map from :py:class:`~.Qubit` to :py:class:`~.Pauli` (implemented as a :py:class:`~.QubitPauliString`) and a complex coefficient.
     """
 
     @overload
@@ -214,7 +214,7 @@ class QubitPauliTensor:
     @overload
     def __init__(self, map: Mapping[pytket._tket.unit_id.Qubit, Pauli], coeff: complex = 1.0) -> None:
         """
-        Construct a QubitPauliTensor from a dictionary mapping :py:class:`Qubit` to :py:class:`Pauli`.
+        Construct a QubitPauliTensor from a dictionary mapping :py:class:`~.Qubit` to :py:class:`~.Pauli`.
         """
 
     @overload
@@ -241,7 +241,7 @@ class QubitPauliTensor:
 
     @property
     def string(self) -> QubitPauliString:
-        """The QubitPauliTensor's underlying :py:class:`QubitPauliString`"""
+        """The QubitPauliTensor's underlying :py:class:`~.QubitPauliString`"""
 
     @string.setter
     def string(self, arg: QubitPauliString, /) -> None: ...

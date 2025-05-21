@@ -126,7 +126,6 @@
 ```{eval-rst}
 .. automodule:: pytket.utils.symbolic
     :members:
-    :special-members: SymGateFunc
 ```
 
 ## pytket.utils.term_sequence

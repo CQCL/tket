@@ -1,6 +1,6 @@
 # pytket.circuit.OpType
 
-Enum for available operations compatible with the tket {py:class}`Circuit` class.
+Enum for available operations compatible with the tket {py:class}`~.Circuit` class.
 
 :::{warning}
 All parametrised OpTypes which take angles (e.g. Rz, CPhase, FSim) expect parameters in multiples of pi (half-turns).

@@ -522,7 +522,7 @@ class BackendResult:
         """Convert to a :py:class:`pytket.utils.distribution.EmpiricalDistribution`
         where the observations are sequences of 0s and 1s.
 
-        :param bits: Optionally provide the :py:class:`Bit` s over which to
+        :param bits: Optionally provide the :py:class:`~.Bit` s over which to
             marginalize the distribution.
         :return: A distribution where the observations are sequences of 0s and 1s.
         """  # noqa: RUF002
@@ -538,7 +538,7 @@ class BackendResult:
         """Convert to a :py:class:`pytket.utils.distribution.ProbabilityDistribution`
         where the possible outcomes are sequences of 0s and 1s.
 
-        :param qubits: Optionally provide the :py:class:`Qubit` s over which to
+        :param qubits: Optionally provide the :py:class:`~.Qubit` s over which to
             marginalize the distribution.
         :param min_p: Optional probability below which to ignore values (for
             example to avoid spurious values due to rounding errors in

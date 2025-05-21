@@ -147,13 +147,13 @@ std::vector<std::pair<T1, T2>> cast_map_to_vector_of_pairs(
 void init_boxes(nb::module_ &m) {
   nb::class_<CircBox, Op>(
       m, "CircBox",
-      "A user-defined operation specified by a :py:class:`Circuit`.")
+      "A user-defined operation specified by a :py:class:`~.Circuit`.")
       .def(
-          nb::init<const Circuit &>(), "Construct from a :py:class:`Circuit`.",
-          nb::arg("circ"))
+          nb::init<const Circuit &>(),
+          "Construct from a :py:class:`~.Circuit`.", nb::arg("circ"))
       .def(
           "get_circuit", [](CircBox &cbox) { return *cbox.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "symbol_substitution",
           [](CircBox &circ, const symbol_map_t &sub_map) {
@@ -172,7 +172,7 @@ void init_boxes(nb::module_ &m) {
       .def_prop_rw(
           "circuit_name", &CircBox::get_circuit_name,
           &CircBox::set_circuit_name,
-          ":return: the name of the contained circuit. "
+          "The name of the contained circuit. "
           "\n\n WARNING: "
           "Setting this property mutates the CircBox and "
           "any changes are propagated to "
@@ -186,7 +186,7 @@ void init_boxes(nb::module_ &m) {
           "Construct from a unitary matrix.", nb::arg("m"))
       .def(
           "get_circuit", [](Unitary1qBox &ubox) { return *ubox.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_matrix", &Unitary1qBox::get_matrix,
           ":return: the unitary matrix as a numpy array");
@@ -204,7 +204,7 @@ void init_boxes(nb::module_ &m) {
           nb::arg("m"), nb::arg("basis") = BasisOrder::ilo)
       .def(
           "get_circuit", [](Unitary2qBox &ubox) { return *ubox.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_matrix", &Unitary2qBox::get_matrix,
           ":return: the unitary matrix (in ILO-BE format) as a numpy "
@@ -223,7 +223,7 @@ void init_boxes(nb::module_ &m) {
           nb::arg("m"), nb::arg("basis") = BasisOrder::ilo)
       .def(
           "get_circuit", [](Unitary3qBox &ubox) { return *ubox.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_matrix", &Unitary3qBox::get_matrix,
           ":return: the unitary matrix (in ILO-BE format) as a numpy array");
@@ -245,7 +245,7 @@ void init_boxes(nb::module_ &m) {
           nb::arg("A"), nb::arg("t"), nb::arg("basis") = BasisOrder::ilo)
       .def(
           "get_circuit", [](ExpBox &ebox) { return *ebox.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box");
+          ":return: the :py:class:`~.Circuit` described by the box");
   nb::class_<PauliExpBox, Op>(
       m, "PauliExpBox",
       "An operation defined as the exponential of a tensor of Pauli "
@@ -264,10 +264,10 @@ void init_boxes(nb::module_ &m) {
           nb::arg("cx_config_type") = CXConfigType::Tree)
       .def(
           "get_circuit", [](PauliExpBox &pbox) { return *pbox.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_paulis", &PauliExpBox::get_paulis,
-          ":return: the corresponding list of " CLSOBJS(Pauli))
+          ":return: the corresponding list of " CLSOBJS(~.Pauli))
       .def(
           "get_phase", &PauliExpBox::get_phase,
           ":return: the corresponding phase parameter")
@@ -301,11 +301,11 @@ void init_boxes(nb::module_ &m) {
       .def(
           "get_circuit",
           [](PauliExpPairBox &pbox) { return *pbox.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_paulis_pair", &PauliExpPairBox::get_paulis_pair,
           ":return: A tuple containing the two corresponding lists of " CLSOBJS(
-              Pauli))
+              ~.Pauli))
       .def(
           "get_phase_pair", &PauliExpPairBox::get_phase_pair,
           ":return: A tuple containing the two phase parameters")
@@ -340,7 +340,7 @@ void init_boxes(nb::module_ &m) {
       .def(
           "get_circuit",
           [](PauliExpCommutingSetBox &pbox) { return *pbox.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_paulis",
           [](const PauliExpCommutingSetBox &pbox) {
@@ -401,7 +401,7 @@ void init_boxes(nb::module_ &m) {
       .def(
           "get_circuit",
           [](TermSequenceBox &pbox) { return *pbox.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_paulis",
           [](const TermSequenceBox &pbox) {
@@ -533,7 +533,7 @@ void init_boxes(nb::module_ &m) {
           nb::arg("rotation_axis") = OpType::Ry)
       .def(
           "get_circuit", [](ToffoliBox &tbox) { return *tbox.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_permutation",
           [](ToffoliBox &box) {
@@ -583,12 +583,12 @@ void init_boxes(nb::module_ &m) {
           ":return: the maximum value");
   nb::class_<ResourceData>(
       m, "ResourceData",
-      "An object holding resource data for use in a :py:class:`DummyBox`."
+      "An object holding resource data for use in a :py:class:`~.DummyBox`."
       "\n\nThe object holds several fields representing minimum and maximum "
-      "values for certain resources. The absence of an :py:class:`OpType` in "
+      "values for certain resources. The absence of an :py:class:`~.OpType` in "
       "one of these fields is interpreted as the absence of gates of that type "
       "in the (imagined) circuit."
-      "\n\nSee :py:meth:`Circuit.get_resources` for how to use this data.")
+      "\n\nSee :py:meth:`~.Circuit.get_resources` for how to use this data.")
       .def(
           nb::init<
               const std::map<OpType, ResourceBounds<unsigned>> &,
@@ -597,10 +597,10 @@ void init_boxes(nb::module_ &m) {
               const ResourceBounds<unsigned> &>(),
           "Constructs a ResourceData object.\n\n"
           ":param op_type_count: dictionary of counts of selected "
-          ":py:class:`OpType`\n"
+          ":py:class:`~.OpType`\n"
           ":param gate_depth: overall gate depth\n"
           ":param op_type_depth: dictionary of depths of selected "
-          ":py:class:`OpType`\n"
+          ":py:class:`~.OpType`\n"
           ":param two_qubit_gate_depth: overall two-qubit-gate depth",
           nb::arg("op_type_count"), nb::arg("gate_depth"),
           nb::arg("op_type_depth"), nb::arg("two_qubit_gate_depth"))
@@ -675,11 +675,11 @@ void init_boxes(nb::module_ &m) {
   nb::class_<QControlBox, Op>(
       m, "QControlBox",
       "A user-defined controlled operation specified by an "
-      ":py:class:`Op`, the number of quantum controls, and the control state "
+      ":py:class:`~.Op`, the number of quantum controls, and the control state "
       "expressed as an integer or a bit vector.")
       .def(
           nb::init<Op_ptr &, unsigned, std::vector<bool> &>(),
-          "Construct from an :py:class:`Op`, a number of quantum "
+          "Construct from an :py:class:`~.Op`, a number of quantum "
           "controls, and the control state expressed as a bit vector. The "
           "controls occupy the low-index ports of the "
           "resulting operation.\n\n"
@@ -696,7 +696,7 @@ void init_boxes(nb::module_ &m) {
             new (p) QControlBox(
                 op, n_controls, dec_to_bin(control_state, n_controls));
           },
-          "Construct from an :py:class:`Op`, a number of quantum "
+          "Construct from an :py:class:`~.Op`, a number of quantum "
           "controls, and the control state expressed as an integer. The "
           "controls occupy the low-index ports of the "
           "resulting operation.\n\n"
@@ -707,13 +707,13 @@ void init_boxes(nb::module_ &m) {
           nb::arg("op"), nb::arg("n_controls"), nb::arg("control_state"))
       .def(
           nb::init<Op_ptr &, unsigned>(),
-          "Construct from an :py:class:`Op` and a number of quantum "
+          "Construct from an :py:class:`~.Op` and a number of quantum "
           "controls. The controls occupy the low-index ports of the "
           "resulting operation.",
           nb::arg("op"), nb::arg("n") = 1)
       .def(
           "get_circuit", [](QControlBox &qcbox) { return *qcbox.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def("get_op", &QControlBox::get_op, ":return: the underlying operator")
       .def(
           "get_n_controls", &QControlBox::get_n_controls,
@@ -778,7 +778,7 @@ void init_boxes(nb::module_ &m) {
           "dictionary representation of the Circuit.");
   nb::class_<CustomGate, Op>(
       m, "CustomGate",
-      "A user-defined gate defined by a parametrised :py:class:`Circuit`.")
+      "A user-defined gate defined by a parametrised :py:class:`~.Circuit`.")
       .def(
           nb::init<
               const composite_def_ptr_t &,
@@ -793,7 +793,7 @@ void init_boxes(nb::module_ &m) {
       .def(
           "get_circuit",
           [](CustomGate &composite) { return *composite.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the gate.");
+          ":return: the :py:class:`~.Circuit` described by the gate.");
   nb::class_<PhasePolyBox, Op>(
       m, "PhasePolyBox",
       "Box encapsulating any Circuit made up of CNOT and RZ as a phase "
@@ -866,7 +866,7 @@ void init_boxes(nb::module_ &m) {
           "Boolean matrix corresponding to linear transformation.")
       .def(
           "get_circuit", [](PhasePolyBox &ppb) { return *ppb.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box.")
+          ":return: the :py:class:`~.Circuit` described by the box.")
       .def_prop_ro(
           "qubit_indices",
           [](PhasePolyBox &ppoly) {
@@ -895,7 +895,7 @@ void init_boxes(nb::module_ &m) {
       .def(
           "get_circuit",
           [](ProjectorAssertionBox &ubox) { return *ubox.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_matrix", &ProjectorAssertionBox::get_matrix,
           ":return: the unitary matrix (in ILO-BE format) as a numpy array");
@@ -953,7 +953,7 @@ void init_boxes(nb::module_ &m) {
       .def(
           "get_circuit",
           [](StabiliserAssertionBox &ubox) { return *ubox.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_stabilisers", &StabiliserAssertionBox::get_stabilisers,
           ":return: the list of Pauli stabilisers");
@@ -962,27 +962,27 @@ void init_boxes(nb::module_ &m) {
       m, "MultiplexorBox",
       "A user-defined multiplexor (i.e. uniformly controlled operations) "
       "specified by a "
-      "map from bitstrings to " CLSOBJS(Op)
-      "or a list of bitstring-" CLSOBJS(Op) " pairs")
+      "map from bitstrings to " CLSOBJS(~.Op)
+      "or a list of bitstring-" CLSOBJS(~.Op) " pairs")
       .def(
         "__init__",
         [](MultiplexorBox *p, const py_ctrl_op_map_t_alt & bitstring_op_pairs) {
           new(p) MultiplexorBox(to_cpp_ctrl_op_map_t(bitstring_op_pairs));
         },
-      "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
-      ":param bitstring_to_op_list: List of bitstring-" CLSOBJS(Op) "pairs\n",
+      "Construct from a list of bitstring-" CLSOBJS(~.Op) "pairs\n\n"
+      ":param bitstring_to_op_list: List of bitstring-" CLSOBJS(~.Op) "pairs\n",
       nb::arg("bistring_to_op_list"))
       .def(
           "__init__",
           [](MultiplexorBox *p, const py_ctrl_op_map_t & bitstring_op_map) {
             new(p) MultiplexorBox(to_cpp_ctrl_op_map_t(bitstring_op_map));
           },
-          "Construct from a map from bitstrings to " CLSOBJS(Op) "\n\n"
-          ":param op_map: Map from bitstrings to " CLSOBJS(Op) "\n",
+          "Construct from a map from bitstrings to " CLSOBJS(~.Op) "\n\n"
+          ":param op_map: Map from bitstrings to " CLSOBJS(~.Op) "\n",
           nb::arg("op_map"))
       .def(
           "get_circuit", [](MultiplexorBox &box) { return *box.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_op_map",
           [](MultiplexorBox &box) {
@@ -1000,8 +1000,8 @@ void init_boxes(nb::module_ &m) {
       m, "MultiplexedRotationBox",
       "A user-defined multiplexed rotation gate (i.e. "
       "uniformly controlled single-axis rotations) specified by "
-      "a map from bitstrings to " CLSOBJS(Op)
-      "or a list of bitstring-" CLSOBJS(Op) " pairs. "
+      "a map from bitstrings to " CLSOBJS(~.Op)
+      "or a list of bitstring-" CLSOBJS(~.Op) " pairs. "
       "Implementation based on arxiv.org/abs/quant-ph/0410066. "
       "The decomposed circuit has at most 2^k single-qubit rotations, "
       "2^k CX gates, and two additional H gates if the rotation axis is X. "
@@ -1011,20 +1011,20 @@ void init_boxes(nb::module_ &m) {
           [](MultiplexedRotationBox *p, const py_ctrl_op_map_t_alt & bitstring_op_pairs) {
             new(p) MultiplexedRotationBox(to_cpp_ctrl_op_map_t(bitstring_op_pairs));
           },
-          "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
-          "All " CLSOBJS(Op) "  must share the same single-qubit rotation type: "
+          "Construct from a list of bitstring-" CLSOBJS(~.Op) "pairs\n\n"
+          "All " CLSOBJS(~.Op) "  must share the same single-qubit rotation type: "
           "Rx, Ry, or Rz.\n\n"
-          ":param bitstring_to_op_list: List of bitstring-" CLSOBJS(Op) "pairs\n",
+          ":param bitstring_to_op_list: List of bitstring-" CLSOBJS(~.Op) "pairs\n",
           nb::arg("bistring_to_op_list"))
       .def(
           "__init__",
           [](MultiplexedRotationBox *p, const py_ctrl_op_map_t & bitstring_op_map) {
             new(p) MultiplexedRotationBox(to_cpp_ctrl_op_map_t(bitstring_op_map));
           },
-          "Construct from a map from bitstrings to :py:class:`Op` s."
-          "All " CLSOBJS(Op) "  must share the same single-qubit rotation type: "
+          "Construct from a map from bitstrings to :py:class:`~.Op` s."
+          "All " CLSOBJS(~.Op) "  must share the same single-qubit rotation type: "
           "Rx, Ry, or Rz.\n\n"
-          ":param op_map: Map from bitstrings to " CLSOBJS(Op) "\n",
+          ":param op_map: Map from bitstrings to " CLSOBJS(~.Op) "\n",
           nb::arg("op_map"))
       .def(
           "__init__",
@@ -1059,7 +1059,7 @@ void init_boxes(nb::module_ &m) {
       .def(
           "get_circuit",
           [](MultiplexedRotationBox &box) { return *box.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_bitstring_op_pair_list",
           [](MultiplexedRotationBox &box) {
@@ -1076,8 +1076,8 @@ void init_boxes(nb::module_ &m) {
       m, "MultiplexedU2Box",
       "A user-defined multiplexed U2 gate (i.e. uniformly controlled U2 "
       "gate) specified by a "
-      "map from bitstrings to " CLSOBJS(Op)
-      "or a list of bitstring-" CLSOBJS(Op) " pairs"
+      "map from bitstrings to " CLSOBJS(~.Op)
+      "or a list of bitstring-" CLSOBJS(~.Op) " pairs"
       "Implementation based on arxiv.org/abs/quant-ph/0410066. "
       "The decomposed circuit has at most 2^k single-qubit gates, 2^k -1 CX gates, "
       "and a k+1 qubit DiagonalBox at the end. "
@@ -1087,10 +1087,10 @@ void init_boxes(nb::module_ &m) {
           [](MultiplexedU2Box *p, const py_ctrl_op_map_t_alt & bitstring_op_pairs, bool impl_diag) {
             new(p) MultiplexedU2Box(to_cpp_ctrl_op_map_t(bitstring_op_pairs), impl_diag);
           },
-      "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
+      "Construct from a list of bitstring-" CLSOBJS(~.Op) "pairs\n\n"
       "Only supports single qubit unitary gate types and "
-      ":py:class:`Unitary1qBox`.\n\n"
-      ":param op_map: List of bitstring-" CLSOBJS(Op) "pairs\n"
+      ":py:class:`~.Unitary1qBox`.\n\n"
+      ":param op_map: List of bitstring-" CLSOBJS(~.Op) "pairs\n"
       ":param impl_diag: Whether to implement the final diagonal gate, "
       "default to True.",
       nb::arg("bistring_to_op_list"), nb::arg("impl_diag") = true)
@@ -1099,17 +1099,17 @@ void init_boxes(nb::module_ &m) {
           [](MultiplexedU2Box *p, const py_ctrl_op_map_t & bitstring_op_map, bool impl_diag) {
             new(p) MultiplexedU2Box(to_cpp_ctrl_op_map_t(bitstring_op_map), impl_diag);
           },
-          "Construct from a map from bitstrings to " CLSOBJS(Op) "."
+          "Construct from a map from bitstrings to " CLSOBJS(~.Op) "."
           "Only supports single qubit unitary gate types and "
-          ":py:class:`Unitary1qBox`.\n\n"
-          ":param op_map: Map from bitstrings to " CLSOBJS(Op) "\n"
+          ":py:class:`~.Unitary1qBox`.\n\n"
+          ":param op_map: Map from bitstrings to " CLSOBJS(~.Op) "\n"
           ":param impl_diag: Whether to implement the final diagonal gate, "
           "default to True.",
           nb::arg("op_map"), nb::arg("impl_diag") = true)
       .def(
           "get_circuit",
           [](MultiplexedU2Box &box) { return *box.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_bitstring_op_pair_list",
           [](MultiplexedU2Box &box) {
@@ -1130,8 +1130,8 @@ void init_boxes(nb::module_ &m) {
   nb::class_<MultiplexedTensoredU2Box, Op>(
       m, "MultiplexedTensoredU2Box",
       "A user-defined multiplexed tensor product of U2 gates specified by a "
-      "map from bitstrings to lists of " CLSOBJS(Op)
-      "or a list of bitstring-list(" CLSOBJS(Op) ") pairs. "
+      "map from bitstrings to lists of " CLSOBJS(~.Op)
+      "or a list of bitstring-list(" CLSOBJS(~.Op) ") pairs. "
       "A box with k control qubits and t target qubits is implemented as t "
       "k-controlled multiplexed-U2 gates with their diagonal "
       "components merged and commuted to the end. The resulting circuit contains "
@@ -1144,10 +1144,10 @@ void init_boxes(nb::module_ &m) {
           [](MultiplexedTensoredU2Box *p, const py_ctrl_tensored_op_map_t_alt & bitstring_op_pairs) {
             new(p) MultiplexedTensoredU2Box(to_cpp_ctrl_op_map_t(bitstring_op_pairs));
           },
-          "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
+          "Construct from a list of bitstring-" CLSOBJS(~.Op) "pairs\n\n"
           "Only supports single qubit unitary gate types and "
-          ":py:class:`Unitary1qBox`.\n\n"
-          ":param bitstring_to_op_list: List of bitstring-List of " CLSOBJS(Op) " pairs\n",
+          ":py:class:`~.Unitary1qBox`.\n\n"
+          ":param bitstring_to_op_list: List of bitstring-List of " CLSOBJS(~.Op) " pairs\n",
           nb::arg("bistring_to_op_list"))
       .def(
           "__init__",
@@ -1155,15 +1155,15 @@ void init_boxes(nb::module_ &m) {
             new(p) MultiplexedTensoredU2Box(to_cpp_ctrl_op_map_t(bitstring_op_map));
           },
           "Construct from a map from bitstrings to equal-sized lists of "
-          CLSOBJS(Op) ". "
+          CLSOBJS(~.Op) ". "
           "Only supports single qubit unitary gate types and "
-          ":py:class:`Unitary1qBox`.\n\n"
-          ":param op_map: Map from bitstrings to lists of " CLSOBJS(Op),
+          ":py:class:`~.Unitary1qBox`.\n\n"
+          ":param op_map: Map from bitstrings to lists of " CLSOBJS(~.Op),
           nb::arg("op_map"))
       .def(
           "get_circuit",
           [](MultiplexedTensoredU2Box &box) { return *box.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_bitstring_op_pair_list",
           [](MultiplexedTensoredU2Box &box) {
@@ -1198,7 +1198,7 @@ void init_boxes(nb::module_ &m) {
       .def(
           "get_circuit",
           [](StatePreparationBox &box) { return *box.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_statevector", &StatePreparationBox::get_statevector,
           ":return: the statevector")
@@ -1228,7 +1228,7 @@ void init_boxes(nb::module_ &m) {
           nb::arg("diagonal"), nb::arg("upper_triangle") = true)
       .def(
           "get_circuit", [](DiagonalBox &box) { return *box.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_diagonal", &DiagonalBox::get_diagonal,
           ":return: the statevector")
@@ -1254,7 +1254,7 @@ void init_boxes(nb::module_ &m) {
           nb::arg("uncompute") = std::nullopt)
       .def(
           "get_circuit", [](ConjugationBox &box) { return *box.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box")
+          ":return: the :py:class:`~.Circuit` described by the box")
       .def(
           "get_compute", &ConjugationBox::get_compute,
           ":return: the compute operation")
