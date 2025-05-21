@@ -8,6 +8,11 @@ Features:
   `MeasurementSetup`, `Node`, `WiredClExpr`, and all types of
   `Predicate` except `UserDefinedPredicate`).
 
+
+Fixes:
+
+- Add additional type check step to `get_default_to_linear_boundary_unit_map`.
+
 ## 2.4.1 (May 2025)
 
 Fixes:
