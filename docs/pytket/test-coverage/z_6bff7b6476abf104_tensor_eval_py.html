@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="index.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
-            created at 2025-05-20 15:19 +0000
+            created at 2025-05-21 08:09 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -294,9 +294,9 @@
     <p class="pln"><span class="n"><a id="t210" href="#t210">210</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t211" href="#t211">211</a></span><span class="t"><span class="key">def</span> <span class="nam">tensor_from_quantum_diagram</span><span class="op">(</span><span class="nam">diag</span><span class="op">:</span> <span class="nam">ZXDiagram</span><span class="op">)</span> <span class="op">-></span> <span class="nam">np</span><span class="op">.</span><span class="nam">ndarray</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t212" href="#t212">212</a></span><span class="t">    <span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t213" href="#t213">213</a></span><span class="t"><span class="str">    Evaluates a purely quantum :py:class:`ZXDiagram` as a tensor. Indices of</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t213" href="#t213">213</a></span><span class="t"><span class="str">    Evaluates a purely quantum :py:class:`~.ZXDiagram` as a tensor. Indices of</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t214" href="#t214">214</a></span><span class="t"><span class="str">    the resulting tensor match the order of the boundary vertices from</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t215" href="#t215">215</a></span><span class="t"><span class="str">    :py:meth:`ZXDiagram.get_boundary`.</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t215" href="#t215">215</a></span><span class="t"><span class="str">    :py:meth:`~.ZXDiagram.get_boundary`.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t216" href="#t216">216</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t217" href="#t217">217</a></span><span class="t"><span class="str">    Throws an exception if the diagram contains any non-quantum vertex or wire,</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t218" href="#t218">218</a></span><span class="t"><span class="str">    or if it contains any symbolic parameters.</span>&nbsp;</span><span class="r"></span></p>
@@ -321,12 +321,12 @@
     <p class="pln"><span class="n"><a id="t237" href="#t237">237</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t238" href="#t238">238</a></span><span class="t"><span class="key">def</span> <span class="nam">tensor_from_mixed_diagram</span><span class="op">(</span><span class="nam">diag</span><span class="op">:</span> <span class="nam">ZXDiagram</span><span class="op">)</span> <span class="op">-></span> <span class="nam">np</span><span class="op">.</span><span class="nam">ndarray</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t239" href="#t239">239</a></span><span class="t">    <span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t240" href="#t240">240</a></span><span class="t"><span class="str">    Evaluates an arbitrary :py:class:`ZXDiagram` as a tensor in the doubled</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t240" href="#t240">240</a></span><span class="t"><span class="str">    Evaluates an arbitrary :py:class:`~.ZXDiagram` as a tensor in the doubled</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t241" href="#t241">241</a></span><span class="t"><span class="str">    picture - that is, each quantum generator is treated as a pair of conjugate</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t242" href="#t242">242</a></span><span class="t"><span class="str">    generators, whereas a classical generator is just itself.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t243" href="#t243">243</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t244" href="#t244">244</a></span><span class="t"><span class="str">    The indices of the resulting tensor match the order of the boundary</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t245" href="#t245">245</a></span><span class="t"><span class="str">    vertices from :py:meth:`ZXDiagram.get_boundary`, with quantum boundaries</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t245" href="#t245">245</a></span><span class="t"><span class="str">    vertices from :py:meth:`~.ZXDiagram.get_boundary`, with quantum boundaries</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t246" href="#t246">246</a></span><span class="t"><span class="str">    split into two. For example, if the boundary is ``[qb1, cb1, qb2]``, the</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t247" href="#t247">247</a></span><span class="t"><span class="str">    indices will match ``[qb1, qb1_conj, cb1, qb2, qb2_conj]``.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t248" href="#t248">248</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -354,10 +354,10 @@
     <p class="pln"><span class="n"><a id="t270" href="#t270">270</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t271" href="#t271">271</a></span><span class="t"><span class="key">def</span> <span class="nam">unitary_from_quantum_diagram</span><span class="op">(</span><span class="nam">diag</span><span class="op">:</span> <span class="nam">ZXDiagram</span><span class="op">)</span> <span class="op">-></span> <span class="nam">np</span><span class="op">.</span><span class="nam">ndarray</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t272" href="#t272">272</a></span><span class="t">    <span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t273" href="#t273">273</a></span><span class="t"><span class="str">    Evaluates a purely quantum :py:class:`ZXDiagram` as a matrix describing the</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t273" href="#t273">273</a></span><span class="t"><span class="str">    Evaluates a purely quantum :py:class:`~.ZXDiagram` as a matrix describing the</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t274" href="#t274">274</a></span><span class="t"><span class="str">    linear map from inputs to outputs. Qubits are indexed according to ILO-BE</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t275" href="#t275">275</a></span><span class="t"><span class="str">    convention based on relative position amongst inputs/outputs in</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t276" href="#t276">276</a></span><span class="t"><span class="str">    :py:meth`ZXDiagram.get_boundary`.</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t276" href="#t276">276</a></span><span class="t"><span class="str">    :py:meth`~.ZXDiagram.get_boundary`.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t277" href="#t277">277</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t278" href="#t278">278</a></span><span class="t"><span class="str">    Throws an exception if the diagram contains any non-quantum vertex or wire,</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t279" href="#t279">279</a></span><span class="t"><span class="str">    or if it contains any symbolic parameters.</span>&nbsp;</span><span class="r"></span></p>
@@ -368,10 +368,10 @@
     <p class="pln"><span class="n"><a id="t284" href="#t284">284</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t285" href="#t285">285</a></span><span class="t"><span class="key">def</span> <span class="nam">unitary_from_classical_diagram</span><span class="op">(</span><span class="nam">diag</span><span class="op">:</span> <span class="nam">ZXDiagram</span><span class="op">)</span> <span class="op">-></span> <span class="nam">np</span><span class="op">.</span><span class="nam">ndarray</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t286" href="#t286">286</a></span><span class="t">    <span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t287" href="#t287">287</a></span><span class="t"><span class="str">    Evaluates a purely classical :py:class:`ZXDiagram` as a matrix describing</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t287" href="#t287">287</a></span><span class="t"><span class="str">    Evaluates a purely classical :py:class:`~.ZXDiagram` as a matrix describing</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t288" href="#t288">288</a></span><span class="t"><span class="str">    the linear map from inputs to outputs. Bits are indexed according to the</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t289" href="#t289">289</a></span><span class="t"><span class="str">    ILO-BE convention based on relative position amongst inputs/outputs in</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t290" href="#t290">290</a></span><span class="t"><span class="str">    :py:meth:`ZXDiagram.get_boundary`. Each quantum generator is treated as a</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t290" href="#t290">290</a></span><span class="t"><span class="str">    :py:meth:`~.ZXDiagram.get_boundary`. Each quantum generator is treated as a</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t291" href="#t291">291</a></span><span class="t"><span class="str">    pair of conjugate generators.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t292" href="#t292">292</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t293" href="#t293">293</a></span><span class="t"><span class="str">    Throws an exception if the diagram contains any non-classical boundary, or</span>&nbsp;</span><span class="r"></span></p>
@@ -390,11 +390,11 @@
     <p class="pln"><span class="n"><a id="t306" href="#t306">306</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t307" href="#t307">307</a></span><span class="t"><span class="key">def</span> <span class="nam">density_matrix_from_cptp_diagram</span><span class="op">(</span><span class="nam">diag</span><span class="op">:</span> <span class="nam">ZXDiagram</span><span class="op">)</span> <span class="op">-></span> <span class="nam">np</span><span class="op">.</span><span class="nam">ndarray</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t308" href="#t308">308</a></span><span class="t">    <span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t309" href="#t309">309</a></span><span class="t"><span class="str">    Evaluates a :py:class:`ZXDiagram` with quantum boundaries but possibly</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t309" href="#t309">309</a></span><span class="t"><span class="str">    Evaluates a :py:class:`~.ZXDiagram` with quantum boundaries but possibly</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t310" href="#t310">310</a></span><span class="t"><span class="str">    mixed quantum and classical generators as a density matrix. Inputs are</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t311" href="#t311">311</a></span><span class="t"><span class="str">    treated identically to outputs, i.e. the result is the Choi-state of the</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t312" href="#t312">312</a></span><span class="t"><span class="str">    diagram. Qubits are indexed according to the ILO-BE convention based on the</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t313" href="#t313">313</a></span><span class="t"><span class="str">    ordering of boundary vertices in :py:meth:`ZXDiagram.get_boundary`.</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t313" href="#t313">313</a></span><span class="t"><span class="str">    ordering of boundary vertices in :py:meth:`~.ZXDiagram.get_boundary`.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t314" href="#t314">314</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t315" href="#t315">315</a></span><span class="t"><span class="str">    Throws an exception if the diagram contains any non-quantum boundary, or if</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t316" href="#t316">316</a></span><span class="t"><span class="str">    it contains any symbolic parameters.</span>&nbsp;</span><span class="r"></span></p>
@@ -420,7 +420,7 @@
     <p class="pln"><span class="n"><a id="t336" href="#t336">336</a></span><span class="t">    <span class="nam">diag</span><span class="op">:</span> <span class="nam">ZXDiagram</span><span class="op">,</span> <span class="nam">vals</span><span class="op">:</span> <span class="nam">dict</span><span class="op">[</span><span class="nam">ZXVert</span><span class="op">,</span> <span class="nam">int</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t337" href="#t337">337</a></span><span class="t"><span class="op">)</span> <span class="op">-></span> <span class="nam">ZXDiagram</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t338" href="#t338">338</a></span><span class="t">    <span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t339" href="#t339">339</a></span><span class="t"><span class="str">    Fixes (a subset of) the boundary vertices of a :py:class:`ZXDiagram` to</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t339" href="#t339">339</a></span><span class="t"><span class="str">    Fixes (a subset of) the boundary vertices of a :py:class:`~.ZXDiagram` to</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t340" href="#t340">340</a></span><span class="t"><span class="str">    computational basis states/post-selection.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t341" href="#t341">341</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t342" href="#t342">342</a></span><span class="t">    <span class="nam">new_diag</span> <span class="op">=</span> <span class="nam">ZXDiagram</span><span class="op">(</span><span class="nam">diag</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -447,7 +447,7 @@
     <p class="pln"><span class="n"><a id="t363" href="#t363">363</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t364" href="#t364">364</a></span><span class="t"><span class="key">def</span> <span class="nam">fix_inputs_to_binary_state</span><span class="op">(</span><span class="nam">diag</span><span class="op">:</span> <span class="nam">ZXDiagram</span><span class="op">,</span> <span class="nam">vals</span><span class="op">:</span> <span class="nam">list</span><span class="op">[</span><span class="nam">int</span><span class="op">]</span><span class="op">)</span> <span class="op">-></span> <span class="nam">ZXDiagram</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t365" href="#t365">365</a></span><span class="t">    <span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t366" href="#t366">366</a></span><span class="t"><span class="str">    Fixes all input vertices of a :py:class:`ZXDiagram` to computational basis states.</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t366" href="#t366">366</a></span><span class="t"><span class="str">    Fixes all input vertices of a :py:class:`~.ZXDiagram` to computational basis states.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t367" href="#t367">367</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t368" href="#t368">368</a></span><span class="t">    <span class="nam">inputs</span> <span class="op">=</span> <span class="nam">diag</span><span class="op">.</span><span class="nam">get_boundary</span><span class="op">(</span><span class="nam">type</span><span class="op">=</span><span class="nam">ZXType</span><span class="op">.</span><span class="nam">Input</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t369" href="#t369">369</a></span><span class="t">    <span class="key">if</span> <span class="nam">len</span><span class="op">(</span><span class="nam">inputs</span><span class="op">)</span> <span class="op">!=</span> <span class="nam">len</span><span class="op">(</span><span class="nam">vals</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -460,7 +460,7 @@
     <p class="pln"><span class="n"><a id="t376" href="#t376">376</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t377" href="#t377">377</a></span><span class="t"><span class="key">def</span> <span class="nam">fix_outputs_to_binary_state</span><span class="op">(</span><span class="nam">diag</span><span class="op">:</span> <span class="nam">ZXDiagram</span><span class="op">,</span> <span class="nam">vals</span><span class="op">:</span> <span class="nam">list</span><span class="op">[</span><span class="nam">int</span><span class="op">]</span><span class="op">)</span> <span class="op">-></span> <span class="nam">ZXDiagram</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t378" href="#t378">378</a></span><span class="t">    <span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t379" href="#t379">379</a></span><span class="t"><span class="str">    Fixes all output vertices of a :py:class:`ZXDiagram` to computational basis</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t379" href="#t379">379</a></span><span class="t"><span class="str">    Fixes all output vertices of a :py:class:`~.ZXDiagram` to computational basis</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t380" href="#t380">380</a></span><span class="t"><span class="str">    states/post-selection.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t381" href="#t381">381</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t382" href="#t382">382</a></span><span class="t">    <span class="nam">outputs</span> <span class="op">=</span> <span class="nam">diag</span><span class="op">.</span><span class="nam">get_boundary</span><span class="op">(</span><span class="nam">type</span><span class="op">=</span><span class="nam">ZXType</span><span class="op">.</span><span class="nam">Output</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -479,7 +479,7 @@
             <a class="nav" href="index.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
-            created at 2025-05-20 15:19 +0000
+            created at 2025-05-21 08:09 +0000
         </p>
     </div>
 </footer>
