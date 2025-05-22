@@ -6,7 +6,7 @@ exclude = [
     "stub_generation/stubgen.py",
 ]
 
-target-version = "py312"
+target-version = "py310"
 
 lint.select = [
     "A",

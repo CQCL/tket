@@ -484,7 +484,7 @@ def test_passes_roundtrip_serialisation() -> None:
     for k, p in TWO_WAY_PASSES.items():
         try:
             check_pass_serialisation(p)
-        except ValidationError as e:
+        except ValidationError as e:  # noqa: PERF203
             raise ValueError(f"Pass {k} failed serialisation test.") from e
 
 
@@ -492,7 +492,7 @@ def test_passes_onw_way_serialisation() -> None:
     for k, p in ONE_WAY_PASSES.items():
         try:
             check_pass_serialisation(p, check_roundtrip=False)
-        except ValidationError as e:
+        except ValidationError as e:  # noqa: PERF203
             raise ValueError(f"Pass {k} failed serialisation test.") from e
 
 
@@ -500,7 +500,7 @@ def test_predicate_serialisation() -> None:
     for k, p in PREDICATES.items():
         try:
             check_predicate_serialisation(p)
-        except ValidationError as e:
+        except ValidationError as e:  # noqa: PERF203
             raise ValueError(f"Predicate {k} failed serialisation test.") from e
 
 
