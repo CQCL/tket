@@ -7,6 +7,7 @@ Features:
 - Enable pickling of more pytket objects (`MeasurementBitMap`,
   `MeasurementSetup`, `Node`, `WiredClExpr`, and all types of
   `Predicate` except `UserDefinedPredicate`).
+- Canonicalize gate angles when serializing to JSON.
 
 
 Fixes:
