@@ -72,8 +72,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pytket-*.whl
           pip install --pre --index-url https://github_actions:${{ secrets.PRIVATE_PYPI_PASS }}@cqcpythonrepository.azurewebsites.net/simple/ pytket_benchmarking
+          pip install pytket-*.whl
           pip list
 
       - name: Checkout pytket-benchmarking-store
@@ -84,26 +84,82 @@ jobs:
 
       - name: Perform Compilation
         run: |
-          pytket_benchmarking compile QiskitIBMQ pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled
-          pytket_benchmarking compile PytketIBMQ pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled
+          (
+            pytket_benchmarking compile QiskitL3 HeavyHex3x3 pytket-benchmarking-store/benchmarking_circuits/benchmarking_mini_set compilations_hh
+            pytket_benchmarking compile PytketL2 HeavyHex3x3 pytket-benchmarking-store/benchmarking_circuits/benchmarking_mini_set compilations_hh
+            pytket_benchmarking compile PytketL3 HeavyHex3x3 pytket-benchmarking-store/benchmarking_circuits/benchmarking_mini_set compilations_hh
+          ) &
+          
+          (
+              pytket_benchmarking compile QiskitL3 FullyConnected pytket-benchmarking-store/benchmarking_circuits/benchmarking_mini_set compilations_fc
+              pytket_benchmarking compile PytketL2 FullyConnected pytket-benchmarking-store/benchmarking_circuits/benchmarking_mini_set compilations_fc
+              pytket_benchmarking compile PytketL3 FullyConnected pytket-benchmarking-store/benchmarking_circuits/benchmarking_mini_set compilations_fc
+          ) &
+          wait
+
+      - name: Generating Report
+        run: pytket_benchmarking pdf-report -s pytket-benchmarking-store/benchmarking_circuits/benchmarking_mini_set -c compilations_fc -c compilations_hh -x FullyConnected -x HeavyHex3x3 -o report.pdf
 
       - name: Save compiled circuits
         uses: actions/upload-artifact@v4
         with:
           name: automated_benchmarks_compiled
-          path: automated_benchmarks_compiled/
+          path: |
+            compilations_hh
+            compilations_fc
+            report.pdf
 
-      - name: Calculate percentage better
-        run: echo "RETURN_TEST=$(pytket_benchmarking percentage-better pytket-benchmarking-store/benchmarking_circuits/quantum_volume automated_benchmarks_compiled PytketIBMQ)" >> $GITHUB_ENV
+      - name: Upload Report
+        run: |
+          # https://stackoverflow.com/a/78933760
 
-      - name: Post to a Slack channel
-        id: slack
-        uses: slackapi/slack-github-action@v2.1.0
-        with:
-          method: chat.postMessage
-          token: ${{ secrets.PYTKET_BENCHMARKING_SLACK_BOT_TOKEN }}
-          payload: |
-            channel: 'G01CP0YFFA7'
-            text: '${{ env.RETURN_TEST }} Release tag: ${{ github.event.release.tag_name }}.'
-        env:
-          RETURN_TEST: ${{ env.RETURN_TEST }}
+          PYTKET_VERSION=$(python -c "import pytket; print(pytket.__version__)")
+          FILE_PATH="report.pdf"
+          CHANNEL_ID="G01CP0YFFA7"
+          TOKEN="${{ secrets.PYTKET_BENCHMARKING_SLACK_BOT_TOKEN }}"
+          FILENAME=$(basename "$FILE_PATH")
+
+          # Get the file size using macOS compatible stat command. use stat -c%s "$FILE_PATH" otherwise
+          FILE_SIZE=$(stat -f%z "$FILE_PATH")
+
+          # Stage 1: Get an upload URL
+          UPLOAD_URL_RESPONSE=$(curl -s -F files=@"$FILENAME" -F filename="$FILENAME" -F token=$TOKEN -F length=$FILE_SIZE https://slack.com/api/files.getUploadURLExternal)
+
+          UPLOAD_URL=$(echo "$UPLOAD_URL_RESPONSE" | jq -r '.upload_url')
+          FILE_ID=$(echo "$UPLOAD_URL_RESPONSE" | jq -r '.file_id')
+
+          if [ "$UPLOAD_URL" == "null" ]; then
+            echo "Error getting upload URL: $UPLOAD_URL_RESPONSE"
+            exit 1
+          fi
+
+          # Stage 2: Upload the file to the provided URL
+          UPLOAD_RESPONSE=$(curl -s -X POST \
+            -T "$FILE_PATH" \
+            -H "Content-Type: application/octet-stream" \
+            "$UPLOAD_URL")
+
+          if [ $? -ne 0 ]; then
+            echo "Error uploading file: $UPLOAD_RESPONSE"
+            exit 1
+          fi
+
+          # Stage 3: Complete the upload, and post the message and the file
+          COMPLETE_RESPONSE=$(curl -s -X POST \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Content-Type: application/json;charset=utf-8" \
+            -d '{
+                  "files": [
+                    {
+                      "id": "'"$FILE_ID"'"
+                    }
+                  ],
+                  "channel_id": "'"$CHANNEL_ID"'",
+                  "initial_comment": "Benchmarking results with pytket version '"$PYTKET_VERSION"'"
+                }' \
+            https://slack.com/api/files.completeUploadExternal)
+
+          if [ "$(echo "$COMPLETE_RESPONSE" | jq -r '.ok')" != "true" ]; then
+            echo "Error completing upload: $COMPLETE_RESPONSE"
+            exit 1
+          fi
