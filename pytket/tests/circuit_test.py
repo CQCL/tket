@@ -1668,3 +1668,8 @@ def test_pickle() -> None:
     s = pickle.dumps(n)
     n1 = pickle.loads(s)
     assert n == n1
+
+
+def test_serialized_params() -> None:
+    c = Circuit(1).Rz(7.5, 0)
+    assert c.to_dict()["commands"][0]["op"]["params"][0] == "3.5"
