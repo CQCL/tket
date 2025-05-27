@@ -40,5 +40,5 @@ class pytketRecipe(ConanFile):
         self.requires("tket/2.1.19@tket/stable")
         self.requires("tklog/0.3.3@tket/stable")
         self.requires("tkrng/0.3.3@tket/stable")
-        self.requires("tktokenswap/0.3.11@tket/stable")
-        self.requires("tkwsm/0.3.11@tket/stable")
+        self.requires("tktokenswap/0.3.12@tket/stable")
+        self.requires("tkwsm/0.3.12@tket/stable")
