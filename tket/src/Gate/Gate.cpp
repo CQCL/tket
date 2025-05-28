@@ -959,7 +959,7 @@ nlohmann::json Gate::serialize() const {
   if (!optypeinfo().at(optype).signature) {
     j["n_qb"] = n_qubits();
   }
-  std::vector<Expr> params = get_params();
+  std::vector<Expr> params = get_params_reduced();
   if (!params.empty()) {
     j["params"] = params;
   }
