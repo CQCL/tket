@@ -72,8 +72,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pytket-*.whl
           pip install --pre --index-url https://${{ secrets.BENCHMARKING_ARTIFACTORY_USER }}:${{ secrets.BENCHMARKING_ARTIFACTORY_TOKEN }}@quantinuumsw.jfrog.io/artifactory/api/pypi/pypi_local/simple/ pytket_benchmarking
+          pip install pytket-*.whl
           pip list
 
       - name: Checkout pytket-benchmarking-store
