@@ -526,7 +526,7 @@ SCENARIO("Track initial and final maps throughout compilation") {
     add_2qb_gates(circ, OpType::CY, {{0, 3}, {1, 4}, {1, 0}, {2, 1}});
     circ.add_op<unsigned>(OpType::SWAP, {3, 4});
     circ.add_op<unsigned>(OpType::Z, {4});
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     CompilationUnit cu(circ);
     SynthesiseTK()->apply(cu);
     for (auto pair : cu.get_initial_map_ref().left) {
@@ -541,7 +541,7 @@ SCENARIO("Track initial and final maps throughout compilation") {
     add_2qb_gates(circ, OpType::CY, {{0, 3}, {1, 4}, {1, 0}, {2, 1}});
     circ.add_op<unsigned>(OpType::SWAP, {3, 4});
     circ.add_op<unsigned>(OpType::Z, {4});
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     unit_map_t rename_map = {
         {Qubit(0), Qubit("qa")},
         {Qubit(1), Qubit("qb")},
@@ -1014,7 +1014,7 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     circ.add_op<unsigned>(OpType::Z, {3});
 
     REQUIRE(NoWireSwapsPredicate().verify(circ));
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     REQUIRE(!NoWireSwapsPredicate().verify(circ));
 
     CompilationUnit cu(circ);
@@ -1034,7 +1034,7 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     circ.add_op<unsigned>(OpType::Z, {4});
 
     REQUIRE(NoWireSwapsPredicate().verify(circ));
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     REQUIRE(!NoWireSwapsPredicate().verify(circ));
 
     CompilationUnit cu(circ);
@@ -1062,7 +1062,7 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     circ.add_op<unsigned>(OpType::CX, {2, 3});
 
     REQUIRE(NoWireSwapsPredicate().verify(circ));
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     REQUIRE(!NoWireSwapsPredicate().verify(circ));
 
     CompilationUnit cu(circ);
@@ -1093,7 +1093,7 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     circ.add_op<unsigned>(OpType::CX, {2, 3});
 
     REQUIRE(NoWireSwapsPredicate().verify(circ));
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     REQUIRE(!NoWireSwapsPredicate().verify(circ));
 
     CompilationUnit cu(circ);
@@ -1130,7 +1130,7 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     circ.add_op<unsigned>(OpType::CX, {2, 3});
 
     REQUIRE(NoWireSwapsPredicate().verify(circ));
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     REQUIRE(!NoWireSwapsPredicate().verify(circ));
 
     CompilationUnit cu(circ);
@@ -1171,7 +1171,7 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     circ.add_op<unsigned>(OpType::CX, {2, 3});
 
     REQUIRE(NoWireSwapsPredicate().verify(circ));
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     REQUIRE(!NoWireSwapsPredicate().verify(circ));
 
     CompilationUnit cu(circ);
