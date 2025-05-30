@@ -793,7 +793,7 @@ SCENARIO("Check that a simple SWAP removal can be performed", "[SWAP]") {
     unit_vector_t qbs = {qb0, qb1};
     Command test_command(get_op_ptr(OpType::SWAP), qbs);
     REQUIRE(coms[0] == test_command);
-    test2.replace_SWAPs();
+    REQUIRE(test2.replace_SWAPs());
     // test2.print_graph();
     VertexVec new_path_0 = test2.qubit_path_vertices(qb0);
     test2.assert_valid();
@@ -846,7 +846,7 @@ SCENARIO(
     }
 
     WHEN("SWAPs are removed") {
-      test2.replace_SWAPs();
+      REQUIRE(test2.replace_SWAPs());
       test2.assert_valid();
       REQUIRE(test2.get_commands().size() == 4);
     }
@@ -1693,7 +1693,7 @@ SCENARIO("Test conditional_circuit method") {
   GIVEN("A circuit with wireswaps") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::SWAP, {0, 1});
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     REQUIRE_THROWS_AS(
         circ.conditional_circuit({Bit(0), Bit(1)}, 3), CircuitInvalidity);
   }
@@ -2880,7 +2880,7 @@ SCENARIO("Vertex info maps") {
     c.add_op<unsigned>(OpType::SWAP, {0, 1});
     Vertex cy =
         c.add_conditional_gate<unsigned>(OpType::CY, {}, {1, 2}, {0}, 1);
-    c.replace_SWAPs();
+    REQUIRE(c.replace_SWAPs());
     THEN("Check vertex_unit_map") {
       std::map<Vertex, unit_set_t> vmap = c.vertex_unit_map();
       unit_set_t correct = {qbs[1], qbs[2]};
@@ -2919,7 +2919,7 @@ SCENARIO("Vertex info maps") {
     Vertex x = c.add_conditional_gate<unsigned>(OpType::X, {}, uvec{1}, {}, 0);
     c.add_op<unsigned>(OpType::SWAP, {0, 1});
     Vertex cy = c.add_conditional_gate<unsigned>(OpType::CY, {}, {1, 2}, {}, 0);
-    c.replace_SWAPs();
+    REQUIRE(c.replace_SWAPs());
     THEN("Check vertex_rev_depth_map") {
       std::map<Vertex, unsigned> dmap = c.vertex_rev_depth_map();
       REQUIRE(dmap.at(z) == 0);
@@ -3308,7 +3308,7 @@ SCENARIO("Test replacing wire swaps") {
                               {qreg[6], qreg[6]}};
   const Eigen::MatrixXcd u = tket_sim::get_unitary(circ);
   // Replace SWAPS
-  circ.replace_SWAPs();
+  REQUIRE(circ.replace_SWAPs());
   REQUIRE(circ.n_gates() == 0);
   REQUIRE(circ.implicit_qubit_permutation() == correct_perm);
   const Eigen::MatrixXcd v = tket_sim::get_unitary(circ);

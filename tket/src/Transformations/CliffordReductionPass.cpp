@@ -736,7 +736,7 @@ bool CliffordReductionPass::reduce_circuit(Circuit &circ, bool allow_swaps) {
   }
 
   if (allow_swaps) {
-    circ.replace_SWAPs();
+    context.success = circ.replace_SWAPs() || context.success;
   }
 
   return context.success;

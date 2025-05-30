@@ -1306,8 +1306,10 @@ class Circuit {
    * way can be obtained using the \ref implicit_qubit_permutation method.
    *
    * O(V)
+   *
+   * @return whether any swaps were replaced
    */
-  void replace_SWAPs();
+  bool replace_SWAPs();
 
   /**
    * this function replaces an implicit wire swap between the two given qubits

@@ -709,7 +709,7 @@ SCENARIO("QControlBox", "[boxes]") {
     c0.add_op<unsigned>(OpType::Rx, 0.7, {0});
     c0.add_op<unsigned>(OpType::SWAP, {0, 1});
     c0.add_op<unsigned>(OpType::SWAP, {1, 2});
-    c0.replace_SWAPs();
+    REQUIRE(c0.replace_SWAPs());
     REQUIRE(c0.has_implicit_wireswaps());
     Circuit c0_numerical(c0);
     symbol_map_t map = {{s, 0.125}};

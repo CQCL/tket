@@ -934,7 +934,7 @@ SCENARIO("Phase polynomial synthesis without architecture") {
   GIVEN("single SWAP circuit") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::SWAP, {0, 1});
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     PhasePolyBox ppbox(circ);
     std::shared_ptr<Circuit> circptr = ppbox.to_circuit();
     Circuit circ2 = *circptr;
@@ -945,7 +945,7 @@ SCENARIO("Phase polynomial synthesis without architecture") {
     circ.add_op<unsigned>(OpType::SWAP, {0, 1});
     circ.add_op<unsigned>(OpType::SWAP, {0, 2});
     circ.add_op<unsigned>(OpType::SWAP, {0, 3});
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     PhasePolyBox ppbox(circ);
     std::shared_ptr<Circuit> circptr = ppbox.to_circuit();
     Circuit circ2 = *circptr;
@@ -957,7 +957,7 @@ SCENARIO("Phase polynomial synthesis without architecture") {
     circ.add_op<unsigned>(OpType::SWAP, {1, 2});
     circ.add_op<unsigned>(OpType::SWAP, {2, 3});
     circ.add_op<unsigned>(OpType::SWAP, {3, 4});
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     PhasePolyBox ppbox(circ);
     std::shared_ptr<Circuit> circptr = ppbox.to_circuit();
     Circuit circ2 = *circptr;

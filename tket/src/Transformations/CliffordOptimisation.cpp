@@ -506,7 +506,7 @@ static bool multiq_clifford_match(Circuit &circ, bool allow_swaps) {
     }
   }
   if (allow_swaps) {
-    circ.replace_SWAPs();
+    success = circ.replace_SWAPs() || success;
   }
   circ.remove_vertices(
       bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
