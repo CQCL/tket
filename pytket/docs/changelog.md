@@ -9,6 +9,7 @@ Features:
   `Predicate` except `UserDefinedPredicate`).
 - Canonicalize gate angles when serializing to JSON.
 - Add boolean return value to `Circuit.replace_SWAPs()`.
+- Add `TK1_to_PhasedX` method and use in `AutoRebase` passes.
 
 Fixes:
 
