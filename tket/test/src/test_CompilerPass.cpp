@@ -2144,6 +2144,21 @@ SCENARIO("Custom rebase pass with implicit wire swaps.") {
     auto u2 = tket_sim::get_unitary(cu.get_circ_ref());
     REQUIRE(u1.isApprox(u2));
   }
+  GIVEN("Targeting CZ and PhasedX gates.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::TK1, {0.1, 0.2, 0.3}, {0});
+    c.add_op<unsigned>(OpType::TK1, {0.7, 0.6, 0.8}, {1});
+    CompilationUnit cu(c);
+    CHECK(gen_rebase_pass_via_tk2(
+              {OpType::PhasedX, OpType::CZ}, CircPool::TK2_using_TK2_or_swap,
+              CircPool::tk1_to_PhasedX)
+              ->apply(cu));
+    auto u1 = tket_sim::get_unitary(c);
+    auto u2 = tket_sim::get_unitary(cu.get_circ_ref());
+    REQUIRE(u1.isApprox(u2));
+  }
 }
 
 SCENARIO(

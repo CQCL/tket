@@ -160,6 +160,9 @@ find_tk1_replacement(const OpTypeSet& gateset) {
   if (gateset.contains(OpType::GPI) && gateset.contains(OpType::GPI2)) {
     return CircPool::TK1_using_GPI;
   }
+  if (gateset.contains(OpType::PhasedX)) {
+    return CircPool::tk1_to_PhasedX;
+  }
   throw Unsupported("No known decomposition from TK1 to available gateset.");
 }
 
