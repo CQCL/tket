@@ -321,6 +321,9 @@ def TK2_using_normalised_TK2(arg0: Union[sympy.core.expr.Expr, float], arg1: Uni
 def TK1_to_PhasedXRz(arg0: Union[sympy.core.expr.Expr, float], arg1: Union[sympy.core.expr.Expr, float], arg2: Union[sympy.core.expr.Expr, float], /) -> pytket._tket.circuit.Circuit:
     """A tk1 equivalent circuit given tk1 parameters in terms of PhasedX, Rz"""
 
+def TK1_to_PhasedX(arg0: Union[sympy.core.expr.Expr, float], arg1: Union[sympy.core.expr.Expr, float], arg2: Union[sympy.core.expr.Expr, float], /) -> pytket._tket.circuit.Circuit:
+    """A tk1 equivalent circuit given tk1 parameters in terms of PhasedX"""
+
 def TK1_to_RzRx(arg0: Union[sympy.core.expr.Expr, float], arg1: Union[sympy.core.expr.Expr, float], arg2: Union[sympy.core.expr.Expr, float], /) -> pytket._tket.circuit.Circuit:
     """A tk1 equivalent circuit given tk1 parameters in terms of Rz, Rx"""
 

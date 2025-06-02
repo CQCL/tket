@@ -78,6 +78,7 @@ from pytket._tket.circuit_library import (
     Rz_using_GPI,
     SWAP_using_CX_0,
     SWAP_using_CX_1,
+    TK1_to_PhasedX,
     TK1_to_PhasedXRz,
     TK1_to_RxRy,
     TK1_to_RzH,
