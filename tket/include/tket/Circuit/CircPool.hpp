@@ -486,9 +486,12 @@ Circuit NPhasedX_using_PhasedX(
 Circuit TK2_using_normalised_TK2(
     const Expr &alpha, const Expr &beta, const Expr &gamma);
 
-// converts a TK1 gate to a PhasedXRz gate
+/** converts a TK1 gate to a circuit using PhasedX and Rz gates */
 Circuit tk1_to_PhasedXRz(
     const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+/** converts a TK1 gate to a circuit using PhasedX gates */
+Circuit tk1_to_PhasedX(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 /** Equivalent to TK1, using Rz and Rx gates */
 Circuit tk1_to_rzrx(const Expr &alpha, const Expr &beta, const Expr &gamma);

@@ -1536,6 +1536,13 @@ Circuit tk1_to_PhasedXRz(
   return c;
 }
 
+Circuit tk1_to_PhasedX(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c(1);
+  c.add_op<unsigned>(OpType::PhasedX, {-1, 0.5 * (alpha - gamma)}, {0});
+  c.add_op<unsigned>(OpType::PhasedX, {1 + beta, alpha}, {0});
+  return c;
+}
+
 Circuit Rx_using_GPI(const Expr &theta) {
   Circuit c(1);
   c.add_op<unsigned>(OpType::GPI2, 0.5, {0});
