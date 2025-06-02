@@ -74,7 +74,7 @@ var searchData=
   ['replace_5fall_5fimplicit_5fwire_5fswaps_71',['replace_all_implicit_wire_swaps',['../classtket_1_1Circuit.html#ae22d24c3371c3c44f9d92a6419c82ccd',1,'tket::Circuit']]],
   ['replace_5fcx_5fwith_5ftk2_72',['replace_CX_with_TK2',['../namespacetket.html#a2f9b9cde1c0e762f1c626f0cfde54efa',1,'tket']]],
   ['replace_5fimplicit_5fwire_5fswap_73',['replace_implicit_wire_swap',['../classtket_1_1Circuit.html#a827a382deeab34243f53f9345d6827b9',1,'tket::Circuit']]],
-  ['replace_5fswaps_74',['replace_SWAPs',['../classtket_1_1Circuit.html#ad2ec28ea6653bfc9749572c04373ee02',1,'tket::Circuit']]],
+  ['replace_5fswaps_74',['replace_SWAPs',['../classtket_1_1Circuit.html#a3e09cf88e643420342e8ef9d083b36e7',1,'tket::Circuit']]],
   ['repr_75',['repr',['../classtket_1_1UnitID.html#a98378460706cc69edd8aa45500db6a14',1,'tket::UnitID']]],
   ['reset_76',['Reset',['../classtket_1_1Transforms_1_1GreedyPauliSimp_1_1Reset.html#a01fdca3093a270a69d5d4a46119946c9',1,'tket::Transforms::GreedyPauliSimp::Reset']]],
   ['resourcebounds_77',['resourcebounds',['../structtket_1_1ResourceBounds.html#a0ca808e1ca5cb575e3d8ac17053aac9a',1,'tket::ResourceBounds::ResourceBounds(T minval, T maxval)'],['../structtket_1_1ResourceBounds.html#aa89bebe5de037a4268be39de2150cd43',1,'tket::ResourceBounds::ResourceBounds(T val)'],['../structtket_1_1ResourceBounds.html#ac9fbee7a88cf2d0a08c4b906da7e6e7a',1,'tket::ResourceBounds::ResourceBounds()']]],

@@ -110,7 +110,7 @@ var searchData=
   ['replace_5fall_5fimplicit_5fwire_5fswaps_107',['replace_all_implicit_wire_swaps',['../classtket_1_1Circuit.html#ae22d24c3371c3c44f9d92a6419c82ccd',1,'tket::Circuit']]],
   ['replace_5fcx_5fwith_5ftk2_108',['replace_CX_with_TK2',['../namespacetket.html#a2f9b9cde1c0e762f1c626f0cfde54efa',1,'tket']]],
   ['replace_5fimplicit_5fwire_5fswap_109',['replace_implicit_wire_swap',['../classtket_1_1Circuit.html#a827a382deeab34243f53f9345d6827b9',1,'tket::Circuit']]],
-  ['replace_5fswaps_110',['replace_SWAPs',['../classtket_1_1Circuit.html#ad2ec28ea6653bfc9749572c04373ee02',1,'tket::Circuit']]],
+  ['replace_5fswaps_110',['replace_SWAPs',['../classtket_1_1Circuit.html#a3e09cf88e643420342e8ef9d083b36e7',1,'tket::Circuit']]],
   ['replacement_2ecpp_111',['Replacement.cpp',['../Replacement_8cpp.html',1,'']]],
   ['replacement_2ehpp_112',['Replacement.hpp',['../Replacement_8hpp.html',1,'']]],
   ['repr_113',['repr',['../classtket_1_1UnitID.html#a98378460706cc69edd8aa45500db6a14',1,'tket::UnitID']]],
