@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2.5.0 (June 2025)
 
 Features:
 
