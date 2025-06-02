@@ -8,11 +8,12 @@ Features:
   `MeasurementSetup`, `Node`, `WiredClExpr`, and all types of
   `Predicate` except `UserDefinedPredicate`).
 - Canonicalize gate angles when serializing to JSON.
-
+- Add boolean return value to `Circuit.replace_SWAPs()`.
 
 Fixes:
 
 - Add additional type check step to `get_default_to_linear_boundary_unit_map`.
+- Ensure transforms and passes return `true` when they replace swaps.
 
 ## 2.4.1 (May 2025)
 

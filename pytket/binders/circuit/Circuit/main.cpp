@@ -825,7 +825,8 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
           "(i.e., whether there are any implicit wire swaps).")
       .def(
           "replace_SWAPs", &Circuit::replace_SWAPs,
-          "Replace all SWAP gates with implicit wire swaps.")
+          "Replace all SWAP gates with implicit wire swaps."
+          "\n\n:return: whether any SWAP gates were replaced")
       .def(
           "replace_implicit_wire_swaps",
           &Circuit::replace_all_implicit_wire_swaps,

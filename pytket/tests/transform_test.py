@@ -689,6 +689,13 @@ def test_implicit_swaps_4() -> None:
     assert np.allclose(u0, u1)
 
 
+def test_implicit_swaps_5() -> None:
+    # https://github.com/CQCL/tket/issues/1923
+    c = Circuit(2).SWAP(0, 1)
+    assert Transform.OptimiseCliffords(True).apply(c)
+    assert len(c.get_commands()) == 0
+
+
 def test_commute_through_multis() -> None:
     # TKET-1253
     c = Circuit(2)
