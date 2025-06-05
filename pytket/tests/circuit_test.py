@@ -1361,6 +1361,7 @@ def test_phase_order() -> None:
 
 
 def test_empty_multiplexed_rz() -> None:
+    # https://github.com/CQCL/tket/issues/1928
     ubox = Unitary1qBox(np.eye(2, dtype=complex))
 
     op0 = Op.create(OpType.noop)
