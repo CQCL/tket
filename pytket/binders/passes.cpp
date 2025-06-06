@@ -564,6 +564,10 @@ NB_MODULE(passes, m) {
       "(Any Measure and Reset operations are left untouched; "
       "Conditional gates are also allowed.)");
   m.def(
+      "RxFromSX", &RxFromSX,
+      "Replaces all SX in the circuit with Rx(1/2) and all SXdg with "
+      "Rx(-1/2).");
+  m.def(
       "RemoveRedundancies", &RemoveRedundancies,
       "Removes gate-inverse pairs, merges rotations, removes identity "
       "rotations, and removes redundant gates before measurement. Does not "
