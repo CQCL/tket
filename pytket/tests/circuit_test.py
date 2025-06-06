@@ -1367,7 +1367,7 @@ def test_empty_multiplexed_rz() -> None:
     op0 = Op.create(OpType.noop)
     op1 = Op.create(OpType.Z)
 
-    op_map = {(False,): [ubox, op0], (True,): [ubox, op1]}
+    op_map = {(0,): [ubox, op0], (1,): [ubox, op1]}
 
     sbox = MultiplexedTensoredU2Box(op_map)
     assert sbox.get_circuit()
