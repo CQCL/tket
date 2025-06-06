@@ -922,6 +922,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(FullPeepholeOptimise, FullPeepholeOptimise())
   COMPPASSJSONTEST(RebaseTket, RebaseTket())
   COMPPASSJSONTEST(RebaseUFR, RebaseUFR())
+  COMPPASSJSONTEST(RxFromSX, RxFromSX())
   COMPPASSJSONTEST(RemoveRedundancies, RemoveRedundancies())
   COMPPASSJSONTEST(SynthesiseTK, SynthesiseTK())
   COMPPASSJSONTEST(SynthesiseTket, SynthesiseTket())

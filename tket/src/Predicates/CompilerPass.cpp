@@ -438,6 +438,8 @@ PassPtr deserialise(
       pp = RebaseTket();
     } else if (passname == "RebaseUFR") {
       pp = RebaseUFR();
+    } else if (passname == "RxFromSX") {
+      pp = RxFromSX();
     } else if (passname == "RemoveRedundancies") {
       pp = RemoveRedundancies();
     } else if (passname == "SynthesiseTK") {
