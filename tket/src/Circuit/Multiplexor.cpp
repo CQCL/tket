@@ -1008,7 +1008,7 @@ void add_multi_rz(
   TKET_ASSERT(!all_decomps.empty());
   unsigned reference_size = 0;
   for (unsigned i = 0; i < all_decomps.size(); i++) {
-    if (!all_decomps[i].empty()) continue;
+    if (all_decomps[i].empty()) continue;
     if (!reference_size) reference_size = all_decomps[i].size();
     TKET_ASSERT(reference_size == all_decomps[i].size());
   }
