@@ -1,10 +1,14 @@
 # Changelog
 
-## Unreleased
+## 2.6.0 (June 2025)
 
 Features:
 
 - Add new pass `RxFromSX` to convert `SX` and `SXdg` gates to `Rx`.
+
+Fixes:
+
+- Fix assertion error in `MultiplexedTensoredU2Box.get_circuit()`.
 
 ## 2.5.0 (June 2025)
 
