@@ -66,6 +66,11 @@ const PassPtr &SquashRzPhasedX();
 const PassPtr &RebaseTket();
 const PassPtr &RebaseUFR();
 
+/**
+ * @brief Replace all SX in the circuit with Rx(1/2) and all SXdg with Rx(-1/2).
+ */
+const PassPtr &RxFromSX();
+
 const PassPtr &DecomposeBridges();
 const PassPtr &FlattenRegisters();
 

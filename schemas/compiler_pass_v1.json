@@ -167,7 +167,8 @@
             "RemoveImplicitQubitPermutation",
             "NormaliseTK2",
             "RoundAngles",
-            "GreedyPauliSimp"
+            "GreedyPauliSimp",
+            "RxFromSX"
           ],
           "description": "The name of the compiler pass. Matches the name of the pytket method used to generate it. List all the passes as enum."
         },
@@ -964,7 +965,8 @@
                   "SimplifyMeasured",
                   "RemoveBarriers",
                   "RemovePhaseOps",
-                  "DecomposeBridges"
+                  "DecomposeBridges",
+                  "RxFromSX"
                 ]
               }
             }

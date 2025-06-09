@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+Features:
+
+- Add new pass `RxFromSX` to convert `SX` and `SXdg` gates to `Rx`.
+
 ## 2.5.0 (June 2025)
 
 Features:
