@@ -2373,5 +2373,25 @@ SCENARIO("Efficient TK2 synthesis") {
   }
 }
 
+SCENARIO("RxFromSX") {
+  GIVEN("A circuit containing SX and SXdg gates") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::SX, {0});
+    c.add_op<unsigned>(OpType::SX, {0});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::SXdg, {1});
+    CompilationUnit cu(c);
+    RxFromSX()->apply(cu);
+    Circuit c1 = cu.get_circ_ref();
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::Rx, 0.5, {0});
+    c0.add_op<unsigned>(OpType::Rx, 0.5, {0});
+    c0.add_op<unsigned>(OpType::CX, {0, 1});
+    c0.add_op<unsigned>(OpType::Rx, -0.5, {1});
+    c0.add_phase(0.25);
+    REQUIRE(c1 == c0);
+  }
+}
+
 }  // namespace test_CompilerPass
 }  // namespace tket

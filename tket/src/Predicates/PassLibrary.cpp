@@ -86,6 +86,54 @@ const PassPtr &RebaseUFR() {
   return pp;
 }
 
+const PassPtr &RxFromSX() {
+  static const PassPtr pp([]() {
+    Transform t{[](Circuit &circ) {
+      VertexVec verts_sx;
+      VertexVec verts_sxdg;
+      BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+        OpType optype = circ.get_Op_ptr_from_Vertex(v)->get_type();
+        if (optype == OpType::SX) {
+          verts_sx.push_back(v);
+        } else if (optype == OpType::SXdg) {
+          verts_sxdg.push_back(v);
+        }
+      }
+      if (verts_sx.empty() && verts_sxdg.empty()) {
+        return false;
+      }
+      Circuit c_sx(1);
+      c_sx.add_op<unsigned>(OpType::Rx, 0.5, {0});
+      Circuit c_sxdg(1);
+      c_sxdg.add_op<unsigned>(OpType::Rx, -0.5, {0});
+      VertexList bin;
+      for (const Vertex &v : verts_sx) {
+        circ.substitute(c_sx, v, Circuit::VertexDeletion::No);
+        circ.add_phase(0.25);
+        bin.push_back(v);
+      }
+      for (const Vertex &v : verts_sxdg) {
+        circ.substitute(c_sxdg, v, Circuit::VertexDeletion::No);
+        circ.add_phase(-0.25);
+        bin.push_back(v);
+      }
+      circ.remove_vertices(
+          bin, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::Yes);
+      return true;
+    }};
+    PredicatePtrMap s_ps;
+    PredicateClassGuarantees g_postcons{
+        {typeid(GateSetPredicate), Guarantee::Clear}};
+    PostConditions postcon{s_ps, g_postcons, Guarantee::Preserve};
+    PredicatePtrMap precons;
+    // record pass config
+    nlohmann::json j;
+    j["name"] = "RxFromSX";
+    return std::make_shared<StandardPass>(precons, t, postcon, j);
+  }());
+  return pp;
+}
+
 const PassPtr &RemoveRedundancies() {
   static const PassPtr pp([]() {
     Transform t = Transforms::remove_redundancies();
