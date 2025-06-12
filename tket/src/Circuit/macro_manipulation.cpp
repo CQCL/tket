@@ -424,8 +424,9 @@ void Circuit::cut_insert(
   substitute(incirc, sub, VertexDeletion::No);
 }
 
-void Circuit::replace_SWAPs() {
+bool Circuit::replace_SWAPs() {
   VertexList bin;
+  bool changed = false;
   BGL_FORALL_VERTICES(v, dag, DAG) {
     if (get_Op_ptr_from_Vertex(v)->get_type() == OpType::SWAP) {
       Vertex swap = v;
@@ -436,9 +437,11 @@ void Circuit::replace_SWAPs() {
       dag[out2].ports.first = 0;
       remove_vertex(swap, GraphRewiring::Yes, VertexDeletion::No);
       bin.push_back(swap);
+      changed = true;
     }
   }
   remove_vertices(bin, GraphRewiring::No, VertexDeletion::Yes);
+  return changed;
 }
 
 void Circuit::replace_implicit_wire_swap(

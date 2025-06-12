@@ -319,6 +319,9 @@ NB_MODULE(circuit_library, library_m) {
       "TK1_to_PhasedXRz", &CircPool::tk1_to_PhasedXRz,
       "A tk1 equivalent circuit given tk1 parameters in terms of PhasedX, Rz");
   library_m.def(
+      "TK1_to_PhasedX", &CircPool::tk1_to_PhasedX,
+      "A tk1 equivalent circuit given tk1 parameters in terms of PhasedX");
+  library_m.def(
       "TK1_to_RzRx", &CircPool::tk1_to_rzrx,
       "A tk1 equivalent circuit given tk1 parameters in terms of Rz, Rx");
   library_m.def(

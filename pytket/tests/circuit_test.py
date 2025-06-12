@@ -1360,6 +1360,17 @@ def test_phase_order() -> None:
         assert c == c1
 
 
+def test_empty_multiplexed_rz() -> None:
+    # https://github.com/CQCL/tket/issues/1928
+    ubox = Unitary1qBox(np.eye(2, dtype=complex))
+
+    op0 = Op.create(OpType.noop)
+    op1 = Op.create(OpType.Z)
+    op_map: BitstringToTensoredOpMap = {(_0,): [ubox, op0], (_1,): [ubox, op1]}
+    sbox = MultiplexedTensoredU2Box(op_map)
+    assert sbox.get_circuit()
+
+
 def test_dummy_box() -> None:
     resource_data = ResourceData(
         op_type_count={OpType.T: ResourceBounds(10, 20)},

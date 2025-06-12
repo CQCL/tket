@@ -526,7 +526,7 @@ SCENARIO("Track initial and final maps throughout compilation") {
     add_2qb_gates(circ, OpType::CY, {{0, 3}, {1, 4}, {1, 0}, {2, 1}});
     circ.add_op<unsigned>(OpType::SWAP, {3, 4});
     circ.add_op<unsigned>(OpType::Z, {4});
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     CompilationUnit cu(circ);
     SynthesiseTK()->apply(cu);
     for (auto pair : cu.get_initial_map_ref().left) {
@@ -541,7 +541,7 @@ SCENARIO("Track initial and final maps throughout compilation") {
     add_2qb_gates(circ, OpType::CY, {{0, 3}, {1, 4}, {1, 0}, {2, 1}});
     circ.add_op<unsigned>(OpType::SWAP, {3, 4});
     circ.add_op<unsigned>(OpType::Z, {4});
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     unit_map_t rename_map = {
         {Qubit(0), Qubit("qa")},
         {Qubit(1), Qubit("qb")},
@@ -1014,7 +1014,7 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     circ.add_op<unsigned>(OpType::Z, {3});
 
     REQUIRE(NoWireSwapsPredicate().verify(circ));
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     REQUIRE(!NoWireSwapsPredicate().verify(circ));
 
     CompilationUnit cu(circ);
@@ -1034,7 +1034,7 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     circ.add_op<unsigned>(OpType::Z, {4});
 
     REQUIRE(NoWireSwapsPredicate().verify(circ));
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     REQUIRE(!NoWireSwapsPredicate().verify(circ));
 
     CompilationUnit cu(circ);
@@ -1062,7 +1062,7 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     circ.add_op<unsigned>(OpType::CX, {2, 3});
 
     REQUIRE(NoWireSwapsPredicate().verify(circ));
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     REQUIRE(!NoWireSwapsPredicate().verify(circ));
 
     CompilationUnit cu(circ);
@@ -1093,7 +1093,7 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     circ.add_op<unsigned>(OpType::CX, {2, 3});
 
     REQUIRE(NoWireSwapsPredicate().verify(circ));
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     REQUIRE(!NoWireSwapsPredicate().verify(circ));
 
     CompilationUnit cu(circ);
@@ -1130,7 +1130,7 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     circ.add_op<unsigned>(OpType::CX, {2, 3});
 
     REQUIRE(NoWireSwapsPredicate().verify(circ));
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     REQUIRE(!NoWireSwapsPredicate().verify(circ));
 
     CompilationUnit cu(circ);
@@ -1171,7 +1171,7 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     circ.add_op<unsigned>(OpType::CX, {2, 3});
 
     REQUIRE(NoWireSwapsPredicate().verify(circ));
-    circ.replace_SWAPs();
+    REQUIRE(circ.replace_SWAPs());
     REQUIRE(!NoWireSwapsPredicate().verify(circ));
 
     CompilationUnit cu(circ);
@@ -2144,6 +2144,21 @@ SCENARIO("Custom rebase pass with implicit wire swaps.") {
     auto u2 = tket_sim::get_unitary(cu.get_circ_ref());
     REQUIRE(u1.isApprox(u2));
   }
+  GIVEN("Targeting CZ and PhasedX gates.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::TK1, {0.1, 0.2, 0.3}, {0});
+    c.add_op<unsigned>(OpType::TK1, {0.7, 0.6, 0.8}, {1});
+    CompilationUnit cu(c);
+    CHECK(gen_rebase_pass_via_tk2(
+              {OpType::PhasedX, OpType::CZ}, CircPool::TK2_using_TK2_or_swap,
+              CircPool::tk1_to_PhasedX)
+              ->apply(cu));
+    auto u1 = tket_sim::get_unitary(c);
+    auto u2 = tket_sim::get_unitary(cu.get_circ_ref());
+    REQUIRE(u1.isApprox(u2));
+  }
 }
 
 SCENARIO(
@@ -2355,6 +2370,26 @@ SCENARIO("Efficient TK2 synthesis") {
     FullPeepholeOptimise(true, OpType::TK2)->apply(cu);
     Circuit c1 = cu.get_circ_ref();
     REQUIRE(c1 == c);
+  }
+}
+
+SCENARIO("RxFromSX") {
+  GIVEN("A circuit containing SX and SXdg gates") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::SX, {0});
+    c.add_op<unsigned>(OpType::SX, {0});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::SXdg, {1});
+    CompilationUnit cu(c);
+    RxFromSX()->apply(cu);
+    Circuit c1 = cu.get_circ_ref();
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::Rx, 0.5, {0});
+    c0.add_op<unsigned>(OpType::Rx, 0.5, {0});
+    c0.add_op<unsigned>(OpType::CX, {0, 1});
+    c0.add_op<unsigned>(OpType::Rx, -0.5, {1});
+    c0.add_phase(0.25);
+    REQUIRE(c1 == c0);
   }
 }
 

@@ -115,6 +115,7 @@ Parameters of the gate to be decomposed are passed as method arguments.
    .. autofunction:: pytket.circuit_library.NPhasedX_using_PhasedX
    .. autofunction:: pytket.circuit_library.TK2_using_normalised_TK2
    .. autofunction:: pytket.circuit_library.TK1_to_PhasedXRz
+   .. autofunction:: pytket.circuit_library.TK1_to_PhasedX
    .. autofunction:: pytket.circuit_library.TK1_to_RzRx
    .. autofunction:: pytket.circuit_library.TK1_to_RxRy
    .. autofunction:: pytket.circuit_library.TK1_to_RzH

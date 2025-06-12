@@ -77,6 +77,7 @@ from pytket.passes import (
     RepeatWithMetricPass,
     RoundAngles,
     RoutingPass,
+    RxFromSX,
     SequencePass,
     SimplifyInitial,
     SimplifyMeasured,
@@ -878,6 +879,12 @@ def test_iswapmax_autorebase() -> None:
     assert c.n_gates_of_type(OpType.ISWAPMax) <= 2
 
 
+def test_CZ_PhasedX_autorebase() -> None:
+    c = Circuit(2).H(0).CX(0, 1)
+    assert AutoRebase({OpType.CZ, OpType.PhasedX}).apply(c)
+    assert all(cmd.op.type in (OpType.CZ, OpType.PhasedX) for cmd in c)
+
+
 def test_flatten_relabel_pass() -> None:
     c = Circuit(3)
     c.H(1).H(2)
@@ -1241,3 +1248,13 @@ def test_pickling() -> None:
         s = pickle.dumps(pred)
         pred1 = pickle.loads(s)
         assert pred.to_dict() == pred1.to_dict()
+
+
+def test_rx_from_sx() -> None:
+    c = Circuit(2).H(0).CX(0, 1)
+    assert not RxFromSX().apply(c)
+    c.SX(0).H(0).SX(0).SXdg(1).H(1)
+    assert RxFromSX().apply(c)
+    assert c == Circuit(2).H(0).CX(0, 1).Rx(0.5, 0).H(0).Rx(0.5, 0).Rx(-0.5, 1).H(
+        1
+    ).add_phase(0.25)

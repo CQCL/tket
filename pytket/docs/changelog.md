@@ -1,6 +1,16 @@
 # Changelog
 
-## Unreleased
+## 2.6.0 (June 2025)
+
+Features:
+
+- Add new pass `RxFromSX` to convert `SX` and `SXdg` gates to `Rx`.
+
+Fixes:
+
+- Fix assertion error in `MultiplexedTensoredU2Box.get_circuit()`.
+
+## 2.5.0 (June 2025)
 
 Features:
 
@@ -8,11 +18,13 @@ Features:
   `MeasurementSetup`, `Node`, `WiredClExpr`, and all types of
   `Predicate` except `UserDefinedPredicate`).
 - Canonicalize gate angles when serializing to JSON.
-
+- Add boolean return value to `Circuit.replace_SWAPs()`.
+- Add `TK1_to_PhasedX` method and use in `AutoRebase` passes.
 
 Fixes:
 
 - Add additional type check step to `get_default_to_linear_boundary_unit_map`.
+- Ensure transforms and passes return `true` when they replace swaps.
 
 ## 2.4.1 (May 2025)
 

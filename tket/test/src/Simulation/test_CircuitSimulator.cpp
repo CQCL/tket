@@ -571,7 +571,7 @@ SCENARIO("Handling internal qubit permutations") {
     Circuit circ2(3);
     circ2.add_op<unsigned>(OpType::CX, {1, 0});
     circ2.add_op<unsigned>(OpType::SWAP, {0, 1});
-    circ2.replace_SWAPs();
+    REQUIRE(circ2.replace_SWAPs());
     Eigen::MatrixXcd m1 = tket_sim::get_unitary(circ);
     Eigen::MatrixXcd m2 = tket_sim::get_unitary(circ2);
     REQUIRE(m1.isApprox(m2, ERR_EPS));
