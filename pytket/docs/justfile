@@ -1,0 +1,17 @@
+install:
+    poetry install
+    poetry run pip install ../.
+
+build:
+    poetry run bash ./build-docs.sh
+
+serve: build
+    npm exec serve build
+
+clean:
+    rm -rf jupyter_execute
+    rm -rf .jupyter_cache
+    rm -rf build
+    rm -rf _static
+    rm -rf quantinuum-sphinx
+    rm -f conf.py
