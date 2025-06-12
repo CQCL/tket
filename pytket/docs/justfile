@@ -1,6 +1,10 @@
-install:
+install-dev:
     poetry install
     poetry run pip install ../.
+
+install:
+    poetry install
+    poetry run pip install -U pytket
 
 build:
     poetry run bash ./build-docs.sh
