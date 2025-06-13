@@ -16,28 +16,34 @@ git clone git@github.com:CQCL/tket.git --recurse-submodules
 cd pytket/docs
 ```
 
-# Install python deps
+# Justfile
+
+The steps outlined below can be performed with the just command runner.
 
 ```
+
+# Install python deps
+
+```shell
 poetry install
 ```
 
 # Install pytket
 
-The pytket package is not installed as a poetry dependency so needs to be installed seperately
+The pytket package is not installed as a poetry dependency so needs to be installed separately
 
-```
+```shell
 poetry run pip install -U pytket
 ```
 You can install a pypi version as above or an editable wheel.
 
 # Build html
 
-```
+```shell
 poetry run bash ./build-docs.sh
 ```
 # Serve built html locally
 
-```
+```shell
 npx serve build
 ```
