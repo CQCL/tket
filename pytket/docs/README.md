@@ -52,7 +52,8 @@ just clean
 
 # Option 2 - Without Justfile
 
-## Install python deps
+
+## Install Python dependencies
 
 ```shell
 poetry install
