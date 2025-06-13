@@ -771,6 +771,16 @@ enum class OpType {
    * Function defined over bits and sequences of bits treated as integers
    */
   ClExpr,
+
+  /**
+   * RNG input node of the circuit
+   */
+  RNGInput,
+
+  /**
+   * RNG output node of the circuit
+   */
+  RNGOutput,
 };
 
 JSON_DECL(OpType)

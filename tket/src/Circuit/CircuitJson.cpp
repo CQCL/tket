@@ -27,6 +27,9 @@ void to_json(nlohmann::json& j, const Circuit& circ) {
   if (circ._number_of_wasm_wires > 0) {
     j["number_of_ws"] = circ._number_of_wasm_wires;
   }
+  if (circ._number_of_rng_wires > 0) {
+    j["number_of_rs"] = circ._number_of_rng_wires;
+  }
 
   const auto impl = circ.implicit_qubit_permutation();
   // empty maps are mapped to null instead of empty array
@@ -60,6 +63,9 @@ void from_json(const nlohmann::json& j, Circuit& circ) {
   }
   if (j.contains("number_of_ws")) {
     circ.add_wasm_register(j.at("number_of_ws").get<unsigned>());
+  }
+  if (j.contains("number_of_rs")) {
+    circ.add_rng_register(j.at("number_of_rs").get<unsigned>());
   }
 
   for (const auto& j_com : j.at("commands")) {

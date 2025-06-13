@@ -50,6 +50,7 @@ Circuit::Circuit(const Circuit &circ) : Circuit() {
   phase = circ.get_phase();
   name = circ.name;
   add_wasm_register(circ._number_of_wasm_wires);
+  add_rng_register(circ._number_of_rng_wires);
 }
 
 // copy assignment. Moves boundary pointers.
@@ -61,6 +62,7 @@ Circuit &Circuit::operator=(const Circuit &other)  // (1)
   phase = other.get_phase();
   name = other.name;
   add_wasm_register(other._number_of_wasm_wires);
+  add_rng_register(other._number_of_rng_wires);
 
   return *this;
 }
@@ -73,8 +75,10 @@ VertexVec Circuit::all_inputs() const {
   VertexVec ins = q_inputs();
   VertexVec c_ins = c_inputs();
   VertexVec w_ins = w_inputs();
+  VertexVec r_ins = r_inputs();
   ins.insert(ins.end(), c_ins.begin(), c_ins.end());
   ins.insert(ins.end(), w_ins.begin(), w_ins.end());
+  ins.insert(ins.end(), r_ins.begin(), r_ins.end());
   return ins;
 }
 
@@ -100,6 +104,15 @@ VertexVec Circuit::w_inputs() const {
   VertexVec ins;
   for (auto [it, end] =
            boundary.get<TagType>().equal_range(UnitType::WasmState);
+       it != end; it++) {
+    ins.push_back(it->in_);
+  }
+  return ins;
+}
+
+VertexVec Circuit::r_inputs() const {
+  VertexVec ins;
+  for (auto [it, end] = boundary.get<TagType>().equal_range(UnitType::RngState);
        it != end; it++) {
     ins.push_back(it->in_);
   }
@@ -137,6 +150,15 @@ VertexVec Circuit::w_outputs() const {
   VertexVec outs;
   for (auto [it, end] =
            boundary.get<TagType>().equal_range(UnitType::WasmState);
+       it != end; it++) {
+    outs.push_back(it->out_);
+  }
+  return outs;
+}
+
+VertexVec Circuit::r_outputs() const {
+  VertexVec outs;
+  for (auto [it, end] = boundary.get<TagType>().equal_range(UnitType::RngState);
        it != end; it++) {
     outs.push_back(it->out_);
   }
@@ -730,19 +752,19 @@ std::pair<Vertex, Edge> Circuit::get_prev_pair(
 bool Circuit::detect_initial_Op(const Vertex &vertex) const {
   OpType type = get_OpType_from_Vertex(vertex);
   return is_initial_q_type(type) || type == OpType::ClInput ||
-         type == OpType::WASMInput;
+         type == OpType::WASMInput || type == OpType::RNGInput;
 }
 
 bool Circuit::detect_final_Op(const Vertex &vertex) const {
   OpType type = get_OpType_from_Vertex(vertex);
   return is_final_q_type(type) || type == OpType::ClOutput ||
-         type == OpType::WASMOutput;
+         type == OpType::WASMOutput || type == OpType::RNGOutput;
 }
 
 bool Circuit::detect_boundary_Op(const Vertex &vertex) const {
   OpType type = get_OpType_from_Vertex(vertex);
   return is_boundary_q_type(type) || is_boundary_c_type(type) ||
-         is_boundary_w_type(type);
+         is_boundary_w_type(type) || is_boundary_r_type(type);
 }
 
 bool Circuit::detect_singleq_unitary_op(const Vertex &vert) const {

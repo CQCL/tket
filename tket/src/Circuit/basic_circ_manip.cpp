@@ -550,6 +550,18 @@ void Circuit::add_wasm_register(std::size_t number_of_w_) {
   }
 }
 
+void Circuit::add_rng_register(std::size_t number_of_r_) {
+  while (number_of_r_ > _number_of_rng_wires) {
+    Vertex in = add_vertex(OpType::RNGInput);
+    Vertex out = add_vertex(OpType::RNGOutput);
+    add_edge({in, 0}, {out, 0}, EdgeType::RNG);
+    RngState ruid = RngState(_number_of_rng_wires);
+    rngwire.push_back(ruid);
+    boundary.insert({ruid, in, out});
+    ++_number_of_rng_wires;
+  }
+}
+
 void Circuit::qubit_create(const Qubit& id) {
   Vertex v = get_in(id);
   dag[v].op = std::make_shared<const MetaOp>(OpType::Create);

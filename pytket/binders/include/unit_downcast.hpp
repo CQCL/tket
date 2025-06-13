@@ -33,6 +33,8 @@ struct type_hook<tket::UnitID> {
         return &typeid(tket::Node);
       } else if (src->type() == tket::UnitType::WasmState) {
         return &typeid(tket::WasmState);
+      } else if (src->type() == tket::UnitType::RngState) {
+        return &typeid(tket::RngState);
       } else {
         return &typeid(tket::Bit);
       }

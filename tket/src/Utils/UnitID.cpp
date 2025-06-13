@@ -42,6 +42,9 @@ void from_json(const nlohmann::json& j, WasmState& wb) {
   json_to_unitid(j, wb);
 }
 
+void to_json(nlohmann::json& j, const RngState& rb) { unitid_to_json(j, rb); }
+void from_json(const nlohmann::json& j, RngState& rb) { json_to_unitid(j, rb); }
+
 void to_json(nlohmann::json& j, const Node& node) { unitid_to_json(j, node); }
 void from_json(const nlohmann::json& j, Node& node) { json_to_unitid(j, node); }
 
@@ -88,6 +91,12 @@ const std::string& c_default_reg() {
 const std::string& w_default_reg() {
   static std::unique_ptr<const std::string> regname =
       std::make_unique<const std::string>("_w");
+  return *regname;
+}
+
+const std::string& r_default_reg() {
+  static std::unique_ptr<const std::string> regname =
+      std::make_unique<const std::string>("_r");
   return *regname;
 }
 

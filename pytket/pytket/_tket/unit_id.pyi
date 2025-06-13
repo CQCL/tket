@@ -27,6 +27,9 @@ class UnitType(enum.Enum):
     bit = 1
     """A single classical Bit"""
 
+    rngstate = 3
+    """A single RngState"""
+
 class UnitID:
     """A handle to a computational unit (e.g. qubit, bit)"""
 
@@ -241,6 +244,41 @@ class WasmState(UnitID):
     def from_list(arg: list, /) -> WasmState:
         """
         Construct WasmState instance from JSON serializable list representation of the WasmState.
+        """
+
+class RngState(UnitID):
+    """A handle to an rngstate"""
+
+    def __init__(self, index: int) -> None:
+        """
+        Constructs an id for some index in the default RNG register
+
+        :param index: The index in the register
+        """
+
+    def __copy__(self) -> RngState: ...
+
+    def __deepcopy__(self, arg: dict, /) -> RngState: ...
+
+    def __eq__(self, arg: object, /) -> bool: ...
+
+    def __hash__(self) -> int: ...
+
+    def __getstate__(self) -> tuple: ...
+
+    def __setstate__(self, arg: tuple, /) -> None: ...
+
+    def to_list(self) -> list:
+        """
+        Return a JSON serializable list representation of the RngState.
+
+        :return: list containing register name and index
+        """
+
+    @staticmethod
+    def from_list(arg: list, /) -> RngState:
+        """
+        Construct RngState instance from JSON serializable list representation of the RngState.
         """
 
 class Node(Qubit):

@@ -180,7 +180,11 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
       {OpType::MultiBit, {"MultiBit", "MultiBit", {}, std::nullopt}},
       {OpType::UnitaryTableauBox,
        {"UnitaryTableauBox", "UnitaryTableauBox", {}, std::nullopt}},
-      {OpType::ClExpr, {"ClExpr", "ClExpr", {}, std::nullopt}}};
+      {OpType::ClExpr, {"ClExpr", "ClExpr", {}, std::nullopt}},
+      {OpType::RNGInput,
+       {"RNGInput", "RNGInput", {}, op_signature_t({EdgeType::RNG})}},
+      {OpType::RNGOutput,
+       {"RNGOutput", "RNGOutput", {}, op_signature_t({EdgeType::RNG})}}};
   static std::unique_ptr<const std::map<OpType, OpTypeInfo>> opinfo =
       std::make_unique<const std::map<OpType, OpTypeInfo>>(typeinfo);
   return *opinfo;

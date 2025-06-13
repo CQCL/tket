@@ -35,7 +35,7 @@
 namespace tket {
 
 /** Type of information held */
-enum class UnitType { Qubit, Bit, WasmState };
+enum class UnitType { Qubit, Bit, WasmState, RngState };
 
 /** The type and dimension of a register */
 typedef std::pair<UnitType, unsigned> register_info_t;
@@ -46,6 +46,7 @@ const std::string &q_default_reg();
 const std::string &q_routing_ancilla_reg();
 const std::string &c_default_reg();
 const std::string &w_default_reg();
+const std::string &r_default_reg();
 const std::string &node_default_reg();
 const std::string &c_debug_zero_prefix();
 const std::string &c_debug_one_prefix();
@@ -263,6 +264,44 @@ class WasmState : public UnitID {
 
 JSON_DECL(WasmState)
 
+/** Location holding an RNG UID */
+class RngState : public UnitID {
+ public:
+  RngState() : UnitID(r_default_reg(), {}, UnitType::RngState) {}
+
+  /** Bit in default register */
+  explicit RngState(unsigned index)
+      : UnitID(r_default_reg(), {index}, UnitType::RngState) {}
+
+  /** Named register with no index */
+  explicit RngState(const std::string &name)
+      : UnitID(name, {}, UnitType::RngState) {}
+
+  /** Named register with a one-dimensional index */
+  RngState(const std::string &name, unsigned index)
+      : UnitID(name, {index}, UnitType::RngState) {}
+
+  /** Named register with a two-dimensional index */
+  RngState(const std::string &name, unsigned row, unsigned col)
+      : UnitID(name, {row, col}, UnitType::RngState) {}
+
+  /** Named register with a three-dimensional index */
+  RngState(const std::string &name, unsigned row, unsigned col, unsigned layer)
+      : UnitID(name, {row, col, layer}, UnitType::RngState) {}
+
+  /** Named register with a multi-dimensional index */
+  RngState(const std::string &name, std::vector<unsigned> index)
+      : UnitID(name, index, UnitType::RngState) {}
+
+  explicit RngState(const UnitID &other) : UnitID(other) {
+    if (other.type() != UnitType::RngState) {
+      throw InvalidUnitConversion(other.repr(), "RngState");
+    }
+  }
+};
+
+JSON_DECL(RngState)
+
 /** Architectural qubit location */
 class Node : public Qubit {
  public:
@@ -295,6 +334,14 @@ JSON_DECL(Node)
 class WasmNode : public WasmState {
  public:
   WasmNode() : WasmState() {}
+};
+
+JSON_DECL(WasmNode)
+
+/** RNG UID */
+class RngNode : public RngState {
+ public:
+  RngNode() : RngState() {}
 };
 
 JSON_DECL(WasmNode)

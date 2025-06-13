@@ -116,7 +116,7 @@ struct Rotation2Q {
  */
 struct CommuteInfo {
   std::vector<std::vector<Pauli>> paulis;
-  // We use UnitID to differentiate between Bit and WasmState
+  // We use UnitID to differentiate between Bit, WasmState and RngState
   std::vector<std::pair<UnitID, BitType>> bits_info;
 };
 

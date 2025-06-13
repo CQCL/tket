@@ -198,6 +198,17 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
           "should be added to the circuit",
           nb::arg("size"))
       .def(
+          "_add_r_register",
+          [](Circuit &circ, const std::size_t &size) {
+            return circ.add_rng_register(size);
+          },
+          "Creates given number of RNG wires in the circuit. If "
+          "there are already RNG wires in circuit, only the "
+          "additional RNG wires will be added."
+          "\n\n:param size: Number of RNG wires that "
+          "should be added to the circuit",
+          nb::arg("size"))
+      .def(
           "add_c_register",
           [](Circuit &circ, const std::string &name, const std::size_t &size) {
             circ.add_c_register(name, size);
@@ -942,6 +953,12 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
               w_inputs.insert(im[v]);
             }
 
+            // subset of RNG input nodes
+            std::set<unsigned> r_inputs;
+            for (const Vertex &v : circ.r_inputs()) {
+              r_inputs.insert(im[v]);
+            }
+
             // subset of quantum output nodes
             std::set<unsigned> q_outputs;
             for (const Vertex &v : circ.q_outputs()) {
@@ -958,6 +975,12 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
             std::set<unsigned> w_outputs;
             for (const Vertex &v : circ.w_outputs()) {
               w_outputs.insert(im[v]);
+            }
+
+            // subset of RNG output nodes
+            std::set<unsigned> r_outputs;
+            for (const Vertex &v : circ.r_outputs()) {
+              r_outputs.insert(im[v]);
             }
 
             // maps from input and output nodes to unit names
@@ -999,8 +1022,9 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
             }
 
             return std::make_tuple(
-                q_inputs, c_inputs, w_inputs, q_outputs, c_outputs, w_outputs,
-                input_names, output_names, node_data, edge_data);
+                q_inputs, c_inputs, w_inputs, r_inputs, q_outputs, c_outputs,
+                w_outputs, r_outputs, input_names, output_names, node_data,
+                edge_data);
           },
           "DAG data for circuit");
 }
