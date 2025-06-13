@@ -78,6 +78,9 @@ bool is_boundary_c_type(OpType optype);
 /** Test for input or output for wasm "ops" */
 bool is_boundary_w_type(OpType optype);
 
+/** Test for input or output for RNG "ops" */
+bool is_boundary_r_type(OpType optype);
+
 /** Test for elementary gates */
 bool is_gate_type(OpType optype);
 

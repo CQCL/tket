@@ -44,6 +44,8 @@ class EdgeType(enum.Enum):
 
     WASM = 3
 
+    RNG = 4
+
 class OpType(enum.IntEnum):
     """
     Enum for available operations compatible with tket :py:class:`~.Circuit` s.
@@ -2336,7 +2338,7 @@ class Circuit:
         """
 
     @property
-    def _dag_data(self) -> tuple[set[int], set[int], set[int], set[int], set[int], set[int], dict[int, str], dict[int, str], dict[int, str], set[tuple[int, int, int, int, str]]]:
+    def _dag_data(self) -> tuple[set[int], set[int], set[int], set[int], set[int], set[int], set[int], set[int], dict[int, str], dict[int, str], dict[int, str], set[tuple[int, int, int, int, str]]]:
         """DAG data for circuit"""
 
     def add_wasm(self: Circuit, funcname: str, filehandler: pytket.wasm.wasm.WasmModuleHandler, list_i: Sequence[int], list_o: Sequence[int], args: Union[Sequence[int], Sequence[pytket._tket.unit_id.Bit]], args_wasm: Sequence[int] | None = None, **kwargs: Any) -> Circuit:

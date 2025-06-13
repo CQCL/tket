@@ -43,6 +43,11 @@ void to_json(nlohmann::json& j, const Command& com) {
         j_args.push_back(wb);
         break;
       }
+      case EdgeType::RNG: {
+        const RngState& rb = static_cast<const RngState&>(args[i]);
+        j_args.push_back(rb);
+        break;
+      }
       case EdgeType::Quantum: {
         const Qubit& qb = static_cast<const Qubit&>(args[i]);
         j_args.push_back(qb);
@@ -79,6 +84,10 @@ void from_json(const nlohmann::json& j, Command& com) {
     switch (sig[i]) {
       case EdgeType::WASM: {
         args.push_back(j_args[i].get<WasmState>());
+        break;
+      }
+      case EdgeType::RNG: {
+        args.push_back(j_args[i].get<RngState>());
         break;
       }
       case EdgeType::Quantum: {
