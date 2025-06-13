@@ -22,6 +22,9 @@ else
     sed -i 's/pytket._tket/pytket/g' build/searchindex.js
 fi
 
+# Run link checker
+sphinx-build -b linkcheck . build
+
 # Remove copied files. This ensures reusability.
 rm -r _static 
 rm -r quantinuum-sphinx
