@@ -23,7 +23,7 @@ else
 fi
 
 # Run link checker
-sphinx-build -b linkcheck . build
+sphinx-build -W -b linkcheck . build || exit 1
 
 # Remove copied files. This ensures reusability.
 rm -r _static 
