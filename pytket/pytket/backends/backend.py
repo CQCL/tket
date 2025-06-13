@@ -66,7 +66,7 @@ class Backend(ABC):
     @staticmethod
     def empty_result(circuit: Circuit, n_shots: int) -> BackendResult:
         """
-        Creates a :py:class:`~.BackendResult` mimicking the outcome where every
+        Creates a :py:class:`~pytket.backends.backendresult.BackendResult` mimicking the outcome where every
         bit is 0 for every shot.
         """
         n_bits = len(circuit.bits)
@@ -162,7 +162,7 @@ class Backend(ABC):
     ) -> Circuit:
         """
         Return a single circuit compiled with :py:meth:`default_compilation_pass`. See
-        :py:meth:`Backend.get_compiled_circuits`.
+        :py:meth:`~pytket.backends.backend.Backend.get_compiled_circuits`.
         """
         return_circuit = circuit.copy()
         self.default_compilation_pass(optimisation_level).apply(return_circuit)
@@ -187,7 +187,7 @@ class Backend(ABC):
 
         If the validity check fails, you can obtain more information about the failure
         by iterating through the predicates in the `required_predicates` property of the
-        backend, and running the :py:meth:`~.Predicate.verify` method on each in turn with your
+        backend, and running the :py:meth:`~pytket.predicates.Predicate.verify` method on each in turn with your
         circuit.
 
         :param circuits: The circuits to compile.
@@ -231,7 +231,7 @@ class Backend(ABC):
     ) -> ResultHandle:
         """
         Submit a single circuit to the backend for running. See
-        :py:meth:`Backend.process_circuits`.
+        :py:meth:`~pytket.backends.backend.Backend.process_circuits`.
         """
 
         return self.process_circuits(
@@ -252,7 +252,7 @@ class Backend(ABC):
         get_<data> method.
 
         If the `postprocess` keyword argument is set to True, and the backend supports
-        the feature (see  :py:meth:`supports_contextual_optimisation`), then contextual
+        the feature (see  :py:attr:`~pytket.backends.backend.Backend.supports_contextual_optimisation`), then contextual
         optimisatioons are applied before running the circuit and retrieved results will
         have any necessary classical postprocessing applied. This is not enabled by
         default.
@@ -267,7 +267,7 @@ class Backend(ABC):
         Note: If a backend is reused many times, the in-memory results cache grows
         indefinitely. Therefore, when processing many circuits on a statevector or
         unitary backend (whose results may occupy significant amounts of memory), it is
-        advisable to run :py:meth:`Backend.empty_cache` after each result is retrieved.
+        advisable to run :py:meth:`~pytket.backends.backend.Backend.empty_cache` after each result is retrieved.
 
         :param circuits: Circuits to process on the backend.
         :param n_shots: Number of shots to run per circuit. Optionally, this can be
@@ -352,14 +352,14 @@ class Backend(ABC):
         Submits a circuit to the backend and returns results
 
         :param circuit: Circuit to be executed
-        :param n_shots: Passed on to :py:meth:`Backend.process_circuit`
-        :param valid_check: Passed on to :py:meth:`Backend.process_circuit`
+        :param n_shots: Passed on to :py:meth:`~pytket.backends.backend.Backend.process_circuit`
+        :param valid_check: Passed on to :py:meth:`~pytket.backends.backend.Backend.process_circuit`
         :return: Result
 
         This is a convenience method equivalent to calling
-        :py:meth:`Backend.process_circuit` followed by :py:meth:`Backend.get_result`.
+        :py:meth:`~pytket.backends.backend.Backend.process_circuit` followed by :py:meth:`~pytket.backends.backend.Backend.get_result`.
         Any additional keyword arguments are passed on to
-        :py:meth:`Backend.process_circuit` and :py:meth:`Backend.get_result`.
+        :py:meth:`~pytket.backends.backend.Backend.process_circuit` and :py:meth:`~pytket.backends.backend.Backend.get_result`.
         """
         return self.run_circuits(
             [circuit], n_shots=n_shots, valid_check=valid_check, **kwargs
@@ -376,14 +376,14 @@ class Backend(ABC):
         Submits circuits to the backend and returns results
 
         :param circuits: Sequence of Circuits to be executed
-        :param n_shots: Passed on to :py:meth:`Backend.process_circuits`
-        :param valid_check: Passed on to :py:meth:`Backend.process_circuits`
+        :param n_shots: Passed on to :py:meth:`~pytket.backends.backend.Backend.process_circuits`
+        :param valid_check: Passed on to :py:meth:`~pytket.backends.backend.Backend.process_circuits`
         :return: List of results
 
         This is a convenience method equivalent to calling
-        :py:meth:`Backend.process_circuits` followed by :py:meth:`Backend.get_results`.
+        :py:meth:`~pytket.backends.backend.Backend.process_circuits` followed by :py:meth:`~pytket.backends.backend.Backend.get_results`.
         Any additional keyword arguments are passed on to
-        :py:meth:`Backend.process_circuits` and :py:meth:`Backend.get_results`.
+        :py:meth:`~pytket.backends.backend.Backend.process_circuits` and :py:meth:`~pytket.backends.backend.Backend.get_results`.
         """
         handles = self.process_circuits(circuits, n_shots, valid_check, **kwargs)
         results = self.get_results(handles, **kwargs)
@@ -434,7 +434,7 @@ class Backend(ABC):
     def supports_shots(self) -> bool:
         """
         Does this backend support shot result retrieval via
-        :py:meth:`~.BackendResult.get_shots`.
+        :py:meth:`~pytket.backends.backendresult.BackendResult.get_shots`.
         """
         return self._supports_shots
 
@@ -442,7 +442,7 @@ class Backend(ABC):
     def supports_counts(self) -> bool:
         """
         Does this backend support counts result retrieval via
-        :py:meth:`~.BackendResult.get_counts`.
+        :py:meth:`~pytket.backends.backendresult.BackendResult.get_counts`.
         """
         return self._supports_counts
 
@@ -450,7 +450,7 @@ class Backend(ABC):
     def supports_state(self) -> bool:
         """
         Does this backend support statevector retrieval via
-        :py:meth:`~.BackendResult.get_state`.
+        :py:meth:`~pytket.backends.backendresult.BackendResult.get_state`.
         """
         return self._supports_state
 
@@ -458,7 +458,7 @@ class Backend(ABC):
     def supports_unitary(self) -> bool:
         """
         Does this backend support unitary retrieval via
-        :py:meth:`~.BackendResult.get_unitary`.
+        :py:meth:`~pytket.backends.backendresult.BackendResult.get_unitary`.
         """
         return self._supports_unitary
 
