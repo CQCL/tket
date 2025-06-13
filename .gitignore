@@ -37,5 +37,11 @@ pytket/tests/qasm_test_files/testout6.qasm
 result
 .envrc
 .direnv/
+
+# Docs
+pytket/docs/_static/**
+conf.py
+pytket/docs/quantinuum-sphinx/**
 *.jupyter_cache
 jupyter_execute/
+
