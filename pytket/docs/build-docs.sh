@@ -10,8 +10,6 @@ PACKAGE="pytket $PYTKET_VERSION"
 # Build the docs setting the html title to show the correct pytket version.
 sphinx-build -W -b html . build -D html_title="$PACKAGE API documentation" || exit 1
 
-sphinx-build -W -v -b coverage . build/coverage || exit 1
-
 # Replace unnecessary _tket for all classes and functions in the built html
 # Apple MACOSX and Linux have differing sed replace syntax
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -24,6 +22,8 @@ fi
 
 # Run link checker
 sphinx-build -W -b linkcheck . build || exit 1
+
+sphinx-build -W -v -b coverage . build/coverage || exit 1
 
 # Remove copied files. This ensures reusability.
 rm -r _static 
