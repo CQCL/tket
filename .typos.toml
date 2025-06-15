@@ -21,6 +21,7 @@ iy = "iy"
 PNGs = "PNGs"
 NDArray = "NDArray"
 pattern_nd = "pattern_nd"
+pn = "pn"
 
 [default.extend-words]
 Braket = "Braket"

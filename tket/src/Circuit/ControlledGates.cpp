@@ -1084,8 +1084,8 @@ static void add_cu_using_cu3(
   circ.append_with_map(cnu_circ, unit_map);
 }
 
-// Add on to qubits {1,...,n}, assume n > 1
-static void add_on(Circuit& circ, unsigned n, bool inverse) {
+// Add pn to qubits {1,...,n}, assume n > 1
+static void add_pn(Circuit& circ, unsigned n, bool inverse) {
   TKET_ASSERT(n > 1);
   // on is self commute
   for (unsigned i = 2; i < n + 1; i++) {
@@ -1095,7 +1095,7 @@ static void add_on(Circuit& circ, unsigned n, bool inverse) {
 }
 
 // Add on(u) to qubits {1,...,n}, assume n > 1
-static void add_on_unitary(
+static void add_pn_unitary(
     Circuit& circ, const Eigen::Matrix2cd& u, unsigned n, bool inverse) {
   TKET_ASSERT(n > 1);
   // on_(u) is self commute
