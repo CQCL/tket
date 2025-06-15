@@ -51,7 +51,7 @@ Yes, this is possible. To do so this follow [this guide](https://github.com/CQCL
 
 ### Do all versions of `pytket` work with Windows?
 
-`pytket` versions 0.6 and above are compatible with most recent versions of Windows. LTSC versions of Windows are not supported and an [issue](https://github.com/CQCL/pytket/issues/36) has been reported with these.
+`pytket` versions 0.6 and above are compatible with most recent versions of Windows. LTSC versions of Windows are not supported and an [issue](https://github.com/CQCL/pytket-docs/issues/36) has been reported with these.
 
 ### `pytket` installed but modules mentioned in the docs could not be found. Why?
 

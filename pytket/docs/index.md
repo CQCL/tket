@@ -1,7 +1,7 @@
 # pytket
 
 `pytket` is a python module for interfacing with tket, a quantum computing toolkit and optimising compiler developed by [Quantinuum]. We currently support circuits and device architectures from
-[numerous providers](https://docs.quantinuum.com/tket/api-docs/extensions), allowing the
+[numerous providers](https://docs.quantinuum.com/tket/api-docs/extensions.html), allowing the
 tket tools to be used in conjunction with projects on their platforms.
 
 `pytket` is available for Python 3.10, 3.11, 3.12 and 3.13, on Linux, MacOS
