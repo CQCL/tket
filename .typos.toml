@@ -14,7 +14,7 @@ arange = "arange"
 args_ser = "args_ser"
 IY = "IY"
 iy = "iy"
-
+PNGs = "PNGs"
 
 [default.extend-words]
 Braket = "Braket"
@@ -24,3 +24,5 @@ Strat = "Strat"
 strat = "strat"
 typ = "typ"
 NDArray = "NDArray"
+classicals = "classicals"
+BRIDGEs = "BRIDGEs"
