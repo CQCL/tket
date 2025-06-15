@@ -558,7 +558,7 @@ PassPtr gen_routing_pass(
   PredicatePtrMap s_postcons{pair1, CompilationUnit::make_type_pair(postcon2)};
   std::type_index gateset_ti = typeid(GateSetPredicate);
   // clears all Routing predicates apart from the ones which are specified
-  // clears all GateSet predicates (inserts SWAPs and BRIDGEEs)
+  // clears all GateSet predicates (inserts SWAPs and BRIDGEs)
   PredicateClassGuarantees g_postcons{
       {pair1.first, Guarantee::Clear},
       {gateset_ti, Guarantee::Clear},

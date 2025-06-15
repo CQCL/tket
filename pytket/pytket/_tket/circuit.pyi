@@ -14,7 +14,6 @@ import pytket._tket.unit_id
 import pytket.circuit.logic_exp
 import pytket.wasm.wasm
 
-
 class CXConfigType(enum.Enum):
     """Enum for available configurations for CXs upon decompose phase gadgets"""
 
@@ -490,7 +489,9 @@ class Op:
 
     @overload
     @staticmethod
-    def create(arg0: OpType, arg1: Sequence[Union[sympy.core.expr.Expr, float]], /) -> Op:
+    def create(
+        arg0: OpType, arg1: Sequence[Union[sympy.core.expr.Expr, float]], /
+    ) -> Op:
         """Create an :py:class:`~.Op` with given type and parameters"""
 
     @property
@@ -519,18 +520,18 @@ class Op:
         """String representation of op"""
 
     def __eq__(self, arg: object, /) -> bool: ...
-
     def __hash__(self) -> int:
         """
         Hashing is not implemented for this class, attempting to hash an object will raise a type error
         """
 
     def __repr__(self) -> str: ...
-
     def free_symbols(self) -> set[sympy.core.symbol.Symbol]: ...
-
-    def get_unitary(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')]: ...
-
+    def get_unitary(
+        self,
+    ) -> Annotated[
+        NDArray, dict(dtype="complex128", shape=(None, None), order="F")
+    ]: ...
     def is_clifford_type(self) -> bool:
         """Check if the operation is one of the Clifford :py:class:`~.OpType` s."""
 
@@ -565,14 +566,12 @@ class Command:
         """Construct from an operation and a vector of unit IDs"""
 
     def __eq__(self, arg: object, /) -> bool: ...
-
     def __hash__(self) -> int:
         """
         Hashing is not implemented for this class, attempting to hash an object will raise a type error
         """
 
     def __repr__(self) -> str: ...
-
     @property
     def op(self) -> Op:
         """Operation for this command."""
@@ -678,13 +677,23 @@ class Circuit:
         """
 
     @overload
-    def add_gate(self, Op: Op, args: Sequence[int] | Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_gate(
+        self,
+        Op: Op,
+        args: Sequence[int] | Sequence[pytket._tket.unit_id.UnitID],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a single operation to the end of the circuit on some particular qubits/bits. The number of qubits/bits specified must match the arity of the gate.
         """
 
     @overload
-    def add_gate(self, type: OpType, args: Sequence[int] | Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_gate(
+        self,
+        type: OpType,
+        args: Sequence[int] | Sequence[pytket._tket.unit_id.UnitID],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a single (non-parameterised) gate to the end of the circuit on some particular qubits from the default register ('q'). The number of qubits specified must match the arity of the gate. For `OpType.Measure` operations the bit from the default register should follow the qubit.
 
@@ -698,7 +707,13 @@ class Circuit:
         """
 
     @overload
-    def add_gate(self, type: OpType, angle: Union[sympy.core.expr.Expr, float], args: Sequence[int] | Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_gate(
+        self,
+        type: OpType,
+        angle: Union[sympy.core.expr.Expr, float],
+        args: Sequence[int] | Sequence[pytket._tket.unit_id.UnitID],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a single gate, parameterised by an expression, to the end of circuit on some particular qubits from the default register ('q').
 
@@ -710,7 +725,13 @@ class Circuit:
         """
 
     @overload
-    def add_gate(self, type: OpType, angles: Sequence[Union[sympy.core.expr.Expr, float]], args: Sequence[int] | Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_gate(
+        self,
+        type: OpType,
+        angles: Sequence[Union[sympy.core.expr.Expr, float]],
+        args: Sequence[int] | Sequence[pytket._tket.unit_id.UnitID],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a single gate to the end of the circuit
 
@@ -722,7 +743,9 @@ class Circuit:
         """
 
     @overload
-    def add_barrier(self, qubits: Sequence[int], bits: Sequence[int] = [], data: str = '') -> Circuit:
+    def add_barrier(
+        self, qubits: Sequence[int], bits: Sequence[int] = [], data: str = ""
+    ) -> Circuit:
         """
         Append a Barrier on the given units
 
@@ -731,10 +754,18 @@ class Circuit:
         """
 
     @overload
-    def add_barrier(self, units: Sequence[pytket._tket.unit_id.UnitID], data: str = '') -> Circuit: ...
-
+    def add_barrier(
+        self, units: Sequence[pytket._tket.unit_id.UnitID], data: str = ""
+    ) -> Circuit: ...
     @overload
-    def add_conditional_barrier(self, barrier_qubits: Sequence[int], barrier_bits: Sequence[int], condition_bits: Sequence[int], value: int, data: str = '') -> Circuit:
+    def add_conditional_barrier(
+        self,
+        barrier_qubits: Sequence[int],
+        barrier_bits: Sequence[int],
+        condition_bits: Sequence[int],
+        value: int,
+        data: str = "",
+    ) -> Circuit:
         """
         Append a Conditional Barrier on the given barrier qubits and barrier bits, conditioned on the given condition bits.
 
@@ -747,7 +778,13 @@ class Circuit:
         """
 
     @overload
-    def add_conditional_barrier(self, barrier_args: Sequence[pytket._tket.unit_id.UnitID], condition_bits: Sequence[pytket._tket.unit_id.Bit], value: int, data: str = '') -> Circuit:
+    def add_conditional_barrier(
+        self,
+        barrier_args: Sequence[pytket._tket.unit_id.UnitID],
+        condition_bits: Sequence[pytket._tket.unit_id.Bit],
+        value: int,
+        data: str = "",
+    ) -> Circuit:
         """
         Append a Conditional Barrier on the given barrier qubits and barrier bits, conditioned on the given condition bits.
 
@@ -758,7 +795,9 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_clexpr(self, expr: WiredClExpr, args: Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
+    def add_clexpr(
+        self, expr: WiredClExpr, args: Sequence[pytket._tket.unit_id.Bit], **kwargs: Any
+    ) -> Circuit:
         """
         Append a :py:class:`~.WiredClExpr` to the circuit.
 
@@ -767,7 +806,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_circbox(self, circbox: CircBox, args: Sequence[int] | Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_circbox(
+        self,
+        circbox: CircBox,
+        args: Sequence[int] | Sequence[pytket._tket.unit_id.UnitID],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.CircBox` to the circuit.
 
@@ -778,7 +822,13 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_circbox_regwise(self, circbox: CircBox, qregs: Sequence[pytket._tket.unit_id.QubitRegister], cregs: Sequence[pytket._tket.unit_id.BitRegister], **kwargs: Any) -> Circuit:
+    def add_circbox_regwise(
+        self,
+        circbox: CircBox,
+        qregs: Sequence[pytket._tket.unit_id.QubitRegister],
+        cregs: Sequence[pytket._tket.unit_id.BitRegister],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.CircBox` to the circuit, wiring whole registers together.
 
@@ -788,7 +838,13 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_circbox_with_regmap(self, circbox: CircBox, qregmap: Mapping[str, str], cregmap: Mapping[str, str], **kwargs: Any) -> Circuit:
+    def add_circbox_with_regmap(
+        self,
+        circbox: CircBox,
+        qregmap: Mapping[str, str],
+        cregmap: Mapping[str, str],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.CircBox` to the circuit, wiring whole registers together.
 
@@ -800,7 +856,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_unitary1qbox(self, unitarybox: Unitary1qBox, qubit_0: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def add_unitary1qbox(
+        self,
+        unitarybox: Unitary1qBox,
+        qubit_0: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.Unitary1qBox` to the circuit.
 
@@ -809,7 +870,13 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_unitary2qbox(self, unitarybox: Unitary2qBox, qubit_0: int | pytket._tket.unit_id.Qubit, qubit_1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def add_unitary2qbox(
+        self,
+        unitarybox: Unitary2qBox,
+        qubit_0: int | pytket._tket.unit_id.Qubit,
+        qubit_1: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.Unitary2qBox` to the circuit.
 
@@ -821,7 +888,14 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_unitary3qbox(self, unitarybox: Unitary3qBox, qubit_0: int | pytket._tket.unit_id.Qubit, qubit_1: int | pytket._tket.unit_id.Qubit, qubit_2: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def add_unitary3qbox(
+        self,
+        unitarybox: Unitary3qBox,
+        qubit_0: int | pytket._tket.unit_id.Qubit,
+        qubit_1: int | pytket._tket.unit_id.Qubit,
+        qubit_2: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.Unitary3qBox` to the circuit.
 
@@ -832,7 +906,13 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_expbox(self, expbox: ExpBox, qubit_0: int | pytket._tket.unit_id.Qubit, qubit_1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def add_expbox(
+        self,
+        expbox: ExpBox,
+        qubit_0: int | pytket._tket.unit_id.Qubit,
+        qubit_1: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append an :py:class:`~.ExpBox` to the circuit.
 
@@ -844,7 +924,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_pauliexpbox(self, pauliexpbox: PauliExpBox, qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_pauliexpbox(
+        self,
+        pauliexpbox: PauliExpBox,
+        qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.PauliExpBox` to the circuit.
 
@@ -853,7 +938,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_pauliexppairbox(self, pauliexppairbox: PauliExpPairBox, qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_pauliexppairbox(
+        self,
+        pauliexppairbox: PauliExpPairBox,
+        qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.PauliExpPairBox` to the circuit.
 
@@ -862,7 +952,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_pauliexpcommutingsetbox(self, pauliexpcommutingsetbox: PauliExpCommutingSetBox, qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_pauliexpcommutingsetbox(
+        self,
+        pauliexpcommutingsetbox: PauliExpCommutingSetBox,
+        qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.PauliExpCommutingSetBox` to the circuit.
 
@@ -871,7 +966,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_termsequencebox(self, termsequencebox: TermSequenceBox, qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_termsequencebox(
+        self,
+        termsequencebox: TermSequenceBox,
+        qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.TermSequenceBox` to the circuit.
 
@@ -880,7 +980,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_toffolibox(self, toffolibox: ToffoliBox, qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_toffolibox(
+        self,
+        toffolibox: ToffoliBox,
+        qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.ToffoliBox` to the circuit.
 
@@ -889,7 +994,13 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_dummybox(self, dummybox: DummyBox, qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], bits: Sequence[int] | Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
+    def add_dummybox(
+        self,
+        dummybox: DummyBox,
+        qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        bits: Sequence[int] | Sequence[pytket._tket.unit_id.Bit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.DummyBox` to the circuit.
 
@@ -899,7 +1010,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_qcontrolbox(self, qcontrolbox: QControlBox, qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_qcontrolbox(
+        self,
+        qcontrolbox: QControlBox,
+        qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.QControlBox` to the circuit.
 
@@ -908,7 +1024,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_phasepolybox(self, phasepolybox: PhasePolyBox, qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_phasepolybox(
+        self,
+        phasepolybox: PhasePolyBox,
+        qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.PhasePolyBox` to the circuit.
 
@@ -917,7 +1038,13 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_custom_gate(self, definition: CustomGateDef, params: Sequence[Union[sympy.core.expr.Expr, float]], qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_custom_gate(
+        self,
+        definition: CustomGateDef,
+        params: Sequence[Union[sympy.core.expr.Expr, float]],
+        qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append an instance of a :py:class:`~.CustomGateDef` to the circuit.
 
@@ -928,7 +1055,13 @@ class Circuit:
         """
 
     @overload
-    def add_assertion(self, box: ProjectorAssertionBox, qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], ancilla: int | pytket._tket.unit_id.Qubit | None = None, name: str | None = None) -> Circuit:
+    def add_assertion(
+        self,
+        box: ProjectorAssertionBox,
+        qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        ancilla: int | pytket._tket.unit_id.Qubit | None = None,
+        name: str | None = None,
+    ) -> Circuit:
         """
         Append a :py:class:`~.ProjectorAssertionBox` to the circuit.
 
@@ -940,7 +1073,13 @@ class Circuit:
         """
 
     @overload
-    def add_assertion(self, box: StabiliserAssertionBox, qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], ancilla: int | pytket._tket.unit_id.Qubit, name: str | None = None) -> Circuit:
+    def add_assertion(
+        self,
+        box: StabiliserAssertionBox,
+        qubits: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        ancilla: int | pytket._tket.unit_id.Qubit,
+        name: str | None = None,
+    ) -> Circuit:
         """
         Append a :py:class:`~.StabiliserAssertionBox` to the circuit.
 
@@ -951,7 +1090,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_multiplexor(self, box: MultiplexorBox, args: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_multiplexor(
+        self,
+        box: MultiplexorBox,
+        args: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.MultiplexorBox` to the circuit.
 
@@ -960,7 +1104,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_multiplexedrotation(self, box: MultiplexedRotationBox, args: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_multiplexedrotation(
+        self,
+        box: MultiplexedRotationBox,
+        args: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.MultiplexedRotationBox` to the circuit.
 
@@ -969,7 +1118,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_multiplexedu2(self, box: MultiplexedU2Box, args: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_multiplexedu2(
+        self,
+        box: MultiplexedU2Box,
+        args: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.MultiplexedU2Box` to the circuit.
 
@@ -978,7 +1132,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_multiplexed_tensored_u2(self, box: MultiplexedTensoredU2Box, args: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_multiplexed_tensored_u2(
+        self,
+        box: MultiplexedTensoredU2Box,
+        args: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.MultiplexedTensoredU2Box` to the circuit.
 
@@ -987,7 +1146,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_state_preparation_box(self, box: StatePreparationBox, args: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_state_preparation_box(
+        self,
+        box: StatePreparationBox,
+        args: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.StatePreparationBox` to the circuit.
 
@@ -996,7 +1160,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_diagonal_box(self, box: DiagonalBox, args: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_diagonal_box(
+        self,
+        box: DiagonalBox,
+        args: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.DiagonalBox` to the circuit.
 
@@ -1005,7 +1174,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_conjugation_box(self, box: ConjugationBox, args: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_conjugation_box(
+        self,
+        box: ConjugationBox,
+        args: Sequence[int] | Sequence[pytket._tket.unit_id.Qubit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.ConjugationBox` to the circuit.
 
@@ -1086,7 +1260,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def Measure(self, qubit: int | pytket._tket.unit_id.Qubit, bit: int | pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
+    def Measure(
+        self,
+        qubit: int | pytket._tket.unit_id.Qubit,
+        bit: int | pytket._tket.unit_id.Bit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a single-qubit measurement in the computational (Z) basis.
 
@@ -1100,294 +1279,536 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def Rz(self, angle: Union[sympy.core.expr.Expr, float], qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def Rz(
+        self,
+        angle: Union[sympy.core.expr.Expr, float],
+        qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends an Rz gate with a possibly symbolic angle (specified in half-turns).
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def Rx(self, angle: Union[sympy.core.expr.Expr, float], qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def Rx(
+        self,
+        angle: Union[sympy.core.expr.Expr, float],
+        qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends an Rx gate with a possibly symbolic angle (specified in half-turns).
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def Ry(self, angle: Union[sympy.core.expr.Expr, float], qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def Ry(
+        self,
+        angle: Union[sympy.core.expr.Expr, float],
+        qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends an Ry gate with a possibly symbolic angle (specified in half-turns).
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def U1(self, angle: Union[sympy.core.expr.Expr, float], qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def U1(
+        self,
+        angle: Union[sympy.core.expr.Expr, float],
+        qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a U1 gate with a possibly symbolic angle (specified in half-turns).
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def U2(self, angle0: Union[sympy.core.expr.Expr, float], angle1: Union[sympy.core.expr.Expr, float], qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def U2(
+        self,
+        angle0: Union[sympy.core.expr.Expr, float],
+        angle1: Union[sympy.core.expr.Expr, float],
+        qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a U2 gate with possibly symbolic angles (specified in half-turns).
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def U3(self, angle0: Union[sympy.core.expr.Expr, float], angle1: Union[sympy.core.expr.Expr, float], angle2: Union[sympy.core.expr.Expr, float], qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def U3(
+        self,
+        angle0: Union[sympy.core.expr.Expr, float],
+        angle1: Union[sympy.core.expr.Expr, float],
+        angle2: Union[sympy.core.expr.Expr, float],
+        qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a U3 gate with possibly symbolic angles (specified in half-turns).
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def GPI(self, angle: Union[sympy.core.expr.Expr, float], qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def GPI(
+        self,
+        angle: Union[sympy.core.expr.Expr, float],
+        qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a GPI gate with a possibly symbolic angle (specified in half-turns).
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def GPI2(self, angle: Union[sympy.core.expr.Expr, float], qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def GPI2(
+        self,
+        angle: Union[sympy.core.expr.Expr, float],
+        qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a GPI2 gate with a possibly symbolic angle (specified in half-turns).
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def AAMS(self, angle0: Union[sympy.core.expr.Expr, float], angle1: Union[sympy.core.expr.Expr, float], angle2: Union[sympy.core.expr.Expr, float], qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def AAMS(
+        self,
+        angle0: Union[sympy.core.expr.Expr, float],
+        angle1: Union[sympy.core.expr.Expr, float],
+        angle2: Union[sympy.core.expr.Expr, float],
+        qubit0: int | pytket._tket.unit_id.Qubit,
+        qubit1: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends an AAMS gate with possibly symbolic angles (specified in half-turns).
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def TK1(self, angle0: Union[sympy.core.expr.Expr, float], angle1: Union[sympy.core.expr.Expr, float], angle2: Union[sympy.core.expr.Expr, float], qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def TK1(
+        self,
+        angle0: Union[sympy.core.expr.Expr, float],
+        angle1: Union[sympy.core.expr.Expr, float],
+        angle2: Union[sympy.core.expr.Expr, float],
+        qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a TK1 gate with possibly symbolic angles (specified in half-turns).
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def TK2(self, angle0: Union[sympy.core.expr.Expr, float], angle1: Union[sympy.core.expr.Expr, float], angle2: Union[sympy.core.expr.Expr, float], qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def TK2(
+        self,
+        angle0: Union[sympy.core.expr.Expr, float],
+        angle1: Union[sympy.core.expr.Expr, float],
+        angle2: Union[sympy.core.expr.Expr, float],
+        qubit0: int | pytket._tket.unit_id.Qubit,
+        qubit1: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a TK2 gate with possibly symbolic angles (specified in half-turns).
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def CX(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def CX(
+        self,
+        control_qubit: int | pytket._tket.unit_id.Qubit,
+        target_qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a CX gate on the wires for the specified control and target qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def CY(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def CY(
+        self,
+        control_qubit: int | pytket._tket.unit_id.Qubit,
+        target_qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a CY gate on the wires for the specified control and target qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def CZ(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def CZ(
+        self,
+        control_qubit: int | pytket._tket.unit_id.Qubit,
+        target_qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a CZ gate on the wires for the specified control and target qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def CH(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def CH(
+        self,
+        control_qubit: int | pytket._tket.unit_id.Qubit,
+        target_qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a CH gate on the wires for the specified control and target qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def CV(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def CV(
+        self,
+        control_qubit: int | pytket._tket.unit_id.Qubit,
+        target_qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a CV gate on the wires for the specified control and target qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def CVdg(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def CVdg(
+        self,
+        control_qubit: int | pytket._tket.unit_id.Qubit,
+        target_qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a CVdg gate on the wires for the specified control and target qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def CSX(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def CSX(
+        self,
+        control_qubit: int | pytket._tket.unit_id.Qubit,
+        target_qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a CSX gate on the wires for the specified control and target qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def CSXdg(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def CSXdg(
+        self,
+        control_qubit: int | pytket._tket.unit_id.Qubit,
+        target_qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a CSXdg gate on the wires for the specified control and target qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def CS(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def CS(
+        self,
+        control_qubit: int | pytket._tket.unit_id.Qubit,
+        target_qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a CS gate on the wires for the specified control and target qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def CSdg(self, control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def CSdg(
+        self,
+        control_qubit: int | pytket._tket.unit_id.Qubit,
+        target_qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a CSdg gate on the wires for the specified control and target qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def CRz(self, angle: Union[sympy.core.expr.Expr, float], control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def CRz(
+        self,
+        angle: Union[sympy.core.expr.Expr, float],
+        control_qubit: int | pytket._tket.unit_id.Qubit,
+        target_qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a CRz gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified control and target qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def CRx(self, angle: Union[sympy.core.expr.Expr, float], control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def CRx(
+        self,
+        angle: Union[sympy.core.expr.Expr, float],
+        control_qubit: int | pytket._tket.unit_id.Qubit,
+        target_qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a CRx gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified control and target qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def CRy(self, angle: Union[sympy.core.expr.Expr, float], control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def CRy(
+        self,
+        angle: Union[sympy.core.expr.Expr, float],
+        control_qubit: int | pytket._tket.unit_id.Qubit,
+        target_qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a CRy gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified control and target qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def CU1(self, angle: Union[sympy.core.expr.Expr, float], control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def CU1(
+        self,
+        angle: Union[sympy.core.expr.Expr, float],
+        control_qubit: int | pytket._tket.unit_id.Qubit,
+        target_qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a CU1 gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified control and target qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def CU3(self, angle0: Union[sympy.core.expr.Expr, float], angle1: Union[sympy.core.expr.Expr, float], angle2: Union[sympy.core.expr.Expr, float], control_qubit: int | pytket._tket.unit_id.Qubit, target_qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def CU3(
+        self,
+        angle0: Union[sympy.core.expr.Expr, float],
+        angle1: Union[sympy.core.expr.Expr, float],
+        angle2: Union[sympy.core.expr.Expr, float],
+        control_qubit: int | pytket._tket.unit_id.Qubit,
+        target_qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a CU3 gate with possibly symbolic angles (specified in half-turns) on the wires for the specified control and target qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def ZZPhase(self, angle: Union[sympy.core.expr.Expr, float], qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def ZZPhase(
+        self,
+        angle: Union[sympy.core.expr.Expr, float],
+        qubit0: int | pytket._tket.unit_id.Qubit,
+        qubit1: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a ZZ gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified two qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def ZZMax(self, qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def ZZMax(
+        self,
+        qubit0: int | pytket._tket.unit_id.Qubit,
+        qubit1: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a ZZMax gate on the wires for the specified two qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def ESWAP(self, angle: Union[sympy.core.expr.Expr, float], qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def ESWAP(
+        self,
+        angle: Union[sympy.core.expr.Expr, float],
+        qubit0: int | pytket._tket.unit_id.Qubit,
+        qubit1: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends an ESWAP gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified two qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def FSim(self, angle0: Union[sympy.core.expr.Expr, float], angle1: Union[sympy.core.expr.Expr, float], qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def FSim(
+        self,
+        angle0: Union[sympy.core.expr.Expr, float],
+        angle1: Union[sympy.core.expr.Expr, float],
+        qubit0: int | pytket._tket.unit_id.Qubit,
+        qubit1: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends an FSim gate with possibly symbolic angles (specified in half-turns) on the wires for the specified qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def Sycamore(self, qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def Sycamore(
+        self,
+        qubit0: int | pytket._tket.unit_id.Qubit,
+        qubit1: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a Sycamore gate on the wires for the specified qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def XXPhase(self, angle: Union[sympy.core.expr.Expr, float], qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def XXPhase(
+        self,
+        angle: Union[sympy.core.expr.Expr, float],
+        qubit0: int | pytket._tket.unit_id.Qubit,
+        qubit1: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a XX gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified two qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def YYPhase(self, angle: Union[sympy.core.expr.Expr, float], qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def YYPhase(
+        self,
+        angle: Union[sympy.core.expr.Expr, float],
+        qubit0: int | pytket._tket.unit_id.Qubit,
+        qubit1: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a YY gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified two qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def XXPhase3(self, angle: Union[sympy.core.expr.Expr, float], qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, qubit2: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def XXPhase3(
+        self,
+        angle: Union[sympy.core.expr.Expr, float],
+        qubit0: int | pytket._tket.unit_id.Qubit,
+        qubit1: int | pytket._tket.unit_id.Qubit,
+        qubit2: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a 3-qubit XX gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified three qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def PhasedX(self, angle0: Union[sympy.core.expr.Expr, float], angle1: Union[sympy.core.expr.Expr, float], qubit: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def PhasedX(
+        self,
+        angle0: Union[sympy.core.expr.Expr, float],
+        angle1: Union[sympy.core.expr.Expr, float],
+        qubit: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a PhasedX gate with possibly symbolic angles (specified in half-turns) on the wires for the specified qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def CCX(self, control_0: int | pytket._tket.unit_id.Qubit, control_1: int | pytket._tket.unit_id.Qubit, target: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def CCX(
+        self,
+        control_0: int | pytket._tket.unit_id.Qubit,
+        control_1: int | pytket._tket.unit_id.Qubit,
+        target: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a CCX gate on the wires for the specified control and target qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def ECR(self, qubit_0: int | pytket._tket.unit_id.Qubit, qubit_1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def ECR(
+        self,
+        qubit_0: int | pytket._tket.unit_id.Qubit,
+        qubit_1: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends an ECR gate on the wires for the specified qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def SWAP(self, qubit_0: int | pytket._tket.unit_id.Qubit, qubit_1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def SWAP(
+        self,
+        qubit_0: int | pytket._tket.unit_id.Qubit,
+        qubit_1: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a SWAP gate on the wires for the specified qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def CSWAP(self, control: int | pytket._tket.unit_id.Qubit, target_0: int | pytket._tket.unit_id.Qubit, target_1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def CSWAP(
+        self,
+        control: int | pytket._tket.unit_id.Qubit,
+        target_0: int | pytket._tket.unit_id.Qubit,
+        target_1: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a CSWAP gate on the wires for the specified control and target qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def ISWAP(self, angle: Union[sympy.core.expr.Expr, float], qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def ISWAP(
+        self,
+        angle: Union[sympy.core.expr.Expr, float],
+        qubit0: int | pytket._tket.unit_id.Qubit,
+        qubit1: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends an ISWAP gate with a possibly symbolic angle (specified in half-turns) on the wires for the specified qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def ISWAPMax(self, qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def ISWAPMax(
+        self,
+        qubit0: int | pytket._tket.unit_id.Qubit,
+        qubit1: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends an ISWAPMax gate on the wires for the specified qubits.
 
         :return: the new :py:class:`~.Circuit`
         """
 
-    def PhasedISWAP(self, angle0: Union[sympy.core.expr.Expr, float], angle1: Union[sympy.core.expr.Expr, float], qubit0: int | pytket._tket.unit_id.Qubit, qubit1: int | pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+    def PhasedISWAP(
+        self,
+        angle0: Union[sympy.core.expr.Expr, float],
+        angle1: Union[sympy.core.expr.Expr, float],
+        qubit0: int | pytket._tket.unit_id.Qubit,
+        qubit1: int | pytket._tket.unit_id.Qubit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a PhasedISWAP gate with possibly symbolic angles (specified in half-turns) on the wires for the specified qubits.
 
@@ -1401,7 +1822,9 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def measure_register(self, arg0: pytket._tket.unit_id.QubitRegister, arg1: str, /) -> Circuit:
+    def measure_register(
+        self, arg0: pytket._tket.unit_id.QubitRegister, arg1: str, /
+    ) -> Circuit:
         """
         Appends a measure gate to all qubits in the given register, storing the results in the given classical register with matching indices.The classical register will be created if it doesn't exist.
 
@@ -1410,9 +1833,16 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def Phase(self, arg0: Union[sympy.core.expr.Expr, float], /, **kwargs: Any) -> Circuit: ...
-
-    def add_c_transform(self, values: Sequence[int], args: Sequence[int] | Sequence[pytket._tket.unit_id.Bit], name: str = 'ClassicalTransform', **kwargs: Any) -> Circuit:
+    def Phase(
+        self, arg0: Union[sympy.core.expr.Expr, float], /, **kwargs: Any
+    ) -> Circuit: ...
+    def add_c_transform(
+        self,
+        values: Sequence[int],
+        args: Sequence[int] | Sequence[pytket._tket.unit_id.Bit],
+        name: str = "ClassicalTransform",
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a purely classical transformation, defined by a table of values, to the end of the circuit.
 
@@ -1424,9 +1854,18 @@ class Circuit:
         """
 
     @overload
-    def _add_wasm(self, funcname: str, wasm_uid: str, width_i_parameter: Sequence[int], width_o_parameter: Sequence[int], args: Sequence[int] | Sequence[pytket._tket.unit_id.Bit], wasm_wire_args: Sequence[int], **kwargs: Any) -> Circuit:
+    def _add_wasm(
+        self,
+        funcname: str,
+        wasm_uid: str,
+        width_i_parameter: Sequence[int],
+        width_o_parameter: Sequence[int],
+        args: Sequence[int] | Sequence[pytket._tket.unit_id.Bit],
+        wasm_wire_args: Sequence[int],
+        **kwargs: Any,
+    ) -> Circuit:
         """
-        Add a classical function call from a wasm file to the circuit. 
+        Add a classical function call from a wasm file to the circuit.
 
         :param funcname: name of the function that is called
         :param wasm_uid: unit id to identify the wasm file
@@ -1439,9 +1878,17 @@ class Circuit:
         """
 
     @overload
-    def _add_wasm(self, funcname: str, wasm_uid: str, list_reg_in: Sequence[pytket._tket.unit_id.BitRegister], list_reg_out: Sequence[pytket._tket.unit_id.BitRegister], wasm_wire_args: Sequence[int], **kwargs: Any) -> Circuit:
+    def _add_wasm(
+        self,
+        funcname: str,
+        wasm_uid: str,
+        list_reg_in: Sequence[pytket._tket.unit_id.BitRegister],
+        list_reg_out: Sequence[pytket._tket.unit_id.BitRegister],
+        wasm_wire_args: Sequence[int],
+        **kwargs: Any,
+    ) -> Circuit:
         """
-        Add a classical function call from a wasm file to the circuit. 
+        Add a classical function call from a wasm file to the circuit.
 
         :param funcname: name of the function that is called
         :param wasm_uid: unit id to identify the wasm file
@@ -1451,7 +1898,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_c_setbits(self, values: Sequence[bool], args: Sequence[int] | Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
+    def add_c_setbits(
+        self,
+        values: Sequence[bool],
+        args: Sequence[int] | Sequence[pytket._tket.unit_id.Bit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends an operation to set some bit values.
 
@@ -1461,12 +1913,19 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_c_setreg(self, value: int, arg: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
+    def add_c_setreg(
+        self, value: int, arg: pytket._tket.unit_id.BitRegister, **kwargs: Any
+    ) -> Circuit:
         """
         Set a classical register to an unsigned integer value. The little-endian bitwise representation of the integer is truncated to the register size, up to _TKET_REG_WIDTH bit width. It is zero-padded if the width of the register is greater than _TKET_REG_WIDTH.
         """
 
-    def add_c_copybits(self, args_in: Sequence[int] | Sequence[pytket._tket.unit_id.Bit], args_out: Sequence[int] | Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
+    def add_c_copybits(
+        self,
+        args_in: Sequence[int] | Sequence[pytket._tket.unit_id.Bit],
+        args_out: Sequence[int] | Sequence[pytket._tket.unit_id.Bit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a classical copy operation
 
@@ -1476,26 +1935,51 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_c_copyreg(self, input_reg: pytket._tket.unit_id.BitRegister, output_reg: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
+    def add_c_copyreg(
+        self,
+        input_reg: pytket._tket.unit_id.BitRegister,
+        output_reg: pytket._tket.unit_id.BitRegister,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Copy a classical register to another. Copying is truncated to the size of the smaller of the two registers.
         """
 
-    def add_c_predicate(self, values: Sequence[bool], args_in: Sequence[int] | Sequence[pytket._tket.unit_id.Bit], arg_out: int | pytket._tket.unit_id.Bit, name: str = 'ExplicitPredicate', **kwargs: Any) -> Circuit:
+    def add_c_predicate(
+        self,
+        values: Sequence[bool],
+        args_in: Sequence[int] | Sequence[pytket._tket.unit_id.Bit],
+        arg_out: int | pytket._tket.unit_id.Bit,
+        name: str = "ExplicitPredicate",
+        **kwargs: Any,
+    ) -> Circuit:
         """
         :param name: operation name
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_c_modifier(self, values: Sequence[bool], args_in: Sequence[int] | Sequence[pytket._tket.unit_id.Bit], arg_inout: int | pytket._tket.unit_id.Bit, name: str = 'ExplicitModifier', **kwargs: Any) -> Circuit:
+    def add_c_modifier(
+        self,
+        values: Sequence[bool],
+        args_in: Sequence[int] | Sequence[pytket._tket.unit_id.Bit],
+        arg_inout: int | pytket._tket.unit_id.Bit,
+        name: str = "ExplicitModifier",
+        **kwargs: Any,
+    ) -> Circuit:
         """
         :param name: operation name
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_c_and(self, arg0_in: int | pytket._tket.unit_id.Bit, arg1_in: int | pytket._tket.unit_id.Bit, arg_out: int | pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
+    def add_c_and(
+        self,
+        arg0_in: int | pytket._tket.unit_id.Bit,
+        arg1_in: int | pytket._tket.unit_id.Bit,
+        arg_out: int | pytket._tket.unit_id.Bit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a binary AND operation to the end of the circuit.
 
@@ -1506,7 +1990,13 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_c_or(self, arg0_in: int | pytket._tket.unit_id.Bit, arg1_in: int | pytket._tket.unit_id.Bit, arg_out: int | pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
+    def add_c_or(
+        self,
+        arg0_in: int | pytket._tket.unit_id.Bit,
+        arg1_in: int | pytket._tket.unit_id.Bit,
+        arg_out: int | pytket._tket.unit_id.Bit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a binary OR operation to the end of the circuit.
 
@@ -1517,7 +2007,13 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_c_xor(self, arg0_in: int | pytket._tket.unit_id.Bit, arg1_in: int | pytket._tket.unit_id.Bit, arg_out: int | pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
+    def add_c_xor(
+        self,
+        arg0_in: int | pytket._tket.unit_id.Bit,
+        arg1_in: int | pytket._tket.unit_id.Bit,
+        arg_out: int | pytket._tket.unit_id.Bit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a binary XOR operation to the end of the circuit.
 
@@ -1528,7 +2024,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_c_not(self, arg_in: int | pytket._tket.unit_id.Bit, arg_out: int | pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
+    def add_c_not(
+        self,
+        arg_in: int | pytket._tket.unit_id.Bit,
+        arg_out: int | pytket._tket.unit_id.Bit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a NOT operation to the end of the circuit.
 
@@ -1538,7 +2039,14 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_c_range_predicate(self, minval: int, maxval: int, args_in: Sequence[int] | Sequence[pytket._tket.unit_id.Bit], arg_out: int | pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
+    def add_c_range_predicate(
+        self,
+        minval: int,
+        maxval: int,
+        args_in: Sequence[int] | Sequence[pytket._tket.unit_id.Bit],
+        arg_out: int | pytket._tket.unit_id.Bit,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Appends a range-predicate operation to the end of the circuit.
 
@@ -1550,7 +2058,13 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_c_and_to_registers(self, reg0_in: pytket._tket.unit_id.BitRegister, reg1_in: pytket._tket.unit_id.BitRegister, reg_out: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
+    def add_c_and_to_registers(
+        self,
+        reg0_in: pytket._tket.unit_id.BitRegister,
+        reg1_in: pytket._tket.unit_id.BitRegister,
+        reg_out: pytket._tket.unit_id.BitRegister,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Applies bitwise AND to linear registers.
 
@@ -1563,7 +2077,13 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_c_or_to_registers(self, reg0_in: pytket._tket.unit_id.BitRegister, reg1_in: pytket._tket.unit_id.BitRegister, reg_out: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
+    def add_c_or_to_registers(
+        self,
+        reg0_in: pytket._tket.unit_id.BitRegister,
+        reg1_in: pytket._tket.unit_id.BitRegister,
+        reg_out: pytket._tket.unit_id.BitRegister,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Applies bitwise OR to linear registers.
 
@@ -1576,7 +2096,13 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_c_xor_to_registers(self, reg0_in: pytket._tket.unit_id.BitRegister, reg1_in: pytket._tket.unit_id.BitRegister, reg_out: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
+    def add_c_xor_to_registers(
+        self,
+        reg0_in: pytket._tket.unit_id.BitRegister,
+        reg1_in: pytket._tket.unit_id.BitRegister,
+        reg_out: pytket._tket.unit_id.BitRegister,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Applies bitwise XOR to linear registers.
 
@@ -1589,7 +2115,12 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_c_not_to_registers(self, reg_in: pytket._tket.unit_id.BitRegister, reg_out: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
+    def add_c_not_to_registers(
+        self,
+        reg_in: pytket._tket.unit_id.BitRegister,
+        reg_out: pytket._tket.unit_id.BitRegister,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Applies bitwise NOT to linear registers.
 
@@ -1602,28 +2133,32 @@ class Circuit:
         """
 
     def __eq__(self, arg: object, /) -> bool: ...
-
     def __hash__(self) -> int:
         """
         Hashing is not implemented for this class, attempting to hash an object will raise a type error
         """
 
     def __str__(self) -> str: ...
-
     def __repr__(self) -> str: ...
-
     def __iter__(self) -> Iterator[Command]:
         """Iterate through the circuit, a Command at a time."""
 
     def get_commands(self) -> list[Command]:
         """:return: a list of all the Commands in the circuit"""
 
-    def get_unitary(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')]:
+    def get_unitary(
+        self,
+    ) -> Annotated[NDArray, dict(dtype="complex128", shape=(None, None), order="F")]:
         """
         :return: The numerical unitary matrix of the circuit, using ILO-BE convention.
         """
 
-    def get_unitary_times_other(self, matr: Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')]) -> Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')]:
+    def get_unitary_times_other(
+        self,
+        matr: Annotated[
+            NDArray, dict(dtype="complex128", shape=(None, None), order="F")
+        ],
+    ) -> Annotated[NDArray, dict(dtype="complex128", shape=(None, None), order="F")]:
         """
         Calculate UM, where U is the numerical unitary matrix of the circuit, with ILO-BE convention, and M is another matrix. This is more efficient than calculating U separately, if M has fewer columns than U.
 
@@ -1631,7 +2166,9 @@ class Circuit:
         :return: The product of the circuit unitary and the given matrix.
         """
 
-    def get_statevector(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')]:
+    def get_statevector(
+        self,
+    ) -> Annotated[NDArray, dict(dtype="complex128", shape=(None), order="C")]:
         """
         Calculate the statevector resulting from applying the circuit to the all-zero state, using ILO-BE convention. The result is a one-dimensional array.
 
@@ -1639,7 +2176,9 @@ class Circuit:
         """
 
     @overload
-    def add_q_register(self, name: str, size: int) -> pytket._tket.unit_id.QubitRegister:
+    def add_q_register(
+        self, name: str, size: int
+    ) -> pytket._tket.unit_id.QubitRegister:
         """
         Constructs a new quantum register with a given name and number of qubits.
 
@@ -1649,7 +2188,9 @@ class Circuit:
         """
 
     @overload
-    def add_q_register(self, register: pytket._tket.unit_id.QubitRegister) -> pytket._tket.unit_id.QubitRegister:
+    def add_q_register(
+        self, register: pytket._tket.unit_id.QubitRegister
+    ) -> pytket._tket.unit_id.QubitRegister:
         """
         Adds QubitRegister to Circuit
 
@@ -1658,7 +2199,7 @@ class Circuit:
 
     def _add_w_register(self, size: int) -> None:
         """
-        Creates given number of wasm bits in the circuit. If there are already wasm bits in circuit only the additional wasm bits will be added. 
+        Creates given number of wasm bits in the circuit. If there are already wasm bits in circuit only the additional wasm bits will be added.
 
         :param size: Number of wasm bits that should be added to the circuit
         """
@@ -1674,7 +2215,9 @@ class Circuit:
         """
 
     @overload
-    def add_c_register(self, register: pytket._tket.unit_id.BitRegister) -> pytket._tket.unit_id.BitRegister:
+    def add_c_register(
+        self, register: pytket._tket.unit_id.BitRegister
+    ) -> pytket._tket.unit_id.BitRegister:
         """
         Adds BitRegister to Circuit
 
@@ -1717,7 +2260,9 @@ class Circuit:
         :return: List of :py:class:`~.QubitRegister`
         """
 
-    def add_qubit(self, id: pytket._tket.unit_id.Qubit, reject_dups: bool = True) -> None:
+    def add_qubit(
+        self, id: pytket._tket.unit_id.Qubit, reject_dups: bool = True
+    ) -> None:
         """
         Constructs a single qubit with the given id.
 
@@ -1762,7 +2307,9 @@ class Circuit:
         """
 
     @property
-    def qubit_to_bit_map(self) -> dict[pytket._tket.unit_id.Qubit, pytket._tket.unit_id.Bit]:
+    def qubit_to_bit_map(
+        self,
+    ) -> dict[pytket._tket.unit_id.Qubit, pytket._tket.unit_id.Bit]:
         """
         A map from qubit to the bit it is measured to. A qubit will feature in this map if it is measured and neither it nor the bit containing the measurement result is subsequently acted on
         """
@@ -1771,13 +2318,20 @@ class Circuit:
     def opgroups(self) -> set[str]:
         """A set of all opgroup names in the circuit"""
 
-    def flatten_registers(self) -> dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]:
+    def flatten_registers(
+        self,
+    ) -> dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]:
         """
         Combines all qubits into a single register namespace with the default name, and likewise for bits
         """
 
     @overload
-    def add_circuit(self, circuit: Circuit, qubits: Sequence[pytket._tket.unit_id.Qubit], bits: Sequence[pytket._tket.unit_id.Bit] = []) -> Circuit:
+    def add_circuit(
+        self,
+        circuit: Circuit,
+        qubits: Sequence[pytket._tket.unit_id.Qubit],
+        bits: Sequence[pytket._tket.unit_id.Bit] = [],
+    ) -> Circuit:
         """
         In-place sequential composition of circuits, appending a copy of the argument onto the end of the circuit. Connects qubits and bits with the same behaviour as :py:meth:`add_gate`.
 
@@ -1788,7 +2342,9 @@ class Circuit:
         """
 
     @overload
-    def add_circuit(self, circuit: Circuit, qubits: Sequence[int], bits: Sequence[int] = []) -> Circuit:
+    def add_circuit(
+        self, circuit: Circuit, qubits: Sequence[int], bits: Sequence[int] = []
+    ) -> Circuit:
         """
         In-place sequential composition of circuits, appending a copy of the argument onto the end of the circuit. Connects qubits and bits with the same behaviour as :py:meth:`add_gate`.
 
@@ -1798,7 +2354,11 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
-    def add_circuit_with_map(self, circuit: Circuit, unit_map: Mapping[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]) -> Circuit:
+    def add_circuit_with_map(
+        self,
+        circuit: Circuit,
+        unit_map: Mapping[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID],
+    ) -> Circuit:
         """
         In-place sequential composition of circuits, appending a copy of the argument onto the end of the circuit.
 
@@ -1857,13 +2417,15 @@ class Circuit:
 
     @property
     def name(self) -> str | None: ...
-
     @name.setter
     def name(self, arg: str, /) -> None: ...
-
-    def remove_blank_wires(self, keep_blank_classical_wires: bool = False, remove_classical_only_at_end_of_register: bool = True) -> None:
+    def remove_blank_wires(
+        self,
+        keep_blank_classical_wires: bool = False,
+        remove_classical_only_at_end_of_register: bool = True,
+    ) -> None:
         """
-        Removes any Input-Output pairs in the DAG with no intervening operations, i.e. removes untouched qubits/bits from the circuit. This may occur when optimisations recognise that the operations on a qubit reduce to the identity, or when routing adds wires to "fill out" the architecture. This operation will only remove empty classical wires if there are no used bits with a higher index in the same register. 
+        Removes any Input-Output pairs in the DAG with no intervening operations, i.e. removes untouched qubits/bits from the circuit. This may occur when optimisations recognise that the operations on a qubit reduce to the identity, or when routing adds wires to "fill out" the architecture. This operation will only remove empty classical wires if there are no used bits with a higher index in the same register.
 
         :param keep_blank_classical_wires: if true, empty classical wires are not removed
         :param remove_classical_only_at_end_of_register: if true, empty classical wires are not removed if they don't belong to a register or there are any non-empty wires with a higher index in the same register
@@ -1876,7 +2438,17 @@ class Circuit:
         :param number: Number of qubits to add
         """
 
-    def rename_units(self, map: Mapping[pytket._tket.unit_id.UnitID | pytket._tket.unit_id.Qubit | pytket._tket.unit_id.Bit, pytket._tket.unit_id.UnitID | pytket._tket.unit_id.Qubit | pytket._tket.unit_id.Bit]) -> bool:
+    def rename_units(
+        self,
+        map: Mapping[
+            pytket._tket.unit_id.UnitID
+            | pytket._tket.unit_id.Qubit
+            | pytket._tket.unit_id.Bit,
+            pytket._tket.unit_id.UnitID
+            | pytket._tket.unit_id.Qubit
+            | pytket._tket.unit_id.Bit,
+        ],
+    ) -> bool:
         """
         Rename qubits and bits simultaneously according to the map of ids provided
 
@@ -1988,9 +2560,7 @@ class Circuit:
         """
 
     def __getstate__(self) -> tuple: ...
-
     def __setstate__(self, arg: tuple, /) -> None: ...
-
     def to_latex_file(self, filename: str) -> None:
         """
         Produces a latex file with a visualisation of the circuit using the Quantikz package.
@@ -2025,9 +2595,14 @@ class Circuit:
     def copy(self) -> Circuit:
         """:return: an identical copy of the circuit"""
 
-    def symbol_substitution(self, symbol_map: Mapping[sympy.core.symbol.Symbol, Union[sympy.core.expr.Expr, float]]) -> None:
+    def symbol_substitution(
+        self,
+        symbol_map: Mapping[
+            sympy.core.symbol.Symbol, Union[sympy.core.expr.Expr, float]
+        ],
+    ) -> None:
         """
-        In-place substitution for symbolic expressions; iterates through each parameterised gate/box and performs the substitution. 
+        In-place substitution for symbolic expressions; iterates through each parameterised gate/box and performs the substitution.
 
         :param symbol_map: A map from SymPy symbols to SymPy expressions or floats
         """
@@ -2178,20 +2753,28 @@ class Circuit:
     def qubit_is_discarded(self, arg: pytket._tket.unit_id.Qubit, /) -> bool:
         """Query whether a qubit has its final state discarded"""
 
-    def _classical_eval(self, arg: Mapping[pytket._tket.unit_id.Bit, bool], /) -> dict[pytket._tket.unit_id.Bit, bool]: ...
-
-    def valid_connectivity(self, arch: pytket._tket.architecture.Architecture, directed: bool, allow_bridge: bool = False) -> bool:
+    def _classical_eval(
+        self, arg: Mapping[pytket._tket.unit_id.Bit, bool], /
+    ) -> dict[pytket._tket.unit_id.Bit, bool]: ...
+    def valid_connectivity(
+        self,
+        arch: pytket._tket.architecture.Architecture,
+        directed: bool,
+        allow_bridge: bool = False,
+    ) -> bool:
         """
         Confirms whether all two qubit gates in given circuit are along some edge of the architecture.
 
         :param arch: The architecture capturing the desired connectivity
         :param directed: If true, also checks that CX or ECR gates are in the same direction as the edges of the architecture
-        :param allow_bridge: Accept BRIDGEEs as valid, assuming the middle qubit neighbours the others
+        :param allow_bridge: Accept BRIDGEs as valid, assuming the middle qubit neighbours the others
 
         :return: True or False
         """
 
-    def implicit_qubit_permutation(self) -> dict[pytket._tket.unit_id.Qubit, pytket._tket.unit_id.Qubit]:
+    def implicit_qubit_permutation(
+        self,
+    ) -> dict[pytket._tket.unit_id.Qubit, pytket._tket.unit_id.Qubit]:
         """
         :return: dictionary mapping input qubit to output qubit on the same path
         """
@@ -2294,10 +2877,32 @@ class Circuit:
         """
 
     @property
-    def _dag_data(self) -> tuple[set[int], set[int], set[int], set[int], set[int], set[int], dict[int, str], dict[int, str], dict[int, str], set[tuple[int, int, int, int, str]]]:
+    def _dag_data(
+        self,
+    ) -> tuple[
+        set[int],
+        set[int],
+        set[int],
+        set[int],
+        set[int],
+        set[int],
+        dict[int, str],
+        dict[int, str],
+        dict[int, str],
+        set[tuple[int, int, int, int, str]],
+    ]:
         """DAG data for circuit"""
 
-    def add_wasm(self: Circuit, funcname: str, filehandler: pytket.wasm.wasm.WasmModuleHandler, list_i: Sequence[int], list_o: Sequence[int], args: Union[Sequence[int], Sequence[pytket._tket.unit_id.Bit]], args_wasm: Union[Sequence[int], None] = None, **kwargs: Any) -> Circuit:
+    def add_wasm(
+        self: Circuit,
+        funcname: str,
+        filehandler: pytket.wasm.wasm.WasmModuleHandler,
+        list_i: Sequence[int],
+        list_o: Sequence[int],
+        args: Union[Sequence[int], Sequence[pytket._tket.unit_id.Bit]],
+        args_wasm: Union[Sequence[int], None] = None,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Add a classical function call from a wasm file to the circuit.
 
@@ -2321,7 +2926,15 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
 
-    def add_wasm_to_reg(self: Circuit, funcname: str, filehandler: pytket.wasm.wasm.WasmModuleHandler, list_i: Sequence[pytket._tket.unit_id.BitRegister], list_o: Sequence[pytket._tket.unit_id.BitRegister], args_wasm: Union[Sequence[int], None] = None, **kwargs: Any) -> Circuit:
+    def add_wasm_to_reg(
+        self: Circuit,
+        funcname: str,
+        filehandler: pytket.wasm.wasm.WasmModuleHandler,
+        list_i: Sequence[pytket._tket.unit_id.BitRegister],
+        list_o: Sequence[pytket._tket.unit_id.BitRegister],
+        args_wasm: Union[Sequence[int], None] = None,
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Add a classical function call from a wasm file to the circuit.
 
@@ -2345,7 +2958,12 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
 
-    def add_clexpr_from_logicexp(circ: Circuit, exp: pytket.circuit.logic_exp.LogicExp, output_bits: list[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
+    def add_clexpr_from_logicexp(
+        circ: Circuit,
+        exp: pytket.circuit.logic_exp.LogicExp,
+        output_bits: list[pytket._tket.unit_id.Bit],
+        **kwargs: Any,
+    ) -> Circuit:
         """
         Append a :py:class:`~.ClExprOp` defined in terms of a logical expression.
 
@@ -2375,11 +2993,16 @@ class CircBox(Op):
     def get_circuit(self) -> Circuit:
         """:return: the :py:class:`~.Circuit` described by the box"""
 
-    def symbol_substitution(self, symbol_map: Mapping[sympy.core.symbol.Symbol, Union[sympy.core.expr.Expr, float]]) -> None:
+    def symbol_substitution(
+        self,
+        symbol_map: Mapping[
+            sympy.core.symbol.Symbol, Union[sympy.core.expr.Expr, float]
+        ],
+    ) -> None:
         """
-        In-place substitution of symbolic expressions within underlying circuit; iterates through each parameterised gate/box within the circuit and performs the substitution. 
+        In-place substitution of symbolic expressions within underlying circuit; iterates through each parameterised gate/box within the circuit and performs the substitution.
 
-         WARNING: This method potentially mutates the CircBox and any changes are propagated to any Circuit that the CircBox has been added to (via Circuit.add_circbox). 
+         WARNING: This method potentially mutates the CircBox and any changes are propagated to any Circuit that the CircBox has been added to (via Circuit.add_circbox).
 
         :param symbol_map: A map from SymPy symbols to SymPy expressions
         """
@@ -2387,7 +3010,7 @@ class CircBox(Op):
     @property
     def circuit_name(self) -> str | None:
         """
-        The name of the contained circuit. 
+        The name of the contained circuit.
 
          WARNING: Setting this property mutates the CircBox and any changes are propagated to any Circuit that the CircBox has been added to (via Circuit.add_circbox).
         """
@@ -2398,19 +3021,27 @@ class CircBox(Op):
 class Unitary1qBox(Op):
     """A user-defined one-qubit operation specified by a unitary matrix."""
 
-    def __init__(self, m: Annotated[NDArray, dict(dtype='complex128', shape=(2, 2), order='F')]) -> None:
+    def __init__(
+        self, m: Annotated[NDArray, dict(dtype="complex128", shape=(2, 2), order="F")]
+    ) -> None:
         """Construct from a unitary matrix."""
 
     def get_circuit(self) -> Circuit:
         """:return: the :py:class:`~.Circuit` described by the box"""
 
-    def get_matrix(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(2, 2), order='F')]:
+    def get_matrix(
+        self,
+    ) -> Annotated[NDArray, dict(dtype="complex128", shape=(2, 2), order="F")]:
         """:return: the unitary matrix as a numpy array"""
 
 class Unitary2qBox(Op):
     """A user-defined two-qubit operation specified by a unitary matrix."""
 
-    def __init__(self, m: Annotated[NDArray, dict(dtype='complex128', shape=(4, 4), order='F')], basis: BasisOrder = BasisOrder.ilo) -> None:
+    def __init__(
+        self,
+        m: Annotated[NDArray, dict(dtype="complex128", shape=(4, 4), order="F")],
+        basis: BasisOrder = BasisOrder.ilo,
+    ) -> None:
         """
         Construct from a unitary matrix.
 
@@ -2421,13 +3052,19 @@ class Unitary2qBox(Op):
     def get_circuit(self) -> Circuit:
         """:return: the :py:class:`~.Circuit` described by the box"""
 
-    def get_matrix(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(4, 4), order='F')]:
+    def get_matrix(
+        self,
+    ) -> Annotated[NDArray, dict(dtype="complex128", shape=(4, 4), order="F")]:
         """:return: the unitary matrix (in ILO-BE format) as a numpy array"""
 
 class Unitary3qBox(Op):
     """A user-defined three-qubit operation specified by a unitary matrix."""
 
-    def __init__(self, m: Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')], basis: BasisOrder = BasisOrder.ilo) -> None:
+    def __init__(
+        self,
+        m: Annotated[NDArray, dict(dtype="complex128", shape=(None, None), order="F")],
+        basis: BasisOrder = BasisOrder.ilo,
+    ) -> None:
         """
         Construct from a unitary matrix.
 
@@ -2438,7 +3075,9 @@ class Unitary3qBox(Op):
     def get_circuit(self) -> Circuit:
         """:return: the :py:class:`~.Circuit` described by the box"""
 
-    def get_matrix(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(8, 8), order='F')]:
+    def get_matrix(
+        self,
+    ) -> Annotated[NDArray, dict(dtype="complex128", shape=(8, 8), order="F")]:
         """:return: the unitary matrix (in ILO-BE format) as a numpy array"""
 
 class ExpBox(Op):
@@ -2446,7 +3085,12 @@ class ExpBox(Op):
     A user-defined two-qubit operation whose corresponding unitary matrix is the exponential of a user-defined hermitian matrix.
     """
 
-    def __init__(self, A: Annotated[NDArray, dict(dtype='complex128', shape=(4, 4), order='F')], t: float, basis: BasisOrder = BasisOrder.ilo) -> None:
+    def __init__(
+        self,
+        A: Annotated[NDArray, dict(dtype="complex128", shape=(4, 4), order="F")],
+        t: float,
+        basis: BasisOrder = BasisOrder.ilo,
+    ) -> None:
         """
         Construct :math:`e^{itA}` from a hermitian matrix :math:`A` and a parameter :math:`t`.
 
@@ -2463,7 +3107,12 @@ class PauliExpBox(Op):
     An operation defined as the exponential of a tensor of Pauli operations and a (possibly symbolic) phase parameter.
     """
 
-    def __init__(self, paulis: Sequence[pytket._tket.pauli.Pauli], t: Union[sympy.core.expr.Expr, float], cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
+    def __init__(
+        self,
+        paulis: Sequence[pytket._tket.pauli.Pauli],
+        t: Union[sympy.core.expr.Expr, float],
+        cx_config_type: CXConfigType = CXConfigType.Tree,
+    ) -> None:
         r"""
         Construct :math:`e^{-\frac12 i \pi t \sigma_0 \otimes \sigma_1 \otimes \cdots}` from Pauli operators :math:`\sigma_i \in \{I,X,Y,Z\}` and a parameter :math:`t`.
         """
@@ -2487,7 +3136,14 @@ class PauliExpPairBox(Op):
     Phase parameters may be symbolic.
     """
 
-    def __init__(self, paulis0: Sequence[pytket._tket.pauli.Pauli], t0: Union[sympy.core.expr.Expr, float], paulis1: Sequence[pytket._tket.pauli.Pauli], t1: Union[sympy.core.expr.Expr, float], cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
+    def __init__(
+        self,
+        paulis0: Sequence[pytket._tket.pauli.Pauli],
+        t0: Union[sympy.core.expr.Expr, float],
+        paulis1: Sequence[pytket._tket.pauli.Pauli],
+        t1: Union[sympy.core.expr.Expr, float],
+        cx_config_type: CXConfigType = CXConfigType.Tree,
+    ) -> None:
         r"""
         Construct a pair of Pauli exponentials of the form :math:`e^{-\frac12 i \pi t_j \sigma_0 \otimes \sigma_1 \otimes \cdots}` from Pauli operator strings :math:`\sigma_i \in \{I,X,Y,Z\}` and parameters :math:`t_j, j \in \{0,1\}`.
         """
@@ -2495,12 +3151,16 @@ class PauliExpPairBox(Op):
     def get_circuit(self) -> Circuit:
         """:return: the :py:class:`~.Circuit` described by the box"""
 
-    def get_paulis_pair(self) -> tuple[list[pytket._tket.pauli.Pauli], list[pytket._tket.pauli.Pauli]]:
+    def get_paulis_pair(
+        self,
+    ) -> tuple[list[pytket._tket.pauli.Pauli], list[pytket._tket.pauli.Pauli]]:
         """
         :return: A tuple containing the two corresponding lists of :py:class:`~.Pauli` s
         """
 
-    def get_phase_pair(self) -> tuple[Union[sympy.core.expr.Expr, float], Union[sympy.core.expr.Expr, float]]:
+    def get_phase_pair(
+        self,
+    ) -> tuple[Union[sympy.core.expr.Expr, float], Union[sympy.core.expr.Expr, float]]:
         """:return: A tuple containing the two phase parameters"""
 
     def get_cx_config(self) -> CXConfigType:
@@ -2511,7 +3171,15 @@ class PauliExpCommutingSetBox(Op):
     An operation defined as a set of commuting of exponentials of atensor of Pauli operations and their (possibly symbolic) phase parameters.
     """
 
-    def __init__(self, pauli_gadgets: Sequence[tuple[Sequence[pytket._tket.pauli.Pauli], Union[sympy.core.expr.Expr, float]]], cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
+    def __init__(
+        self,
+        pauli_gadgets: Sequence[
+            tuple[
+                Sequence[pytket._tket.pauli.Pauli], Union[sympy.core.expr.Expr, float]
+            ]
+        ],
+        cx_config_type: CXConfigType = CXConfigType.Tree,
+    ) -> None:
         r"""
         Construct a set of necessarily commuting Pauli exponentials of the form :math:`e^{-\frac12 i \pi t_j \sigma_0 \otimes \sigma_1 \otimes \cdots}` from Pauli operator strings :math:`\sigma_i \in \{I,X,Y,Z\}` and parameters :math:`t_j, j \in \{0, 1, \cdots \}`.
         """
@@ -2519,7 +3187,11 @@ class PauliExpCommutingSetBox(Op):
     def get_circuit(self) -> Circuit:
         """:return: the :py:class:`~.Circuit` described by the box"""
 
-    def get_paulis(self) -> list[tuple[list[pytket._tket.pauli.Pauli], Union[sympy.core.expr.Expr, float]]]:
+    def get_paulis(
+        self,
+    ) -> list[
+        tuple[list[pytket._tket.pauli.Pauli], Union[sympy.core.expr.Expr, float]]
+    ]:
         """:return: the corresponding list of Pauli gadgets"""
 
     def get_cx_config(self) -> CXConfigType:
@@ -2532,7 +3204,19 @@ class TermSequenceBox(Op):
      WARNING: Global phase is not preserved when using PauliSynthStrat.Greedy.
     """
 
-    def __init__(self, pauli_gadgets: Sequence[tuple[Sequence[pytket._tket.pauli.Pauli], Union[sympy.core.expr.Expr, float]]], synthesis_strategy: pytket._tket.transform.PauliSynthStrat = pytket._tket.transform.PauliSynthStrat.Sets, partitioning_strategy: pytket._tket.partition.PauliPartitionStrat = pytket._tket.partition.PauliPartitionStrat.CommutingSets, graph_colouring: pytket._tket.partition.GraphColourMethod = pytket._tket.partition.GraphColourMethod.Lazy, cx_config_type: CXConfigType = CXConfigType.Tree, depth_weight: float = 0.3) -> None:
+    def __init__(
+        self,
+        pauli_gadgets: Sequence[
+            tuple[
+                Sequence[pytket._tket.pauli.Pauli], Union[sympy.core.expr.Expr, float]
+            ]
+        ],
+        synthesis_strategy: pytket._tket.transform.PauliSynthStrat = pytket._tket.transform.PauliSynthStrat.Sets,
+        partitioning_strategy: pytket._tket.partition.PauliPartitionStrat = pytket._tket.partition.PauliPartitionStrat.CommutingSets,
+        graph_colouring: pytket._tket.partition.GraphColourMethod = pytket._tket.partition.GraphColourMethod.Lazy,
+        cx_config_type: CXConfigType = CXConfigType.Tree,
+        depth_weight: float = 0.3,
+    ) -> None:
         r"""
         Construct a set of Pauli exponentials of the form :math:`e^{-\frac12 i \pi t_j \sigma_0 \otimes \sigma_1 \otimes \cdots}` from Pauli operator strings :math:`\sigma_i \in \{I,X,Y,Z\}` and parameters :math:`t_j, j \in \{0, 1, \cdots \}`.
         `depth_weight` controls the degree of depth optimisation and only applies to synthesis_strategy `PauliSynthStrat:Greedy`. `partitioning_strategy`, `graph_colouring`, and `cx_config_type` have no effect if `PauliSynthStrat.Greedy` is used.
@@ -2543,7 +3227,11 @@ class TermSequenceBox(Op):
     def get_circuit(self) -> Circuit:
         """:return: the :py:class:`~.Circuit` described by the box"""
 
-    def get_paulis(self) -> list[tuple[list[pytket._tket.pauli.Pauli], Union[sympy.core.expr.Expr, float]]]:
+    def get_paulis(
+        self,
+    ) -> list[
+        tuple[list[pytket._tket.pauli.Pauli], Union[sympy.core.expr.Expr, float]]
+    ]:
         """:return: the corresponding list of Pauli gadgets"""
 
     def get_synthesis_strategy(self) -> pytket._tket.transform.PauliSynthStrat:
@@ -2576,7 +3264,12 @@ class ToffoliBox(Op):
     """
 
     @overload
-    def __init__(self, permutation: Sequence[tuple[Sequence[bool], Sequence[bool]]], strat: ToffoliBoxSynthStrat, rotation_axis: OpType = pytket._tket.circuit.OpType.Ry) -> None:
+    def __init__(
+        self,
+        permutation: Sequence[tuple[Sequence[bool], Sequence[bool]]],
+        strat: ToffoliBoxSynthStrat,
+        rotation_axis: OpType = pytket._tket.circuit.OpType.Ry,
+    ) -> None:
         """
         Construct from a permutation of basis states
 
@@ -2586,7 +3279,11 @@ class ToffoliBox(Op):
         """
 
     @overload
-    def __init__(self, permutation: Sequence[tuple[Sequence[bool], Sequence[bool]]], rotation_axis: OpType = pytket._tket.circuit.OpType.Ry) -> None:
+    def __init__(
+        self,
+        permutation: Sequence[tuple[Sequence[bool], Sequence[bool]]],
+        rotation_axis: OpType = pytket._tket.circuit.OpType.Ry,
+    ) -> None:
         """
         Construct from a permutation of basis states and perform synthesis using the Matching strategy
 
@@ -2595,11 +3292,21 @@ class ToffoliBox(Op):
         """
 
     @overload
-    def __init__(self, n_qubits: int, permutation: Sequence[tuple[Sequence[bool], Sequence[bool]]], rotation_axis: OpType = pytket._tket.circuit.OpType.Ry) -> None:
+    def __init__(
+        self,
+        n_qubits: int,
+        permutation: Sequence[tuple[Sequence[bool], Sequence[bool]]],
+        rotation_axis: OpType = pytket._tket.circuit.OpType.Ry,
+    ) -> None:
         """Constructor for backward compatibility. Subject to deprecation."""
 
     @overload
-    def __init__(self, permutation: dict[tuple[bool, ...], Sequence[bool]], strat: ToffoliBoxSynthStrat, rotation_axis: OpType = pytket._tket.circuit.OpType.Ry) -> None:
+    def __init__(
+        self,
+        permutation: dict[tuple[bool, ...], Sequence[bool]],
+        strat: ToffoliBoxSynthStrat,
+        rotation_axis: OpType = pytket._tket.circuit.OpType.Ry,
+    ) -> None:
         """
         Construct from a permutation of basis states
 
@@ -2609,7 +3316,11 @@ class ToffoliBox(Op):
         """
 
     @overload
-    def __init__(self, permutation: dict[tuple[bool, ...], Sequence[bool]], rotation_axis: OpType = pytket._tket.circuit.OpType.Ry) -> None:
+    def __init__(
+        self,
+        permutation: dict[tuple[bool, ...], Sequence[bool]],
+        rotation_axis: OpType = pytket._tket.circuit.OpType.Ry,
+    ) -> None:
         """
         Construct from a permutation of basis states and perform synthesis using the Matching strategy
 
@@ -2618,7 +3329,12 @@ class ToffoliBox(Op):
         """
 
     @overload
-    def __init__(self, n_qubits: int, permutation: dict[tuple[bool, ...], Sequence[bool]], rotation_axis: OpType = pytket._tket.circuit.OpType.Ry) -> None:
+    def __init__(
+        self,
+        n_qubits: int,
+        permutation: dict[tuple[bool, ...], Sequence[bool]],
+        rotation_axis: OpType = pytket._tket.circuit.OpType.Ry,
+    ) -> None:
         """Constructor for backward compatibility. Subject to deprecation."""
 
     def get_circuit(self) -> Circuit:
@@ -2661,7 +3377,13 @@ class ResourceData:
     See :py:meth:`~.Circuit.get_resources` for how to use this data.
     """
 
-    def __init__(self, op_type_count: Mapping[OpType, ResourceBounds], gate_depth: ResourceBounds, op_type_depth: Mapping[OpType, ResourceBounds], two_qubit_gate_depth: ResourceBounds) -> None:
+    def __init__(
+        self,
+        op_type_count: Mapping[OpType, ResourceBounds],
+        gate_depth: ResourceBounds,
+        op_type_depth: Mapping[OpType, ResourceBounds],
+        two_qubit_gate_depth: ResourceBounds,
+    ) -> None:
         """
         Constructs a ResourceData object.
 
@@ -2708,7 +3430,9 @@ class QControlBox(Op):
     """
 
     @overload
-    def __init__(self, op: Op, n_controls: int = 1, control_state: Sequence[bool] = []) -> None:
+    def __init__(
+        self, op: Op, n_controls: int = 1, control_state: Sequence[bool] = []
+    ) -> None:
         """
         Construct from an :py:class:`~.Op`, a number of quantum controls, and the control state expressed as a bit vector. The controls occupy the low-index ports of the resulting operation.
 
@@ -2755,10 +3479,13 @@ class CustomGateDef:
     A custom unitary gate definition, given as a composition of other gates
     """
 
-    def __init__(self, arg0: str, arg1: Circuit, arg2: Sequence[sympy.core.symbol.Symbol], /) -> None: ...
-
+    def __init__(
+        self, arg0: str, arg1: Circuit, arg2: Sequence[sympy.core.symbol.Symbol], /
+    ) -> None: ...
     @staticmethod
-    def define(name: str, circ: Circuit, args: Sequence[sympy.core.symbol.Symbol]) -> CustomGateDef:
+    def define(
+        name: str, circ: Circuit, args: Sequence[sympy.core.symbol.Symbol]
+    ) -> CustomGateDef:
         """
         Define a new custom gate as a composite of other gates
 
@@ -2797,7 +3524,11 @@ class CustomGateDef:
 class CustomGate(Op):
     """A user-defined gate defined by a parametrised :py:class:`~.Circuit`."""
 
-    def __init__(self, gatedef: CustomGateDef, params: Sequence[Union[sympy.core.expr.Expr, float]]) -> None:
+    def __init__(
+        self,
+        gatedef: CustomGateDef,
+        params: Sequence[Union[sympy.core.expr.Expr, float]],
+    ) -> None:
         """Instantiate a custom gate."""
 
     @property
@@ -2821,13 +3552,31 @@ class PhasePolyBox(Op):
     """
 
     @overload
-    def __init__(self, n_qubits: int, qubit_indices: Mapping[pytket._tket.unit_id.Qubit, int], phase_polynomial: dict[tuple[bool, ...], Union[sympy.core.expr.Expr, float]], linear_transformation: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')]) -> None:
+    def __init__(
+        self,
+        n_qubits: int,
+        qubit_indices: Mapping[pytket._tket.unit_id.Qubit, int],
+        phase_polynomial: dict[tuple[bool, ...], Union[sympy.core.expr.Expr, float]],
+        linear_transformation: Annotated[
+            NDArray, dict(dtype="bool", shape=(None, None), order="F")
+        ],
+    ) -> None:
         """
         Construct from the number of qubits, the mapping from Qubit to index, the phase polynomial (map from bitstring to phase) and the linear transformation (boolean matrix)
         """
 
     @overload
-    def __init__(self, n_qubits: int, qubit_indices: Mapping[pytket._tket.unit_id.Qubit, int], phase_polynomial: Sequence[tuple[Sequence[bool], Union[sympy.core.expr.Expr, float]]], linear_transformation: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')]) -> None:
+    def __init__(
+        self,
+        n_qubits: int,
+        qubit_indices: Mapping[pytket._tket.unit_id.Qubit, int],
+        phase_polynomial: Sequence[
+            tuple[Sequence[bool], Union[sympy.core.expr.Expr, float]]
+        ],
+        linear_transformation: Annotated[
+            NDArray, dict(dtype="bool", shape=(None, None), order="F")
+        ],
+    ) -> None:
         """
         Construct from the number of qubits, the mapping from Qubit to index, the phase polynomial (list of bitstring phase pairs) and the linear transformation (boolean matrix)
 
@@ -2845,7 +3594,9 @@ class PhasePolyBox(Op):
         """Number of gates the polynomial acts on."""
 
     @property
-    def phase_polynomial_as_list(self) -> list[tuple[list[bool], Union[sympy.core.expr.Expr, float]]]:
+    def phase_polynomial_as_list(
+        self,
+    ) -> list[tuple[list[bool], Union[sympy.core.expr.Expr, float]]]:
         """List of bitstring(basis state)-phase pairs."""
 
     @property
@@ -2853,7 +3604,9 @@ class PhasePolyBox(Op):
         """Map from bitstring (basis state) to phase."""
 
     @property
-    def linear_transformation(self) -> Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')]:
+    def linear_transformation(
+        self,
+    ) -> Annotated[NDArray, dict(dtype="bool", shape=(None, None), order="F")]:
         """Boolean matrix corresponding to linear transformation."""
 
     def get_circuit(self) -> Circuit:
@@ -2868,7 +3621,11 @@ class ProjectorAssertionBox(Op):
     A user-defined assertion specified by a 2x2, 4x4, or 8x8 projector matrix.
     """
 
-    def __init__(self, m: Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')], basis: BasisOrder = BasisOrder.ilo) -> None:
+    def __init__(
+        self,
+        m: Annotated[NDArray, dict(dtype="complex128", shape=(None, None), order="F")],
+        basis: BasisOrder = BasisOrder.ilo,
+    ) -> None:
         """
         Construct from a projector matrix.
 
@@ -2879,14 +3636,18 @@ class ProjectorAssertionBox(Op):
     def get_circuit(self) -> Circuit:
         """:return: the :py:class:`~.Circuit` described by the box"""
 
-    def get_matrix(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')]:
+    def get_matrix(
+        self,
+    ) -> Annotated[NDArray, dict(dtype="complex128", shape=(None, None), order="F")]:
         """:return: the unitary matrix (in ILO-BE format) as a numpy array"""
 
 class StabiliserAssertionBox(Op):
     """A user-defined assertion specified by a list of Pauli stabilisers."""
 
     @overload
-    def __init__(self, stabilisers: Sequence[pytket._tket.pauli.PauliStabiliser]) -> None:
+    def __init__(
+        self, stabilisers: Sequence[pytket._tket.pauli.PauliStabiliser]
+    ) -> None:
         """
         Construct from a list of Pauli stabilisers.
 
@@ -2913,7 +3674,9 @@ class MultiplexorBox(Op):
     """
 
     @overload
-    def __init__(self, bistring_to_op_list: Sequence[tuple[Sequence[bool], Op]]) -> None:
+    def __init__(
+        self, bistring_to_op_list: Sequence[tuple[Sequence[bool], Op]]
+    ) -> None:
         """
         Construct from a list of bitstring-:py:class:`~.Op` spairs
 
@@ -2943,7 +3706,9 @@ class MultiplexedRotationBox(Op):
     """
 
     @overload
-    def __init__(self, bistring_to_op_list: Sequence[tuple[Sequence[bool], Op]]) -> None:
+    def __init__(
+        self, bistring_to_op_list: Sequence[tuple[Sequence[bool], Op]]
+    ) -> None:
         """
         Construct from a list of bitstring-:py:class:`~.Op` spairs
 
@@ -2984,7 +3749,11 @@ class MultiplexedU2Box(Op):
     """
 
     @overload
-    def __init__(self, bistring_to_op_list: Sequence[tuple[Sequence[bool], Op]], impl_diag: bool = True) -> None:
+    def __init__(
+        self,
+        bistring_to_op_list: Sequence[tuple[Sequence[bool], Op]],
+        impl_diag: bool = True,
+    ) -> None:
         """
         Construct from a list of bitstring-:py:class:`~.Op` spairs
 
@@ -2995,7 +3764,9 @@ class MultiplexedU2Box(Op):
         """
 
     @overload
-    def __init__(self, op_map: dict[tuple[bool, ...], Op], impl_diag: bool = True) -> None:
+    def __init__(
+        self, op_map: dict[tuple[bool, ...], Op], impl_diag: bool = True
+    ) -> None:
         """
         Construct from a map from bitstrings to :py:class:`~.Op` s.Only supports single qubit unitary gate types and :py:class:`~.Unitary1qBox`.
 
@@ -3021,7 +3792,9 @@ class MultiplexedTensoredU2Box(Op):
     """
 
     @overload
-    def __init__(self, bistring_to_op_list: Sequence[tuple[Sequence[bool], Sequence[Op]]]) -> None:
+    def __init__(
+        self, bistring_to_op_list: Sequence[tuple[Sequence[bool], Sequence[Op]]]
+    ) -> None:
         """
         Construct from a list of bitstring-:py:class:`~.Op` spairs
 
@@ -3052,7 +3825,14 @@ class StatePreparationBox(Op):
     A box for preparing quantum states using multiplexed-Ry and multiplexed-Rz gates. Implementation based on Theorem 9 of arxiv.org/abs/quant-ph/0406176. The decomposed circuit has at most 2*(2^n-2) CX gates, and 2^n-2 CX gates if the coefficients are all real.
     """
 
-    def __init__(self, statevector: Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')], is_inverse: bool = False, with_initial_reset: bool = False) -> None:
+    def __init__(
+        self,
+        statevector: Annotated[
+            NDArray, dict(dtype="complex128", shape=(None), order="C")
+        ],
+        is_inverse: bool = False,
+        with_initial_reset: bool = False,
+    ) -> None:
         """
         Construct from a statevector
 
@@ -3064,7 +3844,9 @@ class StatePreparationBox(Op):
     def get_circuit(self) -> Circuit:
         """:return: the :py:class:`~.Circuit` described by the box"""
 
-    def get_statevector(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')]:
+    def get_statevector(
+        self,
+    ) -> Annotated[NDArray, dict(dtype="complex128", shape=(None), order="C")]:
         """:return: the statevector"""
 
     def is_inverse(self) -> bool:
@@ -3082,7 +3864,11 @@ class DiagonalBox(Op):
     A box for synthesising a diagonal unitary matrix into a sequence of multiplexed-Rz gates. Implementation based on Theorem 7 of arxiv.org/abs/quant-ph/0406176. The decomposed circuit has at most 2^n-2 CX gates.
     """
 
-    def __init__(self, diagonal: Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')], upper_triangle: bool = True) -> None:
+    def __init__(
+        self,
+        diagonal: Annotated[NDArray, dict(dtype="complex128", shape=(None), order="C")],
+        upper_triangle: bool = True,
+    ) -> None:
         """
         Construct from the diagonal entries of the unitary operator. The size of the vector must be 2^n where n is a positive integer.
 
@@ -3093,7 +3879,9 @@ class DiagonalBox(Op):
     def get_circuit(self) -> Circuit:
         """:return: the :py:class:`~.Circuit` described by the box"""
 
-    def get_diagonal(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')]:
+    def get_diagonal(
+        self,
+    ) -> Annotated[NDArray, dict(dtype="complex128", shape=(None), order="C")]:
         """:return: the statevector"""
 
     def is_upper_triangle(self) -> bool:
@@ -3213,7 +4001,15 @@ class WASMOp(ClassicalOp):
     An op holding an external classical call, defined by the external module id, the name of the function and the arguments. External calls can only act on entire registers (which will be interpreted as fixed-width integers).
     """
 
-    def __init__(self, num_bits: int, num_w: int, n_inputs: Sequence[int], n_outputs: Sequence[int], func_name: str, wasm_uid: str) -> None:
+    def __init__(
+        self,
+        num_bits: int,
+        num_w: int,
+        n_inputs: Sequence[int],
+        n_outputs: Sequence[int],
+        func_name: str,
+        wasm_uid: str,
+    ) -> None:
         """
         Construct from number of bits, bitwidths of inputs and outputs, function name and module id.
         """
@@ -3347,13 +4143,9 @@ class ClBitVar:
         """
 
     def __eq__(self, arg: object, /) -> bool: ...
-
     def __str__(self) -> str: ...
-
     def __repr__(self) -> str: ...
-
     def __hash__(self) -> int: ...
-
     @property
     def index(self) -> int:
         """integer identifier for the variable"""
@@ -3369,13 +4161,9 @@ class ClRegVar:
         """
 
     def __eq__(self, arg: object, /) -> bool: ...
-
     def __str__(self) -> str: ...
-
     def __repr__(self) -> str: ...
-
     def __hash__(self) -> int: ...
-
     @property
     def index(self) -> int:
         """integer identifier for the variable"""
@@ -3383,7 +4171,9 @@ class ClRegVar:
 class ClExpr:
     """A classical expression"""
 
-    def __init__(self, op: ClOp, args: Sequence[int | ClBitVar | ClRegVar | ClExpr]) -> None:
+    def __init__(
+        self, op: ClOp, args: Sequence[int | ClBitVar | ClRegVar | ClExpr]
+    ) -> None:
         """
         Construct from an operation type and a list of arguments.
 
@@ -3392,9 +4182,7 @@ class ClExpr:
         """
 
     def __eq__(self, arg: object, /) -> bool: ...
-
     def __str__(self) -> str: ...
-
     def __hash__(self) -> int:
         """
         Hashing is not implemented for this class, attempting to hash an object will raise a type error
@@ -3408,7 +4196,11 @@ class ClExpr:
     def args(self) -> list[int | ClBitVar | ClRegVar | ClExpr]:
         """arguments"""
 
-    def as_qasm(self, input_bits: Mapping[int, pytket._tket.unit_id.Bit], input_regs: Mapping[int, pytket._tket.unit_id.BitRegister]) -> str:
+    def as_qasm(
+        self,
+        input_bits: Mapping[int, pytket._tket.unit_id.Bit],
+        input_regs: Mapping[int, pytket._tket.unit_id.BitRegister],
+    ) -> str:
         """
         QASM-style string representation given corresponding bits and registers
         """
@@ -3416,7 +4208,13 @@ class ClExpr:
 class WiredClExpr:
     """An operation defined by a classical expression over a sequence of bits"""
 
-    def __init__(self, expr: ClExpr, bit_posn: Mapping[int, int] = {}, reg_posn: Mapping[int, Sequence[int]] = {}, output_posn: Sequence[int] = []) -> None:
+    def __init__(
+        self,
+        expr: ClExpr,
+        bit_posn: Mapping[int, int] = {},
+        reg_posn: Mapping[int, Sequence[int]] = {},
+        output_posn: Sequence[int] = [],
+    ) -> None:
         """
         Construct from an expression with bit and register positions.
 
@@ -3427,9 +4225,7 @@ class WiredClExpr:
         """
 
     def __eq__(self, arg: object, /) -> bool: ...
-
     def __str__(self) -> str: ...
-
     def __hash__(self) -> int:
         """
         Hashing is not implemented for this class, attempting to hash an object will raise a type error
@@ -3459,7 +4255,6 @@ class WiredClExpr:
         """Construct from JSON-serializable dict representation"""
 
     def __getstate__(self) -> tuple: ...
-
     def __setstate__(self, arg: tuple, /) -> None: ...
 
 class ClExprOp(Op):
@@ -3476,7 +4271,7 @@ class ClExprOp(Op):
     def expr(self) -> WiredClExpr:
         """wired expression"""
 
-def fresh_symbol(preferred: str = 'a') -> sympy.core.symbol.Symbol:
+def fresh_symbol(preferred: str = "a") -> sympy.core.symbol.Symbol:
     """
     Given some preferred symbol, this finds an appropriate suffix that will guarantee it has not yet been used in the current python session.
 

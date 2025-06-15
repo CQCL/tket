@@ -186,11 +186,11 @@ SCENARIO("Transforms::remove_redundancies removes typical redundancies") {
           "Non-cancelling ECRs (swapped port order)",
           TestGate{OpType::ECR, {1, 0}}, TestGate{OpType::ECR, {0, 1}}, false},
       TestCase{
-          "Cancelling BRIDGEEs (same port order)",
+          "Cancelling BRIDGEs (same port order)",
           TestGate{OpType::BRIDGE, {0, 1, 2}},
           TestGate{OpType::BRIDGE, {0, 1, 2}}, true},
       TestCase{
-          "Non-cancelling BRIDGEEs (swapped port order)",
+          "Non-cancelling BRIDGEs (swapped port order)",
           TestGate{OpType::BRIDGE, {0, 1, 2}},
           TestGate{OpType::BRIDGE, {0, 2, 1}}, false},
       TestCase{
