@@ -40,7 +40,7 @@ struct TargetEdgePruningParameters {
    * 12 target vertices, giving a maximum of 12*11/2 = 66
    * possible target edges, then 66-18 = 48 potential target edges are
    * currently unused by the input solution.
-   * So if the varaible value were 256, say, then since 256/1024 = 1/4,
+   * So if the variable value were 256, say, then since 256/1024 = 1/4,
    * then we would ensure that at least 48*(1/4) = 12 target edges were
    * not part of the new target graph, i.e. there could be at most
    * 66-12 = 54 target edges in the new graph.

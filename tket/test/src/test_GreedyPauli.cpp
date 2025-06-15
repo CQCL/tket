@@ -549,7 +549,7 @@ SCENARIO("Complete synthesis") {
     REQUIRE(c2 == d2);
   }
 
-  GIVEN("Circuit with measures, classicals, and resets") {
+  GIVEN("Circuit with measures, classics, and resets") {
     Circuit circ(3, 1);
     circ.add_box(
         PauliExpBox(SymPauliTensor({Pauli::X, Pauli::Z, Pauli::Z}, 0.3)),

@@ -125,7 +125,7 @@ SCENARIO("Base Placement class") {
   GIVEN(
       "Seven qubit unconnected circuit, seven qubit Architecture, some Qubits "
       "pre-assigned, Placement::get_placement_map and "
-      "Placment::place_with_map.") {
+      "Placement::place_with_map.") {
     std::vector<std::pair<unsigned, unsigned>> edges = {{0, 1}, {1, 2}, {2, 3},
                                                         {3, 4}, {4, 5}, {5, 6}};
     Architecture architecture(edges);

@@ -59,7 +59,7 @@ bool Rewrite::remove_interior_cliffords_fun(ZXDiagram& diag) {
     auto xi = neighbours.begin(), x_end = neighbours.end();
     for (; xi != x_end; ++xi) {
       for (auto yi = xi + 1; yi != x_end; ++yi) {
-        // Don't add a doubled edge between classicals to preserve graph-like
+        // Don't add a doubled edge between classics to preserve graph-like
         if (!(vqtype == QuantumType::Quantum &&
               *diag.get_qtype(*xi) == QuantumType::Classical &&
               *diag.get_qtype(*yi) == QuantumType::Classical)) {
@@ -109,7 +109,7 @@ static void bipartite_complementation(
     QuantumType qtype) {
   for (const ZXVert& a : sa.get<TagSeq>()) {
     for (const ZXVert& b : sb.get<TagSeq>()) {
-      // Don't add a doubled edge between classicals to preserve graph-like
+      // Don't add a doubled edge between classics to preserve graph-like
       if (!(qtype == QuantumType::Quantum &&
             *diag.get_qtype(a) == QuantumType::Classical &&
             *diag.get_qtype(b) == QuantumType::Classical)) {

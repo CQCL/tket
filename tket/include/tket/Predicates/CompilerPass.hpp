@@ -60,7 +60,7 @@ enum class SafetyMode {
 };
 
 /* Guarantee composition for CompilerPass composition:
-    Given A, B, ..., Z CompilerPasss, the Guarantee of Predicate 'p' for A >> B
+    Given A, B, ..., Z CompilerPass, the Guarantee of Predicate 'p' for A >> B
    >> ... >> Z is the last non-"Preserve" Guarantee for 'p' in list. If all
    "Preserve", Guarantee 'p' := "Preserve"
  */

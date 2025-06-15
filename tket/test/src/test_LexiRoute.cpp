@@ -974,7 +974,7 @@ SCENARIO("Test MappingManager with LexiRouteRoutingMethod and LexiLabelling") {
 }
 
 SCENARIO(
-    "Check that an already solved routing problem will not add unecessary "
+    "Check that an already solved routing problem will not add unnecessary "
     "swaps") {
   GIVEN("A solved problem") {
     Circuit test_circuit;
@@ -1099,7 +1099,7 @@ SCENARIO(
   }
 }
 
-SCENARIO("Dense CX circuits route succesfully") {
+SCENARIO("Dense CX circuits route successfully") {
   GIVEN(
       "Complex CX circuits for large directed architecture based off "
       "IBMTokyo") {
@@ -1135,7 +1135,7 @@ SCENARIO("Dense CX circuits route succesfully") {
 }
 
 SCENARIO(
-    "Dense CX circuits route succesfully on undirected Ring with "
+    "Dense CX circuits route successfully on undirected Ring with "
     "placement.",
     "[.long]") {
   GIVEN("Complex CX circuits, big ring") {
@@ -1160,7 +1160,7 @@ SCENARIO(
 }
 
 SCENARIO(
-    "Dense CX circuits route succesfully on smart placement unfriendly "
+    "Dense CX circuits route successfully on smart placement unfriendly "
     "architecture.") {
   GIVEN("Complex CX circuits, big ring") {
     Circuit circ(13);
@@ -2076,7 +2076,7 @@ SCENARIO(
   }
 
   GIVEN(
-      "Line archtiecture, reassigned Nodes both at end of Circuit so extra "
+      "Line architecture, reassigned Nodes both at end of Circuit so extra "
       "logic required.") {
     std::vector<std::pair<unsigned, unsigned>> coupling_map;
     for (unsigned i = 0; i < 15; i++) {

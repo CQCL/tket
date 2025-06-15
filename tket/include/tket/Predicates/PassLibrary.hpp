@@ -153,7 +153,7 @@ const PassPtr &RemoveImplicitQubitPermutation();
  * beforehand and may increase the cost of the circuit.
  *
  * @param allow_swaps Determines whether the extracted circuit may have
- * implicit wire swaps. If set to false, implict wire swaps will be removed
+ * implicit wire swaps. If set to false, implicit wire swaps will be removed
  * by adding SWAP gates at the end of the circuit.
  *
  * @return compilation pass to perform this transformation

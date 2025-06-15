@@ -27,7 +27,7 @@ namespace tests {
 class WeightedSquareGrid : public PlacementCostModelInterface {
  public:
   /** The number of weights will be used to deduce the size of the grid
-   * (we reuqire it to have same width and height).
+   * (we required it to have same width and height).
    * @param weights weights[i] is the edge weight from vertex i to its parent.
    * (Thus weights[0], weights[1] are "dummy" weights, as 0,1 have no parent).
    * @param number_of_primitive_gates_in_swap How many primitive 2-qubit gates

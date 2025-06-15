@@ -269,7 +269,7 @@ Fixes:
 - Support converting conditional `RangePredicate` s to QASM.
 - Fix `maxwidth` parameter of `circuit_from_qasm_str`
 - Add `scratch_reg_resize_pass` to `circuit_from_qasm_str`
-- Reject incompete classical registers in pytket to qasm conversion
+- Reject incomplete classical registers in pytket to qasm conversion
 - Add parameter `include_conditional` to `n_gates_of_type` to include
   conditional gates in the count
 
@@ -548,7 +548,7 @@ Minor new features:
 - `PauliExpBox`, `PauliExpPairBox`, and `PauliExpCommutingSetBox` are now
   decomposed into a single `ConjugationBox`.
 - Make `SquashRzPhasedX` pass always squash symbols.
-- Add in-place symbol_substition method for `CircBox`
+- Add in-place symbol_substitution method for `CircBox`
 - Add rendering support for 0-valued control-type gates.
 - Typing improvements
 - Make `BitRegister` and `QubitRegister` iterable
@@ -1412,7 +1412,7 @@ Compatible extension versions:
 
 Major new features:
 
-- Subsitution of named operations with other operations, boxes or circuits.
+- Substitution of named operations with other operations, boxes or circuits.
 - New ability to condition operations on compound (AND, OR, XOR) operations on `Bit` and `BitRegister`,
   which can be compiled with `DecomposeClassicalExp` and executed with `HoneywellBackend`.
 

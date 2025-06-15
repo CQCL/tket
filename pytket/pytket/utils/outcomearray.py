@@ -55,7 +55,7 @@ class OutcomeArray(np.ndarray):
         bitcapacity = obj.shape[-1] * 8
         if width > bitcapacity:
             raise ValueError(
-                f"Width {width} is larger than maxium bitlength of "
+                f"Width {width} is larger than maximum bitlength of "
                 f"array: {bitcapacity}."
             )
         obj._width = width  # noqa: SLF001

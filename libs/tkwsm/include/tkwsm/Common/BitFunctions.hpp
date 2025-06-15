@@ -26,7 +26,7 @@ struct BitFunctions {
    * (So, we can right shift x by this amount and not lose any bits).
    * Returns 64 for x=0.
    * @param x The raw bits.
-   * @return The number of consective zero bits, starting from the right (the
+   * @return The number of consecutive zero bits, starting from the right (the
    * least significant bit). F(0)=64.
    */
   static unsigned get_number_of_rightmost_zero_bits(std::uint64_t x);

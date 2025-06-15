@@ -811,7 +811,7 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
           "connectivity"
           "\n:param directed: If true, also checks that CX or ECR gates are in "
           "the same direction as the edges of the architecture"
-          "\n:param allow_bridge: Accept BRIDGEs as valid, assuming the "
+          "\n:param allow_bridge: Accept BRIDGEEs as valid, assuming the "
           "middle qubit neighbours the others"
           "\n\n:return: True or False",
           nb::arg("arch"), nb::arg("directed"), nb::arg("allow_bridge") = false)

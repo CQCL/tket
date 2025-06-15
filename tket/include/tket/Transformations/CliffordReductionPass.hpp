@@ -147,7 +147,7 @@ class CliffordReductionPass {
 
   /**
    * Tries to commute an interaction backwards to search for a match,
-   * consulting the current table of interaction points to find canditates.
+   * consulting the current table of interaction points to find candidates.
    */
   std::optional<InteractionMatch> search_back_for_match(
       const RevInteractionPoint &rip0, const RevInteractionPoint &rip1) const;

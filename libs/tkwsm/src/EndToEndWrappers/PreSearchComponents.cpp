@@ -18,9 +18,9 @@ namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
 PreSearchComponents::PreSearchComponents(
-    const NeighboursData& pattern_nd, const NeighboursData& target_nd)
-    : pattern_ndata(pattern_nd),
-      target_ndata(target_nd),
+    const NeighboursData& pattern_and, const NeighboursData& target_and)
+    : pattern_ndata(pattern_and),
+      target_ndata(target_and),
       pattern_near_ndata(pattern_ndata),
       target_near_ndata(target_ndata) {}
 

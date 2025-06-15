@@ -265,7 +265,7 @@ Circuit phase_poly_synthesis_int(
     unsigned lookahead, CNotSynthType cnottype) {
   if (lookahead == 0)
     throw std::logic_error(
-        "[AAS] the lookahead of the phase polynominal synthesis has to be "
+        "[AAS] the lookahead of the phase polynomial synthesis has to be "
         "greater than 0");
 
   CostedOperations best_operations;
@@ -376,7 +376,7 @@ class PhasePolySynthesizer {
       forward_contiguous_uids_q.insert({q, qu_no});
       backward_contiguous_uids_n.insert({qu_no, n});
     }
-    // define new arcitecture
+    // define new architecture
     std::vector<Architecture::Connection> new_con;
     for (auto pair : arch.get_all_edges_vec()) {
       new_con.push_back(
@@ -415,7 +415,7 @@ class PhasePolySynthesizer {
       backward_contiguous_uids_n.insert({qu_no, n});
       unitid_to_int_nodes.insert({qu_no, n});
     }
-    // define new arcitecture: include only the tree edges
+    // define new architecture: include only the tree edges
     std::vector<Architecture::Connection> new_con;
     for (auto pair : iter_order.get_edgelist()) {
       new_con.push_back(

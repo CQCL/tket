@@ -127,7 +127,7 @@ SCENARIO("Building rebases with rebase_factory") {
     const StateVector s1 = tket_sim::get_statevector(c);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
   }
-  GIVEN("Rebasing a CV and CVdg ciruit to a CX gate set") {
+  GIVEN("Rebasing a CV and CVdg circuit to a CX gate set") {
     Circuit c(2);
     c.add_op<unsigned>(OpType::S, {0});
     c.add_op<unsigned>(OpType::CV, {0, 1});
@@ -145,7 +145,7 @@ SCENARIO("Building rebases with rebase_factory") {
     const StateVector s1 = tket_sim::get_statevector(c);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
   }
-  GIVEN("Rebasing a CSX and CSXdg ciruit to a CX gate set") {
+  GIVEN("Rebasing a CSX and CSXdg circuit to a CX gate set") {
     Circuit c(2);
     c.add_op<unsigned>(OpType::S, {0});
     c.add_op<unsigned>(OpType::CSX, {0, 1});

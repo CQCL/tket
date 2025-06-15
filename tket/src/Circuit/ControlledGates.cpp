@@ -1084,21 +1084,21 @@ static void add_cu_using_cu3(
   circ.append_with_map(cnu_circ, unit_map);
 }
 
-// Add pn to qubits {1,...,n}, assume n > 1
-static void add_pn(Circuit& circ, unsigned n, bool inverse) {
+// Add on to qubits {1,...,n}, assume n > 1
+static void add_on(Circuit& circ, unsigned n, bool inverse) {
   TKET_ASSERT(n > 1);
-  // pn is self commute
+  // on is self commute
   for (unsigned i = 2; i < n + 1; i++) {
     unsigned long long d = 1ULL << (n - i + 1);
     circ.add_op<unsigned>(OpType::CRx, (inverse ? -1. : 1.) / d, {i - 1, n});
   }
 }
 
-// Add pn(u) to qubits {1,...,n}, assume n > 1
-static void add_pn_unitary(
+// Add on(u) to qubits {1,...,n}, assume n > 1
+static void add_on_unitary(
     Circuit& circ, const Eigen::Matrix2cd& u, unsigned n, bool inverse) {
   TKET_ASSERT(n > 1);
-  // pn_(u) is self commute
+  // on_(u) is self commute
   for (unsigned i = 2; i < n + 1; i++) {
     Eigen::Matrix2cd m = nth_root(u, 1ULL << (n - i + 1));
     if (inverse) m.adjointInPlace();
@@ -1112,12 +1112,12 @@ static void add_qn(Circuit& circ, unsigned n) {
   TKET_ASSERT(n > 1);
   for (unsigned i = n - 1; i > 1; i--) {
     unsigned long long d = 1ULL << (i - 1);
-    add_pn(circ, i, false);
+    add_on(circ, i, false);
     circ.add_op<unsigned>(OpType::CRx, (double)1 / d, {0, i});
   }
   circ.add_op<unsigned>(OpType::CRx, 1, {0, 1});
   for (unsigned i = 2; i < n; i++) {
-    add_pn(circ, i, true);
+    add_on(circ, i, true);
   }
 }
 
@@ -1160,8 +1160,8 @@ Circuit CnU_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u) {
     return circ;
   }
 
-  // Add pn(u) to qubits {1,...,n}
-  add_pn_unitary(circ, u, n, false);
+  // Add on(u) to qubits {1,...,n}
+  add_on_unitary(circ, u, n, false);
   // Add CU to {0, n}
   Eigen::Matrix2cd m = nth_root(u, 1ULL << (n - 1));
   add_cu_using_cu3(0, n, circ, m);
@@ -1170,8 +1170,8 @@ Circuit CnU_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u) {
   Circuit qn_dag = qn.dagger();
   circ.append(qn);
 
-  // Add pn(u).dagger to qubits {1,...,n}
-  add_pn_unitary(circ, u, n, true);
+  // Add on(u).dagger to qubits {1,...,n}
+  add_on_unitary(circ, u, n, true);
 
   // Add incrementer inverse (without toggling q0) to {0,...,n-1}
   circ.append(qn_dag);

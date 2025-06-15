@@ -139,7 +139,7 @@ VarType = TypeVar("VarType", type[Bit], type[BitRegister])
 
 
 def _int_to_bools(val: Constant, width: int) -> list[bool]:
-    # map int to bools via litle endian encoding
+    # map int to bools via little endian encoding
     return list(map(bool, map(int, reversed(f"{val:0{width}b}"[-width:]))))
 
 

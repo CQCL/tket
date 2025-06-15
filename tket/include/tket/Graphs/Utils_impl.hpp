@@ -24,7 +24,7 @@
 
 #include "tket/Utils/GraphHeaders.hpp"
 
-// Implemetation details of `Graphs/Utils.hpp`
+// Implementation details of `Graphs/Utils.hpp`
 namespace tket::graphs::utils {
 
 // ::detail includes all internal implementation-specific details
@@ -240,7 +240,7 @@ class graph_utils_base_with_ind : public graph_utils_base<Graph, Impl> {
  * The Derived template type is the child class that inherits from this class
  *  -> see Curiously Recurring Template Pattern (CRTP)
  *  The Indexable boolean template is true iff Graph support integer vertex
- *  indexing (see has_integral_index). It should be left to default and infered
+ *  indexing (see has_integral_index). It should be left to default and inferred
  *  by compiler
  *
  * We distinguish four cases for template specialisations, given by the four
@@ -332,7 +332,7 @@ class graph_utils_helper<Derived, Graph, void, true>
 };
 
 /* Now come the same 4 cases with the additional support of an external map
- * with vertrex indices as keys
+ * with vertex indices as keys
  */
 // Case 1-2: not indexable
 template <
@@ -436,7 +436,7 @@ class graph_utils_helper_with_map<Derived, Graph, Map, void, true>
   StdMap new_map;
 };
 
-// The above implementions are accessed through the following helper classes,
+// The above implementations are accessed through the following helper classes,
 // making template args nicer
 template <typename Graph, typename PMap = void>
 class graph_utils_impl

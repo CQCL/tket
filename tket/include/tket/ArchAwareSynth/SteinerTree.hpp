@@ -50,7 +50,7 @@ class InvalidRowOperation : public std::logic_error {
 };
 
 /**
- * This clas is creating a steiner tree, which is a mst including all the nodes
+ * This class is creating a steiner tree, which is a mst including all the nodes
  * of a given phase gadget plus all the nodes which are neede to connect all the
  * nodes of the gadget. This class also offers the function to reduce this tree
  * by extracting operations steps by step. This class is designed with
@@ -109,8 +109,8 @@ class SteinerTree {
 
   /**
    * calculates the available operation in this tree which could be executed
-   * @param pathhandler conections used for the calculation
-   * @return gives the list of all avilable operations
+   * @param pathhandler connections used for the calculation
+   * @return gives the list of all available operations
    */
   OperationList operations_available(const PathHandler &pathhandler) const;
 

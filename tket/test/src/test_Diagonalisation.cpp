@@ -45,18 +45,18 @@ SCENARIO("Matrix tests for reducing a Pauli to Z") {
 }
 
 SCENARIO("Matrix tests for reducing two anticommuting Paulis to Z X") {
-  std::list<Pauli> non_trivials{Pauli::X, Pauli::Y, Pauli::Z};
+  std::list<Pauli> non_trivial{Pauli::X, Pauli::Y, Pauli::Z};
   std::list<CXConfigType> test_configs = {
       CXConfigType::Snake, CXConfigType::Tree, CXConfigType::Star,
       CXConfigType::MultiQGate};
   // Loop through all commuting options for two qubits
-  for (const Pauli& p0 : non_trivials) {
-    for (const Pauli& p1 : non_trivials) {
+  for (const Pauli& p0 : non_trivial) {
+    for (const Pauli& p1 : non_trivial) {
       SpPauliStabiliser p({Pauli::Z, p0, p1, Pauli::Z});
       CmplxSpMat p_u = p.to_sparse_matrix();
       Eigen::MatrixXcd p_ud = p_u;
-      for (const Pauli& q0 : non_trivials) {
-        for (const Pauli& q1 : non_trivials) {
+      for (const Pauli& q0 : non_trivial) {
+        for (const Pauli& q1 : non_trivial) {
           SpPauliStabiliser q({Pauli::X, q0, q1, Pauli::Z});
           if (p.commutes_with(q)) continue;
           CmplxSpMat q_u = q.to_sparse_matrix();

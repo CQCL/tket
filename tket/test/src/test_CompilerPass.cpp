@@ -843,7 +843,7 @@ SCENARIO("PeepholeOptimise2Q and FullPeepholeOptimise") {
     REQUIRE(FullPeepholeOptimise()->apply(cu));
     REQUIRE(test_unitary_comparison(circ, cu.get_circ_ref()));
   }
-  GIVEN("A circuit targetting TK2.") {
+  GIVEN("A circuit targeting TK2.") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Rz, 0.2, {1});

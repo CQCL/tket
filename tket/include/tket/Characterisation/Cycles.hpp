@@ -31,7 +31,7 @@ struct CycleCom {
   }
 };
 
-// Cycle stores minimum subcircuit information requried for FrameRandomisation
+// Cycle stores minimum subcircuit information required for FrameRandomisation
 class Cycle {
  public:
   Cycle() {}

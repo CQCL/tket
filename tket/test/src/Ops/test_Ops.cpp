@@ -354,7 +354,7 @@ SCENARIO("Check exceptions in basic Op methods", "[ops]") {
 }
 
 SCENARIO("Commutation relations") {
-  GIVEN("An arbitary TK1") {
+  GIVEN("An arbitrary TK1") {
     Op_ptr op = get_op_ptr(OpType::TK1, std::vector<Expr>{0.2, 0.4, 0.4});
     REQUIRE(op->commuting_basis(0) == std::nullopt);
   }

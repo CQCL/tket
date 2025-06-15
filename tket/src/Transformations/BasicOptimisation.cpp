@@ -502,10 +502,10 @@ Transform absorb_Rz_NPhasedX() {
         // Find out which Rz angle is most popular.
         // Note that we only compare expr[i] with expr[j] when j < i. This means
         // that only the largest i from a set of equivalent exprs will have the
-        // right occurence count, but that is good enough.
+        // right occurrence count, but that is good enough.
         std::vector<Expr> all_rz = in_rz;
         all_rz.insert(all_rz.end(), out_rz.begin(), out_rz.end());
-        std::vector<unsigned> occurences_count(2 * arity);
+        std::vector<unsigned> occurrences_count(2 * arity);
         for (unsigned i = 0; i < 2 * arity; ++i) {
           unsigned cnt = 0;
           for (unsigned j = 0; j < i; ++j) {
@@ -513,11 +513,11 @@ Transform absorb_Rz_NPhasedX() {
               ++cnt;
             }
           }
-          occurences_count[i] = cnt;
+          occurrences_count[i] = cnt;
         }
         unsigned max_i =
-            std::max_element(occurences_count.begin(), occurences_count.end()) -
-            occurences_count.begin();
+            std::max_element(occurrences_count.begin(), occurrences_count.end()) -
+            occurrences_count.begin();
         Expr absorb_rz = all_rz[max_i];
 
         if (!equiv_0(absorb_rz, 4)) {

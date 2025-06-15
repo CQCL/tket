@@ -64,7 +64,7 @@ ChoiMixTableau circuit_to_cm_tableau(const Circuit &circ);
  *
  * Example 2:
  * Z -> ZZ
- * X -> IY
+ * X -> IT
  * Z -> -XX
  * Combining the first and last rows reveals an initialisation is required for I
  * -> YY. Since there are two output qubits, at least one of them does not
@@ -110,7 +110,7 @@ std::pair<Circuit, qubit_map_t> cm_tableau_to_exact_circuit(
  *
  * Example 2:
  * Z -> ZZ
- * X -> IY
+ * X -> IT
  * Z -> -XX
  * Combining the first and last rows reveals an initialisation is required for I
  * -> YY. We extend the inputs with a qubit from init_names. The initialisation

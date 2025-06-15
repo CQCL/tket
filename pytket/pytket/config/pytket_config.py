@@ -23,11 +23,11 @@ from typing import Any, ClassVar, TypeVar
 def get_config_file_path() -> Path:
     """Get a path to the config file on this machine."""
     config_dir: Path
-    xdg_conifg_dir = os.environ.get("XDG_CONFIG_HOME")
-    if xdg_conifg_dir is None:
+    xdg_config_dir = os.environ.get("XDG_CONFIG_HOME")
+    if xdg_config_dir is None:
         config_dir = Path.home() / ".config"
     else:
-        config_dir = Path(xdg_conifg_dir)
+        config_dir = Path(xdg_config_dir)
 
     return config_dir / "pytket" / "config.json"
 
@@ -42,7 +42,7 @@ class PytketConfig:
         self,
         extensions: dict[str, Any] | None = None,
     ) -> None:
-        """Construct a PytketConfig object with inital config parameter values.
+        """Construct a PytketConfig object with initial config parameter values.
 
         :param extensions: Dictionary holding parameter values for extension packages,
             defaults to None

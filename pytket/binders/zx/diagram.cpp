@@ -728,7 +728,7 @@ NB_MODULE(zx, m) {
             return dmap;
           },
           "The map from a vertex to its depth")
-      .def("focus", &Flow::focus, "Focusses a flow.", nb::arg("diag"))
+      .def("focus", &Flow::focus, "Focuses a flow.", nb::arg("diag"))
       .def_static(
           "identify_causal_flow", &Flow::identify_causal_flow,
           "Attempts to identify a causal flow for a diagram.", nb::arg("diag"))

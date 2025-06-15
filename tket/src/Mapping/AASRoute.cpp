@@ -59,7 +59,7 @@ std::pair<bool, unit_map_t> AASRouteRoutingMethod::routing_method(
 
       // check that the box we are working on is really placed and the check
       // method has been executed
-      // this is imporant if the circuit contains more than one ppb and only one
+      // this is important if the circuit contains more than one ppb and only one
       // of them is placed
 
       if (box_placed) {
@@ -99,7 +99,7 @@ std::pair<bool, unit_map_t> AASRouteRoutingMethod::routing_method(
           }
         }
 
-        // define new arcitecture with int nodes for ppb
+        // define new architecture with int nodes for ppb
         std::vector<Architecture::Connection> new_con;
         for (auto pair : architecture->get_all_edges_vec()) {
           new_con.push_back(

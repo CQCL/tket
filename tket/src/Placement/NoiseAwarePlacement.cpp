@@ -52,7 +52,7 @@ double NoiseAwarePlacement::cost_placement(
     node_set_t neighbours = this->architecture_.get_neighbour_nodes(node);
     double edge_sum = 1.0;
     for (const Node& neighbour : neighbours) {
-      double fwd_edge_weighting = 1.0, bck_edge_weighting = 1.0;
+      double fwd_edge_weighting = 1.0, back_edge_weighting = 1.0;
       // check if neighbour node is mapped
       auto nei_qb_it = map.right.find(neighbour);
       if (nei_qb_it == map.right.end()) continue;
@@ -69,17 +69,17 @@ double NoiseAwarePlacement::cost_placement(
       } else {
         edge_val = q_graph.get_connection_weight(nei_qb_it->second, qb);
         if (edge_val) {
-          bck_edge_weighting += place_interactions_boost(edge_val);
+          back_edge_weighting += place_interactions_boost(edge_val);
         }
       }
       gate_error_t fwd_error =
           this->characterisation_.get_error({node, neighbour});
-      gate_error_t bck_error =
+      gate_error_t back_error =
           this->characterisation_.get_error({neighbour, node});
 
-      if (fwd_error < 1.0 && bck_error < 1.0) {
+      if (fwd_error < 1.0 && back_error < 1.0) {
         edge_sum += fwd_edge_weighting * (1.0 - fwd_error);
-        edge_sum += bck_edge_weighting * (1.0 - bck_error);
+        edge_sum += back_edge_weighting * (1.0 - back_error);
       }
     }
     // bigger edge sum -> smaller cost

@@ -1274,7 +1274,7 @@ std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
 
   Circuit pre(2), post(2);
 
-  // Add ot.dagger() at beggining and ot at end.
+  // Add ot.dagger() at beginning and ot at end.
   auto conj = [&pre, &post](OpType ot) {
     Op_ptr op = get_op_ptr(ot);
     Op_ptr opdg = op->dagger();

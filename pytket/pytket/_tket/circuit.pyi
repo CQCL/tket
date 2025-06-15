@@ -2186,7 +2186,7 @@ class Circuit:
 
         :param arch: The architecture capturing the desired connectivity
         :param directed: If true, also checks that CX or ECR gates are in the same direction as the edges of the architecture
-        :param allow_bridge: Accept BRIDGEs as valid, assuming the middle qubit neighbours the others
+        :param allow_bridge: Accept BRIDGEEs as valid, assuming the middle qubit neighbours the others
 
         :return: True or False
         """

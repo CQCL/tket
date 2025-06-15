@@ -20,7 +20,7 @@ namespace tket {
 
 namespace Transforms {
 
-// mutli-qubit patterns that decrease the CX count
+// multi-qubit patterns that decrease the CX count
 // inserting swaps can sometimes cause errors elsewhere (e.g. routing), so
 // they can be turned off
 Transform multiq_clifford_replacement(bool allow_swaps = false);

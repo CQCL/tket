@@ -1268,7 +1268,7 @@ def test_range_predicate_properties() -> None:
     assert range_predicate.upper == 5
 
 
-def test_conditional_classicals() -> None:
+def test_conditional_classics() -> None:
     c = Circuit()
     b = c.add_c_register("b", 2)
     c.add_c_and(b[0], b[1], b[1], condition=b[0])

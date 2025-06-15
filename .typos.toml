@@ -11,12 +11,9 @@ aer = "aer"
 qiskit_aer = "qiskit_aer"
 anc = "anc"
 arange = "arange"
-aer_unitary_b = "aer_unitary_b"
-aer_b = "aer_b"
-noisy_aer_b = "noisy_aer_b"
-aer_state_b = "aer_state_b"
 args_ser = "args_ser"
 IY = "IY"
+iy = "iy"
 
 
 [default.extend-words]
@@ -26,3 +23,4 @@ AAS = "AAS"
 Strat = "Strat"
 strat = "strat"
 typ = "typ"
+NDArray = "NDArray"
