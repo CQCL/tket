@@ -1,4 +1,4 @@
-files.extend-exclude = ["docs/pytket/pytket-docs-theming/**"]
+files.extend-exclude = ["pytket/docs/pytket-docs-theming/**"]
 
 
 [default.extend-identifiers]
