@@ -93,7 +93,7 @@ SCENARIO("verify_measurement_setup") {
       REQUIRE_FALSE(ms.verify());
     }
     WHEN("Wrong bit set") {
-      SpPauliString it({{q1, Pauli::Y}});
+      SpPauliString iy({{q1, Pauli::Y}});
       ms.add_result_for_term(it, {0, {0, 1}, false});
       REQUIRE_FALSE(ms.verify());
     }
