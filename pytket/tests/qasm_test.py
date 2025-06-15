@@ -117,7 +117,7 @@ def test_long_registers_2() -> None:
         assert creg.size <= 100
 
 
-def test_incompete_registers() -> None:
+def test_incomplete_registers() -> None:
     c = Circuit(1)
     c.add_bit(Bit("d", 1))
     c.add_bit(Bit("d", 2))

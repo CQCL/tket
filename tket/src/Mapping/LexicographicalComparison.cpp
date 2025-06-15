@@ -97,7 +97,7 @@ lexicographical_distances_t LexicographicalComparison::get_updated_distances(
     if (interacting != swap.first) {
       // update distances due to second node and qubit its interacting with
       increment_distances(copy, {swap.second, interacting}, -2);
-      // update distannces due to frist node and qubit second node is
+      // update distannces due to first node and qubit second node is
       // interacting with
       increment_distances(copy, {swap.first, interacting}, 2);
     }

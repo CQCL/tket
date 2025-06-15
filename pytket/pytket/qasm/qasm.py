@@ -242,7 +242,7 @@ def _extract_reg(var: Token) -> tuple[str, int]:
 
 
 def _load_include_module(
-    header_name: str, flter: bool, decls_only: bool
+    header_name: str, filter_bool: bool, decls_only: bool
 ) -> dict[str, dict]:
     try:
         if decls_only:
@@ -260,7 +260,7 @@ def _load_include_module(
     return {
         gate: include_def[gate]
         for gate in include_def
-        if not flter or gate not in _all_known_gates
+        if not filter_bool or gate not in _all_known_gates
     }
 
 
@@ -811,7 +811,7 @@ class _CircuitTransformer(Transformer):
         return self.cce_call(tree)
 
     def cce_call(self, tree: list) -> Iterable[CommandDict]:
-        nam = tree[0].value
+        name = tree[0].value
         params = list(tree[1])
         if self.wasm is None:
             raise QASMParseError(
@@ -829,7 +829,7 @@ class _CircuitTransformer(Transformer):
             "op": {
                 "type": "WASM",
                 "wasm": {
-                    "func_name": nam,
+                    "func_name": name,
                     "ww_n": 1,
                     "n": sum(n_i_vec),
                     "width_i_parameter": n_i_vec,
@@ -1002,7 +1002,9 @@ def circuit_from_qasm_str(qasm_str: str, maxwidth: int = 32) -> Circuit:
     global g_parser  # noqa: PLW0602
     _set_parser(maxwidth=maxwidth)
     assert g_parser is not None
-    cast("_CircuitTransformer", g_parser.options.transformer)._reset_context(  # noqa: SLF001
+    cast(
+        "_CircuitTransformer", g_parser.options.transformer
+    )._reset_context(  # noqa: SLF001
         reset_wasm=False
     )
 
@@ -1203,7 +1205,9 @@ def _retrieve_registers(
 ) -> dict[str, TypeReg]:
     if any(len(unit.index) != 1 for unit in units):
         raise NotImplementedError("OPENQASM registers must use a single index")
-    maxunits = map(lambda x: max(x[1]), groupby(units, key=lambda un: un.reg_name))  # noqa: C417
+    maxunits = map(
+        lambda x: max(x[1]), groupby(units, key=lambda un: un.reg_name)
+    )  # noqa: C417
     return {
         maxunit.reg_name: reg_type(maxunit.reg_name, maxunit.index[0] + 1)
         for maxunit in maxunits

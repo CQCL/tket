@@ -110,7 +110,7 @@ typedef std::vector<std::pair<WeightWSM, std::pair<VertexWSM, VertexWSM>>>
 // We'll prioritise new t-edges between TWO used TVs over those
 // touching only ONE used TV, and also lower weights over highrer weights.
 
-// Get all extra t-edges, both explcit and implicit, between TWO used TV.
+// Get all extra t-edges, both explicit and implicit, between TWO used TV.
 static void get_extra_edges_adjoining_two_used_tv_unsorted(
     const NeighboursData& explicit_target_ndata,
     const std::vector<unsigned>& original_used_tv_sorted,
@@ -140,7 +140,7 @@ static void get_extra_edges_adjoining_two_used_tv_unsorted(
   }
 }
 
-// Get all extra explcit t-edges adjoining exactly ONE used TV.
+// Get all extra explicit t-edges adjoining exactly ONE used TV.
 static WeightAndTEdgeList
 get_explicit_extra_edges_adjoining_one_used_tv_unsorted(
     const NeighboursData& explicit_target_ndata,

@@ -859,7 +859,7 @@ Transform push_cliffords_through_measures() {
       measurement_operators.push_back(cliff_tab.get_row_product(sps));
     }
 
-    // Mutually diagonalize updated measuement operators
+    // Mutually diagonalize updated measurement operators
     Circuit mutual_c = mutual_diagonalise(
         measurement_operators, std::set<Qubit>(qubits.begin(), qubits.end()),
         CXConfigType::Snake);

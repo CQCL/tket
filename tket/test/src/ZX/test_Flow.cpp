@@ -306,7 +306,7 @@ SCENARIO("Testing Pauli flow identification and focussing") {
   REQUIRE_NOTHROW(f.verify(diag));
 }
 
-SCENARIO("Test focussed set identificaiton") {
+SCENARIO("Test focussed set identification") {
   // Diagram combines Ex. 2.43, "There and back again: a circuit extraction
   // tale", Backens et al. 2021 and Ex. C.13, "Relating measurement patterns to
   // circuits via Pauli flow", Simmons 2021

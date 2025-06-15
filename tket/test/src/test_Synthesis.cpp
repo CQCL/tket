@@ -1149,7 +1149,7 @@ SCENARIO(
   }
 }
 
-SCENARIO("Molmer-Sorensen gate converions") {
+SCENARIO("Molmer-Sorensen gate conversions") {
   GIVEN("A single MS gate") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::XXPhase, 0.4, {0, 1});

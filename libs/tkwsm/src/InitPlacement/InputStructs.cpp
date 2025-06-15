@@ -49,7 +49,7 @@ static std::vector<WeightWSM> get_interpolated_weights(
   }
   const WeightWSM final_index = size - 1;
   for (WeightWSM ii = 1; ii < final_index; ++ii) {
-    // Just use arithmetic progession, rather than geometric progression.
+    // Just use arithmetic progression, rather than geometric progression.
     // A fun exercise to implement nearest-integer geometric progressions
     // using only int operations (no std::exp or std::log),
     // but not worth the trouble.

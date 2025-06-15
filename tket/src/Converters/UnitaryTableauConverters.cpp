@@ -29,8 +29,8 @@ UnitaryTableau circuit_to_unitary_tableau(const Circuit& circ) {
 }
 
 Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
-  SymplecticTableau tabl(tab.tab_);
-  unsigned size = tabl.get_n_qubits();
+  SymplecticTableau table(tab.tab_);
+  unsigned size = table.get_n_qubits();
   Circuit c(size);
   /*
    * Aaronson-Gottesman: Improved Simulation of Stabilizer Circuits, Theorem 8
@@ -44,7 +44,7 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
    * Step 1: Use Hadamards (in our case, Vs) to make C (z rows of xmat_) have
    * full rank
    */
-  MatrixXb echelon = tabl.xmat.block(size, 0, size, size);
+  MatrixXb echelon = table.xmat.block(size, 0, size, size);
   std::map<unsigned, unsigned> leading_val_to_col;
   for (unsigned i = 0; i < size; i++) {
     for (unsigned j = 0; j < size; j++) {
@@ -63,9 +63,9 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
     if (leading_val_to_col.size() > i)
       continue;  // Independent of previous cols
     c.add_op<unsigned>(OpType::V, {i});
-    tabl.apply_V(i);
-    tabl.apply_X(i);
-    echelon.col(i) = tabl.zmat.block(size, i, size, 1);
+    table.apply_V(i);
+    table.apply_X(i);
+    echelon.col(i) = table.zmat.block(size, i, size, 1);
     for (unsigned j = 0; j < size; j++) {
       if (echelon(j, i)) {
         if (leading_val_to_col.find(j) == leading_val_to_col.end()) {
@@ -88,11 +88,11 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
    * / A B \
    * \ I D /
    */
-  MatrixXb to_reduce = tabl.xmat.block(size, 0, size, size);
+  MatrixXb to_reduce = table.xmat.block(size, 0, size, size);
   for (const std::pair<unsigned, unsigned>& qbs :
        gaussian_elimination_col_ops(to_reduce)) {
     c.add_op<unsigned>(OpType::CX, {qbs.first, qbs.second});
-    tabl.apply_CX(qbs.first, qbs.second);
+    table.apply_CX(qbs.first, qbs.second);
   }
 
   /*
@@ -102,12 +102,12 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
    * for some invertible M.
    */
   std::pair<MatrixXb, MatrixXb> zp_z_llt =
-      binary_LLT_decomposition(tabl.zmat.block(size, 0, size, size));
+      binary_LLT_decomposition(table.zmat.block(size, 0, size, size));
   for (unsigned i = 0; i < size; i++) {
     if (zp_z_llt.second(i, i)) {
       c.add_op<unsigned>(OpType::S, {i});
-      tabl.apply_S(i);
-      tabl.apply_Z(i);
+      table.apply_S(i);
+      table.apply_Z(i);
     }
   }
 
@@ -123,7 +123,7 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
            m_to_i.rbegin();
        it != m_to_i.rend(); it++) {
     c.add_op<unsigned>(OpType::CX, {it->first, it->second});
-    tabl.apply_CX(it->first, it->second);
+    table.apply_CX(it->first, it->second);
   }
 
   /*
@@ -137,8 +137,8 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
    */
   for (unsigned i = 0; i < size; i++) {
     c.add_op<unsigned>(OpType::S, {i});
-    tabl.apply_S(i);
-    tabl.apply_Z(i);
+    table.apply_S(i);
+    table.apply_Z(i);
   }
 
   /*
@@ -147,11 +147,11 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
    * \ I 0 /
    * By commutativity relations, IB^T = A0^T + I, therefore B = I.
    */
-  to_reduce = tabl.xmat.block(size, 0, size, size);
+  to_reduce = table.xmat.block(size, 0, size, size);
   for (const std::pair<unsigned, unsigned>& qbs :
        gaussian_elimination_col_ops(to_reduce)) {
     c.add_op<unsigned>(OpType::CX, {qbs.first, qbs.second});
-    tabl.apply_CX(qbs.first, qbs.second);
+    table.apply_CX(qbs.first, qbs.second);
   }
 
   /*
@@ -161,7 +161,7 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
    */
   for (unsigned i = 0; i < size; i++) {
     c.add_op<unsigned>(OpType::H, {i});
-    tabl.apply_H(i);
+    table.apply_H(i);
   }
 
   /*
@@ -170,12 +170,12 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
    * some invertible N.
    */
   std::pair<MatrixXb, MatrixXb> xp_z_llt =
-      binary_LLT_decomposition(tabl.zmat.block(0, 0, size, size));
+      binary_LLT_decomposition(table.zmat.block(0, 0, size, size));
   for (unsigned i = 0; i < size; i++) {
     if (xp_z_llt.second(i, i)) {
       c.add_op<unsigned>(OpType::S, {i});
-      tabl.apply_S(i);
-      tabl.apply_Z(i);
+      table.apply_S(i);
+      table.apply_Z(i);
     }
   }
 
@@ -190,7 +190,7 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
            n_to_i.rbegin();
        it != n_to_i.rend(); it++) {
     c.add_op<unsigned>(OpType::CX, {it->first, it->second});
-    tabl.apply_CX(it->first, it->second);
+    table.apply_CX(it->first, it->second);
   }
 
   /*
@@ -203,8 +203,8 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
    */
   for (unsigned i = 0; i < size; i++) {
     c.add_op<unsigned>(OpType::S, {i});
-    tabl.apply_S(i);
-    tabl.apply_Z(i);
+    table.apply_S(i);
+    table.apply_Z(i);
   }
 
   /*
@@ -213,22 +213,22 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
    * \ 0 I /
    */
   for (const std::pair<unsigned, unsigned>& qbs :
-       gaussian_elimination_col_ops(tabl.xmat.block(0, 0, size, size))) {
+       gaussian_elimination_col_ops(table.xmat.block(0, 0, size, size))) {
     c.add_op<unsigned>(OpType::CX, {qbs.first, qbs.second});
-    tabl.apply_CX(qbs.first, qbs.second);
+    table.apply_CX(qbs.first, qbs.second);
   }
 
   /*
    * DELAYED STEPS: Set all phases to 0 by applying Z or X gates
    */
   for (unsigned i = 0; i < size; i++) {
-    if (tabl.phase(i)) {
+    if (table.phase(i)) {
       c.add_op<unsigned>(OpType::Z, {i});
-      tabl.apply_Z(i);
+      table.apply_Z(i);
     }
-    if (tabl.phase(i + size)) {
+    if (table.phase(i + size)) {
       c.add_op<unsigned>(OpType::X, {i});
-      tabl.apply_X(i);
+      table.apply_X(i);
     }
   }
 

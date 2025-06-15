@@ -111,14 +111,14 @@ class IterationOrder {
   explicit IterationOrder(const Architecture &arch);
 
   /**
-   * give the in the constructur calculated iteration order
-   * @return ordered vector of the architecutre in which they can be iterated.
+   * give the in the constructor calculated iteration order
+   * @return ordered vector of the architecture in which they can be iterated.
    */
   std::vector<Node> get_iterationorder() { return iterationorder; }
 
   /**
-   * give the in the constructur calculated edges used for the iteration
-   * @return vector of edges pf the architecutre which are used for the
+   * give the in the constructor calculated edges used for the iteration
+   * @return vector of edges pf the architecture which are used for the
    * iteration.
    */
   std::vector<std::pair<Node, Node>> get_edgelist() { return edgelist; }

@@ -504,7 +504,7 @@ class Flow:
         """The map from a vertex to its depth"""
 
     def focus(self, diag: ZXDiagram) -> None:
-        """Focusses a flow."""
+        """Focuses a flow."""
 
     @staticmethod
     def identify_causal_flow(diag: ZXDiagram) -> Flow:

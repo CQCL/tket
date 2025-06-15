@@ -28,7 +28,7 @@ typedef std::map<std::type_index, std::pair<PredicatePtr, bool>> PredicateCache;
 
 /* The CompilationUnit class encapsulates a Circuit and a PredicatePtrMap of the
    Predicates that Circuit is intended to satisfy by the end of its run through
-   the compiler. It holdes a cache of Predicates
+   the compiler. It holds a cache of Predicates
     which are currently satisfied. */
 
 class CompilationUnit {

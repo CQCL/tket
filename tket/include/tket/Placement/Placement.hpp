@@ -71,7 +71,7 @@ class Placement {
    *
    * For some Circuit, returns maps between Circuit UnitID and
    * Architecture UnitID that can be used for reassigning UnitID in
-   * Circuit. Maps expected to give similiar performance for given method.
+   * Circuit. Maps expected to give similar performance for given method.
    * For Placement this naively assigns every Qubit to some Node.
    *
    * @param circ_ Circuit relabelling map is constructed from

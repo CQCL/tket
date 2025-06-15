@@ -31,7 +31,7 @@ namespace WeightedSubgraphMonomorphism {
  * and allowing only multiplication and positive numbers
  * (no addition, subtraction, division).
  * Close to best possible in terms of accuracy (discards
- * the least signficant bits first, and retains almost the
+ * the least significant bits first, and retains almost the
  * maximum number of bits).
  */
 class DyadicFraction {

@@ -171,7 +171,7 @@ struct MappingFrontier {
    * is now mapped to out wire of merge Input vertex.
    *
    * @param merge UnitID to which ancilla path is prepended
-   * @param ancilla UnitID of ancilla opeartions
+   * @param ancilla UnitID of ancilla operations
    */
   void merge_ancilla(const UnitID& merge, const UnitID& ancilla);
 

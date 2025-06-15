@@ -358,7 +358,7 @@ def test_basic_mapping() -> None:
 def test_MultiGateReorderRoutingMethod() -> None:
     circ = Circuit(5)
     arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4)])
-    # Invalid opration
+    # Invalid operation
     circ.CZ(0, 2)
     # Valid operations that can all be commuted to the front
     circ.CZ(0, 1)
@@ -418,7 +418,7 @@ def test_BoxDecompositionRoutingMethod() -> None:
     circ = Circuit(5)
     sub_circ = Circuit(5)
     arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4)])
-    # Invalid oprations
+    # Invalid operations
     sub_circ.CZ(0, 2)
     sub_circ.CZ(1, 3)
     circ_box = CircBox(sub_circ)

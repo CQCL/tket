@@ -198,7 +198,7 @@ static Architecture random_architecture() {
  * Check correctness of a completed compilation pass.
  *
  * @param[in] c0 original circuit
- * @param[in] cu compliation pass having been applied to \p c0
+ * @param[in] cu compilation pass having been applied to \p c0
  */
 static void check_correctness(
     const Circuit &c0, const CompilationUnit &cu,

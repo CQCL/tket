@@ -51,7 +51,7 @@ std::pair<bool, bool> run_delay_measures(
  * Rejects gates acting on measured_units, and terminates early.
  * Applies recursively for CircBoxes and Conditionals.
  * @param com The command to check.
- * @param measured_units The list of measured units to add to, initialy
+ * @param measured_units The list of measured units to add to, initially
  * populated with previously-measured units.
  * @return Whether there are no mid-circuit measurements.
  **/
