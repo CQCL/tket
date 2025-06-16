@@ -781,6 +781,26 @@ enum class OpType {
    * RNG output node of the circuit
    */
   RNGOutput,
+
+  /**
+   * Seed an RNG using 64 bits
+   */
+  RNGSeed,
+
+  /**
+   * Set an (inclusive) 32-bit upper bound on RNG output
+   */
+  RNGBound,
+
+  /**
+   * Set a 32-bit index on an RNG
+   */
+  RNGIndex,
+
+  /**
+   * Get 32-bit output from an RNG
+   */
+  RNGNum,
 };
 
 JSON_DECL(OpType)

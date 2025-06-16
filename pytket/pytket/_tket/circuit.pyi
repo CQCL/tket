@@ -515,6 +515,24 @@ class OpType(enum.IntEnum):
     UnitaryTableauBox = 113
     """See :py:class:`~.UnitaryTableauBox`"""
 
+    RNGInput = 116
+    """RNG input node"""
+
+    RNGOutput = 117
+    """RNG output node"""
+
+    RNGSeed = 118
+    """Seed an RNG using 64 bits"""
+
+    RNGBound = 119
+    """Set an (inclusive) 32-bit upper bound on RNG output"""
+
+    RNGIndex = 120
+    """Set a 32-bit index on an RNG"""
+
+    RNGNum = 121
+    """Get 32-bit output from an RNG"""
+    
     @staticmethod
     def from_name(arg: str, /) -> OpType:
         """Construct from name"""

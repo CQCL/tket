@@ -1479,7 +1479,8 @@ SCENARIO("Test TK1 gate decomp for some gates") {
       OpType::Collapse,     OpType::Measure,      OpType::Label,
       OpType::Branch,       OpType::Goto,         OpType::Stop,
       OpType::Create,       OpType::Discard,      OpType::RNGInput,
-      OpType::RNGOutput};
+      OpType::RNGOutput,    OpType::RNGSeed,      OpType::RNGBound,
+      OpType::RNGIndex,     OpType::RNGNum};
   for (const std::pair<const OpType, OpTypeInfo> &map_pair : optypeinfo()) {
     OpTypeInfo oti = map_pair.second;
     if (!oti.signature) continue;

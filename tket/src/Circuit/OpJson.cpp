@@ -35,6 +35,8 @@ void from_json(const nlohmann::json& j, Op_ptr& op) {
     op = Conditional::deserialize(j);
   } else if (optype == OpType::WASM) {
     op = WASMOp::deserialize(j);
+  } else if (is_opaque_classical_type(optype)) {
+    op = OpaqueClassicalOp::deserialize(j);
   } else if (optype == OpType::ClExpr) {
     op = ClExprOp::deserialize(j);
   } else if (is_classical_type(optype)) {

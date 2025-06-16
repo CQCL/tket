@@ -80,6 +80,39 @@ class ClassicalOp : public Op {
   std::vector<EdgeType> sig_;
 };
 
+/**
+ * An opaque classical operation with no parameters and fixed signature
+ */
+class OpaqueClassicalOp : public ClassicalOp {
+ public:
+  /**
+   * Construct an OpaqueClassicalOp of specified type
+   *
+   * @param type operation type
+   */
+  OpaqueClassicalOp(OpType type);
+
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &) const override {
+    return std::make_shared<OpaqueClassicalOp>(*this);
+  }
+
+  /**
+   * Serialize to JSON
+   */
+  nlohmann::json serialize() const override;
+
+  /**
+   * Deserialize from JSON
+   */
+  static Op_ptr deserialize(const nlohmann::json &j);
+
+  /**
+   * Equality check between two OpaqueClassicalOp instances
+   */
+  bool is_equal(const Op &other) const override;
+};
+
 class ClassicalEvalOp : public ClassicalOp {
  public:
   /**

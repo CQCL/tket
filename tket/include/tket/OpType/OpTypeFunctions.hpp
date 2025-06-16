@@ -45,6 +45,9 @@ const OpTypeSet &all_projective_types();
 /** Set of all controlled gates*/
 const OpTypeSet &all_controlled_gate_types();
 
+/** Set of all opaque classical gates */
+const OpTypeSet &all_opaque_classical_types();
+
 /** Set of all classical gates */
 const OpTypeSet &all_classical_types();
 
@@ -119,6 +122,9 @@ bool is_classical_type(OpType optype);
 
 /** Test for controlled gates */
 bool is_controlled_gate_type(OpType optype);
+
+/** Test for opaque classical gates **/
+bool is_opaque_classical_type(OpType optype);
 
 /** Whether a given operation type belongs to a given set */
 bool find_in_set(const OpType &val, const OpTypeSet &set);
