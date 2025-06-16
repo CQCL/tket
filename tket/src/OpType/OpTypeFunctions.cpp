@@ -113,6 +113,10 @@ const OpTypeSet& all_classical_types() {
       OpType::MultiBit,
       OpType::WASM,
       OpType::ClExpr,
+      OpType::RNGSeed,
+      OpType::RNGBound,
+      OpType::RNGIndex,
+      OpType::RNGNum,
   };
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
@@ -134,6 +138,14 @@ const OpTypeSet& all_controlled_gate_types() {
       OpType::CVdg, OpType::CRx,   OpType::CnRx, OpType::CnRz, OpType::CnRy,
       OpType::CRy,  OpType::CY,    OpType::CRz,  OpType::CZ,   OpType::CH,
       OpType::CU1,  OpType::CU3};
+  static std::unique_ptr<const OpTypeSet> gates =
+      std::make_unique<const OpTypeSet>(optypes);
+  return *gates;
+}
+
+const OpTypeSet& all_opaque_classical_types() {
+  static const OpTypeSet optypes{
+      OpType::RNGSeed, OpType::RNGBound, OpType::RNGIndex, OpType::RNGNum};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;
@@ -292,4 +304,9 @@ bool is_classical_type(OpType optype) {
 bool is_controlled_gate_type(OpType optype) {
   return find_in_set(optype, all_controlled_gate_types());
 }
+
+bool is_opaque_classical_type(OpType optype) {
+  return find_in_set(optype, all_opaque_classical_types());
+}
+
 }  // namespace tket

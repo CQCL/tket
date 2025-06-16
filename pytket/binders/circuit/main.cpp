@@ -571,8 +571,14 @@ NB_MODULE(circuit, m) {
           "UnitaryTableauBox", OpType::UnitaryTableauBox,
           "See "
           ":py:class:`~.UnitaryTableauBox`")
-      .value("_RNGInput", OpType::RNGInput, "RNG input node")
-      .value("_RNGOutput", OpType::RNGOutput, "RNG output node")
+      .value("RNGInput", OpType::RNGInput, "RNG input node")
+      .value("RNGOutput", OpType::RNGOutput, "RNG output node")
+      .value("RNGSeed", OpType::RNGSeed, "Seed an RNG using 64 bits")
+      .value(
+          "RNGBound", OpType::RNGBound,
+          "Set an (inclusive) 32-bit upper bound on RNG output")
+      .value("RNGIndex", OpType::RNGIndex, "Set a 32-bit index on an RNG")
+      .value("RNGNum", OpType::RNGNum, "Get 32-bit output from an RNG")
       .def_static(
           "from_name",
           [](const nb::str &name) { return json(name).get<OpType>(); },
