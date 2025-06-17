@@ -406,4 +406,18 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_conjugation_box
 
+RNG operations
+--------------
+
+These operations allow the use of a PRNG implemented in the backend. The details
+of its implementation are backend-specific. Backends that do not provide a PRNG
+may either ignore these operations or reject them.
+
+   -- automethod:: set_rng_seed
+
+   -- automethod:: set_rng_bound
+
+   -- automethod:: set_rng_index
+
+   -- automethod:: get_rng_num
 ```

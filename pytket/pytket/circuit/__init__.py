@@ -160,6 +160,96 @@ please use only registers of at most 32 bits"""
 setattr(Circuit, "add_wasm_to_reg", add_wasm_to_reg)  # noqa: B010
 
 
+def set_rng_seed(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
+    """Seed an RNG from the contents of a classical register.
+
+    The classical register must be exactly 64 bits.
+
+    :param creg: register of classical bits
+    :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
+         are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+    :return: the new :py:class:`Circuit`
+    """
+    self._add_r_register(1)
+    if creg.size != 64:
+        raise ValueError(
+            f"Register passed to `set_rng_seed()` has size {creg.size} (should be 64)"
+        )
+    return self._set_rng_seed(creg, 0, **kwargs)
+
+
+setattr(Circuit, "set_rng_seed", set_rng_seed)
+
+
+def set_rng_bound(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
+    """Set an RNG upper bound from the contents of a classical register.
+
+    The classical register must be exactly 32 bits. It encodes the upper bound in
+    little-endian binary (least significant bit first). The bound is inclusive.
+
+    :param creg: register of classical bits
+    :param rng_wire: index of RNG wire
+    :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
+        are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+    :return: the new :py:class:`Circuit`
+    """
+    self._add_r_register(1)
+    if creg.size != 32:
+        raise ValueError(
+            f"Register passed to `set_rng_bound()` has size {creg.size} (should be 32)"
+        )
+    return self._set_rng_bound(creg, 0, **kwargs)
+
+
+setattr(Circuit, "set_rng_bound", set_rng_bound)
+
+
+def set_rng_index(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
+    """Set an RNG stream index from the contents of a classical register.
+
+    The classical register must be exactly 32 bits. It encodes the index in little-
+    endian binary (least significant bit first).
+
+    :param creg: register of classical bits
+    :param rng_wire: index of RNG wire
+    :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
+        are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+    :return: the new :py:class:`Circuit`
+    """
+    self._add_r_register(1)
+    if creg.size != 32:
+        raise ValueError(
+            f"Register passed to `set_rng_bound()` has size {creg.size} (should be 32)"
+        )
+    return self._set_rng_index(creg, 0, **kwargs)
+
+
+setattr(Circuit, "set_rng_index", set_rng_index)
+
+
+def get_rng_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
+    """Get RNG output into a classical register.
+
+    The classical register must be exactly 32 bits. After the operation it encodes the
+    output number in little-endian binary (least significant bit first).
+
+    :param creg: register of classical bits
+    :param rng_wire: index of RNG wire
+    :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
+        are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+    :return: the new :py:class:`Circuit`
+    """
+    self._add_r_register(1)
+    if creg.size != 32:
+        raise ValueError(
+            f"Register passed to `get_rng_num()` has size {creg.size} (should be 32)"
+        )
+    return self._get_rng_num(creg, 0, **kwargs)
+
+
+setattr(Circuit, "get_rng_num", get_rng_num)
+
+
 def add_clexpr_from_logicexp(
     circ: Circuit, exp: LogicExp, output_bits: list[Bit], **kwargs: Any
 ) -> Circuit:
