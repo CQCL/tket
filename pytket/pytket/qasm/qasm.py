@@ -1863,6 +1863,34 @@ class _QasmWriter:
         for variable in outputs:
             self.mark_as_written(label, variable)
 
+    def add_rng_seed(self, args: list[Bit]):
+        assert len(args) == 65
+        reg_name = args[0].reg_name
+        creg = self.cregs[reg_name]
+        assert args[:-1] == creg.to_list()
+        self.strings.add_string(f"RNGseed({reg_name});\n")
+
+    def add_rng_bound(self, args: list[Bit]):
+        assert len(args) == 33
+        reg_name = args[0].reg_name
+        creg = self.cregs[reg_name]
+        assert args[:-1] == creg.to_list()
+        self.strings.add_string(f"RNGbound({reg_name});\n")
+
+    def add_rng_index(self, args: list[Bit]):
+        assert len(args) == 33
+        reg_name = args[0].reg_name
+        creg = self.cregs[reg_name]
+        assert args[:-1] == creg.to_list()
+        self.strings.add_string(f"RNGindex({reg_name});\n")
+
+    def add_rng_num(self, args: list[Bit]):
+        assert len(args) == 33
+        reg_name = args[0].reg_name
+        creg = self.cregs[reg_name]
+        assert args[:-1] == creg.to_list()
+        self.strings.add_string(f"{reg_name} = RNGnum();\n")
+
     def add_measure(self, args: Sequence[UnitID]) -> None:
         label = self.strings.add_string(f"measure {args[0]} -> {args[1]};\n")
         self.mark_as_written(label, f"{args[1]}")
@@ -1968,6 +1996,14 @@ class _QasmWriter:
         elif optype == OpType.WASM:
             assert isinstance(op, WASMOp)
             self.add_wasm(op, cast("list[Bit]", args))
+        elif optype == OpType.RNGSeed:
+            self.add_rng_seed(args)
+        elif optype == OpType.RNGBound:
+            self.add_rng_bound(args)
+        elif optype == OpType.RNGIndex:
+            self.add_rng_index(args)
+        elif optype == OpType.RNGNum:
+            self.add_rng_num(args)
         elif optype == OpType.Measure:
             self.add_measure(args)
         elif _hqs_header(self.header) and optype == OpType.ZZPhase:
