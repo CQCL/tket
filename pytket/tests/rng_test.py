@@ -15,6 +15,7 @@
 import pytest
 
 from pytket.circuit import Circuit, OpType
+from pytket.qasm import circuit_to_qasm_str
 
 
 def test_rng_seed() -> None:
@@ -71,3 +72,24 @@ def test_rng() -> None:
     circ.H(0, condition_bits=[num[0]], condition_value=1)
     circ.measure_all()
     assert circ.n_gates == 8
+    qasm = circuit_to_qasm_str(circ, header="hqslib1", maxwidth=64)
+    assert qasm == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+qreg q[1];
+creg bound[32];
+creg c[1];
+creg index[32];
+creg num[32];
+creg seed[64];
+bound[1] = 1;
+seed[1] = 1;
+seed[3] = 1;
+seed[5] = 1;
+RNGseed(seed);
+RNGbound(bound);
+RNGindex(index);
+num = RNGnum();
+if(num[0]==1) h q[0];
+measure q[0] -> c[0];
+"""
