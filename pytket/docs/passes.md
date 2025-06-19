@@ -8,7 +8,7 @@ Also there are special purpose passes such as {py:meth}`~.passes.OptimisePhaseGa
 
 Rebase passes can be used to convert a circuit to a desired gateset. See {py:meth}`~.passes.RebaseCustom` and {py:meth}`~.passes.AutoRebase`.
 
-For more on pytket passes see the [compilation](https://docs.quantinuum.com/tket/user-guide/manual/manual_compiler.html) section of the user manual or the [notebook tutorials](https://docs.quantinuum.com/tket/examples)
+For more on pytket passes see the [compilation](https://docs.quantinuum.com/tket/user-guide/manual/manual_compiler.html) section of the user manual or the [notebook tutorials](https://docs.quantinuum.com/tket/user-guide)
 
 ```{eval-rst}
 .. currentmodule:: pytket._tket.passes

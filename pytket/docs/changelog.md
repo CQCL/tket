@@ -1521,7 +1521,7 @@ Bugfixes:
 
 Known issues:
 
-- There is an [issue](https://github.com/CQCL/pytket/issues/24) with the use
+- There is an [issue](https://github.com/CQCL/pytket-docs/issues/24) with the use
   of symbolic circuits on Windows, causing memory access violations in some
   circumstances.
 

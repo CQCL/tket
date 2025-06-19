@@ -39,7 +39,7 @@ The source content for the manual and notebook examples can be found in the [pyt
 
 In addition to the core pytket package there are pytket extension modules which allow pytket to interface with quantum devices and simulators. Some extensions also provide interoperability with other software libraries such as qiskit, cirq and pennylane.
 
-For a list of available pytket extensions see the [extensions index page](https://docs.quantinuum.com/tket/api-docs/extensions).
+For a list of available pytket extensions see the [extensions index page](https://docs.quantinuum.com/tket/api-docs/extensions.html).
 
 These extensions are installed as separate python packages and the source code for each extension lives in its own github repository.
 

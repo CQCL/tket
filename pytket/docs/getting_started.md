@@ -81,7 +81,7 @@ for an extensive tutorial on pytket, providing a gentle introduction to its
 features and how to run circuits on backend devices, with worked examples.
 
 In pytket there is also a generic {py:class}`~.Backend` interface. This represents a connection to a quantum device or simulator.
-It's possible to run circuits on platforms from different providers through the [extension modules](https://docs.quantinuum.com/tket/api-docs/extensions).
+It's possible to run circuits on platforms from different providers through the [extension modules](extensions.md).
 
 ```{code-cell} ipython3
 ---
