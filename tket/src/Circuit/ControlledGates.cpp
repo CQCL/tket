@@ -1098,7 +1098,7 @@ static void add_pn(Circuit& circ, unsigned n, bool inverse) {
 static void add_pn_unitary(
     Circuit& circ, const Eigen::Matrix2cd& u, unsigned n, bool inverse) {
   TKET_ASSERT(n > 1);
-  // on_(u) is self commute
+  // pn_(u) is self commute
   for (unsigned i = 2; i < n + 1; i++) {
     Eigen::Matrix2cd m = nth_root(u, 1ULL << (n - i + 1));
     if (inverse) m.adjointInPlace();
