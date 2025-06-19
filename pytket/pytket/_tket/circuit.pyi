@@ -1,5 +1,6 @@
 from collections.abc import Iterator, Mapping, Sequence, Set
 import enum
+import types
 from typing import Annotated, Any, Union, overload
 
 from numpy.typing import NDArray
@@ -2893,16 +2894,7 @@ class Circuit:
     ]:
         """DAG data for circuit"""
 
-    def add_wasm(
-        self: Circuit,
-        funcname: str,
-        filehandler: pytket.wasm.wasm.WasmModuleHandler,
-        list_i: Sequence[int],
-        list_o: Sequence[int],
-        args: Union[Sequence[int], Sequence[pytket._tket.unit_id.Bit]],
-        args_wasm: Union[Sequence[int], None] = None,
-        **kwargs: Any,
-    ) -> Circuit:
+    def add_wasm(self: Circuit, funcname: str, filehandler: pytket.wasm.wasm.WasmModuleHandler, list_i: Sequence[int], list_o: Sequence[int], args: Union[Sequence[int], Sequence[pytket._tket.unit_id.Bit]], args_wasm: Sequence[int] | None = None, **kwargs: Any) -> Circuit:
         """
         Add a classical function call from a wasm file to the circuit.
 
@@ -2926,15 +2918,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
 
-    def add_wasm_to_reg(
-        self: Circuit,
-        funcname: str,
-        filehandler: pytket.wasm.wasm.WasmModuleHandler,
-        list_i: Sequence[pytket._tket.unit_id.BitRegister],
-        list_o: Sequence[pytket._tket.unit_id.BitRegister],
-        args_wasm: Union[Sequence[int], None] = None,
-        **kwargs: Any,
-    ) -> Circuit:
+    def add_wasm_to_reg(self: Circuit, funcname: str, filehandler: pytket.wasm.wasm.WasmModuleHandler, list_i: Sequence[pytket._tket.unit_id.BitRegister], list_o: Sequence[pytket._tket.unit_id.BitRegister], args_wasm: Sequence[int] | None = None, **kwargs: Any) -> Circuit:
         """
         Add a classical function call from a wasm file to the circuit.
 

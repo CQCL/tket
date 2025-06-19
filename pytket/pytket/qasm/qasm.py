@@ -1877,7 +1877,7 @@ class _QasmWriter:
         # that 0 <= param < 4
         if param > 1:
             # first get in to 0 <= param < 2 range
-            param = Decimal(str(param)) % Decimal("2")
+            param = Decimal(str(param)) % Decimal(2)
             # then flip 1 <= param < 2  range into
             # -1 <= param < 0
             if param > 1:

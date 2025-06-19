@@ -1627,8 +1627,6 @@ def test_controlled_TermSequenceBox_logging(capfd: Any) -> None:
 
 
 def test_cnx_vchain_zeroed_ancillas() -> None:
-    from pytket.circuit_library import CnX_vchain_decomp
-
     for n in range(3, 7):
         circ = CnX_vchain_decomp(n, True)
 
