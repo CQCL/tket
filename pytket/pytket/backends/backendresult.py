@@ -55,7 +55,7 @@ class StoredResult(NamedTuple):
     density_matrix: np.ndarray | None = None
 
 
-class BackendResult:
+class BackendResult:  # noqa: PLW1641
     """Encapsulate generic results from pytket Backend instances.
 
     In the case of a real quantum device or a shots-based simulator
