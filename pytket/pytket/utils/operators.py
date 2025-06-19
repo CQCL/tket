@@ -105,6 +105,9 @@ class QubitPauliOperator:
             return self._dict == other._dict
         return False
 
+    def __hash__(self) -> int:
+        return hash(self._dict)
+
     def __iadd__(self, addend: "QubitPauliOperator") -> "QubitPauliOperator":
         """In-place addition (+=) of QubitPauliOperators.
 
