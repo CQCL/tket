@@ -152,24 +152,24 @@ def test_add_c_setreg_raises_runtime_error() -> None:
 
 def test_wasm() -> None:
     c = Circuit(0, 6)
-    c._add_wasm(
+    c._add_wasm(  # noqa: SLF001
         "funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0]
-    )  # noqa: SLF001
-    c._add_wasm(
+    )
+    c._add_wasm(  # noqa: SLF001
         "funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(2)], [0]
-    )  # noqa: SLF001
-    c._add_wasm(
+    )
+    c._add_wasm(  # noqa: SLF001
         "funcname", "wasmfileuid", [1, 1], [2], [0, 1, 2, 3], [0]
-    )  # noqa: SLF001
-    c._add_wasm(
+    )
+    c._add_wasm(  # noqa: SLF001
         "funcname", "wasmfileuid", [1, 1], [2], [0, 1, 2, 4], [0]
-    )  # noqa: SLF001
-    c._add_wasm(
+    )
+    c._add_wasm(  # noqa: SLF001
         "funcname", "wasmfileuid", [1], [1, 2], [0, 1, 2, 3], [0]
-    )  # noqa: SLF001
-    c._add_wasm(
+    )
+    c._add_wasm(  # noqa: SLF001
         "funcname", "wasmfileuid", [2, 1], [3], [0, 1, 2, 3, 4, 5], [0]
-    )  # noqa: SLF001
+    )
 
     assert c.depth() == 6
 
@@ -919,12 +919,8 @@ DrawType = Callable[[SearchStrategy[T]], T]
 @strategies.composite
 def bit_register(
     draw: DrawType,
-    name: SearchStrategy[str] = strategies.from_regex(
-        reg_name_regex, fullmatch=True
-    ),  # noqa: B008
-    size: SearchStrategy[int] = strategies.integers(
-        min_value=2, max_value=32
-    ),  # noqa: B008
+    name: SearchStrategy[str] = strategies.from_regex(reg_name_regex, fullmatch=True),
+    size: SearchStrategy[int] = strategies.integers(min_value=2, max_value=32),
 ) -> BitRegister:
     return BitRegister(draw(name.filter(lambda nm: not nm.startswith("q"))), draw(size))
 
@@ -932,12 +928,8 @@ def bit_register(
 @strategies.composite
 def qubit_register(
     draw: DrawType,
-    name: SearchStrategy[str] = strategies.from_regex(
-        reg_name_regex, fullmatch=True
-    ),  # noqa: B008
-    size: SearchStrategy[int] = strategies.integers(
-        min_value=0, max_value=32
-    ),  # noqa: B008
+    name: SearchStrategy[str] = strategies.from_regex(reg_name_regex, fullmatch=True),
+    size: SearchStrategy[int] = strategies.integers(min_value=0, max_value=32),
 ) -> QubitRegister:
     return QubitRegister(draw(name), draw(size))
 
@@ -959,9 +951,7 @@ def test_registers(reg: BitRegister | QubitRegister, index: int) -> None:
 @strategies.composite
 def bits(
     draw: DrawType,
-    name: SearchStrategy[str] = strategies.from_regex(
-        reg_name_regex, fullmatch=True
-    ),  # noqa: B008
+    name: SearchStrategy[str] = strategies.from_regex(reg_name_regex, fullmatch=True),
     index: SearchStrategy[int] = uint32,
 ) -> Bit:
     return Bit(draw(name.filter(lambda nm: not nm.startswith("q"))), draw(index))
@@ -1114,9 +1104,7 @@ def composite_bit_logic_exps(
             operator.xor,
         ]
     ),
-    n_terms: SearchStrategy[int] = strategies.integers(
-        min_value=2, max_value=7
-    ),  # noqa: B008
+    n_terms: SearchStrategy[int] = strategies.integers(min_value=2, max_value=7),
 ) -> BitLogicExp:
     terms = draw(n_terms)
     exp: BitLogicExp
@@ -1142,9 +1130,7 @@ def composite_reg_logic_exps(
             operator.xor,
         ]
     ),
-    n_terms: SearchStrategy[int] = strategies.integers(
-        min_value=1, max_value=7
-    ),  # noqa: B008
+    n_terms: SearchStrategy[int] = strategies.integers(min_value=1, max_value=7),
 ) -> RegLogicExp:
     terms = draw(n_terms)
     exp = draw(regs)
@@ -1172,9 +1158,7 @@ def bit_const_predicates(
     exp: SearchStrategy[BitLogicExp] = composite_bit_logic_exps(),  # noqa: B008
     operators: SearchStrategy[
         Callable[[Bit | BitLogicExp], PredicateExp]
-    ] = strategies.sampled_from(
-        [if_bit, if_not_bit]
-    ),  # noqa: B008
+    ] = strategies.sampled_from([if_bit, if_not_bit]),
 ) -> PredicateExp:
     func = draw(operators)
     arg = draw(exp)
@@ -1187,9 +1171,7 @@ def reg_const_predicates(
     exp: SearchStrategy[RegLogicExp] = composite_reg_logic_exps(),  # noqa: B008
     operators: SearchStrategy[
         Callable[[RegLogicExp | BitRegister, int], PredicateExp]
-    ] = strategies.sampled_from(
-        [reg_eq, reg_neq, reg_lt, reg_gt, reg_leq, reg_geq]
-    ),  # noqa: B008
+    ] = strategies.sampled_from([reg_eq, reg_neq, reg_lt, reg_gt, reg_leq, reg_geq]),
     constants: SearchStrategy[int] = uint64,
 ) -> PredicateExp:
     return draw(operators)(draw(exp), draw(constants))  # type: ignore

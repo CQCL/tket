@@ -1205,9 +1205,7 @@ def _retrieve_registers(
 ) -> dict[str, TypeReg]:
     if any(len(unit.index) != 1 for unit in units):
         raise NotImplementedError("OPENQASM registers must use a single index")
-    maxunits = map(
-        lambda x: max(x[1]), groupby(units, key=lambda un: un.reg_name)
-    )  # noqa: C417
+    maxunits = (max(x[1]) for x in groupby(units, key=lambda un: un.reg_name))
     return {
         maxunit.reg_name: reg_type(maxunit.reg_name, maxunit.index[0] + 1)
         for maxunit in maxunits
