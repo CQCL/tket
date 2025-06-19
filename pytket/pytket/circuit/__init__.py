@@ -60,7 +60,7 @@ def add_wasm(  # noqa: PLR0913
     list_i: Sequence[int],
     list_o: Sequence[int],
     args: Union[Sequence[int], Sequence[Bit]],  # noqa: UP007
-    args_wasm: Optional[Sequence[int]] = None,  # noqa: UP007
+    args_wasm: Sequence[int] | None = None,
     **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
@@ -109,7 +109,7 @@ def add_wasm_to_reg(  # noqa: PLR0913
     filehandler: wasm.WasmModuleHandler,
     list_i: Sequence[BitRegister],
     list_o: Sequence[BitRegister],
-    args_wasm: Optional[Sequence[int]] = None,  # noqa: UP007
+    args_wasm: Sequence[int] | None = None,
     **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.

@@ -207,6 +207,9 @@ class LogicExp:
             return False
         return (self.op == other.op) and (self.args == other.args)
 
+    def __hash__(self) -> int:
+        return hash((self.op, self.args))
+
     def to_dict(self) -> dict[str, Any]:
         """Output JSON serializable nested dictionary."""
         out: dict[str, Any] = {"op": str(self.op)}
@@ -653,30 +656,31 @@ def create_bit_logic_exp(  # noqa: PLR0911
     Builds the :py:class:`LogicExp` corresponding to applying the given
     :py:class:`BitWiseOp` to some sequence of bits.
     """
-    if op == BitWiseOp.AND:
-        assert len(args) == 2  # noqa: PLR2004
-        return BitAnd(args[0], args[1])
-    if op == BitWiseOp.OR:
-        assert len(args) == 2  # noqa: PLR2004
-        return BitOr(args[0], args[1])
-    if op == BitWiseOp.XOR:
-        assert len(args) == 2  # noqa: PLR2004
-        return BitXor(args[0], args[1])
-    if op == BitWiseOp.NOT:
-        assert len(args) == 1
-        return BitNot(args[0])
-    if op == BitWiseOp.EQ:
-        assert len(args) == 2  # noqa: PLR2004
-        return BitEq(args[0], args[1])
-    if op == BitWiseOp.NEQ:
-        assert len(args) == 2  # noqa: PLR2004
-        return BitNeq(args[0], args[1])
-    if op == BitWiseOp.ZERO:
-        assert len(args) == 0
-        return BitZero()
-    if op == BitWiseOp.ONE:  # noqa: RET503
-        assert len(args) == 0
-        return BitOne()
+    match op:
+        case BitWiseOp.AND:
+            assert len(args) == 2  # noqa: PLR2004
+            return BitAnd(args[0], args[1])
+        case BitWiseOp.OR:
+            assert len(args) == 2  # noqa: PLR2004
+            return BitOr(args[0], args[1])
+        case BitWiseOp.XOR:
+            assert len(args) == 2  # noqa: PLR2004
+            return BitXor(args[0], args[1])
+        case BitWiseOp.NOT:
+            assert len(args) == 1
+            return BitNot(args[0])
+        case BitWiseOp.EQ:
+            assert len(args) == 2  # noqa: PLR2004
+            return BitEq(args[0], args[1])
+        case BitWiseOp.NEQ:
+            assert len(args) == 2  # noqa: PLR2004
+            return BitNeq(args[0], args[1])
+        case BitWiseOp.ZERO:
+            assert len(args) == 0
+            return BitZero()
+        case BitWiseOp.ONE:
+            assert len(args) == 0
+            return BitOne()
 
 
 def create_reg_logic_exp(  # noqa: PLR0911, PLR0912

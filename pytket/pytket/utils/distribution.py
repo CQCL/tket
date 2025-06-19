@@ -67,6 +67,9 @@ class EmpiricalDistribution(Generic[T0]):
             return NotImplemented
         return self._C == other._C
 
+    def __hash__(self) -> int:
+        return hash(self._C)
+
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self._C!r})"
 
@@ -133,7 +136,7 @@ class EmpiricalDistribution(Generic[T0]):
         return (M2 - M1**2 / M0) / (M0 - 1)
 
 
-class ProbabilityDistribution(Generic[T0]):
+class ProbabilityDistribution(Generic[T0]):  # noqa: PLW1641
     """Represents an exact probability distribution.
 
     Supports methods for combination, marginalization, expectation value, etc. May be
