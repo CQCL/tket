@@ -1087,7 +1087,7 @@ static void add_cu_using_cu3(
 // Add pn to qubits {1,...,n}, assume n > 1
 static void add_pn(Circuit& circ, unsigned n, bool inverse) {
   TKET_ASSERT(n > 1);
-  // on is self commute
+  // pn is self commute
   for (unsigned i = 2; i < n + 1; i++) {
     unsigned long long d = 1ULL << (n - i + 1);
     circ.add_op<unsigned>(OpType::CRx, (inverse ? -1. : 1.) / d, {i - 1, n});
