@@ -1094,7 +1094,7 @@ static void add_pn(Circuit& circ, unsigned n, bool inverse) {
   }
 }
 
-// Add on(u) to qubits {1,...,n}, assume n > 1
+// Add pn(u) to qubits {1,...,n}, assume n > 1
 static void add_pn_unitary(
     Circuit& circ, const Eigen::Matrix2cd& u, unsigned n, bool inverse) {
   TKET_ASSERT(n > 1);
@@ -1112,12 +1112,12 @@ static void add_qn(Circuit& circ, unsigned n) {
   TKET_ASSERT(n > 1);
   for (unsigned i = n - 1; i > 1; i--) {
     unsigned long long d = 1ULL << (i - 1);
-    add_on(circ, i, false);
+    add_pn(circ, i, false);
     circ.add_op<unsigned>(OpType::CRx, (double)1 / d, {0, i});
   }
   circ.add_op<unsigned>(OpType::CRx, 1, {0, 1});
   for (unsigned i = 2; i < n; i++) {
-    add_on(circ, i, true);
+    add_pn(circ, i, true);
   }
 }
 
@@ -1160,8 +1160,8 @@ Circuit CnU_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u) {
     return circ;
   }
 
-  // Add on(u) to qubits {1,...,n}
-  add_on_unitary(circ, u, n, false);
+  // Add pn(u) to qubits {1,...,n}
+  add_pn_unitary(circ, u, n, false);
   // Add CU to {0, n}
   Eigen::Matrix2cd m = nth_root(u, 1ULL << (n - 1));
   add_cu_using_cu3(0, n, circ, m);
@@ -1170,8 +1170,8 @@ Circuit CnU_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u) {
   Circuit qn_dag = qn.dagger();
   circ.append(qn);
 
-  // Add on(u).dagger to qubits {1,...,n}
-  add_on_unitary(circ, u, n, true);
+  // Add pn(u).dagger to qubits {1,...,n}
+  add_pn_unitary(circ, u, n, true);
 
   // Add incrementer inverse (without toggling q0) to {0,...,n-1}
   circ.append(qn_dag);

@@ -22,6 +22,7 @@ PNGs = "PNGs"
 NDArray = "NDArray"
 pattern_nd = "pattern_nd"
 pn = "pn"
+add_pn_unitary = "add_pn_unitary"
 
 [default.extend-words]
 Braket = "Braket"
@@ -34,3 +35,5 @@ NDArray = "NDArray"
 classicals = "classicals"
 BRIDGEs = "BRIDGEs"
 Childs = "Childs"
+pn = "pn"
+add_pn_unitary = "add_pn_unitary"
