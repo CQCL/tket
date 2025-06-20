@@ -1,4 +1,7 @@
-files.extend-exclude = ["pytket/docs/pytket-docs-theming/**"]
+files.extend-exclude = [
+    "pytket/docs/pytket-docs-theming/**",
+    "tket/test/src/TokenSwapping/Data/**",
+]
 
 
 [default.extend-identifiers]
