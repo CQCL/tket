@@ -1,6 +1,7 @@
 files.extend-exclude = [
     "pytket/docs/pytket-docs-theming/**",
     "tket/test/src/TokenSwapping/Data/**",
+    "libs/tktokenswap/test/src/Data/**",
 ]
 
 
