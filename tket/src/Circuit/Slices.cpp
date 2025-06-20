@@ -175,7 +175,7 @@ static std::shared_ptr<b_frontier_t> get_next_b_frontier(
         break;
       }
       case EdgeType::Boolean: {
-        throw CircuitInvalidity("Boolen edge not allowed in b_frontier_t");
+        throw CircuitInvalidity("Boolean edge not allowed in b_frontier_t");
       }
       default: {
         TKET_ASSERT(!"get_next_b_frontier found invalid edge type in sig");

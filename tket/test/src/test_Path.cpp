@@ -144,7 +144,7 @@ SCENARIO("Check graph construction is correct") {
         2, 2, 2, 3;                     // 3
     REQUIRE(handler.get_path_matrix() == correct_path_matrix);
   }
-  GIVEN("wrong 4-vertex graph complet graph") {
+  GIVEN("wrong 4-vertex graph complete graph") {
     MatrixXb connectivity(4, 4);
     connectivity << 0, 1, 1, 1,  // 0
         1, 0, 1, 1,              // 1
@@ -928,7 +928,7 @@ SCENARIO("Check Hamiltonian path construction is correct") {
     }
   }
 }
-SCENARIO("Check iteration order construciton") {
+SCENARIO("Check iteration order construction") {
   GIVEN("iteration order - simple example") {
     Architecture arch(
         {{Node(0), Node(1)}, {Node(0), Node(2)}, {Node(0), Node(3)}});

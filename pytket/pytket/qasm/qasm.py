@@ -242,7 +242,7 @@ def _extract_reg(var: Token) -> tuple[str, int]:
 
 
 def _load_include_module(
-    header_name: str, flter: bool, decls_only: bool
+    header_name: str, filter: bool, decls_only: bool
 ) -> dict[str, dict]:
     try:
         if decls_only:
@@ -260,7 +260,7 @@ def _load_include_module(
     return {
         gate: include_def[gate]
         for gate in include_def
-        if not flter or gate not in _all_known_gates
+        if not filter or gate not in _all_known_gates
     }
 
 
@@ -811,7 +811,7 @@ class _CircuitTransformer(Transformer):
         return self.cce_call(tree)
 
     def cce_call(self, tree: list) -> Iterable[CommandDict]:
-        nam = tree[0].value
+        name = tree[0].value
         params = list(tree[1])
         if self.wasm is None:
             raise QASMParseError(
@@ -829,7 +829,7 @@ class _CircuitTransformer(Transformer):
             "op": {
                 "type": "WASM",
                 "wasm": {
-                    "func_name": nam,
+                    "func_name": name,
                     "ww_n": 1,
                     "n": sum(n_i_vec),
                     "width_i_parameter": n_i_vec,

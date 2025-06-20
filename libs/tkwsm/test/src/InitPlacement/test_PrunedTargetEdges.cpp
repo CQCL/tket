@@ -84,7 +84,7 @@ static void test_validity_of_new_graph_data(
   }
 }
 
-SCENARIO("Test adding unsued edges to simple random graphs with assignments") {
+SCENARIO("Test adding unused edges to simple random graphs with assignments") {
   TargetEdgePruningParameters parameters;
   parameters.max_additional_number_of_target_edges_factor_per_kilo = 800;
   parameters.min_implicit_unused_number_of_target_edges_factor_per_kilo = 400;

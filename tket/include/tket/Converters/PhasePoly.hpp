@@ -104,7 +104,7 @@ class PhasePolyBox : public Box {
 /**
  * this class realises the conversion all sub circuits of a given circuits which
  *  contains only CX+Rz to a PhasePolyBox. The circuit should contain only
- *  CX, Rz, H, measure, reset, collape, barrier.
+ *  CX, Rz, H, measure, reset, collapse, barrier.
  */
 class CircToPhasePolyConversion {
  public:

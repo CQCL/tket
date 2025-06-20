@@ -1188,7 +1188,7 @@ SCENARIO("TermSequenceBox", "[boxes]") {
     d.add_box(pbox1, {0, 1, 2});
     REQUIRE(test_unitary_comparison(c, d, true));
   }
-  GIVEN("Greedy strategy with idenity strings throws") {
+  GIVEN("Greedy strategy with identity strings throws") {
     auto paulis = std::vector<Pauli>{Pauli::I, Pauli::I, Pauli::I};
     auto phase = Expr(0.25);
     auto synth_strat = Transforms::PauliSynthStrat::Greedy;

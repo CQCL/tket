@@ -773,7 +773,7 @@ Circuit greedy_pauli_graph_synthesis_flag(
     gpg.apply_gate_at_end(cmd);
   }
 
-  // We regularly check whether the timeout has ocurred
+  // We regularly check whether the timeout has occurred
   if (stop_flag.get()->load()) {
     return Circuit();
   }

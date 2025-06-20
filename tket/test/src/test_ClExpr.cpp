@@ -42,9 +42,9 @@ SCENARIO("Circuit containing a ClExprOp") {
   }
   GIVEN("A complicated classical expression") {
     // d[0,1,2] <-- (a[2,1,0] + b[2,3,4]) / (c[1,0,3] * d[0,1,2])
-    ClExpr numer(ClOp::RegAdd, {ClRegVar{0}, ClRegVar{1}});
+    ClExpr number(ClOp::RegAdd, {ClRegVar{0}, ClRegVar{1}});
     ClExpr denom(ClOp::RegMul, {ClRegVar{2}, ClRegVar{3}});
-    ClExpr expr(ClOp::RegDiv, {numer, denom});
+    ClExpr expr(ClOp::RegDiv, {number, denom});
     std::vector<unsigned> a_pos{0, 3, 4};
     std::vector<unsigned> b_pos{1, 11, 5};
     std::vector<unsigned> c_pos{10, 2, 7};
@@ -165,9 +165,9 @@ SCENARIO("Serialization and stringification") {
   }
   GIVEN("ClExpr (2)") {
     // (r0 + r1) / (r2 * 3)
-    ClExpr numer(ClOp::RegAdd, {ClRegVar{0}, ClRegVar{1}});
+    ClExpr number(ClOp::RegAdd, {ClRegVar{0}, ClRegVar{1}});
     ClExpr denom(ClOp::RegMul, {ClRegVar{2}, uint64_t{3}});
-    ClExpr expr(ClOp::RegDiv, {numer, denom});
+    ClExpr expr(ClOp::RegDiv, {number, denom});
     std::stringstream ss;
     ss << expr;
     REQUIRE(ss.str() == "div(add(r0, r1), mul(r2, 3))");
@@ -176,9 +176,9 @@ SCENARIO("Serialization and stringification") {
     REQUIRE(expr1 == expr);
   }
   GIVEN("WiredClExpr") {
-    ClExpr numer(ClOp::RegAdd, {ClRegVar{0}, ClRegVar{1}});
+    ClExpr number(ClOp::RegAdd, {ClRegVar{0}, ClRegVar{1}});
     ClExpr denom(ClOp::RegMul, {ClRegVar{2}, ClRegVar{3}});
-    ClExpr expr(ClOp::RegDiv, {numer, denom});
+    ClExpr expr(ClOp::RegDiv, {number, denom});
     std::vector<unsigned> a_pos{0, 3, 4};
     std::vector<unsigned> b_pos{1, 11, 5};
     std::vector<unsigned> c_pos{10, 2, 7};
@@ -196,9 +196,9 @@ SCENARIO("Serialization and stringification") {
     REQUIRE(wexpr1 == wexpr);
   }
   GIVEN("ClExprOp") {
-    ClExpr numer(ClOp::RegAdd, {ClRegVar{0}, ClRegVar{1}});
+    ClExpr number(ClOp::RegAdd, {ClRegVar{0}, ClRegVar{1}});
     ClExpr denom(ClOp::RegMul, {ClRegVar{2}, ClRegVar{3}});
-    ClExpr expr(ClOp::RegDiv, {numer, denom});
+    ClExpr expr(ClOp::RegDiv, {number, denom});
     std::vector<unsigned> a_pos{0, 3, 4};
     std::vector<unsigned> b_pos{1, 11, 5};
     std::vector<unsigned> c_pos{10, 2, 7};

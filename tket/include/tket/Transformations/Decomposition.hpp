@@ -105,7 +105,7 @@ Transform decompose_MolmerSorensen();
  * convenient to reduce the two-qubit gate count of the decomposed TK2.
  *
  * If no fidelities are provided, the decomposition will be exact, using CX
- * gates. For equal fidelities, ZZPhase will be prefered over ZZMax and CX if
+ * gates. For equal fidelities, ZZPhase will be preferred over ZZMax and CX if
  * it requires fewer gates.
  *
  * If the TK2 angles are symbolic values, the decomposition will be exact
@@ -169,7 +169,7 @@ Transform decomp_boxes(
  * Replaces all CX+Rz sub circuits by PhasePolyBox
  * Expects: only CX + Rz + H (and measure + reset + collapse + barrier)
  * @param min_size value for the minimal number of CX in each box, groups with
- * less than min_size CX gates are not converted to a PhasePolyBox, dafault
+ * less than min_size CX gates are not converted to a PhasePolyBox, default
  * value is 0
  * @return Transformation to perform the conversion
  */

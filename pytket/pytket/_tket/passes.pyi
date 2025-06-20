@@ -215,7 +215,7 @@ def DecomposeTK2(allow_swaps: bool = True, **kwargs: Any) -> BasePass:
 
     We currently support `CX_fidelity`, `ZZMax_fidelity` and `ZZPhase_fidelity`. If provided, the `CX` and `ZZMax` fidelities must be given by a single floating point fidelity. The `ZZPhase` fidelity is given as a lambda float -> float, mapping a ZZPhase angle parameter to its fidelity, or by a single float. These parameters will be used to return the optimal decomposition of each TK2 gate, taking noise into consideration.
 
-    If no fidelities are provided, the TK2 gates will be decomposed exactly using CX gates. For equal fidelities, ZZPhase will be prefered over ZZMax and CX if the decomposition results in fewer two-qubit gates.
+    If no fidelities are provided, the TK2 gates will be decomposed exactly using CX gates. For equal fidelities, ZZPhase will be preferred over ZZMax and CX if the decomposition results in fewer two-qubit gates.
 
     All TK2 gate parameters must be normalised, i.e. they must satisfy `NormalisedTK2Predicate`. (This can be achieved by applying the :py:meth:`NormaliseTK2` pass beforehand.)
 
@@ -507,14 +507,14 @@ def ComposePhasePolyBoxes(min_size: int = 0) -> BasePass:
     """
     Pass to convert a given :py:class:`~.Circuit` to the CX, Rz, H gateset and compose phase polynomial boxes from the groups of the CX+Rz gates.
 
-    - (unsigned) min_size=0: minimal number of CX gates in each phase polynominal box: groups with a smaller number of CX gates are not affected by this transformation
+    - (unsigned) min_size=0: minimal number of CX gates in each phase polynomial box: groups with a smaller number of CX gates are not affected by this transformation
 
     :return: a pass to perform the composition
     """
 
 def CXMappingPass(arc: pytket._tket.architecture.Architecture, placer: pytket._tket.placement.Placement, **kwargs: Any) -> BasePass:
     r"""
-    Construct a pass to convert all gates to CX, relabel :py:class:`~.Circuit` Qubits to :py:class:`~.Architecture` Nodes, route to the connectivty graph of a :py:class:`~.Architecture` and decompose additional routing gates (SWAP and BRIDGE) to CX gates.
+    Construct a pass to convert all gates to CX, relabel :py:class:`~.Circuit` Qubits to :py:class:`~.Architecture` Nodes, route to the connectivity graph of a :py:class:`~.Architecture` and decompose additional routing gates (SWAP and BRIDGE) to CX gates.
 
     :param arc: The Architecture used for connectivity information.
     :param placer: The placement used for relabelling.
@@ -580,7 +580,7 @@ def PauliExponentials(strat: pytket._tket.transform.PauliSynthStrat = pytket._tk
 
 def PauliSimp(strat: pytket._tket.transform.PauliSynthStrat = pytket._tket.transform.PauliSynthStrat.Sets, cx_config: pytket._tket.circuit.CXConfigType = pytket._tket.circuit.CXConfigType.Snake) -> BasePass:
     """
-    Construct a pass that converts a circuit into a graph of Pauli gadgets to account for commutation and phase folding, and resynthesises them as either individual gagdets, pairwise constructions, or by diagonalising sets of commuting gadgets.
+    Construct a pass that converts a circuit into a graph of Pauli gadgets to account for commutation and phase folding, and resynthesises them as either individual gadgets, pairwise constructions, or by diagonalising sets of commuting gadgets.
 
     This pass will not preserve the global phase of the circuit.
 
@@ -674,7 +674,7 @@ def RemoveImplicitQubitPermutation() -> BasePass:
 
 def CustomPass(transform: Callable[[pytket._tket.circuit.Circuit], pytket._tket.circuit.Circuit], label: str = '') -> BasePass:
     """
-    Generate a custom pass from a user-provided circuit transfomation function.
+    Generate a custom pass from a user-provided circuit transformation function.
 
     It is the caller's responsibility to provide a valid transform.
 
@@ -685,7 +685,7 @@ def CustomPass(transform: Callable[[pytket._tket.circuit.Circuit], pytket._tket.
 
 def CustomPassMap(transform: Callable[[pytket._tket.circuit.Circuit], tuple[pytket._tket.circuit.Circuit, tuple[Mapping[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID], Mapping[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]]]], label: str = '') -> BasePass:
     """
-    Generate a custom pass from a user-provided circuit transfomation function.
+    Generate a custom pass from a user-provided circuit transformation function.
 
     It is the caller's responsibility to provide a valid transform.
 

@@ -359,7 +359,7 @@ Subcircuit CliffordReductionPass::substitute(
   TKET_ASSERT(q_width == 2);
 
   // Construct tables of predecessors, successors, units, in-edges, out-edges.
-  // Only quantum circuit replacments here so don't care about classical stuff
+  // Only quantum circuit replacements here so don't care about classical stuff
   std::vector<VertPort> preds(q_width);
   std::vector<VertPort> succs(q_width);
   std::vector<UnitID> units(q_width);

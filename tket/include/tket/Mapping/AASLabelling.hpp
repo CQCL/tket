@@ -28,7 +28,7 @@ class AASLabellingMethod : public RoutingMethod {
 
   /**
    * will place all the qubits of the given circuit that are not placed at the
-   * moment. All nodes assigend to placed qubits will not be changed
+   * moment. All nodes assigned to placed qubits will not be changed
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
    * modifying
    * @param architecture Architecture providing physical constraints

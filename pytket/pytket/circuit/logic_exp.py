@@ -213,19 +213,19 @@ class LogicExp:
     def to_dict(self) -> dict[str, Any]:
         """Output JSON serializable nested dictionary."""
         out: dict[str, Any] = {"op": str(self.op)}
-        args_ser: list[dict | Constant | list[str | int]] = []
+        arg_ser: list[dict | Constant | list[str | int]] = []
 
         for arg in self.args:
             if isinstance(arg, LogicExp):
-                args_ser.append(arg.to_dict())
+                arg_ser.append(arg.to_dict())
             elif isinstance(arg, Constant):
-                args_ser.append(arg)
+                arg_ser.append(arg)
             elif isinstance(arg, Bit):
-                args_ser.append(arg.to_list())
+                arg_ser.append(arg.to_list())
             elif isinstance(arg, BitRegister):
-                args_ser.append({"name": arg.name, "size": arg.size})
+                arg_ser.append({"name": arg.name, "size": arg.size})
 
-        out["args"] = args_ser
+        out["args"] = arg_ser
         return out
 
     @classmethod
@@ -235,16 +235,16 @@ class LogicExp:
         opset = BitWiseOp if opset_name == "BitWiseOp" else RegWiseOp
         op = next(o for o in opset if o.name == op_name)
         args: list[ArgType] = []
-        for arg_ser in dic["args"]:
-            if isinstance(arg_ser, Constant):
-                args.append(arg_ser)
-            elif isinstance(arg_ser, list):
-                args.append(Bit(arg_ser[0], arg_ser[1]))
-            elif isinstance(arg_ser, dict):
-                if "op" in arg_ser:
-                    args.append(LogicExp.from_dict(arg_ser))
+        for arg_set in dic["args"]:
+            if isinstance(arg_set, Constant):
+                args.append(arg_set)
+            elif isinstance(arg_set, list):
+                args.append(Bit(arg_set[0], arg_set[1]))
+            elif isinstance(arg_set, dict):
+                if "op" in arg_set:
+                    args.append(LogicExp.from_dict(arg_set))
                 else:
-                    args.append(BitRegister(arg_ser["name"], arg_ser["size"]))
+                    args.append(BitRegister(arg_set["name"], arg_set["size"]))
         return create_logic_exp(op, args)
 
     def _rename_args_recursive(
@@ -349,7 +349,7 @@ class RegLogicExp(LogicExp):
 
 
 class BinaryOp(LogicExp):
-    """Expresion for operation on two arguments."""
+    """Expression for operation on two arguments."""
 
     def __str__(self) -> str:
         return f"({self.args[0]} {self.op.value} {self.args[1]})"

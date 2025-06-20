@@ -104,7 +104,7 @@ class ClassicalEvalOp : public ClassicalOp {
    *
    * @param x vector of input bits
    *
-   * @return vector of outbut bits
+   * @return vector of output bits
    */
   virtual std::vector<bool> eval(const std::vector<bool> &x) const = 0;
 
@@ -250,7 +250,7 @@ class WASMOp : public ClassicalOp {
   const unsigned ww_n_;
 
   /**
-   * total number of i32 inut and output variables
+   * total number of i32 input and output variables
    */
   const unsigned n_i32_;
 

@@ -968,7 +968,7 @@ SCENARIO(
   }
 }
 
-SCENARIO("Test that subsituting edge cases works correctly") {
+SCENARIO("Test that substituting edge cases works correctly") {
   GIVEN("A circuit with 1 op acting on all qubits") {
     Circuit test(2);
     Vertex cx = test.add_op<unsigned>(OpType::CX, {0, 1});
@@ -991,7 +991,7 @@ SCENARIO("Test that subsituting edge cases works correctly") {
       REQUIRE(test.get_successors(test.get_in(qb1))[0] == test.get_out(qb0));
     }
 
-    WHEN("Parallel wires are subsituted") {
+    WHEN("Parallel wires are substituted") {
       Circuit test2(2);
       test.substitute(test2, sub);
       REQUIRE(test.get_successors(test.get_in(qb0))[0] == test.get_out(qb0));

@@ -73,7 +73,7 @@ class VertexMapResizing : public NeighboursInterface {
   /** The mapping may be altered, even upon failure, so obviously the caller
    * should make a copy if it needs to be preserved. Increase the map size as
    * much as possible if too small (still a success even if it cannot reach the
-   * size). Decrease the size if too large (and not reaching the szie is then a
+   * size). Decrease the size if too large (and not reaching the size is then a
    * failure). Newly added or removed vertices are all fixed, i.e. map[v]=v.
    * @param mapping The mapping which will be altered and returned by reference.
    * @param desired_size The size we wish to reach, or as close as possible if

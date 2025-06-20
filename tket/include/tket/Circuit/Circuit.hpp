@@ -895,7 +895,7 @@ class Circuit {
       const OpType &type, std::optional<std::string> opgroup = std::nullopt);
 
   // given vertices and desired in port for i2 and out port
-  // for i1, adds edge bewteen them
+  // for i1, adds edge between them
   // O(1)
   Edge add_edge(
       const VertPort &source, const VertPort &target, const EdgeType &type);
@@ -909,7 +909,7 @@ class Circuit {
   void add_bit(const Bit &id, bool reject_dups = true);
   register_t add_q_register(std::string reg_name, unsigned size);
   register_t add_c_register(std::string reg_name, unsigned size);
-  void add_wasm_register(std::size_t numer_of_w = 1);
+  void add_wasm_register(std::size_t number_of_w = 1);
 
   /**
    * Create the given qubit in the zero state at the beginning of the circuit.

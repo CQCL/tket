@@ -225,7 +225,7 @@ class Unitary1qBox : public Box {
    */
   bool is_equal(const Op &op_other) const override;
 
-  /** Get the unitary matrix correspnding to this operation */
+  /** Get the unitary matrix corresponding to this operation */
   Eigen::Matrix2cd get_matrix() const { return m_; }
 
   std::optional<Eigen::MatrixXcd> get_box_unitary() const override {
@@ -287,7 +287,7 @@ class Unitary2qBox : public Box {
    */
   bool is_equal(const Op &op_other) const override;
 
-  /** Get the unitary matrix correspnding to this operation */
+  /** Get the unitary matrix corresponding to this operation */
   Eigen::Matrix4cd get_matrix() const { return m_; }
 
   std::optional<Eigen::MatrixXcd> get_box_unitary() const override {
@@ -346,7 +346,7 @@ class Unitary3qBox : public Box {
    */
   bool is_equal(const Op &op_other) const override;
 
-  /** Get the unitary matrix correspnding to this operation */
+  /** Get the unitary matrix corresponding to this operation */
   Matrix8cd get_matrix() const { return m_; }
 
   std::optional<Eigen::MatrixXcd> get_box_unitary() const override {
@@ -604,7 +604,7 @@ class ProjectorAssertionBox : public Box {
    */
   bool is_equal(const Op &op_other) const override;
 
-  /** Get the unitary matrix correspnding to this operation */
+  /** Get the unitary matrix corresponding to this operation */
   Eigen::MatrixXcd get_matrix() const { return m_; }
   std::vector<bool> get_expected_readouts() const { return expected_readouts_; }
 

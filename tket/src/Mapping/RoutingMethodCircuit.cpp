@@ -67,7 +67,7 @@ std::pair<bool, unit_map_t> RoutingMethodCircuit::routing_method(
   mapping_frontier->permute_subcircuit_q_out_hole(
       std::get<3>(routed_subcircuit), frontier_subcircuit);
 
-  // substitute old boundary with new cirucit
+  // substitute old boundary with new circuit
   std::get<1>(routed_subcircuit).flatten_registers();
   mapping_frontier->circuit_.substitute(
       std::get<1>(routed_subcircuit), frontier_subcircuit);

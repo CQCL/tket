@@ -46,7 +46,7 @@ class WeightCalculator {
    * @param pattern_ndata Data about the pattern graph.
    * @param target_ndata Data about the target graph.
    * @param accessor Object to retrieve information about the current search
-   * node (inclusing new assignments).
+   * node (including new assignments).
    * @param number_of_processed_assignments The number of assignments stored at
    * the start of the new assignments vector, of the current node, which this
    * class has already processed (and thus, need not process again).
