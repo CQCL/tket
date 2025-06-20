@@ -60,9 +60,6 @@ def gen_module_stubs(modname, private_exceptions, output_file, n_special_replace
             "def to_dict\\(self\\) -> JSON:", "def to_dict(self) -> dict:", stub, n_special_replacements
         )
         stub = sub_and_check(
-            "LogicExpression", "pytket.circuit.logic_exp.LogicExp", stub, n_special_replacements
-        )
-        stub = sub_and_check(
             "Mapping\\[Sequence\\[bool\\],", "dict[tuple[bool, ...],", stub, n_special_replacements
         )
         stub = sub_and_check(
