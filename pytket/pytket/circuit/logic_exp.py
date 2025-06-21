@@ -235,16 +235,16 @@ class LogicExp:
         opset = BitWiseOp if opset_name == "BitWiseOp" else RegWiseOp
         op = next(o for o in opset if o.name == op_name)
         args: list[ArgType] = []
-        for arg_set in dic["args"]:
-            if isinstance(arg_set, Constant):
-                args.append(arg_set)
-            elif isinstance(arg_set, list):
-                args.append(Bit(arg_set[0], arg_set[1]))
-            elif isinstance(arg_set, dict):
-                if "op" in arg_set:
-                    args.append(LogicExp.from_dict(arg_set))
+        for arg_ser in dic["args"]:
+            if isinstance(arg_ser, Constant):
+                args.append(arg_ser)
+            elif isinstance(arg_ser, list):
+                args.append(Bit(arg_ser[0], arg_ser[1]))
+            elif isinstance(arg_ser, dict):
+                if "op" in arg_ser:
+                    args.append(LogicExp.from_dict(arg_ser))
                 else:
-                    args.append(BitRegister(arg_set["name"], arg_set["size"]))
+                    args.append(BitRegister(arg_ser["name"], arg_ser["size"]))
         return create_logic_exp(op, args)
 
     def _rename_args_recursive(
