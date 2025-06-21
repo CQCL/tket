@@ -213,19 +213,19 @@ class LogicExp:
     def to_dict(self) -> dict[str, Any]:
         """Output JSON serializable nested dictionary."""
         out: dict[str, Any] = {"op": str(self.op)}
-        arg_ser: list[dict | Constant | list[str | int]] = []
+        args_ser: list[dict | Constant | list[str | int]] = []
 
         for arg in self.args:
             if isinstance(arg, LogicExp):
-                arg_ser.append(arg.to_dict())
+                args_ser.append(arg.to_dict())
             elif isinstance(arg, Constant):
-                arg_ser.append(arg)
+                args_ser.append(arg)
             elif isinstance(arg, Bit):
-                arg_ser.append(arg.to_list())
+                args_ser.append(arg.to_list())
             elif isinstance(arg, BitRegister):
-                arg_ser.append({"name": arg.name, "size": arg.size})
+                args_ser.append({"name": arg.name, "size": arg.size})
 
-        out["args"] = arg_ser
+        out["args"] = args_ser
         return out
 
     @classmethod
