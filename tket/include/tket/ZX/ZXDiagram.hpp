@@ -123,7 +123,7 @@ class ZXDiagram {
   std::optional<QuantumType> get_qtype(const ZXVert& v) const;
   void set_vertex_ZXGen_ptr(const ZXVert& v, const ZXGen_ptr& op);
 
-  // Getting/setting wire properies
+  // Getting/setting wire properties
   WireProperties get_wire_info(const Wire& w) const;
   QuantumType get_qtype(const Wire& w) const;
   ZXWireType get_wire_type(const Wire& w) const;

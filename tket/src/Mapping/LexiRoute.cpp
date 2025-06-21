@@ -26,7 +26,7 @@ LexiRoute::LexiRoute(
   for (const Qubit& qb : this->mapping_frontier_->circuit_.all_qubits()) {
     this->labelling_.insert({qb, qb});
     Node n(qb);
-    // store which Node have been asigned to Circuit already
+    // store which Node have been assigned to Circuit already
     if (this->architecture_->node_exists(n)) {
       this->assigned_nodes_.insert(n);
     }
@@ -40,7 +40,7 @@ void LexiRoute::reassign_to_any_ancilla_node(const Node& reassign_node) {
    * "reassign_node" path.
    * We know that "reassign_node" is for a Qubit wire with no
    * multi-qubit gates.
-   * Remove as a known ancilla node and update the Cirucit.
+   * Remove as a known ancilla node and update the Circuit.
    */
 
   TKET_ASSERT(!this->mapping_frontier_->ancilla_nodes_.empty());
@@ -748,7 +748,7 @@ void LexiRoute::remove_swaps_decreasing(swap_set_t& swaps) {
       pair_second = swap.second;
     }
     // => UnitID in SWAP are interacting
-    // Check should alrady be done with earlier continue
+    // Check should already be done with earlier continue
     TKET_ASSERT(pair_second != swap.first);
 
     const std::pair<std::size_t, std::size_t>& curr_dists =

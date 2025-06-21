@@ -152,7 +152,7 @@ class ExceptionMessageContainsMatcher
 };
 
 // Creates a matcher that checks whether the message of a std derived exception
-// constains a substring
+// contains a substring
 ExceptionMessageContainsMatcher MessageContains(std::string const& substring);
 
 }  // namespace tket

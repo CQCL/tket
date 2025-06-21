@@ -1203,7 +1203,7 @@ def test_getting_registers() -> None:
     assert q_regs[1] == QubitRegister("test_qr", 10)
 
 
-def test_getting_registers_with_non_consective_indices() -> None:
+def test_getting_registers_with_non_consecutive_indices() -> None:
     # https://github.com/CQCL/tket/issues/1160
     c = Circuit()
     c.add_qubit(Qubit(3))

@@ -473,7 +473,7 @@ NB_MODULE(passes, m) {
       "will be used to return the optimal decomposition of each TK2 gate, "
       "taking noise into consideration.\n\n"
       "If no fidelities are provided, the TK2 gates will be decomposed "
-      "exactly using CX gates. For equal fidelities, ZZPhase will be prefered "
+      "exactly using CX gates. For equal fidelities, ZZPhase will be preferred "
       "over ZZMax and CX if the decomposition results in fewer two-qubit "
       "gates.\n\n"
       "All TK2 gate parameters must be normalised, i.e. they must satisfy "
@@ -861,7 +861,7 @@ NB_MODULE(passes, m) {
       "and compose "
       "phase polynomial boxes from the groups of the CX+Rz gates."
       "\n\n- (unsigned) min_size=0: minimal number of CX gates in each phase "
-      "polynominal box: groups with a smaller number of CX gates are not "
+      "polynomial box: groups with a smaller number of CX gates are not "
       "affected by this transformation\n"
       "\n:return: a pass to perform the composition",
       nb::arg("min_size") = 0);
@@ -872,7 +872,7 @@ NB_MODULE(passes, m) {
       ":py:class:`~.Circuit` Qubits to :py:class:`~.Architecture` Nodes, route "
       "to "
       "the "
-      "connectivty graph of a :py:class:`~.Architecture` and decompose "
+      "connectivity graph of a :py:class:`~.Architecture` and decompose "
       "additional "
       "routing gates (SWAP and BRIDGE) to CX gates."
       "\n\n:param arc: The Architecture used for connectivity information."
@@ -956,7 +956,7 @@ NB_MODULE(passes, m) {
       "PauliSimp", &gen_synthesise_pauli_graph,
       "Construct a pass that converts a circuit into a graph of Pauli "
       "gadgets to account for commutation and phase folding, and "
-      "resynthesises them as either individual gagdets, pairwise "
+      "resynthesises them as either individual gadgets, pairwise "
       "constructions, or by diagonalising sets of commuting gadgets.\n\n"
       "This pass will not preserve the global phase of the circuit."
       "\n\n:param strat: A synthesis strategy for the Pauli graph."
@@ -1106,7 +1106,7 @@ NB_MODULE(passes, m) {
 
   m.def(
       "CustomPass", &CustomPass,
-      "Generate a custom pass from a user-provided circuit transfomation "
+      "Generate a custom pass from a user-provided circuit transformation "
       "function."
       "\n\n"
       "It is the caller's responsibility to provide a valid transform."
@@ -1121,7 +1121,7 @@ NB_MODULE(passes, m) {
 
   m.def(
       "CustomPassMap", &CustomPassMap,
-      "Generate a custom pass from a user-provided circuit transfomation "
+      "Generate a custom pass from a user-provided circuit transformation "
       "function."
       "\n\n"
       "It is the caller's responsibility to provide a valid transform."

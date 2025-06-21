@@ -4,7 +4,6 @@ import pytket._tket.architecture
 import pytket._tket.circuit
 import pytket._tket.unit_id
 
-
 class RoutingMethod:
     """
     Parent class for RoutingMethod, for inheritance purposes only, not for usage.
@@ -17,7 +16,20 @@ class RoutingMethodCircuit(RoutingMethod):
     The RoutingMethod class captures a method for partially mapping logical subcircuits to physical operations as permitted by some architecture. Ranked RoutingMethod objects are used by the MappingManager to route whole circuits.
     """
 
-    def __init__(self, route_subcircuit: Callable[[pytket._tket.circuit.Circuit, pytket._tket.architecture.Architecture], tuple[bool, pytket._tket.circuit.Circuit, Mapping[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID], Mapping[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]]], max_size: int, max_depth: int) -> None:
+    def __init__(
+        self,
+        route_subcircuit: Callable[
+            [pytket._tket.circuit.Circuit, pytket._tket.architecture.Architecture],
+            tuple[
+                bool,
+                pytket._tket.circuit.Circuit,
+                Mapping[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID],
+                Mapping[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID],
+            ],
+        ],
+        max_size: int,
+        max_depth: int,
+    ) -> None:
         """
         Constructor for a routing method defined by partially routing subcircuits.
 
@@ -47,7 +59,7 @@ class AASRouteRoutingMethod(RoutingMethod):
         """
         AASRouteRoutingMethod constructor.
 
-        :param aaslookahead: recursive interation depth of the architecture aware synthesis.method.
+        :param aaslookahead: recursive interaction depth of the architecture aware synthesis.method.
         """
 
 class AASLabellingMethod(RoutingMethod):
@@ -75,7 +87,7 @@ class MultiGateReorderRoutingMethod(RoutingMethod):
         """
         MultiGateReorderRoutingMethod constructor.
 
-        :param max_depth: Maximum number of layers of gates checked for simultaneous commutation. 
+        :param max_depth: Maximum number of layers of gates checked for simultaneous commutation.
         :param max_size: Maximum number of gates checked for simultaneous commutation.
         """
 
@@ -97,7 +109,11 @@ class MappingManager:
         :param architecture: pytket Architecture object.
         """
 
-    def route_circuit(self, circuit: pytket._tket.circuit.Circuit, routing_methods: Sequence[RoutingMethod]) -> bool:
+    def route_circuit(
+        self,
+        circuit: pytket._tket.circuit.Circuit,
+        routing_methods: Sequence[RoutingMethod],
+    ) -> bool:
         """
         Maps from given logical circuit to physical circuit. Modification defined by route_subcircuit, but typically this proceeds by insertion of SWAP gates that permute logical qubits on physical qubits.
 

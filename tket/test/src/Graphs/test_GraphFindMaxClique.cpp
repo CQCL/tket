@@ -149,7 +149,7 @@ static std::size_t check_that_calculated_cliques_are_valid(
 // Returns true if the calculated clique list does include the expected clique.
 // Also return true if the expected clique size is strictly smaller
 // than the calculated clique size,
-// so we do not epect to see the clique (as it's not of MAXIMUM possible size).
+// so we do not expect to see the clique (as it's not of MAXIMUM possible size).
 static bool expected_clique_is_present(
     const set<std::size_t>& expected_clique_vertices,
     const vector<set<std::size_t>>& calculated_clique_data,

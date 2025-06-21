@@ -6,7 +6,7 @@ emcc <filename>.c -o <filename>.html
 ```
 This will generate an wasm file and a html file. You can ignore the html.
 
-Using clang, this should work in all clang vesions.
+Using clang, this should work in all clang versions.
 ```
 clang --target=wasm32 --no-standard-libraries -Wl,--export-all -Wl,--no-entry -o <filename>.wasm <filename>.c
 ```

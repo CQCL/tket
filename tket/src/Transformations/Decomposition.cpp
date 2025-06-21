@@ -1797,7 +1797,7 @@ Transform cnx_pairwise_decomposition() {
           }
         }
         // If the two CCX gates are not acting on the same set of qubits
-        // we don't change ther arguments, and decompose them as they are.
+        // we don't change their arguments, and decompose them as they are.
       } else {
         // The more general case
         // we try to reorder the control args of the two gates to maximise

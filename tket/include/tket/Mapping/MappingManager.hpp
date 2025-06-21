@@ -37,8 +37,8 @@ class MappingManager {
   /**
    * route_circuit
    * Referenced Circuit modified such that all multi-qubit gates are permitted
-   * by this->architecture_ RoutingIncompability thrown if Circuit has more
-   * logical qubits than Architecture has physical qubits RoutingIncompability
+   * by this->architecture_ RoutingIncompatibility thrown if Circuit has more
+   * logical qubits than Architecture has physical qubits RoutingIncompatibility
    * thrown if Circuit has a gate of OpType not in Architecture's permitted
    * OpTypes
    *
@@ -54,8 +54,8 @@ class MappingManager {
   /**
    * route_circuit_maps
    * Referenced Circuit modified such that all multi-qubit gates are permitted
-   * by this->architecture_ RoutingIncompability thrown if Circuit has more
-   * logical qubits than Architecture has physical qubits RoutingIncompability
+   * by this->architecture_ RoutingIncompatibility thrown if Circuit has more
+   * logical qubits than Architecture has physical qubits RoutingIncompatibility
    * thrown if Circuit has a gate of OpType not in Architecture's permitted
    * OpTypes
    *

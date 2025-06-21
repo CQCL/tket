@@ -31,7 +31,7 @@ bool is_spiderless_optype(const OpType& optype) {
          optype == OpType::noop;
 }
 
-// Add a swicth with the on-state controlled by the on_value.
+// Add a switch with the on-state controlled by the on_value.
 // qtype indicates the quantum type of the switch.
 std::pair<ZXVertPort, ZXVertPort> add_switch(
     ZXDiagram& zxd, const bool& on_value, const QuantumType& qtype) {

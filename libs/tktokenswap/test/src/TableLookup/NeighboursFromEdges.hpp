@@ -39,7 +39,7 @@ class NeighboursFromEdges : public NeighboursInterface {
   /** The caller must not call this too soon, before "add_edge" calls are
    * completed.
    * @param vertex A vertex in the graph
-   * @return All other vertices adjecent to the vertex (stored internally).
+   * @return All other vertices adjacent to the vertex (stored internally).
    */
   virtual const std::vector<std::size_t>& operator()(
       std::size_t vertex) override;

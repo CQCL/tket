@@ -85,7 +85,7 @@ namespace tsa_internal {
  * that all 3 are isomorphic. The first two are of the form [ab cb ab] == [ac],
  * and the third has the form [ab cb ab] == [ca].) It seems like we'd need a
  * scheme involving integer hashing of graphs, with few isomorphic collisions,
- * but such algoritms need to be pretty simple and fast or they're not worth
+ * but such algorithms need to be pretty simple and fast or they're not worth
  * doing except for much larger table sizes.
  */
 struct SwapSequenceTable {

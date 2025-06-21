@@ -30,7 +30,7 @@ namespace Transforms {
  * @brief Implements the AbstractSquasher interface for SingleQubitSquash
  *
  * The StandardSquasher squashes chains of single qubit gates to
- * the circuit given by the tk1_replacment function passed as parameter.
+ * the circuit given by the tk1_replacement function passed as parameter.
  *
  * At the moment, it does not commute anything through multi-qubit gates.
  */

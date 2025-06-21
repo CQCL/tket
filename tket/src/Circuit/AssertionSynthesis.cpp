@@ -178,7 +178,7 @@ static unsigned apply_z_measurements(
  * into Z basis projectors, so we create two rank=2^(n-1) projectors that
  * project the same subspace when combined (intersection of two subspaces).
  * e.g. D1: 11111111|00000000, D2: 11111000|11100000.
- * After permuting D2, both diagonal matrices should have diagonal entires:
+ * After permuting D2, both diagonal matrices should have diagonal entries:
  * 11111111|00000000.
  * Similar to the projector_diagonalisation function, the permutation of the
  * eigen decomposition is not optimised.
@@ -234,7 +234,7 @@ std::tuple<Circuit, std::vector<bool>> projector_assertion_synthesis(
       throw CircuitInvalidity(
           "8x8 projector that requires an ancilla is not supported");
     }
-    // Add an auxilary qubit to the end
+    // Add an auxiliary qubit to the end
     Qubit ancilla(n_qubits);
     circ.add_qubit(ancilla, false);
     circ.add_op<Qubit>(OpType::Reset, {ancilla});

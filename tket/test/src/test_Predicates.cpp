@@ -29,7 +29,7 @@
 namespace tket {
 namespace test_Predicates {
 
-SCENARIO("Test out basic Predicate useage") {
+SCENARIO("Test out basic Predicate usage") {
   GIVEN("GateSetPredicate") {
     OpTypeSet ots = {OpType::CX};
     PredicatePtr gsp = std::make_shared<GateSetPredicate>(ots);

@@ -244,7 +244,7 @@ static void set_lifted_triplets(
 
 namespace {
 // Contains data potentially of size roughly 2^n or larger,
-// to avoid expensive memeory reallocation.
+// to avoid expensive memory reallocation.
 struct LargeWorkData {
   LiftedBitsResult lifted_bits;
   std::vector<TripletCd> lifted_triplets;

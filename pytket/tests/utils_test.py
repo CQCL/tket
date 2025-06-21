@@ -504,7 +504,7 @@ def test_dag() -> None:
 
 
 def test_dag_implicit_perm() -> None:
-    # THET-701
+    # TKET-701
     c = Circuit(3).CX(0, 1).CX(1, 0).CX(1, 2).CX(2, 1)
     Transform.OptimiseCliffords().apply(c)
     assert c.has_implicit_wireswaps

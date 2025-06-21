@@ -123,7 +123,7 @@ def _compute_dot(submatrices: Iterable[np.ndarray], vector: np.ndarray) -> np.nd
     """Multiplies the kronecker product of the given submatrices with given vector.
 
     :param submatrices: Submatrices multiplied
-    :param vector: Vector multplied
+    :param vector: Vector multiplied
 
     :return: Kronecker product of arguments
     """
@@ -140,7 +140,7 @@ def _bayesian_iteration(
     t: np.ndarray,
     epsilon: float,
 ) -> np.ndarray:
-    """Transforms T corresponds to a Bayesian iteration, used to modfiy
+    """Transforms T corresponds to a Bayesian iteration, used to modify
     measurements.
 
     :param submatrices: submatrices to be inverted and applied to measurements.

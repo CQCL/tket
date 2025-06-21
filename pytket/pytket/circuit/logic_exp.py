@@ -349,7 +349,7 @@ class RegLogicExp(LogicExp):
 
 
 class BinaryOp(LogicExp):
-    """Expresion for operation on two arguments."""
+    """Expression for operation on two arguments."""
 
     def __str__(self) -> str:
         return f"({self.args[0]} {self.op.value} {self.args[1]})"

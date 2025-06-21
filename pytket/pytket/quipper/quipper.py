@@ -569,13 +569,13 @@ class _CircuitMaker:
                 wire = tkqbits[gate.wire.i]  # must be quantum
                 raise NotImplementedError("QInit")
             elif isinstance(gate, _CInit):
-                wire = tkcbits[gate.wire.i]  # must be clasical
+                wire = tkcbits[gate.wire.i]  # must be classical
                 raise NotImplementedError("CInit")
             elif isinstance(gate, _QTerm):
                 wire = tkqbits[gate.wire.i]  # must be quantum
                 raise NotImplementedError("QTerm")
             elif isinstance(gate, _CTerm):
-                wire = tkcbits[gate.wire.i]  # must be clasical
+                wire = tkcbits[gate.wire.i]  # must be classical
                 raise NotImplementedError("CTerm")
             elif isinstance(gate, _QMeas):
                 # QMeas turns a qubit into a bit.
@@ -610,7 +610,7 @@ def circuit_from_quipper(input_file: str) -> Circuit:
 
     * Only limited support for controlled gates (depending on the gate type).
 
-    * No support for 'QInit' and 'QTerm'. All qubits must run from the begining
+    * No support for 'QInit' and 'QTerm'. All qubits must run from the beginning
       to the end of the circuit.
 
     * No support for the legacy keywords ('QNot', 'QMultinot', 'QHad', 'QSwap',

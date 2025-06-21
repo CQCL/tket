@@ -95,7 +95,7 @@ bool WeightNogoodDetectorManager::should_activate_detector(
     return false;
   }
 
-  // Note that we are careful to avoid int oveflow.
+  // Note that we are careful to avoid int overflow.
 
   if (current_weight < max_weight / 1024 ||
       DyadicFraction(current_weight) <

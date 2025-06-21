@@ -488,7 +488,7 @@ def test_passes_roundtrip_serialisation() -> None:
             raise ValueError(f"Pass {k} failed serialisation test.") from e
 
 
-def test_passes_onw_way_serialisation() -> None:
+def test_passes_one_way_serialisation() -> None:
     for k, p in ONE_WAY_PASSES.items():
         try:
             check_pass_serialisation(p, check_roundtrip=False)

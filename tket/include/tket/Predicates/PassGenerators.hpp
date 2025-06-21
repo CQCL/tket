@@ -140,7 +140,7 @@ PassPtr gen_directed_cx_routing_pass(
     const Architecture& arc, const std::vector<RoutingMethodPtr>& config);
 
 /**
- * execute architecture aware synthesis on a given architecture for an allready
+ * execute architecture aware synthesis on a given architecture for an already
  * place circuit, only for circuit which contains Cx+Rz+H gates
  * this pass is not able to handle implicit wire swaps
  * @param arc architecture to route on
@@ -185,7 +185,7 @@ PassPtr gen_full_mapping_pass_phase_poly(
 /**
  * pass to place all not yet placed qubits of the circuit to the given
  * architecture for the architecture aware synthesis.
- * @param arc achitecture to place the circuit on
+ * @param arc architecture to place the circuit on
  * @param _maximum_matches parameter effecting the number of
  * matches found during the GraphPlacement substep
  * @param _timeout timeout (ms) for finding subgraph monomorphisms
@@ -198,7 +198,7 @@ PassPtr gen_full_mapping_pass_phase_poly(
  * the size of the target graph, constructed from a phase polynomial,
  * during the GraphPlacement substep, by restricting the depth of gates
  * in the phase polynomial that are added to the target graph
- * @return passpointer to perfomr the mapping
+ * @return passpointer to perform the mapping
  */
 PassPtr gen_placement_pass_phase_poly(
     const Architecture& arc, unsigned _maximum_matches = 2000,
@@ -436,7 +436,7 @@ PassPtr CustomPass(
 /**
  * Generate a custom pass that tracks map
  *
- * @param transform circuit transformation function and modified intial and
+ * @param transform circuit transformation function and modified initial and
  * final maps
  * @param label optional user-defined label for the pass
  *

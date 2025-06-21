@@ -493,7 +493,7 @@ NB_MODULE(circuit, m) {
           "A general classical operation where all inputs are also outputs")
       .value(
           "WASM", OpType::WASM, "Op containing a classical wasm function call")
-      /* this optypes are intentionally not in python avilable at the moment
+      /* this optypes are intentionally not in python available at the moment
       .value("_WASMInput", OpType::WASMInput, "WASM wire input node")
       .value("_WASMOutput", OpType::WASMOutput, "WASM wire output node")
       .value("_Input", OpType::Input, "Quantum input node of the circuit")

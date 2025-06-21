@@ -68,7 +68,7 @@ struct ChoiMixBuilder {
    * maximally-mixed states (in_out_permutation may similarly join these onto
    * input qubits no longer in use)
    * - out_circ_tp: the transpose of a unitary circuit (without implicit
-   * permuations); we store this as the transpose so we can build it up in
+   * permutations); we store this as the transpose so we can build it up in
    * reverse
    */
   Circuit in_circ;

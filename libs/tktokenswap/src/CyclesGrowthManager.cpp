@@ -162,7 +162,7 @@ CyclesGrowthManager::GrowthResult CyclesGrowthManager::attempt_to_grow(
 
         // We want 100*(L-decr)/(num.moves) >=
         // min_power_percentage_for_partial_path. But we need the ceiling
-        // because of interger division.
+        // because of integer division.
         min_decrease = std::max(
             min_decrease,
             (99 + m_options.min_power_percentage_for_partial_path * num_moves) /
