@@ -80,7 +80,7 @@ lexicographical_distances_t LexicographicalComparison::get_updated_distances(
   // first condition => first node not interacting with self, so update
   // distances
   if (iq_it != this->interacting_nodes_.end()) {
-    // update distances due to first swap node and qubit its interating with
+    // update distances due to first swap node and qubit its interacting with
     // (assuming swap)
     Node interacting = iq_it->second;
     if (interacting != swap.second) {

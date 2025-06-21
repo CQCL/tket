@@ -462,7 +462,7 @@ void MappingFrontier::advance_frontier_boundary(
               if (out_bundle.empty()) {
                 // => all edges in boolean bundle in boolean boundary attached
                 // to this vertex
-                // => vertex has no edges in output boolean bundle for thos port
+                // => vertex has no edges in output boolean bundle for this port
                 // => can erase Bit from boolean boundary as its not longer used
                 this->boolean_boundary->erase(boolean_it);
               } else {

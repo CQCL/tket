@@ -888,7 +888,7 @@ static Eigen::Matrix2cd get_target_op_matrix(const Op_ptr &op) {
 
 // A gate block containing Cn* gates that can be merged as a single CnU gate
 // a block can also contain a single Barrier, which will be left in place
-// TODO: conjugation boxs are accepted as well; however they don't fit the
+// TODO: conjugation boxes are accepted as well; however they don't fit the
 // semantics. control_qubits and target_qubit don't mean anything for a
 // conjugation box.
 struct CnGateBlock {
