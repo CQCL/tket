@@ -51,9 +51,9 @@ class InvalidRowOperation : public std::logic_error {
 
 /**
  * This class is creating a steiner tree, which is a mst including all the nodes
- * of a given phase gadget plus all the nodes which are neede to connect all the
- * nodes of the gadget. This class also offers the function to reduce this tree
- * by extracting operations steps by step. This class is designed with
+ * of a given phase gadget plus all the nodes which are needed to connect all
+ * the nodes of the gadget. This class also offers the function to reduce this
+ * tree by extracting operations steps by step. This class is designed with
  * architecture aware synthesis in mind; it may not be suitable for other
  * generic purposes.
  */

@@ -52,7 +52,7 @@ bool is_maximum(const T& val) {
 }
 // GCOVR_EXCL_STOP
 
-/** Handy for testing; a string represention of a std container.
+/** Handy for testing; a string representation of a std container.
  * @param elems A container of elements.
  * @param max_elems_to_print The maximum number to print, before terminating
  * early.

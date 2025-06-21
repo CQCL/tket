@@ -166,7 +166,7 @@ SCENARIO("Test adding unused edges to simple random graphs with assignments") {
   // applications:
   // connectivity in many real quantum computers (e.g. the IBM heavy hexagon
   // "brick wall pattern" machines) is quite low;
-  // qubit intereactions in a real quantum circuit are presumably often
+  // qubit interactions in a real quantum circuit are presumably often
   // quite numerous, as you often have many gates and a lot of entanglement
   // in a useful circuit.
   const auto explicit_target_graph_data =
