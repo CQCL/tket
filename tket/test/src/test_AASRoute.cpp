@@ -62,7 +62,7 @@ SCENARIO("Test aas route in RV3") {
 
     AASRouteRoutingMethod aasrm(1, aas::CNotSynthType::Rec);
 
-    // this will fail because the cx ae in fron of the ppb
+    // this will fail because the cx ae in front of the ppb
     REQUIRE(!aasrm.routing_method(mf, shared_arc).first);
   }
   GIVEN("AASRoute - test AASRouteRoutingMethod routing_method placed") {
