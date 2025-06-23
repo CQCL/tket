@@ -106,10 +106,9 @@ cmake --install .
 
 ```
 cd ${TMP_DIR}
-wget https://github.com/emil-e/rapidcheck/archive/1c91f40e64d87869250cfb610376c629307bf77d.zip
-unzip 1c91f40e64d87869250cfb610376c629307bf77d.zip
-cd rapidcheck-1c91f40e64d87869250cfb610376c629307bf77d/
-sed -i -e 's/cmake_minimum_required(VERSION 3.0)/cmake_minimum_required(VERSION 3.5)/g' CMakeLists.txt
+https://github.com/emil-e/rapidcheck/archive/ff6af6fc683159deb51c543b065eba14dfcf329b.zip
+unzip ff6af6fc683159deb51c543b065eba14dfcf329b.zip
+cd rapidcheck-ff6af6fc683159deb51c543b065eba14dfcf329b/
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
