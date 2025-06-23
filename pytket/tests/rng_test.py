@@ -93,3 +93,12 @@ num = RNGnum();
 if(num[0]==1) h q[0];
 measure q[0] -> c[0];
 """
+
+def test_shot_num() -> None:
+    circ = Circuit()
+    creg = circ.add_c_register("c", 32)
+    circ.get_job_shot_num(creg)
+    assert circ.n_gates_of_type(OpType.JobShotNum) == 1
+    dreg = circ.add_c_register("d", 16)
+    with pytest.raises(ValueError):
+        circ.get_job_shot_num(dreg)

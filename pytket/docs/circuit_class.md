@@ -420,4 +420,14 @@ may either ignore these operations or reject them.
    -- automethod:: set_rng_index
 
    -- automethod:: get_rng_num
+
+Operations to get job variables
+-------------------------------
+
+Job variables encode metadata about the job that is running the circuit, such as
+the shot number (when the circuit is being run multiple times). Such information
+may not be available on all backends, and backends may either ignore these
+operations or reject them.
+
+   -- automethod:: get_job_shot_num
 ```
