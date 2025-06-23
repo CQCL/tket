@@ -516,7 +516,8 @@ Transform absorb_Rz_NPhasedX() {
           occurrences_count[i] = cnt;
         }
         unsigned max_i =
-            std::max_element(occurrences_count.begin(), occurrences_count.end()) -
+            std::max_element(
+                occurrences_count.begin(), occurrences_count.end()) -
             occurrences_count.begin();
         Expr absorb_rz = all_rz[max_i];
 

@@ -59,8 +59,8 @@ std::pair<bool, unit_map_t> AASRouteRoutingMethod::routing_method(
 
       // check that the box we are working on is really placed and the check
       // method has been executed
-      // this is important if the circuit contains more than one ppb and only one
-      // of them is placed
+      // this is important if the circuit contains more than one ppb and only
+      // one of them is placed
 
       if (box_placed) {
         // get ppb from op
