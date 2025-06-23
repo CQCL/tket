@@ -34,6 +34,7 @@ target_nd = "target_nd"
 BRIDGEs = "BRIDGEs"
 ot = "ot"
 ccontrol_pred = "ccontrol_pred"
+bck = "bck"
 
 [default.extend-words]
 Braket = "Braket"
