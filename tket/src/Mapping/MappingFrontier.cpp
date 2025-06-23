@@ -790,7 +790,7 @@ void MappingFrontier::add_bridge(
       this->circuit_.get_nth_out_edge(vp_central.first, vp_central.second),
       this->circuit_.get_nth_out_edge(vp_target.first, vp_target.second),
   };  // get cx vertex
-      // this should be guarantees by pre-checks
+      // this should be guaranteed by pre-checks
   Vertex cx_v = this->circuit_.target(predecessors[0]);
   // add bridge
   Vertex bridge_v = this->circuit_.add_vertex(OpType::BRIDGE);
