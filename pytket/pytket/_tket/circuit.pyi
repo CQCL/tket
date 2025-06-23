@@ -2466,6 +2466,19 @@ class Circuit:
             :return: the new :py:class:`Circuit`
         """
 
+    def get_job_shot_num(self: Circuit, creg: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
+        """
+        Get shot number into a classical register.
+
+            The classical register must be exactly 32 bits. After the operation it encodes the
+            shot number in little-endian binary (least significant bit first).
+
+            :param creg: register of classical bits
+            :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
+                are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+            :return: the new :py:class:`Circuit`
+        """
+
     def add_clexpr_from_logicexp(circ: Circuit, exp: pytket.circuit.logic_exp.LogicExp, output_bits: list[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`~.ClExprOp` defined in terms of a logical expression.

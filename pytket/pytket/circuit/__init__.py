@@ -250,6 +250,28 @@ def get_rng_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
 setattr(Circuit, "get_rng_num", get_rng_num)
 
 
+def get_job_shot_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
+    """Get shot number into a classical register.
+
+    The classical register must be exactly 32 bits. After the operation it encodes the
+    shot number in little-endian binary (least significant bit first).
+
+    :param creg: register of classical bits
+    :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
+        are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+    :return: the new :py:class:`Circuit`
+    """
+    self._add_r_register(1)
+    if creg.size != 32:
+        raise ValueError(
+            f"Register passed to `get_job_shot_num()` has size {creg.size} (should be 32)"
+        )
+    return self._get_job_shot_num(creg, **kwargs)
+
+
+setattr(Circuit, "get_job_shot_num", get_job_shot_num)
+
+
 def add_clexpr_from_logicexp(
     circ: Circuit, exp: LogicExp, output_bits: list[Bit], **kwargs: Any
 ) -> Circuit:
