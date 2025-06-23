@@ -22,7 +22,7 @@ from conan.errors import ConanInvalidConfiguration
 
 class TketConan(ConanFile):
     name = "tket"
-    version = "2.1.25"
+    version = "2.1.26"
     package_type = "library"
     license = "Apache 2"
     homepage = "https://github.com/CQCL/tket"
@@ -122,7 +122,7 @@ class TketConan(ConanFile):
         if self.build_test():
             self.test_requires("catch2/3.8.1@tket/stable")
         if self.build_proptest():
-            self.test_requires("rapidcheck/tci-20230815@tket/stable")
+            self.test_requires("rapidcheck/tci-20231215@tket/stable")
 
     def build_test(self):
         return self.options.with_test or self.options.with_all_tests
