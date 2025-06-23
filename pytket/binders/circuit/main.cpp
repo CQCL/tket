@@ -579,6 +579,10 @@ NB_MODULE(circuit, m) {
           "Set an (inclusive) 32-bit upper bound on RNG output")
       .value("RNGIndex", OpType::RNGIndex, "Set a 32-bit index on an RNG")
       .value("RNGNum", OpType::RNGNum, "Get 32-bit output from an RNG")
+      .value(
+          "JobShotNum", OpType::JobShotNum,
+          "Get 32-bit (little-endian) shot number when a circuit is being run "
+          "multiple times")
       .def_static(
           "from_name",
           [](const nb::str &name) { return json(name).get<OpType>(); },
