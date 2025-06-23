@@ -801,6 +801,11 @@ enum class OpType {
    * Get 32-bit output from an RNG
    */
   RNGNum,
+
+  /**
+   * Get 32-bit (little-endian) shot number
+   */
+  JobShotNum,
 };
 
 JSON_DECL(OpType)

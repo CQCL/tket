@@ -741,6 +741,14 @@ SCENARIO("Opaque classical ops") {
     Circuit c1 = j.get<Circuit>();
     REQUIRE(c == c1);
   }
+  GIVEN("Shot-number serialization") {
+    Circuit c(0, 32);
+    c.add_op(
+        std::make_shared<OpaqueClassicalOp>(OpType::JobShotNum), c.all_bits());
+    nlohmann::json j = c;
+    Circuit c1 = j.get<Circuit>();
+    REQUIRE(c == c1);
+  }
 }
 
 }  // namespace test_Ops

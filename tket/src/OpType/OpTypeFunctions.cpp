@@ -117,6 +117,7 @@ const OpTypeSet& all_classical_types() {
       OpType::RNGBound,
       OpType::RNGIndex,
       OpType::RNGNum,
+      OpType::JobShotNum,
   };
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
@@ -145,7 +146,8 @@ const OpTypeSet& all_controlled_gate_types() {
 
 const OpTypeSet& all_opaque_classical_types() {
   static const OpTypeSet optypes{
-      OpType::RNGSeed, OpType::RNGBound, OpType::RNGIndex, OpType::RNGNum};
+      OpType::RNGSeed, OpType::RNGBound, OpType::RNGIndex, OpType::RNGNum,
+      OpType::JobShotNum};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;

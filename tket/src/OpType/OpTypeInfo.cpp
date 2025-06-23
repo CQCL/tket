@@ -25,6 +25,7 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
   static const op_signature_t singleq(1, EdgeType::Quantum);
   static const op_signature_t doubleq(2, EdgeType::Quantum);
   static const op_signature_t tripleq(3, EdgeType::Quantum);
+  static const op_signature_t bits32(32, EdgeType::Classical);
   static op_signature_t rng32bits(32, EdgeType::Classical);
   rng32bits.push_back(EdgeType::RNG);
   static op_signature_t rng64bits(64, EdgeType::Classical);
@@ -192,7 +193,8 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
       {OpType::RNGSeed, {"RNGSeed", "RNGSeed", {}, rng64bits}},
       {OpType::RNGBound, {"RNGBound", "RNGBound", {}, rng32bits}},
       {OpType::RNGIndex, {"RNGIndex", "RNGIndex", {}, rng32bits}},
-      {OpType::RNGNum, {"RNGNum", "RNGNum", {}, rng32bits}}};
+      {OpType::RNGNum, {"RNGNum", "RNGNum", {}, rng32bits}},
+      {OpType::JobShotNum, {"JobShotNum", "JobShotNum", {}, bits32}}};
   static std::unique_ptr<const std::map<OpType, OpTypeInfo>> opinfo =
       std::make_unique<const std::map<OpType, OpTypeInfo>>(typeinfo);
   return *opinfo;

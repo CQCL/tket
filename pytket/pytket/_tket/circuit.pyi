@@ -532,7 +532,12 @@ class OpType(enum.IntEnum):
 
     RNGNum = 121
     """Get 32-bit output from an RNG"""
-    
+
+    JobShotNum = 122
+    """
+    Get 32-bit (little-endian) shot number when a circuit is being run multiple times
+    """
+
     @staticmethod
     def from_name(arg: str, /) -> OpType:
         """Construct from name"""

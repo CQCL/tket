@@ -170,6 +170,7 @@ static unsigned n_i_for_opaque(OpType type) {
     case OpType::RNGIndex:
       return 32;
     case OpType::RNGNum:
+    case OpType::JobShotNum:
       return 0;
     default:
       throw std::domain_error("Unknown opaque classical type.");
@@ -183,6 +184,7 @@ static unsigned n_o_for_opaque(OpType type) {
     case OpType::RNGIndex:
       return 0;
     case OpType::RNGNum:
+    case OpType::JobShotNum:
       return 32;
     default:
       throw std::domain_error("Unknown opaque classical type.");
@@ -220,7 +222,10 @@ OpaqueClassicalOp::OpaqueClassicalOp(OpType type)
     : ClassicalOp(
           type, n_i_for_opaque(type), 0, n_o_for_opaque(type),
           optypeinfo().at(type).name) {
-  sig_.push_back(EdgeType::RNG);
+  if (type == OpType::RNGSeed || type == OpType::RNGBound ||
+      type == OpType::RNGIndex || type == OpType::RNGNum) {
+    sig_.push_back(EdgeType::RNG);
+  }
 }
 
 nlohmann::json OpaqueClassicalOp::serialize() const {
