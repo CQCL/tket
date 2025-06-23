@@ -1104,7 +1104,7 @@ PassPtr gen_special_UCC_synthesis(
     Transforms::PauliSynthStrat strat, CXConfigType cx_config) {
   Transform t = Transforms::special_UCC_synthesis(strat, cx_config);
   PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
-  PredicatePtrMap precons{CompilationUnit::make_type_pair(control_pred)};
+  PredicatePtrMap precons{CompilationUnit::make_type_pair(ccontrol_pred)};
   PredicateClassGuarantees g_postcons = {
       {typeid(ConnectivityPredicate), Guarantee::Clear},
       {typeid(NoWireSwapsPredicate), Guarantee::Clear}};
