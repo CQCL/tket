@@ -191,7 +191,7 @@ void SteinerTree::add_path_to_tree(
 
       tree_nodes.push_back(node_to_add);
 
-      num_neighbours[node_to_add] = 2;  // it has two neighbors
+      num_neighbours[node_to_add] = 2;  // it has two neighbours
 
       if (pathhandler.get_path_matrix()(node_to_add, node_in_tree) ==
           pathhandler.get_size()) {
