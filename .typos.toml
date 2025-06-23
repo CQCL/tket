@@ -33,6 +33,7 @@ non_trivials = "non_trivials"
 target_nd = "target_nd"
 BRIDGEs = "BRIDGEs"
 ot = "ot"
+ccontrol_pred = "ccontrol_pred"
 
 [default.extend-words]
 Braket = "Braket"

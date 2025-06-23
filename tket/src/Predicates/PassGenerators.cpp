@@ -931,8 +931,8 @@ PassPtr FullPeepholeOptimise(bool allow_swaps, OpType target_2qb_gate) {
 
 PassPtr gen_optimise_phase_gadgets(CXConfigType cx_config) {
   Transform t = Transforms::optimise_via_PhaseGadget(cx_config);
-  PredicatePtr control_pred = std::make_shared<NoClassicalControlPredicate>();
-  PredicatePtrMap precons{CompilationUnit::make_type_pair(control_pred)};
+  PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
+  PredicatePtrMap precons{CompilationUnit::make_type_pair(ccontrol_pred)};
   OpTypeSet after_set{OpType::Measure, OpType::Collapse, OpType::Reset,
                       OpType::Phase,   OpType::TK1,      OpType::CX};
   std::type_index ti = typeid(ConnectivityPredicate);
@@ -954,11 +954,11 @@ PassPtr gen_optimise_phase_gadgets(CXConfigType cx_config) {
 
 PassPtr gen_pairwise_pauli_gadgets(CXConfigType cx_config) {
   Transform t = Transforms::pairwise_pauli_gadgets(cx_config);
-  PredicatePtr control_pred = std::make_shared<NoClassicalControlPredicate>();
+  PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
   PredicatePtr simple = std::make_shared<DefaultRegisterPredicate>();
   PredicatePtrMap precons = {
       CompilationUnit::make_type_pair(simple),
-      CompilationUnit::make_type_pair(control_pred)};
+      CompilationUnit::make_type_pair(ccontrol_pred)};
   PredicateClassGuarantees g_postcons = {
       {typeid(ConnectivityPredicate), Guarantee::Clear},
       {typeid(NoWireSwapsPredicate), Guarantee::Clear}};
@@ -977,7 +977,7 @@ PassPtr gen_pairwise_pauli_gadgets(CXConfigType cx_config) {
 PassPtr gen_pauli_exponentials(
     Transforms::PauliSynthStrat strat, CXConfigType cx_config) {
   Transform t = Transforms::synthesise_pauli_graph(strat, cx_config);
-  PredicatePtr control_pred = std::make_shared<NoClassicalControlPredicate>();
+  PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
   PredicatePtr mid_pred = std::make_shared<NoMidMeasurePredicate>();
   OpTypeSet ins = {OpType::Z,       OpType::X,           OpType::Y,
                    OpType::S,       OpType::Sdg,         OpType::V,
@@ -990,7 +990,7 @@ PassPtr gen_pauli_exponentials(
                    OpType::PhasedX, OpType::SX,          OpType::SXdg};
   PredicatePtr in_gates = std::make_shared<GateSetPredicate>(ins);
   PredicatePtrMap precons{
-      CompilationUnit::make_type_pair(control_pred),
+      CompilationUnit::make_type_pair(ccontrol_pred),
       CompilationUnit::make_type_pair(mid_pred),
       CompilationUnit::make_type_pair(in_gates)};
   PredicateClassGuarantees g_postcons = {
@@ -1103,7 +1103,7 @@ PassPtr gen_greedy_pauli_simp(
 PassPtr gen_special_UCC_synthesis(
     Transforms::PauliSynthStrat strat, CXConfigType cx_config) {
   Transform t = Transforms::special_UCC_synthesis(strat, cx_config);
-  PredicatePtr control_pred = std::make_shared<NoClassicalControlPredicate>();
+  PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
   PredicatePtrMap precons{CompilationUnit::make_type_pair(control_pred)};
   PredicateClassGuarantees g_postcons = {
       {typeid(ConnectivityPredicate), Guarantee::Clear},

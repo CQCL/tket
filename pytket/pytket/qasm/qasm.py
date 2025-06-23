@@ -242,7 +242,7 @@ def _extract_reg(var: Token) -> tuple[str, int]:
 
 
 def _load_include_module(
-    header_name: str, filter_bool: bool, decls_only: bool
+    header_name: str, do_filter: bool, decls_only: bool
 ) -> dict[str, dict]:
     try:
         if decls_only:
@@ -260,7 +260,7 @@ def _load_include_module(
     return {
         gate: include_def[gate]
         for gate in include_def
-        if not filter_bool or gate not in _all_known_gates
+        if not do_filter or gate not in _all_known_gates
     }
 
 
@@ -1205,9 +1205,7 @@ def _retrieve_registers(
 ) -> dict[str, TypeReg]:
     if any(len(unit.index) != 1 for unit in units):
         raise NotImplementedError("OPENQASM registers must use a single index")
-    maxunits = map(
-        lambda x: max(x[1]), groupby(units, key=lambda un: un.reg_name)
-    )  # noqa: C417
+    maxunits = map(lambda x: max(x[1]), groupby(units, key=lambda un: un.reg_name))  # noqa: C417
     return {
         maxunit.reg_name: reg_type(maxunit.reg_name, maxunit.index[0] + 1)
         for maxunit in maxunits
