@@ -1003,7 +1003,7 @@ def circuit_from_qasm_str(qasm_str: str, maxwidth: int = 32) -> Circuit:
     _set_parser(maxwidth=maxwidth)
     assert g_parser is not None
     cast("_CircuitTransformer", g_parser.options.transformer)._reset_context(  # noqa: SLF001
-    reset_wasm=False
+        reset_wasm=False
     )
     circ = Circuit.from_dict(g_parser.parse(qasm_str))  # type: ignore[arg-type]
     cpass = scratch_reg_resize_pass(maxwidth)
