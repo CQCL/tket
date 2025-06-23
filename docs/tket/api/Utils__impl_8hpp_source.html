@@ -114,7 +114,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &quot;<a class="code" href="GraphHeaders_8hpp.html">tket/Utils/GraphHeaders.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="comment">// Implemetation details of `Graphs/Utils.hpp`</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="comment">// Implementation details of `Graphs/Utils.hpp`</span></div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacetket_1_1graphs_1_1utils.html">tket::graphs::utils</a> {</div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="comment">// ::detail includes all internal implementation-specific details</span></div>
@@ -361,7 +361,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span><span class="comment"> * The Derived template type is the child class that inherits from this class</span></div>
 <div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span><span class="comment"> *  -&gt; see Curiously Recurring Template Pattern (CRTP)</span></div>
 <div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span><span class="comment"> *  The Indexable boolean template is true iff Graph support integer vertex</span></div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span><span class="comment"> *  indexing (see has_integral_index). It should be left to default and infered</span></div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span><span class="comment"> *  indexing (see has_integral_index). It should be left to default and inferred</span></div>
 <div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span><span class="comment"> *  by compiler</span></div>
 <div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span><span class="comment"> *</span></div>
 <div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span><span class="comment"> * We distinguish four cases for template specialisations, given by the four</span></div>
@@ -467,7 +467,7 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span> </div>
 <div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span><span class="comment">/* Now come the same 4 cases with the additional support of an external map</span></div>
-<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span><span class="comment"> * with vertrex indices as keys</span></div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span><span class="comment"> * with vertex indices as keys</span></div>
 <div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span><span class="comment"> */</span></div>
 <div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span><span class="comment">// Case 1-2: not indexable</span></div>
 <div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span><span class="keyword">template</span> &lt;</div>
@@ -591,7 +591,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00437" name="l00437"></a><span class="lineno">  437</span>};</div>
 </div>
 <div class="line"><a id="l00438" name="l00438"></a><span class="lineno">  438</span> </div>
-<div class="line"><a id="l00439" name="l00439"></a><span class="lineno">  439</span><span class="comment">// The above implementions are accessed through the following helper classes,</span></div>
+<div class="line"><a id="l00439" name="l00439"></a><span class="lineno">  439</span><span class="comment">// The above implementations are accessed through the following helper classes,</span></div>
 <div class="line"><a id="l00440" name="l00440"></a><span class="lineno">  440</span><span class="comment">// making template args nicer</span></div>
 <div class="line"><a id="l00441" name="l00441"></a><span class="lineno">  441</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Graph, <span class="keyword">typename</span> PMap = <span class="keywordtype">void</span>&gt;</div>
 <div class="foldopen" id="foldopen00442" data-start="{" data-end="};">

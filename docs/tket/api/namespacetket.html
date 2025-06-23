@@ -318,7 +318,7 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1LexiLabellingMethod.html">LexiLabellingMethod</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1LexiRoute.html">LexiRoute</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A class for modifiying a <a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> held in a <a class="el" href="structtket_1_1MappingFrontier.html">MappingFrontier</a> object with either an <a class="el" href="classtket_1_1Architecture.html">Architecture</a> permitted single SWAP gate or BRIDGE gate.  <a href="classtket_1_1LexiRoute.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A class for modifying a <a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> held in a <a class="el" href="structtket_1_1MappingFrontier.html">MappingFrontier</a> object with either an <a class="el" href="classtket_1_1Architecture.html">Architecture</a> permitted single SWAP gate or BRIDGE gate.  <a href="classtket_1_1LexiRoute.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1LexiRouteError.html">LexiRouteError</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1770,7 +1770,7 @@ Functions</h2></td></tr>
 <tr class="memdesc:aafd09d98fa6e20472aebce452b2f36be"><td class="mdescLeft">&#160;</td><td class="mdescRight">pass to place all not yet placed qubits of the circuit to the given architecture for the architecture aware synthesis.  <br /></td></tr>
 <tr class="separator:aafd09d98fa6e20472aebce452b2f36be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58f426cda6a5527b6c273adff59cf493" id="r_a58f426cda6a5527b6c273adff59cf493"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a58f426cda6a5527b6c273adff59cf493">aas_routing_pass</a> (const <a class="el" href="classtket_1_1Architecture.html">Architecture</a> &amp;arc, const unsigned lookahead=1, const <a class="el" href="namespacetket_1_1aas.html#af7e883680036ba6f4ba75d9729a443c5">aas::CNotSynthType</a> cnotsynthtype=<a class="el" href="namespacetket_1_1aas.html#af7e883680036ba6f4ba75d9729a443c5a59506b7d50499cf62e3099491c108c9d">aas::CNotSynthType::Rec</a>)</td></tr>
-<tr class="memdesc:a58f426cda6a5527b6c273adff59cf493"><td class="mdescLeft">&#160;</td><td class="mdescRight">execute architecture aware synthesis on a given architecture for an allready place circuit, only for circuit which contains Cx+Rz+H gates this pass is not able to handle implicit wire swaps  <br /></td></tr>
+<tr class="memdesc:a58f426cda6a5527b6c273adff59cf493"><td class="mdescLeft">&#160;</td><td class="mdescRight">execute architecture aware synthesis on a given architecture for an already place circuit, only for circuit which contains Cx+Rz+H gates this pass is not able to handle implicit wire swaps  <br /></td></tr>
 <tr class="separator:a58f426cda6a5527b6c273adff59cf493"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16df3bfe4c652b1a36b75d4748bd582b" id="r_a16df3bfe4c652b1a36b75d4748bd582b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a16df3bfe4c652b1a36b75d4748bd582b">gen_full_mapping_pass_phase_poly</a> (const <a class="el" href="classtket_1_1Architecture.html">Architecture</a> &amp;arc, const unsigned lookahead=1, const <a class="el" href="namespacetket_1_1aas.html#af7e883680036ba6f4ba75d9729a443c5">aas::CNotSynthType</a> cnotsynthtype=<a class="el" href="namespacetket_1_1aas.html#af7e883680036ba6f4ba75d9729a443c5a59506b7d50499cf62e3099491c108c9d">aas::CNotSynthType::Rec</a>, unsigned graph_placement_maximum_matches=2000, unsigned graph_placement_timeout=100, unsigned graph_placement_maximum_pattern_gates=2000, unsigned graph_placement_maximum_pattern_depth=2000)</td></tr>
 <tr class="memdesc:a16df3bfe4c652b1a36b75d4748bd582b"><td class="mdescLeft">&#160;</td><td class="mdescRight">execute architecture aware synthesis on a given architecture for any circuit.  <br /></td></tr>
@@ -5843,7 +5843,7 @@ e^{-i\pi\beta} \end{array} \right] \) </p>
       </table>
 </div><div class="memdoc">
 
-<p>execute architecture aware synthesis on a given architecture for an allready place circuit, only for circuit which contains Cx+Rz+H gates this pass is not able to handle implicit wire swaps </p>
+<p>execute architecture aware synthesis on a given architecture for an already place circuit, only for circuit which contains Cx+Rz+H gates this pass is not able to handle implicit wire swaps </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">arc</td><td>architecture to route on </td></tr>
@@ -9509,7 +9509,7 @@ template&lt;&gt; </div>
 <p>Generate a custom pass that tracks map. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">transform</td><td>circuit transformation function and modified intial and final maps </td></tr>
+    <tr><td class="paramname">transform</td><td>circuit transformation function and modified initial and final maps </td></tr>
     <tr><td class="paramname">label</td><td>optional user-defined label for the pass</td></tr>
   </table>
   </dd>
@@ -12655,7 +12655,7 @@ template&lt;arithmetic T&gt; </div>
 <p>pass to place all not yet placed qubits of the circuit to the given architecture for the architecture aware synthesis. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">arc</td><td>achitecture to place the circuit on </td></tr>
+    <tr><td class="paramname">arc</td><td>architecture to place the circuit on </td></tr>
     <tr><td class="paramname">_maximum_matches</td><td>parameter effecting the number of matches found during the <a class="el" href="classtket_1_1GraphPlacement.html">GraphPlacement</a> substep </td></tr>
     <tr><td class="paramname">_timeout</td><td>timeout (ms) for finding subgraph monomorphisms during the <a class="el" href="classtket_1_1GraphPlacement.html">GraphPlacement</a> substep </td></tr>
     <tr><td class="paramname">_maximum_pattern_gates</td><td>parameter effecting the size of the target graph, constructed from a phase polynomial, during the <a class="el" href="classtket_1_1GraphPlacement.html">GraphPlacement</a> substep, by restricting the number of gates in the phase polynomial used </td></tr>
@@ -12663,7 +12663,7 @@ template&lt;arithmetic T&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>passpointer to perfomr the mapping </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>passpointer to perform the mapping </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00577">577</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
@@ -21195,7 +21195,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 <p>As a resynthesis pass, this will ignore almost all optimisations achieved beforehand and may increase the cost of the circuit.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">allow_swaps</td><td>Determines whether the extracted circuit may have implicit wire swaps. If set to false, implict wire swaps will be removed by adding SWAP gates at the end of the circuit.</td></tr>
+    <tr><td class="paramname">allow_swaps</td><td>Determines whether the extracted circuit may have implicit wire swaps. If set to false, implicit wire swaps will be removed by adding SWAP gates at the end of the circuit.</td></tr>
   </table>
   </dd>
 </dl>

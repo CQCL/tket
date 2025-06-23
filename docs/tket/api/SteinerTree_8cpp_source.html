@@ -256,7 +256,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>    }</div>
 <div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span> </div>
 <div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>    <span class="keywordflow">while</span> (node_in_tree != node_to_add) {</div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>      <span class="comment">// node in a path = zero node, it has two neighbbors</span></div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>      <span class="comment">// node in a path = zero node, it has two neighbours</span></div>
 <div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>      <a class="code hl_variable" href="classtket_1_1aas_1_1SteinerTree.html#a36a9177d59fab02c55bb9cd9dd5e2bea">node_types</a>[node_in_tree] = <a class="code hl_enumvalue" href="namespacetket_1_1aas.html#a5d7e42ff2fcc3a26d82ea3d4dd415374a65436f186d3c96249cc3283423cc42a5">SteinerNodeType::ZeroInTree</a>;</div>
 <div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>      <a class="code hl_variable" href="classtket_1_1aas_1_1SteinerTree.html#a36d6e99667526554d4f8f4cca97f6b85">tree_nodes</a>.push_back(node_in_tree);</div>
 <div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>      <a class="code hl_variable" href="classtket_1_1aas_1_1SteinerTree.html#a5943e6b16bf90e01b13571d25678d35a">num_neighbours</a>[node_in_tree] = 2;</div>
@@ -292,7 +292,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span> </div>
 <div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>      <a class="code hl_variable" href="classtket_1_1aas_1_1SteinerTree.html#a36d6e99667526554d4f8f4cca97f6b85">tree_nodes</a>.push_back(node_to_add);</div>
 <div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span> </div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>      <a class="code hl_variable" href="classtket_1_1aas_1_1SteinerTree.html#a5943e6b16bf90e01b13571d25678d35a">num_neighbours</a>[node_to_add] = 2;  <span class="comment">// it has two neighbbors</span></div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>      <a class="code hl_variable" href="classtket_1_1aas_1_1SteinerTree.html#a5943e6b16bf90e01b13571d25678d35a">num_neighbours</a>[node_to_add] = 2;  <span class="comment">// it has two neighbours</span></div>
 <div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span> </div>
 <div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>      <span class="keywordflow">if</span> (pathhandler.<a class="code hl_function" href="classtket_1_1aas_1_1PathHandler.html#a572081898db50f76cc46c14fe3b0ecec">get_path_matrix</a>()(node_to_add, node_in_tree) ==</div>
 <div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>          pathhandler.<a class="code hl_function" href="classtket_1_1aas_1_1PathHandler.html#aadb4097e24f6282db813611c4ec0d442">get_size</a>()) {</div>

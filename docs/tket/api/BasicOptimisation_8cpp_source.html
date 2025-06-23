@@ -604,10 +604,10 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00502" name="l00502"></a><span class="lineno">  502</span>        <span class="comment">// Find out which Rz angle is most popular.</span></div>
 <div class="line"><a id="l00503" name="l00503"></a><span class="lineno">  503</span>        <span class="comment">// Note that we only compare expr[i] with expr[j] when j &lt; i. This means</span></div>
 <div class="line"><a id="l00504" name="l00504"></a><span class="lineno">  504</span>        <span class="comment">// that only the largest i from a set of equivalent exprs will have the</span></div>
-<div class="line"><a id="l00505" name="l00505"></a><span class="lineno">  505</span>        <span class="comment">// right occurence count, but that is good enough.</span></div>
+<div class="line"><a id="l00505" name="l00505"></a><span class="lineno">  505</span>        <span class="comment">// right occurrence count, but that is good enough.</span></div>
 <div class="line"><a id="l00506" name="l00506"></a><span class="lineno">  506</span>        std::vector&lt;Expr&gt; all_rz = in_rz;</div>
 <div class="line"><a id="l00507" name="l00507"></a><span class="lineno">  507</span>        all_rz.insert(all_rz.end(), out_rz.begin(), out_rz.end());</div>
-<div class="line"><a id="l00508" name="l00508"></a><span class="lineno">  508</span>        std::vector&lt;unsigned&gt; occurences_count(2 * arity);</div>
+<div class="line"><a id="l00508" name="l00508"></a><span class="lineno">  508</span>        std::vector&lt;unsigned&gt; occurrences_count(2 * arity);</div>
 <div class="line"><a id="l00509" name="l00509"></a><span class="lineno">  509</span>        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; 2 * arity; ++i) {</div>
 <div class="line"><a id="l00510" name="l00510"></a><span class="lineno">  510</span>          <span class="keywordtype">unsigned</span> cnt = 0;</div>
 <div class="line"><a id="l00511" name="l00511"></a><span class="lineno">  511</span>          <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; i; ++j) {</div>
@@ -615,222 +615,223 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00513" name="l00513"></a><span class="lineno">  513</span>              ++cnt;</div>
 <div class="line"><a id="l00514" name="l00514"></a><span class="lineno">  514</span>            }</div>
 <div class="line"><a id="l00515" name="l00515"></a><span class="lineno">  515</span>          }</div>
-<div class="line"><a id="l00516" name="l00516"></a><span class="lineno">  516</span>          occurences_count[i] = cnt;</div>
+<div class="line"><a id="l00516" name="l00516"></a><span class="lineno">  516</span>          occurrences_count[i] = cnt;</div>
 <div class="line"><a id="l00517" name="l00517"></a><span class="lineno">  517</span>        }</div>
 <div class="line"><a id="l00518" name="l00518"></a><span class="lineno">  518</span>        <span class="keywordtype">unsigned</span> max_i =</div>
-<div class="line"><a id="l00519" name="l00519"></a><span class="lineno">  519</span>            std::max_element(occurences_count.begin(), occurences_count.end()) -</div>
-<div class="line"><a id="l00520" name="l00520"></a><span class="lineno">  520</span>            occurences_count.begin();</div>
-<div class="line"><a id="l00521" name="l00521"></a><span class="lineno">  521</span>        <a class="code hl_typedef" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> absorb_rz = all_rz[max_i];</div>
-<div class="line"><a id="l00522" name="l00522"></a><span class="lineno">  522</span> </div>
-<div class="line"><a id="l00523" name="l00523"></a><span class="lineno">  523</span>        <span class="keywordflow">if</span> (!<a class="code hl_function" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(absorb_rz, 4)) {</div>
-<div class="line"><a id="l00524" name="l00524"></a><span class="lineno">  524</span>          success = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00525" name="l00525"></a><span class="lineno">  525</span> </div>
-<div class="line"><a id="l00526" name="l00526"></a><span class="lineno">  526</span>          <span class="comment">// Subtract absorb_rz in NPhasedX</span></div>
-<div class="line"><a id="l00527" name="l00527"></a><span class="lineno">  527</span>          std::vector&lt;Expr&gt; new_params = op-&gt;get_params();</div>
-<div class="line"><a id="l00528" name="l00528"></a><span class="lineno">  528</span>          TKET_ASSERT(new_params.size() == 2);</div>
-<div class="line"><a id="l00529" name="l00529"></a><span class="lineno">  529</span>          new_params[1] += absorb_rz;</div>
-<div class="line"><a id="l00530" name="l00530"></a><span class="lineno">  530</span>          circ.<a class="code hl_variable" href="classtket_1_1Circuit.html#aa2661c079a17a04f213ec8221718efc1">dag</a>[v] = <a class="code hl_function" href="namespacetket.html#a218e50abe75d86161d9b5ef3e556877f">get_op_ptr</a>(<a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a29d19ccd6cb57e5bd1006d9130efbcfc">OpType::NPhasedX</a>, new_params, arity);</div>
-<div class="line"><a id="l00531" name="l00531"></a><span class="lineno">  531</span> </div>
-<div class="line"><a id="l00532" name="l00532"></a><span class="lineno">  532</span>          <span class="comment">// Finally, adjust +-absorb_rz in Rz everywhere around</span></div>
-<div class="line"><a id="l00533" name="l00533"></a><span class="lineno">  533</span>          <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; arity; ++i) {</div>
-<div class="line"><a id="l00534" name="l00534"></a><span class="lineno">  534</span>            <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> in_v = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a90c4935d28c1c7a05a5430862afb3c3f">source</a>(in_edges[i]);</div>
-<div class="line"><a id="l00535" name="l00535"></a><span class="lineno">  535</span>            <a class="code hl_typedef" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> in_op = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a15fd2bc465a81f45f79171d50590a520">get_Op_ptr_from_Vertex</a>(in_v);</div>
-<div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span>            <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> out_v = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#af523ff39367bf72c26155a4493d25daa">target</a>(out_edges[i]);</div>
-<div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span>            <a class="code hl_typedef" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> out_op = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a15fd2bc465a81f45f79171d50590a520">get_Op_ptr_from_Vertex</a>(out_v);</div>
-<div class="line"><a id="l00538" name="l00538"></a><span class="lineno">  538</span> </div>
-<div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span>            <a class="code hl_typedef" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> angle;</div>
-<div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span>            <a class="code hl_typedef" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> in_e, out_e;</div>
-<div class="line"><a id="l00541" name="l00541"></a><span class="lineno">  541</span>            <a class="code hl_typedef" href="namespacetket.html#a2993d101c682c3d8e566a19ac49b5285">VertexSet</a> bin;</div>
-<div class="line"><a id="l00542" name="l00542"></a><span class="lineno">  542</span>            <span class="keywordflow">if</span> (in_op-&gt;get_type() == <a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aca877e9e6cc89dfdd87b1797169c9a9e">OpType::Rz</a>) {</div>
-<div class="line"><a id="l00543" name="l00543"></a><span class="lineno">  543</span>              angle = in_op-&gt;get_params().at(0) + absorb_rz;</div>
-<div class="line"><a id="l00544" name="l00544"></a><span class="lineno">  544</span>              out_e = in_edges[i];</div>
-<div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span>              in_e = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#ab4a20262a5bafa273a324b5d236708b6">get_last_edge</a>(in_v, out_e);</div>
-<div class="line"><a id="l00546" name="l00546"></a><span class="lineno">  546</span>              bin = {in_v};</div>
-<div class="line"><a id="l00547" name="l00547"></a><span class="lineno">  547</span>            } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span>              angle = absorb_rz;</div>
-<div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span>              out_e = in_edges[i];</div>
-<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span>              in_e = out_e;</div>
-<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span>              bin = {};</div>
-<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span>            }</div>
-<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span>            <a class="code hl_struct" href="structtket_1_1Subcircuit.html">Subcircuit</a> sub{{in_e}, {out_e}, {}, bin};</div>
-<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span>            <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> c(1);</div>
-<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span>            <span class="keywordflow">if</span> (!<a class="code hl_function" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(angle, 4)) {</div>
-<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span>              c.<a class="code hl_function" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aca877e9e6cc89dfdd87b1797169c9a9e">OpType::Rz</a>, angle, {0});</div>
-<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span>            }</div>
-<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span>            circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a7b1bacb65c517890d2a40cb2892c5b1f">substitute</a>(c, sub, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6abafd7322c6e97d25b6299b5d6fe8920b">Circuit::VertexDeletion::No</a>);</div>
-<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>            all_bins.insert(bin.begin(), bin.end());</div>
-<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span> </div>
-<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span>            <span class="keywordflow">if</span> (out_op-&gt;get_type() == <a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aca877e9e6cc89dfdd87b1797169c9a9e">OpType::Rz</a>) {</div>
-<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span>              angle = out_op-&gt;get_params().at(0) - absorb_rz;</div>
-<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span>              in_e = out_edges[i];</div>
-<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span>              out_e = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a164af2301398cd38dde15b9961907ddd">get_next_edge</a>(out_v, in_e);</div>
-<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span>              bin = {out_v};</div>
-<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span>            } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span>              angle = -absorb_rz;</div>
-<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span>              in_e = out_edges[i];</div>
-<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span>              out_e = in_e;</div>
-<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span>              bin = {};</div>
-<div class="line"><a id="l00571" name="l00571"></a><span class="lineno">  571</span>            }</div>
-<div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span>            sub = <a class="code hl_struct" href="structtket_1_1Subcircuit.html">Subcircuit</a>{{in_e}, {out_e}, {}, bin};</div>
-<div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span>            c = <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>(1);</div>
-<div class="line"><a id="l00574" name="l00574"></a><span class="lineno">  574</span>            <span class="keywordflow">if</span> (!<a class="code hl_function" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(angle, 4)) {</div>
-<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span>              c.<a class="code hl_function" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aca877e9e6cc89dfdd87b1797169c9a9e">OpType::Rz</a>, angle, {0});</div>
-<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span>            }</div>
-<div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span>            circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a7b1bacb65c517890d2a40cb2892c5b1f">substitute</a>(c, sub, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6abafd7322c6e97d25b6299b5d6fe8920b">Circuit::VertexDeletion::No</a>);</div>
-<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span>            all_bins.insert(bin.begin(), bin.end());</div>
-<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span>          }</div>
-<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span>        }</div>
-<div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span>      }</div>
-<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span>    }</div>
-<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span>    circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a87763c01e9430173ebff697ccbe2e762">remove_vertices</a>(</div>
-<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span>        all_bins, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#a9ebf9fffcbb5cf57899e25d9358a41cbabafd7322c6e97d25b6299b5d6fe8920b">Circuit::GraphRewiring::No</a>, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6a93cba07454f06a4a960172bbd6e2a435">Circuit::VertexDeletion::Yes</a>);</div>
-<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span> </div>
-<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span>    <span class="keywordflow">return</span> success;</div>
-<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span>  });</div>
-<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span>}</div>
+<div class="line"><a id="l00519" name="l00519"></a><span class="lineno">  519</span>            std::max_element(</div>
+<div class="line"><a id="l00520" name="l00520"></a><span class="lineno">  520</span>                occurrences_count.begin(), occurrences_count.end()) -</div>
+<div class="line"><a id="l00521" name="l00521"></a><span class="lineno">  521</span>            occurrences_count.begin();</div>
+<div class="line"><a id="l00522" name="l00522"></a><span class="lineno">  522</span>        <a class="code hl_typedef" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> absorb_rz = all_rz[max_i];</div>
+<div class="line"><a id="l00523" name="l00523"></a><span class="lineno">  523</span> </div>
+<div class="line"><a id="l00524" name="l00524"></a><span class="lineno">  524</span>        <span class="keywordflow">if</span> (!<a class="code hl_function" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(absorb_rz, 4)) {</div>
+<div class="line"><a id="l00525" name="l00525"></a><span class="lineno">  525</span>          success = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00526" name="l00526"></a><span class="lineno">  526</span> </div>
+<div class="line"><a id="l00527" name="l00527"></a><span class="lineno">  527</span>          <span class="comment">// Subtract absorb_rz in NPhasedX</span></div>
+<div class="line"><a id="l00528" name="l00528"></a><span class="lineno">  528</span>          std::vector&lt;Expr&gt; new_params = op-&gt;get_params();</div>
+<div class="line"><a id="l00529" name="l00529"></a><span class="lineno">  529</span>          TKET_ASSERT(new_params.size() == 2);</div>
+<div class="line"><a id="l00530" name="l00530"></a><span class="lineno">  530</span>          new_params[1] += absorb_rz;</div>
+<div class="line"><a id="l00531" name="l00531"></a><span class="lineno">  531</span>          circ.<a class="code hl_variable" href="classtket_1_1Circuit.html#aa2661c079a17a04f213ec8221718efc1">dag</a>[v] = <a class="code hl_function" href="namespacetket.html#a218e50abe75d86161d9b5ef3e556877f">get_op_ptr</a>(<a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a29d19ccd6cb57e5bd1006d9130efbcfc">OpType::NPhasedX</a>, new_params, arity);</div>
+<div class="line"><a id="l00532" name="l00532"></a><span class="lineno">  532</span> </div>
+<div class="line"><a id="l00533" name="l00533"></a><span class="lineno">  533</span>          <span class="comment">// Finally, adjust +-absorb_rz in Rz everywhere around</span></div>
+<div class="line"><a id="l00534" name="l00534"></a><span class="lineno">  534</span>          <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; arity; ++i) {</div>
+<div class="line"><a id="l00535" name="l00535"></a><span class="lineno">  535</span>            <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> in_v = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a90c4935d28c1c7a05a5430862afb3c3f">source</a>(in_edges[i]);</div>
+<div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span>            <a class="code hl_typedef" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> in_op = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a15fd2bc465a81f45f79171d50590a520">get_Op_ptr_from_Vertex</a>(in_v);</div>
+<div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span>            <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> out_v = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#af523ff39367bf72c26155a4493d25daa">target</a>(out_edges[i]);</div>
+<div class="line"><a id="l00538" name="l00538"></a><span class="lineno">  538</span>            <a class="code hl_typedef" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> out_op = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a15fd2bc465a81f45f79171d50590a520">get_Op_ptr_from_Vertex</a>(out_v);</div>
+<div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span> </div>
+<div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span>            <a class="code hl_typedef" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> angle;</div>
+<div class="line"><a id="l00541" name="l00541"></a><span class="lineno">  541</span>            <a class="code hl_typedef" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> in_e, out_e;</div>
+<div class="line"><a id="l00542" name="l00542"></a><span class="lineno">  542</span>            <a class="code hl_typedef" href="namespacetket.html#a2993d101c682c3d8e566a19ac49b5285">VertexSet</a> bin;</div>
+<div class="line"><a id="l00543" name="l00543"></a><span class="lineno">  543</span>            <span class="keywordflow">if</span> (in_op-&gt;get_type() == <a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aca877e9e6cc89dfdd87b1797169c9a9e">OpType::Rz</a>) {</div>
+<div class="line"><a id="l00544" name="l00544"></a><span class="lineno">  544</span>              angle = in_op-&gt;get_params().at(0) + absorb_rz;</div>
+<div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span>              out_e = in_edges[i];</div>
+<div class="line"><a id="l00546" name="l00546"></a><span class="lineno">  546</span>              in_e = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#ab4a20262a5bafa273a324b5d236708b6">get_last_edge</a>(in_v, out_e);</div>
+<div class="line"><a id="l00547" name="l00547"></a><span class="lineno">  547</span>              bin = {in_v};</div>
+<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span>            } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span>              angle = absorb_rz;</div>
+<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span>              out_e = in_edges[i];</div>
+<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span>              in_e = out_e;</div>
+<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span>              bin = {};</div>
+<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span>            }</div>
+<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span>            <a class="code hl_struct" href="structtket_1_1Subcircuit.html">Subcircuit</a> sub{{in_e}, {out_e}, {}, bin};</div>
+<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span>            <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> c(1);</div>
+<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span>            <span class="keywordflow">if</span> (!<a class="code hl_function" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(angle, 4)) {</div>
+<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span>              c.<a class="code hl_function" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aca877e9e6cc89dfdd87b1797169c9a9e">OpType::Rz</a>, angle, {0});</div>
+<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span>            }</div>
+<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>            circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a7b1bacb65c517890d2a40cb2892c5b1f">substitute</a>(c, sub, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6abafd7322c6e97d25b6299b5d6fe8920b">Circuit::VertexDeletion::No</a>);</div>
+<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span>            all_bins.insert(bin.begin(), bin.end());</div>
+<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span> </div>
+<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span>            <span class="keywordflow">if</span> (out_op-&gt;get_type() == <a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aca877e9e6cc89dfdd87b1797169c9a9e">OpType::Rz</a>) {</div>
+<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span>              angle = out_op-&gt;get_params().at(0) - absorb_rz;</div>
+<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span>              in_e = out_edges[i];</div>
+<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span>              out_e = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a164af2301398cd38dde15b9961907ddd">get_next_edge</a>(out_v, in_e);</div>
+<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span>              bin = {out_v};</div>
+<div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span>            } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span>              angle = -absorb_rz;</div>
+<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span>              in_e = out_edges[i];</div>
+<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span>              out_e = in_e;</div>
+<div class="line"><a id="l00571" name="l00571"></a><span class="lineno">  571</span>              bin = {};</div>
+<div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span>            }</div>
+<div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span>            sub = <a class="code hl_struct" href="structtket_1_1Subcircuit.html">Subcircuit</a>{{in_e}, {out_e}, {}, bin};</div>
+<div class="line"><a id="l00574" name="l00574"></a><span class="lineno">  574</span>            c = <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>(1);</div>
+<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span>            <span class="keywordflow">if</span> (!<a class="code hl_function" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(angle, 4)) {</div>
+<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span>              c.<a class="code hl_function" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aca877e9e6cc89dfdd87b1797169c9a9e">OpType::Rz</a>, angle, {0});</div>
+<div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span>            }</div>
+<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span>            circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a7b1bacb65c517890d2a40cb2892c5b1f">substitute</a>(c, sub, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6abafd7322c6e97d25b6299b5d6fe8920b">Circuit::VertexDeletion::No</a>);</div>
+<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span>            all_bins.insert(bin.begin(), bin.end());</div>
+<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span>          }</div>
+<div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span>        }</div>
+<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span>      }</div>
+<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span>    }</div>
+<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span>    circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a87763c01e9430173ebff697ccbe2e762">remove_vertices</a>(</div>
+<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span>        all_bins, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#a9ebf9fffcbb5cf57899e25d9358a41cbabafd7322c6e97d25b6299b5d6fe8920b">Circuit::GraphRewiring::No</a>, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6a93cba07454f06a4a960172bbd6e2a435">Circuit::VertexDeletion::Yes</a>);</div>
+<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span> </div>
+<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span>    <span class="keywordflow">return</span> success;</div>
+<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span>  });</div>
+<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span>}</div>
 </div>
-<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span> </div>
-<div class="foldopen" id="foldopen00590" data-start="{" data-end="}">
-<div class="line"><a id="l00590" name="l00590"></a><span class="lineno"><a class="line" href="namespacetket_1_1Transforms.html#a4c85817ac5250d6d3d816cc50c6f4a0d">  590</a></span><a class="code hl_class" href="classtket_1_1Transform.html">Transform</a> <a class="code hl_function" href="namespacetket_1_1Transforms.html#a4c85817ac5250d6d3d816cc50c6f4a0d">ZZPhase_to_Rz</a>() {</div>
-<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span>  <span class="comment">// basic optimisation, replace ZZPhase with two Rz(1)</span></div>
-<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span>  <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Transform.html">Transform</a>([](<a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ) {</div>
-<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span>    <span class="keywordtype">bool</span> success = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span>    <a class="code hl_typedef" href="namespacetket.html#a2993d101c682c3d8e566a19ac49b5285">VertexSet</a> bin;</div>
-<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span> </div>
-<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span>    BGL_FORALL_VERTICES(v, circ.<a class="code hl_variable" href="classtket_1_1Circuit.html#aa2661c079a17a04f213ec8221718efc1">dag</a>, <a class="code hl_typedef" href="namespacetket.html#af4988a391ad5e8bc5523e50daff2c932">DAG</a>) {</div>
-<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span>      <a class="code hl_typedef" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> op = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a15fd2bc465a81f45f79171d50590a520">get_Op_ptr_from_Vertex</a>(v);</div>
-<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span>      <span class="keywordflow">if</span> (op-&gt;get_type() == <a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a3093b0af32d5a67378a948d9e90ac005">OpType::ZZPhase</a>) {</div>
-<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span>        <span class="keyword">auto</span> params = op-&gt;get_params();</div>
-<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>        TKET_ASSERT(params.size() == 1);</div>
-<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span>        <span class="comment">// evaluate</span></div>
-<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span>        std::optional&lt;double&gt; param = <a class="code hl_function" href="namespacetket.html#a741f7a00246fe7f3797c1c410374ebe1">eval_expr</a>(params[0]);</div>
-<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span>        <span class="keywordflow">if</span> (param.has_value() &amp;&amp; std::abs(param.value()) == 1.0) {</div>
-<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span>          success = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span>          <span class="comment">// basic optimisation, replace ZZPhase with two Rz(1)</span></div>
-<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span>          <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> replacement(2);</div>
-<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span>          replacement.<a class="code hl_function" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aca877e9e6cc89dfdd87b1797169c9a9e">OpType::Rz</a>, 1.0, {0});</div>
-<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span>          replacement.<a class="code hl_function" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aca877e9e6cc89dfdd87b1797169c9a9e">OpType::Rz</a>, 1.0, {1});</div>
-<div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span>          circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a7b1bacb65c517890d2a40cb2892c5b1f">substitute</a>(replacement, v, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6abafd7322c6e97d25b6299b5d6fe8920b">Circuit::VertexDeletion::No</a>);</div>
-<div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span>          bin.insert(v);</div>
-<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span>        }</div>
-<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span>      }</div>
-<div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span>    }</div>
-<div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span>    circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a87763c01e9430173ebff697ccbe2e762">remove_vertices</a>(</div>
-<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span>        bin, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#a9ebf9fffcbb5cf57899e25d9358a41cbabafd7322c6e97d25b6299b5d6fe8920b">Circuit::GraphRewiring::No</a>, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6a93cba07454f06a4a960172bbd6e2a435">Circuit::VertexDeletion::Yes</a>);</div>
-<div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span>    <span class="keywordflow">return</span> success;</div>
-<div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span>  });</div>
-<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span>}</div>
+<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span> </div>
+<div class="foldopen" id="foldopen00591" data-start="{" data-end="}">
+<div class="line"><a id="l00591" name="l00591"></a><span class="lineno"><a class="line" href="namespacetket_1_1Transforms.html#a4c85817ac5250d6d3d816cc50c6f4a0d">  591</a></span><a class="code hl_class" href="classtket_1_1Transform.html">Transform</a> <a class="code hl_function" href="namespacetket_1_1Transforms.html#a4c85817ac5250d6d3d816cc50c6f4a0d">ZZPhase_to_Rz</a>() {</div>
+<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span>  <span class="comment">// basic optimisation, replace ZZPhase with two Rz(1)</span></div>
+<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span>  <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Transform.html">Transform</a>([](<a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ) {</div>
+<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span>    <span class="keywordtype">bool</span> success = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span>    <a class="code hl_typedef" href="namespacetket.html#a2993d101c682c3d8e566a19ac49b5285">VertexSet</a> bin;</div>
+<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span> </div>
+<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span>    BGL_FORALL_VERTICES(v, circ.<a class="code hl_variable" href="classtket_1_1Circuit.html#aa2661c079a17a04f213ec8221718efc1">dag</a>, <a class="code hl_typedef" href="namespacetket.html#af4988a391ad5e8bc5523e50daff2c932">DAG</a>) {</div>
+<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span>      <a class="code hl_typedef" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> op = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a15fd2bc465a81f45f79171d50590a520">get_Op_ptr_from_Vertex</a>(v);</div>
+<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span>      <span class="keywordflow">if</span> (op-&gt;get_type() == <a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a3093b0af32d5a67378a948d9e90ac005">OpType::ZZPhase</a>) {</div>
+<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>        <span class="keyword">auto</span> params = op-&gt;get_params();</div>
+<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span>        TKET_ASSERT(params.size() == 1);</div>
+<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span>        <span class="comment">// evaluate</span></div>
+<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span>        std::optional&lt;double&gt; param = <a class="code hl_function" href="namespacetket.html#a741f7a00246fe7f3797c1c410374ebe1">eval_expr</a>(params[0]);</div>
+<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span>        <span class="keywordflow">if</span> (param.has_value() &amp;&amp; std::abs(param.value()) == 1.0) {</div>
+<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span>          success = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span>          <span class="comment">// basic optimisation, replace ZZPhase with two Rz(1)</span></div>
+<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span>          <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> replacement(2);</div>
+<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span>          replacement.<a class="code hl_function" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aca877e9e6cc89dfdd87b1797169c9a9e">OpType::Rz</a>, 1.0, {0});</div>
+<div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span>          replacement.<a class="code hl_function" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aca877e9e6cc89dfdd87b1797169c9a9e">OpType::Rz</a>, 1.0, {1});</div>
+<div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span>          circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a7b1bacb65c517890d2a40cb2892c5b1f">substitute</a>(replacement, v, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6abafd7322c6e97d25b6299b5d6fe8920b">Circuit::VertexDeletion::No</a>);</div>
+<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span>          bin.insert(v);</div>
+<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span>        }</div>
+<div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span>      }</div>
+<div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span>    }</div>
+<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span>    circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a87763c01e9430173ebff697ccbe2e762">remove_vertices</a>(</div>
+<div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span>        bin, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#a9ebf9fffcbb5cf57899e25d9358a41cbabafd7322c6e97d25b6299b5d6fe8920b">Circuit::GraphRewiring::No</a>, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6a93cba07454f06a4a960172bbd6e2a435">Circuit::VertexDeletion::Yes</a>);</div>
+<div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span>    <span class="keywordflow">return</span> success;</div>
+<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span>  });</div>
+<div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span>}</div>
 </div>
-<div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span> </div>
-<div class="foldopen" id="foldopen00620" data-start="{" data-end="}">
-<div class="line"><a id="l00620" name="l00620"></a><span class="lineno"><a class="line" href="namespacetket_1_1Transforms.html#af27a84ae14a0ac564832ac765e7599ac">  620</a></span><a class="code hl_class" href="classtket_1_1Transform.html">Transform</a> <a class="code hl_function" href="namespacetket_1_1Transforms.html#af27a84ae14a0ac564832ac765e7599ac">normalise_TK2</a>() {</div>
-<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>  <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Transform.html">Transform</a>([](<a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ) {</div>
-<div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span>    <span class="keywordtype">bool</span> success = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span>    <a class="code hl_typedef" href="namespacetket.html#a2993d101c682c3d8e566a19ac49b5285">VertexSet</a> bin;</div>
-<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span> </div>
-<div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span>    BGL_FORALL_VERTICES(v, circ.<a class="code hl_variable" href="classtket_1_1Circuit.html#aa2661c079a17a04f213ec8221718efc1">dag</a>, <a class="code hl_typedef" href="namespacetket.html#af4988a391ad5e8bc5523e50daff2c932">DAG</a>) {</div>
-<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span>      <a class="code hl_typedef" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> op = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a15fd2bc465a81f45f79171d50590a520">get_Op_ptr_from_Vertex</a>(v);</div>
-<div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span>      <span class="keywordtype">bool</span> conditional = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span>      <span class="keywordflow">while</span> (op-&gt;get_type() == <a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a9d3afea73e90192d96dda8d38c87a4fe">OpType::Conditional</a>) {</div>
-<div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span>        op = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code hl_class" href="classtket_1_1Conditional.html">Conditional</a> &amp;<span class="keyword">&gt;</span>(*op).<a class="code hl_function" href="classtket_1_1Conditional.html#ab7608e854d63f262895583b328c75424">get_op</a>();</div>
-<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span>        conditional = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span>      }</div>
-<div class="line"><a id="l00632" name="l00632"></a><span class="lineno">  632</span>      <span class="keywordflow">if</span> (op-&gt;get_type() == <a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a605943552629c6e31b20ee3733694927">OpType::TK2</a>) {</div>
-<div class="line"><a id="l00633" name="l00633"></a><span class="lineno">  633</span>        <span class="keyword">auto</span> params = op-&gt;get_params();</div>
-<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span>        TKET_ASSERT(params.size() == 3);</div>
-<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span>        <span class="keywordflow">if</span> (!<a class="code hl_function" href="namespacetket.html#a5a4d7de23884e54943c6dff655efa1c6">in_weyl_chamber</a>({params[0], params[1], params[2]})) {</div>
-<div class="line"><a id="l00636" name="l00636"></a><span class="lineno">  636</span>          success = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span>          <span class="keywordflow">if</span> (conditional) {</div>
-<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span>            circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a223094feeabeebcb16301c089a8834da">substitute_conditional</a>(</div>
-<div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span>                <a class="code hl_function" href="namespacetket_1_1CircPool.html#aa15065db27caec06c8e6c68e7a1293b4">CircPool::TK2_using_normalised_TK2</a>(</div>
-<div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span>                    params[0], params[1], params[2]),</div>
-<div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span>                v, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6abafd7322c6e97d25b6299b5d6fe8920b">Circuit::VertexDeletion::No</a>);</div>
-<div class="line"><a id="l00642" name="l00642"></a><span class="lineno">  642</span>          } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00643" name="l00643"></a><span class="lineno">  643</span>            circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a7b1bacb65c517890d2a40cb2892c5b1f">substitute</a>(</div>
-<div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span>                <a class="code hl_function" href="namespacetket_1_1CircPool.html#aa15065db27caec06c8e6c68e7a1293b4">CircPool::TK2_using_normalised_TK2</a>(</div>
-<div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span>                    params[0], params[1], params[2]),</div>
-<div class="line"><a id="l00646" name="l00646"></a><span class="lineno">  646</span>                v, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6abafd7322c6e97d25b6299b5d6fe8920b">Circuit::VertexDeletion::No</a>);</div>
-<div class="line"><a id="l00647" name="l00647"></a><span class="lineno">  647</span>          }</div>
-<div class="line"><a id="l00648" name="l00648"></a><span class="lineno">  648</span>          bin.insert(v);</div>
-<div class="line"><a id="l00649" name="l00649"></a><span class="lineno">  649</span>        }</div>
-<div class="line"><a id="l00650" name="l00650"></a><span class="lineno">  650</span>      }</div>
-<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span>    }</div>
-<div class="line"><a id="l00652" name="l00652"></a><span class="lineno">  652</span> </div>
-<div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span>    circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a87763c01e9430173ebff697ccbe2e762">remove_vertices</a>(</div>
-<div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span>        bin, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#a9ebf9fffcbb5cf57899e25d9358a41cbabafd7322c6e97d25b6299b5d6fe8920b">Circuit::GraphRewiring::No</a>, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6a93cba07454f06a4a960172bbd6e2a435">Circuit::VertexDeletion::Yes</a>);</div>
-<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span> </div>
-<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span>    <span class="keywordflow">return</span> success;</div>
-<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span>  });</div>
-<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span>}</div>
+<div class="line"><a id="l00620" name="l00620"></a><span class="lineno">  620</span> </div>
+<div class="foldopen" id="foldopen00621" data-start="{" data-end="}">
+<div class="line"><a id="l00621" name="l00621"></a><span class="lineno"><a class="line" href="namespacetket_1_1Transforms.html#af27a84ae14a0ac564832ac765e7599ac">  621</a></span><a class="code hl_class" href="classtket_1_1Transform.html">Transform</a> <a class="code hl_function" href="namespacetket_1_1Transforms.html#af27a84ae14a0ac564832ac765e7599ac">normalise_TK2</a>() {</div>
+<div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span>  <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Transform.html">Transform</a>([](<a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ) {</div>
+<div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span>    <span class="keywordtype">bool</span> success = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span>    <a class="code hl_typedef" href="namespacetket.html#a2993d101c682c3d8e566a19ac49b5285">VertexSet</a> bin;</div>
+<div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span> </div>
+<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span>    BGL_FORALL_VERTICES(v, circ.<a class="code hl_variable" href="classtket_1_1Circuit.html#aa2661c079a17a04f213ec8221718efc1">dag</a>, <a class="code hl_typedef" href="namespacetket.html#af4988a391ad5e8bc5523e50daff2c932">DAG</a>) {</div>
+<div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span>      <a class="code hl_typedef" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> op = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a15fd2bc465a81f45f79171d50590a520">get_Op_ptr_from_Vertex</a>(v);</div>
+<div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span>      <span class="keywordtype">bool</span> conditional = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span>      <span class="keywordflow">while</span> (op-&gt;get_type() == <a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a9d3afea73e90192d96dda8d38c87a4fe">OpType::Conditional</a>) {</div>
+<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span>        op = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code hl_class" href="classtket_1_1Conditional.html">Conditional</a> &amp;<span class="keyword">&gt;</span>(*op).<a class="code hl_function" href="classtket_1_1Conditional.html#ab7608e854d63f262895583b328c75424">get_op</a>();</div>
+<div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span>        conditional = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00632" name="l00632"></a><span class="lineno">  632</span>      }</div>
+<div class="line"><a id="l00633" name="l00633"></a><span class="lineno">  633</span>      <span class="keywordflow">if</span> (op-&gt;get_type() == <a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a605943552629c6e31b20ee3733694927">OpType::TK2</a>) {</div>
+<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span>        <span class="keyword">auto</span> params = op-&gt;get_params();</div>
+<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span>        TKET_ASSERT(params.size() == 3);</div>
+<div class="line"><a id="l00636" name="l00636"></a><span class="lineno">  636</span>        <span class="keywordflow">if</span> (!<a class="code hl_function" href="namespacetket.html#a5a4d7de23884e54943c6dff655efa1c6">in_weyl_chamber</a>({params[0], params[1], params[2]})) {</div>
+<div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span>          success = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span>          <span class="keywordflow">if</span> (conditional) {</div>
+<div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span>            circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a223094feeabeebcb16301c089a8834da">substitute_conditional</a>(</div>
+<div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span>                <a class="code hl_function" href="namespacetket_1_1CircPool.html#aa15065db27caec06c8e6c68e7a1293b4">CircPool::TK2_using_normalised_TK2</a>(</div>
+<div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span>                    params[0], params[1], params[2]),</div>
+<div class="line"><a id="l00642" name="l00642"></a><span class="lineno">  642</span>                v, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6abafd7322c6e97d25b6299b5d6fe8920b">Circuit::VertexDeletion::No</a>);</div>
+<div class="line"><a id="l00643" name="l00643"></a><span class="lineno">  643</span>          } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span>            circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a7b1bacb65c517890d2a40cb2892c5b1f">substitute</a>(</div>
+<div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span>                <a class="code hl_function" href="namespacetket_1_1CircPool.html#aa15065db27caec06c8e6c68e7a1293b4">CircPool::TK2_using_normalised_TK2</a>(</div>
+<div class="line"><a id="l00646" name="l00646"></a><span class="lineno">  646</span>                    params[0], params[1], params[2]),</div>
+<div class="line"><a id="l00647" name="l00647"></a><span class="lineno">  647</span>                v, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6abafd7322c6e97d25b6299b5d6fe8920b">Circuit::VertexDeletion::No</a>);</div>
+<div class="line"><a id="l00648" name="l00648"></a><span class="lineno">  648</span>          }</div>
+<div class="line"><a id="l00649" name="l00649"></a><span class="lineno">  649</span>          bin.insert(v);</div>
+<div class="line"><a id="l00650" name="l00650"></a><span class="lineno">  650</span>        }</div>
+<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span>      }</div>
+<div class="line"><a id="l00652" name="l00652"></a><span class="lineno">  652</span>    }</div>
+<div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span> </div>
+<div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span>    circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a87763c01e9430173ebff697ccbe2e762">remove_vertices</a>(</div>
+<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span>        bin, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#a9ebf9fffcbb5cf57899e25d9358a41cbabafd7322c6e97d25b6299b5d6fe8920b">Circuit::GraphRewiring::No</a>, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6a93cba07454f06a4a960172bbd6e2a435">Circuit::VertexDeletion::Yes</a>);</div>
+<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span> </div>
+<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span>    <span class="keywordflow">return</span> success;</div>
+<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span>  });</div>
+<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span>}</div>
 </div>
-<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span> </div>
-<div class="foldopen" id="foldopen00660" data-start="{" data-end="}">
-<div class="line"><a id="l00660" name="l00660"></a><span class="lineno"><a class="line" href="namespacetket_1_1Transforms.html#a8a51421110b7b660e1a27e91aec733be">  660</a></span><a class="code hl_class" href="classtket_1_1Transform.html">Transform</a> <a class="code hl_function" href="namespacetket_1_1Transforms.html#a8a51421110b7b660e1a27e91aec733be">round_angles</a>(<span class="keywordtype">unsigned</span> n, <span class="keywordtype">bool</span> only_zeros) {</div>
-<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span>  <span class="keywordflow">if</span> (n &gt;= 32) {</div>
-<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span>    <span class="keywordflow">throw</span> std::invalid_argument(<span class="stringliteral">&quot;Precision parameter must be less than 32.&quot;</span>);</div>
-<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span>  }</div>
-<div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span>  <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Transform.html">Transform</a>([n, only_zeros](<a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ) {</div>
-<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span>    <span class="keywordtype">bool</span> changed = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span>    <a class="code hl_typedef" href="namespacetket.html#a2993d101c682c3d8e566a19ac49b5285">VertexSet</a> bin;</div>
-<div class="line"><a id="l00667" name="l00667"></a><span class="lineno">  667</span>    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> pow2n = 1 &lt;&lt; n;</div>
-<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span>    BGL_FORALL_VERTICES(v, circ.<a class="code hl_variable" href="classtket_1_1Circuit.html#aa2661c079a17a04f213ec8221718efc1">dag</a>, <a class="code hl_typedef" href="namespacetket.html#af4988a391ad5e8bc5523e50daff2c932">DAG</a>) {</div>
-<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span>      <a class="code hl_typedef" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> op = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a15fd2bc465a81f45f79171d50590a520">get_Op_ptr_from_Vertex</a>(v);</div>
-<div class="line"><a id="l00670" name="l00670"></a><span class="lineno">  670</span>      <span class="keywordtype">bool</span> conditional = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00671" name="l00671"></a><span class="lineno">  671</span>      <span class="keywordflow">while</span> (op-&gt;get_type() == <a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a9d3afea73e90192d96dda8d38c87a4fe">OpType::Conditional</a>) {</div>
-<div class="line"><a id="l00672" name="l00672"></a><span class="lineno">  672</span>        op = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code hl_class" href="classtket_1_1Conditional.html">Conditional</a> &amp;<span class="keyword">&gt;</span>(*op).<a class="code hl_function" href="classtket_1_1Conditional.html#ab7608e854d63f262895583b328c75424">get_op</a>();</div>
-<div class="line"><a id="l00673" name="l00673"></a><span class="lineno">  673</span>        conditional = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00674" name="l00674"></a><span class="lineno">  674</span>      }</div>
-<div class="line"><a id="l00675" name="l00675"></a><span class="lineno">  675</span>      <span class="keywordflow">if</span> (op-&gt;get_desc().is_gate()) {</div>
-<div class="line"><a id="l00676" name="l00676"></a><span class="lineno">  676</span>        std::vector&lt;Expr&gt; params = op-&gt;get_params();</div>
-<div class="line"><a id="l00677" name="l00677"></a><span class="lineno">  677</span>        <span class="keywordflow">if</span> (!params.empty()) {</div>
-<div class="line"><a id="l00678" name="l00678"></a><span class="lineno">  678</span>          std::vector&lt;Expr&gt; new_params;</div>
-<div class="line"><a id="l00679" name="l00679"></a><span class="lineno">  679</span>          <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code hl_typedef" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;e : params) {</div>
-<div class="line"><a id="l00680" name="l00680"></a><span class="lineno">  680</span>            std::optional&lt;double&gt; eval = <a class="code hl_function" href="namespacetket.html#a741f7a00246fe7f3797c1c410374ebe1">eval_expr</a>(e);</div>
-<div class="line"><a id="l00681" name="l00681"></a><span class="lineno">  681</span>            <span class="keywordflow">if</span> (eval) {</div>
-<div class="line"><a id="l00682" name="l00682"></a><span class="lineno">  682</span>              <span class="keywordflow">if</span> (only_zeros) {</div>
-<div class="line"><a id="l00683" name="l00683"></a><span class="lineno">  683</span>                new_params.push_back(</div>
-<div class="line"><a id="l00684" name="l00684"></a><span class="lineno">  684</span>                    pow2n * std::abs(eval.value()) &lt; 0.5 ? 0. : e);</div>
-<div class="line"><a id="l00685" name="l00685"></a><span class="lineno">  685</span>              } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00686" name="l00686"></a><span class="lineno">  686</span>                new_params.push_back(nearbyint(pow2n * eval.value()) / pow2n);</div>
-<div class="line"><a id="l00687" name="l00687"></a><span class="lineno">  687</span>              }</div>
-<div class="line"><a id="l00688" name="l00688"></a><span class="lineno">  688</span>            } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00689" name="l00689"></a><span class="lineno">  689</span>              new_params.push_back(e);</div>
-<div class="line"><a id="l00690" name="l00690"></a><span class="lineno">  690</span>            }</div>
-<div class="line"><a id="l00691" name="l00691"></a><span class="lineno">  691</span>          }</div>
-<div class="line"><a id="l00692" name="l00692"></a><span class="lineno">  692</span>          <span class="keywordflow">if</span> (params != new_params) {</div>
-<div class="line"><a id="l00693" name="l00693"></a><span class="lineno">  693</span>            <span class="keywordtype">unsigned</span> n_qb = op-&gt;n_qubits();</div>
-<div class="line"><a id="l00694" name="l00694"></a><span class="lineno">  694</span>            <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> replacement(n_qb);</div>
-<div class="line"><a id="l00695" name="l00695"></a><span class="lineno">  695</span>            <span class="keywordflow">if</span> (std::any_of(</div>
-<div class="line"><a id="l00696" name="l00696"></a><span class="lineno">  696</span>                    new_params.begin(), new_params.end(),</div>
-<div class="line"><a id="l00697" name="l00697"></a><span class="lineno">  697</span>                    [](<span class="keyword">const</span> <a class="code hl_typedef" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;e) { return (e != 0.); })) {</div>
-<div class="line"><a id="l00698" name="l00698"></a><span class="lineno">  698</span>              std::vector&lt;Qubit&gt; args;</div>
-<div class="line"><a id="l00699" name="l00699"></a><span class="lineno">  699</span>              <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; n_qb; i++) {</div>
-<div class="line"><a id="l00700" name="l00700"></a><span class="lineno">  700</span>                args.push_back(<a class="code hl_class" href="classtket_1_1Qubit.html">Qubit</a>(i));</div>
-<div class="line"><a id="l00701" name="l00701"></a><span class="lineno">  701</span>              }</div>
-<div class="line"><a id="l00702" name="l00702"></a><span class="lineno">  702</span>              replacement.<a class="code hl_function" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>(op-&gt;get_type(), new_params, args);</div>
-<div class="line"><a id="l00703" name="l00703"></a><span class="lineno">  703</span>            }</div>
-<div class="line"><a id="l00704" name="l00704"></a><span class="lineno">  704</span>            <span class="keywordflow">if</span> (conditional) {</div>
-<div class="line"><a id="l00705" name="l00705"></a><span class="lineno">  705</span>              circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a223094feeabeebcb16301c089a8834da">substitute_conditional</a>(</div>
-<div class="line"><a id="l00706" name="l00706"></a><span class="lineno">  706</span>                  replacement, v, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6abafd7322c6e97d25b6299b5d6fe8920b">Circuit::VertexDeletion::No</a>);</div>
-<div class="line"><a id="l00707" name="l00707"></a><span class="lineno">  707</span>            } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00708" name="l00708"></a><span class="lineno">  708</span>              circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a7b1bacb65c517890d2a40cb2892c5b1f">substitute</a>(replacement, v, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6abafd7322c6e97d25b6299b5d6fe8920b">Circuit::VertexDeletion::No</a>);</div>
-<div class="line"><a id="l00709" name="l00709"></a><span class="lineno">  709</span>            }</div>
-<div class="line"><a id="l00710" name="l00710"></a><span class="lineno">  710</span>            bin.insert(v);</div>
-<div class="line"><a id="l00711" name="l00711"></a><span class="lineno">  711</span>            changed = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00712" name="l00712"></a><span class="lineno">  712</span>          }</div>
-<div class="line"><a id="l00713" name="l00713"></a><span class="lineno">  713</span>        }</div>
-<div class="line"><a id="l00714" name="l00714"></a><span class="lineno">  714</span>      }</div>
-<div class="line"><a id="l00715" name="l00715"></a><span class="lineno">  715</span>    }</div>
-<div class="line"><a id="l00716" name="l00716"></a><span class="lineno">  716</span> </div>
-<div class="line"><a id="l00717" name="l00717"></a><span class="lineno">  717</span>    circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a87763c01e9430173ebff697ccbe2e762">remove_vertices</a>(</div>
-<div class="line"><a id="l00718" name="l00718"></a><span class="lineno">  718</span>        bin, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#a9ebf9fffcbb5cf57899e25d9358a41cbabafd7322c6e97d25b6299b5d6fe8920b">Circuit::GraphRewiring::No</a>, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6a93cba07454f06a4a960172bbd6e2a435">Circuit::VertexDeletion::Yes</a>);</div>
-<div class="line"><a id="l00719" name="l00719"></a><span class="lineno">  719</span> </div>
-<div class="line"><a id="l00720" name="l00720"></a><span class="lineno">  720</span>    <span class="keywordflow">return</span> changed;</div>
-<div class="line"><a id="l00721" name="l00721"></a><span class="lineno">  721</span>  });</div>
-<div class="line"><a id="l00722" name="l00722"></a><span class="lineno">  722</span>}</div>
+<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span> </div>
+<div class="foldopen" id="foldopen00661" data-start="{" data-end="}">
+<div class="line"><a id="l00661" name="l00661"></a><span class="lineno"><a class="line" href="namespacetket_1_1Transforms.html#a8a51421110b7b660e1a27e91aec733be">  661</a></span><a class="code hl_class" href="classtket_1_1Transform.html">Transform</a> <a class="code hl_function" href="namespacetket_1_1Transforms.html#a8a51421110b7b660e1a27e91aec733be">round_angles</a>(<span class="keywordtype">unsigned</span> n, <span class="keywordtype">bool</span> only_zeros) {</div>
+<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span>  <span class="keywordflow">if</span> (n &gt;= 32) {</div>
+<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span>    <span class="keywordflow">throw</span> std::invalid_argument(<span class="stringliteral">&quot;Precision parameter must be less than 32.&quot;</span>);</div>
+<div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span>  }</div>
+<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span>  <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Transform.html">Transform</a>([n, only_zeros](<a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ) {</div>
+<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span>    <span class="keywordtype">bool</span> changed = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00667" name="l00667"></a><span class="lineno">  667</span>    <a class="code hl_typedef" href="namespacetket.html#a2993d101c682c3d8e566a19ac49b5285">VertexSet</a> bin;</div>
+<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span>    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> pow2n = 1 &lt;&lt; n;</div>
+<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span>    BGL_FORALL_VERTICES(v, circ.<a class="code hl_variable" href="classtket_1_1Circuit.html#aa2661c079a17a04f213ec8221718efc1">dag</a>, <a class="code hl_typedef" href="namespacetket.html#af4988a391ad5e8bc5523e50daff2c932">DAG</a>) {</div>
+<div class="line"><a id="l00670" name="l00670"></a><span class="lineno">  670</span>      <a class="code hl_typedef" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> op = circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a15fd2bc465a81f45f79171d50590a520">get_Op_ptr_from_Vertex</a>(v);</div>
+<div class="line"><a id="l00671" name="l00671"></a><span class="lineno">  671</span>      <span class="keywordtype">bool</span> conditional = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00672" name="l00672"></a><span class="lineno">  672</span>      <span class="keywordflow">while</span> (op-&gt;get_type() == <a class="code hl_enumvalue" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a9d3afea73e90192d96dda8d38c87a4fe">OpType::Conditional</a>) {</div>
+<div class="line"><a id="l00673" name="l00673"></a><span class="lineno">  673</span>        op = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code hl_class" href="classtket_1_1Conditional.html">Conditional</a> &amp;<span class="keyword">&gt;</span>(*op).<a class="code hl_function" href="classtket_1_1Conditional.html#ab7608e854d63f262895583b328c75424">get_op</a>();</div>
+<div class="line"><a id="l00674" name="l00674"></a><span class="lineno">  674</span>        conditional = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00675" name="l00675"></a><span class="lineno">  675</span>      }</div>
+<div class="line"><a id="l00676" name="l00676"></a><span class="lineno">  676</span>      <span class="keywordflow">if</span> (op-&gt;get_desc().is_gate()) {</div>
+<div class="line"><a id="l00677" name="l00677"></a><span class="lineno">  677</span>        std::vector&lt;Expr&gt; params = op-&gt;get_params();</div>
+<div class="line"><a id="l00678" name="l00678"></a><span class="lineno">  678</span>        <span class="keywordflow">if</span> (!params.empty()) {</div>
+<div class="line"><a id="l00679" name="l00679"></a><span class="lineno">  679</span>          std::vector&lt;Expr&gt; new_params;</div>
+<div class="line"><a id="l00680" name="l00680"></a><span class="lineno">  680</span>          <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code hl_typedef" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;e : params) {</div>
+<div class="line"><a id="l00681" name="l00681"></a><span class="lineno">  681</span>            std::optional&lt;double&gt; eval = <a class="code hl_function" href="namespacetket.html#a741f7a00246fe7f3797c1c410374ebe1">eval_expr</a>(e);</div>
+<div class="line"><a id="l00682" name="l00682"></a><span class="lineno">  682</span>            <span class="keywordflow">if</span> (eval) {</div>
+<div class="line"><a id="l00683" name="l00683"></a><span class="lineno">  683</span>              <span class="keywordflow">if</span> (only_zeros) {</div>
+<div class="line"><a id="l00684" name="l00684"></a><span class="lineno">  684</span>                new_params.push_back(</div>
+<div class="line"><a id="l00685" name="l00685"></a><span class="lineno">  685</span>                    pow2n * std::abs(eval.value()) &lt; 0.5 ? 0. : e);</div>
+<div class="line"><a id="l00686" name="l00686"></a><span class="lineno">  686</span>              } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00687" name="l00687"></a><span class="lineno">  687</span>                new_params.push_back(nearbyint(pow2n * eval.value()) / pow2n);</div>
+<div class="line"><a id="l00688" name="l00688"></a><span class="lineno">  688</span>              }</div>
+<div class="line"><a id="l00689" name="l00689"></a><span class="lineno">  689</span>            } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00690" name="l00690"></a><span class="lineno">  690</span>              new_params.push_back(e);</div>
+<div class="line"><a id="l00691" name="l00691"></a><span class="lineno">  691</span>            }</div>
+<div class="line"><a id="l00692" name="l00692"></a><span class="lineno">  692</span>          }</div>
+<div class="line"><a id="l00693" name="l00693"></a><span class="lineno">  693</span>          <span class="keywordflow">if</span> (params != new_params) {</div>
+<div class="line"><a id="l00694" name="l00694"></a><span class="lineno">  694</span>            <span class="keywordtype">unsigned</span> n_qb = op-&gt;n_qubits();</div>
+<div class="line"><a id="l00695" name="l00695"></a><span class="lineno">  695</span>            <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> replacement(n_qb);</div>
+<div class="line"><a id="l00696" name="l00696"></a><span class="lineno">  696</span>            <span class="keywordflow">if</span> (std::any_of(</div>
+<div class="line"><a id="l00697" name="l00697"></a><span class="lineno">  697</span>                    new_params.begin(), new_params.end(),</div>
+<div class="line"><a id="l00698" name="l00698"></a><span class="lineno">  698</span>                    [](<span class="keyword">const</span> <a class="code hl_typedef" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;e) { return (e != 0.); })) {</div>
+<div class="line"><a id="l00699" name="l00699"></a><span class="lineno">  699</span>              std::vector&lt;Qubit&gt; args;</div>
+<div class="line"><a id="l00700" name="l00700"></a><span class="lineno">  700</span>              <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; n_qb; i++) {</div>
+<div class="line"><a id="l00701" name="l00701"></a><span class="lineno">  701</span>                args.push_back(<a class="code hl_class" href="classtket_1_1Qubit.html">Qubit</a>(i));</div>
+<div class="line"><a id="l00702" name="l00702"></a><span class="lineno">  702</span>              }</div>
+<div class="line"><a id="l00703" name="l00703"></a><span class="lineno">  703</span>              replacement.<a class="code hl_function" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>(op-&gt;get_type(), new_params, args);</div>
+<div class="line"><a id="l00704" name="l00704"></a><span class="lineno">  704</span>            }</div>
+<div class="line"><a id="l00705" name="l00705"></a><span class="lineno">  705</span>            <span class="keywordflow">if</span> (conditional) {</div>
+<div class="line"><a id="l00706" name="l00706"></a><span class="lineno">  706</span>              circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a223094feeabeebcb16301c089a8834da">substitute_conditional</a>(</div>
+<div class="line"><a id="l00707" name="l00707"></a><span class="lineno">  707</span>                  replacement, v, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6abafd7322c6e97d25b6299b5d6fe8920b">Circuit::VertexDeletion::No</a>);</div>
+<div class="line"><a id="l00708" name="l00708"></a><span class="lineno">  708</span>            } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00709" name="l00709"></a><span class="lineno">  709</span>              circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a7b1bacb65c517890d2a40cb2892c5b1f">substitute</a>(replacement, v, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6abafd7322c6e97d25b6299b5d6fe8920b">Circuit::VertexDeletion::No</a>);</div>
+<div class="line"><a id="l00710" name="l00710"></a><span class="lineno">  710</span>            }</div>
+<div class="line"><a id="l00711" name="l00711"></a><span class="lineno">  711</span>            bin.insert(v);</div>
+<div class="line"><a id="l00712" name="l00712"></a><span class="lineno">  712</span>            changed = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00713" name="l00713"></a><span class="lineno">  713</span>          }</div>
+<div class="line"><a id="l00714" name="l00714"></a><span class="lineno">  714</span>        }</div>
+<div class="line"><a id="l00715" name="l00715"></a><span class="lineno">  715</span>      }</div>
+<div class="line"><a id="l00716" name="l00716"></a><span class="lineno">  716</span>    }</div>
+<div class="line"><a id="l00717" name="l00717"></a><span class="lineno">  717</span> </div>
+<div class="line"><a id="l00718" name="l00718"></a><span class="lineno">  718</span>    circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a87763c01e9430173ebff697ccbe2e762">remove_vertices</a>(</div>
+<div class="line"><a id="l00719" name="l00719"></a><span class="lineno">  719</span>        bin, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#a9ebf9fffcbb5cf57899e25d9358a41cbabafd7322c6e97d25b6299b5d6fe8920b">Circuit::GraphRewiring::No</a>, <a class="code hl_enumvalue" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6a93cba07454f06a4a960172bbd6e2a435">Circuit::VertexDeletion::Yes</a>);</div>
+<div class="line"><a id="l00720" name="l00720"></a><span class="lineno">  720</span> </div>
+<div class="line"><a id="l00721" name="l00721"></a><span class="lineno">  721</span>    <span class="keywordflow">return</span> changed;</div>
+<div class="line"><a id="l00722" name="l00722"></a><span class="lineno">  722</span>  });</div>
+<div class="line"><a id="l00723" name="l00723"></a><span class="lineno">  723</span>}</div>
 </div>
-<div class="line"><a id="l00723" name="l00723"></a><span class="lineno">  723</span> </div>
-<div class="line"><a id="l00724" name="l00724"></a><span class="lineno">  724</span>}  <span class="comment">// namespace tket::Transforms</span></div>
+<div class="line"><a id="l00724" name="l00724"></a><span class="lineno">  724</span> </div>
+<div class="line"><a id="l00725" name="l00725"></a><span class="lineno">  725</span>}  <span class="comment">// namespace tket::Transforms</span></div>
 </div>
 <div class="ttc" id="aBasicOptimisation_8hpp_html"><div class="ttname"><a href="BasicOptimisation_8hpp.html">BasicOptimisation.hpp</a></div></div>
 <div class="ttc" id="aCircPool_8hpp_html"><div class="ttname"><a href="CircPool_8hpp.html">CircPool.hpp</a></div></div>
@@ -886,14 +887,14 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="anamespacetket_1_1Transforms_html"><div class="ttname"><a href="namespacetket_1_1Transforms.html">tket::Transforms</a></div><div class="ttdef"><b>Definition</b> <a href="BasicOptimisation_8cpp_source.html#l00033">BasicOptimisation.cpp:33</a></div></div>
 <div class="ttc" id="anamespacetket_1_1Transforms_html_a08e93cca7716f8695bdbf272f547a908"><div class="ttname"><a href="namespacetket_1_1Transforms.html#a08e93cca7716f8695bdbf272f547a908">tket::Transforms::decompose_TK2</a></div><div class="ttdeci">Transform decompose_TK2(bool allow_swaps)</div><div class="ttdef"><b>Definition</b> <a href="Decomposition_8cpp_source.html#l00867">Decomposition.cpp:867</a></div></div>
 <div class="ttc" id="anamespacetket_1_1Transforms_html_a2ad65c0bed6e615eddffab07122b17a3"><div class="ttname"><a href="namespacetket_1_1Transforms.html#a2ad65c0bed6e615eddffab07122b17a3">tket::Transforms::commute_through_multis</a></div><div class="ttdeci">Transform commute_through_multis()</div><div class="ttdef"><b>Definition</b> <a href="BasicOptimisation_8cpp_source.html#l00040">BasicOptimisation.cpp:40</a></div></div>
-<div class="ttc" id="anamespacetket_1_1Transforms_html_a4c85817ac5250d6d3d816cc50c6f4a0d"><div class="ttname"><a href="namespacetket_1_1Transforms.html#a4c85817ac5250d6d3d816cc50c6f4a0d">tket::Transforms::ZZPhase_to_Rz</a></div><div class="ttdeci">Transform ZZPhase_to_Rz()</div><div class="ttdoc">Converts any ZZPhase with angle in (-1, 1) to two pi Rz gates.</div><div class="ttdef"><b>Definition</b> <a href="BasicOptimisation_8cpp_source.html#l00590">BasicOptimisation.cpp:590</a></div></div>
+<div class="ttc" id="anamespacetket_1_1Transforms_html_a4c85817ac5250d6d3d816cc50c6f4a0d"><div class="ttname"><a href="namespacetket_1_1Transforms.html#a4c85817ac5250d6d3d816cc50c6f4a0d">tket::Transforms::ZZPhase_to_Rz</a></div><div class="ttdeci">Transform ZZPhase_to_Rz()</div><div class="ttdoc">Converts any ZZPhase with angle in (-1, 1) to two pi Rz gates.</div><div class="ttdef"><b>Definition</b> <a href="BasicOptimisation_8cpp_source.html#l00591">BasicOptimisation.cpp:591</a></div></div>
 <div class="ttc" id="anamespacetket_1_1Transforms_html_a70cf68af47c453c01462a54673baa33b"><div class="ttname"><a href="namespacetket_1_1Transforms.html#a70cf68af47c453c01462a54673baa33b">tket::Transforms::decompose_multi_qubits_TK2</a></div><div class="ttdeci">Transform decompose_multi_qubits_TK2()</div><div class="ttdoc">Decomposes all multi-qubit unitary gates into TK2 and single-qubit gates.</div><div class="ttdef"><b>Definition</b> <a href="Decomposition_8cpp_source.html#l00164">Decomposition.cpp:164</a></div></div>
-<div class="ttc" id="anamespacetket_1_1Transforms_html_a8a51421110b7b660e1a27e91aec733be"><div class="ttname"><a href="namespacetket_1_1Transforms.html#a8a51421110b7b660e1a27e91aec733be">tket::Transforms::round_angles</a></div><div class="ttdeci">Transform round_angles(unsigned n, bool only_zeros)</div><div class="ttdoc">Generate a transform that rounds all angles to the nearest .</div><div class="ttdef"><b>Definition</b> <a href="BasicOptimisation_8cpp_source.html#l00660">BasicOptimisation.cpp:660</a></div></div>
+<div class="ttc" id="anamespacetket_1_1Transforms_html_a8a51421110b7b660e1a27e91aec733be"><div class="ttname"><a href="namespacetket_1_1Transforms.html#a8a51421110b7b660e1a27e91aec733be">tket::Transforms::round_angles</a></div><div class="ttdeci">Transform round_angles(unsigned n, bool only_zeros)</div><div class="ttdoc">Generate a transform that rounds all angles to the nearest .</div><div class="ttdef"><b>Definition</b> <a href="BasicOptimisation_8cpp_source.html#l00661">BasicOptimisation.cpp:661</a></div></div>
 <div class="ttc" id="anamespacetket_1_1Transforms_html_a8d602ed5ee73002e620a6bdd0f39b754"><div class="ttname"><a href="namespacetket_1_1Transforms.html#a8d602ed5ee73002e620a6bdd0f39b754">tket::Transforms::squash_1qb_to_pqp</a></div><div class="ttdeci">Transform squash_1qb_to_pqp(const OpType &amp;q, const OpType &amp;p, bool strict)</div><div class="ttdoc">general u_squash by converting any chains of p, q gates (p, q in {Rx,Ry,Rz}) to triples -p-q-p- or -q...</div><div class="ttdef"><b>Definition</b> <a href="PQPSquash_8cpp_source.html#l00190">PQPSquash.cpp:190</a></div></div>
 <div class="ttc" id="anamespacetket_1_1Transforms_html_aa0883b0a9a6626492212506e41278569"><div class="ttname"><a href="namespacetket_1_1Transforms.html#aa0883b0a9a6626492212506e41278569">tket::Transforms::two_qubit_squash</a></div><div class="ttdeci">Transform two_qubit_squash(bool allow_swaps)</div><div class="ttdef"><b>Definition</b> <a href="BasicOptimisation_8cpp_source.html#l00196">BasicOptimisation.cpp:196</a></div></div>
 <div class="ttc" id="anamespacetket_1_1Transforms_html_abc5ed5a372aa369b67d538eb51075ee5"><div class="ttname"><a href="namespacetket_1_1Transforms.html#abc5ed5a372aa369b67d538eb51075ee5">tket::Transforms::commute_SQ_gates_through_SWAPS</a></div><div class="ttdeci">Transform commute_SQ_gates_through_SWAPS(const avg_node_errors_t &amp;node_errors)</div><div class="ttdef"><b>Definition</b> <a href="BasicOptimisation_8cpp_source.html#l00455">BasicOptimisation.cpp:455</a></div></div>
 <div class="ttc" id="anamespacetket_1_1Transforms_html_adee710165c3b4aaac9e4521e9d74fbfa"><div class="ttname"><a href="namespacetket_1_1Transforms.html#adee710165c3b4aaac9e4521e9d74fbfa">tket::Transforms::absorb_Rz_NPhasedX</a></div><div class="ttdeci">Transform absorb_Rz_NPhasedX()</div><div class="ttdoc">Absorb Rz gates into NPhasedX where possible.</div><div class="ttdef"><b>Definition</b> <a href="BasicOptimisation_8cpp_source.html#l00464">BasicOptimisation.cpp:464</a></div></div>
-<div class="ttc" id="anamespacetket_1_1Transforms_html_af27a84ae14a0ac564832ac765e7599ac"><div class="ttname"><a href="namespacetket_1_1Transforms.html#af27a84ae14a0ac564832ac765e7599ac">tket::Transforms::normalise_TK2</a></div><div class="ttdeci">Transform normalise_TK2()</div><div class="ttdoc">Normalises all TK2 gates so that NormalisedTK2Predicate is satisfied.</div><div class="ttdef"><b>Definition</b> <a href="BasicOptimisation_8cpp_source.html#l00620">BasicOptimisation.cpp:620</a></div></div>
+<div class="ttc" id="anamespacetket_1_1Transforms_html_af27a84ae14a0ac564832ac765e7599ac"><div class="ttname"><a href="namespacetket_1_1Transforms.html#af27a84ae14a0ac564832ac765e7599ac">tket::Transforms::normalise_TK2</a></div><div class="ttdeci">Transform normalise_TK2()</div><div class="ttdoc">Normalises all TK2 gates so that NormalisedTK2Predicate is satisfied.</div><div class="ttdef"><b>Definition</b> <a href="BasicOptimisation_8cpp_source.html#l00621">BasicOptimisation.cpp:621</a></div></div>
 <div class="ttc" id="anamespacetket_1_1Transforms_html_af45f1a2172f52f2bea73d710a2ed9ca6"><div class="ttname"><a href="namespacetket_1_1Transforms.html#af45f1a2172f52f2bea73d710a2ed9ca6">tket::Transforms::squash_1qb_to_tk1</a></div><div class="ttdeci">Transform squash_1qb_to_tk1()</div><div class="ttdoc">Squash all single-qubit gates to TK1.</div><div class="ttdef"><b>Definition</b> <a href="PQPSquash_8cpp_source.html#l00201">PQPSquash.cpp:201</a></div></div>
 <div class="ttc" id="anamespacetket_html_a0bf6a146dadc36738e597ab8892a09f5"><div class="ttname"><a href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">tket::Vertex</a></div><div class="ttdeci">boost::graph_traits&lt; DAG &gt;::vertex_descriptor Vertex</div><div class="ttdef"><b>Definition</b> <a href="DAGDefs_8hpp_source.html#l00070">DAGDefs.hpp:70</a></div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">tket::OpType</a></div><div class="ttdeci">OpType</div><div class="ttdoc">Named operation types.</div><div class="ttdef"><b>Definition</b> <a href="OpType_8hpp_source.html#l00029">OpType.hpp:29</a></div></div>

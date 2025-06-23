@@ -956,7 +956,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00859" name="l00859"></a><span class="lineno">  859</span>      measurement_operators.push_back(cliff_tab.<a class="code hl_function" href="classtket_1_1UnitaryRevTableau.html#a4a5deb1b831ba8e69aca313754b0a861">get_row_product</a>(sps));</div>
 <div class="line"><a id="l00860" name="l00860"></a><span class="lineno">  860</span>    }</div>
 <div class="line"><a id="l00861" name="l00861"></a><span class="lineno">  861</span> </div>
-<div class="line"><a id="l00862" name="l00862"></a><span class="lineno">  862</span>    <span class="comment">// Mutually diagonalize updated measuement operators</span></div>
+<div class="line"><a id="l00862" name="l00862"></a><span class="lineno">  862</span>    <span class="comment">// Mutually diagonalize updated measurement operators</span></div>
 <div class="line"><a id="l00863" name="l00863"></a><span class="lineno">  863</span>    <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> mutual_c = <a class="code hl_function" href="namespacetket.html#a75243cc19f38916af79d0c31989f32d5">mutual_diagonalise</a>(</div>
 <div class="line"><a id="l00864" name="l00864"></a><span class="lineno">  864</span>        measurement_operators, std::set&lt;Qubit&gt;(qubits.begin(), qubits.end()),</div>
 <div class="line"><a id="l00865" name="l00865"></a><span class="lineno">  865</span>        <a class="code hl_enumvalue" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>);</div>

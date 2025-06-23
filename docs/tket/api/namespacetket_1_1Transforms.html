@@ -723,7 +723,7 @@ Variables</h2></td></tr>
 <p>Replaces all CX+Rz sub circuits by <a class="el" href="classtket_1_1PhasePolyBox.html" title="A PhasePolyBox is capable of representing arbitrary Circuits made up of CNOT and RZ,...">PhasePolyBox</a> Expects: only CX + Rz + H (and measure + reset + collapse + barrier) </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">min_size</td><td>value for the minimal number of CX in each box, groups with less than min_size CX gates are not converted to a <a class="el" href="classtket_1_1PhasePolyBox.html" title="A PhasePolyBox is capable of representing arbitrary Circuits made up of CNOT and RZ,...">PhasePolyBox</a>, dafault value is 0 </td></tr>
+    <tr><td class="paramname">min_size</td><td>value for the minimal number of CX in each box, groups with less than min_size CX gates are not converted to a <a class="el" href="classtket_1_1PhasePolyBox.html" title="A PhasePolyBox is capable of representing arbitrary Circuits made up of CNOT and RZ,...">PhasePolyBox</a>, default value is 0 </td></tr>
   </table>
   </dd>
 </dl>
@@ -1185,7 +1185,7 @@ Variables</h2></td></tr>
 <p>We currently support CX, ZZMax and ZZPhase.</p>
 <p>Decompose each TK2 gate into two-qubit gates in a noise-aware way. Supported two-qubit gate fidelities will be used to return the optimal decomposition of each TK2 gate, taking noise into consideration.</p>
 <p>Using the <code>allow_swaps=true</code> (default) option, qubits will be swapped when convenient to reduce the two-qubit gate count of the decomposed TK2.</p>
-<p>If no fidelities are provided, the decomposition will be exact, using CX gates. For equal fidelities, ZZPhase will be prefered over ZZMax and CX if it requires fewer gates.</p>
+<p>If no fidelities are provided, the decomposition will be exact, using CX gates. For equal fidelities, ZZPhase will be preferred over ZZMax and CX if it requires fewer gates.</p>
 <p>If the TK2 angles are symbolic values, the decomposition will be exact (i.e. not noise-aware). It is not possible in general to obtain optimal decompositions for arbitrary symbolic parameters, so consider substituting for concrete values if possible.</p>
 <p>All TK2 angles must be normalised to the Weyl chamber. This can be achieved using the <a class="el" href="namespacetket_1_1Transforms.html#af27a84ae14a0ac564832ac765e7599ac">normalise_TK2</a> transform.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -1586,7 +1586,7 @@ Variables</h2></td></tr>
 
 <p>Normalises all TK2 gates so that <code><a class="el" href="classtket_1_1NormalisedTK2Predicate.html" title="Asserts that all TK2 gates are normalised.">NormalisedTK2Predicate</a></code> is satisfied. </p>
 
-<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00620">620</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00621">621</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
 
 </div>
 </div>
@@ -2119,7 +2119,7 @@ Variables</h2></td></tr>
 <dl class="section pre"><dt>Precondition</dt><dd>n &lt; 32</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtket_1_1Transform.html" title="A transformation of a circuit that preserves its semantics.">Transform</a> to perform rounding </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00660">660</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00661">661</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
 
 </div>
 </div>
@@ -2654,7 +2654,7 @@ with Quantomatic". </p>
 
 <p>Converts any ZZPhase with angle in (-1, 1) to two pi Rz gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00590">590</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00591">591</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
 
 </div>
 </div>

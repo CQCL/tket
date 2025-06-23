@@ -482,7 +482,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00462" name="l00462"></a><span class="lineno">  462</span>              <span class="keywordflow">if</span> (out_bundle.empty()) {</div>
 <div class="line"><a id="l00463" name="l00463"></a><span class="lineno">  463</span>                <span class="comment">// =&gt; all edges in boolean bundle in boolean boundary attached</span></div>
 <div class="line"><a id="l00464" name="l00464"></a><span class="lineno">  464</span>                <span class="comment">// to this vertex</span></div>
-<div class="line"><a id="l00465" name="l00465"></a><span class="lineno">  465</span>                <span class="comment">// =&gt; vertex has no edges in output boolean bundle for thos port</span></div>
+<div class="line"><a id="l00465" name="l00465"></a><span class="lineno">  465</span>                <span class="comment">// =&gt; vertex has no edges in output boolean bundle for this port</span></div>
 <div class="line"><a id="l00466" name="l00466"></a><span class="lineno">  466</span>                <span class="comment">// =&gt; can erase Bit from boolean boundary as its not longer used</span></div>
 <div class="line"><a id="l00467" name="l00467"></a><span class="lineno">  467</span>                this-&gt;boolean_boundary-&gt;erase(boolean_it);</div>
 <div class="line"><a id="l00468" name="l00468"></a><span class="lineno">  468</span>              } <span class="keywordflow">else</span> {</div>
@@ -810,7 +810,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00790" name="l00790"></a><span class="lineno">  790</span>      this-&gt;circuit_.get_nth_out_edge(vp_central.first, vp_central.second),</div>
 <div class="line"><a id="l00791" name="l00791"></a><span class="lineno">  791</span>      this-&gt;circuit_.get_nth_out_edge(vp_target.first, vp_target.second),</div>
 <div class="line"><a id="l00792" name="l00792"></a><span class="lineno">  792</span>  };  <span class="comment">// get cx vertex</span></div>
-<div class="line"><a id="l00793" name="l00793"></a><span class="lineno">  793</span>      <span class="comment">// this should be guaranteeds by pre-checks</span></div>
+<div class="line"><a id="l00793" name="l00793"></a><span class="lineno">  793</span>      <span class="comment">// this should be guaranteed by pre-checks</span></div>
 <div class="line"><a id="l00794" name="l00794"></a><span class="lineno">  794</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> cx_v = this-&gt;circuit_.target(predecessors[0]);</div>
 <div class="line"><a id="l00795" name="l00795"></a><span class="lineno">  795</span>  <span class="comment">// add bridge</span></div>
 <div class="line"><a id="l00796" name="l00796"></a><span class="lineno">  796</span>  <a class="code hl_typedef" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> bridge_v = this-&gt;circuit_.add_vertex(OpType::BRIDGE);</div>

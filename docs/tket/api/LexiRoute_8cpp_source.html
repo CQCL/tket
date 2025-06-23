@@ -117,7 +117,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1Qubit.html">Qubit</a>&amp; qb : this-&gt;mapping_frontier_-&gt;circuit_.all_qubits()) {</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    this-&gt;labelling_.insert({qb, qb});</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    <a class="code hl_class" href="classtket_1_1Node.html">Node</a> n(qb);</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <span class="comment">// store which Node have been asigned to Circuit already</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <span class="comment">// store which Node have been assigned to Circuit already</span></div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <span class="keywordflow">if</span> (this-&gt;architecture_-&gt;node_exists(n)) {</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>      this-&gt;assigned_nodes_.insert(n);</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    }</div>
@@ -685,7 +685,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00748" name="l00748"></a><span class="lineno">  748</span>      pair_second = swap.second;</div>
 <div class="line"><a id="l00749" name="l00749"></a><span class="lineno">  749</span>    }</div>
 <div class="line"><a id="l00750" name="l00750"></a><span class="lineno">  750</span>    <span class="comment">// =&gt; UnitID in SWAP are interacting</span></div>
-<div class="line"><a id="l00751" name="l00751"></a><span class="lineno">  751</span>    <span class="comment">// Check should alrady be done with earlier continue</span></div>
+<div class="line"><a id="l00751" name="l00751"></a><span class="lineno">  751</span>    <span class="comment">// Check should already be done with earlier continue</span></div>
 <div class="line"><a id="l00752" name="l00752"></a><span class="lineno">  752</span>    TKET_ASSERT(pair_second != swap.first);</div>
 <div class="line"><a id="l00753" name="l00753"></a><span class="lineno">  753</span> </div>
 <div class="line"><a id="l00754" name="l00754"></a><span class="lineno">  754</span>    <span class="keyword">const</span> std::pair&lt;std::size_t, std::size_t&gt;&amp; curr_dists =</div>
