@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="z_233a074811efd0b8___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.9.1">coverage.py v7.9.1</a>,
-            created at 2025-06-23 13:10 +0000
+            created at 2025-06-23 14:14 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -653,13 +653,13 @@
     <p class="mis show_mis"><span class="n"><a id="t569" href="#t569">569</a></span><span class="t">                <span class="nam">wire</span> <span class="op">=</span> <span class="nam">tkqbits</span><span class="op">[</span><span class="nam">gate</span><span class="op">.</span><span class="nam">wire</span><span class="op">.</span><span class="nam">i</span><span class="op">]</span>  <span class="com"># must be quantum</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t570" href="#t570">570</a></span><span class="t">                <span class="key">raise</span> <span class="nam">NotImplementedError</span><span class="op">(</span><span class="str">"QInit"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t571" href="#t571">571</a></span><span class="t">            <span class="key">elif</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">gate</span><span class="op">,</span> <span class="nam">_CInit</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t572" href="#t572">572</a></span><span class="t">                <span class="nam">wire</span> <span class="op">=</span> <span class="nam">tkcbits</span><span class="op">[</span><span class="nam">gate</span><span class="op">.</span><span class="nam">wire</span><span class="op">.</span><span class="nam">i</span><span class="op">]</span>  <span class="com"># must be clasical</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t572" href="#t572">572</a></span><span class="t">                <span class="nam">wire</span> <span class="op">=</span> <span class="nam">tkcbits</span><span class="op">[</span><span class="nam">gate</span><span class="op">.</span><span class="nam">wire</span><span class="op">.</span><span class="nam">i</span><span class="op">]</span>  <span class="com"># must be classical</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t573" href="#t573">573</a></span><span class="t">                <span class="key">raise</span> <span class="nam">NotImplementedError</span><span class="op">(</span><span class="str">"CInit"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t574" href="#t574">574</a></span><span class="t">            <span class="key">elif</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">gate</span><span class="op">,</span> <span class="nam">_QTerm</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t575" href="#t575">575</a></span><span class="t">                <span class="nam">wire</span> <span class="op">=</span> <span class="nam">tkqbits</span><span class="op">[</span><span class="nam">gate</span><span class="op">.</span><span class="nam">wire</span><span class="op">.</span><span class="nam">i</span><span class="op">]</span>  <span class="com"># must be quantum</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t576" href="#t576">576</a></span><span class="t">                <span class="key">raise</span> <span class="nam">NotImplementedError</span><span class="op">(</span><span class="str">"QTerm"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t577" href="#t577">577</a></span><span class="t">            <span class="key">elif</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">gate</span><span class="op">,</span> <span class="nam">_CTerm</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t578" href="#t578">578</a></span><span class="t">                <span class="nam">wire</span> <span class="op">=</span> <span class="nam">tkcbits</span><span class="op">[</span><span class="nam">gate</span><span class="op">.</span><span class="nam">wire</span><span class="op">.</span><span class="nam">i</span><span class="op">]</span>  <span class="com"># must be clasical</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t578" href="#t578">578</a></span><span class="t">                <span class="nam">wire</span> <span class="op">=</span> <span class="nam">tkcbits</span><span class="op">[</span><span class="nam">gate</span><span class="op">.</span><span class="nam">wire</span><span class="op">.</span><span class="nam">i</span><span class="op">]</span>  <span class="com"># must be classical</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t579" href="#t579">579</a></span><span class="t">                <span class="key">raise</span> <span class="nam">NotImplementedError</span><span class="op">(</span><span class="str">"CTerm"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t580" href="#t580">580</a></span><span class="t">            <span class="key">elif</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">gate</span><span class="op">,</span> <span class="nam">_QMeas</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t581" href="#t581">581</a></span><span class="t">                <span class="com"># QMeas turns a qubit into a bit.</span>&nbsp;</span><span class="r"></span></p>
@@ -694,7 +694,7 @@
     <p class="pln"><span class="n"><a id="t610" href="#t610">610</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t611" href="#t611">611</a></span><span class="t"><span class="str">    * Only limited support for controlled gates (depending on the gate type).</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t612" href="#t612">612</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t613" href="#t613">613</a></span><span class="t"><span class="str">    * No support for 'QInit' and 'QTerm'. All qubits must run from the begining</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t613" href="#t613">613</a></span><span class="t"><span class="str">    * No support for 'QInit' and 'QTerm'. All qubits must run from the beginning</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t614" href="#t614">614</a></span><span class="t"><span class="str">      to the end of the circuit.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t615" href="#t615">615</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t616" href="#t616">616</a></span><span class="t"><span class="str">    * No support for the legacy keywords ('QNot', 'QMultinot', 'QHad', 'QSwap',</span>&nbsp;</span><span class="r"></span></p>
@@ -812,7 +812,7 @@
             <a class="nav" href="z_233a074811efd0b8___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.9.1">coverage.py v7.9.1</a>,
-            created at 2025-06-23 13:10 +0000
+            created at 2025-06-23 14:14 +0000
         </p>
     </div>
 </footer>
