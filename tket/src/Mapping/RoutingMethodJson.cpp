@@ -65,7 +65,7 @@ void from_json(const nlohmann::json& j, std::vector<RoutingMethodPtr>& rmp_v) {
           std::make_shared<BoxDecompositionRoutingMethod>(
               BoxDecompositionRoutingMethod::deserialize(c)));
     } else {
-      std::logic_error(
+      throw std::logic_error(
           "Deserialization for given RoutingMethod not supported.");
     }
   }
