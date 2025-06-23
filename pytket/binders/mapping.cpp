@@ -84,7 +84,7 @@ NB_MODULE(mapping, m) {
       .def(
           nb::init<unsigned>(),
           "AASRouteRoutingMethod constructor.\n\n:param aaslookahead: "
-          "recursive interation depth of the architecture aware synthesis."
+          "recursive interaction depth of the architecture aware synthesis."
           "method.",
           nb::arg("aaslookahead"));
 

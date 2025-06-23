@@ -24,7 +24,7 @@ KwargTypes = Any
 class BitPermuter:
     """Class for permuting the bits in an integer
 
-    Enables inverse permuation and uses caching to speed up common uses.
+    Enables inverse permutation and uses caching to speed up common uses.
 
     """
 

@@ -181,7 +181,7 @@ class Transform:
 
         We currently support CX, ZZMax and ZZPhase.
 
-        If one or more gate fidelities are provided, the two-qubit gate type achieving the highest fidelity will be chosen for the decomposition, as measured using squared trace fidelity. If no fidelities are provided, the TK2 gates will be decomposed exactly using CX gates. For equal fidelities, ZZPhase will be prefered over ZZMax and CX if the decomposition results in fewer two-qubit gates.
+        If one or more gate fidelities are provided, the two-qubit gate type achieving the highest fidelity will be chosen for the decomposition, as measured using squared trace fidelity. If no fidelities are provided, the TK2 gates will be decomposed exactly using CX gates. For equal fidelities, ZZPhase will be preferred over ZZMax and CX if the decomposition results in fewer two-qubit gates.
 
         All TK2 gate parameters must be normalised, i.e. they must satisfy `NormalisedTK2Predicate`.
 

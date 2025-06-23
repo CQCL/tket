@@ -63,7 +63,7 @@ SCENARIO("IQP for 10x10 square grid; 30 and 90 logical qubits") {
 
   // Try two different placement problems on the same grid.
   // Of course, the actual number of gates will be slightly lower
-  // (89 and 465, respecitvely)
+  // (89 and 465, respectively)
   // due to random v1==v2 collisions which are simply skipped.
   std::vector<std::pair<VertexWSM, VertexWSM>> gates_30_pv_100_gates;
   std::vector<std::pair<VertexWSM, VertexWSM>> gates_90_pv_500_gates;

@@ -42,7 +42,7 @@ class LexicographicalComparison {
  public:
   /**
    * Class constructor
-   * @param _architecture Architecture object for calcuating distances from
+   * @param _architecture Architecture object for calculating distances from
    * @param _interacting_nodes Pairs of physical Node with interacting logical
    * Qubit
    */

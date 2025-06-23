@@ -155,7 +155,7 @@ void SteinerTree::add_path_to_tree(
     }
 
     while (node_in_tree != node_to_add) {
-      // node in a path = zero node, it has two neighbbors
+      // node in a path = zero node, it has two neighbours
       node_types[node_in_tree] = SteinerNodeType::ZeroInTree;
       tree_nodes.push_back(node_in_tree);
       num_neighbours[node_in_tree] = 2;
@@ -191,7 +191,7 @@ void SteinerTree::add_path_to_tree(
 
       tree_nodes.push_back(node_to_add);
 
-      num_neighbours[node_to_add] = 2;  // it has two neighbbors
+      num_neighbours[node_to_add] = 2;  // it has two neighbours
 
       if (pathhandler.get_path_matrix()(node_to_add, node_in_tree) ==
           pathhandler.get_size()) {

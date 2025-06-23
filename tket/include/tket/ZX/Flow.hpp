@@ -59,7 +59,7 @@ class Flow {
   // Throws a ZXError if any condition is violated
   void verify(const ZXDiagram& diag) const;
 
-  // Focusses a flow according to Lemma B.5, Simmons "Relating Measurement
+  // Focuses a flow according to Lemma B.5, Simmons "Relating Measurement
   // Patterns to Circuits via Pauli Flow" https://arxiv.org/pdf/2109.05654.pdf
   void focus(const ZXDiagram& diag);
 

@@ -33,7 +33,7 @@ namespace tket {
 /** Description of a node in a circuit, representing some operation */
 struct VertexProperties {
   Op_ptr op;                          /**< operation */
-  std::optional<std::string> opgroup; /**< operation group identfier */
+  std::optional<std::string> opgroup; /**< operation group identifier */
 
   VertexProperties(
       Op_ptr op = 0, std::optional<std::string> opgroup = std::nullopt)

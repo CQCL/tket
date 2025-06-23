@@ -26,7 +26,7 @@ class LexiRouteError : public std::logic_error {
 };
 
 /**
- * A class for modifiying a Circuit held in a MappingFrontier object
+ * A class for modifying a Circuit held in a MappingFrontier object
  * with either an Architecture permitted single SWAP gate or BRIDGE gate.
  * Used in the LexiRouteRoutingMethod class which provides a subcircuit
  * modification method for MappingManager. Used in solution presented in "On the
@@ -136,7 +136,7 @@ class LexiRoute {
    * distances between no swap and given swap assuming distance 2 interactions
    * are  complete. If no swap is better, update return object to reflect this.
    * @param swap Pair of Node comprising SWAP for checking
-   * @param lookahead Number of steps of lookahead emplyed for comparison
+   * @param lookahead Number of steps of lookahead employed for comparison
    * @return Pair of bool, where true implies BRIDGE to be added
    */
   std::pair<bool, bool> check_bridge(
@@ -173,7 +173,7 @@ class LexiRoute {
    * @param reassign_node Node to reassign
    * @param assigned Node to newly assign
    */
-  void reassign_node(const Node& reassign_node, const UnitID& asignee);
+  void reassign_node(const Node& reassign_node, const UnitID& assignee);
 
   /**
    * When reassigning a Circuit UnitID labelled as a Node
@@ -201,7 +201,7 @@ class LexiRoute {
    * Method for relabelling the qubit wire associated to "assignee"
    * to "replacement". If "replacement" is already used to label another
    * reassignable qubit wire, then a new Node is found to update
-   * the qubit wire assoiated with "replacement"
+   * the qubit wire associated with "replacement"
    *
    * @param assignee UnitID representing a Qubit wire to be updated
    * @param replacement UnitID tag to now represent the Qubit wire associated

@@ -25,9 +25,9 @@ namespace tsa_internal {
  *  This works by decomposing the desired mapping into abstract disjoint
  *  cycles, decomposing the abstract cycles into lists of abstract swaps,
  *  then finally decomposing the abstract swaps into concrete swaps.
- *  ("Abstract" means that the vertices invloved are not necessarily
+ *  ("Abstract" means that the vertices involved are not necessarily
  *  adjacent, so the actual swaps cannot be calculated without knowing
- *  the graph, and "concrete" swaps are actual swaps beteen adjacent vertices).
+ *  the graph, and "concrete" swaps are actual swaps between adjacent vertices).
  *  Because the ABSTRACT cycles are disjoint, we are free to perform them,
  *  as long as no other vertices are moved when doing so (they may be moved
  *  in intermediate steps, but will be moved back again by the end of each

@@ -47,7 +47,7 @@ class AASRouteRoutingMethod(RoutingMethod):
         """
         AASRouteRoutingMethod constructor.
 
-        :param aaslookahead: recursive interation depth of the architecture aware synthesis.method.
+        :param aaslookahead: recursive interaction depth of the architecture aware synthesis.method.
         """
 
 class AASLabellingMethod(RoutingMethod):

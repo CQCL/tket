@@ -53,7 +53,7 @@ class CyclesPartialTsa : public PartialTsaInterface {
  public:
   CyclesPartialTsa();
 
-  /** Calculate a solution to improve the current token configuarion,
+  /** Calculate a solution to improve the current token configuration,
    *  add the swaps to the list, and carry out the swaps on "vertex_mapping".
    *  We don't need a path finder because the cycles are built up one vertex
    *  at a time, so we only need distances and neighbours.

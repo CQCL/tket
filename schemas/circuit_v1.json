@@ -530,7 +530,7 @@
         },
         "params": {
           "type": "array",
-          "description": "Expressions of CompositeGate paramaters.",
+          "description": "Expressions of CompositeGate parameters.",
           "items": {
             "$ref": "#/definitions/expression"
           }

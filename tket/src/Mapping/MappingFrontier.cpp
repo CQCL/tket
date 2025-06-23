@@ -462,7 +462,7 @@ void MappingFrontier::advance_frontier_boundary(
               if (out_bundle.empty()) {
                 // => all edges in boolean bundle in boolean boundary attached
                 // to this vertex
-                // => vertex has no edges in output boolean bundle for thos port
+                // => vertex has no edges in output boolean bundle for this port
                 // => can erase Bit from boolean boundary as its not longer used
                 this->boolean_boundary->erase(boolean_it);
               } else {
@@ -790,7 +790,7 @@ void MappingFrontier::add_bridge(
       this->circuit_.get_nth_out_edge(vp_central.first, vp_central.second),
       this->circuit_.get_nth_out_edge(vp_target.first, vp_target.second),
   };  // get cx vertex
-      // this should be guaranteeds by pre-checks
+      // this should be guaranteed by pre-checks
   Vertex cx_v = this->circuit_.target(predecessors[0]);
   // add bridge
   Vertex bridge_v = this->circuit_.add_vertex(OpType::BRIDGE);

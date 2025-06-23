@@ -130,7 +130,7 @@ static std::vector<std::vector<bool>> rearrange_along_col(
   // the solution will also take care of the rows starting with prefix+1
 
   // Construct the bipartite graph with 2*2^n_right_columns vertices
-  // that connects the postfix in the row entires and the postfix in the row
+  // that connects the postfix in the row entries and the postfix in the row
   // indices. First half of the vertices represents the row entries the second
   // half represents the row indices
   cube_graph_t g(1ULL << (n_right_columns + 1));

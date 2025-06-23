@@ -277,7 +277,7 @@ SCENARIO("Build some basic trees") {
         aas::SteinerNodeType::Leaf};      // 11
     REQUIRE(st.node_types == correct_types);
   }
-  GIVEN("binar tree") {
+  GIVEN("binary tree") {
     const Architecture archi(
         {{Node(0), Node(1)},
          {Node(0), Node(2)},
@@ -316,7 +316,7 @@ SCENARIO("Build some basic trees") {
         aas::SteinerNodeType::OutOfTree};  // 14
     REQUIRE(st.node_types == correct_types);
   }
-  GIVEN("binar tree II") {
+  GIVEN("binary tree II") {
     const Architecture archi(
         {{Node(0), Node(1)},
          {Node(0), Node(2)},

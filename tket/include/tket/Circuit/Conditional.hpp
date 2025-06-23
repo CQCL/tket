@@ -14,7 +14,7 @@
 
 #pragma once
 
-// This file is in the Circuit component because Conditonal::deserialize() may
+// This file is in the Circuit component because Conditional::deserialize() may
 // require deserialization of a Box.
 
 #include "tket/Ops/Op.hpp"
