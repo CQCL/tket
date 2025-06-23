@@ -102,3 +102,11 @@ def test_shot_num() -> None:
     dreg = circ.add_c_register("d", 16)
     with pytest.raises(ValueError):
         circ.get_job_shot_num(dreg)
+    qasm = circuit_to_qasm_str(circ, header="hqslib1")
+    assert qasm == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+creg c[32];
+creg d[16];
+c = JOB_shotnum;
+"""

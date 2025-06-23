@@ -1891,6 +1891,13 @@ class _QasmWriter:
         assert args[:-1] == creg.to_list()
         self.strings.add_string(f"{reg_name} = RNGnum();\n")
 
+    def add_job_shot_num(self, args: list[Bit]):
+        assert len(args) == 32
+        reg_name = args[0].reg_name
+        creg = self.cregs[reg_name]
+        assert args == creg.to_list()
+        self.strings.add_string(f"{reg_name} = JOB_shotnum;\n")
+
     def add_measure(self, args: Sequence[UnitID]) -> None:
         label = self.strings.add_string(f"measure {args[0]} -> {args[1]};\n")
         self.mark_as_written(label, f"{args[1]}")
@@ -2004,6 +2011,8 @@ class _QasmWriter:
             self.add_rng_index(args)
         elif optype == OpType.RNGNum:
             self.add_rng_num(args)
+        elif optype == OpType.JobShotNum:
+            self.add_job_shot_num(args)
         elif optype == OpType.Measure:
             self.add_measure(args)
         elif _hqs_header(self.header) and optype == OpType.ZZPhase:
