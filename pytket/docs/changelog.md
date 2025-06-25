@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+Fixes:
+
+- Add Python bindings for all `OpType`s.
+
 ## 2.6.0 (June 2025)
 
 Features:

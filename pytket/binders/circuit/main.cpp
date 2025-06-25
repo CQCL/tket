@@ -493,22 +493,6 @@ NB_MODULE(circuit, m) {
           "A general classical operation where all inputs are also outputs")
       .value(
           "WASM", OpType::WASM, "Op containing a classical wasm function call")
-      /* this optypes are intentionally not in python available at the moment
-      .value("_WASMInput", OpType::WASMInput, "WASM wire input node")
-      .value("_WASMOutput", OpType::WASMOutput, "WASM wire output node")
-      .value("_Input", OpType::Input, "Quantum input node of the circuit")
-      .value("_Output", OpType::Output, "Quantum output node of the circuit")
-      .value(
-          "_Create", OpType::Create,
-          "Quantum node with no predecessors, implicitly in zero state.")
-      .value(
-          "_Discard", OpType::Discard,
-          "Quantum node with no successors, not composable with input nodes of "
-          "other circuits.")
-      .value("_ClInput", OpType::ClInput, "Classical input node of the circuit")
-      .value(
-          "_ClOutput", OpType::ClOutput, "Classical output node of the
-      circuit")*/
       .value(
           "SetBits", OpType::SetBits,
           "An operation to set some bits to specified values")
@@ -549,6 +533,43 @@ NB_MODULE(circuit, m) {
           "A box for synthesising a diagonal unitary matrix into a sequence of "
           "multiplexed-Rz gates")
       .value("ClExpr", OpType::ClExpr, "A classical expression")
+      .value("Input", OpType::Input, "Quantum input node of the circuit")
+      .value("Output", OpType::Output, "Quantum output node of the circuit")
+      .value(
+          "Create", OpType::Create,
+          "Quantum node with no predecessors, "
+          "implicitly in zero state")
+      .value(
+          "Discard", OpType::Discard,
+          "Quantum node with no successors, not "
+          "composable with input nodes of other circuits")
+      .value("ClInput", OpType::ClInput, "Classical input node of the circuit")
+      .value(
+          "ClOutput", OpType::ClOutput,
+          "Classical output node of the "
+          "circuit")
+      .value("WASMInput", OpType::WASMInput, "WASM input node of the circuit")
+      .value(
+          "WASMOutput", OpType::WASMOutput,
+          "WASM output node of the "
+          "circuit")
+      .value(
+          "Collapse", OpType::Collapse,
+          "Measure a qubit producing no "
+          "output")
+      .value("CliffBox", OpType::CliffBox, "NYI")
+      .value(
+          "ProjectorAssertionBox", OpType::ProjectorAssertionBox,
+          "See "
+          ":py:class:`~.ProjectorAssertionBox`")
+      .value(
+          "StabiliserAssertionBox", OpType::StabiliserAssertionBox,
+          "See "
+          ":py:class:`~.StabiliserAssertionBox`")
+      .value(
+          "UnitaryTableauBox", OpType::UnitaryTableauBox,
+          "See "
+          ":py:class:`~.UnitaryTableauBox`")
       .def_static(
           "from_name",
           [](const nb::str &name) { return json(name).get<OpType>(); },
