@@ -1167,6 +1167,12 @@ def test_get_gate_set() -> None:
     assert OpType.CX in gate_set
     assert OpType.Measure in gate_set
     assert CliffordPushThroughMeasures().get_gate_set() is None
+    gate_set1 = ThreeQubitSquash().get_gate_set()
+    assert gate_set1 is not None
+    assert OpType.Collapse in gate_set1
+    gate_set2 = ZXGraphlikeOptimisation().get_gate_set()
+    assert gate_set2 is not None
+    assert OpType.Output in gate_set2
 
 
 def test_decompose_inside_conditionals() -> None:
