@@ -472,6 +472,47 @@ class OpType(enum.IntEnum):
     ClExpr = 115
     """A classical expression"""
 
+    Input = 0
+    """Quantum input node of the circuit"""
+
+    Output = 1
+    """Quantum output node of the circuit"""
+
+    Create = 2
+    """Quantum node with no predecessors, implicitly in zero state"""
+
+    Discard = 3
+    """
+    Quantum node with no successors, not composable with input nodes of other circuits
+    """
+
+    ClInput = 4
+    """Classical input node of the circuit"""
+
+    ClOutput = 5
+    """Classical output node of the circuit"""
+
+    WASMInput = 6
+    """WASM input node of the circuit"""
+
+    WASMOutput = 7
+    """WASM output node of the circuit"""
+
+    Collapse = 67
+    """Measure a qubit producing no output"""
+
+    CliffBox = 98
+    """NYI"""
+
+    ProjectorAssertionBox = 110
+    """See :py:class:`~.ProjectorAssertionBox`"""
+
+    StabiliserAssertionBox = 111
+    """See :py:class:`~.StabiliserAssertionBox`"""
+
+    UnitaryTableauBox = 113
+    """See :py:class:`~.UnitaryTableauBox`"""
+
     @staticmethod
     def from_name(arg: str, /) -> OpType:
         """Construct from name"""
