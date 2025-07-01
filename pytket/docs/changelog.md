@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+Features:
+
+- Add RNG and shot-number operations with conversion to extended QASM.
+
 Fixes:
 
 - Add Python bindings for all `OpType`s.
