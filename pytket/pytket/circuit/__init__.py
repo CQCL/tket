@@ -178,7 +178,7 @@ def set_rng_seed(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
     return self._set_rng_seed(creg, 0, **kwargs)
 
 
-Circuit.set_rng_seed = set_rng_seed
+setattr(Circuit, "set_rng_seed", set_rng_seed)
 
 
 def set_rng_bound(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
@@ -201,7 +201,7 @@ def set_rng_bound(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
     return self._set_rng_bound(creg, 0, **kwargs)
 
 
-Circuit.set_rng_bound = set_rng_bound
+setattr(Circuit, "set_rng_bound", set_rng_bound)
 
 
 def set_rng_index(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
@@ -224,7 +224,7 @@ def set_rng_index(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
     return self._set_rng_index(creg, 0, **kwargs)
 
 
-Circuit.set_rng_index = set_rng_index
+setattr(Circuit, "set_rng_index", set_rng_index)
 
 
 def get_rng_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
@@ -247,7 +247,7 @@ def get_rng_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
     return self._get_rng_num(creg, 0, **kwargs)
 
 
-Circuit.get_rng_num = get_rng_num
+setattr(Circuit, "get_rng_num", get_rng_num)
 
 
 def get_job_shot_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
@@ -269,7 +269,7 @@ def get_job_shot_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit
     return self._get_job_shot_num(creg, **kwargs)
 
 
-Circuit.get_job_shot_num = get_job_shot_num
+setattr(Circuit, "get_job_shot_num", get_job_shot_num)
 
 
 def add_clexpr_from_logicexp(
