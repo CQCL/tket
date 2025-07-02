@@ -217,7 +217,7 @@ def set_rng_index(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
     :return: the new :py:class:`Circuit`
     """
     self._add_r_register(1)
-    if creg.size != 32:   # noqa: PLR2004
+    if creg.size != 32:  # noqa: PLR2004
         raise ValueError(
             f"Register passed to `set_rng_bound()` has size {creg.size} (should be 32)"
         )

@@ -28,6 +28,7 @@ def test_rng_seed() -> None:
     with pytest.raises(ValueError):
         circ.set_rng_seed(dreg)
 
+
 def test_rng_bound() -> None:
     circ = Circuit()
     creg = circ.add_c_register("c", 32)
@@ -37,6 +38,7 @@ def test_rng_bound() -> None:
     dreg = circ.add_c_register("d", 64)
     with pytest.raises(ValueError):
         circ.set_rng_bound(dreg)
+
 
 def test_rng_index() -> None:
     circ = Circuit()
@@ -48,6 +50,7 @@ def test_rng_index() -> None:
     with pytest.raises(ValueError):
         circ.set_rng_index(dreg)
 
+
 def test_rng_num() -> None:
     circ = Circuit()
     creg = circ.add_c_register("c", 32)
@@ -56,6 +59,7 @@ def test_rng_num() -> None:
     dreg = circ.add_c_register("d", 64)
     with pytest.raises(ValueError):
         circ.get_rng_num(dreg)
+
 
 def test_rng() -> None:
     circ = Circuit(1, 1)
@@ -73,7 +77,9 @@ def test_rng() -> None:
     circ.measure_all()
     assert circ.n_gates == 8
     qasm = circuit_to_qasm_str(circ, header="hqslib1", maxwidth=64)
-    assert qasm == """OPENQASM 2.0;
+    assert (
+        qasm
+        == """OPENQASM 2.0;
 include "hqslib1.inc";
 
 qreg q[1];
@@ -93,6 +99,8 @@ num = RNGnum();
 if(num[0]==1) h q[0];
 measure q[0] -> c[0];
 """
+    )
+
 
 def test_shot_num() -> None:
     circ = Circuit()
@@ -103,10 +111,13 @@ def test_shot_num() -> None:
     with pytest.raises(ValueError):
         circ.get_job_shot_num(dreg)
     qasm = circuit_to_qasm_str(circ, header="hqslib1")
-    assert qasm == """OPENQASM 2.0;
+    assert (
+        qasm
+        == """OPENQASM 2.0;
 include "hqslib1.inc";
 
 creg c[32];
 creg d[16];
 c = JOB_shotnum;
 """
+    )

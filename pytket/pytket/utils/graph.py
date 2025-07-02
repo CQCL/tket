@@ -244,7 +244,7 @@ class Graph:
             "Boolean": b_color,
             "Classical": c_color,
             "WASM": w_color,
-            "RNG": r_color
+            "RNG": r_color,
         }
         edge_attr = {
             "weight": "2",
