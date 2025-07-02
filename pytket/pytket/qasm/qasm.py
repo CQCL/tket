@@ -2004,15 +2004,15 @@ class _QasmWriter:
             assert isinstance(op, WASMOp)
             self.add_wasm(op, cast("list[Bit]", args))
         elif optype == OpType.RNGSeed:
-            self.add_rng_seed(args)
+            self.add_rng_seed(cast("list[Bit]", args))
         elif optype == OpType.RNGBound:
-            self.add_rng_bound(args)
+            self.add_rng_bound(cast("list[Bit]", args))
         elif optype == OpType.RNGIndex:
-            self.add_rng_index(args)
+            self.add_rng_index(cast("list[Bit]", args))
         elif optype == OpType.RNGNum:
-            self.add_rng_num(args)
+            self.add_rng_num(cast("list[Bit]", args))
         elif optype == OpType.JobShotNum:
-            self.add_job_shot_num(args)
+            self.add_job_shot_num(cast("list[Bit]", args))
         elif optype == OpType.Measure:
             self.add_measure(args)
         elif _hqs_header(self.header) and optype == OpType.ZZPhase:
