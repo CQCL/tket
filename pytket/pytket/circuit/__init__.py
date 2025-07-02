@@ -171,14 +171,14 @@ def set_rng_seed(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
     :return: the new :py:class:`Circuit`
     """
     self._add_r_register(1)
-    if creg.size != 64:
+    if creg.size != 64:  # noqa: PLR2004
         raise ValueError(
             f"Register passed to `set_rng_seed()` has size {creg.size} (should be 64)"
         )
     return self._set_rng_seed(creg, 0, **kwargs)
 
 
-setattr(Circuit, "set_rng_seed", set_rng_seed)
+Circuit.set_rng_seed = set_rng_seed
 
 
 def set_rng_bound(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
@@ -194,14 +194,14 @@ def set_rng_bound(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
     :return: the new :py:class:`Circuit`
     """
     self._add_r_register(1)
-    if creg.size != 32:
+    if creg.size != 32:  # noqa: PLR2004
         raise ValueError(
             f"Register passed to `set_rng_bound()` has size {creg.size} (should be 32)"
         )
     return self._set_rng_bound(creg, 0, **kwargs)
 
 
-setattr(Circuit, "set_rng_bound", set_rng_bound)
+Circuit.set_rng_bound = set_rng_bound
 
 
 def set_rng_index(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
@@ -217,14 +217,14 @@ def set_rng_index(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
     :return: the new :py:class:`Circuit`
     """
     self._add_r_register(1)
-    if creg.size != 32:
+    if creg.size != 32:   # noqa: PLR2004
         raise ValueError(
             f"Register passed to `set_rng_bound()` has size {creg.size} (should be 32)"
         )
     return self._set_rng_index(creg, 0, **kwargs)
 
 
-setattr(Circuit, "set_rng_index", set_rng_index)
+Circuit.set_rng_index = set_rng_index
 
 
 def get_rng_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
@@ -240,14 +240,14 @@ def get_rng_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
     :return: the new :py:class:`Circuit`
     """
     self._add_r_register(1)
-    if creg.size != 32:
+    if creg.size != 32:  # noqa: PLR2004
         raise ValueError(
             f"Register passed to `get_rng_num()` has size {creg.size} (should be 32)"
         )
     return self._get_rng_num(creg, 0, **kwargs)
 
 
-setattr(Circuit, "get_rng_num", get_rng_num)
+Circuit.get_rng_num = get_rng_num
 
 
 def get_job_shot_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
@@ -262,14 +262,14 @@ def get_job_shot_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit
     :return: the new :py:class:`Circuit`
     """
     self._add_r_register(1)
-    if creg.size != 32:
+    if creg.size != 32:  # noqa: PLR2004
         raise ValueError(
             f"Register passed to `get_job_shot_num()` has size {creg.size} (should be 32)"
         )
     return self._get_job_shot_num(creg, **kwargs)
 
 
-setattr(Circuit, "get_job_shot_num", get_job_shot_num)
+Circuit.get_job_shot_num = get_job_shot_num
 
 
 def add_clexpr_from_logicexp(
