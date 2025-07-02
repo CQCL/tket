@@ -1863,35 +1863,35 @@ class _QasmWriter:
         for variable in outputs:
             self.mark_as_written(label, variable)
 
-    def add_rng_seed(self, args: list[Bit]):
+    def add_rng_seed(self, args: list[Bit]) -> None:
         assert len(args) == 65  # noqa: PLR2004
         reg_name = args[0].reg_name
         creg = self.cregs[reg_name]
         assert args[:-1] == creg.to_list()
         self.strings.add_string(f"RNGseed({reg_name});\n")
 
-    def add_rng_bound(self, args: list[Bit]):
+    def add_rng_bound(self, args: list[Bit]) -> None:
         assert len(args) == 33  # noqa: PLR2004
         reg_name = args[0].reg_name
         creg = self.cregs[reg_name]
         assert args[:-1] == creg.to_list()
         self.strings.add_string(f"RNGbound({reg_name});\n")
 
-    def add_rng_index(self, args: list[Bit]):
+    def add_rng_index(self, args: list[Bit]) -> None:
         assert len(args) == 33  # noqa: PLR2004
         reg_name = args[0].reg_name
         creg = self.cregs[reg_name]
         assert args[:-1] == creg.to_list()
         self.strings.add_string(f"RNGindex({reg_name});\n")
 
-    def add_rng_num(self, args: list[Bit]):
+    def add_rng_num(self, args: list[Bit]) -> None:
         assert len(args) == 33  # noqa: PLR2004
         reg_name = args[0].reg_name
         creg = self.cregs[reg_name]
         assert args[:-1] == creg.to_list()
         self.strings.add_string(f"{reg_name} = RNGnum();\n")
 
-    def add_job_shot_num(self, args: list[Bit]):
+    def add_job_shot_num(self, args: list[Bit]) -> None:
         assert len(args) == 32  # noqa: PLR2004
         reg_name = args[0].reg_name
         creg = self.cregs[reg_name]
