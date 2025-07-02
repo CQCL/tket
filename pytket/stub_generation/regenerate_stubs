@@ -75,6 +75,12 @@ if __name__ == "__main__":
             [
                 "_add_wasm",
                 "_add_w_register",
+                "_set_rng_seed",
+                "_set_rng_bound",
+                "_set_rng_index",
+                "_get_rng_num",
+                "_get_job_shot_num",
+                "_add_r_register",
                 "_classical_eval",
                 "_dag_data",
                 "_n_vertices",
