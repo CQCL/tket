@@ -719,6 +719,9 @@ SCENARIO("Opaque classical ops") {
   GIVEN("RNG circuit serialization") {
     Circuit c(0, 64);
 
+    REQUIRE(c.r_inputs().empty());
+    REQUIRE(c.r_outputs().empty());
+
     std::vector<UnitID> args64;
     for (unsigned i = 0; i < 64; i++) {
       args64.push_back(Bit(i));
@@ -737,6 +740,11 @@ SCENARIO("Opaque classical ops") {
     c.add_op(std::make_shared<OpaqueClassicalOp>(OpType::RNGBound), args32);
     c.add_op(std::make_shared<OpaqueClassicalOp>(OpType::RNGIndex), args32);
     c.add_op(std::make_shared<OpaqueClassicalOp>(OpType::RNGNum), args32);
+
+    REQUIRE(c.r_inputs().size() == 1);
+    REQUIRE(c.r_outputs().size() == 1);
+    c.assert_valid();
+
     nlohmann::json j = c;
     Circuit c1 = j.get<Circuit>();
     REQUIRE(c == c1);
