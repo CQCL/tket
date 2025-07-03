@@ -757,6 +757,24 @@ SCENARIO("Opaque classical ops") {
     Circuit c1 = j.get<Circuit>();
     REQUIRE(c == c1);
   }
+  GIVEN("RNG circuit substitution") {
+    Circuit c(1, 32);
+    c.add_op<unsigned>(OpType::H, {0});
+    std::vector<UnitID> args32;
+    for (unsigned i = 0; i < 32; i++) {
+      args32.push_back(Bit(i));
+    }
+    args32.push_back(RngState(0));
+    Vertex v =
+        c.add_op(std::make_shared<OpaqueClassicalOp>(OpType::RNGBound), args32);
+    // Replace the RNGBound operation with RNGIndex.
+    Circuit c1(0, 32);
+    c1.add_op(std::make_shared<OpaqueClassicalOp>(OpType::RNGIndex), args32);
+    c.substitute(c1, v);
+    std::map<OpType, unsigned> opcounts = c.op_counts();
+    REQUIRE(!opcounts.contains(OpType::RNGBound));
+    REQUIRE(opcounts.at(OpType::RNGIndex) == 1);
+  }
 }
 
 }  // namespace test_Ops
