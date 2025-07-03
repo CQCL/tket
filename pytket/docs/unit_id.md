@@ -74,3 +74,11 @@
    .. automethod:: from_list
    .. automethod:: to_list
 ```
+
+```{eval-rst}
+.. autoclass:: pytket.unit_id.RngState
+
+   .. automethod:: __init__
+   .. automethod:: from_list
+   .. automethod:: to_list
+```
