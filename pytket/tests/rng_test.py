@@ -105,7 +105,6 @@ measure q[0] -> c[0];
         circuit_from_qasm_str(qasm, maxwidth=64)
 
 
-
 def test_shot_num() -> None:
     circ = Circuit()
     creg = circ.add_c_register("c", 32)
