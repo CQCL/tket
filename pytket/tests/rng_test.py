@@ -15,7 +15,8 @@
 import pytest
 
 from pytket.circuit import Circuit, OpType
-from pytket.qasm import circuit_to_qasm_str
+from pytket.qasm import circuit_from_qasm_str, circuit_to_qasm_str
+from pytket.qasm.qasm import QASMParseError
 
 
 def test_rng_seed() -> None:
@@ -100,6 +101,9 @@ if(num[0]==1) h q[0];
 measure q[0] -> c[0];
 """
     )
+    with pytest.raises(QASMParseError):
+        circuit_from_qasm_str(qasm, maxwidth=64)
+
 
 
 def test_shot_num() -> None:
