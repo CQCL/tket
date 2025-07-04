@@ -73,7 +73,8 @@ NB_MODULE(circuit, m) {
       .value("Boolean", EdgeType::Boolean)
       .value("Classical", EdgeType::Classical)
       .value("Quantum", EdgeType::Quantum)
-      .value("WASM", EdgeType::WASM);
+      .value("WASM", EdgeType::WASM)
+      .value("RNG", EdgeType::RNG);
   // NOTE: Sphinx does not automatically pick up the docstring for OpType
   nb::enum_<OpType>(
       m, "OpType",
@@ -570,6 +571,18 @@ NB_MODULE(circuit, m) {
           "UnitaryTableauBox", OpType::UnitaryTableauBox,
           "See "
           ":py:class:`~.UnitaryTableauBox`")
+      .value("RNGInput", OpType::RNGInput, "RNG input node")
+      .value("RNGOutput", OpType::RNGOutput, "RNG output node")
+      .value("RNGSeed", OpType::RNGSeed, "Seed an RNG using 64 bits")
+      .value(
+          "RNGBound", OpType::RNGBound,
+          "Set an (inclusive) 32-bit upper bound on RNG output")
+      .value("RNGIndex", OpType::RNGIndex, "Set a 32-bit index on an RNG")
+      .value("RNGNum", OpType::RNGNum, "Get 32-bit output from an RNG")
+      .value(
+          "JobShotNum", OpType::JobShotNum,
+          "Get 32-bit (little-endian) shot number when a circuit is being run "
+          "multiple times")
       .def_static(
           "from_name",
           [](const nb::str &name) { return json(name).get<OpType>(); },

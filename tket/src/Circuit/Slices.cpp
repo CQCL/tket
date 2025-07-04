@@ -43,6 +43,13 @@ SliceIterator::SliceIterator(const Circuit& circ) : cut_(), circ_(&circ) {
     cut_.u_frontier->insert({circ.wasmwire[i], circ.get_nth_out_edge(in, 0)});
   }
 
+  // add RNGState to u_frontier
+  for (unsigned i = 0; i < circ._number_of_rng_wires; ++i) {
+    Vertex in = circ.get_in(circ.rngwire[i]);
+    cut_.slice->push_back(in);
+    cut_.u_frontier->insert({circ.rngwire[i], circ.get_nth_out_edge(in, 0)});
+  }
+
   prev_b_frontier_ = cut_.b_frontier;
   cut_ = circ.next_cut(cut_.u_frontier, cut_.b_frontier);
 
@@ -52,7 +59,8 @@ SliceIterator::SliceIterator(const Circuit& circ) : cut_(), circ_(&circ) {
     if (circ.n_in_edges(v) == 0 &&
         circ.n_out_edges_of_type(v, EdgeType::Quantum) == 0 &&
         circ.n_out_edges_of_type(v, EdgeType::Classical) == 0 &&
-        circ.n_out_edges_of_type(v, EdgeType::WASM) == 0) {
+        circ.n_out_edges_of_type(v, EdgeType::WASM) == 0 &&
+        circ.n_out_edges_of_type(v, EdgeType::RNG) == 0) {
       cut_.slice->push_back(v);
     }
   }
@@ -80,6 +88,13 @@ SliceIterator::SliceIterator(
     Vertex in = circ.get_in(circ.wasmwire[i]);
     cut_.slice->push_back(in);
     cut_.u_frontier->insert({circ.wasmwire[i], circ.get_nth_out_edge(in, 0)});
+  }
+
+  // add RngState to u_frontier
+  for (unsigned i = 0; i < circ._number_of_rng_wires; ++i) {
+    Vertex in = circ.get_in(circ.rngwire[i]);
+    cut_.slice->push_back(in);
+    cut_.u_frontier->insert({circ.rngwire[i], circ.get_nth_out_edge(in, 0)});
   }
 
   prev_b_frontier_ = cut_.b_frontier;
@@ -159,7 +174,8 @@ static std::shared_ptr<b_frontier_t> get_next_b_frontier(
   for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
     switch (circ.get_edgetype(pair.second)) {
       case EdgeType::Quantum:
-      case EdgeType::WASM: {
+      case EdgeType::WASM:
+      case EdgeType::RNG: {
         break;
       }
       case EdgeType::Classical: {
@@ -319,7 +335,8 @@ CutFrontier Circuit::next_q_cut(
     EdgeVec ins = get_in_edges(try_v);
     for (const Edge& in : ins) {
       if (!edge_lookup.contains(in) && (get_edgetype(in) == EdgeType::Quantum ||
-                                        get_edgetype(in) == EdgeType::WASM)) {
+                                        get_edgetype(in) == EdgeType::WASM ||
+                                        get_edgetype(in) == EdgeType::RNG)) {
         good_vertex = false;
         bad_vertices.insert(try_v);
         break;

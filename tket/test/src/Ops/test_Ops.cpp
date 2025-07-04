@@ -13,11 +13,14 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
+#include <memory>
 #include <optional>
 #include <stdexcept>
 #include <unsupported/Eigen/MatrixFunctions>
+#include <vector>
 
 #include "../testutil.hpp"
+#include "Ops/ClassicalOps.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
@@ -702,6 +705,75 @@ SCENARIO("Two-qubit entangling gates") {
     c1.add_op<unsigned>(OpType::PhasedISWAP, {p, t}, {0, 1});
     Transforms::synthesise_tket().apply(c1);
     REQUIRE(test_unitary_comparison(c0, c1));
+  }
+}
+
+SCENARIO("Opaque classical ops") {
+  GIVEN("RNG op serialization") {
+    std::shared_ptr<OpaqueClassicalOp> op =
+        std::make_shared<OpaqueClassicalOp>(OpType::RNGSeed);
+    nlohmann::json j = op->serialize();
+    Op_ptr op1 = OpaqueClassicalOp::deserialize(j);
+    REQUIRE(op->is_equal(*op1));
+  }
+  GIVEN("RNG circuit serialization") {
+    Circuit c(0, 64);
+
+    REQUIRE(c.r_inputs().empty());
+    REQUIRE(c.r_outputs().empty());
+
+    std::vector<UnitID> args64;
+    for (unsigned i = 0; i < 64; i++) {
+      args64.push_back(Bit(i));
+    }
+    args64.push_back(RngState(0));
+    std::vector<UnitID> args32;
+    for (unsigned i = 0; i < 32; i++) {
+      args32.push_back(Bit(i));
+    }
+    args32.push_back(RngState(0));
+
+    c.add_op(std::make_shared<OpaqueClassicalOp>(OpType::RNGSeed), args64);
+    std::vector<bool> values{true, true};
+    std::shared_ptr<SetBitsOp> sb = std::make_shared<SetBitsOp>(values);
+    c.add_op<Bit>(sb, {Bit(0), Bit(1)});
+    c.add_op(std::make_shared<OpaqueClassicalOp>(OpType::RNGBound), args32);
+    c.add_op(std::make_shared<OpaqueClassicalOp>(OpType::RNGIndex), args32);
+    c.add_op(std::make_shared<OpaqueClassicalOp>(OpType::RNGNum), args32);
+
+    REQUIRE(c.r_inputs().size() == 1);
+    REQUIRE(c.r_outputs().size() == 1);
+    c.assert_valid();
+
+    nlohmann::json j = c;
+    Circuit c1 = j.get<Circuit>();
+    REQUIRE(c == c1);
+  }
+  GIVEN("Shot-number serialization") {
+    Circuit c(0, 32);
+    c.add_op(
+        std::make_shared<OpaqueClassicalOp>(OpType::JobShotNum), c.all_bits());
+    nlohmann::json j = c;
+    Circuit c1 = j.get<Circuit>();
+    REQUIRE(c == c1);
+  }
+  GIVEN("RNG circuit substitution") {
+    Circuit c(1, 32);
+    c.add_op<unsigned>(OpType::H, {0});
+    std::vector<UnitID> args32;
+    for (unsigned i = 0; i < 32; i++) {
+      args32.push_back(Bit(i));
+    }
+    args32.push_back(RngState(0));
+    Vertex v =
+        c.add_op(std::make_shared<OpaqueClassicalOp>(OpType::RNGBound), args32);
+    // Replace the RNGBound operation with RNGIndex.
+    Circuit c1(0, 32);
+    c1.add_op(std::make_shared<OpaqueClassicalOp>(OpType::RNGIndex), args32);
+    c.substitute(c1, v);
+    std::map<OpType, unsigned> opcounts = c.op_counts();
+    REQUIRE(!opcounts.contains(OpType::RNGBound));
+    REQUIRE(opcounts.at(OpType::RNGIndex) == 1);
   }
 }
 

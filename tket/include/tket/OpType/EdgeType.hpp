@@ -47,7 +47,12 @@ enum class EdgeType {
    * A wire to connect the wasm ops in the order they should be executed in.
    * Corresponding to some allocated @ref WasmState.
    */
-  WASM
+  WASM,
+
+  /**
+   * A wire carrying the internal state of a (pseudo-)random number generator.
+   */
+  RNG,
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(
@@ -56,6 +61,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
                   {EdgeType::Classical, "C"},
                   {EdgeType::Boolean, "B"},
                   {EdgeType::WASM, "W"},
+                  {EdgeType::RNG, "R"},
               });
 
 typedef std::vector<EdgeType> op_signature_t;

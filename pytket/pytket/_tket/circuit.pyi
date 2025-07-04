@@ -44,6 +44,8 @@ class EdgeType(enum.Enum):
 
     WASM = 3
 
+    RNG = 4
+
 class OpType(enum.IntEnum):
     """
     Enum for available operations compatible with tket :py:class:`~.Circuit` s.
@@ -512,6 +514,29 @@ class OpType(enum.IntEnum):
 
     UnitaryTableauBox = 113
     """See :py:class:`~.UnitaryTableauBox`"""
+
+    RNGInput = 116
+    """RNG input node"""
+
+    RNGOutput = 117
+    """RNG output node"""
+
+    RNGSeed = 118
+    """Seed an RNG using 64 bits"""
+
+    RNGBound = 119
+    """Set an (inclusive) 32-bit upper bound on RNG output"""
+
+    RNGIndex = 120
+    """Set a 32-bit index on an RNG"""
+
+    RNGNum = 121
+    """Get 32-bit output from an RNG"""
+
+    JobShotNum = 122
+    """
+    Get 32-bit (little-endian) shot number when a circuit is being run multiple times
+    """
 
     @staticmethod
     def from_name(arg: str, /) -> OpType:
@@ -1493,6 +1518,65 @@ class Circuit:
         :return: the new :py:class:`~.Circuit`
         """
 
+    def _set_rng_seed(self, creg: pytket._tket.unit_id.BitRegister, rng_wire: int, **kwargs: Any) -> Circuit:
+        """
+        Seed an RNG from the contents of a classical register.
+
+        The classical register must be exactly 64 bits.
+
+        :param creg: register of classical bits
+        :param rng_wire: index of RNG wire
+        :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+        :return: the new :py:class:`~.Circuit`
+        """
+
+    def _set_rng_bound(self, creg: pytket._tket.unit_id.BitRegister, rng_wire: int, **kwargs: Any) -> Circuit:
+        """
+        Set an RNG upper bound from the contents of a classical register.
+
+        The classical register must be exactly 32 bits. It encodes the upper bound in little-endian binary (least significant bit first). The bound is inclusive.
+
+        :param creg: register of classical bits
+        :param rng_wire: index of RNG wire
+        :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+        :return: the new :py:class:`~.Circuit`
+        """
+
+    def _set_rng_index(self, creg: pytket._tket.unit_id.BitRegister, rng_wire: int, **kwargs: Any) -> Circuit:
+        """
+        Set an RNG stream index from the contents of a classical register.
+
+        The classical register must be exactly 32 bits. It encodes the index in little-endian binary (least significant bit first).
+
+        :param creg: register of classical bits
+        :param rng_wire: index of RNG wire
+        :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+        :return: the new :py:class:`~.Circuit`
+        """
+
+    def _get_rng_num(self, creg: pytket._tket.unit_id.BitRegister, rng_wire: int, **kwargs: Any) -> Circuit:
+        """
+        Get RNG output into a classical register.
+
+        The classical register must be exactly 32 bits. After the operation it encodes the output number in little-endian binary (least significant bit first).
+
+        :param creg: register of classical bits
+        :param rng_wire: index of RNG wire
+        :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+        :return: the new :py:class:`~.Circuit`
+        """
+
+    def _get_job_shot_num(self, creg: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
+        """
+        Get shot number into a classical register.
+
+        The classical register must be exactly 32 bits. After the operation it encodes the shot number in little-endian binary (least significant bit first).
+
+        :param creg: register of classical bits
+        :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+        :return: the new :py:class:`~.Circuit`
+        """
+
     def add_c_setbits(self, values: Sequence[bool], args: Sequence[int] | Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
         """
         Appends an operation to set some bit values.
@@ -1703,6 +1787,13 @@ class Circuit:
         Creates given number of wasm bits in the circuit. If there are already wasm bits in circuit only the additional wasm bits will be added. 
 
         :param size: Number of wasm bits that should be added to the circuit
+        """
+
+    def _add_r_register(self, size: int) -> None:
+        """
+        Creates given number of RNG wires in the circuit. If there are already RNG wires in circuit, only the additional RNG wires will be added.
+
+        :param size: Number of RNG wires that should be added to the circuit
         """
 
     @overload
@@ -2336,7 +2427,7 @@ class Circuit:
         """
 
     @property
-    def _dag_data(self) -> tuple[set[int], set[int], set[int], set[int], set[int], set[int], dict[int, str], dict[int, str], dict[int, str], set[tuple[int, int, int, int, str]]]:
+    def _dag_data(self) -> tuple[set[int], set[int], set[int], set[int], set[int], set[int], set[int], set[int], dict[int, str], dict[int, str], dict[int, str], set[tuple[int, int, int, int, str]]]:
         """DAG data for circuit"""
 
     def add_wasm(self: Circuit, funcname: str, filehandler: pytket.wasm.wasm.WasmModuleHandler, list_i: Sequence[int], list_o: Sequence[int], args: Union[Sequence[int], Sequence[pytket._tket.unit_id.Bit]], args_wasm: Sequence[int] | None = None, **kwargs: Any) -> Circuit:
@@ -2385,6 +2476,73 @@ class Circuit:
              `condition_value`
 
         :return: the new :py:class:`Circuit`
+        """
+
+    def set_rng_seed(self: Circuit, creg: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
+        """
+        Seed an RNG from the contents of a classical register.
+
+            The classical register must be exactly 64 bits.
+
+            :param creg: register of classical bits
+            :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
+                 are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+            :return: the new :py:class:`Circuit`
+        """
+
+    def set_rng_bound(self: Circuit, creg: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
+        """
+        Set an RNG upper bound from the contents of a classical register.
+
+            The classical register must be exactly 32 bits. It encodes the upper bound in
+            little-endian binary (least significant bit first). The bound is inclusive.
+
+            :param creg: register of classical bits
+            :param rng_wire: index of RNG wire
+            :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
+                are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+            :return: the new :py:class:`Circuit`
+        """
+
+    def set_rng_index(self: Circuit, creg: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
+        """
+        Set an RNG stream index from the contents of a classical register.
+
+            The classical register must be exactly 32 bits. It encodes the index in little-
+            endian binary (least significant bit first).
+
+            :param creg: register of classical bits
+            :param rng_wire: index of RNG wire
+            :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
+                are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+            :return: the new :py:class:`Circuit`
+        """
+
+    def get_rng_num(self: Circuit, creg: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
+        """
+        Get RNG output into a classical register.
+
+            The classical register must be exactly 32 bits. After the operation it encodes the
+            output number in little-endian binary (least significant bit first).
+
+            :param creg: register of classical bits
+            :param rng_wire: index of RNG wire
+            :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
+                are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+            :return: the new :py:class:`Circuit`
+        """
+
+    def get_job_shot_num(self: Circuit, creg: pytket._tket.unit_id.BitRegister, **kwargs: Any) -> Circuit:
+        """
+        Get shot number into a classical register.
+
+            The classical register must be exactly 32 bits. After the operation it encodes the
+            shot number in little-endian binary (least significant bit first).
+
+            :param creg: register of classical bits
+            :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
+                are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+            :return: the new :py:class:`Circuit`
         """
 
     def add_clexpr_from_logicexp(circ: Circuit, exp: pytket.circuit.logic_exp.LogicExp, output_bits: list[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:

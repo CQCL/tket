@@ -48,6 +48,7 @@
 #include "Slices.hpp"
 #include "tket/Gate/GatePtr.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
+#include "tket/OpType/EdgeType.hpp"
 #include "tket/Utils/Json.hpp"
 #include "tket/Utils/SequencedContainers.hpp"
 #include "tket/Utils/UnitID.hpp"
@@ -337,10 +338,12 @@ class Circuit {
   VertexVec q_inputs() const;
   VertexVec c_inputs() const;
   VertexVec w_inputs() const;
+  VertexVec r_inputs() const;
   VertexVec all_outputs() const;
   VertexVec q_outputs() const;
   VertexVec c_outputs() const;
   VertexVec w_outputs() const;
+  VertexVec r_outputs() const;
 
   qubit_vector_t all_qubits() const;
   qubit_vector_t created_qubits() const;
@@ -910,6 +913,7 @@ class Circuit {
   register_t add_q_register(std::string reg_name, unsigned size);
   register_t add_c_register(std::string reg_name, unsigned size);
   void add_wasm_register(std::size_t number_of_w = 1);
+  void add_rng_register(std::size_t number_of_r = 1);
 
   /**
    * Create the given qubit in the zero state at the beginning of the circuit.
@@ -1616,7 +1620,9 @@ class Circuit {
   DAG dag; /** Representation as directed graph */
   boundary_t boundary;
   std::vector<WasmState> wasmwire;
+  std::vector<RngState> rngwire;
   std::size_t _number_of_wasm_wires = 0;
+  std::size_t _number_of_rng_wires = 0;
 
   /**
    * Calculate the overall resources of the circuit.
@@ -1706,13 +1712,17 @@ Vertex Circuit::add_op(
   static_assert(std::is_base_of<UnitID, ID>::value);
   op_signature_t sig = op->get_signature();
 
-  // check if there is wasm in the signature
+  // check if there are wasm or rng wires in the signature
   unsigned count_wasm_sig = 0;
+  unsigned count_rng_sig = 0;
   for (EdgeType e : sig) {
     if (e == EdgeType::WASM) {
       ++count_wasm_sig;
+    } else if (e == EdgeType::RNG) {
+      ++count_rng_sig;
     }
   }
+
   if (sig.size() != args.size()) {
     throw CircuitInvalidity(
         std::to_string(args.size()) + " args provided, but " + op->get_name() +
@@ -1731,6 +1741,7 @@ Vertex Circuit::add_op(
   }
 
   add_wasm_register(count_wasm_sig);
+  add_rng_register(count_rng_sig);
 
   unit_set_t write_arg_set;
   EdgeVec preds;

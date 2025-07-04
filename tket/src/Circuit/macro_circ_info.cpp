@@ -32,7 +32,7 @@ bool Circuit::is_simple() const {
   for (const BoundaryElement& el : boundary.get<TagID>()) {
     std::string reg = el.id_.reg_name();
     if (!(reg == q_default_reg() || reg == c_default_reg() ||
-          reg == w_default_reg()))
+          reg == w_default_reg() || reg == r_default_reg()))
       return false;
   }
   return true;
@@ -48,6 +48,9 @@ bool Circuit::default_regs_ok() const {
   opt_reg_info_t w_info = get_reg_info(w_default_reg());
   register_info_t correct_w_info = {UnitType::WasmState, 1};
   if (w_info && w_info.value() != correct_w_info) return false;
+  opt_reg_info_t r_info = get_reg_info(r_default_reg());
+  register_info_t correct_r_info = {UnitType::RngState, 1};
+  if (r_info && r_info.value() != correct_r_info) return false;
   return true;
 }
 
@@ -128,6 +131,7 @@ Circuit Circuit::subcircuit(const Subcircuit& sc) const {
   unsigned n_qbs = 0;
   unsigned n_bits = 0;
   unsigned n_wasm = 0;
+  unsigned n_rng = 0;
   for (unsigned i = 0; i < sc.in_hole.size(); ++i) {
     Edge in_edge = sc.in_hole.at(i);
     std::optional<Edge> out_edge = sc.out_hole.at(i);
@@ -181,6 +185,20 @@ Circuit Circuit::subcircuit(const Subcircuit& sc) const {
         out_boundary_map.insert({*out_edge, out});
         break;
       }
+      case EdgeType::RNG: {
+        TKET_ASSERT(out_edge.has_value());
+        Vertex in = sub.add_vertex(OpType::RNGInput);
+        Vertex out = sub.add_vertex(OpType::RNGOutput);
+        sub.boundary.insert({RngState(n_rng), in, out});
+        sub.rngwire.push_back(RngState(n_rng));
+        ++sub._number_of_rng_wires;
+        ++n_rng;
+        vmap[source(in_edge)] = in;
+        in_boundary_map.insert({in_edge, in});
+        vmap[target(*out_edge)] = out;
+        out_boundary_map.insert({*out_edge, out});
+        break;
+      }
       default: {
         TKET_ASSERT(false);
       }
@@ -200,7 +218,7 @@ Circuit Circuit::subcircuit(const Subcircuit& sc) const {
       port_t in_port = get_source_port(e);
       OpType type = sub.get_OpType_from_Vertex(sub_source);
       if (is_initial_q_type(type) || type == OpType::ClInput ||
-          type == OpType::WASMInput) {
+          type == OpType::WASMInput || type == OpType::RNGInput) {
         // Multiple inputs might be mapped to the same source
         // so need to distinguish them.
         sub_source = in_boundary_map.at(e);
@@ -279,6 +297,9 @@ std::map<UnitID, QPathDetailed> Circuit::all_unit_paths() const {
   }
   for (const WasmState& w : wasmwire) {
     new_list_of_paths.insert({w, unit_path(w)});
+  }
+  for (const RngState& r : rngwire) {
+    new_list_of_paths.insert({r, unit_path(r)});
   }
   return new_list_of_paths;
 }
@@ -394,7 +415,9 @@ SliceVec Circuit::get_reverse_slices() const {
       case OpType::ClOutput:
       case OpType::Discard:
       case OpType::WASMInput:
-      case OpType::WASMOutput: {
+      case OpType::WASMOutput:
+      case OpType::RNGInput:
+      case OpType::RNGOutput: {
         break;
       }
       default: {
@@ -611,59 +634,37 @@ unit_vector_t Circuit::args_from_frontier(
   EdgeVec ins = get_in_edges(vert);
   unit_vector_t args;
   for (port_t p = 0; p < ins.size(); ++p) {
-    switch (get_edgetype(ins[p])) {
-      case EdgeType::WASM: {
-        Edge out = get_next_edge(vert, ins[p]);
-        bool found = false;
-        for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
-          if (pair.second == out) {
+    if (get_edgetype(ins[p]) == EdgeType::Boolean) {
+      bool found = false;
+      for (const std::pair<Bit, EdgeVec>& pair :
+           prev_b_frontier->get<TagKey>()) {
+        for (const Edge& edge : pair.second) {
+          if (edge == ins[p]) {
             args.push_back(pair.first);
             found = true;
             break;
           }
         }
-        TKET_ASSERT(found);  // Vertex edges not found in frontier.
-        break;
-      }
-      case EdgeType::Boolean: {
-        bool found = false;
-        for (const std::pair<Bit, EdgeVec>& pair :
-             prev_b_frontier->get<TagKey>()) {
-          for (const Edge& edge : pair.second) {
-            if (edge == ins[p]) {
-              args.push_back(pair.first);
-              found = true;
-              break;
-            }
-          }
-          if (found) {
-            break;
-          }
+        if (found) {
+          break;
         }
-        TKET_ASSERT(found);  // Vertex edges not found in Boolean frontier.
-        break;
       }
-      case EdgeType::Classical:
-      case EdgeType::Quantum: {
-        Edge out = get_next_edge(vert, ins[p]);
-        bool found = false;
-        for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
-          if (pair.second == out) {
-            args.push_back(pair.first);
-            found = true;
-            break;
-          }
+      TKET_ASSERT(found);  // Vertex edges not found in Boolean frontier.
+    } else {
+      Edge out = get_next_edge(vert, ins[p]);
+      bool found = false;
+      for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
+        if (pair.second == out) {
+          args.push_back(pair.first);
+          found = true;
+          break;
         }
-        if (!found)
-          throw CircuitInvalidity(
-              "Vertex edges not found in frontier. Edge: " +
-              get_Op_ptr_from_Vertex(source(out))->get_name() + " -> " +
-              get_Op_ptr_from_Vertex(target(out))->get_name());
-        break;
       }
-      default: {
-        TKET_ASSERT(!"args_from_frontier found invalid edge type in signature");
-      }
+      if (!found)
+        throw CircuitInvalidity(
+            "Vertex edges not found in frontier. Edge: " +
+            get_Op_ptr_from_Vertex(source(out))->get_name() + " -> " +
+            get_Op_ptr_from_Vertex(target(out))->get_name());
     }
   }
   return args;

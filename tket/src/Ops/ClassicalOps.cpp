@@ -35,7 +35,7 @@ static uint64_t u64_from_boolvec(const std::vector<bool> &x) {
 }
 
 static nlohmann::json classical_to_json(const Op_ptr &op, const OpType &type) {
-  nlohmann::json j_class;
+  nlohmann::json j_class = nlohmann::json::object();
   switch (type) {
     case OpType::MultiBit: {
       const auto &multibit = static_cast<const MultiBitOp &>(*op);
@@ -162,6 +162,35 @@ ClassicalOp::ClassicalOp(
   }
 }
 
+static unsigned n_i_for_opaque(OpType type) {
+  switch (type) {
+    case OpType::RNGSeed:
+      return 64;
+    case OpType::RNGBound:
+    case OpType::RNGIndex:
+      return 32;
+    case OpType::RNGNum:
+    case OpType::JobShotNum:
+      return 0;
+    default:
+      throw std::domain_error("Unknown opaque classical type.");
+  }
+}
+
+static unsigned n_o_for_opaque(OpType type) {
+  switch (type) {
+    case OpType::RNGSeed:
+    case OpType::RNGBound:
+    case OpType::RNGIndex:
+      return 0;
+    case OpType::RNGNum:
+    case OpType::JobShotNum:
+      return 32;
+    default:
+      throw std::domain_error("Unknown opaque classical type.");
+  }
+}
+
 ClassicalEvalOp::ClassicalEvalOp(
     OpType type, unsigned n_i, unsigned n_io, unsigned n_o,
     const std::string &name)
@@ -187,6 +216,32 @@ nlohmann::json WASMOp::serialize() const {
 
 Op_ptr WASMOp::deserialize(const nlohmann::json &j) {
   return wasm_from_json(j.at("wasm"));
+}
+
+OpaqueClassicalOp::OpaqueClassicalOp(OpType type)
+    : ClassicalOp(
+          type, n_i_for_opaque(type), 0, n_o_for_opaque(type),
+          optypeinfo().at(type).name) {
+  if (type == OpType::RNGSeed || type == OpType::RNGBound ||
+      type == OpType::RNGIndex || type == OpType::RNGNum) {
+    sig_.push_back(EdgeType::RNG);
+  }
+}
+
+nlohmann::json OpaqueClassicalOp::serialize() const {
+  nlohmann::json j;
+  j["type"] = get_type();
+  return j;
+}
+
+Op_ptr OpaqueClassicalOp::deserialize(const nlohmann::json &j) {
+  OpType optype = j.at("type").get<OpType>();
+  return std::make_shared<OpaqueClassicalOp>(optype);
+}
+
+bool OpaqueClassicalOp::is_equal(const Op &other) const {
+  const OpaqueClassicalOp &op = dynamic_cast<const OpaqueClassicalOp &>(other);
+  return (op.get_type() == get_type());
 }
 
 std::string ClassicalOp::get_name(bool) const { return name_; }
