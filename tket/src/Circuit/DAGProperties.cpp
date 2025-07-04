@@ -123,17 +123,19 @@ bool is_valid(const DAG &G) {
 
     // Now check the required properties.
 
-    CHECK(
-        in_ports.size() == q_in_ports.size() + c_in_ports.size() +
-                               b_in_ports.size() + w_in_ports.size() +
-                               r_in_ports.size());
+    bool expected =
+        (in_ports.size() == q_in_ports.size() + c_in_ports.size() +
+                                b_in_ports.size() + w_in_ports.size() +
+                                r_in_ports.size());
+    CHECK(expected);
 
     // Every Boolean out port matches a Classical out port.
     for (const Edge &e : b_out) {
       port_t p = G[e].ports.first;
-      CHECK(std::any_of(c_out.cbegin(), c_out.cend(), [&](const Edge &f) {
+      expected = std::any_of(c_out.cbegin(), c_out.cend(), [&](const Edge &f) {
         return G[f].ports.first == p;
-      }));
+      });
+      CHECK(expected);
     }
 
     // get size and empty only once
