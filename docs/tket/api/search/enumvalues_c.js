@@ -1,10 +1,9 @@
 var searchData=
 [
-  ['off_0',['Off',['../namespacetket.html#ab65820ebbcb1ceb848e855a832420396ad15305d7a4e34e02489c74a5ef542f36',1,'tket']]],
-  ['oneintree_1',['OneInTree',['../namespacetket_1_1aas.html#a5d7e42ff2fcc3a26d82ea3d4dd415374a7cace27bf2e1d90caf06c9aae1ba7b6f',1,'tket::aas']]],
-  ['open_2',['Open',['../namespacetket_1_1zx.html#ab1dacff6605c3bc8caa5f7fa6e3f5646ac3bf447eabe632720a3aa1a7ce401274',1,'tket::zx']]],
-  ['original_3',['Original',['../namespacetket_1_1zx.html#abb8c0def99251ff33fc25d6216440b03a0a52da7a03a6de3beefe54f8c03ad80d',1,'tket::zx']]],
-  ['out_4',['Out',['../namespacetket.html#ada996db81e915837fb2a8b96ab83d3fda7c147cda9e49590f6abe83d118b7353b',1,'tket']]],
-  ['outoftree_5',['OutOfTree',['../namespacetket_1_1aas.html#a5d7e42ff2fcc3a26d82ea3d4dd415374a4700d62d87d80dc0a16ceba7d87d5a42',1,'tket::aas']]],
-  ['output_6',['output',['../classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257aba29c2c02a361c9d7028472e5d92cd4a54',1,'tket::ChoiMixTableau::Output'],['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a29c2c02a361c9d7028472e5d92cd4a54',1,'tket::Output'],['../namespacetket_1_1zx.html#ab1dacff6605c3bc8caa5f7fa6e3f5646a29c2c02a361c9d7028472e5d92cd4a54',1,'tket::zx::Output']]]
+  ['name_0',['Name',['../classtket_1_1Circuit.html#a80fa413c88ea82abce86d16c8f220559a49ee3087348e8d44e1feda1917443987',1,'tket::Circuit']]],
+  ['no_1',['no',['../classtket_1_1Circuit.html#a9ebf9fffcbb5cf57899e25d9358a41cbabafd7322c6e97d25b6299b5d6fe8920b',1,'tket::Circuit::No'],['../classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6abafd7322c6e97d25b6299b5d6fe8920b',1,'tket::Circuit::No'],['../classtket_1_1Circuit.html#afa505b94722dbd9406a8ec5c2eb1a326abafd7322c6e97d25b6299b5d6fe8920b',1,'tket::Circuit::No'],['../namespacetket_1_1Transforms.html#ac99440e10912adc1db7cde10c39b4690abafd7322c6e97d25b6299b5d6fe8920b',1,'tket::Transforms::No'],['../namespacetket_1_1Transforms.html#a7f618e54969ee0fdc1a3fa4a82b3d604abafd7322c6e97d25b6299b5d6fe8920b',1,'tket::Transforms::No']]],
+  ['non_5ffinite_5fparameter_2',['NON_FINITE_PARAMETER',['../structtket_1_1GateUnitaryMatrixError.html#af611ef0f8913f3c63ce098c0050f12a1ab954217077751b7cf2f3a19a4238b878',1,'tket::GateUnitaryMatrixError']]],
+  ['nonconflictingsets_3',['NonConflictingSets',['../namespacetket.html#a2d578ba7a7267e8172ac6a302fab7f67aa14f01b7f06d08c48fcd7d489a614123',1,'tket']]],
+  ['noop_4',['noop',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5483bf26dec486ec0175e2a3ca816a0a',1,'tket']]],
+  ['nphasedx_5',['NPhasedX',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a29d19ccd6cb57e5bd1006d9130efbcfc',1,'tket']]]
 ];

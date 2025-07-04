@@ -350,11 +350,17 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1WasmState.html">tket::WasmState</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Location holding a wasm UID.  <a href="classtket_1_1WasmState.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1RngState.html">tket::RngState</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Location holding an RNG UID.  <a href="classtket_1_1RngState.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Node.html">tket::Node</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Architectural qubit location.  <a href="classtket_1_1Node.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1WasmNode.html">tket::WasmNode</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">WASM UID.  <a href="classtket_1_1WasmNode.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1RngNode.html">tket::RngNode</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">RNG UID.  <a href="classtket_1_1RngNode.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtket_1_1unit__bimaps__t.html">tket::unit_bimaps_t</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A pair of ("initial" and "final") correspondences between unit IDs.  <a href="structtket_1_1unit__bimaps__t.html#details">More...</a><br /></td></tr>
@@ -403,6 +409,7 @@ Enumerations</h2></td></tr>
 <tr class="memitem:ab638aca8b1f14267ebf40f93686b7ac9" id="r_ab638aca8b1f14267ebf40f93686b7ac9"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9">tket::UnitType</a> { <a class="el" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">tket::Qubit</a>
 , <a class="el" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9aed98fd4f2d1aeadad43670b2d07d5b40">tket::Bit</a>
 , <a class="el" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9aa177140416d55f0ce12892a005f0398a">tket::WasmState</a>
+, <a class="el" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9aa162dd441d6600f6e05b9037a73ea524">tket::RngState</a>
  }</td></tr>
 <tr class="memdesc:ab638aca8b1f14267ebf40f93686b7ac9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of information held.  <a href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9">More...</a><br /></td></tr>
 <tr class="separator:ab638aca8b1f14267ebf40f93686b7ac9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -417,6 +424,8 @@ Functions</h2></td></tr>
 <tr class="separator:a15b37bcb17a543d2716a481f41482b8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ea5fd5fa5527d487e1704565ba7fcdf" id="r_a7ea5fd5fa5527d487e1704565ba7fcdf"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a7ea5fd5fa5527d487e1704565ba7fcdf">tket::w_default_reg</a> ()</td></tr>
 <tr class="separator:a7ea5fd5fa5527d487e1704565ba7fcdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51baa738e162479e6fe5802ab7735316" id="r_a51baa738e162479e6fe5802ab7735316"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a51baa738e162479e6fe5802ab7735316">tket::r_default_reg</a> ()</td></tr>
+<tr class="separator:a51baa738e162479e6fe5802ab7735316"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38cf6ebc750836b73e4d409c38f238a8" id="r_a38cf6ebc750836b73e4d409c38f238a8"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a38cf6ebc750836b73e4d409c38f238a8">tket::node_default_reg</a> ()</td></tr>
 <tr class="separator:a38cf6ebc750836b73e4d409c38f238a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a424ce0db972dbf33c03ce0dd9580d642" id="r_a424ce0db972dbf33c03ce0dd9580d642"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a424ce0db972dbf33c03ce0dd9580d642">tket::c_debug_zero_prefix</a> ()</td></tr>
