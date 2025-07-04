@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2.7.0 (July 2025)
 
 Features:
 
