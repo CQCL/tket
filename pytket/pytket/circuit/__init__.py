@@ -188,7 +188,6 @@ def set_rng_bound(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
     little-endian binary (least significant bit first). The bound is inclusive.
 
     :param creg: register of classical bits
-    :param rng_wire: index of RNG wire
     :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
         are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
     :return: the new :py:class:`Circuit`
@@ -211,7 +210,6 @@ def set_rng_index(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
     endian binary (least significant bit first).
 
     :param creg: register of classical bits
-    :param rng_wire: index of RNG wire
     :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
         are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
     :return: the new :py:class:`Circuit`
@@ -234,7 +232,6 @@ def get_rng_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
     output number in little-endian binary (least significant bit first).
 
     :param creg: register of classical bits
-    :param rng_wire: index of RNG wire
     :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
         are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
     :return: the new :py:class:`Circuit`
