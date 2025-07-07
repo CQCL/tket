@@ -21,6 +21,7 @@
 #include <tklog/TketLog.hpp>
 
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/CircUtils.hpp"
 #include "tket/Gate/Gate.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
 #include "tket/Ops/ClassicalOps.hpp"

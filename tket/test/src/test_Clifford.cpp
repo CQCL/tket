@@ -956,5 +956,14 @@ SCENARIO("Test push_cliffords_through_measures") {
   }
 }
 
+SCENARIO("Test clifford_simp with TK2 swaps") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::TK2, {0.5, 0.5, 0.5}, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    REQUIRE(Transforms::clifford_simp(true, OpType::TK2).apply(circ));
+    REQUIRE(circ.n_gates() == 0);
+}
+
 }  // namespace test_Clifford
 }  // namespace tket

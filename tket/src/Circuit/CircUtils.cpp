@@ -1400,7 +1400,7 @@ std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
 std::optional<double> is_TK2_SWAP(const Expr &alpha, const Expr &beta, const Expr &gamma)  {
   std::optional<double> a = eval_expr_mod(alpha, 4);
   std::optional<double> b = eval_expr_mod(beta, 4);
-  std::optional<double> c = eval_expr_mod(gamma 4);
+  std::optional<double> c = eval_expr_mod(gamma, 4);
   if (a != std::nullopt && b != std::nullopt && c != std::nullopt &&
       approx_eq(*a, *b, 4) && approx_eq(*a, *c, 4)) {
     if (approx_eq(*a, 0.5, 4)) {
