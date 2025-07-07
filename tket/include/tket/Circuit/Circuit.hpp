@@ -1305,11 +1305,13 @@ class Circuit {
    * The boundaries are not updated. Implicit permutations introduced in this
    * way can be obtained using the \ref implicit_qubit_permutation method.
    *
+   * @param replace_tk2_equivalents If true, also replace TK2 gates equivalent to SWAPs.
+   * 
    * O(V)
    *
    * @return whether any swaps were replaced
    */
-  bool replace_SWAPs();
+  bool replace_SWAPs(bool replace_tk2_equivalents = false);
 
   /**
    * this function replaces an implicit wire swap between the two given qubits

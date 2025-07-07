@@ -424,23 +424,36 @@ void Circuit::cut_insert(
   substitute(incirc, sub, VertexDeletion::No);
 }
 
-bool Circuit::replace_SWAPs() {
+bool Circuit::replace_SWAPs(bool replace_tk2_equivalents) {
   VertexList bin;
   bool changed = false;
+  double total_phase = 0.;
   BGL_FORALL_VERTICES(v, dag, DAG) {
-    if (get_Op_ptr_from_Vertex(v)->get_type() == OpType::SWAP) {
-      Vertex swap = v;
-      EdgeVec outs = get_all_out_edges(v);
-      Edge out1 = outs[0];
-      dag[out1].ports.first = 1;
-      Edge out2 = outs[1];
-      dag[out2].ports.first = 0;
-      remove_vertex(swap, GraphRewiring::Yes, VertexDeletion::No);
-      bin.push_back(swap);
-      changed = true;
+    Op_ptr op = get_Op_ptr_from_Vertex(v);
+    OpType type = op->get_type();
+    if (type != OpType::SWAP && (type != OpType::TK2 || !replace_tk2_equivalents)) {
+      continue;
     }
+    if (type == OpType::TK2) {
+      std::vector<Expr> params = op->get_params();
+      std::optional<double> phase = is_TK2_SWAP(params[0], params[1], params[2]);
+      if (phase == std::nullopt) {
+        continue;
+      }
+      total_phase += *phase;
+    }
+    Vertex swap = v;
+    EdgeVec outs = get_all_out_edges(v);
+    Edge out1 = outs[0];
+    dag[out1].ports.first = 1;
+    Edge out2 = outs[1];
+    dag[out2].ports.first = 0;
+    remove_vertex(swap, GraphRewiring::Yes, VertexDeletion::No);
+    bin.push_back(swap);
+    changed = true;
   }
   remove_vertices(bin, GraphRewiring::No, VertexDeletion::Yes);
+  add_phase(total_phase);
   return changed;
 }
 
