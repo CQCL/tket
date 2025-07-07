@@ -44,7 +44,7 @@ A full list of available pytket backends is shown below.
 
 ## Cloud Access
 
-[BraketBackend](inv:#*extensions.braket.BraketBackend)
+[BraketBackend](inv:#*braket.BraketBackend)
 \- Interface to Amazon Braket service.
 
 ## Emulators
