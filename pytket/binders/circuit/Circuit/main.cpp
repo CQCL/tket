@@ -826,7 +826,10 @@ void def_circuit(nb::class_<Circuit> &pyCircuit) {
       .def(
           "replace_SWAPs", &Circuit::replace_SWAPs,
           "Replace all SWAP gates with implicit wire swaps."
-          "\n\n:return: whether any SWAP gates were replaced")
+          "\n\n:param replace_tk2_equivalents: If True, TK2 gates that are "
+          "equivalent to SWAPs will also be replaced. Defaults to False."
+          "\n\n:return: whether any SWAP gates were replaced",
+          nb::arg("replace_tk2_equivalents") = false)
       .def(
           "replace_implicit_wire_swaps",
           &Circuit::replace_all_implicit_wire_swaps,

@@ -1565,7 +1565,9 @@ def test_deserialization_from_junk() -> None:
 
 def test_wasm_serialization() -> None:
     c = Circuit(2, 2).H(0).H(1).measure_all()
-    c._add_wasm("some_name", "some_uid", [1, 1], [], [Bit(0), Bit(1)], [0])  # noqa: SLF001
+    c._add_wasm(
+        "some_name", "some_uid", [1, 1], [], [Bit(0), Bit(1)], [0]
+    )  # noqa: SLF001
     c.CZ(0, 1).measure_all()
     assert json_validate(c)
 
@@ -1682,3 +1684,14 @@ def test_pickle() -> None:
 def test_serialized_params() -> None:
     c = Circuit(1).Rz(7.5, 0)
     assert c.to_dict()["commands"][0]["op"]["params"][0] == "3.5"
+
+
+def test_replace_swaps() -> None:
+    c = Circuit(2).SWAP(0, 1)
+    assert c.replace_SWAPs()
+    assert c.n_gates == 0
+    c = Circuit(2).TK2(0.5, 0.5, 0.5, 0, 1)
+    assert not c.replace_SWAPs(replace_tk2_equivalents=False)
+    assert c.n_gates == 1
+    assert c.replace_SWAPs(replace_tk2_equivalents=True)
+    assert c.n_gates == 0

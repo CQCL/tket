@@ -2203,9 +2203,11 @@ class Circuit:
         Indicates whether the circuit has a non-trivial qubit permutation (i.e., whether there are any implicit wire swaps).
         """
 
-    def replace_SWAPs(self) -> bool:
+    def replace_SWAPs(self, replace_tk2_equivalents: bool = False) -> bool:
         """
         Replace all SWAP gates with implicit wire swaps.
+
+        :param replace_tk2_equivalents: If True, TK2 gates that are equivalent to SWAPs will also be replaced. Defaults to False.
 
         :return: whether any SWAP gates were replaced
         """
