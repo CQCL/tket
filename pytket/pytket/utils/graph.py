@@ -37,9 +37,11 @@ class Graph:
             q_inputs,
             c_inputs,
             w_inputs,
+            r_inputs,
             q_outputs,
             c_outputs,
             w_outputs,
+            r_outputs,
             input_names,
             output_names,
             node_data,
@@ -48,9 +50,11 @@ class Graph:
         self.q_inputs = q_inputs
         self.c_inputs = c_inputs
         self.w_inputs = w_inputs
+        self.r_inputs = r_inputs
         self.q_outputs = q_outputs
         self.c_outputs = c_outputs
         self.w_outputs = w_outputs
+        self.r_outputs = r_outputs
         self.input_names = input_names
         self.output_names = output_names
         self.node_data = node_data
@@ -136,6 +140,7 @@ class Graph:
         c_color = "slategray"
         b_color = "gray"
         w_color = "green"
+        r_color = "red"
         gate_color = "lightblue"
         boundary_cluster_attr = {
             "style": "rounded, filled",
@@ -164,6 +169,13 @@ class Graph:
                 c.node(
                     str((node, 0)), xlabel=self.input_names[node], **boundary_node_attr
                 )
+        with G.subgraph(name="cluster_r_inputs") as c:
+            c.attr(rank="source", **boundary_cluster_attr)
+            c.node_attr.update(shape="point", color=r_color)
+            for node in self.r_inputs:
+                c.node(
+                    str((node, 0)), xlabel=self.input_names[node], **boundary_node_attr
+                )
         with G.subgraph(name="cluster_q_outputs") as c:
             c.attr(rank="sink", **boundary_cluster_attr)
             c.node_attr.update(shape="point", color=q_color)
@@ -185,13 +197,22 @@ class Graph:
                 c.node(
                     str((node, 0)), xlabel=self.output_names[node], **boundary_node_attr
                 )
+        with G.subgraph(name="cluster_r_outputs") as c:
+            c.attr(rank="sink", **boundary_cluster_attr)
+            c.node_attr.update(shape="point", color=r_color)
+            for node in self.r_outputs:
+                c.node(
+                    str((node, 0)), xlabel=self.output_names[node], **boundary_node_attr
+                )
         boundary_nodes = (
             self.q_inputs
             | self.c_inputs
             | self.w_inputs
+            | self.r_inputs
             | self.q_outputs
             | self.c_outputs
             | self.w_outputs
+            | self.r_outputs
         )
         Gnx = self.as_nx()
         node_cluster_attr = {
@@ -223,6 +244,7 @@ class Graph:
             "Boolean": b_color,
             "Classical": c_color,
             "WASM": w_color,
+            "RNG": r_color,
         }
         edge_attr = {
             "weight": "2",

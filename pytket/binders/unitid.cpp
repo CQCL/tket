@@ -94,7 +94,8 @@ NB_MODULE(unit_id, m) {
       "Enum for data types of units in circuits (e.g. Qubits vs Bits).")
       .value("qubit", UnitType::Qubit, "A single Qubit")
       .value("wasmstate", UnitType::WasmState, "A single WasmState")
-      .value("bit", UnitType::Bit, "A single classical Bit");
+      .value("bit", UnitType::Bit, "A single classical Bit")
+      .value("rngstate", UnitType::RngState, "A single RngState");
 
   nb::class_<UnitID>(
       m, "UnitID", "A handle to a computational unit (e.g. qubit, bit)")
@@ -285,6 +286,47 @@ NB_MODULE(unit_id, m) {
           },
           "Construct WasmState instance from JSON serializable "
           "list representation of the WasmState.");
+
+  nb::class_<RngState, UnitID>(m, "RngState", "A handle to an rngstate")
+      .def("__copy__", [](const RngState &id) { return RngState(id); })
+      .def(
+          "__deepcopy__",
+          [](const RngState &id, const nb::dict &) { return RngState(id); })
+      .def(
+          nb::init<unsigned>(),
+          "Constructs an id for some index in the default RNG "
+          "register\n\n:param index: The index in the register",
+          nb::arg("index"))
+      .def("__eq__", &py_equals<RngState>)
+      .def("__hash__", [](const RngState &b) { return hash_value(b); })
+      .def(
+          "__getstate__",
+          [](const RngState &b) {
+            return nb::make_tuple(b.reg_name(), b.index());
+          })
+      .def(
+          "__setstate__",
+          [](RngState &b, const nb::tuple &t) {
+            if (t.size() != 2)
+              throw std::runtime_error(
+                  "Invalid state: tuple size: " + std::to_string(t.size()));
+            new (&b) RngState(
+                nb::cast<std::string>(t[0]),
+                nb::cast<std::vector<unsigned>>(t[1]));
+          })
+      .def(
+          "to_list",
+          [](const RngState &b) {
+            return nb::cast<nb::list>(nb::object(json(b)));
+          },
+          "Return a JSON serializable list representation of "
+          "the RngState."
+          "\n\n:return: list containing register name and index")
+      .def_static(
+          "from_list",
+          [](const nb::list &py_list) { return json(py_list).get<RngState>(); },
+          "Construct RngState instance from JSON serializable "
+          "list representation of the RngState.");
 
   nb::class_<Node, Qubit>(m, "Node", "A handle to a device node")
       .def("__copy__", [](const Node &id) { return Node(id); })

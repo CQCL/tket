@@ -529,7 +529,7 @@ class SpamCorrecter:
             if options is None:
                 options = {}
             tol_val = options.get("tol", 1 / Ncounts)
-            maxit = options.get("maxiter", None)
+            maxit = options.get("maxiter")
             outvec = _bayesian_iterative_correct(
                 correction_matrices, in_vec_norm, tol=tol_val, max_it=maxit
             )

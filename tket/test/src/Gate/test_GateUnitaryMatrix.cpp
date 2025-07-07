@@ -387,7 +387,14 @@ SCENARIO("Non-unitary op types cause not implemented exceptions") {
       OpType::Measure,
       OpType::Collapse,
       OpType::Reset,
-      OpType::Conditional};
+      OpType::Conditional,
+      OpType::RNGInput,
+      OpType::RNGOutput,
+      OpType::RNGSeed,
+      OpType::RNGBound,
+      OpType::RNGIndex,
+      OpType::RNGNum,
+      OpType::JobShotNum};
   const std::vector<double> no_parameters;
   for (auto type : non_unitary_types) {
     const auto name = OpDesc(type).name();

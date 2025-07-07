@@ -1863,6 +1863,41 @@ class _QasmWriter:
         for variable in outputs:
             self.mark_as_written(label, variable)
 
+    def add_rng_seed(self, args: list[Bit]) -> None:
+        assert len(args) == 65  # noqa: PLR2004
+        reg_name = args[0].reg_name
+        creg = self.cregs[reg_name]
+        assert args[:-1] == creg.to_list()
+        self.strings.add_string(f"RNGseed({reg_name});\n")
+
+    def add_rng_bound(self, args: list[Bit]) -> None:
+        assert len(args) == 33  # noqa: PLR2004
+        reg_name = args[0].reg_name
+        creg = self.cregs[reg_name]
+        assert args[:-1] == creg.to_list()
+        self.strings.add_string(f"RNGbound({reg_name});\n")
+
+    def add_rng_index(self, args: list[Bit]) -> None:
+        assert len(args) == 33  # noqa: PLR2004
+        reg_name = args[0].reg_name
+        creg = self.cregs[reg_name]
+        assert args[:-1] == creg.to_list()
+        self.strings.add_string(f"RNGindex({reg_name});\n")
+
+    def add_rng_num(self, args: list[Bit]) -> None:
+        assert len(args) == 33  # noqa: PLR2004
+        reg_name = args[0].reg_name
+        creg = self.cregs[reg_name]
+        assert args[:-1] == creg.to_list()
+        self.strings.add_string(f"{reg_name} = RNGnum();\n")
+
+    def add_job_shot_num(self, args: list[Bit]) -> None:
+        assert len(args) == 32  # noqa: PLR2004
+        reg_name = args[0].reg_name
+        creg = self.cregs[reg_name]
+        assert args == creg.to_list()
+        self.strings.add_string(f"{reg_name} = JOB_shotnum;\n")
+
     def add_measure(self, args: Sequence[UnitID]) -> None:
         label = self.strings.add_string(f"measure {args[0]} -> {args[1]};\n")
         self.mark_as_written(label, f"{args[1]}")
@@ -1940,7 +1975,7 @@ class _QasmWriter:
         mainstr = opstr + _make_params_str(params) + _make_args_str(args)
         return gatedefstr, mainstr
 
-    def add_op(self, op: Op, args: Sequence[UnitID]) -> None:  # noqa: PLR0912
+    def add_op(self, op: Op, args: Sequence[UnitID]) -> None:  # noqa: PLR0912, PLR0915
         optype, _params = _get_optype_and_params(op)
         if optype == OpType.RangePredicate:
             assert isinstance(op, RangePredicateOp)
@@ -1968,6 +2003,16 @@ class _QasmWriter:
         elif optype == OpType.WASM:
             assert isinstance(op, WASMOp)
             self.add_wasm(op, cast("list[Bit]", args))
+        elif optype == OpType.RNGSeed:
+            self.add_rng_seed(cast("list[Bit]", args))
+        elif optype == OpType.RNGBound:
+            self.add_rng_bound(cast("list[Bit]", args))
+        elif optype == OpType.RNGIndex:
+            self.add_rng_index(cast("list[Bit]", args))
+        elif optype == OpType.RNGNum:
+            self.add_rng_num(cast("list[Bit]", args))
+        elif optype == OpType.JobShotNum:
+            self.add_job_shot_num(cast("list[Bit]", args))
         elif optype == OpType.Measure:
             self.add_measure(args)
         elif _hqs_header(self.header) and optype == OpType.ZZPhase:

@@ -113,6 +113,11 @@ const OpTypeSet& all_classical_types() {
       OpType::MultiBit,
       OpType::WASM,
       OpType::ClExpr,
+      OpType::RNGSeed,
+      OpType::RNGBound,
+      OpType::RNGIndex,
+      OpType::RNGNum,
+      OpType::JobShotNum,
   };
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
@@ -139,10 +144,20 @@ const OpTypeSet& all_controlled_gate_types() {
   return *gates;
 }
 
+const OpTypeSet& all_opaque_classical_types() {
+  static const OpTypeSet optypes{
+      OpType::RNGSeed, OpType::RNGBound, OpType::RNGIndex, OpType::RNGNum,
+      OpType::JobShotNum};
+  static std::unique_ptr<const OpTypeSet> gates =
+      std::make_unique<const OpTypeSet>(optypes);
+  return *gates;
+}
+
 bool is_metaop_type(OpType optype) {
   static const OpTypeSet metaops = {
       OpType::Input,     OpType::Output,     OpType::ClInput, OpType::ClOutput,
-      OpType::WASMInput, OpType::WASMOutput, OpType::Create,  OpType::Discard};
+      OpType::WASMInput, OpType::WASMOutput, OpType::Create,  OpType::Discard,
+      OpType::RNGInput,  OpType::RNGOutput};
   return find_in_set(optype, metaops);
 }
 
@@ -158,17 +173,19 @@ bool is_final_q_type(OpType optype) {
 
 bool is_initial_type(OpType optype) {
   return optype == OpType::Input || optype == OpType::Create ||
-         optype == OpType::ClInput || optype == OpType::WASMInput;
+         optype == OpType::ClInput || optype == OpType::WASMInput ||
+         optype == OpType::RNGInput;
 }
 
 bool is_final_type(OpType optype) {
   return optype == OpType::Output || optype == OpType::Discard ||
-         optype == OpType::ClOutput || optype == OpType::WASMOutput;
+         optype == OpType::ClOutput || optype == OpType::WASMOutput ||
+         optype == OpType::RNGOutput;
 }
 
 bool is_boundary_type(OpType optype) {
   return is_boundary_q_type(optype) || is_boundary_c_type(optype) ||
-         is_boundary_w_type(optype);
+         is_boundary_w_type(optype) || is_boundary_r_type(optype);
 }
 
 bool is_boundary_q_type(OpType optype) {
@@ -181,6 +198,10 @@ bool is_boundary_c_type(OpType optype) {
 
 bool is_boundary_w_type(OpType optype) {
   return optype == OpType::WASMInput || optype == OpType::WASMOutput;
+}
+
+bool is_boundary_r_type(OpType optype) {
+  return optype == OpType::RNGInput || optype == OpType::RNGOutput;
 }
 
 bool is_gate_type(OpType optype) {
@@ -285,4 +306,9 @@ bool is_classical_type(OpType optype) {
 bool is_controlled_gate_type(OpType optype) {
   return find_in_set(optype, all_controlled_gate_types());
 }
+
+bool is_opaque_classical_type(OpType optype) {
+  return find_in_set(optype, all_opaque_classical_types());
+}
+
 }  // namespace tket

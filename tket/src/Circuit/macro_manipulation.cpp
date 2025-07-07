@@ -151,6 +151,8 @@ void Circuit::append_with_map(const Circuit& c2, const unit_map_t& qm) {
 
   copy.add_wasm_register(_number_of_wasm_wires);
   add_wasm_register(copy._number_of_wasm_wires);
+  copy.add_rng_register(_number_of_rng_wires);
+  add_rng_register(copy._number_of_rng_wires);
 
   // Check what we need to do at the joins:
   //   Output  --- Input    ==>   -------------
@@ -253,7 +255,7 @@ void Circuit::substitute(
     VertexDeletion vertex_deletion, OpGroupTransfer opgroup_transfer) {
   if (!to_insert.is_simple()) throw SimpleOnly();
   if (to_insert.n_qubits() + to_insert.n_bits() +
-          to_insert._number_of_wasm_wires !=
+          to_insert._number_of_wasm_wires + to_insert._number_of_rng_wires !=
       to_replace.in_hole.size())
     throw CircuitInvalidity("Subcircuit boundary mismatch to hole");
 
@@ -277,6 +279,7 @@ void Circuit::substitute(
   unsigned qubit_id = 0;
   unsigned bit_id = 0;
   unsigned wasm_id = 0;
+  unsigned rng_id = 0;
   for (unsigned i = 0; i < to_replace.in_hole.size(); ++i) {
     Edge in_edge = to_replace.in_hole.at(i);
     std::optional<Edge> out_edge = to_replace.out_hole.at(i);
@@ -360,6 +363,24 @@ void Circuit::substitute(
         set_vertex_Op_ptr(outp, noop);
         bin.push_back(outp);
         ++wasm_id;
+        break;
+      }
+      case EdgeType::RNG: {
+        TKET_ASSERT(out_edge.has_value());
+        TKET_ASSERT(get_edgetype(*out_edge) == EdgeType::RNG);
+        Vertex inp = vm[to_insert.get_in(RngState(rng_id))];
+        add_edge({in_pred, in_port}, {inp, 0}, EdgeType::RNG);
+        set_vertex_Op_ptr(inp, noop);
+        bin.push_back(inp);
+        Vertex out_succ = target(*out_edge);
+        port_t out_port = get_target_port(*out_edge);
+        ebin.insert(*out_edge);
+        Vertex outp = vm[to_insert.get_out(RngState(rng_id))];
+        add_edge({outp, 0}, {out_succ, out_port}, EdgeType::RNG);
+        set_vertex_Op_ptr(outp, noop);
+        bin.push_back(outp);
+        ++rng_id;
+        break;
       }
     }
   }

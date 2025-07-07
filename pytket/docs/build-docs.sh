@@ -2,6 +2,8 @@ cp -R pytket-docs-theming/_static .
 cp -R pytket-docs-theming/quantinuum-sphinx .
 cp pytket-docs-theming/conf.py .
 
+echo "coverage_ignore_functions.extend([\"get_job_shot_num\", \"get_rng_num\", \"set_rng_bound\", \"set_rng_index\", \"set_rng_seed\"])" >> conf.py
+
 # Get pytket package version to be used in page title
 PYTKET_VERSION="$(pip show pytket| grep Version | awk '{print $2}')"
 

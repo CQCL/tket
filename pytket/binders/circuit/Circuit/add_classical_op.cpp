@@ -272,6 +272,110 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("funcname"), nb::arg("wasm_uid"), nb::arg("list_reg_in"),
           nb::arg("list_reg_out"), nb::arg("wasm_wire_args"), nb::arg("kwargs"))
+      .def("_set_rng_seed",
+           [](Circuit &circ, BitRegister &creg, unsigned rng_wire,
+            const nb::kwargs &kwargs) {
+            std::shared_ptr<OpaqueClassicalOp> op = std::make_shared<OpaqueClassicalOp>(OpType::RNGSeed);
+            std::vector<UnitID> args;
+            for (const Bit& arg : creg.to_vector()) {
+              args.push_back(arg);
+            }
+            args.push_back(RngState(rng_wire));
+            return add_gate_method_any(&circ, op, args, kwargs);
+           },
+           "Seed an RNG from the contents of a classical register."
+           "\n\nThe classical register must be exactly 64 bits."
+           "\n\n:param creg: register of classical bits"
+           "\n:param rng_wire: index of RNG wire"
+           "\n:param kwargs: additional arguments passed to `add_gate_method` "
+           "(allowed parameters are `opgroup`,  `condition` , `condition_bits` "
+           "and `condition_value`)"
+           "\n:return: the new :py:class:`~.Circuit`",
+           nb::arg("creg"), nb::arg("rng_wire"), nb::arg("kwargs"))
+      .def("_set_rng_bound",
+           [](Circuit &circ, BitRegister &creg, unsigned rng_wire,
+            const nb::kwargs &kwargs) {
+            std::shared_ptr<OpaqueClassicalOp> op = std::make_shared<OpaqueClassicalOp>(OpType::RNGBound);
+            std::vector<UnitID> args;
+            for (const Bit& arg : creg.to_vector()) {
+              args.push_back(arg);
+            }
+            args.push_back(RngState(rng_wire));
+            return add_gate_method_any(&circ, op, args, kwargs);
+           },
+           "Set an RNG upper bound from the contents of a classical register."
+           "\n\nThe classical register must be exactly 32 bits. It encodes the "
+           "upper bound in little-endian binary (least significant bit first). "
+           "The bound is inclusive."
+           "\n\n:param creg: register of classical bits"
+           "\n:param rng_wire: index of RNG wire"
+           "\n:param kwargs: additional arguments passed to `add_gate_method` "
+           "(allowed parameters are `opgroup`,  `condition` , `condition_bits` "
+           "and `condition_value`)"
+           "\n:return: the new :py:class:`~.Circuit`",
+           nb::arg("creg"), nb::arg("rng_wire"), nb::arg("kwargs"))
+      .def("_set_rng_index",
+           [](Circuit &circ, BitRegister &creg, unsigned rng_wire,
+            const nb::kwargs &kwargs) {
+            std::shared_ptr<OpaqueClassicalOp> op = std::make_shared<OpaqueClassicalOp>(OpType::RNGIndex);
+            std::vector<UnitID> args;
+            for (const Bit& arg : creg.to_vector()) {
+              args.push_back(arg);
+            }
+            args.push_back(RngState(rng_wire));
+            return add_gate_method_any(&circ, op, args, kwargs);
+           },
+           "Set an RNG stream index from the contents of a classical register."
+           "\n\nThe classical register must be exactly 32 bits. It encodes the "
+           "index in little-endian binary (least significant bit first)."
+           "\n\n:param creg: register of classical bits"
+           "\n:param rng_wire: index of RNG wire"
+           "\n:param kwargs: additional arguments passed to `add_gate_method` "
+           "(allowed parameters are `opgroup`,  `condition` , `condition_bits` "
+           "and `condition_value`)"
+           "\n:return: the new :py:class:`~.Circuit`",
+           nb::arg("creg"), nb::arg("rng_wire"), nb::arg("kwargs"))
+      .def("_get_rng_num",
+           [](Circuit &circ, BitRegister &creg, unsigned rng_wire,
+            const nb::kwargs &kwargs) {
+            std::shared_ptr<OpaqueClassicalOp> op = std::make_shared<OpaqueClassicalOp>(OpType::RNGNum);
+            std::vector<UnitID> args;
+            for (const Bit& arg : creg.to_vector()) {
+              args.push_back(arg);
+            }
+            args.push_back(RngState(rng_wire));
+            return add_gate_method_any(&circ, op, args, kwargs);
+           },
+           "Get RNG output into a classical register."
+           "\n\nThe classical register must be exactly 32 bits. After the "
+           "operation it encodes the output number in little-endian binary "
+           "(least significant bit first)."
+           "\n\n:param creg: register of classical bits"
+           "\n:param rng_wire: index of RNG wire"
+           "\n:param kwargs: additional arguments passed to `add_gate_method` "
+           "(allowed parameters are `opgroup`,  `condition` , `condition_bits` "
+           "and `condition_value`)"
+           "\n:return: the new :py:class:`~.Circuit`",
+           nb::arg("creg"), nb::arg("rng_wire"), nb::arg("kwargs"))
+      .def("_get_job_shot_num",
+          [](Circuit &circ, BitRegister &creg, const nb::kwargs &kwargs) {
+            std::shared_ptr<OpaqueClassicalOp> op = std::make_shared<OpaqueClassicalOp>(OpType::JobShotNum);
+            std::vector<UnitID> args;
+            for (const Bit& arg : creg.to_vector()) {
+              args.push_back(arg);
+            }
+            return add_gate_method_any(&circ, op, args, kwargs);
+           },
+           "Get shot number into a classical register."
+           "\n\nThe classical register must be exactly 32 bits. After the "
+           "operation it encodes the shot number in little-endian binary "
+           "(least significant bit first)."
+           "\n\n:param creg: register of classical bits"
+           "\n:param kwargs: additional arguments passed to `add_gate_method` "
+           "(allowed parameters are `opgroup`,  `condition` , `condition_bits` "
+           "and `condition_value`)"
+           "\n:return: the new :py:class:`~.Circuit`",
+           nb::arg("creg"), nb::arg("kwargs"))
       .def(
           "add_c_setbits",
           [](Circuit &circ, const nb::tket_custom::SequenceVec<bool> &values,

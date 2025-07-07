@@ -131,6 +131,10 @@ Circuit *add_gate_method_any(
           new_args.push_back(WasmState(uid));
           break;
         }
+        case EdgeType::RNG: {
+          new_args.push_back(RngState(uid));
+          break;
+        }
         case EdgeType::Classical:
         case EdgeType::Boolean: {
           new_args.push_back(Bit(uid));

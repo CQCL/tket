@@ -406,4 +406,28 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_conjugation_box
 
+   RNG operations
+   --------------
+
+   These operations allow the use of a PRNG implemented in the backend. The
+   details of its implementation are backend-specific. Backends that do not
+   provide a PRNG may either ignore these operations or reject them.
+
+    .. automethod:: set_rng_seed
+
+    .. automethod:: set_rng_bound
+
+    .. automethod:: set_rng_index
+
+    .. automethod:: get_rng_num
+
+   Operations to get job variables
+   -------------------------------
+
+   Job variables encode metadata about the job that is running the circuit, such
+   as the shot number (when the circuit is being run multiple times). Such
+   information may not be available on all backends, and backends may either
+   ignore these operations or reject them.
+
+   .. automethod:: get_job_shot_num
 ```

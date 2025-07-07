@@ -37,7 +37,7 @@ enum class VertexType { Quantum, Classical, Measure };
 
 bool is_valid(const DAG &G) {
   BGL_FORALL_VERTICES(v, G, DAG) {
-    EdgeSet q_in, c_in, b_in, w_in;
+    EdgeSet q_in, c_in, b_in, w_in, r_in;
     BGL_FORALL_INEDGES(v, e, G, DAG) {
       switch (G[e].type) {
         case EdgeType::Quantum:
@@ -52,11 +52,14 @@ bool is_valid(const DAG &G) {
         case EdgeType::WASM:
           w_in.insert(e);
           break;
+        case EdgeType::RNG:
+          r_in.insert(e);
+          break;
         default:
           CHECK(!"found unknown edge type in is_valid check");
       }
     }
-    EdgeSet q_out, c_out, b_out, w_out;
+    EdgeSet q_out, c_out, b_out, w_out, r_out;
     BGL_FORALL_OUTEDGES(v, e, G, DAG) {
       switch (G[e].type) {
         case EdgeType::Quantum:
@@ -71,12 +74,15 @@ bool is_valid(const DAG &G) {
         case EdgeType::WASM:
           w_out.insert(e);
           break;
+        case EdgeType::RNG:
+          r_out.insert(e);
+          break;
         default:
           CHECK(!"found unknown edge type in is_valid check");
       }
     }
     std::set<port_t> in_ports, q_in_ports, q_out_ports, c_in_ports, c_out_ports,
-        b_in_ports, w_in_ports, w_out_ports;
+        b_in_ports, w_in_ports, w_out_ports, r_in_ports, r_out_ports;
     for (const auto &e : q_in) {
       port_t p = G[e].ports.second;
       in_ports.insert(p);
@@ -106,19 +112,30 @@ bool is_valid(const DAG &G) {
     for (const auto &e : w_out) {
       w_out_ports.insert(G[e].ports.first);
     }
+    for (const auto &e : r_in) {
+      port_t p = G[e].ports.second;
+      in_ports.insert(p);
+      r_in_ports.insert(p);
+    }
+    for (const auto &e : r_out) {
+      r_out_ports.insert(G[e].ports.first);
+    }
 
     // Now check the required properties.
 
-    CHECK(
-        in_ports.size() == q_in_ports.size() + c_in_ports.size() +
-                               b_in_ports.size() + w_in_ports.size());
+    bool expected =
+        (in_ports.size() == q_in_ports.size() + c_in_ports.size() +
+                                b_in_ports.size() + w_in_ports.size() +
+                                r_in_ports.size());
+    CHECK(expected);
 
     // Every Boolean out port matches a Classical out port.
     for (const Edge &e : b_out) {
       port_t p = G[e].ports.first;
-      CHECK(std::any_of(c_out.cbegin(), c_out.cend(), [&](const Edge &f) {
+      expected = std::any_of(c_out.cbegin(), c_out.cend(), [&](const Edge &f) {
         return G[f].ports.first == p;
-      }));
+      });
+      CHECK(expected);
     }
 
     // get size and empty only once
@@ -134,6 +151,9 @@ bool is_valid(const DAG &G) {
     unsigned w_in_deg = w_in.size();
     unsigned w_out_deg = w_out.size();
 
+    unsigned r_in_deg = r_in.size();
+    unsigned r_out_deg = r_out.size();
+
     bool q_in_empty = q_in.empty();
     bool q_out_empty = q_out.empty();
 
@@ -146,6 +166,9 @@ bool is_valid(const DAG &G) {
     bool w_in_empty = w_in.empty();
     bool w_out_empty = w_out.empty();
 
+    bool r_in_empty = r_in.empty();
+    bool r_out_empty = r_out.empty();
+
     // check that ports maps to edges
 
     CHECK(q_in_ports.size() == q_in_deg);
@@ -153,6 +176,9 @@ bool is_valid(const DAG &G) {
 
     CHECK(w_in_ports.size() == w_in_deg);
     CHECK(w_out_ports.size() == w_out_deg);
+
+    CHECK(r_in_ports.size() == r_in_deg);
+    CHECK(r_out_ports.size() == r_out_deg);
 
     CHECK(c_in_ports.size() == c_in_deg);
     CHECK(c_out_ports.size() == c_out_deg);
@@ -165,6 +191,8 @@ bool is_valid(const DAG &G) {
       CHECK(b_out_empty);
       CHECK(w_in_empty);
       CHECK(w_out_empty);
+      CHECK(r_in_empty);
+      CHECK(r_out_empty);
       CHECK(q_in_deg == 0 && q_out_deg == 1);
     } else if (c_in_empty && c_out_empty && !q_in_empty && q_out_empty) {
       // quantum out vertex
@@ -172,6 +200,8 @@ bool is_valid(const DAG &G) {
       CHECK(b_out_empty);
       CHECK(w_in_empty);
       CHECK(w_out_empty);
+      CHECK(r_in_empty);
+      CHECK(r_out_empty);
       CHECK(q_in_deg == 1 && q_out_deg == 0);
     } else if (
         c_in_empty && c_out_empty && !q_in_empty && !q_out_empty &&
@@ -180,6 +210,8 @@ bool is_valid(const DAG &G) {
       CHECK(b_out_empty);
       CHECK(w_in_empty);
       CHECK(w_out_empty);
+      CHECK(r_in_empty);
+      CHECK(r_out_empty);
       CHECK(q_in_ports == q_out_ports);  // bijection between in and out ports
     } else if (
         c_in_empty && c_out_empty && !q_in_empty && !q_out_empty &&
@@ -188,6 +220,8 @@ bool is_valid(const DAG &G) {
       CHECK(b_out_empty);
       CHECK(w_in_empty);
       CHECK(w_out_empty);
+      CHECK(r_in_empty);
+      CHECK(r_out_empty);
       CHECK(q_in_ports == q_out_ports);  // bijection between in and out ports
     } else if (w_in_empty && !w_out_empty) {
       // wasm out vertex
@@ -197,6 +231,8 @@ bool is_valid(const DAG &G) {
       CHECK(c_out_empty);
       CHECK(q_in_empty);
       CHECK(q_out_empty);
+      CHECK(r_in_empty);
+      CHECK(r_out_empty);
       CHECK(w_in_deg == 0 && w_out_deg == 1);
     } else if (!w_in_empty && w_out_empty) {
       // wasm in vertex
@@ -206,11 +242,45 @@ bool is_valid(const DAG &G) {
       CHECK(c_out_empty);
       CHECK(q_in_empty);
       CHECK(q_out_empty);
+      CHECK(r_in_empty);
+      CHECK(r_out_empty);
       CHECK(w_in_deg == 1 && w_out_deg == 0);
     } else if (!w_in_empty && !w_out_empty) {
       // wasm vertex
       CHECK(q_in_empty);
       CHECK(q_out_empty);
+      CHECK(r_in_empty);
+      CHECK(r_out_empty);
+      CHECK(c_in_ports == c_out_ports);  // bijection between in and out ports
+      CHECK(w_in_ports == w_out_ports);  // bijection between in and out ports
+    } else if (r_in_empty && !r_out_empty) {
+      // RNG out vertex
+      CHECK(b_in_empty);
+      CHECK(b_out_empty);
+      CHECK(c_in_empty);
+      CHECK(c_out_empty);
+      CHECK(q_in_empty);
+      CHECK(q_out_empty);
+      CHECK(w_in_empty);
+      CHECK(w_out_empty);
+      CHECK(r_in_deg == 0 && r_out_deg == 1);
+    } else if (!r_in_empty && r_out_empty) {
+      // RNG in vertex
+      CHECK(b_in_empty);
+      CHECK(b_out_empty);
+      CHECK(c_in_empty);
+      CHECK(c_out_empty);
+      CHECK(q_in_empty);
+      CHECK(q_out_empty);
+      CHECK(w_in_empty);
+      CHECK(w_out_empty);
+      CHECK(r_in_deg == 1 && r_out_deg == 0);
+    } else if (!r_in_empty && !r_out_empty) {
+      // RNG vertex
+      CHECK(q_in_empty);
+      CHECK(q_out_empty);
+      CHECK(w_in_empty);
+      CHECK(w_out_empty);
       CHECK(c_in_ports == c_out_ports);  // bijection between in and out ports
       CHECK(w_in_ports == w_out_ports);  // bijection between in and out ports
     } else if (c_in_empty && !c_out_empty) {
@@ -220,6 +290,8 @@ bool is_valid(const DAG &G) {
       CHECK(w_out_empty);
       CHECK(q_in_empty);
       CHECK(q_out_empty);
+      CHECK(r_in_empty);
+      CHECK(r_out_empty);
       CHECK(c_in_deg == 0 && c_out_deg == 1);
     } else if (!c_in_empty && c_out_empty) {
       // classical out vertex, can't have bool out edges
@@ -228,6 +300,8 @@ bool is_valid(const DAG &G) {
       CHECK(w_out_empty);
       CHECK(q_in_empty);
       CHECK(q_out_empty);
+      CHECK(r_in_empty);
+      CHECK(r_out_empty);
       CHECK(c_in_deg == 1 && c_out_deg == 0);
     } else if (q_in_empty && q_out_empty && !c_in_empty && !c_out_empty) {
       // classical vertex, can have bool in and out edges
@@ -238,12 +312,16 @@ bool is_valid(const DAG &G) {
       // mixed vertex, can have bool in and out edges
       CHECK(w_in_empty);
       CHECK(w_out_empty);
+      CHECK(r_in_empty);
+      CHECK(r_out_empty);
       CHECK(c_in_ports == c_out_ports);  // bijection between in and out ports
       CHECK(q_in_ports == q_out_ports);  // bijection between in and out ports
     } else if (q_in_empty && q_out_empty && c_in_empty && c_out_empty) {
       // unconected vertex, can't have bool in and out edges
       CHECK(w_in_empty);
       CHECK(w_out_empty);
+      CHECK(r_in_empty);
+      CHECK(r_out_empty);
       CHECK(b_in_empty);
       CHECK(b_out_empty);
     } else {

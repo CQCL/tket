@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.7.0 (July 2025)
+
+Features:
+
+- Add RNG and shot-number operations with conversion to extended QASM.
+
+Fixes:
+
+- Add Python bindings for all `OpType`s.
+
 ## 2.6.0 (June 2025)
 
 Features:
