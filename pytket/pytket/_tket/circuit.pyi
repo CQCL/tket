@@ -2498,7 +2498,6 @@ class Circuit:
             little-endian binary (least significant bit first). The bound is inclusive.
 
             :param creg: register of classical bits
-            :param rng_wire: index of RNG wire
             :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
                 are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
             :return: the new :py:class:`Circuit`
@@ -2512,7 +2511,6 @@ class Circuit:
             endian binary (least significant bit first).
 
             :param creg: register of classical bits
-            :param rng_wire: index of RNG wire
             :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
                 are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
             :return: the new :py:class:`Circuit`
@@ -2526,7 +2524,6 @@ class Circuit:
             output number in little-endian binary (least significant bit first).
 
             :param creg: register of classical bits
-            :param rng_wire: index of RNG wire
             :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
                 are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
             :return: the new :py:class:`Circuit`
