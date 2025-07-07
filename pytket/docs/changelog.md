@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+Features:
+
+- Add the optional `replace_tk2_equivalents` argument to `replace_SWAPs`.
+  Also, add handling of TK2 gates that are equivalent to SWAPs in `CliffordSimp`.
+
 ## 2.7.0 (July 2025)
 
 Features:
@@ -1791,10 +1798,3 @@ Updates:
 
 - Cirq functionality supports Cirq 0.4
 - Refactoring into modules
-
-## 0.0.1 (July 2018)
-
-New Features:
-
-- Support for circuits and architectures from Google Cirq (0.3)
-- Routing and placement procedures available for manipulating circuits to satisfy device specifications
