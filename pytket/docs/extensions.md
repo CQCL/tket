@@ -16,7 +16,7 @@ The types of `Backend` available in pytket are the following
 ## Types of Backend
 
 - **QPUs** - These are real quantum computers that return shots based results. E.g the [QuantinuumBackend](inv:#*extensions.quantinuum.QuantinuumBackend).
-- **Cloud Access** - Cloud backends allow pytket to interface with cloud platforms to access additional QPUs and simulators. E.g [BraketBackend](inv:#*extensions.braket.BraketBackend).
+- **Cloud Access** - Cloud backends allow pytket to interface with cloud platforms to access additional QPUs and simulators. E.g [BraketBackend](inv:#*braket.BraketBackend).
 - **Emulators** - These classically simulate a circuit and produce shots based results. Sometimes emulators use a noise model and have connectivity constraints to emulate real QPUs. E.g. [IBMQEmulatorBackend](inv:#*extensions.qiskit.IBMQEmulatorBackend)
 - **Statevector Simulators** - Calculates the pure quantum state prepared by a circuit returning a vector/ndarray. Examples of statevector simulators are the [ForestStateBackend](inv:#*extensions.pyquil.ForestStateBackend) and the [AerStateBackend](inv:#*extensions.qiskit.AerStateBackend).
 - **Unitary Simulators** - Unitary simulators calculate the unitary operator that is applied by a circuit. A unitary matrix/ndarray is returned [AerUnitaryBackend](inv:#*extensions.qiskit.AerUnitaryBackend) is an example of such a simulator.
