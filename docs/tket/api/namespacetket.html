@@ -1319,6 +1319,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a19d7f9c01b83138402d0d0630e6b0ab7" id="r_a19d7f9c01b83138402d0d0630e6b0ab7"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, std::array&lt; <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>, 3 &gt;, <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a19d7f9c01b83138402d0d0630e6b0ab7">normalise_TK2_angles</a> (<a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> a, <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> b, <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> c)</td></tr>
 <tr class="memdesc:a19d7f9c01b83138402d0d0630e6b0ab7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get normalised TK2 angles and local change of basis for normalisation.  <br /></td></tr>
 <tr class="separator:a19d7f9c01b83138402d0d0630e6b0ab7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a80582d8033f433a0d594b0ab33ee1e33" id="r_a80582d8033f433a0d594b0ab33ee1e33"><td class="memItemLeft" align="right" valign="top">std::optional&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a80582d8033f433a0d594b0ab33ee1e33">is_TK2_SWAP</a> (const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;alpha, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;beta, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;gamma)</td></tr>
+<tr class="memdesc:a80582d8033f433a0d594b0ab33ee1e33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether the given TK2 angles represent a SWAP gate up to a phase, and return the phase if so.  <br /></td></tr>
+<tr class="separator:a80582d8033f433a0d594b0ab33ee1e33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5282c55bc6f6450eca5dc48555e8a6ab" id="r_a5282c55bc6f6450eca5dc48555e8a6ab"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a5282c55bc6f6450eca5dc48555e8a6ab">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="classtket_1_1Command.html">Command</a> &amp;com)</td></tr>
 <tr class="separator:a5282c55bc6f6450eca5dc48555e8a6ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ec709945767bd70fb640a0838d63b0f" id="r_a7ec709945767bd70fb640a0838d63b0f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a7ec709945767bd70fb640a0838d63b0f">from_json</a> (const nlohmann::json &amp;j, <a class="el" href="classtket_1_1Command.html">Command</a> &amp;com)</td></tr>
@@ -15053,6 +15056,45 @@ template&lt;&gt; </div>
 
 </div>
 </div>
+<a id="a80582d8033f433a0d594b0ab33ee1e33" name="a80582d8033f433a0d594b0ab33ee1e33"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80582d8033f433a0d594b0ab33ee1e33">&#9670;&#160;</a></span>is_TK2_SWAP()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; double &gt; tket::is_TK2_SWAP </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;&#160;</td>
+          <td class="paramname"><em>alpha</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;&#160;</td>
+          <td class="paramname"><em>beta</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;&#160;</td>
+          <td class="paramname"><em>gamma</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check whether the given TK2 angles represent a SWAP gate up to a phase, and return the phase if so. </p>
+<dl class="section return"><dt>Returns</dt><dd>The phase (as a multiple of pi) if the TK2 is a SWAP up to a phase. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l01400">1400</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a85a557b9186a43dd79f284d4ac6d5bff" name="a85a557b9186a43dd79f284d4ac6d5bff"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a85a557b9186a43dd79f284d4ac6d5bff">&#9670;&#160;</a></span>is_unitary()</h2>
 
@@ -16567,7 +16609,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macro__manipulation_8cpp_source.html#l00125">125</a> of file <a class="el" href="macro__manipulation_8cpp_source.html">macro_manipulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro__manipulation_8cpp_source.html#l00126">126</a> of file <a class="el" href="macro__manipulation_8cpp_source.html">macro_manipulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -17107,7 +17149,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macro__manipulation_8cpp_source.html#l00242">242</a> of file <a class="el" href="macro__manipulation_8cpp_source.html">macro_manipulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro__manipulation_8cpp_source.html#l00243">243</a> of file <a class="el" href="macro__manipulation_8cpp_source.html">macro_manipulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -18268,7 +18310,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macro__manipulation_8cpp_source.html#l00411">411</a> of file <a class="el" href="macro__manipulation_8cpp_source.html">macro_manipulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro__manipulation_8cpp_source.html#l00412">412</a> of file <a class="el" href="macro__manipulation_8cpp_source.html">macro_manipulation.cpp</a>.</p>
 
 </div>
 </div>
