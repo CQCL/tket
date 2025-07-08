@@ -14,6 +14,7 @@
 
 #include "tket/Transformations/CliffordReductionPass.hpp"
 
+#include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/DAGDefs.hpp"
 #include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
 
@@ -687,7 +688,16 @@ bool CliffordReductionPass::reduce_circuit(Circuit &circ, bool allow_swaps) {
           }
           break;
         }
-        case OpType::SWAP: {
+        case OpType::SWAP:
+        case OpType::TK2: {
+          if (type == OpType::TK2) {
+            std::vector<Expr> params = op->get_params();
+            std::optional<double> phase =
+                is_TK2_SWAP(params[0], params[1], params[2]);
+            if (phase == std::nullopt) {
+              goto default_case;
+            }
+          }
           auto r0 = context.itable.get<TagEdge>().equal_range(ins[0]);
           for (auto it = r0.first; it != r0.second; ++it) {
             InteractionPoint ip = *it;
@@ -702,6 +712,7 @@ bool CliffordReductionPass::reduce_circuit(Circuit &circ, bool allow_swaps) {
           }
           break;
         }
+        default_case:
         default: {
           for (unsigned i = 0; i < ins.size(); ++i) {
             auto r = context.itable.get<TagEdge>().equal_range(ins[i]);
@@ -736,7 +747,7 @@ bool CliffordReductionPass::reduce_circuit(Circuit &circ, bool allow_swaps) {
   }
 
   if (allow_swaps) {
-    context.success = circ.replace_SWAPs() || context.success;
+    context.success = circ.replace_SWAPs(true) || context.success;
   }
 
   return context.success;

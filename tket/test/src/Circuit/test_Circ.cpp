@@ -3322,6 +3322,30 @@ SCENARIO("Test replacing wire swaps") {
   REQUIRE(u.isApprox(w, ERR_EPS));
 }
 
+SCENARIO("Test replacing TK2 swaps") {
+  Circuit circ(2);
+  circ.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {0, 1});
+  GIVEN("case 1") {
+    circ.add_op<unsigned>(OpType::TK2, {0.5, 0.5, 0.5}, {0, 1});
+  }
+  GIVEN("case 2") {
+    circ.add_op<unsigned>(OpType::TK2, {1.5, 1.5, 1.5}, {0, 1});
+  }
+  GIVEN("case 3") {
+    circ.add_op<unsigned>(OpType::TK2, {2.5, 2.5, 2.5}, {0, 1});
+  }
+  GIVEN("case 4") {
+    circ.add_op<unsigned>(OpType::TK2, {3.5, 3.5, 3.5}, {0, 1});
+  }
+  const Eigen::MatrixXcd u = tket_sim::get_unitary(circ);
+  circ.replace_SWAPs(false);
+  REQUIRE(circ.n_gates() == 2);
+  circ.replace_SWAPs(true);
+  REQUIRE(circ.n_gates() == 1);
+  const Eigen::MatrixXcd v = tket_sim::get_unitary(circ);
+  REQUIRE(u.isApprox(v, ERR_EPS));
+}
+
 SCENARIO("check edge type in rewire function") {
   GIVEN("valid edge type") {
     Circuit c(2);
