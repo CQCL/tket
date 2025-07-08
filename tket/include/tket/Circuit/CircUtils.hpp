@@ -214,12 +214,12 @@ Circuit with_controls(const Circuit& c, unsigned n_controls = 1);
 std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
     Expr a, Expr b, Expr c);
 
-
 /**
- * @brief Check whether the given TK2 angles represent a SWAP gate 
+ * @brief Check whether the given TK2 angles represent a SWAP gate
  * up to a phase, and return the phase if so.
  *
  * @return The phase (as a multiple of pi) if the TK2 is a SWAP up to a phase.
  */
-std::optional<double> is_TK2_SWAP(const Expr &alpha, const Expr &beta, const Expr &gamma);
+std::optional<double> is_TK2_SWAP(
+    const Expr& alpha, const Expr& beta, const Expr& gamma);
 }  // namespace tket

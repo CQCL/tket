@@ -20,8 +20,8 @@
 #include <tket/OpType/OpType.hpp>
 #include <tklog/TketLog.hpp>
 
-#include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Circuit.hpp"
 #include "tket/Gate/Gate.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
@@ -453,12 +453,14 @@ bool Circuit::replace_SWAPs(bool replace_tk2_equivalents) {
   BGL_FORALL_VERTICES(v, dag, DAG) {
     Op_ptr op = get_Op_ptr_from_Vertex(v);
     OpType type = op->get_type();
-    if (type != OpType::SWAP && (type != OpType::TK2 || !replace_tk2_equivalents)) {
+    if (type != OpType::SWAP &&
+        (type != OpType::TK2 || !replace_tk2_equivalents)) {
       continue;
     }
     if (type == OpType::TK2) {
       std::vector<Expr> params = op->get_params();
-      std::optional<double> phase = is_TK2_SWAP(params[0], params[1], params[2]);
+      std::optional<double> phase =
+          is_TK2_SWAP(params[0], params[1], params[2]);
       if (phase == std::nullopt) {
         continue;
       }

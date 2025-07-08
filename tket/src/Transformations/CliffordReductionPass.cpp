@@ -689,11 +689,11 @@ bool CliffordReductionPass::reduce_circuit(Circuit &circ, bool allow_swaps) {
           break;
         }
         case OpType::SWAP:
-        case OpType::TK2:
-        {
+        case OpType::TK2: {
           if (type == OpType::TK2) {
             std::vector<Expr> params = op->get_params();
-            std::optional<double> phase = is_TK2_SWAP(params[0], params[1], params[2]);
+            std::optional<double> phase =
+                is_TK2_SWAP(params[0], params[1], params[2]);
             if (phase == std::nullopt) {
               goto default_case;
             }
