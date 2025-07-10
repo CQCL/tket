@@ -112,6 +112,7 @@ add_executable(test-tket
     src/test_Clifford.cpp
     src/test_Combinators.cpp
     src/test_CompilerPass.cpp
+    src/test_Concurrency.cpp
     src/test_ContextOpt.cpp
     src/test_ControlDecomp.cpp
     src/test_DeviceCharacterisation.cpp

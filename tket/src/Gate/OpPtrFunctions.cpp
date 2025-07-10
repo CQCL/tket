@@ -14,6 +14,8 @@
 
 #include "tket/Gate/OpPtrFunctions.hpp"
 
+#include <mutex>
+
 #include "tket/Gate/Gate.hpp"
 #include "tket/Gate/SymTable.hpp"
 #include "tket/OpType/OpTypeFunctions.hpp"
@@ -22,12 +24,16 @@
 
 namespace tket {
 
+// Mutex to protect the global symbol table.
+static std::mutex mtx;
+
 Op_ptr get_op_ptr(OpType chosen_type, const Expr& param, unsigned n_qubits) {
   return get_op_ptr(chosen_type, std::vector<Expr>{param}, n_qubits);
 }
 
 Op_ptr get_op_ptr(
     OpType chosen_type, const std::vector<Expr>& params, unsigned n_qubits) {
+  std::lock_guard<std::mutex> lock(mtx);
   if (is_gate_type(chosen_type)) {
     SymTable::register_symbols(expr_free_symbols(params));
     return std::make_shared<const Gate>(chosen_type, params, n_qubits);
