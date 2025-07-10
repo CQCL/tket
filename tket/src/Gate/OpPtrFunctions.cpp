@@ -24,6 +24,7 @@
 
 namespace tket {
 
+// Mutex to protect the global symbol table.
 static std::mutex mtx;
 
 Op_ptr get_op_ptr(OpType chosen_type, const Expr& param, unsigned n_qubits) {
