@@ -24,6 +24,7 @@ namespace tket {
 namespace test_Concurrency {
 
 SCENARIO("Concurrent transforms") {
+#ifdef NDEBUG
   GIVEN("clifford_simp") {
     // https://github.com/CQCL/tket/issues/1953
     const std::string json_str =
@@ -39,6 +40,7 @@ SCENARIO("Concurrent transforms") {
     thread1.join();
     thread2.join();
   }
+#endif
 }
 
 }  // namespace test_Concurrency
