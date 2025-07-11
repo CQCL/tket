@@ -22,7 +22,7 @@ from conan.errors import ConanInvalidConfiguration
 
 class TketConan(ConanFile):
     name = "tket"
-    version = "2.1.33"
+    version = "2.1.34"
     package_type = "library"
     license = "Apache 2"
     homepage = "https://github.com/CQCL/tket"
@@ -96,9 +96,19 @@ class TketConan(ConanFile):
         cmake.configure()
         cmake.build()
         if self.build_test():
-            self.run(os.path.join(self.test_folder(), "test-tket"))
+            self.run(
+                os.path.join(
+                    "test",
+                    "test-tket" + (".exe" if self.settings.os == "Windows" else ""),
+                )
+            )
         if self.build_proptest():
-            self.run(os.path.join(self.proptest_folder(), "proptest-tket"))
+            self.run(
+                os.path.join(
+                    "proptest",
+                    "proptest-tket" + (".exe" if self.settings.os == "Windows" else ""),
+                )
+            )
 
     def package(self):
         cmake = CMake(self)
@@ -129,13 +139,3 @@ class TketConan(ConanFile):
 
     def build_proptest(self):
         return self.options.with_proptest or self.options.with_all_tests
-
-    def test_folder(self):
-        if self.settings.os == "Windows":
-            return os.path.join("test", str(self.settings.build_type))
-        return os.path.join("test")
-
-    def proptest_folder(self):
-        if self.settings.os == "Windows":
-            return os.path.join("proptest", str(self.settings.build_type))
-        return os.path.join("proptest")
