@@ -174,6 +174,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ad6c91bf1299a5725b8ddf90f33600d4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a239959a6b733ad01a7e1fbf4d9204250" id="r_a239959a6b733ad01a7e1fbf4d9204250"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1PhasePolyBox.html#a239959a6b733ad01a7e1fbf4d9204250">~PhasePolyBox</a> () override</td></tr>
 <tr class="separator:a239959a6b733ad01a7e1fbf4d9204250"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87a1468fa56253f7c0797bc6aa742851" id="r_a87a1468fa56253f7c0797bc6aa742851"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1PhasePolyBox.html#a87a1468fa56253f7c0797bc6aa742851">is_clifford</a> () const override</td></tr>
+<tr class="memdesc:a87a1468fa56253f7c0797bc6aa742851"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test whether operation is in the Clifford group.  <br /></td></tr>
+<tr class="separator:a87a1468fa56253f7c0797bc6aa742851"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44a2b882d5b76ee925858aa87b1104b9" id="r_a44a2b882d5b76ee925858aa87b1104b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1PhasePolyBox.html#a44a2b882d5b76ee925858aa87b1104b9">symbol_substitution</a> (const SymEngine::map_basic_basic &amp;sub_map) const override</td></tr>
 <tr class="memdesc:a44a2b882d5b76ee925858aa87b1104b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Operation with values for symbols substituted.  <br /></td></tr>
 <tr class="separator:a44a2b882d5b76ee925858aa87b1104b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -261,9 +264,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad506e4acce7672faae2160f65e3425c3 inherit pub_methods_classtket_1_1Op" id="r_ad506e4acce7672faae2160f65e3425c3"><td class="memItemLeft" align="right" valign="top">virtual std::optional&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#ad506e4acce7672faae2160f65e3425c3">is_identity</a> () const</td></tr>
 <tr class="memdesc:ad506e4acce7672faae2160f65e3425c3 inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test whether operation is identity up to a phase and return phase if so.  <br /></td></tr>
 <tr class="separator:ad506e4acce7672faae2160f65e3425c3 inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa315c1326624b437013bd990be146bd inherit pub_methods_classtket_1_1Op" id="r_afa315c1326624b437013bd990be146bd"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#afa315c1326624b437013bd990be146bd">is_clifford</a> () const</td></tr>
-<tr class="memdesc:afa315c1326624b437013bd990be146bd inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test whether operation is in the Clifford group.  <br /></td></tr>
-<tr class="separator:afa315c1326624b437013bd990be146bd inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa2cdcc72b3bc0ca1ca6c362cee08fb0 inherit pub_methods_classtket_1_1Op" id="r_afa2cdcc72b3bc0ca1ca6c362cee08fb0"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#afa2cdcc72b3bc0ca1ca6c362cee08fb0">has_symmetry</a> (unsigned port1, unsigned port2) const</td></tr>
 <tr class="memdesc:afa2cdcc72b3bc0ca1ca6c362cee08fb0 inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for symmetry of port pairs.  <br /></td></tr>
 <tr class="separator:afa2cdcc72b3bc0ca1ca6c362cee08fb0 inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -339,7 +339,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00146">146</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00147">147</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
 
 </div>
 </div>
@@ -389,7 +389,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00222">222</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00223">223</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
 
 </div>
 </div>
@@ -438,7 +438,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Copy constructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00307">307</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00308">308</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
 
 </div>
 </div>
@@ -497,7 +497,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classtket_1_1Op.html#aaf39768595adfe922e0278dfed20ecf6">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00321">321</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00328">328</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
 
 </div>
 </div>
@@ -525,7 +525,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00358">358</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00365">365</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
 
 </div>
 </div>
@@ -554,7 +554,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classtket_1_1Box.html#afa60507ad9bb7463edc3775ca8e908a1">tket::Box</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00288">288</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00289">289</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
 
 </div>
 </div>
@@ -573,7 +573,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00295">295</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00296">296</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
 
 </div>
 </div>
@@ -600,7 +600,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PhasePoly_8hpp_source.html#l00076">76</a> of file <a class="el" href="PhasePoly_8hpp_source.html">PhasePoly.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasePoly_8hpp_source.html#l00078">78</a> of file <a class="el" href="PhasePoly_8hpp_source.html">PhasePoly.hpp</a>.</p>
 
 </div>
 </div>
@@ -627,7 +627,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PhasePoly_8hpp_source.html#l00083">83</a> of file <a class="el" href="PhasePoly_8hpp_source.html">PhasePoly.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasePoly_8hpp_source.html#l00085">85</a> of file <a class="el" href="PhasePoly_8hpp_source.html">PhasePoly.hpp</a>.</p>
 
 </div>
 </div>
@@ -654,7 +654,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PhasePoly_8hpp_source.html#l00073">73</a> of file <a class="el" href="PhasePoly_8hpp_source.html">PhasePoly.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasePoly_8hpp_source.html#l00075">75</a> of file <a class="el" href="PhasePoly_8hpp_source.html">PhasePoly.hpp</a>.</p>
 
 </div>
 </div>
@@ -681,7 +681,45 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PhasePoly_8hpp_source.html#l00079">79</a> of file <a class="el" href="PhasePoly_8hpp_source.html">PhasePoly.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasePoly_8hpp_source.html#l00081">81</a> of file <a class="el" href="PhasePoly_8hpp_source.html">PhasePoly.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a87a1468fa56253f7c0797bc6aa742851" name="a87a1468fa56253f7c0797bc6aa742851"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87a1468fa56253f7c0797bc6aa742851">&#9670;&#160;</a></span>is_clifford()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tket::PhasePolyBox::is_clifford </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Test whether operation is in the Clifford group. </p>
+<p>A return value of true guarantees that the operation is Clifford. (Note that the converse is not the case: some Clifford operations may not be detected as such.)</p>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">true</td><td>operation is in the Clifford group </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplemented from <a class="el" href="classtket_1_1Op.html#afa315c1326624b437013bd990be146bd">tket::Op</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00315">315</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
 
 </div>
 </div>
@@ -715,7 +753,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classtket_1_1Op.html#a1267ba5bf1c744782e6ff73cb7032da6">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="PhasePoly_8hpp_source.html#l00064">64</a> of file <a class="el" href="PhasePoly_8hpp_source.html">PhasePoly.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasePoly_8hpp_source.html#l00066">66</a> of file <a class="el" href="PhasePoly_8hpp_source.html">PhasePoly.hpp</a>.</p>
 
 </div>
 </div>
@@ -754,7 +792,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classtket_1_1Op.html#a1e06f818450f001dd255c902dd06c172">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00314">314</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00321">321</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
 
 </div>
 </div>
@@ -782,7 +820,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00340">340</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00347">347</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
 
 </div>
 </div>

@@ -177,6 +177,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a68093e79e83bad2090df6c3a1e34d078" id="r_a68093e79e83bad2090df6c3a1e34d078"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1UnitaryTableauBox.html#a68093e79e83bad2090df6c3a1e34d078">transpose</a> () const override</td></tr>
 <tr class="memdesc:a68093e79e83bad2090df6c3a1e34d078"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transpose of a unitary operation.  <br /></td></tr>
 <tr class="separator:a68093e79e83bad2090df6c3a1e34d078"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada653ebc46b4d2344b87e79dbd64bd8e" id="r_ada653ebc46b4d2344b87e79dbd64bd8e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1UnitaryTableauBox.html#ada653ebc46b4d2344b87e79dbd64bd8e">is_clifford</a> () const override</td></tr>
+<tr class="memdesc:ada653ebc46b4d2344b87e79dbd64bd8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test whether operation is in the Clifford group.  <br /></td></tr>
+<tr class="separator:ada653ebc46b4d2344b87e79dbd64bd8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87bbe2347b507e84f5a277cc29ee3158" id="r_a87bbe2347b507e84f5a277cc29ee3158"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1UnitaryTableauBox.html#a87bbe2347b507e84f5a277cc29ee3158">symbol_substitution</a> (const SymEngine::map_basic_basic &amp;sub_map) const override</td></tr>
 <tr class="memdesc:a87bbe2347b507e84f5a277cc29ee3158"><td class="mdescLeft">&#160;</td><td class="mdescRight">Operation with values for symbols substituted.  <br /></td></tr>
 <tr class="separator:a87bbe2347b507e84f5a277cc29ee3158"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -248,9 +251,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad506e4acce7672faae2160f65e3425c3 inherit pub_methods_classtket_1_1Op" id="r_ad506e4acce7672faae2160f65e3425c3"><td class="memItemLeft" align="right" valign="top">virtual std::optional&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#ad506e4acce7672faae2160f65e3425c3">is_identity</a> () const</td></tr>
 <tr class="memdesc:ad506e4acce7672faae2160f65e3425c3 inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test whether operation is identity up to a phase and return phase if so.  <br /></td></tr>
 <tr class="separator:ad506e4acce7672faae2160f65e3425c3 inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa315c1326624b437013bd990be146bd inherit pub_methods_classtket_1_1Op" id="r_afa315c1326624b437013bd990be146bd"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#afa315c1326624b437013bd990be146bd">is_clifford</a> () const</td></tr>
-<tr class="memdesc:afa315c1326624b437013bd990be146bd inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test whether operation is in the Clifford group.  <br /></td></tr>
-<tr class="separator:afa315c1326624b437013bd990be146bd inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa2cdcc72b3bc0ca1ca6c362cee08fb0 inherit pub_methods_classtket_1_1Op" id="r_afa2cdcc72b3bc0ca1ca6c362cee08fb0"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#afa2cdcc72b3bc0ca1ca6c362cee08fb0">has_symmetry</a> (unsigned port1, unsigned port2) const</td></tr>
 <tr class="memdesc:afa2cdcc72b3bc0ca1ca6c362cee08fb0 inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for symmetry of port pairs.  <br /></td></tr>
 <tr class="separator:afa2cdcc72b3bc0ca1ca6c362cee08fb0 inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -575,6 +575,44 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="UnitaryTableauBox_8cpp_source.html#l00061">61</a> of file <a class="el" href="UnitaryTableauBox_8cpp_source.html">UnitaryTableauBox.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ada653ebc46b4d2344b87e79dbd64bd8e" name="ada653ebc46b4d2344b87e79dbd64bd8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada653ebc46b4d2344b87e79dbd64bd8e">&#9670;&#160;</a></span>is_clifford()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tket::UnitaryTableauBox::is_clifford </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Test whether operation is in the Clifford group. </p>
+<p>A return value of true guarantees that the operation is Clifford. (Note that the converse is not the case: some Clifford operations may not be detected as such.)</p>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">true</td><td>operation is in the Clifford group </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplemented from <a class="el" href="classtket_1_1Op.html#afa315c1326624b437013bd990be146bd">tket::Op</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="UnitaryTableauBox_8hpp_source.html#l00057">57</a> of file <a class="el" href="UnitaryTableauBox_8hpp_source.html">UnitaryTableauBox.hpp</a>.</p>
 
 </div>
 </div>
