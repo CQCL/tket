@@ -54,6 +54,7 @@ class UnitaryTableauBox : public Box {
    */
   Op_ptr dagger() const override;
   Op_ptr transpose() const override;
+  bool is_clifford() const override { return true; }
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
   SymSet free_symbols() const override;
