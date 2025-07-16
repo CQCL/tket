@@ -26,6 +26,7 @@
 #include "tket/OpType/OpType.hpp"
 #include "tket/Ops/OpJsonFactory.hpp"
 #include "tket/Ops/OpPtr.hpp"
+#include "tket/Utils/Expression.hpp"
 
 namespace tket {
 
@@ -310,6 +311,12 @@ PhasePolyBox::PhasePolyBox(const PhasePolyBox& other)
       qubit_indices_(other.qubit_indices_),
       phase_polynomial_(other.phase_polynomial_),
       linear_transformation_(other.linear_transformation_) {}
+
+bool PhasePolyBox::is_clifford() const {
+  return std::all_of(
+      phase_polynomial_.begin(), phase_polynomial_.end(),
+      [](const phase_term_t& pair) { return equiv_0(4 * pair.second); });
+}
 
 Op_ptr PhasePolyBox::symbol_substitution(
     const SymEngine::map_basic_basic& sub_map) const {

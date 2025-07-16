@@ -56,6 +56,8 @@ class PhasePolyBox : public Box {
 
   ~PhasePolyBox() override {}
 
+  bool is_clifford() const override;
+
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &sub_map) const override;
 
