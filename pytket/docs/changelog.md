@@ -6,6 +6,7 @@ Features:
 
 - Add the optional `replace_tk2_equivalents` argument to `replace_SWAPs`.
   Also, add handling of TK2 gates that are equivalent to SWAPs in `CliffordSimp`.
+- Add Clifford testing for `PhasePolyBox` and `UnitaryTableauBox`.
 
 ## 2.7.0 (July 2025)
 
