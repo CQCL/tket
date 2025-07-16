@@ -821,6 +821,7 @@ SCENARIO("Tableau serialisation") {
     zph << 1, 0, 1;
     Op_ptr box =
         std::make_shared<const UnitaryTableauBox>(xx, xz, xph, zx, zz, zph);
+    REQUIRE(box->is_clifford());
     Circuit circ(3);
     circ.add_op<unsigned>(box, uvec{0, 1, 2});
 

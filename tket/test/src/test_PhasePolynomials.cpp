@@ -964,6 +964,22 @@ SCENARIO("Phase polynomial synthesis without architecture") {
     REQUIRE(test_unitary_comparison(circ, circ2));
   }
 }
+SCENARIO("Clifford test") {
+  GIVEN("A Clifford circuit") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Rz, 0.5, {1});
+    PhasePolyBox ppbox(circ);
+    REQUIRE(ppbox.is_clifford());
+  }
+  GIVEN("A non-Clifford circuit") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Rz, 0.4, {1});
+    PhasePolyBox ppbox(circ);
+    REQUIRE(!ppbox.is_clifford());
+  }
+}
 
 }  // namespace test_PhasePolynomials
 }  // namespace tket
