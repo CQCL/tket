@@ -13,13 +13,13 @@
 # limitations under the License.
 
 import copy
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any, Union, cast
 
 import numpy
 import numpy as np
 from sympy import Expr, Float, I, Integer, Symbol, im, re
 
-from pytket.circuit import Qubit
+from pytket.circuit import Circuit, Qubit
 from pytket.pauli import QubitPauliString, pauli_string_mult
 from pytket.utils.serialization import complex_to_list, list_to_complex
 
@@ -39,6 +39,30 @@ def _coeff_convert(coeff: CoeffTypeAccepted) -> Expr:
     if isinstance(coeff, complex):
         return Float(coeff.real) + Float(coeff.imag) * I
     return Expr(coeff)
+
+
+# The functions `_expr_to_str()` and `_str_to_expr()` are a hack to achieve
+# serialization and deserialization of expressions without having to invoke
+# `sympy.sympify()`, which is unsafe. Going via a `Circuit` serialization means we use
+# the C++ conversions instead. This is overkill but works.
+
+
+def _expr_to_str(e: Expr) -> str:
+    return cast("str", Circuit().add_phase(e).to_dict()["phase"])
+
+
+def _str_to_expr(s: str) -> Expr:
+    return Circuit.from_dict(
+        {
+            "bits": [],
+            "commands": [],
+            "created_qubits": [],
+            "discarded_qubits": [],
+            "implicit_permutation": [],
+            "phase": s,
+            "qubits": [],
+        }
+    ).phase
 
 
 class QubitPauliOperator:
@@ -234,8 +258,8 @@ class QubitPauliOperator:
             try:
                 coeff = complex_to_list(complex(v))
             except TypeError:
-                assert isinstance(Expr(v), Expr)
-                coeff = str(v)
+                assert isinstance(v, Expr)
+                coeff = _expr_to_str(v)
             ret.append(
                 {
                     "string": k.to_list(),
@@ -258,7 +282,7 @@ class QubitPauliOperator:
         def get_coeff(obj: dict[str, Any]) -> Expr:
             coeff = obj["coefficient"]
             if type(coeff) is str:
-                return _coeff_convert(coeff)
+                return _str_to_expr(coeff)
             return _coeff_convert(list_to_complex(coeff))
 
         return QubitPauliOperator({get_qps(obj): get_coeff(obj) for obj in pauli_list})
