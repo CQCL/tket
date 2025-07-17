@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING, Any, Union
 
 import numpy
 import numpy as np
-from sympy import Expr, Symbol, im, re, sympify
+from sympy import Expr, Float, I, Integer, Symbol, im, re
 
 from pytket.circuit import Qubit
 from pytket.pauli import QubitPauliString, pauli_string_mult
@@ -29,11 +29,16 @@ if TYPE_CHECKING:
     from scipy.sparse import csc_matrix
 
 
-def _coeff_convert(coeff: CoeffTypeAccepted | str) -> Expr:
-    sympy_val = sympify(coeff)
-    if not isinstance(sympy_val, Expr):
-        raise ValueError("Unsupported value for QubitPauliString coefficient")
-    return sympy_val
+def _coeff_convert(coeff: CoeffTypeAccepted) -> Expr:
+    if isinstance(coeff, Expr):
+        return coeff
+    if isinstance(coeff, int):
+        return Integer(coeff)
+    if isinstance(coeff, float):
+        return Float(coeff)
+    if isinstance(coeff, complex):
+        return Float(coeff.real) + Float(coeff.imag) * I
+    return Expr(coeff)
 
 
 class QubitPauliOperator:
