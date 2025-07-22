@@ -87,7 +87,7 @@ jobs:
         run: |
           brew update
           brew install clang-format@20
-          git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file -i
+          git ls-files "*.cpp" "*.hpp" "*.h" | xargs clang-format -style=file -i
           git diff --exit-code
 
   build_test_tket:

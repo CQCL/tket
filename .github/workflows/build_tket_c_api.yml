@@ -1,0 +1,121 @@
+name: Build tket-c-api
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  schedule:
+    # 03:00 every Saturday morning
+    - cron: "0 3 * * 6"
+  workflow_dispatch: {}
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  check_changes:
+    name: Check for changes in ./tket-c-api
+    runs-on: ubuntu-24.04
+    outputs:
+      has_changed: ${{ steps.filter.outputs.has_changed }}
+      tket_c_api_ver: ${{ steps.tket_c_api_ver.outputs.tket_c_api_ver }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: dorny/paths-filter@v3.0.2
+        id: filter
+        with:
+          base: ${{ github.ref }}
+          filters: |
+            has_changed:
+              - '{tket-c-api/src/**,tket-c-api/include/**,tket-c-api/conanfile.py,tket-c-api/CMakeLists.txt}'
+      - name: Install conan
+        uses: turtlebrowser/get-conan@v1.2
+      - name: parse version from conanfile
+        id: tket_c_api_ver
+        run: |
+          tket_c_api_ver=$(conan inspect tket-c-api/conanfile.py | grep "^version: " | awk '{print $2}')
+          echo "tket_c_api_ver=${tket_c_api_ver}" >> $GITHUB_OUTPUT
+      - name: See if version exists on remote
+        id: test_package_exists
+        run: |
+          conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+          conan_package_exists=`conan search -r tket-libs "tket/${{ steps.tket_c_api_ver.outputs.tket_c_api_ver }}@tket/stable" | grep "not found" > /dev/null 2>&1 && echo false || echo true`
+          echo "conan_package_exists=${conan_package_exists}" >> $GITHUB_OUTPUT
+      - name: Check tket-c-api version bump
+        if: github.event_name == 'pull_request' && steps.filter.outputs.has_changed == 'true' && steps.test_package_exists.outputs.conan_package_exists == 'true'
+        run: |
+          echo "Changes detected in tket-c-api. Please bump the tket-c-api version number."
+          exit 1
+
+  build_tket_c_api:
+    name: Build
+    needs: check_changes
+    if: needs.check_changes.outputs.has_changed == 'true'
+    strategy:
+      matrix:
+        os: ["ubuntu-24.04", "macos-13", "macos-15", "windows-2025"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: apt update
+        if: matrix.os == 'ubuntu-24.04'
+        run: sudo apt update
+      - name: Select Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install conan
+        uses: turtlebrowser/get-conan@v1.2
+      - name: Set up conan
+        shell: bash
+        run: |
+          conan profile detect
+          DEFAULT_PROFILE_PATH=`conan profile path default`
+          PROFILE_PATH=./conan-profiles/${{ matrix.os }}
+          diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+          cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
+          conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+      - name: normalize line endings in conanfile and src directory
+        if: matrix.os == 'windows-2025'
+        # This is necessary on Windows to ensure consistent revisions across platforms.
+        # Conan's revision hash is composed of hashes of all the exported files,
+        # so we must normalize the line endings in these.
+        run: |
+          $tket_files = Get-ChildItem "tket" -File -Recurse
+          foreach ($f in $tket_files) {
+            $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
+            [IO.File]::WriteAllText($f, $normalized_file)
+          }
+      - name: Build tket-c-api
+        run: conan create tket-c-api -s build_type=Release --user=tket --channel=stable
+      - name: Upload package
+        if: github.event_name == 'push'
+        run: |
+          conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
+          conan upload tket-c-api/${{ needs.check_changes.outputs.tket_c_api_ver }}@tket/stable -r=tket-libs
+
+  check_build_tket_c_api_successful:
+    name: tket-c-api build successful
+    needs:
+      - check_changes
+      - build_tket_c_api
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - shell: python
+        name: Check job results
+        run: |
+          results = [
+              "${{ needs.check_changes.result }}",
+              "${{ needs.build_tket_c_api.result }}",
+          ]
+          if "failure" in results or "cancelled" in results:
+              raise Exception
