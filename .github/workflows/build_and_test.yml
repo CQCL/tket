@@ -587,18 +587,20 @@ jobs:
       - shell: python
         name: Check job results
         run: |
-          results = [
-              "${{ needs.check_changes.result }}",
-              "${{ needs.check_docs_tket.result }}",
-              "${{ needs.check_format_tket.result }}",
-              "${{ needs.build_test_tket.result }}",
-              "${{ needs.build_test_tket_windows.result }}",
-              "${{ needs.publish_pytket_coverage.result }}",
-              "${{ needs.build_test_pytket_macos.result }}",
-              "${{ needs.build_test_pytket_ubuntu.result }}",
-              "${{ needs.build_test_pytket_windows.result }}"
-              "${{ needs.publish_pytket_coverage.result }}",
-              "${{ needs.check_pytket_coverage.result }}",
-          ]
-          if "failure" in results or "cancelled" in results:
+          results = {
+              "check_changes": "${{ needs.check_changes.result }}",
+              "check_docs_tket": "${{ needs.check_docs_tket.result }}",
+              "check_format_tket": "${{ needs.check_format_tket.result }}",
+              "build_test_tket": "${{ needs.build_test_tket.result }}",
+              "build_test_tket_windows": "${{ needs.build_test_tket_windows.result }}",
+              "publish_pytket_coverage": "${{ needs.publish_pytket_coverage.result }}",
+              "build_test_pytket_macos": "${{ needs.build_test_pytket_macos.result }}",
+              "build_test_pytket_ubuntu": "${{ needs.build_test_pytket_ubuntu.result }}",
+              "build_test_pytket_windows": "${{ needs.build_test_pytket_windows.result }}"
+              "publish_pytket_coverage": "${{ needs.publish_pytket_coverage.result }}",
+              "check_pytket_coverage": "${{ needs.check_pytket_coverage.result }}"
+          }
+          failed_jobs = [job for job, status in results.items() if status in ("failure", "cancelled")]
+          if failed_jobs:
+              print(f"Job(s) failed or cancelled: {', '.join(failed_jobs)}")
               raise Exception
