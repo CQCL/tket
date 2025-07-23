@@ -1,7 +1,7 @@
 # pytket.logging
 
 ```{eval-rst}
-.. currentmodule:: pytket._tket.logging
+.. currentmodule:: pytket.logging
 ```
 
 ```{eval-rst}
@@ -13,9 +13,9 @@
 ```
 
 ```{eval-rst}
-.. autoenum:: pytket._tket.logging.level
+.. autoenum:: pytket.logging.level
 ```
 
 ```{eval-rst}
-.. automethod:: pytket._tket.logging.set_level
+.. automethod:: pytket.logging.set_level
 ```

@@ -6,7 +6,7 @@ This module contains three placement methods to perform such an assignment.
 For more on qubit placement (and routing in general) see the [qubit mapping and routing](https://docs.quantinuum.com/tket/user-guide/examples/circuit_compilation/mapping_example.html) tutorial and the corresponding entry in the [user manual](https://docs.quantinuum.com/tket/user-guide/manual/manual_compiler.html#placement).
 
 ```{eval-rst}
-.. currentmodule:: pytket._tket.placement
+.. currentmodule:: pytket.placement
 ```
 
 ```{eval-rst}

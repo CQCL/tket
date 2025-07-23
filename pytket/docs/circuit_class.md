@@ -29,7 +29,7 @@ condition on a specified set of bit values.)
 ```
 
 ```{eval-rst}
-.. autoclass:: pytket._tket.circuit.Circuit
+.. autoclass:: pytket.circuit.Circuit
 
    .. automethod:: __init__
 
