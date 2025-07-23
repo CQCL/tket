@@ -275,7 +275,7 @@ class Backend(ABC):
             None is to be used for state/unitary simulators. Defaults to None.
         :param valid_check: Explicitly check that all circuits satisfy all required
             predicates to run on the backend. Defaults to True
-        :return: Handles to results for each input circuit, as an interable in
+        :return: Handles to results for each input circuit, as an iterable in
             the same order as the circuits.
         """
         ...
@@ -326,7 +326,7 @@ class Backend(ABC):
         :param handles: Iterable of handles
         :return: List of results
 
-        Keyword arguments are as for `get_result`, and apply to all jobs.
+        Keyword arguments are as for :py:meth:`~pytket.backends.backend.Backend.get_result`, and apply to all jobs.
         """
         try:
             return [self.get_result(handle, **kwargs) for handle in handles]
@@ -465,7 +465,7 @@ class Backend(ABC):
     @property
     def supports_density_matrix(self) -> bool:
         """Does this backend support density matrix retrieval via
-        `get_density_matrix`."""
+        :py:meth:`~pytket.backends.backendresult.BackendResult.get_density_matrix`."""
         return self._supports_density_matrix
 
     @property
