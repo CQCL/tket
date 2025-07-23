@@ -1,5 +1,4 @@
 cp -R pytket-docs-theming/_static .
-cp -R pytket-docs-theming/quantinuum-sphinx .
 cp pytket-docs-theming/conf.py .
 
 # Get pytket package version to be used in page title
@@ -10,22 +9,11 @@ PACKAGE="pytket $PYTKET_VERSION"
 # Build the docs setting the html title to show the correct pytket version.
 sphinx-build -W -b html . build -D html_title="$PACKAGE API documentation" || exit 1
 
-# Replace unnecessary _tket for all classes and functions in the built html
-# Apple MACOSX and Linux have differing sed replace syntax
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    find build/ -type f -name "*.html" | xargs sed -e 's/pytket._tket/pytket/g' -i ""
-    sed -i '' 's/pytket._tket/pytket/g' build/searchindex.js
-else
-    find build/ -type f -name "*.html" | xargs sed -i 's/pytket._tket/pytket/g'
-    sed -i 's/pytket._tket/pytket/g' build/searchindex.js
-fi
-
 # Run link checker
 sphinx-build -W -b linkcheck . build || exit 1
 
 sphinx-build -W -v -b coverage . build/coverage || exit 1
 
 # Remove copied files. This ensures reusability.
-rm -r _static 
-rm -r quantinuum-sphinx
+rm -r _static
 rm conf.py

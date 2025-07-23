@@ -70,7 +70,7 @@ def add_wasm(  # noqa: PLR0913
     \n:param list_o: list of the number of bits in the output variables
     \n:param args: vector of circuit bits the wasm op should be added to
     \n:param args_wasm: vector of wasmstates the wasm op should be added to
-    \n:param kwargs: additional arguments passed to `add_gate_method` .
+    \n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` .
      Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
      `condition_value`
     \n:return: the new :py:class:`Circuit`"""
@@ -120,7 +120,7 @@ def add_wasm_to_reg(  # noqa: PLR0913
     \n:param list_o: list of the classical registers assigned to
      the output variables of the function call
     \n:param args_wasm: vector of wasmstates the wasm op should be added to
-    \n:param kwargs: additional arguments passed to `add_gate_method` .
+    \n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` .
      Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
      `condition_value`
     \n:return: the new :py:class:`Circuit`"""
@@ -166,7 +166,7 @@ def set_rng_seed(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
     The classical register must be exactly 64 bits.
 
     :param creg: register of classical bits
-    :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
+    :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
          are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
     :return: the new :py:class:`Circuit`
     """
@@ -188,7 +188,7 @@ def set_rng_bound(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
     little-endian binary (least significant bit first). The bound is inclusive.
 
     :param creg: register of classical bits
-    :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
+    :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
         are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
     :return: the new :py:class:`Circuit`
     """
@@ -210,7 +210,7 @@ def set_rng_index(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
     endian binary (least significant bit first).
 
     :param creg: register of classical bits
-    :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
+    :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
         are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
     :return: the new :py:class:`Circuit`
     """
@@ -232,7 +232,7 @@ def get_rng_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
     output number in little-endian binary (least significant bit first).
 
     :param creg: register of classical bits
-    :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
+    :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
         are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
     :return: the new :py:class:`Circuit`
     """
@@ -254,7 +254,7 @@ def get_job_shot_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit
     shot number in little-endian binary (least significant bit first).
 
     :param creg: register of classical bits
-    :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
+    :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
         are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
     :return: the new :py:class:`Circuit`
     """

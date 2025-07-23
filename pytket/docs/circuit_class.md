@@ -413,13 +413,13 @@ condition on a specified set of bit values.)
    details of its implementation are backend-specific. Backends that do not
    provide a PRNG may either ignore these operations or reject them.
 
-    .. automethod:: set_rng_seed
+   .. automethod:: set_rng_seed
 
-    .. automethod:: set_rng_bound
+   .. automethod:: set_rng_bound
 
-    .. automethod:: set_rng_index
+   .. automethod:: set_rng_index
 
-    .. automethod:: get_rng_num
+   .. automethod:: get_rng_num
 
    Operations to get job variables
    -------------------------------
