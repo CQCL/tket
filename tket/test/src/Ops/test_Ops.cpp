@@ -777,5 +777,18 @@ SCENARIO("Opaque classical ops") {
   }
 }
 
+SCENARIO("Clifford checks") {
+  GIVEN("PhasedX") {
+    const Op_ptr op0 = get_op_ptr(OpType::PhasedX, {1.0, 0.25});
+    const Op_ptr op1 = get_op_ptr(OpType::PhasedX, {1.5, 0.5});
+    const Op_ptr op2 = get_op_ptr(OpType::PhasedX, {1.5, 0.25});
+    const Op_ptr op3 = get_op_ptr(OpType::PhasedX, {1.0, 0.125});
+    CHECK(op0->is_clifford());
+    CHECK(op1->is_clifford());
+    CHECK(!op2->is_clifford());
+    CHECK(!op3->is_clifford());
+  }
+}
+
 }  // namespace test_Ops
 }  // namespace tket

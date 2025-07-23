@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+Features:
+
+- Detect more Clifford `PhasedX` gates.
+
 ## 2.8.0
 
 Features:

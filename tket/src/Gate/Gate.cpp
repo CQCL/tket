@@ -474,11 +474,15 @@ bool Gate::is_clifford() const {
     case OpType::YYPhase:
     case OpType::ZZPhase:
     case OpType::XXPhase3:
-    case OpType::PhasedX:
-    case OpType::NPhasedX:
       return std::all_of(params_.begin(), params_.end(), [](const Expr& e) {
         return equiv_0(4 * e);
       });
+    case OpType::PhasedX:
+    case OpType::NPhasedX:
+      return std::all_of(
+                 params_.begin(), params_.end(),
+                 [](const Expr& e) { return equiv_0(4 * e); }) ||
+             (equiv_0(2 * params_.at(0)) && equiv_0(8 * params_.at(1)));
     case OpType::ISWAP:
     case OpType::ESWAP:
       return equiv_0(2 * params_.at(0));
