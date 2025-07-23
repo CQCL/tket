@@ -596,7 +596,7 @@ jobs:
               "publish_pytket_coverage": "${{ needs.publish_pytket_coverage.result }}",
               "build_test_pytket_macos": "${{ needs.build_test_pytket_macos.result }}",
               "build_test_pytket_ubuntu": "${{ needs.build_test_pytket_ubuntu.result }}",
-              "build_test_pytket_windows": "${{ needs.build_test_pytket_windows.result }}"
+              "build_test_pytket_windows": "${{ needs.build_test_pytket_windows.result }}",
               "publish_pytket_coverage": "${{ needs.publish_pytket_coverage.result }}",
               "check_pytket_coverage": "${{ needs.check_pytket_coverage.result }}"
           }
