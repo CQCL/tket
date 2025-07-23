@@ -2436,23 +2436,15 @@ class Circuit:
         """
         Add a classical function call from a wasm file to the circuit.
 
-
         :param funcname: name of the function that is called
-
         :param filehandler: wasm file or module handler to identify the wasm module
-
         :param list_i: list of the number of bits in the input variables
-
         :param list_o: list of the number of bits in the output variables
-
         :param args: vector of circuit bits the wasm op should be added to
-
         :param args_wasm: vector of wasmstates the wasm op should be added to
-
-        :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` .
-             Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
-             `condition_value`
-
+        :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate`.
+         Allowed parameters are `opgroup`,  `condition`, `condition_bits`,
+         `condition_value`
         :return: the new :py:class:`Circuit`
         """
 
@@ -2460,23 +2452,16 @@ class Circuit:
         """
         Add a classical function call from a wasm file to the circuit.
 
-
         :param funcname: name of the function that is called
-
         :param filehandler: wasm file or module handler to identify the wasm module
-
         :param list_i: list of the classical registers assigned to
-             the input variables of the function call
-
+         the input variables of the function call
         :param list_o: list of the classical registers assigned to
-             the output variables of the function call
-
+         the output variables of the function call
         :param args_wasm: vector of wasmstates the wasm op should be added to
-
-        :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` .
-             Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
-             `condition_value`
-
+        :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate`.
+         Allowed parameters are `opgroup`,  `condition`, `condition_bits`,
+         `condition_value`
         :return: the new :py:class:`Circuit`
         """
 
@@ -2488,7 +2473,7 @@ class Circuit:
 
         :param creg: register of classical bits
         :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
-             are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+         are `opgroup`,  `condition`, `condition_bits` and `condition_value`)
         :return: the new :py:class:`Circuit`
         """
 
@@ -2501,7 +2486,7 @@ class Circuit:
 
         :param creg: register of classical bits
         :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
-            are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+            are `opgroup`,  `condition`, `condition_bits` and `condition_value`)
         :return: the new :py:class:`Circuit`
         """
 
@@ -2514,7 +2499,7 @@ class Circuit:
 
         :param creg: register of classical bits
         :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
-            are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+            are `opgroup`,  `condition`, `condition_bits` and `condition_value`)
         :return: the new :py:class:`Circuit`
         """
 
@@ -2527,7 +2512,7 @@ class Circuit:
 
         :param creg: register of classical bits
         :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
-            are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+            are `opgroup`,  `condition`, `condition_bits` and `condition_value`)
         :return: the new :py:class:`Circuit`
         """
 
@@ -2540,14 +2525,13 @@ class Circuit:
 
         :param creg: register of classical bits
         :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
-            are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+            are `opgroup`,  `condition`, `condition_bits` and `condition_value`)
         :return: the new :py:class:`Circuit`
         """
 
     def add_clexpr_from_logicexp(circ: Circuit, exp: pytket.circuit.logic_exp.LogicExp, output_bits: list[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`~.ClExprOp` defined in terms of a logical expression.
-
 
         Example:
 
@@ -2559,9 +2543,7 @@ class Circuit:
         [ClExpr x[0], x[1], x[2], y[0], y[1], y[2], z[0], z[1], z[2]; ]
 
         :param exp: logical expression
-
         :param output_bits: list of bits in output
-
         :return: the updated circuit
         """
 

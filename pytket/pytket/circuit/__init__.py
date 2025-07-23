@@ -64,16 +64,17 @@ def add_wasm(  # noqa: PLR0913
     **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
-    \n\n:param funcname: name of the function that is called
-    \n:param filehandler: wasm file or module handler to identify the wasm module
-    \n:param list_i: list of the number of bits in the input variables
-    \n:param list_o: list of the number of bits in the output variables
-    \n:param args: vector of circuit bits the wasm op should be added to
-    \n:param args_wasm: vector of wasmstates the wasm op should be added to
-    \n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` .
-     Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
+    
+    :param funcname: name of the function that is called
+    :param filehandler: wasm file or module handler to identify the wasm module
+    :param list_i: list of the number of bits in the input variables
+    :param list_o: list of the number of bits in the output variables
+    :param args: vector of circuit bits the wasm op should be added to
+    :param args_wasm: vector of wasmstates the wasm op should be added to
+    :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate`.
+     Allowed parameters are `opgroup`,  `condition`, `condition_bits`,
      `condition_value`
-    \n:return: the new :py:class:`Circuit`"""
+    :return: the new :py:class:`Circuit`"""
 
     if args_wasm is None:
         args_wasm = [0]
@@ -113,17 +114,18 @@ def add_wasm_to_reg(  # noqa: PLR0913
     **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
-    \n\n:param funcname: name of the function that is called
-    \n:param filehandler: wasm file or module handler to identify the wasm module
-    \n:param list_i: list of the classical registers assigned to
+
+    :param funcname: name of the function that is called
+    :param filehandler: wasm file or module handler to identify the wasm module
+    :param list_i: list of the classical registers assigned to
      the input variables of the function call
-    \n:param list_o: list of the classical registers assigned to
+    :param list_o: list of the classical registers assigned to
      the output variables of the function call
-    \n:param args_wasm: vector of wasmstates the wasm op should be added to
-    \n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` .
-     Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
+    :param args_wasm: vector of wasmstates the wasm op should be added to
+    :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate`.
+     Allowed parameters are `opgroup`,  `condition`, `condition_bits`,
      `condition_value`
-    \n:return: the new :py:class:`Circuit`"""
+    :return: the new :py:class:`Circuit`"""
 
     if args_wasm is None:
         args_wasm = [0]
@@ -167,9 +169,8 @@ def set_rng_seed(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
 
     :param creg: register of classical bits
     :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
-         are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
-    :return: the new :py:class:`Circuit`
-    """
+     are `opgroup`,  `condition`, `condition_bits` and `condition_value`)
+    :return: the new :py:class:`Circuit`"""
     self._add_r_register(1)
     if creg.size != 64:  # noqa: PLR2004
         raise ValueError(
@@ -189,7 +190,7 @@ def set_rng_bound(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
 
     :param creg: register of classical bits
     :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
-        are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+        are `opgroup`,  `condition`, `condition_bits` and `condition_value`)
     :return: the new :py:class:`Circuit`
     """
     self._add_r_register(1)
@@ -211,7 +212,7 @@ def set_rng_index(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
 
     :param creg: register of classical bits
     :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
-        are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+        are `opgroup`,  `condition`, `condition_bits` and `condition_value`)
     :return: the new :py:class:`Circuit`
     """
     self._add_r_register(1)
@@ -233,7 +234,7 @@ def get_rng_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
 
     :param creg: register of classical bits
     :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
-        are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+        are `opgroup`,  `condition`, `condition_bits` and `condition_value`)
     :return: the new :py:class:`Circuit`
     """
     self._add_r_register(1)
@@ -255,7 +256,7 @@ def get_job_shot_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit
 
     :param creg: register of classical bits
     :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
-        are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+        are `opgroup`,  `condition`, `condition_bits` and `condition_value`)
     :return: the new :py:class:`Circuit`
     """
     self._add_r_register(1)
@@ -273,11 +274,19 @@ def add_clexpr_from_logicexp(
     circ: Circuit, exp: LogicExp, output_bits: list[Bit], **kwargs: Any
 ) -> Circuit:
     """Append a :py:class:`~.ClExprOp` defined in terms of a logical expression.
-    \n\nExample:
-    \n>>> c = Circuit()\n>>> x_reg = c.add_c_register('x', 3)\n>>> y_reg = c.add_c_register('y', 3)\n>>> z_reg = c.add_c_register('z', 3)\n>>> c.add_clexpr_from_logicexp(x_reg | y_reg, z_reg.to_list())\n[ClExpr x[0], x[1], x[2], y[0], y[1], y[2], z[0], z[1], z[2]; ]
-    \n:param exp: logical expression
-    \n:param output_bits: list of bits in output
-    \n:return: the updated circuit"""
+
+    Example:
+
+    >>> c = Circuit()
+    >>> x_reg = c.add_c_register('x', 3)
+    >>> y_reg = c.add_c_register('y', 3)
+    >>> z_reg = c.add_c_register('z', 3)
+    >>> c.add_clexpr_from_logicexp(x_reg | y_reg, z_reg.to_list())
+    [ClExpr x[0], x[1], x[2], y[0], y[1], y[2], z[0], z[1], z[2]; ]
+    
+    :param exp: logical expression
+    :param output_bits: list of bits in output
+    :return: the updated circuit"""
     wexpr, args = wired_clexpr_from_logic_exp(exp, output_bits)
     circ.add_clexpr(wexpr, args, **kwargs)
     return circ
