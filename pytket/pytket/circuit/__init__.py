@@ -64,7 +64,7 @@ def add_wasm(  # noqa: PLR0913
     **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
-    
+
     :param funcname: name of the function that is called
     :param filehandler: wasm file or module handler to identify the wasm module
     :param list_i: list of the number of bits in the input variables
@@ -283,7 +283,7 @@ def add_clexpr_from_logicexp(
     >>> z_reg = c.add_c_register('z', 3)
     >>> c.add_clexpr_from_logicexp(x_reg | y_reg, z_reg.to_list())
     [ClExpr x[0], x[1], x[2], y[0], y[1], y[2], z[0], z[1], z[2]; ]
-    
+
     :param exp: logical expression
     :param output_bits: list of bits in output
     :return: the updated circuit"""
