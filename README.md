@@ -57,7 +57,7 @@ The codebase is split into two main projects:
    as well as various other utilities.
 
 There is further a limited subset of the C++ functionality that is exposed through
-a `C` API in the [tket-c-api](tket-c-api) directory. This project is experimental,
+a `C` API in the [tket-c-api](tket-c-api) directory. This project is experimental, and
 we make no guarantees about its stability or future compatibility.
 
 ### Prerequisites

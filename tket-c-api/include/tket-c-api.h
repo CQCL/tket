@@ -48,7 +48,7 @@ TketError tket_two_qubit_squash(
     bool allow_swaps);
 
 /**
- * Apply TKET1's clifford_simp transform to the circuit
+ * Apply clifford_simp transform to the circuit
  *
  * Resynthesise all Clifford subcircuits and simplify using Clifford rules.
  * This can significantly reduce the two-qubit gate count for Clifford-heavy

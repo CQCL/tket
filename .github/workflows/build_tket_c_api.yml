@@ -47,7 +47,7 @@ jobs:
         id: test_package_exists
         run: |
           conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
-          conan_package_exists=`conan search -r tket-libs "tket/${{ steps.tket_c_api_ver.outputs.tket_c_api_ver }}@tket/stable" | grep "not found" > /dev/null 2>&1 && echo false || echo true`
+          conan_package_exists=`conan search -r tket-libs "tket-c-api/${{ steps.tket_c_api_ver.outputs.tket_c_api_ver }}@tket/stable" | grep "not found" > /dev/null 2>&1 && echo false || echo true`
           echo "conan_package_exists=${conan_package_exists}" >> $GITHUB_OUTPUT
       - name: Check tket-c-api version bump
         if: github.event_name == 'pull_request' && steps.filter.outputs.has_changed == 'true' && steps.test_package_exists.outputs.conan_package_exists == 'true'
