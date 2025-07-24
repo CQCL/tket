@@ -55,6 +55,7 @@ jobs:
       id: tket_ver
       run: |
         tket_ver=$(cat TKET_VERSION)
+        echo "tket_ver=${tket_ver}bla"
         echo "tket_ver=${tket_ver}" >> $GITHUB_OUTPUT
     - name: See if version exists on remote
       id: test_package_exists
