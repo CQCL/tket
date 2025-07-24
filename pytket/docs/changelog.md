@@ -5,6 +5,11 @@
 Features:
 
 - Detect more Clifford `PhasedX` gates.
+- Add support for `TK1` gates to `GreedyPauliSimp`.
+
+Fixes:
+
+- Update phase folding for Clifford angles in `GreedyPauliSimp`.
 
 Fixes:
 
