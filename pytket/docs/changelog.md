@@ -5,6 +5,7 @@
 Features:
 
 - Detect more Clifford `PhasedX` gates.
+- Add support for `TK1` gates to `GreedyPauliSimp`.
 
 Fixes:
 

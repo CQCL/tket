@@ -704,6 +704,10 @@ SCENARIO("Test GreedyPauliSimp for individual gates") {
       get_op_ptr(OpType::PhasedX, {0.15, 0.2}),
       get_op_ptr(OpType::PhasedX, {0.5, -0.5}),
       get_op_ptr(OpType::PhasedX, {0.2, 1}),
+      get_op_ptr(OpType::TK1, {0.25, 0.5, 0.75}),
+      get_op_ptr(OpType::TK1, {0.012, 0.78, 0.1249}),
+      get_op_ptr(OpType::TK1, {-0.25, 0.5, 0.5}),
+      get_op_ptr(OpType::TK1, {0.12385, 0.281, 0.595}),
       get_op_ptr(OpType::T),
       get_op_ptr(OpType::Tdg),
   };
