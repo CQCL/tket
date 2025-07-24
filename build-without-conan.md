@@ -57,7 +57,7 @@ cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DBUILD_TESTS=OFF -DBUILD_BENCHMARKS=OFF -DWITH_SYMENGINE_THREAD_SAFE=ON ..
 cmake --build .
 cmake --install .
-````
+```
 
 ### `eigen`
 
@@ -260,3 +260,14 @@ NO_CONAN=1 pip install -v -e .
 (You can use the environment variable `PYTKET_CMAKE_N_THREADS` to restrict the
 number of threads used in the above command; otherwise one thread per CPU is
 used.)
+
+## `tket-c-api`
+
+```
+cd ${TKET_DIR}/tket-c-api
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
+cmake --build .
+cmake --install .
+```
