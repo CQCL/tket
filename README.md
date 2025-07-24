@@ -56,6 +56,10 @@ The codebase is split into two main projects:
    used by the extension modules such as the `Backend` and `BackendResult` classes,
    as well as various other utilities.
 
+There is further a limited subset of the C++ functionality that is exposed through
+a `C` API in the [tket-c-api](tket-c-api) directory. This project is experimental, and
+we make no guarantees about its stability or future compatibility.
+
 ### Prerequisites
 
 #### Build tools

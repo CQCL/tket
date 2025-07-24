@@ -78,10 +78,8 @@ An easy way to meet all formatting and linting requirements is to issue `pre-com
 ## Version numbers
 
 If you make any changes in `tket/src`, you should bump the version number of
-`tket` in `recipes/tket/conanfile.py`, and also the `tket` versions in the
-`requires` field in `recipes/tket-test/conanfile.py`,
-`recipes/tket-proptests/conanfile.py` and `pytket/conanfile.txt` so that they
-match the new version. (This is checked on the CI for all PRs to `main`.)
+`tket` in the `TKET_VERSION` file at the root of this repo. This will
+automatically bump the version of `tket` used in `pytket`.
 Follow the "semantic versioning" convention: any backwards-incompatible changes
 to the C++ API require a major version bump; new API features that maintain
 backwards compatibility require a minor version bump; internal improvements and
