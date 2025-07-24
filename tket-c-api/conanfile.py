@@ -1,10 +1,11 @@
 from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
+from conan.tools.files import copy, load
+import os
 
 
 class TketCAPIRecipe(ConanFile):
     name = "tket-c-api"
-    version = "0.0.2"
     package_type = "library"
 
     # Optional metadata
@@ -23,6 +24,26 @@ class TketCAPIRecipe(ConanFile):
     def config_options(self):
         if self.settings.os == "Windows":
             self.options.rm_safe("fPIC")
+
+    def set_version(self):
+        # TKET_VERSION is in the parent directory in the repo, but will be in
+        # the current directory once the package has been exported to conan cache
+        for dir in [".", ".."]:
+            path = os.path.join(dir, "TKET_VERSION")
+            if os.path.exists(path):
+                self.version = load(self, path).strip()
+                return
+
+        raise FileNotFoundError("TKET_VERSION not found")
+
+    def export(self):
+        # Copy the TKET_VERSION file to the export folder
+        copy(
+            self,
+            "TKET_VERSION",
+            os.path.join(self.recipe_folder, ".."),
+            self.export_folder,
+        )
 
     def configure(self):
         if self.options.shared:
@@ -50,4 +71,4 @@ class TketCAPIRecipe(ConanFile):
         self.cpp_info.libs = ["tket-c-api"]
 
     def requirements(self):
-        self.requires("tket/2.1.35@tket/stable")
+        self.requires(f"tket/{self.version}@tket/stable")
