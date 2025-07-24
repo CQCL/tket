@@ -6,6 +6,10 @@ Features:
 
 - Detect more Clifford `PhasedX` gates.
 
+Fixes:
+
+- Update phase folding for Clifford angles in `GreedyPauliSimp`.
+
 ## 2.8.0
 
 Features:

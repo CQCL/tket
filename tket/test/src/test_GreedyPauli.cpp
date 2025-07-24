@@ -767,6 +767,14 @@ SCENARIO("Test GreedyPauliSimp pass construction") {
     REQUIRE(!gen_greedy_pauli_simp(0.3, 0.5, 500, 500, 0, false, 100, true)
                  ->apply(cu));
   }
+  GIVEN("A circuit with implicit Clifford merging") {
+    Circuit c(1);
+    c.add_op<unsigned>(OpType::Rz, 1.005, {0});
+    c.add_op<unsigned>(OpType::PhasedX, {1.50, 1.505}, {0});
+    CompilationUnit cu(c);
+    CHECK(gen_greedy_pauli_simp(0.3, 0.5)->apply(cu));
+    REQUIRE(test_unitary_comparison(c, cu.get_circ_ref(), true));
+  }
 }
 
 SCENARIO("Test GreedyPauliSimp with multiple trials and threads") {

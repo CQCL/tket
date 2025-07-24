@@ -39,9 +39,9 @@ jobs:
         base: ${{ github.ref }}
         filters: |
           tket:
-            - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**}'
+            - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**,TKET_VERSION}'
           tket_or_workflow:
-            - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**}'
+            - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**,TKET_VERSION}'
             - '.github/workflows/build_and_test.yml'
           doxyfile_or_workflow:
             - '{tket/Doxyfile}'
@@ -51,10 +51,10 @@ jobs:
             - '.github/workflows/build_and_test.yml'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
-    - name: parse version from conanfile
+    - name: Read version from file
       id: tket_ver
       run: |
-        tket_ver=$(conan inspect tket/conanfile.py | grep "^version: " | awk '{print $2}')
+        tket_ver=$(cat TKET_VERSION)
         echo "tket_ver=${tket_ver}" >> $GITHUB_OUTPUT
     - name: See if version exists on remote
       id: test_package_exists
@@ -259,9 +259,6 @@ jobs:
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
-    - name: check that version is consistent
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Set up Python (pull request)
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v5
