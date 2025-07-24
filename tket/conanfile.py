@@ -89,7 +89,7 @@ class TketConan(ConanFile):
 
         # TKET_VERSION is in the parent directory in the repo, but will be in
         # the current directory once the package has been exported to conan cache
-        for try_dir in [".", ".."]:
+        for try_dir in [os.curdir, os.pardir]:
             path = os.path.join(try_dir, "TKET_VERSION")
             if os.path.exists(path):
                 self.version = load(self, path).strip()
@@ -102,7 +102,7 @@ class TketConan(ConanFile):
         copy(
             self,
             "TKET_VERSION",
-            os.path.join(self.recipe_folder, ".."),
+            os.path.join(self.recipe_folder, os.pardir),
             self.export_folder,
         )
 

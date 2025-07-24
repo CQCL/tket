@@ -51,7 +51,7 @@ jobs:
             - '.github/workflows/build_and_test.yml'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
-    - name: parse version from conanfile
+    - name: Read version from file
       id: tket_ver
       run: |
         tket_ver=$(cat TKET_VERSION)
