@@ -42,9 +42,8 @@ static std::vector<PauliNode_ptr> get_nodes_from_tableau(
       z_string.push_back(z_stab.string.at(Qubit(j)));
       x_string.push_back(x_stab.string.at(Qubit(j)));
     }
-    rows.push_back(
-        std::make_shared<PauliPropagation>(
-            z_string, x_string, z_sign, x_sign, i));
+    rows.push_back(std::make_shared<PauliPropagation>(
+        z_string, x_string, z_sign, x_sign, i));
   }
   return rows;
 }
@@ -230,7 +229,6 @@ void GPGraph::apply_paulis_at_end(
     const std::vector<std::pair<std::vector<Pauli>, Expr>>& rotations,
     const qubit_vector_t& qbs, bool conditional,
     std::vector<unsigned> cond_bits, unsigned cond_value) {
-  std::vector<std::tuple<std::vector<Pauli>, bool, Expr>> conj_rotations;
   for (const auto& pair : rotations) {
     const std::vector<Pauli>& paulis = pair.first;
     const Expr& angle = pair.second;
@@ -239,7 +237,9 @@ void GPGraph::apply_paulis_at_end(
             paulis.begin(), paulis.end(), Pauli::I)) == paulis.size())
       continue;
     std::optional<unsigned> cliff_angle = equiv_Clifford(angle);
-    if (cliff_angle && cliff_angle.value() == 0) continue;
+    if (cliff_angle && cliff_angle.value() == 0) {
+      continue;
+    }
     QubitPauliMap qpm;
     for (unsigned i = 0; i != qbs.size(); ++i)
       qpm.insert({Qubit(qbs[i]), paulis[i]});
@@ -250,19 +250,15 @@ void GPGraph::apply_paulis_at_end(
     // if not clifford we conjugate the string with the end-circuit tableau
     SpPauliStabiliser qpt = cliff_.get_row_product(SpPauliStabiliser(qpm));
     auto [pauli_dense, theta] = dense_pauli(qpt, n_qubits_, angle);
-    conj_rotations.push_back({pauli_dense, true, theta});
-  }
-
-  // if conditional we add a ConditionalBlock otherwise we add individual
-  // rotations.
-  if (conditional) {
-    PauliNode_ptr node = std::make_shared<ConditionalBlock>(
-        conj_rotations, cond_bits, cond_value);
-    apply_node_at_end(node);
-  } else {
-    for (const auto& t : conj_rotations) {
-      PauliNode_ptr node = std::make_shared<PauliRotation>(
-          std::get<0>(t), std::get<1>(t), std::get<2>(t));
+    if (conditional) {
+      PauliNode_ptr node = std::make_shared<ConditionalBlock>(
+          std::vector<std::tuple<std::vector<Pauli>, bool, Expr>>{
+              {pauli_dense, true, theta}},
+          cond_bits, cond_value);
+      apply_node_at_end(node);
+    } else {
+      PauliNode_ptr node =
+          std::make_shared<PauliRotation>(pauli_dense, true, theta);
       apply_node_at_end(node);
     }
   }
@@ -301,7 +297,6 @@ void GPGraph::apply_gate_at_end(
       }
     }
   }
-
   std::vector<std::pair<std::vector<Pauli>, Expr>> pauli_rots;
   switch (type) {
     case OpType::Conditional: {
