@@ -42,8 +42,9 @@ static std::vector<PauliNode_ptr> get_nodes_from_tableau(
       z_string.push_back(z_stab.string.at(Qubit(j)));
       x_string.push_back(x_stab.string.at(Qubit(j)));
     }
-    rows.push_back(std::make_shared<PauliPropagation>(
-        z_string, x_string, z_sign, x_sign, i));
+    rows.push_back(
+        std::make_shared<PauliPropagation>(
+            z_string, x_string, z_sign, x_sign, i));
   }
   return rows;
 }
