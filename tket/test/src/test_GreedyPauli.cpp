@@ -569,12 +569,10 @@ SCENARIO("Complete synthesis") {
         PauliExpBox(SymPauliTensor({Pauli::X, Pauli::X}, 0.3)), {0, 1});
     Circuit d1(circ);
     Circuit d2(circ);
-    REQUIRE(
-        Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
-            .apply(d1));
-    REQUIRE(
-        Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, false)
-            .apply(d2));
+    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
+                .apply(d1));
+    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, false)
+                .apply(d2));
     REQUIRE(test_unitary_comparison(circ, d1, true));
     REQUIRE(test_unitary_comparison(circ, d2, true));
     REQUIRE(d1.count_n_qubit_gates(2) == 1);
@@ -589,9 +587,8 @@ SCENARIO("Complete synthesis") {
     circ.add_box(
         PauliExpBox(SymPauliTensor({Pauli::X, Pauli::Y}, 0.2)), {4, 5});
     Circuit d(circ);
-    REQUIRE(
-        Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
-            .apply(d));
+    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
+                .apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
     REQUIRE(d.count_n_qubit_gates(2) == 3);
   }
@@ -672,9 +669,8 @@ SCENARIO("Complete synthesis") {
         PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Y, Pauli::X}, 0.15)),
         {0, 1, 2});
     Circuit d(circ);
-    REQUIRE(
-        Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
-            .apply(d));
+    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
+                .apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
     // if the first XY was implemented using a ZZPhase
     // then 2 TQEs is needed to conjugate the remaining two strings to weight 2
@@ -767,6 +763,14 @@ SCENARIO("Test GreedyPauliSimp pass construction") {
     REQUIRE(!gen_greedy_pauli_simp(0.3, 0.5, 500, 500, 0, false, 100, true)
                  ->apply(cu));
   }
+  GIVEN("A circuit with implicit Clifford merging") {
+    Circuit c(1);
+    c.add_op<unsigned>(OpType::Rz, 1.005, {0});
+    c.add_op<unsigned>(OpType::PhasedX, {1.50, 1.505}, {0});
+    CompilationUnit cu(c);
+    CHECK(gen_greedy_pauli_simp(0.3, 0.5)->apply(cu));
+    REQUIRE(test_unitary_comparison(c, cu.get_circ_ref(), true));
+  }
 }
 
 SCENARIO("Test GreedyPauliSimp with multiple trials and threads") {
@@ -832,10 +836,9 @@ SCENARIO("Test GreedyPauliSimp with multiple trials and threads") {
     REQUIRE(!Transforms::greedy_pauli_optimisation(
                  0.7, 0.3, 500, 500, 0, true, 0, 10)
                  .apply(d));
-    REQUIRE(
-        Transforms::greedy_pauli_optimisation(
-            0.7, 0.3, 500, 500, 0, true, 100, 10)
-            .apply(d));
+    REQUIRE(Transforms::greedy_pauli_optimisation(
+                0.7, 0.3, 500, 500, 0, true, 100, 10)
+                .apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
   }
 }
