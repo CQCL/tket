@@ -402,6 +402,12 @@ void GPGraph::apply_gate_at_end(
       pauli_rots.push_back({{Pauli::Z}, beta});
       break;
     }
+    case OpType::TK1: {
+      pauli_rots.push_back({{Pauli::Z}, op->get_params().at(2)});
+      pauli_rots.push_back({{Pauli::X}, op->get_params().at(1)});
+      pauli_rots.push_back({{Pauli::Z}, op->get_params().at(0)});
+      break;
+    }
     case OpType::T: {
       pauli_rots.push_back({{Pauli::Z}, 0.25});
       break;
