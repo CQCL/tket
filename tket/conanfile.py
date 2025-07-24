@@ -16,13 +16,12 @@ import os
 
 from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
-from conan.tools.files import copy
+from conan.tools.files import copy, load
 from conan.errors import ConanInvalidConfiguration
 
 
 class TketConan(ConanFile):
     name = "tket"
-    version = "2.1.36"
     package_type = "library"
     license = "Apache 2"
     homepage = "https://github.com/CQCL/tket"
@@ -84,6 +83,28 @@ class TketConan(ConanFile):
         if self.build_proptest():
             tc.variables["BUILD_TKET_PROPTEST"] = True
         tc.generate()
+
+    def set_version(self):
+        """Set the version of this package from the TKET_VERSION file."""
+
+        # TKET_VERSION is in the parent directory in the repo, but will be in
+        # the current directory once the package has been exported to conan cache
+        for try_dir in [".", ".."]:
+            path = os.path.join(try_dir, "TKET_VERSION")
+            if os.path.exists(path):
+                self.version = load(self, path).strip()
+                return
+
+        raise FileNotFoundError("TKET_VERSION not found")
+
+    def export(self):
+        # Copy the TKET_VERSION file to the export folder
+        copy(
+            self,
+            "TKET_VERSION",
+            os.path.join(self.recipe_folder, ".."),
+            self.export_folder,
+        )
 
     def validate(self):
         if self.options.profile_coverage and self.settings.compiler != "gcc":
