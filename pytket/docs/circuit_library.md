@@ -1,7 +1,7 @@
 # pytket.circuit_library
 
 ```{eval-rst}
-.. currentmodule:: pytket._tket.circuit_library
+.. currentmodule:: pytket.circuit_library
 ```
 
 The {py:mod}`~pytket.circuit_library` module is a collection of methods for generating small circuits, mostly of the form of representing one gate in terms of others (as used, for example, within the {py:meth}`~.passes.AutoRebase` pass).

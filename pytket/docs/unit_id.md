@@ -1,7 +1,7 @@
 # pytket.unit_id
 
 ```{eval-rst}
-.. currentmodule:: pytket._tket.unit_id
+.. currentmodule:: pytket.unit_id
 ```
 
 ```{eval-rst}

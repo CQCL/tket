@@ -1,7 +1,7 @@
 # pytket.partition
 
 ```{eval-rst}
-.. currentmodule:: pytket._tket.partition
+.. currentmodule:: pytket.partition
 ```
 
 ```{eval-rst}

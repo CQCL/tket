@@ -1,7 +1,7 @@
 # pytket.tableau
 
 ```{eval-rst}
-.. currentmodule:: pytket._tket.tableau
+.. currentmodule:: pytket.tableau
 ```
 
 ```{eval-rst}

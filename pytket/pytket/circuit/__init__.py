@@ -63,17 +63,20 @@ def add_wasm(  # noqa: PLR0913
     args_wasm: Sequence[int] | None = None,
     **kwargs: Any,
 ) -> Circuit:
-    """Add a classical function call from a wasm file to the circuit.
-    \n\n:param funcname: name of the function that is called
-    \n:param filehandler: wasm file or module handler to identify the wasm module
-    \n:param list_i: list of the number of bits in the input variables
-    \n:param list_o: list of the number of bits in the output variables
-    \n:param args: vector of circuit bits the wasm op should be added to
-    \n:param args_wasm: vector of wasmstates the wasm op should be added to
-    \n:param kwargs: additional arguments passed to `add_gate_method` .
-     Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
+    """
+    Add a classical function call from a wasm file to the circuit.
+
+    :param funcname: name of the function that is called
+    :param filehandler: wasm file or module handler to identify the wasm module
+    :param list_i: list of the number of bits in the input variables
+    :param list_o: list of the number of bits in the output variables
+    :param args: vector of circuit bits the wasm op should be added to
+    :param args_wasm: vector of wasmstates the wasm op should be added to
+    :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate`.
+     Allowed parameters are `opgroup`,  `condition`, `condition_bits`,
      `condition_value`
-    \n:return: the new :py:class:`Circuit`"""
+    :return: the new :py:class:`Circuit`
+    """
 
     if args_wasm is None:
         args_wasm = [0]
@@ -112,18 +115,21 @@ def add_wasm_to_reg(  # noqa: PLR0913
     args_wasm: Sequence[int] | None = None,
     **kwargs: Any,
 ) -> Circuit:
-    """Add a classical function call from a wasm file to the circuit.
-    \n\n:param funcname: name of the function that is called
-    \n:param filehandler: wasm file or module handler to identify the wasm module
-    \n:param list_i: list of the classical registers assigned to
+    """
+    Add a classical function call from a wasm file to the circuit.
+
+    :param funcname: name of the function that is called
+    :param filehandler: wasm file or module handler to identify the wasm module
+    :param list_i: list of the classical registers assigned to
      the input variables of the function call
-    \n:param list_o: list of the classical registers assigned to
+    :param list_o: list of the classical registers assigned to
      the output variables of the function call
-    \n:param args_wasm: vector of wasmstates the wasm op should be added to
-    \n:param kwargs: additional arguments passed to `add_gate_method` .
-     Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
+    :param args_wasm: vector of wasmstates the wasm op should be added to
+    :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate`.
+     Allowed parameters are `opgroup`,  `condition`, `condition_bits`,
      `condition_value`
-    \n:return: the new :py:class:`Circuit`"""
+    :return: the new :py:class:`Circuit`
+    """
 
     if args_wasm is None:
         args_wasm = [0]
@@ -161,13 +167,14 @@ setattr(Circuit, "add_wasm_to_reg", add_wasm_to_reg)  # noqa: B010
 
 
 def set_rng_seed(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
-    """Seed an RNG from the contents of a classical register.
+    """
+    Seed an RNG from the contents of a classical register.
 
     The classical register must be exactly 64 bits.
 
     :param creg: register of classical bits
-    :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
-         are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+    :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
+     are `opgroup`,  `condition`, `condition_bits` and `condition_value`)
     :return: the new :py:class:`Circuit`
     """
     self._add_r_register(1)
@@ -182,14 +189,15 @@ setattr(Circuit, "set_rng_seed", set_rng_seed)  # noqa: B010
 
 
 def set_rng_bound(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
-    """Set an RNG upper bound from the contents of a classical register.
+    """
+    Set an RNG upper bound from the contents of a classical register.
 
     The classical register must be exactly 32 bits. It encodes the upper bound in
     little-endian binary (least significant bit first). The bound is inclusive.
 
     :param creg: register of classical bits
-    :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
-        are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+    :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
+        are `opgroup`,  `condition`, `condition_bits` and `condition_value`)
     :return: the new :py:class:`Circuit`
     """
     self._add_r_register(1)
@@ -204,14 +212,15 @@ setattr(Circuit, "set_rng_bound", set_rng_bound)  # noqa: B010
 
 
 def set_rng_index(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
-    """Set an RNG stream index from the contents of a classical register.
+    """
+    Set an RNG stream index from the contents of a classical register.
 
     The classical register must be exactly 32 bits. It encodes the index in little-
     endian binary (least significant bit first).
 
     :param creg: register of classical bits
-    :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
-        are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+    :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
+        are `opgroup`,  `condition`, `condition_bits` and `condition_value`)
     :return: the new :py:class:`Circuit`
     """
     self._add_r_register(1)
@@ -226,14 +235,15 @@ setattr(Circuit, "set_rng_index", set_rng_index)  # noqa: B010
 
 
 def get_rng_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
-    """Get RNG output into a classical register.
+    """
+    Get RNG output into a classical register.
 
     The classical register must be exactly 32 bits. After the operation it encodes the
     output number in little-endian binary (least significant bit first).
 
     :param creg: register of classical bits
-    :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
-        are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+    :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
+        are `opgroup`,  `condition`, `condition_bits` and `condition_value`)
     :return: the new :py:class:`Circuit`
     """
     self._add_r_register(1)
@@ -248,14 +258,15 @@ setattr(Circuit, "get_rng_num", get_rng_num)  # noqa: B010
 
 
 def get_job_shot_num(self: Circuit, creg: BitRegister, **kwargs: Any) -> Circuit:
-    """Get shot number into a classical register.
+    """
+    Get shot number into a classical register.
 
     The classical register must be exactly 32 bits. After the operation it encodes the
     shot number in little-endian binary (least significant bit first).
 
     :param creg: register of classical bits
-    :param kwargs: additional arguments passed to `add_gate_method` (allowed parameters
-        are `opgroup`,  `condition` , `condition_bits` and `condition_value`)
+    :param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` (allowed parameters
+        are `opgroup`,  `condition`, `condition_bits` and `condition_value`)
     :return: the new :py:class:`Circuit`
     """
     self._add_r_register(1)
@@ -272,12 +283,22 @@ setattr(Circuit, "get_job_shot_num", get_job_shot_num)  # noqa: B010
 def add_clexpr_from_logicexp(
     circ: Circuit, exp: LogicExp, output_bits: list[Bit], **kwargs: Any
 ) -> Circuit:
-    """Append a :py:class:`~.ClExprOp` defined in terms of a logical expression.
-    \n\nExample:
-    \n>>> c = Circuit()\n>>> x_reg = c.add_c_register('x', 3)\n>>> y_reg = c.add_c_register('y', 3)\n>>> z_reg = c.add_c_register('z', 3)\n>>> c.add_clexpr_from_logicexp(x_reg | y_reg, z_reg.to_list())\n[ClExpr x[0], x[1], x[2], y[0], y[1], y[2], z[0], z[1], z[2]; ]
-    \n:param exp: logical expression
-    \n:param output_bits: list of bits in output
-    \n:return: the updated circuit"""
+    """
+    Append a :py:class:`~.ClExprOp` defined in terms of a logical expression.
+
+    Example:
+
+    >>> c = Circuit()
+    >>> x_reg = c.add_c_register('x', 3)
+    >>> y_reg = c.add_c_register('y', 3)
+    >>> z_reg = c.add_c_register('z', 3)
+    >>> c.add_clexpr_from_logicexp(x_reg | y_reg, z_reg.to_list())
+    [ClExpr x[0], x[1], x[2], y[0], y[1], y[2], z[0], z[1], z[2]; ]
+
+    :param exp: logical expression
+    :param output_bits: list of bits in output
+    :return: the updated circuit
+    """
     wexpr, args = wired_clexpr_from_logic_exp(exp, output_bits)
     circ.add_clexpr(wexpr, args, **kwargs)
     return circ

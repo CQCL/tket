@@ -149,8 +149,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
        "applied to inputs :math:`(a_i)`."
        "\n:param args: bits to which the transform is applied"
        "\n:param name: operation name"
-       "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-       " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+       "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` ."
+       " Allowed parameters are `opgroup`,  `condition`, `condition_bits`,"
        " `condition_value`"
        "\n:return: the new :py:class:`~.Circuit`",
        nb::arg("values"), nb::arg("args"),
@@ -192,8 +192,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "variables"
           "\n:param args: vector of circuit bits the wasm op should be added to"
           "\n:param wasm_wire_args: vector of circuit wasmwires the wasm op should be added to"
-          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` ."
+          " Allowed parameters are `opgroup`,  `condition`, `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("funcname"), nb::arg("wasm_uid"), nb::arg("width_i_parameter"),
@@ -266,8 +266,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "circuit used as inputs"
           "\n:param list_reg_out: list of the classical registers in the "
           "circuit used as outputs"
-          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` ."
+          " Allowed parameters are `opgroup`,  `condition`, `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("funcname"), nb::arg("wasm_uid"), nb::arg("list_reg_in"),
@@ -287,8 +287,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
            "\n\nThe classical register must be exactly 64 bits."
            "\n\n:param creg: register of classical bits"
            "\n:param rng_wire: index of RNG wire"
-           "\n:param kwargs: additional arguments passed to `add_gate_method` "
-           "(allowed parameters are `opgroup`,  `condition` , `condition_bits` "
+           "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` "
+           "(allowed parameters are `opgroup`,  `condition`, `condition_bits` "
            "and `condition_value`)"
            "\n:return: the new :py:class:`~.Circuit`",
            nb::arg("creg"), nb::arg("rng_wire"), nb::arg("kwargs"))
@@ -309,8 +309,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
            "The bound is inclusive."
            "\n\n:param creg: register of classical bits"
            "\n:param rng_wire: index of RNG wire"
-           "\n:param kwargs: additional arguments passed to `add_gate_method` "
-           "(allowed parameters are `opgroup`,  `condition` , `condition_bits` "
+           "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` "
+           "(allowed parameters are `opgroup`,  `condition`, `condition_bits` "
            "and `condition_value`)"
            "\n:return: the new :py:class:`~.Circuit`",
            nb::arg("creg"), nb::arg("rng_wire"), nb::arg("kwargs"))
@@ -330,8 +330,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
            "index in little-endian binary (least significant bit first)."
            "\n\n:param creg: register of classical bits"
            "\n:param rng_wire: index of RNG wire"
-           "\n:param kwargs: additional arguments passed to `add_gate_method` "
-           "(allowed parameters are `opgroup`,  `condition` , `condition_bits` "
+           "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` "
+           "(allowed parameters are `opgroup`,  `condition`, `condition_bits` "
            "and `condition_value`)"
            "\n:return: the new :py:class:`~.Circuit`",
            nb::arg("creg"), nb::arg("rng_wire"), nb::arg("kwargs"))
@@ -352,8 +352,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
            "(least significant bit first)."
            "\n\n:param creg: register of classical bits"
            "\n:param rng_wire: index of RNG wire"
-           "\n:param kwargs: additional arguments passed to `add_gate_method` "
-           "(allowed parameters are `opgroup`,  `condition` , `condition_bits` "
+           "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` "
+           "(allowed parameters are `opgroup`,  `condition`, `condition_bits` "
            "and `condition_value`)"
            "\n:return: the new :py:class:`~.Circuit`",
            nb::arg("creg"), nb::arg("rng_wire"), nb::arg("kwargs"))
@@ -371,8 +371,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
            "operation it encodes the shot number in little-endian binary "
            "(least significant bit first)."
            "\n\n:param creg: register of classical bits"
-           "\n:param kwargs: additional arguments passed to `add_gate_method` "
-           "(allowed parameters are `opgroup`,  `condition` , `condition_bits` "
+           "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` "
+           "(allowed parameters are `opgroup`,  `condition`, `condition_bits` "
            "and `condition_value`)"
            "\n:return: the new :py:class:`~.Circuit`",
            nb::arg("creg"), nb::arg("kwargs"))
@@ -386,8 +386,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "Appends an operation to set some bit values."
           "\n\n:param values: values to set"
           "\n:param args: bits to set"
-          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` ."
+          " Allowed parameters are `opgroup`,  `condition`, `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("values"), nb::arg("args"), nb::arg("kwargs"))
@@ -427,8 +427,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "Appends a classical copy operation"
           "\n\n:param args_in: source bits"
           "\n:param args_out: destination bits"
-          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` ."
+          " Allowed parameters are `opgroup`,  `condition`, `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("args_in"), nb::arg("args_out"), nb::arg("kwargs"))
@@ -470,8 +470,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param args_in: input bits for the predicate"
           "\n:param arg_out: output bit, distinct from all inputs",
           "\n:param name: operation name"
-          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` ."
+          " Allowed parameters are `opgroup`,  `condition`, `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("values"), nb::arg("args_in"), nb::arg("arg_out"),
@@ -497,8 +497,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param args_in: input bits, excluding the modified bit"
           "\n:param arg_out: modified bit",
           "\n:param name: operation name"
-          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` ."
+          " Allowed parameters are `opgroup`,  `condition`, `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("values"), nb::arg("args_in"), nb::arg("arg_inout"),
@@ -532,8 +532,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n\n:param arg0_in: first input bit"
           "\n:param arg1_in: second input bit"
           "\n:param arg_out: output bit"
-          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` ."
+          " Allowed parameters are `opgroup`,  `condition`, `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("arg0_in"), nb::arg("arg1_in"), nb::arg("arg_out"), nb::arg("kwargs"))
@@ -566,8 +566,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n\n:param arg0_in: first input bit"
           "\n:param arg1_in: second input bit"
           "\n:param arg_out: output bit"
-          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` ."
+          " Allowed parameters are `opgroup`,  `condition`, `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("arg0_in"), nb::arg("arg1_in"), nb::arg("arg_out"), nb::arg("kwargs"))
@@ -600,8 +600,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n\n:param arg0_in: first input bit"
           "\n:param arg1_in: second input bit"
           "\n:param arg_out: output bit"
-          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` ."
+          " Allowed parameters are `opgroup`,  `condition`, `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("arg0_in"), nb::arg("arg1_in"), nb::arg("arg_out"), nb::arg("kwargs"))
@@ -627,8 +627,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "Appends a NOT operation to the end of the circuit."
           "\n\n:param arg_in: input bit"
           "\n:param arg_out: output bit"
-          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` ."
+          " Allowed parameters are `opgroup`,  `condition`, `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("arg_in"), nb::arg("arg_out"), nb::arg("kwargs"))
@@ -647,8 +647,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n:param maxval: upper bound of input in little-endian encoding"
           "\n:param args_in: input bits"
           "\n:param arg_out: output bit (distinct from input bits)"
-          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` ."
+          " Allowed parameters are `opgroup`,  `condition`, `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("minval"), nb::arg("maxval"), nb::arg("args_in"),
@@ -677,8 +677,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n\n:param reg0_in: first input register"
           "\n:param reg1_in: second input register"
           "\n:param reg_out: output register"
-          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` ."
+          " Allowed parameters are `opgroup`,  `condition`, `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("reg0_in"), nb::arg("reg1_in"), nb::arg("reg_out"), nb::arg("kwargs"))
@@ -706,8 +706,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n\n:param reg0_in: first input register"
           "\n:param reg1_in: second input register"
           "\n:param reg_out: output register"
-          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` ."
+          " Allowed parameters are `opgroup`,  `condition`, `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("reg0_in"), nb::arg("reg1_in"), nb::arg("reg_out"), nb::arg("kwargs"))
@@ -735,8 +735,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "\n\n:param reg0_in: first input register"
           "\n:param reg1_in: second input register"
           "\n:param reg_out: output register"
-          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` ."
+          " Allowed parameters are `opgroup`,  `condition`, `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("reg0_in"), nb::arg("reg1_in"), nb::arg("reg_out"), nb::arg("kwargs"))
@@ -754,8 +754,8 @@ void init_circuit_add_classical_op(nb::class_<Circuit> &c) {
           "each register, up to the size of the smallest register."
           "\n\n:param reg_in: input register"
           "\n:param reg_out: name of output register"
-          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
-          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          "\n:param kwargs: additional arguments passed to :py:meth:`~.Circuit.add_gate` ."
+          " Allowed parameters are `opgroup`,  `condition`, `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`~.Circuit`",
           nb::arg("reg_in"), nb::arg("reg_out"), nb::arg("kwargs"));

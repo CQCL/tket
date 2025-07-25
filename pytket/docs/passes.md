@@ -11,7 +11,7 @@ Rebase passes can be used to convert a circuit to a desired gateset. See {py:met
 For more on pytket passes see the [compilation](https://docs.quantinuum.com/tket/user-guide/manual/manual_compiler.html) section of the user manual or the [notebook tutorials](https://docs.quantinuum.com/tket/user-guide)
 
 ```{eval-rst}
-.. currentmodule:: pytket._tket.passes
+.. currentmodule:: pytket.passes
 ```
 
 ```{eval-rst}

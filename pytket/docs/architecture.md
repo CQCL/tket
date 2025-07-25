@@ -1,7 +1,7 @@
 # pytket.architecture
 
 ```{eval-rst}
-.. currentmodule:: pytket._tket.architecture
+.. currentmodule:: pytket.architecture
 ```
 
 ```{eval-rst}

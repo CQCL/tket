@@ -1,7 +1,7 @@
 # pytket.tailoring
 
 ```{eval-rst}
-.. currentmodule:: pytket._tket.tailoring
+.. currentmodule:: pytket.tailoring
 ```
 
 ```{eval-rst}
