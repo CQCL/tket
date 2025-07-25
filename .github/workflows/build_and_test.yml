@@ -322,6 +322,9 @@ jobs:
         pip install -r requirements.txt
         pytest --ignore=simulator/
     - name: Test building docs
+      uses: extractions/setup-just@v3
+      with:
+        just-version: 1.5.0
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       timeout-minutes: 20
       run: |
@@ -329,7 +332,7 @@ jobs:
         poetry config virtualenvs.create false
         cd pytket/docs
         poetry install
-        bash ./build-docs.sh
+        just build-strict
     - name: Upload artifact
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/upload-artifact@v4
