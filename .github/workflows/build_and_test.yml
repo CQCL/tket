@@ -433,6 +433,7 @@ jobs:
       # so we must normalize the line endings in these.
       run: |
              $tket_files = Get-ChildItem "tket" -File -Recurse
+             $tket_files += Get-Item "TKET_VERSION"
              foreach ($f in $tket_files) {
              $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
              [IO.File]::WriteAllText($f, $normalized_file)
