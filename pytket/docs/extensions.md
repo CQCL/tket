@@ -20,7 +20,7 @@ The types of `Backend` available in pytket are the following
 - **Emulators** - These classically simulate a circuit and produce shots based results. Sometimes emulators use a noise model and have connectivity constraints to emulate real QPUs. E.g. [IBMQEmulatorBackend](inv:#*extensions.qiskit.IBMQEmulatorBackend)
 - **Statevector Simulators** - Calculates the pure quantum state prepared by a circuit returning a vector/ndarray. Examples of statevector simulators are the [ForestStateBackend](inv:#*extensions.pyquil.ForestStateBackend) and the [AerStateBackend](inv:#*extensions.qiskit.AerStateBackend).
 - **Unitary Simulators** - Unitary simulators calculate the unitary operator that is applied by a circuit. A unitary matrix/ndarray is returned [AerUnitaryBackend](inv:#*extensions.qiskit.AerUnitaryBackend) is an example of such a simulator.
-- **Density Matrix Simulators** - These simulators compute the density matrix prepared by a circuit. The result can be a statistical mixture of states in contrast to statevector simulation. E.g. [CirqDensityMatrixSampleBackend](inv:#*extensions.cirq.CirqDensityMatrixSampleBackend)
+- **Density Matrix Simulators** - These simulators compute the density matrix prepared by a circuit. The result can be a statistical mixture of states in contrast to statevector simulation. E.g. [CirqDensityMatrixSampleBackend](inv:#*.cirq.CirqDensityMatrixSampleBackend)
 - **Other specialised simulators** - There are extensions for simulating specific types of circuit. For instance the [SimplexBackend](inv:#*extensions.pysimplex.SimplexBackend) is designed to simulate Clifford circuits.
 
 A full list of available pytket backends is shown below.
@@ -56,10 +56,10 @@ A full list of available pytket backends is shown below.
 
 ## Statevector Simulators
 
-[CirqStateSampleBackend](inv:#*extensions.cirq.CirqStateSampleBackend)
+[CirqStateSampleBackend](inv:#*.cirq.CirqStateSampleBackend)
 \- Backend for Cirq statevector simulator sampling.
 
-[CirqStateSimBackend](inv:#*extensions.cirq.CirqStateSimBackend)
+[CirqStateSimBackend](inv:#*.cirq.CirqStateSimBackend)
 \- Backend for Cirq statevector simulator state return.
 
 [AerStateBackend](inv:#*extensions.qiskit.AerStateBackend) - Backend for running simulations on the Qiskit Aer Statevector simulator.
@@ -79,10 +79,10 @@ A full list of available pytket backends is shown below.
 
 [AerDensityMatrixBackend](inv:#*extensions.qiskit.AerDensityMatrixBackend) - Backend for density matrix simulation using qiskit Aer. Can take a `NoiseModel` as an optional argument.
 
-[CirqDensityMatrixSampleBackend](inv:#*extensions.cirq.CirqDensityMatrixSampleBackend)
+[CirqDensityMatrixSampleBackend](inv:#*.cirq.CirqDensityMatrixSampleBackend)
 \- Backend for Cirq density matrix simulator sampling.
 
-[CirqDensityMatrixSimBackend](inv:#*extensions.cirq.CirqDensityMatrixSimBackend)
+[CirqDensityMatrixSimBackend](inv:#*.cirq.CirqDensityMatrixSimBackend)
 \- Backend for Cirq density matrix simulator density_matrix return.
 
 [QulacsBackend](inv:#*extensions.qulacs.QulacsBackend) - This has a configurable density matrix simulation option.
@@ -91,10 +91,10 @@ Use `QulacsBackend(result_type="density_matrix")`.
 
 ## Clifford Simulators
 
-[CirqCliffordSampleBackend](inv:#*extensions.cirq.CirqCliffordSampleBackend)
+[CirqCliffordSampleBackend](inv:#*.cirq.CirqCliffordSampleBackend)
 \- Backend for Cirq Clifford simulator sampling.
 
-[CirqCliffordSimBackend](inv:#*extensions.cirq.CirqCliffordSimBackend)
+[CirqCliffordSimBackend](inv:#*.cirq.CirqCliffordSimBackend)
 \- Backend for Cirq Clifford simulator state return.
 
 [SimplexBackend](inv:#*extensions.pysimplex.SimplexBackend)- Backend for simulating Clifford circuits using pysimplex.
