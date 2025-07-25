@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2.9.0 (July 2025)
 
 Features:
 
@@ -11,11 +11,7 @@ Fixes:
 
 - Update phase folding for Clifford angles in `GreedyPauliSimp`.
 
-Fixes:
-
-- Update phase folding for Clifford angles in `GreedyPauliSimp`.
-
-## 2.8.0
+## 2.8.0 (July 2025)
 
 Features:
 
