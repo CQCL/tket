@@ -95,7 +95,7 @@ jobs:
         # Ensure wheels are compatible with MacOS 13.0 and later:
         export WHEEL_PLAT_NAME=macosx_13_0_x86_64
         pip install -U pip build delocate
-        python -m build
+        TKET_VERSION=`cat ../TKET_VERSION` python -m build
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
     - uses: actions/upload-artifact@v4
       with:
@@ -137,7 +137,7 @@ jobs:
         # Ensure wheels are compatible with MacOS 13.0 and later:
         export WHEEL_PLAT_NAME=macosx_13_0_arm64
         python${{ matrix.python-version }} -m pip install -U pip build delocate
-        python${{ matrix.python-version }} -m build
+        TKET_VERSION=`cat ../TKET_VERSION` python${{ matrix.python-version }} -m build
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
     - uses: actions/upload-artifact@v4
       with:
@@ -173,10 +173,11 @@ jobs:
     - name: Build tket
       run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
     - name: Build wheel
+      shell: bash
       run: |
         cd pytket
         python -m pip install -U pip build
-        python -m build --outdir "${{ github.workspace }}/wheelhouse"
+        TKET_VERSION=`cat ../TKET_VERSION` python -m build --outdir "${{ github.workspace }}/wheelhouse"
     - uses: actions/upload-artifact@v4
       with:
         name: Windows_${{ matrix.python-version }}_wheel
