@@ -1,7 +1,7 @@
 # pytket.transform
 
 ```{eval-rst}
-.. currentmodule:: pytket._tket.transform
+.. currentmodule:: pytket.transform
 ```
 
 ```{eval-rst}

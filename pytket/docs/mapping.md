@@ -1,7 +1,7 @@
 # pytket.mapping
 
 ```{eval-rst}
-.. currentmodule:: pytket._tket.mapping
+.. currentmodule:: pytket.mapping
 ```
 
 ```{eval-rst}
