@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.9.0 (July 2025)
+## 2.9.1 (July 2025)
 
 Features:
 
