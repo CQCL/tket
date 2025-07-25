@@ -35,6 +35,9 @@ class pytketRecipe(ConanFile):
         cmake.install()
 
     def _get_tket_version(self) -> str:
+        tket_ver = os.getenv("TKET_VERSION")
+        if tket_ver is not None:
+            return tket_ver
         # TKET_VERSION is in the parent directory in the repo, but will be in
         # the current directory once the package has been exported to conan cache
         for try_dir in [os.curdir, os.pardir]:
