@@ -53,7 +53,7 @@ endif()
 add_library(tket-c-api src/tket-c-api.cpp)
 target_include_directories(tket-c-api PUBLIC include)
 
-target_link_libraries(tket-c-api PRIVATE tket::tket)
+target_link_libraries(tket-c-api PRIVATE tket::tket Eigen3::Eigen)
 
 set_target_properties(tket-c-api PROPERTIES PUBLIC_HEADER "include/tket-c-api.h")
 install(TARGETS tket-c-api)
