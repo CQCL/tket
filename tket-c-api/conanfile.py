@@ -27,10 +27,12 @@ class TketCAPIRecipe(ConanFile):
             self.options.rm_safe("fPIC")
 
     def set_version(self):
+        """Set the version of this package from the TKET_VERSION file."""
+
         # TKET_VERSION is in the parent directory in the repo, but will be in
         # the current directory once the package has been exported to conan cache
-        for dir in [".", ".."]:
-            path = os.path.join(dir, "TKET_VERSION")
+        for try_dir in [os.curdir, os.pardir]:
+            path = os.path.join(try_dir, "TKET_VERSION")
             if os.path.exists(path):
                 self.version = load(self, path).strip()
                 return
@@ -42,7 +44,7 @@ class TketCAPIRecipe(ConanFile):
         copy(
             self,
             "TKET_VERSION",
-            os.path.join(self.recipe_folder, ".."),
+            os.path.join(self.recipe_folder, os.pardir),
             self.export_folder,
         )
 
