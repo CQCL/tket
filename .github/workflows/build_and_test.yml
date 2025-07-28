@@ -22,11 +22,11 @@ jobs:
     runs-on: ubuntu-24.04
     outputs:
       tket_or_workflow_changed: ${{ steps.filter.outputs.tket_or_workflow }}
+      tket_or_c_api_changed: ${{ steps.filter.outputs.tket_or_c_api }}
       tket_changed: ${{ steps.filter.outputs.tket }}
       doxyfile_or_workflow_changed: ${{ steps.filter.outputs.doxyfile_or_workflow }}
       pytket_or_workflow_changed: ${{ steps.filter.outputs.pytket_or_workflow }}
       tket_ver: ${{ steps.tket_ver.outputs.tket_ver }}
-      tket_c_api: ${{ steps.filter.outputs.tket_c_api }}
     steps:
     - uses: actions/checkout@v4
     - name: Select Python 3.12
@@ -40,8 +40,11 @@ jobs:
         filters: |
           tket:
             - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**,TKET_VERSION}'
-            - '{tket-c-api/src/**,tket-c-api/include/**,tket-c-api/conanfile.py,tket-c-api/CMakeLists.txt}'
           tket_or_workflow:
+            - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**,TKET_VERSION}'
+            - '{tket-c-api/src/**,tket-c-api/include/**,tket-c-api/conanfile.py,tket-c-api/CMakeLists.txt}'
+            - '.github/workflows/build_and_test.yml'
+          tket_or_c_api:
             - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**,TKET_VERSION}'
             - '{tket-c-api/src/**,tket-c-api/include/**,tket-c-api/conanfile.py,tket-c-api/CMakeLists.txt}'
             - '.github/workflows/build_and_test.yml'
@@ -71,7 +74,7 @@ jobs:
           echo "tket_package_exists=false" >> $GITHUB_OUTPUT
         fi
     - name: Check tket version bump
-      if: github.event_name == 'pull_request' && steps.filter.outputs.tket == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
+      if: github.event_name == 'pull_request' && steps.filter.outputs.tket_or_c_api == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
       run: exit 1
 
   check_docs_tket:
@@ -101,7 +104,7 @@ jobs:
   build_test_tket:
     name: Build and test (tket)
     needs: check_changes
-    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_c_api_changed == 'true'
     strategy:
       matrix:
         os: ['ubuntu-24.04', 'macos-13', 'macos-15']
@@ -144,12 +147,13 @@ jobs:
     - name: Build tket
       run: conan create tket -s build_type=Release --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True
     - name: Build tket-c-api
-      run: conan create tket-c-api -s build_type=Release --user=tket --channel=stable
+      run: conan create tket-c-api -s build_type=Release --user=tket --channel=stable -o boost/*:header_only=True -o tket/*:with_all_tests=True
     - name: Upload packages
       if: github.event_name == 'push'
       run: |
         ccache --set-config namespace=WITHOUT_TESTS
         conan create tket --user=tket --channel=stable -o boost/*:header_only=True
+        conan create tket-c-api --user=tket --channel=stable -o boost/*:header_only=True
         conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
         conan upload tket-c-api/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
@@ -157,7 +161,7 @@ jobs:
   build_test_tket_windows:
     name: Build and test (tket)
     needs: check_changes
-    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_c_api_changed == 'true'
     strategy:
       matrix:
         os: ['windows-2025']
@@ -226,16 +230,16 @@ jobs:
         # On windows use build + export-pkg so build directory is consistent across runs (i.e. don't build from conan cache)
         # Necessary because setting ccache base_dir doesn't currently work on windows
         run: |
-          conan build tket-c-api --user=tket --channel=stable -c tools.cmake.cmaketoolchain:generator=Ninja
-          conan export-pkg tket --user=tket --channel=stable -c tools.cmake.cmaketoolchain:generator=Ninja
+          conan build tket-c-api --user=tket --channel=stable -o boost/*:header_only=True -o tket/*:with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
+          conan export-pkg tket-c-api --user=tket --channel=stable -o boost/*:header_only=True -o tket/*:with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
       - name: Upload packages
         if: github.event_name == 'push'
         run: |
           ccache --set-config namespace=WITHOUT_TESTS
           conan build tket --user=tket --channel=stable -o boost/*:header_only=True
           conan export-pkg tket --user=tket --channel=stable -o boost/*:header_only=True
-          conan build tket-c-api --user=tket --channel=stable
-          conan export-pkg tket-c-api --user=tket --channel=stable
+          conan build tket-c-api --user=tket --channel=stable -o boost/*:header_only=True
+          conan export-pkg tket-c-api --user=tket --channel=stable -o boost/*:header_only=True
           conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
           conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
           conan upload tket-c-api/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
