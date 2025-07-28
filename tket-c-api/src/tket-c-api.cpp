@@ -12,21 +12,6 @@ extern "C" {
 using namespace tket;
 using json = nlohmann::json;
 
-// Macro to suppress MSVC warning about throwing exceptions in extern "C"
-// functions
-#if defined(_MSC_VER)
-#define THROW_NO_MSVC_WARNING                                             \
-  do {                                                                    \
-    /* Suppress MSVC warning about throwing an exception in an extern "C" \
-     * function */                                                        \
-    /* We do not recover from these unknown errors */                     \
-    __pragma(warning(push)) __pragma(warning(disable : 4297)) throw;      \
-    __pragma(warning(pop))                                                \
-  } while (0)
-#else
-#define THROW_NO_MSVC_WARNING throw
-#endif
-
 struct TketCircuit {
   Circuit circuit;
 };
@@ -38,7 +23,8 @@ OpType convert_target_gate(TketTargetGate target_gate) {
     case TKET_TARGET_TK2:
       return OpType::TK2;
     default:
-      throw std::invalid_argument("Invalid target gate");
+      std::cerr << "Invalid target gate\n";
+      std::exit(EXIT_FAILURE);
   }
 }
 
@@ -56,9 +42,10 @@ TketCircuit *tket_circuit_from_json(const char *json_str) {
     if (tc) tket_free_circuit(tc);
     tc = nullptr;
   } catch (...) {
-    // Clean up memory and rethrow
+    // Clean up memory, print error, and exit
     if (tc) tket_free_circuit(tc);
-    THROW_NO_MSVC_WARNING;
+    std::cerr << "Unknown error in tket_circuit_from_json\n";
+    std::exit(EXIT_FAILURE);
   }
 
   return tc;
@@ -83,10 +70,11 @@ TketError tket_circuit_to_json(const TketCircuit *tc, char **json_str) {
     *json_str = (char *)malloc(s.size() + 1);
     std::strcpy(*json_str, s.c_str());
   } catch (...) {
-    // Clean up memory and rethrow
+    // Clean up memory, print error, and exit
     if (*json_str) free(*json_str);
     *json_str = nullptr;
-    THROW_NO_MSVC_WARNING;
+    std::cerr << "Unknown error in tket_circuit_from_json\n";
+    std::exit(EXIT_FAILURE);
   }
 
   return TKET_SUCCESS;
