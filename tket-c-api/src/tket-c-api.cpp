@@ -20,11 +20,11 @@ using json = nlohmann::json;
     /* Suppress MSVC warning about throwing an exception in an extern "C" \
      * function */                                                        \
     /* We do not recover from these unknown errors */                     \
-    #pragma warning(push) #pragma warning(disable : 4297) throw;          \
-    #pragma warning(pop)                                                  \
+    __pragma(warning(push)) __pragma(warning(disable : 4297)) throw;      \
+    __pragma(warning(pop))                                                \
   } while (0)
 #else
-#define THROW_NO_MSVC_WARNING throw;
+#define THROW_NO_MSVC_WARNING throw
 #endif
 
 struct TketCircuit {
@@ -58,7 +58,7 @@ TketCircuit *tket_circuit_from_json(const char *json_str) {
   } catch (...) {
     // Clean up memory and rethrow
     if (tc) tket_free_circuit(tc);
-    THROW_NO_MSVC_WARNING
+    THROW_NO_MSVC_WARNING;
   }
 
   return tc;
@@ -86,7 +86,7 @@ TketError tket_circuit_to_json(const TketCircuit *tc, char **json_str) {
     // Clean up memory and rethrow
     if (*json_str) free(*json_str);
     *json_str = nullptr;
-    THROW_NO_MSVC_WARNING
+    THROW_NO_MSVC_WARNING;
   }
 
   return TKET_SUCCESS;
