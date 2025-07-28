@@ -11,7 +11,7 @@ display.md
 ```
 
 ```{eval-rst}
-.. currentmodule:: pytket._tket.circuit
+.. currentmodule:: pytket.circuit
 ```
 
 ```{eval-rst}

@@ -5,7 +5,7 @@ In pytket, predicates enforce properties of circuits. Each pytket {py:class}`~.B
 For more on predicates read the corresponding section of the [user manual](https://docs.quantinuum.com/tket/user-guide/manual/manual_compiler.html#compilation-predicates). See also the [Compilation example](https://docs.quantinuum.com/tket/user-guide/examples/circuit_compilation/compilation_example.html) notebook.
 
 ```{eval-rst}
-.. currentmodule:: pytket._tket.predicates
+.. currentmodule:: pytket.predicates
 ```
 
 ```{eval-rst}

@@ -1,7 +1,7 @@
 # pytket.zx
 
 ```{eval-rst}
-.. currentmodule:: pytket._tket.zx
+.. currentmodule:: pytket.zx
 ```
 
 ```{eval-rst}

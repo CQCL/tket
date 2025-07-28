@@ -1,7 +1,7 @@
 # pytket.pauli
 
 ```{eval-rst}
-.. currentmodule:: pytket._tket.pauli
+.. currentmodule:: pytket.pauli
 ```
 
 ```{eval-rst}

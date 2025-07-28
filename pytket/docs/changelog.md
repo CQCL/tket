@@ -1,12 +1,17 @@
 # Changelog
 
-## Unreleased
+## 2.9.1 (July 2025)
 
 Features:
 
 - Detect more Clifford `PhasedX` gates.
+- Add support for `TK1` gates to `GreedyPauliSimp`.
 
-## 2.8.0
+Fixes:
+
+- Update phase folding for Clifford angles in `GreedyPauliSimp`.
+
+## 2.8.0 (July 2025)
 
 Features:
 

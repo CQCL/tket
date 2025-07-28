@@ -9,13 +9,13 @@ Therefore, for instance `circuit.add_gate(OpType.Rx, 1, [0])` is equivalent in t
 :::
 
 ```{eval-rst}
-.. currentmodule:: pytket._tket.circuit.OpType
+.. currentmodule:: pytket.circuit.OpType
 ```
 
 ```{eval-rst}
-.. autoenum:: pytket._tket.circuit.OpType
+.. autoenum:: pytket.circuit.OpType
 ```
 
 ```{eval-rst}
-.. automethod:: pytket._tket.circuit.OpType.from_name
+.. automethod:: pytket.circuit.OpType.from_name
 ```
