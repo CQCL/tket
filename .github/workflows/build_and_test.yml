@@ -21,31 +21,34 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.12'
-    - name: Install conan
-      uses: turtlebrowser/get-conan@v1.2
-    - name: Set up conan
-      run: |
-        conan profile detect
-        DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/ubuntu-24.04
-        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
-        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        key: tket-dynamic-ubuntu-24.04
-    - name: further ccache config
-      run: |
-        ccache --set-config base_dir=${HOME}
-        ccache --set-config compiler_check=content
-        ccache -p
-    - name: Build tket
-      run: conan create tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
-    - name: Build pytket
-      run: |
-        cd pytket
-        pip install -e .[ZX] -v
+    # - name: Install conan
+    #   uses: turtlebrowser/get-conan@v1.2
+    # - name: Set up conan
+    #   run: |
+    #     conan profile detect
+    #     DEFAULT_PROFILE_PATH=`conan profile path default`
+    #     PROFILE_PATH=./conan-profiles/ubuntu-24.04
+    #     diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+    #     cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
+    #     conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+    # - name: ccache
+    #   uses: hendrikmuhs/ccache-action@v1.2
+    #   with:
+    #     key: tket-dynamic-ubuntu-24.04
+    # - name: further ccache config
+    #   run: |
+    #     ccache --set-config base_dir=${HOME}
+    #     ccache --set-config compiler_check=content
+    #     ccache -p
+    # - name: Build tket
+    #   run: conan create tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
+    # - name: Build pytket
+    #   run: |
+    #     cd pytket
+    #     pip install -e .[ZX] -v
+    - name: Install pytket
+      run:
+        pip install pytket
     - name: Test pytket
       run: |
         pip install coverage
