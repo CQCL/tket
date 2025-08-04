@@ -3,7 +3,8 @@ name: Build and test
 on:
   push:
     branches:
-      - ae/debug-2002
+      main
+      # - ae/debug-2002
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}

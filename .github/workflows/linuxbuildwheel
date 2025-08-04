@@ -46,4 +46,4 @@ ${PYEX} -m venv env
 # LD_LIBRARY_PATH=./pytket/_tket auditwheel repair "dist/pytket-"*".whl" -w "audited/"
 
 ${PYEX} -m pip install pytket coverage
-coverage run -m unittest test-2002/test-2002.py
+${PYEX} -m coverage run -m unittest test-2002/test-2002.py
