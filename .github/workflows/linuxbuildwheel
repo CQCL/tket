@@ -22,25 +22,28 @@ export PYBIN=/opt/python/${PY_TAG}/bin
 export PYEX=${PYBIN}/python
 ${PYEX} -m venv env
 . env/bin/activate
-${PYEX} -m pip install -U pip build conan
-CONAN_CMD=${PYBIN}/conan
-${CONAN_CMD} profile detect
-DEFAULT_PROFILE_PATH=`${CONAN_CMD} profile path default`
-PROFILE_PATH=./conan-profiles/${CONAN_PROFILE}
-diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
-cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
-${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+# ${PYEX} -m pip install -U pip build conan
+# CONAN_CMD=${PYBIN}/conan
+# ${CONAN_CMD} profile detect
+# DEFAULT_PROFILE_PATH=`${CONAN_CMD} profile path default`
+# PROFILE_PATH=./conan-profiles/${CONAN_PROFILE}
+# diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+# cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
+# ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
 
-# Build tket
-${CONAN_CMD} create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
+# # Build tket
+# ${CONAN_CMD} create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
 
-# Work around https://github.com/pypa/manylinux/issues/1309
-git config --global --add safe.directory "*"
+# # Work around https://github.com/pypa/manylinux/issues/1309
+# git config --global --add safe.directory "*"
 
-mkdir /tket/pytket/wheelhouse
-mkdir /tket/pytket/audited
+# mkdir /tket/pytket/wheelhouse
+# mkdir /tket/pytket/audited
 
-# build pytket
-cd pytket
-${PYEX} -m build
-LD_LIBRARY_PATH=./pytket/_tket auditwheel repair "dist/pytket-"*".whl" -w "audited/"
+# # build pytket
+# cd pytket
+# ${PYEX} -m build
+# LD_LIBRARY_PATH=./pytket/_tket auditwheel repair "dist/pytket-"*".whl" -w "audited/"
+
+${PYEX} -m pip install pytket coverage
+coverage run -m unittest test-2002/test-2002.py
