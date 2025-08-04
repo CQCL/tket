@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        python3-version: ['12']
+        python3-version: ['13']
     steps:
     - uses: actions/checkout@v4
       with:
