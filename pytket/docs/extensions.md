@@ -115,7 +115,6 @@ Use `QulacsBackend(result_type="density_matrix")`.
 :maxdepth: 0
 
 pytket-aqt <https://cqcl.github.io/pytket-aqt/api/index.html>
-pytket-azure <https://docs.quantinuum.com/tket/extensions/pytket-azure>
 pytket-braket <https://docs.quantinuum.com/tket/extensions/pytket-braket>
 pytket-cirq <https://docs.quantinuum.com/tket/extensions/pytket-cirq>
 pytket-iqm <https://docs.quantinuum.com/tket/extensions/pytket-iqm>
