@@ -595,18 +595,15 @@ const Circuit &CY_using_CX() {
 const Circuit &CH_using_CX() {
   static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
     Circuit c(2);
-    c.add_op<unsigned>(OpType::H, {1});
     c.add_op<unsigned>(OpType::Sdg, {1});
-    c.add_op<unsigned>(OpType::CX, {0, 1});
     c.add_op<unsigned>(OpType::H, {1});
-    c.add_op<unsigned>(OpType::T, {1});
+    c.add_op<unsigned>(OpType::Tdg, {1});
+    c.add_op<unsigned>(OpType::V, {1});
     c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::Vdg, {1});
     c.add_op<unsigned>(OpType::T, {1});
     c.add_op<unsigned>(OpType::H, {1});
     c.add_op<unsigned>(OpType::S, {1});
-    c.add_op<unsigned>(OpType::X, {1});
-    c.add_op<unsigned>(OpType::S, {0});
-    c.add_phase(-0.25);
     return c;
   }());
   return *C;
