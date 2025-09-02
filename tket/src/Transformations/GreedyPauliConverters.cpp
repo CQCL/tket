@@ -149,7 +149,12 @@ void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
   GPVertSet to_search = end_line_;
   GPVertSet commuted;
   GPVert new_vert = boost::add_vertex(graph_);
+  // If the node is a ConditionalBlock, this might
+  // store another node that can be merged with it
+  std::optional<GPVert> merged_cond = std::nullopt;
+
   graph_[new_vert] = node;
+
   while (!to_search.empty()) {
     // Get next candidate parent
     GPVert to_compare = *to_search.begin();
@@ -176,9 +181,11 @@ void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
       if (block1.cond_bits() == block2.cond_bits() &&
           block1.cond_value() == block2.cond_value()) {
         block2.append(block1);
-        boost::clear_vertex(new_vert, graph_);
-        boost::remove_vertex(new_vert, graph_);
-        return;
+        merged_cond = to_compare;
+        // If the two blocks can be merged,
+        // we still need to check the new vertex’s dependencies
+        // on the others
+        continue;
       }
     }
     if (nodes_commute(node, compare_node)) {
@@ -221,6 +228,16 @@ void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
       boost::add_edge(to_compare, new_vert, graph_);
       end_line_.erase(to_compare);
     }
+  }
+  if (merged_cond != std::nullopt) {
+    // We have merged the new block into this existing conditional block.
+    // Now we transfer all dependency edges.
+    for (const GPVert& pred : get_predecessors(new_vert)) {
+      boost::add_edge(pred, *merged_cond, graph_);
+    }
+    boost::clear_vertex(new_vert, graph_);
+    boost::remove_vertex(new_vert, graph_);
+    return;
   }
   end_line_.insert(new_vert);
   if (get_predecessors(new_vert).empty()) start_line_.insert(new_vert);
@@ -272,7 +289,6 @@ void GPGraph::apply_gate_at_end(
   unit_vector_t args = cmd.get_args();
   qubit_vector_t qbs = cmd.get_qubits();
   OpType type = op->get_type();
-
   for (const UnitID& arg : args) {
     if (arg.type() == UnitType::Qubit) {
       auto it = end_measures_.left.find(arg.index().at(0));

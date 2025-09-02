@@ -7,6 +7,7 @@ Fixes:
 - Update `CH` decomposition to use a single `CX` gate.
 - Fix QASM conversion of circuits containing multiple RNG calls writing to the
   same register.
+- Update Conditional Block merging in `GreedyPauliSimp`.
 
 ## 2.9.1 (July 2025)
 
