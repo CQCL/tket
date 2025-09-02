@@ -176,15 +176,16 @@ void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
       if (block1.cond_bits() == block2.cond_bits() &&
           block1.cond_value() == block2.cond_value()) {
         block2.append(block1);
+        // Transfer all dependency edges from new_vert to to_compare
+        for (const GPVert& pred : get_predecessors(new_vert)) {
+          boost::add_edge(pred, to_compare, graph_);
+        }
         boost::clear_vertex(new_vert, graph_);
         boost::remove_vertex(new_vert, graph_);
         return;
       }
     }
-    // if we only ever commute non-conditional forward through conditonal then
-    // later block merging is never incorrect
-    if (nodes_commute(node, compare_node) &&
-        node->get_type() != PauliNodeType::ConditionalBlock) {
+    if (nodes_commute(node, compare_node)) {
       // Check if two pauli rotations can be merged
       if (node->get_type() == PauliNodeType::PauliRotation &&
           compare_node->get_type() == PauliNodeType::PauliRotation) {
