@@ -1373,3 +1373,30 @@ a[0] = a + b[0];
 """
     c7 = circuit_from_qasm_str(qasm7)
     assert c4 == c7
+
+
+def test_rng_reuse() -> None:
+    # https://github.com/CQCL/tket/issues/2013
+    c = Circuit(1)
+    r = c.add_c_register("r", 32)
+    c.get_rng_num(r)
+    c.X(0, condition=reg_eq(r, 0))
+    c.get_rng_num(r)
+    c.Y(0, condition=reg_eq(r, 1))
+    qasm = circuit_to_qasm_str(c, header="hqslib1")
+    assert (
+        qasm
+        == """OPENQASM 2.0;
+include "hqslib1.inc";
+
+qreg q[1];
+creg r[32];
+creg tk_SCRATCH_BIT[2];
+r = RNGnum();
+if(r==0) tk_SCRATCH_BIT[0] = 1;
+if(r!=0) tk_SCRATCH_BIT[0] = 0;
+r = RNGnum();
+if(tk_SCRATCH_BIT[0]==1) x q[0];
+if(r==1) y q[0];
+"""
+    )
