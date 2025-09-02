@@ -27,6 +27,7 @@
 #include "tket/Predicates/CompilerPass.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Transformations/GreedyPauliOptimisation.hpp"
 #include "tket/Utils/Expression.hpp"
 
@@ -368,6 +369,23 @@ SCENARIO("Complete synthesis") {
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
     REQUIRE(circ == d);
   }
+
+  GIVEN("Circuit with conditional gates 3") {
+    Circuit c(2, 1);
+    c.add_op<unsigned>(OpType::Rx, 1.0246, {0});
+    c.add_conditional_gate<unsigned>(OpType::Ry, {-0.25}, {1}, {0}, 0);
+    c.add_conditional_gate<unsigned>(OpType::CZ, {}, {0, 1}, {0}, 0);
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(c));
+
+    Circuit comp(2, 1);
+    comp.add_op<unsigned>(OpType::Rx, 1.0246, {0});
+    comp.add_conditional_gate<unsigned>(OpType::Ry, {-0.25}, {1}, {0}, 0);
+    comp.add_conditional_gate<unsigned>(OpType::CZ, {}, {1, 0}, {0}, 0);
+    // Previously Conditional Ry was being commuted ahead of Rz and then CZ
+    // merged in without checking commuting with Rx Returning the same circuit
+    // is expected, except the CZ gate is "flipped"
+    REQUIRE(comp == c);
+  }
   GIVEN("Circuit with conditional gates and measures") {
     Circuit circ(2, 2);
     Op_ptr cond1 = std::make_shared<Conditional>(
@@ -405,6 +423,7 @@ SCENARIO("Complete synthesis") {
     // should all be canceled
     Circuit d(2, 2);
     REQUIRE(Transforms::greedy_pauli_optimisation().apply(circ));
+    Transforms::remove_redundancies().apply(circ);
     REQUIRE(circ == d);
   }
   GIVEN("Circuit with classical gates") {
@@ -569,12 +588,10 @@ SCENARIO("Complete synthesis") {
         PauliExpBox(SymPauliTensor({Pauli::X, Pauli::X}, 0.3)), {0, 1});
     Circuit d1(circ);
     Circuit d2(circ);
-    REQUIRE(
-        Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
-            .apply(d1));
-    REQUIRE(
-        Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, false)
-            .apply(d2));
+    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
+                .apply(d1));
+    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, false)
+                .apply(d2));
     REQUIRE(test_unitary_comparison(circ, d1, true));
     REQUIRE(test_unitary_comparison(circ, d2, true));
     REQUIRE(d1.count_n_qubit_gates(2) == 1);
@@ -589,9 +606,8 @@ SCENARIO("Complete synthesis") {
     circ.add_box(
         PauliExpBox(SymPauliTensor({Pauli::X, Pauli::Y}, 0.2)), {4, 5});
     Circuit d(circ);
-    REQUIRE(
-        Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
-            .apply(d));
+    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
+                .apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
     REQUIRE(d.count_n_qubit_gates(2) == 3);
   }
@@ -672,12 +688,12 @@ SCENARIO("Complete synthesis") {
         PauliExpBox(SymPauliTensor({Pauli::Z, Pauli::Y, Pauli::X}, 0.15)),
         {0, 1, 2});
     Circuit d(circ);
-    REQUIRE(
-        Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
-            .apply(d));
+    REQUIRE(Transforms::greedy_pauli_optimisation(0.7, 0.3, 500, 500, 0, true)
+                .apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
     // if the first XY was implemented using a ZZPhase
-    // then 2 TQEs is needed to conjugate the remaining two strings to weight 2
+    // then 2 TQEs is needed to conjugate the remaining two strings to
+    // weight 2
     // hence 5 2-qubit gates in total.
     REQUIRE(d.count_n_qubit_gates(2) == 4);
   }
@@ -844,10 +860,9 @@ SCENARIO("Test GreedyPauliSimp with multiple trials and threads") {
     REQUIRE(!Transforms::greedy_pauli_optimisation(
                  0.7, 0.3, 500, 500, 0, true, 0, 10)
                  .apply(d));
-    REQUIRE(
-        Transforms::greedy_pauli_optimisation(
-            0.7, 0.3, 500, 500, 0, true, 100, 10)
-            .apply(d));
+    REQUIRE(Transforms::greedy_pauli_optimisation(
+                0.7, 0.3, 500, 500, 0, true, 100, 10)
+                .apply(d));
     REQUIRE(test_unitary_comparison(circ, d, true));
   }
 }

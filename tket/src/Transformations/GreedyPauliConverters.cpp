@@ -42,9 +42,8 @@ static std::vector<PauliNode_ptr> get_nodes_from_tableau(
       z_string.push_back(z_stab.string.at(Qubit(j)));
       x_string.push_back(x_stab.string.at(Qubit(j)));
     }
-    rows.push_back(
-        std::make_shared<PauliPropagation>(
-            z_string, x_string, z_sign, x_sign, i));
+    rows.push_back(std::make_shared<PauliPropagation>(
+        z_string, x_string, z_sign, x_sign, i));
   }
   return rows;
 }
@@ -150,6 +149,7 @@ void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
   GPVertSet commuted;
   GPVert new_vert = boost::add_vertex(graph_);
   graph_[new_vert] = node;
+
   while (!to_search.empty()) {
     // Get next candidate parent
     GPVert to_compare = *to_search.begin();
@@ -181,7 +181,10 @@ void GPGraph::apply_node_at_end(PauliNode_ptr& node) {
         return;
       }
     }
-    if (nodes_commute(node, compare_node)) {
+    // if we only ever commute non-conditional forward through conditonal then
+    // later block merging is never incorrect
+    if (nodes_commute(node, compare_node) &&
+        node->get_type() != PauliNodeType::ConditionalBlock) {
       // Check if two pauli rotations can be merged
       if (node->get_type() == PauliNodeType::PauliRotation &&
           compare_node->get_type() == PauliNodeType::PauliRotation) {
@@ -272,7 +275,6 @@ void GPGraph::apply_gate_at_end(
   unit_vector_t args = cmd.get_args();
   qubit_vector_t qbs = cmd.get_qubits();
   OpType type = op->get_type();
-
   for (const UnitID& arg : args) {
     if (arg.type() == UnitType::Qubit) {
       auto it = end_measures_.left.find(arg.index().at(0));
