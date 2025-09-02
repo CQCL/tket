@@ -1889,7 +1889,8 @@ class _QasmWriter:
         reg_name = args[0].reg_name
         creg = self.cregs[reg_name]
         assert args[:-1] == creg.to_list()
-        self.strings.add_string(f"{reg_name} = RNGnum();\n")
+        label = self.strings.add_string(f"{reg_name} = RNGnum();\n")
+        self.mark_as_written(label, reg_name)
 
     def add_job_shot_num(self, args: list[Bit]) -> None:
         assert len(args) == 32  # noqa: PLR2004
