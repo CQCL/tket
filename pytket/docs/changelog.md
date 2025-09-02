@@ -5,6 +5,7 @@
 Fixes:
 
 - Update `CH` decomposition to use a single `CX` gate.
+- Update Conditional Block merging in `GreedyPauliSimp`.
 
 ## 2.9.1 (July 2025)
 
