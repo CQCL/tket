@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased (August 2025)
+
+Fixes:
+
+- Update `CH` decomposition to use a single `CX` gate.
+
 ## 2.9.1 (July 2025)
 
 Features:
