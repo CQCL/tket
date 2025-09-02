@@ -11,7 +11,7 @@ jobs:
   build_docs:
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Install Doxygen
       run: sudo apt update && sudo apt install -y doxygen graphviz
     - name: Build Doxygen docs
@@ -26,11 +26,11 @@ jobs:
     concurrency: gh_pages
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         ref: gh-pages
     - name: Download artefact
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: tket_docs
         path: api/
