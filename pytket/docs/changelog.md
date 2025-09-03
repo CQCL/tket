@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.9.2 (August 2025)
+## 2.9.3 (August 2025)
 
 Fixes:
 
