@@ -30,7 +30,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Select Python 3.12
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
     - uses: dorny/paths-filter@v3.0.2
@@ -114,7 +114,7 @@ jobs:
       if: matrix.os == 'ubuntu-24.04'
       run: sudo apt update
     - name: Select Python 3.12
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
     - name: Install conan
@@ -168,7 +168,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Select Python 3.12
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Install conan
@@ -257,7 +257,7 @@ jobs:
       with: 
         submodules: recursive
     - name: Select Python 3.12
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
     - name: Install conan
@@ -287,17 +287,17 @@ jobs:
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
     - name: Set up Python (pull request)
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.10'
     - name: Set up Python (push)
       if: github.event_name == 'push'
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: Set up Python (schedule)
       if: github.event_name == 'schedule'
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.13'
     - name: Build pytket
@@ -359,7 +359,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Select Python 3.12
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
     - name: Install conan
@@ -389,17 +389,17 @@ jobs:
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
     - name: Set up Python (pull request)
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.10'
     - name: Set up Python (push)
       if: github.event_name == 'push'
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: Set up Python (schedule)
       if: github.event_name == 'schedule'
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.13'
     - name: Build pytket
@@ -438,7 +438,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Select Python 3.12
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
     - name: Install conan
@@ -507,17 +507,17 @@ jobs:
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
     - name: Set up Python 3.10
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.10'
     - name: Set up Python 3.11
       if: github.event_name == 'push'
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: Set up Python 3.12
       if: github.event_name == 'schedule'
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
     - name: Build pytket
