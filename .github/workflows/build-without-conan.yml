@@ -14,7 +14,7 @@ jobs:
       INSTALL_DIR: "/home/runner/local"
       TMP_DIR: "/home/runner/tmp"
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Create directories
       run: |
         mkdir ${INSTALL_DIR}
@@ -108,9 +108,9 @@ jobs:
     - name: Install nanobind
       run: |
         cd ${TMP_DIR}
-        wget https://github.com/wjakob/nanobind/archive/refs/tags/v2.7.0.tar.gz
-        tar xzvf v2.7.0.tar.gz
-        cd nanobind-2.7.0/
+        wget https://github.com/wjakob/nanobind/archive/refs/tags/v2.9.2.tar.gz
+        tar xzvf v2.9.2.tar.gz
+        cd nanobind-2.9.2/
         mkdir build
         cd build
         cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DNB_TEST=OFF -DNB_USE_SUBMODULE_DEPS=OFF ..
@@ -191,7 +191,7 @@ jobs:
         cmake --build  . -j2
         cmake --install .
     - name: Set up Python 3.11
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.11'
     - name: Install pytket

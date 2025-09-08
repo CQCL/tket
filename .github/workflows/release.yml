@@ -16,7 +16,7 @@ jobs:
       matrix:
         python3-version: ['10', '11', '12']
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
@@ -42,7 +42,7 @@ jobs:
       matrix:
         python3-version: ['10', '11', '12']
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
@@ -68,12 +68,12 @@ jobs:
       matrix:
         python-version: ['3.10', '3.11', '3.12']
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install conan
@@ -110,12 +110,12 @@ jobs:
       matrix:
         python-version: ['3.10', '3.11', '3.12']
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install conan
@@ -150,12 +150,12 @@ jobs:
       matrix:
         python-version: ['3.10', '3.11', '3.12']
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Select Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install conan
@@ -191,7 +191,7 @@ jobs:
         python3-version: ['10', '11', '12', '13']
     steps:
       - name: Set up Python 3.${{ matrix.python3-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.${{ matrix.python3-version }}"
       - name: Download wheel (non-stable-ABI)
@@ -208,7 +208,7 @@ jobs:
           path: wheelhouse/
       - name: Install wheel
         run: pip install wheelhouse/pytket-*.whl
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           path: tket
       - name: Setup tests
@@ -226,11 +226,11 @@ jobs:
       matrix:
         python3-version: ['10', '11', '12', '13']
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         path: tket
     - name: Set up Python 3.${{ matrix.python3-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: "3.${{ matrix.python3-version }}"
     - name: Download wheel (non-stable-ABI)
@@ -247,7 +247,7 @@ jobs:
         path: wheelhouse/
     - name: Install wheel
       run: pip install wheelhouse/pytket-*.whl
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         path: tket
     - name: Setup tests
@@ -267,7 +267,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
     - name: Download wheel (non-stable-ABI)
@@ -282,7 +282,7 @@ jobs:
       with:
         name: MacOS_x86_3.12_wheel
         path: wheelhouse/
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         path: tket
     - name: Install wheel
@@ -304,7 +304,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
     - name: Download wheel (non-stable-ABI)
@@ -319,7 +319,7 @@ jobs:
       with:
         name: MacOS_arm64_3.12_wheel
         path: wheelhouse/
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         path: tket
     - name: Install wheel
@@ -340,7 +340,7 @@ jobs:
         python-version: ['3.10', '3.11', '3.12', '3.13']
     steps:
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
     - name: Download wheel (non-stable-ABI)
@@ -358,7 +358,7 @@ jobs:
     - name: Install wheel
       shell: bash
       run: for i in wheelhouse/pytket-*.whl ; do pip install $i ; done
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
           path: tket
     - name: Run tests

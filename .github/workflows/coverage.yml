@@ -23,7 +23,7 @@ jobs:
     outputs:
       tket: ${{ steps.filter.outputs.tket }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: dorny/paths-filter@v3.0.2
       id: filter
       with:
@@ -39,9 +39,9 @@ jobs:
     if: needs.changes.outputs.tket == 'true' || github.event_name == 'schedule'
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Select Python 3.12
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
     - name: Install conan
@@ -97,7 +97,7 @@ jobs:
     if: ((github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch') && needs.changes.outputs.tket == 'true') || github.event_name == 'schedule'
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Download artefact
       uses: actions/download-artifact@v5
       with:
@@ -121,7 +121,7 @@ jobs:
     if: github.event_name == 'push' && needs.changes.outputs.tket == 'true'
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         ref: gh-pages
     - name: Download artefact
@@ -150,7 +150,7 @@ jobs:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         ref: gh-pages
     - name: Download artefact

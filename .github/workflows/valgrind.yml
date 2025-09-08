@@ -18,7 +18,7 @@ jobs:
     outputs:
       tket: ${{ steps.filter.outputs.tket }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: dorny/paths-filter@v3.0.2
       id: filter
       with:
@@ -32,11 +32,11 @@ jobs:
     needs: changes
     if: needs.changes.outputs.tket == 'true'
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: apt update
       run: sudo apt update
     - name: Select Python 3.12
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
     - name: Install conan
