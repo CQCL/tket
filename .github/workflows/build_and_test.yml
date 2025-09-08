@@ -28,7 +28,7 @@ jobs:
       pytket_or_workflow_changed: ${{ steps.filter.outputs.pytket_or_workflow }}
       tket_ver: ${{ steps.tket_ver.outputs.tket_ver }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Select Python 3.12
       uses: actions/setup-python@v5
       with:
@@ -82,7 +82,7 @@ jobs:
     if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.doxyfile_or_workflow_changed == 'true'
     runs-on: 'ubuntu-24.04'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check doxygen
         run: |
           sudo apt install -y doxygen graphviz
@@ -92,7 +92,7 @@ jobs:
     name: Check C++ code formatting
     runs-on: 'macos-latest'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check C++ code formatting
         run: |
           brew update
@@ -109,7 +109,7 @@ jobs:
         os: ['ubuntu-24.04', 'macos-13', 'macos-15']
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: apt update
       if: matrix.os == 'ubuntu-24.04'
       run: sudo apt update
@@ -166,7 +166,7 @@ jobs:
         os: ['windows-2025']
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Select Python 3.12
         uses: actions/setup-python@v5
         with:
@@ -253,7 +253,7 @@ jobs:
     if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.pytket_or_workflow_changed == 'true'
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with: 
         submodules: recursive
     - name: Select Python 3.12
@@ -357,7 +357,7 @@ jobs:
         os: ['macos-13', 'macos-15']
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Select Python 3.12
       uses: actions/setup-python@v5
       with:
@@ -436,7 +436,7 @@ jobs:
     if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.pytket_or_workflow_changed == 'true'
     runs-on: windows-2025
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Select Python 3.12
       uses: actions/setup-python@v5
       with:
@@ -552,7 +552,7 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         ref: gh-pages
     - name: Download artefact
@@ -580,7 +580,7 @@ jobs:
     if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Download artefact
       uses: actions/download-artifact@v5
       with:
