@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 from typing import Annotated, overload
 
+import numpy
 from numpy.typing import NDArray
 
 import pytket._tket.circuit
@@ -22,7 +23,7 @@ class UnitaryTableau:
         """
 
     @overload
-    def __init__(self, xx: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], xz: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], xph: Annotated[NDArray, dict(dtype='bool', shape=(None), order='C')], zx: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], zz: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], zph: Annotated[NDArray, dict(dtype='bool', shape=(None), order='C')]) -> None:
+    def __init__(self, xx: Annotated[NDArray[numpy.bool], dict(shape=(None, None), order='F')], xz: Annotated[NDArray[numpy.bool], dict(shape=(None, None), order='F')], xph: Annotated[NDArray[numpy.bool], dict(shape=(None,), order='C')], zx: Annotated[NDArray[numpy.bool], dict(shape=(None, None), order='F')], zz: Annotated[NDArray[numpy.bool], dict(shape=(None, None), order='F')], zph: Annotated[NDArray[numpy.bool], dict(shape=(None,), order='C')]) -> None:
         """
         Constructs a :py:class:`~.UnitaryTableau` from the binary tables of its components.
 
@@ -103,7 +104,7 @@ class UnitaryRevTableau:
         """
 
     @overload
-    def __init__(self, xx: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], xz: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], xph: Annotated[NDArray, dict(dtype='bool', shape=(None), order='C')], zx: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], zz: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], zph: Annotated[NDArray, dict(dtype='bool', shape=(None), order='C')]) -> None:
+    def __init__(self, xx: Annotated[NDArray[numpy.bool], dict(shape=(None, None), order='F')], xz: Annotated[NDArray[numpy.bool], dict(shape=(None, None), order='F')], xph: Annotated[NDArray[numpy.bool], dict(shape=(None,), order='C')], zx: Annotated[NDArray[numpy.bool], dict(shape=(None, None), order='F')], zz: Annotated[NDArray[numpy.bool], dict(shape=(None, None), order='F')], zph: Annotated[NDArray[numpy.bool], dict(shape=(None,), order='C')]) -> None:
         """
         Constructs a :py:class:`~.UnitaryRevTableau` from the binary tables of its components.
 
@@ -182,7 +183,7 @@ class UnitaryTableauBox(pytket._tket.circuit.Op):
         """
 
     @overload
-    def __init__(self, xx: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], xz: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], xph: Annotated[NDArray, dict(dtype='bool', shape=(None), order='C')], zx: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], zz: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')], zph: Annotated[NDArray, dict(dtype='bool', shape=(None), order='C')]) -> None:
+    def __init__(self, xx: Annotated[NDArray[numpy.bool], dict(shape=(None, None), order='F')], xz: Annotated[NDArray[numpy.bool], dict(shape=(None, None), order='F')], xph: Annotated[NDArray[numpy.bool], dict(shape=(None,), order='C')], zx: Annotated[NDArray[numpy.bool], dict(shape=(None, None), order='F')], zz: Annotated[NDArray[numpy.bool], dict(shape=(None, None), order='F')], zph: Annotated[NDArray[numpy.bool], dict(shape=(None,), order='C')]) -> None:
         """
         Construct the tableau from the binary tables of its components.
 
