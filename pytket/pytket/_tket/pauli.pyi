@@ -2,6 +2,7 @@ from collections.abc import Mapping, Sequence
 import enum
 from typing import Annotated, overload
 
+import numpy
 from numpy.typing import NDArray
 import scipy.sparse
 
@@ -116,7 +117,7 @@ class QubitPauliString:
         """
 
     @overload
-    def dot_state(self, state: Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')]) -> Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')]:
+    def dot_state(self, state: Annotated[NDArray[numpy.complex128], dict(shape=(None,), order='C')]) -> Annotated[NDArray[numpy.complex128], dict(shape=(None,), order='C')]:
         """
         Performs the dot product of the state with the pauli string. Maps the qubits of the statevector with sequentially-indexed qubits in the default register, with ``Qubit(0)`` being the most significant qubit.
 
@@ -125,7 +126,7 @@ class QubitPauliString:
         """
 
     @overload
-    def dot_state(self, state: Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')], qubits: Sequence[pytket._tket.unit_id.Qubit]) -> Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')]:
+    def dot_state(self, state: Annotated[NDArray[numpy.complex128], dict(shape=(None,), order='C')], qubits: Sequence[pytket._tket.unit_id.Qubit]) -> Annotated[NDArray[numpy.complex128], dict(shape=(None,), order='C')]:
         """
         Performs the dot product of the state with the pauli string. Maps the qubits of the statevector according to the ordered list `qubits`, with ``qubits[0]`` being the most significant qubit.
 
@@ -135,7 +136,7 @@ class QubitPauliString:
         """
 
     @overload
-    def state_expectation(self, state: Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')]) -> complex:
+    def state_expectation(self, state: Annotated[NDArray[numpy.complex128], dict(shape=(None,), order='C')]) -> complex:
         """
         Calculates the expectation value of the state with the pauli string. Maps the qubits of the statevector with sequentially-indexed qubits in the default register, with ``Qubit(0)`` being the most significant qubit.
 
@@ -144,7 +145,7 @@ class QubitPauliString:
         """
 
     @overload
-    def state_expectation(self, state: Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')], qubits: Sequence[pytket._tket.unit_id.Qubit]) -> complex:
+    def state_expectation(self, state: Annotated[NDArray[numpy.complex128], dict(shape=(None,), order='C')], qubits: Sequence[pytket._tket.unit_id.Qubit]) -> complex:
         """
         Calculates the expectation value of the state with the pauli string. Maps the qubits of the statevector according to the ordered list `qubits`, with ``qubits[0]`` being the most significant qubit.
 
@@ -286,7 +287,7 @@ class QubitPauliTensor:
         """
 
     @overload
-    def dot_state(self, state: Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')]) -> Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')]:
+    def dot_state(self, state: Annotated[NDArray[numpy.complex128], dict(shape=(None,), order='C')]) -> Annotated[NDArray[numpy.complex128], dict(shape=(None,), order='C')]:
         """
         Performs the dot product of the state with the pauli tensor. Maps the qubits of the statevector with sequentially-indexed qubits in the default register, with ``Qubit(0)`` being the most significant qubit.
 
@@ -295,7 +296,7 @@ class QubitPauliTensor:
         """
 
     @overload
-    def dot_state(self, state: Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')], qubits: Sequence[pytket._tket.unit_id.Qubit]) -> Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')]:
+    def dot_state(self, state: Annotated[NDArray[numpy.complex128], dict(shape=(None,), order='C')], qubits: Sequence[pytket._tket.unit_id.Qubit]) -> Annotated[NDArray[numpy.complex128], dict(shape=(None,), order='C')]:
         """
         Performs the dot product of the state with the pauli tensor. Maps the qubits of the statevector according to the ordered list `qubits`, with ``qubits[0]`` being the most significant qubit.
 
@@ -305,7 +306,7 @@ class QubitPauliTensor:
         """
 
     @overload
-    def state_expectation(self, state: Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')]) -> complex:
+    def state_expectation(self, state: Annotated[NDArray[numpy.complex128], dict(shape=(None,), order='C')]) -> complex:
         """
         Calculates the expectation value of the state with the pauli operator. Maps the qubits of the statevector with sequentially-indexed qubits in the default register, with ``Qubit(0)`` being the most significant qubit.
 
@@ -314,7 +315,7 @@ class QubitPauliTensor:
         """
 
     @overload
-    def state_expectation(self, state: Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')], qubits: Sequence[pytket._tket.unit_id.Qubit]) -> complex:
+    def state_expectation(self, state: Annotated[NDArray[numpy.complex128], dict(shape=(None,), order='C')], qubits: Sequence[pytket._tket.unit_id.Qubit]) -> complex:
         """
         Calculates the expectation value of the state with the pauli operator. Maps the qubits of the statevector according to the ordered list `qubits`, with ``qubits[0]`` being the most significant qubit.
 
