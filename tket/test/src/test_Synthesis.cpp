@@ -1690,6 +1690,20 @@ SCENARIO("Testing decompose_TK2") {
     REQUIRE(c.count_gates(OpType::ZZPhase) == exp_n_zzphase[i]);
     REQUIRE(!Transforms::decompose_TK2().apply(c));
   }
+  GIVEN("ZZPhase circuit with, single, small angles.") {
+    fid.ZZPhase_fidelity = [](double) { return 1.; };
+    Circuit circ_5(2);
+    circ_5.add_op<unsigned>(tket::OpType::TK2, {0, 0, 1e-5}, {0, 1});
+    Transforms::normalise_TK2().apply(circ_5);
+    Transforms::decompose_TK2(fid).apply(circ_5);
+    REQUIRE(circ_5.count_gates(OpType::ZZPhase) == 1);
+
+    Circuit circ_6(2);
+    circ_6.add_op<unsigned>(tket::OpType::TK2, {0, 0, 1e-6}, {0, 1});
+    Transforms::normalise_TK2().apply(circ_6);
+    Transforms::decompose_TK2(fid).apply(circ_6);
+    REQUIRE(circ_6.count_gates(OpType::ZZPhase) == 0);
+  }
 }
 
 SCENARIO("DecomposeTK2, implicit swaps") {
