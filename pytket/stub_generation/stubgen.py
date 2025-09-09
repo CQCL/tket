@@ -51,6 +51,7 @@ from pathlib import Path
 from typing import Any, Callable, List, Optional, Sequence, cast
 
 from nanobind.stubgen import (
+    create_subdirectory_for_module,
     NbFunction,
     NbStaticProperty,
     NbType,
@@ -151,16 +152,15 @@ class PytketStubGen(StubGen):
                     # Do not include submodules in the same stub, but include a directive to import them
                     self.import_object(value.__name__, name=None, as_name=name)
 
-                    # If the user requested this, generate a separate stub recursively
+                    # If the user requested this, generate recursive stub files as well
                     if self.recursive and value_name_s[:-1] == module_name_s and self.output_file:
-                        module_file = getattr(value, '__file__', None)
-
-                        if not module_file or module_file.endswith('__init__.py'):
+                        if create_subdirectory_for_module(value):
+                            # Create a new subdirectory and start with an __init__.pyi file there
                             dir_name = self.output_file.parents[0] / value_name_s[-1]
                             dir_name.mkdir(parents=False, exist_ok=True)
                             output_file = dir_name / '__init__.pyi'
                         else:
-                            output_file = self.output_file.parents[0] / (value_name_s[-1] + '.py')
+                            output_file = self.output_file.parents[0] / (value_name_s[-1] + '.pyi')
 
                         sg = PytketStubGen(
                             module=value,
@@ -178,6 +178,7 @@ class PytketStubGen(StubGen):
                         )
 
                         sg.put(value)
+                        output_file = output_file.resolve()
 
                         if not self.quiet:
                             print(f'  - writing stub "{output_file}" ..')
@@ -271,7 +272,17 @@ class PytketStubGen(StubGen):
                 overload = self.import_object("typing", "overload")
                 self.write_ln(f"@{overload}")
 
-            sig_str = f"{name}{self.signature_str(signature(fno))}"
+            try:
+                sig = signature(fno)
+            except ValueError:
+                sig = None
+
+            if sig is not None:
+                sig_str = f"{name}{self.signature_str(sig)}"
+            else:
+                # If inspect.signature fails, use a maximally permissive type.
+                any_type = self.import_object("typing", "Any")
+                sig_str = f"{name}(*args, **kwargs) -> {any_type}"
 
             # Potentially copy docstring from the implementation function
             docstr = fno.__doc__

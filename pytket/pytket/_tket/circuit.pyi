@@ -3,6 +3,7 @@ import enum
 import types
 from typing import Annotated, Any, Union, overload
 
+import numpy
 from numpy.typing import NDArray
 import sympy.core.expr
 import sympy.core.symbol
@@ -596,7 +597,7 @@ class Op:
 
     def free_symbols(self) -> set[sympy.core.symbol.Symbol]: ...
 
-    def get_unitary(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')]: ...
+    def get_unitary(self) -> Annotated[NDArray[numpy.complex128], dict(shape=(None, None), order='F')]: ...
 
     def is_clifford_type(self) -> bool:
         """Check if the operation is one of the Clifford :py:class:`~.OpType` s."""
@@ -1744,12 +1745,12 @@ class Circuit:
     def get_commands(self) -> list[Command]:
         """:return: a list of all the Commands in the circuit"""
 
-    def get_unitary(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')]:
+    def get_unitary(self) -> Annotated[NDArray[numpy.complex128], dict(shape=(None, None), order='F')]:
         """
         :return: The numerical unitary matrix of the circuit, using ILO-BE convention.
         """
 
-    def get_unitary_times_other(self, matr: Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')]) -> Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')]:
+    def get_unitary_times_other(self, matr: Annotated[NDArray[numpy.complex128], dict(shape=(None, None), order='F')]) -> Annotated[NDArray[numpy.complex128], dict(shape=(None, None), order='F')]:
         """
         Calculate UM, where U is the numerical unitary matrix of the circuit, with ILO-BE convention, and M is another matrix. This is more efficient than calculating U separately, if M has fewer columns than U.
 
@@ -1757,7 +1758,7 @@ class Circuit:
         :return: The product of the circuit unitary and the given matrix.
         """
 
-    def get_statevector(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')]:
+    def get_statevector(self) -> Annotated[NDArray[numpy.complex128], dict(shape=(None,), order='C')]:
         """
         Calculate the statevector resulting from applying the circuit to the all-zero state, using ILO-BE convention. The result is a one-dimensional array.
 
@@ -2579,19 +2580,19 @@ class CircBox(Op):
 class Unitary1qBox(Op):
     """A user-defined one-qubit operation specified by a unitary matrix."""
 
-    def __init__(self, m: Annotated[NDArray, dict(dtype='complex128', shape=(2, 2), order='F')]) -> None:
+    def __init__(self, m: Annotated[NDArray[numpy.complex128], dict(shape=(2, 2), order='F')]) -> None:
         """Construct from a unitary matrix."""
 
     def get_circuit(self) -> Circuit:
         """:return: the :py:class:`~.Circuit` described by the box"""
 
-    def get_matrix(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(2, 2), order='F')]:
+    def get_matrix(self) -> Annotated[NDArray[numpy.complex128], dict(shape=(2, 2), order='F')]:
         """:return: the unitary matrix as a numpy array"""
 
 class Unitary2qBox(Op):
     """A user-defined two-qubit operation specified by a unitary matrix."""
 
-    def __init__(self, m: Annotated[NDArray, dict(dtype='complex128', shape=(4, 4), order='F')], basis: BasisOrder = BasisOrder.ilo) -> None:
+    def __init__(self, m: Annotated[NDArray[numpy.complex128], dict(shape=(4, 4), order='F')], basis: BasisOrder = BasisOrder.ilo) -> None:
         """
         Construct from a unitary matrix.
 
@@ -2602,13 +2603,13 @@ class Unitary2qBox(Op):
     def get_circuit(self) -> Circuit:
         """:return: the :py:class:`~.Circuit` described by the box"""
 
-    def get_matrix(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(4, 4), order='F')]:
+    def get_matrix(self) -> Annotated[NDArray[numpy.complex128], dict(shape=(4, 4), order='F')]:
         """:return: the unitary matrix (in ILO-BE format) as a numpy array"""
 
 class Unitary3qBox(Op):
     """A user-defined three-qubit operation specified by a unitary matrix."""
 
-    def __init__(self, m: Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')], basis: BasisOrder = BasisOrder.ilo) -> None:
+    def __init__(self, m: Annotated[NDArray[numpy.complex128], dict(shape=(None, None), order='F')], basis: BasisOrder = BasisOrder.ilo) -> None:
         """
         Construct from a unitary matrix.
 
@@ -2619,7 +2620,7 @@ class Unitary3qBox(Op):
     def get_circuit(self) -> Circuit:
         """:return: the :py:class:`~.Circuit` described by the box"""
 
-    def get_matrix(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(8, 8), order='F')]:
+    def get_matrix(self) -> Annotated[NDArray[numpy.complex128], dict(shape=(8, 8), order='F')]:
         """:return: the unitary matrix (in ILO-BE format) as a numpy array"""
 
 class ExpBox(Op):
@@ -2627,7 +2628,7 @@ class ExpBox(Op):
     A user-defined two-qubit operation whose corresponding unitary matrix is the exponential of a user-defined hermitian matrix.
     """
 
-    def __init__(self, A: Annotated[NDArray, dict(dtype='complex128', shape=(4, 4), order='F')], t: float, basis: BasisOrder = BasisOrder.ilo) -> None:
+    def __init__(self, A: Annotated[NDArray[numpy.complex128], dict(shape=(4, 4), order='F')], t: float, basis: BasisOrder = BasisOrder.ilo) -> None:
         """
         Construct :math:`e^{itA}` from a hermitian matrix :math:`A` and a parameter :math:`t`.
 
@@ -3002,13 +3003,13 @@ class PhasePolyBox(Op):
     """
 
     @overload
-    def __init__(self, n_qubits: int, qubit_indices: Mapping[pytket._tket.unit_id.Qubit, int], phase_polynomial: dict[tuple[bool, ...], Union[sympy.core.expr.Expr, float]], linear_transformation: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')]) -> None:
+    def __init__(self, n_qubits: int, qubit_indices: Mapping[pytket._tket.unit_id.Qubit, int], phase_polynomial: dict[tuple[bool, ...], Union[sympy.core.expr.Expr, float]], linear_transformation: Annotated[NDArray[numpy.bool], dict(shape=(None, None), order='F')]) -> None:
         """
         Construct from the number of qubits, the mapping from Qubit to index, the phase polynomial (map from bitstring to phase) and the linear transformation (boolean matrix)
         """
 
     @overload
-    def __init__(self, n_qubits: int, qubit_indices: Mapping[pytket._tket.unit_id.Qubit, int], phase_polynomial: Sequence[tuple[Sequence[bool], Union[sympy.core.expr.Expr, float]]], linear_transformation: Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')]) -> None:
+    def __init__(self, n_qubits: int, qubit_indices: Mapping[pytket._tket.unit_id.Qubit, int], phase_polynomial: Sequence[tuple[Sequence[bool], Union[sympy.core.expr.Expr, float]]], linear_transformation: Annotated[NDArray[numpy.bool], dict(shape=(None, None), order='F')]) -> None:
         """
         Construct from the number of qubits, the mapping from Qubit to index, the phase polynomial (list of bitstring phase pairs) and the linear transformation (boolean matrix)
 
@@ -3034,7 +3035,7 @@ class PhasePolyBox(Op):
         """Map from bitstring (basis state) to phase."""
 
     @property
-    def linear_transformation(self) -> Annotated[NDArray, dict(dtype='bool', shape=(None, None), order='F')]:
+    def linear_transformation(self) -> Annotated[NDArray[numpy.bool], dict(shape=(None, None), order='F')]:
         """Boolean matrix corresponding to linear transformation."""
 
     def get_circuit(self) -> Circuit:
@@ -3049,7 +3050,7 @@ class ProjectorAssertionBox(Op):
     A user-defined assertion specified by a 2x2, 4x4, or 8x8 projector matrix.
     """
 
-    def __init__(self, m: Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')], basis: BasisOrder = BasisOrder.ilo) -> None:
+    def __init__(self, m: Annotated[NDArray[numpy.complex128], dict(shape=(None, None), order='F')], basis: BasisOrder = BasisOrder.ilo) -> None:
         """
         Construct from a projector matrix.
 
@@ -3060,7 +3061,7 @@ class ProjectorAssertionBox(Op):
     def get_circuit(self) -> Circuit:
         """:return: the :py:class:`~.Circuit` described by the box"""
 
-    def get_matrix(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(None, None), order='F')]:
+    def get_matrix(self) -> Annotated[NDArray[numpy.complex128], dict(shape=(None, None), order='F')]:
         """:return: the unitary matrix (in ILO-BE format) as a numpy array"""
 
 class StabiliserAssertionBox(Op):
@@ -3233,7 +3234,7 @@ class StatePreparationBox(Op):
     A box for preparing quantum states using multiplexed-Ry and multiplexed-Rz gates. Implementation based on Theorem 9 of arxiv.org/abs/quant-ph/0406176. The decomposed circuit has at most 2*(2^n-2) CX gates, and 2^n-2 CX gates if the coefficients are all real.
     """
 
-    def __init__(self, statevector: Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')], is_inverse: bool = False, with_initial_reset: bool = False) -> None:
+    def __init__(self, statevector: Annotated[NDArray[numpy.complex128], dict(shape=(None,), order='C')], is_inverse: bool = False, with_initial_reset: bool = False) -> None:
         """
         Construct from a statevector
 
@@ -3245,7 +3246,7 @@ class StatePreparationBox(Op):
     def get_circuit(self) -> Circuit:
         """:return: the :py:class:`~.Circuit` described by the box"""
 
-    def get_statevector(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')]:
+    def get_statevector(self) -> Annotated[NDArray[numpy.complex128], dict(shape=(None,), order='C')]:
         """:return: the statevector"""
 
     def is_inverse(self) -> bool:
@@ -3263,7 +3264,7 @@ class DiagonalBox(Op):
     A box for synthesising a diagonal unitary matrix into a sequence of multiplexed-Rz gates. Implementation based on Theorem 7 of arxiv.org/abs/quant-ph/0406176. The decomposed circuit has at most 2^n-2 CX gates.
     """
 
-    def __init__(self, diagonal: Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')], upper_triangle: bool = True) -> None:
+    def __init__(self, diagonal: Annotated[NDArray[numpy.complex128], dict(shape=(None,), order='C')], upper_triangle: bool = True) -> None:
         """
         Construct from the diagonal entries of the unitary operator. The size of the vector must be 2^n where n is a positive integer.
 
@@ -3274,7 +3275,7 @@ class DiagonalBox(Op):
     def get_circuit(self) -> Circuit:
         """:return: the :py:class:`~.Circuit` described by the box"""
 
-    def get_diagonal(self) -> Annotated[NDArray, dict(dtype='complex128', shape=(None), order='C')]:
+    def get_diagonal(self) -> Annotated[NDArray[numpy.complex128], dict(shape=(None,), order='C')]:
         """:return: the statevector"""
 
     def is_upper_triangle(self) -> bool:
