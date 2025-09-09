@@ -1690,7 +1690,7 @@ SCENARIO("Testing decompose_TK2") {
     REQUIRE(c.count_gates(OpType::ZZPhase) == exp_n_zzphase[i]);
     REQUIRE(!Transforms::decompose_TK2().apply(c));
   }
-  GIVEN("ZZPhase circuit with, single, small angles."){
+  GIVEN("ZZPhase circuit with, single, small angles.") {
     fid.ZZPhase_fidelity = [](double) { return 1.; };
     Circuit circ_5(2);
     circ_5.add_op<unsigned>(tket::OpType::TK2, {0, 0, 1e-5}, {0, 1});

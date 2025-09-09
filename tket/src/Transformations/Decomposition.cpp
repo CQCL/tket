@@ -648,7 +648,7 @@ static double best_noise_aware_decomposition(
       }
       double nzz_fid = get_ZZPhase_fidelity(angles, n_zz) * zz_fid;
       // Use ZZPhase if fidelity is greater or it is equal but uses fewer gates
-      
+
       if (nzz_fid - max_fid > EPS ||
           (nzz_fid - max_fid > -EPS && n_zz < n_gates)) {
         max_fid = nzz_fid;
@@ -733,9 +733,10 @@ static Circuit TK2_replacement(
   // First we check the number of non-zero angles
   // If there is only one then we set allow_swaps == false
   // as this can not improve the gate count
-  allow_swaps &= std::count_if(begin(angles), end(angles),
-                            [](auto a){ return a != 0; }) > 1;
-  
+  allow_swaps &= std::count_if(begin(angles), end(angles), [](auto a) {
+                   return a != 0;
+                 }) > 1;
+
   // Only used when allow_swaps == true.
   Circuit pre, post;
   std::array<Expr, 3> angles_swapped;
