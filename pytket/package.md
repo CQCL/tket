@@ -35,7 +35,7 @@ For bugs and feature requests we recommend creating an issue on the [github repo
 
 User support: tket-support@quantinuum.com
 
-For discussion, join the public slack channel [here](https://join.slack.com/t/tketusers/shared_invite/zt-18qmsamj9-UqQFVdkRzxnXCcKtcarLRA).
+For discussion, join the public slack channel [here](https://join.slack.com/t/tketusers/shared_invite/zt-3a7x4ots2-nZIUpOJ0cSnMM9E~oBm0xQ).
 
 There is also a [pytket tag](https://quantumcomputing.stackexchange.com/questions/tagged/pytket) on quantum computing stack exchange.
 
