@@ -23,6 +23,9 @@
 namespace tket {
 namespace test_Concurrency {
 
+// No test assertions here, as they are not thread-safe:
+// https://catch2-temp.readthedocs.io/en/latest/limitations.html#thread-safe-assertions
+
 SCENARIO("Concurrent transforms") {
 #ifdef NDEBUG
   GIVEN("clifford_simp") {
@@ -31,14 +34,32 @@ SCENARIO("Concurrent transforms") {
         R"({"bits": [], "commands": [{"args": [["q", [0]], ["q", [1]]], "op": {"type": "CX"}}, {"args": [["q", [0]], ["q", [1]]], "op": {"type": "CX"}}], "created_qubits": [], "discarded_qubits": [], "implicit_permutation": [[["q", [0]], ["q", [0]]], [["q", [1]], ["q", [1]]]], "phase": "0.0", "qubits": [["q", [0]], ["q", [1]]]})";
     Circuit circ = nlohmann::json::parse(json_str);
     std::function<void(Circuit)> func = [](Circuit circ) {
-      // No test assertions here, as they are not thread-safe:
-      // https://catch2-temp.readthedocs.io/en/latest/limitations.html#thread-safe-assertions
       Transforms::clifford_simp().apply(circ);
     };
     std::thread thread1(func, circ);
     std::thread thread2(func, circ);
     thread1.join();
     thread2.join();
+  }
+#endif
+}
+SCENARIO("Concurrent circuit operations") {
+#ifdef NDEBUG
+  GIVEN("Circuit construction and serialization") {
+    // https://github.com/CQCL/tket/issues/2009
+    std::function<void(void)> func = []() {
+      Circuit circ(2);
+      circ.add_op<unsigned>(OpType::H, {0});
+      nlohmann::json j = circ;
+    };
+    std::vector<std::thread> threads;
+    for (unsigned i = 0; i < 5; i++) {
+      std::thread thread(func);
+      threads.push_back(std::move(thread));
+    }
+    for (auto &thread : threads) {
+      thread.join();
+    }
   }
 #endif
 }
