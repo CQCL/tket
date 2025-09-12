@@ -143,8 +143,7 @@ class OutcomeArray(np.ndarray):
         """
         n_ints = len(ints)
         bitstrings = (
-            bin(int_val)[2:].zfill(width)[:: (-1) ** (not big_endian)]
-            for int_val in ints
+            f"{int_val:b}".zfill(width)[:: (-1) ** (not big_endian)] for int_val in ints
         )
         bitar = np.frombuffer(
             "".join(bitstrings).encode("ascii"), dtype=np.uint8, count=n_ints * width
