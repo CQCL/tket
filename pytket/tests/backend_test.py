@@ -526,7 +526,7 @@ def test_postprocess_2() -> None:
     c = Circuit(3).CX(0, 1).Y(0).H(1).CX(1, 2)
     c.measure_all()
     for xcirc in [None, Circuit(1).Y(0).Z(0)]:
-        c0, ppcirc = prepare_circuit(c, xcirc=xcirc)
+        c0, _ppcirc = prepare_circuit(c, xcirc=xcirc)
         c0 = b.get_compiled_circuit(c0)
         # c0 should act trivially on qubits 0 and 2
         assert (

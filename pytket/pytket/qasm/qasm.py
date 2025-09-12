@@ -534,7 +534,7 @@ class _CircuitTransformer(Transformer):
                 )
 
     def _logic_exp(self, tree: list, opstr: str) -> LogicExp:
-        args, line = self._get_logic_args(tree)
+        args, _line = self._get_logic_args(tree)
         openum: type[BitWiseOp] | type[RegWiseOp]
         if opstr in _BITOPS and opstr not in _REGOPS:
             openum = BitWiseOp
