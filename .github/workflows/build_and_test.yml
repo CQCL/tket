@@ -322,35 +322,34 @@ jobs:
         pip install -r requirements.txt
         pytest --ignore=simulator/
     - name: Test building docs
-    steps:
-      - uses: extractions/setup-just@v3
-        with:
-          just-version: 1.5.0
-        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-        timeout-minutes: 20
-      - run: |
-          pip install poetry>=1.8.1
-          poetry config virtualenvs.create false
-          cd pytket/docs
-          poetry install
-          just build-strict
-      - name: Upload artifact
-        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@v4
-        with:
-          name: pytket_docs
-          path: pytket/docs/build/
-      - name: Upload pytket coverage artefact
-        if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@v4
-        with:
-          name: pytket_test_coverage
-          path: pytket/tests/htmlcov
-      - name: Upload package
-        if: github.event_name == 'push' && needs.check_changes.outputs.tket_changed == 'true'
-        run: |
-          conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
-          conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
+      uses: extractions/setup-just@v3
+      with:
+        just-version: 1.5.0
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+      timeout-minutes: 20
+      run: |
+        pip install poetry>=1.8.1
+        poetry config virtualenvs.create false
+        cd pytket/docs
+        poetry install
+        just build-strict
+    - name: Upload artifact
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+      uses: actions/upload-artifact@v4
+      with:
+        name: pytket_docs
+        path: pytket/docs/build/
+    - name: Upload pytket coverage artefact
+      if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+      uses: actions/upload-artifact@v4
+      with:
+        name: pytket_test_coverage
+        path: pytket/tests/htmlcov
+    - name: Upload package
+      if: github.event_name == 'push' && needs.check_changes.outputs.tket_changed == 'true'
+      run: |
+        conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
+        conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
 
   build_test_pytket_macos:
     name: Build and test pytket (macos)
