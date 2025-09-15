@@ -332,6 +332,7 @@ jobs:
         poetry config virtualenvs.create false
         cd pytket/docs
         poetry install
+        pip install --upgrade pip 
         just build-strict
     - name: Upload artifact
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
