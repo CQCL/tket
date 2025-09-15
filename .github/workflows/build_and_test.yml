@@ -46,7 +46,6 @@ jobs:
           tket_or_c_api:
             - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**,TKET_VERSION}'
             - '{tket-c-api/src/**,tket-c-api/include/**,tket-c-api/conanfile.py,tket-c-api/CMakeLists.txt}'
-            - '.github/workflows/build_and_test.yml'
           doxyfile_or_workflow:
             - '{tket/Doxyfile}'
             - '.github/workflows/build_and_test.yml'
