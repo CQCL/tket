@@ -17,19 +17,25 @@
 #include <memory>
 #include <optional>
 
+#include "tket/OpType/EdgeType.hpp"
 #include "tket/OpType/OpType.hpp"
 
 namespace tket {
+
+static op_signature_t make_rng_sig(unsigned n_bits) {
+  op_signature_t sig(n_bits, EdgeType::Classical);
+  sig.push_back(EdgeType::RNG);
+  return sig;
+}
+
 const std::map<OpType, OpTypeInfo>& optypeinfo() {
   static const op_signature_t noargs;
   static const op_signature_t singleq(1, EdgeType::Quantum);
   static const op_signature_t doubleq(2, EdgeType::Quantum);
   static const op_signature_t tripleq(3, EdgeType::Quantum);
   static const op_signature_t bits32(32, EdgeType::Classical);
-  static op_signature_t rng32bits(32, EdgeType::Classical);
-  rng32bits.push_back(EdgeType::RNG);
-  static op_signature_t rng64bits(64, EdgeType::Classical);
-  rng64bits.push_back(EdgeType::RNG);
+  static const op_signature_t rng32bits(make_rng_sig(32));
+  static const op_signature_t rng64bits(make_rng_sig(64));
 
   // No memory leak since the objects are only constructed once and
   // the memory is reclaimed on program termination.
