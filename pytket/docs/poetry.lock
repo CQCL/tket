@@ -1710,22 +1710,18 @@ cffi = {version = "*", markers = "implementation_name == \"pypy\""}
 
 [[package]]
 name = "quantinuum-sphinx"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
 optional = false
-python-versions = "^3.10"
+python-versions = "<4.0,>=3.10"
 groups = ["main"]
-files = []
-develop = false
+files = [
+    {file = "quantinuum_sphinx-0.2.0-py3-none-any.whl", hash = "sha256:de2c4196ba04faaf4c0329ce6bb1b07c1de69146220820eb7d316f18e296da5e"},
+    {file = "quantinuum_sphinx-0.2.0.tar.gz", hash = "sha256:0234fba70673310265a06c5c1adc0fa269a92b2f01686c3e428d46d2837cbf9e"},
+]
 
 [package.dependencies]
-furo = "^2024.5.6"
-
-[package.source]
-type = "git"
-url = "https://github.com/CQCL/quantinuum-sphinx.git"
-reference = "HEAD"
-resolved_reference = "f72f55749533e73f5ed5beeb5e48f53487ade657"
+furo = ">=2024.5.6,<2025.0.0"
 
 [[package]]
 name = "referencing"
@@ -2556,4 +2552,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "94931cadca547373d55fd2b4c17af2cccb50675c70c50ee905cdd1123992cdcb"
+content-hash = "ef92078998caa142574369b8abd94a881f68a68800f5a1d3c33c35ee0accfd77"
