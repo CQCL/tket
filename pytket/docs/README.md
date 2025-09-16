@@ -6,13 +6,13 @@ All documentation pages are written in [MyST Markdown](https://mystmd.org) and b
 
 ## Clone repository
 
-```
+```shell
 git clone git@github.com:CQCL/tket.git --recurse-submodules
 ```
 
 ## Move to docs directory
 
-```
+```shell
 cd pytket/docs
 ```
 
