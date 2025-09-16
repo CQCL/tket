@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Functions for decomposing Circuits containing classical expressions
-in to primitive logical operations."""
+"""Functions for decomposing Circuits containing classical expressions into primitive
+logical operations."""
 
 from heapq import heappop, heappush
 from typing import Any, Generic, TypeVar
