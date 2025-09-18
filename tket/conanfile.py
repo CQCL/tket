@@ -141,15 +141,15 @@ class TketConan(ConanFile):
     def requirements(self):
         # libraries installed from remote:
         # https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
-        self.requires("boost/tci-1.87.0@tket/stable", transitive_headers=True)
+        self.requires("boost/tci-1.89.0@tket/stable", transitive_headers=True)
         self.requires("eigen/3.4.0", transitive_headers=True)
         self.requires("nlohmann_json/3.12.0", transitive_headers=True)
-        self.requires("symengine/tci-0.14.0.1@tket/stable", transitive_headers=True)
+        self.requires("symengine/tci-0.14.0.2@tket/stable", transitive_headers=True)
         self.requires("tkassert/0.3.4@tket/stable", transitive_headers=True)
         self.requires("tklog/0.3.3@tket/stable")
         self.requires("tkrng/0.3.3@tket/stable")
-        self.requires("tktokenswap/0.3.11@tket/stable")
-        self.requires("tkwsm/0.3.11@tket/stable")
+        self.requires("tktokenswap/0.3.13@tket/stable")
+        self.requires("tkwsm/0.3.13@tket/stable")
         if self.build_test():
             self.test_requires("catch2/3.10.0@tket/stable")
         if self.build_proptest():
