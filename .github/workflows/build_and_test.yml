@@ -327,7 +327,7 @@ jobs:
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       timeout-minutes: 20
       run: |
-        pipx install poetry
+        pipx install poetry~=2.2.1
         poetry config virtualenvs.create false
         cd pytket/docs
         poetry install
