@@ -15,7 +15,7 @@
     top:0;bottom:0;left:0;right:0;
     margin:auto;resize:both;display:block;overflow:hidden;
     width:min({{ min_width }}, 100%);
-    height:min({{ min_height }},100%);
+    height:min({{ min_height }}, 100%);
     max-width:100%;
     max-height:100%;">
 {% endif %}
@@ -49,6 +49,10 @@
 {% endmacro %}
 
 {% if jupyter %}
+
+<!-- Bypass some Iframe origin concerns for VS Code and import the scripts needed
+directly so they will be cached for the subsequent IFrame. -->
+{% include "html/head_imports.html" %}
 
 <div style="resize: vertical; overflow: auto; height: {{ min_height }}; display: block">
     <iframe srcdoc="{{ show_circuit_page(display_options, circuit_json, uid, min_width, min_height, view_format)|escape }}"
