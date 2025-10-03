@@ -838,7 +838,6 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
 // Return the target unitary given a Cn* gate where n >= 0
 static Eigen::Matrix2cd get_target_op_matrix(const Op_ptr &op) {
   OpType optype = op->get_type();
-  Eigen::Matrix2cd m;
   switch (optype) {
     case OpType::CX:
     case OpType::CCX:

@@ -384,8 +384,12 @@ SymplecticTableau SymplecticTableau::conjugate() const {
 
 void SymplecticTableau::gaussian_form() {
   MatrixXb fullmat = MatrixXb::Zero(get_n_rows(), 2 * get_n_qubits());
-  fullmat(Eigen::all, Eigen::seq(0, Eigen::last, 2)) = xmat;
-  fullmat(Eigen::all, Eigen::seq(1, Eigen::last, 2)) = zmat;
+  fullmat(
+      Eigen::placeholders::all, Eigen::seq(0, Eigen::placeholders::last, 2)) =
+      xmat;
+  fullmat(
+      Eigen::placeholders::all, Eigen::seq(1, Eigen::placeholders::last, 2)) =
+      zmat;
   std::vector<std::pair<unsigned, unsigned>> row_ops =
       gaussian_elimination_row_ops(fullmat);
   for (const std::pair<unsigned, unsigned> &op : row_ops) {

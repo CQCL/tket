@@ -59,8 +59,6 @@ class TketConan(ConanFile):
             del self.options.fPIC
 
     def configure(self):
-        # Disable features that are still under the LGPL.
-        self.options["eigen"].MPL2_only = True
         # Only need header libraries from boost.
         self.options["boost"].header_only = True
 
@@ -142,7 +140,7 @@ class TketConan(ConanFile):
         # libraries installed from remote:
         # https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
         self.requires("boost/tci-1.89.0@tket/stable", transitive_headers=True)
-        self.requires("eigen/3.4.0", transitive_headers=True)
+        self.requires("eigen/5.0.0", transitive_headers=True)
         self.requires("nlohmann_json/3.12.0", transitive_headers=True)
         self.requires("symengine/tci-0.14.0.2@tket/stable", transitive_headers=True)
         self.requires("tkassert/0.3.4@tket/stable", transitive_headers=True)
