@@ -52,10 +52,10 @@ jobs:
     - name: Install eigen
       run: |
         cd ${TMP_DIR}
-        wget https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.bz2
-        bzip2 -dk eigen-3.4.0.tar.bz2
-        tar xvf eigen-3.4.0.tar
-        cd eigen-3.4.0/
+        wget https://gitlab.com/libeigen/eigen/-/archive/5.0.0/eigen-5.0.0.tar.bz2
+        bzip2 -dk eigen-5.0.0.tar.bz2
+        tar xvf eigen-5.0.0.tar
+        cd eigen-5.0.0/
         mkdir build
         cd build
         cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
