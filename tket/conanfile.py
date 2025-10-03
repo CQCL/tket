@@ -59,8 +59,6 @@ class TketConan(ConanFile):
             del self.options.fPIC
 
     def configure(self):
-        # Disable features that are still under the LGPL.
-        self.options["eigen"].MPL2_only = True
         # Only need header libraries from boost.
         self.options["boost"].header_only = True
 
