@@ -109,7 +109,7 @@ struct type_caster<SymEngine::Expression> {
  public:
   NB_TYPE_CASTER(
       SymEngine::Expression,
-      const_name("typing.Union[sympy.core.expr.Expr, float]"));
+      const_name("sympy.core.expr.Expr | float"));
 
   static void assert_tuple_length(nanobind::tuple t, unsigned len) {
     if (t.size() != len)
