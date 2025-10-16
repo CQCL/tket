@@ -81,8 +81,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Winconsistent-missing-override -Wloop-analysis")
 endif()
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    # Work around gcc bug related to std::optional.
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=maybe-uninitialized")
+    # Work around gcc bug related to std::optional, and warning from Eigen.
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=maybe-uninitialized -Wno-error=stringop-overflow")
 endif()
 
 
@@ -93,10 +93,6 @@ IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     IF (PROFILE_COVERAGE)
         target_compile_options(tket PRIVATE -g --coverage)
         target_link_options(tket PUBLIC --coverage)
-        # Bug in gcc 10: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95353
-        IF (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 11)
-            target_compile_options(tket PRIVATE -Wno-stringop-overflow)
-        ENDIF()
     ENDIF()
 ENDIF()
 

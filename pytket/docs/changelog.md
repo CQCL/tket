@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.10.0 (October 2025)
+## 2.10.1 (October 2025)
 
 Fixes:
 
