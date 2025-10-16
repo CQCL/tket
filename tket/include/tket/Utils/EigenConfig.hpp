@@ -27,9 +27,6 @@
 #if __has_warning("-Wdeprecated-copy")
 #pragma GCC diagnostic ignored "-Wdeprecated-copy"
 #endif
-#if __has_warning("-Wstringop-overflow")
-#pragma GCC diagnostic ignored "-Wstringop-overflow"
-#endif
 #endif
 #endif
 
