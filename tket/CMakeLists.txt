@@ -93,10 +93,6 @@ IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     IF (PROFILE_COVERAGE)
         target_compile_options(tket PRIVATE -g --coverage)
         target_link_options(tket PUBLIC --coverage)
-        # Bug in gcc 10: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95353
-        IF (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 11)
-            target_compile_options(tket PRIVATE -Wno-stringop-overflow)
-        ENDIF()
     ENDIF()
 ENDIF()
 
