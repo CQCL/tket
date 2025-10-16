@@ -1,11 +1,15 @@
 # Changelog
 
-## Unreleased
+## 2.10.0 (October 2025)
 
 Fixes:
 
 - Update `Decompose_TK2` to not check decomposition with wire swaps when the `TK2` gate only has a single angle.
 - Make `optypeinfo()` thread-safe.
+
+General:
+
+- Drop support for MacOS on x86 architecture.
 
 
 ## 2.9.3 (August 2025)
