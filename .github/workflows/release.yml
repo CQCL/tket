@@ -167,7 +167,7 @@ jobs:
           name: Linux_3.12_wheel
           path: wheelhouse/
       - name: Install wheel
-        run: pip install `ls wheelhouse/pytket-*.whl`
+        run: pip install wheelhouse/pytket-*.whl
       - uses: actions/checkout@v5
         with:
           path: tket
@@ -206,7 +206,7 @@ jobs:
         name: Linux_aarch64_3.12_wheel
         path: wheelhouse/
     - name: Install wheel
-      run: pip install `ls wheelhouse/pytket-*.whl`
+      run: pip install wheelhouse/pytket-*.whl
     - uses: actions/checkout@v5
       with:
         path: tket
