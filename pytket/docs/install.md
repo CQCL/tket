@@ -32,7 +32,7 @@ For instructions on how to do this see the [tket repository README](https://gith
 
 ### Is there a build of `pytket` for my system?
 
-The core pytket package, as well as the separate extension modules are available on PyPI. Wheels are built to work on Linux, MacOS and Windows with Python versions 3.10, 3.11, 3.12 or 3.13, and `pip` version 20.0.0+.
+The core pytket package, as well as the separate extension modules are available on PyPI. Wheels are built to work on Linux, MacOS and Windows with Python versions 3.10+, and `pip` version 20.0.0+.
 
 :::{note}
 On M1-based Macs running in native (arm64) mode, this command may fail
