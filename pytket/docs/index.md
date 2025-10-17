@@ -4,8 +4,8 @@
 [numerous providers](extensions.md), allowing the
 tket tools to be used in conjunction with projects on their platforms.
 
-`pytket` is available for Python 3.10, 3.11, 3.12 and 3.13, on Linux, MacOS
-and Windows. To install, run
+`pytket` is available for Python 3.10+, on Linux, MacOS and Windows. To install,
+run
 
 ```
 pip install pytket
