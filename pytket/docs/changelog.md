@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+Fixes:
+
+- Fix `circuit_dict_from_pytket1_dict()` when circuit contains `CustomGate`.
+
 ## 2.10.1 (October 2025)
 
 Fixes:
