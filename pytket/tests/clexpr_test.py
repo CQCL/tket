@@ -17,6 +17,7 @@ import pickle
 from pathlib import Path
 
 from jsonschema import validate  # type: ignore
+from sympy import Symbol
 
 from pytket.circuit import (
     Bit,
@@ -27,6 +28,7 @@ from pytket.circuit import (
     ClExprOp,
     ClOp,
     ClRegVar,
+    CustomGateDef,
     WiredClExpr,
 )
 from pytket.qasm import circuit_from_qasm_str, circuit_to_qasm_str
@@ -336,3 +338,18 @@ def test_pickle() -> None:
     s = pickle.dumps(wexpr)
     wexpr1 = pickle.loads(s)
     assert wexpr == wexpr1
+
+
+def test_circuit_dict_from_pytket1_dict_with_customgate() -> None:
+    # https://github.com/CQCL/tket/issues/2049
+    a = Symbol("a")
+    b = Symbol("b")
+    setup = Circuit(3)
+    setup.CX(0, 1)
+    setup.Rz(a + 0.5, 2)
+    setup.CRz(b, 0, 2)
+    my_gate = CustomGateDef.define("g", setup, [a, b])
+    c = Circuit(4)
+    c.add_custom_gate(my_gate, [0.2, 1.3], [0, 3, 1])
+    c1 = Circuit.from_dict(circuit_dict_from_pytket1_dict(c.to_dict()))
+    assert c == c1
