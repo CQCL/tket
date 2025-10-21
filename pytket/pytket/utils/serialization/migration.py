@@ -191,7 +191,9 @@ def _new_op(op: dict[str, Any], args: list) -> dict[str, Any]:
             return new_data
         case "CustomGate":
             new_data = deepcopy(op)
-            new_data["box"]["gate"] = circuit_dict_from_pytket1_dict(op["box"]["gate"])
+            new_data["box"]["gate"]["definition"] = circuit_dict_from_pytket1_dict(
+                op["box"]["gate"]["definition"]
+            )
             return new_data
         case "ClassicalExpBox":
             return {
