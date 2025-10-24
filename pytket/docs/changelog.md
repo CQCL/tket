@@ -1,10 +1,14 @@
 # Changelog
 
-## Unreleased
+## 2.10.2 (October 2025)
 
 Fixes:
 
 - Fix `circuit_dict_from_pytket1_dict()` when circuit contains `CustomGate`.
+
+General:
+
+- Restore support for MacOS on x86 architecture.
 
 ## 2.10.1 (October 2025)
 
