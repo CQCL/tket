@@ -55,11 +55,11 @@ class VarHeap(Generic[T]):
 
     def pop(self) -> T:
         """Pop from top of heap."""
-        return heappop(self._heap)
+        return heappop(self._heap)  # type: ignore
 
     def push(self, var: T) -> None:
         """Push var to heap."""
-        heappush(self._heap, var)
+        heappush(self._heap, var)  # type: ignore
         self._heap_vars.add(var)
 
     def is_heap_var(self, var: T) -> bool:
