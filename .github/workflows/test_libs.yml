@@ -161,7 +161,7 @@ jobs:
       with:
         ref: gh-pages
     - name: download artefact
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: ${{ matrix.lib }}_coverage
         path: ${{ matrix.lib }}-coverage/

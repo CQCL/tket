@@ -559,7 +559,7 @@ jobs:
       with:
         ref: gh-pages
     - name: Download artefact
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: pytket_test_coverage
         path: htmlcov/
@@ -585,7 +585,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Download artefact
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: pytket_test_coverage
         path: pytket-test-coverage/
