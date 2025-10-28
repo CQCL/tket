@@ -355,7 +355,7 @@ condition on a specified set of bit values.)
 
       bigger_circ = Circuit(3)
 
-      # Equivalent to bigger_circ.add_circbox(box, [0, 1, 2])
+      # Equivalent to bigger_circ.add_circbox(box, [0, 1])
       bigger_circ.add_gate(box, [0, 1])
 
    .. automethod:: add_circbox
