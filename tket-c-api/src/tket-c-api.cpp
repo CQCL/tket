@@ -106,6 +106,14 @@ TketError tket_clifford_simp(
   return TKET_SUCCESS;
 }
 
+TketError tket_squash_phasedx_rz(TketCircuit *tc) {
+  if (!tc) return TKET_ERROR_NULL_POINTER;
+
+  Transforms::squash_1qb_to_Rz_PhasedX(true).apply(tc->circuit);
+
+  return TKET_SUCCESS;
+}
+
 const char *tket_error_string(TketError error) {
   switch (error) {
     case TKET_SUCCESS:
