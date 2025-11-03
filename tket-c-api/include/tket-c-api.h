@@ -61,6 +61,16 @@ TketError tket_two_qubit_squash(
 TketError tket_clifford_simp(
     TketCircuit *circuit, TketTargetGate target_gate, bool allow_swaps);
 
+/**
+ * Squash sequences of single-qubit gates into PhasedX and Rz gates.
+ *
+ * Also remove identity gates. Commute Rz gates to the back if possible.
+ *
+ * @param circuit Circuit to transform (modified in-place)
+ * @return TKET_SUCCESS if successful, error code otherwise
+ */
+TketError tket_squash_phasedx_rz(TketCircuit *circuit);
+
 // Utility functions
 const char *tket_error_string(TketError error);
 
