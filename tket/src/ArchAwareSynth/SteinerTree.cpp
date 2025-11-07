@@ -433,7 +433,7 @@ bool SteinerTree::fully_reduced() const { return tree_cost == 0; }
 
 static std::pair<unsigned, std::vector<unsigned>> steiner_reduce(
     Circuit& circ, DiagMatrix& CNOT_matrix, const PathHandler& paths,
-    unsigned col, unsigned root, std::list<unsigned>& nodes, bool upper,
+    unsigned col, int root, std::list<unsigned>& nodes, bool upper,
     CNotSynthType cnottype) {
   std::pair<unsigned, std::vector<unsigned>> result;
 
@@ -443,8 +443,8 @@ static std::pair<unsigned, std::vector<unsigned>> steiner_reduce(
 
   if (upper) {
     MatrixXb directed_connectivity = paths.get_connectivity_matrix();
-    for (unsigned i = 0; i < directed_connectivity.rows(); ++i) {
-      for (unsigned j = 0; j < directed_connectivity.cols(); ++j) {
+    for (int i = 0; i < directed_connectivity.rows(); ++i) {
+      for (int j = 0; j < directed_connectivity.cols(); ++j) {
         if (i < root) directed_connectivity(i, j) = 0;
         if (j < root) directed_connectivity(i, j) = 0;
       }
@@ -454,8 +454,8 @@ static std::pair<unsigned, std::vector<unsigned>> steiner_reduce(
   } else {
     MatrixXb directed_connectivity = paths.get_connectivity_matrix();
     if (cnottype == CNotSynthType::HamPath) {
-      for (unsigned i = 0; i < directed_connectivity.rows(); ++i) {
-        for (unsigned j = 0; j < directed_connectivity.cols(); ++j) {
+      for (int i = 0; i < directed_connectivity.rows(); ++i) {
+        for (int j = 0; j < directed_connectivity.cols(); ++j) {
           if (j > i) directed_connectivity(i, j) = 0;
           if ((j + 1 != i) && (j != i + 1)) directed_connectivity(i, j) = 0;
         }
@@ -468,15 +468,15 @@ static std::pair<unsigned, std::vector<unsigned>> steiner_reduce(
 
   // make list of edges, starting from root to leaves of tree
   std::list<std::pair<unsigned, unsigned>> parent_child_list;
-  std::set<unsigned> possible_parents{root};
+  std::set<int> possible_parents{root};
   unsigned n_edges = cnot_tree.tree_nodes.size();
   if (n_edges > 0) --n_edges;
-  std::set<unsigned> visited_parents{root};
+  std::set<int> visited_parents{root};
   unsigned counterwhile = 0;
   while ((parent_child_list.size() < n_edges) &&
          (counterwhile < n_edges * n_edges)) {
     ++counterwhile;
-    std::set<unsigned> new_parents;
+    std::set<int> new_parents;
 
     for (unsigned node : cnot_tree.tree_nodes) {
       for (unsigned parent : possible_parents) {
