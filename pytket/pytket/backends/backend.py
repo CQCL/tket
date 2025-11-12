@@ -95,6 +95,11 @@ class Backend(ABC):
         """
         return all(pred.verify(circuit) for pred in self.required_predicates)
 
+    @property
+    def _uses_lightsabre(self) -> bool:
+        # used by pytket-qiskit
+        return False
+
     def _check_all_circuits(
         self, circuits: Iterable[Circuit], nomeasure_warn: bool | None = None
     ) -> bool:
