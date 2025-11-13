@@ -97,7 +97,7 @@ class Backend(ABC):
 
     @property
     def _uses_lightsabre(self) -> bool:
-        # used by pytket-qiskit
+        # lightsaber is a routing method used by pytket-qiskit
         return False
 
     def _check_all_circuits(
