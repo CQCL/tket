@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.10.3 (October 2025)
+
+- Add `tket_squash_phasedx_rz` to c api.
+
 ## 2.10.2 (October 2025)
 
 Fixes:
