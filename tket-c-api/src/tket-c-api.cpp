@@ -3,9 +3,9 @@ extern "C" {
 }
 
 #include <cstring>
-#include <system_error>
 
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Predicates/CompilerPass.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 
@@ -14,6 +14,10 @@ using json = nlohmann::json;
 
 struct TketCircuit {
   Circuit circuit;
+};
+
+struct TketPass {
+  PassPtr pass;
 };
 
 OpType convert_target_gate(TketTargetGate target_gate) {
@@ -38,13 +42,14 @@ TketCircuit *tket_circuit_from_json(const char *json_str) {
     tc = new TketCircuit;
     tc->circuit = json::parse(json_str);
   } catch (const json::parse_error &e) {
-    std::cerr << "Invalid JSON in tket_circuit_from_json: " << e.what() << "\n";
+    std::cerr << "Invalid JSON in tket_circuit_from_json: " << e.what()
+              << std::endl;
     if (tc) tket_free_circuit(tc);
     tc = nullptr;
   } catch (...) {
     // Clean up memory, print error, and exit
     if (tc) tket_free_circuit(tc);
-    std::cerr << "Unknown error in tket_circuit_from_json\n";
+    std::cerr << "Unknown error in tket_circuit_from_json" << std::endl;
     std::exit(EXIT_FAILURE);
   }
 
@@ -73,14 +78,49 @@ TketError tket_circuit_to_json(const TketCircuit *tc, char **json_str) {
     // Clean up memory, print error, and exit
     if (*json_str) free(*json_str);
     *json_str = nullptr;
-    std::cerr << "Unknown error in tket_circuit_from_json\n";
+    std::cerr << "Unknown error in tket_circuit_from_json" << std::endl;
     std::exit(EXIT_FAILURE);
   }
 
   return TKET_SUCCESS;
 }
 
+TketPass *tket_pass_from_json(const char *json_str) {
+  if (!json_str) return nullptr;
+
+  TketPass *tp = nullptr;
+
+  // Parse JSON and create pass
+  try {
+    const json j = json::parse(json_str);
+    tp = new TketPass;
+    tp->pass = deserialise(j);
+  } catch (const json::parse_error &e) {
+    std::cerr << "Invalid JSON in tket_pass_from_json: " << e.what()
+              << std::endl;
+    if (tp) tket_free_pass(tp);
+    tp = nullptr;
+  } catch (const std::exception &e) {
+    // Clean up memory, print error, and exit
+    if (tp) tket_free_pass(tp);
+    std::cerr << "Error in tket_pass_from_json: " << e.what() << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+
+  return tp;
+}
+
+TketError tket_apply_pass(TketCircuit *tc, const TketPass *tp) {
+  if (!tc || !tp) return TKET_ERROR_NULL_POINTER;
+  CompilationUnit cu(tc->circuit);
+  tp->pass->apply(cu);
+  tc->circuit = cu.get_circ_ref();
+  return TKET_SUCCESS;
+}
+
 void tket_free_circuit(TketCircuit *tc) { delete tc; }
+
+void tket_free_pass(TketPass *tp) { delete tp; }
 
 void tket_free_string(char *str) { free(str); }
 

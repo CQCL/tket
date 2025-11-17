@@ -11,6 +11,9 @@ extern "C" {
 // Opaque handle to tket Circuit object
 typedef struct TketCircuit TketCircuit;
 
+// Opaque handle to tket BasePass object
+typedef struct TketPass TketPass;
+
 // Error handling
 typedef enum {
   TKET_SUCCESS = 0,
@@ -25,8 +28,15 @@ typedef enum { TKET_TARGET_CX = 0, TKET_TARGET_TK2 = 1 } TketTargetGate;
 TketCircuit *tket_circuit_from_json(const char *json_str);
 TketError tket_circuit_to_json(const TketCircuit *circuit, char **json_str);
 
+// Loading a Pass from its c-string JSON
+TketPass *tket_pass_from_json(const char *json_str);
+
+// Applying a pass to a circuit
+TketError tket_apply_pass(TketCircuit *circuit, const TketPass *pass);
+
 // Free memory
 void tket_free_circuit(TketCircuit *circuit);
+void tket_free_pass(TketPass *pass);
 void tket_free_string(char *str);
 
 // Transform functions
