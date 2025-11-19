@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
+#include <tket/OpType/OpType.hpp>
 
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DummyBox.hpp"
@@ -48,6 +49,15 @@ SCENARIO("DummyBox") {
         {{OpType::H, ResourceBounds<unsigned>(3)},
          {OpType::CX, ResourceBounds<unsigned>(3, 9)}},
         ResourceBounds<unsigned>(5, 9)};
+    CHECK(data == expected);
+  }
+
+  GIVEN("Phase op") {
+    // https://github.com/CQCL/tket/issues/2066
+    Circuit c(1);
+    c.add_op<unsigned>(OpType::Phase, 0.0, {});
+    ResourceData data = c.get_resources();
+    ResourceData expected{};
     CHECK(data == expected);
   }
 }
