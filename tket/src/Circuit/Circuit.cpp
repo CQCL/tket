@@ -406,10 +406,11 @@ ResourceData Circuit::get_resources() /*const*/ {
             op_type_count[pair.first].max += pair.second.max;
           }
         } else {
+          unsigned n_qubits = get_Op_ptr_from_Vertex(v)->n_qubits();
+          if (n_qubits == 0) continue;
           data.GateDepth = {1};
           data.OpTypeDepth[optype] = {1};
-          if (OpDesc(optype).is_gate() &&
-              get_Op_ptr_from_Vertex(v)->n_qubits() == 2) {
+          if (OpDesc(optype).is_gate() && n_qubits == 2) {
             data.TwoQubitGateDepth = {1};
           }
           op_type_count[optype].min += 1;
