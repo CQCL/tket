@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Fix segfault from `Circuit::get_resources()` with 0-qubit gates.
+- Fix `GreedyPauliSimp` ignoring implicit qubit permutation.
 
 ## 2.10.3 (October 2025)
 
