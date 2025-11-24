@@ -1,11 +1,11 @@
 # Changelog
 
-## Unreleased
+## 2.11.0 (November 2025)
 
 - Fix segfault from `Circuit::get_resources()` with 0-qubit gates.
 - Fix `GreedyPauliSimp` ignoring implicit qubit permutation.
 
-## 2.10.3 (October 2025)
+## 2.10.3 (November 2025)
 
 - Add `tket_squash_phasedx_rz` to c api.
 
