@@ -828,147 +828,148 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00751" name="l00751"></a><span class="lineno">  751</span>    <span class="keywordflow">throw</span> <a class="code hl_class" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GreedyPauliSimpError.html">GreedyPauliSimpError</a>(<span class="stringliteral">&quot;max_tqe_candidates must be greater than 0.&quot;</span>);</div>
 <div class="line"><a id="l00752" name="l00752"></a><span class="lineno">  752</span>  }</div>
 <div class="line"><a id="l00753" name="l00753"></a><span class="lineno">  753</span>  <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> circ_flat(circ);</div>
-<div class="line"><a id="l00754" name="l00754"></a><span class="lineno">  754</span>  <span class="keywordtype">unsigned</span> n_qubits = circ_flat.<a class="code hl_function" href="classtket_1_1Circuit.html#a0baec82ad9c0308fd2655607d30caf3d">n_qubits</a>();</div>
-<div class="line"><a id="l00755" name="l00755"></a><span class="lineno">  755</span>  <span class="keywordtype">unsigned</span> n_bits = circ_flat.<a class="code hl_function" href="classtket_1_1Circuit.html#abe179cb0bf4ce967c79b24d8569426ae">n_bits</a>();</div>
-<div class="line"><a id="l00756" name="l00756"></a><span class="lineno">  756</span>  <span class="comment">// empty circuit</span></div>
-<div class="line"><a id="l00757" name="l00757"></a><span class="lineno">  757</span>  <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> new_circ(n_qubits, n_bits);</div>
-<div class="line"><a id="l00758" name="l00758"></a><span class="lineno">  758</span>  std::optional&lt;std::string&gt; name = circ_flat.<a class="code hl_function" href="classtket_1_1Circuit.html#a87a9a6c2f01019d20719201016f7a0d2">get_name</a>();</div>
-<div class="line"><a id="l00759" name="l00759"></a><span class="lineno">  759</span>  <span class="keywordflow">if</span> (name != std::nullopt) {</div>
-<div class="line"><a id="l00760" name="l00760"></a><span class="lineno">  760</span>    new_circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a1093e9abb719dcb06b44e99afc2b3b94">set_name</a>(name.value());</div>
-<div class="line"><a id="l00761" name="l00761"></a><span class="lineno">  761</span>  }</div>
-<div class="line"><a id="l00762" name="l00762"></a><span class="lineno">  762</span>  <a class="code hl_typedef" href="namespacetket.html#aa08fc2d553413efa43b68fa1269fba77">unit_map_t</a> unit_map = circ_flat.<a class="code hl_function" href="classtket_1_1Circuit.html#a7c0f42bfdcbbadff9e57f5b8a820db8e">flatten_registers</a>();</div>
-<div class="line"><a id="l00763" name="l00763"></a><span class="lineno">  763</span>  <a class="code hl_typedef" href="namespacetket.html#aa08fc2d553413efa43b68fa1269fba77">unit_map_t</a> rev_unit_map;</div>
-<div class="line"><a id="l00764" name="l00764"></a><span class="lineno">  764</span>  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; pair : unit_map) {</div>
-<div class="line"><a id="l00765" name="l00765"></a><span class="lineno">  765</span>    rev_unit_map.insert({pair.second, pair.first});</div>
-<div class="line"><a id="l00766" name="l00766"></a><span class="lineno">  766</span>  }</div>
-<div class="line"><a id="l00767" name="l00767"></a><span class="lineno">  767</span> </div>
-<div class="line"><a id="l00768" name="l00768"></a><span class="lineno">  768</span>  <a class="code hl_class" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html">GPGraph</a> gpg(circ_flat.<a class="code hl_function" href="classtket_1_1Circuit.html#a1e25972d9f6e767128fdc294a628a95b">all_qubits</a>(), circ_flat.<a class="code hl_function" href="classtket_1_1Circuit.html#a79b731d8d4d889642d254aa394abf828">all_bits</a>());</div>
-<div class="line"><a id="l00769" name="l00769"></a><span class="lineno">  769</span>  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1Command.html">Command</a>&amp; cmd : circ_flat.<a class="code hl_function" href="classtket_1_1Circuit.html#aef592b95607e089ca574a85e5331471b">get_commands</a>()) {</div>
-<div class="line"><a id="l00770" name="l00770"></a><span class="lineno">  770</span>    <span class="keywordflow">if</span> (stop_flag.get()-&gt;load()) {</div>
-<div class="line"><a id="l00771" name="l00771"></a><span class="lineno">  771</span>      <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>();</div>
-<div class="line"><a id="l00772" name="l00772"></a><span class="lineno">  772</span>    }</div>
-<div class="line"><a id="l00773" name="l00773"></a><span class="lineno">  773</span>    gpg.<a class="code hl_function" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html#a1cbec0a8107be6366f54b63b672db548">apply_gate_at_end</a>(cmd);</div>
-<div class="line"><a id="l00774" name="l00774"></a><span class="lineno">  774</span>  }</div>
-<div class="line"><a id="l00775" name="l00775"></a><span class="lineno">  775</span> </div>
-<div class="line"><a id="l00776" name="l00776"></a><span class="lineno">  776</span>  <span class="comment">// We regularly check whether the timeout has occurred</span></div>
-<div class="line"><a id="l00777" name="l00777"></a><span class="lineno">  777</span>  <span class="keywordflow">if</span> (stop_flag.get()-&gt;load()) {</div>
-<div class="line"><a id="l00778" name="l00778"></a><span class="lineno">  778</span>    <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>();</div>
-<div class="line"><a id="l00779" name="l00779"></a><span class="lineno">  779</span>  }</div>
-<div class="line"><a id="l00780" name="l00780"></a><span class="lineno">  780</span> </div>
-<div class="line"><a id="l00781" name="l00781"></a><span class="lineno">  781</span>  <span class="keyword">auto</span> [rotation_sets, rows, measures] = gpg.<a class="code hl_function" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html#ab55187cbbaba573862fb6cafeeec5644">get_sequence</a>(stop_flag);</div>
-<div class="line"><a id="l00782" name="l00782"></a><span class="lineno">  782</span> </div>
-<div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span>  <span class="keywordflow">if</span> (stop_flag.get()-&gt;load()) {</div>
-<div class="line"><a id="l00784" name="l00784"></a><span class="lineno">  784</span>    <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>();</div>
-<div class="line"><a id="l00785" name="l00785"></a><span class="lineno">  785</span>  }</div>
-<div class="line"><a id="l00786" name="l00786"></a><span class="lineno">  786</span> </div>
-<div class="line"><a id="l00787" name="l00787"></a><span class="lineno">  787</span>  DepthTracker depth_tracker(n_qubits);</div>
-<div class="line"><a id="l00788" name="l00788"></a><span class="lineno">  788</span>  <span class="comment">// synthesise Pauli exps</span></div>
-<div class="line"><a id="l00789" name="l00789"></a><span class="lineno">  789</span>  pauli_exps_synthesis(</div>
-<div class="line"><a id="l00790" name="l00790"></a><span class="lineno">  790</span>      rotation_sets, rows, new_circ, depth_tracker, discount_rate, depth_weight,</div>
-<div class="line"><a id="l00791" name="l00791"></a><span class="lineno">  791</span>      max_lookahead, max_tqe_candidates, seed, allow_zzphase, stop_flag);</div>
-<div class="line"><a id="l00792" name="l00792"></a><span class="lineno">  792</span> </div>
-<div class="line"><a id="l00793" name="l00793"></a><span class="lineno">  793</span>  <span class="keywordflow">if</span> (stop_flag.get()-&gt;load()) {</div>
-<div class="line"><a id="l00794" name="l00794"></a><span class="lineno">  794</span>    <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>();</div>
-<div class="line"><a id="l00795" name="l00795"></a><span class="lineno">  795</span>  }</div>
-<div class="line"><a id="l00796" name="l00796"></a><span class="lineno">  796</span>  <span class="comment">// synthesise the tableau</span></div>
-<div class="line"><a id="l00797" name="l00797"></a><span class="lineno">  797</span>  tableau_row_nodes_synthesis(</div>
-<div class="line"><a id="l00798" name="l00798"></a><span class="lineno">  798</span>      rows, new_circ, depth_tracker, depth_weight, max_lookahead,</div>
-<div class="line"><a id="l00799" name="l00799"></a><span class="lineno">  799</span>      max_tqe_candidates, seed, stop_flag);</div>
-<div class="line"><a id="l00800" name="l00800"></a><span class="lineno">  800</span> </div>
-<div class="line"><a id="l00801" name="l00801"></a><span class="lineno">  801</span>  <span class="keywordflow">if</span> (stop_flag.get()-&gt;load()) {</div>
-<div class="line"><a id="l00802" name="l00802"></a><span class="lineno">  802</span>    <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>();</div>
-<div class="line"><a id="l00803" name="l00803"></a><span class="lineno">  803</span>  }</div>
-<div class="line"><a id="l00804" name="l00804"></a><span class="lineno">  804</span> </div>
-<div class="line"><a id="l00805" name="l00805"></a><span class="lineno">  805</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> it = measures.begin(); it != measures.end(); ++it) {</div>
-<div class="line"><a id="l00806" name="l00806"></a><span class="lineno">  806</span>    new_circ.<a class="code hl_function" href="classtket_1_1Circuit.html#ace617462599813ac8ebd9a49257b085f">add_measure</a>(it-&gt;left, it-&gt;right);</div>
-<div class="line"><a id="l00807" name="l00807"></a><span class="lineno">  807</span>  }</div>
-<div class="line"><a id="l00808" name="l00808"></a><span class="lineno">  808</span>  new_circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a045acc253d2d125da63c0af649bf3cd2">rename_units</a>(rev_unit_map);</div>
-<div class="line"><a id="l00809" name="l00809"></a><span class="lineno">  809</span>  new_circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a8474139dd1c7af1b8a8f6c37657a4ce0">replace_SWAPs</a>();</div>
-<div class="line"><a id="l00810" name="l00810"></a><span class="lineno">  810</span>  <span class="keywordflow">return</span> new_circ;</div>
-<div class="line"><a id="l00811" name="l00811"></a><span class="lineno">  811</span>}</div>
+<div class="line"><a id="l00754" name="l00754"></a><span class="lineno">  754</span>  circ_flat.<a class="code hl_function" href="classtket_1_1Circuit.html#ae22d24c3371c3c44f9d92a6419c82ccd">replace_all_implicit_wire_swaps</a>();</div>
+<div class="line"><a id="l00755" name="l00755"></a><span class="lineno">  755</span>  <span class="keywordtype">unsigned</span> n_qubits = circ_flat.<a class="code hl_function" href="classtket_1_1Circuit.html#a0baec82ad9c0308fd2655607d30caf3d">n_qubits</a>();</div>
+<div class="line"><a id="l00756" name="l00756"></a><span class="lineno">  756</span>  <span class="keywordtype">unsigned</span> n_bits = circ_flat.<a class="code hl_function" href="classtket_1_1Circuit.html#abe179cb0bf4ce967c79b24d8569426ae">n_bits</a>();</div>
+<div class="line"><a id="l00757" name="l00757"></a><span class="lineno">  757</span>  <span class="comment">// empty circuit</span></div>
+<div class="line"><a id="l00758" name="l00758"></a><span class="lineno">  758</span>  <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> new_circ(n_qubits, n_bits);</div>
+<div class="line"><a id="l00759" name="l00759"></a><span class="lineno">  759</span>  std::optional&lt;std::string&gt; name = circ_flat.<a class="code hl_function" href="classtket_1_1Circuit.html#a87a9a6c2f01019d20719201016f7a0d2">get_name</a>();</div>
+<div class="line"><a id="l00760" name="l00760"></a><span class="lineno">  760</span>  <span class="keywordflow">if</span> (name != std::nullopt) {</div>
+<div class="line"><a id="l00761" name="l00761"></a><span class="lineno">  761</span>    new_circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a1093e9abb719dcb06b44e99afc2b3b94">set_name</a>(name.value());</div>
+<div class="line"><a id="l00762" name="l00762"></a><span class="lineno">  762</span>  }</div>
+<div class="line"><a id="l00763" name="l00763"></a><span class="lineno">  763</span>  <a class="code hl_typedef" href="namespacetket.html#aa08fc2d553413efa43b68fa1269fba77">unit_map_t</a> unit_map = circ_flat.<a class="code hl_function" href="classtket_1_1Circuit.html#a7c0f42bfdcbbadff9e57f5b8a820db8e">flatten_registers</a>();</div>
+<div class="line"><a id="l00764" name="l00764"></a><span class="lineno">  764</span>  <a class="code hl_typedef" href="namespacetket.html#aa08fc2d553413efa43b68fa1269fba77">unit_map_t</a> rev_unit_map;</div>
+<div class="line"><a id="l00765" name="l00765"></a><span class="lineno">  765</span>  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; pair : unit_map) {</div>
+<div class="line"><a id="l00766" name="l00766"></a><span class="lineno">  766</span>    rev_unit_map.insert({pair.second, pair.first});</div>
+<div class="line"><a id="l00767" name="l00767"></a><span class="lineno">  767</span>  }</div>
+<div class="line"><a id="l00768" name="l00768"></a><span class="lineno">  768</span> </div>
+<div class="line"><a id="l00769" name="l00769"></a><span class="lineno">  769</span>  <a class="code hl_class" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html">GPGraph</a> gpg(circ_flat.<a class="code hl_function" href="classtket_1_1Circuit.html#a1e25972d9f6e767128fdc294a628a95b">all_qubits</a>(), circ_flat.<a class="code hl_function" href="classtket_1_1Circuit.html#a79b731d8d4d889642d254aa394abf828">all_bits</a>());</div>
+<div class="line"><a id="l00770" name="l00770"></a><span class="lineno">  770</span>  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1Command.html">Command</a>&amp; cmd : circ_flat.<a class="code hl_function" href="classtket_1_1Circuit.html#aef592b95607e089ca574a85e5331471b">get_commands</a>()) {</div>
+<div class="line"><a id="l00771" name="l00771"></a><span class="lineno">  771</span>    <span class="keywordflow">if</span> (stop_flag.get()-&gt;load()) {</div>
+<div class="line"><a id="l00772" name="l00772"></a><span class="lineno">  772</span>      <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>();</div>
+<div class="line"><a id="l00773" name="l00773"></a><span class="lineno">  773</span>    }</div>
+<div class="line"><a id="l00774" name="l00774"></a><span class="lineno">  774</span>    gpg.<a class="code hl_function" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html#a1cbec0a8107be6366f54b63b672db548">apply_gate_at_end</a>(cmd);</div>
+<div class="line"><a id="l00775" name="l00775"></a><span class="lineno">  775</span>  }</div>
+<div class="line"><a id="l00776" name="l00776"></a><span class="lineno">  776</span> </div>
+<div class="line"><a id="l00777" name="l00777"></a><span class="lineno">  777</span>  <span class="comment">// We regularly check whether the timeout has occurred</span></div>
+<div class="line"><a id="l00778" name="l00778"></a><span class="lineno">  778</span>  <span class="keywordflow">if</span> (stop_flag.get()-&gt;load()) {</div>
+<div class="line"><a id="l00779" name="l00779"></a><span class="lineno">  779</span>    <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>();</div>
+<div class="line"><a id="l00780" name="l00780"></a><span class="lineno">  780</span>  }</div>
+<div class="line"><a id="l00781" name="l00781"></a><span class="lineno">  781</span> </div>
+<div class="line"><a id="l00782" name="l00782"></a><span class="lineno">  782</span>  <span class="keyword">auto</span> [rotation_sets, rows, measures] = gpg.<a class="code hl_function" href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GPGraph.html#ab55187cbbaba573862fb6cafeeec5644">get_sequence</a>(stop_flag);</div>
+<div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span> </div>
+<div class="line"><a id="l00784" name="l00784"></a><span class="lineno">  784</span>  <span class="keywordflow">if</span> (stop_flag.get()-&gt;load()) {</div>
+<div class="line"><a id="l00785" name="l00785"></a><span class="lineno">  785</span>    <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>();</div>
+<div class="line"><a id="l00786" name="l00786"></a><span class="lineno">  786</span>  }</div>
+<div class="line"><a id="l00787" name="l00787"></a><span class="lineno">  787</span> </div>
+<div class="line"><a id="l00788" name="l00788"></a><span class="lineno">  788</span>  DepthTracker depth_tracker(n_qubits);</div>
+<div class="line"><a id="l00789" name="l00789"></a><span class="lineno">  789</span>  <span class="comment">// synthesise Pauli exps</span></div>
+<div class="line"><a id="l00790" name="l00790"></a><span class="lineno">  790</span>  pauli_exps_synthesis(</div>
+<div class="line"><a id="l00791" name="l00791"></a><span class="lineno">  791</span>      rotation_sets, rows, new_circ, depth_tracker, discount_rate, depth_weight,</div>
+<div class="line"><a id="l00792" name="l00792"></a><span class="lineno">  792</span>      max_lookahead, max_tqe_candidates, seed, allow_zzphase, stop_flag);</div>
+<div class="line"><a id="l00793" name="l00793"></a><span class="lineno">  793</span> </div>
+<div class="line"><a id="l00794" name="l00794"></a><span class="lineno">  794</span>  <span class="keywordflow">if</span> (stop_flag.get()-&gt;load()) {</div>
+<div class="line"><a id="l00795" name="l00795"></a><span class="lineno">  795</span>    <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>();</div>
+<div class="line"><a id="l00796" name="l00796"></a><span class="lineno">  796</span>  }</div>
+<div class="line"><a id="l00797" name="l00797"></a><span class="lineno">  797</span>  <span class="comment">// synthesise the tableau</span></div>
+<div class="line"><a id="l00798" name="l00798"></a><span class="lineno">  798</span>  tableau_row_nodes_synthesis(</div>
+<div class="line"><a id="l00799" name="l00799"></a><span class="lineno">  799</span>      rows, new_circ, depth_tracker, depth_weight, max_lookahead,</div>
+<div class="line"><a id="l00800" name="l00800"></a><span class="lineno">  800</span>      max_tqe_candidates, seed, stop_flag);</div>
+<div class="line"><a id="l00801" name="l00801"></a><span class="lineno">  801</span> </div>
+<div class="line"><a id="l00802" name="l00802"></a><span class="lineno">  802</span>  <span class="keywordflow">if</span> (stop_flag.get()-&gt;load()) {</div>
+<div class="line"><a id="l00803" name="l00803"></a><span class="lineno">  803</span>    <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>();</div>
+<div class="line"><a id="l00804" name="l00804"></a><span class="lineno">  804</span>  }</div>
+<div class="line"><a id="l00805" name="l00805"></a><span class="lineno">  805</span> </div>
+<div class="line"><a id="l00806" name="l00806"></a><span class="lineno">  806</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> it = measures.begin(); it != measures.end(); ++it) {</div>
+<div class="line"><a id="l00807" name="l00807"></a><span class="lineno">  807</span>    new_circ.<a class="code hl_function" href="classtket_1_1Circuit.html#ace617462599813ac8ebd9a49257b085f">add_measure</a>(it-&gt;left, it-&gt;right);</div>
+<div class="line"><a id="l00808" name="l00808"></a><span class="lineno">  808</span>  }</div>
+<div class="line"><a id="l00809" name="l00809"></a><span class="lineno">  809</span>  new_circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a045acc253d2d125da63c0af649bf3cd2">rename_units</a>(rev_unit_map);</div>
+<div class="line"><a id="l00810" name="l00810"></a><span class="lineno">  810</span>  new_circ.<a class="code hl_function" href="classtket_1_1Circuit.html#a8474139dd1c7af1b8a8f6c37657a4ce0">replace_SWAPs</a>();</div>
+<div class="line"><a id="l00811" name="l00811"></a><span class="lineno">  811</span>  <span class="keywordflow">return</span> new_circ;</div>
+<div class="line"><a id="l00812" name="l00812"></a><span class="lineno">  812</span>}</div>
 </div>
-<div class="line"><a id="l00812" name="l00812"></a><span class="lineno">  812</span> </div>
-<div class="foldopen" id="foldopen00813" data-start="{" data-end="}">
-<div class="line"><a id="l00813" name="l00813"></a><span class="lineno"><a class="line" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a042d7d1967beadd4ec4b06f15cb3c136">  813</a></span><a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> <a class="code hl_function" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a042d7d1967beadd4ec4b06f15cb3c136">greedy_pauli_graph_synthesis</a>(</div>
-<div class="line"><a id="l00814" name="l00814"></a><span class="lineno">  814</span>    <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>&amp; circ, <span class="keywordtype">double</span> discount_rate, <span class="keywordtype">double</span> depth_weight,</div>
-<div class="line"><a id="l00815" name="l00815"></a><span class="lineno">  815</span>    <span class="keywordtype">unsigned</span> max_lookahead, <span class="keywordtype">unsigned</span> max_tqe_candidates, <span class="keywordtype">unsigned</span> seed,</div>
-<div class="line"><a id="l00816" name="l00816"></a><span class="lineno">  816</span>    <span class="keywordtype">bool</span> allow_zzphase) {</div>
-<div class="line"><a id="l00817" name="l00817"></a><span class="lineno">  817</span>  std::shared_ptr&lt;std::atomic&lt;bool&gt;&gt; dummy_stop_flag =</div>
-<div class="line"><a id="l00818" name="l00818"></a><span class="lineno">  818</span>      std::make_shared&lt;std::atomic&lt;bool&gt;&gt;(<span class="keyword">false</span>);</div>
-<div class="line"><a id="l00819" name="l00819"></a><span class="lineno">  819</span>  <span class="keywordflow">return</span> <a class="code hl_function" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#aff48bec510a58497cc59efa47bbf99a7">greedy_pauli_graph_synthesis_flag</a>(</div>
-<div class="line"><a id="l00820" name="l00820"></a><span class="lineno">  820</span>      circ, dummy_stop_flag, discount_rate, depth_weight, max_lookahead,</div>
-<div class="line"><a id="l00821" name="l00821"></a><span class="lineno">  821</span>      max_tqe_candidates, seed, allow_zzphase);</div>
-<div class="line"><a id="l00822" name="l00822"></a><span class="lineno">  822</span>}</div>
+<div class="line"><a id="l00813" name="l00813"></a><span class="lineno">  813</span> </div>
+<div class="foldopen" id="foldopen00814" data-start="{" data-end="}">
+<div class="line"><a id="l00814" name="l00814"></a><span class="lineno"><a class="line" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a042d7d1967beadd4ec4b06f15cb3c136">  814</a></span><a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a> <a class="code hl_function" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a042d7d1967beadd4ec4b06f15cb3c136">greedy_pauli_graph_synthesis</a>(</div>
+<div class="line"><a id="l00815" name="l00815"></a><span class="lineno">  815</span>    <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>&amp; circ, <span class="keywordtype">double</span> discount_rate, <span class="keywordtype">double</span> depth_weight,</div>
+<div class="line"><a id="l00816" name="l00816"></a><span class="lineno">  816</span>    <span class="keywordtype">unsigned</span> max_lookahead, <span class="keywordtype">unsigned</span> max_tqe_candidates, <span class="keywordtype">unsigned</span> seed,</div>
+<div class="line"><a id="l00817" name="l00817"></a><span class="lineno">  817</span>    <span class="keywordtype">bool</span> allow_zzphase) {</div>
+<div class="line"><a id="l00818" name="l00818"></a><span class="lineno">  818</span>  std::shared_ptr&lt;std::atomic&lt;bool&gt;&gt; dummy_stop_flag =</div>
+<div class="line"><a id="l00819" name="l00819"></a><span class="lineno">  819</span>      std::make_shared&lt;std::atomic&lt;bool&gt;&gt;(<span class="keyword">false</span>);</div>
+<div class="line"><a id="l00820" name="l00820"></a><span class="lineno">  820</span>  <span class="keywordflow">return</span> <a class="code hl_function" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#aff48bec510a58497cc59efa47bbf99a7">greedy_pauli_graph_synthesis_flag</a>(</div>
+<div class="line"><a id="l00821" name="l00821"></a><span class="lineno">  821</span>      circ, dummy_stop_flag, discount_rate, depth_weight, max_lookahead,</div>
+<div class="line"><a id="l00822" name="l00822"></a><span class="lineno">  822</span>      max_tqe_candidates, seed, allow_zzphase);</div>
+<div class="line"><a id="l00823" name="l00823"></a><span class="lineno">  823</span>}</div>
 </div>
-<div class="line"><a id="l00823" name="l00823"></a><span class="lineno">  823</span> </div>
-<div class="line"><a id="l00824" name="l00824"></a><span class="lineno">  824</span>}  <span class="comment">// namespace GreedyPauliSimp</span></div>
-<div class="line"><a id="l00825" name="l00825"></a><span class="lineno">  825</span> </div>
-<div class="foldopen" id="foldopen00826" data-start="{" data-end="}">
-<div class="line"><a id="l00826" name="l00826"></a><span class="lineno"><a class="line" href="namespacetket_1_1Transforms.html#ab42e6527de86921625a2c97f2fc71493">  826</a></span><a class="code hl_class" href="classtket_1_1Transform.html">Transform</a> <a class="code hl_function" href="namespacetket_1_1Transforms.html#ab42e6527de86921625a2c97f2fc71493">greedy_pauli_optimisation</a>(</div>
-<div class="line"><a id="l00827" name="l00827"></a><span class="lineno">  827</span>    <span class="keywordtype">double</span> discount_rate, <span class="keywordtype">double</span> depth_weight, <span class="keywordtype">unsigned</span> max_lookahead,</div>
-<div class="line"><a id="l00828" name="l00828"></a><span class="lineno">  828</span>    <span class="keywordtype">unsigned</span> max_tqe_candidates, <span class="keywordtype">unsigned</span> seed, <span class="keywordtype">bool</span> allow_zzphase,</div>
-<div class="line"><a id="l00829" name="l00829"></a><span class="lineno">  829</span>    <span class="keywordtype">unsigned</span> thread_timeout, <span class="keywordtype">unsigned</span> trials) {</div>
-<div class="line"><a id="l00830" name="l00830"></a><span class="lineno">  830</span>  <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Transform.html">Transform</a>([discount_rate, depth_weight, max_lookahead,</div>
-<div class="line"><a id="l00831" name="l00831"></a><span class="lineno">  831</span>                    max_tqe_candidates, seed, allow_zzphase, thread_timeout,</div>
-<div class="line"><a id="l00832" name="l00832"></a><span class="lineno">  832</span>                    trials](<a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>&amp; circ) {</div>
-<div class="line"><a id="l00833" name="l00833"></a><span class="lineno">  833</span>    std::mt19937 seed_gen(seed);</div>
-<div class="line"><a id="l00834" name="l00834"></a><span class="lineno">  834</span>    std::vector&lt;Circuit&gt; circuits;</div>
-<div class="line"><a id="l00835" name="l00835"></a><span class="lineno">  835</span>    circuits.reserve(trials);</div>
-<div class="line"><a id="l00836" name="l00836"></a><span class="lineno">  836</span>    <span class="keywordtype">unsigned</span> threads_started = 0;</div>
-<div class="line"><a id="l00837" name="l00837"></a><span class="lineno">  837</span> </div>
-<div class="line"><a id="l00838" name="l00838"></a><span class="lineno">  838</span>    <span class="keywordflow">while</span> (threads_started &lt; trials) {</div>
-<div class="line"><a id="l00839" name="l00839"></a><span class="lineno">  839</span>      std::shared_ptr&lt;std::atomic&lt;bool&gt;&gt; stop_flag =</div>
-<div class="line"><a id="l00840" name="l00840"></a><span class="lineno">  840</span>          std::make_shared&lt;std::atomic&lt;bool&gt;&gt;(<span class="keyword">false</span>);</div>
-<div class="line"><a id="l00841" name="l00841"></a><span class="lineno">  841</span>      std::future&lt;Circuit&gt; future = std::async(</div>
-<div class="line"><a id="l00842" name="l00842"></a><span class="lineno">  842</span>          std::launch::async,</div>
-<div class="line"><a id="l00843" name="l00843"></a><span class="lineno">  843</span>          [&amp;, stop_flag]() {  <span class="comment">// Capture `stop_flag` explicitly in the lambda</span></div>
-<div class="line"><a id="l00844" name="l00844"></a><span class="lineno">  844</span>            <span class="keywordflow">return</span> <a class="code hl_function" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#aff48bec510a58497cc59efa47bbf99a7">GreedyPauliSimp::greedy_pauli_graph_synthesis_flag</a>(</div>
-<div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span>                circ, stop_flag, discount_rate, depth_weight, max_lookahead,</div>
-<div class="line"><a id="l00846" name="l00846"></a><span class="lineno">  846</span>                max_tqe_candidates, seed_gen(), allow_zzphase);</div>
-<div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span>          });</div>
-<div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span>      threads_started++;</div>
-<div class="line"><a id="l00849" name="l00849"></a><span class="lineno">  849</span> </div>
-<div class="line"><a id="l00850" name="l00850"></a><span class="lineno">  850</span>      <span class="keywordflow">if</span> (future.wait_for(std::chrono::seconds(thread_timeout)) ==</div>
-<div class="line"><a id="l00851" name="l00851"></a><span class="lineno">  851</span>          std::future_status::ready) {</div>
-<div class="line"><a id="l00852" name="l00852"></a><span class="lineno">  852</span>        circuits.emplace_back();</div>
-<div class="line"><a id="l00853" name="l00853"></a><span class="lineno">  853</span>        circuits.back() = future.get();</div>
-<div class="line"><a id="l00854" name="l00854"></a><span class="lineno">  854</span>        circuits.back().decompose_boxes_recursively();</div>
-<div class="line"><a id="l00855" name="l00855"></a><span class="lineno">  855</span>      } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00856" name="l00856"></a><span class="lineno">  856</span>        <span class="comment">// If the thread isn&#39;t complete within time, prompt cancelling the</span></div>
-<div class="line"><a id="l00857" name="l00857"></a><span class="lineno">  857</span>        <span class="comment">// optimisation and break from while loop</span></div>
-<div class="line"><a id="l00858" name="l00858"></a><span class="lineno">  858</span>        *stop_flag = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00859" name="l00859"></a><span class="lineno">  859</span>        <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00860" name="l00860"></a><span class="lineno">  860</span>      }</div>
-<div class="line"><a id="l00861" name="l00861"></a><span class="lineno">  861</span>    }</div>
-<div class="line"><a id="l00862" name="l00862"></a><span class="lineno">  862</span> </div>
-<div class="line"><a id="l00863" name="l00863"></a><span class="lineno">  863</span>    <span class="comment">// Return the smallest circuit if any were found within the single</span></div>
-<div class="line"><a id="l00864" name="l00864"></a><span class="lineno">  864</span>    <span class="comment">// thread_timeout</span></div>
-<div class="line"><a id="l00865" name="l00865"></a><span class="lineno">  865</span>    <span class="comment">// If none are found then return false</span></div>
-<div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span>    <span class="keywordflow">if</span> (circuits.empty()) <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00867" name="l00867"></a><span class="lineno">  867</span>    <span class="keyword">auto</span> min = std::min_element(</div>
-<div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span>        circuits.begin(), circuits.end(),</div>
-<div class="line"><a id="l00869" name="l00869"></a><span class="lineno">  869</span>        [](<span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>&amp; a, <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>&amp; b) {</div>
-<div class="line"><a id="l00870" name="l00870"></a><span class="lineno">  870</span>          const auto two_qubit_gates_a = a.count_n_qubit_gates(2);</div>
-<div class="line"><a id="l00871" name="l00871"></a><span class="lineno">  871</span>          const auto two_qubit_gates_b = b.count_n_qubit_gates(2);</div>
-<div class="line"><a id="l00872" name="l00872"></a><span class="lineno">  872</span>          if (two_qubit_gates_a != two_qubit_gates_b) {</div>
-<div class="line"><a id="l00873" name="l00873"></a><span class="lineno">  873</span>            return two_qubit_gates_a &lt; two_qubit_gates_b;</div>
-<div class="line"><a id="l00874" name="l00874"></a><span class="lineno">  874</span>          }</div>
-<div class="line"><a id="l00875" name="l00875"></a><span class="lineno">  875</span>          <span class="keyword">const</span> <span class="keyword">auto</span> n_gates_a = a.<a class="code hl_function" href="classtket_1_1Circuit.html#a807df5b6bc08a6649396d392c54eee90">n_gates</a>();</div>
-<div class="line"><a id="l00876" name="l00876"></a><span class="lineno">  876</span>          <span class="keyword">const</span> <span class="keyword">auto</span> n_gates_b = b.<a class="code hl_function" href="classtket_1_1Circuit.html#a807df5b6bc08a6649396d392c54eee90">n_gates</a>();</div>
-<div class="line"><a id="l00877" name="l00877"></a><span class="lineno">  877</span>          <span class="keywordflow">if</span> (n_gates_a != n_gates_b) {</div>
-<div class="line"><a id="l00878" name="l00878"></a><span class="lineno">  878</span>            <span class="keywordflow">return</span> n_gates_a &lt; n_gates_b;</div>
-<div class="line"><a id="l00879" name="l00879"></a><span class="lineno">  879</span>          }</div>
-<div class="line"><a id="l00880" name="l00880"></a><span class="lineno">  880</span>          <span class="keywordflow">return</span> a.<a class="code hl_function" href="classtket_1_1Circuit.html#a0e427bbdac1dc30118e2fcd82c54627b">depth</a>() &lt; b.<a class="code hl_function" href="classtket_1_1Circuit.html#a0e427bbdac1dc30118e2fcd82c54627b">depth</a>();</div>
-<div class="line"><a id="l00881" name="l00881"></a><span class="lineno">  881</span>        });</div>
-<div class="line"><a id="l00882" name="l00882"></a><span class="lineno">  882</span>    circ = std::move(*min);</div>
-<div class="line"><a id="l00883" name="l00883"></a><span class="lineno">  883</span>    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00884" name="l00884"></a><span class="lineno">  884</span>  });</div>
-<div class="line"><a id="l00885" name="l00885"></a><span class="lineno">  885</span>}</div>
+<div class="line"><a id="l00824" name="l00824"></a><span class="lineno">  824</span> </div>
+<div class="line"><a id="l00825" name="l00825"></a><span class="lineno">  825</span>}  <span class="comment">// namespace GreedyPauliSimp</span></div>
+<div class="line"><a id="l00826" name="l00826"></a><span class="lineno">  826</span> </div>
+<div class="foldopen" id="foldopen00827" data-start="{" data-end="}">
+<div class="line"><a id="l00827" name="l00827"></a><span class="lineno"><a class="line" href="namespacetket_1_1Transforms.html#ab42e6527de86921625a2c97f2fc71493">  827</a></span><a class="code hl_class" href="classtket_1_1Transform.html">Transform</a> <a class="code hl_function" href="namespacetket_1_1Transforms.html#ab42e6527de86921625a2c97f2fc71493">greedy_pauli_optimisation</a>(</div>
+<div class="line"><a id="l00828" name="l00828"></a><span class="lineno">  828</span>    <span class="keywordtype">double</span> discount_rate, <span class="keywordtype">double</span> depth_weight, <span class="keywordtype">unsigned</span> max_lookahead,</div>
+<div class="line"><a id="l00829" name="l00829"></a><span class="lineno">  829</span>    <span class="keywordtype">unsigned</span> max_tqe_candidates, <span class="keywordtype">unsigned</span> seed, <span class="keywordtype">bool</span> allow_zzphase,</div>
+<div class="line"><a id="l00830" name="l00830"></a><span class="lineno">  830</span>    <span class="keywordtype">unsigned</span> thread_timeout, <span class="keywordtype">unsigned</span> trials) {</div>
+<div class="line"><a id="l00831" name="l00831"></a><span class="lineno">  831</span>  <span class="keywordflow">return</span> <a class="code hl_class" href="classtket_1_1Transform.html">Transform</a>([discount_rate, depth_weight, max_lookahead,</div>
+<div class="line"><a id="l00832" name="l00832"></a><span class="lineno">  832</span>                    max_tqe_candidates, seed, allow_zzphase, thread_timeout,</div>
+<div class="line"><a id="l00833" name="l00833"></a><span class="lineno">  833</span>                    trials](<a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>&amp; circ) {</div>
+<div class="line"><a id="l00834" name="l00834"></a><span class="lineno">  834</span>    std::mt19937 seed_gen(seed);</div>
+<div class="line"><a id="l00835" name="l00835"></a><span class="lineno">  835</span>    std::vector&lt;Circuit&gt; circuits;</div>
+<div class="line"><a id="l00836" name="l00836"></a><span class="lineno">  836</span>    circuits.reserve(trials);</div>
+<div class="line"><a id="l00837" name="l00837"></a><span class="lineno">  837</span>    <span class="keywordtype">unsigned</span> threads_started = 0;</div>
+<div class="line"><a id="l00838" name="l00838"></a><span class="lineno">  838</span> </div>
+<div class="line"><a id="l00839" name="l00839"></a><span class="lineno">  839</span>    <span class="keywordflow">while</span> (threads_started &lt; trials) {</div>
+<div class="line"><a id="l00840" name="l00840"></a><span class="lineno">  840</span>      std::shared_ptr&lt;std::atomic&lt;bool&gt;&gt; stop_flag =</div>
+<div class="line"><a id="l00841" name="l00841"></a><span class="lineno">  841</span>          std::make_shared&lt;std::atomic&lt;bool&gt;&gt;(<span class="keyword">false</span>);</div>
+<div class="line"><a id="l00842" name="l00842"></a><span class="lineno">  842</span>      std::future&lt;Circuit&gt; future = std::async(</div>
+<div class="line"><a id="l00843" name="l00843"></a><span class="lineno">  843</span>          std::launch::async,</div>
+<div class="line"><a id="l00844" name="l00844"></a><span class="lineno">  844</span>          [&amp;, stop_flag]() {  <span class="comment">// Capture `stop_flag` explicitly in the lambda</span></div>
+<div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span>            <span class="keywordflow">return</span> <a class="code hl_function" href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#aff48bec510a58497cc59efa47bbf99a7">GreedyPauliSimp::greedy_pauli_graph_synthesis_flag</a>(</div>
+<div class="line"><a id="l00846" name="l00846"></a><span class="lineno">  846</span>                circ, stop_flag, discount_rate, depth_weight, max_lookahead,</div>
+<div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span>                max_tqe_candidates, seed_gen(), allow_zzphase);</div>
+<div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span>          });</div>
+<div class="line"><a id="l00849" name="l00849"></a><span class="lineno">  849</span>      threads_started++;</div>
+<div class="line"><a id="l00850" name="l00850"></a><span class="lineno">  850</span> </div>
+<div class="line"><a id="l00851" name="l00851"></a><span class="lineno">  851</span>      <span class="keywordflow">if</span> (future.wait_for(std::chrono::seconds(thread_timeout)) ==</div>
+<div class="line"><a id="l00852" name="l00852"></a><span class="lineno">  852</span>          std::future_status::ready) {</div>
+<div class="line"><a id="l00853" name="l00853"></a><span class="lineno">  853</span>        circuits.emplace_back();</div>
+<div class="line"><a id="l00854" name="l00854"></a><span class="lineno">  854</span>        circuits.back() = future.get();</div>
+<div class="line"><a id="l00855" name="l00855"></a><span class="lineno">  855</span>        circuits.back().decompose_boxes_recursively();</div>
+<div class="line"><a id="l00856" name="l00856"></a><span class="lineno">  856</span>      } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00857" name="l00857"></a><span class="lineno">  857</span>        <span class="comment">// If the thread isn&#39;t complete within time, prompt cancelling the</span></div>
+<div class="line"><a id="l00858" name="l00858"></a><span class="lineno">  858</span>        <span class="comment">// optimisation and break from while loop</span></div>
+<div class="line"><a id="l00859" name="l00859"></a><span class="lineno">  859</span>        *stop_flag = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00860" name="l00860"></a><span class="lineno">  860</span>        <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00861" name="l00861"></a><span class="lineno">  861</span>      }</div>
+<div class="line"><a id="l00862" name="l00862"></a><span class="lineno">  862</span>    }</div>
+<div class="line"><a id="l00863" name="l00863"></a><span class="lineno">  863</span> </div>
+<div class="line"><a id="l00864" name="l00864"></a><span class="lineno">  864</span>    <span class="comment">// Return the smallest circuit if any were found within the single</span></div>
+<div class="line"><a id="l00865" name="l00865"></a><span class="lineno">  865</span>    <span class="comment">// thread_timeout</span></div>
+<div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span>    <span class="comment">// If none are found then return false</span></div>
+<div class="line"><a id="l00867" name="l00867"></a><span class="lineno">  867</span>    <span class="keywordflow">if</span> (circuits.empty()) <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span>    <span class="keyword">auto</span> min = std::min_element(</div>
+<div class="line"><a id="l00869" name="l00869"></a><span class="lineno">  869</span>        circuits.begin(), circuits.end(),</div>
+<div class="line"><a id="l00870" name="l00870"></a><span class="lineno">  870</span>        [](<span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>&amp; a, <span class="keyword">const</span> <a class="code hl_class" href="classtket_1_1Circuit.html">Circuit</a>&amp; b) {</div>
+<div class="line"><a id="l00871" name="l00871"></a><span class="lineno">  871</span>          const auto two_qubit_gates_a = a.count_n_qubit_gates(2);</div>
+<div class="line"><a id="l00872" name="l00872"></a><span class="lineno">  872</span>          const auto two_qubit_gates_b = b.count_n_qubit_gates(2);</div>
+<div class="line"><a id="l00873" name="l00873"></a><span class="lineno">  873</span>          if (two_qubit_gates_a != two_qubit_gates_b) {</div>
+<div class="line"><a id="l00874" name="l00874"></a><span class="lineno">  874</span>            return two_qubit_gates_a &lt; two_qubit_gates_b;</div>
+<div class="line"><a id="l00875" name="l00875"></a><span class="lineno">  875</span>          }</div>
+<div class="line"><a id="l00876" name="l00876"></a><span class="lineno">  876</span>          <span class="keyword">const</span> <span class="keyword">auto</span> n_gates_a = a.<a class="code hl_function" href="classtket_1_1Circuit.html#a807df5b6bc08a6649396d392c54eee90">n_gates</a>();</div>
+<div class="line"><a id="l00877" name="l00877"></a><span class="lineno">  877</span>          <span class="keyword">const</span> <span class="keyword">auto</span> n_gates_b = b.<a class="code hl_function" href="classtket_1_1Circuit.html#a807df5b6bc08a6649396d392c54eee90">n_gates</a>();</div>
+<div class="line"><a id="l00878" name="l00878"></a><span class="lineno">  878</span>          <span class="keywordflow">if</span> (n_gates_a != n_gates_b) {</div>
+<div class="line"><a id="l00879" name="l00879"></a><span class="lineno">  879</span>            <span class="keywordflow">return</span> n_gates_a &lt; n_gates_b;</div>
+<div class="line"><a id="l00880" name="l00880"></a><span class="lineno">  880</span>          }</div>
+<div class="line"><a id="l00881" name="l00881"></a><span class="lineno">  881</span>          <span class="keywordflow">return</span> a.<a class="code hl_function" href="classtket_1_1Circuit.html#a0e427bbdac1dc30118e2fcd82c54627b">depth</a>() &lt; b.<a class="code hl_function" href="classtket_1_1Circuit.html#a0e427bbdac1dc30118e2fcd82c54627b">depth</a>();</div>
+<div class="line"><a id="l00882" name="l00882"></a><span class="lineno">  882</span>        });</div>
+<div class="line"><a id="l00883" name="l00883"></a><span class="lineno">  883</span>    circ = std::move(*min);</div>
+<div class="line"><a id="l00884" name="l00884"></a><span class="lineno">  884</span>    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00885" name="l00885"></a><span class="lineno">  885</span>  });</div>
+<div class="line"><a id="l00886" name="l00886"></a><span class="lineno">  886</span>}</div>
 </div>
-<div class="line"><a id="l00886" name="l00886"></a><span class="lineno">  886</span> </div>
-<div class="line"><a id="l00887" name="l00887"></a><span class="lineno">  887</span>}  <span class="comment">// namespace Transforms</span></div>
-<div class="line"><a id="l00888" name="l00888"></a><span class="lineno">  888</span> </div>
-<div class="line"><a id="l00889" name="l00889"></a><span class="lineno">  889</span>}  <span class="comment">// namespace tket</span></div>
+<div class="line"><a id="l00887" name="l00887"></a><span class="lineno">  887</span> </div>
+<div class="line"><a id="l00888" name="l00888"></a><span class="lineno">  888</span>}  <span class="comment">// namespace Transforms</span></div>
+<div class="line"><a id="l00889" name="l00889"></a><span class="lineno">  889</span> </div>
+<div class="line"><a id="l00890" name="l00890"></a><span class="lineno">  890</span>}  <span class="comment">// namespace tket</span></div>
 <div class="ttc" id="aGreedyPauliOptimisationLookupTables_8hpp_html"><div class="ttname"><a href="GreedyPauliOptimisationLookupTables_8hpp.html">GreedyPauliOptimisationLookupTables.hpp</a></div></div>
 <div class="ttc" id="aGreedyPauliOptimisation_8hpp_html"><div class="ttname"><a href="GreedyPauliOptimisation_8hpp.html">GreedyPauliOptimisation.hpp</a></div></div>
 <div class="ttc" id="aOpType_8hpp_html"><div class="ttname"><a href="OpType_8hpp.html">OpType.hpp</a></div></div>
@@ -987,6 +988,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aclasstket_1_1Circuit_html_a87a9a6c2f01019d20719201016f7a0d2"><div class="ttname"><a href="classtket_1_1Circuit.html#a87a9a6c2f01019d20719201016f7a0d2">tket::Circuit::get_name</a></div><div class="ttdeci">std::optional&lt; std::string &gt; get_name() const</div><div class="ttdoc">Get the name of the circuit.</div><div class="ttdef"><b>Definition</b> <a href="Circuit_8hpp_source.html#l01599">Circuit.hpp:1599</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_abe179cb0bf4ce967c79b24d8569426ae"><div class="ttname"><a href="classtket_1_1Circuit.html#abe179cb0bf4ce967c79b24d8569426ae">tket::Circuit::n_bits</a></div><div class="ttdeci">unsigned n_bits() const</div><div class="ttdef"><b>Definition</b> <a href="setters__and__getters_8cpp_source.html#l00355">setters_and_getters.cpp:355</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_ace617462599813ac8ebd9a49257b085f"><div class="ttname"><a href="classtket_1_1Circuit.html#ace617462599813ac8ebd9a49257b085f">tket::Circuit::add_measure</a></div><div class="ttdeci">Vertex add_measure(const Qubit &amp;qubit, const Bit &amp;bit)</div><div class="ttdoc">Add a measure operation from a qubit to a bit.</div><div class="ttdef"><b>Definition</b> <a href="Circuit_8hpp_source.html#l00770">Circuit.hpp:770</a></div></div>
+<div class="ttc" id="aclasstket_1_1Circuit_html_ae22d24c3371c3c44f9d92a6419c82ccd"><div class="ttname"><a href="classtket_1_1Circuit.html#ae22d24c3371c3c44f9d92a6419c82ccd">tket::Circuit::replace_all_implicit_wire_swaps</a></div><div class="ttdeci">void replace_all_implicit_wire_swaps()</div><div class="ttdoc">replaces all implicit wire swaps with SWAP gates</div><div class="ttdef"><b>Definition</b> <a href="macro__manipulation_8cpp_source.html#l00501">macro_manipulation.cpp:501</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_aef592b95607e089ca574a85e5331471b"><div class="ttname"><a href="classtket_1_1Circuit.html#aef592b95607e089ca574a85e5331471b">tket::Circuit::get_commands</a></div><div class="ttdeci">std::vector&lt; Command &gt; get_commands() const</div><div class="ttdoc">Get the sequence of commands comprising the circuit.</div><div class="ttdef"><b>Definition</b> <a href="Circuit_8cpp_source.html#l00105">Circuit.cpp:105</a></div></div>
 <div class="ttc" id="aclasstket_1_1Command_html"><div class="ttname"><a href="classtket_1_1Command.html">tket::Command</a></div><div class="ttdef"><b>Definition</b> <a href="Command_8hpp_source.html#l00034">Command.hpp:34</a></div></div>
 <div class="ttc" id="aclasstket_1_1Transform_html"><div class="ttname"><a href="classtket_1_1Transform.html">tket::Transform</a></div><div class="ttdoc">A transformation of a circuit that preserves its semantics.</div><div class="ttdef"><b>Definition</b> <a href="Transform_8hpp_source.html#l00027">Transform.hpp:27</a></div></div>
@@ -997,7 +999,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aclasstket_1_1Transforms_1_1GreedyPauliSimp_1_1GreedyPauliSimpError_html"><div class="ttname"><a href="classtket_1_1Transforms_1_1GreedyPauliSimp_1_1GreedyPauliSimpError.html">tket::Transforms::GreedyPauliSimp::GreedyPauliSimpError</a></div><div class="ttdef"><b>Definition</b> <a href="GreedyPauliOptimisation_8hpp_source.html#l00029">GreedyPauliOptimisation.hpp:29</a></div></div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div><div class="ttdoc">STL namespace.</div></div>
 <div class="ttc" id="anamespacetket_1_1Transforms_1_1GreedyPauliSimp_html_a02eb95f095c5e7b204d81efac472f7ce"><div class="ttname"><a href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a02eb95f095c5e7b204d81efac472f7ce">tket::Transforms::GreedyPauliSimp::greedy_pauli_set_synthesis</a></div><div class="ttdeci">Circuit greedy_pauli_set_synthesis(const std::vector&lt; SymPauliTensor &gt; &amp;unordered_set, double depth_weight, unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase)</div><div class="ttdoc">Synthesise a set of unordered Pauli exponentials by applying Clifford gates and single qubit rotation...</div><div class="ttdef"><b>Definition</b> <a href="GreedyPauliOptimisation_8cpp_source.html#l00710">GreedyPauliOptimisation.cpp:710</a></div></div>
-<div class="ttc" id="anamespacetket_1_1Transforms_1_1GreedyPauliSimp_html_a042d7d1967beadd4ec4b06f15cb3c136"><div class="ttname"><a href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a042d7d1967beadd4ec4b06f15cb3c136">tket::Transforms::GreedyPauliSimp::greedy_pauli_graph_synthesis</a></div><div class="ttdeci">Circuit greedy_pauli_graph_synthesis(const Circuit &amp;circ, double discount_rate, double depth_weight, unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase)</div><div class="ttdoc">Converts the given circuit into a GPGraph and conjugates each node by greedily applying 2-qubit Cliff...</div><div class="ttdef"><b>Definition</b> <a href="GreedyPauliOptimisation_8cpp_source.html#l00813">GreedyPauliOptimisation.cpp:813</a></div></div>
+<div class="ttc" id="anamespacetket_1_1Transforms_1_1GreedyPauliSimp_html_a042d7d1967beadd4ec4b06f15cb3c136"><div class="ttname"><a href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a042d7d1967beadd4ec4b06f15cb3c136">tket::Transforms::GreedyPauliSimp::greedy_pauli_graph_synthesis</a></div><div class="ttdeci">Circuit greedy_pauli_graph_synthesis(const Circuit &amp;circ, double discount_rate, double depth_weight, unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase)</div><div class="ttdoc">Converts the given circuit into a GPGraph and conjugates each node by greedily applying 2-qubit Cliff...</div><div class="ttdef"><b>Definition</b> <a href="GreedyPauliOptimisation_8cpp_source.html#l00814">GreedyPauliOptimisation.cpp:814</a></div></div>
 <div class="ttc" id="anamespacetket_1_1Transforms_1_1GreedyPauliSimp_html_a17eec2f5b6466bdc2248a76fe8c9a2c4a04ccd8816da9d02471d0c9acc16c8572"><div class="ttname"><a href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a17eec2f5b6466bdc2248a76fe8c9a2c4a04ccd8816da9d02471d0c9acc16c8572">tket::Transforms::GreedyPauliSimp::PauliNodeType::PauliPropagation</a></div><div class="ttdeci">@ PauliPropagation</div></div>
 <div class="ttc" id="anamespacetket_1_1Transforms_1_1GreedyPauliSimp_html_a17eec2f5b6466bdc2248a76fe8c9a2c4a35889523a1ee08c8fe9cdfc35805f6dd"><div class="ttname"><a href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a17eec2f5b6466bdc2248a76fe8c9a2c4a35889523a1ee08c8fe9cdfc35805f6dd">tket::Transforms::GreedyPauliSimp::PauliNodeType::ConditionalBlock</a></div><div class="ttdeci">@ ConditionalBlock</div></div>
 <div class="ttc" id="anamespacetket_1_1Transforms_1_1GreedyPauliSimp_html_a17eec2f5b6466bdc2248a76fe8c9a2c4a3e13a308faee88597d93b239d7a5a4ee"><div class="ttname"><a href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a17eec2f5b6466bdc2248a76fe8c9a2c4a3e13a308faee88597d93b239d7a5a4ee">tket::Transforms::GreedyPauliSimp::PauliNodeType::MidMeasure</a></div><div class="ttdeci">@ MidMeasure</div></div>
@@ -1017,7 +1019,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="anamespacetket_1_1Transforms_1_1GreedyPauliSimp_html_a9603776a1a40b23c07f8c60ff276365a"><div class="ttname"><a href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#a9603776a1a40b23c07f8c60ff276365a">tket::Transforms::GreedyPauliSimp::gpg_from_unordered_set</a></div><div class="ttdeci">std::tuple&lt; std::vector&lt; PauliNode_ptr &gt;, std::vector&lt; PauliNode_ptr &gt; &gt; gpg_from_unordered_set(const std::vector&lt; SymPauliTensor &gt; &amp;unordered_set)</div><div class="ttdoc">Convert a unordered set of SymPauliTensor into a set of PauliRotations followed by a set of PauliProp...</div><div class="ttdef"><b>Definition</b> <a href="GreedyPauliConverters_8cpp_source.html#l00053">GreedyPauliConverters.cpp:53</a></div></div>
 <div class="ttc" id="anamespacetket_1_1Transforms_1_1GreedyPauliSimp_html_ac465f8164e5f1099215ed84c3b678e90"><div class="ttname"><a href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#ac465f8164e5f1099215ed84c3b678e90">tket::Transforms::GreedyPauliSimp::PauliNode_ptr</a></div><div class="ttdeci">std::shared_ptr&lt; PauliNode &gt; PauliNode_ptr</div><div class="ttdef"><b>Definition</b> <a href="GreedyPauliOptimisation_8hpp_source.html#l00140">GreedyPauliOptimisation.hpp:140</a></div></div>
 <div class="ttc" id="anamespacetket_1_1Transforms_1_1GreedyPauliSimp_html_aff48bec510a58497cc59efa47bbf99a7"><div class="ttname"><a href="namespacetket_1_1Transforms_1_1GreedyPauliSimp.html#aff48bec510a58497cc59efa47bbf99a7">tket::Transforms::GreedyPauliSimp::greedy_pauli_graph_synthesis_flag</a></div><div class="ttdeci">Circuit greedy_pauli_graph_synthesis_flag(const Circuit &amp;circ, std::shared_ptr&lt; std::atomic&lt; bool &gt; &gt; stop_flag, double discount_rate, double depth_weight, unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase)</div><div class="ttdef"><b>Definition</b> <a href="GreedyPauliOptimisation_8cpp_source.html#l00743">GreedyPauliOptimisation.cpp:743</a></div></div>
-<div class="ttc" id="anamespacetket_1_1Transforms_html_ab42e6527de86921625a2c97f2fc71493"><div class="ttname"><a href="namespacetket_1_1Transforms.html#ab42e6527de86921625a2c97f2fc71493">tket::Transforms::greedy_pauli_optimisation</a></div><div class="ttdeci">Transform greedy_pauli_optimisation(double discount_rate, double depth_weight, unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase, unsigned thread_timeout, unsigned trials)</div><div class="ttdef"><b>Definition</b> <a href="GreedyPauliOptimisation_8cpp_source.html#l00826">GreedyPauliOptimisation.cpp:826</a></div></div>
+<div class="ttc" id="anamespacetket_1_1Transforms_html_ab42e6527de86921625a2c97f2fc71493"><div class="ttname"><a href="namespacetket_1_1Transforms.html#ab42e6527de86921625a2c97f2fc71493">tket::Transforms::greedy_pauli_optimisation</a></div><div class="ttdeci">Transform greedy_pauli_optimisation(double discount_rate, double depth_weight, unsigned max_lookahead, unsigned max_tqe_candidates, unsigned seed, bool allow_zzphase, unsigned thread_timeout, unsigned trials)</div><div class="ttdef"><b>Definition</b> <a href="GreedyPauliOptimisation_8cpp_source.html#l00827">GreedyPauliOptimisation.cpp:827</a></div></div>
 <div class="ttc" id="anamespacetket_html"><div class="ttname"><a href="namespacetket.html">tket</a></div><div class="ttdoc">Defines tket::DeviceCharacterisation, used in NoiseAwarePlacement and in commute_SQ_gates_through_SWA...</div><div class="ttdef"><b>Definition</b> <a href="Path_8cpp_source.html#l00022">Path.cpp:22</a></div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">tket::OpType</a></div><div class="ttdeci">OpType</div><div class="ttdoc">Named operation types.</div><div class="ttdef"><b>Definition</b> <a href="OpType_8hpp_source.html#l00029">OpType.hpp:29</a></div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a02129bb861061d1a052c592e2dc6b383"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a02129bb861061d1a052c592e2dc6b383">tket::OpType::X</a></div><div class="ttdeci">@ X</div></div>
