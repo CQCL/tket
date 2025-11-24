@@ -751,6 +751,7 @@ Circuit greedy_pauli_graph_synthesis_flag(
     throw GreedyPauliSimpError("max_tqe_candidates must be greater than 0.");
   }
   Circuit circ_flat(circ);
+  circ_flat.replace_all_implicit_wire_swaps();
   unsigned n_qubits = circ_flat.n_qubits();
   unsigned n_bits = circ_flat.n_bits();
   // empty circuit

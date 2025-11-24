@@ -142,6 +142,15 @@ SCENARIO("Clifford synthesis") {
   }
 }
 SCENARIO("Complete synthesis") {
+  GIVEN("Qubit permutation circuit") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+    circ.add_op<unsigned>(OpType::SWAP, {1, 2});
+    circ.replace_SWAPs();
+    Circuit d(circ);
+    REQUIRE(Transforms::greedy_pauli_optimisation().apply(d));
+    REQUIRE(test_unitary_comparison(circ, d, true));
+  }
   GIVEN("1Q Simple Circuit") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::Sdg, {0});
