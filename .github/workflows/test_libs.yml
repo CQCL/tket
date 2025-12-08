@@ -143,7 +143,7 @@ jobs:
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: |
         # File may not exist if this is the very first time, so don't error.
-        wget https://cqcl.github.io/tket/${{ matrix.lib }}/test-coverage/summary.txt || true
+        wget https://quantinuum.github.io/tket/${{ matrix.lib }}/test-coverage/summary.txt || true
         if [[ -f summary.txt ]] ; then
           ./.github/workflows/compare-coverage summary.txt ${{ matrix.lib }}-coverage/summary.txt
         fi

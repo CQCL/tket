@@ -106,12 +106,12 @@ jobs:
     - name: Compare with latest report from main (short tests)
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: |
-        wget https://cqcl.github.io/tket/tket/test-coverage-short/summary.txt
+        wget https://quantinuum.github.io/tket/tket/test-coverage-short/summary.txt
         ./.github/workflows/compare-coverage summary.txt test-coverage/summary.txt
     - name: Compare with latest report from main (full suite)
       if: github.event_name == 'schedule'
       run: |
-        wget https://cqcl.github.io/tket/tket/test-coverage/summary.txt
+        wget https://quantinuum.github.io/tket/tket/test-coverage/summary.txt
         ./.github/workflows/compare-coverage summary.txt test-coverage/summary.txt
 
   publish_coverage_short:

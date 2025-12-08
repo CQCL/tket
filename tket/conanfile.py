@@ -24,7 +24,7 @@ class TketConan(ConanFile):
     name = "tket"
     package_type = "library"
     license = "Apache 2"
-    homepage = "https://github.com/CQCL/tket"
+    homepage = "https://github.com/quantinuum/tket"
     url = "https://github.com/conan-io/conan-center-index"
     description = "Quantum SDK"
     topics = ("quantum", "computation", "compiler")

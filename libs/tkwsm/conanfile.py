@@ -24,7 +24,7 @@ class TkwsmConan(ConanFile):
     version = "0.3.13"
     package_type = "library"
     license = "Apache 2"
-    url = "https://github.com/CQCL/tket"
+    url = "https://github.com/quantinuum/tket"
     description = "Weighted-subgraph-monomorphism algorithms library"
     settings = "os", "compiler", "build_type", "arch"
     options = {
