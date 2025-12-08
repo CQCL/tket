@@ -22,7 +22,7 @@ class test_tklogRecipe(ConanFile):
     version = "0.3.3"
     package_type = "application"
     license = "Apache 2"
-    url = "https://github.com/CQCL/tket"
+    url = "https://github.com/quantinuum/tket"
     description = "Unit tests for tklog"
     settings = "os", "compiler", "build_type", "arch"
     options = {"with_coverage": [True, False]}

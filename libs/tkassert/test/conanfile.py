@@ -22,7 +22,7 @@ class test_tkassertRecipe(ConanFile):
     version = "0.3.4"
     package_type = "application"
     license = "Apache 2"
-    url = "https://github.com/CQCL/tket"
+    url = "https://github.com/quantinuum/tket"
     description = "Unit tests for tkassert"
     settings = "os", "compiler", "build_type", "arch"
     options = {"with_coverage": [True, False]}

@@ -79,7 +79,7 @@ jobs:
       - name: Checkout pytket-benchmarking-store
         uses: actions/checkout@v6
         with:
-          repository: CQCL/pytket-benchmarking-store
+          repository: quantinuum/pytket-benchmarking-store
           path: pytket-benchmarking-store
 
       - name: Perform Compilation

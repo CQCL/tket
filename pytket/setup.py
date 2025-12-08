@@ -160,8 +160,8 @@ setup(
     python_requires=">=3.10",
     project_urls={
         "Documentation": "https://docs.quantinuum.com/tket/api-docs/",
-        "Source": "https://github.com/CQCL/tket",
-        "Tracker": "https://github.com/CQCL/tket/issues",
+        "Source": "https://github.com/quantinuum/tket",
+        "Tracker": "https://github.com/quantinuum/tket/issues",
     },
     description="Quantum computing toolkit and interface to the TKET compiler",
     long_description=open("package.md").read(),  # noqa: SIM115

@@ -24,7 +24,7 @@ class TktokenswapConan(ConanFile):
     version = "0.3.13"
     package_type = "library"
     license = "Apache 2"
-    url = "https://github.com/CQCL/tket"
+    url = "https://github.com/quantinuum/tket"
     description = "Token swapping algorithms library"
     settings = "os", "compiler", "build_type", "arch"
     options = {
