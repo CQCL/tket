@@ -405,10 +405,16 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.14'
-    - name: Build pytket
+    - name: Build pytket (with zx)
+      if: matrix.os == 'macos-26'
       run: |
         cd pytket
         pip install -e .[ZX] -v
+    - name: Build pytket (without zx)
+      if: matrix.os == 'macos-15-intel'
+      run: |
+        cd pytket
+        pip install -e . -v
     - name: Run doctests
       run: |
         cd pytket
