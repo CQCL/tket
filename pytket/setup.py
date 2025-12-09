@@ -181,7 +181,7 @@ setup(
     ],
     extras_require={
         "ZX": [
-            "numba >= 0.61.0",
+            "numba ~= 0.62.1",
             "quimb >= 1.8.2",
             "autoray >= 0.6.12",
         ],
